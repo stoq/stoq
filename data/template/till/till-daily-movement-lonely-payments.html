@@ -1,0 +1,38 @@
+<%page args="payments" />
+% if payments:
+<h4>${ _("Lonely Payments") }</h4>
+
+    <table class="list">
+      <thead>
+        <tr>
+          <tr class="align-left">
+            <td>${ _("Code") }</td>
+            <td>${ _("Metdod") }</td>
+            <td>${ _("Description") }</td>
+            <td>${ _("Due Date") }</td>
+            <td class="align-right">${ _("Payment Value") }</td>
+          </tr>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        % for payment in payments:
+          <tr class="align-left">
+           <td>${ payment.identifier }</td>
+           <td>${ payment.method.get_description() }</td>
+           <td>${ payment.description }</td>
+           <td>${ format_date(payment.due_date) }</td>
+           <td class="align-right">${ format_price(payment.value) }</td>
+          </tr>
+        % endfor
+      </tbody>
+    </table>
+% endif

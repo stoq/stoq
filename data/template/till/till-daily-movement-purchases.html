@@ -1,0 +1,66 @@
+% if report.purchases:
+<h4>${ _("Purchases") }</h4>
+    <table>
+      <thead>
+        <tr class="align-left">
+          <td>${ _("Code") }</td>
+          <td>${ _("Status") }</td>
+          <td>${ _("Responsible") }</td>
+          <td>${ _("Branch") }</td>
+          <td>${ _("Notes") }</td>
+          <td>${ _("Supplier") }</td>
+          <td class="align-right">${ _("Purchase Value") }</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        % for purchase in report.purchases:
+          <tr class="highlight">
+            <td>${ purchase.identifier }</td>
+            <td>${ purchase.get_status_str() }</td>
+            <td>${ purchase.get_responsible_name() }</td>
+            <td>${ purchase.get_branch_name() }</td>
+            <td>${ purchase.notes }</td>
+            <td>${ purchase.get_supplier_name() }</td>
+            <td class="align-right">${ format_price(purchase.get_purchase_total()) }</td>
+          </tr>
+          <tr>
+            <td colspan="7">
+            <table class="subtable">
+              <thead>
+                <tr class="align-left">
+                  <td>${ _("Code") }</td>
+                  <td>${ _("Metdod") }</td>
+                  <td>${ _("Description") }</td>
+                  <td class="align-right">${ _("Payment Value") }</td>
+                </tr>
+              </thead>
+              <tbody>
+
+              % for purchase_payment in report.purchases[purchase]:
+              <tr class="align-left">
+                <td>${ purchase_payment.identifier }</td>
+                <td>${ purchase_payment.method.get_description()}</td>
+                <td>${ purchase_payment.description }</td>
+                <td class="align-right">${ format_price(purchase_payment.value) }</td>
+              </tr>
+              % endfor
+
+              </tbody>
+            </table>
+          </tr>
+        % endfor
+      </tbody>
+    </table>
+% endif
+

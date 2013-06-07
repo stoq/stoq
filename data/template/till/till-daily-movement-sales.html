@@ -1,0 +1,76 @@
+% if report.sales:
+<h4>${ _("Sales") }</h4>
+    <table>
+      <thead>
+        <tr class="align-left">
+          <td>${ _("Code") }</td>
+          <td>${ _("Sales Person") }</td>
+          <td>${ _("Client") }</td>
+          <td class="align-right">${ _("Sale Value") }</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        % for sale in report.sales:
+          <tr class="highlight">
+            <td>${ sale.identifier }</td>
+            <td>${ sale.get_salesperson_name() }</td>
+            <td>${ sale.get_client_name() }</td>
+            <td class="align-right">${ format_price(sale.get_total_sale_amount()) }</td>
+          </tr>
+
+          <tr>
+            <td colspan="4">
+            <table class="subtable">
+              <thead>
+                <tr class="align-left">
+                  <td>${ _("Code") }</td>
+                  <td>${ _("Method") }</td>
+                  <td>${ _("Description") }</td>
+                  <td class="align-right">${ _("Payment Value") }</td>
+                </tr>
+              </thead>
+              <tbody>
+
+              % for sale_payment in report.sales[sale]:
+              <tr class="align-left">
+                <td>${ sale_payment.identifier }</td>
+                <td>${ sale_payment.method.get_description() }</td>
+                <td>
+                    ${ sale_payment.description }
+                  % if sale_payment.card_data:
+                  <br></br>
+                  <span class="small">
+                    ${ _("Auth:") }  ${ sale_payment.card_data.auth or ''}
+                    ${ _("Provider:") }  ${ sale_payment.card_data.provider.short_name or ''}
+                    ${ _("Device:") }  ${ sale_payment.card_data.device.description or ''}
+                  </span>
+
+                  % elif sale_payment.check_data:
+                  <br></br>
+                  <span class="small">
+                    ${ _("Bank:") }  ${ sale_payment.check_data.bank_account.bank_number or ''}
+                    ${ _("Agency:") }  ${ sale_payment.check_data.bank_account.bank_branch or ''}
+                    ${ _("Acount:") }  ${ sale_payment.check_data.bank_account.bank_account or ''}
+                  </span>
+
+                </td>
+                  %endif
+                <td class="align-right">${ format_price(sale_payment.value) }</td>
+              </tr>
+              % endfor
+              </tbody>
+            </table>
+          </tr>
+        % endfor
+      </tbody>
+    </table>
+% endif
+

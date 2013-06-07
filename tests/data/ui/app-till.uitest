@@ -15,6 +15,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
           GtkImageMenuItem(): 'Open till...'
           GtkImageMenuItem(): 'Verify till...', insensitive
           GtkImageMenuItem(): 'Close till...', insensitive
+          GtkImageMenuItem(): 'Till daily movement...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Print...', insensitive
           GtkImageMenuItem(): 'Export to spreadsheet...', insensitive

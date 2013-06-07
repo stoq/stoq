@@ -35,6 +35,7 @@
       <menuitem action="TillOpen"/>
       <menuitem action="TillVerify"/>
       <menuitem action="TillClose"/>
+      <menuitem action="TillDailyMovement"/>
     </placeholder>
   </menu>
   <placeholder name="AppMenubarPH">

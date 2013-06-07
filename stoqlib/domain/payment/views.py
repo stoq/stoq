@@ -70,6 +70,9 @@ class BasePaymentView(Viewable):
     sale = Sale
     method = PaymentMethod
 
+    card_data = CreditCardData
+    check_data = CheckData
+
     # Payment
     id = Payment.id
     identifier = Payment.identifier
@@ -109,6 +112,8 @@ class BasePaymentView(Viewable):
         LeftJoin(PaymentGroup, PaymentGroup.id == Payment.group_id),
         LeftJoin(PaymentCategory, PaymentCategory.id == Payment.category_id),
         Join(PaymentMethod, Payment.method_id == PaymentMethod.id),
+        LeftJoin(CreditCardData, Payment.id == CreditCardData.payment_id),
+        LeftJoin(CheckData, Payment.id == CheckData.payment_id),
 
         # Purchase
         LeftJoin(PaymentGroup_Purchase, PaymentGroup_Purchase.id == Payment.group_id),

@@ -23,9 +23,13 @@
 ##
 ##
 """ Till report implementation """
+from storm.expr import And
 
+from stoqlib.database.expr import Date
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.reporting.report import ObjectListReport
+from stoqlib.reporting.report import ObjectListReport, HTMLReport
 
 
 class TillHistoryReport(ObjectListReport):
@@ -35,3 +39,72 @@ class TillHistoryReport(ObjectListReport):
     title = _("Till History Listing")
     main_object_name = (_("till entry"), _("till entries"))
     summary = ['value']
+
+
+class TillDailyMovementReport(HTMLReport):
+    """This report shows all the financial transactions on till
+    """
+    template_filename = 'till/till.html'
+    title = _('Daily Movement')
+    complete_header = False
+
+    def __init__(self, filename, store, start_date, end_date=None):
+        self.start_date = start_date
+        self.end_date = end_date
+
+        query = And(Payment.status == Payment.STATUS_PAID,
+                    Date(Payment.paid_date) == Date(start_date))
+
+        # Keys are the sale objects, and values are lists with all payments
+        self.sales = {}
+
+        # Keys are the returned sale objects, and values are lists with all payments
+        self.return_sales = {}
+        self.purchases = {}
+
+        # lonely input and output payments
+        self.lonely_in_payments = []
+        self.lonely_out_payments = []
+
+        # values are lists with the first element the summary of the input, and
+        # the second the summary of the output
+        self.method_summary = {}
+        self.card_summary = {}
+
+        for p in store.find(InPaymentView, query):
+            if p.sale:
+                sale_payments = self.sales.setdefault(p.sale, [])
+                sale_payments.append(p)
+            else:
+                self.lonely_in_payments.append(p)
+
+            self.method_summary.setdefault(p.method, [0, 0])
+            self.method_summary[p.method][0] += p.value
+            if p.card_data:
+                type_desc = p.card_data.short_desc[p.card_data.card_type]
+                key = (p.card_data.provider.short_name, type_desc)
+                self.card_summary.setdefault(key, 0)
+                self.card_summary[key] += p.value
+
+        for p in store.find(OutPaymentView, query):
+            if p.purchase:
+                purchase_payments = self.purchases.setdefault(p.purchase, [])
+                purchase_payments.append(p)
+            elif p.sale:
+                return_sales_payment = self.return_sales.setdefault(p.sale, [])
+                return_sales_payment.append(p)
+            else:
+                self.lonely_out_payments.append(p)
+
+            self.method_summary.setdefault(p.method, [0, 0])
+            self.method_summary[p.method][1] += p.value
+
+        HTMLReport.__init__(self, filename)
+
+    def get_subtitle(self):
+        """Returns a subtitle text
+        """
+        if self.end_date:
+            return _('Till movement on %s to %s') % (self.start_date,
+                                                     self.end_date)
+        return _('Till movement on %s') % self.start_date

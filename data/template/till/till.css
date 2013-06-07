@@ -1,0 +1,40 @@
+.align-left {
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
+tr.align-right td {
+    text-align: right;
+}
+
+.highlight {
+    text-align: left;
+    background-color: #f1f1f1;
+}
+
+.highlight td:last-child {
+    text-align: right;
+}
+
+.subrow {
+    text-align: right;
+    font-size: 8pt;
+}
+
+table.subtable {
+    text-align: right;
+    font-size: 8pt;
+    padding-left: 1cm
+}
+
+table.subtable th {
+    font-weight: bold;
+}
+
+table.subtable td {
+    border: 0;
+}
+

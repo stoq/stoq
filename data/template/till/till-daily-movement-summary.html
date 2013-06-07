@@ -1,0 +1,43 @@
+% if report.method_summary:
+<h4>${ _("Per Payment Method") }</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Payment Method") }</td>
+          <td class="align-right">${ _("Income Total") }</td>
+          <td class="align-right">${ _("Outcome Total") }</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        <%
+            in_sum = 0
+            out_sum = 0
+        %>
+        % for (method, values) in report.method_summary.items():
+            <tr>
+                <td>${ method.description }</td>
+                <td class="align-right">${ format_price(values[0]) }</td>
+                <td class="align-right">${ format_price(values[1]) }</td>
+            </tr>
+            <%
+                in_sum += values[0]
+                out_sum += values[1]
+            %>
+        % endfor
+
+            <tr class="summary">
+                <td><b>Total:</b></td>
+                <td  class="align-right"><b>${ format_price(in_sum) }</b></td>
+                <td  class="align-right"><b>${ format_price(out_sum) }</b></td>
+            </tr>
+
+      </tbody>
+    </table>
+% endif

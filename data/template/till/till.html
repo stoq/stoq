@@ -1,0 +1,34 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  <link rel="stylesheet" href="base/base.css" type="text/css" />
+  <link rel="stylesheet" href="till/till.css" type="text/css" />
+  ${ setup_margin_labels(title) }
+
+  <style>
+    #items .list td:nth-child(3),
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5) {
+      text-align: right;
+    }
+  </style>
+
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes) }
+
+<h3>${ _("Input Payments") }</h3>
+<%include file="till-daily-movement-sales.html" />
+<%include file="till-daily-movement-lonely-payments.html" args="payments=report.lonely_in_payments" />
+
+<h3>${ _("Output Payments") }</h3>
+<%include file="till-daily-movement-purchases.html" />
+<%include file="till-daily-movement-lonely-payments.html" args="payments=report.lonely_out_payments" />
+<%include file="till-daily-movement-return-sales.html" />
+
+<%include file="till-daily-movement-summary.html" />
+<%include file="till-daily-movement-card-summary.html" />
+
+</div> <!-- end div.page -->

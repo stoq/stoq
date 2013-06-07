@@ -63,8 +63,10 @@ from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
 from stoqlib.gui.utils.keybindings import get_accels
+from stoqlib.gui.utils.printing import print_report
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.reporting.sale import SalesReport
-
+from stoqlib.reporting.till import TillDailyMovementReport
 from stoq.gui.shell.shellapp import ShellApp
 
 log = logging.getLogger(__name__)
@@ -95,6 +97,8 @@ class TillApp(ShellApp):
              group.get('close_till')),
             ('TillVerify', None, _('Verify till...'),
              group.get('verify_till')),
+            ("TillDailyMovement", None, _("Till daily movement..."),
+             group.get('daily_movement')),
             ('TillAddCash', None, _('Cash addition...'), ''),
             ('TillRemoveCash', None, _('Cash removal...'), ''),
             ("PaymentReceive", None, _("Payment receival..."),
@@ -516,6 +520,10 @@ class TillApp(ShellApp):
             run_dialog(CashOutEditor, self, store)
         if store.committed:
             self._update_total()
+
+    def on_TillDailyMovement__activate(self, button):
+        today = localtoday()
+        print_report(TillDailyMovementReport, self.store, today)
 
     # Search
 

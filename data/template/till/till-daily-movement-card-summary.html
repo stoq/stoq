@@ -1,0 +1,35 @@
+<h4>${ _("Per Card Provider") }</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Provider Name") }</td>
+          <td class="align-right">${ _("Income Total") }</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        <%
+            sum = 0
+            keys = report.card_summary.keys()
+        %>
+        % for key in sorted(keys) :
+            <tr>
+                <td>${ key[0] }
+                    ${ key[1] }</td>
+                <td class="align-right">${ format_price(report.card_summary[key]) }</td>
+            </tr>
+            <% sum += report.card_summary[key] %>
+        % endfor
+
+            <tr class="summary">
+                <td><b>Total:</b></td>
+                <td class="align-right"><b>${ format_price(sum) }</b></td>
+            </tr>
+
+      </tbody>
+    </table>

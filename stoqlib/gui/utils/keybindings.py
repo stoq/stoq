@@ -424,6 +424,8 @@ _bindings = [
      _("Show details of the sale")),
     ('app.till.payment_receive', '',
      _("Receive payment")),
+    ('app.till.daily_movement', '',
+     _("Print daily movement report")),
     # ecf till read memory: <Primary>F9
     # ecf till summarize: <Primary>F11
 ]
