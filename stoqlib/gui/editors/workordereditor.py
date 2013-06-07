@@ -35,8 +35,9 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderApprovedAndFinishedView)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.columns import IdentifierColumn
+from stoqlib.gui.stockicons import STOQ_DELIVERY
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.workordercategoryeditor import WorkOrderCategoryEditor
 from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
@@ -100,12 +101,6 @@ class WorkOrderEditor(BaseEditor):
         self.execution_slave = WorkOrderExecutionSlave(
             self.store, self.model, visual_mode=self.visual_mode)
         self.attach_slave('execution_holder', self.execution_slave)
-        # FIXME: It's strange to connect to the list on a slave on other slave
-        # and other slave, but we need to update status_str proxy after.
-        # Is there a way of doing this without having to create a gsinal
-        # in each slave and propagate one to another?
-        self.execution_slave.sellable_item_slave.slave.klist.connect(
-            'has-rows', self._on_execution_slave__has_rows)
 
         self.history_slave = WorkOrderHistorySlave(
             self.store, self.model, visual_mode=self.visual_mode)
@@ -118,7 +113,7 @@ class WorkOrderEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def update_visual_mode(self):
-        for widget in [self.has_client_approval, self.client_create,
+        for widget in [self.toggle_status_btn, self.client_create,
                        self.category_create]:
             widget.set_sensitive(False)
 
@@ -153,30 +148,50 @@ class WorkOrderEditor(BaseEditor):
             self._set_current_tab('quote_holder')
         elif self.model.status in [WorkOrder.STATUS_WORK_IN_PROGRESS,
                                    WorkOrder.STATUS_WORK_FINISHED,
-                                   WorkOrder.STATUS_CLOSED,
-                                   WorkOrder.STATUS_APPROVED]:
+                                   WorkOrder.STATUS_WORK_WAITING,
+                                   WorkOrder.STATUS_CLOSED]:
             self._set_current_tab('execution_holder')
 
     def _update_view(self):
         self.proxy.update('status_str')
 
-        is_approved = self.model.status != WorkOrder.STATUS_OPENED
         # If it's not opened, it's at least approved.
         # So, we can enable the execution slave
         tab = self._get_tab('execution_holder')
-        tab.set_sensitive(is_approved)
+        tab.set_sensitive(self.model.status == WorkOrder.STATUS_WORK_IN_PROGRESS)
 
-        if is_approved and not self.has_client_approval.get_active():
-            self.has_client_approval.set_active(True)
-
-        # Once we started working, it makes no sense to
-        # remove client's approval
-        if self.model.status == WorkOrder.STATUS_WORK_IN_PROGRESS:
-            self.has_client_approval.set_sensitive(False)
+        has_items = bool(self.model.order_items.count())
+        if self.model.can_approve():
+            label = _("Approve")
+        elif self.model.can_work() and not has_items:
+            label = _("Start")
+        elif self.model.can_work():
+            label = _("Continue")
+        elif self.model.can_pause():
+            label = _("Pause")
         else:
-            has_client = self.model.client is not None
-            self.has_client_approval.set_sensitive(has_client and
-                                                   not self.visual_mode)
+            label = ''
+        self.toggle_status_btn.set_label(label)
+        self.toggle_status_btn.set_sensitive(self.model.client is not None)
+        self.toggle_status_btn.set_visible(bool(label))
+
+        if self.model.is_in_transport():
+            stock_id = STOQ_DELIVERY
+            tooltip = _(u"In transport")
+        elif self.model.is_rejected:
+            stock_id = gtk.STOCK_DIALOG_WARNING
+            tooltip = _(u"Rejected")
+        elif self.model.is_approved():
+            stock_id = gtk.STOCK_APPLY
+            tooltip = _(u"Approved")
+        else:
+            stock_id = None
+        if stock_id is not None:
+            self.state_icon.set_from_stock(stock_id, gtk.ICON_SIZE_MENU)
+            self.state_icon.set_visible(True)
+            self.state_icon.set_tooltip_text(tooltip)
+        else:
+            self.state_icon.hide()
 
     def _get_tab_pagenum(self, holder_name):
         return self.slaves_notebook.page_num(getattr(self, holder_name))
@@ -214,15 +229,27 @@ class WorkOrderEditor(BaseEditor):
             self._fill_categories_combo()
             self.category.select(self.store.fetch(rv))
 
+    def _maybe_toggle_status(self):
+        if self.model.can_approve():
+            self.model.approve()
+        elif self.model.can_work():
+            self.model.work()
+        elif self.model.can_pause():
+            msg_text = _(u"This will inform the order that we are waiting. "
+                         u"Are you sure?")
+            rv = run_dialog(
+                NoteEditor, self, self.store, model=Note(),
+                message_text=msg_text, label_text=_(u"Reason"), mandatory=True)
+            if not rv:
+                return
+            self.model.pause(reason=rv.notes)
+
+        self._update_view()
+        self.history_slave.update_items()
+
     #
     #  Callbacks
     #
-
-    def _on_execution_slave__has_rows(self, klist, has_rows):
-        if has_rows and self.model.can_start():
-            self.model.start()
-
-        self._update_view()
 
     def on_client__content_changed(self, combo):
         has_client = bool(combo.read())
@@ -247,13 +274,8 @@ class WorkOrderEditor(BaseEditor):
     def on_category_edit__clicked(self, button):
         self._run_category_editor(category=self.category.read())
 
-    def on_has_client_approval__toggled(self, check):
-        if check.get_active() and self.model.can_approve():
-            self.model.approve()
-        if not check.get_active() and self.model.can_undo_approval():
-            self.model.undo_approval()
-
-        self._update_view()
+    def on_toggle_status_btn__clicked(self, button):
+        self._maybe_toggle_status()
 
 
 class WorkOrderPackageSendEditor(BaseEditor):

@@ -24,7 +24,8 @@
 
 import mock
 
-from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory
+from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
+                                      WorkOrderHistory)
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
                                                  WorkOrderPackageSendEditor)
@@ -35,8 +36,11 @@ from stoqlib.lib.parameters import sysparam
 # This is needed because default_factory is set when the module is
 # read, and we cannot mock descriptors right
 def _adjust_history_date(workorder):
-    for history in workorder.history_entries:
-        history.date = localdatetime(2013, 3, 1)
+    entries = workorder.history_entries
+    # Since the history is ordered by date, mimic that so they keep
+    # the same order on the objectlist
+    for i, history in enumerate(entries.order_by(WorkOrderHistory.date)):
+        history.date = localdatetime(2013, 3, i + 1)
 
 
 class TestWorkOrderEditor(GUITest):
@@ -62,9 +66,9 @@ class TestWorkOrderEditor(GUITest):
 
         editor.equipment.update(u"Test equipment")
         editor.category.update(category)
-        self.assertNotSensitive(editor, ['has_client_approval'])
+        self.assertNotSensitive(editor, ['toggle_status_btn'])
         editor.client.update(client)
-        self.assertSensitive(editor, ['has_client_approval'])
+        self.assertSensitive(editor, ['toggle_status_btn'])
         opening_slave.defect_reported.update(u"Defect reported")
         # Check initial state
         self.assertEqual(editor.model.status, WorkOrder.STATUS_OPENED)
@@ -79,9 +83,21 @@ class TestWorkOrderEditor(GUITest):
         sysparam(self.store).update_parameter(u"ALLOW_OUTDATED_OPERATIONS", u"1")
         quote_slave.estimated_start.validate(force=True)
         self.assertValid(quote_slave, ['estimated_start'])
-        editor.has_client_approval.set_active(True)
-        # Check approved state
-        self.assertEqual(editor.model.status, WorkOrder.STATUS_APPROVED)
+        # Clicking the first time will approve the order (put it on waiting state)
+        self.click(editor.toggle_status_btn)
+        self.assertEqual(editor.model.status, WorkOrder.STATUS_WORK_WAITING)
+        # The second time will start thr work
+        self.click(editor.toggle_status_btn)
+        self.assertEqual(editor.model.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
+        _adjust_history_date(editor.model)
+        # FIXME: For some reason, history_slave.update_items is not really
+        # updating the list (it calls add_list that should do that) and because
+        # of that the items' dates are not updated when they should
+        # (update_items will call add_list that should call clear before).
+        # Calling clear here fixes the problem, but it should not be necessary.
+        # This is probably a kiwi issue
+        editor.history_slave.details_list.clear()
+        editor.history_slave.update_items()
         self.check_editor(editor, 'editor-workorder-create-approved')
 
         product_sellable = self.create_product(stock=100).sellable
@@ -102,7 +118,6 @@ class TestWorkOrderEditor(GUITest):
         item_slave.quantity.update(2)
         self.click(item_slave.add_sellable_button)
         # Check work in progress state
-        self.assertEqual(editor.model.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
         self.check_editor(editor, 'editor-workorder-create-in-progress')
 
         self.click(editor.main_dialog.ok_button)
@@ -140,7 +155,7 @@ class TestWorkOrderEditor(GUITest):
                                price=99, quantity=2)
         workorder.add_sellable(self.create_sellable(description=u"Product B"),
                                price=5, quantity=100)
-        workorder.start()
+        workorder.work()
         _adjust_history_date(workorder)
         # Create another editor to check work in progress state
         editor = WorkOrderEditor(self.store, model=workorder)
@@ -179,7 +194,7 @@ class TestWorkOrderPackageSendEditor(GUITest):
                 workorders_ids.add(wo.id)
             elif i < 6:
                 wo.approve()
-                wo.start()
+                wo.work()
                 wo.add_sellable(self.create_sellable())
                 wo.finish()
                 workorders_ids.add(wo.id)

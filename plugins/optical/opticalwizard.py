@@ -256,7 +256,7 @@ class OpticalItemStep(BaseWizardStep):
 
             # The work order might be already approved, if we are editing a
             # sale.
-            if wo.status != WorkOrder.STATUS_APPROVED:
+            if wo.can_approve():
                 wo.approve()
             data.append([desc, wo])
 

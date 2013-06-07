@@ -40,6 +40,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
           GtkImageMenuItem(): 'Finish...', insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
           GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Approve...', hidden, insensitive
+          GtkImageMenuItem(): 'Pause the work...', hidden, insensitive
+          GtkImageMenuItem(): 'Start the work...', hidden, insensitive
+          GtkImageMenuItem(): 'Reject order...', hidden, insensitive
+          GtkImageMenuItem(): 'Undo order rejection...', hidden, insensitive
+          GtkImageMenuItem(): 'Reopen order...', hidden, insensitive
           GtkImageMenuItem(): 'Print quote...', insensitive
           GtkImageMenuItem(): 'Print receipt...', insensitive
       GtkImageMenuItem(): '_Search'
@@ -91,9 +97,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                       item: 'All work orders', selected
                       item: 'Pending'
                       item: 'In progress'
-                      item: 'In transport'
                       item: 'Finished'
                       item: 'Closed or cancelled'
+                      item: 'sep'
+                      item: 'Approved'
+                      item: 'In transport'
+                      item: 'Rejected'
                   SearchFilter(_primary_filter):
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
@@ -108,6 +117,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                 column: title='Category', hidden
                 column: title='Equipment', expand
                 column: title='Equipment'
+                column: title='Equipment'
                 column: title='Client'
                 column: title='Branch', hidden
                 column: title='Current branch', hidden
@@ -115,8 +125,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                 column: title='Approval date', hidden
                 column: title='Finish date', hidden
                 column: title='Total'
-                row: 666, u'Waiting', None, u'', None, None, u'Moda Stoq', u'Moda Stoq', datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
-                row: 667, u'Waiting', None, u'', None, None, u'Moda Stoq', u'Moda Stoq', datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
+                row: 666, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
+                row: 667, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
@@ -140,5 +150,11 @@ GtkMenu(popup): hidden
   GtkImageMenuItem(): 'Finish...', insensitive
   GtkImageMenuItem(): 'Cancel...', insensitive
   GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Approve...', hidden, insensitive
+  GtkImageMenuItem(): 'Pause the work...', hidden, insensitive
+  GtkImageMenuItem(): 'Start the work...', hidden, insensitive
+  GtkImageMenuItem(): 'Reject order...', hidden, insensitive
+  GtkImageMenuItem(): 'Undo order rejection...', hidden, insensitive
+  GtkImageMenuItem(): 'Reopen order...', hidden, insensitive
   GtkImageMenuItem(): 'Print quote...', insensitive
   GtkImageMenuItem(): 'Print receipt...', insensitive

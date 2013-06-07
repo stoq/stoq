@@ -34,10 +34,10 @@ from zope.interface import implements
 from stoqlib.database.expr import Field, NullIf
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
-                                         IdentifierCol, IdCol)
+                                         IdentifierCol, IdCol, BoolCol)
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.database.viewable import Viewable
-from stoqlib.exceptions import InvalidStatus, StockError
+from stoqlib.exceptions import InvalidStatus, NeedReason, StockError
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import (Branch, Client, Person, SalesPerson,
@@ -424,13 +424,15 @@ class WorkOrder(Domain):
     .. graphviz::
 
        digraph work_order_status {
-         STATUS_OPENED -> STATUS_APPROVED;
+         STATUS_OPENED -> STATUS_WORK_WAITING;
          STATUS_OPENED -> STATUS_CANCELLED;
-         STATUS_APPROVED -> STATUS_OPENED;
-         STATUS_APPROVED -> STATUS_CANCELLED;
-         STATUS_APPROVED -> STATUS_WORK_IN_PROGRESS;
+         STATUS_WORK_WAITING -> STATUS_WORK_IN_PROGRESS;
+         STATUS_WORK_WAITING -> STATUS_CANCELLED;
          STATUS_WORK_IN_PROGRESS -> STATUS_WORK_FINISHED;
+         STATUS_WORK_IN_PROGRESS -> STATUS_WORK_WAITING;
+         STATUS_WORK_IN_PROGRESS -> STATUS_CANCELLED;
          STATUS_WORK_FINISHED -> STATUS_CLOSED;
+         STATUS_WORK_FINISHED -> STATUS_WORK_IN_PROGRESS;
        }
 
     See also:
@@ -448,10 +450,16 @@ class WorkOrder(Domain):
     #: for some reason it was cancelled
     STATUS_CANCELLED = 1
 
-    #: the |client| has approved the order, work has not begun yet
-    STATUS_APPROVED = 2
+    #: this is the initial status after the order gets approved by the
+    #: |client| and also a helper state for :attr:`.STATUS_WORK_IN_PROGRESS`
+    #: since when there, the order can come back here to be explicit that
+    #: it's waiting (for material, for labor, etc) to continue the work
+    STATUS_WORK_WAITING = 2
 
-    #: work is currently in progress
+    #: work is currently in progress. Note that if at any time we need
+    #: to wait for more material to continue the work, the status can
+    #: go back to :attr:`.STATUS_WORK_WAITING` and then come back
+    #: here when we have it and the work is going to be continued
     STATUS_WORK_IN_PROGRESS = 3
 
     #: work has been finished, but no |sale| has been created yet.
@@ -463,9 +471,9 @@ class WorkOrder(Domain):
     STATUS_CLOSED = 5
 
     statuses = {
-        STATUS_OPENED: _(u'Waiting'),
+        STATUS_OPENED: _(u'Opened'),
         STATUS_CANCELLED: _(u'Cancelled'),
-        STATUS_APPROVED: _(u'Approved'),
+        STATUS_WORK_WAITING: _(u'Waiting'),
         STATUS_WORK_IN_PROGRESS: _(u'In progress'),
         STATUS_WORK_FINISHED: _(u'Finished'),
         STATUS_CLOSED: _(u'Closed')}
@@ -507,6 +515,11 @@ class WorkOrder(Domain):
     #: date this work was finished (set by :obj:`.finish`)
     finish_date = DateTimeCol(default=None)
 
+    #: if the order was rejected by the other |branch|, e.g. when one
+    #: branch sends the order in a |workorderpackage| to another branch
+    #: for execution and it sends it back because of something
+    is_rejected = BoolCol(allow_none=False, default=False)
+
     branch_id = IdCol()
     #: the |branch| where this order was created and responsible for it
     branch = Reference(branch_id, 'Branch.id')
@@ -543,8 +556,6 @@ class WorkOrder(Domain):
 
     @property
     def status_str(self):
-        if self.is_in_transport():
-            return _("In transport")
         return self.statuses[self.status]
 
     def __init__(self, *args, **kwargs):
@@ -632,6 +643,19 @@ class WorkOrder(Domain):
         """
         return self.current_branch is None
 
+    def is_approved(self):
+        """Checks if this work order is approved
+
+        If the order is paused or in progress, it's
+        considered to be approved (obviously, the same applies to
+        status after them, like finished and closed).
+
+        :returns: ``True`` if the order is considered as approved,
+            ``False`` otherwise.
+        """
+        return self.status not in [self.STATUS_OPENED,
+                                   self.STATUS_CANCELLED]
+
     def is_finished(self):
         """Checks if this work order is finished
 
@@ -648,7 +672,7 @@ class WorkOrder(Domain):
         :obj:`estimated finish date <.estimated_finish>` and that
         date has already passed.
         """
-        if self.status in [self.STATUS_WORK_FINISHED, self.STATUS_CLOSED]:
+        if self.is_finished():
             return False
         if not self.estimated_finish:
             # No estimated_finish means we are not late
@@ -660,12 +684,18 @@ class WorkOrder(Domain):
     def can_cancel(self):
         """Checks if this work order can be cancelled
 
-        Only opened and approved orders can be cancelled. Once the
-        work has started, it should not be possible to do that anymore.
+        The order can be cancelled at any point, since it's not
+        finished (this is done by checking :meth:`.is_finished`)
+
+        Also, we are not allowing to cancel an order with items, since
+        it's a more sophisticated process. e.g. An item can go back to the
+        stock and another can be already used so it's lost.
 
         :returns: ``True`` if can be cancelled, ``False`` otherwise
         """
-        return self.status in [self.STATUS_OPENED, self.STATUS_APPROVED]
+        if self.order_items.count():
+            return False
+        return not self.is_finished()
 
     def can_approve(self):
         """Checks if this work order can be approved
@@ -674,24 +704,28 @@ class WorkOrder(Domain):
         """
         return self.status == self.STATUS_OPENED
 
-    def can_undo_approval(self):
-        """Checks if this work order order can be unapproved
+    def can_pause(self):
+        """Checks if we can put the order on "waiting" state
 
-        Only approved orders can be unapproved. Once the work
-        has started, it should not be possible to do that anymore
+        Only orders with work in progress be put in that state.
 
-        :returns: ``True`` if can be unapproved, ``False`` otherwise
+        :returns: ``True`` if can work, ``False`` otherwise
         """
-        return self.status == self.STATUS_APPROVED
+        if self.is_rejected or self.is_in_transport():
+            return False
+        return self.status == self.STATUS_WORK_IN_PROGRESS
 
-    def can_start(self):
-        """Checks if this work order can start
+    def can_work(self):
+        """Checks if this order's task can be worked
 
-        Note that the work needs to be approved before it can be started.
+        Note that the work needs to be approved before it's task
+        can be started to be worked.
 
-        :returns: ``True`` if can start, ``False`` otherwise
+        :returns: ``True`` if can work, ``False`` otherwise
         """
-        return self.status == self.STATUS_APPROVED
+        if self.is_rejected or self.is_in_transport():
+            return False
+        return self.status == self.STATUS_WORK_WAITING
 
     def can_finish(self):
         """Checks if this work order can finish
@@ -700,9 +734,12 @@ class WorkOrder(Domain):
 
         :returns: ``True`` if can finish, ``False`` otherwise
         """
+        if self.is_rejected or self.is_in_transport():
+            return False
         if not self.order_items.count():
             return False
-        return self.status == self.STATUS_WORK_IN_PROGRESS
+        return self.status in [self.STATUS_WORK_IN_PROGRESS,
+                               self.STATUS_WORK_WAITING]
 
     def can_close(self):
         """Checks if this work order can close
@@ -711,7 +748,72 @@ class WorkOrder(Domain):
 
         :returns: ``True`` if can close, ``False`` otherwise
         """
+        if self.is_rejected or self.is_in_transport():
+            return False
         return self.status == self.STATUS_WORK_FINISHED
+
+    def can_reopen(self):
+        """Checks if this work order can be re-opened
+
+        A finished order can be reopened, but not after it's closed.
+
+        :returns: ``True`` if it can, ``False`` otherwise
+        """
+        return self.status == self.STATUS_WORK_FINISHED
+
+    def can_reject(self):
+        """Checks if the :obj:`.is_rejected` flag can be set
+
+        :returns: ``True`` if it can, ``False`` otherwise
+        """
+        if self.is_rejected or self.is_in_transport():
+            return False
+
+        return self.status in [self.STATUS_WORK_WAITING,
+                               self.STATUS_WORK_IN_PROGRESS,
+                               self.STATUS_WORK_FINISHED]
+
+    def can_undo_rejection(self):
+        """Checks if the :obj:`.is_rejected` flag can be unset
+
+        :returns: ``True`` if it can, ``False`` otherwise
+        """
+        return self.is_rejected and not self.is_in_transport()
+
+    def reject(self, reason):
+        """Setter for the :obj:`.is_rejected` flag
+
+        When setting the is_rejected flag to ``True``,
+        it should be done here since some additional logic
+        (e.g. Registering a :class:`WorkOrderHistory`) will be
+        made together.
+
+        :param reason: the explanation to why we are setting this flag
+        """
+        assert self.can_reject()
+
+        self.is_rejected = True
+        WorkOrderHistory.add_entry(
+            self.store, self, what=_(u"Rejected"),
+            old_value=_(u"No"), new_value=_(u"Yes"), notes=reason)
+
+    def undo_rejection(self, reason):
+        """Unsetter for the :obj:`.is_rejected` flag
+
+        When setting the is_rejected flag to ``False``,
+        it should be done here since some additional logic
+        (e.g. Registering a :class:`WorkOrderHistory`) will be
+        made together.
+
+        :param reason: an explanation to what was done to make this
+            order not rejected anymore
+        """
+        assert self.can_undo_rejection()
+
+        self.is_rejected = False
+        WorkOrderHistory.add_entry(
+            self.store, self, what=_(u"Rejected"),
+            old_value=_(u"Yes"), new_value=_(u"No"), notes=reason)
 
     def cancel(self, reason=None):
         """Cancels this work order
@@ -732,28 +834,39 @@ class WorkOrder(Domain):
         """
         assert self.can_approve()
         self.approve_date = localnow()
-        self._change_status(self.STATUS_APPROVED)
+        WorkOrderHistory.add_entry(
+            self.store, self, what=_(u"Approval"),
+            old_value=_(u"No"), new_value=_(u"Yes"))
+        self._change_status(self.STATUS_WORK_WAITING)
 
-    def undo_approval(self):
-        """Unapproves this work order
-
-        Unapproving means that the |client| once has approved the
-        order's task and it's cost, but now he doesn't anymore.
-        Different from :meth:`.cancel`, the |client| still can
-        approve this again.
-        """
-        assert self.can_undo_approval()
-        self.approve_date = None
-        self._change_status(self.STATUS_OPENED)
-
-    def start(self):
-        """Starts this work order's task
+    def work(self):
+        """Set this orders state as "work in progress"
 
         The :obj:`.execution_responsible` started working on
         this order's task and will finish sometime in the future.
+
+        Note that if the work has to stop for a while for some reason
+        (e.g. lack of material, lack of labor, etc), one can call
+        :meth:`.pause` to set the state properly and then call this
+        again when the work can continue.
         """
-        assert self.can_start()
+        assert self.can_work()
         self._change_status(self.STATUS_WORK_IN_PROGRESS)
+
+    def pause(self, reason):
+        """Set this orders state as "waiting"
+
+        This is used to indicate that the work has stopped for a while
+        for a reason (e.g. lack of material, lack of labor, etc). When the
+        work can continue call :meth:`.work`
+
+        Note: When comming from :attr:`.STATUS_OPENED`, :meth:`.approve` must
+        be used instead.
+
+        :param reason: the reason explaining why this order was paused
+        """
+        assert self.can_pause()
+        self._change_status(self.STATUS_WORK_WAITING, notes=reason)
 
     def finish(self):
         """Finishes this work order's task
@@ -767,6 +880,19 @@ class WorkOrder(Domain):
         self.finish_date = localnow()
         self._change_status(self.STATUS_WORK_FINISHED)
 
+    def reopen(self, reason):
+        """Reopens the work order
+
+        This is useful if the order was finished but needs to be reopened
+        for some reason. The state will be back to
+        :attr:`.STATUS_WORK_IN_PROGRESS`
+
+        :param reason: the reason explaining why this order was reopened
+        """
+        assert self.can_reopen()
+        self.finish_date = None
+        self._change_status(self.STATUS_WORK_IN_PROGRESS, notes=reason)
+
     def close(self):
         """Closes this work order
 
@@ -777,23 +903,24 @@ class WorkOrder(Domain):
         assert self.can_close()
         self._change_status(self.STATUS_CLOSED)
 
-    def change_status(self, new_status):
+    def change_status(self, new_status, reason=None):
         """
         Change the status of this work order
 
         Using this function you can change the status is several steps.
 
+        :param new_status: the new status
+        :param reason: a reason for that status change. Only needed
+            by some changes
         :returns: if the status was changed
         :raises: :exc:`stoqlib.exceptions.InvalidStatus` if the status cannot be changed
+        :raises: :exc:`stoqlib.exceptions.NeedReason` if the change
+            needs a reason to happen
         """
-        if self.status == WorkOrder.STATUS_WORK_FINISHED:
-            raise InvalidStatus(
-                _("This work order has already been finished, it cannot be modified."))
-
         # This is the logic order of status changes, this is the flow/ordering
         # of the status that should be used
         status_order = [WorkOrder.STATUS_OPENED,
-                        WorkOrder.STATUS_APPROVED,
+                        WorkOrder.STATUS_WORK_WAITING,
                         WorkOrder.STATUS_WORK_IN_PROGRESS,
                         WorkOrder.STATUS_WORK_FINISHED]
 
@@ -808,10 +935,17 @@ class WorkOrder(Domain):
             # depending on the direction
             next_status = status_order[status_order.index(next_status) + direction]
             if next_status == WorkOrder.STATUS_WORK_IN_PROGRESS:
-                if not self.can_start():
+                if self.can_reopen():
+                    if reason is not None:
+                        self.reopen(reason=reason)
+                    else:
+                        raise NeedReason(_("A reason is needed to reopen "
+                                           "the work order"))
+                elif self.can_work():
+                    self.work()
+                else:
                     raise InvalidStatus(
-                        _("This work order cannot be started"))
-                self.start()
+                        _("This work order cannot be worked on"))
 
             if next_status == WorkOrder.STATUS_WORK_FINISHED:
                 if not self.can_finish():
@@ -819,17 +953,21 @@ class WorkOrder(Domain):
                         _('This work order cannot be finished'))
                 self.finish()
 
-            if next_status == WorkOrder.STATUS_APPROVED:
-                if not self.can_approve():
+            if next_status == WorkOrder.STATUS_WORK_WAITING:
+                if self.can_approve():
+                    self.approve()
+                elif self.can_pause():
+                    if reason is not None:
+                        self.pause(reason=reason)
+                    else:
+                        raise NeedReason(_("A reason is needed to pause "
+                                           "the work order"))
+                else:
                     raise InvalidStatus(
-                        _("This work order cannot be approved, it's already in progress"))
-                self.approve()
+                        _("This work order cannot wait for material"))
 
             if next_status == WorkOrder.STATUS_OPENED:
-                if not self.can_undo_approval():
-                    raise InvalidStatus(
-                        _('This work order cannot be re-opened'))
-                self.undo_approval()
+                raise InvalidStatus(_("This work order cannot be re-opened"))
 
             # We've reached our goal, bail out
             if next_status == new_status:
@@ -970,6 +1108,7 @@ class WorkOrderView(Viewable):
     open_date = WorkOrder.open_date
     approve_date = WorkOrder.approve_date
     finish_date = WorkOrder.finish_date
+    is_rejected = WorkOrder.is_rejected
 
     # WorkOrderCategory
     category_name = WorkOrderCategory.name
@@ -1108,7 +1247,7 @@ class WorkOrderApprovedAndFinishedView(WorkOrderView):
     approved and finished orders are showed here.
     """
 
-    clause = In(WorkOrder.status, [WorkOrder.STATUS_APPROVED,
+    clause = In(WorkOrder.status, [WorkOrder.STATUS_WORK_WAITING,
                                    WorkOrder.STATUS_WORK_FINISHED])
 
 

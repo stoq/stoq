@@ -40,6 +40,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
           GtkImageMenuItem(): 'Finish...', insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
           GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Approve...', hidden, insensitive
+          GtkImageMenuItem(): 'Pause the work...', hidden, insensitive
+          GtkImageMenuItem(): 'Start the work...', hidden, insensitive
+          GtkImageMenuItem(): 'Reject order...', hidden, insensitive
+          GtkImageMenuItem(): 'Undo order rejection...', hidden, insensitive
+          GtkImageMenuItem(): 'Reopen order...', hidden, insensitive
           GtkImageMenuItem(): 'Print quote...', insensitive
           GtkImageMenuItem(): 'Print receipt...', insensitive
       GtkImageMenuItem(): '_Search'
@@ -91,9 +97,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                       item: 'All work orders', selected
                       item: 'Pending'
                       item: 'In progress'
-                      item: 'In transport'
                       item: 'Finished'
                       item: 'Closed or cancelled'
+                      item: 'sep'
+                      item: 'Approved'
+                      item: 'In transport'
+                      item: 'Rejected'
                   SearchFilter():
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
@@ -107,6 +116,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                 column: title='Status', hidden
                 column: title='Category', hidden
                 column: title='Equipment', expand
+                column: title='Equipment'
                 column: title='Equipment'
                 column: title='Client'
                 column: title='Branch', hidden
@@ -138,5 +148,11 @@ GtkMenu(): hidden
   GtkImageMenuItem(): 'Finish...', insensitive
   GtkImageMenuItem(): 'Cancel...', insensitive
   GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Approve...', hidden, insensitive
+  GtkImageMenuItem(): 'Pause the work...', hidden, insensitive
+  GtkImageMenuItem(): 'Start the work...', hidden, insensitive
+  GtkImageMenuItem(): 'Reject order...', hidden, insensitive
+  GtkImageMenuItem(): 'Undo order rejection...', hidden, insensitive
+  GtkImageMenuItem(): 'Reopen order...', hidden, insensitive
   GtkImageMenuItem(): 'Print quote...', insensitive
   GtkImageMenuItem(): 'Print receipt...', insensitive

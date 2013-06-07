@@ -11,3 +11,7 @@ CREATE TABLE work_order_history (
     user_id bigint NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
     work_order_id bigint NOT NULL REFERENCES work_order(id) ON UPDATE CASCADE
 );
+
+-- Add is_rejected flag on work_order
+ALTER TABLE work_order
+    ADD COLUMN is_rejected boolean NOT NULL DEFAULT false;
