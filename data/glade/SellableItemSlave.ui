@@ -124,7 +124,6 @@
                 <property name="adjustment">adjustment1</property>
                 <property name="digits">2</property>
                 <property name="numeric">True</property>
-                <property name="wrap">True</property>
                 <property name="data_type">Decimal</property>
                 <property name="model_attribute">quantity</property>
               </object>
