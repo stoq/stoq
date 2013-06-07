@@ -41,6 +41,7 @@ from stoqlib.exceptions import (StoqlibError, TillError, SellError,
 from stoqlib.database.expr import Date
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
+from stoqlib.domain.workorder import WorkOrder
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -50,6 +51,7 @@ from stoqlib.gui.dialogs.missingitemsdialog import (MissingItemsDialog,
                                                     get_missing_items)
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.keybindings import get_accels
@@ -242,13 +244,22 @@ class TillApp(ShellApp):
         statuses.insert(0, (_('Any'), None))
         return statuses
 
-    def _confirm_order(self):
+    def _create_sale_payments(self, order_view):
+        store = api.new_store()
+        # TODO: Maybe change the sale status to ORDERED
+        sale = store.fetch(order_view.sale)
+        retval = run_dialog(SalePaymentsEditor, self, store, sale)
+
+        if store.confirm(retval):
+            self.search.refresh()
+        store.close()
+
+    def _confirm_order(self, order_view):
         if self.check_open_inventory():
             return
 
         store = api.new_store()
-        selected = self.results.get_selected()
-        sale = store.fetch(selected.sale)
+        sale = store.fetch(order_view.sale)
         expire_date = sale.expire_date
 
         if (sale.status == Sale.STATUS_QUOTE and
@@ -275,6 +286,9 @@ class TillApp(ShellApp):
         subtotal = self._add_sale_items(sale, coupon)
         try:
             if coupon.confirm(sale, store, subtotal=subtotal):
+                workorders = WorkOrder.find_by_sale(store, sale)
+                for order in workorders:
+                    order.close()
                 store.commit()
                 self.refresh()
             else:
@@ -440,7 +454,16 @@ class TillApp(ShellApp):
     #
 
     def on_Confirm__activate(self, action):
-        self._confirm_order()
+        selected = self.results.get_selected()
+        query = WorkOrder.status != WorkOrder.STATUS_WORK_FINISHED
+
+        # If there are unfinished workorders associated with the sale, we
+        # cannot print the coupon yet. Instead lets just create the payments.
+        unfinished = WorkOrder.find_by_sale(self.store, selected.sale).find(query)
+        if not unfinished.is_empty():
+            self._create_sale_payments(selected)
+        else:
+            self._confirm_order(selected)
         self._update_total()
 
     def on_results__double_click(self, results, sale):

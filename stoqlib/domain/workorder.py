@@ -25,7 +25,7 @@
 """Work order implementation and utils"""
 
 from kiwi.currency import currency
-from storm.expr import Count, LeftJoin, Alias, Select, Sum, Coalesce, In
+from storm.expr import Count, LeftJoin, Alias, Select, Sum, Coalesce, In, And, Eq
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
@@ -866,6 +866,9 @@ class WorkOrderView(Viewable):
     #: the |client| object
     client = Client
 
+    #: the |sale| associated with this workorder
+    sale = Sale
+
     # WorkOrder
     id = WorkOrder.id
     identifier = WorkOrder.identifier
@@ -890,6 +893,9 @@ class WorkOrderView(Viewable):
                            _PersonOriginalBranch.name)
     current_branch_name = Coalesce(NullIf(_CompanyCurrentBranch.fancy_name, u''),
                                    _PersonCurrentBranch.name)
+
+    # Sale
+    sale_id = Sale.id
 
     # WorkOrderItem
     quantity = Coalesce(Field('_work_order_items', 'quantity'), 0)
@@ -1015,13 +1021,17 @@ class WorkOrderApprovedAndFinishedView(WorkOrderView):
 
 
 class WorkOrderFinishedView(WorkOrderView):
-    """A view for finished |workorders|
+    """A view for finished |workorders| that still dont have a |sale|
+
+    This viewable should be used only to find what workorders still dont have a
+    sale and can be closed (ie, they can have the sale created).
 
     This is the same as :class:`.WorkOrderView`, but only finished
     orders are showed here.
     """
 
-    clause = WorkOrder.status == WorkOrder.STATUS_WORK_FINISHED
+    clause = And(WorkOrder.status == WorkOrder.STATUS_WORK_FINISHED,
+                 Eq(Sale.id, None))
 
 
 _WorkOrderPackageItemsSummary = Alias(Select(

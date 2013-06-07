@@ -38,7 +38,6 @@ from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialo
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.gui.wizards.salequotewizard import (SaleQuoteWizard,
                                                  StartSaleQuoteStep,
-                                                 SaleQuotePaymentStep,
                                                  SaleQuoteItemStep)
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
@@ -298,12 +297,7 @@ class OpticalItemStep(BaseWizardStep):
     #
 
     def has_next_step(self):
-        return True
-
-    def next_step(self):
-        # TODO: Add a parameter to enable or disable this step
-        return SaleQuotePaymentStep(self.store, self.wizard,
-                                    model=self.model, previous=self)
+        return False
 
     #
     #   Callbacks
