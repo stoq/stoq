@@ -1201,20 +1201,30 @@ class Sale(Domain, Adaptable):
     @property
     def products(self):
         """All |saleitems| of this sale containing a |product|.
+
+        :returns: the result set containing the |saleitems|, ordered
+            by :attr:`stoqlib.domain.sellable.Sellable.code`
         """
         return self.store.find(
             SaleItem,
             And(SaleItem.sale_id == self.id,
-                SaleItem.sellable_id == Product.sellable_id))
+                SaleItem.sellable_id == Product.sellable_id,
+                SaleItem.sellable_id == Sellable.id)).order_by(
+                    Sellable.code)
 
     @property
     def services(self):
         """All |saleitems| of this sale containing a |service|.
+
+        :returns: the result set containing the |saleitems|, ordered
+            by :attr:`stoqlib.domain.sellable.Sellable.code`
         """
         return self.store.find(
             SaleItem,
             And(SaleItem.sale_id == self.id,
-                SaleItem.sellable_id == Service.sellable_id))
+                SaleItem.sellable_id == Service.sellable_id,
+                SaleItem.sellable_id == Sellable.id)).order_by(
+                    Sellable.code)
 
     @property
     def payments(self):

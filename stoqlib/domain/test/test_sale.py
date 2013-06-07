@@ -784,11 +784,17 @@ class TestSale(DomainTest):
 
         self.assertTrue(sale.products.is_empty())
 
-        product = self.create_product()
-        sellable = product.sellable
-        sale.add_sellable(sellable, quantity=1)
+        for code in [u'123', u'124', u'125', u'222', u'111']:
+            product = self.create_product()
+            sellable = product.sellable
+            sellable.code = code
+            sale.add_sellable(sellable, quantity=1)
 
         self.assertFalse(sale.products.is_empty())
+        # Make sure that the items and only them are on the results,
+        # and ordered by the code
+        self.assertEqual([u'111', u'123', u'124', u'125', u'222'],
+                         [i.sellable.code for i in sale.products])
 
     def testServices(self):
         sale = self.create_sale()
@@ -800,11 +806,17 @@ class TestSale(DomainTest):
 
         self.assertTrue(sale.services.is_empty())
 
-        service = self.create_service()
-        sellable = service.sellable
-        sale.add_sellable(sellable, quantity=1)
+        for code in [u'123', u'124', u'125', u'222', u'111']:
+            service = self.create_service()
+            sellable = service.sellable
+            sellable.code = code
+            sale.add_sellable(sellable, quantity=1)
 
         self.assertFalse(sale.services.is_empty())
+        # Make sure that the items and only them are on the results,
+        # and ordered by the code
+        self.assertEqual([u'111', u'123', u'124', u'125', u'222'],
+                         [i.sellable.code for i in sale.services])
 
     def testSaleWithDelivery(self):
         sale = self.create_sale()
