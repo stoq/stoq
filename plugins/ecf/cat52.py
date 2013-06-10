@@ -52,7 +52,6 @@ BRAND_CODES = {
 MODEL_CODES = {
     ('daruma', 'FS345'): 4,
     ('bematech', 'MP25'): 1,
-    ('bematech', 'MP2100'): 'E',
 }
 
 BRAND_FULL_NAME = {
@@ -63,7 +62,6 @@ BRAND_FULL_NAME = {
 MODEL_FULL_NAME = {
     ('daruma', 'FS345'): 'FS-345',
     ('bematech', 'MP25'): 'MP-20 FI',
-    ('bematech', 'MP2100'): 'MP-2100 TH FI',
 }
 
 DOCUMENT_TYPES = {
