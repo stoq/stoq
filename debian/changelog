@@ -1,3 +1,9 @@
+stoq (1.7.2) precise; urgency=low
+
+  * Bugfix Release 1.7.2
+
+ -- Ronaldo Francisco Maia <romaia@async.com.br>  Mon, 10 Jun 2013 12:13:56 -0300
+
 stoq (1.7.1) precise; urgency=low
 
   * Bugfix Release 1.7.1
