@@ -44,7 +44,7 @@ from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
-from stoqlib.exceptions import DeviceError, TillError
+from stoqlib.exceptions import DeviceError, TillError, SellError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.quotedialog import ConfirmSaleMissingDialog
 from stoqlib.gui.editors.tilleditor import (TillOpeningEditor,
@@ -516,7 +516,12 @@ class FiscalCoupon(gobject.GObject):
             store.rollback(name=savepoint, close=False)
             return False
 
-        sale.confirm()
+        try:
+            sale.confirm()
+        except SellError as err:
+            warning(str(err))
+            store.rollback(name=savepoint, close=False)
+            return False
 
         if not self.print_receipts(sale):
             warning('A venda foi cancelada')
