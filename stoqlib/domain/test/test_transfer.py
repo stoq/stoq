@@ -36,53 +36,49 @@ class TestTransferOrderItem(DomainTest):
 
 class TestTransferOrder(DomainTest):
 
-    def testCanClose(self):
+    def testTransferProcess(self):
         order = self.create_transfer_order()
-        self.assertEqual(order.can_close(), False)
+        self.assertEqual(order.can_send(), False)
+        self.assertEqual(order.can_receive(), False)
 
-        item = self.create_transfer_order_item(order)
-        self.assertEqual(order.can_close(), True)
+        self.create_transfer_order_item(order)
+        self.assertEqual(order.can_send(), True)
+        self.assertEqual(order.can_receive(), False)
 
-        item.send()
-        self.assertEqual(order.can_close(), True)
+        order.send()
+        self.assertEqual(order.can_send(), False)
+        self.assertEqual(order.can_receive(), True)
 
-        order.receive()
-        self.assertEqual(order.can_close(), False)
+        order.receive(self.create_employee())
+        self.assertEqual(order.can_send(), False)
+        self.assertEqual(order.can_receive(), False)
 
-    def testSendItem(self):
+    def testSend(self):
+        qty = 2
         order = self.create_transfer_order()
-        self.assertEqual(order.can_close(), False)
-
-        sent_qty = 2
-        item = self.create_transfer_order_item(order, quantity=2)
-        self.assertEqual(order.can_close(), True)
+        item = self.create_transfer_order_item(order, quantity=qty)
 
         product = self.store.find(Product, sellable=item.sellable).one()
         storable = product.storable
         before_qty = storable.get_balance_for_branch(order.source_branch)
-        item.send()
+        order.send()
         after_qty = storable.get_balance_for_branch(order.source_branch)
-        self.assertEqual(after_qty, before_qty - sent_qty)
+        self.assertEqual(after_qty, before_qty - qty)
 
         history = self.store.find(ProductHistory, sellable=item.sellable).one()
         self.failIf(history is None)
-        self.assertEqual(history.quantity_transfered, sent_qty)
+        self.assertEqual(history.quantity_transfered, qty)
 
     def testReceive(self):
-        order = self.create_transfer_order()
-        self.assertEqual(order.can_close(), False)
-
         sent_qty = 2
+        order = self.create_transfer_order()
         item = self.create_transfer_order_item(order, quantity=sent_qty)
-        self.assertEqual(order.can_close(), True)
-        item.send()
+        order.send()
 
         storable = item.sellable.product_storable
         before_qty = storable.get_balance_for_branch(order.destination_branch)
-        order.receive()
+        order.receive(self.create_employee())
         after_qty = storable.get_balance_for_branch(order.destination_branch)
-        self.assertEqual(order.can_close(), False)
-
         self.assertEqual(after_qty, before_qty + sent_qty)
 
     def testAddItem(self):

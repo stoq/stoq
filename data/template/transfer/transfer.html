@@ -28,7 +28,11 @@
           <td>${ _("Responsible") }:</td>
           <td>${ order.source_responsible.person.name }</td>
           <td>${ _("Responsible") }:</td>
-          <td>${ order.destination_responsible.person.name }</td>
+          <td>
+            % if order.destination_responsible:
+              ${ order.destination_responsible.person.name }
+            % endif
+          </td>
         </tr>
       </tbody>
     </table>
@@ -69,13 +73,17 @@
 
   <section>
     Open: ${ order.open_date.strftime('%x') }<br />
-    Receival: ${ order.receival_date.strftime('%x') }
+    % if order.receival_date:
+      Receival: ${ order.receival_date.strftime('%x') }
+    % endif
   </section>
 
   <section class="signatures">
     <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
                        if there is not enough space -->
     <span class="signature">${ order.source_responsible.person.name }</span>
-    <span class="signature">${ order.destination_responsible.person.name }</span>
+    % if order.destination_responsible:
+      <span class="signature">${ order.destination_responsible.person.name }</span>
+    % endif
   </section>
 </div> <!-- end div.page -->

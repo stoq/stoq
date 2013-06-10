@@ -369,13 +369,14 @@ class TestProductHistory(DomainTest):
 
     def testAddTransferedQuantity(self):
         qty = 10
+
         order = self.create_transfer_order()
         transfer_item = self.create_transfer_order_item(order, quantity=qty)
         self.failIf(self.store.find(ProductHistory,
                                     sellable=transfer_item.sellable).one())
 
-        transfer_item.send()
-        order.receive()
+        order.send()
+        order.receive(self.create_employee())
         prod_hist = self.store.find(ProductHistory,
                                     sellable=transfer_item.sellable).one()
         self.failUnless(prod_hist)
@@ -951,7 +952,7 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
 
         transfer.source_branch = self.branch
-        transfer_item.send()
+        transfer.send()
 
         self._check_stock_history(product, -5, transfer_item, transfer,
                                   StockTransactionHistory.TYPE_TRANSFER_TO)
@@ -965,7 +966,9 @@ class TestStockTransactionHistory(DomainTest):
 
         transfer_item.quantity = 2
         transfer.destination_branch = self.branch
-        transfer.receive(localtoday())
+
+        transfer.send()
+        transfer.receive(self.create_employee())
 
         self._check_stock_history(product, 2, transfer_item, transfer,
                                   StockTransactionHistory.TYPE_TRANSFER_FROM)

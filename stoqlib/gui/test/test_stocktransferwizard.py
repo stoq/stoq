@@ -26,7 +26,6 @@ import gtk
 import mock
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.person import Employee
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
@@ -45,32 +44,20 @@ class TestStockTransferWizard(GUITest):
                              stock=10)
 
         wizard = StockTransferWizard(self.store)
-        self.assertNotSensitive(wizard, ['next_button'])
+        self.assertSensitive(wizard, ['next_button'])
         self.check_wizard(wizard, 'wizard-stock-transfer-create')
 
+        self.click(wizard.next_button)
         step = wizard.get_current_step()
+
+        # No source or destination responsible selected. Finish is disabled
+        self.assertNotSensitive(wizard, ['next_button'])
 
         # adds sellable to step
         step.sellable_selected(sellable)
         step._add_sellable()
 
         self.check_wizard(wizard, 'wizard-stock-transfer-products')
-        self.click(wizard.next_button)
-        step = wizard.get_current_step()
-
-        self.check_wizard(wizard, 'wizard-stock-transfer-finish-step')
-        # No source or destination responsible selected. Finish is disabled
-        self.assertNotSensitive(wizard, ['next_button'])
-
-        employee = self.store.find(Employee)[0]
-
-        # Select a source responsible
-        step.source_responsible.select(employee)
-
-        # Finish should still be disable until we select a destination
-        # responsible
-        self.assertNotSensitive(wizard, ['next_button'])
-        step.destination_responsible.select(employee)
 
         module = 'stoqlib.gui.events.StockTransferWizardFinishEvent.emit'
         with mock.patch(module) as emit:

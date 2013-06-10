@@ -1,10 +1,13 @@
 dialog: TransferOrderDetailsDialog
 GtkVBox(details_vbox):
   GtkTable(table1, fill=True, padding=6):
+    GtkLabel(label1): 'Status:'
+    GtkLabel(status): 'Pending'
+    GtkButton(receive_button): 'Receive', hidden
     ProxyLabel(kiwilabel1): 'Open date:'
     ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
     ProxyLabel(kiwilabel2): 'Receival date:'
-    ProxyLabel(receival_date): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(receival_date): '<span ></span>'
     ProxyLabel(kiwilabel3): 'Source:'
     ProxyLabel(source_branch_name): '<span >Source</span>'
     ProxyLabel(kiwilabel4): 'Destination:'

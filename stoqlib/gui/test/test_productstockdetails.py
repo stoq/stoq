@@ -71,18 +71,18 @@ class TestProductStockHistoryDialog(GUITest):
         transfer = self.create_transfer_order(source_branch=branch)
         transfer.open_date = date
         transfer.identifier = 55
-        t_item = self.create_transfer_order_item(transfer, 2, product.sellable)
-        t_item.send()
-        transfer.receive(today)
+        self.create_transfer_order_item(transfer, 2, product.sellable)
+        transfer.send()
+        transfer.receive(self.create_employee())
 
         # Transfer from another to branch
         transfer = self.create_transfer_order(source_branch=transfer.destination_branch,
                                               dest_branch=branch)
         transfer.open_date = date
         transfer.identifier = 66
-        t_item = self.create_transfer_order_item(transfer, 1, product.sellable)
-        t_item.send()
-        transfer.receive(today)
+        self.create_transfer_order_item(transfer, 1, product.sellable)
+        transfer.send()
+        transfer.receive(self.create_employee())
 
         # Loan
         # FIXME: See bug 5147

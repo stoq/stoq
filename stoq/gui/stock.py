@@ -425,6 +425,7 @@ class StockApp(ShellApp):
 
     def on_SearchTransfer__activate(self, action):
         self.run_dialog(TransferOrderSearch, self.store)
+        self.search.refresh()
 
     def on_SearchPurchasedStockItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.store)

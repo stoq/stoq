@@ -24,22 +24,20 @@
 """ Stock transfer wizard definition """
 
 from decimal import Decimal
-import operator
 
 import gtk
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.transfer import TransferOrder
+from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.domain.views import ProductWithStockBranchView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
+from stoqlib.gui.base.wizards import (BaseWizard, WizardEditorStep)
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
@@ -49,7 +47,7 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_sellable_description
 from stoqlib.lib.message import warning, yesno
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
 _ = stoqlib_gettext
@@ -59,47 +57,74 @@ _ = stoqlib_gettext
 # Wizard steps
 #
 
-# FIXME: This should not be necessary. We should be using the TransferOrder
-# directly. We only need to remove the NOT NULL from the destination branch and
-# destination responsible (which makes sense from the domain's point of view,
-# since you just need to know the destination when calling tranfer.send
-class TemporaryTransferOrder(object):
+class StockTransferInitialStep(WizardEditorStep):
+    gladefile = 'StockTransferInitialStep'
+    model_type = TransferOrder
+    proxy_widgets = ['open_date',
+                     'destination_branch',
+                     'source_responsible']
 
-    def __init__(self, source_branch):
-        self.items = []
-        self.open_date = localtoday().date()
-        self.receival_date = localtoday().date()
-        self.source_branch = source_branch
-        self.destination_branch = None
-        self.source_responsible = None
-        self.destination_responsible = None
+    def __init__(self, wizard, store, model):
+        self.branch = api.get_current_branch(store)
+        WizardEditorStep.__init__(self, store, wizard, model)
 
-    @property
-    def branch(self):
-        # This method is here because SellableItemStep requires a branch
-        # property
-        return self.source_branch
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.wizard.model, self.proxy_widgets)
 
-    def add_item(self, item):
-        self.items.append(item)
+    def _setup_widgets(self):
+        branches = Branch.get_active_remote_branches(self.store)
+        self.destination_branch.prefill(api.for_person_combo(branches))
 
-    def get_items(self):
-        return self.items
+        self.source_branch.set_text(self.branch.person.name)
 
-    def remove_item(self, item):
-        self.items.remove(item)
+        employees = self.store.find(Employee)
+        self.source_responsible.prefill(api.for_person_combo(employees))
 
+    def _validate_destination_branch(self):
+        other_branch = self.destination_branch.read()
 
-class TemporaryTransferOrderItem(Settable):
-    pass
+        if not self.branch.is_from_same_company(other_branch):
+            warning(_(u"Branches are not from the same CNPJ"))
+            return False
+
+        return True
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def has_next_step(self):
+        return True
+
+    def next_step(self):
+        return StockTransferItemStep(self.wizard, self, self.store,
+                                     self.wizard.model)
+
+    def validate_step(self):
+        return self._validate_destination_branch()
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_open_date__validate(self, widget, date):
+        if date < localtoday().date():
+            return ValidationError(_(u"The date must be set to today or a "
+                                     "future date"))
 
 
 class StockTransferItemStep(SellableItemStep):
-    model_type = TemporaryTransferOrder
-    item_table = TemporaryTransferOrderItem
+    model_type = TransferOrder
+    item_table = TransferOrderItem
     sellable_view = ProductWithStockBranchView
     batch_selection_dialog = BatchDecreaseSelectionDialog
     validate_stock = True
+    cost_editable = False
 
     #
     # SellableItemStep hooks
@@ -116,11 +141,7 @@ class StockTransferItemStep(SellableItemStep):
         return list(self.model.get_items())
 
     def get_order_item(self, sellable, cost, quantity, batch=None):
-        item = TemporaryTransferOrderItem(quantity=quantity,
-                                          sellable=sellable,
-                                          batch=batch)
-        self.model.add_item(item)
-        return item
+        return self.model.add_sellable(sellable, batch, quantity)
 
     def get_columns(self):
         return [
@@ -175,98 +196,11 @@ class StockTransferItemStep(SellableItemStep):
     def post_init(self):
         self.hide_add_button()
         self.hide_edit_button()
-        self.cost.hide()
-        self.cost_label.hide()
 
-    def next_step(self):
-        return StockTransferFinishStep(self.store, self.wizard,
-                                       self.model, self)
-
-
-# FIXME: This should be a WizardEditorStep, so we should not have to
-# override the __init__ to store the informations it does (and setup_proxies
-# should be called automatically then too)
-class StockTransferFinishStep(BaseWizardStep):
-    gladefile = 'StockTransferFinishStep'
-    proxy_widgets = ('open_date',
-                     'receival_date',
-                     'destination_responsible',
-                     'destination_branch',
-                     'source_responsible')
-
-    def __init__(self, store, wizard, transfer_order, previous):
-        self.store = store
-        self.transfer_order = transfer_order
-        self.branch = transfer_order.branch
-        BaseWizardStep.__init__(self, self.store, wizard, previous)
-        self.setup_proxies()
-
-    def setup_proxies(self):
-        self._setup_widgets()
-        self.proxy = self.add_proxy(self.transfer_order,
-                                    StockTransferFinishStep.proxy_widgets)
-
-    def _setup_widgets(self):
-        items = [(b.person.name, b)
-                 for b in self.store.find(Branch)
-                 if b is not self.branch]
-        self.destination_branch.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
-        self.source_branch.set_text(self.branch.person.name)
-
-        employees = self.store.find(Employee)
-        self.source_responsible.prefill(api.for_combo(employees))
-        self.destination_responsible.prefill(api.for_combo(employees))
-
-        self.transfer_order.source_branch = self.branch
-        self.transfer_order.destination_branch = items[0][1]
-
-    def _validate_destination_branch(self):
-        other_branch = self.destination_branch.read()
-
-        if not self.branch.is_from_same_company(other_branch):
-            warning(_(u"Branches are not from the same CNPJ"))
-            return False
-
-        return True
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-
-    def has_previous_step(self):
-        return True
+        SellableItemStep.post_init(self)
 
     def has_next_step(self):
         return False
-
-    def validate_step(self):
-        if not self._validate_destination_branch():
-            return False
-
-        return True
-
-    #
-    # Kiwi callbacks
-    #
-
-    def on_open_date__validate(self, widget, date):
-        if date < localtoday().date():
-            return ValidationError(_(u"The date must be set to today "
-                                     "or a future date"))
-        receival_date = self.receival_date.get_date()
-        if receival_date is not None and date > receival_date:
-            return ValidationError(_(u"The open date must be set to "
-                                     "before the receival date"))
-
-    def on_receival_date__validate(self, widget, date):
-        if self.open_date.get_date() > date:
-            return ValidationError(_(u"The receival date must be set "
-                                     "to after the open date"))
 
 
 #
@@ -279,11 +213,18 @@ class StockTransferWizard(BaseWizard):
     size = (750, 350)
 
     def __init__(self, store):
-        self.model = TemporaryTransferOrder(
-            source_branch=api.get_current_branch(store))
-        first_step = StockTransferItemStep(self, None, store, self.model)
+        self.model = self._create_model(store)
+        first_step = StockTransferInitialStep(self, store, self.model)
         BaseWizard.__init__(self, store, first_step, self.model)
-        self.next_button.set_sensitive(False)
+
+    def _create_model(self, store):
+        user = api.get_current_user(store)
+        source_responsible = store.find(Employee, person=user.person).one()
+        return TransferOrder(
+            source_branch=api.get_current_branch(store),
+            source_responsible=source_responsible,
+            destination_branch=Branch.get_active_remote_branches(store)[0],
+            store=store)
 
     def _receipt_dialog(self, order):
         msg = _('Would you like to print a receipt for this transfer?')
@@ -296,24 +237,9 @@ class StockTransferWizard(BaseWizard):
             run_dialog(MissingItemsDialog, self, self.model, missing)
             return False
 
-        order = TransferOrder(
-            open_date=self.model.open_date,
-            receival_date=self.model.receival_date,
-            source_branch=self.model.source_branch,
-            destination_branch=self.model.destination_branch,
-            source_responsible=self.model.source_responsible,
-            destination_responsible=self.model.destination_responsible,
-            store=self.store)
-        for item in self.model.get_items():
-            transfer_item = order.add_sellable(item.sellable,
-                                               quantity=item.quantity,
-                                               batch=item.batch)
-            transfer_item.send()
-
-        # XXX Waiting for transfer order receiving wizard implementation
-        order.receive()
+        self.model.send()
 
         self.retval = self.model
         self.close()
-        StockTransferWizardFinishEvent.emit(order)
-        self._receipt_dialog(order)
+        StockTransferWizardFinishEvent.emit(self.model)
+        self._receipt_dialog(self.model)

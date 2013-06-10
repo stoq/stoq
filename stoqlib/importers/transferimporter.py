@@ -24,7 +24,7 @@
 
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+from stoqlib.domain.transfer import TransferOrder
 from stoqlib.importers.csvimporter import CSVImporter
 
 
@@ -67,19 +67,17 @@ class TransferImporter(CSVImporter):
 
         order = TransferOrder(store=store,
                               open_date=self.parse_date(data.open_date),
-                              receival_date=self.parse_date(data.receival_date),
+                              receival_date=None,
                               source_branch=source_branch,
                               destination_branch=dest_branch,
                               source_responsible=source_employee,
-                              destination_responsible=dest_employee)
+                              destination_responsible=None)
 
         for sellable in sellables:
             if not sellable.product:
                 continue
-            transfer_item = TransferOrderItem(store=store,
-                                              quantity=int(data.quantity),
-                                              sellable=sellable,
-                                              transfer_order=order)
-            transfer_item.send()
+            order.add_sellable(sellable, batch=None,
+                               quantity=int(data.quantity))
 
-        order.receive()
+        order.send()
+        order.receive(dest_employee)

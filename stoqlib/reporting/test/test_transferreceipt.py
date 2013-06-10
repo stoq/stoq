@@ -35,9 +35,9 @@ class TestTransferReceipt(ReportTest):
         order = self.create_transfer_order(source_branch=source_branch,
                                            dest_branch=destination_branch)
         for i in range(5):
-            item = self.create_transfer_order_item(order)
-            item.send()
+            self.create_transfer_order_item(order)
 
-        order.receive()
+        order.send()
+        order.receive(self.create_employee())
 
         self._diff_expected(TransferOrderReceipt, 'transfer-receipt', order)

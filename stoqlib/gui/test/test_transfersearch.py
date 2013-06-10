@@ -23,6 +23,8 @@
 
 import mock
 
+from stoqlib.api import api
+from stoqlib.domain.person import Branch
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.lib.dateutils import localdate, localdatetime
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
@@ -42,21 +44,32 @@ class TestTransferOrderSearch(GUITest):
     def _create_domain(self):
         self.clean_domain([TransferOrderItem, TransferOrder])
 
-        source_branch = self.create_branch(u'Riachuelo')
-        dest_branch = self.create_branch(u'Marisa')
+        source_branch = Branch.get_active_remote_branches(self.store)[0]
+        dest_branch = api.get_current_branch(self.store)
+
+        # Created order, did not send it yet.
         order = self.create_transfer_order(source_branch=source_branch,
                                            dest_branch=dest_branch)
         self.create_transfer_order_item(order=order)
         order.identifier = 75168
         order.open_date = localdatetime(2012, 1, 1)
 
-        source_branch = self.create_branch(u'Opera Rock')
-        dest_branch = self.create_branch(u'Cavalera')
+        # Created and sent the order.
         order = self.create_transfer_order(source_branch=source_branch,
                                            dest_branch=dest_branch)
         self.create_transfer_order_item(order=order)
         order.identifier = 56832
         order.open_date = localdatetime(2012, 2, 2)
+        order.send()
+
+        # Order arrived at the destination.
+        order = self.create_transfer_order(source_branch=source_branch,
+                                           dest_branch=dest_branch)
+        self.create_transfer_order_item(order=order)
+        order.identifier = 20486
+        order.open_date = localdatetime(2012, 3, 3)
+        order.send()
+        order.receive(self.create_employee())
 
     def testSearch(self):
         self._create_domain()

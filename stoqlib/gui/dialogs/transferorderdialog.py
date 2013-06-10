@@ -32,6 +32,7 @@ from kiwi.ui.widgets.list import SummaryLabel
 from stoqlib.api import api
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -62,7 +63,19 @@ class TransferOrderDetailsDialog(BaseEditor):
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
+    def _setup_status(self):
+        self.status.set_text(self.model.status_str)
+
+        local_branch = api.get_current_branch(self.store)
+        sent_remote_order = (self.model.status == self.model.STATUS_SENT and
+                             self.model.destination_branch == local_branch)
+
+        if not sent_remote_order:
+            self.receive_button.hide()
+
     def _setup_widgets(self):
+        self._setup_status()
+
         self.product_list.set_columns(self._get_product_columns())
         products = self.store.find(TransferOrderItem, transfer_order=self.model)
         self.product_list.add_list(list(products))
@@ -94,3 +107,17 @@ class TransferOrderDetailsDialog(BaseEditor):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def on_receive_button__clicked(self, event):
+        assert self.model.status == self.model.STATUS_SENT
+
+        if yesno(_(u'Receive the order?'), gtk.RESPONSE_YES, _(u'Receive'),
+                 _(u"Don't receive")):
+            responsible = api.get_current_user(self.store).person.employee
+            self.model.receive(responsible)
+            self.store.commit(close=False)
+
+        self.proxy.update_many(['receival_date',
+                                'destination_responsible_name'])
+
+        self._setup_status()

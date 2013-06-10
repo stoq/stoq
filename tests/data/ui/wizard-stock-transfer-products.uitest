@@ -13,8 +13,8 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
             ProxyLabel(step.kiwilabel2): 'Quantity:'
             ProxySpinButton(step.quantity): '0.000', insensitive
             ProxyLabel(step.unit_label): '<span weight="bold"></span>'
-            ProxyLabel(step.cost_label): 'Cost:', hidden
-            ProxySpinButton(step.cost): '0.00', hidden, insensitive
+            ProxyLabel(step.cost_label): 'Cost:'
+            ProxySpinButton(step.cost): '0.00', insensitive
             GtkButton(step.add_sellable_button): insensitive
             ProxyLabel(step.sellable_description): '<span ></span>'
             GtkLabel(step.minimum_quantity_lbl): 'Minimum:', hidden
@@ -29,7 +29,7 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
                   column: title='Stock'
                   column: title='Transfer'
                   column: title='Total'
-                  row: u'Product to transfer', None, Decimal('1.000'), None
+                  row: u'Product to transfer', None, Decimal('1.000'), Decimal('125.000')
               GtkHBox(hbox1, fill=True):
                 GtkAlignment(alignment1, fill=True):
                   GtkHButtonBox(hbuttonbox1):
@@ -39,11 +39,11 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
                 GtkHBox(message_hbox, expand=True, fill=True): hidden
                   GtkLabel(message_label, expand=True, fill=True):
                   GtkButton(message_details_button, fill=True): 'Details'
-      ProxyLabel(notification_lbl, fill=True): hidden
+      ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
-          GtkButton(previous_button): 'gtk-go-back', insensitive
-          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

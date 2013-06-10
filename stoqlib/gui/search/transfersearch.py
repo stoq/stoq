@@ -30,14 +30,16 @@ from decimal import Decimal
 import gtk
 from kiwi.ui.objectlist import Column
 
-from stoqlib.domain.transfer import TransferOrderView
-
+from stoqlib.domain.transfer import TransferOrder, TransferOrderView
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
@@ -65,6 +67,12 @@ class TransferOrderSearch(SearchDialog):
         self.results.connect('row_activated', self.on_row_activated)
         self.update_widgets()
 
+    def _get_status_values(self):
+        items = [(str(value), key) for key, value in
+                 TransferOrder.statuses.items()]
+        items.insert(0, (_('Any'), None))
+        return items
+
     #
     # SearchDialog Hooks
     #
@@ -88,17 +96,34 @@ class TransferOrderSearch(SearchDialog):
         self.add_filter(self.date_filter, columns=['open_date',
                                                    'receival_date'])
 
+        # Branch
+        self.branch_filter = self.create_branch_filter(_('To branch:'))
+        self.add_filter(self.branch_filter,
+                        columns=['destination_branch_id'])
+
+        # Status
+        statuses = self._get_status_values()
+        self.status_filter = ComboSearchFilter(_('With status:'), statuses)
+        self.status_filter.select(None)
+        self.add_filter(self.status_filter, columns=['status'],
+                        position=SearchFilterPosition.TOP)
+
     def get_columns(self):
         return [IdentifierColumn('identifier'),
+                SearchColumn('transfer_order.status_str', _('Status'), data_type=str,
+                             valid_values=self._get_status_values(),
+                             search_attribute='status', width=100),
                 SearchColumn('open_date', _('Open date'),
                              data_type=datetime.date, sorted=True, width=100),
+                SearchColumn('receival_date', _('Receival Date'),
+                             data_type=datetime.date, width=100,
+                             visible=False),
                 SearchColumn('source_branch_name', _('Source'),
                              data_type=unicode, expand=True),
                 SearchColumn('destination_branch_name', _('Destination'),
                              data_type=unicode, width=220),
-                Column('total_items',
-                       _('Number of items transferred'), data_type=Decimal,
-                       width=110)]
+                Column('total_items', _('Items'), data_type=Decimal,
+                       format_func=format_quantity, width=110)]
 
     #
     # Callbacks

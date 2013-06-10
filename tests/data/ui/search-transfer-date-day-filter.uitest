@@ -7,6 +7,13 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
         GtkVBox(vbox):
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
+              ComboSearchFilter(status_filter):
+                GtkLabel(): 'With status:'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'Pending'
+                  item: 'Sent'
+                  item: 'Received'
               SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
@@ -29,13 +36,21 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
               ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), invalid
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), insensitive
+            ComboSearchFilter(branch_filter):
+              GtkLabel(): 'To branch:'
+              ProxyComboBox(padding=6):
+                item: 'Any'
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
+                item: 'Stoq Com\xc3\xa9rcio Ltda ME'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='#'
+            column: title='Status'
             column: title='Open date'
+            column: title='Receival Date', hidden
             column: title='Source', expand
             column: title='Destination'
-            column: title='Number of items transferred'
-            row: 75168, datetime.datetime(2012, 1, 1, 0, 0), u'Riachuelo', u'Marisa', None
+            column: title='Items'
+            row: 75168, u'Pending', datetime.datetime(2012, 1, 1, 0, 0), None, u'Stoq Com\xe9rcio Ltda ME', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('5.000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):

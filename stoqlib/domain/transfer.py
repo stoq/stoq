@@ -28,8 +28,8 @@ from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implements
 
-from stoqlib.database.properties import (QuantityCol, IntCol, DateTimeCol,
-                                         IdentifierCol, IdCol)
+from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
+                                         IntCol, PriceCol, QuantityCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -68,6 +68,9 @@ class TransferOrderItem(Domain):
     #: The quantity to transfer
     quantity = QuantityCol()
 
+    #: Average cost of the item in the source branch at the time of transfer.
+    stock_cost = PriceCol(default=0)
+
     #
     # Public API
     #
@@ -77,25 +80,29 @@ class TransferOrderItem(Domain):
         return self.quantity * self.sellable.cost
 
     def send(self):
-        """Sends this item to it's destination |branch|"""
-        assert self.transfer_order.can_close()
-
-        storable = self.sellable.product_storable
-        storable.decrease_stock(self.quantity, self.transfer_order.source_branch,
-                                StockTransactionHistory.TYPE_TRANSFER_TO,
-                                self.id, batch=self.batch)
-        ProductHistory.add_transfered_item(self.store, self.transfer_order.source_branch, self)
-
-    def receive(self):
-        """Receives this item, increasing the quantity in the stock
+        """Sends this item to it's destination |branch|.
+        This method should never be used directly, and to send a transfer you
+        should use TransferOrder.send().
         """
         storable = self.sellable.product_storable
-        from_stock = storable.get_stock_item(self.transfer_order.source_branch,
-                                             self.batch)
+        storable.decrease_stock(self.quantity,
+                                self.transfer_order.source_branch,
+                                StockTransactionHistory.TYPE_TRANSFER_TO,
+                                self.id, batch=self.batch)
+        ProductHistory.add_transfered_item(self.store,
+                                           self.transfer_order.source_branch,
+                                           self)
+
+    def receive(self):
+        """Receives this item, increasing the quantity in the stock.
+        This method should never be used directly, and to receive a transfer
+        you should use TransferOrder.receive().
+        """
+        storable = self.sellable.product_storable
         storable.increase_stock(self.quantity,
                                 self.transfer_order.destination_branch,
                                 StockTransactionHistory.TYPE_TRANSFER_FROM,
-                                self.id, unit_cost=from_stock.stock_cost,
+                                self.id, unit_cost=self.stock_cost,
                                 batch=self.batch)
 
 
@@ -107,23 +114,25 @@ class TransferOrder(Domain):
     __storm_table__ = 'transfer_order'
 
     (STATUS_PENDING,
-     STATUS_CLOSED) = range(2)
+     STATUS_SENT,
+     STATUS_RECEIVED) = range(3)
 
     statuses = {STATUS_PENDING: _(u'Pending'),
-                STATUS_CLOSED: _(u'Closed')}
+                STATUS_SENT: _(u'Sent'),
+                STATUS_RECEIVED: _(u'Received')}
 
     status = IntCol(default=STATUS_PENDING)
 
-    #: A numeric identifier for this object. This value should be used instead of
-    #: :obj:`Domain.id` when displaying a numerical representation of this object to
-    #: the user, in dialogs, lists, reports and such.
+    #: A numeric identifier for this object. This value should be used instead
+    #: of :obj:`Domain.id` when displaying a numerical representation of this
+    #: object to the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
     #: The date the order was created
     open_date = DateTimeCol(default_factory=localnow)
 
     #: The date the order was received
-    receival_date = DateTimeCol(default_factory=localnow)
+    receival_date = DateTimeCol()
 
     source_branch_id = IdCol()
 
@@ -143,7 +152,8 @@ class TransferOrder(Domain):
     destination_responsible_id = IdCol()
 
     #: The |employee| responsible for the |transfer| at destination |branch|
-    destination_responsible = Reference(destination_responsible_id, 'Employee.id')
+    destination_responsible = Reference(destination_responsible_id,
+                                        'Employee.id')
 
     #
     # IContainer implementation
@@ -153,6 +163,7 @@ class TransferOrder(Domain):
         return self.store.find(TransferOrderItem, transfer_order=self)
 
     def add_item(self, item):
+        assert self.status == self.STATUS_PENDING
         item.transfer_order = self
 
     def remove_item(self, item):
@@ -165,6 +176,14 @@ class TransferOrder(Domain):
     # Public API
     #
 
+    @property
+    def branch(self):
+        return self.source_branch
+
+    @property
+    def status_str(self):
+        return(self.statuses[self.status])
+
     def add_sellable(self, sellable, batch, quantity=1):
         """Add the given |sellable| to this |transfer|.
 
@@ -173,26 +192,48 @@ class TransferOrder(Domain):
           are transfering.
         :param quantity: The quantity of this product that is being transfered.
         """
+        assert self.status == self.STATUS_PENDING
+
         self.validate_batch(batch, sellable=sellable)
+
+        stock_item = sellable.product_storable.get_stock_item(
+            self.source_branch, batch)
+
         return TransferOrderItem(store=self.store,
                                  transfer_order=self,
                                  sellable=sellable,
                                  batch=batch,
-                                 quantity=quantity)
+                                 quantity=quantity,
+                                 stock_cost=stock_item.stock_cost)
 
-    def can_close(self):
-        if self.status == TransferOrder.STATUS_PENDING:
-            return self.get_items().count() > 0
-        return False
+    def can_send(self):
+        return (self.status == self.STATUS_PENDING and
+                self.get_items().count() > 0)
 
-    def receive(self, receival_date=None):
-        """Confirms the receiving of the transfer order"""
-        assert self.can_close()
+    def can_receive(self):
+        return self.status == self.STATUS_SENT
+
+    def send(self):
+        """Sends a transfer order to the destination branch.
+        """
+        assert self.can_send()
+
+        for item in self.get_items():
+            item.send()
+
+        self.status = self.STATUS_SENT
+
+    def receive(self, responsible, receival_date=None):
+        """Confirms the receiving of the transfer order.
+        """
+        assert self.can_receive()
+
         for item in self.get_items():
             item.receive()
 
         self.receival_date = receival_date or localtoday()
-        self.status = TransferOrder.STATUS_CLOSED
+        self.destination_responsible = responsible
+        self.status = self.STATUS_RECEIVED
 
     def get_source_branch_name(self):
         """Returns the source |branch| name"""
@@ -212,6 +253,9 @@ class TransferOrder(Domain):
         """Returns the name of the |employee| responsible for the transfer
            at destination |branch|
         """
+        if not self.destination_responsible:
+            return u''
+
         return self.destination_responsible.person.name
 
     def get_total_items_transfer(self):
@@ -229,6 +273,7 @@ class TransferOrderView(Viewable):
     id = TransferOrder.id
     identifier = TransferOrder.identifier
     identifier_str = Cast(TransferOrder.identifier, 'text')
+    status = TransferOrder.status
     open_date = TransferOrder.open_date
     receival_date = TransferOrder.receival_date
     source_branch_id = TransferOrder.source_branch_id
@@ -237,7 +282,7 @@ class TransferOrderView(Viewable):
     destination_branch_name = PersonDest.name
 
     # Aggregates
-    total_itens = Sum(TransferOrderItem.quantity)
+    total_items = Sum(TransferOrderItem.quantity)
 
     group_by = [TransferOrder, source_branch_name, destination_branch_name]
 

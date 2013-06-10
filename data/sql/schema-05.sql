@@ -1309,11 +1309,11 @@ CREATE TABLE transfer_order (
     open_date timestamp NOT NULL,
     receival_date timestamp,
     status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 2),
+        CHECK (status >= 0 AND status <= 2),
     source_branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     destination_branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     source_responsible_id uuid NOT NULL REFERENCES employee(id) ON UPDATE CASCADE,
-    destination_responsible_id uuid NOT NULL REFERENCES employee(id) ON UPDATE CASCADE,
+    destination_responsible_id uuid REFERENCES employee(id) ON UPDATE CASCADE,
     UNIQUE (identifier, source_branch_id)
 );
 
@@ -1324,7 +1324,9 @@ CREATE TABLE transfer_order_item (
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     transfer_order_id uuid NOT NULL REFERENCES transfer_order(id) ON UPDATE CASCADE,
     quantity numeric(20, 3) NOT NULL CONSTRAINT positive_quantity
-        CHECK (quantity > 0)
+        CHECK (quantity > 0),
+    stock_cost numeric(20, 8) NOT NULL DEFAULT 0 CONSTRAINT positive_stock_cost
+        CHECK (stock_cost >= 0)
 );
 
 CREATE TABLE invoice_layout (
