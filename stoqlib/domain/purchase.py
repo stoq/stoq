@@ -368,7 +368,7 @@ class PurchaseOrder(Domain, Adaptable):
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
-        Event.log(Event.TYPE_ORDER,
+        Event.log(self.store, Event.TYPE_ORDER,
                   _(u"Order %s, total value %2.2f, supplier '%s' "
                     u"is now confirmed") % (self.identifier,
                                             self.get_purchase_total(),
@@ -391,7 +391,7 @@ class PurchaseOrder(Domain, Adaptable):
                                u'got %s instead') % self.get_status_str())
         self.status = self.ORDER_CLOSED
 
-        Event.log(Event.TYPE_ORDER,
+        Event.log(self.store, Event.TYPE_ORDER,
                   _(u"Order %s, total value %2.2f, supplier '%s' "
                     u"is now closed") % (self.identifier,
                                          self.get_purchase_total(),

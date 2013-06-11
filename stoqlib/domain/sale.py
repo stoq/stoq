@@ -860,7 +860,7 @@ class Sale(Domain, Adaptable):
                         u"confirmed with value {total_value:.2f}.").format(
                             sale_number=self.identifier,
                             total_value=self.get_total_sale_amount())
-            Event.log(Event.TYPE_SALE, msg)
+            Event.log(self.store, Event.TYPE_SALE, msg)
 
     def set_paid(self):
         """Mark the sale as paid
@@ -905,7 +905,7 @@ class Sale(Domain, Adaptable):
                         u"with value {total_value:.2f}.").format(
                             sale_number=self.identifier,
                             total_value=self.get_total_sale_amount())
-        Event.log(Event.TYPE_SALE, msg)
+        Event.log(self.store, Event.TYPE_SALE, msg)
 
     def set_not_paid(self):
         """Mark a sale as not paid. This happens when the user sets a
@@ -989,7 +989,7 @@ class Sale(Domain, Adaptable):
                              total_value=returned_sale.returned_total,
                              reason=returned_sale.reason)
 
-        Event.log(Event.TYPE_SALE, msg)
+        Event.log(self.store, Event.TYPE_SALE, msg)
 
     #
     # Accessors

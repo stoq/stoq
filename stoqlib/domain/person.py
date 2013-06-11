@@ -1330,21 +1330,25 @@ class LoginUser(Domain):
     def login(self):
         station = get_current_station(self.store)
         if station:
-            Event.log(Event.TYPE_USER,
+            Event.log(self.store,
+                      Event.TYPE_USER,
                       _(u"User '%s' logged in on '%s'") % (self.username,
                                                            station.name))
         else:
-            Event.log(Event.TYPE_USER,
+            Event.log(self.store,
+                      Event.TYPE_USER,
                       _(u"User '%s' logged in") % (self.username, ))
 
     def logout(self):
         station = get_current_station(self.store)
         if station:
-            Event.log(Event.TYPE_USER,
+            Event.log(self.store,
+                      Event.TYPE_USER,
                       _(u"User '%s' logged out from '%s'") % (self.username,
                                                               station.name))
         else:
-            Event.log(Event.TYPE_USER,
+            Event.log(self.store,
+                      Event.TYPE_USER,
                       _(u"User '%s' logged out") % (self.username, ))
 
 
@@ -1449,7 +1453,7 @@ class Branch(Domain):
     # Event
 
     def on_create(self):
-        Event.log(Event.TYPE_SYSTEM,
+        Event.log(self.store, Event.TYPE_SYSTEM,
                   _(u"Created branch '%s'") % (self.person.name, ))
 
     # Classmethods
