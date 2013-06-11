@@ -118,10 +118,14 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                   ObjectList(details_list, expand=True, fill=True):
                     column: title='Date'
                     column: title='Time'
-                    column: title='What happened', expand
-                    row: datetime.datetime(2013, 1, 1, 0, 0), datetime.time(0, 0), u'Approved by the client'
-                    row: datetime.datetime(2013, 1, 1, 0, 0), datetime.time(0, 0), u'The work was finished'
-                    row: datetime.today(), datetime.time(0, 0), u'The order was opened'
+                    column: title='Who', expand
+                    column: title='What', expand
+                    column: title='Old value', expand
+                    column: title='New value', expand
+                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Waiting', u'Approved'
+                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Approved', u'In progress'
+                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'In progress', u'Finished'
+                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Finished', u'Closed'
                   GtkHBox(hbox1, fill=True):
                     GtkButton(details_btn, fill=True): 'gtk-info', insensitive
       GtkHBox(fill=True):

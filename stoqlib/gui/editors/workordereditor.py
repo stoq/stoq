@@ -26,17 +26,17 @@
 import datetime
 
 import gtk
-from kiwi.ui.forms import TextField, MultiLineField
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client, Branch
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
-                                      WorkOrderPackage, WorkOrderPackageItem,
+                                      WorkOrderPackage,
                                       WorkOrderApprovedAndFinishedView)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.workordercategoryeditor import WorkOrderCategoryEditor
 from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
@@ -256,31 +256,6 @@ class WorkOrderEditor(BaseEditor):
         self._update_view()
 
 
-class WorkOrderPackageItemEditor(BaseEditor):
-    """A simple editor for |workorderpackageitem|
-
-    Most useful to edit the item's notes
-    """
-
-    size = (400, 200)
-    model_name = _(u"Work order")
-    model_type = WorkOrderPackageItem
-
-    fields = dict(
-        package=TextField(_('Package'), editable=False),
-        order=TextField(_('Description'), editable=False),
-        notes=MultiLineField(_('Notes'), proxy=True),
-    )
-
-    #
-    #  BaseEditor
-    #
-
-    def setup_proxies(self):
-        self.package.set_text(self.model.package.identifier)
-        self.order.set_text(self.model.order.equipment)
-
-
 class WorkOrderPackageSendEditor(BaseEditor):
     """Editor responsible for creating and sending |workorderpackages|
 
@@ -312,16 +287,21 @@ class WorkOrderPackageSendEditor(BaseEditor):
         self.add_proxy(self.model, self.proxy_widgets)
 
     def validate_confirm(self):
-        assert all([i in self._items for
-                    i in self.workorders if i.will_send])
-
-        if not self._items:
+        if not any(i.will_send for i in self.workorders):
             warning(_(u"You need to select at least one work order"))
             return False
 
         return True
 
     def on_confirm(self):
+        for order_view in self.workorders:
+            if not order_view.will_send:
+                continue
+            # If note is false (that is, an empty string) pass None
+            # to force the history's notes being set as null
+            notes = order_view.notes if order_view.notes else None
+            self.model.add_order(order_view.work_order, notes=notes)
+
         self.model.send()
 
     #
@@ -329,7 +309,6 @@ class WorkOrderPackageSendEditor(BaseEditor):
     #
 
     def _setup_widgets(self):
-        self._items = {}
         self._prefill_branches()
         for widget in [self.details_btn, self.edit_btn]:
             widget.set_sensitive(False)
@@ -356,6 +335,7 @@ class WorkOrderPackageSendEditor(BaseEditor):
             WorkOrderApprovedAndFinishedView.identifier)
 
         for workorder in workorders:
+            workorder.notes = u''
             workorder.will_send = False
             yield workorder
 
@@ -363,41 +343,15 @@ class WorkOrderPackageSendEditor(BaseEditor):
         branches = Branch.get_active_remote_branches(self.store)
         self.destination_branch.prefill(api.for_person_combo(branches))
 
-    def _add_order(self, order_view):
-        if order_view in self._items:
-            return
-
-        self._items[order_view] = self.model.add_order(order_view.work_order)
-
-    def _remove_order(self, order_view):
-        item = self._items.pop(order_view, None)
-        if item is None:
-            return
-
-        self.store.remove(item)
-
     def _edit_order(self, order_view):
-        item = self._items[order_view]
-
-        self.store.savepoint('before_run_editor_package_item')
-        rv = run_dialog(WorkOrderPackageItemEditor, self,
-                        self.store, model=item)
-        if not rv:
-            self.store.rollback_to_savepoint('before_run_editor_package_item')
+        run_dialog(NoteEditor, self, self.store, model=order_view,
+                   attr_name='notes', title=_(u"Notes"))
 
     #
     #  Callbacks
     #
 
     def on_workorders__cell_edited(self, klist, obj, attr):
-        if attr == 'will_send':
-            # We need to add/remove the object immediately, since we
-            # may edit the WorkOrderPackageItem (to add some notes).
-            if obj.will_send:
-                self._add_order(obj)
-            else:
-                self._remove_order(obj)
-
         self.force_validation()
 
     def on_workorders__selection_changed(self, workorders, selected):

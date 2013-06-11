@@ -21,7 +21,6 @@ CREATE TABLE work_order_package_item (
     id serial NOT NULL PRIMARY KEY,
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    notes text,
     order_id bigint NOT NULL REFERENCES work_order(id) ON UPDATE CASCADE,
     package_id bigint NOT NULL REFERENCES work_order_package(id) ON UPDATE CASCADE,
     UNIQUE (order_id, package_id)

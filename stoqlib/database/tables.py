@@ -142,7 +142,8 @@ _tables = [
                    'WorkOrderItem',
                    'WorkOrderCategory',
                    'WorkOrderPackage',
-                   'WorkOrderPackageItem']),
+                   'WorkOrderPackageItem',
+                   'WorkOrderHistory']),
     ('event', ['Event']),
 ]
 
