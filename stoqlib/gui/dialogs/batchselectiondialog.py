@@ -312,6 +312,9 @@ class _StorableBatchSelectionDialog(BaseEditor):
                                    gtk.FILL, 0, 0, 0)
             widget.show()
 
+        focus_chain = self.main_table.get_focus_chain() or []
+        self.main_table.set_focus_chain(focus_chain + [entry, spin])
+
         # FIXME: Kiwi will only set mandatory and call validate events (and
         # other stuff) on widgets on a proxy. Remove this when fixing kiwi
         entry_name = '_entry_%d' % len(self._entries)

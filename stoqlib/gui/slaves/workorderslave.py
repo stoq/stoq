@@ -167,9 +167,9 @@ class _WorkOrderItemSlave(SellableItemSlave):
                     Sellable.get_available_sellables_query(self.store)))
 
     def get_batch_items(self):
-        # Since the item will have it's stock synchronized above
+        # FIXME: Since the item will have it's stock synchronized above
         # (on sellable_selected) and thus having it's stock decreased,
-        # we can't pass anything here
+        # we can't pass anything here. Find a better way to do this
         return []
 
     def sellable_selected(self, sellable):
