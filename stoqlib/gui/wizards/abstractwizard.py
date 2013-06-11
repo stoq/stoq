@@ -498,15 +498,20 @@ class SellableItemSlave(BaseEditorSlave):
     #
 
     def _get_batch_items(self):
+        batch_items = {}
         for item in self.slave.klist:
             if item.batch is None:
                 continue
-            yield BatchItem(batch=item.batch, quantity=item.quantity)
+            batch_items.setdefault(item.batch, 0)
+            # Sum all quantities of the same batch
+            batch_items[item.batch] += item.quantity
+
+        return [BatchItem(batch=k, quantity=v) for k, v in batch_items.items()]
 
     def _get_batch_order_items(self, sellable, value, quantity):
         order_items = []
         storable = sellable.product_storable
-        original_batch_items = list(self._get_batch_items())
+        original_batch_items = self._get_batch_items()
         if issubclass(self.batch_selection_dialog,
                       BatchDecreaseSelectionDialog):
             extra_kw = dict(decreased_batches=original_batch_items)
