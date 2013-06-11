@@ -54,7 +54,8 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardStep
 from stoqlib.gui.columns import SearchColumn
-from stoqlib.gui.dialogs.batchselectiondialog import BatchItem
+from stoqlib.gui.dialogs.batchselectiondialog import (BatchDecreaseSelectionDialog,
+                                                      BatchItem)
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import WizardSellableItemStepEvent
@@ -314,7 +315,7 @@ class SellableItemSlave(BaseEditorSlave):
             order_items.extend(self._get_batch_order_items(sellable,
                                                            value, quantity))
         else:
-            order_item = self._get_order_item(sellable, value, quantity)
+            order_item = self.get_order_item(sellable, value, quantity)
             if order_item is not None:
                 order_items.append(order_item)
 
@@ -431,16 +432,6 @@ class SellableItemSlave(BaseEditorSlave):
         """
         raise NotImplementedError('This method must be defined on child')
 
-    def update_order_item(self, order_item):
-        """A hook called every time the *order_item* gets updated
-
-        When adding a new item, if it's already on the list it will have
-        it's quantity updated (so :meth:`.get_order_item` will not be called)
-
-        This can be implemented on subclasses if they need to do
-        some additional action when the item gets updated.
-        """
-
     def get_saved_items(self):
         raise NotImplementedError('This method must be defined on child')
 
@@ -506,22 +497,6 @@ class SellableItemSlave(BaseEditorSlave):
     #  Private
     #
 
-    def _add_to_cache(self, order_item, sellable, value, batch):
-        # batch can be both the batch number or the batch object
-        b_key = batch if isinstance(batch, basestring) else batch.id
-        key = (sellable.id, b_key, value)
-
-        if key in self._items_cache:
-            assert self._items_cache[key] == order_item
-        self._items_cache[key] = order_item
-
-    def _pop_from_cache(self, sellable, value, batch):
-        # batch can be both the batch number or the batch object
-        b_key = batch if isinstance(batch, basestring) else batch.id
-        key = (sellable.id, b_key, value)
-
-        return self._items_cache.pop(key)
-
     def _get_batch_items(self):
         for item in self.slave.klist:
             if item.batch is None:
@@ -532,73 +507,25 @@ class SellableItemSlave(BaseEditorSlave):
         order_items = []
         storable = sellable.product_storable
         original_batch_items = list(self._get_batch_items())
-        # Existing batches before running the editor. Since the user
-        # may remove the some batches in this dialog, we need to detect
-        # what was removed.
-        existing_batches = set(bi.batch for bi in original_batch_items)
+        if issubclass(self.batch_selection_dialog,
+                      BatchDecreaseSelectionDialog):
+            extra_kw = dict(decreased_batches=original_batch_items)
+        else:
+            extra_kw = dict(original_batches=original_batch_items)
 
         retval = run_dialog(
             self.batch_selection_dialog, self.get_parent(),
-            store=self.store, model=storable, quantity=quantity,
-            original_batches=original_batch_items)
+            store=self.store, model=storable, quantity=quantity, **extra_kw)
 
         for batch_item in retval or []:
-            # By removing this from the exieting batchs, at the for's end
-            # existing_batches will have batches that were removed
-            existing_batches.discard(batch_item.batch)
-            order_item = self._get_order_item(sellable, value,
-                                              quantity=batch_item.quantity,
-                                              batch=batch_item.batch)
+            order_item = self.get_order_item(sellable, value,
+                                             quantity=batch_item.quantity,
+                                             batch=batch_item.batch)
             if order_item is None:
                 continue
-
-            self._add_to_cache(order_item, sellable, value,
-                               batch_item.batch)
             order_items.append(order_item)
 
-        # If the dialog wasn't cancelled, remove the items that
-        # were removed on the dialog
-        if retval is not None:
-            for batch in existing_batches:
-                # This *needs* to be possible or else we are doing
-                # something very wrong here
-                assert self.slave.delete_button.get_visible()
-
-                item = self._pop_from_cache(sellable, value, batch)
-                # This is the same as clicking del button
-                self.slave.klist.remove(item)
-
         return order_items
-
-    def _get_order_item(self, sellable, value, quantity, batch=None):
-        for item in self.slave.klist:
-            if item.sellable != sellable:
-                continue
-            # Some items (e.g. PurchaseItem) may not have a batch
-            if getattr(item, 'batch', None) != batch:
-                continue
-            # The item will only get updated if the price is the same.
-            # We test using hasattr first so we don't get confused if
-            # it doesn't have a price/cost attribute
-            if (hasattr(item, self.value_column) and
-                getattr(item, self.value_column, None) != value):
-                continue
-
-            # If we have a batch, we are replacing the quantity,
-            # since it was adjusted on batch_selection_dialog using the
-            # actual quantity.
-            if batch is not None:
-                item.quantity = quantity
-            # Else, the user is adding *more* quantity so we are going
-            # to sum it with the existing
-            else:
-                item.quantity += quantity
-
-            self.update_order_item(item)
-            return item
-
-        # If we didn't update any existing item, get a new one
-        return self.get_order_item(sellable, value, quantity, batch=batch)
 
     def _setup_widgets(self):
         self._update_product_labels_visibility(False)

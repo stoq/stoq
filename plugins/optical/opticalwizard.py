@@ -170,20 +170,6 @@ class _ItemSlave(SaleQuoteItemStep):
     #   SellableItemSlave implementation
     #
 
-    def update_order_item(self, order_item):
-        work_order = self.emit('get-work-order')
-        for wo_item in work_order.get_items():
-            if ((wo_item.sellable, wo_item.price, wo_item.batch) ==
-                (order_item.sellable, order_item.price, order_item.batch)):
-                # If we already had that item on workorder, simply
-                # update it's quantity
-                wo_item.quantity = order_item.quantity
-                break
-        else:
-            raise AssertionError("We should have the item %s on the "
-                                 "workorder %s at this point" % (
-                                     order_item, work_order))
-
     def get_order_item(self, sellable, price, quantity, batch=None):
         work_order = self.emit('get-work-order')
         print work_order
