@@ -32,7 +32,6 @@ from storm.store import AutoReload
 
 from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.runtime import new_store
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -89,18 +88,14 @@ class Event(ORMObject):
     description = UnicodeCol()
 
     @classmethod
-    def log(cls, event_type, description):
+    def log(cls, store, event_type, description):
         """
         Create a new event message.
 
+        :param store: a store
         :param event_type: the event type of this message
         :param description: the message description
-
-        .. note:: this creates a new store, commits and closes it.
         """
-        store = new_store()
         cls(event_type=event_type,
             description=description,
             store=store)
-        store.commit()
-        store.close()

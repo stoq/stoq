@@ -428,7 +428,7 @@ class Payment(Domain):
                         method=self.method.method_name,
                         original_value=self.value,
                         value=self.paid_value)
-        Event.log(Event.TYPE_PAYMENT, msg.capitalize())
+        Event.log(self.store, Event.TYPE_PAYMENT, msg.capitalize())
 
     def cancel(self, change_entry=None):
         """Cancel the payment, set it's status to :obj:`.STATUS_CANCELLED`
@@ -454,7 +454,7 @@ class Payment(Domain):
         msg = _(u"{method} payment with value {value:.2f} was cancelled").format(
             method=self.method.method_name,
             value=self.value)
-        Event.log(Event.TYPE_PAYMENT, msg.capitalize())
+        Event.log(self.store, Event.TYPE_PAYMENT, msg.capitalize())
 
     def change_due_date(self, new_due_date):
         """Changes the payment due date.
