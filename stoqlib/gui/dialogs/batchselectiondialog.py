@@ -427,6 +427,18 @@ class BatchDecreaseSelectionDialog(_StorableBatchSelectionDialog):
 
     VALIDATE_MAX_QUANTITY = False
 
+    def __init__(self, store, model, quantity,
+                 original_batches=None, decreased_batches=None):
+        """
+        :param decreased_batches: a sequence of :class:`batch item <.BatchItem>`
+            of quantities already decreased. Useful when you have some quantity
+            already decreased on a store for example and you want it to be
+            taken in consideration when checking for stock availability
+        """
+        self._decreased_batches = decreased_batches or []
+        _StorableBatchSelectionDialog.__init__(self, store, model, quantity,
+                                               original_batches=original_batches)
+
     #
     #  _StorableBatchSelectionDialog
     #
@@ -455,6 +467,10 @@ class BatchDecreaseSelectionDialog(_StorableBatchSelectionDialog):
 
         branch = api.get_current_branch(self.store)
         available_qty = batch.get_balance_for_branch(branch)
+        for batch_item in self._decreased_batches:
+            if batch_item.batch == batch:
+                available_qty -= batch_item.quantity
+
         if quantity > available_qty:
             return ValidationError(_("There's only %s available in stock for "
                                      "the given batch") % available_qty)
