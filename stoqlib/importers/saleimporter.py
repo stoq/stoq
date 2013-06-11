@@ -114,6 +114,6 @@ class SaleImporter(CSVImporter):
         till.add_debit_entry(till.get_balance(),
                              _(u'Amount removed from Till'))
         till.close_till()
-        yesterday = localtoday().date() - datetime.timedelta(1)
+        yesterday = localtoday() - datetime.timedelta(1)
         till.opening_date = yesterday
         till.closing_date = yesterday

@@ -788,7 +788,7 @@ class ExampleCreator(object):
         from stoqlib.domain.payment.card import CreditProvider
         return CreditProvider(store=self.store,
                               short_name=short_name,
-                              open_contract_date=localdate(2006, 01, 01).date())
+                              open_contract_date=localdate(2006, 01, 01))
 
     def create_card_device(self, description=u'Cielo'):
         from stoqlib.domain.payment.card import CardPaymentDevice
@@ -811,7 +811,7 @@ class ExampleCreator(object):
         if payment_type is None:
             payment_type = Payment.TYPE_OUT
         if not date:
-            date = localtoday().date()
+            date = localtoday()
         return Payment(group=group or self.create_payment_group(),
                        description=u'Test payment',
                        branch=branch or get_current_branch(self.store),
@@ -1082,7 +1082,7 @@ class ExampleCreator(object):
 
     def create_call(self, person=None, attendant=None):
         from stoqlib.domain.person import Calls
-        return Calls(date=localdate(2011, 1, 1).date(),
+        return Calls(date=localdate(2011, 1, 1),
                      message=u"Test call message",
                      person=person or self.create_person(),
                      attendant=attendant or self.create_user(),
@@ -1091,7 +1091,7 @@ class ExampleCreator(object):
 
     def create_credit_check_history(self, user=None, client=None):
         from stoqlib.domain.person import CreditCheckHistory
-        return CreditCheckHistory(check_date=localdate(2011, 1, 1).date(),
+        return CreditCheckHistory(check_date=localdate(2011, 1, 1),
                                   identifier=u"identifier123",
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
                                   notes=u"random note",

@@ -201,8 +201,8 @@ class TestProductFullStockView(DomainTest):
         sellable.on_sale_price = Decimal('5.55')
 
         # And a interval that includes today
-        yesterday = localtoday().date() - datetime.timedelta(days=1)
-        tomorrow = localtoday().date() + datetime.timedelta(days=1)
+        yesterday = localtoday() - datetime.timedelta(days=1)
+        tomorrow = localtoday() + datetime.timedelta(days=1)
         sellable.on_sale_start_date = yesterday
         sellable.on_sale_end_date = tomorrow
 
@@ -211,8 +211,8 @@ class TestProductFullStockView(DomainTest):
         self.assertEquals(results[0].price, Decimal('5.55'))
 
         # Testing with a sale price set, but in the past
-        date1 = localtoday().date() - datetime.timedelta(days=10)
-        date2 = localtoday().date() - datetime.timedelta(days=5)
+        date1 = localtoday() - datetime.timedelta(days=10)
+        date2 = localtoday() - datetime.timedelta(days=5)
         sellable.on_sale_start_date = date1
         sellable.on_sale_end_date = date2
 
@@ -311,8 +311,8 @@ class TestSellableFullStockView(DomainTest):
         sellable.on_sale_price = Decimal('5.55')
 
         # And a interval that includes today
-        yesterday = localtoday().date() - datetime.timedelta(days=1)
-        tomorrow = localtoday().date() + datetime.timedelta(days=1)
+        yesterday = localtoday() - datetime.timedelta(days=1)
+        tomorrow = localtoday() + datetime.timedelta(days=1)
         sellable.on_sale_start_date = yesterday
         sellable.on_sale_end_date = tomorrow
 
@@ -321,8 +321,8 @@ class TestSellableFullStockView(DomainTest):
         self.assertEquals(results[0].price, Decimal('5.55'))
 
         # Testing with a sale price set, but in the past
-        date1 = localtoday().date() - datetime.timedelta(days=10)
-        date2 = localtoday().date() - datetime.timedelta(days=5)
+        date1 = localtoday() - datetime.timedelta(days=10)
+        date2 = localtoday() - datetime.timedelta(days=5)
         sellable.on_sale_start_date = date1
         sellable.on_sale_end_date = date2
 
@@ -415,7 +415,7 @@ class TestSoldItemView(DomainTest):
         # self.assertEquals(results.count(), 1)
         self.assertEquals(len(list(results)), 1)
 
-        today = localtoday().date()
+        today = localtoday()
         results = SoldItemView.find_by_branch_date(self.store, None, today).find(
             SoldItemView.id == sellable.id)
         self.assertEquals(len(list(results)), 1)

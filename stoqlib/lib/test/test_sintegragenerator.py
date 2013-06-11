@@ -17,7 +17,7 @@ class TestSintegraGenerator(DomainTest):
 
     def testRegisters(self):
         order = self.create_receiving_order()
-        order.receival_date = localdate(2007, 6, 1).date()
+        order.receival_date = localdate(2007, 6, 1)
         order.discount_value = 10
         # order.purchase.discount_value = 5
         # order.purchase.surcharge_value = 8
@@ -59,7 +59,7 @@ class TestSintegraGenerator(DomainTest):
         sellable2.code = u'10000'
 
         sale = self.create_sale()
-        sale.open_date = localdate(2007, 6, 10).date()
+        sale.open_date = localdate(2007, 6, 10)
 
         sellable3 = self.create_sellable()
         product = sellable3.product
@@ -81,12 +81,12 @@ class TestSintegraGenerator(DomainTest):
 
         sale.confirm()
         sale.group.pay()
-        sale.close_date = localdate(2007, 6, 10).date()
-        sale.confirm_date = localdate(2007, 6, 10).date()
+        sale.close_date = localdate(2007, 6, 10)
+        sale.confirm_date = localdate(2007, 6, 10)
         sellable3.code = u'09999'
 
         inventory = Inventory(branch=branch, store=self.store)
-        inventory.open_date = localdate(2007, 6, 15).date()
+        inventory.open_date = localdate(2007, 6, 15)
 
         # product came from sellable3
         inventory_item = InventoryItem(product=product,
@@ -98,11 +98,11 @@ class TestSintegraGenerator(DomainTest):
         inventory_item.reason = u'Test'
         inventory_item.actual_quantity = 99
         inventory_item.adjust(invoice_number=999)
-        inventory.close(close_date=localdate(2007, 6, 15).date())
+        inventory.close(close_date=localdate(2007, 6, 15))
 
         generator = StoqlibSintegraGenerator(self.store,
-                                             localdate(2007, 6, 1).date(),
-                                             localdate(2007, 6, 30).date())
+                                             localdate(2007, 6, 1),
+                                             localdate(2007, 6, 30))
 
         try:
             compare_sintegra_file(generator.sintegra, 'sintegra-receival')

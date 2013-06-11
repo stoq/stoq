@@ -244,13 +244,13 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEquals(len(individuals), 0)
 
         client1 = self.create_client(u'Junio C. Hamano')
-        client1.person.individual.birth_date = localdate(1972, 10, 15).date()
+        client1.person.individual.birth_date = localdate(1972, 10, 15)
         client2 = self.create_client(u'Richard Stallman')
-        client2.person.individual.birth_date = localdate(1989, 3, 4).date()
+        client2.person.individual.birth_date = localdate(1989, 3, 4)
         client3 = self.create_client(u'Linus Torvalds')
-        client3.person.individual.birth_date = localdate(2000, 3, 4).date()
+        client3.person.individual.birth_date = localdate(2000, 3, 4)
         client4 = self.create_client(u'Guido van Rossum')
-        client4.person.individual.birth_date = localdate(2005, 3, 4).date()
+        client4.person.individual.birth_date = localdate(2005, 3, 4)
 
         individuals = list(self.store.find(Individual, test_query))
         self.assertEquals(len(individuals), 3)
@@ -282,13 +282,13 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEquals(len(individuals), 0)
 
         client1 = self.create_client(u'Junio C. Hamano')
-        client1.person.individual.birth_date = localdate(1972, 10, 15).date()
+        client1.person.individual.birth_date = localdate(1972, 10, 15)
         client2 = self.create_client(u'Richard Stallman')
-        client2.person.individual.birth_date = localdate(1989, 3, 7).date()
+        client2.person.individual.birth_date = localdate(1989, 3, 7)
         client3 = self.create_client(u'Linus Torvalds')
-        client3.person.individual.birth_date = localdate(2000, 3, 4).date()
+        client3.person.individual.birth_date = localdate(2000, 3, 4)
         client4 = self.create_client(u'Guido van Rossum')
-        client4.person.individual.birth_date = localdate(2005, 3, 20).date()
+        client4.person.individual.birth_date = localdate(2005, 3, 20)
 
         individuals = list(self.store.find(Individual, test_query))
         self.assertEquals(len(individuals), 3)
@@ -380,7 +380,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         u'store_credit')
-        today = localtoday().date()
+        today = localtoday()
 
         # client can pay if he doesn't have any payments
         client.credit_limit = Decimal("1000")
@@ -414,7 +414,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         u'store_credit')
-        today = localtoday().date()
+        today = localtoday()
 
         # client can pay if he doesn't have any payments
         self.assertTrue(client.can_purchase(money_method, currency("0")))
@@ -450,7 +450,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         u'store_credit')
-        today = localtoday().date()
+        today = localtoday()
 
         # client can pay if he doesn't have any payments
         self.assertTrue(client.can_purchase(money_method, currency("0")))
