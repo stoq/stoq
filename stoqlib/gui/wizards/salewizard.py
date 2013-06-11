@@ -95,7 +95,7 @@ class _TemporarySaleItem(object):
 
     @property
     def total(self):
-        return currency(self.cost * self.quantity)
+        return currency(self.price * self.quantity)
 
     @property
     def need_adjust_batch(self):
