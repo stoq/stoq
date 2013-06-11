@@ -965,7 +965,7 @@ class TestStockTransactionHistory(DomainTest):
 
         transfer_item.quantity = 2
         transfer.destination_branch = self.branch
-        transfer.receive(localtoday().date())
+        transfer.receive(localtoday())
 
         self._check_stock_history(product, 2, transfer_item, transfer,
                                   StockTransactionHistory.TYPE_TRANSFER_FROM)

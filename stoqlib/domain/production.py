@@ -149,7 +149,7 @@ class ProductionOrder(Domain):
         for material in self.get_material_items():
             material.allocate()
 
-        self.start_date = localtoday().date()
+        self.start_date = localtoday()
         self.status = ProductionOrder.ORDER_PRODUCING
 
     # FIXME: Test
@@ -182,7 +182,7 @@ class ProductionOrder(Domain):
             self.status = ProductionOrder.ORDER_QA
         elif is_produced and is_tested:
             # All items must be completely produced and tested
-            self.close_date = localtoday().date()
+            self.close_date = localtoday()
             self.status = ProductionOrder.ORDER_CLOSED
 
         # If the order is closed, return the the remaining allocated material to

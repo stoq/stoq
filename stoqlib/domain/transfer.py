@@ -191,7 +191,7 @@ class TransferOrder(Domain):
         for item in self.get_items():
             item.receive()
 
-        self.receival_date = receival_date or localtoday().date()
+        self.receival_date = receival_date or localtoday()
         self.status = TransferOrder.STATUS_CLOSED
 
     def get_source_branch_name(self):

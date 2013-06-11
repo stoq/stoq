@@ -375,13 +375,13 @@ class TestWorkOrder(DomainTest):
             self.assertFalse(workorder.is_late())
 
         # datetime.today will expand to 2012, so this is in the future
-        workorder.estimated_finish = localdate(2013, 1, 1).date()
+        workorder.estimated_finish = localdate(2013, 1, 1)
         for status in WorkOrder.statuses.keys():
             workorder.status = status
             self.assertFalse(workorder.is_late())
 
         # datetime.today will expand to 2012, so this is in the past
-        workorder.estimated_finish = localdate(2011, 1, 1).date()
+        workorder.estimated_finish = localdate(2011, 1, 1)
         for status in WorkOrder.statuses.keys():
             workorder.status = status
             if status in [WorkOrder.STATUS_WORK_FINISHED,
@@ -460,7 +460,7 @@ class TestWorkOrder(DomainTest):
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def testApprove(self, localnow):
-        localnow.return_value = localdate(2012, 1, 1).date()
+        localnow.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_APPROVED)
         self.assertEqual(workorder.approve_date, None)
@@ -490,7 +490,7 @@ class TestWorkOrder(DomainTest):
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def testFinish(self, localnow):
-        localnow.return_value = localdate(2012, 1, 1).date()
+        localnow.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
         workorder.approve()
         workorder.start()

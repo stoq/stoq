@@ -70,7 +70,7 @@ class TestPayable(BaseGUITest):
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
         payment = self.add_payments(order, method_type=u'money')[0]
-        payment.open_date = payment.due_date = localdate(2012, 1, 1).date()
+        payment.open_date = payment.due_date = localdate(2012, 1, 1)
         order.confirm()
         payment.identifier = 67890
         order.close()

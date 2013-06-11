@@ -246,7 +246,7 @@ class BaseAccountWindow(ShellApp):
                 tolerance = api.sysparam(self.store).TOLERANCE_FOR_LATE_PAYMENTS
                 return And(
                     payment_view.status == Payment.STATUS_PENDING,
-                    payment_view.due_date < localtoday().date() -
+                    payment_view.due_date < localtoday() -
                     relativedelta(days=tolerance))
         elif kind == 'category':
             return payment_view.category == value

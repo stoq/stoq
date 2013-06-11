@@ -49,7 +49,7 @@ def compare_sintegra_file(sfile, basename):
 class SintegraTest(DomainTest):
     def testComplete(self):
         station = self.create_station()
-        today = localdate(2007, 1, 1).date()
+        today = localdate(2007, 1, 1)
         reduction_date = localdatetime(2007, 1, 1, 23, 59)
         day = FiscalDayHistory(store=self.store,
                                emission_date=today,

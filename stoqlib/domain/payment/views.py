@@ -225,10 +225,10 @@ class InPaymentView(BasePaymentView):
         """
         tolerance = sysparam(store).TOLERANCE_FOR_LATE_PAYMENTS
 
-        query = And(cls.person_id == person.id,
-                    cls.status == Payment.STATUS_PENDING,
-                    cls.due_date < localtoday().date() -
-                    relativedelta(days=tolerance))
+        query = And(
+            cls.person_id == person.id,
+            cls.status == Payment.STATUS_PENDING,
+            cls.due_date < localtoday() - relativedelta(days=tolerance))
 
         late_payments = store.find(cls, query)
         if late_payments.any():
