@@ -353,13 +353,16 @@ class WorkOrderItem(Domain):
     sellable = Reference(sellable_id, 'Sellable.id')
 
     batch_id = IdCol()
-
     #: If the sellable is a storable, the |batch| that it was removed from
     batch = Reference(batch_id, 'StorableBatch.id')
 
     order_id = IdCol()
     #: |workorder| this item belongs
     order = Reference(order_id, 'WorkOrder.id')
+
+    sale_item_id = IdCol()
+    #: the corresponding |saleitem| for this item
+    sale_item = Reference(sale_item_id, 'SaleItem.id')
 
     @property
     def total(self):
@@ -444,6 +447,17 @@ class WorkOrderItem(Domain):
         # Reset the values used to calculate the stock quantity, just like
         # when the object as loaded from the database again.
         self._original_quantity = self.quantity
+
+    @classmethod
+    def get_from_sale_item(cls, store, sale_item):
+        """Get the |workorderitem| given one |saleitem|
+
+        :param store: a store
+        :param sale_item: a |saleitem|
+        :returns: The |workorderitem| related to the |saleitem|
+        :rtype: |workorderitem|
+        """
+        return store.find(cls, cls.sale_item_id == sale_item.id).one()
 
 
 class WorkOrder(Domain):
@@ -1173,6 +1187,8 @@ class WorkOrderView(Viewable):
 
     # Sale
     sale_id = Sale.id
+    sale_identifier = Sale.identifier
+    sale_identifier_str = Cast(Sale.identifier, 'text')
 
     # WorkOrderItem
     quantity = Coalesce(Field('_work_order_items', 'quantity'), 0)

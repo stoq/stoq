@@ -343,7 +343,7 @@ class MaintenanceApp(ShellApp):
 
     def create_filters(self):
         self.set_text_field_columns(['equipment', 'client_name',
-                                     'identifier_str'])
+                                     'identifier_str', 'sale_identifier_str'])
 
         self.main_filter = ComboSearchFilter(_('Show'), [])
         combo = self.main_filter.combo
@@ -361,6 +361,7 @@ class MaintenanceApp(ShellApp):
     def get_columns(self):
         return [
             IdentifierColumn('identifier'),
+            IdentifierColumn('sale_identifier', title=_("Sale #"), visible=False),
             SearchColumn('work_order.status_str', title=_(u'Status'),
                          search_attribute='status', data_type=str,
                          valid_values=self._get_status_values(), visible=False),

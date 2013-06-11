@@ -1557,6 +1557,7 @@ CREATE TABLE work_order_item (
     price numeric(20,2),
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
+    sale_item_id uuid REFERENCES sale_item(id) ON UPDATE CASCADE,
     order_id uuid REFERENCES work_order(id) ON UPDATE CASCADE
 );
 

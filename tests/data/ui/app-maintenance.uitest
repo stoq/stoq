@@ -114,6 +114,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                   GtkButton(search_button): 'gtk-find'
               SearchResultListView(result_view, expand=True, fill=True):
                 column: title='#'
+                column: title='Sale #', hidden
                 column: title='Status', hidden
                 column: title='Category', hidden
                 column: title='Equipment', expand
@@ -127,8 +128,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                 column: title='Approval date', hidden
                 column: title='Finish date', hidden
                 column: title='Total'
-                row: 666, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
-                row: 667, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
+                row: 666, None, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
+                row: 667, None, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

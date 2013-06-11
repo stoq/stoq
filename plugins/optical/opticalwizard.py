@@ -27,19 +27,23 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import PriceField, NumericField
 from kiwi.ui.objectlist import Column
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.workorder import WorkOrder
+from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
 from stoqlib.gui.base.wizards import BaseWizardStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
+from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.gui.wizards.salequotewizard import (SaleQuoteWizard,
-                                                 StartSaleQuoteStep,
-                                                 SaleQuoteItemStep)
-from stoqlib.lib.formatters import format_quantity
+                                                 StartSaleQuoteStep)
+from stoqlib.lib.formatters import (format_quantity, format_sellable_description,
+                                    get_formatted_percentage)
 from stoqlib.lib.translation import stoqlib_gettext
 
 from optical.opticalslave import WorkOrderOpticalSlave
@@ -153,7 +157,87 @@ class OpticalWorkOrderStep(BaseWizardStep):
         self._add_workorder(self._create_work_order())
 
 
-class _ItemSlave(SaleQuoteItemStep):
+# This is used so we can display on what work order an item is in.
+class _TempSaleItem(object):
+    def __init__(self, sale_item):
+        self._sale_item = sale_item
+
+        self.sellable = sale_item.sellable
+        self.base_price = sale_item.base_price
+        self.price = sale_item.price
+        self.quantity = sale_item.quantity
+        self.total = sale_item.get_total()
+        self.batch = sale_item.batch
+
+        store = sale_item.store
+        self._work_item = WorkOrderItem.get_from_sale_item(store, sale_item)
+        optical_wo = store.find(OpticalWorkOrder,
+                                work_order=self._work_item.order).one()
+        self.patient = optical_wo.patient
+
+    @property
+    def description(self):
+        return format_sellable_description(self.sellable, self.batch)
+
+    @property
+    def sale_discount(self):
+        return self._sale_item.get_sale_discount()
+
+    def remove(self):
+        # First remove the item from the work order
+        work_order = self._work_item.order
+        work_order.remove_item(self._work_item)
+
+        # then remove it from the sale
+        sale = self._sale_item.sale
+        sale.remove_item(self._sale_item)
+
+    def update(self):
+        self._work_item.price = self.price
+        self._work_item.quantity = self.quantity
+        self._sale_item.price = self.price
+        self._sale_item.quantity = self.quantity
+
+        self.total = self._sale_item.get_total()
+
+
+class _ItemEditor(BaseEditor):
+    model_name = _(u'Work order item')
+    model_type = _TempSaleItem
+    confirm_widgets = ['price', 'quantity']
+
+    fields = dict(
+        price=PriceField(_(u'Price'), proxy=True, mandatory=True),
+        quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
+    )
+
+    def on_confirm(self):
+        self.model.update()
+
+    def on_price__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(_(u"The price must be greater than 0"))
+
+        sellable = self.model.sellable
+        if not sellable.is_valid_price(value):
+            return ValidationError(_(u"Max discount for this product "
+                                     u"is %.2f%%") % sellable.max_discount)
+
+    def on_quantity__validate(self, entry, value):
+        sellable = self.model.sellable
+
+        # TODO: Validate quantity properly (checking if the current stock is
+        # enougth
+        if value <= 0:
+            return ValidationError(_(u"The quantity must be greater than 0"))
+
+        if not sellable.is_valid_quantity(value):
+            return ValidationError(_(u"This product unit (%s) does not "
+                                     u"support fractions.") %
+                                   sellable.get_unit_description())
+
+
+class _ItemSlave(SellableItemSlave):
     """This is the slave that will add the items in the sale and at the same
     time, also add the items to the Work Orders.
 
@@ -165,47 +249,52 @@ class _ItemSlave(SaleQuoteItemStep):
 
     model_type = Sale
     batch_selection_dialog = BatchDecreaseSelectionDialog
+    item_editor = _ItemEditor
+    summary_label_text = "<b>%s</b>" % api.escape(_('Total:'))
+    value_column = 'price'
 
     #
     #   SellableItemSlave implementation
     #
 
+    def post_init(self):
+        self.hide_add_button()
+        self.cost_label.set_label('Price:')
+        self.cost.set_editable(True)
+
     def get_order_item(self, sellable, price, quantity, batch=None):
         work_order = self.emit('get-work-order')
-        print work_order
-        item = SaleQuoteItemStep.get_order_item(self, sellable, price,
-                                                quantity, batch=batch)
-        if item and work_order:
-            for wo_item in work_order.get_items():
-                if ((wo_item.sellable, wo_item.price, wo_item.batch) ==
-                    (item.sellable, item.price, item.batch)):
-                    # If we already had that item on workorder, simply
-                    # update it's quantity
-                    wo_item.quantity = item.quantity
-                    break
-            else:
-                work_order.add_sellable(item.sellable, quantity=item.quantity,
-                                        price=item.price, batch=batch)
-        return item
+        assert work_order
+        sale_item = self.model.add_sellable(sellable, quantity, price, batch=batch)
+        order_item = work_order.add_sellable(sellable, quantity=quantity, price=price,
+                                             batch=batch)
+        order_item.sale_item = sale_item
+        return _TempSaleItem(sale_item)
 
     def get_saved_items(self):
-        # TODO: Implement this so we can add the workorder column. This way, we
-        # can return a different object here, that has the workorder property
-        return SaleQuoteItemStep.get_saved_items(self)
+        sale_items = self.model.get_items()
+        for item in sale_items:
+            yield _TempSaleItem(item)
+
+    def remove_items(self, items):
+        for temp_item in items:
+            temp_item.remove()
 
     def get_columns(self, editable=True):
-        # TODO: Add a column to show what work order this item is in.
         return [
             Column('sellable.code', title=_(u'Code'),
                    data_type=str, visible=False),
             Column('sellable.barcode', title=_(u'Barcode'),
                    data_type=str, visible=False),
-            Column('sellable.description', title=_(u'Description'),
+            Column('description', title=_(u'Description'),
                    data_type=str, expand=True),
-            Column('price', title=_(u'Price'),
-                   data_type=currency),
+            Column('patient', title=_(u'Owner'), data_type=str),
             Column('quantity', title=_(u'Quantity'),
                    data_type=Decimal, format_func=format_quantity),
+            Column('base_price', title=_('Original Price'), data_type=currency),
+            Column('price', title=_('Sale Price'), data_type=currency),
+            Column('sale_discount', title=_('Discount'), data_type=Decimal,
+                   format_func=get_formatted_percentage),
             Column('total', title=_(u'Total'),
                    data_type=currency),
         ]
@@ -218,7 +307,7 @@ class OpticalItemStep(BaseWizardStep):
     add items to the sale, this step has a widget on the top to let the user
     choose on what work order he is adding the items.
 
-    If the sale has more than 4 work ordes, then the widget will be a combo
+    If the sale has more than 4 work orders, then the widget will be a combo
     box.  Otherwise, there will be up to 3 radio buttons for the user to choose
     the work order.
     """
@@ -232,7 +321,7 @@ class OpticalItemStep(BaseWizardStep):
 
     def _create_ui(self):
         self._setup_workorders_widget()
-        slave = _ItemSlave(self.wizard, None, self.store, self.model)
+        slave = _ItemSlave(self.store, self.model)
         slave.connect('get-work-order', self._on_item_slave__get_work_order)
         self.attach_slave('slave_holder', slave)
 
@@ -273,6 +362,8 @@ class OpticalItemStep(BaseWizardStep):
     #
 
     def get_work_order(self):
+        """Returns what |workorder| the user has selected.
+        """
         if self.work_orders_combo.get_visible():
             return self.work_orders_combo.read()
         else:
@@ -311,3 +402,15 @@ class OpticalSaleQuoteWizard(SaleQuoteWizard):
 
     def get_first_step(self, store, model):
         return OpticalStartSaleQuoteStep(store, self, model)
+
+    def finish(self):
+        # Now we must remove the products added to the workorders from the stock
+        for wo in self.workorders:
+            wo.sync_stock()
+
+        # And also set them as already decreased in the sale, so it does not get
+        # decreased twice
+        for item in self.model.get_items():
+            item.quantity_decreased = item.quantity
+
+        SaleQuoteWizard.finish(self)

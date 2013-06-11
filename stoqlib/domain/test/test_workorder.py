@@ -203,6 +203,25 @@ class TestWorkOrderItem(DomainTest):
                                       order=workorder, sellable=sellable)
         self.assertEqual(workorderitem.total, 150)
 
+    def testGetFromSaleItem(self):
+        sale_item = self.create_sale_item()
+
+        # There is no work order item yet.
+        wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
+        self.assertEquals(wo_item, None)
+
+        # Create one work order
+        item = WorkOrderItem(store=self.store, sellable=sale_item.sellable)
+
+        # They are still not related.
+        wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
+        self.assertEquals(wo_item, None)
+
+        # After relating them, it should be found.
+        item.sale_item = sale_item
+        wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
+        self.assertEquals(wo_item, item)
+
 
 class TestWorkOrder(DomainTest):
     def testGetTotalAmount(self):
