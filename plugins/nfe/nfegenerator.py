@@ -37,6 +37,7 @@ from kiwi.python import strip_accents, Settable
 from stoqlib.domain.sale import SaleItem
 from stoqlib.enums import NFeDanfeOrientation
 from stoqlib.exceptions import ModelDataError
+from stoqlib.lib.ibpt import calculate_tax_for_item
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import validate_cnpj
@@ -79,6 +80,7 @@ class NFeGenerator(object):
     """
     def __init__(self, sale, store):
         self._sale = sale
+        self._total_taxes = 0
 
         self.store = store
         self.root = ElementTree.Element(
@@ -258,6 +260,9 @@ class NFeGenerator(object):
 
     def _add_sale_items(self, sale_items):
         for item_number, sale_item in enumerate(sale_items):
+            tax_item = calculate_tax_for_item(sale_item)
+            self._total_taxes += tax_item
+
             # item_number should start from 1, not zero.
             item_number += 1
             nfe_item = NFeProduct(item_number)
@@ -334,7 +339,11 @@ class NFeGenerator(object):
             self._nfe_data.append(dup)
 
     def _add_additional_information(self):
-        fisco_info = sysparam(self.store).NFE_FISCO_INFORMATION
+        sale_total = self._sale.get_sale_subtotal()
+        total_tax_percentage = (self._total_taxes / sale_total) * 100
+        tax_msg = "Val Aprox Tributos R$ {:0.2f} ({:0.2f}%) Fonte: IBPT - "
+        fisco_info = tax_msg.format(self._total_taxes, total_tax_percentage)
+        fisco_info += sysparam(self.store).NFE_FISCO_INFORMATION
         nfe_info = NFeAdditionalInformation(fisco_info, self._sale.notes)
         self._nfe_data.append(nfe_info)
 

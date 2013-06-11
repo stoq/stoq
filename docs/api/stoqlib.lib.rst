@@ -361,6 +361,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`ibpt` Module
+------------------
+
+.. automodule:: stoqlib.lib.ibpt
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
