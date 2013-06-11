@@ -104,13 +104,6 @@ class _WorkOrderItemSlave(SellableItemSlave):
     validate_stock = True
     validate_value = True
     value_column = 'price'
-    # TODO XXX: The batch selection dialog will try to validate the quantity
-    # based on the actual stock, but some items may have been already decreased
-    # on the process and that can confuse it. What to do to workaround this
-    # problem? Maybe add a decreased_quantity on BatchItem? Or maybe call
-    # sync_stock on the item and pass a flag to the batch selection step saying
-    # that the quantity there is already decreased (and then the dialog is
-    # responsible to validate it right)?
     batch_selection_dialog = BatchDecreaseSelectionDialog
 
     def __init__(self, store, model=None, visual_mode=False):
@@ -172,6 +165,21 @@ class _WorkOrderItemSlave(SellableItemSlave):
                 And(Or(ProductStockItem.branch_id == self.model.branch.id,
                        Eq(ProductStockItem.branch_id, None)),
                     Sellable.get_available_sellables_query(self.store)))
+
+    def get_batch_items(self):
+        # Since the item will have it's stock synchronized above
+        # (on sellable_selected) and thus having it's stock decreased,
+        # we can't pass anything here
+        return []
+
+    def sellable_selected(self, sellable):
+        super(_WorkOrderItemSlave, self).sellable_selected(sellable)
+
+        for item in self.slave.klist:
+            if item.sellable == sellable and item.batch is not None:
+                # We need to synchronize stock here so so the batch selection
+                # dialog can check stock availability right
+                item.sync_stock()
 
     #
     #  Private

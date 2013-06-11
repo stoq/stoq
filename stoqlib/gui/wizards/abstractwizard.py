@@ -493,11 +493,12 @@ class SellableItemSlave(BaseEditorSlave):
         self.cost.set_sensitive(has_sellable and self.cost_editable)
         self._update_product_labels_visibility(has_storable)
 
-    #
-    #  Private
-    #
+    def get_batch_items(self):
+        """Get batch items for sellables inside this slave
 
-    def _get_batch_items(self):
+        :returns: a sequence of
+            :class:`stoqlib.gui.batchselectiondialog.BatchItem`
+        """
         batch_items = {}
         for item in self.slave.klist:
             if item.batch is None:
@@ -508,10 +509,14 @@ class SellableItemSlave(BaseEditorSlave):
 
         return [BatchItem(batch=k, quantity=v) for k, v in batch_items.items()]
 
+    #
+    #  Private
+    #
+
     def _get_batch_order_items(self, sellable, value, quantity):
         order_items = []
         storable = sellable.product_storable
-        original_batch_items = self._get_batch_items()
+        original_batch_items = self.get_batch_items()
         if issubclass(self.batch_selection_dialog,
                       BatchDecreaseSelectionDialog):
             extra_kw = dict(decreased_batches=original_batch_items)
