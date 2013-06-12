@@ -172,7 +172,8 @@ class WorkOrderEditor(BaseEditor):
         else:
             label = ''
         self.toggle_status_btn.set_label(label)
-        self.toggle_status_btn.set_sensitive(self.model.client is not None)
+        self.toggle_status_btn.set_sensitive(not self.visual_mode and
+                                             self.model.client is not None)
         self.toggle_status_btn.set_visible(bool(label))
 
         if self.model.is_in_transport():
