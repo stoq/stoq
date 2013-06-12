@@ -10,7 +10,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkLabel(label4): 'Work order:'
               ProxyLabel(identifier): '<span >00666</span>'
               GtkLabel(label20): 'Status:'
-              ProxyLabel(status_str): '<span >Waiting</span>'
+              GtkHBox(hbox2):
+                ProxyLabel(status_str, fill=True): '<span >Opened</span>'
+                GtkImage(state_icon): hidden
+              GtkButton(toggle_status_btn): 'Approve'
               GtkLabel(label8): 'Client:'
               ProxyComboEntry(client):
                 item: 'Alessandra Almeida Itaber\xc3\xa1'
@@ -28,7 +31,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkButton(category_edit): insensitive
               GtkLabel(label19): 'Equipment:'
               ProxyEntry(equipment): 'Test equipment'
-              GtkCheckButton(has_client_approval): 'The client has approved'
+              GtkHBox(hbox1):
           GtkNotebook(slaves_notebook, expand=True, fill=True):
             GtkEventBox(opening_holder): slave WorkOrderOpeningSlave is attached
               GtkVBox(toplevel):

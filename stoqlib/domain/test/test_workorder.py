@@ -26,7 +26,7 @@ import contextlib
 
 import mock
 
-from stoqlib.exceptions import InvalidStatus
+from stoqlib.exceptions import InvalidStatus, NeedReason
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderPackage, WorkOrderPackageItem,
@@ -353,6 +353,18 @@ class TestWorkOrder(DomainTest):
             workorder.current_branch = None
             self.assertTrue(workorder.is_in_transport())
 
+    def testIsApproved(self):
+        workorder = self.create_workorder()
+        for status in WorkOrder.statuses.keys():
+            workorder.status = status
+            if status in [WorkOrder.STATUS_WORK_WAITING,
+                          WorkOrder.STATUS_WORK_IN_PROGRESS,
+                          WorkOrder.STATUS_WORK_FINISHED,
+                          WorkOrder.STATUS_CLOSED]:
+                self.assertTrue(workorder.is_approved())
+            else:
+                self.assertFalse(workorder.is_approved())
+
     def testIsFinished(self):
         workorder = self.create_workorder()
         self.assertEqual(workorder.estimated_finish, None)
@@ -391,13 +403,22 @@ class TestWorkOrder(DomainTest):
                 self.assertTrue(workorder.is_late())
 
     def testCanCancel(self):
-        workorder = self.create_workorder()
+        sellable = self.create_sellable()
         for status in WorkOrder.statuses.keys():
+            workorder = self.create_workorder()
             workorder.status = status
-            if status in [WorkOrder.STATUS_OPENED, WorkOrder.STATUS_APPROVED]:
-                self.assertTrue(workorder.can_cancel())
-            else:
+
+            item = workorder.add_sellable(sellable)
+            # This should be False even at any state since there're items
+            self.assertFalse(workorder.can_cancel())
+            workorder.remove_item(item)
+
+            # After adding, only STATUS_WORK_IN_PROGRESS should be True
+            if status in [WorkOrder.STATUS_WORK_FINISHED,
+                          WorkOrder.STATUS_CLOSED]:
                 self.assertFalse(workorder.can_cancel())
+            else:
+                self.assertTrue(workorder.can_cancel())
 
     def testCanApprove(self):
         workorder = self.create_workorder()
@@ -408,23 +429,41 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.can_approve())
 
-    def testCanUndoApproval(self):
+    def testCanPause(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
-            if status == WorkOrder.STATUS_APPROVED:
-                self.assertTrue(workorder.can_undo_approval())
-            else:
-                self.assertFalse(workorder.can_undo_approval())
 
-    def testCanStart(self):
+            # Rejected cannot pause
+            workorder.is_rejected = True
+            self.assertFalse(workorder.can_pause())
+            workorder.is_rejected = False
+            # In transport cannot pause
+            with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
+                self.assertFalse(workorder.can_pause())
+
+            if status == WorkOrder.STATUS_WORK_IN_PROGRESS:
+                self.assertTrue(workorder.can_pause())
+            else:
+                self.assertFalse(workorder.can_pause())
+
+    def testCanWork(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
-            if status == WorkOrder.STATUS_APPROVED:
-                self.assertTrue(workorder.can_start())
+
+            # Rejected cannot work
+            workorder.is_rejected = True
+            self.assertFalse(workorder.can_work())
+            workorder.is_rejected = False
+            # In transport cannot work
+            with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
+                self.assertFalse(workorder.can_work())
+
+            if status == WorkOrder.STATUS_WORK_WAITING:
+                self.assertTrue(workorder.can_work())
             else:
-                self.assertFalse(workorder.can_start())
+                self.assertFalse(workorder.can_work())
 
     def testCanFinish(self):
         sellable = self.create_sellable()
@@ -432,12 +471,20 @@ class TestWorkOrder(DomainTest):
             workorder = self.create_workorder()
             workorder.status = status
 
+            # Rejected cannot finish
+            workorder.is_rejected = True
+            self.assertFalse(workorder.can_finish())
+            workorder.is_rejected = False
+            # In transport cannot finish
+            with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
+                self.assertFalse(workorder.can_finish())
             # This should be False even on STATUS_WORK_IN_PROGRESS, since
             # there're no items on the order
             self.assertFalse(workorder.can_finish())
             workorder.add_sellable(sellable)
             # After adding, only STATUS_WORK_IN_PROGRESS should be True
-            if status == WorkOrder.STATUS_WORK_IN_PROGRESS:
+            if status in [WorkOrder.STATUS_WORK_IN_PROGRESS,
+                          WorkOrder.STATUS_WORK_WAITING]:
                 self.assertTrue(workorder.can_finish())
             else:
                 self.assertFalse(workorder.can_finish())
@@ -446,10 +493,78 @@ class TestWorkOrder(DomainTest):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
+
+            # Rejected cannot close
+            workorder.is_rejected = True
+            self.assertFalse(workorder.can_close())
+            workorder.is_rejected = False
+            # In transport cannot close
+            with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
+                self.assertFalse(workorder.can_close())
+
             if status == WorkOrder.STATUS_WORK_FINISHED:
                 self.assertTrue(workorder.can_close())
             else:
                 self.assertFalse(workorder.can_close())
+
+    def testCanReopen(self):
+        workorder = self.create_workorder()
+        for status in WorkOrder.statuses.keys():
+            workorder.status = status
+
+            if status == WorkOrder.STATUS_WORK_FINISHED:
+                self.assertTrue(workorder.can_reopen())
+            else:
+                self.assertFalse(workorder.can_reopen())
+
+    def testCanReject(self):
+        workorder = self.create_workorder()
+        for status in WorkOrder.statuses.keys():
+            workorder.status = status
+
+            # If already rejected, it can't be rejected again
+            workorder.is_rejected = True
+            self.assertFalse(workorder.can_close())
+            workorder.is_rejected = False
+            # In transport cannot reject
+            with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
+                self.assertFalse(workorder.can_reject())
+
+            if status in [WorkOrder.STATUS_WORK_WAITING,
+                          WorkOrder.STATUS_WORK_IN_PROGRESS,
+                          WorkOrder.STATUS_WORK_FINISHED]:
+                self.assertTrue(workorder.can_reject())
+            else:
+                self.assertFalse(workorder.can_reject())
+
+    def testCanUndoRejection(self):
+        workorder = self.create_workorder()
+        for status in WorkOrder.statuses.keys():
+            workorder.status = status
+
+            # In transport cannot undo rejection
+            with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
+                self.assertFalse(workorder.can_undo_rejection())
+
+            workorder.is_rejected = True
+            self.assertTrue(workorder.can_undo_rejection())
+            workorder.is_rejected = False
+            self.assertFalse(workorder.can_undo_rejection())
+
+    def testReject(self):
+        workorder = self.create_workorder()
+        workorder.approve()
+        self.assertFalse(workorder.is_rejected)
+        workorder.reject(reason=u'Reject reason')
+        self.assertTrue(workorder.is_rejected)
+
+    def testUndoRejection(self):
+        workorder = self.create_workorder()
+        workorder.approve()
+        workorder.reject(reason=u'Reject reason')
+        self.assertTrue(workorder.is_rejected)
+        workorder.undo_rejection(u'Undo reject reason')
+        self.assertFalse(workorder.is_rejected)
 
     def testCancel(self):
         workorder = self.create_workorder()
@@ -462,30 +577,29 @@ class TestWorkOrder(DomainTest):
     def testApprove(self, localnow):
         localnow.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
-        self.assertNotEqual(workorder.status, WorkOrder.STATUS_APPROVED)
+        self.assertNotEqual(workorder.status, WorkOrder.STATUS_WORK_WAITING)
         self.assertEqual(workorder.approve_date, None)
 
         workorder.approve()
-        self.assertEqual(workorder.status, WorkOrder.STATUS_APPROVED)
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_WAITING)
         self.assertEqual(workorder.approve_date,
                          self.fake.datetime.datetime.now())
 
-    def testUndoApproval(self):
+    def testPause(self):
         workorder = self.create_workorder()
         workorder.approve()
-        self.assertNotEqual(workorder.status, WorkOrder.STATUS_OPENED)
-        self.assertNotEqual(workorder.approve_date, None)
+        workorder.work()
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
-        workorder.undo_approval()
-        self.assertEqual(workorder.status, WorkOrder.STATUS_OPENED)
-        self.assertEqual(workorder.approve_date, None)
+        workorder.pause(reason=u'Pause reason')
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_WAITING)
 
-    def testStart(self):
+    def testWork(self):
         workorder = self.create_workorder()
         workorder.approve()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
-        workorder.start()
+        workorder.work()
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
     @mock.patch('stoqlib.domain.workorder.localnow')
@@ -493,7 +607,7 @@ class TestWorkOrder(DomainTest):
         localnow.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
         workorder.approve()
-        workorder.start()
+        workorder.work()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
         self.assertEqual(workorder.finish_date, None)
 
@@ -504,10 +618,14 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.finish_date,
                          self.fake.datetime.datetime.now())
 
+    def testReopen(self):
+        # TODO
+        pass
+
     def testClose(self):
         workorder = self.create_workorder()
         workorder.approve()
-        workorder.start()
+        workorder.work()
         self.assertRaises(AssertionError, workorder.finish)
         workorder.add_sellable(self.create_sellable())
         workorder.finish()
@@ -525,17 +643,19 @@ class TestWorkOrder(DomainTest):
             workorder.change_status(WorkOrder.STATUS_OPENED)
         self.assertEquals(str(se.exception), 'This work order cannot be re-opened')
 
-        # Approved
-        workorder.change_status(WorkOrder.STATUS_APPROVED)
+        # Waiting material
+        workorder.change_status(WorkOrder.STATUS_WORK_WAITING)
         with self.assertRaises(InvalidStatus) as se:
-            workorder.change_status(WorkOrder.STATUS_APPROVED)
-        self.assertEquals(str(se.exception), "This work order cannot be approved, it's already in progress")
+            workorder.change_status(WorkOrder.STATUS_WORK_WAITING)
+        self.assertEquals(str(se.exception),
+                          "This work order cannot wait for material")
 
         # In progress
         workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
         with self.assertRaises(InvalidStatus) as se:
             workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
-        self.assertEquals(str(se.exception), "This work order cannot be started")
+        self.assertEquals(str(se.exception),
+                          "This work order cannot be worked on")
 
         # Finished
         prod = self.create_product(stock=100)
@@ -544,17 +664,18 @@ class TestWorkOrder(DomainTest):
         workorder.change_status(WorkOrder.STATUS_WORK_FINISHED)
         with self.assertRaises(InvalidStatus) as se:
             workorder.change_status(WorkOrder.STATUS_WORK_FINISHED)
-        self.assertEquals(str(se.exception), 'This work order has already been finished, it cannot be modified.')
+        self.assertEquals(str(se.exception),
+                          'This work order cannot be finished')
 
     def testChangeStatusReverse(self):
-        # Start with finished
+        # FIXME: Improve this test by adding more status change cases
         workorder = self.create_workorder()
-        workorder.change_status(WorkOrder.STATUS_APPROVED)
+        workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
 
-        workorder.change_status(WorkOrder.STATUS_OPENED)
-        with self.assertRaises(InvalidStatus) as se:
-            workorder.change_status(WorkOrder.STATUS_OPENED)
-        self.assertEquals(str(se.exception), 'This work order cannot be re-opened')
+        with self.assertRaises(NeedReason) as se:
+            workorder.change_status(WorkOrder.STATUS_WORK_WAITING)
+        self.assertEquals(str(se.exception),
+                          'A reason is needed to pause the work order')
 
     def testFindBySale(self):
         workorder1 = self.create_workorder()
@@ -687,7 +808,7 @@ class TestWorkWithPackageView(TestWorkOrderView):
 
 class TestWorkOrderApprovedAndFinishedView(_TestWorkOrderView):
     view = WorkOrderApprovedAndFinishedView
-    default_status = [WorkOrder.STATUS_APPROVED,
+    default_status = [WorkOrder.STATUS_WORK_WAITING,
                       WorkOrder.STATUS_WORK_FINISHED]
     excluded_status = [k for k in WorkOrder.statuses.keys() if
                        k not in default_status]

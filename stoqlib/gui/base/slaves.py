@@ -29,6 +29,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 _ = stoqlib_gettext
 
 
+# FIXME: s/NoteSlave/NotesSlave/ and move this to stoqlib.gui.slaves.notesslave
 class NoteSlave(BaseEditorSlave):
     """ Slave store general notes. The model must have an attribute 'notes'
     to work.

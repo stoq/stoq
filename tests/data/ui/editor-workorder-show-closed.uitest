@@ -10,7 +10,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkLabel(label4): 'Work order:'
               ProxyLabel(identifier): '<span >00666</span>'
               GtkLabel(label20): 'Status:'
-              ProxyLabel(status_str): '<span >Closed</span>'
+              GtkHBox(hbox2):
+                ProxyLabel(status_str, fill=True): '<span >Closed</span>'
+                GtkImage(state_icon):
+              GtkButton(toggle_status_btn): hidden
               GtkLabel(label8): 'Client:'
               ProxyComboEntry(client):
                 item: 'Alessandra Almeida Itaber\xc3\xa1'
@@ -28,7 +31,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkButton(category_edit): insensitive
               GtkLabel(label19): 'Equipment:'
               ProxyEntry(equipment): 'Test equipment'
-              GtkCheckButton(has_client_approval): 'The client has approved', active
+              GtkHBox(hbox1):
           GtkNotebook(slaves_notebook, expand=True, fill=True):
             GtkEventBox(opening_holder): slave WorkOrderOpeningSlave is attached
               GtkVBox(toplevel):
@@ -59,7 +62,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                 GtkLabel(label12, fill=True): 'Defect detected by responsible:'
                 GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
                   ProxyTextView(defect_detected):
-            GtkEventBox(execution_holder): slave WorkOrderExecutionSlave is attached
+            GtkEventBox(execution_holder): slave WorkOrderExecutionSlave is attached, insensitive
               GtkVBox(toplevel):
                 GtkTable(table3, fill=True):
                   GtkLabel(label17): 'Execution responsible:'
@@ -122,10 +125,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     column: title='What', expand
                     column: title='Old value', expand
                     column: title='New value', expand
-                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Waiting', u'Approved'
-                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Approved', u'In progress'
-                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'In progress', u'Finished'
-                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Finished', u'Closed'
+                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Approval', u'No', u'Yes'
+                    row: datetime.datetime(2013, 3, 2, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Opened', u'Waiting'
+                    row: datetime.datetime(2013, 3, 3, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Waiting', u'In progress'
+                    row: datetime.datetime(2013, 3, 4, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'In progress', u'Finished'
+                    row: datetime.datetime(2013, 3, 5, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Finished', u'Closed'
                   GtkHBox(hbox1, fill=True):
                     GtkButton(details_btn, fill=True): 'gtk-info', insensitive
       GtkHBox(fill=True):

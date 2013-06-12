@@ -17,16 +17,16 @@ GtkDialog(PluggableWizard): title='Receive work orders', hidden
               column: title='Salesperson', hidden
               column: title='Open date', hidden
               column: title='Approval date'
-              row: 666, 'In transport', u'Equipment 0', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 667, 'In transport', u'Equipment 1', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 668, 'In transport', u'Equipment 2', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 669, 'In transport', u'Equipment 3', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 670, 'In transport', u'Equipment 4', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 671, 'In transport', u'Equipment 5', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 672, 'In transport', u'Equipment 6', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 673, 'In transport', u'Equipment 7', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 674, 'In transport', u'Equipment 8', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-              row: 675, 'In transport', u'Equipment 9', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 666, u'Opened', u'Equipment 0', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 667, u'Opened', u'Equipment 1', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 668, u'Opened', u'Equipment 2', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 669, u'Opened', u'Equipment 3', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 670, u'Opened', u'Equipment 4', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 671, u'Opened', u'Equipment 5', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 672, u'Opened', u'Equipment 6', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 673, u'Opened', u'Equipment 7', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 674, u'Opened', u'Equipment 8', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
+              row: 675, u'Opened', u'Equipment 9', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
             GtkHBox(step.hbox2, fill=True):
               GtkButton(step.details_btn, fill=True): 'gtk-info', insensitive
       ProxyLabel(notification_lbl, fill=True):

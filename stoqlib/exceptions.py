@@ -122,6 +122,10 @@ class InvalidStatus(Exception):
     """Invalid status for the object which the operation was requested"""
 
 
+class NeedReason(Exception):
+    """The operation needs a reason to be accomplished"""
+
+
 class BarcodeDoesNotExists(Exception):
     """There are no products with the specified barcode"""
 

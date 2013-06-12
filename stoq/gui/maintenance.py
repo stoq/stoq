@@ -32,16 +32,17 @@ from kiwi.currency import currency
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 import pango
-from storm.expr import Or, Eq
+from storm.expr import And, Or, Eq
 from zope.interface import implements
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderView)
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.exceptions import InvalidStatus
+from stoqlib.exceptions import InvalidStatus, NeedReason
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
+from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
                                                  WorkOrderPackageSendEditor)
 from stoqlib.gui.interfaces import ISearchResultView
@@ -53,7 +54,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.stockicons import STOQ_CLIENTS
+from stoqlib.gui.stockicons import STOQ_CLIENTS, STOQ_DELIVERY
 from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.message import yesno, info
@@ -80,6 +81,10 @@ class WorkOrderResultKanbanView(KanbanView):
                 work_order.change_status(new_status)
             except InvalidStatus as e:
                 info(str(e))
+                store.retval = False
+            except NeedReason as e:
+                info(str(e), _("Make the change on the order's menu so "
+                               "you can specify a reason"))
                 store.retval = False
             else:
                 store.retval = True
@@ -159,14 +164,19 @@ class MaintenanceApp(ShellApp):
     search_label = _(u'matching:')
     report_table = WorkOrdersReport
 
-    _query_mapper = {
+    _status_query_mapper = {
         'pending': Or(WorkOrder.status == WorkOrder.STATUS_OPENED,
-                      WorkOrder.status == WorkOrder.STATUS_APPROVED),
+                      WorkOrder.status == WorkOrder.STATUS_WORK_WAITING),
         'in-progress': WorkOrder.status == WorkOrder.STATUS_WORK_IN_PROGRESS,
-        'in-transport': Eq(WorkOrder.current_branch_id, None),
         'finished': WorkOrder.status == WorkOrder.STATUS_WORK_FINISHED,
         'closed': Or(WorkOrder.status == WorkOrder.STATUS_CANCELLED,
                      WorkOrder.status == WorkOrder.STATUS_CLOSED),
+    }
+    _flags_query_mapper = {
+        'approved': And(WorkOrder.status != WorkOrder.STATUS_OPENED,
+                        WorkOrder.status != WorkOrder.STATUS_CANCELLED),
+        'in-transport': Eq(WorkOrder.current_branch_id, None),
+        'rejected': Eq(WorkOrder.is_rejected, True),
     }
 
     #
@@ -212,6 +222,12 @@ class MaintenanceApp(ShellApp):
             ("PrintReceipt", None, _(u"Print receipt..."),
              group.get('order_print_receipt'),
              _(u"Print a receipt of the selected order")),
+            ("Approve", None, _(u"Approve...")),
+            ("Pause", None, _(u"Pause the work...")),
+            ("Work", None, _(u"Start the work...")),
+            ("Reject", None, _(u"Reject order...")),
+            ("UndoRejection", None, _(u"Undo order rejection...")),
+            ("Reopen", None, _(u"Reopen order...")),
         ]
         self.maintenance_ui = self.add_ui_actions("", actions,
                                                   filename="maintenance.xml")
@@ -351,6 +367,9 @@ class MaintenanceApp(ShellApp):
                          data_type=str, expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment'), column='equipment',
                    data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
+            Column('flag_icon', title=_(u'Equipment'), column='equipment',
+                   data_type=gtk.gdk.Pixbuf,
+                   format_func=self._format_state_icon, format_func_data=True),
             SearchColumn('client_name', title=_(u'Client'),
                          data_type=str),
             SearchColumn('branch_name', title=_(u'Branch'),
@@ -371,6 +390,22 @@ class MaintenanceApp(ShellApp):
     # Private
     #
 
+    def _format_state_icon(self, item, data):
+        work_order = item.work_order
+        if work_order.is_in_transport():
+            stock_id = STOQ_DELIVERY
+        elif work_order.is_rejected:
+            stock_id = gtk.STOCK_DIALOG_WARNING
+        elif work_order.is_approved():
+            stock_id = gtk.STOCK_APPLY
+        else:
+            stock_id = None
+
+        if stock_id is not None:
+            # We are using self.results because render_icon is a gtk.Widget's
+            # method. It has nothing to do with results tough.
+            return self.results.render_icon(stock_id, gtk.ICON_SIZE_MENU)
+
     def _get_main_query(self, state):
         item = state.value
         if item is None:
@@ -380,7 +415,9 @@ class MaintenanceApp(ShellApp):
         if kind == 'category':
             return WorkOrder.category_id == item.id
         if kind == 'status':
-            return self._query_mapper[value]
+            return self._status_query_mapper[value]
+        if kind == 'flag':
+            return self._flags_query_mapper[value]
         else:
             raise AssertionError(kind, value)
 
@@ -398,28 +435,41 @@ class MaintenanceApp(ShellApp):
     def _update_list_aware_view(self):
         selection = self.search.get_selected_item()
         has_selected = bool(selection)
+        wo = has_selected and selection.work_order
         has_quote = has_selected and bool(selection.work_order.defect_detected)
 
-        can_edit = (has_selected and (selection.work_order.can_approve() or
-                                      selection.work_order.can_start() or
-                                      selection.work_order.can_finish()))
+        can_edit = (has_selected and
+                    (wo.can_approve() or wo.can_work() or wo.can_finish()))
         self.set_sensitive([self.Edit], can_edit)
         self.set_sensitive([self.Details], has_selected)
-        self.set_sensitive([self.Finish],
-                           has_selected and selection.work_order.can_finish())
-        self.set_sensitive([self.Cancel],
-                           has_selected and selection.work_order.can_cancel())
-        self.set_sensitive([self.PrintReceipt],
-                           has_selected and selection.work_order.is_finished())
+        self.set_sensitive([self.Finish], has_selected and wo.can_finish())
+        self.set_sensitive([self.Cancel], has_selected and wo.can_cancel())
+        self.set_sensitive([self.PrintReceipt], has_selected and wo.is_finished())
         self.set_sensitive([self.PrintQuote], has_quote)
+
+        for widget, value in [
+                (self.Approve, has_selected and wo.can_approve()),
+                (self.Reject, has_selected and wo.can_reject()),
+                (self.UndoRejection, has_selected and wo.can_undo_rejection()),
+                (self.Pause, has_selected and wo.can_pause()),
+                (self.Work, has_selected and wo.can_work()),
+                (self.Reopen, has_selected and wo.can_reopen())]:
+            self.set_sensitive([widget], value)
+            # Some of those options are mutually exclusive (except Approve,
+            # but it can only be called once) so avoid confusions and
+            # hide not available options
+            widget.set_visible(value)
 
     def _update_filters(self):
         options = [
             _FilterItem(_(u'Pending'), 'status:pending'),
             _FilterItem(_(u'In progress'), 'status:in-progress'),
-            _FilterItem(_(u'In transport'), 'status:in-transport'),
             _FilterItem(_(u'Finished'), 'status:finished'),
             _FilterItem(_(u'Closed or cancelled'), 'status:closed'),
+            _FilterItem('sep', 'sep'),
+            _FilterItem(_(u'Approved'), 'flag:approved'),
+            _FilterItem(_(u'In transport'), 'flag:in-transport'),
+            _FilterItem(_(u'Rejected'), 'flag:rejected'),
         ]
 
         categories = list(self.store.find(WorkOrderCategory))
@@ -471,15 +521,91 @@ class MaintenanceApp(ShellApp):
         self._update_view()
 
     def _cancel_order(self):
-        if not yesno(_(u"This will cancel the selected order. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Cancel order"), _(u"Don't cancel")):
+        msg_text = _(u"This will cancel the selected order. Are you sure?")
+        rv = self._run_notes_editor(msg_text=msg_text, mandatory=True)
+        if not rv:
             return
 
         selection = self.search.get_selected_item()
         with api.trans() as store:
             work_order = store.fetch(selection.work_order)
-            work_order.cancel()
+            work_order.cancel(reason=rv.notes)
         self._update_view()
+
+    def _approve_order(self):
+        if not yesno(_(u"This will inform the order that the client has "
+                       u"approved the work. Are you sure?"),
+                     gtk.RESPONSE_NO, _(u"Approve"), _(u"Don't approve")):
+            return
+
+        selection = self.search.get_selected_item()
+        with api.trans() as store:
+            work_order = store.fetch(selection.work_order)
+            work_order.approve()
+
+        self._update_view(select_item=selection)
+
+    def _pause_order(self):
+        msg_text = _(u"This will inform the order that we are waiting. "
+                     u"Are you sure?")
+        rv = self._run_notes_editor(msg_text=msg_text, mandatory=True)
+        if not rv:
+            return
+
+        selection = self.search.get_selected_item()
+        with api.trans() as store:
+            work_order = store.fetch(selection.work_order)
+            work_order.pause(reason=rv.notes)
+
+        self._update_view(select_item=selection)
+
+    def _work(self):
+        selection = self.search.get_selected_item()
+        with api.trans() as store:
+            work_order = store.fetch(selection.work_order)
+            work_order.work()
+
+        self._update_view(select_item=selection)
+
+    def _reject(self):
+        msg_text = _(u"This will reject the order. Are you sure?")
+        rv = self._run_notes_editor(msg_text=msg_text, mandatory=True)
+        if not rv:
+            return
+
+        selection = self.search.get_selected_item()
+        with api.trans() as store:
+            work_order = store.fetch(selection.work_order)
+            work_order.reject(reason=rv.notes)
+
+        self._update_view(select_item=selection)
+
+    def _undo_rejection(self):
+        msg_text = _(u"This will undo the rejection of the order. "
+                     u"Are you sure?")
+        rv = self._run_notes_editor(msg_text=msg_text, mandatory=False)
+        if not rv:
+            return
+
+        selection = self.search.get_selected_item()
+        with api.trans() as store:
+            work_order = store.fetch(selection.work_order)
+            work_order.undo_rejection(reason=rv.notes)
+
+        self._update_view(select_item=selection)
+
+    def _reopen(self):
+        msg_text = _(u"This will reopen the order. Are you sure?")
+        rv = self._run_notes_editor(msg_text=msg_text, mandatory=True)
+        if not rv:
+            return
+
+        selection = self.search.get_selected_item()
+        with api.trans() as store:
+            work_order = store.fetch(selection.work_order)
+            work_order.reopen(reason=rv.notes)
+
+        self._update_view(select_item=selection)
 
     def _send_orders(self):
         with api.trans() as store:
@@ -506,12 +632,18 @@ class MaintenanceApp(ShellApp):
         self._update_view()
         self._update_filters()
 
+    def _run_notes_editor(self, msg_text, mandatory):
+        return self.run_dialog(NoteEditor, self.store, model=Note(),
+                               message_text=msg_text, label_text=_(u"Reason"),
+                               mandatory=mandatory)
+
     #
     # Kiwi Callbacks
     #
 
     def _on_main_filter__row_separator_func(self, model, titer):
-        if model[titer][0] == 'sep':
+        obj = model[titer][1]
+        if obj and obj.value == 'sep':
             return True
         return False
 
@@ -585,6 +717,24 @@ class MaintenanceApp(ShellApp):
 
     def on_Details__activate(self, action):
         self._run_order_details_dialog()
+
+    def on_Approve__activate(self, action):
+        self._approve_order()
+
+    def on_Pause__activate(self, action):
+        self._pause_order()
+
+    def on_Work__activate(self, action):
+        self._work()
+
+    def on_Reject__activate(self, action):
+        self._reject()
+
+    def on_UndoRejection__activate(self, action):
+        self._undo_rejection()
+
+    def on_Reopen__activate(self, action):
+        self._reopen()
 
     def on_PrintQuote__activate(self, action):
         workorderview = self.search.get_selected_item()

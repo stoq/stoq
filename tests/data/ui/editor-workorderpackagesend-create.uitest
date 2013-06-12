@@ -21,9 +21,9 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
               column: title='Salesperson', hidden
               column: title='Open date', hidden
               column: title='Approval date'
-              row: True, 666, u'Approved', u'Equipment 0', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: True, 667, u'Approved', u'Equipment 1', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: False, 668, u'Approved', u'Equipment 2', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: True, 666, u'Waiting', u'Equipment 0', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: True, 667, u'Waiting', u'Equipment 1', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: False, 668, u'Waiting', u'Equipment 2', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
               row: False, 669, u'Finished', u'Equipment 3', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
               row: False, 670, u'Finished', u'Equipment 4', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
               row: False, 671, u'Finished', u'Equipment 5', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)

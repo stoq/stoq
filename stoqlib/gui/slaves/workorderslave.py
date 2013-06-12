@@ -297,6 +297,19 @@ class WorkOrderHistorySlave(BaseEditorSlave):
     model_type = WorkOrder
 
     #
+    #  Public API
+    #
+
+    def update_items(self):
+        """Update the items on the list
+
+        Useful when a history is created when using this slave and
+        we want it to show here at the same time.
+        """
+        self.details_list.add_list(
+            WorkOrderHistoryView.find_by_work_order(self.store, self.model))
+
+    #
     #  BaseEditorSlave
     #
 
@@ -310,8 +323,8 @@ class WorkOrderHistorySlave(BaseEditorSlave):
             Column('what', _(u"What"), data_type=str, expand=True),
             Column('old_value', _(u"Old value"), data_type=str, expand=True),
             Column('new_value', _(u"New value"), data_type=str, expand=True)])
-        self.details_list.extend(
-            WorkOrderHistoryView.find_by_work_order(self.store, self.model))
+        self.update_items()
+
     #
     #  Private
     #

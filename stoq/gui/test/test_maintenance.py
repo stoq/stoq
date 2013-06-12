@@ -29,6 +29,7 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderItem, WorkOrder
+from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.search.personsearch import ClientSearch
 
 from stoq.gui.maintenance import MaintenanceApp
@@ -47,9 +48,9 @@ class TestMaintenance(BaseGUITest):
 
         self.check_app(app, u'maintenance')
 
-    @mock.patch('stoq.gui.maintenance.yesno')
+    @mock.patch('stoq.gui.maintenance.MaintenanceApp.run_dialog')
     @mock.patch('stoq.gui.maintenance.api.new_store')
-    def test_cancel_workorder_dont_confirm(self, new_store, yesno):
+    def test_cancel_workorder_dont_confirm(self, new_store, run_dialog):
         new_store.return_value = self.store
 
         self.clean_domain([WorkOrderItem, WorkOrder])
@@ -68,20 +69,21 @@ class TestMaintenance(BaseGUITest):
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
                 # Click the cancel order, but dont confirm the change
-                yesno.return_value = False
+                run_dialog.return_value = False
                 self.activate(app.Cancel)
 
-                yesno.assert_called_once_with(u"This will cancel the selected "
-                                              "order. Are you sure?",
-                                              gtk.RESPONSE_NO, u"Cancel order",
-                                              u"Don't cancel")
+                run_dialog.assert_called_once_with(
+                    NoteEditor, self.store,
+                    message_text=(u'This will cancel the selected order. '
+                                  u'Are you sure?'),
+                    model=Note(), mandatory=True, label_text=u'Reason')
 
                 # Status should not be altered. ie, its still opened
                 self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
 
-    @mock.patch('stoq.gui.maintenance.yesno')
+    @mock.patch('stoq.gui.maintenance.MaintenanceApp.run_dialog')
     @mock.patch('stoq.gui.maintenance.api.new_store')
-    def test_cancel_workorder_confirm(self, new_store, yesno):
+    def test_cancel_workorder_confirm(self, new_store, run_dialog):
         new_store.return_value = self.store
 
         self.clean_domain([WorkOrderItem, WorkOrder])
@@ -100,13 +102,14 @@ class TestMaintenance(BaseGUITest):
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
                 # Click the cancel order, and confirm the change
-                yesno.return_value = True
+                run_dialog.return_value = Note(notes=u'xxx')
                 self.activate(app.Cancel)
 
-                yesno.assert_called_once_with(u"This will cancel the selected "
-                                              u"order. Are you sure?",
-                                              gtk.RESPONSE_NO, u"Cancel order",
-                                              u"Don't cancel")
+                run_dialog.assert_called_once_with(
+                    NoteEditor, self.store,
+                    message_text=(u'This will cancel the selected order. '
+                                  u'Are you sure?'),
+                    model=Note(), mandatory=True, label_text=u'Reason')
 
                 # Status should be updated to cancelled.
                 self.assertEquals(workorder.status, WorkOrder.STATUS_CANCELLED)

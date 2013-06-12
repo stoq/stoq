@@ -56,6 +56,13 @@
       <menuitem action="Finish"/>
       <menuitem action="Cancel"/>
       <separator/>
+      <menuitem action="Approve"/>
+      <menuitem action="Pause"/>
+      <menuitem action="Work"/>
+      <menuitem action="Reject"/>
+      <menuitem action="UndoRejection"/>
+      <menuitem action="Reopen"/>
+      <separator/>
       <menuitem action="PrintQuote"/>
       <menuitem action="PrintReceipt"/>
     </menu>
@@ -67,6 +74,13 @@
   <menuitem action="Edit"/>
   <menuitem action="Finish"/>
   <menuitem action="Cancel"/>
+  <separator/>
+  <menuitem action="Approve"/>
+  <menuitem action="Pause"/>
+  <menuitem action="Work"/>
+  <menuitem action="Reject"/>
+  <menuitem action="UndoRejection"/>
+  <menuitem action="Reopen"/>
   <separator/>
   <menuitem action="PrintQuote"/>
   <menuitem action="PrintReceipt"/>

@@ -120,6 +120,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                             ProxyEntry(spouse_name): '', hidden
                       GtkEventBox(note_holder, expand=True, fill=True): slave NoteSlave is attached
                         GtkVBox(toplevel):
+                          GtkLabel(message_label, fill=True): hidden
                           GtkLabel(notes_label, fill=True): 'Notes:'
                           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                             ProxyTextView(notes):
