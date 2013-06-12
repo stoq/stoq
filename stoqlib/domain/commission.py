@@ -27,7 +27,7 @@ Commission management
 
 from decimal import Decimal
 
-from storm.expr import Join
+from storm.expr import Join, Cast
 from storm.references import Reference
 
 from stoqlib.database.properties import PercentCol, PriceCol
@@ -205,6 +205,7 @@ class CommissionView(Viewable):
 
     id = Sale.id
     identifier = Sale.identifier
+    identifier_str = Cast(Sale.identifier, 'text')
     sale_status = Sale.status
     code = Commission.id
     commission_value = Commission.value

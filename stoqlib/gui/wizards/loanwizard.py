@@ -246,7 +246,7 @@ class LoanSelectionStep(BaseWizardStep):
         self.setup_slaves()
 
     def _create_filters(self):
-        self.search.set_text_field_columns(['client_name'])
+        self.search.set_text_field_columns(['client_name', 'identifier_str'])
 
     def _get_columns(self):
         return [IdentifierColumn('identifier', sorted=True),

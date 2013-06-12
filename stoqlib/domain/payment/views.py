@@ -26,7 +26,8 @@ import datetime
 
 from dateutil.relativedelta import relativedelta
 from kiwi.datatypes import converter
-from storm.expr import And, Count, Join, LeftJoin, Or, Sum, Alias, Select
+from storm.expr import (And, Count, Join, LeftJoin, Or, Sum, Alias,
+                        Select, Cast)
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import Date, Field
@@ -72,6 +73,7 @@ class BasePaymentView(Viewable):
     # Payment
     id = Payment.id
     identifier = Payment.identifier
+    identifier_str = Cast(Payment.identifier, 'text')
     description = Payment.description
     due_date = Payment.due_date
     status = Payment.status
@@ -264,6 +266,7 @@ class CardPaymentView(Viewable):
     # Payment Columns
     id = Payment.id
     identifier = Payment.identifier
+    identifier_str = Cast(Payment.identifier, 'text')
     description = Payment.description
     due_date = Payment.due_date
     paid_date = Payment.paid_date

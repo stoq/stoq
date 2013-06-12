@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: utf-8 -*-
+# Mode: Python; coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -24,7 +24,7 @@
 
 from kiwi.currency import currency
 from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
-                        Alias, Count)
+                        Alias, Count, Cast)
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import Date, Distinct, Field
@@ -561,6 +561,7 @@ class QuotationView(Viewable):
     purchase_id = Quotation.purchase_id
     group_id = Quotation.group_id
     identifier = Quotation.identifier
+    identifier_str = Cast(Quotation.identifier, 'text')
     group_identifier = QuoteGroup.identifier
     open_date = PurchaseOrder.open_date
     deadline = PurchaseOrder.quote_deadline
@@ -725,6 +726,7 @@ class PurchasedItemAndStockView(Viewable):
     expected_receival_date = PurchaseItem.expected_receival_date
 
     order_identifier = PurchaseOrder.identifier
+    order_identifier_str = Cast(PurchaseOrder.identifier, 'text')
     purchased_date = PurchaseOrder.open_date
     branch = PurchaseOrder.branch_id
 
@@ -786,6 +788,7 @@ class PurchaseReceivingView(Viewable):
     invoice_number = ReceivingOrder.invoice_number
     invoice_total = ReceivingOrder.invoice_total
     purchase_identifier = PurchaseOrder.identifier
+    purchase_identifier_str = Cast(PurchaseOrder.identifier, 'text')
     branch_id = ReceivingOrder.branch_id
     purchase_responsible_name = _PurchaseResponsible.name
     responsible_name = _Responsible.name
@@ -884,6 +887,7 @@ class ProductionItemView(Viewable):
 
     id = ProductionItem.id
     order_identifier = ProductionOrder.identifier
+    order_identifier_str = Cast(ProductionOrder.identifier, 'text')
     order_status = ProductionOrder.status
     quantity = ProductionItem.quantity
     produced = ProductionItem.produced
@@ -916,6 +920,7 @@ class LoanView(Viewable):
 
     id = Loan.id
     identifier = Loan.identifier
+    identifier_str = Cast(Loan.identifier, 'text')
     status = Loan.status
     open_date = Loan.open_date
     close_date = Loan.close_date
@@ -965,6 +970,8 @@ class LoanItemView(Viewable):
 
     category_description = SellableCategory.description
     unit_description = SellableUnit.description
+
+    identifier_str = Cast(Loan.identifier, 'text')
 
     tables = [
         LoanItem,
@@ -1052,6 +1059,8 @@ class DeliveryView(Viewable):
     open_date = Delivery.open_date
     deliver_date = Delivery.deliver_date
     receive_date = Delivery.receive_date
+
+    identifier_str = Cast(Sale.identifier, 'text')
 
     # Transporter
     transporter_name = PersonTransporter.name

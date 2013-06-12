@@ -46,7 +46,7 @@ class ConsignmentItemSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(['description', 'order_identifier_str'])
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
         self.add_filter(branch_filter, columns=['branch'],

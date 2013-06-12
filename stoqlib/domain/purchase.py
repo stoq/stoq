@@ -27,7 +27,8 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from kiwi.python import Settable
-from storm.expr import And, Count, Join, LeftJoin, Sum, Select, Alias
+from storm.expr import (And, Count, Join, LeftJoin, Sum, Select,
+                        Alias, Cast)
 from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implements
@@ -794,6 +795,7 @@ class PurchaseOrderView(Viewable):
 
     id = PurchaseOrder.id
     identifier = PurchaseOrder.identifier
+    identifier_str = Cast(PurchaseOrder.identifier, 'text')
     status = PurchaseOrder.status
     open_date = PurchaseOrder.open_date
     quote_deadline = PurchaseOrder.quote_deadline

@@ -55,7 +55,7 @@ class LoanItemSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(['description', 'identifier_str'])
         # status filter
         statuses = [(desc, i) for i, desc in Loan.statuses.items()]
         statuses.insert(0, (_(u'Any'), None))
@@ -122,7 +122,8 @@ class LoanSearch(SearchDialog):
         pass
 
     def create_filters(self):
-        self.set_text_field_columns(['client_name', 'removed_by'])
+        self.set_text_field_columns(['client_name', 'removed_by',
+                                     'identifier_str'])
 
         # Date
         self.date_filter = DateSearchFilter(_('Date:'))

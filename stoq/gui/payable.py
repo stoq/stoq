@@ -164,7 +164,8 @@ class PayableApp(BaseAccountWindow):
         run_dialog(OutPaymentBillCheckSearch, self, self.store)
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'supplier_name'])
+        self.set_text_field_columns(['description', 'supplier_name',
+                                     'identifier_str'])
         self.create_main_filter()
 
     def get_columns(self):

@@ -64,7 +64,8 @@ class _BaseSaleSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['client_name', 'salesperson_name'])
+        self.set_text_field_columns(['client_name', 'salesperson_name',
+                                     'identifier_str'])
         items = [(value, key) for key, value in Sale.statuses.items()]
         items.insert(0, (_('Any'), None))
 
