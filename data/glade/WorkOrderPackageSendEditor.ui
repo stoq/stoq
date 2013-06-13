@@ -98,7 +98,7 @@
             <property name="spacing">6</property>
             <child>
               <object class="GtkButton" id="edit_btn">
-                <property name="label">Notes</property>
+                <property name="label">Observations</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

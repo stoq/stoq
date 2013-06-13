@@ -58,7 +58,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   GtkLabel(label19, expand=True, fill=True):
                   GtkLabel(label23, fill=True): 'Total:'
                   ProxyLabel(return_total_lbl, fill=True): '<span >$200.00</span>'
-                GtkLabel(label21, fill=True): 'Check the "Notes" tab for more information...'
+                GtkLabel(label21, fill=True): 'Check the "Observations" tab for more information...'
             GtkVBox(payments_vbox):
               ObjectList(payments_list, expand=True, fill=True):
                 column: title='#'

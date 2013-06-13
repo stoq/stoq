@@ -92,7 +92,7 @@ class NoteEditor(BaseEditor):
             self.message_label.set_text(self.message_text)
             self.message_label.set_visible(True)
         if self.label_text:
-            self.notes_label.set_text(self.label_text)
+            self.observations_label.set_text(self.label_text)
         self.notes.set_accepts_tab(False)
         self.notes.set_property('mandatory', self.mandatory)
 

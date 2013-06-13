@@ -55,7 +55,7 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                 ProxyLabel(step.total_lbl): '0.00'
               GtkLabel(step.label3, expand=True, fill=True):
               GtkHButtonBox(step.hbuttonbox1, pack-end):
-                GtkButton(step.notes_button, pack-end): 'Notes...'
+                GtkButton(step.observations_button, pack-end): 'Observations...'
             GtkHBox(step.hbox4, expand=True, fill=True): hidden
               GtkEventBox(step.cash_change_holder, expand=True, fill=True):
               GtkExpander(step.subtotal_expander, expand=True, fill=True):

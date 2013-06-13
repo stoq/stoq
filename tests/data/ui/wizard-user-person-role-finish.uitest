@@ -137,7 +137,7 @@ GtkDialog(PluggableWizard): title='New User', hidden
                   GtkEventBox(expand=True, fill=True):
                     GtkVBox():
                       GtkLabel(fill=True): hidden
-                      GtkLabel(fill=True): 'Notes:'
+                      GtkLabel(fill=True): 'Observations:'
                       GtkScrolledWindow(expand=True, fill=True):
                         ProxyTextView():
                 GtkEventBox():

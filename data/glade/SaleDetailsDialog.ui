@@ -510,7 +510,7 @@
                     <child>
                       <object class="GtkLabel" id="label21">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Check the "Notes" tab for more information...</property>
+                        <property name="label" translatable="yes">Check the "Observations" tab for more information...</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -797,7 +797,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label18">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Notes</property>
+                <property name="label" translatable="yes">Observations</property>
               </object>
               <packing>
                 <property name="position">5</property>

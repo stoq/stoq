@@ -15,7 +15,7 @@ GtkDialog(PluggableWizard): title='New Quote', hidden
           ProxyComboEntry(step.branch_combo):
             item: 'Moda Stoq', selected
             item: 'Stoq Elite Fashion'
-          GtkLabel(step.label5): 'Notes'
+          GtkLabel(step.label5): 'Observations'
           GtkScrolledWindow(step.scrolledwindow1):
             ProxyTextView(step.notes):
       ProxyLabel(notification_lbl, fill=True): hidden

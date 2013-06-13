@@ -61,7 +61,7 @@ GtkVBox(toplevel):
           ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
           ProxyLabel(total): '<span weight="bold">$1000.00</span>'
           GtkHButtonBox(notes_box):
-            GtkButton(notes_button): 'Notes...', hidden
+            GtkButton(observations_button): 'Observations...', hidden
     GtkScrolledWindow(scrolledwindow1):
       ProxyTextView(notes):
   GtkHButtonBox(hbuttonbox1, fill=True):

@@ -52,7 +52,7 @@ GtkDialog(PluggableWizard): title='New Order', hidden
                 ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
                 ProxyLabel(total): '<span weight="bold">$125.00</span>'
                 GtkHButtonBox(notes_box):
-                  GtkButton(notes_button): 'Notes...'
+                  GtkButton(observations_button): 'Observations...'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

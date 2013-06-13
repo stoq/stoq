@@ -572,8 +572,8 @@
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkButton" id="notes_button">
-                        <property name="label" translatable="yes">Notes...</property>
+                      <object class="GtkButton" id="observations_button">
+                        <property name="label" translatable="yes">Observations...</property>
                         <property name="visible">True</property>
                         <property name="receives_default">False</property>
                         <property name="use_action_appearance">False</property>

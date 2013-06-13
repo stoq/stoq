@@ -771,7 +771,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self._update_totals()
         self.client.validate()
 
-    def on_notes_button__clicked(self, *args):
+    def on_observations_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
                    title=_("Additional Information"))
 
