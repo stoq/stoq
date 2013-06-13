@@ -1366,11 +1366,6 @@ class WorkOrderHistoryView(Viewable):
         Join(Person, LoginUser.person_id == Person.id),
     ]
 
-    @property
-    def time(self):
-        time = self.date.time()
-        return time.replace(second=0, microsecond=0)
-
     #
     #  Classmethods
     #

@@ -30,6 +30,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PriceField, NumericField
 from kiwi.ui.objectlist import Column
+import pango
 from storm.expr import And, Eq, Or
 
 from stoqlib.api import api
@@ -316,18 +317,25 @@ class WorkOrderHistorySlave(BaseEditorSlave):
     def setup_proxies(self):
         self.details_btn.set_sensitive(False)
 
+        # TODO: Show a tooltip for each row displaying the reason
         self.details_list.set_columns([
-            Column('date', _(u"Date"), data_type=datetime.date, sorted=True),
-            Column('time', _(u"Time"), data_type=datetime.time),
-            Column('user_name', _(u"Who"), data_type=str, expand=True),
+            Column('date', _(u"Date"), data_type=datetime.datetime, sorted=True),
+            Column('user_name', _(u"Who"), data_type=str, expand=True,
+                   ellipsize=pango.ELLIPSIZE_END),
             Column('what', _(u"What"), data_type=str, expand=True),
-            Column('old_value', _(u"Old value"), data_type=str, expand=True),
-            Column('new_value', _(u"New value"), data_type=str, expand=True)])
+            Column('old_value', _(u"Old value"), data_type=str),
+            Column('new_value', _(u"New value"), data_type=str),
+            Column('notes', _(u"Notes"), data_type=str,
+                   format_func=self._format_notes,
+                   ellipsize=pango.ELLIPSIZE_END)])
         self.update_items()
 
     #
     #  Private
     #
+
+    def _format_notes(self, notes):
+        return notes.split('\n')[0]
 
     def _show_details(self, item):
         parent = self.get_toplevel().get_toplevel()
