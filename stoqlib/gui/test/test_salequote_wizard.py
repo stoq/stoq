@@ -72,7 +72,7 @@ class TestSaleQuoteWizard(GUITest):
         self.assertTrue(store is not None)
         self.assertEquals(model, client)
 
-        self.click(step.notes_button)
+        self.click(step.observations_button)
         self.assertEquals(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
         editor, parent, store, model, notes = args

@@ -136,7 +136,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     #
 
     def update_visual_mode(self):
-        self.notes_button.hide()
+        self.observations_button.hide()
         self.freight_combo.set_sensitive(False)
 
     def setup_proxies(self):
@@ -191,7 +191,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     on_secure_value__validate = _positive_validator
     on_expense_value__validate = _positive_validator
 
-    def on_notes_button__clicked(self, *args):
+    def on_observations_button__clicked(self, *args):
         run_dialog(NoteEditor, self, self.store, self.model, 'notes',
                    title=_('Additional Information'))
 

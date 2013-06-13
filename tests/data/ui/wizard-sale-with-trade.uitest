@@ -55,7 +55,7 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
                 ProxyLabel(step.total_lbl): '<span >$7.00</span>'
               GtkLabel(step.label3, expand=True, fill=True):
               GtkHButtonBox(step.hbuttonbox1, pack-end):
-                GtkButton(step.notes_button, pack-end): 'Notes...'
+                GtkButton(step.observations_button, pack-end): 'Observations...'
             GtkHBox(step.hbox4, expand=True, fill=True):
               GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
                 GtkVBox(toplevel):

@@ -18,7 +18,7 @@ GtkDialog(PluggableWizard): title='New Order', hidden
             GtkHBox(step.hbox1):
               ProxyDateEntry(step.expected_receival_date, fill=True): datetime.date(2010, 1, 4)
               ProxyLabel(step.kiwilabel5, expand=True, fill=True):
-            GtkLabel(step.label4): 'Notes'
+            GtkLabel(step.label4): 'Observations'
             GtkScrolledWindow(step.scrolled_notes_window):
               ProxyTextView(step.notes):
             GtkAlignment(step.alignment1):

@@ -28,7 +28,7 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
               row: False, 670, u'Finished', u'Equipment 4', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
               row: False, 671, u'Finished', u'Equipment 5', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
           GtkHBox(hbox1):
-            GtkButton(edit_btn, fill=True): 'Notes', insensitive
+            GtkButton(edit_btn, fill=True): 'Observations', insensitive
             GtkButton(details_btn, fill=True): 'gtk-info', insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):

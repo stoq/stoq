@@ -521,7 +521,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label13">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Notes</property>
+                <property name="label" translatable="yes">Observations</property>
               </object>
               <packing>
                 <property name="position">3</property>

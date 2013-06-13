@@ -197,7 +197,7 @@ class StartSaleQuoteStep(WizardEditorStep):
             msg = _(u"The expire date must be set to today or a future date.")
             return ValidationError(msg)
 
-    def on_notes_button__clicked(self, *args):
+    def on_observations_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
                    title=_("Additional Information"))
 
