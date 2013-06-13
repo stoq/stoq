@@ -835,7 +835,7 @@ class WorkOrder(Domain):
         assert self.can_approve()
         self.approve_date = localnow()
         WorkOrderHistory.add_entry(
-            self.store, self, what=_(u"Approval"),
+            self.store, self, what=_(u"Approved"),
             old_value=_(u"No"), new_value=_(u"Yes"))
         self._change_status(self.STATUS_WORK_WAITING)
 

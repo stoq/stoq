@@ -125,7 +125,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     column: title='What', expand
                     column: title='Old value', expand
                     column: title='New value', expand
-                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Approval', u'No', u'Yes'
+                    row: datetime.datetime(2013, 3, 1, 0, 0), datetime.time(0, 0), u'Administrator', u'Approved', u'No', u'Yes'
                     row: datetime.datetime(2013, 3, 2, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Opened', u'Waiting'
                     row: datetime.datetime(2013, 3, 3, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'Waiting', u'In progress'
                     row: datetime.datetime(2013, 3, 4, 0, 0), datetime.time(0, 0), u'Administrator', u'Status', u'In progress', u'Finished'
