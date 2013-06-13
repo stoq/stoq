@@ -24,6 +24,7 @@
 """ Basic dialogs definition """
 
 import inspect
+import imp
 import logging
 
 import gtk
@@ -35,6 +36,7 @@ from kiwi.utils import gsignal
 from zope.interface import implements
 
 from stoqlib.lib.decorators import public
+from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
@@ -334,6 +336,12 @@ def get_dialog(parent, dialog, *args, **kwargs):
     :param args: custom positional arguments
     :param kwargs: custom keyword arguments
     """
+
+    if is_developer_mode():
+        mod = inspect.getmodule(dialog)
+        imp.reload(mod)
+        dialog = getattr(mod, dialog.__name__)
+
     if callable(dialog):
         dialog = dialog(*args, **kwargs)
 
