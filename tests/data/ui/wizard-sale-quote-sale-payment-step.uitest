@@ -19,7 +19,7 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   GtkRadioButton(expand=True, fill=True): 'Store Credit'
                 GtkHBox(hbox2, fill=True):
                   ProxyLabel(currency, fill=True): '$CURRENCY:'
-                  ProxyEntry(value, fill=True): '20.0'
+                  ProxyEntry(value): '20.0'
                   GtkButton(add_button, fill=True): 'gtk-add'
               GtkHBox(hbox3, expand=True, fill=True):
                 GtkVBox(vbox2, expand=True, fill=True):
@@ -28,17 +28,20 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                     column: title='Status'
                     column: title='Value'
                     column: title='Due date'
+                GtkVBox(vbox3, fill=True):
+                  GtkButton(remove_button): 'gtk-remove', insensitive
+                  GtkLabel(label2, expand=True, fill=True):
                   GtkTable(footer_table, fill=True):
-                    GtkLabel(label11): 'Payments:'
-                    ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'
                     GtkLabel(label12): 'Total:'
                     ProxyLabel(total_value): '<span weight="bold">$20.00</span>'
+                    GtkLabel(label11): 'Paid:'
+                    ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'
                     GtkHSeparator(hseparator1):
                     GtkHSeparator(hseparator2):
-                    GtkLabel(missing_change): 'Difference:'
-                    ProxyLabel(missing_value): '<span weight="bold">$ 0.00</span>'
-                GtkVBox(vbox3, fill=True):
-                  GtkButton(remove_button, fill=True): 'gtk-remove', insensitive
+                    GtkLabel(missing): 'Missing:'
+                    ProxyLabel(missing_value): '<span weight="bold">$20.00</span>'
+                    GtkLabel(change): 'Change:'
+                    ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

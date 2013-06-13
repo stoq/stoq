@@ -16,7 +16,7 @@ GtkDialog(PluggableWizard): title='Return Sale Order', hidden
                   GtkRadioButton(expand=True, fill=True): 'Deposit'
                 GtkHBox(hbox2, fill=True):
                   ProxyLabel(currency, fill=True): '$CURRENCY:'
-                  ProxyEntry(value, fill=True): '0.0', insensitive
+                  ProxyEntry(value): '0.0', insensitive
                   GtkButton(add_button, fill=True): 'gtk-add', insensitive
               GtkHBox(hbox3, expand=True, fill=True):
                 GtkVBox(vbox2, expand=True, fill=True):
@@ -28,17 +28,20 @@ GtkDialog(PluggableWizard): title='Return Sale Order', hidden
                     row: u'1/3 Check for sale 01234', u'To Pay', <currency $100>, datetime.datetime(2012, 1, 1, 0, 0)
                     row: u'2/3 Check for sale 01234', u'To Pay', <currency $100>, datetime.datetime(2012, 1, 2, 0, 0)
                     row: u'3/3 Check for sale 01234', u'To Pay', <currency $100>, datetime.datetime(2012, 1, 3, 0, 0)
+                GtkVBox(vbox3, fill=True):
+                  GtkButton(remove_button): 'gtk-remove', insensitive
+                  GtkLabel(label2, expand=True, fill=True):
                   GtkTable(footer_table, fill=True):
-                    GtkLabel(label11): 'Payments:'
-                    ProxyLabel(received_value): '<span weight="bold">$300.00</span>'
                     GtkLabel(label12): 'Total:'
                     ProxyLabel(total_value): '<span weight="bold">$250.00</span>'
+                    GtkLabel(label11): 'Paid:'
+                    ProxyLabel(received_value): '<span weight="bold">$300.00</span>'
                     GtkHSeparator(hseparator1):
                     GtkHSeparator(hseparator2):
-                    GtkLabel(missing_change): 'Overpaid:'
+                    GtkLabel(missing): 'Overpaid:'
                     ProxyLabel(missing_value): '<span weight="bold">$50.00</span>'
-                GtkVBox(vbox3, fill=True):
-                  GtkButton(remove_button, fill=True): 'gtk-remove', insensitive
+                    GtkLabel(change): 'Change:'
+                    ProxyLabel(change_value): '<span weight="bold">$50.00</span>'
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
