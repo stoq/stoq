@@ -736,8 +736,6 @@ class WorkOrder(Domain):
         """
         if self.is_rejected or self.is_in_transport():
             return False
-        if not self.order_items.count():
-            return False
         return self.status in [self.STATUS_WORK_IN_PROGRESS,
                                self.STATUS_WORK_WAITING]
 

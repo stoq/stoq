@@ -466,9 +466,8 @@ class TestWorkOrder(DomainTest):
                 self.assertFalse(workorder.can_work())
 
     def testCanFinish(self):
-        sellable = self.create_sellable()
+        workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
-            workorder = self.create_workorder()
             workorder.status = status
 
             # Rejected cannot finish
@@ -478,11 +477,7 @@ class TestWorkOrder(DomainTest):
             # In transport cannot finish
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
                 self.assertFalse(workorder.can_finish())
-            # This should be False even on STATUS_WORK_IN_PROGRESS, since
-            # there're no items on the order
-            self.assertFalse(workorder.can_finish())
-            workorder.add_sellable(sellable)
-            # After adding, only STATUS_WORK_IN_PROGRESS should be True
+
             if status in [WorkOrder.STATUS_WORK_IN_PROGRESS,
                           WorkOrder.STATUS_WORK_WAITING]:
                 self.assertTrue(workorder.can_finish())
@@ -611,7 +606,6 @@ class TestWorkOrder(DomainTest):
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
         self.assertEqual(workorder.finish_date, None)
 
-        self.assertRaises(AssertionError, workorder.finish)
         workorder.add_sellable(self.create_sellable())
         workorder.finish()
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
@@ -633,7 +627,6 @@ class TestWorkOrder(DomainTest):
         workorder = self.create_workorder()
         workorder.approve()
         workorder.work()
-        self.assertRaises(AssertionError, workorder.finish)
         workorder.add_sellable(self.create_sellable())
         workorder.finish()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_CLOSED)

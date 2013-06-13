@@ -131,7 +131,6 @@ class TestMaintenance(BaseGUITest):
         olist = app.results
         olist.select(olist[0])
 
-        self.assertNotSensitive(app, ['Finish'])
         workorder.add_sellable(self.create_sellable())
         # Selecting again will update actions sensitivity
         olist.select(olist[0])
@@ -172,7 +171,6 @@ class TestMaintenance(BaseGUITest):
         olist = app.results
         olist.select(olist[0])
 
-        self.assertNotSensitive(app, ['Finish'])
         workorder.add_sellable(self.create_sellable())
         # Selecting again will update actions sensitivity
         olist.select(olist[0])

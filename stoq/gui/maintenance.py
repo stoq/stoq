@@ -213,6 +213,7 @@ class MaintenanceApp(ShellApp):
             ("Cancel", gtk.STOCK_CANCEL, _(u"Cancel..."),
              group.get('order_cancel'),
              _(u"Cancel the selected order")),
+            ("CloseOrder", None, _(u"Close...")),
             ("Details", gtk.STOCK_INFO, _(u"Details..."),
              group.get('order_details'),
              _(u"Show details of the selected order")),
@@ -429,14 +430,14 @@ class MaintenanceApp(ShellApp):
         self.search.refresh()
         if select_item is not None:
             item = self.store.find(WorkOrderView, id=select_item.id).one()
-            self.search.select(item)
+            self.select_result(item)
         self._update_list_aware_view()
 
     def _update_list_aware_view(self):
         selection = self.search.get_selected_item()
         has_selected = bool(selection)
         wo = has_selected and selection.work_order
-        has_quote = has_selected and bool(selection.work_order.defect_detected)
+        has_quote = has_selected and bool(wo.defect_detected)
 
         can_edit = (has_selected and
                     (wo.can_approve() or wo.can_work() or wo.can_finish()))
@@ -453,7 +454,12 @@ class MaintenanceApp(ShellApp):
                 (self.UndoRejection, has_selected and wo.can_undo_rejection()),
                 (self.Pause, has_selected and wo.can_pause()),
                 (self.Work, has_selected and wo.can_work()),
-                (self.Reopen, has_selected and wo.can_reopen())]:
+                (self.Reopen, has_selected and wo.can_reopen()),
+                # CloseOrder is grouped here since it's a special case. Only
+                # finished orders without items can be closed here, so avoid
+                # showing the option if it's not sensitive to avoid confusions
+                (self.CloseOrder, (has_selected and wo.can_close() and
+                                   not wo.order_items.count()))]:
             self.set_sensitive([widget], value)
             # Some of those options are mutually exclusive (except Approve,
             # but it can only be called once) so avoid confusions and
@@ -531,6 +537,18 @@ class MaintenanceApp(ShellApp):
             work_order = store.fetch(selection.work_order)
             work_order.cancel(reason=rv.notes)
         self._update_view()
+
+    def _close_order(self):
+        if not yesno(_(u"This will close the order. Are you sure?"),
+                     gtk.RESPONSE_NO, _(u"Close"), _(u"Don't close")):
+            return
+
+        selection = self.search.get_selected_item()
+        with api.trans() as store:
+            work_order = store.fetch(selection.work_order)
+            work_order.close()
+
+        self._update_view(select_item=selection)
 
     def _approve_order(self):
         if not yesno(_(u"This will inform the order that the client has "
@@ -735,6 +753,9 @@ class MaintenanceApp(ShellApp):
 
     def on_Reopen__activate(self, action):
         self._reopen()
+
+    def on_CloseOrder__activate(self, action):
+        self._close_order()
 
     def on_PrintQuote__activate(self, action):
         workorderview = self.search.get_selected_item()

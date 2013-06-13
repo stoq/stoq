@@ -39,6 +39,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
           GtkImageMenuItem(): 'Edit...', insensitive
           GtkImageMenuItem(): 'Finish...', insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
+          GtkImageMenuItem(): 'Close...', hidden, insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Approve...', hidden, insensitive
           GtkImageMenuItem(): 'Pause the work...', hidden, insensitive
@@ -147,6 +148,7 @@ GtkMenu(): hidden
   GtkImageMenuItem(): 'Edit...', insensitive
   GtkImageMenuItem(): 'Finish...', insensitive
   GtkImageMenuItem(): 'Cancel...', insensitive
+  GtkImageMenuItem(): 'Close...', hidden, insensitive
   GtkSeparatorMenuItem():
   GtkImageMenuItem(): 'Approve...', hidden, insensitive
   GtkImageMenuItem(): 'Pause the work...', hidden, insensitive
