@@ -52,9 +52,10 @@ from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.stockicons import STOQ_CLIENTS, STOQ_DELIVERY
+from stoqlib.gui.stockicons import STOQ_CLIENTS
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.message import yesno, info
@@ -393,16 +394,7 @@ class MaintenanceApp(ShellApp):
     #
 
     def _format_state_icon(self, item, data):
-        work_order = item.work_order
-        if work_order.is_in_transport():
-            stock_id = STOQ_DELIVERY
-        elif work_order.is_rejected:
-            stock_id = gtk.STOCK_DIALOG_WARNING
-        elif work_order.is_approved():
-            stock_id = gtk.STOCK_APPLY
-        else:
-            stock_id = None
-
+        stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
             # We are using self.results because render_icon is a gtk.Widget's
             # method. It has nothing to do with results tough.

@@ -25,7 +25,9 @@
 
 import datetime
 
+import gtk
 from kiwi.ui.objectlist import Column
+from kiwi.ui.gadgets import render_pixbuf
 
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.workorder import (WorkOrderPackage,
@@ -38,6 +40,7 @@ from stoqlib.gui.base.wizards import (BaseWizardStep, WizardEditorStep,
                                       BaseWizard)
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
+from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 
 _ = stoqlib_gettext
 
@@ -114,7 +117,13 @@ class WorkOrderPackageReceiveOrdersStep(WizardEditorStep):
             IdentifierColumn('identifier'),
             Column('work_order.status_str', _(u"Status"), data_type=str),
             Column('equipment', _(u"Equipment"), data_type=str,
-                   expand=True, editable=True),
+                   expand=True, editable=True, pack_end=True),
+            Column('category_color', title=_(u'Equipment'),
+                   column='equipment', data_type=gtk.gdk.Pixbuf,
+                   format_func=render_pixbuf),
+            Column('flag_icon', title=_(u'Equipment'), column='equipment',
+                   data_type=gtk.gdk.Pixbuf, format_func_data=True,
+                   format_func=self._format_state_icon),
             Column('client_name', _(u"Client"), data_type=str),
             Column('salesperson_name', _(u"Salesperson"), data_type=str,
                    visible=False),
@@ -134,6 +143,13 @@ class WorkOrderPackageReceiveOrdersStep(WizardEditorStep):
     #
     #  Private
     #
+
+    def _format_state_icon(self, item, data):
+        stock_id, tooltip = get_workorder_state_icon(item.work_order)
+        if stock_id is not None:
+            # We are using self.identifier because render_icon is a
+            # gtk.Widget's # method. It has nothing to do with results tough.
+            return self.identifier.render_icon(stock_id, gtk.ICON_SIZE_MENU)
 
     def _find_orders(self):
         orders = WorkOrderWithPackageView.find_by_package(

@@ -29,6 +29,7 @@ import datetime
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn
+from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
@@ -39,6 +40,7 @@ from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 
 
 _ = stoqlib_gettext
@@ -180,7 +182,13 @@ class ClientDetailsDialog(BaseEditor):
     def _get_work_order_columns(self):
         return [IdentifierColumn("identifier", sorted=True),
                 Column("equipment", title=_("Equipment"),
-                       data_type=str, expand=True),
+                       data_type=str, expand=True, pack_end=True),
+                Column('category_color', title=_(u'Equipment'),
+                       column='equipment', data_type=gtk.gdk.Pixbuf,
+                       format_func=render_pixbuf),
+                Column('flag_icon', title=_(u'Equipment'), column='equipment',
+                       data_type=gtk.gdk.Pixbuf, format_func_data=True,
+                       format_func=self._format_state_icon),
                 Column("open_date", title=_("Open date"),
                        data_type=datetime.date, width=120),
                 Column("approve_date", title=_("Approve date"),
@@ -189,6 +197,13 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=datetime.date, width=120),
                 Column("total", title=_("Total"),
                        data_type=currency, width=100)]
+
+    def _format_state_icon(self, item, data):
+        stock_id, tooltip = get_workorder_state_icon(item.work_order)
+        if stock_id is not None:
+            # We are using self.sales_vbox because render_icon is a
+            # gtk.Widget's # method. It has nothing to do with results tough.
+            return self.sales_vbox.render_icon(stock_id, gtk.ICON_SIZE_MENU)
 
     #
     # BaseEditor Hooks

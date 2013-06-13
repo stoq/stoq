@@ -105,3 +105,11 @@ utils Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`workorderutils` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.utils.workorderutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
