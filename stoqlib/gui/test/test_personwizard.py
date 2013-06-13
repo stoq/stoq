@@ -30,8 +30,8 @@ from stoqlib.gui.editors.personeditor import (BranchEditor, ClientEditor,
                                               TransporterEditor, UserEditor)
 from stoqlib.gui.search.callsearch import CallsSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.personwizard import PersonRoleWizard
-from stoqlib.gui.uitestutils import GUITest
 
 
 class TestPersonRoleWizard(GUITest):

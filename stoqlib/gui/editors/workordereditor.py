@@ -34,12 +34,12 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderPackage,
                                       WorkOrderApprovedAndFinishedView)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.stockicons import STOQ_DELIVERY
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.workordercategoryeditor import WorkOrderCategoryEditor
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderQuoteSlave,
                                                WorkOrderExecutionSlave,

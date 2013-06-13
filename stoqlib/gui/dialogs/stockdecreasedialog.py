@@ -31,8 +31,8 @@ from kiwi.ui.objectlist import Column
 from kiwi.currency import currency
 
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

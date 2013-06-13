@@ -37,8 +37,8 @@ from stoqlib.domain.transfer import TransferOrderItem
 from stoqlib.domain.views import (ReceivingItemView, SaleItemsView,
                                   LoanItemView, StockDecreaseItemsView)
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 
 _ = stoqlib_gettext
 

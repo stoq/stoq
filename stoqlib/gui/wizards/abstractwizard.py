@@ -53,12 +53,12 @@ from stoqlib.gui.search.productsearch import ProductBranchSearch
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardStep
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.dialogs.batchselectiondialog import (BatchDecreaseSelectionDialog,
                                                       BatchItem)
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import WizardSellableItemStepEvent
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext

@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.domain.product import Storable
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam

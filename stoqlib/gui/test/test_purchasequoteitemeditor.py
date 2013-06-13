@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.purchaseeditor import PurchaseQuoteItemEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPurchaseQuoteItemEditor(GUITest):

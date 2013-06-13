@@ -23,8 +23,8 @@
 ##
 
 from stoqlib.lib.dateutils import localdatetime
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.domain.person import Branch
 from stoqlib.domain.inventory import Inventory
 

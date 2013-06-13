@@ -28,7 +28,7 @@ import mock
 
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 
 

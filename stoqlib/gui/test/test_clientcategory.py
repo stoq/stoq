@@ -27,9 +27,9 @@ import mock
 
 from stoqlib.domain.person import ClientCategory
 from stoqlib.domain.sellable import ClientCategoryPrice
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.clientcategoryeditor import ClientCategoryEditor
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 

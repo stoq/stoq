@@ -24,8 +24,8 @@
 
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.productioneditor import ProductionMaterialAllocateEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductionMaterialAllocateEditor(GUITest):

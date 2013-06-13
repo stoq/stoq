@@ -24,8 +24,8 @@
 
 import mock
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellablePriceDialog(GUITest):

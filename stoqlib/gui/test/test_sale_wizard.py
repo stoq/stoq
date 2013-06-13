@@ -31,7 +31,7 @@ from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.enums import LatePaymentPolicy
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.lib.dateutils import localdatetime, localtoday
 from stoqlib.lib.parameters import sysparam

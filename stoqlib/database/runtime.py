@@ -592,7 +592,7 @@ def _register_branch(caller_store, station_name):
                      gtk.RESPONSE_YES, _(u"Register computer"), _(u"Quit")):
             raise SystemExit
 
-        from stoqlib.gui.login import LoginHelper
+        from stoqlib.gui.utils.login import LoginHelper
         h = LoginHelper(username="admin")
         try:
             user = h.validate_user()

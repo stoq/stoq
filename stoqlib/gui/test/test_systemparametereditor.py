@@ -24,8 +24,8 @@
 
 
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.parameterseditor import SystemParameterEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSystemParameterEditor(GUITest):

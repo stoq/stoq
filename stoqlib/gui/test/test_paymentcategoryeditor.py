@@ -26,8 +26,8 @@ import gtk
 import mock
 
 from stoqlib.domain.payment.category import PaymentCategory
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPaymentCategoryEditor(GUITest):

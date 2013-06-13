@@ -31,8 +31,8 @@ from kiwi.ui.widgets.list import ColoredColumn, Column
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.crediteditor import CreditEditor
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

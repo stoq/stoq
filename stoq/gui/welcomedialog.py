@@ -28,7 +28,7 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.gui.openbrowser import open_browser
+from stoqlib.gui.utils.openbrowser import open_browser
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 

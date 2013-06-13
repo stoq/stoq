@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSaleInvoicePrinterDialog(GUITest):

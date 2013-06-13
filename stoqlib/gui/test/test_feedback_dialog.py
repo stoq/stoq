@@ -26,7 +26,7 @@
 import mock
 
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestFeedabackDialog(GUITest):

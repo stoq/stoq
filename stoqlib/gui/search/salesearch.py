@@ -39,12 +39,12 @@ from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
 from stoqlib.domain.views import SoldItemsByBranchView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.slaves.saleslave import SaleListToolbar

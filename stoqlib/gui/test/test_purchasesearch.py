@@ -29,7 +29,7 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPurchaseSearch(GUITest):

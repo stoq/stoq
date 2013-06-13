@@ -34,7 +34,7 @@ from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 EditorSlaveCreateEvent, RunDialogEvent)
-from stoqlib.gui.keybindings import add_bindings, get_accels
+from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.translation import stoqlib_gettext
 

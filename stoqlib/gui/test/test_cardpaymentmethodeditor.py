@@ -36,7 +36,7 @@ from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostListSlave
 from stoqlib.gui.editors.paymentmethodeditor import CardPaymentDetailsEditor
 from stoqlib.gui.editors.paymentmethodeditor import CardPaymentMethodEditor
 from stoqlib.gui.editors.paymentmethodeditor import CreditProviderEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCardDeviceEditor(GUITest):

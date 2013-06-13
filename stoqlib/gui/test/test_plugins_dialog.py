@@ -30,7 +30,7 @@ import gtk
 
 import stoqlib
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 def _get_oficial_plugins_names():

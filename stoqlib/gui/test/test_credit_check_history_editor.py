@@ -26,7 +26,7 @@ import unittest
 
 from stoqlib.domain.person import CreditCheckHistory
 from stoqlib.gui.editors.creditcheckhistoryeditor import CreditCheckHistoryEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localtoday
 
 

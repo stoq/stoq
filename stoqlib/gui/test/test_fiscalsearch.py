@@ -29,7 +29,7 @@ from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.gui.search.fiscalsearch import (CfopSearch,
                                              FiscalBookEntrySearch,
                                              FiscalBookEntryType)
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 

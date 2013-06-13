@@ -32,7 +32,7 @@ from dateutil.relativedelta import SU, MO, SA, relativedelta as delta
 
 from stoqlib.api import api
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.gui.columns import SearchColumn
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import (StringSearchFilter, DateSearchFilter,
                                               ComboSearchFilter, NumberSearchFilter)

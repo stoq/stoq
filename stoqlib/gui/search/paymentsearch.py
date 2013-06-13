@@ -40,14 +40,14 @@ from stoqlib.domain.payment.views import (InCheckPaymentView,
                                           CardPaymentView)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searcheditor import SearchEditor
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.editors.paymenteditor import LonelyPaymentDetailsDialog
 from stoqlib.gui.editors.paymentmethodeditor import CardPaymentDetailsEditor
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.reporting.payment import (BillCheckPaymentReport,
                                        CardPaymentReport)
 

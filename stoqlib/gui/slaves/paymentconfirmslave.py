@@ -46,7 +46,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.filters import get_filters_for_attachment
+from stoqlib.gui.utils.filters import get_filters_for_attachment
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext

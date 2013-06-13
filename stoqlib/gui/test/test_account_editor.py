@@ -26,7 +26,7 @@ import unittest
 
 from stoqlib.domain.account import Account
 from stoqlib.gui.editors.accounteditor import AccountEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestAccountEditor(GUITest):

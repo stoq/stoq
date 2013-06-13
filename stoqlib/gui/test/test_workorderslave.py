@@ -25,9 +25,9 @@
 import gtk
 import mock
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.slaves.workorderslave import (_WorkOrderItemEditor,
                                                _WorkOrderItemSlave)
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestWorkOrderItemEditor(GUITest):

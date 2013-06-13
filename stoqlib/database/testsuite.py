@@ -207,7 +207,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
 
 def _provide_domain_slave_mapper():
     from stoqlib.gui.interfaces import IDomainSlaveMapper
-    from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
+    from stoqlib.gui.slaves.domainslavemapper import DefaultDomainSlaveMapper
     provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
                     replace=True)
 

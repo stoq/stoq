@@ -41,7 +41,7 @@ from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.columns import IdentifierColumn
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.wizards.purchasewizard import PurchasePaymentStep
 
 _ = stoqlib_gettext

@@ -35,7 +35,7 @@ from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.exceptions import SellError
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.columns import IdentifierColumn
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.wizards.salewizard import BaseMethodSelectionStep
 from stoqlib.lib.translation import stoqlib_gettext
 

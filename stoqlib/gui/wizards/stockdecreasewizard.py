@@ -54,7 +54,7 @@ from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialo
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.events import StockDecreaseWizardFinishEvent
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.salewizard import PaymentMethodStep
 from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt

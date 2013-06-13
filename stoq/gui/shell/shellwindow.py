@@ -38,17 +38,17 @@ from stoqlib.gui.base.dialogs import (add_current_toplevel,
                                       run_dialog)
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.events import StartApplicationEvent, StopApplicationEvent
-from stoqlib.gui.help import show_contents, show_section
-from stoqlib.gui.introspection import introspect_slaves
-from stoqlib.gui.keybindings import get_accel, get_accels
-from stoqlib.gui.logo import render_logo_pixbuf
-from stoqlib.gui.openbrowser import open_browser
-from stoqlib.gui.toolmenuaction import ToolMenuAction
+from stoqlib.gui.utils.help import show_contents, show_section
+from stoqlib.gui.utils.introspection import introspect_slaves
+from stoqlib.gui.utils.keybindings import get_accel, get_accels
+from stoqlib.gui.utils.logo import render_logo_pixbuf
+from stoqlib.gui.utils.openbrowser import open_browser
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.webservice import WebService
+from stoqlib.gui.widgets.toolmenuaction import ToolMenuAction
 from stoq.gui.shell.statusbar import ShellStatusbar
 from stoq.lib.applist import get_application_icon
 import stoq

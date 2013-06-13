@@ -28,12 +28,12 @@ from decimal import Decimal
 
 from stoqlib.domain.views import PurchasedItemAndStockView
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.columns import SearchColumn, Column
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import SearchColumn, Column
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchoptions import (Any, Today, ThisWeek, NextWeek,
                                               ThisMonth, NextMonth)
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.purchase import PurchasedItemsReport
 

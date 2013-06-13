@@ -34,9 +34,9 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import SupplierEditor
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize

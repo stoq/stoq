@@ -27,9 +27,9 @@ from decimal import Decimal
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.wizards.salewizard import PaymentMethodStep
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.wizards.salewizard import PaymentMethodStep
 
 
 class TestPaymentRenegotiationWizard(GUITest):

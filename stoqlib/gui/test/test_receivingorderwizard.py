@@ -30,14 +30,14 @@ import mock
 
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.receiving import ReceivingOrder
-from stoqlib.lib.dateutils import localdatetime
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
+from stoqlib.lib.dateutils import localdatetime
 
 
 class TestReceivingOrderWizard(GUITest):
-    @mock.patch('stoqlib.gui.printing.warning')
+    @mock.patch('stoqlib.gui.utils.printing.warning')
     @mock.patch('stoqlib.gui.wizards.receivingwizard.run_dialog')
     @mock.patch('stoqlib.gui.wizards.receivingwizard.yesno')
     def testCompleteReceiving(self, yesno, run_dialog, warning):

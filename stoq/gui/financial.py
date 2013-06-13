@@ -43,20 +43,20 @@ from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryStat
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
-from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.dialogs.financialreportdialog import FinancialReportDialog
-from stoqlib.gui.keybindings import get_accels
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchoptions import Any, DateSearchOption
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.searchslave import SearchSlave
+from stoqlib.gui.utils.keybindings import get_accels
+from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.widgets.accounttree import AccountTree
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno

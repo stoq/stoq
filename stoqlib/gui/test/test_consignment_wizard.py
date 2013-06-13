@@ -27,10 +27,10 @@ import mock
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.product import ProductStockItem, Storable
 from stoqlib.gui.editors.purchaseeditor import InConsignmentItemEditor
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.consignmentwizard import (CloseInConsignmentWizard,
                                                    ConsignmentWizard)
 from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.translation import stoqlib_gettext
 

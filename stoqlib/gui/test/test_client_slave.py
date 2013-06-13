@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.gui.slaves.clientslave import ClientCreditSlave, ClientStatusSlave
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 

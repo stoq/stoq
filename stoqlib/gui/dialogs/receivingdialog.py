@@ -38,8 +38,8 @@ from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.printing import print_labels
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
+from stoqlib.gui.utils.printing import print_labels
 
 _ = stoqlib_gettext
 

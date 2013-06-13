@@ -60,9 +60,9 @@ from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.sale import SaleOrderReport

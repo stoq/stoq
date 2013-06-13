@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.reporting.purchasereceival import PurchaseReceivalReport
 from stoqlib.lib.dateutils import localdatetime

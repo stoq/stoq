@@ -36,7 +36,7 @@ from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.fieldgrid import FieldGrid
+from stoqlib.gui.widgets.fieldgrid import FieldGrid
 from stoqlib.lib.invoice import get_invoice_fields, SaleInvoice
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext as _

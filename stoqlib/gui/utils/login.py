@@ -35,7 +35,7 @@ from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.exceptions import DatabaseError, LoginError, UserProfileError
 from stoqlib.domain.person import LoginUser
 from stoqlib.gui.base.dialogs import RunnableView
-from stoqlib.gui.logo import render_logo_pixbuf
+from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.lib.interfaces import CookieError, ICookieFile
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext

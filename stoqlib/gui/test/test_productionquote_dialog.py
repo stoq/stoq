@@ -27,7 +27,7 @@ import mock
 
 from stoqlib.domain.production import ProductionMaterial, ProductionOrder
 from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

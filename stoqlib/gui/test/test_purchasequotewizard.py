@@ -28,7 +28,7 @@ import gtk
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import Storable
 from stoqlib.gui.base.lists import SimpleListDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)

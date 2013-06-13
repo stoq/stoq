@@ -28,8 +28,8 @@ import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.person import Employee
 from stoqlib.domain.transfer import TransferOrder
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
-from stoqlib.gui.uitestutils import GUITest
 
 from stoqlib.lib.translation import stoqlib_gettext
 

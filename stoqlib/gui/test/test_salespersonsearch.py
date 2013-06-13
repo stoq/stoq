@@ -25,7 +25,7 @@
 from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSalesPersonSalesSearch(GUITest):

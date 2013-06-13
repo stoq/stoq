@@ -23,12 +23,12 @@
 ##
 
 from stoqlib.domain.production import ProductionOrder
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.productionwizard import (OpenProductionOrderStep,
                                                   ProductionServiceStep,
                                                   ProductionItemStep,
                                                   FinishOpenProductionOrderStep,
                                                   ProductionWizard)
-from stoqlib.gui.uitestutils import GUITest
 
 
 class TestProductionWizard(GUITest):

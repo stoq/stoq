@@ -27,7 +27,7 @@ import unittest
 from stoqlib.domain.person import Calls
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.gui.editors.callseditor import CallsEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCallsEditor(GUITest):

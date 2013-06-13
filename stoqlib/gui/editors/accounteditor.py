@@ -32,10 +32,10 @@ from kiwi.ui.widgets.entry import ProxyEntry
 from stoqlib.api import api
 from stoqlib.domain.account import (Account, BankAccount,
                                     BillOption)
-from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.widgets.accounttree import AccountTree
 from stoqlib.lib.boleto import (get_all_banks,
                                 get_bank_info_by_number,
                                 BoletoException)

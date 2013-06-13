@@ -24,8 +24,8 @@
 
 import mock
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCreditCheckHistorySearch(GUITest):

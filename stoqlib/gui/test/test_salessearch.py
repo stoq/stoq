@@ -27,13 +27,13 @@ from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleItem
-from stoqlib.lib.dateutils import localdate
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.salesearch import (SaleSearch,
                                            SaleWithToolbarSearch,
                                            SalesByPaymentMethodSearch,
                                            SoldItemsByBranchSearch)
-from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.dateutils import localdate
 
 
 class TestSaleSearch(GUITest):

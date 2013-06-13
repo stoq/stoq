@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.gui.search.parametersearch import ParameterSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestParameterSearch(GUITest):

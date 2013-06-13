@@ -29,8 +29,8 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
-from stoqlib.gui.logo import render_logo_pixbuf
-from stoqlib.gui.processview import ProcessView
+from stoqlib.gui.utils.logo import render_logo_pixbuf
+from stoqlib.gui.widgets.processview import ProcessView
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext as _
 

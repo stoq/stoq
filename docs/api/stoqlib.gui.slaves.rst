@@ -49,6 +49,14 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`domainslavemapper` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.slaves.domainslavemapper
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`employeeslave` Module
 ---------------------------
 

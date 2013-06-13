@@ -32,8 +32,8 @@ from stoqlib.domain.inventory import Inventory
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchslave import SearchSlave
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.decorators import cached_function
 from stoqlib.lib.translation import stoqlib_gettext as _
 

@@ -43,12 +43,12 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
 from stoqlib.gui.editors.purchaseeditor import PurchaseQuoteItemEditor
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchslave import SearchSlave
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
                                                 PurchaseWizard)
 from stoqlib.lib.dateutils import localtoday

@@ -26,14 +26,14 @@ from decimal import Decimal
 import unittest
 
 import mock
-from stoqlib.gui.uitestutils import GUITest
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
-from stoqlib.lib.dateutils import localdate
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.dateutils import localdate
 from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.booklet import BookletReport
 from stoqlib.reporting.sale import SaleOrderReport

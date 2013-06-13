@@ -26,9 +26,9 @@ import mock
 
 from decimal import Decimal
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductionProductEditor)
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.slaves.productslave import ProductComponentSlave
 from stoqlib.lib.parameters import sysparam
 

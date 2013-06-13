@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+# FIXME: Refactor this module and put it somewhere else (on POS app maybe?)
+
 import datetime
 import logging
 import sys

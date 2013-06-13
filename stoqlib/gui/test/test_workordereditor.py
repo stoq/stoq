@@ -26,9 +26,9 @@ import mock
 
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderHistory)
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
                                                  WorkOrderPackageSendEditor)
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.parameters import sysparam
 

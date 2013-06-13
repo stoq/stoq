@@ -25,8 +25,8 @@
 import mock
 
 from stoqlib.api import api
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPreferencesEditor(GUITest):

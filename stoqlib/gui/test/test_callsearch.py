@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.search.callsearch import CallsSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCallsSearch(GUITest):

@@ -23,11 +23,11 @@
 ##
 
 from stoqlib.api import api
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.person import Person
-from stoqlib.lib.dateutils import localdatetime
 from stoqlib.gui.search.commissionsearch import CommissionSearch
+from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.dateutils import localdatetime
 
 
 class TestCommissionSearch(GUITest):

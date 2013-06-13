@@ -28,11 +28,11 @@ import mock
 
 from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.sale import SaleView
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.paymenteditor import LonelyPaymentDetailsDialog
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.reporting.payment import CardPaymentReport
 
 

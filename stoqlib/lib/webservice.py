@@ -64,7 +64,7 @@ class JsonDownloader(Protocol):
         if not is_developer_mode():
             return
 
-        from stoqlib.gui.webview import show_html
+        from stoqlib.gui.widgets.webview import show_html
         show_html(data)
 
     def dataReceived(self, bytes):

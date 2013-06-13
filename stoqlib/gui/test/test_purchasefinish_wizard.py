@@ -26,7 +26,7 @@
 import datetime
 
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 
 

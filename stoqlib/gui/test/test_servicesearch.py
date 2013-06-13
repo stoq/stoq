@@ -24,7 +24,7 @@
 
 from stoqlib.domain.service import Service
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestServiceSearch(GUITest):

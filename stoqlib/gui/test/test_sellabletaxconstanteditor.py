@@ -24,8 +24,8 @@
 
 from decimal import Decimal
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellableTaxConstantEditor(GUITest):

@@ -31,7 +31,7 @@ from kiwi.ui.delegates import GladeDelegate, GladeSlaveDelegate
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.base.dialogs import RunnableView
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.help import show_section
+from stoqlib.gui.utils.help import show_section
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

@@ -24,20 +24,20 @@
 
 import datetime
 
-from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+from stoqlib.domain.commission import Commission
 from stoqlib.domain.person import (Client, Employee, EmployeeRoleHistory,
                                    Supplier, Transporter, EmployeeRole)
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
+from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.search.personsearch import (ClientSearch, EmployeeSearch,
                                              SupplierSearch, TransporterSearch,
                                              EmployeeRoleSearch, BranchSearch,
                                              UserSearch)
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.domain.sale import Sale, SaleItem
-from stoqlib.domain.commission import Commission
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPersonSearch(GUITest):

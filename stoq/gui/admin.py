@@ -42,7 +42,6 @@ from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.dialogs.sellabledialog import SellableTaxConstantsDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.editors.personeditor import UserEditor
-from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.costcentersearch import CostCenterSearch
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
@@ -62,6 +61,7 @@ from stoqlib.gui.stockicons import (
     STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_HR, STOQ_MONEY,
     STOQ_PAYABLE_APP, STOQ_PLUGIN, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
     STOQ_USER_PROFILES, STOQ_USERS)
+from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.decorators import public
 from stoqlib.lib.message import info

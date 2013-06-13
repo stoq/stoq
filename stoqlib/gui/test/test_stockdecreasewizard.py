@@ -26,11 +26,11 @@ import mock
 
 from stoqlib.api import api
 from stoqlib.domain.costcenter import CostCenterEntry
-from stoqlib.lib.parameters import sysparam
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.domain.stockdecrease import StockDecrease
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import PaymentMethodStep
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
-from stoqlib.domain.stockdecrease import StockDecrease
+from stoqlib.lib.parameters import sysparam
 
 
 class TestStockDecreaseWizard(GUITest):

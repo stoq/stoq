@@ -24,8 +24,8 @@
 
 import mock
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.branchdialog import BranchDialog
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.api import api
 
 

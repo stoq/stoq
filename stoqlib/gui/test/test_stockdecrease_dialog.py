@@ -25,7 +25,7 @@
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 PaymentRenegotiation  # pyflakes
 

@@ -38,7 +38,7 @@ from stoqlib.gui.editors.personeditor import (ClientEditor, UserEditor,
                                               TransporterEditor, BranchEditor)
 from stoqlib.gui.search.callsearch import CallsSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
-from stoqlib.gui.uitestutils import GUITest, GUIDumper
+from stoqlib.gui.test.uitestutils import GUITest, GUIDumper
 
 
 class _BasePersonEditorTest(GUITest):

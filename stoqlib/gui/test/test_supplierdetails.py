@@ -30,7 +30,7 @@ from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.gui.editors.personeditor import SupplierEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSupplierDetails(GUITest):

@@ -34,7 +34,6 @@ from stoqlib.domain.product import (ProductHistory, Storable, Product,
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.sellable import Sellable
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity,
                                               ProductsSoldSearch,
@@ -43,6 +42,7 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
                                               format_data)
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchoptions import Any
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import (ProductReport, ProductPriceReport,

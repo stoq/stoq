@@ -33,8 +33,8 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.sale import SaleView
 from stoqlib.domain.stockdecrease import StockDecrease

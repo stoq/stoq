@@ -28,7 +28,7 @@ import mock
 from stoqlib.api import api
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard, NewLoanWizard
 from stoqlib.lib.dateutils import localdatetime, localtoday
 from stoqlib.lib.translation import stoqlib_gettext

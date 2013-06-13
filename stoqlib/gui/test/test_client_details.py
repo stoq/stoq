@@ -25,11 +25,12 @@
 import unittest
 
 import mock
+
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localtoday
-from stoqlib.gui.uitestutils import GUITest
 
 
 class TestClientDetails(GUITest):

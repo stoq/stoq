@@ -26,11 +26,11 @@ import mock
 
 from stoqlib.api import api
 from stoqlib.domain.production import ProductionMaterial
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoqlib.gui.editors.productioneditor import (ProductionItemProducedEditor,
                                                   ProductionMaterialLostEditor,
                                                   ProductionMaterialAllocateEditor)
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductionDetailsDialog(GUITest):

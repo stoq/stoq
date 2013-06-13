@@ -29,7 +29,7 @@ import mock
 
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.gui.editors.addresseditor import AddressEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestAddressEditor(GUITest):

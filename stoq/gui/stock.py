@@ -38,12 +38,10 @@ from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductStockEditor
-from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
@@ -51,8 +49,10 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductClosedStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
+from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard

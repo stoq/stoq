@@ -41,8 +41,8 @@ from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
                                             NumberIntervalQueryState, BoolQueryState,
                                             QueryExecuter)
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.interfaces import ISearchResultView
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchfilters import (StringSearchFilter, ComboSearchFilter,
                                               DateSearchFilter, NumberSearchFilter,
                                               BoolSearchFilter, SearchFilter)

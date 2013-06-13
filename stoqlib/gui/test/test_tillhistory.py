@@ -29,7 +29,7 @@ from stoqlib.domain.till import Till, TillEntry
 from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestTillHistory(GUITest):

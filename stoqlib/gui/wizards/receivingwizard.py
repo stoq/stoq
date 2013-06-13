@@ -38,14 +38,14 @@ from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.events import ReceivingOrderWizardFinishEvent
-from stoqlib.gui.printing import print_labels
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchslave import SearchSlave
+from stoqlib.gui.utils.printing import print_labels
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext

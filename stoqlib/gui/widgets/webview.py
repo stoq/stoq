@@ -33,7 +33,7 @@ from stoqlib.api import api
 from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
-from stoqlib.gui.openbrowser import open_browser
+from stoqlib.gui.utils.openbrowser import open_browser
 
 log = logging.getLogger(__name__)
 

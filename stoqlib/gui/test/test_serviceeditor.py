@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestServiceEditor(GUITest):

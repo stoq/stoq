@@ -29,7 +29,7 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.views import ConsignedItemAndStockView
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 

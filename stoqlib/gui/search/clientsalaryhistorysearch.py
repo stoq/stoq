@@ -27,7 +27,7 @@ import datetime
 from kiwi.currency import currency
 
 from stoqlib.domain.person import ClientSalaryHistoryView
-from stoqlib.gui.columns import SearchColumn
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 

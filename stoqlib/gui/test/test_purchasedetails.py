@@ -26,12 +26,12 @@ import unittest
 
 import mock
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
-from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
+from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 
 class TestPurchaseDetailsDialog(GUITest):
@@ -81,7 +81,7 @@ class TestPurchaseDetailsDialog(GUITest):
         self.click(dialog.print_button)
         print_report.assert_called_once_with(PurchaseOrderReport, order)
 
-    @mock.patch('stoqlib.gui.printing.warning')
+    @mock.patch('stoqlib.gui.utils.printing.warning')
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.run_dialog')
     def test_print_labels(self, run_dialog, warning):
         order = self.create_purchase_order()

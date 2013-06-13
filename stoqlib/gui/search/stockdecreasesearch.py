@@ -32,11 +32,11 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 

@@ -36,7 +36,7 @@ from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchoptions import Any
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.reporting.production import ProductionItemReport
 
 

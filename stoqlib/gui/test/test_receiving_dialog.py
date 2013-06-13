@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestReceivingDialog(GUITest):
@@ -37,7 +37,7 @@ class TestReceivingDialog(GUITest):
         dialog.invoice_slave.identifier.update('333')
         self.check_dialog(dialog, 'dialog-receiving-order-details-show')
 
-    @mock.patch('stoqlib.gui.printing.warning')
+    @mock.patch('stoqlib.gui.utils.printing.warning')
     @mock.patch('stoqlib.gui.dialogs.receivingdialog.run_dialog')
     def test_print_labels(self, run_dialog, warning):
         order = self.create_receiving_order()

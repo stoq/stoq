@@ -31,7 +31,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 EditorSlaveCreateEvent)
-from stoqlib.gui.keybindings import add_bindings, get_accels
+from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
 from books.bookssearch import ProductBookSearch

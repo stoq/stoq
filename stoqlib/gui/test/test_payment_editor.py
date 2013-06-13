@@ -33,7 +33,7 @@ from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.editors.paymenteditor import (_ONCE, InPaymentEditor,
                                                OutPaymentEditor,
                                                LonelyPaymentDetailsDialog)
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import INTERVALTYPE_WEEK, localdate, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 

@@ -46,7 +46,6 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.missingitemsdialog import (MissingItemsDialog,
                                                     get_missing_items)
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
@@ -54,14 +53,15 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
-from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
+from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.shell.shellapp import ShellApp

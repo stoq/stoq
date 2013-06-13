@@ -27,7 +27,7 @@ import unittest
 
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.domain.product import Storable
 from stoqlib.database.runtime import get_current_branch, get_current_user
 

@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.slaves.userbranchaccessslave import UserBranchAccessSlave
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

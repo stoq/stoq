@@ -34,9 +34,8 @@ from stoqlib.database.properties import UnicodeCol
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
-from stoqlib.gui.base.lists import ModelListSlave
-from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.base.lists import SimpleListDialog
+from stoqlib.gui.base.lists import ModelListSlave, SimpleListDialog
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class _TestModel(Domain):

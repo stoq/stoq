@@ -24,7 +24,7 @@
 
 import mock
 
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salereturnwizard import (SaleReturnWizard,
                                                   SaleTradeWizard)
 from stoqlib.lib.dateutils import localdate

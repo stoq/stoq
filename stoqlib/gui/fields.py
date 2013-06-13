@@ -36,7 +36,7 @@ import pango
 from stoqlib.api import api
 from stoqlib.domain.attachment import Attachment
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.filters import get_filters_for_attachment
+from stoqlib.gui.utils.filters import get_filters_for_attachment
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import yesno
 

@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.sellableeditor import CategoryPriceEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCategoryPriceEditor(GUITest):

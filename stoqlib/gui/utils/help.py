@@ -30,7 +30,7 @@ import gtk
 
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.gui.base.dialogs import get_current_toplevel
-from stoqlib.gui.openbrowser import open_browser
+from stoqlib.gui.utils.openbrowser import open_browser
 import stoq
 
 

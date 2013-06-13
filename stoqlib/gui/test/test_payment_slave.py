@@ -27,11 +27,11 @@ from decimal import Decimal
 import unittest
 
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.lib.dateutils import localdate
-from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.slaves.paymentslave import (BillMethodSlave, CheckMethodSlave,
                                              CardMethodSlave)
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 

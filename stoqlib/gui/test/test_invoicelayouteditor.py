@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.invoiceeditor import InvoiceLayoutEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestInvoiceLayoutEditor(GUITest):

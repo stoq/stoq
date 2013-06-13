@@ -31,13 +31,13 @@ from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.views import (ProductComponentWithClosedView,
                                   ProductionItemView)
 from stoqlib.enums import SearchFilterPosition
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity)
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.production import ProductionItemReport
 

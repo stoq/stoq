@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestTransferOrderDetailsDialog(GUITest):

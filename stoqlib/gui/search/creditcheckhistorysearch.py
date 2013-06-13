@@ -30,8 +30,8 @@ import gtk
 from stoqlib.api import api
 from stoqlib.domain.person import CreditCheckHistoryView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import SearchColumn, Column
 from stoqlib.gui.editors.creditcheckhistoryeditor import CreditCheckHistoryEditor
+from stoqlib.gui.search.searchcolumns import SearchColumn, Column
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.lib.translation import stoqlib_gettext
 

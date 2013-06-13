@@ -102,8 +102,8 @@ class SearchDialog(BasicDialog):
 
     #: If the advanced search is enabled or disabled. When ``True`` we will
     #: instrospect the columns returned by :meth:`get_columns`,and use those
-    #: that are subclasses of :class:`stoqlib.gui.columns.SearchColumn` to add
-    #: as options for the user to filter the results.
+    #: that are subclasses of :class:`stoqlib.gui.search.searchcolumns.SearchColumn`
+    #: to add as options for the user to filter the results.
     advanced_search = True
 
     tree = False

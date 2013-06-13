@@ -24,8 +24,8 @@
 
 
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.purchaseeditor import InConsignmentItemEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestInConsignmentItemEditor(GUITest):

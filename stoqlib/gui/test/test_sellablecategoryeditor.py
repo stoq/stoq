@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellableCategoryEditor(GUITest):

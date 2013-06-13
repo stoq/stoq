@@ -29,7 +29,7 @@ import mock
 from stoq.gui.pos import TemporarySaleItem
 
 from stoqlib.gui.search.sellablesearch import SellableSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCallsSearch(GUITest):

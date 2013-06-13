@@ -71,9 +71,9 @@ from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.base.wizards import (BaseWizard, WizardEditorStep,
                                       WizardStep)
-from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
-from stoqlib.gui.processview import ProcessView
+from stoqlib.gui.utils.logo import render_logo_pixbuf
+from stoqlib.gui.widgets.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig
 from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.kiwilibrary import library
@@ -551,7 +551,7 @@ class InstallPostgresStep(BaseWizardStep):
             return False
 
     def _install_postgres(self):
-        from stoqlib.gui.aptpackageinstaller import AptPackageInstaller
+        from stoqlib.gui.utils.aptpackageinstaller import AptPackageInstaller
         self.wizard.disable_back()
         self.wizard.disable_next()
         apti = AptPackageInstaller(parent=self.wizard.get_toplevel())

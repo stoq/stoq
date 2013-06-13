@@ -33,13 +33,11 @@ from kiwi.python import all
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.dialogs.manufacturerdialog import ProductManufacturerDialog
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.categorysearch import SellableCategorySearch
 from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
@@ -48,10 +46,12 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductClosedStockSearch,
                                               ProductsSoldSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SUPPLIERS)
+from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
                                                    CloseInConsignmentWizard)
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard

@@ -25,8 +25,8 @@
 
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.uiform import UIField, UIForm
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestFormFieldEditor(GUITest):

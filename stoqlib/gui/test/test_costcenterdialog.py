@@ -26,8 +26,8 @@
 from kiwi.currency import currency
 
 from stoqlib.domain.product import StockTransactionHistory
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.costcenterdialog import CostCenterDialog
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localtoday
 
 

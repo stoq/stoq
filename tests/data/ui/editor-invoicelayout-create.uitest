@@ -91,7 +91,7 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: u'VALOR_TOTAL_SERVICOS', 1
             GtkScrolledWindow(sw):
               GtkViewport(viewport1):
-                stoqlib+gui+fieldgrid+FieldGrid(grid):
+                stoqlib+gui+widgets+fieldgrid+FieldGrid(grid):
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

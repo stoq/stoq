@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class _TestEditorSlave(BaseEditorSlave):

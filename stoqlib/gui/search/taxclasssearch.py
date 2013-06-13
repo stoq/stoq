@@ -30,8 +30,8 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.slaves.taxslave import ICMSTemplateSlave, IPITemplateSlave
 from stoqlib.gui.editors.taxclasseditor import ProductTaxTemplateEditor
 

@@ -27,9 +27,9 @@ import mock
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate, localtoday
 
 

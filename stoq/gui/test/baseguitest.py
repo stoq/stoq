@@ -27,10 +27,10 @@ import mock
 
 from stoqlib.api import api
 from stoqlib.domain.profile import ProfileSettings
-from stoqlib.gui.uitestutils import GUITest
-from stoq.gui.shell.shellwindow import ShellWindow
+from stoqlib.gui.test.uitestutils import GUITest
 
 import stoq
+from stoq.gui.shell.shellwindow import ShellWindow
 
 gtk.set_interactive(False)
 

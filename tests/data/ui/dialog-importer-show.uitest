@@ -12,7 +12,7 @@ GtkDialog(toplevel): title='Importer Dialog', hidden
         GtkEventBox(details_holder, pack-end):
       GtkProgressBar(progressbar):
       GtkExpander(expander, expand=True, fill=True):
-        stoqlib+gui+processview+ProcessView(process_view):
+        stoqlib+gui+widgets+processview+ProcessView(process_view):
           GtkTextView():
         GtkLabel(): 'Details...'
     GtkHButtonBox(fill=True, pack-end):

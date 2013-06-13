@@ -24,7 +24,7 @@
 
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestTaxClassSearch(GUITest):

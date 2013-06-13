@@ -39,7 +39,7 @@ from stoqlib.gui.editors.productioneditor import (ProductionItemProducedEditor,
                                                   ProductionMaterialLostEditor,
                                                   ProductionMaterialAllocateEditor,
                                                   )
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.production import ProductionOrderReport
 

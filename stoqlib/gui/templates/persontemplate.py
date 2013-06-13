@@ -31,7 +31,6 @@ from stoqlib.domain.person import Company, Individual, Person, Supplier
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.slaves import NoteSlave
-from stoqlib.gui.databaseform import DatabaseForm
 from stoqlib.gui.dialogs.addressdialog import AddressAdditionDialog
 from stoqlib.gui.dialogs.contactsdialog import ContactInfoListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
@@ -40,6 +39,7 @@ from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 from stoqlib.gui.slaves.addressslave import AddressSlave
 from stoqlib.gui.templates.companytemplate import CompanyEditorTemplate
 from stoqlib.gui.templates.individualtemplate import IndividualEditorTemplate
+from stoqlib.gui.utils.databaseform import DatabaseForm
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext

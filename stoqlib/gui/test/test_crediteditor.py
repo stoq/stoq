@@ -27,7 +27,7 @@ from kiwi.currency import currency
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.editors.crediteditor import CreditEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCreditEditor(GUITest):

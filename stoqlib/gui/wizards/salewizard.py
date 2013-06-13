@@ -61,12 +61,12 @@ from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.booklet import BookletReport

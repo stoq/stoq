@@ -32,8 +32,8 @@ from stoqlib.api import api
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 

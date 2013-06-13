@@ -24,9 +24,9 @@
 
 
 from stoqlib.domain.sale import Delivery
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.deliveryeditor import (DeliveryEditor,
                                                 CreateDeliveryEditor)
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestDeliveryEditor(GUITest):

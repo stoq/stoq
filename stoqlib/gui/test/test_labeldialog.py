@@ -22,8 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor, SkipLabelsEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPrintLabelEditor(GUITest):

@@ -36,9 +36,9 @@ from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation

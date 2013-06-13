@@ -26,7 +26,7 @@ import mock
 import gtk
 
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPaymentCategoryDialog(GUITest):

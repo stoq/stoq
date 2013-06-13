@@ -27,8 +27,8 @@
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.sellable import SellableUnit
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.editors.sellableuniteditor import SellableUnitEditor
 from stoqlib.lib.translation import stoqlib_gettext
 

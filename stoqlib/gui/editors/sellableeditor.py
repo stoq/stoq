@@ -39,12 +39,12 @@ from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableTaxConstant,
                                      ClientCategoryPrice)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.databaseform import DatabaseForm
 from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
-from stoqlib.gui.printing import print_labels
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
+from stoqlib.gui.utils.databaseform import DatabaseForm
+from stoqlib.gui.utils.printing import print_labels
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam

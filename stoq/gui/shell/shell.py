@@ -204,7 +204,7 @@ class Shell(object):
 
     def _do_login(self):
         from stoqlib.exceptions import LoginError
-        from stoqlib.gui.login import LoginHelper
+        from stoqlib.gui.utils.login import LoginHelper
         from stoqlib.lib.message import error
 
         self._login = LoginHelper(username=self._options.login_username)

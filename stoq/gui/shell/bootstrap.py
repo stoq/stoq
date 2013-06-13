@@ -221,7 +221,7 @@ class ShellBootstrap(object):
     def _show_splash(self):
         if not self._options.splashscreen:
             return
-        from stoqlib.gui.splash import show_splash
+        from stoqlib.gui.widgets.splash import show_splash
         show_splash()
 
     def _setup_twisted(self, raise_=True):
@@ -325,12 +325,12 @@ class ShellBootstrap(object):
     def _setup_domain_slave_mapper(self):
         from kiwi.component import provide_utility
         from stoqlib.gui.interfaces import IDomainSlaveMapper
-        from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
+        from stoqlib.gui.slaves.domainslavemapper import DefaultDomainSlaveMapper
         provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
                         replace=True)
 
     def _load_key_bindings(self):
-        from stoqlib.gui.keybindings import load_user_keybindings
+        from stoqlib.gui.utils.keybindings import load_user_keybindings
         load_user_keybindings()
 
     def _check_locale(self):
@@ -344,8 +344,8 @@ class ShellBootstrap(object):
         if not self._options.debug:
             return
         from gtk import keysyms
-        from stoqlib.gui.keyboardhandler import install_global_keyhandler
-        from stoqlib.gui.introspection import introspect_slaves
+        from stoqlib.gui.utils.introspection import introspect_slaves
+        from stoqlib.gui.utils.keyboardhandler import install_global_keyhandler
         install_global_keyhandler(keysyms.F12, introspect_slaves)
 
     #

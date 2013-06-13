@@ -28,7 +28,7 @@ from stoqlib.lib.dateutils import localdate, localdatetime
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
 

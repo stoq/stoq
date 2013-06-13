@@ -42,16 +42,16 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
-from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
+from stoqlib.gui.utils.keybindings import get_accels
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning

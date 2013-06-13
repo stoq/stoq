@@ -22,8 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.addressdialog import AddressAdditionDialog
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestAddressAdditionDialog(GUITest):

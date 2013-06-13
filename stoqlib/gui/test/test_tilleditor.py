@@ -32,11 +32,11 @@ from stoqlib.domain.events import (TillOpenEvent, TillAddCashEvent,
                                    TillRemoveCashEvent)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.tilleditor import (TillClosingEditor,
                                             TillOpeningEditor,
                                             CashAdvanceEditor,
                                             CashInEditor, CashOutEditor)
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 def _till_event(*args, **kwargs):

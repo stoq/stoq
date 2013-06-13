@@ -51,7 +51,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
@@ -62,8 +61,9 @@ from stoqlib.gui.events import (NewLoanWizardFinishEvent,
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchslave import SearchSlave
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteItemStep

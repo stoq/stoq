@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.producteditor import ProductStockEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductStockEditor(GUITest):

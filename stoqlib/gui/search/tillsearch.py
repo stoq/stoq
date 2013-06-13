@@ -40,7 +40,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext

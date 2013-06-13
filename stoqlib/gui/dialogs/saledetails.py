@@ -42,10 +42,10 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.booklet import BookletReport
 from stoqlib.reporting.sale import SaleOrderReport

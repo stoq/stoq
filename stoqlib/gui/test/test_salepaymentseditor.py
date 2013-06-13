@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSalePaymentsEditor(GUITest):

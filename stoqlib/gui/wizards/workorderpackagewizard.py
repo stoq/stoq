@@ -37,7 +37,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (BaseWizardStep, WizardEditorStep,
                                       BaseWizard)
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
-from stoqlib.gui.columns import IdentifierColumn
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 
 _ = stoqlib_gettext
 

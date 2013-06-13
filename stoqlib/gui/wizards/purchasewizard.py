@@ -49,12 +49,12 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam

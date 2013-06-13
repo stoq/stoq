@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.gui.search.categorysearch import SellableCategorySearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellableCategorySearch(GUITest):

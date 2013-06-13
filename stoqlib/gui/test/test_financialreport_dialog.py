@@ -27,8 +27,8 @@ import os
 
 import mock
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.financialreportdialog import FinancialReportDialog
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

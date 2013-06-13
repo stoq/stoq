@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCfopEditor(GUITest):

@@ -29,7 +29,7 @@ from stoqlib.lib.dateutils import localdate, localdatetime
 from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
 from stoqlib.gui.search.loansearch import LoanSearch
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.reporting.loanreceipt import LoanReceipt
 
 

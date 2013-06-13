@@ -24,10 +24,10 @@
 
 import mock
 
-from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.base.dialogs import run_dialog, get_dialog
+from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.events import RunDialogEvent
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestRunDialog(GUITest):

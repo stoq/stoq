@@ -32,7 +32,12 @@ from storm.expr import Eq
 
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
-from stoqlib.domain.person import Individual
+from stoqlib.domain.person import (Individual, EmployeeRole,
+                                   Branch, BranchView,
+                                   Client, ClientView,
+                                   Employee, EmployeeView,
+                                   TransporterView,
+                                   SupplierView, UserView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_phone_number
@@ -44,15 +49,9 @@ from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
-from stoqlib.domain.person import (EmployeeRole,
-                                   Branch, BranchView,
-                                   Client, ClientView,
-                                   Employee, EmployeeView,
-                                   TransporterView,
-                                   SupplierView, UserView)
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 
 _ = stoqlib_gettext

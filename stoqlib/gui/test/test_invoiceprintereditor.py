@@ -25,8 +25,8 @@
 import mock
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.invoiceeditor import InvoicePrinterEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestInvoicePrinterEditor(GUITest):

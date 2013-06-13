@@ -27,7 +27,7 @@ import mock
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.editors.paymentmethodeditor import PaymentMethodEditor
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPaymentMethodsDialog(GUITest):

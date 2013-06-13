@@ -56,8 +56,6 @@ from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialo
 from stoqlib.gui.editors.deliveryeditor import CreateDeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
-from stoqlib.gui.keybindings import get_accels
-from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -67,6 +65,8 @@ from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
 from stoqlib.gui.search.workordersearch import WorkOrderFinishedSearch
+from stoqlib.gui.utils.keybindings import get_accels
+from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard
 from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 

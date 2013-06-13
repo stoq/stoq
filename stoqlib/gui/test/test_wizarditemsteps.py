@@ -25,7 +25,7 @@
 import mock
 
 from stoqlib.database.viewable import Viewable
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.abstractwizard import AdvancedSellableSearch
 from stoqlib.gui.wizards.loanwizard import (NewLoanWizard, LoanItemStep)
 from stoqlib.gui.wizards.productionwizard import (ProductionWizard, ProductionItemStep,

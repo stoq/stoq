@@ -42,14 +42,14 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
-from stoqlib.gui.keybindings import get_accels
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
+from stoqlib.gui.utils.keybindings import get_accels
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _

@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestQuoteFillingDialog(GUITest):

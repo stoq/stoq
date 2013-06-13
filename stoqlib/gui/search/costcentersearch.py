@@ -28,8 +28,8 @@ from kiwi.currency import currency
 
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.editors.costcentereditor import CostCenterEditor
 from stoqlib.gui.dialogs.costcenterdialog import CostCenterDialog
 from stoqlib.lib.translation import stoqlib_gettext

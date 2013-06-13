@@ -24,8 +24,8 @@
 
 
 from kiwi.currency import currency
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.costcentereditor import CostCenterEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCostCenterEditor(GUITest):

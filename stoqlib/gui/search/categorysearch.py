@@ -29,8 +29,8 @@ creation and edition.
 from decimal import Decimal
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.domain.views import SellableCategoryView
 

@@ -29,8 +29,8 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.domain.system import SystemTable
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

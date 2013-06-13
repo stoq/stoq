@@ -23,8 +23,8 @@
 ##
 
 
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.tilleditor import CashOutEditor
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCashOutEditor(GUITest):

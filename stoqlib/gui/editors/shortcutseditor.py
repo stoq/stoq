@@ -31,11 +31,11 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.gui.keybindings import (get_bindings,
-                                     set_user_binding,
-                                     remove_user_binding,
-                                     remove_user_bindings,
-                                     get_binding_categories)
+from stoqlib.gui.utils.keybindings import (get_bindings,
+                                           set_user_binding,
+                                           remove_user_binding,
+                                           remove_user_bindings,
+                                           get_binding_categories)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

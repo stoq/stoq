@@ -32,11 +32,11 @@ from kiwi.currency import currency
 from stoqlib.domain.views import PurchaseReceivingView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.reporting.purchasereceival import PurchaseReceivalReport
 
 _ = stoqlib_gettext

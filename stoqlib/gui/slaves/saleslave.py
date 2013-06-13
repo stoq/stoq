@@ -37,7 +37,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.message import yesno, info
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.parameters import sysparam

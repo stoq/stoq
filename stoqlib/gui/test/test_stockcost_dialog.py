@@ -27,7 +27,7 @@ import operator
 # Needs to import Image so that dump_models, check_dialog doesn't break.
 from stoqlib.domain.image import Image
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 
 Image  # pyflakes
 

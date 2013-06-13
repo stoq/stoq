@@ -37,7 +37,7 @@ from stoqlib.chart.chart import get_chart_class
 from stoqlib.lib.daemonutils import start_daemon
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.webview import WebView
+from stoqlib.gui.widgets.webview import WebView
 
 _ = stoqlib_gettext
 

@@ -98,8 +98,8 @@ class SearchColumn(Column):
 class IdentifierColumn(SearchColumn):
     """A column for :class:`stoqlib.database.properties.IdentifierCol`
 
-    This is :class:`stoqlib.gui.columns.SearchColumn`, but with some
-    properties adjusted to properly display identifiers, avoiding
+    This is :class:`stoqlib.gui.search.searchcolumns.SearchColumn`, but
+    with some properties adjusted to properly display identifiers, avoiding
     lots of code duplication.
 
     One can still overwrite some of those properties, but do that

@@ -23,8 +23,8 @@
 ##
 
 from stoqlib.domain.sale import Delivery
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.deliverysearch import DeliverySearch
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 
 

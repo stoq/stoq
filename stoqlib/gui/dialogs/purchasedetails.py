@@ -39,11 +39,11 @@ from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.printing import print_labels, print_report
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
+from stoqlib.gui.utils.printing import print_labels, print_report
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 _ = stoqlib_gettext

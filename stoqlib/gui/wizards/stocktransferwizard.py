@@ -44,7 +44,7 @@ from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialo
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.events import StockTransferWizardFinishEvent
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_sellable_description

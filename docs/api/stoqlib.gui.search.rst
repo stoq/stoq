@@ -184,6 +184,14 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`searchcolumns` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.search.searchcolumns
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`searchdialog` Module
 --------------------------
 

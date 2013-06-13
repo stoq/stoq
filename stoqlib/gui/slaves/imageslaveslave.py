@@ -35,7 +35,7 @@ from kiwi.utils import gsignal
 
 from stoqlib.domain.image import Image
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.filters import get_filters_for_images
+from stoqlib.gui.utils.filters import get_filters_for_images
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

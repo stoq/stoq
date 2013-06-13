@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.gui.dialogs.costcenterdialog import CostCenterDialog
 from stoqlib.gui.search.costcentersearch import CostCenterSearch
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

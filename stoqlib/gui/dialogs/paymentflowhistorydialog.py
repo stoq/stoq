@@ -29,9 +29,9 @@ from storm.expr import And, Eq, Or
 
 from stoqlib.database.expr import Date
 from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchoptions import Today, Yesterday, LastWeek, LastMonth
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.payment import PaymentFlowHistoryReport

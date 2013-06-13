@@ -28,10 +28,10 @@ import gtk
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
-from stoqlib.gui.uitestutils import GUITest
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 

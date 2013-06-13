@@ -42,14 +42,14 @@ from stoqlib.domain.views import (ProductQuantityView,
                                   ProductBranchStockView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.gtkadds import change_button_appearance
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog, SearchDialogPrintSlave
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter, Today
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost

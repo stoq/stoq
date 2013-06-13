@@ -23,11 +23,12 @@
 ##
 
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 
+# FIXME: We should not translate anything on tests
 _ = stoqlib_gettext
 
 

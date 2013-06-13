@@ -206,7 +206,7 @@ class BasicDialog(GladeDelegate, RunnableView):
 
     def _add_help_button(self, section):
         def on_help__clicked(button):
-            from stoqlib.gui.help import show_section
+            from stoqlib.gui.utils.help import show_section
             show_section(section)
 
         self.action_area.set_layout(gtk.BUTTONBOX_END)

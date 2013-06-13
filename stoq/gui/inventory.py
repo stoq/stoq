@@ -34,12 +34,12 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
-from stoqlib.gui.keybindings import get_accels
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import ProductCountingReport

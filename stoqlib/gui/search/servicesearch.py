@@ -35,12 +35,12 @@ from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.service import ServiceReport, ServicePriceReport
 from stoqlib.gui.base.gtkadds import change_button_appearance
-from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
-from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.searchdialog import SearchDialogPrintSlave
 from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.utils.printing import print_report
 
 _ = stoqlib_gettext
 

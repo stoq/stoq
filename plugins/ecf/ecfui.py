@@ -47,10 +47,10 @@ from stoqlib.domain.person import Individual, Company
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
-from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 CouponCreatedEvent)
+from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext

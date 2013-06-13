@@ -32,7 +32,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.slaves.paymentconfirmslave import (PurchasePaymentConfirmSlave,
                                                     SalePaymentConfirmSlave)
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localtoday
 
 

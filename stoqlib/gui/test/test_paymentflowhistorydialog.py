@@ -23,8 +23,8 @@
 ##
 
 import mock
-from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
+from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPaymentFlowHistoryDialog(GUITest):
