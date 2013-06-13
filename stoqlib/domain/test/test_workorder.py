@@ -619,8 +619,15 @@ class TestWorkOrder(DomainTest):
                          self.fake.datetime.datetime.now())
 
     def testReopen(self):
-        # TODO
-        pass
+        workorder = self.create_workorder()
+        workorder.approve()
+        workorder.work()
+        workorder.add_sellable(self.create_sellable())
+        workorder.finish()
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
+
+        workorder.reopen(reason=u"Reopen reason")
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
     def testClose(self):
         workorder = self.create_workorder()
