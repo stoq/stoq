@@ -38,7 +38,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.python import Settable
-from storm.expr import And
+from storm.expr import And, Lower
 
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObject
@@ -604,6 +604,32 @@ class SellableItemSlave(BaseEditorSlave):
         self.sellable_selected(sellable)
         self.quantity.grab_focus()
 
+    def _find_sellable(self, code=None, barcode=None):
+        """Find a sellable given a code or barcode.
+
+        When searching using the code attribute of the sellable, the search will
+        be case insensitive.
+
+        :returns: The sellable that matches the given barcode or code or
+          ``None`` if nothing was found.
+        """
+        viewable, default_query = self.get_sellable_view_query()
+        if barcode:
+            query = (Lower(viewable.barcode) == barcode.lower())
+        else:
+            query = (Lower(viewable.code) == code.lower())
+
+        if default_query:
+            query = And(query, default_query)
+
+        # FIXME: doing list() here is wrong. But there is a bug in one of
+        # the queries, that len() == 1 but results.count() == 2.
+        results = list(self.store.find(viewable, query))
+        if len(results) != 1:
+            return None
+
+        return results[0].sellable
+
     def _get_sellable(self):
         """This method always read the barcode and searches de database.
 
@@ -615,20 +641,12 @@ class SellableItemSlave(BaseEditorSlave):
             return None
         barcode = unicode(barcode, 'utf-8')
 
-        viewable, default_query = self.get_sellable_view_query()
-        query = viewable.barcode == barcode
+        # First search using the barcode. If the sellable was not found, then
+        # try using the internal code.
+        sellable = self._find_sellable(barcode=barcode)
+        if not sellable:
+            sellable = self._find_sellable(code=barcode)
 
-        if default_query:
-            query = And(query, default_query)
-
-        # FIXME: doing list() here is wrong. But there is a bug in one of
-        # the queries, that len() == 1 but results.count() == 2.
-        results = list(self.store.find(viewable, query))
-
-        if len(results) != 1:
-            return None
-
-        sellable = results[0].sellable
         if not sellable:
             return None
         elif not self.can_add_sellable(sellable):
