@@ -10,7 +10,7 @@ CREATE TABLE person_adapt_to_publisher (
 );
 
 CREATE TABLE product_adapt_to_book (
-    id uuid PRIMARY KEY DEFAULT uuid_genereate_v1(),
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     original_id uuid UNIQUE REFERENCES product(id),
 

@@ -24,7 +24,8 @@
 
 from storm.references import Reference
 
-from stoqlib.database.properties import IntCol, DecimalCol, DateTimeCol, UnicodeCol
+from stoqlib.database.properties import (IntCol, DecimalCol, DateTimeCol,
+                                         UnicodeCol, IdCol)
 from stoqlib.domain.base import Domain
 
 
@@ -48,7 +49,7 @@ class OpticalProduct(Domain):
     #: Contact lenses
     TYPE_CONTACT_LENSES = 2
 
-    product_id = IntCol()
+    product_id = IdCol()
     product = Reference(product_id, 'Product.id')
 
     # The type indicates what of the following fields should be edited.
@@ -186,7 +187,7 @@ class OpticalWorkOrder(Domain):
     #: The frame is made of metal (any kind)
     FRAME_TYPE_METAL = 2
 
-    work_order_id = IntCol()
+    work_order_id = IdCol()
     work_order = Reference(work_order_id, 'WorkOrder.id')
 
     prescription_date = DateTimeCol()
