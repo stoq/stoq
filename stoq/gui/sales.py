@@ -204,7 +204,6 @@ class SalesApp(ShellApp):
 
         self.popup = self.uimanager.get_widget('/SaleSelection')
 
-        self._columns = self.get_columns()
         self._setup_columns()
         self._setup_widgets()
 
@@ -371,13 +370,12 @@ class SalesApp(ShellApp):
         if self._visible_date_col:
             self._visible_date_col.visible = False
 
-        for col in self._columns:
-            if col.attribute == self.cols_info[sale_status]:
-                self._visible_date_col = col
-                col.visible = True
-                break
+        col = self.search.get_column_by_attribute(self.cols_info[sale_status])
+        if col is not None:
+            self._visible_date_col = col
+            col.visible = True
 
-        self.results.set_columns(self._columns)
+        self.results.set_columns(self.search.columns)
         # Adding summary label again and make it properly aligned with the
         # new columns setup
         self._create_summary_label()

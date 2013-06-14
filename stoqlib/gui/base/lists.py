@@ -254,7 +254,7 @@ class AdditionListSlave(SearchSlave):
         SearchSlave.__init__(self, columns=columns,
                              restore_name=restore_name,
                              store=store)
-        if not self._columns:
+        if not self.columns:
             raise StoqlibError("columns must be specified")
         self.visual_mode = visual_mode
         self.store = store
@@ -270,7 +270,7 @@ class AdditionListSlave(SearchSlave):
         self._update_sensitivity()
 
     def _setup_klist(self, klist_objects):
-        self.klist.set_columns(self._columns)
+        self.klist.set_columns(self.columns)
         self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.klist.add_list(klist_objects)
         if self.visual_mode:

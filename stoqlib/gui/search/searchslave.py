@@ -101,7 +101,6 @@ class SearchSlave(SlaveDelegate):
             self.result_view_class = SearchResultTreeView
 
         self._auto_search = True
-        self._columns = columns
         self._lazy_search = False
         self._last_results = None
         self._model = None
@@ -116,7 +115,7 @@ class SearchSlave(SlaveDelegate):
         self.result_view = None
         self._settings_key = 'search-columns-%s' % (
             api.get_current_user(self.store).username, )
-        self._columns = self.restore_columns(columns)
+        self.columns = self.restore_columns(columns)
 
         self.vbox = gtk.VBox()
         SlaveDelegate.__init__(self, toplevel=self.vbox)
@@ -190,18 +189,6 @@ class SearchSlave(SlaveDelegate):
         elif position == SearchFilterPosition.BOTTOM:
             self.filters_box.pack_start(search_filter, False, False)
         search_filter.show()
-
-    #
-    # Overridable
-    #
-
-    def get_columns(self):
-        """
-        This needs to be implemented in a subclass
-        :returns: columns
-        :rtype: list of :class:`kiwi.ui.objectlist.Column`
-        """
-        raise NotImplementedError
 
     #
     # Properties
@@ -283,7 +270,7 @@ class SearchSlave(SlaveDelegate):
         self.combo_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
 
         self.menu = gtk.Menu()
-        for column in self._columns:
+        for column in self.columns:
             if not isinstance(column, SearchColumn):
                 continue
 
@@ -304,7 +291,7 @@ class SearchSlave(SlaveDelegate):
 
     def get_column_by_attribute(self, attribute):
         """Returns a column by its model attribute."""
-        for column in self._columns:
+        for column in self.columns:
             if column.attribute == attribute:
                 return column
 
@@ -574,7 +561,7 @@ class SearchSlave(SlaveDelegate):
 
         self.result_view = result_view_class()
         self.result_view.attach(search=self,
-                                columns=self._columns)
+                                columns=self.columns)
 
         if self._lazy_search:
             self.result_view.enable_lazy_search()
