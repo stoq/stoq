@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkWindow" id="StorableBatchSelectionEditor">
+  <object class="GtkWindow" id="BatchSelectionDialog">
     <child>
       <object class="GtkAlignment" id="alignment1">
         <property name="visible">True</property>
