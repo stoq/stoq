@@ -1,6 +1,6 @@
 -- Create a table for storing work order's history
 CREATE TABLE work_order_history (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     date timestamp NOT NULL,
