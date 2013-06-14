@@ -22,11 +22,33 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from storm.expr import Join
 from storm.references import Reference
 
 from stoqlib.database.properties import (IntCol, DecimalCol, DateTimeCol,
                                          UnicodeCol, IdCol)
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.person import Person
+
+
+class OpticalMedic(Domain):
+    """Information about the Medic (Ophtamologist)"""
+
+    __storm_table__ = 'optical_medic'
+
+    person_id = IdCol()
+    person = Reference(person_id, 'Person.id')
+
+    # TODO: Find out a better name for crm
+    crm_number = UnicodeCol()
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return '%s (crm: %s)' % (self.person.name, self.crm_number)
 
 
 class OpticalProduct(Domain):
@@ -268,3 +290,17 @@ class OpticalWorkOrder(Domain):
 
     #: Pupil distance (DNP in pt_BR)
     re_near_pd = DecimalCol(default=0)
+
+
+class OpticalMedicView(Viewable):
+    medic = OpticalMedic
+
+    id = Person.id
+    name = Person.name
+    crm_number = OpticalMedic.crm_number
+    phone_number = Person.phone_number
+
+    tables = [
+        Person,
+        Join(OpticalMedic, Person.id == OpticalMedic.person_id)
+    ]

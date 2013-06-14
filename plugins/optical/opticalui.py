@@ -38,6 +38,7 @@ from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.translation import stoqlib_gettext
 
+from optical.medicssearch import OpticalMedicSearch
 from optical.opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
 from optical.opticalwizard import OpticalSaleQuoteWizard
 
@@ -55,6 +56,7 @@ class OpticalUI(object):
         RunDialogEvent.connect(self._on_RunDialogEvent)
         add_bindings([
             ('plugin.optical.pre_sale', ''),
+            ('plugin.optical.search_medics', ''),
         ])
 
     #
@@ -73,7 +75,8 @@ class OpticalUI(object):
         </ui>"""
 
     def _add_sale_menus(self, uimanager):
-        menu_items_str = '<menuitem action="OpticalPreSale"/>'
+        menu_items_str = '''<menuitem action="OpticalPreSale"/>
+                            <menuitem action="OpticalMedicSearch"/>'''
         ui_string = self._get_menu_ui_string() % menu_items_str
 
         group = get_accels('plugin.optical')
@@ -83,6 +86,9 @@ class OpticalUI(object):
             ('OpticalPreSale', None, _(u'Optical pre sale'),
              group.get('pre_sale'), None,
              self._on_OpticalPreSale__activate),
+            ('OpticalMedicSearch', None, _(u'Medics ...'),
+             group.get('search_medics'), None,
+             self._on_MedicsSearch__activate),
         ])
 
         uimanager.insert_action_group(ag, 0)
@@ -148,3 +154,7 @@ class OpticalUI(object):
 
     def _on_OpticalPreSale__activate(self, action):
         self._create_pre_sale()
+
+    def _on_MedicsSearch__activate(self, action):
+        with api.trans() as store:
+            run_dialog(OpticalMedicSearch, None, store, hide_footer=True)

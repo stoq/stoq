@@ -28,11 +28,16 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
+
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
-from optical.opticaldomain import OpticalWorkOrder, OpticalProduct
+from optical.opticaleditor import MedicEditor
+from optical.opticaldomain import OpticalWorkOrder, OpticalProduct, OpticalMedic
 
 _ = stoqlib_gettext
 
@@ -40,6 +45,26 @@ _ = stoqlib_gettext
 #: user. This is not a validation, but just a warning. This could also be a
 #: parameter
 LATE_PRESCRIPTION_DAYS = 365
+
+
+class MedicDetailsSlave(BaseEditorSlave):
+    gladefile = 'MedicDetailsSlave'
+    title = _(u'Medic Details')
+    model_type = object
+    proxy_widgets = ['crm_number']
+
+    def __init__(self, store, medic, model=None, visual_mode=False):
+        self._medic = medic
+        BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
+
+    def create_model(self, store):
+        model = store.find(OpticalMedic, person=self._medic.person).one()
+        if model is None:
+            model = OpticalMedic(medic=self._product, store=store)
+        return model
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, MedicDetailsSlave.proxy_widgets)
 
 
 # FIXME: Implement this completely:
@@ -100,7 +125,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     gladefile = 'WorkOrderOpticalSlave'
     title = _(u'Optical Details')
     model_type = object
-    proxy_widgets = ['prescription_date', 'patient', 'lens_type', 'frame_type']
+    proxy_widgets = ['prescription_date', 'patient', 'lens_type', 'frame_type',
+                     'medic_combo']
     workorder_widgets = ['estimated_finish']
 
     # This is a dictionary of specifications for each widget in the slave. each item
@@ -163,6 +189,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             (_('Nylon String'), OpticalWorkOrder.FRAME_TYPE_NYLON),
             (_('Metal'), OpticalWorkOrder.FRAME_TYPE_METAL),
         ])
+        self._medic_combo_prefill()
 
     def _setup_adjustments(self):
         """This will setup the adjustments for the prescription widgets, and
@@ -192,6 +219,16 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             widget.set_digits(digits)
 
         return widget_names
+
+    def _run_medic_editor(self, medic=None, visual_mode=False):
+        with api.trans() as store:
+            run_person_role_dialog(MedicEditor, self, store, medic,
+                                   visual_mode=True)
+        self._medic_combo_prefill()
+
+    def _medic_combo_prefill(self):
+        medics = self.store.find(OpticalMedic)
+        self.medic_combo.prefill(api.for_person_combo(medics))
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -233,6 +270,13 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
                                  'one year'))
         else:
             widget.set_pixbuf(None)
+
+    def on_medic_create__clicked(self, button):
+        self._run_medic_editor()
+
+    def on_medic_details__clicked(self, button):
+        medic = self.model.medic
+        run_dialog(MedicEditor, self, self.store, medic, visual_mode=True)
 
     # Distance axis == Near axis, always
 
