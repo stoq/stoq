@@ -25,6 +25,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`autoreload` Module
+------------------------
+
+.. automodule:: stoqlib.lib.autoreload
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`barcode` Module
 ---------------------
 
@@ -141,6 +149,14 @@ lib Package
 -----------------------
 
 .. automodule:: stoqlib.lib.diffutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`distutils` Module
+-----------------------
+
+.. automodule:: stoqlib.lib.distutils
     :members:
     :undoc-members:
     :show-inheritance:

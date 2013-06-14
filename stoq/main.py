@@ -52,6 +52,10 @@ def get_shell(args):
                      dest="splashscreen",
                      default=True,
                      help='Disable the splash screen')
+    group.add_option('-A', '--autoreload',
+                     action="store_true",
+                     dest="autoreload",
+                     help='Autoreload application when source is modified')
     group.add_option('', '--version',
                      action="store_true",
                      dest="version",

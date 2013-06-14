@@ -282,7 +282,7 @@ class Shell(object):
             pass
 
     @inlineCallbacks
-    def _terminate(self, restart=False):
+    def _terminate(self, restart=False, app=None):
         log.info("Terminating Stoq")
 
         # This removes all temporary files created when calling
@@ -300,7 +300,10 @@ class Shell(object):
         if restart:
             from stoqlib.lib.process import Process
             log.info('Restarting Stoq')
-            Process([sys.argv[0], '--no-splash-screen'])
+            args = [sys.argv[0], '--no-splash-screen']
+            if app is not None:
+                args.append(app)
+            Process(args)
 
         # os._exit() forces a quit without running atexit handlers
         # and does not block on any running threads
@@ -360,7 +363,7 @@ class Shell(object):
         """
         if not self.windows:
             return ''
-        return self.window[0].current_app.app_name
+        return self.windows[0].current_app.app_name
 
     def create_window(self):
         """
@@ -419,11 +422,14 @@ class Shell(object):
         reactor.run()
         log.info("Leaving reactor")
 
-    def quit(self, restart=False):
+    def quit(self, restart=False, app=None):
         """
         Quit the shell and exit the application.
         This will save user settings and then forcefully terminate
         the application
+
+        :param restart: if ``True`` restart after terminating
+        :param str app: if not ``None``, name of the application to restart
         """
         from stoqlib.api import api
         self._logout()
@@ -433,7 +439,7 @@ class Shell(object):
         log.debug("Flushing user settings")
         api.user_settings.flush()
 
-        self._terminate(restart=restart)
+        self._terminate(restart=restart, app=app)
 
 
 def get_shell():
