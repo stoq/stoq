@@ -28,7 +28,7 @@ import datetime
 
 import gtk
 from kiwi.currency import currency
-from storm.expr import Join
+from storm.expr import Join, Cast
 
 from stoqlib.api import api
 from stoqlib.database.viewable import Viewable
@@ -60,6 +60,7 @@ class TillFiscalOperationsView(Viewable):
 
     id = Payment.id
     identifier = Payment.identifier
+    identifier_str = Cast(Payment.identifier, 'text')
     date = Payment.open_date
     description = Payment.description
     value = Payment.value
@@ -91,7 +92,7 @@ class TillFiscalOperationsSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(['description', 'identifier_str'])
         executer = self.search.get_query_executer()
         executer.add_query_callback(self._get_query)
 

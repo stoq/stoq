@@ -80,7 +80,8 @@ class TransferOrderSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['source_branch_name',
-                                     'destination_branch_name'])
+                                     'destination_branch_name',
+                                     'identifier_str'])
 
         # Date
         self.date_filter = DateSearchFilter(_('Date:'))

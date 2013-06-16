@@ -329,7 +329,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                                   store=self.store)
         self.attach_slave('search_group_holder', self.search)
 
-        self.search.set_text_field_columns(['supplier_name'])
+        self.search.set_text_field_columns(['supplier_name', 'identifier_str'])
         filter = self.search.get_primary_filter()
         filter.set_label(_(u'Supplier:'))
         self.search.focus_search_entry()

@@ -341,7 +341,8 @@ class MaintenanceApp(ShellApp):
         self.search.set_message(msg)
 
     def create_filters(self):
-        self.set_text_field_columns(['equipment', 'client_name'])
+        self.set_text_field_columns(['equipment', 'client_name',
+                                     'identifier_str'])
 
         self.main_filter = ComboSearchFilter(_('Show'), [])
         combo = self.main_filter.combo

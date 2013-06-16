@@ -106,7 +106,7 @@ class PaymentReceivingSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(['description', 'identifier_str'])
         self.search.set_query(self.executer_query)
 
         # Date

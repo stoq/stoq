@@ -54,7 +54,7 @@ class CommissionSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['salesperson_name'])
+        self.set_text_field_columns(['salesperson_name', 'identifier_str'])
 
         persons = [p.person.name for p in
                    self.store.find(SalesPerson)]

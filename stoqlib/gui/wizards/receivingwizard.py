@@ -117,7 +117,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.search.focus_search_entry()
 
     def _create_filters(self):
-        self.search.set_text_field_columns(['supplier_name'])
+        self.search.set_text_field_columns(['supplier_name', 'identifier_str'])
 
     def get_extra_query(self, states):
         return PurchaseOrderView.status == PurchaseOrder.ORDER_CONFIRMED

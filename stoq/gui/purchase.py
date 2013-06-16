@@ -247,7 +247,7 @@ class PurchaseApp(ShellApp):
         self.set_sensitive(self._inventory_widgets, False)
 
     def create_filters(self):
-        self.set_text_field_columns(['supplier_name'])
+        self.set_text_field_columns(['supplier_name', 'identifier_str'])
         self.status_filter = ComboSearchFilter(_('Show orders'),
                                                self._get_status_values())
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])

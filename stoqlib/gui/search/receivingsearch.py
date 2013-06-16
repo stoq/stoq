@@ -62,7 +62,8 @@ class PurchaseReceivingSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['supplier_name', 'responsible_name',
-                                     'purchase_responsible_name'])
+                                     'purchase_responsible_name',
+                                     'purchase_identifier_str'])
 
         # Branch
         branch_filter = self.create_branch_filter(_("In branch:"))

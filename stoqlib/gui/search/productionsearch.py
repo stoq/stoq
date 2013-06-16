@@ -75,7 +75,7 @@ class ProductionItemsSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(['description', 'order_identifier_str'])
 
         statuses = [(desc, i) for i, desc in ProductionOrder.statuses.items()]
         statuses.insert(0, (_(u'Any'), None))

@@ -153,7 +153,7 @@ class CardPaymentSearch(SearchEditor):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['drawee_name'])
+        self.set_text_field_columns(['drawee_name', 'identifier_str'])
         self.search.set_query(self.executer_query)
 
         # Provider

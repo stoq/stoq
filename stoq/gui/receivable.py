@@ -165,7 +165,7 @@ class ReceivableApp(BaseAccountWindow):
         self._run_bill_check_search()
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'drawee'])
+        self.set_text_field_columns(['description', 'drawee', 'identifier_str'])
         self.create_main_filter()
 
     def get_columns(self):

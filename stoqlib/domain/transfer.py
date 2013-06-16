@@ -23,7 +23,7 @@
 ##
 """  Product transfer management """
 
-from storm.expr import Join, LeftJoin, Sum
+from storm.expr import Join, LeftJoin, Sum, Cast
 from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implements
@@ -228,6 +228,7 @@ class TransferOrderView(Viewable):
 
     id = TransferOrder.id
     identifier = TransferOrder.identifier
+    identifier_str = Cast(TransferOrder.identifier, 'text')
     open_date = TransferOrder.open_date
     receival_date = TransferOrder.receival_date
     source_branch_id = TransferOrder.source_branch_id

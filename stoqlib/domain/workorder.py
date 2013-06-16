@@ -26,7 +26,7 @@
 
 from kiwi.currency import currency
 from storm.expr import (Count, Join, LeftJoin, Alias, Select, Sum, Coalesce,
-                        In, And, Eq)
+                        In, And, Eq, Cast)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
@@ -1101,6 +1101,7 @@ class WorkOrderView(Viewable):
     # WorkOrder
     id = WorkOrder.id
     identifier = WorkOrder.identifier
+    identifier_str = Cast(WorkOrder.identifier, 'text')
     status = WorkOrder.status
     equipment = WorkOrder.equipment
     open_date = WorkOrder.open_date

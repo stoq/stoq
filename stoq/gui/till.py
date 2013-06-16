@@ -186,7 +186,8 @@ class TillApp(ShellApp):
 
     def create_filters(self):
         self.search.set_query(self._query_executer)
-        self.set_text_field_columns(['client_name', 'salesperson_name'])
+        self.set_text_field_columns(['client_name', 'salesperson_name',
+                                     'identifier_str'])
         self.status_filter = ComboSearchFilter(_(u"Show orders"),
                                                self._get_status_values())
         self.status_filter.select(Sale.STATUS_CONFIRMED)
