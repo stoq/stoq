@@ -48,7 +48,7 @@ _ = stoqlib_gettext
 BatchItem = collections.namedtuple('BatchItem', ['batch', 'quantity'])
 
 
-class _StorableBatchSelectionDialog(BaseEditor):
+class _BatchSelectionDialog(BaseEditor):
     """A dialog for selecting batch quantities
 
     This editor will help to generate quantities for batches given a
@@ -78,7 +78,7 @@ class _StorableBatchSelectionDialog(BaseEditor):
 
     size = (400, -1)
     title = _("Batch selection")
-    gladefile = 'StorableBatchSelectionEditor'
+    gladefile = 'BatchSelectionDialog'
     model_type = Storable
     proxy_widgets = [
         'description',
@@ -416,10 +416,10 @@ class _StorableBatchSelectionDialog(BaseEditor):
         self._update_view()
 
 
-class BatchDecreaseSelectionDialog(_StorableBatchSelectionDialog):
+class BatchDecreaseSelectionDialog(_BatchSelectionDialog):
     """Batch selection for storable decreases
 
-    This is the same as :class:`_StorableBatchSelectionDialog`,
+    This is the same as :class:`_BatchSelectionDialog`,
     but since the quantity selected here is going to be decreased,
     it will be validated for each batch (so no batch is allowed
     to have more quantity than the available in stock)
@@ -439,11 +439,11 @@ class BatchDecreaseSelectionDialog(_StorableBatchSelectionDialog):
             taken in consideration when checking for stock availability
         """
         self._decreased_batches = decreased_batches or []
-        _StorableBatchSelectionDialog.__init__(self, store, model, quantity,
-                                               original_batches=original_batches)
+        _BatchSelectionDialog.__init__(self, store, model, quantity,
+                                       original_batches=original_batches)
 
     #
-    #  _StorableBatchSelectionDialog
+    #  _BatchSelectionDialog
     #
 
     def setup_entry(self, entry):
@@ -479,10 +479,10 @@ class BatchDecreaseSelectionDialog(_StorableBatchSelectionDialog):
                                      "the given batch") % available_qty)
 
 
-class BatchIncreaseSelectionDialog(_StorableBatchSelectionDialog):
+class BatchIncreaseSelectionDialog(_BatchSelectionDialog):
     """Batch selection for storable increases
 
-    This is the same as :class:`_StorableBatchSelectionDialog`,
+    This is the same as :class:`_BatchSelectionDialog`,
     but since the quantity selected here is going to be increased
     there's no limit for quantities in each batch (unless specified
     by the *max_quantity* param)
