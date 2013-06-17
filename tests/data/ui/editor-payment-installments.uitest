@@ -16,7 +16,7 @@ GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
                   GtkRadioButton(expand=True, fill=True): 'Deposit'
                 GtkHBox(hbox2, fill=True):
                   ProxyLabel(currency, fill=True): '$CURRENCY:'
-                  ProxyEntry(value, fill=True): '0.0', insensitive
+                  ProxyEntry(value): '0.0', insensitive
                   GtkButton(add_button, fill=True): 'gtk-add', insensitive
               GtkHBox(hbox3, expand=True, fill=True):
                 GtkVBox(vbox2, expand=True, fill=True):
@@ -26,17 +26,20 @@ GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
                     column: title='Value'
                     column: title='Due date'
                     row: u'1/1 Check for sale 09431', u'Preview', <currency $50>, datetime.datetime(2001, 1, 1, 0, 0)
+                GtkVBox(vbox3, fill=True):
+                  GtkButton(remove_button): 'gtk-remove', insensitive
+                  GtkLabel(label2, expand=True, fill=True):
                   GtkTable(footer_table, fill=True):
-                    GtkLabel(label11): 'Payments:'
-                    ProxyLabel(received_value): '<span weight="bold">$50.00</span>'
                     GtkLabel(label12): 'Total:'
                     ProxyLabel(total_value): '<span weight="bold">$50.00</span>'
+                    GtkLabel(label11): 'Paid:'
+                    ProxyLabel(received_value): '<span weight="bold">$50.00</span>'
                     GtkHSeparator(hseparator1):
                     GtkHSeparator(hseparator2):
-                    GtkLabel(missing_change): 'Difference:'
+                    GtkLabel(missing): 'Difference:'
                     ProxyLabel(missing_value): '<span weight="bold">$ 0.00</span>'
-                GtkVBox(vbox3, fill=True):
-                  GtkButton(remove_button, fill=True): 'gtk-remove', insensitive
+                    GtkLabel(change): 'Change:'
+                    ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

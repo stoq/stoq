@@ -1079,6 +1079,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.total_value.set_bold(True)
         self.received_value.set_bold(True)
         self.missing_value.set_bold(True)
+        self.change_value.set_bold(True)
         self.total_value.update(self._total_value)
         self.remove_button.set_sensitive(False)
         self._update_values()
@@ -1131,23 +1132,29 @@ class MultipleMethodSlave(BaseEditorSlave):
 
     def _update_missing_or_change_value(self):
         # The total value may be less than total received.
-        value = self._get_missing_change_value(with_new_payment=True)
-        self.missing_value.update(abs(value))
 
-        if value > 0:
-            self.missing_change.set_text(_('Missing:'))
-        elif value < 0 and isinstance(self.model, ReturnedSale):
-            self.missing_change.set_text(_('Overpaid:'))
-        elif value < 0:
-            self.missing_change.set_text(_('Change:'))
+        value = self._get_missing_change_value(with_new_payment=True)
+        missing_value = self._get_missing_change_value(with_new_payment=False)
+
+        self.missing_value.update(abs(missing_value))
+
+        change_value = currency(0)
+        if value < 0:
+            change_value = abs(value)
+        self.change_value.update(change_value)
+
+        if missing_value > 0:
+            self.missing.set_text(_('Missing:'))
+        elif missing_value < 0 and isinstance(self.model, ReturnedSale):
+            self.missing.set_text(_('Overpaid:'))
         else:
-            self.missing_change.set_text(_('Difference:'))
+            self.missing.set_text(_('Difference:'))
 
     def _get_missing_change_value(self, with_new_payment=False):
         received = self.received_value.read()
+
         if received == ValueUnset:
             received = currency(0)
-
         if with_new_payment:
             new_payment = self.value.read()
             if new_payment == ValueUnset:
