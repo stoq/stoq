@@ -19,8 +19,6 @@
 -- Author(s): Stoq Team <stoq-devel@async.com.br>
 --
 
--- Patches applied: 04-01 até 04-13, 04-20
-
 --
 -- Extensions
 --
@@ -35,7 +33,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE branch_synchronization (
     id serial NOT NULL PRIMARY KEY,
     sync_time timestamp  NOT NULL,
-    branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     policy text NOT NULL
 );
 
@@ -59,9 +56,9 @@ CREATE TABLE event (
 CREATE TABLE transaction_entry (
     id serial NOT NULL PRIMARY KEY,
     te_time timestamp NOT NULL,
-    user_id integer,
-    station_id integer,
-    dirty boolean DEFAULT true
+    user_id uuid,
+    station_id uuid,
+    dirty boolean DEFAULT TRUE
 );
 
 --
@@ -132,7 +129,7 @@ CREATE TABLE credit_provider (
         CHECK (max_installments > 0),
     short_name text,
     provider_id text,
-    open_contract_date timestamp,
+    open_contract_date timestamp
 );
 
 CREATE TABLE individual (
@@ -152,7 +149,7 @@ CREATE TABLE individual (
     gender integer CONSTRAINT valid_gender
         CHECK (gender >= 0 AND gender < 2),
     spouse_name text,
-    birth_location_id uuid REFERENCES city_location(id) ON UPDATE CASCADE,
+    birth_location_id bigint REFERENCES city_location(id) ON UPDATE CASCADE,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
 
@@ -239,6 +236,9 @@ CREATE TABLE branch (
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
 
+ALTER TABLE branch_synchronization
+    ADD COLUMN branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE;
+
 ALTER TABLE employee ADD COLUMN branch_id uuid REFERENCES branch(id)
     ON UPDATE CASCADE;
 
@@ -278,7 +278,8 @@ CREATE TABLE transporter (
 CREATE TABLE user_profile (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    name text
+    name text,
+    max_discount numeric(10, 2) DEFAULT 0
 );
 
 CREATE TABLE login_user (
@@ -313,7 +314,7 @@ CREATE TABLE client_salary_history (
 
 
 CREATE TABLE product_tax_template (
-    id uuid NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text,
     tax_type integer
@@ -389,9 +390,9 @@ CREATE TABLE sellable (
 );
 
 CREATE TABLE product_icms_template (
-    id uuid NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    product_tax_template_id bigint UNIQUE REFERENCES product_tax_template(id) ON UPDATE CASCADE,
+    product_tax_template_id uuid UNIQUE REFERENCES product_tax_template(id) ON UPDATE CASCADE,
     bc_include_ipi boolean DEFAULT TRUE,
     bc_st_include_ipi boolean DEFAULT TRUE,
     cst integer,
@@ -409,9 +410,9 @@ CREATE TABLE product_icms_template (
 );
 
 CREATE TABLE product_ipi_template (
-    id uuid NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    product_tax_template_id bigint UNIQUE REFERENCES product_tax_template(id) ON UPDATE CASCADE,
+    product_tax_template_id uuid UNIQUE REFERENCES product_tax_template(id) ON UPDATE CASCADE,
     cl_enq text,
     cnpj_prod text,
     c_selo text,
@@ -441,6 +442,7 @@ CREATE TABLE product (
     ex_tipi text,
     genero text,
     production_time integer DEFAULT 0,
+    manage_stock boolean DEFAULT TRUE,
     is_composed boolean DEFAULT FALSE,
     width numeric(10, 2) CONSTRAINT positive_width
         CHECK (width >= 0),
@@ -450,8 +452,8 @@ CREATE TABLE product (
         CHECK (depth >= 0),
     weight numeric(10, 2) CONSTRAINT positive_weight
         CHECK (weight >= 0),
-    icms_template_id bigint REFERENCES product_icms_template(id) ON UPDATE CASCADE,
-    ipi_template_id bigint REFERENCES product_ipi_template(id) ON UPDATE CASCADE,
+    icms_template_id uuid REFERENCES product_icms_template(id) ON UPDATE CASCADE,
+    ipi_template_id uuid REFERENCES product_ipi_template(id) ON UPDATE CASCADE,
     manufacturer_id uuid REFERENCES product_manufacturer(id) ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE
 );
@@ -471,10 +473,24 @@ CREATE TABLE storable (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     product_id uuid UNIQUE REFERENCES product(id) ON UPDATE CASCADE,
+    is_batch boolean DEFAULT False,
     minimum_quantity numeric(20, 3) DEFAULT 0
         CONSTRAINT positive_minimum_quantity CHECK (minimum_quantity >= 0),
     maximum_quantity numeric(20, 3) DEFAULT 0
         CONSTRAINT positive_maximum_quantity CHECK (maximum_quantity >= 0)
+);
+
+CREATE TABLE storable_batch (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    batch_number text NOT NULL,
+    create_date timestamp NOT NULL,
+    expire_date timestamp,
+    notes text,
+
+    storable_id uuid NOT NULL REFERENCES storable(id) ON UPDATE CASCADE,
+    UNIQUE (storable_id, batch_number)
 );
 
 CREATE TABLE product_stock_item (
@@ -484,7 +500,9 @@ CREATE TABLE product_stock_item (
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
     storable_id uuid REFERENCES storable(id) ON UPDATE CASCADE,
-    branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
+    branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
+    UNIQUE (branch_id, storable_id, batch_id)
 );
 
 CREATE TABLE product_supplier_info (
@@ -502,7 +520,7 @@ CREATE TABLE product_supplier_info (
     minimum_purchase numeric(20, 3) DEFAULT 1,
     supplier_id uuid NOT NULL REFERENCES supplier(id) ON UPDATE CASCADE,
     product_id uuid NOT NULL REFERENCES product(id) ON UPDATE CASCADE,
-    UNIQUE (supplier_id, product_id, supplier_code)
+    CONSTRAINT unique_supplier_code UNIQUE (supplier_id, product_id, supplier_code)
 );
 
 CREATE TABLE product_history (
@@ -599,29 +617,6 @@ CREATE TABLE stock_transaction_history (
     responsible_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
     product_stock_item_id uuid NOT NULL REFERENCES product_stock_item(id)
         ON UPDATE CASCADE
-);
-
-CREATE TABLE cost_center (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
-
-    name text NOT NULL,
-    description text,
-    budget numeric(20, 2) CONSTRAINT positive_budget CHECK (budget >= 0),
-    is_active boolean NOT NULL DEFAULT TRUE
-);
-
-CREATE TABLE cost_center_entry (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
-
-    cost_center_id uuid NOT NULL REFERENCES cost_center(id) ON UPDATE CASCADE,
-    payment_id uuid UNIQUE REFERENCES payment(id) ON UPDATE CASCADE,
-    stock_transaction_id uuid UNIQUE REFERENCES stock_transaction_history(id)
-        ON UPDATE CASCADE,
-    CONSTRAINT stock_transaction_or_payment
-        CHECK ((payment_id IS NULL AND stock_transaction_id IS NOT NULL) OR
-               (payment_id IS NOT NULL AND stock_transaction_id IS NULL))
 );
 
 CREATE TABLE purchase_order (
@@ -763,12 +758,11 @@ CREATE TABLE sale (
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     group_id uuid REFERENCES payment_group(id) ON UPDATE CASCADE,
     transporter_id uuid REFERENCES transporter(id) ON UPDATE CASCADE,
-    cost_center_id uuid REFERENCES cost_center(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
 
 CREATE TABLE sale_item_icms (
-    uuid bigserial NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     bc_include_ipi boolean DEFAULT TRUE,
     bc_st_include_ipi boolean DEFAULT TRUE,
@@ -793,7 +787,7 @@ CREATE TABLE sale_item_icms (
 );
 
 CREATE TABLE sale_item_ipi (
-    id uuid NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     cl_enq text,
     cnpj_prod text,
@@ -815,7 +809,7 @@ CREATE TABLE sale_item (
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
     quantity_decreased numeric(20, 3) DEFAULT 0
-        CONSTRAINT valid_quantity_decreased CHECK (quantity_decreased <= quantity);
+        CONSTRAINT valid_quantity_decreased CHECK (quantity_decreased <= quantity),
     base_price numeric(20, 2) CONSTRAINT positive_base_price
         CHECK (base_price >= 0),
     price numeric(20, 2) CONSTRAINT positive_price
@@ -826,6 +820,7 @@ CREATE TABLE sale_item (
     average_cost numeric(20, 8) DEFAULT 0,
     sale_id uuid REFERENCES sale(id) ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     icms_info_id uuid REFERENCES sale_item_icms(id) ON UPDATE CASCADE,
     ipi_info_id uuid REFERENCES sale_item_ipi(id) ON UPDATE CASCADE,
     cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
@@ -857,6 +852,7 @@ CREATE TABLE returned_sale_item (
     price numeric(20, 2) CONSTRAINT positive_price
         CHECK (price >= 0),
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     sale_item_id uuid REFERENCES sale_item(id) ON UPDATE CASCADE,
     returned_sale_id uuid REFERENCES returned_sale(id) ON UPDATE CASCADE
 );
@@ -872,7 +868,7 @@ CREATE TABLE address (
     complement text,
     is_main_address boolean,
     person_id uuid REFERENCES person(id) ON UPDATE CASCADE,
-    city_location_id uuid REFERENCES city_location(id) ON UPDATE CASCADE
+    city_location_id bigint REFERENCES city_location(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE delivery (
@@ -900,29 +896,6 @@ CREATE TABLE calls (
     description text,
     person_id uuid REFERENCES person(id) ON UPDATE CASCADE,
     attendant_id uuid REFERENCES login_user(id) ON UPDATE CASCADE
-);
-
-CREATE TABLE card_installment_settings (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    payment_day integer
-        CHECK (payment_day <= 28),
-    closing_day integer
-        CHECK (closing_day <= 28)
-);
-
-CREATE TABLE card_installments_provider_details (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    max_installments_number integer CONSTRAINT positive_max_installments_number
-        CHECK (max_installments_number > 0),
-    installment_settings_id uuid REFERENCES card_installment_settings(id) ON UPDATE CASCADE
-);
-
-CREATE TABLE card_installments_store_details (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    max_installments_number integer CONSTRAINT positive_max_installments_number
-        CHECK (max_installments_number > 0),
-    installment_settings_id uuid REFERENCES card_installment_settings(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE account (
@@ -990,8 +963,8 @@ CREATE TABLE payment (
     description text,
     payment_number text,
     penalty numeric(20, 2),
-    bill_received boolean DEFAULT false,
-    attachment_id uuid UNIQUE REFERENCES attachment(id) ON UPDATE CASCADE;
+    bill_received boolean DEFAULT FALSE,
+    attachment_id uuid UNIQUE REFERENCES attachment(id) ON UPDATE CASCADE,
     method_id uuid REFERENCES payment_method(id) ON UPDATE CASCADE,
     group_id uuid REFERENCES payment_group(id) ON UPDATE CASCADE,
     till_id uuid REFERENCES till(id) ON UPDATE CASCADE,
@@ -1002,7 +975,6 @@ CREATE TABLE payment (
 
 CREATE TABLE payment_comment (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     date timestamp,
@@ -1018,19 +990,9 @@ CREATE TABLE check_data (
     bank_account_id uuid REFERENCES bank_account(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE credit_card_details (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    installment_settings_id uuid REFERENCES card_installment_settings(id) ON UPDATE CASCADE
-);
-
-CREATE TABLE debit_card_details (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    receive_days integer CONSTRAINT positive_receive_days
-        CHECK (receive_days >= 0)
-);
-
 CREATE TABLE card_payment_device (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     monthly_cost numeric(20, 2),
     description text
@@ -1038,7 +1000,7 @@ CREATE TABLE card_payment_device (
 
 CREATE TABLE card_operation_cost (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
     device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE,
     provider_id uuid REFERENCES credit_provider(id) ON UPDATE CASCADE,
     card_type integer CONSTRAINT valid_status
@@ -1066,7 +1028,7 @@ CREATE TABLE credit_card_data (
     fee_value numeric(20, 2) DEFAULT 0,
     fare numeric(20, 2) DEFAULT 0,
     payment_id uuid UNIQUE REFERENCES payment(id) ON UPDATE CASCADE,
-    provider_id uuid REFERENCES credit_provider(id) ON UPDATE CASCADE
+    provider_id uuid REFERENCES credit_provider(id) ON UPDATE CASCADE,
     device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE
 );
 
@@ -1162,6 +1124,32 @@ CREATE TABLE profile_settings (
     user_profile_id uuid REFERENCES user_profile(id) ON UPDATE CASCADE
 );
 
+CREATE TABLE cost_center (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    name text NOT NULL,
+    description text,
+    budget numeric(20, 2) CONSTRAINT positive_budget CHECK (budget >= 0),
+    is_active boolean NOT NULL DEFAULT TRUE
+);
+
+ALTER TABLE sale ADD COLUMN
+    cost_center_id uuid REFERENCES cost_center(id) ON UPDATE CASCADE;
+
+CREATE TABLE cost_center_entry (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    cost_center_id uuid NOT NULL REFERENCES cost_center(id) ON UPDATE CASCADE,
+    payment_id uuid UNIQUE REFERENCES payment(id) ON UPDATE CASCADE,
+    stock_transaction_id uuid UNIQUE REFERENCES stock_transaction_history(id)
+        ON UPDATE CASCADE,
+    CONSTRAINT stock_transaction_or_payment
+        CHECK ((payment_id IS NULL AND stock_transaction_id IS NOT NULL) OR
+               (payment_id IS NOT NULL AND stock_transaction_id IS NULL))
+);
+
 CREATE TABLE receiving_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1204,6 +1192,7 @@ CREATE TABLE receiving_order_item (
     cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (cost >= 0),
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     receiving_order_id uuid REFERENCES receiving_order(id) ON UPDATE CASCADE,
     purchase_item_id uuid REFERENCES purchase_item(id) ON UPDATE CASCADE
 );
@@ -1332,6 +1321,7 @@ CREATE TABLE transfer_order_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     sellable_id uuid NOT NULL REFERENCES sellable(id) ON UPDATE CASCADE,
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     transfer_order_id uuid NOT NULL REFERENCES transfer_order(id) ON UPDATE CASCADE,
     quantity numeric(20, 3) NOT NULL CONSTRAINT positive_quantity
         CHECK (quantity > 0)
@@ -1397,6 +1387,7 @@ CREATE TABLE inventory_item (
     reason text,
     product_cost numeric(20, 8) CONSTRAINT positive_product_cost
         CHECK (product_cost >= 0),
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     cfop_data_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
 );
 
@@ -1486,7 +1477,8 @@ CREATE TABLE loan_item (
     price numeric(20, 2) CONSTRAINT positive_price
         CHECK (price >= 0),
     loan_id uuid REFERENCES loan(id) ON UPDATE CASCADE,
-    sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE
+    sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE stock_decrease (
@@ -1514,7 +1506,8 @@ CREATE TABLE stock_decrease_item (
        CHECK (quantity >= 0),
     cost numeric(20, 8) DEFAULT 0,
     stock_decrease_id uuid REFERENCES stock_decrease(id) ON UPDATE CASCADE,
-    sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE
+    sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE work_order_category (
@@ -1540,6 +1533,7 @@ CREATE TABLE work_order (
     open_date timestamp,
     approve_date timestamp,
     finish_date timestamp,
+    is_rejected boolean NOT NULL DEFAULT FALSE,
     defect_reported text,
     defect_detected text,
     branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
@@ -1548,6 +1542,7 @@ CREATE TABLE work_order (
     category_id uuid REFERENCES work_order_category(id) ON UPDATE CASCADE,
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE,
     sale_id uuid REFERENCES sale(id) ON UPDATE CASCADE,
+    current_branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
 
@@ -1558,7 +1553,46 @@ CREATE TABLE work_order_item (
     quantity numeric(20,3),
     price numeric(20,2),
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
+    batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     order_id uuid REFERENCES work_order(id) ON UPDATE CASCADE
+);
+
+CREATE TABLE work_order_package (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    identifier text NOT NULL,
+    status integer NOT NULL CONSTRAINT valid_status
+      CHECK (status >= 0 AND status <= 2),
+    send_date timestamp,
+    receive_date timestamp,
+    send_responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
+    receive_responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
+    destination_branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
+    source_branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
+    CONSTRAINT different_branches CHECK (source_branch_id != destination_branch_id)
+);
+
+CREATE TABLE work_order_package_item (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    order_id uuid NOT NULL REFERENCES work_order(id) ON UPDATE CASCADE,
+    package_id uuid NOT NULL REFERENCES work_order_package(id) ON UPDATE CASCADE,
+    UNIQUE (order_id, package_id)
+);
+
+CREATE TABLE work_order_history (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    date timestamp NOT NULL,
+    what text NOT NULL,
+    old_value text,
+    new_value text,
+    notes text,
+    user_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
+    work_order_id uuid NOT NULL REFERENCES work_order(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE account_transaction (
@@ -1666,4 +1700,4 @@ CREATE TABLE system_table (
 );
 
 INSERT INTO system_table (updated, patchlevel, generation)
-     VALUES (CURRENT_TIMESTAMP, 0, 4);
+     VALUES (CURRENT_TIMESTAMP, 0, 5);

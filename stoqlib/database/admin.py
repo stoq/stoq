@@ -202,7 +202,7 @@ def register_accounts(store):
 def _ensure_card_providers():
     """ Creates a list of default card providers """
     log.info("Creating Card Providers")
-    from stoqlib.domain.payment.card import CreditProvider
+    from stoqlib.domain.payment.card import CreditProvider, CardPaymentDevice
 
     providers = [u'VISANET', u'REDECARD', u'AMEX', u'HIPERCARD',
                  u'BANRISUL', u'PAGGO', u'CREDISHOP', u'CERTIF']
@@ -217,6 +217,9 @@ def _ensure_card_providers():
                        provider_id=name,
                        open_contract_date=TransactionTimestamp(),
                        store=store)
+    devices = store.find(CardPaymentDevice)
+    if devices.is_empty():
+        CardPaymentDevice(store=store, description=_(u'Default'))
     store.commit(close=True)
 
 

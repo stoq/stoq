@@ -624,7 +624,7 @@ class TestStorable(DomainTest):
             storable_with_batch.register_initial_stock(10, b2, unit_cost=1)
 
     def testGetStorablesWithoutStockItem(self):
-        self.clean_domain([ProductStockItem, Storable])
+        self.clean_domain([StockTransactionHistory, ProductStockItem, Storable])
 
         s0_without_stock = self.create_storable()
 
