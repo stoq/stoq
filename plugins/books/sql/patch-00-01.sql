@@ -1,6 +1,5 @@
 -- Creation of person_adapt_to_publisher and product_adapt_to_book tables.
 
-
 CREATE TABLE person_adapt_to_publisher (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),

@@ -1,5 +1,12 @@
 -- Initial schema for optical stores plugin.
 
+CREATE TABLE optical_medic (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE,
+    crm_number text UNIQUE
+);
+
 CREATE TABLE optical_product (
     id uuid NOT NULL PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
