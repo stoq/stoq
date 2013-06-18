@@ -61,6 +61,9 @@ class CreditProvider(Domain):
     #: An identification for this provider
     provider_id = UnicodeCol(default=u'')
 
+    #: the maximum number of installments for a |sale| using this credit provider.
+    max_installments = IntCol(default=1)
+
     #: The date when we start working with this provider
     open_contract_date = DateTimeCol()
 

@@ -288,7 +288,8 @@ class CreditProviderEditor(BaseEditor):
     """
     model_type = CreditProvider
     gladefile = 'CreditProviderEditor'
-    proxy_widgets = ['provider_id', 'short_name', 'open_contract_date']
+    proxy_widgets = ['provider_id', 'short_name',
+                     'max_installments', 'open_contract_date']
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
@@ -379,6 +380,7 @@ class ProviderListSlave(ModelListSlave):
     columns = [
         Column('short_name', title=_('Name'),
                data_type=str, expand=True),
+        Column('max_installments', title=_('Max Installments'), data_type=int),
     ]
 
     def populate(self):

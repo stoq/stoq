@@ -786,9 +786,16 @@ class CardMethodSlave(BaseEditorSlave):
         type = self._selected_type
         maximum = 1
 
-        if (type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE or
-                type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER):
+        if type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
             maximum = self.method.max_installments
+        elif type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
+            provider = self.credit_provider.read()
+            if self.credit_provider is not None:
+                # If we have a credit provider, use the limit from that provider,
+                # otherwise fallback to the payment method.
+                maximum = provider.max_installments
+            else:
+                maximum = self.method.max_installments
 
         if maximum > 1:
             minimum = 2

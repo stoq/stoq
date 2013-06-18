@@ -128,7 +128,7 @@ CREATE TABLE credit_provider (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_active boolean,
-    max_installments integer CONSTRAINT valid_max_installments
+    max_installments integer DEFAULT 12 CONSTRAINT valid_max_installments
         CHECK (max_installments > 0),
     short_name text,
     provider_id text,
