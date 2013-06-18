@@ -26,6 +26,7 @@
 import datetime
 
 import gtk
+from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
@@ -34,7 +35,6 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderPackage,
                                       WorkOrderApprovedAndFinishedView)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.stockicons import STOQ_DELIVERY
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -44,6 +44,7 @@ from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderQuoteSlave,
                                                WorkOrderExecutionSlave,
                                                WorkOrderHistorySlave)
+from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -176,17 +177,7 @@ class WorkOrderEditor(BaseEditor):
                                              self.model.client is not None)
         self.toggle_status_btn.set_visible(bool(label))
 
-        if self.model.is_in_transport():
-            stock_id = STOQ_DELIVERY
-            tooltip = _(u"In transport")
-        elif self.model.is_rejected:
-            stock_id = gtk.STOCK_DIALOG_WARNING
-            tooltip = _(u"Rejected")
-        elif self.model.is_approved():
-            stock_id = gtk.STOCK_APPLY
-            tooltip = _(u"Approved")
-        else:
-            stock_id = None
+        stock_id, tooltip = get_workorder_state_icon(self.model)
         if stock_id is not None:
             self.state_icon.set_from_stock(stock_id, gtk.ICON_SIZE_MENU)
             self.state_icon.set_visible(True)
@@ -341,7 +332,13 @@ class WorkOrderPackageSendEditor(BaseEditor):
             IdentifierColumn('identifier'),
             Column('work_order.status_str', _(u"Status"), data_type=str),
             Column('equipment', _(u"Equipment"), data_type=str,
-                   expand=True),
+                   expand=True, pack_end=True),
+            Column('category_color', title=_(u'Equipment'),
+                   column='equipment', data_type=gtk.gdk.Pixbuf,
+                   format_func=render_pixbuf),
+            Column('flag_icon', title=_(u'Equipment'), column='equipment',
+                   data_type=gtk.gdk.Pixbuf, format_func_data=True,
+                   format_func=self._format_state_icon),
             Column('client_name', _(u"Client"), data_type=str),
             Column('salesperson_name', _(u"Salesperson"), data_type=str,
                    visible=False),
@@ -350,6 +347,13 @@ class WorkOrderPackageSendEditor(BaseEditor):
             Column('approve_date', _(u"Approval date"),
                    data_type=datetime.date)])
         self.workorders.extend(self._find_workorders())
+
+    def _format_state_icon(self, item, data):
+        stock_id, tooltip = get_workorder_state_icon(item.work_order)
+        if stock_id is not None:
+            # We are using self.identifier because render_icon is a
+            # gtk.Widget's # method. It has nothing to do with results tough.
+            return self.identifier.render_icon(stock_id, gtk.ICON_SIZE_MENU)
 
     def _find_workorders(self):
         workorders = WorkOrderApprovedAndFinishedView.find_by_current_branch(

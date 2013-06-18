@@ -67,6 +67,8 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
             ObjectList(work_order_list):
               column: title='#'
               column: title='Equipment', expand
+              column: title='Equipment'
+              column: title='Equipment'
               column: title='Open date'
               column: title='Approve date'
               column: title='Finish date'
