@@ -249,14 +249,6 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`productcountingdialog` Module
------------------------------------
-
-.. automodule:: stoqlib.gui.dialogs.productcountingdialog
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`productiondetails` Module
 -------------------------------
 

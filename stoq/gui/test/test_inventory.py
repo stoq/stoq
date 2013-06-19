@@ -30,8 +30,9 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.inventory import Inventory
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
-from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
+from stoqlib.gui.wizards.inventorywizard import InventoryCountWizard
 from stoqlib.reporting.product import ProductCountingReport
+
 from stoq.gui.inventory import InventoryApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
@@ -98,7 +99,7 @@ class TestInventory(BaseGUITest):
 
         results.select(results[0])
         self._check_run_dialog(app.CountingAction,
-                               ProductCountingDialog, [inventory])
+                               InventoryCountWizard, [inventory])
 
         branches = list(self.store.find(Branch))
         branches.remove(inventory.branch)

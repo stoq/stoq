@@ -33,7 +33,7 @@ from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
                                          IdCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.product import StockTransactionHistory
+from stoqlib.domain.product import StockTransactionHistory, StorableBatch
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -126,12 +126,12 @@ class InventoryItem(Domain):
             storable.increase_stock(adjustment_qty,
                                     self.inventory.branch,
                                     StockTransactionHistory.TYPE_INVENTORY_ADJUST,
-                                    self.id)
+                                    self.id, batch=self.batch)
         else:
             storable.decrease_stock(abs(adjustment_qty),
                                     self.inventory.branch,
                                     StockTransactionHistory.TYPE_INVENTORY_ADJUST,
-                                    self.id)
+                                    self.id, batch=self.batch)
 
         self._add_inventory_fiscal_entry(invoice_number)
 
@@ -257,6 +257,41 @@ class Inventory(Domain):
     #
     # Public API
     #
+
+    def add_sellable(self, sellable, batch_number=None):
+        """Add a sellable in this inventory
+
+        Note that the :attr:`item's quantity <InventoryItem.recorded_quantity>`
+        will be set based on the registered sellable's stock
+
+        :param sellable: the |sellable| to be added
+        :param batch_number: a batch number representing a |batch|
+            for the given sellable. It's used like that instead of
+            getting the |batch| directly since we may be adding an item
+            not registered before
+        """
+        product = sellable.product
+        storable = product.storable
+        if storable is None:
+            raise TypeError("product %r has no storable" % (product, ))
+
+        if batch_number is not None:
+            batch = StorableBatch.get_or_create(self.store,
+                                                storable=storable,
+                                                batch_number=batch_number)
+            quantity = batch.get_balance_for_branch(self.branch)
+        else:
+            batch = None
+            quantity = storable.get_balance_for_branch(self.branch)
+
+        self.validate_batch(batch, sellable)
+
+        return InventoryItem(store=self.store,
+                             product=sellable.product,
+                             batch=batch,
+                             product_cost=sellable.cost,
+                             recorded_quantity=quantity,
+                             inventory=self)
 
     def is_open(self):
         """Checks if this inventory is opened

@@ -25,6 +25,14 @@ wizards Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`inventorywizard` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.wizards.inventorywizard
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`loanwizard` Module
 ------------------------
 
