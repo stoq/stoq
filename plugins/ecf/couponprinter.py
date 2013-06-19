@@ -37,6 +37,7 @@ from stoqlib.database.runtime import new_store
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DeviceError
+from stoqlib.lib.ibpt import calculate_tax_for_item
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -273,12 +274,17 @@ class Coupon(object):
         self._printer = printer
         self._driver = driver
         self._item_ids = {}
+        self._total_taxes = 0
 
         self._customer_document = None
         self._customer_document_type = None
 
     def _get_capability(self, name):
         return self._driver.get_capabilities()[name]
+
+    def _add_tax_for_item(self, item):
+        tax_item = calculate_tax_for_item(item)
+        self._total_taxes += tax_item
 
     #
     # IContainer implementation
@@ -293,6 +299,7 @@ class Coupon(object):
           0 if added but not printed (gift certificates, free deliveries)
         """
         sellable = item.sellable
+        self._add_tax_for_item(item)
         max_len = self._get_capability("item_description").max_len
         description = sellable.description[:max_len]
         unit_desc = ''
@@ -406,8 +413,13 @@ class Coupon(object):
         return True
 
     def close(self, sale):
-        message = _(u'Salesperson: %s') % sale.get_salesperson_name()
-        message += '\n' + _('Stoq Retail Management')
+        sale_total = sale.get_sale_subtotal()
+        total_taxes_percentage = (self._total_taxes / sale_total) * 100
+        msg = "Val Aprox Tributos R${:0.2f} ({:0.2f}%) Fonte:IBPT"
+        parts = [msg.format(self._total_taxes, total_taxes_percentage),
+                 _(u'Salesperson: %s') % sale.get_salesperson_name(),
+                 _('Stoq Retail Management')]
+        message = '\n'.join(parts)
         message += ' - www.stoq.com.br'
         self._create_fiscal_sale_data(sale)
         coupon_id = self._driver.close(message)

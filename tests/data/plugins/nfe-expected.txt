@@ -73,4 +73,4 @@ X|1|
 Y|
 Y02|1234|40.00||40.00|
 Y07|4321|2011-10-24|40.00|
-Z|Documento emitido por ME ou EPP optante pelo SIMPLES NACIONAL. Nao gera Direito a Credito Fiscal de ICMS e de ISS. Conforme Lei Complementar 123 de 14/12/2006.||
+Z|Val Aprox Tributos R$ 0.00 (0.00%) Fonte: IBPT - Documento emitido por ME ou EPP optante pelo SIMPLES NACIONAL. Nao gera Direito a Credito Fiscal de ICMS e de ISS. Conforme Lei Complementar 123 de 14/12/2006.||
