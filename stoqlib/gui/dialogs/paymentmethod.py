@@ -48,6 +48,7 @@ class PaymentMethodsDialog(BasicDialog):
     METHOD_EDITORS = {u'card': CardPaymentMethodEditor,
                       u'money': PaymentMethodEditor,
                       u'check': PaymentMethodEditor,
+                      u'credit': PaymentMethodEditor,
                       u'bill': PaymentMethodEditor,
                       u'deposit': PaymentMethodEditor,
                       u'store_credit': PaymentMethodEditor}
