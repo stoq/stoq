@@ -36,7 +36,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductStockItem,
                                     ProductHistory, ProductComponent,
                                     ProductQualityTest, Storable,
-                                    StockTransactionHistory)
+                                    StockTransactionHistory, StorableBatchView)
 from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
@@ -969,3 +969,42 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock_history(product, 2, transfer_item, transfer,
                                   StockTransactionHistory.TYPE_TRANSFER_FROM)
+
+
+class TestStorableBatchView(DomainTest):
+    def testFind(self):
+        b1 = self.create_storable_batch(batch_number=u'123')
+        b2 = self.create_storable_batch(batch_number=u'456')
+
+        results = self.store.find(StorableBatchView)
+        self.assertEqual(set([b1, b2]), set([r.batch for r in results]))
+
+    def testFindByStorable(self):
+        branch1 = self.create_branch()
+        branch2 = self.create_branch()
+
+        storable = self.create_storable()
+        storable.is_batch = True
+
+        b1 = self.create_storable_batch(storable=storable, batch_number=u'123')
+        b2 = self.create_storable_batch(storable=storable, batch_number=u'456')
+        storable.increase_stock(10, branch1, 0, None, batch=b1)
+        storable.increase_stock(20, branch2, 0, None, batch=b1)
+        storable.increase_stock(40, branch1, 0, None, batch=b2)
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_by_storable(self.store, storable)]),
+            set([(u'123', 10), (u'123', 20), (u'456', 40)]))
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_by_storable(self.store, storable,
+                                                    branch=branch1)]),
+            set([(u'123', 10), (u'456', 40)]))
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_by_storable(self.store, storable,
+                                                    branch=branch2)]),
+            set([(u'123', 20)]))

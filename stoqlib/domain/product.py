@@ -27,20 +27,21 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from storm.expr import And, Eq, LeftJoin
+from storm.expr import And, Eq, LeftJoin, Alias, Sum, Coalesce, Select
 from zope.interface import implements
 
+from stoqlib.database.expr import Field, TransactionTimestamp
 from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
                                          BoolCol, IntCol, PercentCol,
                                          IdCol)
-from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.runtime import get_current_user
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
 from stoqlib.domain.interfaces import IDescribable
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, Branch
 from stoqlib.exceptions import StockError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
@@ -1244,3 +1245,65 @@ class ProductQualityTest(Domain):
         if self.store.find(ProductionItemQualityResult, quality_test=self).count():
             return False
         return True
+
+
+_StockSummary = Alias(Select(
+    columns=[
+        ProductStockItem.batch_id,
+        ProductStockItem.branch_id,
+        Alias(Sum(ProductStockItem.quantity), 'stock')],
+    tables=[
+        ProductStockItem],
+    group_by=[
+        ProductStockItem.batch_id,
+        ProductStockItem.branch_id]),
+    '_stock_summary')
+
+
+class StorableBatchView(Viewable):
+    """A view for |batches|
+
+    This is used to get the most information of a |batch|
+    without doing lots of database queries.
+
+    It's bestly used with :meth:`.find_by_storable`
+    """
+
+    #: the |batch| object
+    batch = StorableBatch
+
+    #: the |branch| this batch is in
+    branch = Branch
+
+    # StorableBatch
+    id = StorableBatch.id
+    create_date = StorableBatch.create_date
+    batch_number = StorableBatch.batch_number
+    stock = Coalesce(Field('_stock_summary', 'stock'), 0)
+
+    tables = [
+        StorableBatch,
+        LeftJoin(_StockSummary,
+                 Field('_stock_summary', 'batch_id') == StorableBatch.id),
+        LeftJoin(Branch, Field('_stock_summary', 'branch_id') == Branch.id),
+    ]
+
+    @classmethod
+    def find_by_storable(cls, store, storable, branch=None):
+        """Find results for this view that for *storable*
+
+        Normally it's best to use this instead of *store.find* since
+        it'll only |batches| for the given |storable|.
+
+        :param store: the store that will be used to find the results
+        :param storable: the |storable| used to filter the results
+        :param branch: a |branch| that, if not ``None``, will be used to
+            filter the results to only get batches on that branch.
+        :returns: the matching views
+        :rtype: a sequence of :class:`StorableBatchView`
+        """
+        query = StorableBatch.storable_id == storable.id
+        if branch is not None:
+            query = And(query,
+                        Field('_stock_summary', 'branch_id') == branch.id)
+        return store.find(cls, query)

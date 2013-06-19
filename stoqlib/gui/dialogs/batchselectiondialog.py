@@ -23,16 +23,18 @@
 ##
 
 import collections
+import datetime
 import decimal
 import sys
 
 import gtk
 from kiwi.datatypes import ValidationError
+from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.spinbutton import ProxySpinButton
 
 from stoqlib.api import api
-from stoqlib.domain.product import Storable
+from stoqlib.domain.product import Storable, StorableBatchView
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 from stoqlib.lib.formatters import format_quantity
@@ -76,7 +78,7 @@ class _BatchSelectionDialog(BaseEditor):
     #: have no limit.
     VALIDATE_MAX_QUANTITY = None
 
-    size = (400, -1)
+    size = (600, 400)
     title = _("Batch selection")
     gladefile = 'BatchSelectionDialog'
     model_type = Storable
@@ -153,6 +155,19 @@ class _BatchSelectionDialog(BaseEditor):
         """
         return self._spins[entry]
 
+    def get_batch_item(self, batch):
+        """A hook called to get the batch item for the given batch
+
+        By default, it will return the batch itself. Subclasses can
+        override this if they are working with other type of items
+        on the entries (e.g. the batch number as a string)
+
+        :param batch: the |batch|
+        :returns: the batch item that will be used to update
+            the entry's value
+        """
+        return batch
+
     def setup_entry(self, entry):
         """A hook called every time a new entry is appended on the dialog
 
@@ -212,6 +227,14 @@ class _BatchSelectionDialog(BaseEditor):
             for widget in [self.diff_quantity, self.diff_quantity_lbl]:
                 widget.hide()
 
+        self.existing_batches.set_columns([
+            Column('batch_number', _(u"Number"), data_type=str, expand=True),
+            Column('create_date', _(u"Creation date"),
+                   data_type=datetime.date, sorted=True),
+            Column('stock', _(u"Available"), data_type=decimal.Decimal,
+                   format_func=format_quantity)])
+        self.existing_batches.add_list(self._get_existing_batches())
+
         self.add_proxy(self.model, self.proxy_widgets)
 
     def on_confirm(self):
@@ -226,6 +249,11 @@ class _BatchSelectionDialog(BaseEditor):
     #
     #  Private
     #
+
+    def _get_existing_batches(self):
+        branch = api.get_current_branch(self.store)
+        return StorableBatchView.find_by_storable(self.store, self.model,
+                                                  branch=branch)
 
     def _get_total_sum(self):
         return sum(spin.read() for spin in
@@ -285,16 +313,20 @@ class _BatchSelectionDialog(BaseEditor):
 
         return spin
 
-    def _append_or_update_row(self, quantity, batch=None, mandatory=False):
+    def _append_or_update_row(self, quantity, batch=None, mandatory=False,
+                              grab_focus=False):
         # If the last entry is not valid (no batch set), use it
         # instead of appending a lot of invalids
         if self._last_entry is not None and not self._last_entry.read():
-            self._spins[self._last_entry].update(quantity)
+            last_spin = self._spins[self._last_entry]
+            last_spin.update(quantity)
             # The batch is already None. Only update it if not None
             # to avoid update_view being called again here (no problem
             # for the spin because it should be insensitive)
             if batch is not None:
-                self._last_entry.update(batch)
+                self._last_entry.update(self.get_batch_item(batch))
+                if grab_focus:
+                    last_spin.grab_focus()
             return
 
         self._append_dumb_row_lock += 1
@@ -328,7 +360,10 @@ class _BatchSelectionDialog(BaseEditor):
         self.set_confirm_widget(spin)
         # Do this after adding the widget to the proxy so the validate
         # signal gets emitted
-        entry.update(batch)
+        entry.update(self.get_batch_item(batch))
+        # Don't grab focus on the spin if we have to fill the batch
+        if batch and grab_focus:
+            spin.grab_focus()
 
         self._append_dumb_row_lock -= 1
 
@@ -377,6 +412,24 @@ class _BatchSelectionDialog(BaseEditor):
     #
     #  Callbacks
     #
+
+    def on_existing_batches__row_activated(self, existing_batches, item):
+        # FIXME: When grabbing focus here (both cases below), if the row
+        # was activated by pressing 'Enter', the focus is grabbed right (and
+        # thus, we can type the quantity for that batch directly). But if it
+        # was activated by 'Double-click', it appears to be focussed, but the
+        # focus is still on the objectlist
+        batch = item.batch
+        for spin, entry in self._entries.items():
+            if entry.read() == batch:
+                spin.grab_focus()
+                return
+
+        diff = self._get_diff_quantity()
+        if diff <= 0:
+            # default to 1
+            diff = 1
+        self._append_or_update_row(diff, batch=batch, grab_focus=True)
 
     def _after_entry__changed(self, entry):
         # FIXME: This is a *very* ugly workaround, but if the entry is on
@@ -493,3 +546,10 @@ class BatchIncreaseSelectionDialog(_BatchSelectionDialog):
     """
 
     VALIDATE_MAX_QUANTITY = True
+
+    #
+    #  _BatchSelectionDialog
+    #
+
+    def get_batch_item(self, batch):
+        return batch and batch.batch_number
