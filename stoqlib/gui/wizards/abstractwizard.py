@@ -257,10 +257,15 @@ class SellableItemSlave(BaseEditorSlave):
     cost_editable = True
     item_editor = None
     batch_selection_dialog = None
-    #: The manager is someone who can allow a bigger discount for a sale item.
-    manager = None
+
+    #: If we should make visible a label showing the stock and the minimum
+    #: quantity of a sellable when one is selected. Note that sellables
+    #: without storables (e.g. services) won't have them shown anyway
+    stock_labels_visible = True
 
     def __init__(self, store, model=None, visual_mode=None):
+        # The manager is someone who can allow a bigger discount for a sale item
+        self.manager = None
         # This is used by add_sellable to know what item represents
         # a given sellable/batch/value so it can be removed without
         # needing to ask for the children class
@@ -680,7 +685,7 @@ class SellableItemSlave(BaseEditorSlave):
     def _update_product_labels_visibility(self, visible):
         for widget in [self.minimum_quantity_lbl, self.minimum_quantity,
                        self.stock_quantity, self.stock_quantity_lbl]:
-            widget.set_visible(visible)
+            widget.set_visible(self.stock_labels_visible and visible)
 
     #
     #  Callbacks

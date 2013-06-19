@@ -352,9 +352,6 @@ class LoanItemSelectionStep(SellableItemStep):
         self.hide_edit_button()
         self.hide_del_button()
         self.hide_item_addition_toolbar()
-        for widget in [self.minimum_quantity_lbl, self.minimum_quantity,
-                       self.stock_quantity, self.stock_quantity_lbl]:
-            widget.hide()
 
         self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
         self.slave.klist.connect('cell-editing-started',
