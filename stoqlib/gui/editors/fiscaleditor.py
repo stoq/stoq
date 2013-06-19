@@ -86,7 +86,8 @@ class FiscalBookEntryEditor(BaseEditor):
     #
 
     def get_title(self, model):
-        return _("Edit Fiscal Book Entry #%d") % model.invoice_number
+        # FIXME: bug 5531
+        return _("Edit Fiscal Book Entry #%d") % (model.invoice_number or 0)
 
     def setup_proxies(self):
         self._setup_widgets()

@@ -120,12 +120,12 @@ class TestSaleReturnWizard(GUITest):
             "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed\n"
             "do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
         self.assertValid(step, ['reason'])
-        self.assertNotSensitive(wizard, ['next_button'])
 
-        self.assertInvalid(step, ['invoice_number'])
+        # XXX: changed because invoice_number is no longer mandatory
+        self.assertSensitive(wizard, ['next_button'])
+
         step.invoice_number.update(0)
         self.assertInvalid(step, ['invoice_number'])
-        self.assertNotSensitive(wizard, ['next_button'])
         step.invoice_number.update(1000000000)
         self.assertInvalid(step, ['invoice_number'])
         self.assertNotSensitive(wizard, ['next_button'])
