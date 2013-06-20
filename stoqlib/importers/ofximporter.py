@@ -182,7 +182,7 @@ class OFXImporter(Importer):
         value = self._parse_number(t['trnamt'])
         if value == 0:
             self.skipped += 1
-            # We can't import transactions with a value = 0, skip it.
+            # We can't import transactions without a value = 0, skip it.
             return False
         source_account = store.get(Account, self.source_account_id)
         account = store.get(Account, self.account_id)
