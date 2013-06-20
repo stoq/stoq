@@ -141,6 +141,10 @@ class POSConfirmSaleEvent(Event):
     """
     This event is emitted in case a sale is confirmed in the pos app.
 
+    Note that the `<ConfirmSaleEvent>` is also emitted, right before this event, but
+    this event may not be emitted if the sale is being confirmed outside the pos
+    app.
+
     :param sale_items: A list of objects representing the itens added in the
       Sale. This objects are instances of `<stoq.gui.pos.TemporarySaleItem>`
     """
@@ -239,4 +243,24 @@ class StockTransferWizardFinishEvent(Event):
     :param transfer_order: The `transfer order
       <stoqlib.domain.transfer.TransferOrder>` object that represents the stock
       transfer.
+    """
+
+
+@public(since="1.8.0")
+class ConfirmSaleWizardFinishEvent(Event):
+    """
+    This event is emitted in case a sale is confirmed using the confirm sale
+    wizard
+
+    :param sale: The |sale| that was confirmed.
+    """
+
+
+@public(since="1.8.0")
+class SaleQuoteWizardFinishEvent(Event):
+    """
+    This event is emitted in case a sale quote is created using the sale quote
+    wizard.
+
+    :param sale: The |sale| that was created.
     """
