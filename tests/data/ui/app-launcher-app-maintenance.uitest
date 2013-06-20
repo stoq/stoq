@@ -122,6 +122,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                 column: title='Client'
                 column: title='Branch', hidden
                 column: title='Current branch', hidden
+                column: title='Execution branch', hidden
                 column: title='Open date'
                 column: title='Approval date', hidden
                 column: title='Finish date', hidden

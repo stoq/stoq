@@ -122,12 +122,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                 column: title='Client'
                 column: title='Branch', hidden
                 column: title='Current branch', hidden
+                column: title='Execution branch', hidden
                 column: title='Open date'
                 column: title='Approval date', hidden
                 column: title='Finish date', hidden
                 column: title='Total'
-                row: 666, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
-                row: 667, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
+                row: 666, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
+                row: 667, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 1, 1, 0, 0), None, None, Decimal('0')
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

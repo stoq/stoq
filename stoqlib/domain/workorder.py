@@ -84,6 +84,47 @@ class WorkOrderPackageItem(Domain):
     #: the |workorder| this item represents
     order = Reference(order_id, 'WorkOrder.id')
 
+    #
+    #  Public API
+    #
+
+    def send(self):
+        """Send the item to the :attr:`WorkOrderPackage.destination_branch`
+
+        This will mark the package as sent. Note that it's only possible
+        to call this on the same branch as :attr:`.source_branch`.
+
+        When calling this, the work orders' :attr:`WorkOrder.current_branch`
+        will be ``None``, since they are on a package and not on any branch.
+        """
+        if self.package.destination_branch != self.order.branch:
+            old_execution_branch = self.order.execution_branch
+            self.order.execution_branch = self.package.destination_branch
+            WorkOrderHistory.add_entry(
+                self.store, self.order, _(u"Execution branch"),
+                old_value=(old_execution_branch and
+                           old_execution_branch.get_description()),
+                new_value=self.package.destination_branch.get_description())
+
+    def receive(self):
+        """Receive this item on the :attr:`WorkOrderPackage.destination_branch`
+
+        This will mark the package as received in the branch
+        to receive it there. Note that it's only possible to call this
+        on the same branch as :attr:`.destination_branch`.
+
+        When calling this, the work orders' :attr:`WorkOrder.current_branch`
+        will be set to :attr:`WorkOrderPackage.destination_branch`, since
+        receiving means they got to their destination.
+        """
+        assert self.order.current_branch is None
+        # The order is in destination branch now
+        self.order.current_branch = self.package.destination_branch
+        WorkOrderHistory.add_entry(
+            self.store, self.order, _(u"Current branch"),
+            old_value=_(u"Package %s") % self.package.identifier,
+            new_value=self.package.destination_branch.get_description())
+
 
 class WorkOrderPackage(Domain):
     """A package of |workorders|
@@ -207,8 +248,8 @@ class WorkOrderPackage(Domain):
         This will mark the package as sent. Note that it's only possible
         to call this on the same branch as :attr:`.source_branch`.
 
-        When calling this, the work orders' :attr:`WorkOrder.current_branch`
-        will be ``None``, since they are on a package and not on any branch.
+        Each :obj:`.package_items` will have it's
+        :meth:`WorkOrderPackageItem.send` method called
         """
         assert self.can_send()
 
@@ -223,6 +264,9 @@ class WorkOrderPackage(Domain):
         if not len(package_items):
             raise ValueError(_("There're no orders to send"))
 
+        for package_item in package_items:
+            package_item.send()
+
         self.send_date = localnow()
         self.status = self.STATUS_SENT
 
@@ -233,9 +277,8 @@ class WorkOrderPackage(Domain):
         to receive it there. Note that it's only possible to call this
         on the same branch as :attr:`.destination_branch`.
 
-        When calling this, the work orders' :attr:`WorkOrder.current_branch`
-        will be set to :attr:`.destination_branch`, since receiving means
-        they got to their destination.
+        Each :obj:`.package_items` will have it's
+        :meth:`WorkOrderPackageItem.receive` method called
         """
         assert self.can_receive()
 
@@ -247,14 +290,7 @@ class WorkOrderPackage(Domain):
                       self.destination_branch, get_current_branch(self.store)))
 
         for package_item in self.package_items:
-            order = package_item.order
-            assert order.current_branch is None
-            # The order is in destination branch now
-            order.current_branch = self.destination_branch
-            WorkOrderHistory.add_entry(
-                self.store, order, _(u"Current branch"),
-                old_value=_(u"Package %s") % self.identifier,
-                new_value=self.destination_branch.get_description())
+            package_item.receive()
 
         self.receive_date = localnow()
         self.status = self.STATUS_RECEIVED
@@ -529,6 +565,11 @@ class WorkOrder(Domain):
     # :attr:`.branch` if the order was sent in a |workorderpackage|
     #: to another |branch| for execution
     current_branch = Reference(current_branch_id, 'Branch.id')
+
+    execution_branch_id = IdCol()
+    #: the branch where the work's execution was made. It's automatically
+    #: set by sending the order on a |workorderpackage|
+    execution_branch = Reference(execution_branch_id, 'Branch.id')
 
     quote_responsible_id = IdCol(default=None)
     #: the |loginuser| responsible for the :obj:`.defect_detected`
@@ -1079,10 +1120,13 @@ class WorkOrderView(Viewable):
     # joins just to get the company name.
     _BranchOriginalBranch = ClassAlias(Branch, "branch_original_branch")
     _BranchCurrentBranch = ClassAlias(Branch, "branch_current_branch")
+    _BranchExecutionBranch = ClassAlias(Branch, "branch_execution_branch")
     _PersonOriginalBranch = ClassAlias(Person, "person_original_branch")
     _PersonCurrentBranch = ClassAlias(Person, "person_current_branch")
+    _PersonExecutionBranch = ClassAlias(Person, "person_execution_branch")
     _CompanyOriginalBranch = ClassAlias(Company, "company_original_branch")
     _CompanyCurrentBranch = ClassAlias(Company, "company_current_branch")
+    _CompanyExecutionBranch = ClassAlias(Company, "company_execution_branch")
     _PersonClient = ClassAlias(Person, "person_client")
     _PersonSalesPerson = ClassAlias(Person, "person_salesperson")
 
@@ -1124,6 +1168,8 @@ class WorkOrderView(Viewable):
                            _PersonOriginalBranch.name)
     current_branch_name = Coalesce(NullIf(_CompanyCurrentBranch.fancy_name, u''),
                                    _PersonCurrentBranch.name)
+    execution_branch_name = Coalesce(NullIf(_CompanyExecutionBranch.fancy_name, u''),
+                                     _PersonExecutionBranch.name)
 
     # Sale
     sale_id = Sale.id
@@ -1156,6 +1202,13 @@ class WorkOrderView(Viewable):
                  _BranchCurrentBranch.person_id == _PersonCurrentBranch.id),
         LeftJoin(_CompanyCurrentBranch,
                  _CompanyCurrentBranch.person_id == _PersonCurrentBranch.id),
+
+        LeftJoin(_BranchExecutionBranch,
+                 WorkOrder.execution_branch_id == _BranchExecutionBranch.id),
+        LeftJoin(_PersonExecutionBranch,
+                 _BranchExecutionBranch.person_id == _PersonExecutionBranch.id),
+        LeftJoin(_CompanyExecutionBranch,
+                 _CompanyExecutionBranch.person_id == _PersonExecutionBranch.id),
 
         LeftJoin(WorkOrderCategory,
                  WorkOrder.category_id == WorkOrderCategory.id),

@@ -1545,6 +1545,7 @@ CREATE TABLE work_order (
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE,
     sale_id uuid REFERENCES sale(id) ON UPDATE CASCADE,
     current_branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
+    execution_branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
 
