@@ -188,6 +188,11 @@ class TestConfirmSaleWizard(GUITest):
         self._select_method('check')
         self._go_to_next()
 
+        # populate check and bank data
+        self.bank_id = 123
+        self.bank_branch = 456
+        self.bank_account = 789
+
         # Finish the checkout
         self._go_to_next()
         self.assertEquals(self.sale.payments[0].method.method_name, u'check')

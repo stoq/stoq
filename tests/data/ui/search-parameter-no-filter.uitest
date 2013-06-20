@@ -35,6 +35,7 @@ GtkVBox(toplevel):
     row: u'Payments', u'Block incomplete purchase payments', u'0'
     row: u'Payments', u'Create payments for a stock decrease', u'0'
     row: u'Payments', u'Printing of promissory notes on booklets', u'1'
+    row: u'Payments', u'Mandatory check number', u'0'
     row: u'Products', u'Disable edit code products', u'0'
     row: u'Purchase', u'Default Receiving C.F.O.P.', uuid.uuid()
     row: u'Purchase', u'Suggested unit', None

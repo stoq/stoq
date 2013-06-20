@@ -726,6 +726,15 @@ _details = [
         _(u'This parameter indicates if Stoq should print a promissory note '
           u'when printing a loan receipt.'),
         bool, initial=False),
+
+    ParameterDetails(
+        u'MANDATORY_CHECK_NUMBER',
+        _(u'Payments'),
+        _(u'Mandatory check number'),
+        _(u'This parameter indicates if the check number on check payments is '
+          u'mandatory.'),
+        bool, initial=False),
+
 ]
 
 

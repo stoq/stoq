@@ -54,7 +54,6 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.stockdecrease import StockDecrease
-from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import SellError
 from stoqlib.gui.base.dialogs import run_dialog
@@ -93,6 +92,10 @@ class _BaseTemporaryMethodData(object):
         self.intervals = DEFAULT_INTERVALS
         self.interval_type = DEFAULT_INTERVAL_TYPE
         self.auth_number = None
+        self.bank_id = None
+        self.bank_branch = None
+        self.bank_account = None
+        self.bank_first_check_number = None
 
 
 class _TemporaryCreditProviderGroupData(_BaseTemporaryMethodData):
@@ -241,6 +244,10 @@ class PaymentListSlave(GladeSlaveDelegate):
     def _has_bank_account(self):
         return self.method.method_name == u'check'
 
+    def _is_check_number_mandatory(self):
+        return (api.sysparam(self.method.store).MANDATORY_CHECK_NUMBER and
+                self._has_bank_account())
+
     def _get_columns(self):
         columns = [Column('description', title=_('Description'),
                           expand=True, data_type=str)]
@@ -258,7 +265,13 @@ class PaymentListSlave(GladeSlaveDelegate):
 
         # Money methods doesn't have a payment_number related with it.
         if self.method.method_name != u'money':
-            columns.append(Column('payment_number', title=_('Number'),
+            title = _('Number')
+            # Add (*) to indicate on column Number that this information is
+            # mandatory
+            if self._is_check_number_mandatory():
+                title += ' (*)'
+            columns.append(Column('payment_number',
+                                  title=title,
                                   data_type=str, justify=gtk.JUSTIFY_RIGHT))
 
         columns.extend([Column('due_date', title=_('Due date'),
@@ -311,35 +324,53 @@ class PaymentListSlave(GladeSlaveDelegate):
     def add_payment(self, description, value, due_date, payment_number=None,
                     bank_account=None, refresh=True):
         """Add a payment to the list"""
+        # FIXME: Workaround to allow the check_number to be automatically added.
+        # payment_number is unicode in domain, on wizard we treat it as an int
+        # so we can automatically increment it and before we actually create
+        # the payment it is converted to unicode. Shouldn't it be int
+        # on domain?
+        if payment_number is not None:
+            payment_number = unicode(payment_number)
+
         payment = _TemporaryPaymentData(description,
                                         value,
                                         due_date.date(),
                                         payment_number,
                                         bank_account)
+
         self.payment_list.append(payment)
 
         if refresh:
             self.update_view()
 
     def add_payments(self, installments_number, start_date,
-                     interval, interval_type):
+                     interval, interval_type, bank_id=None, bank_branch=None,
+                     bank_account=None, bank_first_number=None):
         values = generate_payments_values(self.total_value,
                                           installments_number)
         due_dates = create_date_interval(interval_type=interval_type,
                                          interval=interval,
                                          count=installments_number,
                                          start_date=start_date)
-        bank_account = None
 
         self.clear_payments()
+        bank_check_number = bank_first_number
+
         for i in range(installments_number):
+
+            bank_data = None
+            if self._has_bank_account():
+                bank_data = _TemporaryBankData(bank_id, bank_branch,
+                                               bank_account)
+
             description = self.method.describe_payment(self.group, i + 1,
                                                        installments_number)
-            if self._has_bank_account():
-                bank_account = _TemporaryBankData()
 
             self.add_payment(description, currency(values[i]), due_dates[i],
-                             None, bank_account, False)
+                             bank_check_number, bank_data, False)
+
+            if bank_check_number is not None:
+                bank_check_number += 1
 
         self.update_view()
 
@@ -396,10 +427,21 @@ class PaymentListSlave(GladeSlaveDelegate):
     def are_payment_values_valid(self):
         return not self.get_total_difference()
 
+    def is_check_number_valid(self):
+        """Verify if check number is set"""
+        if not self._is_check_number_mandatory():
+            return True
+
+        for p in self.payment_list:
+            if p.payment_number is None or p.payment_number == u'':
+                return False
+
     def is_payment_list_valid(self):
         if not self.are_due_dates_valid():
             return False
         if not self.are_payment_values_valid():
+            return False
+        if not self.is_check_number_valid():
             return False
         return True
 
@@ -426,7 +468,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     proxy_widgets = ('interval_type_combo',
                      'intervals',
                      'first_duedate',
-                     'installments_number')
+                     'installments_number',
+                     'bank_id',
+                     'bank_branch',
+                     'bank_account',
+                     'bank_first_check_number')
 
     def __init__(self, wizard, parent, store, order_obj, payment_method,
                  outstanding_value=currency(0), first_duedate=None,
@@ -440,6 +486,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.total_value = outstanding_value or self._get_total_amount()
         self.payment_group = self.order.group
         self.payment_list = None
+
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = currency(0)
@@ -451,12 +498,16 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.register_validate_function(self._refresh_next)
 
         # Most of slaves don't have bank information
-        self.bank_combo.hide()
-        self.bank_label.hide()
+        self._set_bank_widgets_visible(False)
+
+        self.bank_first_check_number.set_sensitive(True)
 
     #
     # Private Methods
     #
+
+    def _set_bank_widgets_visible(self, visible=True):
+        self.bank_info_box.set_visible(visible)
 
     def _refresh_next(self, validation_ok=True):
         if not self.payment_list:
@@ -541,7 +592,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             self.payment_list.add_payments(self.model.installments_number,
                                            self.model.first_duedate,
                                            self.model.intervals,
-                                           self.model.interval_type)
+                                           self.model.interval_type,
+                                           self.model.bank_id,
+                                           self.model.bank_branch,
+                                           self.model.bank_account,
+                                           self.model.bank_first_check_number)
         self.update_view()
 
     def update_view(self):
@@ -601,6 +656,18 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def after_first_duedate__changed(self, *args):
         self.setup_payments()
 
+    def after_bank_id__changed(self, *args):
+        self.setup_payments()
+
+    def after_bank_branch__changed(self, *args):
+        self.setup_payments()
+
+    def after_bank_account__changed(self, *args):
+        self.setup_payments()
+
+    def after_bank_first_check_number__changed(self, widget):
+        self.setup_payments()
+
     def on_installments_number__validate(self, widget, value):
         if not value:
             return ValidationError(_("The number of installments "
@@ -639,20 +706,7 @@ class CheckMethodSlave(BasePaymentMethodSlave):
                                         outstanding_value=outstanding_value,
                                         installments_number=installments_number,
                                         first_duedate=first_duedate)
-        self.bank_combo.show()
-        self.bank_label.show()
-
-    def _setup_widgets(self):
-        printer = get_current_cheque_printer_settings(self.store)
-        if not printer:
-            self.bank_combo.hide()
-            self.bank_label.hide()
-        else:
-            banks = printer.get_banks()
-            items = [("%s - %s" % (code, bank.name), code)
-                     for code, bank in banks.items()]
-            self.bank_combo.prefill(items)
-        BasePaymentMethodSlave._setup_widgets(self)
+        self._set_bank_widgets_visible(True)
 
 
 class DepositMethodSlave(BasePaymentMethodSlave):
