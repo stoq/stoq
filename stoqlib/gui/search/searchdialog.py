@@ -318,6 +318,19 @@ class SearchDialog(BasicDialog):
 
         return branch_filter
 
+    def create_sellable_filter(self, label=None):
+        from stoqlib.domain.sellable import Sellable
+        items = [(desc, status) for status, desc in Sellable.statuses.items()]
+        items.insert(0, (_(u"Any"), None))
+
+        if label is None:
+            label = _('With status:')
+        sellable_filter = ComboSearchFilter(label, items)
+        # Select status available by default
+        sellable_filter.select(Sellable.STATUS_AVAILABLE)
+
+        return sellable_filter
+
     def create_payment_filter(self, label=None):
         from stoqlib.domain.payment.method import PaymentMethod
         methods = PaymentMethod.get_active_methods(self.store)

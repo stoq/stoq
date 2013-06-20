@@ -27,11 +27,9 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 
-from stoqlib.domain.sellable import Sellable
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 
@@ -68,10 +66,7 @@ class ProductBookSearch(ProductSearch):
         self.branch_filter = branch_filter
 
         # Status
-        statuses = [(desc, id) for id, desc in Sellable.statuses.items()]
-        statuses.insert(0, (_('Any'), None))
-        status_filter = ComboSearchFilter(_('with status:'), statuses)
-        status_filter.select(None)
+        status_filter = self.create_sellable_filter()
         self.add_filter(status_filter, columns=['status'],
                         position=SearchFilterPosition.TOP)
 

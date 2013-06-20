@@ -8,10 +8,10 @@ GtkDialog(toplevel): title='Production Product', hidden
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
               ComboSearchFilter(status_filter):
-                GtkLabel(): 'with status:'
+                GtkLabel(): 'With status:'
                 ProxyComboBox(padding=6):
-                  item: 'Any', selected
-                  item: 'Available'
+                  item: 'Any'
+                  item: 'Available', selected
                   item: 'Closed'
               SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
@@ -38,7 +38,6 @@ GtkDialog(toplevel): title='Production Product', hidden
             column: title='Cost'
             column: title='Price'
             column: title='Stock'
-            row: u'54321', u'', None, u'Luva', None, u'', u'', <currency $125>, <currency $10>, Decimal('3.000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):
@@ -48,7 +47,7 @@ GtkDialog(toplevel): title='Production Product', hidden
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True): slave SearchDialogPrintSlave is attached
           GtkHButtonBox(toplevel):
-            GtkButton(print_price_button): 'gtk-print'
+            GtkButton(print_price_button): 'gtk-print', insensitive
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
           GtkVBox(toplevel):
@@ -56,9 +55,9 @@ GtkDialog(toplevel): title='Production Product', hidden
               GtkLabel(label3, expand=True, fill=True):
               GtkHButtonBox(hbuttonbox1, fill=True):
                 GtkButton(details_button): hidden
-                GtkButton(print_button): 'gtk-print'
+                GtkButton(print_button): 'gtk-print', insensitive
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
-      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...', insensitive
       GtkButton(branch_stock_button, padding=6): 'Stocks details', insensitive
