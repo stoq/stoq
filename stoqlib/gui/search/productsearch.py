@@ -200,7 +200,8 @@ class ProductSearch(SearchEditor):
         self.csv_button.set_sensitive(has_rows)
 
     def on_results__selection_changed(self, widget, selection):
-        self.branch_stock_button.set_sensitive(bool(selection))
+        enable_details = selection and selection.product.storable
+        self.branch_stock_button.set_sensitive(bool(enable_details))
 
     def on_csv_button__clicked(self, widget):
         sse = SpreadSheetExporter()

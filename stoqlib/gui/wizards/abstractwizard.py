@@ -129,7 +129,11 @@ class AdvancedSellableSearch(SearchEditor):
         # services). Also use hasattr for product since it may be None
         sensitive = (hasattr(sellable_view, 'product') and
                      hasattr(sellable_view.product, 'storable'))
-        self.branch_stock_button.set_sensitive(sensitive)
+
+        if sensitive:
+            self.branch_stock_button.set_sensitive(bool(sellable_view.product.storable))
+        else:
+            self.branch_stock_button.set_sensitive(False)
 
     def get_columns(self):
         columns = [SearchColumn('code', title=_(u'Code'), data_type=str),
