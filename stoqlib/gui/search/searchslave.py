@@ -694,5 +694,11 @@ class SearchSlave(SlaveDelegate):
         self.remove_filter(filter)
 
     def _on_search_filter__changed(self, search_filter):
+        # The 'changed' event is emitted when someone presses Enter on the
+        # entry. Since we already do a search when the entry is activated,
+        # doing again when the primary filter is changed would result in doing
+        # the same query twice.
+        if search_filter == self._primary_filter:
+            return
         if self._auto_search:
             self.search()
