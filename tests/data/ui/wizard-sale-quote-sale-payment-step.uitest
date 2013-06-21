@@ -3,45 +3,57 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
-      GtkEventBox(slave_area, expand=True, fill=True): slave SaleQuotePaymentStep is attached
+      GtkEventBox(slave_area, expand=True, fill=True): slave SaleQuoteItemStep is attached
         GtkVBox(step.toplevel):
-          GtkEventBox(step.place_holder, expand=True, fill=True): slave MultipleMethodSlave is attached
+          GtkTable(step.item_table, fill=True):
+            GtkHBox(step.hbox2):
+              ProxyLabel(step.item_lbl, fill=True): 'Item:'
+              GtkEntry(step.barcode, fill=True): ''
+              GtkButton(step.product_button):
+            ProxyLabel(step.kiwilabel2): 'Quantity:'
+            ProxySpinButton(step.quantity): '0.000', insensitive
+            ProxyLabel(step.unit_label): '<span weight="bold"></span>'
+            ProxyLabel(step.cost_label): 'Price:'
+            ProxySpinButton(step.cost): '0.00', insensitive
+            GtkButton(step.add_sellable_button): insensitive
+            ProxyLabel(step.sellable_description): '<span ></span>'
+            GtkLabel(step.minimum_quantity_lbl): 'Minimum:', hidden
+            ProxyLabel(step.minimum_quantity): '<span >0.0</span>', hidden
+            GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
+            ProxyLabel(step.stock_quantity): '<span >0.0</span>', hidden
+          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
             GtkVBox(toplevel):
+              GtkVBox(list_vbox, expand=True, fill=True):
+                ObjectList(klist, expand=True, fill=True):
+                  column: title='Code', hidden
+                  column: title='Barcode', hidden
+                  column: title='Description', expand
+                  column: title='Manufacturer', hidden
+                  column: title='Model', hidden
+                  column: title='Category', expand
+                  column: title='Quantity'
+                  column: title='Unit'
+                  column: title='CFOP', hidden
+                  column: title='ICMS BC', hidden
+                  column: title='ICMS', hidden
+                  column: title='IPI', hidden
+                  column: title='Original Price'
+                  column: title='Sale Price'
+                  column: title='Discount'
+                  column: title='Total'
+                  row: u'', u'12345678', u'Description', None, None, u'', Decimal('2.000'), u'', u'5102', None, None, <currency $ 0>, <currency $10>, <currency $10>, 0, <currency $20>
+                GtkHBox(step.summary, fill=True):
+                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
+                  GtkLabel(): '<b>$20.00</b>'
               GtkHBox(hbox1, fill=True):
-                GtkLabel(label1): '<b>Method:</b>'
-                GtkHBox(methods_box, expand=True, fill=True):
-                  GtkRadioButton(expand=True, fill=True): 'Money', active
-                  GtkRadioButton(expand=True, fill=True): 'Bill'
-                  GtkRadioButton(expand=True, fill=True): 'Card'
-                  GtkRadioButton(expand=True, fill=True): 'Check'
-                  GtkRadioButton(expand=True, fill=True): 'Credit'
-                  GtkRadioButton(expand=True, fill=True): 'Deposit'
-                  GtkRadioButton(expand=True, fill=True): 'Store Credit'
-                GtkHBox(hbox2, fill=True):
-                  ProxyLabel(currency, fill=True): '$CURRENCY:'
-                  ProxyEntry(value): '20.0'
-                  GtkButton(add_button, fill=True): 'gtk-add'
-              GtkHBox(hbox3, expand=True, fill=True):
-                GtkVBox(vbox2, expand=True, fill=True):
-                  ObjectList(payments, expand=True, fill=True):
-                    column: title='Description', expand
-                    column: title='Status'
-                    column: title='Value'
-                    column: title='Due date'
-                GtkVBox(vbox3, fill=True):
-                  GtkButton(remove_button): 'gtk-remove', insensitive
-                  GtkLabel(label2, expand=True, fill=True):
-                  GtkTable(footer_table, fill=True):
-                    GtkLabel(label12): 'Total:'
-                    ProxyLabel(total_value): '<span weight="bold">$20.00</span>'
-                    GtkLabel(label11): 'Paid:'
-                    ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'
-                    GtkHSeparator(hseparator1):
-                    GtkHSeparator(hseparator2):
-                    GtkLabel(missing): 'Missing:'
-                    ProxyLabel(missing_value): '<span weight="bold">$20.00</span>'
-                    GtkLabel(change): 'Change:'
-                    ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
+                GtkAlignment(alignment1, fill=True):
+                  GtkHButtonBox(hbuttonbox1):
+                    GtkButton(add_button): hidden
+                    GtkButton(delete_button): insensitive
+                    GtkButton(edit_button): insensitive
+                GtkHBox(message_hbox, expand=True, fill=True):
+                  GtkLabel(message_label, expand=True, fill=True): '<b>Not enough stock. Estimated time to obtain missing items: 0 days.</b>'
+                  GtkButton(message_details_button, fill=True): 'Details'
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

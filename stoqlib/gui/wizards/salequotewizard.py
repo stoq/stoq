@@ -361,12 +361,8 @@ class SaleQuoteItemStep(SellableItemStep):
     # WizardStep hooks
     #
 
-    def next_step(self):
-        return SaleQuotePaymentStep(self.store, self.wizard,
-                                    model=self.model, previous=self)
-
     def has_next_step(self):
-        return True
+        return False
 
     #
     # Private API
