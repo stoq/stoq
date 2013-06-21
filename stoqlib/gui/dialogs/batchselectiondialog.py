@@ -50,7 +50,7 @@ _ = stoqlib_gettext
 BatchItem = collections.namedtuple('BatchItem', ['batch', 'quantity'])
 
 
-class _BatchSelectionDialog(BaseEditor):
+class BatchSelectionDialog(BaseEditor):
     """A dialog for selecting batch quantities
 
     This editor will help to generate quantities for batches given a
@@ -76,7 +76,21 @@ class _BatchSelectionDialog(BaseEditor):
     #: cannot be greater than the *quantity* passed in from the dialog
     #: constructor for the dialog to be confirmed. If ``False``, it will
     #: have no limit.
-    VALIDATE_MAX_QUANTITY = None
+    validate_max_quantity = False
+
+    #: If we should show a list displaying the existing batches. It's used
+    #: to make easier to check for batch's stock, creation date, etc
+    show_existing_batches_list = True
+
+    #: If ``True``, activating an entry (e.g. pressing Enter) will confirm
+    #: the dialog. If ``False``, the default behaviour will happen that is
+    #: to set focus on the spinbutton (and that spinbutton is always
+    #: set to confirm the dialog on activation)
+    confirm_dialog_on_entry_activate = False
+
+    #: If we should allow to indicate a batch with a quantity of 0. The
+    #: default is ``False`` which will always set a quantity of 0 as invalid
+    allow_no_quantity = False
 
     size = (600, 400)
     title = _("Batch selection")
@@ -91,7 +105,7 @@ class _BatchSelectionDialog(BaseEditor):
         :param store: the store for this editor
         :param model: the |storable| used to generate the batch quantities
         :param quantity: the quantity used to fill the first appended spin.
-            Note that if :attr:`.VALIDATE_MAX_QUANTITY` is set to ``True``
+            Note that if :attr:`.validate_max_quantity` is set to ``True``
             and this is different than 0, it will be used to validate the
             dialog as a maximum quantity (see the attr doc for more
             information). Passing 0 here means forcing no validation
@@ -101,11 +115,6 @@ class _BatchSelectionDialog(BaseEditor):
             calling this editor to edit the same model
         :param visual_mode: if we are working on visual mode
         """
-        if self.VALIDATE_MAX_QUANTITY is None:
-            raise ValueError(
-                "The class %s must define a VALIDATE_MAX_QUANTITY" % (
-                    self.__class__.__name__))
-
         if quantity < 0:
             raise ValueError("The quantity cannot be negative")
 
@@ -113,7 +122,7 @@ class _BatchSelectionDialog(BaseEditor):
         if quantity == 0:
             self._validate_max_quantity = False
         else:
-            self._validate_max_quantity = self.VALIDATE_MAX_QUANTITY
+            self._validate_max_quantity = self.validate_max_quantity
 
         self._quantity = quantity
         # A simple lock, used to avoid some problems (infinity recursion,
@@ -227,13 +236,16 @@ class _BatchSelectionDialog(BaseEditor):
             for widget in [self.diff_quantity, self.diff_quantity_lbl]:
                 widget.hide()
 
-        self.existing_batches.set_columns([
-            Column('batch_number', _(u"Number"), data_type=str, expand=True),
-            Column('create_date', _(u"Creation date"),
-                   data_type=datetime.date, sorted=True),
-            Column('stock', _(u"Available"), data_type=decimal.Decimal,
-                   format_func=format_quantity)])
-        self.existing_batches.add_list(self._get_existing_batches())
+        if self.show_existing_batches_list:
+            self.existing_batches.set_columns([
+                Column('batch_number', _(u"Number"), data_type=str, expand=True),
+                Column('create_date', _(u"Creation date"),
+                       data_type=datetime.date, sorted=True),
+                Column('stock', _(u"Available"), data_type=decimal.Decimal,
+                       format_func=format_quantity)])
+            self.existing_batches.add_list(self._get_existing_batches())
+        else:
+            self.existing_batches_expander.hide()
 
         self.add_proxy(self.model, self.proxy_widgets)
 
@@ -358,6 +370,8 @@ class _BatchSelectionDialog(BaseEditor):
 
         # Allow to confirm the editor by pressing enter on any spin
         self.set_confirm_widget(spin)
+        if self.confirm_dialog_on_entry_activate:
+            self.set_confirm_widget(entry)
         # Do this after adding the widget to the proxy so the validate
         # signal gets emitted
         entry.update(self.get_batch_item(batch))
@@ -454,7 +468,7 @@ class _BatchSelectionDialog(BaseEditor):
 
     def _on_spinbutton__validate(self, spin, value):
         batch = self._entries[spin].read()
-        if batch is not None and not value:
+        if batch is not None and not self.allow_no_quantity and value == 0:
             return ValidationError(_("The quantity cannot be 0"))
 
         sellable = self.model.product.sellable
@@ -469,10 +483,10 @@ class _BatchSelectionDialog(BaseEditor):
         self._update_view()
 
 
-class BatchDecreaseSelectionDialog(_BatchSelectionDialog):
+class BatchDecreaseSelectionDialog(BatchSelectionDialog):
     """Batch selection for storable decreases
 
-    This is the same as :class:`_BatchSelectionDialog`,
+    This is the same as :class:`BatchSelectionDialog`,
     but since the quantity selected here is going to be decreased,
     it will be validated for each batch (so no batch is allowed
     to have more quantity than the available in stock)
@@ -480,8 +494,6 @@ class BatchDecreaseSelectionDialog(_BatchSelectionDialog):
     Also, the *batch* on the returned :class:`.BatchItem` will be a |batch|.
 
     """
-
-    VALIDATE_MAX_QUANTITY = False
 
     def __init__(self, store, model, quantity,
                  original_batches=None, decreased_batches=None):
@@ -492,11 +504,11 @@ class BatchDecreaseSelectionDialog(_BatchSelectionDialog):
             taken in consideration when checking for stock availability
         """
         self._decreased_batches = decreased_batches or []
-        _BatchSelectionDialog.__init__(self, store, model, quantity,
-                                       original_batches=original_batches)
+        BatchSelectionDialog.__init__(self, store, model, quantity,
+                                      original_batches=original_batches)
 
     #
-    #  _BatchSelectionDialog
+    #  BatchSelectionDialog
     #
 
     def setup_entry(self, entry):
@@ -532,10 +544,10 @@ class BatchDecreaseSelectionDialog(_BatchSelectionDialog):
                                      "the given batch") % available_qty)
 
 
-class BatchIncreaseSelectionDialog(_BatchSelectionDialog):
+class BatchIncreaseSelectionDialog(BatchSelectionDialog):
     """Batch selection for storable increases
 
-    This is the same as :class:`_BatchSelectionDialog`,
+    This is the same as :class:`BatchSelectionDialog`,
     but since the quantity selected here is going to be increased
     there's no limit for quantities in each batch (unless specified
     by the *max_quantity* param)
@@ -545,7 +557,7 @@ class BatchIncreaseSelectionDialog(_BatchSelectionDialog):
 
     """
 
-    VALIDATE_MAX_QUANTITY = True
+    validate_max_quantity = True
 
     #
     #  _BatchSelectionDialog

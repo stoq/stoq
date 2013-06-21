@@ -178,6 +178,7 @@ class SaleReturnItemsStep(SellableItemStep):
     summary_label_text = '<b>%s</b>' % api.escape(_("Total to return:"))
     # This will only be used when wizard.unkown_sale is True
     batch_selection_dialog = BatchIncreaseSelectionDialog
+    stock_labels_visible = False
 
     #
     #  SellableItemStep
@@ -190,9 +191,6 @@ class SaleReturnItemsStep(SellableItemStep):
         self.hide_add_button()
         self.hide_edit_button()
         self.hide_del_button()
-        for widget in [self.minimum_quantity_lbl, self.minimum_quantity,
-                       self.stock_quantity, self.stock_quantity_lbl]:
-            widget.hide()
         # If we have a sale reference, we cannot add more items
         if self.model.sale:
             self.hide_item_addition_toolbar()
