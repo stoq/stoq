@@ -65,42 +65,15 @@ BEGIN
 
 input_string := LOWER(input_string);
 
--- These are the must common cases for latin based charceter sets
-input_string := translate(input_string, 'ẚàáâầấẫẩãāăằắẵẳȧǡäǟảåǻǎȁȃạậặḁąⱥɐ',
-                                        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-input_string := translate(input_string, 'èéêềếễểẽēḕḗĕėëẻěȅȇẹệȩḝęḙḛɇɛǝ',
-                                        'eeeeeeeeeeeeeeeeeeeeeeeeeeee');
-input_string := translate(input_string, 'ìíîĩīĭïḯỉǐȉȋịįḭɨı',
-                                        'iiiiiiiiiiiiiiiii');
-input_string := translate(input_string, 'òóôồốỗổõṍȭṏōṑṓŏȯȱöȫỏőǒȍȏơờớỡởợọộǫǭøǿɔꝋꝍɵ',
-                                        'oooooooooooooooooooooooooooooooooooooooo');
-input_string := translate(input_string, 'ùúûũṹūṻŭüǜǘǖǚủůűǔȕȗưừứữửựụṳųṷṵʉ',
-                                        'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu');
-input_string := translate(input_string, 'çñ',
-                                        'cn');
-
--- Not putting those characteres to avoid extra overhead
---input_string := translate(input_string, 'ḃḅḇƀƃɓ', 'bbbbbb');
---input_string := translate(input_string, 'ćĉċčçḉƈȼꜿↄ', 'cccccccccc');
---input_string := translate(input_string, 'ḋďḍḑḓḏđƌɖɗꝺ', 'ddddddddddd');
---input_string := translate(input_string, 'ḟƒꝼ', 'fff');
---input_string := translate(input_string, 'ǵĝḡğġǧģǥɠᵹꝿ', 'ggggggggggg');
---input_string := translate(input_string, 'ĥḣḧȟḥḩḫẖħⱨⱶɥ', 'hhhhhhhhhhhh');
---input_string := translate(input_string, 'ĵǰɉ', 'jjj');
---input_string := translate(input_string, 'ḱǩḳķḵƙⱪꝁꝃꝅ', 'kkkkkkkkkk');
---input_string := translate(input_string, 'ŀĺľḷḹļḽḻſłƚɫⱡꝉꞁꝇ', 'llllllllllllllll');
---input_string := translate(input_string, 'ḿṁṃɱɯ', 'mmmmm');
---input_string := translate(input_string, 'ǹńñṅňṇņṋṉƞɲŉꞑ', 'nnnnnnnnnnnnn');
---input_string := translate(input_string, 'ṕṗƥᵽꝑꝓ', 'pppppp');
---input_string := translate(input_string, 'ɋꝗ', 'qq');
---input_string := translate(input_string, 'ŕṙřȑȓṛṝŗṟɍɽꞃ', 'rrrrrrrrrrrr');
---input_string := translate(input_string, 'ßśṥŝṡšṧṣṩșşȿꞅẛ', 'ssssssssssssss');
---input_string := translate(input_string, 'ṫẗťṭțţṱṯŧƭʈⱦꞇ', 'ttttttttttttt');
---input_string := translate(input_string, 'ṽṿʋʌ', 'vvvv');
---input_string := translate(input_string, 'ẁẃŵẇẅẘẉⱳ', 'wwwwwwww');
---input_string := translate(input_string, 'ẋẍ', 'xx');
---input_string := translate(input_string, 'ỳýŷỹȳẏÿỷẙỵƴɏỿ', 'yyyyyyyyyyyyy');
---input_string := translate(input_string, 'źẑżžẓẕƶȥɀⱬ', 'zzzzzzzzzz');
+-- These are the must common cases for latin based character sets,
+-- and based on code suggested by django:
+-- https://django-orm.readthedocs.org/en/latest/orm-pg-fulltext.html
+input_string := translate(input_string, 'àáâäãåāăą', 'aaaaaaaaa');
+input_string := translate(input_string, 'èéêëēĕėęě', 'eeeeeeeee');
+input_string := translate(input_string, 'ìíîïĩīĭ', 'iiiiiii');
+input_string := translate(input_string, 'òóôöõōŏő', 'oooooooo');
+input_string := translate(input_string, 'ùúûüũūŭů', 'uuuuuuuu');
+input_string := translate(input_string, 'ñç', 'nc');
 
 return input_string;
 END;

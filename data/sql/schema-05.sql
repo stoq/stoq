@@ -25,6 +25,9 @@
 
 -- We use UUID table IDS which is included since PostgreSQL 8.3
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- We use pg_trgm to accelerate indices when using LIKE/ILIKE comparisons,
+-- which is included since PostgreSQL 8.4
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 --
 -- Tables that are not syncronized
@@ -388,6 +391,13 @@ CREATE TABLE sellable (
     tax_constant_id uuid REFERENCES sellable_tax_constant(id) ON UPDATE CASCADE,
     default_sale_cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
 );
+
+-- Those indexes are created to accelerate searchs with lots of sellables
+-- using like/ilike comparisons
+CREATE INDEX sellable_description_idx ON sellable
+    USING gist (description gist_trgm_ops);
+CREATE INDEX sellable_description_normalized_idx ON sellable
+    USING gist (stoq_normalize_string(description) gist_trgm_ops);
 
 CREATE TABLE product_icms_template (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
