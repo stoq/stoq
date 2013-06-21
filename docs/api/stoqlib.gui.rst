@@ -41,14 +41,6 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`kanbanview` Module
-------------------------
-
-.. automodule:: stoqlib.gui.kanbanview
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`stockicons` Module
 ------------------------
 

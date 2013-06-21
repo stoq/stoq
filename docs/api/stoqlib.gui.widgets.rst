@@ -33,6 +33,14 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`kanbanview` Module
+------------------------
+
+.. automodule:: stoqlib.gui.widgets.kanbanview
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`lazyobjectlist` Module
 ----------------------------
 

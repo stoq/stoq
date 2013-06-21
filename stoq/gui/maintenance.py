@@ -45,7 +45,6 @@ from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
                                                  WorkOrderPackageSendEditor)
 from stoqlib.gui.interfaces import ISearchResultView
-from stoqlib.gui.kanbanview import KanbanView, KanbanViewColumn
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
@@ -56,6 +55,7 @@ from stoqlib.gui.stockicons import STOQ_CLIENTS
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
+from stoqlib.gui.widgets.kanbanview import KanbanView, KanbanViewColumn
 from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.message import yesno, info
