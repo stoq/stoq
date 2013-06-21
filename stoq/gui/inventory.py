@@ -36,10 +36,10 @@ from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
-from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.utils.keybindings import get_accels
+from stoqlib.gui.wizards.inventorywizard import InventoryCountWizard
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import ProductCountingReport
@@ -236,7 +236,7 @@ class InventoryApp(ShellApp):
     def _register_product_counting(self):
         store = api.new_store()
         inventory = store.fetch(self.results.get_selected())
-        model = self.run_dialog(ProductCountingDialog, store, inventory)
+        model = self.run_dialog(InventoryCountWizard, store, inventory)
         store.confirm(model)
         store.close()
         self.refresh()

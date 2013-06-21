@@ -37,6 +37,7 @@ from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
+from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -93,15 +94,20 @@ class ProductsAdjustmentDialog(BaseEditor):
         return [Column('code', title=_(u"Code"), data_type=str,
                        sorted=True),
                 Column('description', title=_(u"Description"),
-                       data_type=str, expand=True),
+                       data_type=str, expand=True,
+                       format_func=self._format_description,
+                       format_func_data=True),
                 Column('unit_description', title=_(u"Unit"),
                        data_type=str),
                 Column('fiscal_description', title=_(u"Fiscal class"),
                        data_type=str),
                 Column('recorded_quantity', title=_(u"Recorded quantity"),
-                       data_type=Decimal),
+                       data_type=Decimal, format_func=format_quantity),
                 Column('actual_quantity', title=_(u"Actual quantity"),
-                       data_type=Decimal)]
+                       data_type=Decimal, format_func=format_quantity)]
+
+    def _format_description(self, item, data):
+        return format_sellable_description(item.product.sellable, item.batch)
 
     def _has_rows(self):
         return len(self.inventory_items)

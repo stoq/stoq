@@ -26,7 +26,7 @@
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.domain.inventory import Inventory, InventoryItem
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.dateutils import localnow
@@ -160,18 +160,12 @@ class OpenInventoryDialog(BaseEditor):
             if storable is None:
                 continue
 
-            # a sellable without stock can't be part of inventory
-            # XXX
-            if storable.get_stock_item(self.model.branch, None) is not None:
-                recorded_quantity = storable.get_balance_for_branch(self.model.branch)
-                # TODO: Move the creation of inventory itens to the domain.
-                # TODO: Create one inventory item for each batch, or refactor
-                # the way we do the inventory.
-                InventoryItem(product=sellable.product,
-                              product_cost=sellable.cost,
-                              recorded_quantity=recorded_quantity,
-                              inventory=inventory,
-                              store=self.store)
+            if storable.is_batch:
+                for batch in storable.get_available_batches(inventory.branch):
+                    inventory.add_sellable(sellable,
+                                           batch_number=batch.batch_number)
+            else:
+                inventory.add_sellable(sellable)
 
     #
     # Kiwi Callback
