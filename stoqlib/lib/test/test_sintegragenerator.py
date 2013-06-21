@@ -98,7 +98,8 @@ class TestSintegraGenerator(DomainTest):
         inventory_item.reason = u'Test'
         inventory_item.actual_quantity = 99
         inventory_item.adjust(invoice_number=999)
-        inventory.close(close_date=localdate(2007, 6, 15))
+        inventory.close()
+        inventory.close_date = localdate(2007, 6, 15)
 
         generator = StoqlibSintegraGenerator(self.store,
                                              localdate(2007, 6, 1),

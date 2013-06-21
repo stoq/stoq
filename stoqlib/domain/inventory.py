@@ -27,13 +27,12 @@ from decimal import Decimal
 from storm.expr import And, Eq, Ne
 from storm.references import Reference
 
-from stoqlib.database.expr import TransactionTimestamp
+from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
                                          IntCol, UnicodeCol, IdentifierCol,
                                          IdCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.person import Branch
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
@@ -42,9 +41,11 @@ _ = stoqlib_gettext
 
 
 class InventoryItem(Domain):
-    """The InventoryItem belongs to an Inventory.
+    """An |inventory| item
+
     It contains the recorded quantity and the actual quantity related
     to a specific product.
+
     If those quantities are not identitical, it will also contain a reason
     and a cfop describing that.
 
@@ -89,6 +90,10 @@ class InventoryItem(Domain):
     #: the inventory process that contains this item
     inventory = Reference(inventory_id, 'Inventory.id')
 
+    #
+    #  Private
+    #
+
     def _add_inventory_fiscal_entry(self, invoice_number):
         inventory = self.inventory
         return FiscalBookEntry(
@@ -97,6 +102,10 @@ class InventoryItem(Domain):
             branch=inventory.branch,
             cfop=self.cfop_data,
             store=self.store)
+
+    #
+    #  Public API
+    #
 
     def adjust(self, invoice_number):
         """Create an entry in fiscal book registering the adjustment
@@ -132,6 +141,11 @@ class InventoryItem(Domain):
         :returns: ``True`` if the item have already been adjusted,
           ``False`` otherwise.
         """
+        # FIXME: The comment below is only true from the gui perspective. The
+        # domain should never depend on the gui implementation, so this method
+        # cannot be trusted (e.g. if I set a reason and a cfop_data, even if I
+        # don't call self.adjust() here this will return True)
+        #
         # We check reason and cfop_data attributes because they only
         # exist after the item be adjusted
         return self.reason and self.cfop_data
@@ -245,31 +259,34 @@ class Inventory(Domain):
     #
 
     def is_open(self):
-        """Returns True if the inventory process is open, False
-        otherwise.
+        """Checks if this inventory is opened
+
+        :returns: ``True`` if the inventory process is open,
+            ``False`` otherwise
         """
         return self.status == self.STATUS_OPEN
 
-    def close(self, close_date=None):
+    def close(self):
         """Closes the inventory process
 
-        :param close_date: the closing date or None for right now.
-        :type: datetime.datetime
+        :raises: :exc:`AssertionError` if the inventory is already closed
         """
-        if not close_date:
-            close_date = TransactionTimestamp()
-
         if not self.is_open():
+            # FIXME: We should be raising a better error here.
             raise AssertionError("You can not close an inventory which is "
                                  "already closed!")
 
-        self.close_date = close_date
+        self.close_date = StatementTimestamp()
         self.status = Inventory.STATUS_CLOSED
 
     def all_items_counted(self):
-        """Returns True if all inventory items are counted, False
-        otherwise.
+        """Checks if all items of this inventory were counted
+
+        :returns: ``True`` if all inventory items are counted,
+            ``False`` otherwise.
         """
+        # FIXME: Why would items not be counted if the status is closed?
+        # The status can only be closed if the items were counted and adjusted
         if self.status == self.STATUS_CLOSED:
             return False
 
@@ -288,19 +305,6 @@ class Inventory(Domain):
         return store.find(InventoryItem, inventory=self)
 
     @classmethod
-    def get_open_branches(cls, store):
-        """Retuns all the branches available to open the inventory
-        process.
-
-        :returns: branches
-        :rtype: a sequence of :class:`Branch`
-        """
-        for branch in store.find(Branch):
-            if not store.find(cls, branch=branch,
-                              status=cls.STATUS_OPEN).one():
-                yield branch
-
-    @classmethod
     def has_open(cls, store, branch):
         """Returns if there is an inventory opened at the moment or not.
 
@@ -310,8 +314,11 @@ class Inventory(Domain):
                           branch=branch).one()
 
     def get_items_for_adjustment(self):
-        """Returns all the inventory items that needs adjustment, that is
-        the recorded quantity is different from the actual quantity.
+        """Gets all the inventory items that needs adjustment
+
+        An item needing adjustment is any :class:`InventoryItem`
+        with :attr:`InventoryItem.recorded_quantity` different from
+        :attr:`InventoryItem.actual_quantity`.
 
         :returns: items
         :rtype: a sequence of :class:`InventoryItem`
@@ -335,8 +342,13 @@ class Inventory(Domain):
         return not self.store.find(InventoryItem, query).is_empty()
 
     def cancel(self):
-        """Cancel this inventory. Notice that, to cancel an inventory no
-        products should have been adjusted.
+        """Cancel this inventory
+
+        Note that you can only cancel an inventory as long
+        as you haven't adjusted any :class:`InventoryItem`
+
+        :raises: :exc:`AssertionError` if the inventory is not
+            open or if any item was already adjusted
         """
         if not self.is_open():
             raise AssertionError(
