@@ -28,7 +28,6 @@ import gtk
 from kiwi.currency import currency
 from storm.expr import Ne
 
-from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service, ServiceView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.defaults import sort_sellable_code
@@ -37,7 +36,6 @@ from stoqlib.reporting.service import ServiceReport, ServicePriceReport
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
 from stoqlib.gui.search.searchcolumns import SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.searchdialog import SearchDialogPrintSlave
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.utils.printing import print_report
@@ -84,13 +82,9 @@ class ServiceSearch(SearchEditor):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode'])
-        items = [(v, k) for k, v in Sellable.statuses.items()]
-        items.insert(0, (_('Any'), None))
-        service_filter = ComboSearchFilter(_('Show services'),
-                                           items)
-        service_filter.select(None)
         executer = self.search.get_query_executer()
         executer.add_query_callback(self._get_query)
+        service_filter = self.create_sellable_filter()
         self.add_filter(service_filter, SearchFilterPosition.TOP, ['status'])
 
     #

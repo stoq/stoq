@@ -8,7 +8,7 @@ GtkDialog(toplevel): title='Product Search', hidden
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
               ComboSearchFilter(status_filter):
-                GtkLabel(): 'with status:'
+                GtkLabel(): 'With status:'
                 ProxyComboBox(padding=6):
                   item: 'Any', selected
                   item: 'Available'

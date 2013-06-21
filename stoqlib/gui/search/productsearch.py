@@ -34,7 +34,6 @@ from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import Product, ProductHistory
-from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
@@ -48,7 +47,7 @@ from stoqlib.gui.editors.producteditor import (ProductEditor,
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog, SearchDialogPrintSlave
 from stoqlib.gui.search.searcheditor import SearchEditor
-from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter, Today
+from stoqlib.gui.search.searchfilters import DateSearchFilter, Today
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
@@ -141,10 +140,7 @@ class ProductSearch(SearchEditor):
         self.branch_filter = branch_filter
 
         # Status
-        statuses = [(desc, id) for id, desc in Sellable.statuses.items()]
-        statuses.insert(0, (_('Any'), None))
-        status_filter = ComboSearchFilter(_('with status:'), statuses)
-        status_filter.select(None)
+        status_filter = self.create_sellable_filter()
         self.add_filter(status_filter, columns=['status'],
                         position=SearchFilterPosition.TOP)
         self.status_filter = status_filter

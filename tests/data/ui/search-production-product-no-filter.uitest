@@ -8,10 +8,10 @@ GtkDialog(toplevel): title='Production Product', hidden
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
               ComboSearchFilter(status_filter):
-                GtkLabel(): 'with status:'
+                GtkLabel(): 'With status:'
                 ProxyComboBox(padding=6):
-                  item: 'Any', selected
-                  item: 'Available'
+                  item: 'Any'
+                  item: 'Available', selected
                   item: 'Closed'
               SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
@@ -38,7 +38,6 @@ GtkDialog(toplevel): title='Production Product', hidden
             column: title='Cost'
             column: title='Price'
             column: title='Stock'
-            row: u'54321', u'', None, u'Luva', None, u'', u'', <currency $125>, <currency $10>, Decimal('3.000')
             row: u'65432', u'', None, u'Camiseta', None, u'', u'', <currency $125>, <currency $10>, Decimal('1.000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
