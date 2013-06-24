@@ -68,14 +68,15 @@ class ClientDetailsDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.sales_list.set_columns(self._get_sale_columns())
+        self.returned_sales_list.set_columns(self._get_returned_sale_columns())
         self.product_list.set_columns(self._get_product_columns())
         self.services_list.set_columns(self._get_services_columns())
         self.work_order_list.set_columns(self._get_work_order_columns())
         self.payments_list.set_columns(self._get_payments_columns())
         self.calls_list.set_columns(self._get_calls_columns())
         self.account_list.set_columns(self._get_account_columns())
-
         self.sales_list.add_list(self.model.get_client_sales())
+        self.returned_sales_list.add_list(self.model.get_client_returned_sales())
         self.product_list.add_list(self.model.get_client_products())
         self.services_list.add_list(self.model.get_client_services())
         self.work_order_list.add_list(self.model.get_client_work_orders())
@@ -112,6 +113,22 @@ class ClientDetailsDialog(BaseEditor):
                        searchable=True, expand=True, data_type=str),
                 Column("status_name", title=_("Status"), width=80,
                        data_type=str),
+                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
+                       data_type=currency, width=100)]
+
+    def _get_returned_sale_columns(self):
+        return [IdentifierColumn('identifier', sorted=True),
+                Column("invoice_number", title=_("Invoice #"),
+                       data_type=int, width=90),
+                Column("return_date", title=_("Return Date"), data_type=datetime.date,
+                       justify=gtk.JUSTIFY_RIGHT, width=80),
+                Column("product_name", title=_("Product"),
+                       searchable=True, data_type=str),
+                Column("salesperson_name", title=_("Salesperson"),
+                       searchable=True, visible=False, data_type=str),
+                Column("responsible_name", title=_("Responsible"),
+                       searchable=True, data_type=str),
+                Column("reason", title=_("Reason"), searchable=False, expand=True, data_type=str),
                 Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
                        data_type=currency, width=100)]
 

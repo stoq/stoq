@@ -150,13 +150,38 @@
               </packing>
             </child>
             <child>
+              <placeholder/>
+            </child>
+            <child type="tab">
+              <placeholder/>
+            </child>
+            <child>
+              <object class="ObjectList" id="returned_sales_list">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label11">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Returned Sales</property>
+              </object>
+              <packing>
+                <property name="position">2</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
               <object class="ObjectList" id="product_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="border_width">6</property>
               </object>
               <packing>
-                <property name="position">1</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child type="tab">
@@ -165,7 +190,7 @@
                 <property name="label" translatable="yes">Products</property>
               </object>
               <packing>
-                <property name="position">1</property>
+                <property name="position">3</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
@@ -176,7 +201,7 @@
                 <property name="border_width">6</property>
               </object>
               <packing>
-                <property name="position">2</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child type="tab">
@@ -185,7 +210,7 @@
                 <property name="label" translatable="yes">Services</property>
               </object>
               <packing>
-                <property name="position">2</property>
+                <property name="position">4</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
@@ -196,7 +221,7 @@
                 <property name="border_width">6</property>
               </object>
               <packing>
-                <property name="position">3</property>
+                <property name="position">5</property>
               </packing>
             </child>
             <child type="tab">
@@ -205,7 +230,7 @@
                 <property name="label" translatable="yes">Payments</property>
               </object>
               <packing>
-                <property name="position">3</property>
+                <property name="position">5</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
@@ -216,7 +241,7 @@
                 <property name="border_width">6</property>
               </object>
               <packing>
-                <property name="position">4</property>
+                <property name="position">6</property>
               </packing>
             </child>
             <child type="tab">
@@ -225,7 +250,7 @@
                 <property name="label" translatable="yes">Calls</property>
               </object>
               <packing>
-                <property name="position">4</property>
+                <property name="position">6</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
@@ -250,7 +275,7 @@
                 </child>
               </object>
               <packing>
-                <property name="position">5</property>
+                <property name="position">7</property>
               </packing>
             </child>
             <child type="tab">
@@ -259,7 +284,7 @@
                 <property name="label" translatable="yes">Conta de Crédito</property>
               </object>
               <packing>
-                <property name="position">5</property>
+                <property name="position">7</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
@@ -270,7 +295,7 @@
                 <property name="border_width">6</property>
               </object>
               <packing>
-                <property name="position">6</property>
+                <property name="position">8</property>
               </packing>
             </child>
             <child type="tab">
@@ -279,7 +304,7 @@
                 <property name="label" translatable="yes">Work Orders</property>
               </object>
               <packing>
-                <property name="position">6</property>
+                <property name="position">8</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>

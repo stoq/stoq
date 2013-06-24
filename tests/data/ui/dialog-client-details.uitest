@@ -27,6 +27,15 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>$200.00</b>'
+            ObjectList(returned_sales_list):
+              column: title='#'
+              column: title='Invoice #'
+              column: title='Return Date'
+              column: title='Product'
+              column: title='Salesperson', hidden
+              column: title='Responsible'
+              column: title='Reason', expand
+              column: title='Total'
             ObjectList(product_list):
               column: title='Code'
               column: title='Description', expand
