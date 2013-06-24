@@ -60,6 +60,7 @@ from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.events import SaleQuoteWizardFinishEvent
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
@@ -551,5 +552,6 @@ class SaleQuoteWizard(BaseWizard):
         self.model.group.confirm()
 
         self.retval = self.model
+        SaleQuoteWizardFinishEvent.emit(self.model)
         self.close()
         self._print_quote_details(self.model)

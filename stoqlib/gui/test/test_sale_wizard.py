@@ -30,6 +30,7 @@ import mock
 from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.sale import Sale
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
@@ -95,7 +96,13 @@ class TestConfirmSaleWizard(GUITest):
 
     def testCreate(self):
         self._create_wizard()
-        self._go_to_next()
+
+        module = 'stoqlib.gui.events.ConfirmSaleWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            self._go_to_next()
+            self.assertEquals(emit.call_count, 1)
+            args, kwargs = emit.call_args
+            self.assertTrue(isinstance(args[0], Sale))
 
         self._check_wizard('wizard-sale-done-sold')
         self.assertEquals(self.sale.payments[0].method.method_name, u'money')

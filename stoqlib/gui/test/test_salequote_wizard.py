@@ -25,6 +25,7 @@
 import mock
 import gtk
 
+from stoqlib.domain.sale import Sale
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -108,7 +109,13 @@ class TestSaleQuoteWizard(GUITest):
         self.click(wizard.next_button)
         self.check_wizard(wizard, 'wizard-sale-quote-sale-payment-step')
 
-        self.click(wizard.next_button)
+        module = 'stoqlib.gui.events.SaleQuoteWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            self.click(wizard.next_button)
+            self.assertEquals(emit.call_count, 1)
+            args, kwargs = emit.call_args
+            self.assertTrue(isinstance(args[0], Sale))
+
         self.assertEqual(wizard.model.payments.count(), 0)
         yesno.assert_called_once_with(_('Would you like to print the quote '
                                         'details now?'), gtk.RESPONSE_YES,

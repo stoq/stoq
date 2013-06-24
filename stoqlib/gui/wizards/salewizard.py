@@ -60,6 +60,7 @@ from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
+from stoqlib.gui.events import ConfirmSaleWizardFinishEvent
 from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
@@ -944,6 +945,7 @@ class ConfirmSaleWizard(BaseWizard):
         # FIXME: This is set too late on Sale.confirm(). If PaymentGroup don't
         #        have a payer, we won't be able to print bills/booklets.
         group.payer = self.model.client and self.model.client.person
+        ConfirmSaleWizardFinishEvent.emit(self.model)
 
         booklets = list(group.get_payments_by_method_name(u'store_credit'))
         bills = list(group.get_payments_by_method_name(u'bill'))
