@@ -24,6 +24,7 @@
 """ Wizard for optical pre-sale"""
 
 from decimal import Decimal
+import operator
 
 import gtk
 from kiwi.currency import currency
@@ -33,18 +34,27 @@ from kiwi.ui.objectlist import Column
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
+from stoqlib.domain.person import Client, ClientView, SalesPerson
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
-from stoqlib.gui.base.wizards import BaseWizardStep
+from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
+                                      WorkOrderItem)
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.wizards import BaseWizardStep, WizardEditorStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
-from stoqlib.gui.wizards.salequotewizard import (SaleQuoteWizard,
-                                                 StartSaleQuoteStep)
-from stoqlib.lib.formatters import (format_quantity, format_sellable_description,
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.formatters import (format_quantity,
+                                    format_sellable_description,
                                     get_formatted_percentage)
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 from optical.opticalslave import WorkOrderOpticalSlave
 from optical.opticaldomain import OpticalWorkOrder
@@ -57,21 +67,111 @@ _ = stoqlib_gettext
 MAX_WORK_ORDERS_FOR_RADIO = 3
 
 
-class OpticalStartSaleQuoteStep(StartSaleQuoteStep):
+class OpticalStartSaleQuoteStep(WizardEditorStep):
     """First step of the pre-sale for optical stores.
 
     This is just like the first step of the regular pre-sale, but it has a
     different next step.
     """
 
+    gladefile = 'OpticalSalesPersonStep'
+    model_type = Sale
+    proxy_widgets = ('client', 'salesperson', 'expire_date')
+
+    def _setup_widgets(self):
+        # Salesperson combo
+        salespersons = self.store.find(SalesPerson)
+        self.salesperson.prefill(api.for_person_combo(salespersons))
+        if not sysparam(self.store).ACCEPT_CHANGE_SALESPERSON:
+            self.salesperson.set_sensitive(False)
+        else:
+            self.salesperson.grab_focus()
+
+        self._fill_clients_combo()
+        self._fill_wo_categories_combo()
+
+    def _fill_clients_combo(self):
+        # FIXME: This should not be using a normal ProxyComboEntry,
+        #        we need a specialized widget that does the searching
+        #        on demand.
+
+        # This is to keep the clients in cache
+        clients_cache = list(Client.get_active_clients(self.store))
+        clients_cache  # pyflakes
+
+        # We are using ClientView here to show the fancy name as well
+        clients = ClientView.get_active_clients(self.store)
+        items = [(c.get_description(), c.client) for c in clients]
+        items = locale_sorted(items, key=operator.itemgetter(0))
+        self.client.prefill(items)
+
+        # TODO: Implement a has_items() in kiwi
+        self.client.set_sensitive(len(self.client.get_model()))
+
+    def _fill_wo_categories_combo(self):
+        wo_categories = list(self.store.find(WorkOrderCategory))
+        self.wo_categories.color_attribute = 'color'
+
+        if len(wo_categories) > 0:
+            items = [(category.get_description(), category)
+                     for category in wo_categories]
+            items = locale_sorted(items, key=operator.itemgetter(0))
+            items.insert(0, ('No category', None))
+            self.wo_categories.prefill(items)
+            self.wo_categories.set_sensitive(True)
+
     def post_init(self):
-        super(StartSaleQuoteStep, self).post_init()
+        self.toogle_client_details()
         self.client.mandatory = True
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
     def next_step(self):
+        self.wizard.wo_category = self.wo_categories.get_selected()
         return OpticalWorkOrderStep(self.store, self.wizard, self, self.model)
+
+    def has_previous_step(self):
+        return False
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model,
+                                    OpticalStartSaleQuoteStep.proxy_widgets)
+
+    def toogle_client_details(self):
+        client = self.client.read()
+        self.client_details.set_sensitive(bool(client))
+
+    #
+    #   Callbacks
+    #
+
+    def on_create_client__clicked(self, button):
+        store = api.new_store()
+        client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
+        retval = store.confirm(client)
+        client = self.store.fetch(client)
+        store.close()
+        if not retval:
+            return
+        self._fill_clients_combo()
+        self.client.select(client)
+
+    def on_client__changed(self, widget):
+        self.toogle_client_details()
+
+    def on_client_details__clicked(self, button):
+        client = self.model.client
+        run_dialog(ClientDetailsDialog, self.wizard, self.store, client)
+
+    def on_expire_date__validate(self, widget, value):
+        if value < localtoday().date():
+            msg = _(u"The expire date must be set to today or a future date.")
+            return ValidationError(msg)
+
+    def on_observations_button__clicked(self, *args):
+        run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
+                   title=_("Additional Information"))
 
 
 class OpticalWorkOrderStep(BaseWizardStep):
@@ -404,8 +504,12 @@ class OpticalSaleQuoteWizard(SaleQuoteWizard):
         return OpticalStartSaleQuoteStep(store, self, model)
 
     def finish(self):
-        # Now we must remove the products added to the workorders from the stock
+        # Now we must remove the products added to the workorders from the
+        # stock and we can associate the category selected to the workorders
+        # (we only do this now so we don't have to pay attention if the user
+        # changes the category after we have created workorders).
         for wo in self.workorders:
+            wo.category = self.wo_category
             wo.sync_stock()
 
         # And also set them as already decreased in the sale, so it does not get
