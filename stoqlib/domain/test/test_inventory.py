@@ -142,7 +142,7 @@ class TestInventoryItem(DomainTest):
 
     def testAdjust(self):
         item = self.create_inventory_item()
-        self.failIf(item.adjusted())
+        self.assertFalse(item.is_adjusted)
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
         item.reason = u"test adjust"
@@ -161,14 +161,14 @@ class TestInventoryItem(DomainTest):
 
     def testAdjusted(self):
         item = self.create_inventory_item()
-        self.failIf(item.adjusted())
+        self.assertFalse(item.is_adjusted)
 
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
         item.reason = u"test adjust"
         invoice_number = 13
         item.adjust(invoice_number)
-        self.failUnless(item.adjusted())
+        self.assertTrue(item.is_adjusted)
 
     def testGetAdjustmentQuantity(self):
         recorded_qty = Decimal(10)

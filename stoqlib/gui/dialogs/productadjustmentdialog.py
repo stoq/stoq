@@ -38,7 +38,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
-from stoqlib.lib.message import warning
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -51,12 +51,16 @@ class ProductsAdjustmentDialog(BaseEditor):
     size = (750, 450)
 
     def __init__(self, store, model):
+        self._has_adjusted_any = False
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
         self._update_widgets()
 
+    #
+    #  Private
+    #
+
     def _setup_widgets(self):
-        self.register_validate_function(self._validate)
         self.main_dialog.ok_button.set_label(_(u'_Finish Inventory'))
         self.main_dialog.cancel_button.set_label(gtk.STOCK_CLOSE)
 
@@ -82,7 +86,9 @@ class ProductsAdjustmentDialog(BaseEditor):
         self.adjust_button.set_sensitive(has_selected and
                                          self.invoice_number.is_valid())
 
-        self.refresh_ok(not self._has_rows())
+        # After the first adjustment, the invoice number can not change
+        if self._has_adjusted_any:
+            self.invoice_number.set_sensitive(False)
 
     def _refresh_inventory_items(self):
         items = self.model.get_items_for_adjustment()
@@ -109,12 +115,6 @@ class ProductsAdjustmentDialog(BaseEditor):
     def _format_description(self, item, data):
         return format_sellable_description(item.product.sellable, item.batch)
 
-    def _has_rows(self):
-        return len(self.inventory_items)
-
-    def _validate(self, value=None):
-        return not self._has_rows()
-
     def _run_adjustment_dialog(self, inventory_item):
         self.store.savepoint('before_run_adjustment_dialog')
         retval = run_dialog(AdjustmentDialog, self, self.store,
@@ -125,9 +125,7 @@ class ProductsAdjustmentDialog(BaseEditor):
 
         # The adjustment can be done only once
         self._refresh_inventory_items()
-        # After the first adjustment, the invoice number can not change
-        if self.invoice_number.get_property('sensitive'):
-            self.invoice_number.set_sensitive(False)
+        self._update_widgets()
 
     #
     # BaseEditor
@@ -137,10 +135,24 @@ class ProductsAdjustmentDialog(BaseEditor):
         self.proxy = self.add_proxy(self.model, ['invoice_number'])
 
     def validate_confirm(self):
-        return self._validate()
+        if not len(self.inventory_items):
+            return True
+
+        return yesno(_("Some products were not adjusted. By proceeding, you "
+                       "will be discarding those products' count and their "
+                       "old quantities will still be in the stock. Are you sure?"),
+                     gtk.RESPONSE_NO,
+                     _("Ignore adjustments"), _("Continue adjusting"))
 
     def on_confirm(self):
         self.model.close()
+
+    def on_cancel(self):
+        if yesno(_("Some products were already adjusted. Do you want to"
+                   "save that information or discard them?"),
+                 gtk.RESPONSE_NO, _("Save adjustments"), _("Discard adjustments")):
+            # change retval to True so the store gets commited
+            self.retval = self.model
 
     #
     # Kiwi Callbacks

@@ -1399,6 +1399,7 @@ CREATE TABLE inventory_item (
     reason text,
     product_cost numeric(20, 8) CONSTRAINT positive_product_cost
         CHECK (product_cost >= 0),
+    is_adjusted boolean NOT NULL DEFAULT false,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     cfop_data_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
 );

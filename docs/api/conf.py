@@ -256,6 +256,12 @@ rst_epilog = """
     :class:`employees <stoqlib.domain.person.Employee>`
 .. |individual| replace::
     :class:`individual <stoqlib.domain.person.Individual>`
+.. |inventory| replace::
+    :class:`inventory <stoqlib.domain.inventory.Inventory>`
+.. |inventoryitem| replace::
+    :class:`inventory item <stoqlib.domain.inventory.InventoryItem>`
+.. |inventoryitems| replace::
+    :class:`inventory items <stoqlib.domain.inventory.InventoryItem>`
 .. |image| replace::
     :class:`image <stoqlib.domain.image.Image>`
 .. |loan| replace::

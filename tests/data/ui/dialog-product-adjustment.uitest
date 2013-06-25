@@ -36,4 +36,4 @@ GtkDialog(main_dialog.toplevel): title='Products Adjustment', hidden
         GtkEventBox(main_dialog.details_holder, pack-end):
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-close'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): '_Finish Inventory', insensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): '_Finish Inventory'
