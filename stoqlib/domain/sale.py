@@ -52,7 +52,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer, IPaymentTransaction
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import (Person, Client, Branch,
+from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
                                    SalesPerson)
 from stoqlib.domain.product import (Product, ProductHistory, Storable,
                                     StockTransactionHistory)
@@ -945,7 +945,7 @@ class Sale(Domain, Adaptable):
 
     def return_(self, returned_sale):
         """Returns a sale
-        Returning a sale means that all the items are returned to the item.
+        Returning a sale means that all the items are returned to the stock.
         A renegotiation object needs to be supplied which
         contains the invoice number and the eventual penalty
 
@@ -1760,7 +1760,91 @@ class SaleView(Viewable):
         return Sale.get_status_name(self.status)
 
 
+class ReturnedSaleView(Viewable):
+    """Stores general informatios about returned sales."""
+
+    # Alias for Branch Person Object
+    Person_Branch = ClassAlias(Person, 'person_branch')
+    # Alias for Client Person Object
+    Person_Client = ClassAlias(Person, 'person_client')
+    # Alias for Sales Person Sales Object
+    Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
+    # Alias for Login User Person Object
+    Person_LoginUser = ClassAlias(Person, 'person_login_user')
+
+    # Current Sale
+    sale = Sale
+    # Current Client
+    client = Client
+    # Current Returned Sale
+    returned_sale = ReturnedSale
+
+    #: the id of the returned_sale table
+    id = ReturnedSale.id
+
+    #: a unique numeric identifer for the returned sale
+    identifier = ReturnedSale.identifier
+    identifier_str = Cast(ReturnedSale.identifier, 'text')
+    invoice_number = ReturnedSale.invoice_number
+
+    #: date of the return product
+    return_date = ReturnedSale.return_date
+
+    #: reason to return the sale
+    reason = ReturnedSale.reason
+
+    #: person_id of the responsible for return the sale
+    responsible_id = ReturnedSale.responsible_id
+
+    #: id of the sales branch
+    branch_id = ReturnedSale.branch_id
+
+    #: id of the new sale, if exist, an exchange of product or something else
+    new_sale_id = ReturnedSale.new_sale_id
+
+    #: Sale id
+    sale_id = Sale.id
+
+    #: value of the total of returned sale
+    total = Sum(ReturnedSaleItem.price * ReturnedSaleItem.quantity)
+
+    #: Client id
+    client_id = Client.id
+    #: Name of Sales Person Sales
+    salesperson_name = Person_SalesPerson.name
+    #: Name of Client Person
+    client_name = Person_Client.name
+    #: Name of Branch Person
+    branch_name = Person_Branch.name
+    # Name of Responsible for Returned Sale
+    responsible_name = Person_LoginUser.name
+
+    # Tables Queries
+    tables = [
+        ReturnedSale,
+        Join(Sale, Sale.id == ReturnedSale.sale_id),
+        LeftJoin(ReturnedSaleItem,
+                 ReturnedSaleItem.returned_sale_id == ReturnedSale.id),
+        LeftJoin(Sellable, Sellable.id == ReturnedSaleItem.sellable_id),
+        LeftJoin(Branch, Sale.branch_id == Branch.id),
+        LeftJoin(Client, Sale.client_id == Client.id),
+        LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
+        LeftJoin(LoginUser, LoginUser.id == ReturnedSale.responsible_id),
+        LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
+        LeftJoin(Person_Client, Client.person_id == Person_Client.id),
+        LeftJoin(Person_SalesPerson,
+                 SalesPerson.person_id == Person_SalesPerson.id),
+        LeftJoin(Person_LoginUser, Person_LoginUser.id == LoginUser.person_id)
+    ]
+
+    group_by = [id, sale_id, Sellable.id, client_id, branch_id, branch_name,
+                salesperson_name, client_name, LoginUser.id, Person_LoginUser.name]
+    #: Name of Sellable product
+    product_name = Sellable.description
+
+
 class SalePaymentMethodView(SaleView):
+
     # If a sale has more than one payment, it will appear as much times in the
     # search. Must always be used with select(distinct=True).
     tables = SaleView.tables[:]

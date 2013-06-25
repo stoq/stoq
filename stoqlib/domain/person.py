@@ -860,6 +860,14 @@ class Client(Domain):
         return self.store.find(SaleView,
                                SaleView.client_id == self.id).order_by(SaleView.open_date)
 
+    def get_client_returned_sales(self):
+        """Returns a list of :obj:`returned sales <stoqlib.domain.sale.ReturnedSaleView>`
+        tied with the current client
+        """
+        from stoqlib.domain.sale import ReturnedSaleView
+        returned_sale_view = self.store.find(ReturnedSaleView, ReturnedSaleView.client_id == self.id)
+        return returned_sale_view.order_by(ReturnedSaleView.return_date)
+
     def get_client_services(self):
         """Returns a list of sold
         :obj:`service views stoqlib.domain.sale.SoldServicesView>` with

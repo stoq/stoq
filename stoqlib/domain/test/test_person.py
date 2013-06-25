@@ -347,6 +347,24 @@ class TestClient(_PersonFacetTest, DomainTest):
         one_more_sale = client.get_client_sales().count()
         self.assertEquals(count_sales + 1, one_more_sale)
 
+    def testGetClientReturnedSales(self):
+        client = self.create_client()
+
+        # We cannot use count() since there is a group by in the viewable
+        count_sales = len(list(client.get_client_returned_sales()))
+        self.assertEquals(count_sales, 0)
+
+        sale = self.create_sale()
+        sale.client = client
+
+        sellable = self.create_sellable()
+        sale.add_sellable(sellable)
+
+        sale.create_sale_return_adapter()
+
+        after_return_count = len(list(client.get_client_returned_sales()))
+        self.assertEquals(after_return_count, 1)
+
     def testClientCategory(self):
         categories = self.store.find(ClientCategory, name=u'Category')
         self.assertEquals(categories.count(), 0)
