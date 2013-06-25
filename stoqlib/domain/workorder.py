@@ -481,7 +481,7 @@ class WorkOrder(Domain):
          STATUS_WORK_IN_PROGRESS -> STATUS_WORK_FINISHED;
          STATUS_WORK_IN_PROGRESS -> STATUS_WORK_WAITING;
          STATUS_WORK_IN_PROGRESS -> STATUS_CANCELLED;
-         STATUS_WORK_FINISHED -> STATUS_CLOSED;
+         STATUS_WORK_FINISHED -> STATUS_DELIVERED;
          STATUS_WORK_FINISHED -> STATUS_WORK_IN_PROGRESS;
        }
 
@@ -518,7 +518,7 @@ class WorkOrder(Domain):
     STATUS_WORK_FINISHED = 4
 
     #: a |sale| has been created, delivery and payment handled there
-    STATUS_CLOSED = 5
+    STATUS_DELIVERED = 5
 
     statuses = {
         STATUS_OPENED: _(u'Opened'),
@@ -526,7 +526,7 @@ class WorkOrder(Domain):
         STATUS_WORK_WAITING: _(u'Waiting'),
         STATUS_WORK_IN_PROGRESS: _(u'In progress'),
         STATUS_WORK_FINISHED: _(u'Finished'),
-        STATUS_CLOSED: _(u'Closed')}
+        STATUS_DELIVERED: _(u'Delivered')}
 
     status = IntCol(default=STATUS_OPENED)
 
@@ -703,7 +703,7 @@ class WorkOrder(Domain):
 
         If the order is paused or in progress, it's
         considered to be approved (obviously, the same applies to
-        status after them, like finished and closed).
+        status after them, like finished and DELIVERED).
 
         :returns: ``True`` if the order is considered as approved,
             ``False`` otherwise.
@@ -716,9 +716,9 @@ class WorkOrder(Domain):
 
         A work order is finished when the work that needs to be done
         on it finished, so this will be ``True`` when :obj:`WorkOrder.status` is
-        :obj:`.STATUS_WORK_FINISHED` and :obj:`.STATUS_CLOSED`
+        :obj:`.STATUS_WORK_FINISHED` and :obj:`.STATUS_DELIVERED`
         """
-        return self.status in [self.STATUS_WORK_FINISHED, self.STATUS_CLOSED]
+        return self.status in [self.STATUS_WORK_FINISHED, self.STATUS_DELIVERED]
 
     def is_late(self):
         """Checks if this work order is late
@@ -794,12 +794,12 @@ class WorkOrder(Domain):
         return self.status in [self.STATUS_WORK_IN_PROGRESS,
                                self.STATUS_WORK_WAITING]
 
-    def can_close(self):
-        """Checks if this work order can close
+    def can_delivery(self):
+        """Checks if this work order can delivery
 
-        Note that the work needs to be finished before you can close.
+        Note that the work needs to be finished before you can delivery.
 
-        :returns: ``True`` if can close, ``False`` otherwise
+        :returns: ``True`` if can delivery, ``False`` otherwise
         """
         if self.is_rejected or self.is_in_transport():
             return False
@@ -808,7 +808,7 @@ class WorkOrder(Domain):
     def can_reopen(self):
         """Checks if this work order can be re-opened
 
-        A finished order can be reopened, but not after it's closed.
+        A finished order can be reopened, but not after it's DELIVERED.
 
         :returns: ``True`` if it can, ``False`` otherwise
         """
@@ -927,7 +927,7 @@ class WorkOrder(Domain):
         The :obj:`.execution_responsible` has finished working on
         this order's task. It's possible now to give the equipment
         back to the |client| and create a |sale| so we are able
-        to :meth:`close <.close>` this order.
+        to :meth:`delivery <.delivery>` this order.
         """
         assert self.can_finish()
         self.finish_date = localnow()
@@ -946,15 +946,15 @@ class WorkOrder(Domain):
         self.finish_date = None
         self._change_status(self.STATUS_WORK_IN_PROGRESS, notes=reason)
 
-    def close(self):
-        """Closes this work order
+    def delivery(self):
+        """deliverys this work order
 
         This order's task is done, the |client| got the equipment
         back and a |sale| was created for the |workorderitems|
         Nothing more needs to be done.
         """
-        assert self.can_close()
-        self._change_status(self.STATUS_CLOSED)
+        assert self.can_delivery()
+        self._change_status(self.STATUS_DELIVERED)
 
     def change_status(self, new_status, reason=None):
         """
@@ -1323,7 +1323,7 @@ class WorkOrderFinishedView(WorkOrderView):
     """A view for finished |workorders| that still dont have a |sale|
 
     This viewable should be used only to find what workorders still dont have a
-    sale and can be closed (ie, they can have the sale created).
+    sale and can be DELIVERED (ie, they can have the sale created).
 
     This is the same as :class:`.WorkOrderView`, but only finished
     orders are showed here.

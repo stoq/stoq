@@ -39,7 +39,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
           GtkImageMenuItem(): 'Edit...', insensitive
           GtkImageMenuItem(): 'Finish...', insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
-          GtkImageMenuItem(): 'Close...', hidden, insensitive
+          GtkImageMenuItem(): 'Delivered...', hidden, insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Approve...', hidden, insensitive
           GtkImageMenuItem(): 'Pause the work...', hidden, insensitive
@@ -99,7 +99,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                       item: 'Pending'
                       item: 'In progress'
                       item: 'Finished'
-                      item: 'Closed or cancelled'
+                      item: 'Delivered or cancelled'
                       item: 'sep'
                       item: 'Approved'
                       item: 'In transport'
@@ -150,7 +150,7 @@ GtkMenu(): hidden
   GtkImageMenuItem(): 'Edit...', insensitive
   GtkImageMenuItem(): 'Finish...', insensitive
   GtkImageMenuItem(): 'Cancel...', insensitive
-  GtkImageMenuItem(): 'Close...', hidden, insensitive
+  GtkImageMenuItem(): 'Delivered...', hidden, insensitive
   GtkSeparatorMenuItem():
   GtkImageMenuItem(): 'Approve...', hidden, insensitive
   GtkImageMenuItem(): 'Pause the work...', hidden, insensitive

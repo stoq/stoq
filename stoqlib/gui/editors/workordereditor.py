@@ -150,7 +150,7 @@ class WorkOrderEditor(BaseEditor):
         elif self.model.status in [WorkOrder.STATUS_WORK_IN_PROGRESS,
                                    WorkOrder.STATUS_WORK_FINISHED,
                                    WorkOrder.STATUS_WORK_WAITING,
-                                   WorkOrder.STATUS_CLOSED]:
+                                   WorkOrder.STATUS_DELIVERED]:
             self._set_current_tab('execution_holder')
 
     def _update_view(self):
