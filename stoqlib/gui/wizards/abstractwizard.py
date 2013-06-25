@@ -330,8 +330,8 @@ class SellableItemSlave(BaseEditorSlave):
         if (storable is not None and
             storable.is_batch and
             self.batch_selection_dialog is not None):
-            order_items.extend(self._get_batch_order_items(sellable,
-                                                           value, quantity))
+            order_items.extend(self.get_batch_order_items(sellable,
+                                                          value, quantity))
         else:
             order_item = self.get_order_item(sellable, value, quantity)
             if order_item is not None:
@@ -527,17 +527,31 @@ class SellableItemSlave(BaseEditorSlave):
 
         return [BatchItem(batch=k, quantity=v) for k, v in batch_items.items()]
 
-    #
-    #  Private
-    #
+    def get_batch_order_items(self, sellable, value, quantity):
+        """Get order items for sellable considering it's |batches|
 
-    def _get_batch_order_items(self, sellable, value, quantity):
+        By default, this will run :obj:`.batch_selection_dialog` to get
+        the batches and their quantities and then call :meth:`.get_order_item`
+        on each one.
+
+        :param sellable: a |sellable|
+        :param value: the value (e.g. price, cost) of the sellable
+        :param quantity: the quantity of the sellable
+        """
         order_items = []
         storable = sellable.product_storable
         original_batch_items = self.get_batch_items()
         if issubclass(self.batch_selection_dialog,
                       BatchDecreaseSelectionDialog):
             extra_kw = dict(decreased_batches=original_batch_items)
+            available_batches = list(
+                storable.get_available_batches(self.model.branch))
+            # The trivial case, where there's just one batch, and since this
+            # is a decrease, we can select it directly
+            if len(available_batches) == 1:
+                batch = available_batches[0]
+                return [self.get_order_item(sellable, value,
+                                            quantity=quantity, batch=batch)]
         else:
             extra_kw = dict(original_batches=original_batch_items)
 
@@ -554,6 +568,10 @@ class SellableItemSlave(BaseEditorSlave):
             order_items.append(order_item)
 
         return order_items
+
+    #
+    #  Private
+    #
 
     def _setup_widgets(self):
         self._update_product_labels_visibility(False)

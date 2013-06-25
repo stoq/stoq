@@ -439,6 +439,17 @@ class PosApp(ShellApp):
     def _add_product_sellable(self, sellable, quantity):
         product = sellable.product
         if product.storable and product.storable.is_batch:
+            available_batches = list(product.storable.get_available_batches(
+                api.get_current_branch(self.store)))
+            # The trivial case, where there's just one batch, use it directly
+            if len(available_batches) == 1:
+                batch = available_batches[0]
+                sale_item = TemporarySaleItem(sellable=sellable,
+                                              quantity=quantity,
+                                              batch=batch)
+                self._update_added_item(sale_item)
+                return
+
             rv = self.run_dialog(BatchDecreaseSelectionDialog, self.store,
                                  model=sellable.product_storable,
                                  quantity=quantity)

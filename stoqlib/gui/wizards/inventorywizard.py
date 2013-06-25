@@ -226,6 +226,19 @@ class InventoryCountItemStep(SellableItemStep):
     def get_batch_items(self):
         return []
 
+    def get_batch_order_items(self, sellable, value, quantity):
+        storable = sellable.product_storable
+        available_batches = list(
+            storable.get_available_batches(self.model.branch))
+        # The trivial case, where there's just one batch, we count it directly
+        if len(available_batches) == 1:
+            batch = available_batches[0]
+            return [self.get_order_item(sellable, value,
+                                        quantity=quantity, batch=batch)]
+
+        return super(InventoryCountItemStep, self).get_batch_order_items(
+            sellable, value, quantity)
+
     def get_columns(self):
         adjustment = gtk.Adjustment(lower=0, upper=sys.maxint,
                                     step_incr=1, page_incr=10)
