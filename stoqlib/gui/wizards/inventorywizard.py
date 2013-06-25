@@ -301,7 +301,7 @@ class InventoryCountItemStep(SellableItemStep):
         if next_row < len(klist):
             treeview.set_cursor(next_row, column)
         else:
-            self.main_dialog.ok_button.grab_focus()
+            self.wizard.next_button.grab_focus()
 
 
 class InventoryCountWizard(BaseWizard):
