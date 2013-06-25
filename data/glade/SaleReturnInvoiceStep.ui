@@ -208,7 +208,7 @@
                         </child>
                         <child>
                           <object class="ProxyCheckButton" id="credit_checkbutton">
-                            <property name="label" translatable="yes">Depositar crédito na conta do cliente.</property>
+                            <property name="label" translatable="yes">Create credit for future sales</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
