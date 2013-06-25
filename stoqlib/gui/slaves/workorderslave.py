@@ -135,7 +135,14 @@ class _WorkOrderItemSlave(SellableItemSlave):
     def __init__(self, store, model=None, visual_mode=False):
         super(_WorkOrderItemSlave, self).__init__(store, model=model,
                                                   visual_mode=visual_mode)
+
+        # If the workorder already has a sale, we cannot add items directly
+        # to the work order, but must use the sale editor to do so.
         self.hide_add_button()
+        if model.sale_id:
+            self.hide_edit_button()
+            self.hide_del_button()
+            self.hide_item_addition_toolbar()
 
     #
     #  SellableItemSlave
