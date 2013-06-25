@@ -202,6 +202,7 @@ class WorkOrderEditor(BaseEditor):
 
     def _fill_categories_combo(self):
         categories = self.store.find(WorkOrderCategory)
+        self.category.color_attribute = 'color'
         self.category.prefill(
             api.for_combo(categories, empty=_(u"No category")))
 
