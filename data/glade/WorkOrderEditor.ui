@@ -170,7 +170,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="client_edit">
+                  <object class="GtkButton" id="client_info">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -179,8 +179,8 @@
                     <child>
                       <object class="GtkImage" id="image2">
                         <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Add a new client</property>
-                        <property name="stock">gtk-edit</property>
+                        <property name="tooltip_text" translatable="yes">Show a client details</property>
+                        <property name="stock">gtk-info</property>
                         <property name="icon-size">1</property>
                       </object>
                     </child>

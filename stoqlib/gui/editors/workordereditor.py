@@ -35,6 +35,7 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderPackage,
                                       WorkOrderApprovedAndFinishedView)
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -138,7 +139,7 @@ class WorkOrderEditor(BaseEditor):
     #
 
     def _setup_widgets(self):
-        for widget in [self.client_edit, self.category_edit]:
+        for widget in [self.client_info, self.category_edit]:
             widget.set_sensitive(False)
         self._fill_clients_combo()
         self._fill_categories_combo()
@@ -246,7 +247,7 @@ class WorkOrderEditor(BaseEditor):
 
     def on_client__content_changed(self, combo):
         has_client = bool(combo.read())
-        self.client_edit.set_sensitive(has_client)
+        self.client_info.set_sensitive(has_client)
 
     def after_client__content_changed(self, combo):
         self._update_view()
@@ -258,8 +259,9 @@ class WorkOrderEditor(BaseEditor):
     def on_client_create__clicked(self, button):
         self._run_client_editor()
 
-    def on_client_edit__clicked(self, button):
-        self._run_client_editor(client=self.client.read())
+    def on_client_info__clicked(self, button):
+        run_dialog(ClientDetailsDialog, self, self.store,
+                   self.client.read())
 
     def on_category_create__clicked(self, button):
         self._run_category_editor()
