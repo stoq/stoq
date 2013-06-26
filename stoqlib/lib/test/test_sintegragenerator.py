@@ -3,7 +3,7 @@ from stoqdrivers.enum import TaxType
 from stoqlib.database.runtime import get_current_branch
 
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.inventory import Inventory, InventoryItem
+from stoqlib.domain.inventory import InventoryItem
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import SellableTaxConstant
@@ -85,7 +85,7 @@ class TestSintegraGenerator(DomainTest):
         sale.confirm_date = localdate(2007, 6, 10)
         sellable3.code = u'09999'
 
-        inventory = Inventory(branch=branch, store=self.store)
+        inventory = self.create_inventory(branch=branch)
         inventory.open_date = localdate(2007, 6, 15)
 
         # product came from sellable3

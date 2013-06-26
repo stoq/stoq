@@ -1384,6 +1384,7 @@ CREATE TABLE inventory (
     invoice_number integer CONSTRAINT valid_invoice_number
         CHECK (invoice_number > 0 AND invoice_number <= 999999999),
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
+    responsible_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
 

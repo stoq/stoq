@@ -356,6 +356,11 @@ class ExampleCreator(object):
         from stoqlib.domain.person import LoginUser
         individual = self.create_individual()
         profile = self.create_user_profile()
+        # FIXME: Some tests are calling this twice without passing different
+        # usernames. Remove this line and fix them directly
+        while not self.store.find(LoginUser, username=username).is_empty():
+            username += u'1'
+
         return LoginUser(person=individual.person,
                          username=username,
                          password=u'password',
@@ -920,7 +925,9 @@ class ExampleCreator(object):
     def create_inventory(self, branch=None):
         from stoqlib.domain.inventory import Inventory
         branch = branch or self.create_branch(u"Main")
-        return Inventory(branch=branch, store=self.store)
+        responsible = self.create_user()
+        return Inventory(store=self.store,
+                         branch=branch, responsible=responsible)
 
     def create_inventory_item(self, inventory=None, quantity=5):
         from stoqlib.domain.inventory import InventoryItem

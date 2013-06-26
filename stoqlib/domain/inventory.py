@@ -239,8 +239,12 @@ class Inventory(Domain):
     #: the date inventory process was closed
     close_date = DateTimeCol(default=None)
 
-    branch_id = IdCol()
+    responsible_id = IdCol(allow_none=False)
+    #: the responsible for this inventory. At the moment, the
+    #: |loginuser| that opened the inventory
+    responsible = Reference(responsible_id, 'LoginUser.id')
 
+    branch_id = IdCol(allow_none=False)
     #: branch where the inventory process was done
     branch = Reference(branch_id, 'Branch.id')
 
