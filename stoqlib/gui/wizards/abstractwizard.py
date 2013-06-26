@@ -256,7 +256,11 @@ class SellableItemSlave(BaseEditorSlave):
     sellable_view = ProductFullStockItemView
     sellable_editable = False
     validate_stock = False
-    validate_value = False
+
+    #: If we should also validate the price of the sellable. (checking if it is
+    #: respecting the rules of discount
+    validate_price = False
+
     # FIXME: s/cost/value/
     cost_editable = True
     item_editor = None
@@ -273,9 +277,12 @@ class SellableItemSlave(BaseEditorSlave):
     #: without storables (e.g. services) won't have them shown anyway
     stock_labels_visible = True
 
-    def __init__(self, store, model=None, visual_mode=None):
+    def __init__(self, store, parent, model=None, visual_mode=None):
+        self.parent = parent
+
         # The manager is someone who can allow a bigger discount for a sale item
         self.manager = None
+
         # This is used by add_sellable to know what item represents
         # a given sellable/batch/value so it can be removed without
         # needing to ask for the children class
@@ -800,7 +807,14 @@ class SellableItemSlave(BaseEditorSlave):
         if value <= 0:
             return ValidationError(_(u'Cost must be greater than zero.'))
 
-        if self.validate_value:
+        if self.validate_price:
+            category = getattr(self.model, 'client_category', None)
+            default_price = sellable.get_price_for_category(category)
+            if (not sysparam(self.store).ALLOW_HIGHER_SALE_PRICE and
+                value > default_price):
+                return ValidationError(_(u'The sell price cannot be greater'
+                                         'than %s.') % default_price)
+
             self.manager = self.manager or api.get_current_user(self.store)
             client = getattr(self.model, 'client', None)
             category = client and client.category
@@ -814,9 +828,13 @@ class SellableItemSlave(BaseEditorSlave):
         if icon_pos != gtk.ENTRY_ICON_PRIMARY:
             return
 
+        # No need to check credentials if it is not a price
+        if not self.validate_price:
+            return
+
         # Ask for the credentials of a different user that can possibly allow a
         # bigger discount.
-        self.manager = run_dialog(CredentialsDialog, self.wizard, self.store)
+        self.manager = run_dialog(CredentialsDialog, self.parent, self.store)
         if self.manager:
             self.cost.validate(force=True)
 
@@ -829,7 +847,7 @@ class SellableItemStep(SellableItemSlave, WizardStep):
     def __init__(self, wizard, previous, store, model):
         self.wizard = wizard
         WizardStep.__init__(self, previous)
-        SellableItemSlave.__init__(self, store, model=model)
+        SellableItemSlave.__init__(self, store, self.wizard, model=model)
         WizardSellableItemStepEvent.emit(self)
 
     def get_parent(self):
