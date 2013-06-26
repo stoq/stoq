@@ -51,6 +51,7 @@ from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
 from stoqlib.domain.sale import SaleItem, Sale, Delivery
+from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableCategory,
                                      SellableTaxConstant)
@@ -908,6 +909,40 @@ class ProductionItemView(Viewable):
                  SellableCategory.id == Sellable.category_id),
         LeftJoin(SellableUnit,
                  Sellable.unit_id == SellableUnit.id),
+    ]
+
+
+class ReturnedSalesView(Viewable):
+    PersonBranch = ClassAlias(Person, 'person_branch')
+    PersonResponsible = ClassAlias(Person, 'responsible_sale')
+    PersonClient = ClassAlias(Person, 'person_client')
+
+    returned_sale = ReturnedSale
+
+    id = ReturnedSale.id
+    identifier = ReturnedSale.identifier
+    identifier_str = Cast(ReturnedSale.identifier, 'text')
+    return_date = ReturnedSale.return_date
+    reason = ReturnedSale.reason
+    invoice_number = ReturnedSale.invoice_number
+
+    sale_id = Sale.id
+    sale_identifier = Sale.identifier
+    sale_identifier_str = Cast(Sale.identifier, 'text')
+
+    responsible_name = PersonResponsible.name
+    branch_name = PersonBranch.name
+    client_name = PersonClient.name
+
+    tables = [
+        ReturnedSale,
+        Join(Sale, Sale.id == ReturnedSale.sale_id),
+        Join(LoginUser, LoginUser.id == ReturnedSale.responsible_id),
+        Join(PersonResponsible, PersonResponsible.id == LoginUser.person_id),
+        Join(Branch, Branch.id == ReturnedSale.branch_id),
+        Join(PersonBranch, PersonBranch.id == Branch.person_id),
+        LeftJoin(Client, Client.id == Sale.client_id),
+        LeftJoin(PersonClient, PersonClient.id == Client.person_id),
     ]
 
 

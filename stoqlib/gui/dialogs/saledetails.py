@@ -98,7 +98,7 @@ class SaleDetailsDialog(BaseEditor):
         """ Creates a new SaleDetailsDialog object
 
         :param store: a store
-        :param model: a :class:`stoqlib.domain.sale.Sale` object
+        :param model: a :class:`stoqlib.domain.sale.SaleView` object
         """
         BaseEditor.__init__(self, store, model,
                             visual_mode=visual_mode)

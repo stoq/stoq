@@ -42,6 +42,7 @@ from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
+from stoqlib.gui.search.returnedsalesearch import ReturnedSaleSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
@@ -168,6 +169,8 @@ class SalesApp(ShellApp):
              group.get("search_loans")),
             ("LoanSearchItems", None, _("Loan items..."),
              group.get("search_loan_items")),
+            ("ReturnedSaleSearch", None, _("Returned sales..."),
+             group.get("returned_sales")),
 
             # Sale
             ("SaleMenu", None, _("Sale")),
@@ -496,6 +499,9 @@ class SalesApp(ShellApp):
 
     def on_LoanSearchItems__activate(self, action):
         self.run_dialog(LoanItemSearch, self.store)
+
+    def on_ReturnedSaleSearch__activate(self, action):
+        self.run_dialog(ReturnedSaleSearch, self.store)
 
     # Search
 

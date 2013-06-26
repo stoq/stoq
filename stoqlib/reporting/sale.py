@@ -88,6 +88,10 @@ class SalesReport(ObjectListReport):
     summary = ['total', 'total_quantity']
 
 
+class ReturnedSalesReport(ObjectListReport):
+    title = _("Returned Sales Report")
+
+
 class SoldItemsByBranchReport(ObjectListReport):
     """This report show a list of sold items by branch. For each item
     it show: product code, product description, branch name,

@@ -169,6 +169,14 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`returnedsalesearch` Module
+--------------------------------
+
+.. automodule:: stoqlib.gui.search.returnedsalesearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`salespersonsearch` Module
 -------------------------------
 .. automodule:: stoqlib.gui.search.salespersonsearch

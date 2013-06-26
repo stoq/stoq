@@ -354,6 +354,8 @@ _bindings = [
      _("Search for loans")),
     ('app.sales.search_loan_items', '',
      _("Search for loan items")),
+    ('app.sales.returned_sales', '',
+     _("Search for returned sales")),
     ('app.sales.sale_cancel', '',
      _("Cancel the selected sale")),
     ('app.sales.sale_print_invoice', '',
