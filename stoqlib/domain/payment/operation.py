@@ -351,7 +351,7 @@ class StoreCreditPaymentOperation(object):
 
     def get_constant(self, payment):
         # FIXME: Add another constant to stoqdrivers?
-        return PaymentMethodType.CUSTOM
+        return PaymentMethodType.MONEY
 
     def require_person(self, payment_type):
         if payment_type == Payment.TYPE_IN:
@@ -411,7 +411,7 @@ class CreditPaymentOperation(object):
 
     def get_constant(self, payment):
         # FIXME: Add another constant to stoqdrivers?
-        return PaymentMethodType.CUSTOM
+        return PaymentMethodType.MONEY
 
     def require_person(self, payment_type):
         return True
