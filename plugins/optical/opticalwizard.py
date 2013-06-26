@@ -366,9 +366,19 @@ class _ItemSlave(SellableItemSlave):
     def get_order_item(self, sellable, price, quantity, batch=None):
         work_order = self.emit('get-work-order')
         assert work_order
+
+        remaining_quantity = self.get_remaining_quantity(sellable, batch)
+        available_quantity = min(quantity, remaining_quantity)
         sale_item = self.model.add_sellable(sellable, quantity, price, batch=batch)
-        order_item = work_order.add_sellable(sellable, quantity=quantity, price=price,
-                                             batch=batch)
+
+        # Decrease the available  quantity, so it does not get decreased twice
+        # when confirming the sale
+        sale_item.quantity_decreased = available_quantity
+
+        # Add only the avaiable quantity to the work order, so when it calls
+        # sync_stock below, the final quantity in the stock will be correct
+        order_item = work_order.add_sellable(sellable, price=price, batch=batch,
+                                             quantity=available_quantity)
         order_item.sale_item = sale_item
         return _TempSaleItem(sale_item)
 
@@ -512,10 +522,5 @@ class OpticalSaleQuoteWizard(SaleQuoteWizard):
         for wo in self.workorders:
             wo.category = self.wo_category
             wo.sync_stock()
-
-        # And also set them as already decreased in the sale, so it does not get
-        # decreased twice
-        for item in self.model.get_items():
-            item.quantity_decreased = item.quantity
 
         SaleQuoteWizard.finish(self)
