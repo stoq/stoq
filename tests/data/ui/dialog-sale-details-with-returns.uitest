@@ -55,10 +55,10 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $100>, Decimal('100.00000')
                   row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $100>, Decimal('100.00000')
                 GtkHBox(hbox3, fill=True):
-                  GtkLabel(label19, expand=True, fill=True):
+                  GtkButton(print_return_report): 'gtk-print'
+                  GtkLabel(label21, expand=True, fill=True): 'Check the "Observations" tab for more information...'
                   GtkLabel(label23, fill=True): 'Total:'
                   ProxyLabel(return_total_lbl, fill=True): '<span >$200.00</span>'
-                GtkLabel(label21, fill=True): 'Check the "Observations" tab for more information...'
             GtkVBox(payments_vbox):
               ObjectList(payments_list, expand=True, fill=True):
                 column: title='#'

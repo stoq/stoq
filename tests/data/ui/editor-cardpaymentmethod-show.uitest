@@ -1,0 +1,71 @@
+editor: CardPaymentMethodEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Payment Method"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave CardPaymentMethodEditor is attached
+        GtkVBox(toplevel):
+          GtkNotebook(notebook1, expand=True, fill=True):
+            GtkEventBox(method_holder): slave PaymentMethodSlave is attached
+              GtkVBox(toplevel):
+                GtkTable(table1, expand=True, fill=True):
+                  ProxyLabel(kiwilabel1): 'Default Account:'
+                  ProxyComboBox(account):
+                    item: 'Assets'
+                    item: 'Banks'
+                    item: 'Banks:Banco do Brasil'
+                    item: 'Conta de Investimento'
+                    item: 'Equity'
+                    item: 'Expenses'
+                    item: 'Expenses:Aluguel'
+                    item: 'Expenses:Impostos'
+                    item: 'Expenses:Luz'
+                    item: 'Expenses:Sal\xc3\xa1rios'
+                    item: 'Expenses:Telefonia'
+                    item: 'Imbalance', selected
+                    item: 'Income'
+                    item: 'Saldos Iniciais'
+                    item: 'Tills'
+                  ProxyLabel(kiwilabel2): 'Maximum Installments:'
+                  ProxySpinButton(max_installments): '12'
+                  ProxyLabel(kiwilabel11): 'Penalty:'
+                  ProxySpinButton(penalty): '0.00'
+                  ProxyLabel(kiwilabel3): '%'
+                  ProxyLabel(kiwilabel5): 'Daily Interest:'
+                  ProxySpinButton(daily_interest): '0.00'
+                  ProxyLabel(kiwilabel4): '%'
+                GtkEventBox(slave_holder, fill=True):
+            GtkEventBox(providers_holder): slave ProviderListSlave is attached
+              kiwi+ui+listdialog+ListContainer(listcontainer):
+                ObjectList(expand=True, fill=True):
+                  column: title='Name', expand
+                  column: title='Max Installments'
+                  row: u'AMEX', 1
+                  row: u'BANRISUL', 1
+                  row: u'CERTIF', 1
+                  row: u'CREDISHOP', 1
+                  row: u'HIPERCARD', 1
+                  row: u'PAGGO', 1
+                  row: u'REDECARD', 1
+                  row: u'VISANET', 1
+                GtkVBox(fill=True, padding=6):
+                  GtkButton(fill=True): 'gtk-add'
+                  GtkButton(fill=True): 'gtk-remove', insensitive
+                  GtkButton(fill=True): 'gtk-edit', insensitive
+            GtkEventBox(devices_holder): slave CardDeviceListSlave is attached
+              kiwi+ui+listdialog+ListContainer(listcontainer):
+                ObjectList(expand=True, fill=True):
+                  column: title='Description', expand
+                  row: u'Default'
+                GtkVBox(fill=True, padding=6):
+                  GtkButton(fill=True): 'gtk-add'
+                  GtkButton(fill=True): 'gtk-remove', insensitive
+                  GtkButton(fill=True): 'gtk-edit', insensitive
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

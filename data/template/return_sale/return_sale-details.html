@@ -1,0 +1,17 @@
+      <section>
+        <table class="details">
+          <tbody>
+            <tr>
+              <td>${ _("Client:") }</td>
+              <td>${ report.client.get_name() }</td>
+              <td>${ _("Sale date:") }</td>
+              <td>${ format_date(report.returned_sale.sale.confirm_date) }</td>
+            </tr>
+            <tr>
+              <td>${ _("Returned Value:") }</td>
+              <td>${ format_price(report.returned_sale.return_total) }</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+

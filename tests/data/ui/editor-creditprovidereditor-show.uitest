@@ -1,0 +1,24 @@
+editor: CreditProviderEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "CreditProvider"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave CreditProviderEditor is attached
+        GtkVBox(toplevel):
+          GtkTable(table2, expand=True, fill=True):
+            ProxyLabel(kiwilabel3): 'Provider Id:'
+            ProxyEntry(provider_id): '', ineditable, insensitive
+            ProxyLabel(kiwilabel4): 'Short Name:'
+            ProxyEntry(short_name): 'Velec'
+            GtkLabel(label1): 'Max installments:'
+            ProxySpinButton(max_installments): '1'
+            ProxyLabel(kiwilabel5): 'Open Contract Date:'
+            ProxyDateEntry(open_contract_date): datetime.date(2006, 1, 1)
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

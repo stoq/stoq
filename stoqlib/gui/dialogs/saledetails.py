@@ -49,6 +49,7 @@ from stoqlib.gui.utils.printing import print_report
 from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.booklet import BookletReport
 from stoqlib.reporting.sale import SaleOrderReport
+from stoqlib.reporting.salereturn import SaleReturnReport
 
 _ = stoqlib_gettext
 
@@ -303,3 +304,7 @@ class SaleDetailsDialog(BaseEditor):
             # XXX: Rename to renegotiated
             run_dialog(RenegotiationDetailsDialog, self, self.store,
                        self.sale_order.group.renegotiation)
+
+    def on_print_return_report__clicked(self, button):
+        print_report(SaleReturnReport, self.store, self.model.client,
+                     self.model, self.returned_items_list)

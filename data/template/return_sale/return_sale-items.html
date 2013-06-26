@@ -1,0 +1,52 @@
+  <section id="items">
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td>${ _("Return Date") }</td>
+          <td>${ _("Item") }</td>
+          <td>${ _("Reason") }</td>
+          <td>${ _("Quantity") }</td>
+          <td>${ _("Price") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        % for item in report.returned_items:
+          <tr>
+            <td>${ item.code }</td>
+            <td>${ format_date(item.return_date) }</td>
+            <td>${ item.description }</td>
+            <td>${ item.reason }</td>
+            <td>${ item.quantity }</td>
+            <td>${ format_price(item.price) }</td>
+          </tr>
+        % endfor
+      </tbody>
+
+      <tbody class="summary">
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>${ _('Total:') }</td>
+          <td>${ format_price(report.returned_sale.return_total) }</td>
+        </tr>
+      </tbody>
+
+    </table>
+  </section>
+
+

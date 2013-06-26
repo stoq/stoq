@@ -1,0 +1,14 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+
+${ setup_margin_labels(title) }
+
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes) }
+  <%include file="return_sale-details.html" />
+  <%include file="return_sale-items.html" />
+</div> <!-- end div.page -->

@@ -137,6 +137,14 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`salereturn` Module
+-------------------------
+
+.. automodule:: stoqlib.reporting.salereturn
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`service` Module
 ---------------------
 

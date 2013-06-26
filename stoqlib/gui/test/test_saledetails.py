@@ -80,7 +80,8 @@ class TestSaleDetails(GUITest):
         dialog = SaleDetailsDialog(self.store, model)
         self.check_editor(dialog, 'dialog-sale-details')
 
-    def testShowWithReturns(self):
+    @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
+    def testShowWithReturns(self, print_report):
         date = localdate(2010, 12, 10).date()
 
         sale = self._create_sale()
@@ -96,7 +97,10 @@ class TestSaleDetails(GUITest):
         returned_payment.paid_date = date
 
         model = self.store.find(SaleView, id=sale.id).one()
+
         dialog = SaleDetailsDialog(self.store, model)
+        self.click(dialog.print_return_report)
+
         self.check_editor(dialog, 'dialog-sale-details-with-returns')
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.run_dialog')
