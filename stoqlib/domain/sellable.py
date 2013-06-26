@@ -37,7 +37,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from stoqdrivers.enum import TaxType, UnitType
-from storm.expr import And
+from storm.expr import And, In
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
@@ -962,10 +962,9 @@ class Sellable(Domain):
 
         :rtype: generator of sellables
         """
-        # FIXME: This query should be faster, waiting for #3696
-
+        category_ids = [c.id for c in categories]
         if include_uncategorized:
-            categories.append(None)
-        for sellable in cls.get_unblocked_sellables(store):
-            if sellable.category in categories:
-                yield sellable
+            category_ids.append(None)
+
+        sellables = cls.get_unblocked_sellables(store)
+        return sellables.find(In(Sellable.category_id, category_ids))

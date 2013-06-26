@@ -34,7 +34,7 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
+from stoqlib.gui.editors.inventoryeditor import InventoryOpenEditor
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
@@ -190,35 +190,21 @@ class InventoryApp(ShellApp):
         self.set_sensitive([self.AdjustAction], has_open and all_counted)
         self.window.set_new_menu_sensitive(self._can_open())
 
-    def _get_available_branches_to_inventory(self):
-        """Returns a list of branches where we can open an inventory.
-        Note that we can open a inventory if:
-            - There's no inventory opened yet (in the same branch)
-            - The branch must have some stock
-        """
-        available_branches = []
-        for branch in self._get_branches():
-            has_open_inventory = Inventory.has_open(self.store, branch)
-            if not has_open_inventory:
-                stock = self.store.find(ProductStockItem, branch=branch)
-                if stock.count() > 0:
-                    available_branches.append(branch)
-
-        return available_branches
-
     def _can_open(self):
-        # we can open an inventory if we have at least one branch
-        # available
-        return bool(self._get_available_branches_to_inventory())
+        branch = api.get_current_branch(self.store)
+        if Inventory.has_open(self.store, branch):
+            return False
+
+        # It doesn't make sense to open an inventory if we don't have any stock
+        return self.store.find(ProductStockItem, branch=branch).count() > 0
 
     def _open_inventory(self):
-        store = api.new_store()
-        branches = self._get_available_branches_to_inventory()
-        model = self.run_dialog(OpenInventoryDialog, store, branches)
-        store.confirm(model)
-        store.close()
-        self.refresh()
-        self._update_widgets()
+        with api.trans() as store:
+            rv = self.run_dialog(InventoryOpenEditor, store)
+
+        if rv:
+            self.refresh()
+            self._update_widgets()
 
     def _cancel_inventory(self):
         if not yesno(_('Are you sure you want to cancel this inventory ?'),

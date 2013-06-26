@@ -177,14 +177,6 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`openinventorydialog` Module
----------------------------------
-
-.. automodule:: stoqlib.gui.dialogs.openinventorydialog
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`paymentcategorydialog` Module
 -----------------------------------
 

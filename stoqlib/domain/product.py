@@ -223,13 +223,6 @@ class Product(Domain):
     #: list of |suppliers| that sells this product
     suppliers = ReferenceSet('id', 'ProductSupplierInfo.product_id')
 
-    #
-    # General Methods
-    #
-
-    def has_quality_tests(self):
-        return not self.quality_tests.find().is_empty()
-
     @property
     def description(self):
         return self.sellable.description
@@ -237,6 +230,13 @@ class Product(Domain):
     @property
     def storable(self):
         return self.store.find(Storable, product=self).one()
+
+    #
+    #  Public API
+    #
+
+    def has_quality_tests(self):
+        return not self.quality_tests.find().is_empty()
 
     def remove(self):
         """Deletes this product from the database.
@@ -283,10 +283,6 @@ class Product(Domain):
         if self.manage_stock:
             return self.storable.get_total_balance() == 0
         return True
-
-    #
-    # Acessors
-    #
 
     def get_manufacture_time(self, quantity, branch):
         """Returns the estimated time in days to manufacture a product
