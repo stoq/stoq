@@ -48,6 +48,7 @@ CREATE TABLE optical_work_order (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     work_order_id uuid UNIQUE REFERENCES work_order(id) ON UPDATE CASCADE,
+    medic_id uuid UNIQUE REFERENCES optical_medic(id) ON UPDATE CASCADE,
     prescription_date timestamp,
     patient text,
 
