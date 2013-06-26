@@ -35,7 +35,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.interfaces import IContainer
-from stoqlib.lib.dateutils import localnow, localtoday
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -231,7 +231,7 @@ class TransferOrder(Domain):
         for item in self.get_items():
             item.receive()
 
-        self.receival_date = receival_date or localtoday()
+        self.receival_date = receival_date or localnow()
         self.destination_responsible = responsible
         self.status = self.STATUS_RECEIVED
 

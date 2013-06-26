@@ -70,6 +70,7 @@ class TestTransferOrderSearch(GUITest):
         order.open_date = localdatetime(2012, 3, 3)
         order.send()
         order.receive(self.create_employee())
+        order.receival_date = localdatetime(2012, 3, 4)
 
     def testSearch(self):
         self._create_domain()

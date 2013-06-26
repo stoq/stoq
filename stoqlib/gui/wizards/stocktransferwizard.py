@@ -26,7 +26,6 @@
 from decimal import Decimal
 
 import gtk
-from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from storm.expr import And
 
@@ -44,7 +43,6 @@ from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
 from stoqlib.gui.events import StockTransferWizardFinishEvent
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
-from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_sellable_description
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -107,15 +105,6 @@ class StockTransferInitialStep(WizardEditorStep):
 
     def validate_step(self):
         return self._validate_destination_branch()
-
-    #
-    # Kiwi callbacks
-    #
-
-    def on_open_date__validate(self, widget, date):
-        if date < localtoday().date():
-            return ValidationError(_(u"The date must be set to today or a "
-                                     "future date"))
 
 
 class StockTransferItemStep(SellableItemStep):
