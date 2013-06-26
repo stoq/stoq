@@ -64,7 +64,7 @@ def get_random_color(ignore=None):
     :param set ignore: a set of colors to be ignored
     :returns unicode: a random color, in hex format (e.g. u'#eeeeec')
     """
-    colors = _TANGO_PALETTE
+    colors = _TANGO_PALETTE.copy()
     if ignore:
         colors -= ignore
 
