@@ -73,6 +73,15 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>1.000</b>'
+            GtkVBox(inventory_vbox):
+              ObjectList(inventory_list, expand=True, fill=True):
+                column: title='#'
+                column: title='Responsible'
+                column: title='Open date'
+                column: title='Close date'
+                column: title='Recorded qty'
+                column: title='Counted qty'
+                column: title='Cost'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

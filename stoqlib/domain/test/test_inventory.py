@@ -25,7 +25,7 @@
 from decimal import Decimal
 
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.inventory import Inventory
+from stoqlib.domain.inventory import Inventory, InventoryItemsView
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -182,3 +182,34 @@ class TestInventoryItem(DomainTest):
         actual = Decimal(12)
         item.actual_quantity = actual
         self.assertEqual(actual - recorded_qty, item.get_adjustment_quantity())
+
+
+class TestInventoryItemsView(DomainTest):
+    def testFind(self):
+        inventory = self.create_inventory()
+        item1 = self.create_inventory_item(inventory=inventory)
+        item2 = self.create_inventory_item(inventory=inventory)
+
+        results = self.store.find(InventoryItemsView)
+        self.assertEqual(set([(item1, inventory), (item2, inventory)]),
+                         set([(r.inventory_item, r.inventory) for r in results]))
+
+    def testFindByproduct(self):
+        p1 = self.create_product()
+        p2 = self.create_product()
+
+        inventory1 = self.create_inventory()
+        item1 = self.create_inventory_item(inventory=inventory1, product=p1)
+        item2 = self.create_inventory_item(inventory=inventory1, product=p2)
+
+        inventory2 = self.create_inventory()
+        item3 = self.create_inventory_item(inventory=inventory2, product=p1)
+        item4 = self.create_inventory_item(inventory=inventory2, product=p2)
+
+        results = InventoryItemsView.find_by_product(self.store, p1)
+        self.assertEqual(set([(item1, inventory1), (item3, inventory2)]),
+                         set([(r.inventory_item, r.inventory) for r in results]))
+
+        results = InventoryItemsView.find_by_product(self.store, p2)
+        self.assertEqual(set([(item2, inventory1), (item4, inventory2)]),
+                         set([(r.inventory_item, r.inventory) for r in results]))
