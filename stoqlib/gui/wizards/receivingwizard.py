@@ -443,6 +443,17 @@ class ReceivingOrderWizard(BaseWizard):
         BaseWizard.__init__(self, store, first_step, self.model)
         self.next_button.set_sensitive(False)
 
+    def _maybe_print_labels(self):
+        param = api.sysparam(self.store).LABEL_TEMPLATE_PATH
+        if not param.path:
+            return
+        if not yesno(_(u'Do you want to print the labels for the received products?'),
+                     gtk.RESPONSE_YES, _(u'Print labels'), _(u"Don't print")):
+            return
+        label_data = run_dialog(SkipLabelsEditor, self, self.store)
+        if label_data:
+            print_labels(label_data, self.store, self.model.purchase)
+
     #
     # WizardStep hooks
     #
@@ -457,11 +468,7 @@ class ReceivingOrderWizard(BaseWizard):
                 continue
             ReceivingOrderItem.delete(item.id, store=self.store)
 
-        if yesno(_(u'Do you want to print the labels for the received products?'),
-                 gtk.RESPONSE_YES, _(u'Print labels'), _(u"Don't print")):
-            label_data = run_dialog(SkipLabelsEditor, self, self.store)
-            if label_data:
-                print_labels(label_data, self.store, self.model.purchase)
+        self._maybe_print_labels()
 
         ReceivingOrderWizardFinishEvent.emit(self.model)
 

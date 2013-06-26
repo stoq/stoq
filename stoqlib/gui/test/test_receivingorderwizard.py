@@ -28,6 +28,7 @@ import gtk
 from kiwi.python import Settable
 import mock
 
+from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
@@ -75,16 +76,29 @@ class TestReceivingOrderWizard(GUITest):
         self.check_wizard(wizard, 'receiving-invoice-step')
         module = 'stoqlib.gui.events.ReceivingOrderWizardFinishEvent.emit'
         with mock.patch(module) as emit:
-            self.click(wizard.next_button)
-            self.assertEquals(emit.call_count, 1)
-            args, kwargs = emit.call_args
-            self.assertTrue(isinstance(args[0], ReceivingOrder))
-            yesno.assert_called_once_with('Do you want to print the labels for '
-                                          'the received products?',
-                                          gtk.RESPONSE_YES, 'Print labels',
-                                          "Don't print")
-            run_dialog.assert_called_once_with(SkipLabelsEditor, wizard,
-                                               self.store)
-            warning.assert_called_once_with('It was not possible to print the '
-                                            'labels. The template file was '
-                                            'not found.')
+            with mock.patch.object(wizard.model, 'confirm') as confirm:
+                api.sysparam(self.store).LABEL_TEMPLATE_PATH.path = u''
+                self.assertEqual(confirm.call_count, 0)
+                self.click(wizard.next_button)
+                self.assertEqual(confirm.call_count, 1)
+                self.assertEquals(emit.call_count, 1)
+                args, kwargs = emit.call_args
+                self.assertTrue(isinstance(args[0], ReceivingOrder))
+                self.assertEqual(yesno.call_count, 0)
+                api.sysparam(self.store).LABEL_TEMPLATE_PATH.path = u'C:\nppdf32Log\debuglog.txt'
+                emit.reset_mock()
+                confirm.reset_mock()
+                self.click(wizard.next_button)
+                self.assertEqual(emit.call_count, 1)
+                self.assertEqual(confirm.call_count, 1)
+                args, kwargs = emit.call_args
+                self.assertTrue(isinstance(args[0], ReceivingOrder))
+                yesno.assert_called_once_with('Do you want to print the labels for '
+                                              'the received products?',
+                                              gtk.RESPONSE_YES, 'Print labels',
+                                              "Don't print")
+                run_dialog.assert_called_once_with(SkipLabelsEditor, wizard,
+                                                   self.store)
+                warning.assert_called_once_with('It was not possible to print the '
+                                                'labels. The template file was '
+                                                'not found.')
