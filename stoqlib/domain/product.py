@@ -168,6 +168,18 @@ class Product(Domain):
     #: physical location of this product, like a drawer or shelf number
     location = UnicodeCol(default=u'')
 
+    manufacturer_id = IdCol(default=None)
+
+    #: name of the manufacturer for this product, eg "General Motors"
+    manufacturer = Reference(manufacturer_id, 'ProductManufacturer.id')
+
+    #: name of the brand, eg "Chevrolet" or "Opel"
+    brand = UnicodeCol(default=u'')
+
+    #: name of the family, eg "Cobalt" or "Astra"
+    family = UnicodeCol(default=u'')
+
+    #: name of the model, eg "2.2 L Ecotec L61 I4" or "2.0 8V/ CD 2.0 Hatchback 5p Aut"
     model = UnicodeCol(default=u'')
 
     #: a number representing this part
@@ -196,11 +208,6 @@ class Product(Domain):
 
     #: NFE: see ncm
     genero = UnicodeCol(default=None)
-
-    manufacturer_id = IdCol(default=None)
-
-    #: name of the manufacturer for this product
-    manufacturer = Reference(manufacturer_id, 'ProductManufacturer.id')
 
     icms_template_id = IdCol(default=None)
 

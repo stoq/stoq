@@ -84,8 +84,12 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                     GtkLabel(manufacturer_lbl): 'Manufacturer:'
                     ProxyComboEntry(manufacturer):
                       item: ''
+                    GtkLabel(brand_lbl): 'Brand:'
+                    ProxyEntry(brand): ''
                     GtkLabel(model_lbl): 'Model:'
                     ProxyEntry(product_model): ''
+                    GtkLabel(family_lbl): 'Family:'
+                    ProxyEntry(family): ''
                     GtkLabel(width_lbl): 'Width:'
                     ProxySpinButton(width): '0'
                     GtkLabel(weight_lbl): 'Weight:'

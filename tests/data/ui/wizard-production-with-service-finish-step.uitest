@@ -47,9 +47,11 @@ model: ProductComponent<3>
   quantity: Decimal('1.000')
 
 model: Product<4>
+  brand: u''
   consignment: False
   depth: Decimal('0')
   ex_tipi: None
+  family: u''
   genero: None
   height: Decimal('0')
   is_composed: False
@@ -63,9 +65,11 @@ model: Product<4>
   width: Decimal('0')
 
 model: Product<5>
+  brand: u''
   consignment: False
   depth: Decimal('0')
   ex_tipi: None
+  family: u''
   genero: None
   height: Decimal('0')
   is_composed: False

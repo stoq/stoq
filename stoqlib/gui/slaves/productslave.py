@@ -64,7 +64,7 @@ class ProductInformationSlave(BaseEditorSlave):
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width',
                      'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero',
-                     'product_model']
+                     'product_model', 'brand', 'family']
     storable_widgets = ['minimum_quantity', 'maximum_quantity', 'is_batch']
 
     def __init__(self, store, model, db_form, visual_mode=False):
@@ -176,6 +176,10 @@ class ProductInformationSlave(BaseEditorSlave):
         self.model_lbl.hide()
         self.product_model.hide()
         self.is_batch.hide()
+        self.brand_lbl.hide()
+        self.brand.hide()
+        self.family_lbl.hide()
+        self.family.hide()
 
     #
     # Kiwi Callbacks
