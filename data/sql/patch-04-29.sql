@@ -6,7 +6,9 @@ UPDATE inventory_item SET is_adjusted = true
     WHERE inventory_item.cfop_data_id IS NOT NULL;
 
 -- Add responsible to inventory
-ALTER TABLE inventory ADD COLUMN responsible_id uuid NOT NULL
+ALTER TABLE inventory ADD COLUMN responsible_id uuid
     REFERENCES login_user(id) ON UPDATE CASCADE;
 UPDATE inventory SET responsible_id = transaction_entry.user_id
     FROM transaction_entry WHERE inventory.te_id = transaction_entry.id;
+-- Add not NULL after the migration above
+ALTER TABLE inventory ALTER COLUMN responsible_id SET NOT NULL;
