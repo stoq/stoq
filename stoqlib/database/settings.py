@@ -56,6 +56,7 @@ _ENTRIES_DELETE_THRESHOLD = 1000
 # List of PostgreSQL extensions that we need to be available on the
 # server.
 _REQUIRED_EXTENSIONS = [
+    'pg_trgm',  # gist_trgm_ops index type
     'uuid-ossp',   # uuid data-type
 ]
 

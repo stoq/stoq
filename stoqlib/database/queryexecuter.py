@@ -35,7 +35,7 @@ from storm.tracer import trace
 import psycopg2
 import psycopg2.extensions
 
-from stoqlib.database.expr import Date
+from stoqlib.database.expr import Date, StoqNormalizeString
 from stoqlib.database.viewable import Viewable
 from stoqlib.database.interfaces import ISearchFilter
 
@@ -524,7 +524,8 @@ class QueryExecuter(object):
             return
 
         def _like(value):
-            return Like(table_field, u'%%%s%%' % value.lower(),
+            return Like(StoqNormalizeString(table_field),
+                        StoqNormalizeString(u'%%%s%%' % value.lower()),
                         case_sensitive=False)
 
         if state.mode == StringQueryState.CONTAINS_ALL:
