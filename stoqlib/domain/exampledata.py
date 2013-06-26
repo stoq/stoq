@@ -929,17 +929,18 @@ class ExampleCreator(object):
         return Inventory(store=self.store,
                          branch=branch, responsible=responsible)
 
-    def create_inventory_item(self, inventory=None, quantity=5):
+    def create_inventory_item(self, inventory=None, quantity=5, product=None):
         from stoqlib.domain.inventory import InventoryItem
         from stoqlib.domain.product import Storable, StockTransactionHistory
         if not inventory:
             inventory = self.create_inventory()
         sellable = self.create_sellable()
-        product = sellable.product
-        storable = Storable(product=product, store=self.store)
-        storable.increase_stock(quantity, inventory.branch,
-                                type=StockTransactionHistory.TYPE_INITIAL,
-                                object_id=None)
+        if product is None:
+            product = sellable.product
+            storable = Storable(product=product, store=self.store)
+            storable.increase_stock(quantity, inventory.branch,
+                                    type=StockTransactionHistory.TYPE_INITIAL,
+                                    object_id=None)
         return InventoryItem(product=product,
                              product_cost=product.sellable.cost,
                              recorded_quantity=quantity,

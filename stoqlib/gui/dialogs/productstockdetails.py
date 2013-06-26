@@ -28,14 +28,17 @@ import datetime
 from decimal import Decimal
 
 import gtk
+from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
+from stoqlib.domain.inventory import InventoryItemsView
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
 from stoqlib.domain.views import (ReceivingItemView, SaleItemsView,
                                   LoanItemView, StockDecreaseItemsView)
+from stoqlib.lib.formatters import get_formatted_cost, format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
@@ -70,6 +73,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.transfer_list.set_columns(self._get_transfer_columns())
         self.loan_list.set_columns(self._get_loan_columns())
         self.decrease_list.set_columns(self._get_decrease_columns())
+        self.inventory_list.set_columns(self._get_inventory_columns())
 
         items = self.store.find(ReceivingItemView, sellable_id=self.model.id)
 
@@ -86,6 +90,9 @@ class ProductStockHistoryDialog(BaseEditor):
 
         items = self.store.find(StockDecreaseItemsView, sellable=self.model.id)
         self.decrease_list.add_list(list(items))
+
+        self.inventory_list.add_list(
+            InventoryItemsView.find_by_product(self.store, self.model.product))
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
@@ -187,6 +194,21 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=str),
                 Column("quantity", title=_("Quantity"), data_type=int),
                 Column("unit_description", title=_("Unit"), data_type=str)]
+
+    def _get_inventory_columns(self):
+        return [IdentifierColumn("inventory_identifier", sorted=True),
+                Column("responsible_name", title=_("Responsible"),
+                       data_type=str),
+                Column("open_date", title=_("Open date"),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                Column("close_date", title=_("Close date"),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                Column("recorded_quantity", title=_("Recorded qty"),
+                       data_type=Decimal, format_func=format_quantity),
+                Column("actual_quantity", title=_("Counted qty"),
+                       data_type=Decimal, format_func=format_quantity),
+                Column("product_cost", title=_("Cost"), data_type=currency,
+                       format_func=get_formatted_cost)]
 
     #
     # BaseEditor Hooks

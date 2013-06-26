@@ -24,15 +24,17 @@
 """ Inventory object and related objects implementation """
 
 from decimal import Decimal
-from storm.expr import And, Eq
+from storm.expr import And, Eq, Join
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
                                          IntCol, UnicodeCol, IdentifierCol,
                                          IdCol, BoolCol)
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
+from stoqlib.domain.person import LoginUser, Person
 from stoqlib.domain.product import StockTransactionHistory, StorableBatch
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
@@ -397,3 +399,56 @@ class Inventory(Domain):
 
     def get_status_str(self):
         return self.statuses[self.status]
+
+
+class InventoryItemsView(Viewable):
+    """Holds information about |inventoryitems|
+
+    This is used to get the most information of an inventory item
+    without doing lots of database queries.
+
+    It's best used with :meth:`.find_by_product`
+    """
+
+    #: the |inventoryitem|
+    inventory_item = InventoryItem
+
+    #: the |inventory|
+    inventory = Inventory
+
+    # InventoryItem
+    id = InventoryItem.id
+    product_id = InventoryItem.product_id
+    recorded_quantity = InventoryItem.recorded_quantity
+    actual_quantity = InventoryItem.actual_quantity
+    product_cost = InventoryItem.product_cost
+    is_adjusted = InventoryItem.is_adjusted
+
+    # Inventory
+    inventory_identifier = Inventory.identifier
+    open_date = Inventory.open_date
+    close_date = Inventory.close_date
+
+    # Person
+    responsible_name = Person.name
+
+    tables = [
+        InventoryItem,
+        Join(Inventory,
+             InventoryItem.inventory_id == Inventory.id),
+        Join(LoginUser,
+             Inventory.responsible_id == LoginUser.id),
+        Join(Person,
+             LoginUser.person_id == Person.id),
+    ]
+
+    @classmethod
+    def find_by_product(cls, store, product):
+        """find results for this view that references *product*
+
+        :param store: the store that will be used to find the results
+        :param product: the |product| used to filter the results
+        :returns: the matching views
+        :rtype: a sequence of :class:`InventoryItemView`
+        """
+        return store.find(cls, product_id=product.id)
