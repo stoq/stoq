@@ -355,6 +355,10 @@ class SellableItemSlave(BaseEditorSlave):
         if len(order_items):
             self._reset_sellable()
 
+        # After an item is added, reset manager to None so the discount is only
+        # authorized for one item at a time.
+        self.manager = None
+
     def remove_items(self, items):
         """Remove items from the current :class:`IContainer`.
 
