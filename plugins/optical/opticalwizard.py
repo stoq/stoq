@@ -42,7 +42,6 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizardStep, WizardEditorStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -353,6 +352,7 @@ class _ItemSlave(SellableItemSlave):
     item_editor = _ItemEditor
     summary_label_text = "<b>%s</b>" % api.escape(_('Total:'))
     value_column = 'price'
+    validate_price = True
 
     #
     #   SellableItemSlave implementation
@@ -400,48 +400,6 @@ class _ItemSlave(SellableItemSlave):
                    data_type=currency),
         ]
 
-    def _validate_sellable_price(self, price):
-        s = self.proxy.model.sellable
-        category = self.model.client_category
-        default_price = s.get_price_for_category(category)
-
-        if price > default_price:
-            if not sysparam(self.store).ALLOW_HIGHER_SALE_PRICE:
-                return ValidationError(
-                    _(u'The sell price cannot be greater than %s.') %
-                    default_price)
-
-        self.manager = self.manager or api.get_current_user(self.store)
-
-        valid_data = s.is_valid_price(price, category, self.manager)
-        if not valid_data['is_valid']:
-            return ValidationError(
-                _(u'Max discount for this product is %.2f%%.' %
-                  valid_data['max_discount']))
-
-    #
-    # Callbacks
-    #
-
-    def on_cost__validate(self, widget, value):
-        if not self.proxy.model.sellable:
-            return
-
-        if value <= Decimal(0):
-            return ValidationError(_(u"The price must be greater than zero."))
-        return self._validate_sellable_price(value)
-
-    def on_cost__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
-            return
-
-        # Ask for the credentials of a different user that can possibly allow a
-        # bigger discount.
-        toplevel = self.get_toplevel()
-        self.manager = run_dialog(CredentialsDialog, toplevel.get_toplevel(), self.store)
-        if self.manager:
-            self.cost.validate(force=True)
-
 
 class OpticalItemStep(BaseWizardStep):
     """Third step of the optical pre-sale.
@@ -464,7 +422,7 @@ class OpticalItemStep(BaseWizardStep):
 
     def _create_ui(self):
         self._setup_workorders_widget()
-        slave = _ItemSlave(self.store, self.model)
+        slave = _ItemSlave(self.store, self.wizard, self.model)
         slave.connect('get-work-order', self._on_item_slave__get_work_order)
         self.attach_slave('slave_holder', slave)
 

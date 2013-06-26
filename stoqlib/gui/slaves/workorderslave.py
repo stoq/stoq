@@ -128,12 +128,12 @@ class _WorkOrderItemSlave(SellableItemSlave):
     sellable_view = SellableFullStockView
     item_editor = _WorkOrderItemEditor
     validate_stock = True
-    validate_value = True
+    validate_price = True
     value_column = 'price'
     batch_selection_dialog = BatchDecreaseSelectionDialog
 
-    def __init__(self, store, model=None, visual_mode=False):
-        super(_WorkOrderItemSlave, self).__init__(store, model=model,
+    def __init__(self, store, parent, model=None, visual_mode=False):
+        super(_WorkOrderItemSlave, self).__init__(store, parent, model=model,
                                                   visual_mode=visual_mode)
 
         # If the workorder already has a sale, we cannot add items directly
@@ -304,6 +304,10 @@ class WorkOrderExecutionSlave(BaseEditorSlave):
     #  BaseEditorSlave
     #
 
+    def __init__(self, parent, *args, **kwargs):
+        self.parent = parent
+        BaseEditorSlave.__init__(self, *args, **kwargs)
+
     def setup_proxies(self):
         self._fill_execution_responsible_combo()
 
@@ -311,7 +315,7 @@ class WorkOrderExecutionSlave(BaseEditorSlave):
 
     def setup_slaves(self):
         self.sellable_item_slave = _WorkOrderItemSlave(
-            self.store, self.model, visual_mode=self.visual_mode)
+            self.store, self.parent, self.model, visual_mode=self.visual_mode)
         self.attach_slave('sellable_item_holder', self.sellable_item_slave)
 
     #

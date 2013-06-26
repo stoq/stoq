@@ -101,7 +101,7 @@ class WorkOrderEditor(BaseEditor):
         self.attach_slave('quote_holder', self.quote_slave)
 
         self.execution_slave = WorkOrderExecutionSlave(
-            self.store, self.model, visual_mode=self.visual_mode)
+            self, self.store, self.model, visual_mode=self.visual_mode)
         self.attach_slave('execution_holder', self.execution_slave)
 
         self.history_slave = WorkOrderHistorySlave(

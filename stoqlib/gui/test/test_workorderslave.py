@@ -81,7 +81,8 @@ class TestWorkOrderItemSlave(GUITest):
     def testRemove(self):
         workorder = self.create_workorder(equipment=u'Test equipment')
         workorder.client = self.create_client()
-        editor = _WorkOrderItemSlave(store=self.store, model=workorder)
+        editor = _WorkOrderItemSlave(store=self.store, parent=None,
+                                     model=workorder)
         self.assertEqual(len(editor.slave.klist), 0)
 
         product = self.create_product(branch=workorder.branch, stock=10)
