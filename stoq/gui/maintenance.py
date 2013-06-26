@@ -98,7 +98,7 @@ class WorkOrderResultKanbanView(KanbanView):
         self.connect('item-dragged', self._on__item_dragged)
         statuses = list(WorkOrder.statuses.values())
         statuses.remove(_(u'Cancelled'))
-        statuses.remove(_(u'Closed'))
+        statuses.remove(_(u'Delivered'))
         for status_name in statuses:
             column = KanbanViewColumn(title=status_name)
             self.add_column(column)
@@ -111,7 +111,7 @@ class WorkOrderResultKanbanView(KanbanView):
         for work_order_view in results.order_by(WorkOrder.open_date):
             work_order = work_order_view.work_order
             status_name = WorkOrder.statuses.get(work_order.status)
-            # Skip cancel/closed etc
+            # Skip cancel/delivered etc
             if status_name is None:
                 continue
             column = self.get_column_by_title(status_name)
@@ -170,8 +170,8 @@ class MaintenanceApp(ShellApp):
                       WorkOrder.status == WorkOrder.STATUS_WORK_WAITING),
         'in-progress': WorkOrder.status == WorkOrder.STATUS_WORK_IN_PROGRESS,
         'finished': WorkOrder.status == WorkOrder.STATUS_WORK_FINISHED,
-        'closed': Or(WorkOrder.status == WorkOrder.STATUS_CANCELLED,
-                     WorkOrder.status == WorkOrder.STATUS_CLOSED),
+        'delivered': Or(WorkOrder.status == WorkOrder.STATUS_CANCELLED,
+                        WorkOrder.status == WorkOrder.STATUS_DELIVERED),
     }
     _flags_query_mapper = {
         'approved': And(WorkOrder.status != WorkOrder.STATUS_OPENED,
@@ -214,7 +214,7 @@ class MaintenanceApp(ShellApp):
             ("Cancel", gtk.STOCK_CANCEL, _(u"Cancel..."),
              group.get('order_cancel'),
              _(u"Cancel the selected order")),
-            ("CloseOrder", None, _(u"Close...")),
+            ("DeliveryOrder", None, _(u"Delivered...")),
             ("Details", gtk.STOCK_INFO, _(u"Details..."),
              group.get('order_details'),
              _(u"Show details of the selected order")),
@@ -322,8 +322,8 @@ class MaintenanceApp(ShellApp):
                     base_msg = _(u"No work orders in progress could be found.")
                 elif value == 'finished':
                     base_msg = _(u"No finished work orders could be found.")
-                elif value == 'closed':
-                    base_msg = _(u"No closed or cancelled work "
+                elif value == 'delivered':
+                    base_msg = _(u"No delivered or cancelled work "
                                  u"orders could be found.")
             # Search filtering by category
             elif kind == 'category':
@@ -451,11 +451,11 @@ class MaintenanceApp(ShellApp):
                 (self.Pause, has_selected and wo.can_pause()),
                 (self.Work, has_selected and wo.can_work()),
                 (self.Reopen, has_selected and wo.can_reopen()),
-                # CloseOrder is grouped here since it's a special case. Only
-                # finished orders without items can be closed here, so avoid
+                # deliveryOrder is grouped here since it's a special case. Only
+                # finished orders without items can be delivered here, so avoid
                 # showing the option if it's not sensitive to avoid confusions
-                (self.CloseOrder, (has_selected and wo.can_close() and
-                                   not wo.order_items.count()))]:
+                (self.DeliveryOrder, (has_selected and wo.can_delivery() and
+                                      not wo.order_items.count()))]:
             self.set_sensitive([widget], value)
             # Some of those options are mutually exclusive (except Approve,
             # but it can only be called once) so avoid confusions and
@@ -467,7 +467,7 @@ class MaintenanceApp(ShellApp):
             _FilterItem(_(u'Pending'), 'status:pending'),
             _FilterItem(_(u'In progress'), 'status:in-progress'),
             _FilterItem(_(u'Finished'), 'status:finished'),
-            _FilterItem(_(u'Closed or cancelled'), 'status:closed'),
+            _FilterItem(_(u'Delivered or cancelled'), 'status:delivered'),
             _FilterItem('sep', 'sep'),
             _FilterItem(_(u'Approved'), 'flag:approved'),
             _FilterItem(_(u'In transport'), 'flag:in-transport'),
@@ -534,15 +534,15 @@ class MaintenanceApp(ShellApp):
             work_order.cancel(reason=rv.notes)
         self._update_view()
 
-    def _close_order(self):
-        if not yesno(_(u"This will close the order. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Close"), _(u"Don't close")):
+    def _delivery_order(self):
+        if not yesno(_(u"This will mark the order as delivered. Are you sure?"),
+                     gtk.RESPONSE_NO, _(u"Mark as delivered"), _(u"No mark")):
             return
 
         selection = self.search.get_selected_item()
         with api.trans() as store:
             work_order = store.fetch(selection.work_order)
-            work_order.close()
+            work_order.delivery()
 
         self._update_view(select_item=selection)
 
@@ -670,12 +670,12 @@ class MaintenanceApp(ShellApp):
 
         work_order = wov.work_order
         is_finished = work_order.status == WorkOrder.STATUS_WORK_FINISHED
-        is_closed = work_order.status in [WorkOrder.STATUS_CANCELLED,
-                                          WorkOrder.STATUS_CLOSED]
+        is_delivered = work_order.status in [WorkOrder.STATUS_CANCELLED,
+                                             WorkOrder.STATUS_DELIVERED]
         is_late = work_order.is_late()
 
         for prop, is_set, value in [
-                ('strikethrough', is_closed, True),
+                ('strikethrough', is_delivered, True),
                 ('style', is_finished, pango.STYLE_ITALIC),
                 ('weight', is_late, pango.WEIGHT_BOLD)]:
             renderer.set_property(prop + '-set', is_set)
@@ -750,8 +750,8 @@ class MaintenanceApp(ShellApp):
     def on_Reopen__activate(self, action):
         self._reopen()
 
-    def on_CloseOrder__activate(self, action):
-        self._close_order()
+    def on_DeliveryOrder__activate(self, action):
+        self._delivery_order()
 
     def on_PrintQuote__activate(self, action):
         workorderview = self.search.get_selected_item()

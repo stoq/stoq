@@ -379,7 +379,7 @@ class TestWorkOrder(DomainTest):
             if status in [WorkOrder.STATUS_WORK_WAITING,
                           WorkOrder.STATUS_WORK_IN_PROGRESS,
                           WorkOrder.STATUS_WORK_FINISHED,
-                          WorkOrder.STATUS_CLOSED]:
+                          WorkOrder.STATUS_DELIVERED]:
                 self.assertTrue(workorder.is_approved())
             else:
                 self.assertFalse(workorder.is_approved())
@@ -390,7 +390,7 @@ class TestWorkOrder(DomainTest):
         for status in WorkOrder.statuses.keys():
             workorder.status = status
             if status in [WorkOrder.STATUS_WORK_FINISHED,
-                          WorkOrder.STATUS_CLOSED]:
+                          WorkOrder.STATUS_DELIVERED]:
                 self.assertTrue(workorder.is_finished())
             else:
                 self.assertFalse(workorder.is_finished())
@@ -416,7 +416,7 @@ class TestWorkOrder(DomainTest):
         for status in WorkOrder.statuses.keys():
             workorder.status = status
             if status in [WorkOrder.STATUS_WORK_FINISHED,
-                          WorkOrder.STATUS_CLOSED]:
+                          WorkOrder.STATUS_DELIVERED]:
                 self.assertFalse(workorder.is_late())
             else:
                 self.assertTrue(workorder.is_late())
@@ -434,7 +434,7 @@ class TestWorkOrder(DomainTest):
 
             # After adding, only STATUS_WORK_IN_PROGRESS should be True
             if status in [WorkOrder.STATUS_WORK_FINISHED,
-                          WorkOrder.STATUS_CLOSED]:
+                          WorkOrder.STATUS_DELIVERED]:
                 self.assertFalse(workorder.can_cancel())
             else:
                 self.assertTrue(workorder.can_cancel())
@@ -510,16 +510,16 @@ class TestWorkOrder(DomainTest):
 
             # Rejected cannot close
             workorder.is_rejected = True
-            self.assertFalse(workorder.can_close())
+            self.assertFalse(workorder.can_delivery())
             workorder.is_rejected = False
             # In transport cannot close
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
-                self.assertFalse(workorder.can_close())
+                self.assertFalse(workorder.can_delivery())
 
             if status == WorkOrder.STATUS_WORK_FINISHED:
-                self.assertTrue(workorder.can_close())
+                self.assertTrue(workorder.can_delivery())
             else:
-                self.assertFalse(workorder.can_close())
+                self.assertFalse(workorder.can_delivery())
 
     def testCanReopen(self):
         workorder = self.create_workorder()
@@ -538,7 +538,7 @@ class TestWorkOrder(DomainTest):
 
             # If already rejected, it can't be rejected again
             workorder.is_rejected = True
-            self.assertFalse(workorder.can_close())
+            self.assertFalse(workorder.can_delivery())
             workorder.is_rejected = False
             # In transport cannot reject
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
@@ -648,10 +648,10 @@ class TestWorkOrder(DomainTest):
         workorder.work()
         workorder.add_sellable(self.create_sellable())
         workorder.finish()
-        self.assertNotEqual(workorder.status, WorkOrder.STATUS_CLOSED)
+        self.assertNotEqual(workorder.status, WorkOrder.STATUS_DELIVERED)
 
-        workorder.close()
-        self.assertEqual(workorder.status, WorkOrder.STATUS_CLOSED)
+        workorder.delivery()
+        self.assertEqual(workorder.status, WorkOrder.STATUS_DELIVERED)
 
     def testChangeStatus(self):
         workorder = self.create_workorder()

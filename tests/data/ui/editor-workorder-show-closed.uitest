@@ -11,7 +11,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               ProxyLabel(identifier): '<span >00666</span>'
               GtkLabel(label20): 'Status:'
               GtkHBox(hbox2):
-                ProxyLabel(status_str, fill=True): '<span >Closed</span>'
+                ProxyLabel(status_str, fill=True): '<span >Delivered</span>'
                 GtkImage(state_icon):
               GtkButton(toggle_status_btn): hidden
               GtkLabel(label8): 'Client:'
@@ -129,7 +129,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     row: datetime.datetime(2013, 3, 2, 0, 0), u'Administrator', u'Status', u'Opened', u'Waiting', None
                     row: datetime.datetime(2013, 3, 3, 0, 0), u'Administrator', u'Status', u'Waiting', u'In progress', None
                     row: datetime.datetime(2013, 3, 4, 0, 0), u'Administrator', u'Status', u'In progress', u'Finished', None
-                    row: datetime.datetime(2013, 3, 5, 0, 0), u'Administrator', u'Status', u'Finished', u'Closed', None
+                    row: datetime.datetime(2013, 3, 5, 0, 0), u'Administrator', u'Status', u'Finished', u'Delivered', None
                   GtkHBox(hbox1, fill=True):
                     GtkButton(details_btn, fill=True): 'gtk-info', insensitive
       GtkHBox(fill=True):

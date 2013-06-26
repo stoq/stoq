@@ -171,7 +171,7 @@ class TestWorkOrderEditor(GUITest):
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-finished')
 
-        workorder.close()
+        workorder.delivery()
         _adjust_history_date(workorder)
         # Create another editor to check closed state
         editor = WorkOrderEditor(self.store, model=workorder)
