@@ -170,6 +170,10 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         self._show_finish_date = show_finish_date
         self._workorder = workorder
         model = self._create_model(store)
+
+        # This is used to correctly triangulate the values of the spherical
+        # widgets
+        self._update_order = {'re': [], 'le': []}
         BaseEditorSlave.__init__(self, store, model)
 
     def _create_model(self, store):
@@ -197,26 +201,34 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         proxy later.
         """
         widget_names = []
+
+        def _setup_widget(name, lower, upper, digits, steps, page):
+            widget = getattr(self, name)
+            widget_names.append(name)
+            widget.set_digits(digits)
+
+            # If the minimum value is greater than 0, we keep the ajustment
+            # minimum at 0, to force the user to fill the values.
+            lower = min(lower, 0)
+            widget.set_adjustment(gtk.Adjustment(lower=lower, upper=upper,
+                                                 step_incr=step, page_incr=page))
+            return widget
+
         for eye in ['le', 're']:
             for element in self.optical_widgets:
                 name = eye + '_' + element
-                widget_names.append(name)
-                widget = getattr(self, name)
 
                 lower, upper, digits, step, page = self.optical_widgets[element]
-                widget.set_adjustment(gtk.Adjustment(lower=lower, upper=upper,
-                                                     step_incr=step, page_incr=page))
-                widget.set_digits(digits)
+                widget = _setup_widget(name, lower, upper, digits, step, page)
                 widget.connect('validate', self._on_field_validate, element)
+                if element in ['near_spherical', 'distance_spherical',
+                               'addition']:
+                    widget.connect_after('changed', self._after_spherical_field_changed, eye, element)
 
         for name in self.frame_widgets:
-            widget_names.append(name)
-            widget = getattr(self, name)
-
             lower, upper, digits, step, page = self.frame_widgets[name]
-            widget.set_adjustment(gtk.Adjustment(lower=lower, upper=upper,
-                                                 step_incr=step, page_incr=page))
-            widget.set_digits(digits)
+            widget = _setup_widget(name, lower, upper, digits, step, page)
+            widget.connect('validate', self._on_frame_field_validate, name)
 
         return widget_names
 
@@ -248,7 +260,22 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     #
 
     def _on_field_validate(self, widget, value, field):
+        if value == 0:
+            return
+
         min_v, max_v, digits, step_incr, page_incr = self.optical_widgets[field]
+        if not min_v <= value <= max_v:
+            return ValidationError(_(u'Value is out of range'))
+
+        if value % step_incr != 0:
+            return ValidationError(_(u'Value must be multiple of %s') %
+                                   step_incr)
+
+    def _on_frame_field_validate(self, widget, value, field):
+        if value == 0:
+            return
+
+        min_v, max_v, digits, step_incr, page_incr = self.frame_widgets[field]
         if not min_v <= value <= max_v:
             return ValidationError(_(u'Value is out of range'))
 
@@ -259,6 +286,9 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     def on_lens_type__changed(self, widget):
         has_frame = self.model.lens_type == OpticalWorkOrder.LENS_TYPE_OPHTALMIC
         self.frame_box.set_sensitive(has_frame)
+        for name in ['distance_pd', 'near_pd', 'distance_height']:
+            getattr(self, 'le_' + name).set_sensitive(has_frame)
+            getattr(self, 're_' + name).set_sensitive(has_frame)
 
     def after_prescription_date__changed(self, widget):
         age = localtoday().date() - widget.read()
@@ -278,52 +308,105 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         medic = self.model.medic
         run_dialog(MedicEditor, self, self.store, medic, visual_mode=True)
 
-    # Distance axis == Near axis, always
+    # Distance axis == Near axis WHEN addition != 0
 
     def on_le_near_axis__value_changed(self, widget):
-        self.le_distance_axis.update(widget.read())
+        if self.model.le_addition:
+            self.le_distance_axis.update(widget.read())
 
     def on_le_distance_axis__value_changed(self, widget):
-        self.le_near_axis.update(widget.read())
+        if self.model.le_addition:
+            self.le_near_axis.update(widget.read())
 
     def on_re_near_axis__value_changed(self, widget):
-        self.re_distance_axis.update(widget.read())
+        if self.model.re_addition:
+            self.re_distance_axis.update(widget.read())
 
     def on_re_distance_axis__value_changed(self, widget):
-        self.re_near_axis.update(widget.read())
+        if self.model.re_addition:
+            self.re_near_axis.update(widget.read())
 
-    # Distance cilindrical == Near cilindrical, always
+    # Distance cilindrical == Near cilindrical WHEN addition != 0
 
     def on_le_near_cylindrical__value_changed(self, widget):
-        self.le_distance_cylindrical.update(widget.read())
+        if self.model.le_addition:
+            self.le_distance_cylindrical.update(widget.read())
 
     def on_le_distance_cylindrical__value_changed(self, widget):
-        self.le_near_cylindrical.update(widget.read())
+        if self.model.le_addition:
+            self.le_near_cylindrical.update(widget.read())
 
     def on_re_near_cylindrical__value_changed(self, widget):
-        self.re_distance_cylindrical.update(widget.read())
+        if self.model.re_addition:
+            self.re_distance_cylindrical.update(widget.read())
 
     def on_re_distance_cylindrical__value_changed(self, widget):
-        self.re_near_cylindrical.update(widget.read())
+        if self.model.re_addition:
+            self.re_near_cylindrical.update(widget.read())
 
     # near_spherical = distance_spherical + addition
 
-    def on_re_distance_spherical__value_changed(self, widget):
-        self.re_near_spherical.update(widget.read() + self.model.re_addition)
+    def _update_spherical(self, eye, field):
+        """Updates the spherical fields given the history of changes.
 
-    def on_re_addition__value_changed(self, widget):
-        self.re_near_spherical.update(self.model.re_distance_spherical +
-                                      widget.read())
+        This uses the last two edited fields to update the value of the third
+        field.
 
-    def on_re_near_spherical__value_changed(self, widget):
-        self.re_distance_spherical.update(widget.read() - self.model.re_addition)
+        :param eye: The eye that was just edited ('re' or 'le')
+        :param field: The field of the eye that was eddited. One of 'distance',
+          'addition' or 'near'
+        """
+        last = self._update_order[eye]
+        if not last or field != last[-1]:
+            last.append(field)
 
-    def on_le_distance_spherical__value_changed(self, widget):
-        self.le_near_spherical.update(widget.read() + self.model.le_addition)
+        if len(last) > 2:
+            # Remove the oldest item so we keep only the last two
+            last.pop(0)
 
-    def on_le_addition__value_changed(self, widget):
-        self.le_near_spherical.update(self.model.le_distance_spherical +
-                                      widget.read())
+        # Current values of the model
+        near = getattr(self.model, eye + '_near_spherical')
+        distance = getattr(self.model, eye + '_distance_spherical')
+        addition = getattr(self.model, eye + '_addition')
 
-    def on_le_near_spherical__value_changed(self, widget):
-        self.le_distance_spherical.update(widget.read() - self.model.le_addition)
+        if 'near_spherical' in last and 'distance_spherical' in last:
+            # update addition
+            widget = getattr(self, eye + '_addition')
+            widget.update(near - distance)
+        elif 'distance_spherical' in last and 'addition' in last:
+            # update near
+            widget = getattr(self, eye + '_near_spherical')
+            widget.update(distance + addition)
+        elif 'near_spherical' in last and 'addition' in last:
+            # update distance
+            widget = getattr(self, eye + '_distance_spherical')
+            widget.update(near - addition)
+
+    def _after_spherical_field_changed(self, widget, eye, name):
+        # This is called after near spherical, distance spherical or addition is
+        # changed and is used to update the value of the other field.
+        if not widget.is_focus():
+            return
+        self._update_spherical(eye, name)
+
+    def on_re_addition__changed(self, widget):
+        if self.model.re_near_cylindrical:
+            self.re_distance_cylindrical.update(self.model.re_near_cylindrical)
+        elif self.model.re_distance_cylindrical:
+            self.re_near_cylindrical.update(self.model.re_distance_cylindrical)
+
+        if self.model.re_near_axis:
+            self.re_distance_axis.update(self.model.re_near_axis)
+        elif self.model.re_distance_axis:
+            self.re_near_axis.update(self.model.re_distance_axis)
+
+    def on_le_addition__changed(self, widget):
+        if self.model.le_near_cylindrical:
+            self.le_distance_cylindrical.update(self.model.le_near_cylindrical)
+        elif self.model.le_distance_cylindrical:
+            self.le_near_cylindrical.update(self.model.le_distance_cylindrical)
+
+        if self.model.le_near_axis:
+            self.le_distance_axis.update(self.model.le_near_axis)
+        elif self.model.le_distance_axis:
+            self.le_near_axis.update(self.model.le_distance_axis)
