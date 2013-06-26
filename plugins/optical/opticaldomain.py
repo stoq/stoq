@@ -200,14 +200,14 @@ class OpticalWorkOrder(Domain):
     #: Contact lenses
     LENS_TYPE_CONTACT = 1
 
-    #: The material of the frame is acetate
-    FRAME_TYPE_ACETATE = 0
+    #: The frame for the lens is a closed ring
+    FRAME_TYPE_CLOSED_RING = 0
 
     #: The frame uses a nylon string to hold the lenses.
     FRAME_TYPE_NYLON = 1
 
-    #: The frame is made of metal (any kind)
-    FRAME_TYPE_METAL = 2
+    #: The frame is made 3 pieces
+    FRAME_TYPE_3_PIECES = 2
 
     work_order_id = IdCol()
     work_order = Reference(work_order_id, 'WorkOrder.id')

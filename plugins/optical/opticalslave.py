@@ -189,9 +189,12 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             (_('Contact'), OpticalWorkOrder.LENS_TYPE_CONTACT),
         ])
         self.frame_type.prefill([
-            (_('Acetate'), OpticalWorkOrder.FRAME_TYPE_ACETATE),
+            # Translators: Aro fechado
+            (_('Closed ring'), OpticalWorkOrder.FRAME_TYPE_CLOSED_RING),
+            # Translators: Fio de nylon
             (_('Nylon String'), OpticalWorkOrder.FRAME_TYPE_NYLON),
-            (_('Metal'), OpticalWorkOrder.FRAME_TYPE_METAL),
+            # Translators: 3 preças
+            (_('3 pieces'), OpticalWorkOrder.FRAME_TYPE_3_PIECES),
         ])
         self._medic_combo_prefill()
 
