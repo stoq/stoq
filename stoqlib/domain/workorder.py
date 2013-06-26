@@ -517,6 +517,9 @@ class WorkOrder(Domain):
     #: applications and it's possible to create a |sale| from them.
     STATUS_WORK_FINISHED = 4
 
+    # FIXME: This is not really delivered, it used to be closed, but
+    # closed/finished are not ideal. This probably needs to be
+    # renamed to something else in the future when we have a better name
     #: a |sale| has been created, delivery and payment handled there
     STATUS_DELIVERED = 5
 
