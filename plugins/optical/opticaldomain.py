@@ -212,8 +212,10 @@ class OpticalWorkOrder(Domain):
     work_order_id = IdCol()
     work_order = Reference(work_order_id, 'WorkOrder.id')
 
+    medic_id = IdCol()
+    medic = Reference(medic_id, 'OpticalMedic.id')
+
     prescription_date = DateTimeCol()
-    # TODO: Create a 'physician' record and reference it here.
 
     #: The name of the patient. Note that we already have the client of the work
     #: order, but the patient may be someone else (like the son, father,
