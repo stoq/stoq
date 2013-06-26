@@ -24,13 +24,13 @@
 """ Inventory object and related objects implementation """
 
 from decimal import Decimal
-from storm.expr import And, Eq, Ne
-from storm.references import Reference
+from storm.expr import And, Eq
+from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
                                          IntCol, UnicodeCol, IdentifierCol,
-                                         IdCol)
+                                         IdCol, BoolCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.product import StockTransactionHistory, StorableBatch
@@ -78,11 +78,13 @@ class InventoryItem(Domain):
     #: the reason of why this item has been adjusted
     reason = UnicodeCol(default=u"")
 
+    #: if this inventory's stock difference was adjusted
+    is_adjusted = BoolCol(allow_none=False, default=False)
+
     cfop_data_id = IdCol(default=None)
 
     #: the cfop used to adjust this item, this is only set when
     #: an adjustment is done
-
     cfop_data = Reference(cfop_data_id, 'CfopData.id')
 
     inventory_id = IdCol()
@@ -114,6 +116,8 @@ class InventoryItem(Domain):
 
         :param invoice_number: invoice number to register
         """
+        assert self.inventory.is_open()
+        assert not self.is_adjusted
         storable = self.product.storable
         if storable is None:
             raise TypeError(
@@ -134,21 +138,7 @@ class InventoryItem(Domain):
                                     self.id, batch=self.batch)
 
         self._add_inventory_fiscal_entry(invoice_number)
-
-    def adjusted(self):
-        """Find out if this item has been adjusted.
-
-        :returns: ``True`` if the item have already been adjusted,
-          ``False`` otherwise.
-        """
-        # FIXME: The comment below is only true from the gui perspective. The
-        # domain should never depend on the gui implementation, so this method
-        # cannot be trusted (e.g. if I set a reason and a cfop_data, even if I
-        # don't call self.adjust() here this will return True)
-        #
-        # We check reason and cfop_data attributes because they only
-        # exist after the item be adjusted
-        return self.reason and self.cfop_data
+        self.is_adjusted = True
 
     def get_code(self):
         """Get the product code of this item
@@ -184,7 +174,7 @@ class InventoryItem(Domain):
         by the product cost in the moment it was adjusted. If the item was not
         adjusted yet, the total cost will be zero.
         """
-        if not self.adjusted():
+        if not self.is_adjusted:
             return Decimal(0)
 
         return self.product_cost * self.actual_quantity
@@ -254,6 +244,9 @@ class Inventory(Domain):
     #: branch where the inventory process was done
     branch = Reference(branch_id, 'Branch.id')
 
+    #: the |inventoryitems| of this inventory
+    inventory_items = ReferenceSet('id', 'InventoryItem.inventory_id')
+
     #
     # Public API
     #
@@ -311,6 +304,18 @@ class Inventory(Domain):
             raise AssertionError("You can not close an inventory which is "
                                  "already closed!")
 
+        for item in self.inventory_items:
+            if item.actual_quantity != item.recorded_quantity:
+                continue
+
+            # FIXME: We are setting this here because, when generating a
+            # sintegra file, even if this item wasn't really adjusted (e.g.
+            # adjustment_qty bellow is 0) it needs to be specified and not
+            # setting this would result on self.get_cost returning 0.  Maybe
+            # we should resolve this in another way
+            # We don't call item.adjust since it needs an invoice number
+            item.is_adjusted = True
+
         self.close_date = StatementTimestamp()
         self.status = Inventory.STATUS_CLOSED
 
@@ -325,10 +330,7 @@ class Inventory(Domain):
         if self.status == self.STATUS_CLOSED:
             return False
 
-        store = self.store
-        not_counted = store.find(InventoryItem, inventory=self,
-                                 actual_quantity=None)
-        return not_counted.count() == 0
+        return self.inventory_items.find(actual_quantity=None).is_empty()
 
     def get_items(self):
         """Returns all the inventory items related to this inventory
@@ -358,12 +360,9 @@ class Inventory(Domain):
         :returns: items
         :rtype: a sequence of :class:`InventoryItem`
         """
-        query = And(InventoryItem.inventory_id == self.id,
-                    InventoryItem.recorded_quantity !=
-                    InventoryItem.actual_quantity,
-                    Eq(InventoryItem.cfop_data_id, None),
-                    InventoryItem.reason == u"")
-        return self.store.find(InventoryItem, query)
+        return self.inventory_items.find(
+            And(InventoryItem.recorded_quantity != InventoryItem.actual_quantity,
+                Eq(InventoryItem.is_adjusted, False)))
 
     def has_adjusted_items(self):
         """Returns if we already have an item adjusted or not.
@@ -371,10 +370,7 @@ class Inventory(Domain):
         :returns: ``True`` if there is one or more items adjusted, False
           otherwise.
         """
-        query = And(InventoryItem.inventory_id == self.id,
-                    Ne(InventoryItem.cfop_data_id, None),
-                    InventoryItem.reason != u"")
-        return not self.store.find(InventoryItem, query).is_empty()
+        return not self.inventory_items.find(is_adjusted=True).is_empty()
 
     def cancel(self):
         """Cancel this inventory
