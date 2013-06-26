@@ -22,7 +22,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                 item: 'Luis Sergio da Silva Marin'
                 item: 'Vitalina Claudino'
               GtkButton(client_create):
-              GtkButton(client_edit): insensitive
+              GtkButton(client_info): insensitive
               GtkLabel(label5): 'Category:'
               ProxyComboBox(category):
                 item: 'No category'
