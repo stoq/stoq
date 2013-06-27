@@ -342,6 +342,7 @@ class WorkOrderPackageSendEditor(BaseEditor):
             Column('flag_icon', title=_(u'Equipment'), column='equipment',
                    data_type=gtk.gdk.Pixbuf, format_func_data=True,
                    format_func=self._format_state_icon),
+            Column('branch_name', _(u"Branch"), data_type=str, visible=False),
             Column('client_name', _(u"Client"), data_type=str),
             Column('salesperson_name', _(u"Salesperson"), data_type=str,
                    visible=False),
