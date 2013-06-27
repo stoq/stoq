@@ -386,11 +386,6 @@ class _ItemSlave(SellableItemSlave):
     #   SellableItemSlave implementation
     #
 
-    def post_init(self):
-        self.hide_add_button()
-        self.cost_label.set_label('Price:')
-        self.cost.set_editable(True)
-
     def get_order_item(self, sellable, price, quantity, batch=None):
         work_order = self.emit('get-work-order')
         assert work_order
@@ -453,6 +448,10 @@ class OpticalItemStep(BaseWizardStep):
         slave = _ItemSlave(self.store, self.wizard, self.model)
         slave.connect('get-work-order', self._on_item_slave__get_work_order)
         self.attach_slave('slave_holder', slave)
+
+        slave.hide_add_button()
+        slave.cost_label.set_label('Price:')
+        slave.cost.set_editable(True)
 
     def _add_radio(self, desc, workorder):
         widget = gtk.RadioButton(self._radio_group, desc)
