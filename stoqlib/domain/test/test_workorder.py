@@ -510,16 +510,16 @@ class TestWorkOrder(DomainTest):
 
             # Rejected cannot close
             workorder.is_rejected = True
-            self.assertFalse(workorder.can_delivery())
+            self.assertFalse(workorder.can_close())
             workorder.is_rejected = False
             # In transport cannot close
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
-                self.assertFalse(workorder.can_delivery())
+                self.assertFalse(workorder.can_close())
 
             if status == WorkOrder.STATUS_WORK_FINISHED:
-                self.assertTrue(workorder.can_delivery())
+                self.assertTrue(workorder.can_close())
             else:
-                self.assertFalse(workorder.can_delivery())
+                self.assertFalse(workorder.can_close())
 
     def testCanReopen(self):
         workorder = self.create_workorder()
@@ -538,7 +538,7 @@ class TestWorkOrder(DomainTest):
 
             # If already rejected, it can't be rejected again
             workorder.is_rejected = True
-            self.assertFalse(workorder.can_delivery())
+            self.assertFalse(workorder.can_close())
             workorder.is_rejected = False
             # In transport cannot reject
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
@@ -650,7 +650,7 @@ class TestWorkOrder(DomainTest):
         workorder.finish()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_DELIVERED)
 
-        workorder.delivery()
+        workorder.close()
         self.assertEqual(workorder.status, WorkOrder.STATUS_DELIVERED)
 
     def testChangeStatus(self):
