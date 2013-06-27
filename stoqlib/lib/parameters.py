@@ -25,7 +25,6 @@
 
 from decimal import Decimal
 import logging
-import sys
 
 from kiwi.datatypes import ValidationError
 from kiwi.python import namedAny, ClassInittableObject
@@ -38,6 +37,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.barcode import BarcodeInfo
 from stoqlib.lib.countries import get_countries
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_int,
                                     validate_decimal,
@@ -336,7 +336,7 @@ _details = [
         _(u'Max search results'),
         _(u'The maximum number of results we must show after searching '
           u'in any dialog.'),
-        int, initial=600, range=(1, sys.maxint)),
+        int, initial=600, range=(1, MAX_INT)),
 
     ParameterDetails(
         u'CONFIRM_SALES_ON_TILL',

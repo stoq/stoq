@@ -23,12 +23,9 @@
 ##
 """ Slaves for products """
 
-import sys
-
-import gtk
-
 from decimal import Decimal
 
+import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
@@ -50,7 +47,7 @@ from stoqlib.gui.editors.producteditor import (TemporaryProductComponent,
                                                QualityTestEditor,
                                                ProductSupplierEditor)
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
-from stoqlib.lib.defaults import quantize
+from stoqlib.lib.defaults import quantize, MAX_INT
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import info, yesno, warning
 from stoqlib.lib.parameters import sysparam
@@ -92,7 +89,7 @@ class ProductInformationSlave(BaseEditorSlave):
         for widget in [self.minimum_quantity, self.maximum_quantity,
                        self.width, self.height, self.depth, self.weight]:
             widget.set_adjustment(
-                gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+                gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
 
         if not self.db_form:
             return

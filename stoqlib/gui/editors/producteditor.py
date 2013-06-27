@@ -24,7 +24,6 @@
 """ Editors definitions for products"""
 
 from decimal import Decimal
-import sys
 
 import gtk
 from kiwi.currency import currency
@@ -43,7 +42,7 @@ from stoqlib.domain.sellable import (Sellable,
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
-from stoqlib.lib.defaults import quantize
+from stoqlib.lib.defaults import quantize, MAX_INT
 from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -187,9 +186,9 @@ class ProductSupplierEditor(BaseEditor):
         self.unit_label.set_text(description)
         self.base_cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
         self.base_cost.set_adjustment(
-            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
         self.minimum_purchase.set_adjustment(
-            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
 
     #
     # BaseEditor hooks
@@ -244,7 +243,7 @@ class ProductComponentEditor(BaseEditor):
     def _setup_widgets(self):
         self.component_description.set_text(self.model.description)
         self.quantity.set_adjustment(
-            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1,
+            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
                            page_incr=10))
         # set a default quantity value for new components
         if not self.model.quantity:

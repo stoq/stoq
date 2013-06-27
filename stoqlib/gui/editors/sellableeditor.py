@@ -23,10 +23,7 @@
 ##
 """ Editors definitions for sellable"""
 
-import sys
-
 import gtk
-
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PercentageField, TextField
 from stoqdrivers.enum import TaxType, UnitType
@@ -45,6 +42,7 @@ from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.utils.databaseform import DatabaseForm
 from stoqlib.gui.utils.printing import print_labels
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam
@@ -338,7 +336,7 @@ class SellableEditor(BaseEditor):
 
     def set_widget_formats(self):
         for widget in (self.cost, self.price):
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
         self.requires_weighing_label.set_size("small")
         self.requires_weighing_label.set_text("")

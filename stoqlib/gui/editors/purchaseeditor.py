@@ -24,13 +24,12 @@
 """ Purchase editors """
 
 
-import sys
-
 import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -62,7 +61,7 @@ class PurchaseItemEditor(BaseEditor):
         self.order.set_text(unicode(self.model.order.identifier))
         for widget in [self.quantity, self.cost, self.quantity_sold,
                        self.quantity_returned]:
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
         self.cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)

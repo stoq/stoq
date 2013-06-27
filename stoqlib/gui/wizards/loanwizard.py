@@ -26,7 +26,6 @@
 
 from decimal import Decimal
 import datetime
-import sys
 
 import gtk
 from kiwi.currency import currency
@@ -45,6 +44,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import LoanView, ProductWithStockBranchView
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -359,7 +359,7 @@ class LoanItemSelectionStep(SellableItemStep):
         self.force_validation()
 
     def get_columns(self):
-        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1)
+        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
         return [
             Column('sellable.code', title=_('Code'),
                    data_type=str, visible=False),

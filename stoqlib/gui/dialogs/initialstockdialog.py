@@ -24,7 +24,6 @@
 """ Dialog to register the initial stock of a product in a certain branch """
 
 from decimal import Decimal
-from sys import maxint as MAXINT
 
 import gtk
 from kiwi import ValueUnset
@@ -38,6 +37,7 @@ from stoqlib.domain.product import Storable
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -100,7 +100,7 @@ class InitialStockDialog(BaseEditor):
             yield _TemporaryStorableItem(s)
 
     def _get_columns(self):
-        adj = gtk.Adjustment(lower=0, upper=MAXINT, step_incr=1)
+        adj = gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
         return [Column("code", title=_(u"Code"), data_type=str, sorted=True,
                        width=100),
                 Column("barcode", title=_(u"Barcode"), data_type=str,

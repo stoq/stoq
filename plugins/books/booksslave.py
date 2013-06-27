@@ -23,12 +23,11 @@
 ##
 """ Slaves for books """
 
-import sys
-
 import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -66,7 +65,7 @@ class ProductBookSlave(BaseEditorSlave):
         self.country_combo.prefill(get_countries())
         for widget in [self.pages, self.year]:
             widget.set_adjustment(
-                gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+                gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
         publishers = self.store.find(BookPublisher)
         self.publisher_combo.prefill([(p.person.name, p) for p in publishers])
 

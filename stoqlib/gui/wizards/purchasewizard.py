@@ -25,7 +25,6 @@
 """ Purchase wizard definition """
 
 import datetime
-import sys
 
 import gtk
 
@@ -55,6 +54,7 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -267,7 +267,7 @@ class PurchaseItemStep(SellableItemStep):
 
         minimum = supplier_info.minimum_purchase
         self.quantity.set_adjustment(gtk.Adjustment(lower=minimum,
-                                                    upper=sys.maxint,
+                                                    upper=MAX_INT,
                                                     step_incr=1))
         self.quantity.set_value(minimum)
         self.cost.set_value(supplier_info.base_cost)

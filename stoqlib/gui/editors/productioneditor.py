@@ -33,12 +33,9 @@ This file contains several editors used in the production process:
 * :py:class:`ProductionMaterialEditor`: Item for an production material in the production order
 """
 
-import sys
-
-import gtk
-
 from decimal import Decimal
 
+import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
@@ -46,7 +43,7 @@ from stoqlib.domain.production import (ProductionItem, ProductionMaterial,
                                        ProductionService)
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.productionslave import ProducedItemSlave
-from stoqlib.lib.defaults import QUANTITY_PRECISION
+from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -86,7 +83,7 @@ class ProductionItemEditor(BaseEditor):
     def get_max_quantity(self):
         """Returns the maximum quantity allowed in the quantity spinbutton.
         """
-        return sys.maxint
+        return MAX_INT
 
     def setup_proxies(self):
         self.setup_editor_widgets()

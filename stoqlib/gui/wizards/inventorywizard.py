@@ -23,7 +23,6 @@
 ##
 
 import decimal
-import sys
 
 import gtk
 from kiwi.ui.objectlist import Column
@@ -35,6 +34,7 @@ from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.dialogs.batchselectiondialog import (BatchSelectionDialog,
                                                       BatchItem)
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -240,7 +240,7 @@ class InventoryCountItemStep(SellableItemStep):
             sellable, value, quantity)
 
     def get_columns(self):
-        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint,
+        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT,
                                     step_incr=1, page_incr=10)
         return [
             Column('code', title=_('Code'), data_type=str, sorted=True),

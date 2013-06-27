@@ -23,10 +23,7 @@
 ##
 """ Loan editors """
 
-import sys
-
 import gtk
-
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
@@ -34,6 +31,7 @@ from stoqlib.domain.loan import LoanItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -77,10 +75,10 @@ class LoanItemEditor(BaseEditor):
         self.sale.set_text(unicode(self.model.loan.identifier))
         self.description.set_text(self.model.sellable.get_description())
         for widget in [self.sale_quantity, self.return_quantity]:
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
         self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
-                                                    upper=sys.maxint))
+                                                    upper=MAX_INT))
         self._configure_expanded_edition()
         self.tabs.set_show_tabs(False)
         self.cfop.hide()

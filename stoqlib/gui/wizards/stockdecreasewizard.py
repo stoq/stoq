@@ -25,7 +25,6 @@
 """ Stock Decrease wizard definition """
 
 from decimal import Decimal
-import sys
 
 import gtk
 from kiwi.currency import currency
@@ -44,10 +43,11 @@ from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import ProductWithStockBranchView
 from stoqlib.exceptions import TillError
+from stoqlib.lib.defaults import MAX_INT
+from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
@@ -197,7 +197,7 @@ class DecreaseItemStep(SellableItemStep):
         return self.model.get_items()
 
     def get_columns(self):
-        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint,
+        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT,
                                     step_incr=1, page_incr=10)
         columns = [
             Column('sellable.code', title=_('Code'), data_type=str),

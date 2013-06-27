@@ -25,7 +25,6 @@
 """ Sale return wizards definition """
 
 import decimal
-import sys
 
 import gtk
 from kiwi.currency import currency
@@ -39,6 +38,7 @@ from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import ReturnPolicy
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
@@ -64,7 +64,7 @@ def _adjust_returned_sale_item(item):
     if item.sale_item:
         item.max_quantity = item.quantity
     else:
-        item.max_quantity = sys.maxint
+        item.max_quantity = MAX_INT
 
 
 #
@@ -207,7 +207,7 @@ class SaleReturnItemsStep(SellableItemStep):
                                      model=self.model, previous=self)
 
     def get_columns(self, editable=True):
-        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint,
+        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT,
                                     step_incr=1)
         columns = [
             Column('will_return', title=_('Return'),

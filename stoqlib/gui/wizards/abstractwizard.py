@@ -30,10 +30,8 @@ instead signals and interfaces for that.
 """
 
 from decimal import Decimal
-import sys
 
 import gtk
-
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
@@ -60,7 +58,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import WizardSellableItemStepEvent
 from stoqlib.gui.search.searchcolumns import SearchColumn
-from stoqlib.lib.defaults import sort_sellable_code
+from stoqlib.lib.defaults import sort_sellable_code, MAX_INT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -592,7 +590,7 @@ class SellableItemSlave(BaseEditorSlave):
         self.unit_label.set_bold(True)
 
         for widget in [self.quantity, self.cost]:
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
 
         self._reset_sellable()

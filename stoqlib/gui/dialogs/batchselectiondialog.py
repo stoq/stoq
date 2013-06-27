@@ -25,7 +25,6 @@
 import collections
 import datetime
 import decimal
-import sys
 
 import gtk
 from kiwi.datatypes import ValidationError
@@ -36,7 +35,7 @@ from kiwi.ui.widgets.spinbutton import ProxySpinButton
 from stoqlib.api import api
 from stoqlib.domain.product import Storable, StorableBatchView
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.defaults import QUANTITY_PRECISION
+from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -312,7 +311,7 @@ class BatchSelectionDialog(BaseEditor):
 
         spin.data_type = decimal.Decimal
         unit = self.model.product.sellable.unit
-        upper = self._quantity if self._validate_max_quantity else sys.maxint
+        upper = self._quantity if self._validate_max_quantity else MAX_INT
         spin.set_adjustment(gtk.Adjustment(lower=0, upper=upper,
                                            step_incr=1, page_incr=10))
         if unit and unit.allow_fraction:

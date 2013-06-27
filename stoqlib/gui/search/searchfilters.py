@@ -24,7 +24,6 @@
 
 """Search filters, graphical widgets to interactively create advanced queries"""
 
-import sys
 import datetime
 from decimal import Decimal
 
@@ -58,6 +57,7 @@ from stoqlib.gui.search.searchoptions import (Any,
                                               Yesterday)
 from stoqlib.gui.widgets.hintedentry import HintedEntry
 from stoqlib.gui.widgets.searchfilterbutton import SearchFilterButton
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -754,7 +754,7 @@ class NumberSearchFilter(SearchFilter):
 
         self.start = gtk.SpinButton(climb_rate=1.0)
         self.start.get_adjustment().step_increment = 1.0
-        self.start.set_range(-sys.maxint - 1, sys.maxint)
+        self.start.set_range(-MAX_INT - 1, MAX_INT)
         self.pack_start(self.start, False, False, 6)
         self.start.show()
         self.start.connect_after('activate', self._on_entry__activate)
@@ -765,7 +765,7 @@ class NumberSearchFilter(SearchFilter):
 
         self.end = gtk.SpinButton(climb_rate=1.0)
         self.end.get_adjustment().step_increment = 1.0
-        self.end.set_range(-sys.maxint - 1, sys.maxint)
+        self.end.set_range(-MAX_INT - 1, MAX_INT)
         self.pack_start(self.end, False, False, 6)
         self.end.show()
         self.end.connect_after('activate', self._on_entry__activate)

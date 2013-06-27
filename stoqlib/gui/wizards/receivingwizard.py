@@ -26,7 +26,6 @@
 
 import datetime
 from decimal import Decimal
-import sys
 
 import gtk
 from kiwi.currency import currency
@@ -46,6 +45,7 @@ from stoqlib.gui.events import ReceivingOrderWizardFinishEvent
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.utils.printing import print_labels
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -269,7 +269,7 @@ class ReceivingOrderItemStep(WizardEditorStep):
         self.force_validation()
 
     def _setup_widgets(self):
-        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1)
+        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
         self.purchase_items.set_columns([
             Column('description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),

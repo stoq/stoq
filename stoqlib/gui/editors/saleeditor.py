@@ -23,10 +23,7 @@
 ##
 """ Sale editors """
 
-import sys
-
 import gtk
-
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
@@ -36,6 +33,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -76,7 +74,7 @@ class SaleQuoteItemEditor(BaseEditor):
         self.sale.set_text(unicode(self.model.sale.identifier))
         self.description.set_text(self.model.sellable.get_description())
         self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
-                                                    upper=sys.maxint))
+                                                    upper=MAX_INT))
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 

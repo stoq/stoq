@@ -36,6 +36,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+#: The max int for 32bits. Should be used instead of sys.maxint since
+#: it will be different depending on the cpu's architecture
+#: http://en.wikipedia.org/wiki/2147483647
+MAX_INT = (1 << 31) - 1
+
 MINIMUM_PASSWORD_CHAR_LEN = 6
 
 #
