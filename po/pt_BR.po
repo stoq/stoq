@@ -775,7 +775,7 @@ msgstr "Tipo de dispositivo:"
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:2
 msgid "Brand:"
-msgstr "Fabricante:"
+msgstr "Marca:"
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:4
 #: ../data/glade/ProductInformationSlave.ui.h:11
