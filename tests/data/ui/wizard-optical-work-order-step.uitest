@@ -17,8 +17,8 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                     GtkButton(medic_details, expand=True, fill=True): insensitive
                   GtkLabel(label11): 'Tipo da Lente:'
                   ProxyComboBox(lens_type):
-                    item: 'Ophtalmic', selected
                     item: 'Contact'
+                    item: 'Ophtalmic', selected
                   GtkLabel(label1): 'Owner:'
                   ProxyEntry(patient): 'Patient'
                   GtkLabel(label4): 'Data da receita:'
@@ -94,9 +94,9 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                         ProxySpinButton(frame_bridge): '0.0'
                         GtkLabel(label8): 'Type:'
                         ProxyComboBox(frame_type):
-                          item: 'Closed ring', selected
+                          item: '3 pieces', selected
+                          item: 'Closed ring'
                           item: 'Nylon String'
-                          item: '3 pieces'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

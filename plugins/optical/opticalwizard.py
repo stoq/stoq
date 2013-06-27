@@ -45,12 +45,13 @@ from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.dateutils import localtoday
-from stoqlib.lib.message import warning
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.formatters import (format_quantity,
                                     format_sellable_description,
                                     get_formatted_percentage)
@@ -59,6 +60,8 @@ from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 from .opticaldomain import OpticalWorkOrder
 from .opticalslave import WorkOrderOpticalSlave
+from .opticalreport import OpticalWorkOrderReceiptReport
+
 
 _ = stoqlib_gettext
 
@@ -550,6 +553,14 @@ class OpticalSaleQuoteWizard(SaleQuoteWizard):
 
     def get_first_step(self, store, model):
         return OpticalStartSaleQuoteStep(store, self, model)
+
+    def print_quote_details(self, model, payments_created=False):
+        msg = _('Would you like to print the quote details now?')
+        # We can only print the details if the quote was confirmed.
+        if yesno(msg, gtk.RESPONSE_YES,
+                 _("Print quote details"), _("Don't print")):
+            orders = WorkOrder.find_by_sale(self.model.store, self.model)
+            print_report(OpticalWorkOrderReceiptReport, list(orders))
 
     def finish(self):
         # Now we must remove the products added to the workorders from the

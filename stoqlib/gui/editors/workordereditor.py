@@ -77,6 +77,7 @@ class WorkOrderEditor(BaseEditor):
 
         super(WorkOrderEditor, self).__init__(store, model=model,
                                               visual_mode=visual_mode)
+        self._setup_widgets()
 
     #
     #  BaseEditor
@@ -111,7 +112,8 @@ class WorkOrderEditor(BaseEditor):
         self._update_view()
 
     def setup_proxies(self):
-        self._setup_widgets()
+        self._fill_clients_combo()
+        self._fill_categories_combo()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def update_visual_mode(self):
@@ -141,8 +143,6 @@ class WorkOrderEditor(BaseEditor):
     def _setup_widgets(self):
         for widget in [self.client_info, self.category_edit]:
             widget.set_sensitive(False)
-        self._fill_clients_combo()
-        self._fill_categories_combo()
 
         # When editing an existing opened order, go to the quote tab.
         # But if the work is approved or in progress, go to execution tab.

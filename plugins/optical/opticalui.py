@@ -33,7 +33,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
-                                EditorSlaveCreateEvent, RunDialogEvent)
+                                EditorCreateEvent, RunDialogEvent)
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.translation import stoqlib_gettext
@@ -52,7 +52,7 @@ class OpticalUI(object):
         self.default_store = get_default_store()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
-        EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
+        EditorCreateEvent.connect(self._on_EditorCreateEvent)
         RunDialogEvent.connect(self._on_RunDialogEvent)
         add_bindings([
             ('plugin.optical.pre_sale', ''),
@@ -101,9 +101,19 @@ class OpticalUI(object):
         self._ui = None
 
     def _add_work_order_editor_slave(self, editor, model, store):
+        from stoqlib.gui.utils.printing import print_report
+        from optical.opticalreport import OpticalWorkOrderReceiptReport
         slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
                                       visual_mode=editor.visual_mode)
         editor.add_extra_tab('Ótico', slave)
+
+        def _print_report(button):
+            print_report(OpticalWorkOrderReceiptReport, [model])
+
+        # Also add an print button
+        if model.sale:
+            print_button = editor.add_button(_('Print'), gtk.STOCK_PRINT)
+            print_button.connect('clicked', _print_report)
 
     def _add_product_slave(self, editor, model, store):
         editor.add_extra_tab(ProductOpticSlave.title,
@@ -126,7 +136,7 @@ class OpticalUI(object):
     def _on_StopApplicationEvent(self, appname, app):
         self._remove_app_ui(app.uimanager)
 
-    def _on_EditorSlaveCreateEvent(self, editor, model, store, *args):
+    def _on_EditorCreateEvent(self, editor, model, store, *args):
         # Use type() instead of isinstance so tab does not appear on subclasses
         # (unless thats the desired effect)
         editor_type = type(editor)

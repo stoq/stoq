@@ -490,7 +490,8 @@ class SaleQuoteWizard(BaseWizard):
                     operation_nature=sysparam(store).DEFAULT_OPERATION_NATURE,
                     store=store)
 
-    def _print_quote_details(self, quote, payments_created=False):
+    @public(since='1.8.0')
+    def print_quote_details(self, quote, payments_created=False):
         msg_list = []
         if not quote.group.payments.is_empty():
             msg_list.append(
@@ -516,4 +517,4 @@ class SaleQuoteWizard(BaseWizard):
         self.retval = self.model
         SaleQuoteWizardFinishEvent.emit(self.model)
         self.close()
-        self._print_quote_details(self.model)
+        self.print_quote_details(self.model)

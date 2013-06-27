@@ -1,0 +1,26 @@
+.page {
+    font-size: 8pt;
+}
+
+hr {
+    border-top: 1px dashed black;
+}
+
+.workorder_details {
+    clear: both;
+    page-break-inside: avoid;
+    position: relative;
+}
+
+.optical_details {
+    display: inline-block;
+    width: 59%;
+    border-right: 0.25cm solid white;
+    box-sizing: border-box;
+}
+
+.optical_prescription {
+    display: inline-block;
+    width: 40%;
+}
+

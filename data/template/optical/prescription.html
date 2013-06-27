@@ -1,0 +1,114 @@
+<%page args="workorder, optical_data" />
+
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>${ _("Sale") }:</td>
+          <td>${ report.sale.identifier }</td>
+          <td>${ _("Date") }:</td>
+          <td>${ format_date(report.sale.open_date) }</td>
+        </tr>
+        <tr>
+          <td>${ _("WO") }:</td>
+          <td>${ workorder.identifier }</td>
+          <td>${ _("Deliver") }:</td>
+          <td>${ format_date(workorder.estimated_finish) }</td>
+        </tr>
+        <tr>
+          <td>${ _("Owner") }:</td>
+          <td colspan="3">${ optical_data.patient }</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+
+    <table class="optical_data">
+      <thead>
+      <tr>
+        <td>Longe</td>
+        <td>Esf</td>
+        <td>Cil</td>
+        <td>Eixo</td>
+        <td>DNP</td>
+        <td>Alt</td>
+        <td>Prima</td>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>OD:</td>
+        <td>${ optical_data.re_distance_spherical }</td>
+        <td>${ optical_data.re_distance_cylindrical }</td>
+        <td>${ optical_data.re_distance_axis}</td>
+        <td>${ optical_data.re_distance_pd }</td>
+        <td>${ optical_data.re_distance_height }</td>
+        <td>${ optical_data.re_distance_prism }</td>
+      </tr>
+      <tr>
+        <td>OE:</td>
+        <td>${ optical_data.le_distance_spherical }</td>
+        <td>${ optical_data.le_distance_cylindrical }</td>
+        <td>${ optical_data.le_distance_axis }</td>
+        <td>${ optical_data.le_distance_pd }</td>
+        <td>${ optical_data.le_distance_height }</td>
+        <td>${ optical_data.le_distance_prism }</td>
+      </tr>
+    </table>
+
+    <table class="optical_data">
+      <thead>
+      <tr>
+        <td>Perto</td>
+        <td>Esf</td>
+        <td>Cil</td>
+        <td>Eixo</td>
+        <td>DNP</td>
+        <td>Adição</td>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>OD:</td>
+        <td>${ optical_data.re_near_spherical }</td>
+        <td>${ optical_data.re_near_cylindrical }</td>
+        <td>${ optical_data.re_near_axis }</td>
+        <td>${ optical_data.re_near_pd }</td>
+        <td>${ optical_data.re_addition }</td>
+      </tr>
+      <tr>
+        <td>OE:</td>
+        <td>${ optical_data.le_near_spherical }</td>
+        <td>${ optical_data.le_near_cylindrical }</td>
+        <td>${ optical_data.le_near_axis }</td>
+        <td>${ optical_data.le_near_pd }</td>
+        <td>${ optical_data.le_addition }</td>
+      </tr>
+      </tbody>
+
+    </table>
+
+    % if optical_data.frame_mva or optical_data.frame_mha or optical_data.frame_bridge:
+    <table class="optical_data">
+      <thead>
+      <tr>
+        <td>Armação</td>
+        <td>M.V.A.</td>
+        <td>M.H.A.</td>
+        <td>Ponte</td>
+      </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+            <td>${ optical_data.frame_type_str }</td>
+            <td>${ optical_data.frame_mva }</td>
+            <td>${ optical_data.frame_mha }</td>
+            <td>${ optical_data.frame_bridge }</td>
+        </tr>
+      </tbody>
+      % endif
+    </table>

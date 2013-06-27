@@ -185,18 +185,12 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         return model
 
     def _setup_widgets(self):
-        self.lens_type.prefill([
-            (_('Ophtalmic'), OpticalWorkOrder.LENS_TYPE_OPHTALMIC),
-            (_('Contact'), OpticalWorkOrder.LENS_TYPE_CONTACT),
-        ])
-        self.frame_type.prefill([
-            # Translators: Aro fechado
-            (_('Closed ring'), OpticalWorkOrder.FRAME_TYPE_CLOSED_RING),
-            # Translators: Fio de nylon
-            (_('Nylon String'), OpticalWorkOrder.FRAME_TYPE_NYLON),
-            # Translators: 3 preças
-            (_('3 pieces'), OpticalWorkOrder.FRAME_TYPE_3_PIECES),
-        ])
+        lens_types = [(value, key) for
+                      key, value in OpticalWorkOrder.lens_types.items()]
+        frame_types = [(value, key) for
+                       key, value in OpticalWorkOrder.frame_types.items()]
+        self.lens_type.prefill(sorted(lens_types))
+        self.frame_type.prefill(sorted(frame_types))
         self._medic_combo_prefill()
 
     def _setup_adjustments(self):

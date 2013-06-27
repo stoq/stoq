@@ -30,6 +30,7 @@ from stoqlib.database.properties import (IntCol, DecimalCol, DateTimeCol,
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class OpticalMedic(Domain):
@@ -209,6 +210,22 @@ class OpticalWorkOrder(Domain):
     #: The frame is made 3 pieces
     FRAME_TYPE_3_PIECES = 2
 
+    lens_types = {
+        LENS_TYPE_OPHTALMIC: _('Ophtalmic'),
+        LENS_TYPE_CONTACT: _('Contact'),
+    }
+
+    frame_types = {
+        # Translators: Aro fechado
+        FRAME_TYPE_3_PIECES: _('Closed ring'),
+
+        # Translators: Fio de nylon
+        FRAME_TYPE_NYLON: _('Nylon String'),
+
+        # Translators: 3 preças
+        FRAME_TYPE_CLOSED_RING: _('3 pieces'),
+    }
+
     work_order_id = IdCol(allow_none=False)
     work_order = Reference(work_order_id, 'WorkOrder.id')
 
@@ -292,6 +309,14 @@ class OpticalWorkOrder(Domain):
 
     #: Pupil distance (DNP in pt_BR)
     re_near_pd = DecimalCol(default=0)
+
+    @property
+    def frame_type_str(self):
+        return self.frame_types.get(self.frame_type, '')
+
+    @property
+    def lens_type_str(self):
+        return self.lens_types.get(self.lens_type, '')
 
 
 class OpticalMedicView(Viewable):

@@ -14,7 +14,7 @@ _ = stoqlib_gettext
 
 
 class TestSaleQuoteWizard(GUITest):
-    @mock.patch('stoqlib.gui.wizards.salequotewizard.yesno')
+    @mock.patch('plugins.optical.opticalwizard.yesno')
     @mock.patch('plugins.optical.opticalwizard.run_dialog')
     @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
     def test_confirm(self, run_person_role_dialog, run_dialog, yesno):
