@@ -28,6 +28,7 @@ from kiwi.ui.objectlist import Column
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.sellable import Sellable, SellableCategory
+from stoqlib.domain.product import Product, ProductManufacturer
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.message import info
@@ -39,8 +40,12 @@ _ = stoqlib_gettext
 class _TemporaryInventory(object):
     def __init__(self, store):
         self.open_date = localnow()
-        self.branch = None
+        self.branch = api.get_current_branch(store)
+        self.branch_name = self.branch.get_description()
         self.user = api.get_current_user(store)
+        self.product_manufacturer = None
+        self.product_brand = None
+        self.product_family = None
 
 
 class _TemporaryCategory(object):
@@ -52,28 +57,46 @@ class _TemporaryCategory(object):
         self.selected = True
 
 
-class OpenInventoryDialog(BaseEditor):
-    gladefile = 'OpenInventoryDialog'
+class _UncategorizedProductsCategory(object):
+    def __init__(self):
+        self.description = u'(%s)' % (_("Uncategorized products"), )
+        self.children = []
+
+
+class InventoryOpenEditor(BaseEditor):
+    gladefile = 'InventoryOpenEditor'
     model_type = _TemporaryInventory
     title = _('Open Inventory')
     size = (750, 450)
-    proxy_branch_widgets = ['open_date', 'branch_combo']
+    proxy_widgets = [
+        'open_date',
+        'branch_name',
+        'product_manufacturer',
+        'product_brand',
+        'product_family',
+    ]
 
-    def __init__(self, store, branches):
+    def __init__(self, store):
         BaseEditor.__init__(self, store, model=None)
-        self._branches = branches
-        self._setup_widgets()
-        self._update_widgets()
+
+        self.register_validate_function(self._validate)
+        self.main_dialog.ok_button.set_label(_(u"_Open"))
+
+    #
+    # Private
+    #
 
     def _setup_widgets(self):
-        # open inventory button
-        self.main_dialog.ok_button.set_label(_(u"_Open"))
-        # select all the branches that are able to open an inventory
-        branches = []
-        for branch in self._branches:
-            branches.append((branch.person.name, branch))
-        self.branch_combo.prefill(branches)
-        self.branch_combo.select(branches[0][1])
+        self.product_manufacturer.prefill(
+            api.for_combo(self.store.find(ProductManufacturer)))
+
+        self.product_brand.prefill(
+            [(m, m) for m in
+             sorted(Product.find_distinct_values(self.store, Product.brand))])
+
+        self.product_family.prefill(
+            [(m, m) for m in
+             sorted(Product.find_distinct_values(self.store, Product.family))])
 
         self.username.set_text(self.model.user.person.name)
         self.open_time.set_text(self.model.open_date.strftime("%X"))
@@ -82,35 +105,51 @@ class OpenInventoryDialog(BaseEditor):
         for category in SellableCategory.get_base_categories(self.store):
             self._append_category(category)
 
-        self.category_tree.connect(
-            'cell-edited', self._on_category_tree__cell_edited)
+        self._uncategorized_products = self._append_category(
+            _UncategorizedProductsCategory())
 
     def _update_widgets(self):
         all_selected = all([c.selected for c in self.category_tree])
         self.select_all.set_sensitive(not all_selected)
         has_selected = self._has_selected()
         self.unselect_all.set_sensitive(has_selected)
-        self.refresh_ok(has_selected)
+        self.force_validation()
 
     def _get_columns(self):
-        return [Column('selected', title=" ", width=50,
+        return [Column('selected', title="Include",
                        data_type=bool, editable=True),
                 Column('description', title=_(u"Description"),
                        data_type=str, expand=True, sorted=True,
                        expander=True)]
 
     def _append_category(self, category, parent=None):
-        row = self.category_tree.append(parent, _TemporaryCategory(category))
+        tmp_category = _TemporaryCategory(category)
+        row = self.category_tree.append(parent, tmp_category)
 
         for child in category.children:
             self._append_category(child, parent=row)
 
-    def _get_sellables(self):
-        selected = [c.category for c in self.category_tree if c.selected]
-        include_uncategorized = self.include_uncategorized_check.get_active()
+        return tmp_category
 
-        return Sellable.get_unblocked_by_categories(self.store, selected,
-                                                    include_uncategorized)
+    def _get_sellables(self):
+        selected = [c.category for c in self.category_tree if
+                    c.selected and c is not self._uncategorized_products]
+        include_uncategorized = self._uncategorized_products.selected
+
+        sellables = Sellable.get_unblocked_by_categories(
+            self.store, selected, include_uncategorized)
+
+        if self.model.product_manufacturer:
+            sellables = sellables.find(Product.manufacturer ==
+                                       self.model.product_manufacturer)
+        if self.model.product_brand:
+            sellables = sellables.find(Product.brand ==
+                                       self.model.product_brand)
+        if self.model.product_family:
+            sellables = sellables.find(Product.family ==
+                                       self.model.product_family)
+
+        return sellables
 
     def _select(self, categories, select_value):
         if not categories:
@@ -128,6 +167,9 @@ class OpenInventoryDialog(BaseEditor):
     def _has_selected(self):
         return any([c.selected for c in self.category_tree])
 
+    def _validate(self, value):
+        self.refresh_ok(value and self._has_selected())
+
     #
     # BaseEditorSlave
     #
@@ -136,8 +178,9 @@ class OpenInventoryDialog(BaseEditor):
         return _TemporaryInventory(store)
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(
-            self.model, OpenInventoryDialog.proxy_branch_widgets)
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self._update_widgets()
 
     def validate_confirm(self):
         # This is a generator. It'll be evaluated to True
@@ -178,5 +221,5 @@ class OpenInventoryDialog(BaseEditor):
     def on_unselect_all__clicked(self, widget):
         self._select(list(self.category_tree), select_value=False)
 
-    def _on_category_tree__cell_edited(self, tree, category, attr):
+    def on_category_tree__cell_edited(self, tree, category, attr):
         self._select([category], select_value=category.selected)

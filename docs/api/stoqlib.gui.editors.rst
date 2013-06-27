@@ -129,6 +129,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`inventoryeditor` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.editors.inventoryeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`invoiceeditor` Module
 ---------------------------
 

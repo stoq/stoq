@@ -70,6 +70,19 @@ class TestSelect(DomainTest):
         Ding(store=self.store, int_field=1)
         self.assertRaises(NotOneError, self.store.find(Ding, int_field=1).one)
 
+    def testFindDistinctValues(self):
+        # One empty, 2 duplicates and an extra one
+        for value in [u'', u'xxx', u'xxx', u'yyy']:
+            Ding(store=self.store, str_field=value)
+
+        r1 = list(sorted(Ding.find_distinct_values(
+            self.store, Ding.str_field, exclude_empty=True)))
+        r2 = list(sorted(Ding.find_distinct_values(
+            self.store, Ding.str_field, exclude_empty=False)))
+
+        self.assertEqual(r1, [u'xxx', u'yyy'])
+        self.assertEqual(r2, [u'', u'xxx', u'yyy'])
+
     def testCheckUniqueValueExists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1')
         Ding(store=self.store, str_field=u'Ding_2')

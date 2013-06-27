@@ -1,0 +1,59 @@
+editor: InventoryOpenEditor
+GtkDialog(main_dialog.toplevel): title='Open Inventory', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave InventoryOpenEditor is attached
+        GtkVBox(toplevel):
+          GtkTable(table1):
+            ProxyLabel(kiwilabel4): 'User:'
+            ProxyLabel(username): '<span >Administrator</span>'
+            ProxyLabel(kiwilabel3): 'Open Date:'
+            ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
+            ProxyLabel(branch_label): 'Branch:'
+            ProxyLabel(branch_name): '<span >Moda Stoq</span>'
+            ProxyLabel(kiwilabel2): 'Time:'
+            ProxyLabel(open_time): '<span >12:33:00</span>'
+          GtkHSeparator(hseparator1, fill=True):
+          GtkHBox(hbox2, expand=True, fill=True):
+            ObjectTree(category_tree, expand=True, fill=True, padding=6):
+              column: title='Include'
+              column: title='Description', expand
+              row: True, u'(Uncategorized products)'
+              row: True, u'Bermudas'
+                row: True, u'Bermudas Sarja'
+                row: True, u'Bermudas Shorts'
+              row: True, u'Blusas'
+                row: True, u'Blusas Algod\xe3o'
+                row: True, u'Blusas Poliester'
+              row: True, u'Cal\xe7ados'
+                row: True, u'Chinelos'
+              row: True, u'Cal\xe7as'
+                row: True, u'Cal\xe7as Jeans'
+                row: True, u'Cal\xe7as Poliester'
+              row: True, u'Camisetas'
+                row: True, u'Tinturada'
+              row: True, u'Casacos'
+                row: True, u'Algod\xe3o'
+              row: True, u'Vestido'
+                row: True, u'Viscose'
+            GtkTable(table2, fill=True):
+              GtkLabel(label1): 'Extra Filters:'
+              GtkLabel(label2): 'Manufacturer:'
+              ProxyComboEntry(product_manufacturer):
+              GtkLabel(label4): 'Brand:'
+              ProxyComboEntry(product_brand):
+              GtkLabel(label5): 'Family:'
+              ProxyComboEntry(product_family):
+          GtkHBox(hbox1):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(select_all): 'gtk-select-all', insensitive
+              GtkButton(unselect_all): '_Unselect All'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): '_Open'

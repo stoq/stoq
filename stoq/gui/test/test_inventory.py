@@ -26,9 +26,8 @@ import gtk
 import mock
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.person import Branch
 from stoqlib.domain.inventory import Inventory
-from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
+from stoqlib.gui.editors.inventoryeditor import InventoryOpenEditor
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.wizards.inventorywizard import InventoryCountWizard
 from stoqlib.reporting.product import ProductCountingReport
@@ -101,10 +100,10 @@ class TestInventory(BaseGUITest):
         self._check_run_dialog(app.CountingAction,
                                InventoryCountWizard, [inventory])
 
-        branches = list(self.store.find(Branch))
-        branches.remove(inventory.branch)
+        inventory.close()
+        app._update_widgets()
         self._check_run_dialog(app.NewInventory,
-                               OpenInventoryDialog, [branches])
+                               InventoryOpenEditor, [])
 
     @mock.patch('stoq.gui.inventory.InventoryApp.print_report')
     @mock.patch('stoq.gui.inventory.warning')

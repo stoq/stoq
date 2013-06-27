@@ -240,6 +240,27 @@ class Domain(ORMObject):
 
         return not self.store.find(cls, query).is_empty()
 
+    #
+    #  Classmethods
+    #
+
+    @classmethod
+    def find_distinct_values(cls, store, attr, exclude_empty=True):
+        """Find distinct values for a given attr
+
+        :param store: a store
+        :param attr: the attr we are going to get distinct values for
+        :param exclude_empty: if ``True``, empty results (``None`` or
+            empty strings) will be removed from the results
+        :returns: an iterator of the results
+        """
+        results = store.find(cls)
+        results.config(distinct=True)
+        for value in results.values(attr):
+            if exclude_empty and not value:
+                continue
+            yield value
+
     @classmethod
     def get_or_create(cls, store, **kwargs):
         """Get the object from the database that matches the given criteria, and if
