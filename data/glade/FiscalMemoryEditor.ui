@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="FiscalMemoryEditor">
     <property name="border_width">5</property>
@@ -131,7 +131,6 @@
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
                 <property name="adjustment">adjustment1</property>
-                <property name="numeric">True</property>
                 <property name="data_type">int</property>
                 <property name="model_attribute">start_reductions_number</property>
               </object>
@@ -164,7 +163,6 @@
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
                 <property name="adjustment">adjustment2</property>
-                <property name="numeric">True</property>
                 <property name="data_type">int</property>
                 <property name="model_attribute">end_reductions_number</property>
               </object>
