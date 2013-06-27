@@ -390,9 +390,13 @@ class _ItemSlave(SellableItemSlave):
         work_order = self.emit('get-work-order')
         assert work_order
 
-        remaining_quantity = self.get_remaining_quantity(sellable, batch)
-        available_quantity = min(quantity, remaining_quantity)
         sale_item = self.model.add_sellable(sellable, quantity, price, batch=batch)
+
+        remaining_quantity = self.get_remaining_quantity(sellable, batch)
+        if remaining_quantity is not None:
+            available_quantity = min(quantity, remaining_quantity)
+        else:
+            available_quantity = quantity
 
         # Decrease the available  quantity, so it does not get decreased twice
         # when confirming the sale

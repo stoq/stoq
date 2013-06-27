@@ -408,7 +408,12 @@ class SellableItemSlave(BaseEditorSlave):
             quantity
         :param batch: if not ``None``, the remaining quantity will
             be checked taking the |batch| in consideration
+        :return: the remaining quantity or ``None`` if the sellable
+            doesn't control stock (e.g. a service)
         """
+        if sellable.service or sellable.product_storable is None:
+            return None
+
         total_quatity = sum(i.quantity for i in self.slave.klist if
                             (i.sellable, i.batch) == (sellable, batch))
 
