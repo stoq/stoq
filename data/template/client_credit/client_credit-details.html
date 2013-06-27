@@ -1,0 +1,20 @@
+      <section>
+        <table class="details">
+          <tbody>
+            <tr>
+              <td>${ _("Client:") }</td>
+              <td>${ report.client.get_name() }</td>
+              <td>${ _("Available Credit:") }</td>
+              <td>${ format_price(report.client.credit_account_balance) }</td>
+            </tr>
+            <tr>
+              <td>${ _("Generated on:") }</td>
+              <td>${ format_date(report.get_generated_date()) }</td>
+              <td></td>
+              <td></td>
+            </tr>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+

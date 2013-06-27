@@ -9,7 +9,6 @@
         <property name="visible">True</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
-        <property name="homogeneous">False</property>
         <child>
           <object class="GtkFrame" id="frame2">
             <property name="visible">True</property>
@@ -177,6 +176,7 @@
                 <child>
                   <object class="GtkTable" id="table1">
                     <property name="visible">True</property>
+                    <property name="n_rows">3</property>
                     <property name="n_columns">3</property>
                     <property name="column_spacing">6</property>
                     <property name="row_spacing">6</property>
@@ -220,6 +220,32 @@
                       <packing>
                         <property name="y_options"></property>
                       </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="print_credit_letter">
+                        <property name="label">gtk-print</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                      <packing>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                   </object>
                 </child>

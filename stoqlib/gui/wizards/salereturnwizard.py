@@ -40,7 +40,7 @@ from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import ReturnPolicy
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
-from stoqlib.lib.message import info
+from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -50,7 +50,9 @@ from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
+from stoqlib.reporting.clientcredit import ClientCreditReport
 
 
 _ = stoqlib_gettext
@@ -505,6 +507,11 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
         self.model.return_(method_name=u'credit' if self.credit else u'money')
         self.retval = self.model
         self.close()
+
+        if self.credit:
+            if yesno(_(u'Would you like to print the credit letter?'),
+                     gtk.RESPONSE_YES, _(u"Print Letter"), _(u"Don't print")):
+                print_report(ClientCreditReport, self.model.client)
 
 
 class SaleTradeWizard(_BaseSaleReturnWizard):

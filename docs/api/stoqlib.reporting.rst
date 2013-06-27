@@ -33,6 +33,14 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`clientcredit` Module
+-------------------------
+
+.. automodule:: stoqlib.reporting.clientcredit
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`financial` Module
 -----------------------
 

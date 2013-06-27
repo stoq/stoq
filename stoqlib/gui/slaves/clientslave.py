@@ -30,9 +30,11 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.creditdialog import CreditInfoListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.search.clientsalaryhistorysearch import ClientSalaryHistorySearch
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.domain.person import Client, ClientCategory, ClientSalaryHistory
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.reporting.clientcredit import ClientCreditReport
 
 _ = stoqlib_gettext
 
@@ -125,3 +127,6 @@ class ClientCreditSlave(BaseEditorSlave):
         run_dialog(CreditInfoListDialog, self.get_toplevel().get_toplevel(),
                    self.store, self.model)
         self.proxy.update('credit_account_balance')
+
+    def on_print_credit_letter__clicked(self, button):
+        print_report(ClientCreditReport, self.model)

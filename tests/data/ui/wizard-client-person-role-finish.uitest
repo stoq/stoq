@@ -141,6 +141,7 @@ GtkDialog(PluggableWizard): title='New Client', hidden
                           GtkLabel(): 'Available:'
                           ProxyLabel(): '<span >$ 0.00</span>'
                           GtkButton():
+                          GtkButton(): 'gtk-print'
                       GtkLabel(): '<b>Credit</b>'
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):

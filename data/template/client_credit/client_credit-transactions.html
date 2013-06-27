@@ -1,0 +1,45 @@
+  <section id="items">
+    <h4>${ _("Credit Transactions") }</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td>${ _("Date") }</td>
+          <td>${ _("Description") }</td>
+          <td>${ _("Value") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        % for item in report.client.get_credit_transactions():
+          <tr>
+            <td>${ item.identifier }</td>
+            <td>${ format_date(item.paid_date) }</td>
+            <td>${ item.description }</td>
+            <td>${ format_price(item.value) }</td>
+          </tr>
+        % endfor
+      </tbody>
+
+      <tbody class="summary">
+        <tr>
+          <td></td>
+          <td></td>
+          <td>${ _('Total:') }</td>
+          <td>${ format_price(report.client.credit_account_balance) }</td>
+        </tr>
+      </tbody>
+
+    </table>
+  </section>
+
+

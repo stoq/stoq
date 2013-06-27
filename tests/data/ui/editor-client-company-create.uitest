@@ -111,6 +111,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                               GtkLabel(label5): 'Available:'
                               ProxyLabel(credit_account_balance): '<span >$ 0.00</span>'
                               GtkButton(credit_transactions_button):
+                              GtkButton(print_credit_letter): 'gtk-print'
                           GtkLabel(label6): '<b>Credit</b>'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
