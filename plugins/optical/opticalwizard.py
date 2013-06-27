@@ -50,6 +50,7 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.message import warning
 from stoqlib.lib.formatters import (format_quantity,
                                     format_sellable_description,
                                     get_formatted_percentage)
@@ -220,7 +221,7 @@ class OpticalWorkOrderStep(BaseWizardStep):
             self._add_workorder(order)
 
     def _add_workorder(self, workorder):
-        self.wizard.workorders.append(workorder)
+        self.wizard.workorders.add(workorder)
         total_os = self.work_orders_nb.get_n_pages() + 1
         # Translators: WO is short for Work Order
         label = _('WO %d') % total_os
@@ -237,6 +238,24 @@ class OpticalWorkOrderStep(BaseWizardStep):
                                       show_finish_date=True)
         self.work_orders_nb.append_page(holder, hbox)
         self.attach_slave(label, slave, holder)
+        button.connect('clicked', self._on_remove_wo_clicked, holder, workorder)
+
+    def _remove_workorder(self, holder, workorder):
+        if not workorder.get_items().find().is_empty():
+            warning(_('This workorder already has items and cannot be removed'))
+            return
+
+        # Remove the tab
+        pagenum = self.work_orders_nb.page_num(holder)
+        self.work_orders_nb.remove_page(pagenum)
+
+        # And remove the WO
+        self.wizard.workorders.remove(workorder)
+
+        # We cannot remove the WO from the database (since it already has some
+        # history), but we can disassociate it from the sale and cancel it.
+        workorder.sale = None
+        workorder.cancel()
 
     #
     #   BaseWizardStep hooks
@@ -255,6 +274,15 @@ class OpticalWorkOrderStep(BaseWizardStep):
 
     def _on_new_work_order__clicked(self, button):
         self._add_workorder(self._create_work_order())
+
+    def _on_remove_wo_clicked(self, button, slave_holder, workorder):
+        # Dont let the user remove the last WO. TODO: Hide the button from the
+        # last tab.
+        total_pages = self.work_orders_nb.get_n_pages()
+        if total_pages == 1:
+            return
+
+        self._remove_workorder(slave_holder, workorder)
 
 
 # This is used so we can display on what work order an item is in.
@@ -508,7 +536,7 @@ class OpticalSaleQuoteWizard(SaleQuoteWizard):
     the sales person to select in what work order the item should be added to.
     """
     def __init__(self, *args, **kwargs):
-        self.workorders = []
+        self.workorders = set()
         SaleQuoteWizard.__init__(self, *args, **kwargs)
 
     def get_first_step(self, store, model):
