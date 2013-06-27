@@ -307,6 +307,9 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     def on_medic_create__clicked(self, button):
         self._run_medic_editor()
 
+    def on_medic_combo__content_changed(self, combo):
+        self.medic_details.set_sensitive(bool(self.medic_combo.read()))
+
     def on_medic_details__clicked(self, button):
         medic = self.model.medic
         run_dialog(MedicEditor, self, self.store, medic, visual_mode=True)
