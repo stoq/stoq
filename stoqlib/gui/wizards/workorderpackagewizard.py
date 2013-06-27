@@ -117,7 +117,7 @@ class WorkOrderPackageReceiveOrdersStep(WizardEditorStep):
             IdentifierColumn('identifier'),
             Column('work_order.status_str', _(u"Status"), data_type=str),
             Column('equipment', _(u"Equipment"), data_type=str,
-                   expand=True, editable=True, pack_end=True),
+                   expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment'),
                    column='equipment', data_type=gtk.gdk.Pixbuf,
                    format_func=render_pixbuf),
