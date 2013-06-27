@@ -639,8 +639,10 @@ class MaintenanceApp(ShellApp):
 
     def _run_order_details_dialog(self):
         selection = self.search.get_selected_item()
-        self.run_dialog(WorkOrderEditor, self.store,
-                        model=selection.work_order, visual_mode=True)
+        with api.trans() as store:
+            self.run_dialog(WorkOrderEditor, store,
+                            model=store.fetch(selection.work_order),
+                            visual_mode=True)
 
     def _run_order_category_dialog(self):
         with api.trans() as store:
