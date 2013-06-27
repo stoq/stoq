@@ -432,6 +432,9 @@ class SalesApp(ShellApp):
         store.confirm(model)
         store.close()
 
+        if model:
+            self.search.refresh()
+
     def _search_product(self):
         hide_cost_column = not api.sysparam(self.store).SHOW_COST_COLUMN_IN_SALES
         self.run_dialog(ProductSearch, self.store, hide_footer=True,
