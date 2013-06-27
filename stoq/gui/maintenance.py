@@ -214,7 +214,7 @@ class MaintenanceApp(ShellApp):
             ("Cancel", gtk.STOCK_CANCEL, _(u"Cancel..."),
              group.get('order_cancel'),
              _(u"Cancel the selected order")),
-            ("DeliveryOrder", None, _(u"Delivered...")),
+            ("DeliverOrder", None, _(u"Delivered...")),
             ("Details", gtk.STOCK_INFO, _(u"Details..."),
              group.get('order_details'),
              _(u"Show details of the selected order")),
@@ -451,11 +451,11 @@ class MaintenanceApp(ShellApp):
                 (self.Pause, has_selected and wo.can_pause()),
                 (self.Work, has_selected and wo.can_work()),
                 (self.Reopen, has_selected and wo.can_reopen()),
-                # deliveryOrder is grouped here since it's a special case. Only
+                # DeliverOrder is grouped here since it's a special case. Only
                 # finished orders without items can be delivered here, so avoid
                 # showing the option if it's not sensitive to avoid confusions
-                (self.DeliveryOrder, (has_selected and wo.can_delivery() and
-                                      not wo.order_items.count()))]:
+                (self.DeliverOrder, (has_selected and wo.can_close() and
+                                     not wo.order_items.count()))]:
             self.set_sensitive([widget], value)
             # Some of those options are mutually exclusive (except Approve,
             # but it can only be called once) so avoid confusions and
@@ -534,15 +534,17 @@ class MaintenanceApp(ShellApp):
             work_order.cancel(reason=rv.notes)
         self._update_view()
 
-    def _delivery_order(self):
-        if not yesno(_(u"This will mark the order as delivered. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Mark as delivered"), _(u"No mark")):
+    def _close_order(self):
+        if not yesno(_(u"This will mark the order as delivered. Are you "
+                       "sure?"),
+                     gtk.RESPONSE_NO, _(u"Mark as delivered"),
+                     _(u"Don't mark")):
             return
 
         selection = self.search.get_selected_item()
         with api.trans() as store:
             work_order = store.fetch(selection.work_order)
-            work_order.delivery()
+            work_order.close()
 
         self._update_view(select_item=selection)
 
@@ -750,8 +752,8 @@ class MaintenanceApp(ShellApp):
     def on_Reopen__activate(self, action):
         self._reopen()
 
-    def on_DeliveryOrder__activate(self, action):
-        self._delivery_order()
+    def on_DeliverOrder__activate(self, action):
+        self._deliver_order()
 
     def on_PrintQuote__activate(self, action):
         workorderview = self.search.get_selected_item()
