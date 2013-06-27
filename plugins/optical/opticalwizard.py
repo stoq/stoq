@@ -353,6 +353,7 @@ class _ItemSlave(SellableItemSlave):
     summary_label_text = "<b>%s</b>" % api.escape(_('Total:'))
     value_column = 'price'
     validate_price = True
+    validate_stock = True
 
     #
     #   SellableItemSlave implementation
