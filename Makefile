@@ -50,15 +50,18 @@ pylint:
 	    stoqlib/domain/*.py \
 	    stoqlib/domain/payment/*.py
 
-check: check-source
+clean:
+	@find . -iname '*pyc' -delete
+
+check: clean check-source
 	@echo "Running $(TEST_MODULES) unittests"
 	@rm -f .noseids
 	@python runtests.py --failed $(TEST_MODULES)
 
-check-failed:
+check-failed: clean
 	python runtests.py --failed $(TEST_MODULES)
 
-coverage:
+coverage: clean
 	python runtests.py \
 	    --with-xcoverage \
 	    --with-xunit \
