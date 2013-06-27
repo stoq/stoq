@@ -294,7 +294,11 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             getattr(self, 're_' + name).set_sensitive(has_frame)
 
     def after_prescription_date__changed(self, widget):
-        age = localtoday().date() - widget.read()
+        date = widget.read()
+        if not date:
+            return
+
+        age = localtoday().date() - date
         if age.days > LATE_PRESCRIPTION_DAYS:
             # This is not a validation error, just a warning for the user.
             icon = widget.render_icon(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
