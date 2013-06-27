@@ -364,7 +364,7 @@ class InventoryCountWizard(BaseWizard):
                         item = self.model.add_sellable(
                             sellable, batch_number=batch_number)
 
-                    item.actual_quantity = tmp_item.quantity
+                    item.actual_quantity = quantity
             else:
                 item = model_items.pop((sellable, None))
                 item.actual_quantity = tmp_item.quantity
