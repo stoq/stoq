@@ -36,6 +36,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -54,6 +55,8 @@ class SaleQuoteItemEditor(BaseEditor):
     manager = None
 
     def __init__(self, store, model):
+        manager = get_plugin_manager()
+        self.nfe_is_active = manager.is_active('nfe')
         self.icms_slave = None
         self.ipi_slave = None
 
@@ -77,6 +80,12 @@ class SaleQuoteItemEditor(BaseEditor):
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 
+        if self.nfe_is_active:
+            self.cfop_label.hide()
+            self.cfop.hide()
+
+        # We populate this even if it's hidden because we need a default value
+        # selected to add to the sale item
         cfop_items = [(item.get_description(), item)
                       for item in self.store.find(CfopData)]
         self.cfop.prefill(cfop_items)
@@ -88,11 +97,13 @@ class SaleQuoteItemEditor(BaseEditor):
         if not self.model.sellable.product:
             return
 
-        self.icms_slave = SaleItemICMSSlave(self.store, self.model.icms_info)
-        self.add_tab(_('ICMS'), self.icms_slave)
+        if self.nfe_is_active:
+            self.icms_slave = SaleItemICMSSlave(self.store,
+                                                self.model.icms_info)
+            self.add_tab(_('ICMS'), self.icms_slave)
 
-        self.ipi_slave = SaleItemIPISlave(self.store, self.model.ipi_info)
-        self.add_tab(_('IPI'), self.ipi_slave)
+            self.ipi_slave = SaleItemIPISlave(self.store, self.model.ipi_info)
+            self.add_tab(_('IPI'), self.ipi_slave)
 
     def _validate_quantity(self, new_quantity):
         if new_quantity <= 0:
