@@ -53,6 +53,7 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
+from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
@@ -105,6 +106,8 @@ class TillApp(ShellApp):
             ("SearchSale", None, _("Sales..."),
              group.get('search_sale'),
              _("Search for sales")),
+            ("SearchCardPayment", None, _("Card payments..."),
+             _("Search for card payments")),
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              group.get('search_sold_items_by_branch'),
              _("Search for items sold by branch")),
@@ -525,6 +528,9 @@ class TillApp(ShellApp):
 
         self._run_search_dialog(SaleWithToolbarSearch)
         self.refresh()
+
+    def on_SearchCardPayment__activate(self, action):
+        self.run_dialog(CardPaymentSearch, self.store)
 
     def on_SearchSoldItemsByBranch__activate(self, button):
         self._run_search_dialog(SoldItemsByBranchSearch)

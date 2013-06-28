@@ -50,6 +50,7 @@
       <menuitem action="SearchClient"/>
       <menuitem action="SearchSale"/>
       <menuitem action="SearchSoldItemsByBranch"/>
+      <menuitem action="SearchCardPayment"/>
       <separator/>
       <menuitem action="SearchTillHistory"/>
       <menuitem action="SearchFiscalTillOperations"/>
