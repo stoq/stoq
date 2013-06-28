@@ -755,7 +755,7 @@ class MaintenanceApp(ShellApp):
         self._reopen()
 
     def on_DeliverOrder__activate(self, action):
-        self._deliver_order()
+        self._close_order()
 
     def on_PrintQuote__activate(self, action):
         workorderview = self.search.get_selected_item()
