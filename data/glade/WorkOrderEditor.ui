@@ -179,7 +179,7 @@
                     <child>
                       <object class="GtkImage" id="image2">
                         <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Show a client details</property>
+                        <property name="tooltip_text" translatable="yes">Show client details</property>
                         <property name="stock">gtk-info</property>
                         <property name="icon-size">1</property>
                       </object>
@@ -204,7 +204,7 @@
                     <child>
                       <object class="GtkImage" id="image3">
                         <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Add a new client</property>
+                        <property name="tooltip_text" translatable="yes">Add a new category</property>
                         <property name="stock">gtk-add</property>
                         <property name="icon-size">1</property>
                       </object>
@@ -229,7 +229,7 @@
                     <child>
                       <object class="GtkImage" id="image4">
                         <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Add a new client</property>
+                        <property name="tooltip_text" translatable="yes">Edit category</property>
                         <property name="stock">gtk-edit</property>
                         <property name="icon-size">1</property>
                       </object>
