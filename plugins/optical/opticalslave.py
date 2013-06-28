@@ -237,9 +237,12 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
 
     def _run_medic_editor(self, medic=None, visual_mode=False):
         with api.trans() as store:
-            run_person_role_dialog(MedicEditor, self, store, medic,
-                                   visual_mode=True)
-        self._medic_combo_prefill()
+            medic = run_person_role_dialog(MedicEditor, self, store, medic,
+                                           visual_mode=True)
+        if medic:
+            self._medic_combo_prefill()
+            medic = self.store.fetch(medic)
+            self.medic_combo.select(medic)
 
     def _medic_combo_prefill(self):
         medics = self.store.find(OpticalMedic)
