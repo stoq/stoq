@@ -503,6 +503,10 @@ class FinishPurchaseStep(WizardEditorStep):
 
         self.salesperson_name.grab_focus()
         self._set_receival_date_suggestion()
+
+        if self.model.has_batch_item():
+            self.receive_now.hide()
+
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 

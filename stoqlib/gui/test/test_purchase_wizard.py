@@ -112,3 +112,23 @@ class TestPurchaseWizard(GUITest):
 
         self.check_wizard(self.wizard, 'wizard-purchase-done-received',
                           models=models)
+
+    def testNoReceiveNowForBatchItems(self):
+        sellable = self.create_sellable()
+        product = self.create_product()
+        storable = self.create_storable(is_batch=True)
+        storable.product = product
+        sellable.product = product
+
+        wizard = PurchaseWizard(self.store)
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.sellable_selected(sellable)
+        self.click(step.add_sellable_button)
+        self.click(wizard.next_button)
+
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        self.assertNotVisible(step, ['receive_now'])

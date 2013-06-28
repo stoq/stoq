@@ -210,6 +210,26 @@ class TestPurchaseOrder(DomainTest):
         self.assertEqual(order.group.payments.count(), 2)
         self.assertTrue(money_payment in order.group.payments)
 
+    def testHasBatchItem(self):
+        order = self.create_purchase_order()
+        order.add_item(self.create_sellable(), 3)
+        self.assertFalse(order.has_batch_item())
+
+        sellable = self.create_sellable()
+        product = self.create_product()
+        storable = self.create_storable(is_batch=True)
+        storable.product = product
+        sellable.product = product
+
+        order = self.create_purchase_order()
+        order.add_item(sellable, 2)
+        self.assertTrue(order.has_batch_item())
+
+        order = self.create_purchase_order()
+        order.add_item(self.create_sellable(), 3)
+        order.add_item(sellable, 2)
+        self.assertTrue(order.has_batch_item())
+
 
 class TestQuoteGroup(DomainTest):
 

@@ -27,8 +27,8 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from kiwi.python import Settable
-from storm.expr import (And, Count, Join, LeftJoin, Sum, Select,
-                        Alias, Cast)
+from storm.expr import (Alias, And, Cast, Count, Eq, Join, LeftJoin, Select,
+                        Sum)
 from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implements
@@ -43,6 +43,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.product import Product, Storable
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
 from stoqlib.domain.person import (Person, Branch,
@@ -523,6 +524,21 @@ class PurchaseOrder(Domain, Adaptable):
                                   price=sellable.price,
                                   quantity=purchase_item.quantity)
             yield label_data
+
+    def has_batch_item(self):
+        """Fetch the storables from this purchase order and returns ``True`` if
+        any of them is a batch storable.
+
+        :returns: ``True`` if this purchase order has batch items, ``False`` if
+        it doesn't.
+        """
+        return not self.store.find(Storable,
+                                   And(self.id == PurchaseOrder.id,
+                                       PurchaseOrder.id == PurchaseItem.order_id,
+                                       PurchaseItem.sellable_id == Sellable.id,
+                                       Sellable.id == Product.sellable_id,
+                                       Product.id == Storable.product_id,
+                                       Eq(Storable.is_batch, True))).is_empty()
 
     #
     # Classmethods
