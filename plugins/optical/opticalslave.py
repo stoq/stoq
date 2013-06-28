@@ -308,6 +308,11 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         else:
             widget.set_pixbuf(None)
 
+    def on_estimated_finish__validate(self, widget, date):
+        if date < localtoday().date():
+            return ValidationError(_(u'Estimated finish date cannot be in the '
+                                     'past.'))
+
     def on_medic_create__clicked(self, button):
         self._run_medic_editor()
 
