@@ -32,6 +32,7 @@
   </menu>
   <placeholder name="AppMenubarPH">
     <menu action="InventoryMenu">
+      <menuitem action="Details"/>
       <menuitem action="CountingAction"/>
       <menuitem action="AdjustAction"/>
       <menuitem action="Cancel"/>
@@ -41,6 +42,7 @@
   </placeholder>
 </menubar>
 <popup name="InventorySelection">
+  <menuitem action="Details"/>
   <menuitem action="CountingAction"/>
   <menuitem action="AdjustAction"/>
   <menuitem action="Cancel"/>
@@ -50,6 +52,7 @@
 <toolbar action="toolbar">
   <placeholder name="AppToolbarPH">
     <separator/>
+    <toolitem action="Details"/>
     <toolitem action="CountingAction"/>
     <toolitem action="AdjustAction"/>
     <toolitem action="Cancel"/>

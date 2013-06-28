@@ -24,18 +24,20 @@
 """ Inventory object and related objects implementation """
 
 from decimal import Decimal
-from storm.expr import And, Eq, Join
+
+from storm.expr import And, Eq, Cast, Join
 from storm.references import Reference, ReferenceSet
 
-from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
                                          IntCol, UnicodeCol, IdentifierCol,
                                          IdCol, BoolCol)
+from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import LoginUser, Person
-from stoqlib.domain.product import StockTransactionHistory, StorableBatch
+from stoqlib.domain.product import StockTransactionHistory, StorableBatch, Product
+from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -400,6 +402,13 @@ class Inventory(Domain):
     def get_status_str(self):
         return self.statuses[self.status]
 
+    def get_branch_name(self):
+        """
+        This method returns the name for Branch of Person reference object
+        :return: branch_name
+        """
+        return self.branch.person.name
+
 
 class InventoryItemsView(Viewable):
     """Holds information about |inventoryitems|
@@ -432,10 +441,14 @@ class InventoryItemsView(Viewable):
     # Person
     responsible_name = Person.name
 
+    description = Sellable.description
+
     tables = [
         InventoryItem,
         Join(Inventory,
              InventoryItem.inventory_id == Inventory.id),
+        Join(Product, Product.id == InventoryItem.product_id),
+        Join(Sellable, Sellable.id == Product.sellable_id),
         Join(LoginUser,
              Inventory.responsible_id == LoginUser.id),
         Join(Person,
@@ -449,6 +462,45 @@ class InventoryItemsView(Viewable):
         :param store: the store that will be used to find the results
         :param product: the |product| used to filter the results
         :returns: the matching views
-        :rtype: a sequence of :class:`InventoryItemView`
+        :rtype: a sequence of :cimporlass:`InventoryItemView`
         """
         return store.find(cls, product_id=product.id)
+
+
+class InventoryView(Viewable):
+    """Stores general information's about inventories"""
+
+    inventory = Inventory
+    # Inventory
+
+    #: Inventory Id
+    id = Inventory.id
+    #: Inventory Identifier
+    identifier = Inventory.identifier
+    #: Inventory Identifier ToString
+    identifier_str = Cast(Inventory.identifier, 'text')
+    #: Invoice number
+    invoice_number = Inventory.invoice_number
+    #: Date of open operation
+    open_date = Inventory.open_date
+    #: Date of close operation
+    close_date = Inventory.close_date
+    #: Status of Inventory
+    status = Inventory.status
+    #: Id of referenced Branch
+    branch_id = Inventory.branch_id
+
+    tables = [Inventory]
+
+    @classmethod
+    def find_by_branch(cls, store, branch=None):
+        """find results for this Inventory View that refenrences *Branch*
+
+        :param store: the store that will be used for find the results
+        :param branch: the |branch| used to filter the results
+        :return: the matching views
+        """
+        if branch is not None:
+            return store.find(cls, branch_id=branch.id)
+
+        return store.find(cls)

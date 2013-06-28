@@ -25,7 +25,7 @@
 from decimal import Decimal
 
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.inventory import Inventory, InventoryItemsView
+from stoqlib.domain.inventory import Inventory, InventoryView, InventoryItemsView
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -137,6 +137,15 @@ class TestInventory(DomainTest):
         item2.actual_quantity = 2
         self.failUnless(inventory.all_items_counted())
 
+    def testGetBranchName(self):
+        inventory = self.create_inventory()
+        inventory.branch = self.create_branch(name=u'Dummy',
+                                              phone_number=u'12345678',
+                                              fax_number=u'6125371231')
+
+        inventory_branch_name = inventory.get_branch_name()
+        self.assertEqual(inventory_branch_name, u'Dummy')
+
 
 class TestInventoryItem(DomainTest):
 
@@ -192,9 +201,10 @@ class TestInventoryItemsView(DomainTest):
 
         results = self.store.find(InventoryItemsView)
         self.assertEqual(set([(item1, inventory), (item2, inventory)]),
-                         set([(r.inventory_item, r.inventory) for r in results]))
+                         set([(r.inventory_item, r.inventory) for r in
+                              results]))
 
-    def testFindByproduct(self):
+    def testFindByProduct(self):
         p1 = self.create_product()
         p2 = self.create_product()
 
@@ -208,8 +218,34 @@ class TestInventoryItemsView(DomainTest):
 
         results = InventoryItemsView.find_by_product(self.store, p1)
         self.assertEqual(set([(item1, inventory1), (item3, inventory2)]),
-                         set([(r.inventory_item, r.inventory) for r in results]))
+                         set((r.inventory_item, r.inventory) for r in results))
 
         results = InventoryItemsView.find_by_product(self.store, p2)
         self.assertEqual(set([(item2, inventory1), (item4, inventory2)]),
-                         set([(r.inventory_item, r.inventory) for r in results]))
+                         set((r.inventory_item, r.inventory) for r in results))
+
+
+class TestInventoryView(DomainTest):
+    def testFind(self):
+        inventory1 = self.create_inventory()
+        inventory2 = self.create_inventory()
+        results = self.store.find(InventoryView)
+        self.assertEqual(set([inventory1, inventory2]),
+                         set([r.inventory for r in results]))
+
+    def testFindByBranch(self):
+        b1 = self.create_branch()
+        b2 = self.create_branch()
+
+        inventory1 = self.create_inventory(branch=b1)
+        inventory2 = self.create_inventory(branch=b2)
+
+        results = InventoryView.find_by_branch(self.store)
+        self.assertEqual(set([inventory1, inventory2]),
+                         set(r.inventory for r in results))
+        results = InventoryView.find_by_branch(self.store, b1)
+        r = results.one()
+        self.assertEqual(inventory1, r.inventory)
+        results = InventoryView.find_by_branch(self.store, b2)
+        r = results.one()
+        self.assertEqual(inventory2, r.inventory)

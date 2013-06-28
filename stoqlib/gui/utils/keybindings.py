@@ -144,6 +144,8 @@ _bindings = [
      _("Adjust the selected inventory")),
     ('app.inventory.inventory_cancel', '',
      _("Cancel the selected inventory")),
+    ('app.inventory.inventory_details', '',
+     _("View details of the selected inventory")),
     ('app.inventory.inventory_print', '',
      _('Print the product listing for the selected inventory')),
 

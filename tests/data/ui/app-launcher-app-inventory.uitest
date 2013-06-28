@@ -28,6 +28,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Inventory'
         GtkMenu(): hidden
+          GtkImageMenuItem(): 'Details...', insensitive
           GtkImageMenuItem(): '_Count...', insensitive
           GtkImageMenuItem(): '_Adjust...', insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
@@ -58,6 +59,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
       GtkToolButton(): 'Print', insensitive
       GtkToolButton(): 'Quit', hidden
       GtkSeparatorToolItem():
+      GtkToolButton(): 'Details', insensitive
       GtkToolButton(): 'Count', insensitive
       GtkToolButton(): 'Adjust', insensitive
       GtkToolButton(): 'Cancel', insensitive
@@ -102,6 +104,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
 
 popup: InventorySelection
 GtkMenu(): hidden
+  GtkImageMenuItem(): 'Details...', insensitive
   GtkImageMenuItem(): '_Count...', insensitive
   GtkImageMenuItem(): '_Adjust...', insensitive
   GtkImageMenuItem(): 'Cancel...', insensitive

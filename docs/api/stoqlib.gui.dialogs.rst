@@ -145,6 +145,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`inventorydetails` Module
+------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.inventorydetails
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`labeldialog` Module
 -------------------------
 

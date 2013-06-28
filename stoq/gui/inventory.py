@@ -36,6 +36,7 @@ from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
 from stoqlib.gui.editors.inventoryeditor import InventoryOpenEditor
+from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.utils.keybindings import get_accels
@@ -51,7 +52,6 @@ from stoq.gui.shell.shellapp import ShellApp
 class InventoryApp(ShellApp):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
-
     app_title = _('Inventory')
     gladefile = "inventory"
     search_spec = Inventory
@@ -72,6 +72,9 @@ class InventoryApp(ShellApp):
 
             # Inventory
             ('InventoryMenu', None, _('Inventory')),
+            ('Details', gtk.STOCK_INFO, _('Details...'),
+             group.get('inventory_details'),
+             _('See details about this inventory')),
             ('CountingAction', gtk.STOCK_INDEX, _('_Count...'),
              group.get('inventory_count'),
              _('Register the actual stock of products in the selected '
@@ -94,9 +97,11 @@ class InventoryApp(ShellApp):
 
         self.AdjustAction.set_short_label(_("Adjust"))
         self.CountingAction.set_short_label(_("Count"))
+        self.Details.set_short_label(_("Details"))
         self.Cancel.set_short_label(_("Cancel"))
         self.AdjustAction.props.is_important = True
         self.CountingAction.props.is_important = True
+        self.Details.props.is_important = True
         self.Cancel.props.is_important = True
 
     def create_ui(self):
@@ -183,7 +188,8 @@ class InventoryApp(ShellApp):
             has_open = selected.is_open()
             has_adjusted = selected.has_adjusted_items()
 
-        self.set_sensitive([self.PrintProductListing], bool(selected))
+        self.set_sensitive([self.PrintProductListing, self.Details],
+                           bool(selected))
         self.set_sensitive([self.Cancel], has_open and not has_adjusted)
         self.set_sensitive([self.NewInventory], self._can_open())
         self.set_sensitive([self.CountingAction], has_open)
@@ -244,6 +250,12 @@ class InventoryApp(ShellApp):
         for item in inventory.get_items():
             yield item.product.sellable
 
+    def _show_inventory_details(self):
+        store = api.new_store()
+        inventory = store.fetch(self.results.get_selected())
+        self.run_dialog(InventoryDetailsDialog, store, inventory)
+        store.close()
+
     #
     # Callbacks
     #
@@ -257,11 +269,17 @@ class InventoryApp(ShellApp):
     def on_AdjustAction__activate(self, action):
         self._adjust_product_quantities()
 
+    def on_Details__activate(self, action):
+        self._show_inventory_details()
+
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
 
     def on_results__right_click(self, results, result, event):
         self.popup.popup(None, None, None, event.button, event.time)
+
+    def on_results__double_click(self, results, inventory):
+        self._show_inventory_details()
 
     def on_Cancel__activate(self, widget):
         self._cancel_inventory()

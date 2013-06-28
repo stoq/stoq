@@ -142,7 +142,9 @@ class Viewable(ClassInittableObject):
     #: StoqlibStore when the viewable is first used.
     cls_attributes = None
 
-    #: A list of tables that will be queried
+    #: A list of tables that will be queried, Viewable subclasses should
+    # normally make a copy of this to avoid clobbering up the tables of the
+    # parent class(es)
     tables = []
 
     #: If any property defined in this viewable is an aggregate funcion (that
