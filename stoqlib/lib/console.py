@@ -26,6 +26,7 @@
 
 import code
 import datetime
+import os
 import readline
 import rlcompleter
 rlcompleter  # pyflakes
@@ -36,6 +37,7 @@ from stoqlib.database.tables import get_table_types
 from stoq import version as stoq_version
 
 try:
+    from IPython.config.loader import Config
     from IPython.frontend.terminal.embed import embed
     USE_IPYTHON = True
 except ImportError:
@@ -86,8 +88,13 @@ class Console(object):
         sys.setdefaultencoding('utf-8')
 
         banner = self.get_console_banner()
+        # PyCharm doesn't support colors and tabs
         if USE_IPYTHON:
-            embed(user_ns=self.ns, banner1=banner)
+            config = Config()
+            if 'PYCHARM_HOSTED' in os.environ:
+                config.TerminalInteractiveShell.colors = 'NoColor'
+            embed(config=config,
+                  user_ns=self.ns, banner1=banner)
         else:
             readline.parse_and_bind("tab: complete")
             code.interact(local=self.ns, banner=banner)
