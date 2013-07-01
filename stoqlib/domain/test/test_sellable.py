@@ -238,6 +238,41 @@ class TestSellable(DomainTest):
                                                      supplier=supplier)
         self.assertTrue(sellable in list(available))
 
+    def testGetUnblockedByCategory(self):
+        s1 = self.create_sellable()
+        s2 = self.create_sellable()
+        s3 = self.create_sellable()
+
+        c1 = self.create_sellable_category()
+        c2 = self.create_sellable_category()
+        s1.category = c1
+        s2.category = c2
+
+        self.assertEqual(
+            set([s1, s2, s3]),
+            set(Sellable.get_unblocked_by_categories(
+                self.store, [c1, c2], include_uncategorized=True)))
+
+        self.assertEqual(
+            set([s1, s3]),
+            set(Sellable.get_unblocked_by_categories(
+                self.store, [c1], include_uncategorized=True)))
+
+        self.assertEqual(
+            set([s1, s3]),
+            set(Sellable.get_unblocked_by_categories(
+                self.store, [c1], include_uncategorized=True)))
+
+        self.assertEqual(
+            set([s1]),
+            set(Sellable.get_unblocked_by_categories(
+                self.store, [c1], include_uncategorized=False)))
+
+        self.assertEqual(
+            set([s3]),
+            set(Sellable.get_unblocked_by_categories(
+                self.store, [], include_uncategorized=True)))
+
     def testIsValidQuantity(self):
         sellable = self.create_sellable()
         unit = self.create_sellable_unit()

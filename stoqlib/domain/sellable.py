@@ -37,7 +37,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from stoqdrivers.enum import TaxType, UnitType
-from storm.expr import And, In
+from storm.expr import And, Or, In, Eq
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
@@ -962,9 +962,11 @@ class Sellable(Domain):
 
         :rtype: generator of sellables
         """
-        category_ids = [c.id for c in categories]
+        queries = []
+        if len(categories):
+            queries.append(In(Sellable.category_id, [c.id for c in categories]))
         if include_uncategorized:
-            category_ids.append(None)
+            queries.append(Eq(Sellable.category_id, None))
 
         sellables = cls.get_unblocked_sellables(store)
-        return sellables.find(In(Sellable.category_id, category_ids))
+        return sellables.find(Or(*queries))
