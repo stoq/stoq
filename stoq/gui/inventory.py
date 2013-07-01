@@ -192,7 +192,7 @@ class InventoryApp(ShellApp):
                            bool(selected))
         self.set_sensitive([self.Cancel], has_open and not has_adjusted)
         self.set_sensitive([self.NewInventory], self._can_open())
-        self.set_sensitive([self.CountingAction], has_open)
+        self.set_sensitive([self.CountingAction], has_open and not all_counted)
         self.set_sensitive([self.AdjustAction], has_open and all_counted)
         self.window.set_new_menu_sensitive(self._can_open())
 

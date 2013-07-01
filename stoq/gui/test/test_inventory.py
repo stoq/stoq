@@ -119,9 +119,10 @@ class TestInventory(BaseGUITest):
         self._check_run_dialog(app.AdjustAction,
                                InventoryAdjustmentEditor, [inventory])
 
-        results.select(results[0])
-        self._check_run_dialog(app.CountingAction,
-                               InventoryCountWizard, [inventory])
+        with mock.patch.object(results[0], 'all_items_counted', new=lambda: False):
+            results.select(results[0])
+            self._check_run_dialog(app.CountingAction,
+                                   InventoryCountWizard, [inventory])
 
         inventory.close()
         app._update_widgets()

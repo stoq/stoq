@@ -184,42 +184,34 @@ class InventoryCountItemStep(SellableItemStep):
             return
 
         item = self.wizard.temporary_items.get(sellable, None)
-        if item is not None:
-            if batch is not None:
-                assert isinstance(batch, basestring)
-                item.add_or_update_batch(batch, quantity)
-            else:
-                item.quantity += quantity
-            return item
+        # We populated all items on get_saved_items, so this should not be None
+        assert item is not None
 
-        item = _TemporaryInventoryItem(sellable, quantity, batch_number=batch)
-        # We are adding a non-existing item, no need to edit it after
+        if batch is not None:
+            assert isinstance(batch, basestring)
+            item.add_or_update_batch(batch, quantity)
+        else:
+            item.quantity += quantity
+
         item.changed = True
-        self.wizard.temporary_items[sellable] = item
-
         return item
 
     def get_saved_items(self):
         for item in self.model.get_items():
-            # If we are not doing a manual count, only add the item if it
-            # was already counted (since in that case we will be editing it)
-            if not self.wizard.manual_count and item.actual_quantity is None:
-                continue
-
             sellable = item.product.sellable
             if (sellable in self.wizard.temporary_items and
-                item.batch and item.actual_quantity is not None):
+                item.batch and item.counted_quantity is not None):
                 tmp_item = self.wizard.temporary_items[sellable]
                 tmp_item.add_or_update_batch(item.batch.batch_number,
-                                             item.actual_quantity or 0)
+                                             item.counted_quantity or 0)
                 tmp_item.changed = (tmp_item.changed and
-                                    item.actual_quantity is not None)
+                                    item.counted_quantity is not None)
             elif sellable in self.wizard.temporary_items:
                 continue
             else:
                 tmp_item = _TemporaryInventoryItem(item.product.sellable,
-                                                   item.actual_quantity or 0)
-                tmp_item.changed = item.actual_quantity is not None
+                                                   item.counted_quantity or 0)
+                tmp_item.changed = item.counted_quantity is not None
                 self.wizard.temporary_items[sellable] = tmp_item
 
             yield tmp_item
@@ -263,6 +255,9 @@ class InventoryCountItemStep(SellableItemStep):
 
     def validate(self, value):
         super(InventoryCountItemStep, self).validate(value)
+
+        # FIXME: Maybe we should not require all to be changed if
+        # we are doing an assisted count
         self.wizard.refresh_next(value and
                                  all(i.changed for i in self.slave.klist))
 
@@ -370,13 +365,13 @@ class InventoryCountWizard(BaseWizard):
                         item = self.model.add_sellable(
                             sellable, batch_number=batch_number)
 
-                    item.actual_quantity = quantity
+                    item.counted_quantity = quantity
             else:
                 item = model_items.pop((sellable, None))
-                item.actual_quantity = tmp_item.quantity
+                item.counted_quantity = tmp_item.quantity
 
         # Since we popped the items in here, those items not on the list are
         # considered to have 0 stock
         for sellable, item in model_items.items():
             # None means it wasn't counted
-            item.actual_quantity = 0
+            item.counted_quantity = 0

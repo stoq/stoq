@@ -29,16 +29,15 @@ from decimal import Decimal
 import gtk
 
 from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import TextField, NumericField, MultiLineField
 from kiwi.ui.objectlist import Column
 
-from stoqlib.api import api
-from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.editors.fiscaleditor import CfopEditor
+from stoqlib.gui.fields import CfopField
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
-from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -54,7 +53,6 @@ class InventoryAdjustmentEditor(BaseEditor):
         self._has_adjusted_any = False
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
-        self._update_widgets()
 
     #
     #  Private
@@ -73,31 +71,30 @@ class InventoryAdjustmentEditor(BaseEditor):
         self.open_date.set_text(self.model.open_date.strftime("%x"))
 
         self.inventory_items.set_columns(self._get_columns())
-        self._refresh_inventory_items()
+        self.inventory_items.add_list(self.model.get_items())
 
         if self.model.invoice_number:
             self.invoice_number.set_sensitive(False)
+
+        self._update_widgets()
 
     def _update_widgets(self):
         if not hasattr(self, 'main_dialog'):
             return
 
-        has_selected = bool(self.inventory_items.get_selected())
-        self.adjust_button.set_sensitive(has_selected and
+        selection = self.inventory_items.get_selected()
+        self.adjust_button.set_sensitive(bool(selection) and
+                                         not selection.is_adjusted and
                                          self.invoice_number.is_valid())
 
         # After the first adjustment, the invoice number can not change
         if self._has_adjusted_any:
             self.invoice_number.set_sensitive(False)
 
-    def _refresh_inventory_items(self):
-        items = self.model.get_items_for_adjustment()
-        self.inventory_items.add_list(items)
-        self.inventory_items.refresh(True)
-        self._update_widgets()
-
     def _get_columns(self):
-        return [Column('code', title=_(u"Code"), data_type=str,
+        return [Column('is_adjusted', title=_(u"Adjusted"),
+                       data_type=bool),
+                Column('code', title=_(u"Code"), data_type=str,
                        sorted=True),
                 Column('description', title=_(u"Description"),
                        data_type=str, expand=True,
@@ -106,10 +103,15 @@ class InventoryAdjustmentEditor(BaseEditor):
                 Column('unit_description', title=_(u"Unit"),
                        data_type=str),
                 Column('fiscal_description', title=_(u"Fiscal class"),
-                       data_type=str),
-                Column('recorded_quantity', title=_(u"Recorded quantity"),
+                       data_type=str, visible=False),
+                Column('recorded_quantity', title=_(u"Previous"),
                        data_type=Decimal, format_func=format_quantity),
-                Column('actual_quantity', title=_(u"Actual quantity"),
+                Column('counted_quantity', title=_(u"Counted"),
+                       data_type=Decimal, format_func=format_quantity),
+                # TRANSLATORS: Diff is short for "Difference"
+                Column('difference', title=_(u"Diff"),
+                       data_type=Decimal, format_func=format_quantity),
+                Column('actual_quantity', title=_(u"Actual"),
                        data_type=Decimal, format_func=format_quantity)]
 
     def _format_description(self, item, data):
@@ -124,7 +126,7 @@ class InventoryAdjustmentEditor(BaseEditor):
             return
 
         # The adjustment can be done only once
-        self._refresh_inventory_items()
+        self.inventory_items.update(inventory_item)
         self._update_widgets()
 
     #
@@ -135,7 +137,7 @@ class InventoryAdjustmentEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model, ['invoice_number'])
 
     def validate_confirm(self):
-        if not len(self.inventory_items):
+        if all(i.is_adjusted for i in self.inventory_items):
             return True
 
         return yesno(_("Some products were not adjusted. By proceeding, you "
@@ -163,7 +165,7 @@ class InventoryAdjustmentEditor(BaseEditor):
         self._run_adjustment_dialog(selected)
 
     def on_inventory_items__row_activated(self, objectlist, item):
-        if not self.invoice_number.is_valid():
+        if not self.adjust_button.get_sensitive():
             return
 
         self._run_adjustment_dialog(item)
@@ -185,80 +187,30 @@ class InventoryItemAdjustmentEditor(BaseEditor):
     hide_footer = False
     size = (500, 300)
     model_type = InventoryItem
-    gladefile = "InventoryItemAdjustmentEditor"
-    proxy_widgets = ('adjustment_quantity',
-                     'cfop_combo',
-                     'description',
-                     'reason')
+
+    fields = dict(
+        description=TextField(_("Product"), proxy=True, editable=False),
+        recorded_quantity=TextField(_("Previous quantity"), proxy=True,
+                                    editable=False),
+        counted_quantity=TextField(_("Counted quantity"), proxy=True,
+                                   editable=False),
+        difference=TextField(_("Difference"), proxy=True, editable=False),
+        actual_quantity=NumericField(_("Actual quantity"), proxy=True,
+                                     mandatory=True),
+        cfop_data=CfopField(_("C.F.O.P"), proxy=True),
+        reason=MultiLineField(_("Reason"), proxy=True, mandatory=True),
+    )
 
     def __init__(self, store, model, invoice_number):
         BaseEditor.__init__(self, store, model)
         self._invoice_number = invoice_number
-        self._setup_widgets()
 
-    def _setup_widgets(self):
-        adjustment_qty = self.model.get_adjustment_quantity()
-        assert adjustment_qty is not None
-        if adjustment_qty > 0:
-            self.adjustment_quantity.set_range(1, adjustment_qty)
-        else:
-            self.adjustment_quantity.set_range(adjustment_qty, -1)
-        self.adjustment_quantity.set_value(adjustment_qty)
-
-    def _setup_combo(self):
-        cfops = self.store.find(CfopData)
-        self.cfop_combo.prefill(api.for_combo(cfops))
-
-    def _get_inventory_item(self):
-        adjustment_qty = self.adjustment_quantity.read()
-        if self.model.get_adjustment_quantity() != adjustment_qty:
-            cloned_item = self.model.clone()
-            # Since we will adjust the cloned_item, we need to override its
-            # actual quantity to reflect the stock situation after the
-            # adjustment. For the same reason, we need to update the recorded
-            # quantity of the original model.
-            recorded = cloned_item.recorded_quantity
-            cloned_item.actual_quantity = recorded + adjustment_qty
-            self.model.recorded_quantity = cloned_item.actual_quantity
-            # The original item still needs to be adjusted, so we need to
-            # override some data.
-            self.model.cfop_data = None
-            self.model.reason = u''
-
-            return cloned_item
-
-        return self.model
     #
-    # BaseEditor
+    #  BaseEditor
     #
 
     def setup_proxies(self):
-        self._setup_combo()
-        self.add_proxy(self.model, self.proxy_widgets)
-
-    def validate_confirm(self):
-        can_confirm = True
-        if not self.model.cfop_data:
-            warning(_(u"You can not adjust a product without a cfop!"))
-            can_confirm = False
-        elif not self.model.reason:
-            warning(_(u"You can not adjust a product without a reason!"))
-            can_confirm = False
-        return can_confirm
+        self.actual_quantity.update(self.model.counted_quantity)
 
     def on_confirm(self):
-        inventory_item = self._get_inventory_item()
-        inventory_item.adjust(self._invoice_number)
-
-    #
-    # Kiwi Callbacks
-    #
-
-    def on_new_cfop_button__clicked(self, button):
-        self.store.savepoint('before_run_editor_cfop')
-        new_cfop = run_dialog(CfopEditor, self, self.store, None)
-        if new_cfop:
-            self.cfop_combo.append_item(new_cfop.get_description(), new_cfop)
-            self.cfop_combo.select(new_cfop)
-        else:
-            self.store.rollback_to_savepoint('before_run_editor_cfop')
+        self.model.adjust(self._invoice_number)

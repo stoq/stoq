@@ -223,7 +223,7 @@ rst_epilog = """
 .. |carddevice| replace::
     :class:`card payment device <stoqlib.domain.payment.card.CardPaymentDevice>`
 .. |cfop| replace::
-    :class:`cfop <stoqlib.domain.fiscal.CfopData>`
+    :class:`C.F.O.P. <stoqlib.domain.fiscal.CfopData>`
 .. |client| replace::
     :class:`client <stoqlib.domain.person.Client>`
 .. |clients| replace::

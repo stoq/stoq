@@ -50,6 +50,7 @@ class TestInventory(DomainTest):
 
         inventory = self.create_inventory()
         item = self.create_inventory_item(inventory)
+        item.counted_quantity = item.recorded_quantity - 1
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
         item.reason = u"Test"
@@ -62,7 +63,7 @@ class TestInventory(DomainTest):
         items = []
         for i in range(3):
             item = self.create_inventory_item(inventory)
-            item.actual_quantity = item.recorded_quantity - 1
+            item.counted_quantity = item.recorded_quantity - 1
             items.append(item)
 
         self.assertEqual(inventory.has_adjusted_items(), False)
@@ -105,7 +106,7 @@ class TestInventory(DomainTest):
         for i in range(5):
             item = self.create_inventory_item(inventory)
             if i % 2 == 0:
-                item.actual_quantity = item.recorded_quantity - 1
+                item.counted_quantity = item.recorded_quantity - 1
                 items.append(item)
 
         adjustment_items = inventory.get_items_for_adjustment()
@@ -131,10 +132,10 @@ class TestInventory(DomainTest):
         item2 = self.create_inventory_item(inventory)
         self.failIf(inventory.all_items_counted())
 
-        item1.actual_quantity = 3
+        item1.counted_quantity = 3
         self.failIf(inventory.all_items_counted())
 
-        item2.actual_quantity = 2
+        item2.counted_quantity = 2
         self.failUnless(inventory.all_items_counted())
 
     def test_get_branch_name(self):
@@ -152,6 +153,7 @@ class TestInventoryItem(DomainTest):
     def test_adjust(self):
         item = self.create_inventory_item()
         self.assertFalse(item.is_adjusted)
+        item.counted_quantity = item.recorded_quantity - 1
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
         item.reason = u"test adjust"
@@ -160,7 +162,7 @@ class TestInventoryItem(DomainTest):
 
         storable = item.product.storable
         current_stock = storable.get_balance_for_branch(item.inventory.branch)
-        self.assertEqual(current_stock, item.actual_quantity)
+        self.assertEqual(current_stock, item.counted_quantity)
 
         entry = self.store.find(FiscalBookEntry,
                                 entry_type=FiscalBookEntry.TYPE_INVENTORY).one()
@@ -172,6 +174,7 @@ class TestInventoryItem(DomainTest):
         item = self.create_inventory_item()
         self.assertFalse(item.is_adjusted)
 
+        item.counted_quantity = item.recorded_quantity - 1
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
         item.reason = u"test adjust"
@@ -182,15 +185,15 @@ class TestInventoryItem(DomainTest):
     def test_get_adjustment_quantity(self):
         recorded_qty = Decimal(10)
         item = self.create_inventory_item(None, recorded_qty)
-        self.assertEqual(None, item.get_adjustment_quantity())
+        self.assertEqual(None, item.difference)
 
         actual = Decimal(5)
-        item.actual_quantity = actual
-        self.assertEqual(actual - recorded_qty, item.get_adjustment_quantity())
+        item.counted_quantity = actual
+        self.assertEqual(actual - recorded_qty, item.difference)
 
         actual = Decimal(12)
-        item.actual_quantity = actual
-        self.assertEqual(actual - recorded_qty, item.get_adjustment_quantity())
+        item.counted_quantity = actual
+        self.assertEqual(actual - recorded_qty, item.difference)
 
 
 class TestInventoryItemsView(DomainTest):

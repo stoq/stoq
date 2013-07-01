@@ -60,25 +60,12 @@ class TestProductAdjustmentDialog(GUITest):
 
 class TestAdjustmentDialog(GUITest):
 
-    @mock.patch('stoqlib.gui.editors.inventoryadjustmenteditor.warning')
-    def test_show(self, warning):
-        cfop = self.create_cfop_data()
+    def test_show(self):
         item = self.create_inventory_item()
-        item.actual_quantity = 10
+        item.recorded_quantity = 10
+        item.counted_quantity = 20
         dialog = InventoryItemAdjustmentEditor(self.store, item, 41234)
         self.check_editor(dialog, 'dialog-product-adjustment-item')
 
-        self.click(dialog.main_dialog.ok_button)
-        warning.assert_called_once_with(
-            'You can not adjust a product without a cfop!')
-
-        warning.reset_mock()
-        dialog.cfop_combo.select(cfop)
-        self.click(dialog.main_dialog.ok_button)
-        warning.assert_called_once_with(
-            'You can not adjust a product without a reason!')
-
         dialog.reason.update('just because')
-        warning.reset_mock()
         self.click(dialog.main_dialog.ok_button)
-        self.assertEquals(warning.call_count, 0)

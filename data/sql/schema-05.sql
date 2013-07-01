@@ -1399,6 +1399,8 @@ CREATE TABLE inventory_item (
         CHECK (recorded_quantity >= 0),
     actual_quantity numeric(20, 3) CONSTRAINT positive_actual_quantity
         CHECK (actual_quantity >= 0),
+    counted_quantity numeric(20, 3) CONSTRAINT positive_counted_quantity
+        CHECK (counted_quantity >= 0),
     inventory_id uuid NOT NULL REFERENCES inventory(id) ON UPDATE CASCADE,
     reason text,
     product_cost numeric(20, 8) CONSTRAINT positive_product_cost

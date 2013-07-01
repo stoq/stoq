@@ -59,6 +59,21 @@ def get_store_for_field(field):
 
 
 class DomainChoiceField(ChoiceField):
+    """Field used to select a domain object
+
+    The graphical interface for it contains::
+
+      * a combobox entry for selecting the model object
+      * an add_button, which you can click to add a new object
+        to the model. It's sensitivity is controller by :obj:`.can_add`
+      * an edit_button, which you can click to edit the selected
+        object. It's sensitivity is controlled by :obj:`.can_edit` and
+        :obj:`.can_view`.
+
+    It's supposed to be subclassed and have it's :meth:`.populate` and
+    :meth:`.run_dialog` implemented on the subclass
+
+    """
     default_overrides = dict(has_add_button=True, has_edit_button=True)
 
     #: If we have the permission to add new object of this kind
@@ -288,6 +303,35 @@ class PersonField(DomainChoiceField):
         from stoqlib.gui.wizards.personwizard import run_person_role_dialog
         return run_person_role_dialog(editor, self.toplevel, store, person,
                                       visual_mode=not self.can_edit)
+
+
+class CfopField(DomainChoiceField):
+    """A domain choice field for selecting a |cfop|
+
+    More information about this class on :class:`DomainChoiceField`
+    """
+
+    default_overrides = DomainChoiceField.default_overrides.copy()
+    default_overrides.update(use_entry=True, can_edit=False)
+
+    # Field
+
+    def populate(self, cfop):
+        from stoqlib.domain.fiscal import CfopData
+        store = get_store_for_field(self)
+        cfops = store.find(CfopData)
+        self.widget.prefill(api.for_combo(cfops))
+        if cfop is not None:
+            self.widget.select(cfop)
+
+        self.add_button.set_tooltip_text(_("Add a new C.F.O.P"))
+        self.edit_button.set_tooltip_text(_("View C.F.O.P details"))
+
+    def run_dialog(self, store, cfop):
+        from stoqlib.gui.editors.fiscaleditor import CfopEditor
+        from stoqlib.gui.base.dialogs import run_dialog
+        return run_dialog(CfopEditor, self.toplevel, store, cfop,
+                          visual_mode=not self.can_edit)
 
 
 class AttachmentField(Field):

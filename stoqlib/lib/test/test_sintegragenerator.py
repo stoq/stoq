@@ -97,6 +97,7 @@ class TestSintegraGenerator(DomainTest):
         inventory_item.cfop_data = self.store.find(CfopData).order_by(CfopData.code).first()
         inventory_item.reason = u'Test'
         inventory_item.actual_quantity = 99
+        inventory_item.counted_quantity = 99
         inventory_item.adjust(invoice_number=999)
         inventory.close()
         inventory.close_date = localdate(2007, 6, 15)

@@ -919,6 +919,7 @@ class TestStockTransactionHistory(DomainTest):
 
         item.inventory.branch = self.branch
         item.actual_quantity = 10
+        item.counted_quantity = 10
         item.recorded_quantity = 0
         increase_quantity = item.actual_quantity - item.recorded_quantity
 

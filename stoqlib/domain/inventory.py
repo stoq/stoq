@@ -70,10 +70,19 @@ class InventoryItem(Domain):
     #: inventored
     batch = Reference(batch_id, 'StorableBatch.id')
 
-    #: the recorded quantity of a product
+    #: the recorded quantity of the |product|, that is, the product's quantity
+    #: in stock at the time the inventory process started.
     recorded_quantity = QuantityCol()
 
-    #: the actual quantity of a product
+    #: the counted quantity of the |product|, that is, a quantity counted by
+    #: someone looking at the real physical stock
+    counted_quantity = QuantityCol(default=None)
+
+    #: the actual quantity of the |product|, that will be used to
+    #: increase/decrease stock using :meth:`.adjust`. Normally this will be
+    #: the same as :obj:`counted_quantity`, but it can be different if, for
+    #: instance, the count was done wrong. In cases like that, be sure to
+    #: mention the reason for the difference on :obj:`.reason`
     actual_quantity = QuantityCol(default=None)
 
     #: the product's cost when the product was adjusted.
@@ -95,6 +104,22 @@ class InventoryItem(Domain):
 
     #: the inventory process that contains this item
     inventory = Reference(inventory_id, 'Inventory.id')
+
+    @property
+    def difference(self):
+        """The difference between the recorded and the counted quantities
+
+        This is the same as::
+
+            :obj:`.counted_quantity` - :obj:`.recorded_quantity`
+
+        Note that, if :obj:`.counted_quantity` is ``None``, this
+        will also be ``None``.
+        """
+        if self.counted_quantity is None:
+            return None
+
+        return self.counted_quantity - self.recorded_quantity
 
     #
     #  Private
@@ -127,7 +152,7 @@ class InventoryItem(Domain):
             raise TypeError(
                 "The adjustment item must be a storable product.")
 
-        adjustment_qty = self.get_adjustment_quantity()
+        adjustment_qty = self.actual_quantity - self.recorded_quantity
         if not adjustment_qty:
             return
         elif adjustment_qty > 0:
@@ -165,13 +190,6 @@ class InventoryItem(Domain):
         sellable = self.product.sellable
         if sellable.unit:
             return sellable.unit.description
-
-    def get_adjustment_quantity(self):
-        """Returns the adjustment quantity, the actual quantity minus
-        the recorded quantity or None if there is no actual quantity yet.
-        """
-        if self.actual_quantity is not None:
-            return self.actual_quantity - self.recorded_quantity
 
     def get_total_cost(self):
         """Returns the total cost of this item, the actual quantity multiplied
@@ -313,7 +331,7 @@ class Inventory(Domain):
                                  "already closed!")
 
         for item in self.inventory_items:
-            if item.actual_quantity != item.recorded_quantity:
+            if item.counted_quantity != item.recorded_quantity:
                 continue
 
             # FIXME: We are setting this here because, when generating a
@@ -338,7 +356,7 @@ class Inventory(Domain):
         if self.status == self.STATUS_CLOSED:
             return False
 
-        return self.inventory_items.find(actual_quantity=None).is_empty()
+        return self.inventory_items.find(counted_quantity=None).is_empty()
 
     def get_items(self):
         """Returns all the inventory items related to this inventory
@@ -363,13 +381,13 @@ class Inventory(Domain):
 
         An item needing adjustment is any :class:`InventoryItem`
         with :attr:`InventoryItem.recorded_quantity` different from
-        :attr:`InventoryItem.actual_quantity`.
+        :attr:`InventoryItem.counted_quantity`.
 
         :returns: items
         :rtype: a sequence of :class:`InventoryItem`
         """
         return self.inventory_items.find(
-            And(InventoryItem.recorded_quantity != InventoryItem.actual_quantity,
+            And(InventoryItem.recorded_quantity != InventoryItem.counted_quantity,
                 Eq(InventoryItem.is_adjusted, False)))
 
     def has_adjusted_items(self):
@@ -429,6 +447,7 @@ class InventoryItemsView(Viewable):
     id = InventoryItem.id
     product_id = InventoryItem.product_id
     recorded_quantity = InventoryItem.recorded_quantity
+    counted_quantity = InventoryItem.counted_quantity
     actual_quantity = InventoryItem.actual_quantity
     product_cost = InventoryItem.product_cost
     is_adjusted = InventoryItem.is_adjusted
