@@ -227,6 +227,9 @@ class InventoryCountItemStep(SellableItemStep):
         return []
 
     def get_batch_order_items(self, sellable, value, quantity):
+        if sellable not in self._inventory_sellables:
+            return []
+
         storable = sellable.product_storable
         available_batches = list(
             storable.get_available_batches(self.model.branch))
