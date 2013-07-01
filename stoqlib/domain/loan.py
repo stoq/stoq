@@ -136,12 +136,12 @@ class LoanItem(Domain):
         if diff_quantity > 0:
             self.storable.increase_stock(diff_quantity, self.branch,
                                          StockTransactionHistory.TYPE_RETURNED_LOAN,
-                                         self.id)
+                                         self.id, batch=self.batch)
         elif diff_quantity < 0:
             diff_quantity = - diff_quantity
             self.storable.decrease_stock(diff_quantity, self.branch,
                                          StockTransactionHistory.TYPE_LOANED,
-                                         self.id)
+                                         self.id, batch=self.batch)
 
         # Reset the values used to calculate the stock quantity, just like
         # when the object as loaded from the database again.

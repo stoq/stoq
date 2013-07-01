@@ -107,6 +107,32 @@ class TestLoanItem(DomainTest):
             storable.get_balance_for_branch(branch),
             initial - quantity + loan_item.return_quantity)
 
+    def test_sync_stock_with_storable(self):
+        loan = self.create_loan(branch=self.create_branch())
+        product = self.create_product()
+        storable = self.create_storable(product, loan.branch, is_batch=True)
+        batch = self.create_storable_batch(storable=storable)
+        storable.increase_stock(10, loan.branch, 0, None, batch=batch)
+
+        loan_item = loan.add_sellable(product.sellable, quantity=4, price=10,
+                                      batch=batch)
+        self.assertEqual(batch.get_balance_for_branch(loan.branch), 10)
+        loan_item.sync_stock()
+        self.assertEqual(batch.get_balance_for_branch(loan.branch), 6)
+        self.assertEquals(loan_item.quantity, 4)
+        self.assertEquals(loan_item.return_quantity, 0)
+        self.assertEquals(loan_item.sale_quantity, 0)
+
+        # The sale quantity should still be decreased
+        loan_item.sale_quantity = 2
+        loan_item.sync_stock()
+        self.assertEqual(batch.get_balance_for_branch(loan.branch), 6)
+
+        # The return quantity should go back to the stock
+        loan_item.return_quantity = 2
+        loan_item.sync_stock()
+        self.assertEqual(batch.get_balance_for_branch(loan.branch), 8)
+
     def test_remaining_quantity(self):
         loan = self.create_loan()
         product = self.create_product()
