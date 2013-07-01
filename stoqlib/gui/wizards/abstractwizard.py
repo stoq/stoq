@@ -505,8 +505,6 @@ class SellableItemSlave(BaseEditorSlave):
                 has_storable = True
                 minimum = storable.minimum_quantity
                 stock = storable.get_balance_for_branch(self.model.branch)
-        else:
-            self.barcode.set_text('')
 
         model = Settable(quantity=quantity,
                          cost=cost,
@@ -650,7 +648,8 @@ class SellableItemSlave(BaseEditorSlave):
         sellable = ret.sellable
         if not self.can_add_sellable(sellable):
             return
-        self.barcode.set_text(sellable.barcode)
+        if sellable.barcode:
+            self.barcode.set_text(sellable.barcode)
         self.sellable_selected(sellable)
         self.quantity.grab_focus()
 
@@ -711,13 +710,11 @@ class SellableItemSlave(BaseEditorSlave):
         sellable = self.store.fetch(sellable)
 
         self.add_sellable(sellable)
-        self.proxy.set_model(None)
-        self.sellable_selected(None)
         self.barcode.grab_focus()
 
     def _reset_sellable(self):
         self.proxy.set_model(None)
-        self.barcode.set_text('')
+        self.sellable_selected(None)
 
     def _update_total(self):
         if self.summary:
@@ -760,7 +757,6 @@ class SellableItemSlave(BaseEditorSlave):
 
         if not sellable:
             if self.add_sellable_on_barcode_activate:
-                self._reset_sellable()
                 return
             search_str = unicode(self.barcode.get_text())
             self._run_advanced_search(search_str)

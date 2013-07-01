@@ -78,7 +78,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                     GtkTable(item_table, fill=True):
                       GtkHBox(hbox2):
                         ProxyLabel(item_lbl, fill=True): 'Item:'
-                        GtkEntry(barcode, fill=True): ''
+                        GtkEntry(barcode, fill=True): '5566778899'
                         GtkButton(product_button):
                       ProxyLabel(kiwilabel2): 'Quantity:'
                       ProxySpinButton(quantity): '0.000', insensitive

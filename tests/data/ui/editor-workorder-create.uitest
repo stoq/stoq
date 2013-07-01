@@ -84,13 +84,13 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                       ProxySpinButton(quantity): '0.000', insensitive
                       ProxyLabel(unit_label): '<span weight="bold"></span>'
                       ProxyLabel(cost_label): 'Cost:'
-                      ProxySpinButton(cost): '', insensitive
+                      ProxySpinButton(cost): '0.00', insensitive
                       GtkButton(add_sellable_button): insensitive
                       ProxyLabel(sellable_description): '<span ></span>'
                       GtkLabel(minimum_quantity_lbl): 'Minimum:', hidden
-                      ProxyLabel(minimum_quantity): '<span ></span>', hidden
+                      ProxyLabel(minimum_quantity): '<span >0.0</span>', hidden
                       GtkLabel(stock_quantity_lbl): 'Stock:', hidden
-                      ProxyLabel(stock_quantity): '<span ></span>', hidden
+                      ProxyLabel(stock_quantity): '<span >0.0</span>', hidden
                     GtkEventBox(list_holder, expand=True, fill=True): slave AdditionListSlave is attached
                       GtkVBox(toplevel):
                         GtkVBox(list_vbox, expand=True, fill=True):

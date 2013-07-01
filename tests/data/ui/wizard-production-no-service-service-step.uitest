@@ -14,13 +14,13 @@ GtkDialog(PluggableWizard): title='New Production', hidden
             ProxySpinButton(step.quantity): '0.000', insensitive
             ProxyLabel(step.unit_label): '<span weight="bold"></span>'
             ProxyLabel(step.cost_label): 'Cost:', hidden
-            ProxySpinButton(step.cost): '', hidden, insensitive
+            ProxySpinButton(step.cost): '0.00', hidden, insensitive
             GtkButton(step.add_sellable_button): insensitive
             ProxyLabel(step.sellable_description): '<span ></span>'
             GtkLabel(step.minimum_quantity_lbl): 'Minimum:', hidden
-            ProxyLabel(step.minimum_quantity): '<span ></span>', hidden
+            ProxyLabel(step.minimum_quantity): '<span >0.0</span>', hidden
             GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
-            ProxyLabel(step.stock_quantity): '<span ></span>', hidden
+            ProxyLabel(step.stock_quantity): '<span >0.0</span>', hidden
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
             GtkVBox(toplevel):
               GtkVBox(list_vbox, expand=True, fill=True):

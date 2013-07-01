@@ -8,7 +8,7 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
           GtkTable(step.item_table, fill=True):
             GtkHBox(step.hbox2):
               ProxyLabel(step.item_lbl, fill=True): 'Item:'
-              GtkEntry(step.barcode, fill=True): ''
+              GtkEntry(step.barcode, fill=True): '12345678'
               GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
             ProxySpinButton(step.quantity): '0.000', insensitive
