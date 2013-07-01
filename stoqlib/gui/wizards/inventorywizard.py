@@ -186,6 +186,7 @@ class InventoryCountItemStep(SellableItemStep):
         item = self.wizard.temporary_items.get(sellable, None)
         if item is not None:
             if batch is not None:
+                assert isinstance(batch, basestring)
                 item.add_or_update_batch(batch, quantity)
             else:
                 item.quantity += quantity
@@ -236,8 +237,10 @@ class InventoryCountItemStep(SellableItemStep):
         # The trivial case, where there's just one batch, we count it directly
         if len(available_batches) == 1:
             batch = available_batches[0]
+            # Pass the batch number since it's what what this step is expecting
             return [self.get_order_item(sellable, value,
-                                        quantity=quantity, batch=batch)]
+                                        quantity=quantity,
+                                        batch=batch.batch_number)]
 
         return super(InventoryCountItemStep, self).get_batch_order_items(
             sellable, value, quantity)
