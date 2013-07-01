@@ -24,8 +24,8 @@
 
 import mock
 
-from stoqlib.gui.dialogs.productadjustmentdialog import (ProductsAdjustmentDialog,
-                                                         AdjustmentDialog)
+from stoqlib.gui.editors.inventoryadjustmenteditor import (InventoryAdjustmentEditor,
+                                                           InventoryItemAdjustmentEditor)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -35,16 +35,16 @@ class TestProductAdjustmentDialog(GUITest):
         inventory.invoice_number = 4123
         item = self.create_inventory_item(inventory, 5)
         item.actual_quantity = 10
-        dialog = ProductsAdjustmentDialog(self.store, inventory)
+        dialog = InventoryAdjustmentEditor(self.store, inventory)
         self.check_editor(dialog, 'dialog-product-adjustment')
 
-    @mock.patch('stoqlib.gui.dialogs.productadjustmentdialog.run_dialog')
+    @mock.patch('stoqlib.gui.editors.inventoryadjustmenteditor.run_dialog')
     def testAdjust(self, run_dialog):
         inventory = self.create_inventory()
         item = self.create_inventory_item(inventory, 5)
         item.actual_quantity = 10
 
-        dialog = ProductsAdjustmentDialog(self.store, inventory)
+        dialog = InventoryAdjustmentEditor(self.store, inventory)
         self.assertNotSensitive(dialog, ['adjust_button'])
 
         dialog.invoice_number.update(123)
@@ -60,12 +60,12 @@ class TestProductAdjustmentDialog(GUITest):
 
 class TestAdjustmentDialog(GUITest):
 
-    @mock.patch('stoqlib.gui.dialogs.productadjustmentdialog.warning')
+    @mock.patch('stoqlib.gui.editors.inventoryadjustmenteditor.warning')
     def testShow(self, warning):
         cfop = self.create_cfop_data()
         item = self.create_inventory_item()
         item.actual_quantity = 10
-        dialog = AdjustmentDialog(self.store, item, 41234)
+        dialog = InventoryItemAdjustmentEditor(self.store, item, 41234)
         self.check_editor(dialog, 'dialog-product-adjustment-item')
 
         self.click(dialog.main_dialog.ok_button)

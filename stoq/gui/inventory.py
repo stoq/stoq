@@ -34,8 +34,8 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
 from stoqlib.gui.editors.inventoryeditor import InventoryOpenEditor
-from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.utils.keybindings import get_accels
@@ -231,7 +231,7 @@ class InventoryApp(ShellApp):
     def _adjust_product_quantities(self):
         store = api.new_store()
         inventory = store.fetch(self.results.get_selected())
-        model = self.run_dialog(ProductsAdjustmentDialog, store, inventory)
+        model = self.run_dialog(InventoryAdjustmentEditor, store, inventory)
         store.confirm(model)
         store.close()
         self.refresh()

@@ -44,9 +44,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class ProductsAdjustmentDialog(BaseEditor):
+class InventoryAdjustmentEditor(BaseEditor):
     title = _(u"Products Adjustment")
-    gladefile = "ProductsAdjustment"
+    gladefile = "InventoryAdjustmentEditor"
     model_type = Inventory
     size = (750, 450)
 
@@ -117,7 +117,7 @@ class ProductsAdjustmentDialog(BaseEditor):
 
     def _run_adjustment_dialog(self, inventory_item):
         self.store.savepoint('before_run_adjustment_dialog')
-        retval = run_dialog(AdjustmentDialog, self, self.store,
+        retval = run_dialog(InventoryItemAdjustmentEditor, self, self.store,
                             inventory_item, self.model.invoice_number)
         if not retval:
             self.store.rollback_to_savepoint('before_run_adjustment_dialog')
@@ -180,12 +180,12 @@ class ProductsAdjustmentDialog(BaseEditor):
         self._update_widgets()
 
 
-class AdjustmentDialog(BaseEditor):
+class InventoryItemAdjustmentEditor(BaseEditor):
     title = _(u"Product Adjustment")
     hide_footer = False
     size = (500, 300)
     model_type = InventoryItem
-    gladefile = "ProductAdjustmentDialog"
+    gladefile = "InventoryItemAdjustmentEditor"
     proxy_widgets = ('adjustment_quantity',
                      'cfop_combo',
                      'description',

@@ -9,7 +9,7 @@
     <property name="page_size">0</property>
     <property name="value">0</property>
   </object>
-  <object class="GtkWindow" id="ProductAdjustmentDialog">
+  <object class="GtkWindow" id="InventoryItemAdjustmentEditor">
     <property name="default_height">250</property>
     <property name="default_width">440</property>
     <child>

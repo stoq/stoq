@@ -233,14 +233,6 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`productadjustmentdialog` Module
--------------------------------------
-
-.. automodule:: stoqlib.gui.dialogs.productadjustmentdialog
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`productiondetails` Module
 -------------------------------
 

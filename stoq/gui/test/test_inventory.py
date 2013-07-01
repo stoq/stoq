@@ -27,8 +27,8 @@ import mock
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.inventory import Inventory
+from stoqlib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
 from stoqlib.gui.editors.inventoryeditor import InventoryOpenEditor
-from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.wizards.inventorywizard import InventoryCountWizard
 from stoqlib.reporting.product import ProductCountingReport
 
@@ -94,7 +94,7 @@ class TestInventory(BaseGUITest):
         results.select(results[0])
 
         self._check_run_dialog(app.AdjustAction,
-                               ProductsAdjustmentDialog, [inventory])
+                               InventoryAdjustmentEditor, [inventory])
 
         results.select(results[0])
         self._check_run_dialog(app.CountingAction,
