@@ -77,6 +77,7 @@ class WorkOrderResultKanbanView(KanbanView):
             if work_order.status == new_status:
                 return True
 
+            work_order = store.fetch(work_order)
             store.needs_retval = True
             try:
                 work_order.change_status(new_status)
