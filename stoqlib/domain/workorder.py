@@ -783,6 +783,9 @@ class WorkOrder(Domain):
         """
         if self.is_rejected or self.is_in_transport():
             return False
+        # FIXME: We should not be calling get_current_branch on domain
+        if self.current_branch != get_current_branch(self.store):
+            return False
         return self.status == self.STATUS_WORK_WAITING
 
     def can_finish(self):
@@ -793,6 +796,9 @@ class WorkOrder(Domain):
         :returns: ``True`` if can finish, ``False`` otherwise
         """
         if self.is_rejected or self.is_in_transport():
+            return False
+        # FIXME: We should not be calling get_current_branch on domain
+        if self.current_branch != get_current_branch(self.store):
             return False
         return self.status in [self.STATUS_WORK_IN_PROGRESS,
                                self.STATUS_WORK_WAITING]
@@ -805,6 +811,9 @@ class WorkOrder(Domain):
         :returns: ``True`` if can deliver, ``False`` otherwise
         """
         if self.is_rejected or self.is_in_transport():
+            return False
+        # FIXME: We should not be calling get_current_branch on domain
+        if self.current_branch != get_current_branch(self.store):
             return False
         return self.status == self.STATUS_WORK_FINISHED
 

@@ -478,6 +478,10 @@ class TestWorkOrder(DomainTest):
             # In transport cannot work
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
                 self.assertFalse(workorder.can_work())
+            # Cannot work on other branch than the current one
+            with mock.patch('stoqlib.domain.workorder.get_current_branch',
+                            new=lambda store: self.create_branch()):
+                self.assertFalse(workorder.can_work())
 
             if status == WorkOrder.STATUS_WORK_WAITING:
                 self.assertTrue(workorder.can_work())
@@ -496,6 +500,10 @@ class TestWorkOrder(DomainTest):
             # In transport cannot finish
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
                 self.assertFalse(workorder.can_finish())
+            # Cannot finish on other branch than the current one
+            with mock.patch('stoqlib.domain.workorder.get_current_branch',
+                            new=lambda store: self.create_branch()):
+                self.assertFalse(workorder.can_work())
 
             if status in [WorkOrder.STATUS_WORK_IN_PROGRESS,
                           WorkOrder.STATUS_WORK_WAITING]:
@@ -515,6 +523,10 @@ class TestWorkOrder(DomainTest):
             # In transport cannot close
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
                 self.assertFalse(workorder.can_close())
+            # Cannot finish on other branch than the current one
+            with mock.patch('stoqlib.domain.workorder.get_current_branch',
+                            new=lambda store: self.create_branch()):
+                self.assertFalse(workorder.can_work())
 
             if status == WorkOrder.STATUS_WORK_FINISHED:
                 self.assertTrue(workorder.can_close())
