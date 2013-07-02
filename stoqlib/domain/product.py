@@ -1310,3 +1310,20 @@ class StorableBatchView(Viewable):
             query = And(query,
                         Field('_stock_summary', 'branch_id') == branch.id)
         return store.find(cls, query)
+
+    @classmethod
+    def find_available_by_storable(cls, store, storable, branch=None):
+        """Find results for this view that for *storable* that have stock
+
+        The same as :meth:`.find_by_storable`, but only results with
+        :obj:`.stock` > 0 will be fetched
+
+        :param store: the store that will be used to find the results
+        :param storable: the |storable| used to filter the results
+        :param branch: a |branch| that, if not ``None``, will be used to
+            filter the results to only get batches on that branch.
+        :returns: the matching views
+        :rtype: a sequence of :class:`StorableBatchView`
+        """
+        results = cls.find_by_storable(store, storable, branch=branch)
+        return results.find(Field('_stock_summary', 'stock') > 0)

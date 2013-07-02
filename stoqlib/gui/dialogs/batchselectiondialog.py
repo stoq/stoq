@@ -263,8 +263,8 @@ class BatchSelectionDialog(BaseEditor):
 
     def _get_existing_batches(self):
         branch = api.get_current_branch(self.store)
-        return StorableBatchView.find_by_storable(self.store, self.model,
-                                                  branch=branch)
+        return StorableBatchView.find_available_by_storable(
+            self.store, self.model, branch=branch)
 
     def _get_total_sum(self):
         return sum(spin.read() for spin in
@@ -427,6 +427,10 @@ class BatchSelectionDialog(BaseEditor):
     #
 
     def on_existing_batches__row_activated(self, existing_batches, item):
+        # If the item doesn't have stock, don't append it
+        if not item.stock:
+            return
+
         # FIXME: When grabbing focus here (both cases below), if the row
         # was activated by pressing 'Enter', the focus is grabbed right (and
         # thus, we can type the quantity for that batch directly). But if it

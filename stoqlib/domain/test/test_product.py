@@ -1011,3 +1011,56 @@ class TestStorableBatchView(DomainTest):
                  StorableBatchView.find_by_storable(self.store, storable,
                                                     branch=branch2)]),
             set([(u'123', 20)]))
+
+    def testFindAvailableByStorable(self):
+        branch1 = self.create_branch()
+        branch2 = self.create_branch()
+
+        storable = self.create_storable()
+        storable.is_batch = True
+
+        b1 = self.create_storable_batch(storable=storable, batch_number=u'123')
+        b2 = self.create_storable_batch(storable=storable, batch_number=u'456')
+        storable.increase_stock(10, branch1, 0, None, batch=b1)
+        storable.increase_stock(20, branch2, 0, None, batch=b1)
+        storable.increase_stock(40, branch1, 0, None, batch=b2)
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_available_by_storable(
+                     self.store, storable)]),
+            set([(u'123', 10), (u'123', 20), (u'456', 40)]))
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_available_by_storable(
+                     self.store, storable, branch=branch1)]),
+            set([(u'123', 10), (u'456', 40)]))
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_available_by_storable(
+                     self.store, storable, branch=branch2)]),
+            set([(u'123', 20)]))
+
+        # Decreasing the stock here to 0 should make this item vanish
+        # from the results
+        storable.decrease_stock(40, branch1, 0, None, batch=b2)
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_available_by_storable(
+                     self.store, storable)]),
+            set([(u'123', 10), (u'123', 20)]))
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_available_by_storable(
+                     self.store, storable, branch=branch1)]),
+            set([(u'123', 10)]))
+
+        self.assertEqual(
+            set([(i.batch_number, i.stock) for i in
+                 StorableBatchView.find_available_by_storable(
+                     self.store, storable, branch=branch2)]),
+            set([(u'123', 20)]))
