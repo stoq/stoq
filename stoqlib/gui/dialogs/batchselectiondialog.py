@@ -29,6 +29,7 @@ import decimal
 import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
+from kiwi.ui.entry import ENTRY_MODE_DATA
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.spinbutton import ProxySpinButton
 
@@ -515,6 +516,7 @@ class BatchDecreaseSelectionDialog(BatchSelectionDialog):
     #
 
     def setup_entry(self, entry):
+        entry.set_mode(ENTRY_MODE_DATA)
         entry.set_exact_completion()
         completion = entry.get_completion()
         completion.set_minimum_key_length = 1
