@@ -1,0 +1,47 @@
+search: ProductBrandSearch
+GtkDialog(toplevel): title='Brand Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
+        GtkVBox(vbox):
+          GtkVBox(filters_box, fill=True):
+            GtkHBox(hbox):
+              SearchFilter(_primary_filter):
+                GtkLabel(): 'Search:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains All Words', selected
+                  item: 'Contains Exactly'
+                  item: 'Does Not Contain'
+                HintedEntry(search_entry, padding=6): 'bran'
+              GtkButton(search_button): 'gtk-find'
+            ComboSearchFilter(branch_filter):
+              GtkLabel(): 'In branch:'
+              ProxyComboBox(padding=6):
+                item: 'Any', selected
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+          SearchResultListView(result_view, expand=True, fill=True):
+            column: title='Brand', expand
+            column: title='Quantity'
+            row: u'brand', Decimal('4.000')
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel): hidden
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button):
+              GtkButton(edit_button): insensitive
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button): hidden
+                GtkButton(print_button): 'gtk-print'
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

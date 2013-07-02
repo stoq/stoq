@@ -39,7 +39,7 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductsSoldSearch,
                                               ProductStockSearch,
                                               ProductClosedStockSearch,
-                                              format_data)
+                                              format_data, ProductBrandSearch)
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchoptions import Any
 from stoqlib.gui.test.uitestutils import GUITest
@@ -49,11 +49,10 @@ from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
                                        ProductQuantityReport,
                                        ProductsSoldReport,
                                        ProductStockReport,
-                                       ProductClosedStockReport)
+                                       ProductClosedStockReport, ProductBrandReport)
 
 
 class TestProductSearch(GUITest):
-
     def _show_search(self):
         search = ProductSearch(self.store)
         search.search.refresh()
@@ -182,7 +181,6 @@ class TestProductSearch(GUITest):
 
 
 class TestProductSearchQuantity(GUITest):
-
     def _show_search(self):
         search = ProductSearchQuantity(self.store)
         search.search.refresh()
@@ -219,7 +217,8 @@ class TestProductSearchQuantity(GUITest):
         receiving.identifier = 222
         receiving.receival_date = self.today
         self.create_receiving_order_item(receiving, product.sellable, p_item, 8)
-        self.create_receiving_order_item(receiving, product2.sellable, p2_item, 12)
+        self.create_receiving_order_item(receiving, product2.sellable, p2_item,
+                                         12)
         receiving.confirm()
 
         # Sale
@@ -268,7 +267,6 @@ class TestProductSearchQuantity(GUITest):
 
 
 class TestProductsSoldSearch(GUITest):
-
     def _show_search(self):
         search = ProductsSoldSearch(self.store)
         search.search.refresh()
@@ -349,7 +347,6 @@ class TestProductsSoldSearch(GUITest):
 
 
 class TestProductStockSearch(GUITest):
-
     def _show_search(self):
         search = ProductStockSearch(self.store)
         search.search.refresh()
@@ -390,7 +387,8 @@ class TestProductStockSearch(GUITest):
         receiving.identifier = 222
         receiving.receival_date = self.today
         self.create_receiving_order_item(receiving, product.sellable, p_item, 8)
-        self.create_receiving_order_item(receiving, product2.sellable, p2_item, 12)
+        self.create_receiving_order_item(receiving, product2.sellable, p2_item,
+                                         12)
         receiving.confirm()
 
     def testSearch(self):
@@ -424,8 +422,64 @@ class TestProductStockSearch(GUITest):
                                              filters=search.search.get_search_filters())
 
 
-class TestProductClosedStockSearch(GUITest):
+class TestProductBrandSearch(GUITest):
+    def _show_search(self):
+        search = ProductBrandSearch(self.store)
+        search.search.refresh()
+        search.results.select(search.results[0])
+        return search
 
+    def _create_domain(self):
+        branch = get_current_branch(self.store)
+
+        product = self.create_product()
+        storable = Storable(store=self.store, product=product)
+        ProductStockItem(store=self.store, storable=storable,
+                         branch=branch, quantity=2)
+        product.brand = u''
+        product.sellable.code = u'1'
+        product.sellable.description = u'Luvas'
+
+        product2 = self.create_product()
+        storable2 = Storable(store=self.store, product=product2)
+        ProductStockItem(store=self.store, storable=storable2,
+                         branch=branch, quantity=4)
+        product2.brand = u'brand'
+        product.sellable.code = u'2'
+        product.sellable.description = u'Botas'
+
+    def testSearch(self):
+        self._create_domain()
+        search = self._show_search()
+
+        search.branch_filter.set_state(None)
+        self.check_search(search, 'brand-no-filter')
+
+        search.set_searchbar_search_string('bran')
+        search.search.refresh()
+        self.check_search(search, 'brand-string-filter')
+
+        search.set_searchbar_search_string('')
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
+        search.search.refresh()
+        self.check_search(search, 'brand-branch-filter')
+
+    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    def testPrintButton(self, print_report):
+        self._create_domain()
+        search = self._show_search()
+
+        self.assertSensitive(search._details_slave, ['print_button'])
+
+        self.click(search._details_slave.print_button)
+        args, kwargs = print_report.call_args
+        print_report.assert_called_once_with(ProductBrandReport,
+                                             search.results,
+                                             list(search.results),
+                                             filters=search.search.get_search_filters())
+
+
+class TestProductClosedStockSearch(GUITest):
     def _show_search(self):
         search = ProductClosedStockSearch(self.store)
         search.search.refresh()

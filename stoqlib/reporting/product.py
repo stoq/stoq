@@ -37,6 +37,14 @@ class ProductReport(ObjectListReport):
     filter_format_string = _("on branch <u>%s</u>")
 
 
+class ProductBrandReport(ObjectListReport):
+    """ This report show a list of all products brand returned by a SearchBar,
+    listing both its brand and its product quantity in the stock selected.
+    """
+    title = _("Brand Listing")
+    filter_format_string = _("on branch <u>%s</u>")
+
+
 class SimpleProductReport(ObjectListReport):
     title = _("Product Listing")
     filter_format_string = _("on branch <u>%s</u>")

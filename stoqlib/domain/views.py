@@ -74,10 +74,12 @@ _StockSummary = Alias(Select(
     tables=[ProductStockItem],
     group_by=[ProductStockItem.storable_id]), '_stock_summary')
 
-_StockBranchSummary = Alias(Select(
-    columns=_StockSummary.expr.columns + [ProductStockItem.branch_id],
-    tables=_StockSummary.expr.tables[:],
-    group_by=_StockSummary.expr.group_by + [ProductStockItem.branch_id]), '_stock_summary')
+_StockBranchSummary = Alias(
+    Select(columns=_StockSummary.expr.columns + [ProductStockItem.branch_id],
+           tables=_StockSummary.expr.tables[:],
+           group_by=_StockSummary.expr.group_by + [
+               ProductStockItem.branch_id]),
+    '_stock_summary')
 
 
 class ProductFullStockView(Viewable):
@@ -170,7 +172,8 @@ class ProductFullStockView(Viewable):
         class HighjackedViewable(cls):
             tables = cls.tables[:]
             tables[3] = LeftJoin(_StockBranchSummary,
-                                 Field('_stock_summary', 'storable_id') == Storable.id)
+                                 Field('_stock_summary',
+                                       'storable_id') == Storable.id)
 
         # Also show products that were never purchased.
         query = Or(Field('_stock_summary', 'branch_id') == branch.id,
@@ -316,7 +319,8 @@ class ProductFullStockItemView(ProductFullStockView):
 
     tables = ProductFullStockView.tables[:]
     tables.append(LeftJoin(Alias(_PurchaseItemTotal, '_purchase_total'),
-                           Field('_purchase_total', 'sellable_id') == Sellable.id))
+                           Field('_purchase_total',
+                                 'sellable_id') == Sellable.id))
 
 
 class ProductFullStockItemSupplierView(ProductFullStockItemView):
@@ -576,8 +580,7 @@ class QuotationView(Viewable):
                  PurchaseOrder.id == Quotation.purchase_id),
         LeftJoin(Supplier,
                  Supplier.id == PurchaseOrder.supplier_id),
-        LeftJoin(Person, Person.id ==
-                 Supplier.person_id),
+        LeftJoin(Person, Person.id == Supplier.person_id),
     ]
 
 
@@ -798,7 +801,8 @@ class PurchaseReceivingView(Viewable):
     tables = [
         ReceivingOrder,
         LeftJoin(PurchaseOrder, ReceivingOrder.purchase_id == PurchaseOrder.id),
-        LeftJoin(_PurchaseUser, PurchaseOrder.responsible_id == _PurchaseUser.id),
+        LeftJoin(_PurchaseUser,
+                 PurchaseOrder.responsible_id == _PurchaseUser.id),
         LeftJoin(_PurchaseResponsible,
                  _PurchaseUser.person_id == _PurchaseResponsible.id),
         LeftJoin(Supplier, ReceivingOrder.supplier_id == Supplier.id),
@@ -883,7 +887,6 @@ class ReceivingItemView(Viewable):
 
 
 class ProductionItemView(Viewable):
-
     production_item = ProductionItem
 
     id = ProductionItem.id
@@ -910,6 +913,32 @@ class ProductionItemView(Viewable):
         LeftJoin(SellableUnit,
                  Sellable.unit_id == SellableUnit.id),
     ]
+
+
+class ProductBrandStockView(Viewable):
+    # Alias of Branch to Person table
+
+    id = Product.brand
+    brand = Coalesce(Product.brand, u'')
+
+    quantity = Sum(ProductStockItem.quantity)
+
+    tables = [
+        Product,
+        LeftJoin(Storable,
+                 Storable.product_id == Product.id),
+        LeftJoin(ProductStockItem,
+                 ProductStockItem.storable_id == Storable.id),
+        LeftJoin(Branch, Branch.id == ProductStockItem.branch_id)
+    ]
+    group_by = [id, brand]
+
+    @classmethod
+    def find_by_branch(cls, store, branch):
+        if branch:
+            return store.find(cls, ProductStockItem.branch_id == branch.id)
+
+        return store.find(cls)
 
 
 class ReturnedSalesView(Viewable):
@@ -979,7 +1008,8 @@ class LoanView(Viewable):
         LeftJoin(LoginUser, Loan.responsible_id == LoginUser.id),
         LeftJoin(Client, Loan.client_id == Client.id),
         LeftJoin(PersonBranch, Branch.person_id == PersonBranch.id),
-        LeftJoin(PersonResponsible, LoginUser.person_id == PersonResponsible.id),
+        LeftJoin(PersonResponsible,
+                 LoginUser.person_id == PersonResponsible.id),
         LeftJoin(PersonClient, Client.person_id == PersonClient.id),
     ]
 
@@ -1175,8 +1205,10 @@ class CostCenterEntryStockView(Viewable):
         # possible sale item and stock decrease item
         LeftJoin(SaleItem, SaleItem.id == StockTransactionHistory.object_id),
         LeftJoin(Sale, SaleItem.sale_id == Sale.id),
-        LeftJoin(StockDecreaseItem, StockDecreaseItem.id == StockTransactionHistory.object_id),
-        LeftJoin(StockDecrease, StockDecreaseItem.stock_decrease_id == StockDecrease.id),
+        LeftJoin(StockDecreaseItem,
+                 StockDecreaseItem.id == StockTransactionHistory.object_id),
+        LeftJoin(StockDecrease,
+                 StockDecreaseItem.stock_decrease_id == StockDecrease.id),
     ]
 
     @property

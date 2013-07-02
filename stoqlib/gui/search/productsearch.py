@@ -38,7 +38,7 @@ from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView,
-                                  ProductBranchStockView)
+                                  ProductBranchStockView, ProductBrandStockView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
@@ -55,7 +55,7 @@ from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
                                        ProductClosedStockReport,
                                        ProductPriceReport, ProductStockReport,
-                                       ProductsSoldReport)
+                                       ProductsSoldReport, ProductBrandReport)
 
 _ = stoqlib_gettext
 
@@ -161,8 +161,8 @@ class ProductSearch(SearchEditor):
                              data_type=str, width=120),
                 SearchColumn('description', title=_(u'Description'),
                              expand=True, data_type=str),
-                SearchColumn('manufacturer', title=_('Manufacturer'), data_type=str,
-                             visible=False),
+                SearchColumn('manufacturer', title=_('Manufacturer'),
+                             data_type=str, visible=False),
                 SearchColumn('model', title=_('Model'), data_type=str,
                              visible=False),
                 SearchColumn('location', title=_('Location'), data_type=str,
@@ -351,8 +351,7 @@ class ProductsSoldSearch(SearchDialog):
                        format_func=format_data,
                        data_type=Decimal),
                 Column('average_cost', title=_('Avg. Cost'),
-                       data_type=currency),
-                ]
+                       data_type=currency), ]
 
 
 class ProductStockSearch(SearchEditor):
@@ -403,9 +402,11 @@ class ProductStockSearch(SearchEditor):
                              sort_func=sort_sellable_code),
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, width=100),
-                SearchColumn('description', title=_('Description'), data_type=str,
+                SearchColumn('description', title=_('Description'),
+                             data_type=str,
                              expand=True, sorted=True),
-                SearchColumn('manufacturer', title=_('Manufacturer'), data_type=str,
+                SearchColumn('manufacturer', title=_('Manufacturer'),
+                             data_type=str,
                              visible=False),
                 SearchColumn('model', title=_('Model'), data_type=str,
                              visible=False),
@@ -473,6 +474,72 @@ class ProductClosedStockSearch(ProductSearch):
         print_report(ProductClosedStockReport, self.results,
                      filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
+
+
+class ProductBrandSearch(SearchEditor):
+    title = _('Brand Search')
+    table = Product
+    size = (775, 450)
+    search_spec = ProductBrandStockView
+    editor_class = ProductEditor
+
+    def __init__(self, store):
+        SearchEditor.__init__(self, store, hide_footer=True,
+                              hide_toolbar=True)
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def setup_widgets(self):
+        self.csv_button = self.add_button(label=_('Export to spreadsheet...'))
+        self.csv_button.show()
+        self.csv_button.set_sensitive(False)
+
+    def create_filters(self):
+        self.set_text_field_columns(['brand'])
+        self.search.set_query(self.executer_query)
+
+        # Branch
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        self.add_filter(branch_filter, columns=[])
+        self.branch_filter = branch_filter
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        cols = [SearchColumn('brand', title=_('Brand'), data_type=str,
+                             sorted=True, expand=True),
+                Column('quantity', title=_('Quantity'), data_type=Decimal)]
+        return cols
+
+    def executer_query(self, store):
+        branch_id = self.branch_filter.get_state().value
+        if branch_id is None:
+            branch = None
+        else:
+            branch = store.get(Branch, branch_id)
+
+        return self.search_spec.find_by_branch(store, branch)
+
+    #
+    # Callbacks
+    #
+
+    def on_results__has_rows(self, widget, has_rows):
+        self.csv_button.set_sensitive(has_rows)
+
+    def on_csv_button__clicked(self, widget):
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.results,
+                   name=_('Brands'),
+                   filename_prefix=_('brands'))
+
+    def on_print_button_clicked(self, button):
+        print_report(ProductBrandReport, self.results, list(self.results),
+                     filters=self.search.get_search_filters())
 
 
 class ProductBranchSearch(SearchDialog):

@@ -46,6 +46,7 @@ from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch,
+                                              ProductBrandSearch,
                                               ProductClosedStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
@@ -100,6 +101,9 @@ class StockApp(ShellApp):
             ("SearchPurchasedStockItems", None, _("Purchased items..."),
              group.get('search_purchased_stock_items'),
              _("Search for purchased items")),
+            ("SearchBrandItems", None, _("Brand items..."),
+             group.get('search_brand_items'),
+             _("Search for Brand items on stock")),
             ("SearchStockItems", None, _("Stock items..."),
              group.get('search_stock_items'),
              _("Search for items on stock")),
@@ -147,6 +151,7 @@ class StockApp(ShellApp):
                                    self.NewStockDecrease, self.LoanNew])
         self.window.add_search_items([
             self.SearchStockItems,
+            self.SearchBrandItems,
             self.SearchStockDecrease,
             self.SearchClosedStockItems,
             self.SearchProductHistory,
@@ -432,6 +437,9 @@ class StockApp(ShellApp):
 
     def on_SearchStockItems__activate(self, action):
         self.run_dialog(ProductStockSearch, self.store)
+
+    def on_SearchBrandItems__activate(self, action):
+        self.run_dialog(ProductBrandSearch, self.store)
 
     def on_SearchClosedStockItems__activate(self, action):
         self.run_dialog(ProductClosedStockSearch, self.store)
