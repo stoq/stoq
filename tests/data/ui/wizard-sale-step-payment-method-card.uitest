@@ -9,21 +9,21 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
             GtkVBox(toplevel):
               GtkFrame(frame1, fill=True):
                 GtkTable(table1):
-                  GtkLabel(label5): 'Card Device:'
-                  ProxyComboBox(card_device):
-                    item: 'Default', selected
+                  GtkLabel(label5): 'Credit Provider:'
+                  ProxyComboBox(credit_provider):
+                    item: 'AMEX', selected
+                    item: 'BANRISUL'
+                    item: 'CERTIF'
+                    item: 'CREDISHOP'
+                    item: 'HIPERCARD'
+                    item: 'PAGGO'
+                    item: 'REDECARD'
+                    item: 'VISANET'
                   GtkLabel(label6):
-                  ProxyLabel(kiwilabel4): 'Credit Provider:'
+                  ProxyLabel(kiwilabel4): 'Card Device:'
                   GtkVBox(vbox3):
-                    ProxyComboBox(credit_provider, fill=True):
-                      item: 'AMEX', selected
-                      item: 'BANRISUL'
-                      item: 'CERTIF'
-                      item: 'CREDISHOP'
-                      item: 'HIPERCARD'
-                      item: 'PAGGO'
-                      item: 'REDECARD'
-                      item: 'VISANET'
+                    ProxyComboBox(card_device, fill=True):
+                      item: 'Default', selected
                   GtkLabel(label3):
                   ProxyLabel(kiwilabel2): 'Payment Type:'
                   GtkVBox(types_box):

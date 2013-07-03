@@ -4,19 +4,16 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="PaymentMethodEditor">
-    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="border_width">6</property>
             <property name="n_rows">4</property>
             <property name="n_columns">3</property>
@@ -25,7 +22,6 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Maximum Installments:</property>
               </object>
@@ -38,7 +34,6 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel11">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Penalty:</property>
               </object>
@@ -50,7 +45,6 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel5">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Daily Interest:</property>
               </object>
@@ -127,7 +121,6 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">%</property>
                 <property name="model_attribute">kiwilabel3</property>
@@ -142,7 +135,6 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel4">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">%</property>
               </object>
@@ -156,7 +148,6 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Default Account:</property>
               </object>
@@ -164,7 +155,6 @@
             <child>
               <object class="ProxyComboBox" id="account">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="data_type">object</property>
                 <property name="model_attribute">account</property>
               </object>
@@ -186,7 +176,6 @@
         <child>
           <object class="GtkEventBox" id="slave_holder">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <child>
               <placeholder/>
             </child>

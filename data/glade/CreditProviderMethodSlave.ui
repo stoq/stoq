@@ -26,7 +26,7 @@
                   <object class="ProxyLabel" id="kiwilabel4">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Credit Provider:</property>
+                    <property name="label" translatable="yes">Card Device:</property>
                     <property name="data_type">unicode</property>
                   </object>
                   <packing>
@@ -65,10 +65,10 @@
                   <object class="GtkVBox" id="vbox3">
                     <property name="visible">True</property>
                     <child>
-                      <object class="ProxyComboBox" id="credit_provider">
+                      <object class="ProxyComboBox" id="card_device">
                         <property name="visible">True</property>
                         <property name="data_type">object</property>
-                        <property name="model_attribute">provider</property>
+                        <property name="model_attribute">card_device</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -177,14 +177,14 @@
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Card Device:</property>
+                    <property name="label" translatable="yes">Credit Provider:</property>
                   </object>
                 </child>
                 <child>
-                  <object class="ProxyComboBox" id="card_device">
+                  <object class="ProxyComboBox" id="credit_provider">
                     <property name="visible">True</property>
                     <property name="data_type">object</property>
-                    <property name="model_attribute">card_device</property>
+                    <property name="model_attribute">provider</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>

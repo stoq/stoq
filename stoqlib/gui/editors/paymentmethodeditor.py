@@ -267,10 +267,11 @@ class CardOperationCostEditor(BaseEditor):
             return ValidationError(_('Installments start should be lower '
                                      'or equal installments end'))
 
-        if not CardOperationCost.validate_installment_range(device=self.model.device,
-                                                            provider=self.model.provider, card_type=self.model.card_type,
-                                                            start=start, end=end, ignore=self.model.real_model.id,
-                                                            store=self.store):
+        if not CardOperationCost.validate_installment_range(
+                device=self.model.device,
+                provider=self.model.provider, card_type=self.model.card_type,
+                start=start, end=end, ignore=self.model.real_model.id,
+                store=self.store):
             return ValidationError(_('The installments range is conflicting '
                                      'with another configuration'))
 
@@ -289,11 +290,18 @@ class CreditProviderEditor(BaseEditor):
     model_type = CreditProvider
     gladefile = 'CreditProviderEditor'
     proxy_widgets = ['provider_id', 'short_name',
-                     'max_installments', 'open_contract_date']
+                     'max_installments', 'default_device', 'open_contract_date']
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     CreditProviderEditor.proxy_widgets)
+
+    def _setup_widgets(self):
+        """ Populate device widgets
+        """
+        devices = CardPaymentDevice.get_devices(self.store)
+        self.default_device.prefill(api.for_combo(devices))
 
     def create_model(self, store):
         return CreditProvider(store=store)
@@ -311,8 +319,10 @@ class CardPaymentDetailsEditor(BaseEditor):
     )
 
     def __init__(self, store, model, visual_mode=None):
-        self.fields['device'].values = api.for_combo(CardPaymentDevice.get_devices(store))
-        self.fields['provider'].values = api.for_combo(CreditProvider.get_card_providers(store))
+        self.fields['device'].values = api.for_combo(
+            CardPaymentDevice.get_devices(store))
+        self.fields['provider'].values = api.for_combo(
+            CreditProvider.get_card_providers(store))
         BaseEditor.__init__(self, store, model)
 
     def on_confirm(self):
@@ -380,7 +390,7 @@ class ProviderListSlave(ModelListSlave):
     columns = [
         Column('short_name', title=_('Name'),
                data_type=str, expand=True),
-        Column('max_installments', title=_('Max Installments'), data_type=int),
+        Column('max_installments', title=_('Max Installments'), data_type=int)
     ]
 
     def populate(self):
@@ -419,8 +429,10 @@ class CardOperationCostListSlave(ModelListSlave):
     model_type = CardOperationCost
 
     columns = [
-        Column('description', title=_('Description'), data_type=str, expand=True),
-        Column('installment_range_as_string', title=_('Installments'), data_type=str),
+        Column('description', title=_('Description'), data_type=str,
+               expand=True),
+        Column('installment_range_as_string', title=_('Installments'),
+               data_type=str),
         Column('payment_days', title=_('Days'), data_type=int),
         # Translators: Fee is Taxa in pt_BR
         Column('fee', title=_('Fee'), data_type=Decimal,

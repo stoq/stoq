@@ -64,6 +64,11 @@ class CreditProvider(Domain):
     #: the maximum number of installments for a |sale| using this credit provider.
     max_installments = IntCol(default=1)
 
+    default_device_id = IdCol()
+    #: The default device for this credit provider. This will be suggested to
+    #: the user when he selects this provider in the checkout dialog
+    default_device = Reference(default_device_id, 'CardPaymentDevice.id')
+
     #: The date when we start working with this provider
     open_contract_date = DateTimeCol()
 

@@ -124,16 +124,6 @@ CREATE TABLE company (
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE credit_provider (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    is_active boolean,
-    max_installments integer DEFAULT 12 CONSTRAINT valid_max_installments
-        CHECK (max_installments > 0),
-    short_name text,
-    provider_id text,
-    open_contract_date timestamp
-);
 
 CREATE TABLE individual (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
@@ -1007,6 +997,18 @@ CREATE TABLE card_payment_device (
 
     monthly_cost numeric(20, 2),
     description text
+);
+
+CREATE TABLE credit_provider (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    is_active boolean,
+    max_installments integer DEFAULT 12 CONSTRAINT valid_max_installments
+        CHECK (max_installments > 0),
+    short_name text,
+    provider_id text,
+    open_contract_date timestamp,
+    default_device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE 
 );
 
 CREATE TABLE card_operation_cost (

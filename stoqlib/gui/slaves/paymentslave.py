@@ -520,7 +520,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             return Payment.TYPE_OUT
         else:
             raise TypeError("Could not guess payment type for %r" %
-                           (self.order, ))
+                            (self.order, ))
 
     def _create_payments(self):
         """Insert the payment_list's payments in the base."""
@@ -558,7 +558,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         """This method is called by the wizard when going to a next step.
         If it returns False, the wizard can't go on."""
         if (not self.payment_list or
-            not self.payment_list.is_payment_list_valid()):
+                not self.payment_list.is_payment_list_valid()):
             return False
         self._create_payments()
 
@@ -682,8 +682,7 @@ class CardMethodSlave(BaseEditorSlave):
                      'auth_number')
 
     def __init__(self, wizard, parent, store, order, payment_method,
-                 outstanding_value=currency(0), first_duedate=None,
-                 installments_number=None):
+                 outstanding_value=currency(0)):
         self.order = order
         self.wizard = wizard
         self.method = payment_method
@@ -695,7 +694,6 @@ class CardMethodSlave(BaseEditorSlave):
         self.register_validate_function(self._refresh_next)
         self.parent = parent
         self._order = order
-
         # this will change after the payment type is changed
         self.installments_number.set_range(1, 1)
         self._refresh_next(False)
@@ -810,6 +808,11 @@ class CardMethodSlave(BaseEditorSlave):
         self.installments_number.set_range(minimum, maximum)
         self.installments_number.validate(force=True)
 
+    def _update_card_device(self):
+        provider = self.credit_provider.get_selected()
+        if provider.default_device:
+            self.card_device.update(provider.default_device)
+
     def _get_payment_details(self, cost=None):
         """Given the current state of this slave, this method will return a
         tuple containing:
@@ -882,6 +885,7 @@ class CardMethodSlave(BaseEditorSlave):
     #
     def on_credit_provider__changed(self, combo):
         self._setup_max_installments()
+        self._update_card_device()
 
     def on_card_device__changed(self, combo):
         self.installments_number.validate(force=True)
@@ -1075,7 +1079,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         self._add_method(money_method, payment_type)
         for method in PaymentMethod.get_creatable_methods(
-            self.store, payment_type, separate=False):
+                self.store, payment_type, separate=False):
             if method.method_name in [u'multiple', u'money']:
                 continue
             self._add_method(method, payment_type)
@@ -1191,13 +1195,13 @@ class MultipleMethodSlave(BaseEditorSlave):
                   self.model.client is None):
                 return
             elif (isinstance(self.model, PurchaseOrder) and
-                  (payment_method.method_name == 'store_credit' or
-                   payment_method.method_name == 'credit')):
+                            (payment_method.method_name == 'store_credit' or
+                             payment_method.method_name == 'credit')):
                 return
 
         if (self.model.group.payer and
-            (payment_method.method_name == 'store_credit' or
-             payment_method.method_name == 'credit')):
+                (payment_method.method_name == 'store_credit' or
+                 payment_method.method_name == 'credit')):
             try:
                 self.model.client.can_purchase(payment_method,
                                                self.model.group.get_total_to_pay())
@@ -1292,7 +1296,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             if not self._allow_remove_paid:
                 return
             entry = PaymentChangeHistory(payment=payment,
-                                         change_reason=_(u'Payment renegotiated'),
+                                         change_reason=_(
+                                             u'Payment renegotiated'),
                                          store=self.store)
             payment.set_not_paid(entry)
             entry.new_status = Payment.STATUS_CANCELLED
@@ -1430,7 +1435,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             # Do not allow to remove inpayments on orders, as only
             # outpayments can be added
             can_remove = False
-        elif (isinstance(self.model, (PaymentRenegotiation, Sale, ReturnedSale)) and
+        elif (isinstance(self.model,
+                         (PaymentRenegotiation, Sale, ReturnedSale)) and
               payment.payment_type == Payment.TYPE_OUT):
             # Do not allow to remove outpayments on orders, as only
             # inpayments can be added
@@ -1476,12 +1482,11 @@ class MultipleMethodSlave(BaseEditorSlave):
                 and value > self.model.client.remaining_store_credit):
                 retval = ValidationError(_(
                     u'Client does not have enough credit. Client store '
-                    'credit: %s.') % (
-                        currency(self.model.client.remaining_store_credit)
-                    )
+                    'credit: %s.') % (currency(
+                                      self.model.client.remaining_store_credit))
                 )
             if (self._method.method_name == u'credit'
-                and value > self.model.client.credit_account_balance):
+                    and value > self.model.client.credit_account_balance):
                 retval = ValidationError(_(
                     u'Client does not have enough credit. Client credit: '
                     '%s.') % (
@@ -1509,6 +1514,5 @@ def register_payment_slaves():
         (u'store_credit', StoreCreditMethodSlave),
         (u'multiple', MultipleMethodSlave),
         (u'deposit', DepositMethodSlave)]:
-
         method = PaymentMethod.get_by_name(default_store, method_name)
         dsm.register(method, slave_class)
