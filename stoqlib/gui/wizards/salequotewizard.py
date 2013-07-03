@@ -28,6 +28,9 @@ from decimal import Decimal
 import operator
 
 import gtk
+
+from dateutil.relativedelta import relativedelta
+
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
@@ -162,6 +165,11 @@ class StartSaleQuoteStep(WizardEditorStep):
                                     StartSaleQuoteStep.proxy_widgets)
         if sysparam(self.store).ASK_SALES_CFOP:
             self.add_proxy(self.model, StartSaleQuoteStep.cfop_widgets)
+
+        expire_delta = sysparam(self.store).EXPIRATION_SALE_QUOTE_DATE
+        if expire_delta > 0:
+            self.expire_date.update(localtoday() +
+                                    relativedelta(days=expire_delta))
 
     def toogle_client_details(self):
         client = self.client.read()

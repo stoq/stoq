@@ -448,6 +448,14 @@ _details = [
         int, initial=0, range=(0, 365)),
 
     ParameterDetails(
+        u'EXPIRATION_SALE_QUOTE_DATE',
+        _(u'Sales'),
+        _(u'Period of time in days to calculate expiration date of a sale quote'),
+        _(u'How many days Stoq should consider to calculate the default '
+          u'expiration day of a sale quote'),
+        int, initial=0, range=(0, 365)),
+
+    ParameterDetails(
         u'LATE_PAYMENTS_POLICY',
         _(u'Sales'),
         _(u'Policy for customers with late payments.'),
