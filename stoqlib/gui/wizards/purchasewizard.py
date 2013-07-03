@@ -89,6 +89,8 @@ class StartPurchaseStep(WizardEditorStep):
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
+        sync_mode = api.sysparam(self.store).SYNCHRONIZED_MODE
+        self.branch.set_sensitive(not sync_mode)
 
     def _setup_widgets(self):
         allow_outdated = sysparam(self.store).ALLOW_OUTDATED_OPERATIONS

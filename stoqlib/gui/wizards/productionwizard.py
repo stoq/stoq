@@ -72,6 +72,8 @@ class OpenProductionOrderStep(WizardEditorStep):
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
+        sync_mode = api.sysparam(self.store).SYNCHRONIZED_MODE
+        self.branch.set_sensitive(not sync_mode)
 
     def _fill_responsible_combo(self):
         employees = self.store.find(Employee, status=Employee.STATUS_NORMAL)

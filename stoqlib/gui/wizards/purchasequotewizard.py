@@ -80,6 +80,9 @@ class StartQuoteStep(WizardEditorStep):
 
         branches = Branch.get_active_branches(self.store)
         self.branch_combo.prefill(api.for_person_combo(branches))
+        sync_mode = api.sysparam(self.store).SYNCHRONIZED_MODE
+        self.branch_combo.set_sensitive(not sync_mode)
+
         self.notes.set_accepts_tab(False)
 
     def post_init(self):
