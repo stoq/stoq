@@ -121,6 +121,12 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
             self.wo_categories.prefill(items)
             self.wo_categories.set_sensitive(True)
 
+        workorders = WorkOrder.find_by_sale(self.store, self.model)
+        if workorders:
+            # We only need the first workorder, because all workorders in the
+            # same sale are sharing the same category.
+            self.wo_categories.select(workorders[0].category)
+
     def post_init(self):
         self.toogle_client_details()
         self.client.mandatory = True
