@@ -55,3 +55,7 @@ class TestSellablePriceDialog(GUITest):
 
         self.assertEquals(p1.price, 11)
         self.assertEquals(p2.price, 15)
+
+    def testCancel(self):
+        editor = SellablePriceDialog(self.store)
+        self.click(editor.main_dialog.cancel_button)
