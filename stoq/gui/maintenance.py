@@ -330,7 +330,7 @@ class MaintenanceApp(ShellApp):
             elif kind == 'category':
                 base_msg = _(u"No work orders in the category %s "
                              u"could be found.") % (
-                                 '<b>%s</b>' % (value, ), )
+                    '<b>%s</b>' % (value, ), )
                 url = u"<a href='new_order?%s'>%s</a>" % (
                     urllib.quote(value.encode('utf-8')),
                     api.escape(_(u"create a new work order")), )

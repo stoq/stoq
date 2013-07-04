@@ -199,7 +199,7 @@ class SaleItem(Domain):
         if not self.sellable.is_available():
             raise SellError(_(u"%s is not available for sale. Try making it "
                               u"available first and then try again.") % (
-                                  self.sellable.get_description()))
+                self.sellable.get_description()))
 
         quantity_to_decrease = self.quantity - self.quantity_decreased
         storable = self.sellable.product_storable
@@ -292,7 +292,7 @@ class SaleItem(Domain):
 
             same_state = True
             if (our_address.city_location.state !=
-               client_address.city_location.state):
+                client_address.city_location.state):
                 same_state = False
 
             if same_state:
@@ -853,14 +853,14 @@ class Sale(Domain, Adaptable):
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was "
                         u"confirmed with value {total_value:.2f}.").format(
-                            sale_number=self.identifier,
-                            client_name=self.client.person.name,
-                            total_value=self.get_total_sale_amount())
+                    sale_number=self.identifier,
+                    client_name=self.client.person.name,
+                    total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was "
                         u"confirmed with value {total_value:.2f}.").format(
-                            sale_number=self.identifier,
-                            total_value=self.get_total_sale_amount())
+                    sale_number=self.identifier,
+                    total_value=self.get_total_sale_amount())
             Event.log(self.store, Event.TYPE_SALE, msg)
 
     def set_paid(self):
@@ -886,26 +886,26 @@ class Sale(Domain, Adaptable):
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was paid "
                         u"and confirmed with value {total_value:.2f}.").format(
-                            sale_number=self.identifier,
-                            client_name=self.client.person.name,
-                            total_value=self.get_total_sale_amount())
+                    sale_number=self.identifier,
+                    client_name=self.client.person.name,
+                    total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was paid "
                         u"and confirmed with value {total_value:.2f}.").format(
-                            sale_number=self.identifier,
-                            total_value=self.get_total_sale_amount())
+                    sale_number=self.identifier,
+                    total_value=self.get_total_sale_amount())
         else:
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was paid "
                         u"with value {total_value:.2f}.").format(
-                            sale_number=self.identifier,
-                            client_name=self.client.person.name,
-                            total_value=self.get_total_sale_amount())
+                    sale_number=self.identifier,
+                    client_name=self.client.person.name,
+                    total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was paid "
                         u"with value {total_value:.2f}.").format(
-                            sale_number=self.identifier,
-                            total_value=self.get_total_sale_amount())
+                    sale_number=self.identifier,
+                    total_value=self.get_total_sale_amount())
         Event.log(self.store, Event.TYPE_SALE, msg)
 
     def set_not_paid(self):
@@ -1243,7 +1243,7 @@ class Sale(Domain, Adaptable):
             And(SaleItem.sale_id == self.id,
                 SaleItem.sellable_id == Product.sellable_id,
                 SaleItem.sellable_id == Sellable.id)).order_by(
-                    Sellable.code)
+            Sellable.code)
 
     @property
     def services(self):
@@ -1257,7 +1257,7 @@ class Sale(Domain, Adaptable):
             And(SaleItem.sale_id == self.id,
                 SaleItem.sellable_id == Service.sellable_id,
                 SaleItem.sellable_id == Sellable.id)).order_by(
-                    Sellable.code)
+            Sellable.code)
 
     @property
     def payments(self):

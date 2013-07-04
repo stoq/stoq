@@ -419,12 +419,13 @@ class SaleReturnPaymentStep(WizardEditorStep):
 
         before_debt = currency(self.model.sale_total - self.model.paid_total)
         now_debt = currency(before_debt - self.model.returned_total)
-        info(_("The client's debt has changed. "
-               "Use this step to adjust the payments."),
-             _("The debt before was %s and now is %s. Cancel some unpaid "
-               "installments and create new ones.") % (
-             converter.as_string(currency, before_debt),
-             converter.as_string(currency, now_debt)))
+        short = _("The client's debt has changed. "
+                  "Use this step to adjust the payments.")
+        longdesc = _("The debt before was %s and now is %s. Cancel some unpaid "
+                     "installments and create new ones.")
+        info(short,
+             longdesc % (converter.as_string(currency, before_debt),
+                         converter.as_string(currency, now_debt)))
 
     def setup_slaves(self):
         register_payment_slaves()

@@ -155,8 +155,9 @@ class TestOperationCost(DomainTest):
 
         # there is no other operation cost yet. Complete range should be valid
         self.assertTrue(
-            CardOperationCost.validate_installment_range(device, provider,
-                                                         CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, 1, 12, self.store))
+            CardOperationCost.validate_installment_range(
+                device, provider,
+                CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, 1, 12, self.store))
 
         # Create one cost
         cost = self.create_operation_cost(start=3, end=5,
@@ -167,25 +168,28 @@ class TestOperationCost(DomainTest):
         valid_ranges = [(1, 1), (1, 2), (2, 2), (6, 6), (6, 10), (8, 10)]
         for start, end in valid_ranges:
             self.assertTrue(
-                CardOperationCost.validate_installment_range(device, provider,
-                                                             CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, start, end,
-                                                             self.store))
+                CardOperationCost.validate_installment_range(
+                    device, provider,
+                    CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, start, end,
+                    self.store))
 
         # now test a few invalid ranges:
         invalid_ranges = [(1, 3), (1, 4), (1, 12), (2, 3), (2, 6), (3, 3),
                           (4, 4), (4, 6)]
         for start, end in invalid_ranges:
             self.assertFalse(
-                CardOperationCost.validate_installment_range(device, provider,
-                                                             CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, start, end,
-                                                             self.store))
+                CardOperationCost.validate_installment_range(
+                    device, provider,
+                    CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, start, end,
+                    self.store))
 
         # Also test the ignore parameter. All values above should be valid
         for start, end in invalid_ranges + valid_ranges:
             self.assertTrue(
-                CardOperationCost.validate_installment_range(device, provider,
-                                                             CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, start, end,
-                                                             self.store, ignore=cost.id))
+                CardOperationCost.validate_installment_range(
+                    device, provider,
+                    CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, start, end,
+                    self.store, ignore=cost.id))
 
 
 class TestCreditCardData(DomainTest):

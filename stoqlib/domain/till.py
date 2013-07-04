@@ -117,10 +117,9 @@ class Till(Domain):
 
         till = store.find(cls, status=Till.STATUS_OPEN, station=station).one()
         if till and till.needs_closing():
-            raise TillError(
-                _("You need to close the till opened at %s before "
-                  "doing any fiscal operations") % (
-                      till.opening_date.date(), ))
+            fmt = _("You need to close the till opened at %s before "
+                    "doing any fiscal operations")
+            raise TillError(fmt % (till.opening_date.date(), ))
 
         return till
 

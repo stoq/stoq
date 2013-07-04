@@ -6,7 +6,7 @@
 #: The ref_table is the referenced table. The other 3 columns are the constraint
 #: name, the table that references ref_table, and the column that has the
 #: reference to ref_table.id
-# Based on queries from http://stackoverflow.com/questions/5347050/sql-to-list-all-the-tables-that-reference-a-particular-column-in-a-table
+# Based on queries from http://stackoverflow.com/questions/5347050
 query = """
 SELECT ccu.table_name as ref_table, rc.constraint_name,
        tc.table_name AS table_name, kcu.column_name

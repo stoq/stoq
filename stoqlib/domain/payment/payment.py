@@ -251,9 +251,10 @@ class Payment(Domain):
         Domain.__init__(self, store=store, **kw)
 
     def _check_status(self, status, operation_name):
-        assert self.status == status, ('Invalid status for %s '
-                                       'operation: %s' % (operation_name,
-                                       self.statuses[self.status]))
+        fmt = 'Invalid status for %s operation: %s'
+        assert self.status == status, (
+            fmt % (operation_name,
+                   self.statuses[self.status]))
 
     #
     # ORMObject hooks
@@ -425,9 +426,9 @@ class Payment(Domain):
             msg = _(u"{method} payment with value original value "
                     u"{original_value:.2f} was paid with value "
                     u"{value:.2f}").format(
-                        method=self.method.method_name,
-                        original_value=self.value,
-                        value=self.paid_value)
+                method=self.method.method_name,
+                original_value=self.value,
+                value=self.paid_value)
         Event.log(self.store, Event.TYPE_PAYMENT, msg.capitalize())
 
     def cancel(self, change_entry=None):

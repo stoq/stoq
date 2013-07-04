@@ -117,8 +117,8 @@ class PayableApp(BaseAccountWindow):
 
             # Search
             ('PaymentCategories', None, _("Payment categories..."),
-            group.get('search_payment_categories'),
-            _('Search for payment categories')),
+             group.get('search_payment_categories'),
+             _('Search for payment categories')),
             ('BillCheckSearch', None, _('Bills and checks...'),
              group.get('search_bills'),
              _('Search for bills and checks')),

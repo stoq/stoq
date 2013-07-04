@@ -70,8 +70,7 @@ class InvoicePage(object):
         output = array.array('c', data.upper())
         if y > len(self._data):
             raise ValueError(
-                "maximum invoice layout is %d, got %d" % (
-                self.height, y))
+                "maximum invoice layout is %d, got %d" % (self.height, y))
 
         row = self._data[y]
         row[x:x + width] = output[:width]

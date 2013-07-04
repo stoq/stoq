@@ -86,7 +86,7 @@ class ProductionApp(ShellApp):
              _('Edit the selected production')),
             ('ProductionDetails', gtk.STOCK_INFO, _('Production details...'),
              group.get('production_details'),
-            _('Show production details and register produced items')),
+             _('Show production details and register produced items')),
 
             # Search
             ("SearchProduct", None, _("Production products..."),

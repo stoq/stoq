@@ -48,7 +48,7 @@ class CfopData(Domain):
     """A Brazil-specific class wich defines a fiscal code of operations.
     In Brazil it means 'Codigo Fiscal de Operacoes e Prestacoes'
 
-    Canonical list of C.F.O.Ps can be found `here <http://www.fazenda.gov.br/confaz/confaz/convenios/sinief/cfop_cvsn_70_vigente.htm>`__
+    Canonical list of C.F.O.Ps can be found `here <http://tinyurl.com/mncsnlf>`__
 
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/cfop_data.html>`__

@@ -89,7 +89,7 @@ def modulo11(num, base=9, r=0):
         return resto
 
 
-# From http://jrimum.org/bopepo/browser/trunk/src/br/com/nordestefomento/jrimum/bopepo/campolivre/AbstractCLBanrisul.java
+# From http://tinyurl.com/lu88m7g
 def calculaDuploDigito(seisPrimeirosCamposConcatenados):
     def sum11(s, lmin, lmax):
         soma = 0

@@ -534,12 +534,12 @@ class InstallPostgresStep(BaseWizardStep):
             # Translators: %s is the string "Forward"
             label = _("Click %s to begin installing the "
                       "PostgreSQL server.") % (
-                          forward_label, )
+                forward_label, )
         else:
             # Translators: %s is the string "Forward"
             label = _("Click %s to continue when you have installed "
                       "PostgreSQL server on this computer.") % (
-                          forward_label, )
+                forward_label, )
         self.label.set_markup(label)
 
     def _can_install(self):
@@ -959,9 +959,9 @@ class FirstTimeConfigWizard(BaseWizard):
         address = self.settings.address or "localhost"
         msg = _("Database {dbname} at {address}:{port} is not "
                 "a Stoq database.").format(
-                    dbname=self.settings.dbname,
-                    address=address,
-                    port=self.settings.port)
+            dbname=self.settings.dbname,
+            address=address,
+            port=self.settings.port)
         description = _(
             "Stoq was able to succesfully connect to the database "
             "{dbname} at the database server {address}, however it "

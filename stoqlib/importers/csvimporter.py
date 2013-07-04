@@ -94,15 +94,20 @@ class CSVImporter(Importer):
         if len(item) < len(self.fields):
             raise ValueError(
                 "line %d in file %s has %d fields, but we need at "
-                "least %d fields to be able to process it" % (
-                self.lineno, self.filename, len(item), len(self.fields)))
+                "least %d fields to be able to process it" % (self.lineno,
+                                                              self.filename,
+                                                              len(item),
+                                                              len(self.fields)))
 
         field_names = self.fields + self.optional_fields
         if len(item) > len(field_names):
             raise ValueError(
                 "line %d in file %s has %d fields, but we can at most "
-                "handle %d fields, fields=%r" % (
-                self.lineno, self.filename, len(item), len(field_names), item))
+                "handle %d fields, fields=%r" % (self.lineno,
+                                                 self.filename,
+                                                 len(item),
+                                                 len(field_names),
+                                                 item))
 
         row = CSVRow(item, field_names)
         try:

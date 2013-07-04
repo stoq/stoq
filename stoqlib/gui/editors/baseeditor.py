@@ -85,23 +85,22 @@ class BaseEditorSlave(GladeSlaveDelegate):
             model = self.create_model(self.store)
 
             if model is None:
-                raise ValueError(
-                    "%s.create_model() must return a valid model, not %r" % (
-                    self.__class__.__name__, model))
+                fmt = "%s.create_model() must return a valid model, not %r"
+                raise ValueError(fmt % (self.__class__.__name__, model))
 
         log.info("%s editor using a %smodel %s" % (
             self.__class__.__name__, created, type(model).__name__))
 
         if self.model_type:
             if not isinstance(model, self.model_type):
+                fmt = '%s editor requires a model of type %s, got a %r'
                 raise TypeError(
-                    '%s editor requires a model of type %s, got a %r' % (
-                    self.__class__.__name__, self.model_type.__name__,
-                    model))
+                    fmt % (self.__class__.__name__,
+                           self.model_type.__name__,
+                           model))
         else:
-            raise ValueError("Editor %s must define a model_type "
-                             "attribute" % (
-                                 self.__class__.__name__, ))
+            fmt = "Editor %s must define a model_type attribute"
+            raise ValueError(fmt % (self.__class__.__name__, ))
         self.model = model
 
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)

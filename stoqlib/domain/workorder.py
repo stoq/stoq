@@ -254,11 +254,11 @@ class WorkOrderPackage(Domain):
         assert self.can_send()
 
         if self.source_branch != get_current_branch(self.store):
-            raise ValueError(
-                _("This package's source branch is %s and you are in %s. "
-                  "It's not possible to send a package outside the "
-                  "source branch") % (
-                      self.source_branch, get_current_branch(self.store)))
+            fmt = _("This package's source branch is %s and you are in %s. "
+                    "It's not possible to send a package outside the "
+                    "source branch")
+            raise ValueError(fmt % (self.source_branch,
+                                    get_current_branch(self.store)))
 
         package_items = list(self.package_items)
         if not len(package_items):
@@ -283,11 +283,11 @@ class WorkOrderPackage(Domain):
         assert self.can_receive()
 
         if self.destination_branch != get_current_branch(self.store):
-            raise ValueError(
-                _("This package's destination branch is %s and you are in %s. "
-                  "It's not possible to receive a package outside the "
-                  "destination branch") % (
-                      self.destination_branch, get_current_branch(self.store)))
+            fmt = _("This package's destination branch is %s and you are in %s. "
+                    "It's not possible to receive a package outside the "
+                    "destination branch")
+            raise ValueError(fmt % (self.destination_branch,
+                                    get_current_branch(self.store)))
 
         for package_item in self.package_items:
             package_item.receive()

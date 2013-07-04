@@ -198,9 +198,8 @@ class FieldGrid(gtk.Layout):
         label.set_padding(2, 4)
         if not description:
             description = text
-        label.set_markup(
-            '<span letter_spacing="3072">%s</span>' % (
-            glib.markup_escape_text(description), ))
+        fmt = '<span letter_spacing="3072">%s</span>'
+        label.set_markup(fmt % (glib.markup_escape_text(description), ))
         label.modify_font(self.font)
         field = FieldInfo(self, text, label, x, y, width, height)
         self._fields.append(field)

@@ -162,12 +162,13 @@ class SaleDetailsDialog(BaseEditor):
                 if item.invoice_number in seen_set:
                     continue
 
+                fmt = _("Itens returned on %s")
                 return_notes = ['====== %s ======' % (
-                                _("Itens returned on %s") % (
-                                item.return_date.strftime('%x')))]
+                    fmt % (item.return_date.strftime('%x')))]
                 if item.new_sale:
-                    return_notes.append(_("Traded for sale: %s") % (
-                                        item.new_sale.identifier))
+                    fmt = _("Traded for sale: %s")
+                    return_notes.append(fmt % (item.new_sale.identifier))
+
                 return_notes.extend([
                     _("Invoice number: %s") % item.invoice_number,
                     _("Reason: %s") % item.reason,

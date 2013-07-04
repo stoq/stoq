@@ -139,8 +139,7 @@ def check_extensions(cursor=None, store=None):
 
     for extension in _REQUIRED_EXTENSIONS:
         if not _extension_exists(cursor, extension):
-            raise ValueError(
-                "Database server is missing %s extension." % (
+            raise ValueError("Database server is missing %s extension." % (
                 extension))
 
 

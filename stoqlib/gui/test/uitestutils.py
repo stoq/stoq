@@ -194,10 +194,10 @@ class GUIDumper(object):
             not widget.get_can_focus() and
             self._is_interactive_widget(widget)):
             props.append('unfocusable')
-            self.failures.append(
-                "%s %s is not focusable" % (
-                gobject.type_name(widget),
-                self._items.get(hash(widget), '???')))
+            fmt = "%s %s is not focusable"
+            self.failures.append(fmt % (gobject.type_name(widget),
+                                        self._items.get(hash(widget),
+                                                        '???')))
 
         if IValidatableProxyWidget.providedBy(widget):
             if (not widget.is_valid() and

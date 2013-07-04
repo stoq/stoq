@@ -55,13 +55,11 @@ class ModelListSlave(ListSlave):
         :param store: a store connection
         """
         if self.columns is None:
-            raise TypeError(
-                "%s needs to set it's columns attribute" % (
-                self.__class__.__name__, ))
+            fmt = "%s needs to set it's columns attribute"
+            raise TypeError(fmt % (self.__class__.__name__, ))
         if self.model_type is None:
-            raise TypeError(
-                "%s needs to set it's model_type attribute" % (
-                self.__class__.__name__, ))
+            fmt = "%s needs to set it's model_type attribute"
+            raise TypeError(fmt % (self.__class__.__name__, ))
 
         if not store:
             store = api.get_default_store()
@@ -201,9 +199,8 @@ class ModelListDialog(BasicDialog):
 
     def __init__(self, store=None):
         if self.list_slave_class is None:
-            raise TypeError(
-                "%s needs to set it's list_slave_class attribute" % (
-                self.__class__.__name__, ))
+            fmt = "%s needs to set it's list_slave_class attribute"
+            raise TypeError(fmt % (self.__class__.__name__, ))
         self.list_slave = self.list_slave_class(self, store=store)
 
         BasicDialog.__init__(self, title=self.title, size=self.size)

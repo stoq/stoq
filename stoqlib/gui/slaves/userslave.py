@@ -120,7 +120,7 @@ class PasswordEditorSlave(BaseEditorSlave):
                                   (u"Passwords must have at least %d characters")
                                    % MINIMUM_PASSWORD_CHAR_LEN)
         if ((self.model.confirm_password and self._confirm_password) and
-           password != self.confirm_password.get_text()):
+            password != self.confirm_password.get_text()):
             return ValidationError(_(u"Passwords don't matches"))
 
     def on_password__content_changed(self, entry):

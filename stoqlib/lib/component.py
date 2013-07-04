@@ -268,9 +268,9 @@ class Adaptable(object):
             adapterClass = facets[k]
             adapter = adapterClass(self, *args, **kwargs)
         else:
-            raise AdapterError("The object type %s doesn't implement an "
-                               "adapter for interface %s" % (type(self),
-                               iface))
+            raise AdapterError(
+                "The object type %s doesn't implement an "
+                "adapter for interface %s" % (type(self), iface))
         if adapter:
             self._adapterCache[k] = adapter
 

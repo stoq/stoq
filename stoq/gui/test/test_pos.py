@@ -191,8 +191,10 @@ class TestPos(BaseGUITest):
         yesno.return_value = False
         retval = pos.can_change_application()
         self.assertFalse(retval)
-        yesno.assert_called_once_with(u'You must finish the current sale before '
-                                      u'you change to another application.', gtk.RESPONSE_NO, u'Cancel sale', u'Finish sale')
+        yesno.assert_called_once_with(
+            u'You must finish the current sale before '
+            u'you change to another application.', gtk.RESPONSE_NO,
+            u'Cancel sale', u'Finish sale')
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_can_close_application(self, yesno):
@@ -211,8 +213,10 @@ class TestPos(BaseGUITest):
         yesno.return_value = False
         retval = pos.can_close_application()
         self.assertFalse(retval)
-        yesno.assert_called_once_with(u'You must finish or cancel the current sale before '
-                                      u'you can close the POS application.', gtk.RESPONSE_NO, u'Cancel sale', u'Finish sale')
+        yesno.assert_called_once_with(
+            u'You must finish or cancel the current sale before '
+            u'you can close the POS application.', gtk.RESPONSE_NO,
+            u'Cancel sale', u'Finish sale')
 
     def test_advanced_search(self):
         pos = self._get_pos_with_open_till()
@@ -221,14 +225,15 @@ class TestPos(BaseGUITest):
         with mock.patch.object(pos, 'run_dialog') as run_dialog:
             run_dialog.return_value = None
             self.activate(pos.barcode)
-            run_dialog.assert_called_once_with(SellableSearch, pos.store,
-                                               selection_mode=gtk.SELECTION_BROWSE,
-                                               search_str=u'item',
-                                               sale_items=pos.sale_items,
-                                               quantity=Decimal('1'),
-                                               double_click_confirm=True,
-                                               info_message=(u"The barcode 'item' does not exist. "
-                                                             u"Searching for a product instead..."))
+            run_dialog.assert_called_once_with(
+                SellableSearch, pos.store,
+                selection_mode=gtk.SELECTION_BROWSE,
+                search_str=u'item',
+                sale_items=pos.sale_items,
+                quantity=Decimal('1'),
+                double_click_confirm=True,
+                info_message=(u"The barcode 'item' does not exist. "
+                              u"Searching for a product instead..."))
 
         with mock.patch.object(pos, 'run_dialog') as run_dialog:
             return_value = self.store.find(SellableFullStockView)[0]

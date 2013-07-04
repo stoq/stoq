@@ -77,9 +77,10 @@ class TestTransaction(DomainTest):
             before_decimal = Decimal(before.strftime(u'%s.%f'))
             after_decimal = Decimal(after.strftime(u'%s.%f'))
             if before_decimal > after_decimal:
+                fmt = u"'%s' (%s) was expected to be before '%s' (%s)"
                 raise AssertionError(
-                    u"'%s' (%s) was expected to be before '%s' (%s)" % (
-                    before_name, before, after_name, after))
+                    fmt % (before_name, before,
+                           after_name, after))
 
     def testRemove(self):
         # Total of transaction entries in the begining of the test

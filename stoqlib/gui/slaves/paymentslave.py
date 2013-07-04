@@ -1478,21 +1478,18 @@ class MultipleMethodSlave(BaseEditorSlave):
             retval = ValidationError(_(u'You must provide a payment value.'))
 
         if not isinstance(self.model, StockDecrease):
-            if (self._method.method_name == 'store_credit'
-                and value > self.model.client.remaining_store_credit):
-                retval = ValidationError(_(
-                    u'Client does not have enough credit. Client store '
-                    'credit: %s.') % (currency(
-                                      self.model.client.remaining_store_credit))
-                )
-            if (self._method.method_name == u'credit'
-                    and value > self.model.client.credit_account_balance):
-                retval = ValidationError(_(
-                    u'Client does not have enough credit. Client credit: '
-                    '%s.') % (
-                        currency(self.model.client.credit_account_balance)
-                    )
-                )
+            if (self._method.method_name == 'store_credit' and
+                value > self.model.client.remaining_store_credit):
+                fmt = _(u'Client does not have enough credit. '
+                        u'Client store credit: %s.')
+                retval = ValidationError(
+                    fmt % currency(self.model.client.remaining_store_credit))
+            if (self._method.method_name == u'credit' and
+                value > self.model.client.credit_account_balance):
+                fmt = _(u'Client does not have enough credit. '
+                        u'Client credit: %s.')
+                retval = ValidationError(
+                    fmt % currency(self.model.client.credit_account_balance))
 
         self._holder.value = value
         self.toggle_new_payments()

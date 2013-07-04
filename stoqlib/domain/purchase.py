@@ -354,10 +354,9 @@ class PurchaseOrder(Domain, Adaptable):
 
         if self.status not in [PurchaseOrder.ORDER_PENDING,
                                PurchaseOrder.ORDER_CONSIGNED]:
-            raise ValueError(
-                _(u'Invalid order status, it should be '
-                  u'ORDER_PENDING or ORDER_CONSIGNED, got %s') % (
-                      self.get_status_str(), ))
+            fmt = _(u'Invalid order status, it should be '
+                    u'ORDER_PENDING or ORDER_CONSIGNED, got %s')
+            raise ValueError(fmt % (self.get_status_str(), ))
 
         transaction = IPaymentTransaction(self)
         transaction.confirm()

@@ -133,7 +133,8 @@ You can find a recent version of %s on it's homepage at\n%s""") % (
         self._error(_("Missing dependency"), msg)
 
     def _too_old(self, project, url=None, required=None, found=None):
-        msg = _("""<b>%s</b> was found on your system, but it is too old for Stoq to be able to run. %s %s was found, but %s is required.
+        msg = _("""<b>%s</b> was found on your system, but it is
+too old for Stoq to be able to run. %s %s was found, but %s is required.
 
 You can find a recent version of %s on it's homepage at\n%s""") % (
             project, project, found, _tuple2str(required),
@@ -142,7 +143,8 @@ You can find a recent version of %s on it's homepage at\n%s""") % (
         self._error(_("Out-dated dependency"), msg)
 
     def _incompatible(self, project, url=None, required=None, found=None):
-        msg = _("""<b>%s</b> was found on your system, but its version, %s incompatible with Stoq, you need to downgrade to %s for Stoq to work.
+        msg = _("""<b>%s</b> was found on your system, but its version,
+%s incompatible with Stoq, you need to downgrade to %s for Stoq to work.
 
 You can find an older version of %s on it's homepage at\n%s""") % (
             project, found, _tuple2str(required),

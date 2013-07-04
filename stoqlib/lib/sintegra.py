@@ -320,9 +320,9 @@ class SintegraRegister(object):
             if arg is None:
                 pass
             elif not isinstance(arg, argtype):
-                raise TypeError(
-                    "argument %s should be of type %s but got %s" % (
-                    name, argtype_name(argtype), type(arg).__name__))
+                fmt = "argument %s should be of type %s but got %s"
+                raise TypeError(fmt % (name, argtype_name(argtype),
+                                       type(arg).__name__))
             self._values[name] = self._arg_to_string(arg, length, argtype)
             setattr(self, name, arg)
             total += length

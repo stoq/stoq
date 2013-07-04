@@ -176,7 +176,8 @@ class StoqAPI(object):
 
     def for_person_combo(self, resultset):
         """
-        This is similar to :py:func:`~stoqlib.api.StoqAPI.for_combo` but takes a class that references a :py:class:`~stoqlib.domain.person.Person`,
+        This is similar to :py:func:`~stoqlib.api.StoqAPI.for_combo` but
+        takes a class that references a :py:class:`~stoqlib.domain.person.Person`,
         such as a :py:class:`~stoqlib.domain.person.Client`,
         :py:class:`~stoqlib.domain.person.Company`,
         :py:class:`~stoqlib.domain.person.Supplier` etc.

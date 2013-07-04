@@ -400,7 +400,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     log.info("%s: Opening" % dialog_name)
 
     # FIXME: We should avoid calling dialog.run() here
-    # See http://stackoverflow.com/questions/3504739/twisted-gtk-should-i-run-gui-things-in-threads-or-in-the-reactor-thread
+    # See http://tinyurl.com/lj6ske4
     toplevel.run()
 
     retval = dialog.retval

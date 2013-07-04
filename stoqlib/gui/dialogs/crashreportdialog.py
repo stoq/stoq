@@ -71,12 +71,12 @@ class CrashReportDialog(object):
                                       type=gtk.MESSAGE_WARNING)
 
         self._dialog.set_details_label(_("Details ..."))
-        self._dialog.set_primary(
-            _('We\'r sorry to inform you that an error occurred while '
-              'running %s. Please help us improving Stoq by sending a '
-              'automatically generated report about the incident.\n'
-              'Click on details to see the report text.') % (
-                  app_info.get('name'), ), bold=False)
+        primary_fmt = _('We\'r sorry to inform you that an error occurred while '
+                        'running %s. Please help us improving Stoq by sending a '
+                        'automatically generated report about the incident.\n'
+                        'Click on details to see the report text.')
+        self._dialog.set_primary(primary_fmt % (app_info.get('name'), ),
+                                 bold=False)
 
         self._create_details()
         self._create_comments()

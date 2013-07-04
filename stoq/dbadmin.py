@@ -78,8 +78,7 @@ class StoqCommandHandler:
             manager = get_plugin_manager()
             if cmd in manager.installed_plugins_names:
                 if not len(args):
-                    raise SystemExit(
-                        "%s: %s requires at least 2 argument(s)" % (
+                    raise SystemExit("%s: %s requires at least 2 argument(s)" % (
                         self.prog_name, cmd))
                 plugin = manager.get_plugin(cmd)
                 return plugin.handle_dbadmin_command(args[0], options, args[1:])
@@ -90,8 +89,7 @@ class StoqCommandHandler:
 
         nargs = func.func_code.co_argcount - 2
         if len(args) < nargs:
-            raise SystemExit(
-                "%s: %s requires at least %d argument(s)" % (
+            raise SystemExit("%s: %s requires at least %d argument(s)" % (
                 self.prog_name, cmd, nargs))
         self.args = args
         return func(options, *args)

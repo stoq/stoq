@@ -101,10 +101,10 @@ class BranchStation(Domain):
     def on_create(self):
         # Should be done after_create()
         return
+        fmt = u"Created computer '%s' for branch '%s'"
         Event.log(self.store,
                   Event.TYPE_SYSTEM,
-                  _(u"Created computer '%s' for branch '%s'") % (
-                  self.name, self.branch.person.name))
+                  _(fmt) % (self.name, self.branch.person.name))
 
     #
     # IActive implementation

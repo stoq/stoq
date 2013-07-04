@@ -208,10 +208,10 @@ class TestConfirmSaleWizard(GUITest):
         self._check_wizard('wizard-sale-step-payment-method-bill')
 
         warning.assert_called_once_with(
-            'Could not print Bill Report', description=(
-            "Account 'Imbalance' must be a bank account.\n"
-            "You need to configure the bill payment method in "
-            "the admin application and try again"))
+            'Could not print Bill Report',
+            description=("Account 'Imbalance' must be a bank account.\n"
+                         "You need to configure the bill payment method in "
+                         "the admin application and try again"))
 
     def testStepPaymentMethodCard(self):
         self._create_wizard()

@@ -116,9 +116,8 @@ class ReceivingOrderItem(Domain):
         if self.quantity > self.get_remaining_quantity():
             raise ValueError(
                 u"Quantity received (%d) is greater than "
-                u"quantity ordered (%d)" % (
-                self.quantity,
-                self.get_remaining_quantity()))
+                u"quantity ordered (%d)" % (self.quantity,
+                                            self.get_remaining_quantity()))
 
         branch = self.receiving_order.branch
         storable = self.sellable.product_storable

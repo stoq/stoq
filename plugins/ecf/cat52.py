@@ -422,8 +422,7 @@ class CATRegister(object):
             if kwargs[name] == "":
                 pass
             elif not isinstance(kwargs[name], argtype):
-                raise TypeError(
-                    "argument %s should be of type %s but got %s" % (
+                raise TypeError("argument %s should be of type %s but got %s" % (
                     name, _argtype_name(argtype), type(kwargs[name]).__name__))
             self._values[name] = self._arg_to_string(kwargs[name], length,
                                                      argtype)

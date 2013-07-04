@@ -132,8 +132,8 @@ class PaymentGroup(Domain):
                                And(Payment.group_id == self.id,
                                    In(Payment.status,
                                       [Payment.STATUS_PAID,
-                                      Payment.STATUS_REVIEWING,
-                                      Payment.STATUS_CONFIRMED])))
+                                       Payment.STATUS_REVIEWING,
+                                       Payment.STATUS_CONFIRMED])))
 
     def _get_preview_payments(self):
         return self.store.find(Payment,

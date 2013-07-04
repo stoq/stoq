@@ -55,8 +55,8 @@ class _SellableTaxConstantsListSlave(ModelListSlave):
         quantity = sellables.count()
         if quantity > 0:
             msg = _(u"You can't remove this tax, since %d products or "
-                    "services are taxed with '%s'.") % (
-                        quantity, model.get_description())
+                    "services are taxed with '%s'.") % (quantity,
+                                                        model.get_description())
             info(msg)
         else:
             store.remove(model)
