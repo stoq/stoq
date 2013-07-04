@@ -126,6 +126,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                 column: title='Execution branch', hidden
                 column: title='Open date'
                 column: title='Approval date', hidden
+                column: title='Estimated start', hidden
+                column: title='Estimated finish', hidden
                 column: title='Finish date', hidden
                 column: title='Total'
     ShellStatusbar():

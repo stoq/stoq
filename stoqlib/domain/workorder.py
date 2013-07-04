@@ -1176,6 +1176,8 @@ class WorkOrderView(Viewable):
     equipment = WorkOrder.equipment
     open_date = WorkOrder.open_date
     approve_date = WorkOrder.approve_date
+    estimated_start = WorkOrder.estimated_start
+    estimated_finish = WorkOrder.estimated_finish
     finish_date = WorkOrder.finish_date
     is_rejected = WorkOrder.is_rejected
 
