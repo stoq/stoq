@@ -34,6 +34,7 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import InventoryItemsView
+from stoqlib.domain.sale import ReturnedSaleItemsView
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
 from stoqlib.domain.views import (ReceivingItemView, SaleItemsView,
@@ -74,6 +75,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.loan_list.set_columns(self._get_loan_columns())
         self.decrease_list.set_columns(self._get_decrease_columns())
         self.inventory_list.set_columns(self._get_inventory_columns())
+        self.returned_list.set_columns(self._get_returned_columns())
 
         items = self.store.find(ReceivingItemView, sellable_id=self.model.id)
 
@@ -93,6 +95,9 @@ class ProductStockHistoryDialog(BaseEditor):
 
         self.inventory_list.add_list(
             InventoryItemsView.find_by_product(self.store, self.model.product))
+
+        self.returned_list.add_list(
+            self.store.find(ReturnedSaleItemsView, sellable_id=self.model.id))
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
@@ -209,6 +214,19 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=Decimal, format_func=format_quantity),
                 Column("product_cost", title=_("Cost"), data_type=currency,
                        format_func=get_formatted_cost)]
+
+    def _get_returned_columns(self):
+        return [IdentifierColumn("returned_identifier", sorted=True),
+                Column("reason", title=_(u"Reason"),
+                       data_type=str, expand=True),
+                Column("quantity", title=_(u"Quantity"),
+                       data_type=Decimal, format_func=format_quantity),
+                Column("invoice_number", title=_(u"Invoice"),
+                       data_type=int, visible=False),
+                Column("price", title=_(u"Price"), data_type=currency,
+                       format_func=get_formatted_cost),
+                Column("return_date", title=_(u"Return Date"),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT)]
 
     #
     # BaseEditor Hooks

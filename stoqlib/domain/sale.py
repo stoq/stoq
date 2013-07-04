@@ -1565,11 +1565,13 @@ class ReturnedSaleItemsView(Viewable):
     # returned and original sale
     _sale_id = Sale.id
     _new_sale_id = ReturnedSale.new_sale_id
+    returned_identifier = ReturnedSale.identifier
     invoice_number = ReturnedSale.invoice_number
     return_date = ReturnedSale.return_date
     reason = ReturnedSale.reason
 
     # sellable
+    sellable_id = ReturnedSaleItem.sellable_id
     code = Sellable.code
     description = Sellable.description
 
