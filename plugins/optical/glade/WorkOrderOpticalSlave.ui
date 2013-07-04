@@ -1169,7 +1169,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton1">
+                          <object class="GtkCheckButton" id="client_frame_check">
                             <property name="label" translatable="yes">Armação do cliente</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>

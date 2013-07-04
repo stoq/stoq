@@ -101,7 +101,8 @@ class OpticalUI(object):
         self._ui = None
 
     def _add_work_order_editor_slave(self, editor, model, store):
-        slave = WorkOrderOpticalSlave(store, model, show_finish_date=False)
+        slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
+                                      visual_mode=editor.visual_mode)
         editor.add_extra_tab('Ótico', slave)
 
     def _add_product_slave(self, editor, model, store):
@@ -129,7 +130,6 @@ class OpticalUI(object):
         # Use type() instead of isinstance so tab does not appear on subclasses
         # (unless thats the desired effect)
         editor_type = type(editor)
-
         if editor_type is ProductEditor:
             self._add_product_slave(editor, model, store)
         elif editor_type is WorkOrderEditor:

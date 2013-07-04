@@ -159,7 +159,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         'frame_bridge': (5, 25, 1, Decimal('0.1'), 1),
     }
 
-    def __init__(self, store, workorder, show_finish_date=False):
+    def __init__(self, store, workorder, show_finish_date=False,
+                 visual_mode=False):
         """
         :param workorder: The |workorder| this slave is editing. We will
           actually edit another object, but the |workorder| will be used to
@@ -174,7 +175,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         # This is used to correctly triangulate the values of the spherical
         # widgets
         self._update_order = {'re': [], 'le': []}
-        BaseEditorSlave.__init__(self, store, model)
+        BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     def _create_model(self, store):
         model = store.find(OpticalWorkOrder,
@@ -261,6 +262,14 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             self.estimated_finish_lbl.hide()
             self.estimated_finish.hide()
 
+    def update_visual_mode(self):
+        for widget in [self.prescription_date, self.patient, self.lens_type,
+                       self.frame_type, self.medic_combo, self.medic_create,
+                       self.estimated_finish, self.distance_box1,
+                       self.distance_box2, self.near_box, self.frame_box]:
+
+            widget.set_sensitive(False)
+
     #
     #   Callbacks
     #
@@ -290,6 +299,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
                                    step_incr)
 
     def on_lens_type__changed(self, widget):
+        if self.visual_mode:
+            return
         has_frame = self.model.lens_type == OpticalWorkOrder.LENS_TYPE_OPHTALMIC
         self.frame_box.set_sensitive(has_frame)
         for name in ['distance_pd', 'near_pd', 'distance_height']:
