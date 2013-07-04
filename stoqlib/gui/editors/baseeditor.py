@@ -34,7 +34,7 @@ from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.base.dialogs import RunnableView, BasicDialog, run_dialog
-from stoqlib.gui.events import EditorSlaveCreateEvent
+from stoqlib.gui.events import EditorSlaveCreateEvent, EditorCreateEvent
 from stoqlib.lib.decorators import public
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -332,6 +332,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
 
         self.register_validate_function(self._validation_function)
         self.force_validation()
+        EditorCreateEvent.emit(self, model, store, visual_mode)
 
     def _get_title_format(self):
         if self.visual_mode:

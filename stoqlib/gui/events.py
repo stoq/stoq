@@ -90,19 +90,36 @@ class RunDialogEvent(Event):
 
 
 class DialogCreateEvent(Event):
-    """Emitted when a dialog is instantialized
+    """Emitted when a dialog is instantiated
 
     :param dialog: an instance of :class:`stoqlib.gui.base.dialogs.BasicDialog`
     """
 
 
+class EditorCreateEvent(Event):
+    """Emitted when an editor is instantiated.
+
+    Note that since a BaseEditor is also a BaseEditorSlave, the
+    EditorSlaveCreateEvent will also be emitted. The main difference from this
+    event to the other one, is that when this event is emitted, the editor
+    already has a main_window property that can be used.
+
+    :param editor: a subclass of
+        :class:`stoqlib.gui.editor.baseeditor.BaseEditor`
+    :param model: a subclass of :class:`stoqlib.domain.base.Domain`
+    :param store: the database store used in editor and model
+    :param visual_mode: a bool defining if the editor was created
+        on visual_mode.
+    """
+
+
 class EditorSlaveCreateEvent(Event):
-    """Emitted when a dialog is instantialized
+    """Emitted when a editor slave is instantiated
 
     :param editor: a subclass of
         :class:`stoqlib.gui.editor.baseeditor.BaseEditorSlave`
     :param model: a subclass of :class:`stoqlib.domain.base.Domain`
-    :param conn: the connection used in editor and model
+    :param store: the database store used in editor and model
     :param visual_mode: a bool defining if the editor was created
         on visual_mode.
     """
