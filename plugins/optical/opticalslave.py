@@ -393,12 +393,20 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             widget.update(near - distance)
         elif 'distance_spherical' in last and 'addition' in last:
             # update near
-            widget = getattr(self, eye + '_near_spherical')
-            widget.update(distance + addition)
+            near = addition and (distance + addition)
+            getattr(self, eye + '_near_spherical').update(near)
         elif 'near_spherical' in last and 'addition' in last:
             # update distance
-            widget = getattr(self, eye + '_distance_spherical')
-            widget.update(near - addition)
+            distance = addition and (near - addition)
+            getattr(self, eye + '_distance_spherical').update(distance)
+
+        if field == 'addition' and addition == 0:
+            if near:
+                getattr(self, eye + '_distance_cylindrical').update(0)
+                getattr(self, eye + '_distance_axis').update(0)
+            else:
+                getattr(self, eye + '_near_cylindrical').update(0)
+                getattr(self, eye + '_near_axis').update(0)
 
     def _after_spherical_field_changed(self, widget, eye, name):
         # This is called after near spherical, distance spherical or addition is
