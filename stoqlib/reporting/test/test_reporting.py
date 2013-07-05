@@ -31,7 +31,6 @@ from nose.exc import SkipTest
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
-from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
@@ -39,6 +38,7 @@ from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           OutCheckPaymentView)
 from stoqlib.domain.person import CallsView
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.sale import Sale, SaleView, ReturnedSaleItemsView
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
@@ -54,6 +54,7 @@ from stoqlib.reporting.production import ProductionOrderReport
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
+from stoqlib.reporting.salereturn import SaleReturnReport
 from stoqlib.reporting.till import TillHistoryReport, TillDailyMovementReport
 from stoqlib.reporting.test.reporttest import ReportTest
 from stoqlib.reporting.workorder import WorkOrdersReport
@@ -101,6 +102,50 @@ class TestReport(ReportTest):
 
         self._diff_expected(BillCheckPaymentReport, 'bill-check-receivable-report',
                             search.results, list(search.results))
+
+    def testSaleReturnReport(self):
+        today = datetime.date(2013, 1, 1)
+
+        client = self.create_client()
+
+        # new sale
+        sale = self.create_sale(branch=get_current_branch(self.store))
+        sale.identifier = 123
+        sale.client = client
+        sale.open_date = today
+        sale.discount_value = Decimal('15')
+        sale.surcharge_value = Decimal('8')
+
+        # Product
+        item_ = self.create_sale_item(sale, product=True)
+        self.create_storable(item_.sellable.product, sale.branch, 1)
+
+        # Payments
+        payment = self.add_payments(sale, date=today)[0]
+        payment.identifier = 999
+        payment.group.payer = client.person
+
+        sale.order()
+        sale.confirm()
+        sale.group.pay()
+
+        payment.paid_date = today
+
+        date = datetime.date(2013, 2, 2)
+
+        # return sale
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
+        returned_sale.return_date = date
+
+        model = self.store.find(SaleView,
+                                SaleView.id == returned_sale.sale.id).one()
+
+        returned_items = list(ReturnedSaleItemsView.find_by_sale(self.store,
+                                                                 sale))
+
+        self._diff_expected(SaleReturnReport, 'sale-return-report', self.store,
+                            client, model, returned_items)
 
     def testInPaymentReceipt(self):
         payer = self.create_client()
