@@ -1,0 +1,268 @@
+
+
+<html>
+
+  <head>
+    
+    <title>Daily Movement</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <link rel="stylesheet" href="base/base.css" type="text/css" />
+  <link rel="stylesheet" href="till/till.css" type="text/css" />
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Daily Movement"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+  <style>
+    #items .list td:nth-child(3),
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5) {
+      text-align: right;
+    }
+  </style>
+
+
+    <style>
+      #title .logo {
+        background-image: url('logo.png')
+      }
+    </style>
+  </head>
+
+  <body>
+    
+
+
+
+
+<div class="page">
+  
+    <header>
+      <div id="title">
+        <h1>Daily Movement</h1>
+        <span class="subtitle">Till movement on 2013-07-05</span>
+        <div class="logo"></div>
+      </div>
+    </header>
+
+
+<h3>Input Payments</h3>
+<h4>Sales</h4>
+    <table>
+      <thead>
+        <tr class="align-left">
+          <td>Code</td>
+          <td>Sales Person</td>
+          <td>Client</td>
+          <td class="align-right">Sale Value</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+          <tr class="highlight">
+            <td>01000</td>
+            <td>SalesPerson</td>
+            <td>Not Specified</td>
+            <td class="align-right">$100.00</td>
+          </tr>
+
+          <tr>
+            <td colspan="4">
+            <table class="subtable">
+              <thead>
+                <tr class="align-left">
+                  <td>Code</td>
+                  <td>Method</td>
+                  <td>Description</td>
+                  <td class="align-right">Payment Value</td>
+                </tr>
+              </thead>
+              <tbody>
+
+              <tr class="align-left">
+                <td>01010</td>
+                <td>Money</td>
+                <td>
+                    1/1 Money for sale 01000
+                <td class="align-right">$100.00</td>
+              </tr>
+              </tbody>
+            </table>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+<h4>Lonely Payments</h4>
+
+    <table class="list">
+      <thead>
+        <tr>
+          <tr class="align-left">
+            <td>Code</td>
+            <td>Metdod</td>
+            <td>Description</td>
+            <td>Due Date</td>
+            <td class="align-right">Payment Value</td>
+          </tr>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+          <tr class="align-left">
+           <td>01001</td>
+           <td>Money</td>
+           <td>Test receivable account</td>
+           <td>07/05/13</td>
+           <td class="align-right">$100.00</td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<h3>Output Payments</h3>
+
+
+
+<h4>Lonely Payments</h4>
+
+    <table class="list">
+      <thead>
+        <tr>
+          <tr class="align-left">
+            <td>Code</td>
+            <td>Metdod</td>
+            <td>Description</td>
+            <td>Due Date</td>
+            <td class="align-right">Payment Value</td>
+          </tr>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+          <tr class="align-left">
+           <td>01002</td>
+           <td>Money</td>
+           <td>Test payable account</td>
+           <td>07/05/13</td>
+           <td class="align-right">$100.00</td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+<h4>Per Payment Method</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>Payment Method</td>
+          <td class="align-right">Income Total</td>
+          <td class="align-right">Outcome Total</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        
+            <tr>
+                <td>Money</td>
+                <td class="align-right">$200.00</td>
+                <td class="align-right">$100.00</td>
+            </tr>
+            
+
+            <tr class="summary">
+                <td><b>Total:</b></td>
+                <td  class="align-right"><b>$200.00</b></td>
+                <td  class="align-right"><b>$100.00</b></td>
+            </tr>
+
+      </tbody>
+    </table>
+
+<h4>Per Card Provider</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>Provider Name</td>
+          <td class="align-right">Income Total</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        
+
+            <tr class="summary">
+                <td><b>Total:</b></td>
+                <td class="align-right"><b>$ 0.00</b></td>
+            </tr>
+
+      </tbody>
+    </table>
+
+
+</div> <!-- end div.page -->
+
+  </body>
+
+</html>
+
+
+
+

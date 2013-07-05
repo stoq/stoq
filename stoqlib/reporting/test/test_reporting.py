@@ -54,7 +54,7 @@ from stoqlib.reporting.production import ProductionOrderReport
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
-from stoqlib.reporting.till import TillHistoryReport
+from stoqlib.reporting.till import TillHistoryReport, TillDailyMovementReport
 from stoqlib.reporting.test.reporttest import ReportTest
 from stoqlib.reporting.workorder import WorkOrdersReport
 
@@ -226,6 +226,58 @@ class TestReport(ReportTest):
 
         self._diff_expected(TillHistoryReport, 'till-history-report',
                             dialog.results, list(dialog.results))
+
+    def testTillDailyMovement(self):
+        # create sale payment
+        sale = self.create_sale()
+        sellable = self.create_sellable()
+        sale.add_sellable(sellable, price=100)
+        sale.identifier = 1000
+        sale.order()
+
+        method = PaymentMethod.get_by_name(self.store, u'money')
+        till = Till.get_last_opened(self.store)
+        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+                                        sale.get_sale_subtotal(),
+                                        till=till)
+        payment.identifier = 1010
+        sale.confirm()
+        sale.group.pay()
+
+        # create lonely input payment
+        payer = self.create_client()
+        address = self.create_address()
+        address.person = payer.person
+
+        method = PaymentMethod.get_by_name(self.store, u'money')
+        group = self.create_payment_group()
+        branch = self.create_branch()
+        payment_lonely_input = method.create_payment(Payment.TYPE_IN, group, branch, Decimal(100))
+        payment_lonely_input.description = u"Test receivable account"
+        payment_lonely_input.group.payer = payer.person
+        payment_lonely_input.set_pending()
+        payment_lonely_input.pay()
+        payment_lonely_input.identifier = 1001
+
+        # create purchase payment
+        drawee = self.create_supplier()
+        address = self.create_address()
+        address.person = drawee.person
+
+        method = PaymentMethod.get_by_name(self.store, u'money')
+        group = self.create_payment_group()
+        branch = self.create_branch()
+        payment = method.create_payment(Payment.TYPE_OUT, group, branch, Decimal(100))
+        payment.description = u"Test payable account"
+        payment.group.recipient = drawee.person
+        payment.set_pending()
+        payment.pay()
+        payment.identifier = 1002
+
+        # create lonely output payment
+        today = datetime.date.today()
+        self._diff_expected(TillDailyMovementReport,
+                            'till-daily-movement-report', self.store, today)
 
     def testSalesPersonReport(self):
         sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
