@@ -24,6 +24,7 @@
 """ This module test reporties """
 
 import datetime
+import mock
 from decimal import Decimal
 
 from nose.exc import SkipTest
@@ -47,6 +48,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
 from stoqlib.reporting.callsreport import CallsReport
+from stoqlib.reporting.clientcredit import ClientCreditReport
 from stoqlib.reporting.payment import (BillCheckPaymentReport,
                                        PaymentFlowHistoryReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
@@ -129,8 +131,8 @@ class TestReport(ReportTest):
         sale.confirm()
         sale.group.pay()
 
-        payment.paid_date = today
         sale.confirm_date = today
+        payment.paid_date = today
 
         date = datetime.date(2013, 2, 2)
 
@@ -438,6 +440,14 @@ class TestReport(ReportTest):
 
         self._diff_expected(CallsReport, 'calls-report',
                             search.results, list(search.results), person=person)
+
+    def testClientCreditReport(self):
+        client = self.create_client()
+        client.credit_limit = 100
+
+        with mock.patch.object(ClientCreditReport, 'get_generated_date') as date:
+            date.return_value = datetime.date(2013, 1, 1)
+            self._diff_expected(ClientCreditReport, 'client-credit-report', client)
 
     def testWorkOrdersReport(self):
         from stoqlib.gui.search.workordersearch import WorkOrderSearch
