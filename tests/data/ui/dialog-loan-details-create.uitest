@@ -1,0 +1,24 @@
+dialog: LoanDetailsDialog
+GtkVBox(details_vbox):
+  GtkTable(table1, fill=True, padding=6):
+    ProxyLabel(kiwilabel1): 'Open Date:'
+    ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
+    GtkLabel(label1): 'Confirm Date:'
+    ProxyLabel(confirm_date): '<span ></span>'
+    ProxyLabel(kiwilabel3): 'Branch:'
+    ProxyLabel(branch_name): '<span >Stoq Roupas e Acess\xc3\xb3rios Ltda</span>'
+    GtkLabel(label2): 'Expire Date:'
+    ProxyLabel(expire_date): '<span ></span>'
+    ProxyLabel(kiwilabel5): 'Responsible:'
+    ProxyLabel(responsible_name): '<span >Administrator</span>'
+    ProxyLabel(kiwilabel6): 'Client:'
+    ProxyLabel(client_name): '<span ></span>'
+  GtkVBox(products_vbox, expand=True, fill=True, padding=3):
+    ObjectList(product_list, expand=True, fill=True):
+      column: title='Code'
+      column: title='Description', expand
+      column: title='Quantity'
+      column: title='Sold'
+      column: title='Returned'
+      column: title='Price'
+      row: u'', u'Description', Decimal('1.000'), Decimal('0.000'), Decimal('0.000'), <currency $10>
