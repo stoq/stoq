@@ -22,10 +22,15 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
+from stoqlib.gui.dialogs.creditdialog import CreditInfoListDialog
+from stoqlib.gui.search.clientsalaryhistorysearch import ClientSalaryHistorySearch
 from stoqlib.gui.slaves.clientslave import ClientCreditSlave, ClientStatusSlave
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.clientcredit import ClientCreditReport
 
 _ = stoqlib_gettext
 
@@ -116,3 +121,32 @@ class TestClientSlave(GUITest):
         # checks invalid salary
         self.assertEquals("Salary can't be lower than 0.",
                           str(slave.salary.emit('validate', -10)))
+
+    @mock.patch('stoqlib.gui.slaves.clientslave.run_dialog')
+    def test_salary_history(self, run_dialog):
+        client = self.create_client()
+        slave = ClientCreditSlave(self.store, client)
+
+        self.click(slave.salary_history_button)
+        run_dialog.assert_called_once_with(ClientSalaryHistorySearch,
+                                           slave.get_toplevel().get_toplevel(),
+                                           self.store, client=client)
+
+    @mock.patch('stoqlib.gui.slaves.clientslave.run_dialog')
+    def test_credit_transactions(self, run_dialog):
+        client = self.create_client()
+        slave = ClientCreditSlave(self.store, client)
+
+        self.click(slave.credit_transactions_button)
+        run_dialog.assert_called_once_with(CreditInfoListDialog,
+                                           slave.get_toplevel().get_toplevel(),
+                                           self.store, client)
+
+    @mock.patch('stoqlib.gui.slaves.clientslave.print_report')
+    def test_print_credit_letter(self, print_report):
+        client = self.create_client()
+        slave = ClientCreditSlave(self.store, client)
+
+        self.click(slave.print_credit_letter)
+
+        print_report.assert_called_once_with(ClientCreditReport, client)
