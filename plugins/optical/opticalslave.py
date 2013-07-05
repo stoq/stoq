@@ -36,8 +36,8 @@ from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
-from optical.opticaleditor import MedicEditor
-from optical.opticaldomain import OpticalWorkOrder, OpticalProduct, OpticalMedic
+from .opticaldomain import OpticalWorkOrder, OpticalProduct, OpticalMedic
+from .opticaleditor import MedicEditor
 
 _ = stoqlib_gettext
 

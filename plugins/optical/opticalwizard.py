@@ -57,8 +57,8 @@ from stoqlib.lib.formatters import (format_quantity,
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
-from optical.opticalslave import WorkOrderOpticalSlave
-from optical.opticaldomain import OpticalWorkOrder
+from .opticaldomain import OpticalWorkOrder
+from .opticalslave import WorkOrderOpticalSlave
 
 _ = stoqlib_gettext
 

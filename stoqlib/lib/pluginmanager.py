@@ -167,6 +167,11 @@ class PluginManager(object):
                             "interface" % (plugin, ))
         self._plugins[plugin.name] = plugin
 
+        if library.uninstalled:
+            gladedir = os.path.join('plugins', plugin.name, 'glade')
+            if os.path.exists(gladedir):
+                library.add_global_resource('glade', gladedir)
+
     def activate_plugin(self, plugin_name):
         """Activates a plugin
 

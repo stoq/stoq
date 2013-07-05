@@ -21,10 +21,11 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
-from optical.opticaldomain import OpticalMedic
 
+from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.lib.translation import stoqlib_gettext
+
+from .opticaldomain import OpticalMedic
 
 _ = stoqlib_gettext
 
@@ -43,7 +44,7 @@ class MedicEditor(BasePersonRoleEditor):
         return medic
 
     def setup_slaves(self):
-        from optical.opticalslave import MedicDetailsSlave
+        from .opticalslave import MedicDetailsSlave
         BasePersonRoleEditor.setup_slaves(self)
 
         tab_text = _('Medic Details')
