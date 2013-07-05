@@ -65,7 +65,7 @@ coverage: clean
 	python runtests.py \
 	    --with-xcoverage \
 	    --with-xunit \
-	    --cover-package=stoq,stoqlib \
+	    --cover-package=stoq,stoqlib,plugins \
 	    --cover-erase \
 	    --cover-inclusive \
 	    $(TEST_MODULES)
