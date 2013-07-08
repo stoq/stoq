@@ -213,9 +213,8 @@ class SchemaMigration(object):
                     continue
                 patches_to_apply.append(patch)
 
-            functions = environ.get_resource_filename('stoq', 'sql', 'functions.sql')
-            if db_settings.execute_sql(functions) != 0:
-                error('Failed to create functions')
+            from stoqlib.database.admin import create_database_functions
+            create_database_functions()
 
             log.info("Applying %d patches" % (len(patches_to_apply), ))
             create_log.info("PATCHES:%d" % (len(patches_to_apply), ))

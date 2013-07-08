@@ -32,6 +32,7 @@ import glob
 import logging
 import os
 import sys
+import tempfile
 
 from kiwi.component import provide_utility
 from kiwi.currency import currency
@@ -55,6 +56,7 @@ from stoqlib.importers.invoiceimporter import InvoiceImporter
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.message import error
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
+from stoqlib.lib.template import render_template_string
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -302,14 +304,24 @@ def _get_latest_schema():
     return schemas[-1]
 
 
+def create_database_functions():
+    """Create some functions we define on the database
+
+    This will simply read data/sql/functions.sql and execute it
+    """
+    with tempfile.NamedTemporaryFile(suffix='stoqfunctions-') as tmp_f:
+        with open(environ.find_resource('sql', 'functions.sql')) as f:
+            tmp_f.write(render_template_string(f.read()))
+            tmp_f.flush()
+        if db_settings.execute_sql(tmp_f.name) != 0:
+            error(u'Failed to create functions')
+
+
 def create_base_schema():
     log.info('Creating base schema')
     create_log.info("SCHEMA")
 
-    # Functions
-    functions = environ.find_resource('sql', 'functions.sql')
-    if db_settings.execute_sql(functions) != 0:
-        error(u'Failed to create functions')
+    create_database_functions()
 
     # A Base schema shared between all RDBMS implementations
     schema = _get_latest_schema()

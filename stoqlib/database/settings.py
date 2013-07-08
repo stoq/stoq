@@ -179,6 +179,28 @@ def test_local_database():
         return None
 
 
+def get_database_version(store):
+    """Gets the database version as a tuple
+
+    :param store: a store
+    :returns: the version as a 3 item tuple
+    :raises: :exc:`stoqlib.exceptions.DatabaseError` if any error ocour
+        in the process
+    """
+    full_version = store.execute('SELECT VERSION();').get_one()[0]
+    server_version = full_version.split(' ')[1].split('.')
+
+    try:
+        version_tuple = (int(server_version[0]),
+                         int(server_version[1]),
+                         int(server_version[2]))
+    except ValueError:
+        raise DatabaseError(
+            "Error getting server version: %s" % (server_version, ))
+
+    return version_tuple
+
+
 class DatabaseSettings(object):
     """DatabaseSettings contains all the information required to connect to
     a database, such as hostname, username and password.
@@ -706,14 +728,10 @@ class DatabaseSettings(object):
         :param store: a store
         """
         if self.rdbms == 'postgres':
-            version = store.execute('SELECT VERSION();').get_one()[0]
-            server_version = version.split(' ', 2)[1]
-            assert server_version.count('.') == 2, version
-            parts = server_version.split(".")[:2]
             try:
-                svs = map(int, parts)
-            except ValueError:
-                log.info("Error getting server version: %s" % (server_version, ))
+                svs = get_database_version(store)
+            except DatabaseError as e:
+                log.info(str(e))
                 return
 
             # Client version
@@ -745,6 +763,7 @@ class DatabaseSettings(object):
             cvs = map(int, client_version.split('.'))[:2]
 
             if svs != cvs:
+                server_version = '.'.join(svs)
                 warning(_(u"Problem with PostgreSQL version"),
                         _(u"The version of the PostgreSQL database server (%s) and the "
                           "postgres client tools (%s) differ. I will let you use "

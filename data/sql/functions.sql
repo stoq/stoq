@@ -22,7 +22,14 @@
 --
 -- Stoq SQL function library
 --
--- This needs to work in PostgreSQL 8.4.
+
+<%!
+  from stoqlib.database.settings import get_database_version, db_settings
+
+  store = db_settings.create_store()
+  db_version = get_database_version(store)
+  store.close()
+%>
 
 --
 -- Source: http://wiki.postgresql.org/wiki/CREATE_OR_REPLACE_LANGUAGE
@@ -49,32 +56,47 @@ SELECT
 DROP FUNCTION stoq_create_language_plpgsql();
 
 
---
--- This is used to remove accents from a string
---
--- Source: http://wiki.postgresql.org/wiki/Strip_accents_from_strings,_and_output_in_lowercase
--- Author: Thom Brown
---
--- Source: http://lehelk.com/2011/05/06/script-to-remove-diacritics/
---
+% if db_version[0] >= 9:
+  -- Postgres 9.0+
 
-CREATE OR REPLACE FUNCTION stoq_normalize_string(text) RETURNS text AS $$
-DECLARE
-    input_string text := $1;
-BEGIN
+  -- Enable unaccent extension
+  CREATE EXTENSION IF NOT EXISTS unaccent;
 
-input_string := LOWER(input_string);
+  CREATE OR REPLACE FUNCTION stoq_normalize_string(input_string text) RETURNS text AS $$
+    BEGIN
+      input_string := LOWER(input_string);
+      return unaccent(input_string);
+    END;
+  $$ LANGUAGE plpgsql IMMUTABLE;
 
--- These are the must common cases for latin based character sets,
--- and based on code suggested by django:
--- https://django-orm.readthedocs.org/en/latest/orm-pg-fulltext.html
-input_string := translate(input_string, 'àáâäãåāăą', 'aaaaaaaaa');
-input_string := translate(input_string, 'èéêëēĕėęě', 'eeeeeeeee');
-input_string := translate(input_string, 'ìíîïĩīĭ', 'iiiiiii');
-input_string := translate(input_string, 'òóôöõōŏő', 'oooooooo');
-input_string := translate(input_string, 'ùúûüũūŭů', 'uuuuuuuu');
-input_string := translate(input_string, 'ñç', 'nc');
+% else:
+  -- Postgres 8.4
 
-return input_string;
-END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+  --
+  -- This is used to remove accents from a string
+  --
+  -- Source: http://wiki.postgresql.org/wiki/Strip_accents_from_strings,_and_output_in_lowercase
+  -- Author: Thom Brown
+  --
+  -- Source: http://lehelk.com/2011/05/06/script-to-remove-diacritics/
+  --
+
+  CREATE OR REPLACE FUNCTION stoq_normalize_string(input_string text) RETURNS text AS $$
+    BEGIN
+      input_string := LOWER(input_string);
+
+      -- These are the must common cases for latin based character sets,
+      -- and based on code suggested by django:
+      -- https://django-orm.readthedocs.org/en/latest/orm-pg-fulltext.html
+      input_string := translate(input_string, 'àáâäãåāăą', 'aaaaaaaaa');
+      input_string := translate(input_string, 'èéêëēĕėęě', 'eeeeeeeee');
+      input_string := translate(input_string, 'ìíîïĩīĭ', 'iiiiiii');
+      input_string := translate(input_string, 'òóôöõōŏő', 'oooooooo');
+      input_string := translate(input_string, 'ùúûüũūŭů', 'uuuuuuuu');
+      input_string := translate(input_string, 'ñç', 'nc');
+
+      return input_string;
+    END;
+  $$ LANGUAGE plpgsql IMMUTABLE;
+
+% endif
