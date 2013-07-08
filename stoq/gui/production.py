@@ -131,7 +131,7 @@ class ProductionApp(ShellApp):
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         self.refresh()
         self._update_widgets()
         self.check_open_inventory()

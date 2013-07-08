@@ -139,10 +139,12 @@ class ShellApp(GladeDelegate):
         in the instance.
         """
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         """This is when you switch to an application.
+
         You should setup widget sensitivity here and refresh lists etc
-        :params params: an dictionary with optional parameters.
+
+        :param refresh: if we should refresh the search
         """
 
     def setup_focus(self):

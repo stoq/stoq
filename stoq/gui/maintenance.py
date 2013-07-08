@@ -278,7 +278,7 @@ class MaintenanceApp(ShellApp):
 
         self.results.set_cell_data_func(self._on_results__cell_data_func)
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         self.window.NewToolItem.set_tooltip(
             _(u"Create a new work order"))
         self.window.SearchToolItem.set_tooltip(

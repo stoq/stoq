@@ -111,7 +111,7 @@ class InventoryApp(ShellApp):
         self.window.Print.set_tooltip(
             _("Print a report of these inventories"))
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         # Avoid letting this sensitive if has-rows is never emitted
         self.refresh()
         self._update_widgets()

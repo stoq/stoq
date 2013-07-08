@@ -178,7 +178,7 @@ class StockApp(ShellApp):
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         self.window.NewToolItem.set_tooltip(
             _("Create a new receiving order"))
         self.window.SearchToolItem.set_tooltip(

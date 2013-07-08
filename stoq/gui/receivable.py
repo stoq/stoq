@@ -148,11 +148,10 @@ class ReceivableApp(BaseAccountWindow):
             _("Print a report of this payments"))
         self.popup = self.uimanager.get_widget('/ReceivableSelection')
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         self._update_widgets()
 
-        # FIXME: double negation is weird here
-        if not params.get('no-refresh'):
+        if refresh:
             self.refresh()
 
     def deactivate(self):

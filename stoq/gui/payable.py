@@ -142,9 +142,8 @@ class PayableApp(BaseAccountWindow):
         self.window.Print.set_tooltip(
             _("Print a report of these payments"))
 
-    def activate(self, params):
-        # FIXME: double negation is weird here
-        if not params.get('no-refresh'):
+    def activate(self, refresh=True):
+        if refresh:
             self.refresh()
         self._update_widgets()
 

@@ -374,7 +374,7 @@ class AdminApp(ShellApp):
             if not action.get_visible():
                 self.tasks.hide_item(task)
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         # Admin app doesn't have anything to print/export
         for widget in [self.window.Print,
                        self.window.ExportSpreadSheet]:

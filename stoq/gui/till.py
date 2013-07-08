@@ -162,7 +162,7 @@ class TillApp(ShellApp):
         return _('[%s] - Till') % (
             api.get_current_branch(self.store).get_description(), )
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         self.window.add_new_items([self.TillAddCash,
                                    self.TillRemoveCash])
         self.window.add_search_items([self.SearchFiscalTillOperations,

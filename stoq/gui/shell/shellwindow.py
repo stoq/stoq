@@ -586,7 +586,7 @@ class ShellWindow(GladeDelegate):
     # Public API
     #
 
-    def show_app(self, app, app_window, params=None):
+    def show_app(self, app, app_window, **params):
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
                                                gtk.PACK_START)
@@ -615,7 +615,7 @@ class ShellWindow(GladeDelegate):
         # so that the plugins can have the chance to modify the application
         # before any other event is emitted.
         StartApplicationEvent.emit(app.app_name, app)
-        app.activate(params or {})
+        app.activate(**params)
 
         self.uimanager.ensure_update()
         self.current_app = app
@@ -815,14 +815,13 @@ class ShellWindow(GladeDelegate):
         self.toplevel.destroy()
         self.hide()
 
-    def run_application(self, app_name, params=None):
+    def run_application(self, app_name, **params):
         """
         Load and show an application in a shell window.
 
         :param ShellWindow shell_window: shell window to run application in
         :param str appname: the name of the application to run
-        :param dict params: Optionally a dictionary with parameters to pass
-          to the application
+        :param params: extra arguments passed to the application
         :returns: the shell application or ``None`` if the user doesn't have
           access to open the application
         :rtype: ShellApp
@@ -840,7 +839,7 @@ class ShellWindow(GladeDelegate):
         # FIXME: We should remove the toplevel windows of all ShellApp's
         #        glade files, as we don't use them any longer.
         shell_app_window = shell_app.get_toplevel()
-        self.show_app(shell_app, shell_app_window.get_child(), params)
+        self.show_app(shell_app, shell_app_window.get_child(), **params)
         shell_app_window.hide()
 
         return shell_app

@@ -390,9 +390,10 @@ class FinancialApp(ShellApp):
         self._create_initial_page()
         self._refresh_accounts()
 
-    def activate(self, params):
-        for page in self._pages.values():
-            page.refresh()
+    def activate(self, refresh=True):
+        if refresh:
+            for page in self._pages.values():
+                page.refresh()
         self._update_actions()
         self._update_tooltips()
         self.window.SearchToolItem.set_sensitive(False)

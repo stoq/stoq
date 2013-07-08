@@ -204,14 +204,14 @@ class PurchaseApp(ShellApp):
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         self.window.NewToolItem.set_tooltip(
             _("Create a new purchase order"))
         self.window.SearchToolItem.set_tooltip(
             _("Search for purchase orders"))
         self.window.Print.set_tooltip(
             _("Print a report of these orders"))
-        if not params.get('no-refresh'):
+        if refresh:
             self._update_view()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.check_open_inventory()

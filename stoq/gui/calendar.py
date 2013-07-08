@@ -378,7 +378,7 @@ class CalendarApp(ShellApp):
         self._calendar.show()
         self.window.Print.set_tooltip(_("Print this calendar"))
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         self.window.SearchToolItem.set_sensitive(False)
         # FIXME: Are we 100% sure we can always print something?
         # self.window.Print.set_sensitive(True)

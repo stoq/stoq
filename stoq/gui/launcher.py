@@ -74,7 +74,7 @@ class LauncherApp(ShellApp):
             self.iconview.grab_focus()
         self.iconview_vbox.show()
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         # Menu
         self.window.ChangePassword.set_visible(True)
         self.window.SignOut.set_visible(True)

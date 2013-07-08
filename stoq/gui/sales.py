@@ -218,7 +218,7 @@ class SalesApp(ShellApp):
             self.SearchDelivery])
         self.window.Print.set_tooltip(_("Print a report of these sales"))
 
-    def activate(self, params):
+    def activate(self, refresh=True):
         self.check_open_inventory()
         self._update_toolbar()
 
