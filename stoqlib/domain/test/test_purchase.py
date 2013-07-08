@@ -80,6 +80,18 @@ class TestPurchaseOrder(DomainTest):
         for payment in payments:
             self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
 
+    def testRemoveItem(self):
+        purchase_order = self.create_purchase_order()
+        self.create_purchase_order_item(order=purchase_order)
+
+        items = purchase_order.get_items()
+
+        purchase_order.remove_item(items.one())
+
+        items = purchase_order.get_items()
+
+        self.assertFalse(items)
+
     def testCancelPaid(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)
@@ -258,3 +270,17 @@ class TestQuoteGroup(DomainTest):
         self.assertTrue(quotations[0].is_closed())
 
         self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
+
+    def testRemoveItem(self):
+        order = self.create_purchase_order()
+        quote = QuoteGroup(store=self.store, branch=order.branch)
+        order.status = PurchaseOrder.ORDER_QUOTING
+        quote.add_item(order)
+
+        items = quote.get_items()
+        item = items.one()
+        self.assertEquals(item.purchase, order)
+
+        quote.remove_item(item)
+        items = quote.get_items()
+        self.assertFalse(items)

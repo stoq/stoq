@@ -90,8 +90,7 @@ def apply_patch(store):
                                           quantity=ret[1],
                                           sellable=product.sellable)
         decrease.add_item(decrease_item)
-
-        ProductHistory.delete(hist[0], store)
+        store.remove(hist[0])
         ProductHistory(branch_id=branch_id, sellable=product.sellable,
                        quantity_decreased=decrease_item.quantity,
                        decreased_date=decrease.confirm_date,

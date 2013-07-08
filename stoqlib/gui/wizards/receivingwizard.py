@@ -33,7 +33,7 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
+from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
@@ -466,7 +466,7 @@ class ReceivingOrderWizard(BaseWizard):
         for item in self.model.get_items():
             if item.quantity > 0:
                 continue
-            ReceivingOrderItem.delete(item.id, store=self.store)
+            self.store.remove(item)
 
         self._maybe_print_labels()
 

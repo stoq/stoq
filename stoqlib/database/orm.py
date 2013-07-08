@@ -70,7 +70,7 @@ class SQLObjectBase(Storm):
     @classmethod
     def delete(cls, id, store=None):
         warnings.warn("use store.remove()", DeprecationWarning, stacklevel=2)
-        obj = cls.get(id, store=store)
+        obj = store.get(cls, id)
         Store.of(obj).remove(obj)
 
 

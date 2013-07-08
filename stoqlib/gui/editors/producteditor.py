@@ -87,8 +87,7 @@ class TemporaryProductComponent(object):
     def delete_product_component(self, store):
         component = self._get_product_component(store)
         if component is not None:
-            ProductComponent.delete(component.id,
-                                    store=store)
+            store.remove(component)
 
     def add_or_update_product_component(self, store):
         component = self._get_product_component(store)

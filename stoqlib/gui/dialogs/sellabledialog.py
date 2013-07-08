@@ -59,7 +59,7 @@ class _SellableTaxConstantsListSlave(ModelListSlave):
                         quantity, model.get_description())
             info(msg)
         else:
-            SellableTaxConstant.delete(model.id, store=store)
+            store.remove(model)
 
     def run_editor(self, store, model):
         if model and model.tax_type != TaxType.CUSTOM:

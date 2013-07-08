@@ -317,7 +317,7 @@ class Account(Domain):
                 store.remove(option)
             store.remove(bank)
 
-        self.delete(self.id, store=store)
+        self.store.remove(self)
 
     def has_child_accounts(self):
         """If this account has child accounts

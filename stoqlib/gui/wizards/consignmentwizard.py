@@ -100,7 +100,7 @@ class ConsignmentSelectionStep(PurchaseSelectionStep):
 
     def next_step(self):
         self.search.save_columns()
-        selected = self.search.results.get_selected()
+        selected = self.search.result_view.get_selected()
         consignment = selected.purchase
         self.wizard.purchase_model = consignment
 

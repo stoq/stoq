@@ -77,7 +77,7 @@ class Image(Domain):
         if self.description:
             return self.description
         # TODO: Dont use id here
-        return _(u"Stoq image #%d") % (self.id,)
+        return _(u"Stoq image #%d") % self.id
 
     #
     #  ORMObject
@@ -85,8 +85,9 @@ class Image(Domain):
 
     @classmethod
     def delete(cls, id, store):
-        ImageRemoveEvent.emit(cls.get(id, store))
-        super(Image, cls).delete(id, store)
+        image = store.get(cls, id)
+        ImageRemoveEvent.emit(image)
+        store.remove(image)
 
     #
     # Domain

@@ -68,7 +68,7 @@ class CommissionSlave(BaseEditorSlave):
                          store=self.store)
 
     def _delete_source(self, source):
-        CommissionSource.delete(source.id, store=self.store)
+        self.store.remove(source)
 
     def _update_source(self, source):
         source.direct_value = self._get_direct_commission()

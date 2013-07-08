@@ -21,12 +21,29 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-
 from stoqlib.domain.product import Storable
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.gui.wizards.purchasewizard import PurchaseWizard, FinishPurchaseStep
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
+
+
+class TestFinishPurchaseStep(GUITest):
+    def testPostInit(self):
+        purchase_order = self.create_purchase_order()
+        receiving_order = self.create_receiving_order(
+            purchase_order=purchase_order)
+        self.create_receiving_order_item(
+            receiving_order=receiving_order)
+        wizard = PurchaseWizard(store=self.store)
+        finish_step = FinishPurchaseStep(model=wizard.model,
+                                         store=self.store,
+                                         wizard=wizard)
+        sellable = self.create_sellable()
+        purchase_item = purchase_order.add_item(sellable=sellable)
+        receiving_order.add_purchase_item(purchase_item)
+        finish_step.post_init()
 
 
 class TestPurchaseWizard(GUITest):
@@ -58,6 +75,10 @@ class TestPurchaseWizard(GUITest):
             u"ALLOW_OUTDATED_OPERATIONS", u"1")
 
         self.wizard = PurchaseWizard(self.store)
+        purchase_branch = self.create_branch()
+        purchase_order = PurchaseOrder(branch=purchase_branch)
+        sellable = self.create_sellable()
+        purchase_order.add_item(sellable=sellable)
         self.wizard.model.identifier = 12345
         self.wizard.model.open_date = localdate(2010, 1, 3).date()
         self._check_start_step('wizard-purchase-start-step')
@@ -108,7 +129,8 @@ class TestPurchaseWizard(GUITest):
         models.append(receive)
         models.extend(receive.get_items())
         for item in receive.get_items():
-            models.extend(list(item.sellable.product_storable.get_stock_items()))
+            models.extend(
+                list(item.sellable.product_storable.get_stock_items()))
 
         self.check_wizard(self.wizard, 'wizard-purchase-done-received',
                           models=models)

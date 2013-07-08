@@ -27,7 +27,7 @@ import gtk
 
 from kiwi.ui.objectlist import Column
 
-from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
+from stoqlib.domain.invoice import InvoiceLayout, InvoicePrinter
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -53,8 +53,8 @@ class _InvoiceLayoutListSlave(ModelListSlave):
 
     def delete_model(self, model, store):
         for field in model.fields:
-            InvoiceField.delete(field.id, store)
-        ModelListDialog.delete_model(self, model, store)
+            store.remove(field)
+        ModelListSlave.delete_model(self, model, store)
 
 
 class InvoiceLayoutDialog(ModelListDialog):

@@ -244,7 +244,7 @@ class CardPaymentOperation(object):
     def payment_delete(self, payment):
         store = payment.store
         credit_card_data = self.get_card_data_by_payment(payment)
-        CreditCardData.delete(credit_card_data.id, store=store)
+        store.remove(credit_card_data)
 
     def create_transaction(self):
         return True

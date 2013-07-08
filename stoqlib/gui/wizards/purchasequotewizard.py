@@ -397,7 +397,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         group.remove_item(quote)
         # there is no reason to keep the group if there's no more quotes
         if group.get_items().count() == 0:
-            QuoteGroup.delete(group.id, store=store)
+            store.remove(group)
         store.confirm(True)
         store.close()
         self.search.refresh()
@@ -502,7 +502,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         store = api.new_store()
         group = store.fetch(self._group)
         group.cancel()
-        QuoteGroup.delete(group.id, store=store)
+        store.remove(group)
         store.confirm(True)
         store.close()
         self.wizard.finish()
@@ -528,7 +528,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         if has_selected_items:
             return real_order
         else:
-            PurchaseOrder.delete(real_order.id, store=store)
+            store.remove(real_order)
 
     def _close_quotes(self, quotes):
         if not quotes:

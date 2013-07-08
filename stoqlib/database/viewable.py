@@ -170,7 +170,7 @@ class Viewable(ClassInittableObject):
     def sync(self):
         """Update the values of this object from the database
         """
-        new_obj = self.store.find(type(self), id=self.id).one()
+        new_obj = self._store.find(type(self), id=self.id).one()
         self.__dict__.update(new_obj.__dict__)
 
     def __hash__(self):

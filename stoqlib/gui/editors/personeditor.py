@@ -209,7 +209,7 @@ class EmployeeRoleEditor(BaseEditor):
         # XXX This will prevent problems in case that you can't
         # update the store.
         if not self.edit_mode:
-            self.model_type.delete(self.model.id, store=self.store)
+            self.model.remove(self.model)
 
     #
     # Kiwi handlers

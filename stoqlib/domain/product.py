@@ -453,7 +453,7 @@ class ProductManufacturer(Domain):
 
     def remove(self):
         """Remove this registry from the database."""
-        self.delete(self.id, self.store)
+        self.store.remove(self)
 
 
 class ProductHistory(Domain):

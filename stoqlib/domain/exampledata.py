@@ -216,7 +216,6 @@ class ExampleCreator(object):
             'FiscalBookEntry': self.create_fiscal_book_entry,
             'Client': self.create_client,
             'Company': self.create_company,
-            'Branch': self.create_branch,
             'Employee': self.create_employee,
             'Image': self.create_image,
             'Individual': self.create_individual,
@@ -227,6 +226,7 @@ class ExampleCreator(object):
             'Transporter': self.create_transporter,
             'LoginUser': self.create_user,
             'Payment': self.create_payment,
+            'CardPaymentOperation': self.create_card_operation_payment,
             'ParameterData': self.create_parameter_data,
             'Person': self.create_person,
             'Branch': self.create_branch,
@@ -241,6 +241,7 @@ class ExampleCreator(object):
             'LoginUser': self.create_user,
             'MilitaryData': self.create_military_data,
             'Product': self.create_product,
+            'ProductManufacturer': self.create_product_manufacturer,
             'ProductSupplierInfo': self.create_product_supplier_info,
             'Storable': self.create_storable,
             'PurchaseOrder': self.create_purchase_order,
@@ -445,6 +446,14 @@ class ExampleCreator(object):
                                     unit_cost=10)
 
         return product
+
+    def create_product_manufacturer(self, name=None):
+        from stoqlib.domain.product import ProductManufacturer
+
+        if name is None:
+            name = u''
+
+        return ProductManufacturer(store=self.store, name=name)
 
     def create_product_component(self, product=None, component=None,
                                  storable=False):
@@ -830,6 +839,10 @@ class ExampleCreator(object):
                        category=None,
                        store=self.store,
                        payment_type=payment_type)
+
+    def create_card_operation_payment(self):
+        from stoqlib.domain.payment.operation import CardPaymentOperation
+        return CardPaymentOperation()
 
     def create_card_payment(self, date=None, provider_id=u'AMEX', device=None,
                             payment_value=None):

@@ -259,7 +259,7 @@ class Loan(Domain):
         return self.store.find(LoanItem, loan=self)
 
     def remove_item(self, loan_item):
-        LoanItem.delete(loan_item.id, store=self.store)
+        self.store.remove(loan_item)
 
     #
     # Public API

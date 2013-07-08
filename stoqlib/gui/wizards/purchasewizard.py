@@ -40,7 +40,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch, Supplier, Transporter
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
+from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockItemSupplierView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -498,9 +498,8 @@ class FinishPurchaseStep(WizardEditorStep):
         receiving_model = self.wizard.receiving_model
         if receiving_model:
             for item in receiving_model.get_items():
-                ReceivingOrderItem.delete(item.id, self.store)
-
-            ReceivingOrder.delete(receiving_model.id, store=self.store)
+                self.store.remove(item)
+            self.store.remove(receiving_model)
             self.wizard.receiving_model = None
 
         self.salesperson_name.grab_focus()

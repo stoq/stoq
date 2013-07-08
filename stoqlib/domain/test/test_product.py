@@ -36,7 +36,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductStockItem,
                                     ProductHistory, ProductComponent,
                                     ProductQualityTest, Storable,
-                                    StockTransactionHistory, StorableBatchView)
+                                    StockTransactionHistory, StorableBatchView, ProductManufacturer)
 from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
@@ -584,6 +584,36 @@ class TestProductEvent(DomainTest):
 
             for store in store_list:
                 store.close()
+
+
+class TestProductManufacturer(DomainTest):
+    def testGetDescription(self):
+        manufacturer_name = u'PManufacturer'
+
+        manufacturer = self.create_product_manufacturer(name=manufacturer_name)
+        result = self.store.find(ProductManufacturer,
+                                 name=manufacturer_name).one()
+
+        self.assertEqual(result.name, manufacturer.get_description())
+
+    def testCanRemove(self):
+        manufacturer = self.create_product_manufacturer(name=u'Test')
+        product = self.create_product()
+        product.manufacturer = manufacturer
+        self.assertFalse(manufacturer.can_remove())
+        product.manufacturer = None
+        self.assertTrue(manufacturer.can_remove())
+
+    def testRemove(self):
+        manufacturer_name = u'Tests'
+        manufacturer = self.create_product_manufacturer(name=manufacturer_name)
+        results = self.store.find(ProductManufacturer,
+                                  name=manufacturer_name).count()
+        self.assertEquals(results, 1)
+        manufacturer.remove()
+        results = self.store.find(ProductManufacturer,
+                                  name=manufacturer_name).count()
+        self.assertEquals(results, 0)
 
 
 class TestStorable(DomainTest):

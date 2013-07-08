@@ -289,7 +289,7 @@ class ReturnedSale(Domain):
         return self.returned_items
 
     def remove_item(self, item):
-        item.delete(item.id, store=self.store)
+        self.store.remove(item)
 
     #
     #  Public API
@@ -372,7 +372,7 @@ class ReturnedSale(Domain):
         """Remove this return and it's items from the database"""
         for item in self.get_items():
             self.remove_item(item)
-        self.delete(self.id, store=self.store)
+        self.store.remove(self)
 
     #
     #  Private

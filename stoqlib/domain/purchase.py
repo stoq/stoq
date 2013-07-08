@@ -227,11 +227,10 @@ class PurchaseOrder(Domain, Adaptable):
         return self.store.find(PurchaseItem, order=self)
 
     def remove_item(self, item):
-        store = self.store
         if item.order is not self:
             raise ValueError(_(u'Argument item must have an order attribute '
                                'associated with the current purchase instance'))
-        PurchaseItem.delete(item.id, store=store)
+        self.store.remove(item)
 
     def add_item(self, sellable, quantity=Decimal(1)):
         store = self.store
@@ -614,16 +613,15 @@ class QuoteGroup(Domain):
         return self.store.find(Quotation, group=self)
 
     def remove_item(self, item):
-        store = self.store
         if item.group is not self:
             raise ValueError(_(u'You can not remove an item which does not '
                                u'belong to this group.'))
 
         order = item.purchase
-        Quotation.delete(item.id, store=store)
+        self.store.remove(item)
         for order_item in order.get_items():
             order.remove_item(order_item)
-        PurchaseOrder.delete(order.id, store=store)
+        self.store.remove(order)
 
     def add_item(self, item):
         store = self.store
@@ -646,7 +644,7 @@ class QuoteGroup(Domain):
         store = self.store
         for quote in self.get_items():
             quote.close()
-            Quotation.delete(quote.id, store=store)
+            store.remove(quote)
 
 
 class PurchaseOrderAdaptToPaymentTransaction(object):

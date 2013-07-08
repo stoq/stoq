@@ -22,16 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
-
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestReturnedSale(DomainTest):
-    @mock.patch.object(ReturnedSale, 'delete')
-    @mock.patch.object(ReturnedSaleItem, 'delete')
-    def testRemove(self, rsi_delete, rs_delete):
+    def testRemove(self):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale)
@@ -40,13 +36,18 @@ class TestReturnedSale(DomainTest):
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
 
-        self.assertEqual(rs_delete.call_count, 0)
-        self.assertEqual(rsi_delete.call_count, 0)
+        total = self.store.find(ReturnedSale, id=returned_sale.id).count()
+        total_items = self.store.find(ReturnedSaleItem,
+                                      returned_sale_id=returned_sale.id).count()
+
+        self.assertEquals(total, 1)
+        self.assertEquals(total_items, 2)
 
         returned_sale.remove()
 
-        rs_delete.assert_called_once_with(
-            returned_sale.id, store=returned_sale.store)
-        # There's no way to use assert_called_with since the mock only stores
-        # the last call and we want to make sure the 2 items were removed.
-        self.assertEqual(rsi_delete.call_count, 2)
+        total = self.store.find(ReturnedSale, id=returned_sale.id).count()
+        total_items = self.store.find(ReturnedSaleItem,
+                                      returned_sale_id=returned_sale.id).count()
+
+        self.assertEquals(total, 0)
+        self.assertEquals(total_items, 0)

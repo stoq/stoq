@@ -43,6 +43,7 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchoptions import Any
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
@@ -192,7 +193,7 @@ class TestProductSearchQuantity(GUITest):
 
         branch = get_current_branch(self.store)
         user = get_current_user(self.store)
-        self.today = datetime.date.today()
+        self.today = localtoday()
 
         product = self.create_product()
         Storable(store=self.store, product=product)
@@ -277,7 +278,7 @@ class TestProductsSoldSearch(GUITest):
         self.clean_domain([SaleItem])
 
         branch = get_current_branch(self.store)
-        self.today = datetime.date.today()
+        self.today = localtoday()
 
         product = self.create_product()
         storable = Storable(store=self.store, product=product)
@@ -359,7 +360,7 @@ class TestProductStockSearch(GUITest):
 
         branch = get_current_branch(self.store)
         user = get_current_user(self.store)
-        self.today = datetime.date.today()
+        self.today = localtoday()
 
         product = self.create_product()
         Storable(store=self.store, product=product, minimum_quantity=3,

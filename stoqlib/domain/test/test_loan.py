@@ -24,7 +24,7 @@
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.loan import Loan
+from stoqlib.domain.loan import Loan, LoanItem
 
 
 class TestLoan(DomainTest):
@@ -58,6 +58,18 @@ class TestLoan(DomainTest):
         self.failUnless(loan.can_close())
         loan.close()
         self.assertEquals(loan.status, Loan.STATUS_CLOSED)
+
+    def testRemoveItem(self):
+        loan_item = self.create_loan_item()
+        loan = loan_item.loan
+
+        total_items = self.store.find(LoanItem, loan=loan).count()
+        self.assertEquals(total_items, 1)
+
+        loan.remove_item(loan_item)
+
+        total_items = self.store.find(LoanItem, loan=loan).count()
+        self.assertEquals(total_items, 0)
 
 
 class TestLoanItem(DomainTest):
