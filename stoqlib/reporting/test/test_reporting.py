@@ -130,6 +130,7 @@ class TestReport(ReportTest):
         sale.group.pay()
 
         payment.paid_date = today
+        sale.confirm_date = today
 
         date = datetime.date(2013, 2, 2)
 
@@ -273,6 +274,7 @@ class TestReport(ReportTest):
                             dialog.results, list(dialog.results))
 
     def testTillDailyMovement(self):
+        date = datetime.date(2013, 1, 1)
         # create sale payment
         sale = self.create_sale()
         sellable = self.create_sellable()
@@ -285,9 +287,13 @@ class TestReport(ReportTest):
         payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
                                         sale.get_sale_subtotal(),
                                         till=till)
-        payment.identifier = 1010
         sale.confirm()
         sale.group.pay()
+
+        sale.confirm_date = date
+
+        payment.identifier = 1010
+        payment.paid_date = date
 
         # create lonely input payment
         payer = self.create_client()
@@ -303,6 +309,7 @@ class TestReport(ReportTest):
         payment_lonely_input.set_pending()
         payment_lonely_input.pay()
         payment_lonely_input.identifier = 1001
+        payment_lonely_input.paid_date = date
 
         # create purchase payment
         drawee = self.create_supplier()
@@ -318,11 +325,11 @@ class TestReport(ReportTest):
         payment.set_pending()
         payment.pay()
         payment.identifier = 1002
+        payment.paid_date = date
 
         # create lonely output payment
-        today = datetime.date.today()
         self._diff_expected(TillDailyMovementReport,
-                            'till-daily-movement-report', self.store, today)
+                            'till-daily-movement-report', self.store, date)
 
     def testSalesPersonReport(self):
         sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
