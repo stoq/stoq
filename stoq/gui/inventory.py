@@ -113,7 +113,7 @@ class InventoryApp(ShellApp):
 
     def activate(self, params):
         # Avoid letting this sensitive if has-rows is never emitted
-        self.search.refresh()
+        self.refresh()
         self._update_widgets()
         self.window.SearchToolItem.set_sensitive(False)
 

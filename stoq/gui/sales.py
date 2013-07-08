@@ -223,7 +223,7 @@ class SalesApp(ShellApp):
         self._update_toolbar()
 
     def setup_focus(self):
-        self.search.refresh()
+        self.refresh()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.sales_ui)
@@ -433,7 +433,7 @@ class SalesApp(ShellApp):
         store.close()
 
         if model:
-            self.search.refresh()
+            self.refresh()
 
     def _search_product(self):
         hide_cost_column = not api.sysparam(self.store).SHOW_COST_COLUMN_IN_SALES
@@ -445,10 +445,10 @@ class SalesApp(ShellApp):
     #
 
     def _on_sale_toolbar__sale_returned(self, toolbar, sale):
-        self.search.refresh()
+        self.refresh()
 
     def _on_sale_toolbar__sale_edited(self, toolbar, sale):
-        self.search.refresh()
+        self.refresh()
 
     def on_results__selection_changed(self, results, sale):
         self._update_toolbar()
@@ -474,7 +474,7 @@ class SalesApp(ShellApp):
         sale.cancel()
         store.confirm(True)
         store.close()
-        self.search.refresh()
+        self.refresh()
 
     def on_SalesPrintInvoice__activate(self, action):
         return self._print_invoice()

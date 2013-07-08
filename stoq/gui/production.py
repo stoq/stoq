@@ -132,7 +132,7 @@ class ProductionApp(ShellApp):
                                       lambda: not self.has_open_inventory())
 
     def activate(self, params):
-        self.search.refresh()
+        self.refresh()
         self._update_widgets()
         self.check_open_inventory()
 

@@ -291,7 +291,7 @@ class MaintenanceApp(ShellApp):
         self.uimanager.remove_ui(self.maintenance_ui)
 
     def setup_focus(self):
-        self.search.refresh()
+        self.refresh()
 
     def new_activate(self):
         self._new_order()
@@ -428,7 +428,7 @@ class MaintenanceApp(ShellApp):
                 [(v, k) for k, v in WorkOrder.statuses.items()])
 
     def _update_view(self, select_item=None):
-        self.search.refresh()
+        self.refresh()
         if select_item is not None:
             item = self.store.find(WorkOrderView, id=select_item.id).one()
             self.select_result(item)

@@ -124,7 +124,7 @@ class BaseAccountWindow(ShellApp):
 
         if store.committed:
             self._update_filter_items()
-            self.search.refresh()
+            self.refresh()
             self.select_result(self.store.find(self.search_spec,
                                                id=store.retval.id).one())
 

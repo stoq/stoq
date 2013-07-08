@@ -145,7 +145,7 @@ class PayableApp(BaseAccountWindow):
     def activate(self, params):
         # FIXME: double negation is weird here
         if not params.get('no-refresh'):
-            self.search.refresh()
+            self.refresh()
         self._update_widgets()
 
         # FIXME: Move this to a better place when done
@@ -210,7 +210,7 @@ class PayableApp(BaseAccountWindow):
         dfilter.mode.select_item_by_position(5)
         self.add_filter(dfilter, columns=["paid_date", "due_date"])
         dfilter.start_date.set_date(date)
-        self.search.refresh()
+        self.refresh()
 
     #
     # Private

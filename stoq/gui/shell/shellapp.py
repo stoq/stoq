@@ -340,10 +340,16 @@ class ShellApp(GladeDelegate):
         """
         self.search.set_text_field_columns(columns)
 
-    def refresh(self):
+    def refresh(self, rollback=True):
         """
         See :class:`stoqlib.gui.search.searchslave.SearchSlave.refresh`
         """
+        # Since the store here is actually a transaction and the items
+        # on it can be changed from another station, do a rollback so
+        # the items get reloaded, avoiding cache problems
+        # Note that this gets mocked on tests to not do the rollback
+        if rollback:
+            self.store.rollback(close=False)
         self.search.refresh()
 
     def clear(self):

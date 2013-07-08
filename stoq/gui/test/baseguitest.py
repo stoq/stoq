@@ -30,12 +30,29 @@ from stoqlib.domain.profile import ProfileSettings
 from stoqlib.gui.test.uitestutils import GUITest
 
 import stoq
+from stoq.gui.shell.shellapp import ShellApp
 from stoq.gui.shell.shellwindow import ShellWindow
 
 gtk.set_interactive(False)
 
 
 class BaseGUITest(GUITest):
+    def setUp(self):
+        original_refresh = ShellApp.refresh
+        # We need to do do this mock since the store here doesn't get
+        # confirmed, so an action to an item that results in the results
+        # getting refreshed would make the results disapear
+        self._refresh_mock = mock.patch(
+            'stoq.gui.shell.shellapp.ShellApp.refresh',
+            new=lambda s: original_refresh(s, rollback=False))
+
+        self._refresh_mock.start()
+        super(BaseGUITest, self).setUp()
+
+    def tearDown(self):
+        super(BaseGUITest, self).tearDown()
+        self._refresh_mock.stop()
+
     def create_app(self, window_class, app_name):
         self.user = api.get_current_user(self.store)
         # FIXME: Perhaps we should just ignore permission checking, it'll

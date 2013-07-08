@@ -217,7 +217,7 @@ class PurchaseApp(ShellApp):
         self.check_open_inventory()
 
     def setup_focus(self):
-        self.search.refresh()
+        self.refresh()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.purchase_ui)
@@ -285,7 +285,7 @@ class PurchaseApp(ShellApp):
         dfilter.mode.select_item_by_position(5)
         self.add_filter(dfilter, columns=["expected_receival_date"])
         dfilter.start_date.set_date(date)
-        self.search.refresh()
+        self.refresh()
 
     #
     # Private

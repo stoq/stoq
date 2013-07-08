@@ -153,7 +153,7 @@ class ReceivableApp(BaseAccountWindow):
 
         # FIXME: double negation is weird here
         if not params.get('no-refresh'):
-            self.search.refresh()
+            self.refresh()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.receivable_ui)
@@ -208,7 +208,7 @@ class ReceivableApp(BaseAccountWindow):
         dfilter.mode.select_item_by_position(5)
         self.add_filter(dfilter, columns=["paid_date", "due_date"])
         dfilter.start_date.set_date(date)
-        self.search.refresh()
+        self.refresh()
 
     #
     # Private
@@ -485,7 +485,7 @@ class ReceivableApp(BaseAccountWindow):
         if store.confirm(retval):
             # FIXME: Storm is not expiring the groups correctly.
             # Figure out why. See bug 5087
-            self.search.refresh()
+            self.refresh()
             self._update_widgets()
         store.close()
 
@@ -502,7 +502,7 @@ class ReceivableApp(BaseAccountWindow):
         retval = run_dialog(SalePaymentsEditor, self, store, sale)
 
         if store.confirm(retval):
-            self.search.refresh()
+            self.refresh()
         store.close()
 
     def on_PrintDocument__activate(self, action):

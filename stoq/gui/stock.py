@@ -188,7 +188,7 @@ class StockApp(ShellApp):
         self._update_widgets()
 
     def setup_focus(self):
-        self.search.refresh()
+        self.refresh()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.stock_ui)
@@ -310,7 +310,7 @@ class StockApp(ShellApp):
         model = self.run_dialog(StockTransferWizard, store)
         store.confirm(model)
         store.close()
-        self.search.refresh()
+        self.refresh()
 
     def _receive_purchase(self):
         if self.check_open_inventory():
@@ -319,7 +319,7 @@ class StockApp(ShellApp):
         model = self.run_dialog(ReceivingOrderWizard, store)
         store.confirm(model)
         store.close()
-        self.search.refresh()
+        self.refresh()
 
     #
     # Callbacks
@@ -370,7 +370,7 @@ class StockApp(ShellApp):
         model = self.run_dialog(StockDecreaseWizard, store)
         store.confirm(model)
         store.close()
-        self.search.refresh()
+        self.refresh()
 
     def on_StockInitial__activate(self, action):
         if self.check_open_inventory():
@@ -380,7 +380,7 @@ class StockApp(ShellApp):
         retval = self.run_dialog(InitialStockDialog, store, branch)
         store.confirm(retval)
         store.close()
-        self.search.refresh()
+        self.refresh()
 
     def on_StockPictureViewer__activate(self, button):
         if self.image_viewer:
@@ -406,7 +406,7 @@ class StockApp(ShellApp):
         model = self.run_dialog(NewLoanWizard, store)
         store.confirm(model)
         store.close()
-        self.search.refresh()
+        self.refresh()
 
     def on_LoanClose__activate(self, action):
         if self.check_open_inventory():
@@ -415,7 +415,7 @@ class StockApp(ShellApp):
         model = self.run_dialog(CloseLoanWizard, store)
         store.confirm(model)
         store.close()
-        self.search.refresh()
+        self.refresh()
 
     def on_LoanSearch__activate(self, action):
         self.run_dialog(LoanSearch, self.store)
@@ -430,7 +430,7 @@ class StockApp(ShellApp):
 
     def on_SearchTransfer__activate(self, action):
         self.run_dialog(TransferOrderSearch, self.store)
-        self.search.refresh()
+        self.refresh()
 
     def on_SearchPurchasedStockItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.store)

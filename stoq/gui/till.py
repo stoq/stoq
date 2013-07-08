@@ -259,7 +259,7 @@ class TillApp(ShellApp):
         retval = run_dialog(SalePaymentsEditor, self, store, sale)
 
         if store.confirm(retval):
-            self.search.refresh()
+            self.refresh()
         store.close()
 
     def _confirm_order(self, order_view):
