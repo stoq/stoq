@@ -331,7 +331,9 @@ class BaseEditor(BaseEditorSlave, RunnableView):
 
         self.register_validate_function(self._validation_function)
         self.force_validation()
-        EditorCreateEvent.emit(self, model, store, visual_mode)
+        # We need to use self.model instead of model, since BaseEditorSlave
+        # will create one if its None
+        EditorCreateEvent.emit(self, self.model, store, visual_mode)
 
     def _get_title_format(self):
         if self.visual_mode:

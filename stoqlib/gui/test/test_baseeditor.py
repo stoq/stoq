@@ -22,8 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.gui.events import EditorCreateEvent
 
 
 class _TestEditorSlave(BaseEditorSlave):
@@ -40,6 +41,19 @@ class _TestEditorSlave(BaseEditorSlave):
     def attach_slave(self, holder, slave):
         # mimic attach slave behaviour
         self.slaves[holder] = slave
+
+
+class _TempModel(object):
+    def __init__(self, name):
+        self.name = name
+
+
+class _TestEditor(BaseEditor):
+    model_type = _TempModel
+    gladefile = 'HolderTemplate'
+
+    def create_model(self, store):
+        return _TempModel('new model')
 
 
 class TestBaseEditorSlave(GUITest):
@@ -98,3 +112,33 @@ class TestBaseEditorSlave(GUITest):
             for slave in self.slaves:
                 self.assertEqual(slave.on_confirm_count, 0)
                 self.assertEqual(slave.on_cancel_count, 0)
+
+
+class TestEditor(GUITest):
+
+    def test_event_with_model(self):
+        obj = _TempModel(name='existing model')
+        self._callcount = 0
+
+        def _callback(editor, model, store, visual_mode):
+            self._callcount += 1
+            self.assertEqual(model.name, 'existing model')
+
+        EditorCreateEvent.connect(_callback)
+        _TestEditor(self.store, obj)
+
+        self.assertEqual(self._callcount, 1)
+        EditorCreateEvent.disconnect(_callback)
+
+    def test_event_without_model(self):
+        self._callcount = 0
+
+        def _callback(editor, model, store, visual_mode):
+            self._callcount += 1
+            self.assertEqual(model.name, 'new model')
+
+        EditorCreateEvent.connect(_callback)
+        _TestEditor(self.store, None)
+
+        self.assertEqual(self._callcount, 1)
+        EditorCreateEvent.disconnect(_callback)
