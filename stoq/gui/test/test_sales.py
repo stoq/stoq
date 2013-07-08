@@ -173,6 +173,13 @@ class TestSales(BaseGUITest):
         run_dialog.assert_called_once_with(SaleDetailsDialog, app,
                                            self.store, results[0])
 
+    @mock.patch('stoq.gui.financial.SpreadSheetExporter.export')
+    def test_export_spreadsheet(self, export):
+        app = self.create_app(SalesApp, u'sales')
+        self.activate(app.ExportSpreadSheet)
+        export.assert_called_once_with(object_list=app.results, name='sales',
+                                       filename_prefix='sales')
+
     @mock.patch('stoqlib.gui.slaves.saleslave.api.new_store')
     @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
     def test_return(self, run_dialog, new_store):

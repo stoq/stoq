@@ -211,7 +211,7 @@ class ShellApp(GladeDelegate):
         sse = SpreadSheetExporter()
         sse.export(object_list=self.results,
                    name=self.app_name,
-                   filename_prefix=self.app.name)
+                   filename_prefix=self.app_name)
 
     def create_filters(self):
         """Implement this to provide filters for the search container"""
