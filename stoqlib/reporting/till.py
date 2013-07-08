@@ -23,11 +23,12 @@
 ##
 ##
 """ Till report implementation """
-from storm.expr import And
+from storm.expr import And, Eq
 
 from stoqlib.database.expr import Date
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
+from stoqlib.domain.till import TillEntry
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.report import ObjectListReport, HTMLReport
 
@@ -71,7 +72,7 @@ class TillDailyMovementReport(HTMLReport):
         self.method_summary = {}
         self.card_summary = {}
 
-        for p in store.find(InPaymentView, query):
+        for p in store.find(InPaymentView, query).order_by(Payment.identifier):
             if p.sale:
                 sale_payments = self.sales.setdefault(p.sale, [])
                 sale_payments.append(p)
@@ -86,7 +87,7 @@ class TillDailyMovementReport(HTMLReport):
                 self.card_summary.setdefault(key, 0)
                 self.card_summary[key] += p.value
 
-        for p in store.find(OutPaymentView, query):
+        for p in store.find(OutPaymentView, query).order_by(Payment.identifier):
             if p.purchase:
                 purchase_payments = self.purchases.setdefault(p.purchase, [])
                 purchase_payments.append(p)
@@ -98,6 +99,18 @@ class TillDailyMovementReport(HTMLReport):
 
             self.method_summary.setdefault(p.method, [0, 0])
             self.method_summary[p.method][1] += p.value
+
+        # Till removals
+        query = And(Eq(TillEntry.payment_id, None),
+                    Date(TillEntry.date) == Date(start_date),
+                    TillEntry.value < 0)
+        self.till_removals = store.find(TillEntry, query)
+
+        # Till supply
+        query = And(Eq(TillEntry.payment_id, None),
+                    Date(TillEntry.date) == Date(start_date),
+                    TillEntry.value > 0)
+        self.till_supplies = store.find(TillEntry, query)
 
         HTMLReport.__init__(self, filename)
 

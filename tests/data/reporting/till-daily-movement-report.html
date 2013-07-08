@@ -66,7 +66,7 @@
     </header>
 
 
-<h3>Input Payments</h3>
+<h3>Input Payments:</h3>
 <h4>Sales</h4>
     <table>
       <thead>
@@ -74,11 +74,17 @@
           <td>Code</td>
           <td>Sales Person</td>
           <td>Client</td>
-          <td class="align-right">Sale Value</td>
+          <td>Payment</td>
+          <td>Method</td>
+          <td>Details</td>
+          <td class="align-right">Value</td>
         </tr>
       </tdead>
       <tfoot>
         <tr>
+          <td></td>
+          <td></td>
+          <td></td>
           <td></td>
           <td></td>
           <td></td>
@@ -90,32 +96,21 @@
             <td>01000</td>
             <td>SalesPerson</td>
             <td>Not Specified</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
             <td class="align-right">$100.00</td>
           </tr>
 
-          <tr>
-            <td colspan="4">
-            <table class="subtable">
-              <thead>
-                <tr class="align-left">
-                  <td>Code</td>
-                  <td>Method</td>
-                  <td>Description</td>
-                  <td class="align-right">Payment Value</td>
-                </tr>
-              </thead>
-              <tbody>
-
               <tr class="align-left">
+                <td></td>
+                <td></td>
+                <td></td>
                 <td>01010</td>
                 <td>Money</td>
                 <td>
-                    1/1 Money for sale 01000
                 <td class="align-right">$100.00</td>
               </tr>
-              </tbody>
-            </table>
-          </tr>
       </tbody>
     </table>
 
@@ -123,7 +118,7 @@
 
 <h4>Lonely Payments</h4>
 
-    <table class="list">
+    <table>
       <thead>
         <tr>
           <tr class="align-left">
@@ -142,7 +137,7 @@
           <td></td>
         </tr>
       </tfoot>
-      <tbody>
+      <tbody class="list">
           <tr class="align-left">
            <td>01001</td>
            <td>Money</td>
@@ -153,13 +148,13 @@
     </table>
 
 
-<h3>Output Payments</h3>
+<h3>Output Payments:</h3>
 
 
 
 <h4>Lonely Payments</h4>
 
-    <table class="list">
+    <table>
       <thead>
         <tr>
           <tr class="align-left">
@@ -178,7 +173,7 @@
           <td></td>
         </tr>
       </tfoot>
-      <tbody>
+      <tbody class="list">
           <tr class="align-left">
            <td>01002</td>
            <td>Money</td>
@@ -191,6 +186,11 @@
 
 
 
+<h3>Till Supply/Removal Operations:</h3>
+
+
+
+<h3>Summary:</h3>
 <h4>Per Payment Method</h4>
     <table class="list">
       <thead>
@@ -250,6 +250,16 @@
       </tbody>
     </table>
 
+
+<br/><br/><br/>
+<h3>Observations:</h3>
+<br/><br/><br/><br/><br/><br/><br/>
+
+<section class="signatures">
+  <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                     if there is not enough space -->
+  <span class="signature">Signature</span>
+</section>
 
 </div> <!-- end div.page -->
 

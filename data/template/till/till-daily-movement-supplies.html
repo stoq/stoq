@@ -1,0 +1,37 @@
+% if report.till_supplies:
+<h4>${ _("Till Supplies") }</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td class="align-right">${ _("Supplied Value") }</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        <%
+            in_sum = 0
+        %>
+        % for operation in report.till_supplies:
+            <tr>
+                <td>${ operation.identifier }</td>
+                <td class="align-right">${ format_price(operation.value) }</td>
+            </tr>
+            <%
+                in_sum += operation.value
+            %>
+        % endfor
+
+            <tr class="summary">
+                <td><b>Total:</b></td>
+                <td  class="align-right"><b>${ format_price(in_sum) }</b></td>
+            </tr>
+
+      </tbody>
+    </table>
+% endif

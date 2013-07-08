@@ -6,11 +6,17 @@
           <td>${ _("Code") }</td>
           <td>${ _("Sales Person") }</td>
           <td>${ _("Client") }</td>
-          <td class="align-right">${ _("Sale Value") }</td>
+          <td>${ _("Payment") }</td>
+          <td>${ _("Method") }</td>
+          <td>${ _("Details") }</td>
+          <td class="align-right">${ _("Value") }</td>
         </tr>
       </tdead>
       <tfoot>
         <tr>
+          <td></td>
+          <td></td>
+          <td></td>
           <td></td>
           <td></td>
           <td></td>
@@ -23,41 +29,31 @@
             <td>${ sale.identifier }</td>
             <td>${ sale.get_salesperson_name() }</td>
             <td>${ sale.get_client_name() }</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
             <td class="align-right">${ format_price(sale.get_total_sale_amount()) }</td>
           </tr>
 
-          <tr>
-            <td colspan="4">
-            <table class="subtable">
-              <thead>
-                <tr class="align-left">
-                  <td>${ _("Code") }</td>
-                  <td>${ _("Method") }</td>
-                  <td>${ _("Description") }</td>
-                  <td class="align-right">${ _("Payment Value") }</td>
-                </tr>
-              </thead>
-              <tbody>
-
               % for sale_payment in report.sales[sale]:
               <tr class="align-left">
+                <td></td>
+                <td></td>
+                <td></td>
                 <td>${ sale_payment.identifier }</td>
                 <td>${ sale_payment.method.get_description() }</td>
                 <td>
-                    ${ sale_payment.description }
                   % if sale_payment.card_data:
-                  <br></br>
-                  <span class="small">
-                    ${ _("Auth:") }  ${ sale_payment.card_data.auth or ''}
-                    ${ _("Provider:") }  ${ sale_payment.card_data.provider.short_name or ''}
-                    ${ _("Device:") }  ${ sale_payment.card_data.device.description or ''}
+                  <span>
+                    ${ _("Auth:") }  ${ sale_payment.card_data.auth or ''} |
+                    ${ _("Provider:") }  ${ sale_payment.card_data.provider.short_name or ''} |
+                    ${ _("Device:") }  ${ sale_payment.card_data.device.description or ''} 
                   </span>
 
                   % elif sale_payment.check_data:
-                  <br></br>
-                  <span class="small">
-                    ${ _("Bank:") }  ${ sale_payment.check_data.bank_account.bank_number or ''}
-                    ${ _("Agency:") }  ${ sale_payment.check_data.bank_account.bank_branch or ''}
+                  <span>
+                    ${ _("Bank:") }  ${ sale_payment.check_data.bank_account.bank_number or ''} |
+                    ${ _("Agency:") }  ${ sale_payment.check_data.bank_account.bank_branch or ''} |
                     ${ _("Acount:") }  ${ sale_payment.check_data.bank_account.bank_account or ''}
                   </span>
 
@@ -66,9 +62,6 @@
                 <td class="align-right">${ format_price(sale_payment.value) }</td>
               </tr>
               % endfor
-              </tbody>
-            </table>
-          </tr>
         % endfor
       </tbody>
     </table>

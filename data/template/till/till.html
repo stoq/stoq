@@ -19,16 +19,31 @@
 <div class="page">
   ${ header(complete_header, title, report.get_subtitle(), notes) }
 
-<h3>${ _("Input Payments") }</h3>
+<h3>${ _("Input Payments:") }</h3>
 <%include file="till-daily-movement-sales.html" />
 <%include file="till-daily-movement-lonely-payments.html" args="payments=report.lonely_in_payments" />
 
-<h3>${ _("Output Payments") }</h3>
+<h3>${ _("Output Payments:") }</h3>
 <%include file="till-daily-movement-purchases.html" />
 <%include file="till-daily-movement-lonely-payments.html" args="payments=report.lonely_out_payments" />
 <%include file="till-daily-movement-return-sales.html" />
 
+<h3>${ _("Till Supply/Removal Operations:") }</h3>
+<%include file="till-daily-movement-supplies.html" />
+<%include file="till-daily-movement-removals.html" />
+
+<h3>${ _("Summary:") }</h3>
 <%include file="till-daily-movement-summary.html" />
 <%include file="till-daily-movement-card-summary.html" />
+
+<br/><br/><br/>
+<h3>${ _("Observations:") }</h3>
+<br/><br/><br/><br/><br/><br/><br/>
+
+<section class="signatures">
+  <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                     if there is not enough space -->
+  <span class="signature">${ _('Signature') }</span>
+</section>
 
 </div> <!-- end div.page -->

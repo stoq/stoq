@@ -1,0 +1,37 @@
+% if report.till_removals:
+<h4>${ _("Till Removals") }</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td class="align-right">${ _("Removed Value") }</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        <%
+            out_sum = 0
+        %>
+        % for operation in report.till_removals:
+            <tr>
+                <td>${ operation.identifier }</td>
+                <td class="align-right">${ format_price(operation.value) }</td>
+            </tr>
+            <%
+                out_sum += operation.value
+            %>
+        % endfor
+
+            <tr class="summary">
+                <td><b>Total:</b></td>
+                <td  class="align-right"><b>${ format_price(out_sum) }</b></td>
+            </tr>
+
+      </tbody>
+    </table>
+% endif
