@@ -29,7 +29,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSalesPersonSalesSearch(GUITest):
-    def testShow(self):
+    def test_show(self):
         # 5 items in sale for first salesperson
         sale1 = self.create_sale()
         self.add_product(sale1, quantity=5)

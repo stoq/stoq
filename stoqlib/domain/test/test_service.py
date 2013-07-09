@@ -63,7 +63,7 @@ class _ServiceEventData(object):
 
 
 class TestServiceSellableItem(DomainTest):
-    def test_addItem(self):
+    def test_add_item(self):
         sale = self.create_sale()
         delivery = Delivery(store=self.store)
 
@@ -193,7 +193,7 @@ class TestService(DomainTest):
 
 class TestServiceView(DomainTest):
 
-    def testServiceViewSelect(self):
+    def test_service_view_select(self):
         service = self.store.find(Service).any()
         service_ids = [s.service_id for s in self.store.find(ServiceView)]
         self.assertIn(service.id, service_ids)

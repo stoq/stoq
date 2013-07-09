@@ -12,7 +12,7 @@ class CookieTest(unittest.TestCase):
     def _write_cookie(self, data):
         open('test.cookie', "w").write(data)
 
-    def testGet(self):
+    def test_get(self):
         self.assertRaises(CookieError, self.cookie.get)
 
         self._write_cookie('abc')
@@ -29,14 +29,14 @@ class CookieTest(unittest.TestCase):
 
         os.remove('test.cookie')
 
-    def testClear(self):
+    def test_clear(self):
         self.cookie.clear()
         self._write_cookie('abc')
         self.cookie.clear()
 
         self.failIf(os.path.exists("test.cookie"))
 
-    def testStore(self):
+    def test_store(self):
         self._write_cookie('abc')
         os.chmod('test.cookie', 0)
         self.assertRaises(CookieError, self.cookie.store, '', '')

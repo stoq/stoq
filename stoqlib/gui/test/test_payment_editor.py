@@ -41,7 +41,7 @@ _ = stoqlib_gettext
 
 
 class TestPaymentEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = InPaymentEditor(self.store)
 
         # Model
@@ -56,7 +56,7 @@ class TestPaymentEditor(GUITest):
         self.assertEquals(editor.model.category, None)
         self.check_editor(editor, 'editor-in-payment-create')
 
-    def testConfirm(self):
+    def test_confirm(self):
         editor = OutPaymentEditor(self.store)
         self.assertFalse(editor.validate_confirm())
         editor.description.update('Payment name')
@@ -83,7 +83,7 @@ class TestPaymentEditor(GUITest):
         self.check_editor(editor, 'editor-payment-confirm',
                           [model.group] + list(model.group.payments))
 
-    def testCreateCategory(self):
+    def test_create_category(self):
         category = PaymentCategory(store=self.store,
                                    name=u'TestCategory',
                                    category_type=PaymentCategory.TYPE_RECEIVABLE)
@@ -91,7 +91,7 @@ class TestPaymentEditor(GUITest):
 
         self.check_editor(editor, 'editor-in-payment-create-with-category')
 
-    def testEndDateSensitivity(self):
+    def test_end_date_sensitivity(self):
         editor = InPaymentEditor(self.store)
         self.assertNotSensitive(editor, ['end_date'])
         editor.repeat.update(INTERVALTYPE_WEEK)
@@ -111,7 +111,7 @@ class TestPaymentEditor(GUITest):
         editor.repeat.update(_ONCE)
         self.assertSensitive(editor.main_dialog, ['ok_button'])
 
-    def testValueValidation(self):
+    def test_value_validation(self):
         editor = InPaymentEditor(self.store)
         self.assertEquals(unicode(editor.value.emit('validate', None)),
                           u"The value must be greater than zero.")
@@ -120,21 +120,21 @@ class TestPaymentEditor(GUITest):
                           u"The value must be greater than zero.")
         self.assertFalse(editor.value.emit('validate', 10))
 
-    def testShowOut(self):
+    def test_show_out(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
         payment.group = self.create_payment_group()
         editor = OutPaymentEditor(self.store, payment)
 
         self.check_editor(editor, 'editor-out-payment-show')
 
-    def testShowIn(self):
+    def test_show_in(self):
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
         payment.group = self.create_payment_group()
         editor = InPaymentEditor(self.store, payment)
 
         self.check_editor(editor, 'editor-in-payment-show')
 
-    def testShowFromSale(self):
+    def test_show_from_sale(self):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_payments(sale, method_type=u'money')
@@ -146,7 +146,7 @@ class TestPaymentEditor(GUITest):
 
         self.assertTrue(editor.model.group.sale)
 
-    def testShowFromPurchase(self):
+    def test_show_from_purchase(self):
         purchase = self.create_purchase_order()
         purchase.identifier = 12345
         self.add_payments(purchase, method_type=u'money')
@@ -156,7 +156,7 @@ class TestPaymentEditor(GUITest):
         self.check_editor(editor, 'editor-out-payment-show-purchase')
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
-    def testShowLonelyDialogOut(self, run_dialog):
+    def test_show_lonely_dialog_out(self, run_dialog):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
         payment.group = self.create_payment_group()
         editor = OutPaymentEditor(self.store, payment)
@@ -166,7 +166,7 @@ class TestPaymentEditor(GUITest):
                                            editor.store, editor.model)
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
-    def testShowLonelyDialogIn(self, run_dialog):
+    def test_show_lonely_dialog_in(self, run_dialog):
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
         payment.group = self.create_payment_group()
         editor = InPaymentEditor(self.store, payment)
@@ -176,7 +176,7 @@ class TestPaymentEditor(GUITest):
                                            editor.store, editor.model)
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
-    def testShowPurchaseDialog(self, run_dialog):
+    def test_show_purchase_dialog(self, run_dialog):
         purchase = self.create_purchase_order()
         self.add_payments(purchase, method_type=u'money')
 
@@ -188,7 +188,7 @@ class TestPaymentEditor(GUITest):
                                            editor.store, purchase)
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
-    def testShowSaleDialog(self, run_dialog):
+    def test_show_sale_dialog(self, run_dialog):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()

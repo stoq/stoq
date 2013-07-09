@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCategoryPriceEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         model = self.create_client_category_price()
         editor = CategoryPriceEditor(self.store, model)
         self.check_editor(editor, 'editor-categorypriceeditor-show')

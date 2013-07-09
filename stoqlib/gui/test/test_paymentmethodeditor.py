@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPaymentMethodEditor(GUITest):
-    def testShowBill(self):
+    def test_show_bill(self):
         method = self.get_payment_method(u'bill')
         editor = PaymentMethodEditor(self.store, method)
         self.check_editor(editor, 'editor-paymentmethod-show-bill')

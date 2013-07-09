@@ -33,7 +33,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestAddressEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         person = self.create_person()
         editor = AddressEditor(self.store, person)
 
@@ -41,7 +41,7 @@ class TestAddressEditor(GUITest):
 
         self.check_editor(editor, 'editor-address-create')
 
-    def testShow(self):
+    def test_show(self):
         person = self.create_person()
         address = self.create_address()
         address.person = person
@@ -50,7 +50,7 @@ class TestAddressEditor(GUITest):
         self.check_editor(editor, 'editor-address-show')
 
     @mock.patch('stoqlib.gui.slaves.addressslave.info')
-    def testConfirm(self, info):
+    def test_confirm(self, info):
         city_location = CityLocation.get_or_create(
             self.store, u"São Carlos", u"SP", u"Brazil")
         person = self.create_person()

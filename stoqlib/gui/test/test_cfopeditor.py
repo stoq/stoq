@@ -28,6 +28,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCfopEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = CfopEditor(self.store)
         self.check_editor(editor, 'editor-cfop-create')

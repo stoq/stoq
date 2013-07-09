@@ -29,12 +29,12 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCostCenterEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         model = self.create_cost_center()
         model.budget = currency('10000')
         editor = CostCenterEditor(self.store, model)
         self.check_editor(editor, 'editor-cost-center-show')
 
-    def testCreate(self):
+    def test_create(self):
         editor = CostCenterEditor(self.store)
         self.check_editor(editor, 'editor-cost-center-create')

@@ -29,12 +29,12 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellablePriceEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         sellable = self.create_sellable()
         editor = SellablePriceEditor(self.store, sellable)
         self.check_editor(editor, 'editor-sellablepriceeditor-show')
 
-    def testEditing(self):
+    def test_editing(self):
         sellable = self.create_sellable()
 
         # With this values, the markup is 38.2636..., but when the editor is

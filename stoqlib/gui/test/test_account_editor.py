@@ -30,11 +30,11 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestAccountEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = AccountEditor(self.store)
         self.check_editor(editor, 'editor-account-create')
 
-    def testConfirm(self):
+    def test_confirm(self):
         editor = AccountEditor(self.store)
         self.assertFalse(editor.validate_confirm())
         editor.description.update('Account name')
@@ -43,14 +43,14 @@ class TestAccountEditor(GUITest):
         self.check_editor(editor, 'editor-account-confirm',
                           [editor.retval])
 
-    def testShow(self):
+    def test_show(self):
         account = self.create_account()
         editor = AccountEditor(self.store, account)
         # Created account must not be in accounts tree of editor.
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show')
 
-    def testShowBancoDoBrasil(self):
+    def test_show_banco_do_brasil(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.store, account)
@@ -58,7 +58,7 @@ class TestAccountEditor(GUITest):
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-banco-do-brasil')
 
-    def testShowBanrisul(self):
+    def test_show_banrisul(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.store, account)
@@ -66,7 +66,7 @@ class TestAccountEditor(GUITest):
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-banrisul')
 
-    def testShowBradesco(self):
+    def test_show_bradesco(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.store, account)
@@ -74,7 +74,7 @@ class TestAccountEditor(GUITest):
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-bradesco')
 
-    def testShowCaixa(self):
+    def test_show_caixa(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.store, account)
@@ -82,7 +82,7 @@ class TestAccountEditor(GUITest):
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-caixa')
 
-    def testShowItau(self):
+    def test_show_itau(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.store, account)
@@ -90,7 +90,7 @@ class TestAccountEditor(GUITest):
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-itau')
 
-    def testShowReal(self):
+    def test_show_real(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.store, account)
@@ -98,7 +98,7 @@ class TestAccountEditor(GUITest):
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-real')
 
-    def testShowSantander(self):
+    def test_show_santander(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.store, account)

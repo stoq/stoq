@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductionServiceEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         service = self.create_production_service()
         editor = ProductionServiceEditor(self.store, service)
         editor.identifier.set_label("12345")

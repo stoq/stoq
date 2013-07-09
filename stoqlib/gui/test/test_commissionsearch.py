@@ -31,7 +31,7 @@ from stoqlib.lib.dateutils import localdatetime
 
 
 class TestCommissionSearch(GUITest):
-    def testSearch(self):
+    def test_search(self):
         self.clean_domain([Commission])
 
         person = self.store.find(Person, name=u'Deivis Alexandre Junior').one()

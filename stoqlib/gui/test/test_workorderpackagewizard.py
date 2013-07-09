@@ -33,7 +33,7 @@ from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWi
 class TestSaleReturnWizard(GUITest):
     @mock.patch('stoqlib.domain.workorder.get_current_branch')
     @mock.patch('stoqlib.gui.wizards.workorderpackagewizard.get_current_branch')
-    def testCreate(self, gcb1, gcb2):
+    def test_create(self, gcb1, gcb2):
         source_branch = self.create_branch()
         destination_branch = self.create_branch()
         gcb1.return_value = source_branch

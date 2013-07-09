@@ -45,12 +45,12 @@ class TestDeliveryEditor(GUITest):
 
         return delivery
 
-    def testShow(self):
+    def test_show(self):
         delivery = self._create_delivery()
         editor = DeliveryEditor(self.store, delivery)
         self.check_editor(editor, 'editor-delivery-show')
 
-    def testStateChanging(self):
+    def test_state_changing(self):
         delivery = self._create_delivery()
         editor = DeliveryEditor(self.store, delivery)
 
@@ -90,7 +90,7 @@ class TestDeliveryEditor(GUITest):
 
 
 class TestCreateDeliveryEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         sale = self.create_sale()
         sale_items = []
         for i in range(5):

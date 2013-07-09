@@ -36,7 +36,7 @@ from stoqlib.domain.product import ProductStockItem, Storable
 
 class TestReceivingOrder(DomainTest):
 
-    def testGetTotal(self):
+    def test_get_total(self):
         order = self.create_receiving_order()
         self.create_receiving_order_item(order)
         self.assertEqual(order.get_total(), currency(1000))
@@ -62,7 +62,7 @@ class TestReceivingOrder(DomainTest):
         order.confirm()
         self.assertEqual(order.invoice_total, order.get_total())
 
-    def testConfirm(self):
+    def test_confirm(self):
         order = self.create_receiving_order()
         order.quantity = 8
         order_item = self.create_receiving_order_item(order)
@@ -89,7 +89,7 @@ class TestReceivingOrder(DomainTest):
         self.assertEqual(order.invoice_total, order.get_total())
         self.assertEquals(stock_item.quantity, 16)
 
-    def testOrderReceiveSell(self):
+    def test_order_receive_sell(self):
         product = self.create_product()
         storable = Storable(product=product, store=self.store)
         self.failIf(self.store.find(ProductStockItem, storable=storable).one())
@@ -124,7 +124,7 @@ class TestReceivingOrder(DomainTest):
         sale.confirm()
         self.assertEquals(product_stock_item.quantity, 0)
 
-    def testUpdatePaymentValues(self):
+    def test_update_payment_values(self):
         order = self.create_receiving_order()
         self.create_receiving_order_item(order)
         self.assertEqual(order.get_total(), currency(1000))
@@ -152,7 +152,7 @@ class TestReceivingOrder(DomainTest):
             self.assertEqual(pay.value, order.get_total() / installment_count)
             self.failIf(pay.value <= payment_dict[pay])
 
-    def testUpdatePaymentValuesWithFreightPayment(self):
+    def test_update_payment_values_with_freight_payment(self):
         order = self.create_receiving_order()
         self.create_receiving_order_item(order)
         self.assertEqual(order.get_total(), currency(1000))
@@ -185,7 +185,7 @@ class TestReceivingOrder(DomainTest):
 
 class TestReceivingOrderItem(DomainTest):
 
-    def testGetRemainingQuantity(self):
+    def test_get_remaining_quantity(self):
         order_item = self.create_receiving_order_item()
         self.assertEqual(order_item.get_remaining_quantity(), 8)
         self.assertNotEqual(order_item.get_remaining_quantity(), 4)

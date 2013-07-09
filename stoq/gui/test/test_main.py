@@ -70,7 +70,7 @@ class TestMain(unittest.TestCase):
         for mocked in self._mocks:
             mocked.stop()
 
-    def testShellBootstrap(self):
+    def test_shell_bootstrap(self):
         options = mock.Mock()
         bootstrap = ShellBootstrap(options=options, initial=True)
         mocks = []

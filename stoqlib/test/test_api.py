@@ -28,7 +28,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class APITest(DomainTest):
-    def testForComboAll(self):
+    def test_for_combo_all(self):
         client = self.create_client()
         client.credit_limit = 99
         clients = self.store.find(Client, credit_limit=99,
@@ -36,14 +36,14 @@ class APITest(DomainTest):
         items = api.for_combo(clients)
         self.assertEquals(items, [('Client', client)])
 
-    def testForComboItems(self):
+    def test_for_combo_items(self):
         client = self.create_client()
         client.credit_limit = 99
         results = self.store.find(Client, credit_limit=99)
         items = api.for_combo(results)
         self.assertEquals(items, [('Client', client)])
 
-    def testForComboAttr(self):
+    def test_for_combo_attr(self):
         individual = self.create_individual()
         individual.father_name = u'Daddy'
         individual.mother_name = u'Mommy'
@@ -51,7 +51,7 @@ class APITest(DomainTest):
         items = api.for_combo(results, attr=u'mother_name')
         self.assertEquals(items, [('Mommy', individual)])
 
-    def testForComboEmpty(self):
+    def test_for_combo_empty(self):
         client = self.create_client()
         client.credit_limit = 99
         results = self.store.find(Client, credit_limit=99)

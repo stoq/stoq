@@ -52,11 +52,11 @@ class TestProduction(BaseGUITest):
                     expected_args.extend(other_args)
                 run_dialog.assert_called_once_with(*expected_args, **other_kwargs)
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(ProductionApp, u'production')
         self.check_app(app, u'production')
 
-    def testSelect(self):
+    def test_select(self):
         self.create_production_order()
         app = self.create_app(ProductionApp, u'production')
         results = app.results

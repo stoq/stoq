@@ -111,7 +111,7 @@ class TestBank(DomainTest):
         diff = diff_pdf_htmls(expected, generated)
         self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
 
-    def testBancoDoBrasil(self):
+    def test_banco_do_brasil(self):
         sale = self._create_bill_sale()
         self._configure_boleto(u"001",
                                convenio=u"12345678",
@@ -119,7 +119,7 @@ class TestBank(DomainTest):
                                account=u"00403005")
         self._diff(sale, 'boleto-001')
 
-    def testBancoDoBrasilComDV(self):
+    def test_banco_do_brasil_com_d_v(self):
         sale = self._create_bill_sale()
         self._configure_boleto(u"001",
                                convenio=u"12345678",
@@ -127,7 +127,7 @@ class TestBank(DomainTest):
                                account=u"00403005-X")
         self._diff(sale, 'boleto-001')
 
-    def testNossaCaixa(self):
+    def test_nossa_caixa(self):
         sale = self._create_bill_sale()
         self._configure_boleto(u"104",
                                agency=u"1565",
@@ -135,7 +135,7 @@ class TestBank(DomainTest):
 
         self._diff(sale, 'boleto-104')
 
-    def testItau(self):
+    def test_itau(self):
         sale = self._create_bill_sale()
         self._configure_boleto(u"341",
                                account=u"13877",
@@ -144,7 +144,7 @@ class TestBank(DomainTest):
 
         self._diff(sale, 'boleto-341')
 
-    def testBradesco(self):
+    def test_bradesco(self):
         sale = self._create_bill_sale()
         self._configure_boleto(u"237",
                                account=u"029232-4",
@@ -153,7 +153,7 @@ class TestBank(DomainTest):
 
         self._diff(sale, 'boleto-237')
 
-    def testReal(self):
+    def test_real(self):
         sale = self._create_bill_sale()
         self._configure_boleto(u"356",
                                account=u"5705853",
@@ -286,7 +286,7 @@ class TestBancoBradesco(unittest.TestCase):
         for v in valid:
             self.dados.validate_field(v)
 
-    def testCarteira(self):
+    def test_carteira(self):
         x = BankBradesco(
             carteira=u'9',
             agencia=u'02752',

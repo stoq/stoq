@@ -31,7 +31,7 @@ from stoqlib.api import api
 
 class TestBranchDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.branchdialog.create_main_branch')
-    def testCreate(self, create_main_branch):
+    def test_create(self, create_main_branch):
         create_main_branch.return_value = api.get_current_branch(self.store)
 
         editor = BranchDialog(self.store)
@@ -39,7 +39,7 @@ class TestBranchDialog(GUITest):
                           models=[editor.model])
 
     @mock.patch('stoqlib.gui.dialogs.branchdialog.create_main_branch')
-    def testConfirm(self, create_main_branch):
+    def test_confirm(self, create_main_branch):
         create_main_branch.return_value = api.get_current_branch(self.store)
         editor = BranchDialog(self.store)
         editor.name.set_text('minha empresa')
@@ -47,7 +47,7 @@ class TestBranchDialog(GUITest):
         self.click(editor.main_dialog.ok_button)
 
     @mock.patch('stoqlib.gui.dialogs.branchdialog.create_main_branch')
-    def testValidators(self, create_main_branch):
+    def test_validators(self, create_main_branch):
         create_main_branch.return_value = api.get_current_branch(self.store)
         editor = BranchDialog(self.store)
         editor.name.set_text('minha empresa')

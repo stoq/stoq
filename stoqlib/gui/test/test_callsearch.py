@@ -31,7 +31,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestCallsSearch(GUITest):
 
-    def testShow(self):
+    def test_show(self):
         # 2 calls, different persons
         call1 = self.create_call()
         self.create_call(attendant=call1.attendant)
@@ -40,7 +40,7 @@ class TestCallsSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'calls-show')
 
-    def testWithPerson(self):
+    def test_with_person(self):
         # 2 calls, different persons
         call1 = self.create_call()
         self.create_call(attendant=call1.attendant)
@@ -49,7 +49,7 @@ class TestCallsSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'calls-show-person')
 
-    def testActions(self):
+    def test_actions(self):
         # 2 calls, different persons
         call1 = self.create_call()
         self.create_call(attendant=call1.attendant)

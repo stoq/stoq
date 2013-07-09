@@ -47,7 +47,7 @@ def compare_sintegra_file(sfile, basename):
 
 
 class SintegraTest(DomainTest):
-    def testComplete(self):
+    def test_complete(self):
         station = self.create_station()
         today = localdate(2007, 1, 1)
         reduction_date = localdatetime(2007, 1, 1, 23, 59)

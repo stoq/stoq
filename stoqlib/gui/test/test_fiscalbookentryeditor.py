@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestFiscalBookEntryEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         entry = self.create_fiscal_book_entry()
         entry.invoice_number = 57461
         editor = FiscalBookEntryEditor(self.store, entry)

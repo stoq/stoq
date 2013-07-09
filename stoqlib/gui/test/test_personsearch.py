@@ -41,7 +41,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPersonSearch(GUITest):
-    def testEmployeeSearch(self):
+    def test_employee_search(self):
         self.clean_domain([TransferOrderItem, TransferOrder,
                            EmployeeRoleHistory, Employee])
 
@@ -57,7 +57,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'employee-string-filter')
 
-    def testSupplierSearch(self):
+    def test_supplier_search(self):
         self.clean_domain([ReceivingOrderItem, ReceivingOrder, PurchaseItem,
                            PurchaseOrder, ProductSupplierInfo, Supplier])
 
@@ -73,7 +73,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'supplier-string-filter')
 
-    def testClientSearch(self):
+    def test_client_search(self):
         self.clean_domain([Commission, SaleItem, Sale, Client])
 
         client = self.create_client(u'Richard Stallman')
@@ -109,7 +109,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'client-birthday-interval-filter')
 
-    def testTransporterSearch(self):
+    def test_transporter_search(self):
         self.clean_domain([ReceivingOrderItem, ReceivingOrder, PurchaseItem,
                            PurchaseOrder, Transporter])
 
@@ -125,7 +125,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'transporter-string-filter')
 
-    def testEmployeeRoleSearch(self):
+    def test_employee_role_search(self):
         self.clean_domain([TransferOrderItem, TransferOrder,
                            EmployeeRoleHistory, Employee, EmployeeRole])
 
@@ -141,7 +141,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'employee-role-string-filter')
 
-    def testBranchSearch(self):
+    def test_branch_search(self):
         self.create_branch(name=u'Las Vegas')
         self.create_branch(name=u'Dante')
 
@@ -154,7 +154,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'branch-string-filter')
 
-    def testUserSearch(self):
+    def test_user_search(self):
         self.create_user(username=u'Homer')
         self.create_user(username=u'Bart')
 

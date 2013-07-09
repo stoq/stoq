@@ -29,7 +29,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestInConsignmentItemEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         item = self.create_purchase_order_item()
         item.order.status = PurchaseOrder.ORDER_CONSIGNED
         editor = InConsignmentItemEditor(self.store, item)

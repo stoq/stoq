@@ -33,7 +33,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestWorkOrderItemEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         workorder = self.create_workorder(equipment=u'Test equipment')
         workorder.client = self.create_client()
         workorder.client.category = self.create_client_category()
@@ -78,7 +78,7 @@ class TestWorkOrderItemEditor(GUITest):
 
 
 class TestWorkOrderItemSlave(GUITest):
-    def testRemove(self):
+    def test_remove(self):
         workorder = self.create_workorder(equipment=u'Test equipment')
         workorder.client = self.create_client()
         editor = _WorkOrderItemSlave(store=self.store, parent=None,

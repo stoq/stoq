@@ -35,7 +35,7 @@ class Fruit:
 
 
 class XLSExporterTest(DomainTest):
-    def testExportFromObjectList(self):
+    def test_export_from_object_list(self):
         fruits = ObjectList([Column('name', data_type=str),
                              Column('price', data_type=int)])
 

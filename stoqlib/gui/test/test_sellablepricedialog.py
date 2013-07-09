@@ -30,7 +30,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestSellablePriceDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.sellablepricedialog.ProgressDialog.show')
-    def testCreate(self, show):
+    def test_create(self, show):
         sellable = self.create_sellable()
         sellable.code = u'123'
         sellable.cost = 10
@@ -56,6 +56,6 @@ class TestSellablePriceDialog(GUITest):
         self.assertEquals(p1.price, 11)
         self.assertEquals(p2.price, 15)
 
-    def testCancel(self):
+    def test_cancel(self):
         editor = SellablePriceDialog(self.store)
         self.click(editor.main_dialog.cancel_button)

@@ -28,13 +28,13 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductionMaterialLostEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         material = self.create_production_material()
         editor = ProductionMaterialLostEditor(self.store, material)
         editor.identifier.set_label("12345")
         self.check_editor(editor, 'editor-productionmateriallosteditor-show')
 
-    def testLost(self):
+    def test_lost(self):
         material = self.create_production_material()
         material.needed = 10
         material.allocated = 5

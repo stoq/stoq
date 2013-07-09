@@ -66,66 +66,66 @@ class TestParameter(DomainTest):
 
     # System instances based on stoq.lib.parameters
 
-    def testMainCompany(self):
+    def test_main_company(self):
         company = self.sparam.MAIN_COMPANY
         branchTable = Branch
         assert isinstance(company, branchTable)
         assert isinstance(company.person, Person)
 
-    def testDefaultEmployeeRole(self):
+    def test_default_employee_role(self):
         employee_role = self.sparam.DEFAULT_SALESPERSON_ROLE
         assert isinstance(employee_role, EmployeeRole)
 
-    def testSuggestedSupplier(self):
+    def test_suggested_supplier(self):
         supplier = self.sparam.SUGGESTED_SUPPLIER
         assert isinstance(supplier, Supplier)
 
-    def testDeliveryService(self):
+    def test_delivery_service(self):
         service = self.sparam.DELIVERY_SERVICE
         assert isinstance(service, Service)
 
     # System constants based on stoq.lib.parameters
 
-    def testPOSFullScreen(self):
+    def test_pos_full_screen(self):
         param = self.sparam.POS_FULL_SCREEN
         assert isinstance(param, bool)
 
-    def testPOSSeparateCashier(self):
+    def test_pos_separate_cashier(self):
         param = self.sparam.POS_SEPARATE_CASHIER
         assert isinstance(param, bool)
 
-    def testLocationSuggested(self):
+    def test_location_suggested(self):
         location = CityLocation.get_default(self.store)
         self.assertEqual(location.city, self.sparam.CITY_SUGGESTED)
         self.assertEqual(location.state, self.sparam.STATE_SUGGESTED)
         self.assertEqual(location.country, self.sparam.COUNTRY_SUGGESTED)
 
-    def testHasDeliveryMode(self):
+    def test_has_delivery_mode(self):
         param = self.sparam.HAS_DELIVERY_MODE
         assert isinstance(param, int)
 
-    def testMaxSearchResults(self):
+    def test_max_search_results(self):
         param = self.sparam.MAX_SEARCH_RESULTS
         assert isinstance(param, int)
 
-    def testConfirmSalesOnTill(self):
+    def test_confirm_sales_on_till(self):
         param = self.sparam.CONFIRM_SALES_ON_TILL
         assert isinstance(param, int)
 
-    def testAcceptChangeSalesperson(self):
+    def test_accept_change_salesperson(self):
         param = self.sparam.ACCEPT_CHANGE_SALESPERSON
         assert isinstance(param, bool)
 
-    def testReturnPolicyOnSales(self):
+    def test_return_policy_on_sales(self):
         param = self.sparam.RETURN_POLICY_ON_SALES
         self.assertTrue(isinstance(param, int))
         self.assertEquals(param, 0)
 
-    def testAskSaleCFOP(self):
+    def test_ask_sale_c_f_o_p(self):
         param = self.sparam.ASK_SALES_CFOP
         assert isinstance(param, bool)
 
-    def testDefaultSalesCFOP(self):
+    def test_default_sales_c_f_o_p(self):
         self._create_examples()
         group = self.create_payment_group()
         sale = Sale(coupon_id=123, salesperson=self.salesperson,
@@ -138,7 +138,7 @@ class TestParameter(DomainTest):
                     store=self.store)
         self.assertEquals(sale.cfop, param)
 
-    def testDefaultReturnSalesCFOP(self):
+    def test_default_return_sales_c_f_o_p(self):
         from stoqlib.domain.fiscal import FiscalBookEntry
         self._create_examples()
         wrong_param = self.sparam.DEFAULT_SALES_CFOP
@@ -160,7 +160,7 @@ class TestParameter(DomainTest):
         self.assertEqual(self.sparam.DEFAULT_RETURN_SALES_CFOP,
                          reversal.cfop)
 
-    def testDefaultReceivingCFOP(self):
+    def test_default_receiving_c_f_o_p(self):
         branch = self.create_branch()
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         person = Person(name=u'Craudinho', store=self.store)
@@ -186,18 +186,18 @@ class TestParameter(DomainTest):
         self.assertEqual(param, receiving_order.cfop)
         self.failIfEqual(param, receiving_order2.cfop)
 
-    def testICMSTax(self):
+    def test_icms_tax(self):
         param = self.sparam.ICMS_TAX
         assert isinstance(param, Decimal)
 
-    def testISSTax(self):
+    def test_iss_tax(self):
         param = self.sparam.ISS_TAX
         assert isinstance(param, Decimal)
 
-    def testSubstitutionTax(self):
+    def test_substitution_tax(self):
         param = self.sparam.SUBSTITUTION_TAX
         assert isinstance(param, Decimal)
 
-    def testDefaultAreaCode(self):
+    def test_default_area_code(self):
         param = self.sparam.DEFAULT_AREA_CODE
         self.failUnless(isinstance(param, int), type(param))

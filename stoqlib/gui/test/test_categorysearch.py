@@ -27,7 +27,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellableCategorySearch(GUITest):
-    def testSearch(self):
+    def test_search(self):
         # Create some more categories to populate the search
         category1 = self.create_sellable_category(u"Category 1")
         self.create_sellable_category(u"Category 2",

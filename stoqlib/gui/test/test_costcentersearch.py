@@ -33,7 +33,7 @@ _ = stoqlib_gettext
 
 
 class TestCostCenterSearch(GUITest):
-    def testShow(self):
+    def test_show(self):
         self.create_cost_center()
         search = CostCenterSearch(self.store)
         search.search.refresh()

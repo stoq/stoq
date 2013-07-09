@@ -68,7 +68,7 @@ class TestConfirmSaleWizard(GUITest):
 
         self.check_wizard(self.wizard, name, models=models)
 
-    def testQueries(self):
+    def test_queries(self):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale, price=10)
@@ -94,7 +94,7 @@ class TestConfirmSaleWizard(GUITest):
         # 1: select payment status
         self.assertEquals(tracer.count, 18)
 
-    def testCreate(self):
+    def test_create(self):
         self._create_wizard()
 
         module = 'stoqlib.gui.events.ConfirmSaleWizardFinishEvent.emit'
@@ -107,7 +107,7 @@ class TestConfirmSaleWizard(GUITest):
         self._check_wizard('wizard-sale-done-sold')
         self.assertEquals(self.sale.payments[0].method.method_name, u'money')
 
-    def testMoneyPaymentWithTrade(self):
+    def test_money_payment_with_trade(self):
         # A trade just passes total_paid=value for the trade value (ie, the
         # products being returned)
         self._create_wizard(total_paid=3)
@@ -119,7 +119,7 @@ class TestConfirmSaleWizard(GUITest):
         # Since $30 was already paid, the client only had to pay $70
         self.assertEquals(self.sale.payments[0].value, 7)
 
-    def testSaleWithTradeSameValue(self):
+    def test_sale_with_trade_same_value(self):
         self._create_wizard(total_paid=10)
         self._go_to_next()
 
@@ -134,7 +134,7 @@ class TestConfirmSaleWizard(GUITest):
         # No payment created, since the client already paid the whole value
         self.assertEquals(self.sale.payments.count(), 0)
 
-    def testSalePaymentReserved(self):
+    def test_sale_payment_reserved(self):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale, price=100)
@@ -164,7 +164,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertEqual(set(sale.payments), set([p1, p2]))
 
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
-    def testSaleWithCostCenter(self, yesno):
+    def test_sale_with_cost_center(self, yesno):
         cost_center = self.create_cost_center()
 
         self._create_wizard()
@@ -183,7 +183,7 @@ class TestConfirmSaleWizard(GUITest):
         entry = self.store.find(CostCenterEntry, cost_center=self.sale.cost_center)
         self.assertEquals(len(list(entry)), 1)
 
-    def testStepPaymentMethodCheck(self):
+    def test_step_payment_method_check(self):
         self._create_wizard()
         self._select_method('check')
         self._go_to_next()
@@ -196,7 +196,7 @@ class TestConfirmSaleWizard(GUITest):
 
     # FIXME: add a test with a configured bank account
     @mock.patch('stoqlib.reporting.boleto.warning')
-    def testStepPaymentMethodBill(self, warning):
+    def test_step_payment_method_bill(self, warning):
         self._create_wizard()
         self._select_method('bill')
         self._go_to_next()
@@ -213,7 +213,7 @@ class TestConfirmSaleWizard(GUITest):
                          "You need to configure the bill payment method in "
                          "the admin application and try again"))
 
-    def testStepPaymentMethodCard(self):
+    def test_step_payment_method_card(self):
         self._create_wizard()
         self._select_method('card')
         self._go_to_next()
@@ -232,7 +232,7 @@ class TestConfirmSaleWizard(GUITest):
             models.append(operation.get_card_data_by_payment(p))
         self._check_wizard('wizard-sale-step-payment-method-card', models)
 
-    def testStepPaymentMethodDeposit(self):
+    def test_step_payment_method_deposit(self):
         self._create_wizard()
         self._select_method('deposit')
         self._go_to_next()
@@ -243,7 +243,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertEquals(self.sale.payments[0].method.method_name, 'deposit')
 
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
-    def testStepPaymentMethodStoreCredit(self, yesno):
+    def test_step_payment_method_store_credit(self, yesno):
         yesno.return_value = False
 
         client = self.create_client()
@@ -260,7 +260,7 @@ class TestConfirmSaleWizard(GUITest):
 
         self._check_wizard('wizard-sale-step-payment-method-store-credit')
 
-    def testSaleToClientWithoutCredit(self):
+    def test_sale_to_client_without_credit(self):
         client = self.create_client()
 
         self._create_wizard()
@@ -273,7 +273,7 @@ class TestConfirmSaleWizard(GUITest):
 
     @mock.patch('stoqlib.gui.wizards.salewizard.print_report')
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
-    def testSaleToClientWithLatePayments(self, yesno, print_report):
+    def test_sale_to_client_with_late_payments(self, yesno, print_report):
         #: this parameter allows a client to buy even if he has late payments
         sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
                                               unicode(int(LatePaymentPolicy.ALLOW_SALES)))

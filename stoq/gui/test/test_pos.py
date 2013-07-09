@@ -54,7 +54,7 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 
 class TestPos(BaseGUITest):
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(PosApp, u'pos')
         self.check_app(app, u'pos')
 
@@ -107,7 +107,7 @@ class TestPos(BaseGUITest):
             self.assertEquals(arg, expected)
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
-    def testTillOpen(self, confirm):
+    def test_till_open(self, confirm):
         app = self.create_app(PosApp, u'pos')
         pos = app
         self._pos_open_till(pos)
@@ -115,7 +115,7 @@ class TestPos(BaseGUITest):
         self.check_app(app, u'pos-till-open')
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
-    def testCheckout(self, confirm):
+    def test_checkout(self, confirm):
         app = self.create_app(PosApp, u'pos')
         pos = app
         self._pos_open_till(pos)
@@ -144,7 +144,7 @@ class TestPos(BaseGUITest):
             for store in close_calls:
                 store.close()
 
-    def testAddSaleItem(self):
+    def test_add_sale_item(self):
         app = self.create_app(PosApp, u'pos')
         pos = app
         self._pos_open_till(pos)
@@ -157,7 +157,7 @@ class TestPos(BaseGUITest):
         self.check_app(app, u'pos-add-sale-item')
 
     @mock.patch('stoq.gui.pos.POSConfirmSaleEvent.emit')
-    def testPOSConfirmSaleEvent(self, emit):
+    def test_pos_confirm_sale_event(self, emit):
         pos = self._get_pos_with_open_till()
 
         sellable = self.store.find(Sellable)[0]

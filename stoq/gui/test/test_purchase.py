@@ -43,13 +43,13 @@ from stoqlib.reporting.purchase import PurchaseReport
 
 
 class TestPurchase(BaseGUITest):
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(PurchaseApp, u'purchase')
         for purchase in app.results:
             purchase.open_date = datetime.datetime(2012, 1, 1)
         self.check_app(app, u'purchase')
 
-    def testSelect(self):
+    def test_select(self):
         self.create_purchase_order()
         app = self.create_app(PurchaseApp, u'purchase')
         results = app.results

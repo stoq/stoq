@@ -20,21 +20,21 @@ class EventTest(unittest.TestCase):
     def _stub_return_corret_value(self):
         return ReturnStatus()
 
-    def testReturnValueNoConnection(self):
+    def test_return_value_no_connection(self):
         class MyEvent(Event):
             returnclass = ReturnStatus
 
         retval = MyEvent.emit()
         self.assertEquals(None, retval)
 
-    def testWrongReturnValue(self):
+    def test_wrong_return_value(self):
         class MyEvent(Event):
             returnclass = ReturnStatus
 
         MyEvent.connect(self._stub_return_wrong_value)
         self.assertRaises(TypeError, MyEvent.emit)
 
-    def testCorrectReturnValue(self):
+    def test_correct_return_value(self):
         class MyEvent(Event):
             returnclass = ReturnStatus
 
@@ -43,7 +43,7 @@ class EventTest(unittest.TestCase):
         retval = MyEvent.emit()
         self.assertTrue(isinstance(retval, ReturnStatus))
 
-    def testConnectTwice(self):
+    def test_connect_twice(self):
         class MyEvent(Event):
             returnclass = ReturnStatus
 
@@ -61,7 +61,7 @@ class EventTest(unittest.TestCase):
         MyEvent.disconnect(obj1.callback)
         MyEvent.connect(obj1.callback)
 
-    def testDisconnect(self):
+    def test_disconnect(self):
         class MyEvent(Event):
             returnclass = ReturnStatus
 
@@ -78,7 +78,7 @@ class EventTest(unittest.TestCase):
         self.assertRaises(ValueError,
                           MyEvent.disconnect, lambda: 666)
 
-    def testWeakRef(self):
+    def test_weak_ref(self):
         class MyEvent(Event):
             returnclass = int
 

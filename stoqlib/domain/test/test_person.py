@@ -61,10 +61,10 @@ _ = stoqlib_gettext
 
 
 class TestEmployeeRoleHistory(DomainTest):
-    def testCreate(self):
+    def test_create(self):
         EmployeeRole(store=self.store, name=u'ajudante')
 
-    def testHasRole(self):
+    def test_has_role(self):
         role = EmployeeRole(store=self.store, name=u'role')
         self.failIf(role.has_other_role(u'Role'))
         role = EmployeeRole(store=self.store, name=u'Role')
@@ -72,7 +72,7 @@ class TestEmployeeRoleHistory(DomainTest):
 
 
 class TestEmployeeRole(DomainTest):
-    def testGetdescription(self):
+    def test_getdescription(self):
         role = self.create_employee_role()
         role.name = u'manager'
         self.assertEquals(role.name, role.get_description())
@@ -80,7 +80,7 @@ class TestEmployeeRole(DomainTest):
 
 class TestPerson(DomainTest):
 
-    def testAddresses(self):
+    def test_addresses(self):
         person = self.create_person()
         assert not person.get_main_address()
         ctlocs = self.store.find(CityLocation)
@@ -93,7 +93,7 @@ class TestPerson(DomainTest):
         self.assertEquals(len(list(person.addresses)), 1)
         self.assertEquals(list(person.addresses)[0], address)
 
-    def testCalls(self):
+    def test_calls(self):
         person = self.create_person()
         user = self.create_user()
         self.assertEquals(len(list(person.calls)), 0)
@@ -103,7 +103,7 @@ class TestPerson(DomainTest):
         self.assertEquals(len(list(person.calls)), 1)
         self.assertEquals(list(person.calls)[0], call)
 
-    def testContactInfo(self):
+    def test_contact_info(self):
         person = self.create_person()
         self.assertEquals(len(list(person.contact_infos)), 0)
 
@@ -111,7 +111,7 @@ class TestPerson(DomainTest):
         self.assertEquals(len(list(person.contact_infos)), 1)
         self.assertEquals(list(person.contact_infos)[0], contact_info)
 
-    def testGetaddressString(self):
+    def test_getaddress_string(self):
         person = self.create_person()
         ctloc = CityLocation(store=self.store)
         address = Address(store=self.store, person=person,
@@ -120,12 +120,12 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_address_string(), _(u'%s %s, %s') % (
             address.street, address.streetnumber, address.district))
 
-    def testGetMobileNumberNumber(self):
+    def test_get_mobile_number_number(self):
         person = self.create_person()
         person.mobile_number = u'0321-12345'
         self.assertEquals(person.mobile_number, u'032112345')
 
-    def testGetPhoneNumberNumber(self):
+    def test_get_phone_number_number(self):
         person = self.create_person()
         person.phone_number = u'0321-12345'
         self.assertEquals(person.get_phone_number_number(), 32112345)
@@ -134,7 +134,7 @@ class TestPerson(DomainTest):
         person.phone_number = None
         self.assertEquals(person.get_phone_number_number(), 0)
 
-    def testGetFaxNumberNumber(self):
+    def test_get_fax_number_number(self):
         person = self.create_person()
         person.fax_number = u'0321-12345'
         self.assertEquals(person.fax_number, u'032112345')
@@ -143,7 +143,7 @@ class TestPerson(DomainTest):
         person.fax_number = None
         self.assertEquals(person.get_fax_number_number(), 0)
 
-    def testGetFormattedPhoneNumber(self):
+    def test_get_formatted_phone_number(self):
         person = self.create_person()
         self.assertEquals(person.get_formatted_phone_number(), u"")
         phone = u'0321-1234'
@@ -151,7 +151,7 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_formatted_phone_number(),
                           phone)
 
-    def testGetFormattedFaxNumber(self):
+    def test_get_formatted_fax_number(self):
         person = self.create_person()
         self.assertEquals(person.get_formatted_fax_number(), u"")
         fax = u'0321-1234'
@@ -159,7 +159,7 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_formatted_fax_number(),
                           fax)
 
-    def testGetByPhoneNumber(self):
+    def test_get_by_phone_number(self):
         person = self.create_person()
 
         self.assertTrue(Person.get_by_phone_number(
@@ -181,7 +181,7 @@ class _PersonFacetTest(object):
     def _create_person_facet(self):
         return ExampleCreator.create(self.store, self.facet.__name__)
 
-    def testInactivate(self):
+    def test_inactivate(self):
         facet = self._create_person_facet()
         if not facet.is_active:
             facet.is_active = True
@@ -189,14 +189,14 @@ class _PersonFacetTest(object):
         self.failIf(facet.is_active)
         self.assertRaises(AssertionError, facet.inactivate)
 
-    def testActivate(self):
+    def test_activate(self):
         facet = self._create_person_facet()
         facet.is_active = False
         facet.activate()
         self.failUnless(facet.is_active)
         self.assertRaises(AssertionError, facet.activate)
 
-    def testGetDescription(self):
+    def test_get_description(self):
         facet = self._create_person_facet()
         self.failUnless(facet.get_description(), facet.person.name)
 
@@ -204,7 +204,7 @@ class _PersonFacetTest(object):
 class TestIndividual(_PersonFacetTest, DomainTest):
     facet = Individual
 
-    def testIndividual(self):
+    def test_individual(self):
         person = self.create_person()
         individual = Individual(person=person, store=self.store)
 
@@ -215,14 +215,14 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEqual(type(statuses[0][0]), unicode)
         self.assertEqual(type(statuses[0][1]), int)
 
-    def testGetCPFNumber(self):
+    def test_get_c_p_f_number(self):
         individual = self.create_individual()
         individual.cpf = u''
         self.assertEquals(individual.get_cpf_number(), 0)
         individual.cpf = u'123.456.789-203'
         self.assertEquals(individual.get_cpf_number(), 123456789203)
 
-    def testGetBirthdayDateQuery(self):
+    def test_get_birthday_date_query(self):
         start = localdate(2000, 3, 4)
 
         query = Individual.get_birthday_query(start)
@@ -258,7 +258,7 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertTrue(client3.person.individual in individuals)
         self.assertTrue(client4.person.individual in individuals)
 
-    def testGetBirthdayIntervalQuery(self):
+    def test_get_birthday_interval_query(self):
         start = localdatetime(2000, 3, 1)
         end = localdatetime(2000, 3, 25)
 
@@ -300,7 +300,7 @@ class TestIndividual(_PersonFacetTest, DomainTest):
 class TestCompany(_PersonFacetTest, DomainTest):
     facet = Company
 
-    def testGetCnpjNumberNumber(self):
+    def test_get_cnpj_number_number(self):
         company = self.create_company()
         company.cnpj = u'111.222.333.444'
         self.assertEquals(company.get_cnpj_number(), 111222333444)
@@ -309,18 +309,18 @@ class TestCompany(_PersonFacetTest, DomainTest):
 class TestClient(_PersonFacetTest, DomainTest):
     facet = Client
 
-    def testGetname(self):
+    def test_getname(self):
         client = self.create_client()
         client.person.name = u'Laun'
         self.assertEquals(client.get_name(), u'Laun')
 
-    def testGetStatusString(self):
+    def test_get_status_string(self):
         client = self.create_client()
         status = client.status
         status = client.statuses[status]
         self.assertEquals(client.get_status_string(), status)
 
-    def testGetactiveClients(self):
+    def test_getactive_clients(self):
         table = Client
         active_clients = table.get_active_clients(self.store).count()
         client = self.create_client()
@@ -328,7 +328,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         one_more_active_client = table.get_active_clients(self.store).count()
         self.assertEquals(active_clients + 1, one_more_active_client)
 
-    def testGetclient_sales(self):
+    def test_getclient_sales(self):
         client = self.store.find(Client)
         assert not client.is_empty()
         client = client[0]
@@ -347,7 +347,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         one_more_sale = client.get_client_sales().count()
         self.assertEquals(count_sales + 1, one_more_sale)
 
-    def testGetClientReturnedSales(self):
+    def test_get_client_returned_sales(self):
         client = self.create_client()
 
         # We cannot use count() since there is a group by in the viewable
@@ -365,7 +365,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         after_return_count = len(list(client.get_client_returned_sales()))
         self.assertEquals(after_return_count, 1)
 
-    def testClientCategory(self):
+    def test_client_category(self):
         categories = self.store.find(ClientCategory, name=u'Category')
         self.assertEquals(categories.count(), 0)
 
@@ -550,7 +550,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.salary, 200)
         self.assertEquals(client.credit_limit, 100)
 
-    def testGetClientCreditTransactions(self):
+    def test_get_client_credit_transactions(self):
         method = self.store.find(PaymentMethod, method_name=u'credit').one()
         client = self.create_client()
         sale = self.create_sale(client=client)
@@ -581,7 +581,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(payment.description, payment_domain.description)
         self.assertEquals(payment.paid_value, payment_domain.paid_value)
 
-    def testCreditAccountBalance(self):
+    def test_credit_account_balance(self):
         method = self.store.find(PaymentMethod, method_name=u'credit').one()
         client = self.create_client()
         sale = self.create_sale(client=client)
@@ -609,12 +609,12 @@ class TestClient(_PersonFacetTest, DomainTest):
 class TestSupplier(_PersonFacetTest, DomainTest):
     facet = Supplier
 
-    def testGetActiveSuppliers(self):
+    def test_get_active_suppliers(self):
         for supplier in Supplier.get_active_suppliers(self.store):
             self.assertEquals(supplier.status,
                               Supplier.STATUS_ACTIVE)
 
-    def testGetAllSuppliers(self):
+    def test_get_all_suppliers(self):
         query = And(Person.name == u"test",
                     Supplier.person_id == Person.id)
 
@@ -627,7 +627,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
         suppliers = self.store.find(Person, query)
         self.assertEqual(suppliers.count(), 1)
 
-    def testGetSupplierPurchase(self):
+    def test_get_supplier_purchase(self):
         supplier = self.create_supplier()
 
         self.failIf(supplier.get_supplier_purchases().count())
@@ -648,7 +648,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
 class TestEmployee(_PersonFacetTest, DomainTest):
     facet = Employee
 
-    def testRoleHistory(self):
+    def test_role_history(self):
         # this test depends bug 2457
         employee = self.create_employee()
         EmployeeRoleHistory(role=employee.role,
@@ -664,7 +664,7 @@ class TestEmployee(_PersonFacetTest, DomainTest):
         new_count = employee.get_role_history().count()
         self.assertEquals(old_count + 1, new_count)
 
-    def testGetActiveRoleHistory(self):
+    def test_get_active_role_history(self):
         employee = self.create_employee()
 
         # creating 2 active role history, asserting it fails
@@ -687,7 +687,7 @@ class TestEmployee(_PersonFacetTest, DomainTest):
 class TestUser(_PersonFacetTest, DomainTest):
     facet = LoginUser
 
-    def testGetstatusStr(self):
+    def test_getstatus_str(self):
         users = self.store.find(LoginUser)
         assert not users.is_empty()
         user = users[0]
@@ -695,7 +695,7 @@ class TestUser(_PersonFacetTest, DomainTest):
         string = user.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
 
-    def testGetActiveUsers(self):
+    def test_get_active_users(self):
         active_users_count = LoginUser.get_active_users(self.store).count()
 
         user = self.create_user()
@@ -712,7 +712,7 @@ class TestUser(_PersonFacetTest, DomainTest):
 class TestBranch(_PersonFacetTest, DomainTest):
     facet = Branch
 
-    def testGetstatusStr(self):
+    def test_getstatus_str(self):
         branches = self.store.find(Branch)
         assert not branches.is_empty()
         branch = branches[0]
@@ -720,7 +720,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
         string = branch.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
 
-    def testGetactiveBranches(self):
+    def test_getactive_branches(self):
         person = self.create_person()
         Company(person=person, store=self.store)
         count = Branch.get_active_branches(self.store).count()
@@ -729,7 +729,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
                         manager=manager, is_active=True)
         assert branch.get_active_branches(self.store).count() == count + 1
 
-    def testGetActiveRemoteBranches(self):
+    def test_get_active_remote_branches(self):
         current_branch = get_current_branch(self.store)
         self.assertIn(current_branch, Branch.get_active_branches(self.store))
         self.assertNotIn(current_branch,
@@ -751,13 +751,13 @@ class SalesPersonTest(_PersonFacetTest, DomainTest):
 
     facet = SalesPerson
 
-    def testGetactiveSalespersons(self):
+    def test_getactive_salespersons(self):
         count = SalesPerson.get_active_salespersons(self.store).count()
         salesperson = self.create_sales_person()
         one_more = salesperson.get_active_salespersons(self.store).count()
         assert count + 1 == one_more
 
-    def testGetStatusString(self):
+    def test_get_status_string(self):
         salesperson = self.create_sales_person()
         string = salesperson.get_status_string()
         self.assertEquals(string, _(u'Active'))
@@ -767,12 +767,12 @@ class TransporterTest(_PersonFacetTest, DomainTest):
 
     facet = Transporter
 
-    def testGetStatusString(self):
+    def test_get_status_string(self):
         transporter = self.create_transporter()
         string = transporter.get_status_string()
         self.assertEquals(string, _(u'Active'))
 
-    def testGetActiveTransporters(self):
+    def test_get_active_transporters(self):
         count = Transporter.get_active_transporters(self.store).count()
         transporter = self.create_transporter()
         one_more = transporter.get_active_transporters(self.store).count()
@@ -780,7 +780,7 @@ class TransporterTest(_PersonFacetTest, DomainTest):
 
 
 class TestClientSalaryHistory(DomainTest):
-    def testAdd(self):
+    def test_add(self):
         client = self.create_client()
         user = self.create_user()
 

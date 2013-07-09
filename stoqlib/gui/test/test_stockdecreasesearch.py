@@ -48,7 +48,7 @@ class TestStockDecreaseSearch(GUITest):
         dec.identifier = 74268
         dec.confirm_date = datetime.datetime(2012, 2, 2)
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -60,7 +60,7 @@ class TestStockDecreaseSearch(GUITest):
 
     @mock.patch('stoqlib.gui.search.stockdecreasesearch.run_dialog')
     @mock.patch('stoqlib.gui.search.stockdecreasesearch.print_report')
-    def testButtons(self, print_report, run_dialog):
+    def test_buttons(self, print_report, run_dialog):
         self._create_domain()
         search = self._show_search()
 

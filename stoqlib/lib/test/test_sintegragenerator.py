@@ -15,7 +15,7 @@ from stoqlib.lib.test.test_sintegra import compare_sintegra_file
 
 class TestSintegraGenerator(DomainTest):
 
-    def testRegisters(self):
+    def test_registers(self):
         order = self.create_receiving_order()
         order.receival_date = localdate(2007, 6, 1)
         order.discount_value = 10

@@ -76,11 +76,11 @@ class TestPayable(BaseGUITest):
         order.close()
         return order, payment
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(PayableApp, u'payable')
         self.check_app(app, u'payable')
 
-    def testSelect(self):
+    def test_select(self):
         purchase, payment = self.create_purchase_payment()
         app = self.create_app(PayableApp, u'payable')
         olist = app.results
@@ -88,7 +88,7 @@ class TestPayable(BaseGUITest):
         self.check_app(app, u'payable-selected')
 
     @mock.patch('stoq.gui.payable.run_dialog')
-    def testPay(self, run_dialog):
+    def test_pay(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
@@ -103,7 +103,7 @@ class TestPayable(BaseGUITest):
             self.store.readonly, payments=[payment])
 
     @mock.patch('stoq.gui.payable.run_dialog')
-    def testEdit(self, run_dialog):
+    def test_edit(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
@@ -118,7 +118,7 @@ class TestPayable(BaseGUITest):
             self.store.readonly, purchase)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
-    def testChangeDueDate(self, run_dialog):
+    def test_change_due_date_dialog(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
@@ -133,7 +133,7 @@ class TestPayable(BaseGUITest):
             self.store.readonly, payment, purchase)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
-    def testDetails(self, run_dialog):
+    def test_details(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
@@ -148,7 +148,7 @@ class TestPayable(BaseGUITest):
             self.store.readonly, payment)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
-    def testComments(self, run_dialog):
+    def test_comments(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')

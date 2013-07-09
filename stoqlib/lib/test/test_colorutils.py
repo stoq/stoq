@@ -28,7 +28,7 @@ from stoqlib.lib.colorutils import get_random_color, _TANGO_PALETTE
 
 
 class TestColorUtils(unittest.TestCase):
-    def testGetRandomColor(self):
+    def test_get_random_color(self):
         for i in xrange(100):
             self.assertIn(get_random_color(), _TANGO_PALETTE)
 

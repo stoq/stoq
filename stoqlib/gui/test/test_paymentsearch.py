@@ -69,7 +69,7 @@ class TestPaymentSearch(GUITest):
                                        provider_id=u'VISANET')
         pay.identifier = 88888
 
-    def testCardPaymentSearch(self):
+    def test_card_payment_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -90,7 +90,7 @@ class TestPaymentSearch(GUITest):
 
     @mock.patch('stoqlib.gui.search.paymentsearch.print_report')
     @mock.patch('stoqlib.gui.search.paymentsearch.run_dialog')
-    def testButtons(self, run_dialog, print_report):
+    def test_buttons(self, run_dialog, print_report):
         self._create_domain()
         search = self._show_search()
 

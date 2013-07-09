@@ -33,7 +33,7 @@ from stoqlib.lib.dateutils import localnow
 
 
 class TestBaseTax(DomainTest):
-    def testSetFromTemplate(self):
+    def test_set_from_template(self):
         tax_template = ProductTaxTemplate(
             store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
@@ -44,7 +44,7 @@ class TestBaseTax(DomainTest):
 
 
 class TestProductTaxTemplate(DomainTest):
-    def testGetTaxModel(self):
+    def test_get_tax_model(self):
         tax_template = ProductTaxTemplate(
             store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
@@ -54,7 +54,7 @@ class TestProductTaxTemplate(DomainTest):
             product_tax_template=tax_template)
         self.failUnless(tax_template.get_tax_model())
 
-    def testGetTaxTypeStr(self):
+    def test_get_tax_type_str(self):
         tax_template = ProductTaxTemplate(
             store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
@@ -64,7 +64,7 @@ class TestProductTaxTemplate(DomainTest):
 class TestProductIcmsTemplate(DomainTest):
     """Tests for ProductIcmsTemplate class"""
 
-    def testIsPCredSnValid(self):
+    def test_is_p_cred_sn_valid(self):
         tax_template = ProductTaxTemplate(
             store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
@@ -135,7 +135,7 @@ class TestSaleItemIcms(DomainTest):
         sale_item_icms.update_values()
         self.failIf(sale_item_icms.v_cred_icms_sn)
 
-    def testUpdateValuesNormal(self):
+    def test_update_values_normal(self):
         sale_item_icms = self.create_sale_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
@@ -206,7 +206,7 @@ class TestSaleItemIpi(DomainTest):
 
         return sale_item
 
-    def testSetInitialValues(self):
+    def test_set_initial_values(self):
         sale_item_ipi = SaleItemIpi(store=self.store)
         self._get_sale_item(sale_item_ipi, 1, 10)
         sale_item_ipi.cst = 0

@@ -41,7 +41,7 @@ class TestReceivingOrderWizard(GUITest):
     @mock.patch('stoqlib.gui.utils.printing.warning')
     @mock.patch('stoqlib.gui.wizards.receivingwizard.run_dialog')
     @mock.patch('stoqlib.gui.wizards.receivingwizard.yesno')
-    def testCompleteReceiving(self, yesno, run_dialog, warning):
+    def test_complete_receiving(self, yesno, run_dialog, warning):
         yesno.return_value = True
         run_dialog.return_value = Settable(skip=Decimal('0'))
 

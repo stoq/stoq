@@ -67,11 +67,11 @@ class TestStock(BaseGUITest):
                     for other_arg in other_args:
                         self.assertEquals(arg, other_arg)
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(StockApp, u'stock')
         self.check_app(app, u'stock')
 
-    def testSelect(self):
+    def test_select(self):
         app = self.create_app(StockApp, u'stock')
         results = app.results
         results.select(results[1])

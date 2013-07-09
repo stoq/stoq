@@ -35,7 +35,7 @@ from stoqlib.lib.dateutils import localdate, localtoday
 
 class TestPaymentChangeDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.paymentchangedialog.warning')
-    def testChangeDueDateSale(self, warning):
+    def test_change_due_date_sale(self, warning):
         sale = self.create_sale()
         sale.client = self.create_client()
         sale.identifier = 9123
@@ -67,7 +67,7 @@ class TestPaymentChangeDialog(GUITest):
         self.assertEquals(payment.due_date.date(), today)
 
     @mock.patch('stoqlib.gui.dialogs.paymentchangedialog.warning')
-    def testChangeStatusPaidSale(self, warning):
+    def test_change_status_paid_sale(self, warning):
         sale = self.create_sale()
         self.add_product(sale, price=10)
         sale.identifier = 9124
@@ -93,7 +93,7 @@ class TestPaymentChangeDialog(GUITest):
         self.assertEquals(payment.status, Payment.STATUS_PENDING)
 
     @mock.patch('stoqlib.gui.dialogs.paymentchangedialog.warning')
-    def testChangeStatusCancelPurchase(self, warning):
+    def test_change_status_cancel_purchase(self, warning):
         product = self.create_product()
         order = self.create_purchase_order()
         order.identifier = 9129
@@ -119,7 +119,7 @@ class TestPaymentChangeDialog(GUITest):
 
         self.assertEquals(payment.status, Payment.STATUS_CANCELLED)
 
-    def testChangeDueDateLonelyOutPayment(self):
+    def test_change_due_date_lonely_out_payment(self):
         payment = self.create_payment(Payment.TYPE_OUT)
         payment.group = self.create_payment_group()
         payment.group.recipient = self.create_person()
@@ -128,7 +128,7 @@ class TestPaymentChangeDialog(GUITest):
         editor = PaymentDueDateChangeDialog(self.store, payment)
         self.check_editor(editor, 'editor-payment-change-due-date-lonely-out')
 
-    def testChangeDueDateLonelyInPayment(self):
+    def test_change_due_date_lonely_in_payment(self):
         payment = self.create_payment(Payment.TYPE_IN)
         payment.group = self.create_payment_group()
         payment.group.payer = self.create_person()

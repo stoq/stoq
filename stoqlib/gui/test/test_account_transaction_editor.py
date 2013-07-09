@@ -30,14 +30,14 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestAccountTransactionEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         account = self.create_account()
         editor = AccountTransactionEditor(self.store, None, account)
 
         editor.date.update(datetime.date.today())
         self.check_editor(editor, 'editor-transaction-create')
 
-    def testShow(self):
+    def test_show(self):
         account = self.create_account()
         transaction = self.create_account_transaction(account)
         editor = AccountTransactionEditor(self.store, transaction, account)

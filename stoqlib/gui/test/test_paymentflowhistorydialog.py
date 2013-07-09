@@ -29,18 +29,18 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestPaymentFlowHistoryDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.paymentflowhistorydialog.print_report')
-    def testCreate(self, print_report):
+    def test_create(self, print_report):
         dialog = PaymentFlowHistoryDialog(self.store)
         self.check_dialog(dialog, 'dialog-payment-flow-history')
 
     @mock.patch('stoqlib.gui.dialogs.paymentflowhistorydialog.info')
-    def testNoPayments(self, info):
+    def test_no_payments(self, info):
         dialog = PaymentFlowHistoryDialog(self.store)
         self.click(dialog.ok_button)
         info.assert_called_once_with('No payment history found.')
 
     @mock.patch('stoqlib.gui.dialogs.paymentflowhistorydialog.print_report')
-    def testWithPayments(self, info):
+    def test_with_payments(self, info):
         payment = self.create_payment()
         dialog = PaymentFlowHistoryDialog(self.store)
         self.click(dialog.ok_button)

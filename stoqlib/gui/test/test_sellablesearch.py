@@ -39,7 +39,7 @@ class TestCallsSearch(GUITest):
         search.results.select(search.results[0])
         return search
 
-    def testSearch(self):
+    def test_search(self):
         search = self._show_search()
 
         self.check_search(search, 'sellable-no-filter')
@@ -49,7 +49,7 @@ class TestCallsSearch(GUITest):
         self.check_search(search, 'sellable-string-filter')
 
     @mock.patch('stoqlib.gui.search.sellablesearch.SellableSearch.set_message')
-    def testCreate(self, set_message):
+    def test_create(self, set_message):
         sellable = self.create_sellable()
         self.create_storable(product=sellable.product)
         sale_item = TemporarySaleItem(sellable=sellable, quantity=1)

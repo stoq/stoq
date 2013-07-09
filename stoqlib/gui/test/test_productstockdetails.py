@@ -34,7 +34,7 @@ from stoqlib.database.runtime import get_current_branch, get_current_user
 
 class TestProductStockHistoryDialog(GUITest):
 
-    def testShow(self):
+    def test_show(self):
         date = datetime.date(2012, 1, 1)
         today = datetime.date.today()
         branch = get_current_branch(self.store)

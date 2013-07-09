@@ -29,7 +29,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestCfopData(DomainTest):
-    def testGetDescription(self):
+    def test_get_description(self):
         cfop = CfopData(code=u"2365", description=u"blabla",
                         store=self.store)
         full_desc = cfop.get_description()
@@ -38,13 +38,13 @@ class TestCfopData(DomainTest):
 
 class TestIcmsIpiBookEntry(DomainTest):
 
-    def testReverseEntry(self):
+    def test_reverse_entry(self):
         entry = self.create_icms_ipi_book_entry()
         reversal = entry.reverse_entry(100)
         self.assertEquals(reversal.icms_value, 10)
         self.assertEquals(reversal.ipi_value, 10)
 
-    def testCreateProductEntry(self):
+    def test_create_product_entry(self):
         sale = self.create_sale()
         sale.add_sellable(self.create_sellable(), price=150)
         book_entry = FiscalBookEntry.create_product_entry(
@@ -56,7 +56,7 @@ class TestIcmsIpiBookEntry(DomainTest):
         self.assertEquals(book_entry.entry_type,
                           FiscalBookEntry.TYPE_PRODUCT)
 
-    def testHasEntryByPaymentGroup(self):
+    def test_has_entry_by_payment_group(self):
         payment_group = self.create_payment_group()
         entry = self.create_icms_ipi_book_entry()
 
@@ -65,7 +65,7 @@ class TestIcmsIpiBookEntry(DomainTest):
         self.failIf(entry.has_entry_by_payment_group(
             self.store, payment_group, entry.entry_type))
 
-    def testGetEntryByPaymentGroup(self):
+    def test_get_entry_by_payment_group(self):
         payment_group = self.create_payment_group()
         entry = self.create_icms_ipi_book_entry()
 
@@ -76,12 +76,12 @@ class TestIcmsIpiBookEntry(DomainTest):
 
 class TestIssBookEntry(DomainTest):
 
-    def testReverseEntry(self):
+    def test_reverse_entry(self):
         entry = self.create_iss_book_entry()
         reversal = entry.reverse_entry(201)
         self.assertEquals(reversal.iss_value, 10)
 
-    def testCreateServiceEntry(self):
+    def test_create_service_entry(self):
         sale = self.create_sale()
         sale.add_sellable(self.create_sellable(), price=150)
         book_entry = FiscalBookEntry.create_service_entry(
@@ -95,7 +95,7 @@ class TestIssBookEntry(DomainTest):
         self.assertEquals(book_entry.entry_type,
                           FiscalBookEntry.TYPE_SERVICE)
 
-    def testHasEntryByPaymentGroup(self):
+    def test_has_entry_by_payment_group(self):
         payment_group = self.create_payment_group()
         entry = self.create_iss_book_entry()
 
@@ -104,7 +104,7 @@ class TestIssBookEntry(DomainTest):
         self.failIf(entry.has_entry_by_payment_group(
             self.store, payment_group, entry.entry_type))
 
-    def testGetEntryByPaymentGroup(self):
+    def test_get_entry_by_payment_group(self):
         payment_group = self.create_payment_group()
         entry = self.create_iss_book_entry()
 

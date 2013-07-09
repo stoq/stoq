@@ -28,6 +28,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellableUnitEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = SellableUnitEditor(self.store)
         self.check_editor(editor, 'editor-sellableunit-create')

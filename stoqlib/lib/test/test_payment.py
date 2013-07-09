@@ -33,7 +33,7 @@ class TestPaymentFunctions(DomainTest):
     """A class for testing the functions on lib/payment.py
     """
 
-    def testGeneratePaymentsValues(self):
+    def test_generate_payments_values(self):
         # Test 1
         values = generate_payments_values(Decimal(101), 3)
         expected = [Decimal('33.67'), Decimal('33.67'), Decimal('33.66')]

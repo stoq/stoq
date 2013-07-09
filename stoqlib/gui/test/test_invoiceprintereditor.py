@@ -31,7 +31,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestInvoicePrinterEditor(GUITest):
     @mock.patch('stoqlib.gui.editors.invoiceeditor.BranchStation.get_active_stations')
-    def testCreate(self, select):
+    def test_create(self, select):
         # Station names change depending on the computer running the test. Make
         # sure only one station is in the list, and that the name is always de
         # same

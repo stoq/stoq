@@ -37,13 +37,13 @@ from stoqlib.lib.dateutils import (create_date_interval,
 
 class DateUtilTest(unittest.TestCase):
 
-    def testCreateDateIntervalDaily(self):
+    def test_create_date_interval_daily(self):
         dates = create_date_interval(INTERVALTYPE_DAY,
                                      datetime.date(2011, 1, 1),
                                      datetime.date(2011, 12, 31))
         self.assertEquals(dates.count(), 365)
 
-    def testCreateDateIntervalMonth1(self):
+    def test_create_date_interval_month1(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
                                      datetime.date(2011, 1, 1),
                                      datetime.date(2011, 12, 31))
@@ -52,7 +52,7 @@ class DateUtilTest(unittest.TestCase):
             self.assertEquals(dates[i],
                               datetime.datetime(2011, i + 1, day))
 
-    def testCreateDateIntervalMonth5(self):
+    def test_create_date_interval_month5(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
                                      datetime.date(2011, 1, 5),
                                      datetime.date(2011, 12, 31))
@@ -62,7 +62,7 @@ class DateUtilTest(unittest.TestCase):
             self.assertEquals(dates[i],
                               datetime.datetime(2011, i + 1, day))
 
-    def testCreateDateIntervalMonth29(self):
+    def test_create_date_interval_month29(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
                                      datetime.date(2011, 1, 29),
                                      datetime.date(2011, 12, 31))
@@ -72,7 +72,7 @@ class DateUtilTest(unittest.TestCase):
             self.assertEquals(dates[i],
                               datetime.datetime(2011, i + 1, day))
 
-    def testCreateDateIntervalMonth30(self):
+    def test_create_date_interval_month30(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
                                      datetime.date(2011, 1, 30),
                                      datetime.date(2011, 12, 31))
@@ -82,7 +82,7 @@ class DateUtilTest(unittest.TestCase):
             self.assertEquals(dates[i],
                               datetime.datetime(2011, i + 1, day))
 
-    def testCreateDateIntervalMonth31(self):
+    def test_create_date_interval_month31(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
                                      datetime.date(2011, 1, 31),
                                      datetime.date(2011, 12, 31))
@@ -92,7 +92,7 @@ class DateUtilTest(unittest.TestCase):
             self.assertEquals(dates[i],
                               datetime.datetime(2011, i + 1, day))
 
-    def testCreateDateIntervalWeekly(self):
+    def test_create_date_interval_weekly(self):
         dates = create_date_interval(INTERVALTYPE_WEEK,
                                      datetime.date(2012, 1, 1),
                                      datetime.date(2012, 12, 31))
@@ -102,7 +102,7 @@ class DateUtilTest(unittest.TestCase):
         for date in dates:
             self.assertEquals(date.weekday(), dates[0].weekday())
 
-    def testCreateDateIntervalBiWeekly(self):
+    def test_create_date_interval_bi_weekly(self):
         dates = create_date_interval(INTERVALTYPE_BIWEEK,
                                      datetime.date(2012, 1, 1),
                                      datetime.date(2012, 12, 31))
@@ -110,7 +110,7 @@ class DateUtilTest(unittest.TestCase):
         self.assertEquals(dates[0], datetime.datetime(2012, 1, 1))
         self.assertEquals(dates[26], datetime.datetime(2012, 12, 30))
 
-    def testCreateRepeatQuarterly(self):
+    def test_create_repeat_quarterly(self):
         dates = create_date_interval(INTERVALTYPE_QUARTER,
                                      datetime.date(2012, 1, 1),
                                      datetime.date(2012, 12, 31))
@@ -120,7 +120,7 @@ class DateUtilTest(unittest.TestCase):
         self.assertEquals(dates[2], datetime.datetime(2012, 7, 1))
         self.assertEquals(dates[3], datetime.datetime(2012, 10, 1))
 
-    def testCreateRepeatYearly(self):
+    def test_create_repeat_yearly(self):
         dates = create_date_interval(INTERVALTYPE_YEAR,
                                      datetime.date(2012, 1, 1),
                                      datetime.date(2015, 12, 31))
@@ -130,12 +130,12 @@ class DateUtilTest(unittest.TestCase):
         self.assertEquals(dates[2], datetime.datetime(2014, 1, 1))
         self.assertEquals(dates[3], datetime.datetime(2015, 1, 1))
 
-    def testCreateDateIntervalNoneInvalidIntervalType(self):
+    def test_create_date_interval_none_invalid_interval_type(self):
         self.assertRaises(AssertionError, create_date_interval, 99,
                           datetime.date(2012, 1, 1),
                           datetime.date(2012, 1, 1))
 
-    def testCreateDateIntervalCountDay(self):
+    def test_create_date_interval_count_day(self):
         dates = create_date_interval(interval_type=INTERVALTYPE_DAY,
                                      count=5,
                                      interval=1,
@@ -158,7 +158,7 @@ class DateUtilTest(unittest.TestCase):
         self.assertEquals(dates[3], datetime.datetime(2012, 2, 2))
         self.assertEquals(dates[4], datetime.datetime(2012, 2, 3))
 
-    def testCreateDateIntervalCountWeek(self):
+    def test_create_date_interval_count_week(self):
         dates = create_date_interval(interval_type=INTERVALTYPE_WEEK,
                                      count=5,
                                      interval=1,
@@ -181,7 +181,7 @@ class DateUtilTest(unittest.TestCase):
         self.assertEquals(dates[3], datetime.datetime(2012, 2, 20))
         self.assertEquals(dates[4], datetime.datetime(2012, 2, 27))
 
-    def testCreateDateIntervalCountMonth(self):
+    def test_create_date_interval_count_month(self):
         dates = create_date_interval(interval_type=INTERVALTYPE_MONTH,
                                      count=5,
                                      interval=1,
@@ -204,7 +204,7 @@ class DateUtilTest(unittest.TestCase):
         self.assertEquals(dates[3], datetime.datetime(2012, 4, 30))
         self.assertEquals(dates[4], datetime.datetime(2012, 5, 30))
 
-    def testCreateDateIntervalCountYear(self):
+    def test_create_date_interval_count_year(self):
         dates = create_date_interval(interval_type=INTERVALTYPE_YEAR,
                                      count=5,
                                      interval=1,

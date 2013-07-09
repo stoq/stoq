@@ -35,20 +35,20 @@ from ecf.test.ecftest import ECFTest
 
 
 class TestCouponPrinter(ECFTest):
-    def testCloseTill(self):
+    def test_close_till(self):
         self.printer.close_till(Decimal(0))
         self.assertRaises(DriverError, self.printer.close_till, 0)
 
-    def testAddCash(self):
+    def test_add_cash(self):
         self.printer.add_cash(Decimal(100))
 
-    def testRemoveCash(self):
+    def test_remove_cash(self):
         self.printer.remove_cash(Decimal(100))
 
-    def testCancel(self):
+    def test_cancel(self):
         self.printer.cancel()
 
-    def testSummarize(self):
+    def test_summarize(self):
         self.printer.summarize()
 
 
@@ -59,7 +59,7 @@ class TestFiscalCoupon(ECFTest):
         self.sale = self.create_sale()
         self.coupon = self.printer.create_coupon(self.sale)
 
-    def testAddItemProduct(self):
+    def test_add_item_product(self):
         raise SkipTest(
             "Producing 'Connection closed error', traceback starting at kiwi. "
             "Just happen when running all tests, not alone")
@@ -72,7 +72,7 @@ class TestFiscalCoupon(ECFTest):
         self.coupon.open()
         self.coupon.add_item(item)
 
-    def testAddItemService(self):
+    def test_add_item_service(self):
         service = self.create_service()
         sellable = service.sellable
         item = self.sale.add_sellable(sellable)
@@ -102,7 +102,7 @@ class _TestFiscalCouponPayments(object):
                               sale.get_total_sale_amount())
         self.sale.order()
 
-    def testSetupPayment(self):
+    def test_setup_payment(self):
         raise SkipTest(
             "Need to configure %s payment method on fiscal printer" % self.method)
         product = self.create_product()

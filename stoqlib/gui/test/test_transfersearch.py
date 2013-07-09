@@ -72,7 +72,7 @@ class TestTransferOrderSearch(GUITest):
         order.receive(self.create_employee())
         order.receival_date = localdatetime(2012, 3, 4)
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -96,7 +96,7 @@ class TestTransferOrderSearch(GUITest):
 
     @mock.patch('stoqlib.gui.search.transfersearch.print_report')
     @mock.patch('stoqlib.gui.search.transfersearch.run_dialog')
-    def testButtons(self, run_dialog, print_report):
+    def test_buttons(self, run_dialog, print_report):
         self._create_domain()
         search = self._show_search()
 

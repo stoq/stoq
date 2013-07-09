@@ -88,7 +88,7 @@ for view in _get_all_views():
 
 
 class TestProductFullStockView(DomainTest):
-    def testSelectByBranch(self):
+    def test_select_by_branch(self):
         branch = self.create_branch()
         p1 = self.create_product(branch=branch, stock=1)
 
@@ -103,7 +103,7 @@ class TestProductFullStockView(DomainTest):
         self.failUnless(list(results))
         self.assertEquals(len(list(results)), 1)
 
-    def testPostSearchCallback(self):
+    def test_post_search_callback(self):
         self.clean_domain([StockTransactionHistory, ProductSupplierInfo, ProductStockItem,
                            Storable, Product])
 
@@ -129,7 +129,7 @@ class TestProductFullStockView(DomainTest):
             # Total stock = (10 * 10) = 100
             self.store.execute(postresults[1]).get_one(), (10, 100))
 
-    def testUnitDescription(self):
+    def test_unit_description(self):
         p1 = self.create_product()
         p1.sellable.unit = self.create_sellable_unit()
         p1.sellable.unit.description = u"kg"
@@ -148,7 +148,7 @@ class TestProductFullStockView(DomainTest):
         product_view = results[0]
         self.assertEquals(product_view.get_unit_description(), u"un")
 
-    def testGetProductAndCategoryDescription(self):
+    def test_get_product_and_category_description(self):
         p1 = self.create_product()
         p1.sellable.category = self.create_sellable_category()
         p1.sellable.category.description = u"category"
@@ -169,7 +169,7 @@ class TestProductFullStockView(DomainTest):
         desc = pv.get_product_and_category_description()
         self.assertEquals(desc, u"Description")
 
-    def testStockCost(self):
+    def test_stock_cost(self):
         branch = self.create_branch()
         p1 = self.create_product(branch=branch, stock=1)
 
@@ -188,7 +188,7 @@ class TestProductFullStockView(DomainTest):
         pv = results[0]
         self.assertEquals(pv.stock_cost, 0)
 
-    def testPrice(self):
+    def test_price(self):
         p1 = self.create_product()
         results = ProductFullStockView.find_by_branch(self.store, None).find(
             ProductFullStockView.product_id == p1.id)
@@ -262,7 +262,7 @@ class TestProductFullStockView(DomainTest):
 
 
 class TestProductComponentView(DomainTest):
-    def testSellable(self):
+    def test_sellable(self):
         pc1 = self.create_product_component()
         results = self.store.find(ProductComponentView)
         self.failUnless(list(results))
@@ -271,7 +271,7 @@ class TestProductComponentView(DomainTest):
 
 
 class TestSellableFullStockView(DomainTest):
-    def testSelectByBranch(self):
+    def test_select_by_branch(self):
         branch = self.create_branch()
         p1 = self.create_product(branch=branch, stock=1)
         p2 = self.create_product()
@@ -287,7 +287,7 @@ class TestSellableFullStockView(DomainTest):
         # self.assertEquals(results.count(), 1)
         self.assertEquals(len(list(results)), 1)
 
-    def testSellable(self):
+    def test_sellable(self):
         branch = self.create_branch()
         p1 = self.create_product(branch=branch, stock=1)
 
@@ -297,7 +297,7 @@ class TestSellableFullStockView(DomainTest):
 
         self.assertEquals(results[0].sellable, p1.sellable)
 
-    def testPrice(self):
+    def test_price(self):
         branch = self.create_branch()
         p1 = self.create_product(branch=branch, stock=1, price=Decimal('10.15'))
         results = SellableFullStockView.find_by_branch(self.store, branch).find(
@@ -332,13 +332,13 @@ class TestSellableFullStockView(DomainTest):
 
 
 class TestSellableCategoryView(DomainTest):
-    def testCategory(self):
+    def test_category(self):
         category = self.create_sellable_category()
         results = self.store.find(SellableCategoryView, id=category.id)
         self.failUnless(list(results))
         self.assertEquals(results[0].category, category)
 
-    def testGetCommission(self):
+    def test_get_commission(self):
         category = self.create_sellable_category()
         results = self.store.find(SellableCategoryView, id=category.id)
         self.failUnless(list(results))
@@ -354,7 +354,7 @@ class TestSellableCategoryView(DomainTest):
         results = self.store.find(SellableCategoryView, id=category.id)
         self.assertEquals(results[0].get_commission(), 10)
 
-    def testGetInstallmentsCommission(self):
+    def test_get_installments_commission(self):
         category = self.create_sellable_category()
         results = self.store.find(SellableCategoryView, id=category.id)
         self.failUnless(list(results))
@@ -372,7 +372,7 @@ class TestSellableCategoryView(DomainTest):
 
 
 class TestQuotationView(DomainTest):
-    def testGroupQuotationPurchase(self):
+    def test_group_quotation_purchase(self):
         order = self.create_purchase_order()
         quote = QuoteGroup(store=self.store, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
@@ -394,7 +394,7 @@ class TestQuotationView(DomainTest):
 
 
 class TestSoldItemView(DomainTest):
-    def testSelectByBranchData(self):
+    def test_select_by_branch_data(self):
         branch = get_current_branch(self.store)
         sale = self.create_sale()
         sale.branch = branch
@@ -432,7 +432,7 @@ class TestSoldItemView(DomainTest):
 
         self.assertFalse(results.is_empty())
 
-    def testAverageCost(self):
+    def test_average_cost(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         sale.order()
@@ -445,20 +445,20 @@ class TestSoldItemView(DomainTest):
 
 
 class TestAccountView(DomainTest):
-    def testAccount(self):
+    def test_account(self):
         account = self.create_account()
         results = self.store.find(AccountView, id=account.id)
         self.failUnless(list(results))
         self.assertEquals(results[0].account, account)
 
-    def testParentAccount(self):
+    def test_parent_account(self):
         account = self.create_account()
         account.parent = self.create_account()
         results = self.store.find(AccountView, id=account.id)
         self.failUnless(list(results))
         self.assertEquals(results[0].parent_account, account.parent)
 
-    def testMatches(self):
+    def test_matches(self):
         account = self.create_account()
         account.parent = self.create_account()
         results = self.store.find(AccountView, id=account.id)
@@ -466,7 +466,7 @@ class TestAccountView(DomainTest):
         self.failUnless(results[0].matches(account.id))
         self.failUnless(results[0].matches(account.parent.id))
 
-    def testGetCombinedValue(self):
+    def test_get_combined_value(self):
         a1 = self.create_account()
         a2 = self.create_account()
         results = self.store.find(AccountView, id=a1.id)
@@ -503,7 +503,7 @@ class TestAccountView(DomainTest):
         # The negative sum of t1 and t2 plus the sum of t3 and t4
         self.assertEquals(results[0].get_combined_value(), 90)
 
-    def testRepr(self):
+    def test_repr(self):
         a1 = self.create_account()
         results = self.store.find(AccountView, id=a1.id)
         self.failUnless(list(results))
@@ -512,7 +512,7 @@ class TestAccountView(DomainTest):
 
 class TestProductFullStockItemView(DomainTest):
 
-    def testSelect(self):
+    def test_select(self):
         from stoqlib.domain.product import Product
         product = self.store.find(Product)[0]
 

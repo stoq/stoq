@@ -28,11 +28,11 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellableCategoryEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = SellableCategoryEditor(self.store)
         self.check_editor(editor, 'editor-sellablecategory-create')
 
-    def testDescriptionValidation(self):
+    def test_description_validation(self):
         # Just create an existing category to check unique value above
         self.create_sellable_category(u'Existing category')
 

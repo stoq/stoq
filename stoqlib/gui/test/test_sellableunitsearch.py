@@ -27,7 +27,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellableUnitSearchSearch(GUITest):
-    def testSearch(self):
+    def test_search(self):
         search = SellableUnitSearch(self.store)
 
         search.search.refresh()

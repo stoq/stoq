@@ -60,11 +60,11 @@ class TestReceivable(BaseGUITest):
     def setUp(self):
         BaseGUITest.setUp(self)
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(ReceivableApp, u'receivable')
         self.check_app(app, u'receivable')
 
-    def testInitialWithoutPayments(self):
+    def test_initial_without_payments(self):
         from stoqlib.domain.till import TillEntry
         from stoqlib.domain.commission import Commission
         from stoqlib.domain.account import AccountTransaction
@@ -122,7 +122,7 @@ class TestReceivable(BaseGUITest):
         # payment.paid_date = datetime.datetime(2012, 2, 2)
         return sale, payment
 
-    def testSelect(self):
+    def test_select(self):
         sale, payment = self.create_receivable_sale()
         app = self.create_app(ReceivableApp, u'receivable')
         olist = app.results
@@ -130,7 +130,7 @@ class TestReceivable(BaseGUITest):
         self.check_app(app, u'receivable-selected')
 
     @mock.patch('stoq.gui.receivable.run_dialog')
-    def testReceive(self, run_dialog):
+    def test_receive(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
@@ -142,7 +142,7 @@ class TestReceivable(BaseGUITest):
             self.activate(app.Receive)
 
     @mock.patch('stoq.gui.receivable.run_dialog')
-    def testEdit(self, run_dialog):
+    def test_edit(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
@@ -157,7 +157,7 @@ class TestReceivable(BaseGUITest):
             self.store.readonly, sale)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
-    def testChangeDueDate(self, run_dialog):
+    def test_change_due_date_dialog(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
@@ -172,7 +172,7 @@ class TestReceivable(BaseGUITest):
             self.store.readonly, payment, sale)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
-    def testDetails(self, run_dialog):
+    def test_details(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
@@ -187,7 +187,7 @@ class TestReceivable(BaseGUITest):
             self.store.readonly, payment)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
-    def testComments(self, run_dialog):
+    def test_comments(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
@@ -201,7 +201,7 @@ class TestReceivable(BaseGUITest):
             self.store.readonly, payment)
 
     @mock.patch('stoq.gui.receivable.run_dialog')
-    def testRenegotiate(self, run_dialog):
+    def test_renegotiate(self, run_dialog):
         sale, payment = self.create_receivable_sale()
         sale.client = self.create_client()
 
@@ -217,7 +217,7 @@ class TestReceivable(BaseGUITest):
             self.store.readonly, [payment.group])
 
     @mock.patch('stoq.gui.receivable.print_report')
-    def testPrintDocument(self, print_report):
+    def test_print_document(self, print_report):
         sale, payment = self.create_receivable_sale()
         sale.client = self.create_client()
 

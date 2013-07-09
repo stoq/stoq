@@ -43,12 +43,12 @@ class TestPaymentEditor(GUITest):
 
         return sale
 
-    def testSaleEditorShow(self):
+    def test_sale_editor_show(self):
         sale = self._create_sale()
         editor = SalePaymentsEditor(self.store, sale)
         self.check_editor(editor, 'editor-payment-installments')
 
-    def testSaleEditorRemovePreviewPayment(self):
+    def test_sale_editor_remove_preview_payment(self):
         sale = self._create_sale()
         editor = SalePaymentsEditor(self.store, sale)
 
@@ -60,7 +60,7 @@ class TestPaymentEditor(GUITest):
         self.click(editor.slave.remove_button)
         self.assertEquals(len(editor.slave.payments), 0)
 
-    def testSaleEditorRemovePendingPayment(self):
+    def test_sale_editor_remove_pending_payment(self):
         sale = self._create_sale()
         editor = SalePaymentsEditor(self.store, sale)
 

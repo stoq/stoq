@@ -31,7 +31,7 @@ from stoqlib.lib.dateutils import localtoday
 
 
 class TestCreditCheckHistoryEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         client = self.create_client()
         editor = CreditCheckHistoryEditor(self.store, None, client)
         self.assertTrue(isinstance(editor.model, CreditCheckHistory))
@@ -40,7 +40,7 @@ class TestCreditCheckHistoryEditor(GUITest):
 
         self.check_editor(editor, 'editor-creditcheckhistory-create')
 
-    def testShow(self):
+    def test_show(self):
         client = self.create_client()
         clienthistory = self.create_credit_check_history(client=client)
         editor = CreditCheckHistoryEditor(self.store, clienthistory, client)

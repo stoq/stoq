@@ -37,7 +37,7 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 
 class TestMaintenance(BaseGUITest):
-    def testInitial(self):
+    def test_initial(self):
         for i in xrange(2):
             wo = self.create_workorder()
             wo.identifier = 666 + i

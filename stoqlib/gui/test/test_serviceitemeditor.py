@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestServiceItemEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         sale_item = self.create_sale_item()
         editor = ServiceItemEditor(self.store, sale_item)
         self.check_editor(editor, 'editor-serviceitem-show')

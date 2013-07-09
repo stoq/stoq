@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductionItemEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         production_item = self.create_production_item()
         editor = ProductionItemEditor(self.store, production_item)
         editor.identifier.set_label("12345")

@@ -51,11 +51,11 @@ class TestTill(BaseGUITest):
                 self.assertEquals(called_dialog, dialog)
                 self.assertEquals(store, self.store)
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(TillApp, u'till')
         self.check_app(app, u'till')
 
-    def testSelect(self):
+    def test_select(self):
         sale = self.create_sale(branch=get_current_branch(self.store))
         self.add_product(sale)
         sale.status = Sale.STATUS_CONFIRMED

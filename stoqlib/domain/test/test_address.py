@@ -31,13 +31,13 @@ from stoqlib.domain.test.domaintest import DomainTest
 class TestCityLocation(DomainTest):
     """Tests for CityLocation class"""
 
-    def testIsValidModel(self):
+    def test_is_valid_model(self):
         location = self.create_city_location()
         self.failUnless(location.is_valid_model())
         invalid_location = CityLocation(store=self.store)
         self.failIf(invalid_location.is_valid_model())
 
-    def testGetOrCreate(self):
+    def test_get_or_create(self):
         loc = CityLocation.get_or_create(self.store, u'City',
                                          u'State', u'Country')
         self.failUnless(loc)
@@ -75,7 +75,7 @@ class TestCityLocation(DomainTest):
                                                            state, country),
                                 location)
 
-    def testGetCitiesBy(self):
+    def test_get_cities_by(self):
         location = CityLocation.get_or_create(self.store, u'Sao Carlos',
                                               u'SP', u'Brazil')
         for state, country in [
@@ -109,7 +109,7 @@ class TestCityLocation(DomainTest):
         cities = list(CityLocation.get_cities_by(self.store, state=u'SP'))
         self.assertEqual(len(cities), len(set(cities)))
 
-    def testGetDefault(self):
+    def test_get_default(self):
         location = CityLocation.get_default(self.store)
         self.failUnless(isinstance(location, CityLocation))
         self.assertEquals(location.city,
@@ -121,7 +121,7 @@ class TestCityLocation(DomainTest):
 
 
 class TestAddress(DomainTest):
-    def testIsValidModel(self):
+    def test_is_valid_model(self):
         person = self.create_person()
         empty_location = CityLocation(store=self.store)
         empty_address = Address(store=self.store,
@@ -166,7 +166,7 @@ class TestAddress(DomainTest):
         string = address.get_address_string()
         self.assertEquals(string, u'')
 
-    def testGetPostalNumber(self):
+    def test_get_postal_number(self):
         person = self.create_person()
         location = self.create_city_location()
         address = Address(person=person, city_location=location,
@@ -174,7 +174,7 @@ class TestAddress(DomainTest):
 
         self.assertEquals(address.get_postal_code_number(), 12345678)
 
-    def testGetDetailsString(self):
+    def test_get_details_string(self):
         person = self.create_person()
         city = u'Stoqlandia'
         state = u'SP'

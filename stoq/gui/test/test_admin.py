@@ -77,7 +77,7 @@ class TestAdmin(BaseGUITest):
                 self._activate_task(app, task_name)
                 run_dialog.assert_called_once_with(dialog, self.store)
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(AdminApp, u'admin')
         self.check_app(app, u'admin')
 

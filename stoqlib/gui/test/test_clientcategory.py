@@ -34,12 +34,12 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class TestClientCategoryDialog(GUITest):
-    def testShow(self):
+    def test_show(self):
         dialog = ClientCategoryDialog(self.store)
         self.check_dialog(dialog, 'dialog-clientcategory-show')
 
     @mock.patch('stoqlib.gui.base.lists.run_dialog')
-    def testAdd(self, run_dialog):
+    def test_add(self, run_dialog):
         dialog = ClientCategoryDialog(self.store)
         # user canceled the dialog
         run_dialog.return_value = None
@@ -47,7 +47,7 @@ class TestClientCategoryDialog(GUITest):
         self.assertEquals(run_dialog.call_count, 1)
 
     @mock.patch('stoqlib.gui.base.lists.run_dialog')
-    def testRemove(self, run_dialog):
+    def test_remove(self, run_dialog):
         category = ClientCategory(name=u'foo', store=self.store)
         client = self.create_client()
         client.category = category
@@ -69,7 +69,7 @@ class TestClientCategoryDialog(GUITest):
         self.assertEquals(client.category, None)
 
     @mock.patch('stoqlib.gui.dialogs.clientcategorydialog.warning')
-    def testRemoveWithProduct(self, warning):
+    def test_remove_with_product(self, warning):
         category = ClientCategory(name=u'foo', store=self.store)
         ClientCategoryPrice(category=category,
                             sellable=self.create_sellable(),
@@ -88,6 +88,6 @@ class TestClientCategoryDialog(GUITest):
 
 
 class TestClientCategoryEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = ClientCategoryEditor(self.store)
         self.check_editor(editor, 'editor-clientcategory-create')

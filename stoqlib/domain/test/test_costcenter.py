@@ -27,7 +27,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestCostCenter(DomainTest):
-    def testAddTransaction(self):
+    def test_add_transaction(self):
         cost_center = self.create_cost_center()
         stock_trans = self.create_stock_transaction_history()
         stock_trans.quantity = -1
@@ -41,7 +41,7 @@ class TestCostCenter(DomainTest):
         self.assertEquals(len(list(entry)), 1)
         self.assertEquals(entry[0].stock_transaction, stock_trans)
 
-    def testAddLonelyPayment(self):
+    def test_add_lonely_payment(self):
         cost_center = self.create_cost_center()
         payment = self.create_payment()
 

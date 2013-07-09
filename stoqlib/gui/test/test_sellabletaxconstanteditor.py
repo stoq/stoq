@@ -29,7 +29,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellableTaxConstantEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = SellableTaxConstantEditor(self.store)
         self.check_editor(editor, 'editor-sellabletaxconstant-create')
 

@@ -55,7 +55,7 @@ class Model:
 
 
 class DatabaseTest(unittest.TestCase):
-    def testFinishTransaction(self):
+    def test_finish_transaction(self):
         for item in (True, object(), Model()):
             trans = FakeStore()
             trans.confirm(item)
@@ -68,7 +68,7 @@ class DatabaseTest(unittest.TestCase):
             self.failIf(trans.committed, "%s is committed" % item)
             self.failUnless(trans.rollbacked, "%s is not rollbacked" % item)
 
-    def testRollback(self):
+    def test_rollback(self):
         trans = new_store()
         trans.find(Person).any()
 

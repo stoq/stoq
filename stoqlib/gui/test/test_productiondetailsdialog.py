@@ -76,7 +76,7 @@ class TestProductionDetailsDialog(GUITest):
                            success_value=u'2 - 3')
 
     @mock.patch('stoqlib.gui.dialogs.productiondetails.run_dialog')
-    def testWithoutQualityTest(self, run_dialog):
+    def test_without_quality_test(self, run_dialog):
         order = self._create_order()
         order.start_production()
         editor = ProductionDetailsDialog(self.store, order)
@@ -125,7 +125,7 @@ class TestProductionDetailsDialog(GUITest):
             self.check_editor(editor, 'dialog-production-details-allocated')
 
     @mock.patch('stoqlib.gui.dialogs.productiondetails.run_dialog')
-    def testWithQualityTest(self, run_dialog):
+    def test_with_quality_test(self, run_dialog):
         order = self._create_order()
         self._create_quality_tests(order)
         order.start_production()

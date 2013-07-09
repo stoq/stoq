@@ -27,6 +27,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestShortcutsEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         editor = ShortcutsEditor()
         self.check_dialog(editor, 'dialog-shortcuts-show')

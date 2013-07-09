@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductStockEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         product = self.create_product(storable=True)
         editor = ProductStockEditor(self.store, product)
         self.check_editor(editor, 'editor-productstock-show')

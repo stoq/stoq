@@ -31,7 +31,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCreditEditor(GUITest):
-    def testCreditEditor(self):
+    def test_credit_editor(self):
         client = self.create_client()
         self.assertEquals(client.credit_account_balance, 0)
 
@@ -56,7 +56,7 @@ class TestCreditEditor(GUITest):
         self.assertEquals(payment.payment_type, Payment.TYPE_IN)
         self.assertEquals(client.credit_account_balance, 1)
 
-    def testCreditEditorCancel(self):
+    def test_credit_editor_cancel(self):
         method = PaymentMethod.get_by_name(self.store, u'credit')
         client = self.create_client()
         group = self.create_payment_group(payer=client.person)
@@ -76,7 +76,7 @@ class TestCreditEditor(GUITest):
         editor.cancel()
         self.assertEquals(client.credit_account_balance, currency(6))
 
-    def testNegativeCredit(self):
+    def test_negative_credit(self):
         method = PaymentMethod.get_by_name(self.store, u'credit')
         client = self.create_client()
         group = self.create_payment_group(payer=client.person)

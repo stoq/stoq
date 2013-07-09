@@ -51,11 +51,11 @@ class TestInventory(BaseGUITest):
                     expected_args.extend(other_args)
                 run_dialog.assert_called_once_with(*expected_args)
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(InventoryApp, u'inventory')
         self.check_app(app, u'inventory')
 
-    def testSelect(self):
+    def test_select(self):
         self.create_inventory(branch=get_current_branch(self.store))
 
         app = self.create_app(InventoryApp, u'inventory')

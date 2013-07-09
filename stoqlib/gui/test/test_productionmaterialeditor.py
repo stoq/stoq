@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductionMaterialEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         material = self.create_production_material()
         editor = ProductionMaterialEditor(self.store, material)
         editor.identifier.update("12345")

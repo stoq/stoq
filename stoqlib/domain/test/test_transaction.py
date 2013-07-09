@@ -46,7 +46,7 @@ def _query_server_time(store):
 
 
 class TestTransaction(DomainTest):
-    def testTimestamp(self):
+    def test_timestamp(self):
         # Create person
         before = _query_server_time(self.store)
         person = Person(name=u'dummy', store=self.store)
@@ -82,7 +82,7 @@ class TestTransaction(DomainTest):
                     fmt % (before_name, before,
                            after_name, after))
 
-    def testRemove(self):
+    def test_remove(self):
         # Total of transaction entries in the begining of the test
         start_te = self.store.find(TransactionEntry).count()
 
@@ -108,7 +108,7 @@ class TestTransaction(DomainTest):
         person_te = self.store.find(TransactionEntry, id=person_te_id).one()
         self.assertEquals(person_te, None)
 
-    def testCacheInvalidation(self):
+    def test_cache_invalidation(self):
         # First create a new person in an outside transaction
         outside_store = new_store()
         outside_person = Person(name=u'doe', store=outside_store)

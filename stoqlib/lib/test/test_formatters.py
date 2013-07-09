@@ -31,7 +31,7 @@ from stoqlib.lib.formatters import (format_phone_number,
 
 
 class TestFormatters(DomainTest):
-    def testFormatSellableDescription(self):
+    def test_format_sellable_description(self):
         sellable = self.create_sellable()
         sellable.description = u"Cellphone"
         self.assertEqual(format_sellable_description(sellable),
@@ -43,7 +43,7 @@ class TestFormatters(DomainTest):
         self.assertEqual(format_sellable_description(sellable, batch=batch),
                          u"Cellphone [Batch: 666]")
 
-    def testFormatPhoneNumber(self):
+    def test_format_phone_number(self):
         self.assertEquals(format_phone_number("190"), "190")
         self.assertEquals(format_phone_number("1052"), "1052")
         self.assertEquals(format_phone_number("10325"), "103 25")

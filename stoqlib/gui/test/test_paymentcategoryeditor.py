@@ -31,16 +31,16 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPaymentCategoryEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = PaymentCategoryEditor(self.store)
         self.check_editor(editor, 'editor-paymentcategory-create')
 
-    def testShow(self):
+    def test_show(self):
         payment_category = self.create_payment_category()
         editor = PaymentCategoryEditor(self.store, model=payment_category)
         self.check_editor(editor, 'editor-paymentcategory-show')
 
-    def testConfirm(self):
+    def test_confirm(self):
         payment = self.create_payment()
         payment_category = self.create_payment_category()
         payment.category = payment_category

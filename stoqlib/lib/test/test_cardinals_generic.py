@@ -30,7 +30,7 @@ from stoqlib.lib.cardinals.generic import to_words, to_words_as_money
 
 class TestParameter(DomainTest):
 
-    def testToWords(self):
+    def test_to_words(self):
         self.assertEqual(to_words(0), "zero")
         self.assertEqual(to_words(00), "zero")
         self.assertEqual(to_words(000), "zero")
@@ -96,7 +96,7 @@ class TestParameter(DomainTest):
         self.assertEqual(to_words(1000009, unit_names=names),
                          "one million nine inches")
 
-    def testToWordsAsMoney(self):
+    def test_to_words_as_money(self):
         names = ['dollar', 'dollars', 'cent', 'cents']
         self.assertEqual(to_words_as_money(1, names), "one dollar")
         self.assertEqual(to_words_as_money(0.01, names), "one cent")

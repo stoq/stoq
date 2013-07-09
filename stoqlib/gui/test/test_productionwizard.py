@@ -32,7 +32,7 @@ from stoqlib.gui.wizards.productionwizard import (OpenProductionOrderStep,
 
 
 class TestProductionWizard(GUITest):
-    def testProductionNoService(self):
+    def test_production_no_service(self):
         product_component = self.create_product_component()
         wizard = ProductionWizard(store=self.store)
 
@@ -80,7 +80,7 @@ class TestProductionWizard(GUITest):
                           self.store.find(ProductionOrder,
                                           id=wizard.model.id).one())
 
-    def testProductionWithService(self):
+    def test_production_with_service(self):
         service = self.create_service()
         product_component = self.create_product_component()
         wizard = ProductionWizard(store=self.store)

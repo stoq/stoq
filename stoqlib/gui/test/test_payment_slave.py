@@ -37,7 +37,7 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestBillPaymentSlaves(GUITest):
-    def testCreate(self):
+    def test_create(self):
         wizard = PurchaseWizard(self.store)
 
         method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -47,7 +47,7 @@ class TestBillPaymentSlaves(GUITest):
                                 Decimal(200))
         self.check_slave(slave, 'slave-bill-method')
 
-    def testInstallments(self):
+    def test_installments(self):
         sysparam(self.store).update_parameter(u'ALLOW_OUTDATED_OPERATIONS', u'1')
         wizard = PurchaseWizard(self.store)
 
@@ -62,7 +62,7 @@ class TestBillPaymentSlaves(GUITest):
         slave.installments_number.update(2)
         self.check_slave(slave, 'slave-bill-method-2-installments')
 
-    def testOutdated(self):
+    def test_outdated(self):
         sysparam(self.store).update_parameter(u'ALLOW_OUTDATED_OPERATIONS', u'0')
         wizard = PurchaseWizard(self.store)
 
@@ -79,7 +79,7 @@ class TestBillPaymentSlaves(GUITest):
 
 
 class TestCheckPaymentSlaves(GUITest):
-    def testCreate(self):
+    def test_create(self):
         wizard = PurchaseWizard(self.store)
 
         method = PaymentMethod.get_by_name(self.store, u'check')
@@ -91,7 +91,7 @@ class TestCheckPaymentSlaves(GUITest):
 
 
 class TestCardPaymentSlaves(GUITest):
-    def testCreate(self):
+    def test_create(self):
         wizard = PurchaseWizard(self.store)
 
         method = PaymentMethod.get_by_name(self.store, u'card')
@@ -100,7 +100,7 @@ class TestCardPaymentSlaves(GUITest):
                                 Decimal(200))
         self.check_slave(slave, 'slave-card-method')
 
-    def testInstallments(self):
+    def test_installments(self):
         wizard = PurchaseWizard(self.store)
 
         method = PaymentMethod.get_by_name(self.store, u'card')

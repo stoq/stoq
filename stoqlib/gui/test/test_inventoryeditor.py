@@ -29,14 +29,14 @@ from stoqlib.domain.inventory import Inventory
 
 
 class TestOpenInventoryEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         dialog = InventoryOpenEditor(self.store)
         d = localdatetime(2010, 01, 30, 12, 33)
         dialog.open_time.set_text(d.strftime("%X"))
 
         self.check_editor(dialog, 'editor-inventory-open')
 
-    def testOpenIventory(self):
+    def test_open_iventory(self):
         # There are no inventories open right now
         self.assertEquals(self.store.find(Inventory).count(), 0)
         dialog = InventoryOpenEditor(self.store)
@@ -45,7 +45,7 @@ class TestOpenInventoryEditor(GUITest):
         # There should be one open inventory now
         self.assertEquals(self.store.find(Inventory).count(), 1)
 
-    def testCategorySelection(self):
+    def test_category_selection(self):
         dialog = InventoryOpenEditor(self.store)
 
         # By default, all categories are selected, so these buttons should be

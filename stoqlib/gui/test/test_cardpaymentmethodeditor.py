@@ -40,23 +40,23 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCardDeviceEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = CardDeviceEditor(self.store)
         self.check_editor(editor, 'editor-carddeviceeditor-create')
 
-    def testShow(self):
+    def test_show(self):
         device = self.create_card_device()
         editor = CardDeviceEditor(self.store, device)
         self.check_editor(editor, 'editor-carddeviceeditor-show')
 
 
 class TestCardOperationCostEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         device = self.create_card_device()
         editor = CardOperationCostEditor(self.store, None, device)
         self.check_editor(editor, 'editor-cardoperationcosteditor-create')
 
-    def testShow(self):
+    def test_show(self):
         cost = self.create_operation_cost()
         device = cost.device
         editor = CardOperationCostEditor(self.store, cost, device)
@@ -125,14 +125,14 @@ class TestCardOperationCostEditor(GUITest):
 
 
 class TestCreditProviderEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         provider = self.create_credit_provider()
         editor = CreditProviderEditor(self.store, provider)
         self.check_editor(editor, 'editor-creditprovidereditor-show')
 
 
 class TestCardPaymentDetailsEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         provider = self.create_credit_provider(u'VISANET')
         device = self.create_card_device()
 
@@ -214,7 +214,7 @@ class TestCardPaymentDetailsEditor(GUITest):
 class TestCardDeviceListSlave(GUITest):
 
     @mock.patch('stoqlib.gui.editors.paymentmethodeditor.yesno')
-    def testShow(self, yesno):
+    def test_show(self, yesno):
         device = self.create_card_device(u'Cielo')
         self.create_card_device(u'Santander')
 
@@ -234,7 +234,7 @@ class TestCardDeviceListSlave(GUITest):
 
 class TestCardOperationCostListSlave(GUITest):
 
-    def testShow(self):
+    def test_show(self):
         device = self.create_card_device(u'Cielo')
         cost = self.create_operation_cost(device=device)
 
@@ -248,7 +248,7 @@ class TestCardOperationCostListSlave(GUITest):
 
 
 class TestCardPaymentMethodEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         method = self.get_payment_method(u'card')
         editor = CardPaymentMethodEditor(self.store, method)
         self.check_editor(editor, 'editor-cardpaymentmethod-show')

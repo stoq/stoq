@@ -27,12 +27,12 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestNoteEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         person = self.create_person()
         editor = NoteEditor(self.store, person, 'notes', label_text='Notes')
         self.check_editor(editor, 'editor-note-show')
 
-    def testConfirmWithPaymentComment(self):
+    def test_confirm_with_payment_comment(self):
         comment = self.create_payment_comment(u'foo')
         self.assertEquals(comment.comment, u'foo')
         editor = NoteEditor(self.store, comment, 'comment', label_text='Notes')
@@ -40,7 +40,7 @@ class TestNoteEditor(GUITest):
         self.click(editor.main_dialog.ok_button)
         self.assertEquals(comment.comment, u'bar')
 
-    def testCancelWithNonDomain(self):
+    def test_cancel_with_non_domain(self):
         class TempNote(object):
             obs = u'bin'
 

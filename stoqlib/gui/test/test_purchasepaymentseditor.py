@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPurchasePaymentsEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         purchase = self.create_purchase_order()
         editor = PurchasePaymentsEditor(self.store, purchase)
         self.check_editor(editor, 'editor-purchasepayments-show')

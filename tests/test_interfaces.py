@@ -31,7 +31,7 @@ from stoqlib.lib.introspection import get_interfaces_for_package
 
 
 class TestInterfaces(unittest.TestCase):
-    def testInterfaces(self):
+    def test_interfaces(self):
         for klass in get_interfaces_for_package('stoqlib'):
             for iface in implementedBy(klass):
                 try:

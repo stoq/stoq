@@ -44,7 +44,7 @@ class TestSellableCategory(DomainTest):
         DomainTest.setUp(self)
         self._base_category = self._create_category(u'Monitor')
 
-    def testGetDescription(self):
+    def test_get_description(self):
         category = self._create_category(u'LCD', parent=self._base_category)
         self.assertEqual(category.get_description(), u"LCD")
         self.assertEqual(category.full_description, u"Monitor:LCD")
@@ -53,7 +53,7 @@ class TestSellableCategory(DomainTest):
         self.assertEqual(sub_category.get_description(), u"29'")
         self.assertEqual(sub_category.full_description, u"Monitor:LCD:29'")
 
-    def testMarkup(self):
+    def test_markup(self):
         self._base_category.suggested_markup = currency('10')
         category1 = self._create_category(u'LCD', parent=self._base_category)
         category2 = self._create_category(u'LCD', parent=self._base_category)
@@ -67,7 +67,7 @@ class TestSellableCategory(DomainTest):
         self.assertEqual(category2.get_markup(), 0)
         self.assertEqual(category3.get_markup(), 5)
 
-    def testGetBaseCategories(self):
+    def test_get_base_categories(self):
         categories = SellableCategory.get_base_categories(self.store)
         count = categories.count()
         base_category = SellableCategory(description=u"Monitor",
@@ -80,7 +80,7 @@ class TestSellableCategory(DomainTest):
         self.failIf(category in categories)
         self.assertEqual(categories.count(), count + 1)
 
-    def testGetTaxConstant(self):
+    def test_get_tax_constant(self):
         category = self._create_category(u'LCD', parent=self._base_category)
 
         self.assertEquals(category.get_tax_constant(), None)
@@ -188,7 +188,7 @@ class TestSellable(DomainTest):
         self.failUnless(sellable.markup == 0,
                         u"Expected markup %r, got %r" % (0, sellable.markup))
 
-    def testGetAvailableSellablesQuery(self):
+    def test_get_available_sellables_query(self):
         # Sellable and query without supplier
         sellable = self.create_sellable()
         self.create_storable(product=sellable.product,
@@ -238,7 +238,7 @@ class TestSellable(DomainTest):
                                                      supplier=supplier)
         self.assertTrue(sellable in list(available))
 
-    def testGetUnblockedByCategory(self):
+    def test_get_unblocked_by_category(self):
         s1 = self.create_sellable()
         s2 = self.create_sellable()
         s3 = self.create_sellable()
@@ -273,7 +273,7 @@ class TestSellable(DomainTest):
             set(Sellable.get_unblocked_by_categories(
                 self.store, [], include_uncategorized=True)))
 
-    def testIsValidQuantity(self):
+    def test_is_valid_quantity(self):
         sellable = self.create_sellable()
         unit = self.create_sellable_unit()
         sellable.unit = unit
@@ -296,7 +296,7 @@ class TestSellable(DomainTest):
         self.assertFalse(sellable.is_valid_quantity(5.5))
         self.assertFalse(sellable.is_valid_quantity(Decimal('5.5')))
 
-    def testIsValidPrice(self):
+    def test_is_valid_price(self):
 
         def isValidPriceAssert(valid_data, expected_validity, min_price,
                                max_discount):
@@ -385,7 +385,7 @@ class TestSellable(DomainTest):
         valid_data = sellable.is_valid_price(50, None, user)
         isValidPriceAssert(valid_data, True, currency(50), 50)
 
-    def testGetTaxConstant(self):
+    def test_get_tax_constant(self):
         base_category = SellableCategory(description=u"Monitor",
                                          store=self.store)
         category = SellableCategory(description=u"LCD Monitor",
@@ -409,7 +409,7 @@ class TestSellable(DomainTest):
         sellable.tax_constant = constant3
         self.assertEquals(sellable.get_tax_constant(), constant3)
 
-    def testClose(self):
+    def test_close(self):
         results_not_closed = self.store.find(ProductFullStockView)
         results_with_closed = self.store.find(ProductFullWithClosedStockView)
         results_only_closed = self.store.find(ProductClosedStockView)
@@ -466,7 +466,7 @@ class TestSellable(DomainTest):
         # raise a ValueError.
         self.assertRaises(ValueError, sellable.close)
 
-    def testCanClose(self):
+    def test_can_close(self):
         sellable = self.create_sellable()
         branch = get_current_branch(self.store)
         storable = self.create_storable(sellable.product, branch, 0)
@@ -485,7 +485,7 @@ class TestSellable(DomainTest):
         sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
         self.failIf(sellable.can_close())
 
-    def testCanRemove(self):
+    def test_can_remove(self):
         branch = get_current_branch(self.store)
         sellable = self.create_sellable()
         storable = Storable(product=sellable.product, store=self.store)
@@ -514,7 +514,7 @@ class TestSellable(DomainTest):
         sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
         self.failIf(sellable.can_remove())
 
-    def testRemove(self):
+    def test_remove(self):
         # Remove category price and sellable
         sellable = self.create_sellable()
         Storable(product=sellable.product, store=self.store)

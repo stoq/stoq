@@ -64,7 +64,7 @@ from stoqlib.reporting.workorder import WorkOrdersReport
 
 class TestReport(ReportTest):
 
-    def testPayablePaymentReport(self):
+    def test_payable_payment_report(self):
         raise SkipTest('We need a SearchDialog to test this report.')
 
         out_payments = list(self.store.find(OutPaymentView))
@@ -72,7 +72,7 @@ class TestReport(ReportTest):
             item.payment.due_date = datetime.date(2007, 1, 1)
         # self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
 
-    def testReceivablePaymentReport(self):
+    def test_receivable_payment_report(self):
         raise SkipTest('We need a SearchDialog to test this report.')
 
         payments = self.store.find(InPaymentView).order_by(InPaymentView.identifier)
@@ -81,7 +81,7 @@ class TestReport(ReportTest):
             item.due_date = datetime.date(2007, 1, 1)
         # self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
 
-    def testPayableBillCheckPaymentReport(self):
+    def test_payable_bill_check_payment_report(self):
         from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
         search = OutPaymentBillCheckSearch(self.store)
 
@@ -93,7 +93,7 @@ class TestReport(ReportTest):
         self._diff_expected(BillCheckPaymentReport, 'bill-check-payable-report',
                             search.results, list(search.results))
 
-    def testReceivableBillCheckPaymentReport(self):
+    def test_receivable_bill_check_payment_report(self):
         from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
         search = InPaymentBillCheckSearch(self.store)
 
@@ -105,7 +105,7 @@ class TestReport(ReportTest):
         self._diff_expected(BillCheckPaymentReport, 'bill-check-receivable-report',
                             search.results, list(search.results))
 
-    def testSaleReturnReport(self):
+    def test_sale_return_report(self):
         today = datetime.date(2013, 1, 1)
 
         client = self.create_client()
@@ -150,7 +150,7 @@ class TestReport(ReportTest):
         self._diff_expected(SaleReturnReport, 'sale-return-report', self.store,
                             client, model, returned_items)
 
-    def testInPaymentReceipt(self):
+    def test_in_payment_receipt(self):
         payer = self.create_client()
         address = self.create_address()
         address.person = payer.person
@@ -169,7 +169,7 @@ class TestReport(ReportTest):
         self._diff_expected(InPaymentReceipt, 'in-payment-receipt-report',
                             payment, None, date)
 
-    def testOutPaymentReceipt(self):
+    def test_out_payment_receipt(self):
         drawee = self.create_supplier()
         address = self.create_address()
         address.person = drawee.person
@@ -188,7 +188,7 @@ class TestReport(ReportTest):
         self._diff_expected(OutPaymentReceipt, 'out-payment-receipt-report',
                             payment, None, date)
 
-    def testPaymentFlowHistoryReport(self):
+    def test_payment_flow_history_report(self):
         from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowDay
         # Pending payment
         payment1 = self.create_payment()
@@ -214,7 +214,7 @@ class TestReport(ReportTest):
         self._diff_expected(PaymentFlowHistoryReport, 'payment-flow-history',
                             payments)
 
-    def testProductReport(self):
+    def test_product_report(self):
         from stoqlib.gui.search.productsearch import ProductSearch
         search = ProductSearch(self.store)
         search.width = 1000
@@ -224,7 +224,7 @@ class TestReport(ReportTest):
         self._diff_expected(ProductReport, 'product-report',
                             search.results, list(search.results))
 
-    def testTillHistoryReport(self):
+    def test_till_history_report(self):
         from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
         dialog = TillHistoryDialog(self.store)
 
@@ -275,7 +275,7 @@ class TestReport(ReportTest):
         self._diff_expected(TillHistoryReport, 'till-history-report',
                             dialog.results, list(dialog.results))
 
-    def testTillDailyMovement(self):
+    def test_till_daily_movement(self):
         date = datetime.date(2013, 1, 1)
         # create sale payment
         sale = self.create_sale()
@@ -333,7 +333,7 @@ class TestReport(ReportTest):
         self._diff_expected(TillDailyMovementReport,
                             'till-daily-movement-report', self.store, date)
 
-    def testSalesPersonReport(self):
+    def test_sales_person_report(self):
         sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
         salesperson = self.create_sales_person()
         product = self.create_product(price=100)
@@ -368,7 +368,7 @@ class TestReport(ReportTest):
         self._diff_expected(SalesPersonReport, 'sales-person-report', commissions,
                             salesperson_name)
 
-    def testSaleOrderReport(self):
+    def test_sale_order_report(self):
         product = self.create_product(price=100)
         sellable = product.sellable
         default_date = datetime.date(2007, 1, 1)
@@ -382,7 +382,7 @@ class TestReport(ReportTest):
         sale.order()
         self._diff_expected(SaleOrderReport, 'sale-order-report', sale)
 
-    def testSaleOrderReportAsQuote(self):
+    def test_sale_order_report_as_quote(self):
         product = self.create_product(price=238)
         sellable = product.sellable
         default_date = datetime.date(2003, 12, 15)
@@ -397,7 +397,7 @@ class TestReport(ReportTest):
         sale.expire_date = datetime.date(2003, 12, 20)
         self._diff_expected(SaleOrderReport, 'sale-order-quote-report', sale)
 
-    def testProductPriceReport(self):
+    def test_product_price_report(self):
         # the order_by clause is only needed by the test
         products = self.store.find(ProductFullStockView).order_by(
             ProductFullStockView.code)
@@ -405,12 +405,12 @@ class TestReport(ReportTest):
         self._diff_expected(ProductPriceReport, 'product-price-report',
                             list(products), branch_name=branch_name)
 
-    def testServicePriceReport(self):
+    def test_service_price_report(self):
         services = self.store.find(ServiceView).order_by(ServiceView.code)
         self._diff_expected(ServicePriceReport, 'service-price-report',
                             list(services))
 
-    def testPurchaseQuoteReport(self):
+    def test_purchase_quote_report(self):
         quoted_item = self.create_purchase_order_item()
         quote = quoted_item.order
         quote.open_date = datetime.date(2007, 1, 1)
@@ -418,7 +418,7 @@ class TestReport(ReportTest):
         quote.status = PurchaseOrder.ORDER_QUOTING
         self._diff_expected(PurchaseQuoteReport, 'purchase-quote-report', quote)
 
-    def testProductionOrderReport(self):
+    def test_production_order_report(self):
         order_item = self.create_production_item()
         order = order_item.order
         order.identifier = 28
@@ -428,7 +428,7 @@ class TestReport(ReportTest):
         self._diff_expected(ProductionOrderReport, 'production-order-report',
                             order)
 
-    def testCallsReport(self):
+    def test_calls_report(self):
         from stoqlib.gui.search.callsearch import CallsSearch
         person = self.create_person()
         self.create_call()
@@ -441,7 +441,7 @@ class TestReport(ReportTest):
         self._diff_expected(CallsReport, 'calls-report',
                             search.results, list(search.results), person=person)
 
-    def testClientCreditReport(self):
+    def test_client_credit_report(self):
         client = self.create_client()
         client.credit_limit = 100
 
@@ -449,7 +449,7 @@ class TestReport(ReportTest):
             date.return_value = datetime.date(2013, 1, 1)
             self._diff_expected(ClientCreditReport, 'client-credit-report', client)
 
-    def testWorkOrdersReport(self):
+    def test_work_orders_report(self):
         from stoqlib.gui.search.workordersearch import WorkOrderSearch
         for i in range(5):
             wo = self.create_workorder(u'Work order %d' % i)

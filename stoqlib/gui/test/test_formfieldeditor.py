@@ -30,11 +30,11 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestFormFieldEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         dialog = FormFieldEditor(self.store)
         self.check_dialog(dialog, 'dialog-formfield-show')
 
-    def testSetNotMandatory(self):
+    def test_set_not_mandatory(self):
         store = self.store
         store2 = new_store()
         store3 = new_store()

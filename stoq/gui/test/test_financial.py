@@ -52,23 +52,23 @@ class TestFinancial(BaseGUITest):
                 if sub[0].description == page_child:
                     return activate(sub)
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(FinancialApp, u'financial')
         self.check_app(app, u'financial')
 
-    def testTransactionPage(self):
+    def test_transaction_page(self):
         app = self.create_app(FinancialApp, u'financial')
 
         self._open_page(app, u"Banks", u"Banco do Brasil")
         self.check_app(app, u'financial-transaction-page')
 
-    def testPayablePage(self):
+    def test_payable_page(self):
         app = self.create_app(FinancialApp, u'financial')
 
         page = self._open_page(app, u"Accounts Payable")
         page.search.search()
 
-    def testReceivablePage(self):
+    def test_receivable_page(self):
         app = self.create_app(FinancialApp, u'financial')
 
         page = self._open_page(app, u"Accounts Receivable")

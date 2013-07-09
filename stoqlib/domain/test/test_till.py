@@ -57,7 +57,7 @@ class TestTill(DomainTest):
             purchase.group, purchase.branch, Decimal(10))
         return payment
 
-    def testGetCurrentTillOpen(self):
+    def test_get_current_till_open(self):
         self.assertEqual(Till.get_current(self.store), None)
 
         station = get_current_station(self.store)
@@ -71,7 +71,7 @@ class TestTill(DomainTest):
 
         self.assertRaises(TillError, till.open_till)
 
-    def testGetCurrentTillClose(self):
+    def test_get_current_till_close(self):
         station = get_current_station(self.store)
         self.assertEqual(Till.get_current(self.store), None)
         till = Till(store=self.store, station=station)
@@ -81,7 +81,7 @@ class TestTill(DomainTest):
         till.close_till()
         self.assertEqual(Till.get_current(self.store), None)
 
-    def testTillOpenOnce(self):
+    def test_till_open_once(self):
         station = get_current_station(self.store)
         till = Till(store=self.store, station=station)
 
@@ -90,7 +90,7 @@ class TestTill(DomainTest):
 
         self.assertRaises(TillError, till.open_till)
 
-    def testTillClose(self):
+    def test_till_close(self):
         station = self.create_station()
         till = Till(store=self.store, station=station)
         till.open_till()
@@ -99,14 +99,14 @@ class TestTill(DomainTest):
         self.assertEqual(till.status, Till.STATUS_CLOSED)
         self.assertRaises(TillError, till.close_till)
 
-    def testTillCloseMoreThanBalance(self):
+    def test_till_close_more_than_balance(self):
         station = self.create_station()
         till = Till(store=self.store, station=station)
         till.open_till()
         till.add_debit_entry(currency(20), u"")
         self.assertRaises(ValueError, till.close_till)
 
-    def testGetBalance(self):
+    def test_get_balance(self):
         till = Till(store=self.store,
                     station=self.create_station())
         till.open_till()
@@ -117,7 +117,7 @@ class TestTill(DomainTest):
         till.add_debit_entry(currency(5), u"")
         self.assertEqual(till.get_balance(), old + 5)
 
-    def testGetCashAmount(self):
+    def test_get_cash_amount(self):
         till = Till(store=self.store,
                     station=self.create_station())
         till.open_till()
@@ -145,7 +145,7 @@ class TestTill(DomainTest):
         payment.pay()
         self.assertEqual(till.get_cash_amount(), old + 5 + payment.value)
 
-    def testGetCreditsTotal(self):
+    def test_get_credits_total(self):
         till = Till(store=self.store,
                     station=self.create_station())
         till.open_till()
@@ -157,7 +157,7 @@ class TestTill(DomainTest):
         till.add_debit_entry(currency(5), u"")
         self.assertEqual(till.get_credits_total(), old + 10)
 
-    def testGetDebitsTotal(self):
+    def test_get_debits_total(self):
         till = Till(store=self.store,
                     station=self.create_station())
         till.open_till()
@@ -169,7 +169,7 @@ class TestTill(DomainTest):
         till.add_credit_entry(currency(5), u"")
         self.assertEqual(till.get_debits_total(), old - 10)
 
-    def testTillOpenYesterday(self):
+    def test_till_open_yesterday(self):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
@@ -186,7 +186,7 @@ class TestTill(DomainTest):
 
         self.assertEqual(Till.get_current(self.store), None)
 
-    def testTillOpenPreviouslyNotClosed(self):
+    def test_till_open_previously_not_closed(self):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
@@ -199,7 +199,7 @@ class TestTill(DomainTest):
 
         self.assertRaises(TillError, till.open_till)
 
-    def testTillOpenPreviouslyOpened(self):
+    def test_till_open_previously_opened(self):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
@@ -218,7 +218,7 @@ class TestTill(DomainTest):
         self.assertEquals(new_till.initial_cash_amount,
                           till.final_cash_amount)
 
-    def testTillOpenOtherStation(self):
+    def test_till_open_other_station(self):
         till = Till(station=self.create_station(),
                     store=self.store)
         till.open_till()
@@ -229,7 +229,7 @@ class TestTill(DomainTest):
 
         self.assertEqual(Till.get_last_opened(self.store), till)
 
-    def testNeedsClosing(self):
+    def test_needs_closing(self):
         till = Till(station=self.create_station(),
                     store=self.store)
         self.failIf(till.needs_closing())
@@ -240,7 +240,7 @@ class TestTill(DomainTest):
         till.close_till()
         self.failIf(till.needs_closing())
 
-    def testAddEntryInPayment(self):
+    def test_add_entry_in_payment(self):
         till = Till(store=self.store,
                     station=self.create_station())
         till.open_till()
@@ -250,7 +250,7 @@ class TestTill(DomainTest):
         till.add_entry(payment)
         self.assertEqual(till.get_balance(), 10)
 
-    def testAddEntryOutPayment(self):
+    def test_add_entry_out_payment(self):
         till = Till(store=self.store,
                     station=self.create_station())
         till.open_till()
@@ -260,7 +260,7 @@ class TestTill(DomainTest):
         till.add_entry(payment)
         self.assertEqual(till.get_balance(), -10)
 
-    def testAddCreditEntry(self):
+    def test_add_credit_entry(self):
         till = Till(store=self.store,
                     station=self.create_station())
         till.open_till()
@@ -269,7 +269,7 @@ class TestTill(DomainTest):
         till.add_credit_entry(10)
         self.assertEqual(till.get_balance(), 10)
 
-    def testAddDebitEntry(self):
+    def test_add_debit_entry(self):
         till = Till(store=self.store,
                     station=self.create_station())
         till.open_till()
@@ -278,13 +278,13 @@ class TestTill(DomainTest):
         till.add_debit_entry(10)
         self.assertEqual(till.get_balance(), -10)
 
-    def testGetLast(self):
+    def test_get_last(self):
         till = Till(store=self.store,
                     station=get_current_station(self.store))
         till.open_till()
         self.assertEquals(Till.get_last(self.store), till)
 
-    def testGetLastClosed(self):
+    def test_get_last_closed(self):
         till = Till(store=self.store,
                     station=get_current_station(self.store))
         till.open_till()

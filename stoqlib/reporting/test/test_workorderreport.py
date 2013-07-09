@@ -32,7 +32,7 @@ from stoqlib.reporting.workorder import (WorkOrderQuoteReport,
 
 
 class TestWorkOrderQuoteReport(ReportTest):
-    def testReport(self):
+    def test_report(self):
         workorder = self.create_workorder(u'Test equipment')
         workorder.client = self.create_client()
         workorder.identifier = 666
@@ -54,7 +54,7 @@ class TestWorkOrderQuoteReport(ReportTest):
 
 
 class TestWorkOrderReceiptReport(ReportTest):
-    def testReport(self):
+    def test_report(self):
         workorder = self.create_workorder(u'Test equipment')
         workorder.client = self.create_client()
         workorder.identifier = 666

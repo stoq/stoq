@@ -66,7 +66,7 @@ class TestSales(BaseGUITest):
                     expected_args.extend(other_args)
                 run_dialog.assert_called_once_with(*expected_args, **other_kwargs)
 
-    def testInitial(self):
+    def test_initial(self):
         app = self.create_app(SalesApp, u'sales')
         for sales in app.results:
             sales.open_date = datetime.datetime(2012, 1, 1)
@@ -74,7 +74,7 @@ class TestSales(BaseGUITest):
             sales.close_date = datetime.datetime(2012, 4, 5)
         self.check_app(app, u'sales')
 
-    def testSelect(self):
+    def test_select(self):
         app = self.create_app(SalesApp, u'sales')
         results = app.results
         results.select(results[0])

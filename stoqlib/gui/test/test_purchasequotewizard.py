@@ -63,7 +63,7 @@ class TestQuotePurchaseeWizard(GUITest):
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore.commit')
     @mock.patch('stoqlib.domain.purchase.PurchaseOrder.delete')
-    def testCreate(self, delete, commit):
+    def test_create(self, delete, commit):
         # Allow creating purchases in the past.
         sysparam(self.store).update_parameter(u"ALLOW_OUTDATED_OPERATIONS", u"1")
 
@@ -117,7 +117,7 @@ class TestReceiveQuoteWizard(GUITest):
 
     @mock.patch('stoqlib.gui.wizards.purchasequotewizard.run_dialog')
     @mock.patch('stoqlib.gui.wizards.purchasequotewizard.yesno')
-    def testCreate(self, yesno, run_dialog):
+    def test_create(self, yesno, run_dialog):
         # Allow creating purchases in the past.
         sysparam(self.store).update_parameter(u"ALLOW_OUTDATED_OPERATIONS", u"1")
 

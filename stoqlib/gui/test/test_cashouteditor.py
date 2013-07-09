@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestCashOutEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         till = self.create_till()
         till.open_till()
         editor = CashOutEditor(self.store)

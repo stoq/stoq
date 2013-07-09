@@ -56,7 +56,7 @@ class TestReceivingOrderSearch(GUITest):
         search.results.select(search.results[0])
         return search
 
-    def testReceivingOrderSearch(self):
+    def test_receiving_order_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -68,7 +68,7 @@ class TestReceivingOrderSearch(GUITest):
 
     @mock.patch('stoqlib.gui.search.receivingsearch.run_dialog')
     @mock.patch('stoqlib.gui.search.receivingsearch.print_report')
-    def testButtons(self, print_report, run_dialog):
+    def test_buttons(self, print_report, run_dialog):
         self._create_domain()
         search = self._show_search()
 

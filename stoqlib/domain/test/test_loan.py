@@ -29,7 +29,7 @@ from stoqlib.domain.loan import Loan, LoanItem
 
 class TestLoan(DomainTest):
 
-    def testAddSellable(self):
+    def test_add_sellable(self):
         loan = self.create_loan()
         sellable = self.create_sellable()
         self.create_storable(product=sellable.product,
@@ -39,7 +39,7 @@ class TestLoan(DomainTest):
         self.assertEquals(len(items), 1)
         self.failIf(items[0].sellable is not sellable)
 
-    def testCanClose(self):
+    def test_can_close(self):
         loan_item = self.create_loan_item()
         loan = loan_item.loan
         self.assertEquals(loan.status, Loan.STATUS_OPEN)
@@ -48,7 +48,7 @@ class TestLoan(DomainTest):
         loan_item.return_quantity = loan_item.quantity
         self.failUnless(loan.can_close())
 
-    def testClose(self):
+    def test_close(self):
         loan_item = self.create_loan_item()
         loan = loan_item.loan
         self.assertEquals(loan.status, Loan.STATUS_OPEN)
@@ -59,7 +59,7 @@ class TestLoan(DomainTest):
         loan.close()
         self.assertEquals(loan.status, Loan.STATUS_CLOSED)
 
-    def testRemoveItem(self):
+    def test_remove_item(self):
         loan_item = self.create_loan_item()
         loan = loan_item.loan
 

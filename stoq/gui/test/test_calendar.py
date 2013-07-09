@@ -30,7 +30,7 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestCalendar(BaseGUITest):
     @mock.patch('stoq.gui.calendar.CalendarApp._setup_daemon')
-    def testInitial(self, setup_daemon):
+    def test_initial(self, setup_daemon):
         app = self.create_app(CalendarApp, u'calendar')
         self.check_app(app, u'calendar')
 

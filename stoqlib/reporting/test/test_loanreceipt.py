@@ -31,7 +31,7 @@ from stoqlib.reporting.loanreceipt import LoanReceipt
 
 class TestLoanReceipt(ReportTest):
     @mock.patch('stoqlib.reporting.loanreceipt.datetime', ReportTest.fake.datetime)
-    def testLoanReceipt(self):
+    def test_loan_receipt(self):
         sysparam_ = api.sysparam(self.store)
         client = self.create_client()
         address = self.create_address()

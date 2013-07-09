@@ -37,21 +37,21 @@ from stoqlib.lib.dateutils import localdate
 
 
 class TestSaleSearch(GUITest):
-    def testShow(self):
+    def test_show(self):
         search = SaleSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'sale-show')
 
 
 class TestSaleWithToolbarSearch(GUITest):
-    def testShow(self):
+    def test_show(self):
         search = SaleWithToolbarSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'sale-with-toolbar-show')
 
 
 class TestSalesByPaymentMethodSearch(GUITest):
-    def testShow(self):
+    def test_show(self):
         search = SalesByPaymentMethodSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'sale-payment-method-show')
@@ -91,7 +91,7 @@ class TestSoldItemsByBranchSearch(GUITest):
         search.results.select(search.results[0])
         return search
 
-    def testShow(self):
+    def test_show(self):
         self._create_domain()
         search = self._show_search()
 

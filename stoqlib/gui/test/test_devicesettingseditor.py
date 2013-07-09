@@ -36,7 +36,7 @@ class _Device(object):
 
 class TestDeviceSettingsEditor(GUITest):
     @mock.patch('stoqlib.gui.editors.deviceseditor.DeviceManager.get_serial_devices')
-    def testCreate(self, get_serial_devices):
+    def test_create(self, get_serial_devices):
         get_serial_devices.return_value = [_Device('/dev/ttyS0'),
                                            _Device('/dev/ttyS1')]
         station = self.create_station()
@@ -46,7 +46,7 @@ class TestDeviceSettingsEditor(GUITest):
         self.check_editor(editor, 'editor-devicesetting-create')
 
     @mock.patch('stoqlib.gui.editors.deviceseditor.DeviceManager.get_serial_devices')
-    def testShow(self, get_serial_devices):
+    def test_show(self, get_serial_devices):
         get_serial_devices.return_value = [_Device('/dev/ttyS0'),
                                            _Device('/dev/ttyS1')]
         station = self.create_station()

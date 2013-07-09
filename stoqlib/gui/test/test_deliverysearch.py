@@ -60,7 +60,7 @@ class TestDeliverySearch(GUITest):
         delivery.tracking_code = u'78'
         delivery.status = Delivery.STATUS_RECEIVED
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 

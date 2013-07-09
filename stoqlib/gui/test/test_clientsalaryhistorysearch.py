@@ -30,7 +30,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestClientSalaryHistorySearch(GUITest):
-    def testSearch(self):
+    def test_search(self):
         client = self.create_client()
 
         users = self.store.find(LoginUser).order_by(LoginUser.username)

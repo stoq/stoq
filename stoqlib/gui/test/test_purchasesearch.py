@@ -33,7 +33,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPurchaseSearch(GUITest):
-    def testPurchasedItemsSearch(self):
+    def test_purchased_items_search(self):
         branch = api.get_current_branch(self.store)
         order = self.create_purchase_order(branch=branch)
         item = self.create_purchase_order_item(order=order)

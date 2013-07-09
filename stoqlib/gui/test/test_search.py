@@ -91,7 +91,7 @@ class TestDateOptions(unittest.TestCase):
             self.assertEqual(
                 relativedelta.weekday(interval[1].weekday()), SU)
 
-    def testThisWeek(self):
+    def test_this_week(self):
         option = ThisWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -103,7 +103,7 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(get_today_date()))
                 self._testWeekday(loc, option.get_interval())
 
-    def testLastWeek(self):
+    def test_last_week(self):
         option = LastWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -117,7 +117,7 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(last_week_day))
                 self._testWeekday(loc, option.get_interval())
 
-    def testNextWeek(self):
+    def test_next_week(self):
         option = NextWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -131,7 +131,7 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(next_week_day))
                 self._testWeekday(loc, option.get_interval())
 
-    def testThisMonth(self):
+    def test_this_month(self):
         option = ThisMonth()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -143,7 +143,7 @@ class TestDateOptions(unittest.TestCase):
                 self.assertEqual(option.get_interval(),
                                  self._get_month_interval(month_day))
 
-    def testLastMonth(self):
+    def test_last_month(self):
         option = LastMonth()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -156,7 +156,7 @@ class TestDateOptions(unittest.TestCase):
                 self.assertEqual(option.get_interval(),
                                  self._get_month_interval(last_month_day))
 
-    def testNextMonth(self):
+    def test_next_month(self):
         option = NextMonth()
         for loc in self._get_locales():
             self._set_locale(loc)

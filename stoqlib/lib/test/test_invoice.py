@@ -75,7 +75,7 @@ class InvoiceTest(DomainTest):
         self.create_storable(product, get_current_branch(self.store), stock=100)
         return sellable
 
-    def testSaleInvoice(self):
+    def test_sale_invoice(self):
         sale = self.create_sale()
         for i in range(10):
             price = 50 + i
@@ -98,7 +98,7 @@ class InvoiceTest(DomainTest):
         except AssertionError as e:
             self.fail(e)
 
-    def testHasInvoiceNumber(self):
+    def test_has_invoice_number(self):
         sale = self.create_sale()
         for i in range(10):
             self._add_product(sale, tax=18, price=50 + i)

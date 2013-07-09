@@ -27,7 +27,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestReturnedSale(DomainTest):
-    def testRemove(self):
+    def test_remove(self):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale)

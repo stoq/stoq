@@ -29,7 +29,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 class TestStockDecrease(DomainTest):
 
-    def testGetItems(self):
+    def test_get_items(self):
         decrease = self.create_stock_decrease()
         sellable = self.create_sellable()
         decrease.add_sellable(sellable, quantity=5)
@@ -38,7 +38,7 @@ class TestStockDecrease(DomainTest):
         self.assertEqual(items.count(), 1)
         self.assertEqual(sellable, items[0].sellable)
 
-    def testRemoveItem(self):
+    def test_remove_item(self):
         decrease = self.create_stock_decrease()
         sellable = self.create_sellable()
         decrease.add_sellable(sellable, quantity=5)
@@ -52,7 +52,7 @@ class TestStockDecrease(DomainTest):
         self.failUnlessRaises(TypeError,
                               decrease.get_status_name, u'invalid status')
 
-    def testConfirm(self):
+    def test_confirm(self):
         decrease = self.create_stock_decrease()
         sellable = self.create_sellable()
         decrease.add_sellable(sellable, quantity=5)
@@ -82,7 +82,7 @@ class TestStockDecrease(DomainTest):
 
 class TestStockDecreaseItem(DomainTest):
 
-    def testGetDescription(self):
+    def test_get_description(self):
         decrease = self.create_stock_decrease()
         product = self.create_product()
         decrease_item = decrease.add_sellable(product.sellable)

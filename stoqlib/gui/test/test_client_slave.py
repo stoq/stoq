@@ -36,7 +36,7 @@ _ = stoqlib_gettext
 
 
 class TestClientSlave(GUITest):
-    def testShow(self):
+    def test_show(self):
         # this is necessary so previous tests will not interfere in here
         sysparam(self.store).update_parameter(
             u"CREDIT_LIMIT_SALARY_PERCENT",

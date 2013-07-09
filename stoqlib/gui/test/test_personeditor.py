@@ -45,7 +45,7 @@ class _BasePersonEditorTest(GUITest):
     editor = None
 
     @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
-    def testRunDialogParent(self, run_dialog):
+    def test_run_dialog_parent(self, run_dialog):
         editor = self.editor(self.store, role_type=Person.ROLE_INDIVIDUAL)
         person_slave = editor._person_slave
 
@@ -70,7 +70,7 @@ class _BasePersonEditorTest(GUITest):
 class TestClientEditor(_BasePersonEditorTest):
     editor = ClientEditor
 
-    def testQueries(self):
+    def test_queries(self):
         client = self.create_client()
 
         with self.count_tracer() as tracer:
@@ -98,16 +98,16 @@ class TestClientEditor(_BasePersonEditorTest):
         # 1: select app permissions for the user
         self.assertEquals(tracer.count, 42)
 
-    def testCreateIndividual(self):
+    def test_create_individual(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)
         self.check_editor(editor, 'editor-client-individual-create')
 
-    def testCreateCompany(self):
+    def test_create_company(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-client-company-create')
 
     @mock.patch('stoqlib.gui.templates.persontemplate.warning')
-    def testEditWithoutAddress(self, warning):
+    def test_edit_without_address(self, warning):
         client = self.create_client()
         editor = ClientEditor(self.store, client,
                               role_type=Person.ROLE_INDIVIDUAL)
@@ -118,7 +118,7 @@ class TestClientEditor(_BasePersonEditorTest):
             'adding additional addresses')
 
     @mock.patch('stoqlib.gui.templates.persontemplate.warning')
-    def testEditAddress(self, warning):
+    def test_edit_address(self, warning):
         client = self.store.find(Person,
                                  name=u"Franciso Elisio de Lima Junior")[0].client
         editor = ClientEditor(self.store, client,
@@ -147,7 +147,7 @@ class TestClientEditor(_BasePersonEditorTest):
 
         self.check_filename(dump, 'editor-client-edit-address')
 
-    def testOnlyAdminCanAddClientCredit(self):
+    def test_only_admin_can_add_client_credit(self):
         client = self.create_client()
         editor = ClientEditor(self.store, client,
                               role_type=Person.ROLE_INDIVIDUAL)
@@ -165,11 +165,11 @@ class TestClientEditor(_BasePersonEditorTest):
 class TestUserEditor(_BasePersonEditorTest):
     editor = UserEditor
 
-    def testCreateIndividual(self):
+    def test_create_individual(self):
         editor = UserEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)
         self.check_editor(editor, 'editor-user-individual-create')
 
-    def testCreateCompany(self):
+    def test_create_company(self):
         editor = UserEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-user-company-create')
 
@@ -177,7 +177,7 @@ class TestUserEditor(_BasePersonEditorTest):
 class TestEmployeeEditor(_BasePersonEditorTest):
     editor = EmployeeEditor
 
-    def testCreateIndividual(self):
+    def test_create_individual(self):
         branch = self.create_branch()
         role = self.create_employee_role()
 
@@ -202,7 +202,7 @@ class TestEmployeeEditor(_BasePersonEditorTest):
         self.check_editor(editor, 'editor-employee-individual-create-confirmed',
                           [editor.retval, branch])
 
-    def testCreateCompany(self):
+    def test_create_company(self):
         editor = EmployeeEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-employee-company-create')
 
@@ -210,11 +210,11 @@ class TestEmployeeEditor(_BasePersonEditorTest):
 class TestSupplierEditor(_BasePersonEditorTest):
     editor = SupplierEditor
 
-    def testCreateIndividual(self):
+    def test_create_individual(self):
         editor = SupplierEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)
         self.check_editor(editor, 'editor-supplier-individual-create')
 
-    def testCreateCompany(self):
+    def test_create_company(self):
         editor = SupplierEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-supplier-company-create')
 
@@ -222,13 +222,13 @@ class TestSupplierEditor(_BasePersonEditorTest):
 class TestTransporterEditor(_BasePersonEditorTest):
     editor = TransporterEditor
 
-    def testCreateIndividual(self):
+    def test_create_individual(self):
         editor = TransporterEditor(
             self.store, role_type=Person.ROLE_INDIVIDUAL)
         self.check_editor(
             editor, 'editor-transporter-individual-create')
 
-    def testCreateCompany(self):
+    def test_create_company(self):
         editor = TransporterEditor(
             self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(
@@ -238,16 +238,16 @@ class TestTransporterEditor(_BasePersonEditorTest):
 class TestBranchEditor(_BasePersonEditorTest):
     editor = BranchEditor
 
-    def testCreateIndividual(self):
+    def test_create_individual(self):
         editor = BranchEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)
         self.check_editor(editor, 'editor-branch-individual-create')
 
-    def testCreateCompany(self):
+    def test_create_company(self):
         editor = BranchEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-branch-company-create')
 
 
 class TestEmployeeRoleEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = EmployeeRoleEditor(self.store)
         self.check_editor(editor, 'editor-employeerole-create')

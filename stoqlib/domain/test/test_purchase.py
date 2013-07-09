@@ -31,14 +31,14 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestPurchaseOrder(DomainTest):
-    def testConfirmOrder(self):
+    def test_confirm_order(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.confirm)
         order.status = PurchaseOrder.ORDER_PENDING
 
         order.confirm()
 
-    def testClose(self):
+    def test_close(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)
         order.status = PurchaseOrder.ORDER_PENDING
@@ -54,14 +54,14 @@ class TestPurchaseOrder(DomainTest):
         order.close()
         self.assertEqual(order.status, PurchaseOrder.ORDER_CLOSED)
 
-    def testCloseConsigned(self):
+    def test_close_consigned(self):
         order = self.create_purchase_order()
         order.consigned = True
         order.status = PurchaseOrder.ORDER_PENDING
         order.set_consigned()
         self.failIf(order.can_close())
 
-    def testCancelNotPaid(self):
+    def test_cancel_not_paid(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)
         order.status = PurchaseOrder.ORDER_PENDING
@@ -80,7 +80,7 @@ class TestPurchaseOrder(DomainTest):
         for payment in payments:
             self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
 
-    def testRemoveItem(self):
+    def test_remove_item(self):
         purchase_order = self.create_purchase_order()
         self.create_purchase_order_item(order=purchase_order)
 
@@ -92,7 +92,7 @@ class TestPurchaseOrder(DomainTest):
 
         self.assertFalse(items)
 
-    def testCancelPaid(self):
+    def test_cancel_paid(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)
         order.status = PurchaseOrder.ORDER_PENDING
@@ -125,7 +125,7 @@ class TestPurchaseOrder(DomainTest):
             if payment.is_inpayment():
                 self.assertEqual(payment.value, total_paid)
 
-    def testCanCancelPartial(self):
+    def test_can_cancel_partial(self):
         order = self.create_purchase_order()
         self.assertEqual(order.can_cancel(), True)
         sellable = self.create_sellable()
@@ -133,7 +133,7 @@ class TestPurchaseOrder(DomainTest):
         order.receive_item(purchase_item, 1)
         self.assertEqual(order.can_cancel(), False)
 
-    def testCanCancel(self):
+    def test_can_cancel(self):
         order = self.create_purchase_order()
         self.assertEqual(order.can_cancel(), True)
         order.cancel()
@@ -141,7 +141,7 @@ class TestPurchaseOrder(DomainTest):
         sellable = self.create_sellable()
         order.add_item(sellable, 2)
 
-    def testConfirmSupplier(self):
+    def test_confirm_supplier(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.confirm)
         order.status = PurchaseOrder.ORDER_PENDING
@@ -150,7 +150,7 @@ class TestPurchaseOrder(DomainTest):
         order.confirm()
         self.assertEquals(order.group.recipient, order.supplier.person)
 
-    def testIsPaid(self):
+    def test_is_paid(self):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
@@ -164,7 +164,7 @@ class TestPurchaseOrder(DomainTest):
 
         self.assertEqual(order.is_paid(), True)
 
-    def testAccountTransactionCheck(self):
+    def test_account_transaction_check(self):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
@@ -184,7 +184,7 @@ class TestPurchaseOrder(DomainTest):
         self.assertEquals(t.payment, payment)
         self.assertEquals(t.value, -payment.value)
 
-    def testAccountTransactionMoney(self):
+    def test_account_transaction_money(self):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
@@ -199,7 +199,7 @@ class TestPurchaseOrder(DomainTest):
 
         self.assertFalse(account.transactions.is_empty())
 
-    def testPayments(self):
+    def test_payments(self):
         order = self.create_purchase_order()
         order.add_item(self.create_sellable(), 2)
 
@@ -222,7 +222,7 @@ class TestPurchaseOrder(DomainTest):
         self.assertEqual(order.group.payments.count(), 2)
         self.assertTrue(money_payment in order.group.payments)
 
-    def testHasBatchItem(self):
+    def test_has_batch_item(self):
         order = self.create_purchase_order()
         order.add_item(self.create_sellable(), 3)
         self.assertFalse(order.has_batch_item())
@@ -245,7 +245,7 @@ class TestPurchaseOrder(DomainTest):
 
 class TestQuoteGroup(DomainTest):
 
-    def testCancel(self):
+    def test_cancel(self):
         order = self.create_purchase_order()
         quote = QuoteGroup(store=self.store, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
@@ -255,7 +255,7 @@ class TestQuoteGroup(DomainTest):
         order.cancel()
         self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
 
-    def testClose(self):
+    def test_close(self):
         order = self.create_purchase_order()
         quote = QuoteGroup(store=self.store, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
@@ -271,7 +271,7 @@ class TestQuoteGroup(DomainTest):
 
         self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
 
-    def testRemoveItem(self):
+    def test_remove_item(self):
         order = self.create_purchase_order()
         quote = QuoteGroup(store=self.store, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING

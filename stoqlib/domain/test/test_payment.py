@@ -53,7 +53,7 @@ class TestPayment(DomainTest):
     def _get_relative_day(self, days):
         return localtoday() + datetime.timedelta(days)
 
-    def testGetPenalty(self):
+    def test_get_penalty(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
@@ -91,7 +91,7 @@ class TestPayment(DomainTest):
             paid_date = self._get_relative_day(day)
             self.assertRaises(ValueError, payment.get_penalty, paid_date.date())
 
-    def testGetInterest(self):
+    def test_get_interest(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
@@ -131,7 +131,7 @@ class TestPayment(DomainTest):
             paid_date = self._get_relative_day(day)
             self.assertRaises(ValueError, payment.get_interest, paid_date.date())
 
-    def testHasCommission(self):
+    def test_has_commission(self):
         sale = self.create_sale()
         self.add_payments(sale, method_type=u'check', installments=2)
 
@@ -143,7 +143,7 @@ class TestPayment(DomainTest):
                        salesperson=sale.salesperson)
             self.assertTrue(p.has_commission())
 
-    def testIsPaid(self):
+    def test_is_paid(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
@@ -160,7 +160,7 @@ class TestPayment(DomainTest):
         payment.pay()
         self.failUnless(payment.is_paid())
 
-    def testIsCancelled(self):
+    def test_is_cancelled(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
@@ -179,7 +179,7 @@ class TestPayment(DomainTest):
         payment.cancel()
         self.failUnless(payment.is_cancelled())
 
-    def testGetPaidDateString(self):
+    def test_get_paid_date_string(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
@@ -196,7 +196,7 @@ class TestPayment(DomainTest):
         payment.pay()
         self.failUnless(payment.get_paid_date_string() == today)
 
-    def testGetOpenDateString(self):
+    def test_get_open_date_string(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
@@ -209,7 +209,7 @@ class TestPayment(DomainTest):
                           store=self.store)
         self.assertNotEqual(payment.get_open_date_string(), u"")
 
-    def testGetDaysLate(self):
+    def test_get_days_late(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         open_date = due_date = self._get_relative_day(-4)
         payment = Payment(value=currency(100),
@@ -227,7 +227,7 @@ class TestPayment(DomainTest):
         payment.pay()
         self.assertEqual(payment.get_days_late(), 0)
 
-    def testCancel(self):
+    def test_cancel(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
@@ -243,7 +243,7 @@ class TestPayment(DomainTest):
         payment.cancel()
         self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
 
-    def testCreateRepeatedMonth(self):
+    def test_create_repeated_month(self):
         p = self.create_payment()
         p.description = u'Rent'
         p.category = self.create_payment_category()
@@ -311,7 +311,7 @@ class TestPaymentComment(DomainTest):
 
 
 class TestCardPaymentOperation(DomainTest):
-    def testPaymentDelete(self):
+    def test_payment_delete(self):
         method = PaymentMethod.get_by_name(self.store, u'card')
 
         payment = self.create_payment(method=method)

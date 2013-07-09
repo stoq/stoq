@@ -28,6 +28,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestQualityTestEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = QualityTestEditor(self.store)
         self.check_editor(editor, 'editor-qualitytest-create')

@@ -53,7 +53,7 @@ class TestLoanSearch(GUITest):
         loan.identifier = 45978
         loan.open_date = localdatetime(2012, 2, 2)
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -71,7 +71,7 @@ class TestLoanSearch(GUITest):
 
     @mock.patch('stoqlib.gui.search.loansearch.run_dialog')
     @mock.patch('stoqlib.gui.search.loansearch.print_report')
-    def testButtons(self, print_report, run_dialog):
+    def test_buttons(self, print_report, run_dialog):
         self._create_domain()
         search = self._show_search()
 

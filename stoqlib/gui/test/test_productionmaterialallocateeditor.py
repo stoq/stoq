@@ -29,13 +29,13 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductionMaterialAllocateEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         material = self.create_production_material()
         editor = ProductionMaterialAllocateEditor(self.store, material)
         editor.identifier.set_label("12345")
         self.check_editor(editor, 'editor-productionmaterialallocate-show')
 
-    def testAllocate(self):
+    def test_allocate(self):
         branch = get_current_branch(self.store)
         material = self.create_production_material()
         material.product.storable.increase_stock(5, branch, 0, None)

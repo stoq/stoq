@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestServiceSearch(GUITest):
-    def testSearch(self):
+    def test_search(self):
         self.clean_domain([Service])
 
         self.create_service(u'Delivery', 25).sellable.code = u'1'

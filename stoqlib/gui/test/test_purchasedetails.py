@@ -36,7 +36,7 @@ from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 class TestPurchaseDetailsDialog(GUITest):
 
-    def testShow(self):
+    def test_show(self):
         date = localdate(2012, 1, 1).date()
         supplier = self.create_supplier()
 
@@ -58,7 +58,7 @@ class TestPurchaseDetailsDialog(GUITest):
         self.check_editor(dialog, 'dialog-purchase-details')
 
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.SpreadSheetExporter.export')
-    def testExportSpreadSheet(self, export):
+    def test_export_spread_sheet(self, export):
         order = self.create_purchase_order()
         dialog = PurchaseDetailsDialog(self.store, order)
 
@@ -66,7 +66,7 @@ class TestPurchaseDetailsDialog(GUITest):
         self.assertEquals(export.call_count, 1)
 
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.print_report')
-    def testPrintDetails(self, print_report):
+    def test_print_details(self, print_report):
         order = self.create_purchase_order()
         dialog = PurchaseDetailsDialog(self.store, order)
         self.assertSensitive(dialog, ['print_button'])

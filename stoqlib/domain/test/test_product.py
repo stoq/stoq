@@ -46,7 +46,7 @@ from stoqlib.lib.dateutils import localtoday
 
 class TestProductSupplierInfo(DomainTest):
 
-    def testGetName(self):
+    def test_get_name(self):
         product = self.create_product()
         supplier = self.create_supplier()
         info = ProductSupplierInfo(store=self.store,
@@ -54,7 +54,7 @@ class TestProductSupplierInfo(DomainTest):
                                    supplier=supplier)
         self.assertEqual(info.get_name(), supplier.get_description())
 
-    def testDefaultLeadTimeValue(self):
+    def test_default_lead_time_value(self):
         product = self.create_product()
         supplier = self.create_supplier()
         info = ProductSupplierInfo(store=self.store,
@@ -107,7 +107,7 @@ class TestProduct(DomainTest):
                             product=self.product, is_main_supplier=True)
         self.failUnless(self.product.get_main_supplier_info())
 
-    def testGetComponents(self):
+    def test_get_components(self):
         self.assertEqual(list(self.product.get_components()), [])
 
         components = []
@@ -120,7 +120,7 @@ class TestProduct(DomainTest):
         self.assertEqual(list(self.product.get_components()),
                          components)
 
-    def testHasComponents(self):
+    def test_has_components(self):
         self.assertFalse(self.product.has_components())
 
         component = self.create_product()
@@ -129,14 +129,14 @@ class TestProduct(DomainTest):
                          store=self.store)
         self.assertTrue(self.product.has_components())
 
-    def testGetProductionCost(self):
+    def test_get_production_cost(self):
         product = self.create_product()
         sellable = product.sellable
         sellable.cost = 50
         production_cost = sellable.cost
         self.assertEqual(product.get_production_cost(), production_cost)
 
-    def testIsComposedBy(self):
+    def test_is_composed_by(self):
         component = self.create_product()
         self.assertEqual(self.product.is_composed_by(component), False)
 
@@ -157,7 +157,7 @@ class TestProduct(DomainTest):
         self.assertEqual(component.is_composed_by(component3), False)
         self.assertEqual(component2.is_composed_by(component3), False)
 
-    def testSuppliers(self):
+    def test_suppliers(self):
         product = self.create_product()
         supplier = self.create_supplier()
 
@@ -177,7 +177,7 @@ class TestProduct(DomainTest):
 
         self.assertEqual(product.is_supplied_by(supplier), True)
 
-    def testCanRemove(self):
+    def test_can_remove(self):
         product = self.create_product()
         storable = Storable(product=product, store=self.store)
         self.assertTrue(product.can_remove())
@@ -223,7 +223,7 @@ class TestProduct(DomainTest):
 
         self.assertFalse(product.can_remove())
 
-    def testRemove(self):
+    def test_remove(self):
         product = self.create_product()
         Storable(product=product, store=self.store)
 
@@ -234,7 +234,7 @@ class TestProduct(DomainTest):
         total = self.store.find(Product, id=product.id).count()
         self.assertEquals(total, 0)
 
-    def testIncreaseDecreaseStock(self):
+    def test_increase_decrease_stock(self):
         branch = get_current_branch(self.store)
         product = self.create_product()
         storable = Storable(product=product, store=self.store)
@@ -305,7 +305,7 @@ class TestProduct(DomainTest):
 
 class TestProductSellableItem(DomainTest):
 
-    def testSell(self):
+    def test_sell(self):
         sale = self.create_sale()
         sellable = Sellable(store=self.store)
         sellable.barcode = u'xyz'
@@ -332,7 +332,7 @@ class TestProductSellableItem(DomainTest):
 
 class TestProductHistory(DomainTest):
 
-    def testAddReceivedQuantity(self):
+    def test_add_received_quantity(self):
         order_item = self.create_receiving_order_item()
         order_item.receiving_order.purchase.status = PurchaseOrder.ORDER_PENDING
         order_item.receiving_order.purchase.confirm()
@@ -346,7 +346,7 @@ class TestProductHistory(DomainTest):
         self.assertEqual(prod_hist.quantity_received,
                          order_item.quantity)
 
-    def testAddSoldQuantity(self):
+    def test_add_sold_quantity(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
         product = sellable.product
@@ -367,7 +367,7 @@ class TestProductHistory(DomainTest):
         self.assertEqual(prod_hist.quantity_sold,
                          sale_item.quantity)
 
-    def testAddTransferedQuantity(self):
+    def test_add_transfered_quantity(self):
         qty = 10
 
         order = self.create_transfer_order()
@@ -482,7 +482,7 @@ class TestProductQuality(DomainTest):
 
 
 class TestProductEvent(DomainTest):
-    def testCreateEvent(self):
+    def test_create_event(self):
         store_list = []
         p_data = _ProductEventData()
         ProductCreateEvent.connect(p_data.on_create)
@@ -587,7 +587,7 @@ class TestProductEvent(DomainTest):
 
 
 class TestProductManufacturer(DomainTest):
-    def testGetDescription(self):
+    def test_get_description(self):
         manufacturer_name = u'PManufacturer'
 
         manufacturer = self.create_product_manufacturer(name=manufacturer_name)
@@ -596,7 +596,7 @@ class TestProductManufacturer(DomainTest):
 
         self.assertEqual(result.name, manufacturer.get_description())
 
-    def testCanRemove(self):
+    def test_can_remove(self):
         manufacturer = self.create_product_manufacturer(name=u'Test')
         product = self.create_product()
         product.manufacturer = manufacturer
@@ -604,7 +604,7 @@ class TestProductManufacturer(DomainTest):
         product.manufacturer = None
         self.assertTrue(manufacturer.can_remove())
 
-    def testRemove(self):
+    def test_remove(self):
         manufacturer_name = u'Tests'
         manufacturer = self.create_product_manufacturer(name=manufacturer_name)
         results = self.store.find(ProductManufacturer,
@@ -617,7 +617,7 @@ class TestProductManufacturer(DomainTest):
 
 
 class TestStorable(DomainTest):
-    def testRegisterInitialStock(self):
+    def test_register_initial_stock(self):
         b1 = self.create_branch()
         b2 = self.create_branch()
 
@@ -654,7 +654,7 @@ class TestStorable(DomainTest):
             # is set to control batches
             storable_with_batch.register_initial_stock(10, b2, unit_cost=1)
 
-    def testGetStorablesWithoutStockItem(self):
+    def test_get_storables_without_stock_item(self):
         self.clean_domain([StockTransactionHistory, ProductStockItem, Storable])
 
         s0_without_stock = self.create_storable()
@@ -678,7 +678,7 @@ class TestStorable(DomainTest):
             set([s0_without_stock, s2_without_stock,
                  s1_without_stock, s1_with_stock]))
 
-    def testGetBalance(self):
+    def test_get_balance(self):
         p = self.create_product()
         b1 = self.create_branch()
         b2 = self.create_branch()
@@ -707,7 +707,7 @@ class TestStorable(DomainTest):
 
 
 class TestStorableBatch(DomainTest):
-    def testGetBalanceBatch(self):
+    def test_get_balance_batch(self):
         storable = self.create_storable(is_batch=True)
         branch = self.create_branch()
         batch1 = self.create_storable_batch(storable, batch_number=u'1')
@@ -1005,14 +1005,14 @@ class TestStockTransactionHistory(DomainTest):
 
 
 class TestStorableBatchView(DomainTest):
-    def testFind(self):
+    def test_find(self):
         b1 = self.create_storable_batch(batch_number=u'123')
         b2 = self.create_storable_batch(batch_number=u'456')
 
         results = self.store.find(StorableBatchView)
         self.assertEqual(set([b1, b2]), set([r.batch for r in results]))
 
-    def testFindByStorable(self):
+    def test_find_by_storable(self):
         branch1 = self.create_branch()
         branch2 = self.create_branch()
 
@@ -1042,7 +1042,7 @@ class TestStorableBatchView(DomainTest):
                                                     branch=branch2)]),
             set([(u'123', 20)]))
 
-    def testFindAvailableByStorable(self):
+    def test_find_available_by_storable(self):
         branch1 = self.create_branch()
         branch2 = self.create_branch()
 

@@ -35,11 +35,11 @@ from stoqlib.lib.parameters import sysparam
 
 class TestAccount(DomainTest):
 
-    def testAccount(self):
+    def test_account(self):
         account = self.create_account()
         self.failUnless(account)
 
-    def testAccountGetByStation(self):
+    def test_account_get_by_station(self):
         station = self.create_station()
         account = Account.get_by_station(self.store, station)
         self.failIf(account)
@@ -54,7 +54,7 @@ class TestAccount(DomainTest):
         self.assertRaises(TypeError, Account.get_by_station,
                           self.store, object())
 
-    def testAccountLongDescription(self):
+    def test_account_long_description(self):
         a1 = self.create_account()
         a1.description = u"first"
         a2 = self.create_account()
@@ -68,7 +68,7 @@ class TestAccount(DomainTest):
         self.assertEquals(a2.long_description, u'first:second')
         self.assertEquals(a3.long_description, u'first:second:third')
 
-    def testAccountTransactions(self):
+    def test_account_transactions(self):
         account = self.create_account()
         self.assertTrue(account.transactions.is_empty())
 
@@ -87,7 +87,7 @@ class TestAccount(DomainTest):
 
         self.failUnless(t2 in account.transactions)
 
-    def testAccountCanRemove(self):
+    def test_account_can_remove(self):
         account = self.create_account()
         self.failUnless(account.can_remove())
 
@@ -112,7 +112,7 @@ class TestAccount(DomainTest):
 
         self.failIf(account.can_remove())
 
-    def testAccountRemove(self):
+    def test_account_remove(self):
         a1 = self.create_account()
         a2 = self.create_account()
 
@@ -135,7 +135,7 @@ class TestAccount(DomainTest):
         self.assertEquals(t1.account, imbalance_account)
         self.assertEquals(t2.source_account, imbalance_account)
 
-    def testAccountRemoveWithBankAccount(self):
+    def test_account_remove_with_bank_account(self):
         account = self.create_account()
         bank = self.create_bank_account(account=account)
         BillOption(option=u'foo',
@@ -144,7 +144,7 @@ class TestAccount(DomainTest):
                    store=self.store)
         account.remove(self.store)
 
-    def testHasChildAccounts(self):
+    def test_has_child_accounts(self):
         a1 = self.create_account()
         a2 = self.create_account()
 
@@ -160,7 +160,7 @@ class TestAccount(DomainTest):
         a1 = self.create_account()
         self.assertEquals(a1.long_description, IDescribable(a1).get_description())
 
-    def testGetTypeLabel(self):
+    def test_get_type_label(self):
         a = self.create_account()
         a.account_type = Account.TYPE_CASH
         self.assertEquals(a.get_type_label(True), u"Spend")
@@ -228,7 +228,7 @@ class TestAccount(DomainTest):
 
 class TestAccountTransaction(DomainTest):
 
-    def testGetOtherAccount(self):
+    def test_get_other_account(self):
         a1 = self.create_account()
         a2 = self.create_account()
 
@@ -246,7 +246,7 @@ class TestAccountTransaction(DomainTest):
         self.assertEquals(t2.get_other_account(a1), a2)
         self.assertEquals(t2.get_other_account(a2), a1)
 
-    def testSetOtherAccount(self):
+    def test_set_other_account(self):
         a1 = self.create_account()
         a2 = self.create_account()
 
@@ -276,7 +276,7 @@ class TestAccountTransaction(DomainTest):
         self.assertEquals(t2.account, a2)
         self.assertEquals(t2.source_account, a2)
 
-    def testCreateFromPayment(self):
+    def test_create_from_payment(self):
         sale = self.create_sale()
         self.add_product(sale)
         payment = self.add_payments(sale, method_type=u'check')[0]
@@ -296,7 +296,7 @@ class TestAccountTransaction(DomainTest):
 
 
 class TestAccountTransactionView(DomainTest):
-    def testGetForAccount(self):
+    def test_get_for_account(self):
         a = self.create_account()
         t = self.create_account_transaction(a)
         t.value = 100
@@ -310,7 +310,7 @@ class TestAccountTransactionView(DomainTest):
         self.assertEquals(v1.description, t.description)
         self.assertEquals(v1.date.replace(tzinfo=None), t.date)
 
-    def testGetAccountDescription(self):
+    def test_get_account_description(self):
         a1 = self.create_account()
         a1.description = u"Source Account"
         a2 = self.create_account()
@@ -325,7 +325,7 @@ class TestAccountTransactionView(DomainTest):
         self.assertEquals(views[0].get_account_description(a1), u"Account")
         self.assertEquals(views[0].get_account_description(a2), u"Source Account")
 
-    def testGetValue(self):
+    def test_get_value(self):
         a1 = self.create_account()
         a1.description = u"Source Account"
         a2 = self.create_account()
@@ -341,7 +341,7 @@ class TestAccountTransactionView(DomainTest):
         self.assertEquals(views[0].get_value(a1), -100)
         self.assertEquals(views[0].get_value(a2), 100)
 
-    def testTransaction(self):
+    def test_transaction(self):
         a = self.create_account()
         t = self.create_account_transaction(a)
 

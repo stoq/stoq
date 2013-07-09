@@ -27,11 +27,11 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestUserProfileEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = UserProfileEditor(self.store)
         self.check_editor(editor, 'editor-userprofile-create')
 
-    def testWithMaxDiscount(self):
+    def test_with_max_discount(self):
         profile = self.create_user_profile(max_discount=10)
         editor = UserProfileEditor(self.store, model=profile)
         self.check_editor(editor, 'editor-userprofile-with-max-discount')

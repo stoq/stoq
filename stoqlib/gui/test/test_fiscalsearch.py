@@ -43,7 +43,7 @@ class TestFiscalBookSearch(GUITest):
         search.results.select(search.results[0])
         return search
 
-    def testShow(self):
+    def test_show(self):
         entries = []
         for entry in self.store.find(FiscalBookEntry).order_by(FiscalBookEntry.date):
             entry.date = localtoday().date()
@@ -66,7 +66,7 @@ class TestFiscalBookSearch(GUITest):
 
     @mock.patch('stoqlib.gui.search.fiscalsearch.SpreadSheetExporter.export')
     @mock.patch('stoqlib.gui.search.fiscalsearch.run_dialog')
-    def testButtons(self, run_dialog, export):
+    def test_buttons(self, run_dialog, export):
         search = self._show_search()
 
         self.assertSensitive(search, ['edit_button'])
@@ -81,7 +81,7 @@ class TestFiscalBookSearch(GUITest):
 
 
 class TestCfopSearch(GUITest):
-    def testShow(self):
+    def test_show(self):
         search = CfopSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'cfop-show')

@@ -32,7 +32,7 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestSaleReturnWizard(GUITest):
-    def testCreate(self):
+    def test_create(self):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale, quantity=2)
@@ -47,7 +47,7 @@ class TestSaleReturnWizard(GUITest):
             self.assertEqual(item.quantity, item.max_quantity)
 
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def testSaleReturnItemsStep(self, info):
+    def test_sale_return_items_step(self, info):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale, quantity=2)
@@ -100,7 +100,7 @@ class TestSaleReturnWizard(GUITest):
             self.assertNotSensitive(wizard, ['next_button'])
             _reset_objectlist(objectlist)
 
-    def testSaleReturnInvoiceStep(self):
+    def test_sale_return_invoice_step(self):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale, quantity=2)
@@ -142,7 +142,7 @@ class TestSaleReturnWizard(GUITest):
         self.assertSensitive(wizard, ['next_button'])
 
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def testSaleReturnPaymentStepNotPaid(self, info):
+    def test_sale_return_payment_step_not_paid(self, info):
         sale = self.create_sale()
         sale.identifier = 1234
         self.add_product(sale, price=50, quantity=6)
@@ -172,7 +172,7 @@ class TestSaleReturnWizard(GUITest):
                           'wizard-sale-return-payment-step-not-paid')
 
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def testSaleReturnPaymentStepPartiallyPaid(self, info):
+    def test_sale_return_payment_step_partially_paid(self, info):
         sale = self.create_sale()
         sale.identifier = 1234
         self.add_product(sale, price=50, quantity=6)
@@ -203,7 +203,7 @@ class TestSaleReturnWizard(GUITest):
                           'wizard-sale-return-payment-step-partially-paid')
 
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def testFinishWithGroupCancelling(self, info):
+    def test_finish_with_group_cancelling(self, info):
         sale = self.create_sale()
         self.add_product(sale)
         payment, = self.add_payments(sale)
@@ -226,7 +226,7 @@ class TestSaleReturnWizard(GUITest):
             emit.assert_called_once_with(returned_sale)
 
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def testFinishWithReversalPayment(self, info):
+    def test_finish_with_reversal_payment(self, info):
         sale = self.create_sale()
         self.add_product(sale)
         payment, = self.add_payments(sale)
@@ -248,10 +248,10 @@ class TestSaleReturnWizard(GUITest):
 
 
 class TestSaleTradeWizard(GUITest):
-    def testCreate(self):
+    def test_create(self):
         SaleTradeWizard(self.store)
 
-    def testSaleSelectionStepKnownSale(self):
+    def test_sale_selection_step_known_sale(self):
         wizard = SaleTradeWizard(self.store)
         step = wizard.get_current_step()
         results = step.slave.results
@@ -287,7 +287,7 @@ class TestSaleTradeWizard(GUITest):
             self.click(wizard.next_button)
             emit.assert_called_once_with(wizard.model)
 
-    def testSaleSelectionStepUnknownSale(self):
+    def test_sale_selection_step_unknown_sale(self):
         sysparam(self.store).update_parameter(
             u'ALLOW_TRADE_NOT_REGISTERED_SALES', u'True')
         wizard = SaleTradeWizard(self.store)

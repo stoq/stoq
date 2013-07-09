@@ -75,7 +75,7 @@ class TestModelListSlave(GUITest):
         ])
         self.store.commit(close=False)
 
-    def testPopulate(self):
+    def test_populate(self):
         list_slave = _ModelListSlave(store=self.store)
         # Make sure the list was populated right
         self.assertEqual(set(list_slave.listcontainer.list), self.models)
@@ -85,7 +85,7 @@ class TestModelListSlave(GUITest):
         self.assertEqual(StoqlibStore.of(list_slave.populate()[0]), self.store)
 
     @mock.patch('kiwi.ui.listdialog.yesno')
-    def testRemoveItem(self, yesno):
+    def test_remove_item(self, yesno):
         yesno.return_value = gtk.RESPONSE_OK
 
         list_slave = _ModelListSlave(store=self.store)
@@ -113,7 +113,7 @@ class TestModelListSlave(GUITest):
         self.assertEqual(StoqlibStore.of(list_slave.populate()[0]), self.store)
 
     @mock.patch('kiwi.ui.listdialog.yesno')
-    def testRemoveItemReuseStore(self, yesno):
+    def test_remove_item_reuse_store(self, yesno):
         yesno.return_value = gtk.RESPONSE_OK
 
         list_slave = _ModelListSlave(store=self.store)
@@ -158,11 +158,11 @@ class TestSimpleListDialog(GUITest):
 
         return SimpleListDialog(columns=columns, objects=objs)
 
-    def testDialog(self):
+    def test_dialog(self):
         dialog = self._create_dialog()
         self.check_dialog(dialog, 'dialog-simple-list')
 
-    def testConfirm(self):
+    def test_confirm(self):
         dialog = self._create_dialog()
         with mock.patch.object(dialog, 'close') as close:
             self.click(dialog.ok_button)

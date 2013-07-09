@@ -221,7 +221,7 @@ NEWFILEUID:NONE
 
 
 class OFXImporterTest(DomainTest):
-    def testOFXImportBBJurdica(self):
+    def test_import_bb_juridica(self):
         ofx = OFXImporter()
         ofx.feed(StringIO(OFX_DATA))
         ofx.set_dry(True)
@@ -238,7 +238,7 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(t2.value, 50)
         self.assertEquals(t2.code, '90068258')
 
-    def testOFXImportBBFisica(self):
+    def test_import_bb_fisica(self):
         ofx = OFXImporter()
         ofx.feed(StringIO(OFX_DATA2))
         ofx.set_dry(True)
@@ -255,7 +255,7 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(t.description,
                           'Compra com Cartão - 01/01 01:23 BURRITOS')
 
-    def testOFXImportSantander(self):
+    def test_import_santander(self):
         ofx = OFXImporter()
         ofx.feed(StringIO(OFX_DATA3))
         ofx.set_dry(True)

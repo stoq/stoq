@@ -30,13 +30,13 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestInvoiceLayoutListSlave(GUITest):
-    def testShow(self):
+    def test_show(self):
         InvoiceLayout(description=u'Test Invoice', width=500, height=500)
 
         dialog = InvoiceLayoutDialog(store=self.store)
         self.check_dialog(dialog, 'invoice-layout-dialog-show')
 
-    def testDeleteModel(self):
+    def test_delete_model(self):
         InvoiceLayout(store=self.store, description=u"Standard Invoice",
                       width=500, height=500)
 

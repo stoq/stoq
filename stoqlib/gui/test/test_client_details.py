@@ -35,7 +35,7 @@ from stoqlib.lib.dateutils import localtoday
 
 class TestClientDetails(GUITest):
 
-    def testShow(self):
+    def test_show(self):
         today = localtoday().date()
         client = self.create_client()
         # Nova venda
@@ -60,7 +60,7 @@ class TestClientDetails(GUITest):
         self.check_editor(dialog, 'dialog-client-details')
 
     @mock.patch('stoqlib.gui.dialogs.clientdetails.run_person_role_dialog')
-    def testFurtherDetails(self, run_dialog):
+    def test_further_details(self, run_dialog):
         client = self.create_client()
 
         dialog = ClientDetailsDialog(self.store, client)

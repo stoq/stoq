@@ -28,6 +28,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestInvoiceLayoutEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = InvoiceLayoutEditor(self.store)
         self.check_editor(editor, 'editor-invoicelayout-create')

@@ -45,7 +45,7 @@ def _adjust_history_date(workorder):
 
 class TestWorkOrderEditor(GUITest):
     @mock.patch('stoqlib.domain.workorder.localnow')
-    def testCreate(self, localnow):
+    def test_create(self, localnow):
         sysparam(self.store).update_parameter(
             u'ALLOW_HIGHER_SALE_PRICE',
             u'True')
@@ -131,7 +131,7 @@ class TestWorkOrderEditor(GUITest):
             storable.get_balance_for_branch(editor.model.branch), 1)
 
     @mock.patch('stoqlib.domain.workorder.localnow')
-    def testShow(self, localnow):
+    def test_show(self, localnow):
         localnow.return_value = localdatetime(2013, 2, 1)
 
         workorder = self.create_workorder(equipment=u'Test equipment')
@@ -180,7 +180,7 @@ class TestWorkOrderEditor(GUITest):
 
 class TestWorkOrderPackageSendEditor(GUITest):
     @mock.patch('stoqlib.domain.workorder.localnow')
-    def testCreate(self, localnow):
+    def test_create(self, localnow):
         localnow.return_value = localdatetime(2013, 1, 1)
         destination_branch = self.create_branch()
         workorders_ids = set()

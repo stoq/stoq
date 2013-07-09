@@ -35,7 +35,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestSupplierDetails(GUITest):
 
-    def testShow(self):
+    def test_show(self):
         date = datetime.date(2012, 1, 1)
         supplier = self.create_supplier()
 
@@ -58,7 +58,7 @@ class TestSupplierDetails(GUITest):
         self.check_editor(dialog, 'dialog-supplier-details')
 
     @mock.patch('stoqlib.gui.dialogs.supplierdetails.run_person_role_dialog')
-    def testFurtherDetails(self, run_dialog):
+    def test_further_details(self, run_dialog):
         supplier = self.create_supplier()
 
         dialog = SupplierDetailsDialog(self.store, supplier)

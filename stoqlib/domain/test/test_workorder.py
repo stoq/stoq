@@ -47,14 +47,14 @@ def _combine(iter1, iter2):
 
 
 class TestWorkOrderPackage(DomainTest):
-    def testBranchValidation(self):
+    def test_branch_validation(self):
         package = self.create_workorder_package()
         with self.assertRaisesRegexp(
                 ValueError,
                 "The source branch and destination branch can't be equal"):
             package.destination_branch = package.source_branch
 
-    def testQuantity(self):
+    def test_quantity(self):
         package = self.create_workorder_package()
         self.assertEqual(package.quantity, 0)
 
@@ -64,7 +64,7 @@ class TestWorkOrderPackage(DomainTest):
         self.store.remove(item)
         self.assertEqual(package.quantity, 0)
 
-    def testAddOrder(self):
+    def test_add_order(self):
         package = self.create_workorder_package()
         workorder = self.create_workorder()
         workorder.current_branch = self.create_branch()
@@ -85,7 +85,7 @@ class TestWorkOrderPackage(DomainTest):
                  "the package <WorkOrderPackage u'[0-9a-f-]+'>")):
             package.add_order(workorder)
 
-    def testCanSend(self):
+    def test_can_send(self):
         package = self.create_workorder_package()
         for status in WorkOrderPackage.statuses.keys():
             package.status = status
@@ -94,7 +94,7 @@ class TestWorkOrderPackage(DomainTest):
             else:
                 self.assertFalse(package.can_send())
 
-    def testCanReceived(self):
+    def test_can_received(self):
         package = self.create_workorder_package()
         for status in WorkOrderPackage.statuses.keys():
             package.status = status
@@ -104,7 +104,7 @@ class TestWorkOrderPackage(DomainTest):
                 self.assertFalse(package.can_receive())
 
     @mock.patch('stoqlib.domain.workorder.localnow')
-    def testSend(self, localnow):
+    def test_send(self, localnow):
         localnow.return_value = localdate(2013, 1, 1)
 
         package = self.create_workorder_package()
@@ -140,7 +140,7 @@ class TestWorkOrderPackage(DomainTest):
             self.assertEqual(order.current_branch, None)
 
     @mock.patch('stoqlib.domain.workorder.localnow')
-    def testReceive(self, localnow):
+    def test_receive(self, localnow):
         localnow.return_value = localdate(2013, 1, 1)
 
         package = self.create_workorder_package(
@@ -174,13 +174,13 @@ class TestWorkOrderPackage(DomainTest):
 
 
 class TestWorkOrderCategory(DomainTest):
-    def testGetDescription(self):
+    def test_get_description(self):
         category = WorkOrderCategory(self.store, name=u'xxx')
         self.assertEqual(category.get_description(), u'xxx')
 
 
 class TestWorkOrderItem(DomainTest):
-    def testGetRemainingQuantity(self):
+    def test_get_remaining_quantity(self):
         branch = self.create_branch()
         sellable = self.create_sellable()
         self.create_storable(product=sellable.product, branch=branch, stock=30)
@@ -196,14 +196,14 @@ class TestWorkOrderItem(DomainTest):
         item.sync_stock()
         self.assertEqual(item.get_remaining_quantity(), 10)
 
-    def testTotal(self):
+    def test_total(self):
         sellable = self.create_sellable()
         workorder = self.create_workorder()
         workorderitem = WorkOrderItem(self.store, price=10, quantity=15,
                                       order=workorder, sellable=sellable)
         self.assertEqual(workorderitem.total, 150)
 
-    def testGetFromSaleItem(self):
+    def test_get_from_sale_item(self):
         sale_item = self.create_sale_item()
 
         # There is no work order item yet.
@@ -224,7 +224,7 @@ class TestWorkOrderItem(DomainTest):
 
 
 class TestWorkOrder(DomainTest):
-    def testGetTotalAmount(self):
+    def test_get_total_amount(self):
         workorder = self.create_workorder()
         self.assertEqual(workorder.get_total_amount(), 0)
         workorder.add_sellable(self.create_sellable(), quantity=1, price=10)
@@ -232,13 +232,13 @@ class TestWorkOrder(DomainTest):
         workorder.add_sellable(self.create_sellable(), quantity=5, price=20)
         self.assertEqual(workorder.get_total_amount(), 110)
 
-    def testStatusStr(self):
+    def test_status_str(self):
         workorder = self.create_workorder()
         for status, status_str in WorkOrder.statuses.items():
             workorder.status = status
             self.assertEqual(workorder.status_str, status_str)
 
-    def testAddItem(self):
+    def test_add_item(self):
         sellable = self.create_sellable()
         item = WorkOrderItem(self.store, sellable=sellable)
         workorder = self.create_workorder()
@@ -247,7 +247,7 @@ class TestWorkOrder(DomainTest):
 
         self.assertRaises(AssertionError, workorder.add_item, item)
 
-    def testGetItems(self):
+    def test_get_items(self):
         sellable = self.create_sellable()
         item1 = WorkOrderItem(self.store, sellable=sellable)
         item2 = WorkOrderItem(self.store, sellable=sellable)
@@ -257,7 +257,7 @@ class TestWorkOrder(DomainTest):
 
         self.assertEqual(set(workorder.get_items()), set([item1, item2]))
 
-    def testRemove(self):
+    def test_remove(self):
         workorder = self.create_workorder()
         product1 = self.create_product(stock=10, branch=workorder.branch)
         product2 = self.create_product(stock=10, branch=workorder.branch)
@@ -289,7 +289,7 @@ class TestWorkOrder(DomainTest):
                 self.assertEqual(
                     storable.get_balance_for_branch(workorder.branch), 10)
 
-    def testAddSellable(self):
+    def test_add_sellable(self):
         sellable = self.create_sellable(price=50)
         workorder = self.create_workorder()
 
@@ -313,7 +313,7 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(set(workorder.order_items),
                          set([item1, item2, item3]))
 
-    def testSyncStock(self):
+    def test_sync_stock(self):
         product1 = self.create_product(stock=100)
         storable1 = product1.storable
         product2 = self.create_product(stock=100)
@@ -359,7 +359,7 @@ class TestWorkOrder(DomainTest):
             self.assertEqual(
                 storable2.get_balance_for_branch(workorder.branch), 95)
 
-    def testIsInTransport(self):
+    def test_is_in_transport(self):
         workorder = self.create_workorder()
         branch = self.create_branch()
         for status in WorkOrder.statuses.keys():
@@ -372,7 +372,7 @@ class TestWorkOrder(DomainTest):
             workorder.current_branch = None
             self.assertTrue(workorder.is_in_transport())
 
-    def testIsApproved(self):
+    def test_is_approved(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -384,7 +384,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.is_approved())
 
-    def testIsFinished(self):
+    def test_is_finished(self):
         workorder = self.create_workorder()
         self.assertEqual(workorder.estimated_finish, None)
         for status in WorkOrder.statuses.keys():
@@ -396,7 +396,7 @@ class TestWorkOrder(DomainTest):
                 self.assertFalse(workorder.is_finished())
 
     @mock.patch('stoqlib.domain.workorder.localtoday')
-    def testIsLate(self, localtoday):
+    def test_is_late(self, localtoday):
         localtoday.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
         self.assertEqual(workorder.estimated_finish, None)
@@ -421,7 +421,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertTrue(workorder.is_late())
 
-    def testCanCancel(self):
+    def test_can_cancel(self):
         sellable = self.create_sellable()
         for status in WorkOrder.statuses.keys():
             workorder = self.create_workorder()
@@ -439,7 +439,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertTrue(workorder.can_cancel())
 
-    def testCanApprove(self):
+    def test_can_approve(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -448,7 +448,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.can_approve())
 
-    def testCanPause(self):
+    def test_can_pause(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -466,7 +466,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.can_pause())
 
-    def testCanWork(self):
+    def test_can_work(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -488,7 +488,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.can_work())
 
-    def testCanFinish(self):
+    def test_can_finish(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -511,7 +511,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.can_finish())
 
-    def testCanClose(self):
+    def test_can_close(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -533,7 +533,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.can_close())
 
-    def testCanReopen(self):
+    def test_can_reopen(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -543,7 +543,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.can_reopen())
 
-    def testCanReject(self):
+    def test_can_reject(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -563,7 +563,7 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertFalse(workorder.can_reject())
 
-    def testCanUndoRejection(self):
+    def test_can_undo_rejection(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
             workorder.status = status
@@ -577,14 +577,14 @@ class TestWorkOrder(DomainTest):
             workorder.is_rejected = False
             self.assertFalse(workorder.can_undo_rejection())
 
-    def testReject(self):
+    def test_reject(self):
         workorder = self.create_workorder()
         workorder.approve()
         self.assertFalse(workorder.is_rejected)
         workorder.reject(reason=u'Reject reason')
         self.assertTrue(workorder.is_rejected)
 
-    def testUndoRejection(self):
+    def test_undo_rejection(self):
         workorder = self.create_workorder()
         workorder.approve()
         workorder.reject(reason=u'Reject reason')
@@ -592,7 +592,7 @@ class TestWorkOrder(DomainTest):
         workorder.undo_rejection(u'Undo reject reason')
         self.assertFalse(workorder.is_rejected)
 
-    def testCancel(self):
+    def test_cancel(self):
         workorder = self.create_workorder()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_CANCELLED)
 
@@ -600,7 +600,7 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.status, WorkOrder.STATUS_CANCELLED)
 
     @mock.patch('stoqlib.domain.workorder.localnow')
-    def testApprove(self, localnow):
+    def test_approve(self, localnow):
         localnow.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_WORK_WAITING)
@@ -611,7 +611,7 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.approve_date,
                          self.fake.datetime.datetime.now())
 
-    def testPause(self):
+    def test_pause(self):
         workorder = self.create_workorder()
         workorder.approve()
         workorder.work()
@@ -620,7 +620,7 @@ class TestWorkOrder(DomainTest):
         workorder.pause(reason=u'Pause reason')
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_WAITING)
 
-    def testWork(self):
+    def test_work(self):
         workorder = self.create_workorder()
         workorder.approve()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
@@ -629,7 +629,7 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
     @mock.patch('stoqlib.domain.workorder.localnow')
-    def testFinish(self, localnow):
+    def test_finish(self, localnow):
         localnow.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
         workorder.approve()
@@ -643,7 +643,7 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.finish_date,
                          self.fake.datetime.datetime.now())
 
-    def testReopen(self):
+    def test_reopen(self):
         workorder = self.create_workorder()
         workorder.approve()
         workorder.work()
@@ -654,7 +654,7 @@ class TestWorkOrder(DomainTest):
         workorder.reopen(reason=u"Reopen reason")
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
-    def testClose(self):
+    def test_close(self):
         workorder = self.create_workorder()
         workorder.approve()
         workorder.work()
@@ -665,7 +665,7 @@ class TestWorkOrder(DomainTest):
         workorder.close()
         self.assertEqual(workorder.status, WorkOrder.STATUS_DELIVERED)
 
-    def testChangeStatus(self):
+    def test_change_status(self):
         workorder = self.create_workorder()
 
         # Open
@@ -698,7 +698,7 @@ class TestWorkOrder(DomainTest):
         self.assertEquals(str(se.exception),
                           'This work order cannot be finished')
 
-    def testChangeStatusReverse(self):
+    def test_change_status_reverse(self):
         # FIXME: Improve this test by adding more status change cases
         workorder = self.create_workorder()
         workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
@@ -708,7 +708,7 @@ class TestWorkOrder(DomainTest):
         self.assertEquals(str(se.exception),
                           'A reason is needed to pause the work order')
 
-    def testFindBySale(self):
+    def test_find_by_sale(self):
         workorder1 = self.create_workorder()
         workorder2 = self.create_workorder()
         workorder3 = self.create_workorder()
@@ -739,7 +739,7 @@ class _TestWorkOrderView(DomainTest):
     # Just a facility for all default/excluded status
     all_status = default_status + excluded_status
 
-    def testFind(self):
+    def test_find(self):
         workorders_ids = set()
         for status in self.all_status:
             wo = self.create_workorder()
@@ -753,7 +753,7 @@ class _TestWorkOrderView(DomainTest):
             workorders_ids,
             set([wo.id for wo in self.store.find(self.view)]))
 
-    def testFindByCurrentBranch(self):
+    def test_find_by_current_branch(self):
         branch = self.create_branch()
         workorders_ids = set()
 
@@ -770,7 +770,7 @@ class _TestWorkOrderView(DomainTest):
         workorders = self.view.find_by_current_branch(self.store, branch)
         self.assertEqual(workorders_ids, set([wo.id for wo in workorders]))
 
-    def testValues(self):
+    def test_values(self):
         workorder1 = self.create_workorder()
         workorder1.status = self.default_status[0]
         workorder2 = self.create_workorder()
@@ -792,7 +792,7 @@ class _TestWorkOrderView(DomainTest):
         self.assertEqual(workorderview2.quantity, 0)
         self.assertEqual(workorderview2.total, 0)
 
-    def testPostSearchCallback(self):
+    def test_post_search_callback(self):
         sellable = self.create_sellable()
 
         # Only those 10 will appear on the result
@@ -817,7 +817,7 @@ class TestWorkOrderView(_TestWorkOrderView):
 class TestWorkWithPackageView(TestWorkOrderView):
     view = WorkOrderWithPackageView
 
-    def testFindByPackage(self):
+    def test_find_by_package(self):
         package1 = self.create_workorder_package()
         package2 = self.create_workorder_package()
 
@@ -867,7 +867,7 @@ class _TestWorkOrderPackageView(DomainTest):
     # Just a facility for all default/excluded status
     all_status = default_status + excluded_status
 
-    def testFind(self):
+    def test_find(self):
         packages_ids = set()
 
         for status in self.all_status:
@@ -882,7 +882,7 @@ class _TestWorkOrderPackageView(DomainTest):
             packages_ids,
             set([package.id for package in self.store.find(self.view)]))
 
-    def testFindByDestinationBranch(self):
+    def test_find_by_destination_branch(self):
         branch = self.create_branch()
         packages_ids = set()
 
@@ -900,7 +900,7 @@ class _TestWorkOrderPackageView(DomainTest):
         self.assertEqual(packages_ids,
                          set([package.id for package in packages]))
 
-    def testValues(self):
+    def test_values(self):
         package1 = self.create_workorder_package()
         package1.status = self.default_status[0]
         package2 = self.create_workorder_package()

@@ -217,7 +217,7 @@ class TestDomain(DomainTest):
 
         self.store.commit()
 
-    def testCloneObject(self):
+    def test_clone_object(self):
         # Create an object to test, clone() method.
         old_order = self.create_purchase_order()
         self.assertTrue(old_order.id)
@@ -230,7 +230,7 @@ class TestDomain(DomainTest):
         self.assertNotEquals(old_order.id, new_order.id)
         self.assertNotEquals(old_order.identifier, new_order.identifier)
 
-    def testGetOrCreateSimple(self):
+    def test_get_or_create_simple(self):
         # This test is for a simple get_or_create (only one property)
         cat = self.store.find(SellableCategory, description=u'foo').one()
         self.assertEquals(cat, None)
@@ -248,7 +248,7 @@ class TestDomain(DomainTest):
         self.assertRaises(AttributeError, SellableCategory.get_or_create,
                           self.store, foo=123)
 
-    def testGetOrCreateMultiple(self):
+    def test_get_or_create_multiple(self):
         # This test is for  get_or_create call with more than one property
         product = self.create_product()
 
@@ -269,7 +269,7 @@ class TestDomain(DomainTest):
             self.store, serial_number=123, product=product)
         self.assertEquals(item_a, item_b)
 
-    def testGetOrCreateMultipleWithNull(self):
+    def test_get_or_create_multiple_with_null(self):
         # Check if get_or_creating is working properly when using references
         # with null values.
         item_a = ProductionProducedItem.get_or_create(

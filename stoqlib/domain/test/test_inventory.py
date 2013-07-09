@@ -31,14 +31,14 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 class TestInventory(DomainTest):
 
-    def testIsOpen(self):
+    def test_is_open(self):
         inventory = self.create_inventory()
         self.failUnless(inventory.is_open())
 
         inventory.close()
         self.failIf(inventory.is_open())
 
-    def testCancel(self):
+    def test_cancel(self):
         inventory = self.create_inventory()
         inventory.cancel()
         self.assertEqual(inventory.status, Inventory.STATUS_CANCELLED)
@@ -57,7 +57,7 @@ class TestInventory(DomainTest):
         self.assertRaises(AssertionError, inventory.cancel)
         self.assertEqual(inventory.status, Inventory.STATUS_OPEN)
 
-    def testHasAdjustedItems(self):
+    def test_has_adjusted_items(self):
         inventory = self.create_inventory()
         items = []
         for i in range(3):
@@ -88,7 +88,7 @@ class TestInventory(DomainTest):
         items[2].adjust(invoice_number=13)
         self.assertEqual(inventory.has_adjusted_items(), True)
 
-    def testGetItems(self):
+    def test_get_items(self):
         inventory = self.create_inventory()
         items = []
         for i in range(3):
@@ -99,7 +99,7 @@ class TestInventory(DomainTest):
         self.assertEqual(inventory_items.count(), 3)
         self.assertEqual(sorted(inventory_items), sorted(items))
 
-    def testGetItemsForAdjustment(self):
+    def test_get_items_for_adjustment(self):
         inventory = self.create_inventory()
         items = []
         for i in range(5):
@@ -112,7 +112,7 @@ class TestInventory(DomainTest):
         self.assertEqual(adjustment_items.count(), len(items))
         self.assertEqual(sorted(adjustment_items), sorted(items))
 
-    def testClose(self):
+    def test_close(self):
         inventory = self.create_inventory()
         self.assertEqual(inventory.status, inventory.STATUS_OPEN)
 
@@ -125,7 +125,7 @@ class TestInventory(DomainTest):
         inventory.cancel()
         self.assertRaises(AssertionError, inventory.close)
 
-    def testAllItemsCounted(self):
+    def test_all_items_counted(self):
         inventory = self.create_inventory()
         item1 = self.create_inventory_item(inventory)
         item2 = self.create_inventory_item(inventory)
@@ -137,7 +137,7 @@ class TestInventory(DomainTest):
         item2.actual_quantity = 2
         self.failUnless(inventory.all_items_counted())
 
-    def testGetBranchName(self):
+    def test_get_branch_name(self):
         inventory = self.create_inventory()
         inventory.branch = self.create_branch(name=u'Dummy',
                                               phone_number=u'12345678',
@@ -149,7 +149,7 @@ class TestInventory(DomainTest):
 
 class TestInventoryItem(DomainTest):
 
-    def testAdjust(self):
+    def test_adjust(self):
         item = self.create_inventory_item()
         self.assertFalse(item.is_adjusted)
         item.actual_quantity = item.recorded_quantity - 1
@@ -168,7 +168,7 @@ class TestInventoryItem(DomainTest):
         self.assertEqual(entry.cfop, item.cfop_data)
         self.assertEqual(entry.branch, item.inventory.branch)
 
-    def testAdjusted(self):
+    def test_adjusted(self):
         item = self.create_inventory_item()
         self.assertFalse(item.is_adjusted)
 
@@ -179,7 +179,7 @@ class TestInventoryItem(DomainTest):
         item.adjust(invoice_number)
         self.assertTrue(item.is_adjusted)
 
-    def testGetAdjustmentQuantity(self):
+    def test_get_adjustment_quantity(self):
         recorded_qty = Decimal(10)
         item = self.create_inventory_item(None, recorded_qty)
         self.assertEqual(None, item.get_adjustment_quantity())
@@ -194,7 +194,7 @@ class TestInventoryItem(DomainTest):
 
 
 class TestInventoryItemsView(DomainTest):
-    def testFind(self):
+    def test_find(self):
         inventory = self.create_inventory()
         item1 = self.create_inventory_item(inventory=inventory)
         item2 = self.create_inventory_item(inventory=inventory)
@@ -204,7 +204,7 @@ class TestInventoryItemsView(DomainTest):
                          set([(r.inventory_item, r.inventory) for r in
                               results]))
 
-    def testFindByProduct(self):
+    def test_find_by_product(self):
         p1 = self.create_product()
         p2 = self.create_product()
 
@@ -226,14 +226,14 @@ class TestInventoryItemsView(DomainTest):
 
 
 class TestInventoryView(DomainTest):
-    def testFind(self):
+    def test_find(self):
         inventory1 = self.create_inventory()
         inventory2 = self.create_inventory()
         results = self.store.find(InventoryView)
         self.assertEqual(set([inventory1, inventory2]),
                          set([r.inventory for r in results]))
 
-    def testFindByBranch(self):
+    def test_find_by_branch(self):
         b1 = self.create_branch()
         b2 = self.create_branch()
 

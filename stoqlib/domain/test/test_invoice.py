@@ -28,7 +28,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestInvoicePrinter(DomainTest):
-    def testGetByStation(self):
+    def test_get_by_station(self):
         station = self.create_station()
         self.failIf(InvoicePrinter.get_by_station(station, self.store))
         InvoicePrinter(store=self.store,
@@ -48,11 +48,11 @@ class TestInvoiceLayout(DomainTest):
                              height=20,
                              store=self.store)
 
-    def testSize(self):
+    def test_size(self):
         layout = self.create_layout()
         self.assertEquals(layout.size, (10, 20))
 
-    def testFields(self):
+    def test_fields(self):
         layout = self.create_layout()
         self.assertTrue(layout.fields.is_empty())
         field = InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
@@ -62,7 +62,7 @@ class TestInvoiceLayout(DomainTest):
         self.failUnless(field in layout.fields)
         self.assertEquals([field], list(layout.fields))
 
-    def testGetFieldByName(self):
+    def test_get_field_by_name(self):
         layout = self.create_layout()
         self.failIf(layout.get_field_by_name(u'field'))
         InvoiceField(layout=layout, x=0, y=0, width=1, height=1,

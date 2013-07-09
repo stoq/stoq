@@ -73,7 +73,7 @@ class TestSaleDetails(GUITest):
 
         return sale
 
-    def testShow(self):
+    def test_show(self):
         sale = self._create_sale()
         # SaleDetailsDialog needs a SaleView model
         model = self.store.find(SaleView, id=sale.id).one()
@@ -81,7 +81,7 @@ class TestSaleDetails(GUITest):
         self.check_editor(dialog, 'dialog-sale-details')
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
-    def testShowWithReturns(self, print_report):
+    def test_show_with_returns(self, print_report):
         date = localdate(2010, 12, 10).date()
 
         sale = self._create_sale()
@@ -104,7 +104,7 @@ class TestSaleDetails(GUITest):
         self.check_editor(dialog, 'dialog-sale-details-with-returns')
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.run_dialog')
-    def testClientDetails(self, run_dialog):
+    def test_client_details(self, run_dialog):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
@@ -122,7 +122,7 @@ class TestSaleDetails(GUITest):
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.BillReport.check_printable')
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
-    def testPrintBill(self, print_report, check_printable):
+    def test_print_bill(self, print_report, check_printable):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
@@ -140,7 +140,7 @@ class TestSaleDetails(GUITest):
         print_report.assert_called_once_with(BillReport, [payment])
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
-    def testPrintBooklet(self, print_report):
+    def test_print_booklet(self, print_report):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
@@ -155,7 +155,7 @@ class TestSaleDetails(GUITest):
         print_report.assert_called_once_with(BookletReport, [payment])
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
-    def testPrintDetails(self, print_report):
+    def test_print_details(self, print_report):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)

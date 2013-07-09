@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestServiceEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = ServiceEditor(self.store)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-service-create')

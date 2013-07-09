@@ -52,14 +52,14 @@ store.commit()
 
 
 class TestSelect(DomainTest):
-    def testSelectOne(self):
+    def test_select_one(self):
         self.assertEquals(self.store.find(Ding).one(), None)
         ding1 = Ding(store=self.store)
         self.assertEquals(self.store.find(Ding).one(), ding1)
         Ding(store=self.store)
         self.assertRaises(NotOneError, self.store.find(Ding).one)
 
-    def testSelectOneBy(self):
+    def test_select_one_by(self):
         Ding(store=self.store)
 
         self.assertEquals(
@@ -70,7 +70,7 @@ class TestSelect(DomainTest):
         Ding(store=self.store, int_field=1)
         self.assertRaises(NotOneError, self.store.find(Ding, int_field=1).one)
 
-    def testFindDistinctValues(self):
+    def test_find_distinct_values(self):
         # One empty, 2 duplicates and an extra one
         for value in [u'', u'xxx', u'xxx', u'yyy']:
             Ding(store=self.store, str_field=value)
@@ -83,7 +83,7 @@ class TestSelect(DomainTest):
         self.assertEqual(r1, [u'xxx', u'yyy'])
         self.assertEqual(r2, [u'', u'xxx', u'yyy'])
 
-    def testCheckUniqueValueExists(self):
+    def test_check_unique_value_exists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1')
         Ding(store=self.store, str_field=u'Ding_2')
 
@@ -106,7 +106,7 @@ class TestSelect(DomainTest):
         self.assertTrue(ding_1.check_unique_value_exists(
             Ding.str_field, u'ding_2', case_sensitive=False))
 
-    def testCheckUniqueTupleExists(self):
+    def test_check_unique_tuple_exists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1', int_field=1)
         Ding(store=self.store, str_field=u'Ding_2', int_field=2)
 

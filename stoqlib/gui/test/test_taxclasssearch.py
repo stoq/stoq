@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestTaxClassSearch(GUITest):
-    def testSearch(self):
+    def test_search(self):
         ProductTaxTemplate(name=u'Test ICMS Tax Template',
                            tax_type=ProductTaxTemplate.TYPE_ICMS,
                            store=self.store)

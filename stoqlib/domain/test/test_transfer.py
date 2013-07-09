@@ -28,7 +28,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 class TestTransferOrderItem(DomainTest):
 
-    def testGetTotal(self):
+    def test_get_total(self):
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order)
         self.assertEquals(item.get_total(), 625)
@@ -36,7 +36,7 @@ class TestTransferOrderItem(DomainTest):
 
 class TestTransferOrder(DomainTest):
 
-    def testTransferProcess(self):
+    def test_transfer_process(self):
         order = self.create_transfer_order()
         self.assertEqual(order.can_send(), False)
         self.assertEqual(order.can_receive(), False)
@@ -53,7 +53,7 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(order.can_send(), False)
         self.assertEqual(order.can_receive(), False)
 
-    def testSend(self):
+    def test_send(self):
         qty = 2
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order, quantity=qty)
@@ -69,7 +69,7 @@ class TestTransferOrder(DomainTest):
         self.failIf(history is None)
         self.assertEqual(history.quantity_transfered, qty)
 
-    def testReceive(self):
+    def test_receive(self):
         sent_qty = 2
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order, quantity=sent_qty)
@@ -81,14 +81,14 @@ class TestTransferOrder(DomainTest):
         after_qty = storable.get_balance_for_branch(order.destination_branch)
         self.assertEqual(after_qty, before_qty + sent_qty)
 
-    def testAddItem(self):
+    def test_add_item(self):
         order = self.create_transfer_order()
 
         item = self.create_transfer_order_item()
         order.add_item(item)
         self.assertEquals(item.transfer_order, order)
 
-    def testRemoveItem(self):
+    def test_remove_item(self):
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order)
         order.remove_item(item)
@@ -97,26 +97,26 @@ class TestTransferOrder(DomainTest):
         item = self.create_transfer_order_item()
         self.assertRaises(ValueError, order.remove_item, item)
 
-    def testGetSourceBranchName(self):
+    def test_get_source_branch_name(self):
         order = self.create_transfer_order()
         self.assertEquals(order.get_source_branch_name(), u'Source')
 
-    def testGetDestinationBranchName(self):
+    def test_get_destination_branch_name(self):
         order = self.create_transfer_order()
         self.assertEquals(order.get_destination_branch_name(),
                           u'Dest')
 
-    def testGetSourceResponsibleName(self):
+    def test_get_source_responsible_name(self):
         order = self.create_transfer_order()
         self.assertEquals(order.get_source_responsible_name(),
                           u'Ipswich')
 
-    def testGetDestinationResponsibleName(self):
+    def test_get_destination_responsible_name(self):
         order = self.create_transfer_order()
         self.assertEquals(order.get_destination_responsible_name(),
                           u'Bolton')
 
-    def testGetTotalItemsTransfer(self):
+    def test_get_total_items_transfer(self):
         order = self.create_transfer_order()
         self.create_transfer_order_item(order)
         self.assertEquals(order.get_total_items_transfer(), 5)

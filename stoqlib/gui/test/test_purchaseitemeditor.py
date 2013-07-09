@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPurchaseItemEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         item = self.create_purchase_order_item()
         editor = PurchaseItemEditor(self.store, item)
         editor.order.set_label("12345")

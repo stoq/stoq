@@ -49,7 +49,7 @@ def compare_files(sfile, basename):
 
 
 class Cat52Test(DomainTest):
-    def testComplete(self):
+    def test_complete(self):
         station = self.create_station()
         today = datetime.date(2007, 1, 1)
         reduction_date = datetime.datetime(2007, 1, 1, 23, 59)

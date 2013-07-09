@@ -30,7 +30,7 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestFinishPurchaseStep(GUITest):
-    def testPostInit(self):
+    def test_post_init(self):
         purchase_order = self.create_purchase_order()
         receiving_order = self.create_receiving_order(
             purchase_order=purchase_order)
@@ -69,7 +69,7 @@ class TestPurchaseWizard(GUITest):
             self.check_wizard(self.wizard, uitest)
         self.click(self.wizard.next_button)
 
-    def testCreate(self):
+    def test_create(self):
         # Allow creating purchases in the past.
         sysparam(self.store).update_parameter(
             u"ALLOW_OUTDATED_OPERATIONS", u"1")
@@ -96,7 +96,7 @@ class TestPurchaseWizard(GUITest):
 
         self.click(self.wizard.next_button)
 
-    def testCreateAndReceive(self):
+    def test_create_and_receive(self):
         self.wizard = PurchaseWizard(self.store)
         self.wizard.model.identifier = 12345
         self.wizard.model.open_date = localdate(2010, 1, 3).date()
@@ -135,7 +135,7 @@ class TestPurchaseWizard(GUITest):
         self.check_wizard(self.wizard, 'wizard-purchase-done-received',
                           models=models)
 
-    def testNoReceiveNowForBatchItems(self):
+    def test_no_receive_now_for_batch_items(self):
         sellable = self.create_sellable()
         product = self.create_product()
         storable = self.create_storable(is_batch=True)

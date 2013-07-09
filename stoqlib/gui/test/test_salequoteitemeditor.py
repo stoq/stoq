@@ -29,7 +29,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSaleQuoteItemEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         sale_item = self.create_sale_item()
         editor = SaleQuoteItemEditor(self.store, sale_item)
         editor.sale.set_label('12345')

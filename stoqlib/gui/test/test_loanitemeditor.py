@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestLoanItemEditor(GUITest):
-    def testShow(self):
+    def test_show(self):
         loan_item = self.create_loan_item()
         editor = LoanItemEditor(self.store, loan_item)
         editor.sale.set_label("12345")

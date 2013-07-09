@@ -30,7 +30,7 @@ from stoqlib.lib.cardinals.pt import to_words, to_words_as_money
 
 class TestParameter(DomainTest):
 
-    def testToWords(self):
+    def test_to_words(self):
         self.assertEqual(to_words(0), "zero")
         self.assertEqual(to_words(00), "zero")
         self.assertEqual(to_words(000), "zero")
@@ -92,7 +92,7 @@ class TestParameter(DomainTest):
         self.assertEqual(to_words(1000009, unit_names=names),
                          u"um milhão e nove metros")
 
-    def testToWordsAsMoney(self):
+    def test_to_words_as_money(self):
         names = ['real', 'reais', 'centavo', 'centavos']
         self.assertEqual(to_words_as_money(1, names), "um real")
         self.assertEqual(to_words_as_money(0.01, names), "um centavo")

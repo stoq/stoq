@@ -34,7 +34,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 class TestProductionOrder(DomainTest):
 
-    def testGetServiceItems(self):
+    def test_get_service_items(self):
         order = self.create_production_order()
         self.assertEqual(list(order.get_service_items()), [])
 
@@ -42,7 +42,7 @@ class TestProductionOrder(DomainTest):
         service_item.order = order
         self.assertEqual(list(order.get_service_items()), [service_item])
 
-    def testGetMaterialItems(self):
+    def test_get_material_items(self):
         order = self.create_production_order()
         self.assertEqual(list(order.get_material_items()), [])
 
@@ -50,13 +50,13 @@ class TestProductionOrder(DomainTest):
         material_item.order = order
         self.assertEqual(list(order.get_material_items()), [material_item])
 
-    def testStartProduction(self):
+    def test_start_production(self):
         order = self.create_production_order()
         self.assertEqual(order.status, ProductionOrder.ORDER_OPENED)
         order.start_production()
         self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
 
-    def testSetProductionWaiting(self):
+    def test_set_production_waiting(self):
         order = self.create_production_order()
         self.assertEqual(order.status, ProductionOrder.ORDER_OPENED)
         order.set_production_waiting()
@@ -65,7 +65,7 @@ class TestProductionOrder(DomainTest):
 
 class TestProductionItem(DomainTest):
 
-    def testCanProduce(self):
+    def test_can_produce(self):
         item = self.create_production_item()
         self.assertRaises(AssertionError, item.can_produce, 0)
 
@@ -86,7 +86,7 @@ class TestProductionItem(DomainTest):
         self.assertFalse(item.can_produce(1))
         self.assertFalse(item.can_produce(2))
 
-    def testProduce(self):
+    def test_produce(self):
         item = self.create_production_item(quantity=2)
         branch = item.order.branch
         for material in item.order.get_material_items():
@@ -110,7 +110,7 @@ class TestProductionItem(DomainTest):
         self.assertEqual(order.status, ProductionOrder.ORDER_CLOSED)
         self.assertEqual(item.produced, 2)
 
-    def testAddLost(self):
+    def test_add_lost(self):
         item = self.create_production_item(quantity=2)
         order = item.order
         branch = order.branch
@@ -166,7 +166,7 @@ class TestProductionItem(DomainTest):
 
 class TestProductionMaterial(DomainTest):
 
-    def testAllocateAll(self):
+    def test_allocate_all(self):
         material = self.create_production_material()
         branch = material.order.branch
         product = material.product
@@ -188,7 +188,7 @@ class TestProductionMaterial(DomainTest):
         self.assertEqual(material.get_stock_quantity(), 15)
         self.assertEqual(material.allocated, 20)
 
-    def testAllocatePartial(self):
+    def test_allocate_partial(self):
         material = self.create_production_material()
         branch = material.order.branch
         product = material.product
@@ -206,7 +206,7 @@ class TestProductionMaterial(DomainTest):
 
         self.assertRaises(ValueError, material.allocate, 1)
 
-    def testAddLost(self):
+    def test_add_lost(self):
         item = self.create_production_item()
         order = item.order
         branch = order.branch
@@ -226,7 +226,7 @@ class TestProductionMaterial(DomainTest):
             lost = component.quantity
             self.assertEqual(material.lost, lost)
 
-    def testConsume(self):
+    def test_consume(self):
         item = self.create_production_item()
         order = item.order
         branch = order.branch
@@ -249,7 +249,7 @@ class TestProductionMaterial(DomainTest):
 
 class TestProductionQuality(DomainTest):
 
-    def testProductionQualityCompleteProcess(self):
+    def test_production_quality_complete_process(self):
         # Order with one product to produce 4 units
         order = self.create_production_order()
         item = self.create_production_item(quantity=4, order=order)

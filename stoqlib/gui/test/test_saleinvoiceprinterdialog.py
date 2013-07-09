@@ -28,7 +28,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSaleInvoicePrinterDialog(GUITest):
-    def testShow(self):
+    def test_show(self):
         sale = self.create_sale()
         printer = self.create_invoice_printer()
         editor = SaleInvoicePrinterDialog(self.store, sale, printer)

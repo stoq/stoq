@@ -58,7 +58,7 @@ class TestPaymentGroup(DomainTest):
         self.failUnless(
             sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED)
 
-    def testConfirm(self):
+    def test_confirm(self):
         branch = self.create_branch()
         group = self.create_payment_group()
 
@@ -74,7 +74,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(payment1.status, Payment.STATUS_PENDING)
         self.assertEqual(payment2.status, Payment.STATUS_PENDING)
 
-    def testPay(self):
+    def test_pay(self):
         branch = self.create_branch()
         group = self.create_payment_group()
 
@@ -92,7 +92,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(payment1.status, Payment.STATUS_PAID)
         self.assertEqual(payment2.status, Payment.STATUS_PAID)
 
-    def testPayMoneyPayments(self):
+    def test_pay_money_payments(self):
         branch = self.create_branch()
         group = self.create_payment_group()
 
@@ -118,7 +118,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(payment3.status, Payment.STATUS_PAID)
         self.assertEqual(payment4.status, Payment.STATUS_PAID)
 
-    def testCancel(self):
+    def test_cancel(self):
         branch = self.create_branch()
         group = self.create_payment_group()
 
@@ -138,7 +138,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(payment2.status, Payment.STATUS_CANCELLED)
         self.assertEqual(payment3.status, Payment.STATUS_PAID)
 
-    def testInstallmentsCommissionAmount(self):
+    def test_installments_commission_amount(self):
         self._payComissionWhenConfirmed()
 
         sale = self.create_sale()
@@ -169,7 +169,7 @@ class TestPaymentGroup(DomainTest):
         # $15 * 2/3 => 10,00
         self.assertEquals(commissions[1].value, Decimal("10.00"))
 
-    def testInstallmentsCommissionAmountWithMultipleItems(self):
+    def test_installments_commission_amount_with_multiple_items(self):
         self._payComissionWhenConfirmed()
 
         sale = self.create_sale()
@@ -205,7 +205,7 @@ class TestPaymentGroup(DomainTest):
         # 45 / 2 => 22,50
         self.assertEquals(commissions[2].value, Decimal("22.50"))
 
-    def testInstallmentsCommissionAmountWhenSaleReturn(self):
+    def test_installments_commission_amount_when_sale_return(self):
         raise SkipTest(u"See stoqlib.domain.returnedsale.ReturnedSale.return_ "
                        u"and bug 5215.")
 
@@ -244,7 +244,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(commissions.count(), 4)
         self.failIf(commissions[-1].value >= 0)
 
-    def testGetTotalValue(self):
+    def test_get_total_value(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
@@ -279,7 +279,7 @@ class TestPaymentGroup(DomainTest):
         method.create_payment(Payment.TYPE_IN, group, purchase.branch, Decimal(50))
         self.assertEqual(group.get_total_value(), Decimal(250))
 
-    def testGetTotalToPay(self):
+    def test_get_total_to_pay(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
@@ -303,7 +303,7 @@ class TestPaymentGroup(DomainTest):
         payment2.pay()
         self.assertEqual(group.get_total_to_pay(), Decimal(0))
 
-    def testGetTotalConfirmedValue(self):
+    def test_get_total_confirmed_value(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
@@ -356,7 +356,7 @@ class TestPaymentGroup(DomainTest):
         p.set_pending()
         self.assertEqual(group.get_total_confirmed_value(), 250)
 
-    def testGetTotalDiscount(self):
+    def test_get_total_discount(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
@@ -397,7 +397,7 @@ class TestPaymentGroup(DomainTest):
         p.discount = Decimal(10)
         self.assertEqual(group.get_total_discount(), Decimal(20))
 
-    def testGetTotalInterest(self):
+    def test_get_total_interest(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
@@ -438,7 +438,7 @@ class TestPaymentGroup(DomainTest):
         p.interest = Decimal(10)
         self.assertEqual(group.get_total_interest(), Decimal(20))
 
-    def testGetTotalPenalty(self):
+    def test_get_total_penalty(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
@@ -479,7 +479,7 @@ class TestPaymentGroup(DomainTest):
         p.penalty = Decimal(10)
         self.assertEqual(group.get_total_penalty(), Decimal(20))
 
-    def testGetPaymentByMethodName(self):
+    def test_get_payment_by_method_name(self):
         group = self.create_payment_group()
 
         method = PaymentMethod.get_by_name(self.store, u'money')

@@ -60,12 +60,12 @@ class TestProductSearch(GUITest):
         search.results.select(search.results[0])
         return search
 
-    def testShow(self):
+    def test_show(self):
         search = self._show_search()
         self.check_search(search, 'product-show')
 
     @mock.patch('stoqlib.gui.search.searcheditor.run_dialog')
-    def testShowWithPermission(self, run_dialog):
+    def test_show_with_permission(self, run_dialog):
         search = self._show_search()
 
         self.assertVisible(search._toolbar, ['new_button'])
@@ -80,7 +80,7 @@ class TestProductSearch(GUITest):
         self.assertEquals(kwargs['visual_mode'], False)
 
     @mock.patch('stoqlib.gui.search.searcheditor.run_dialog')
-    def testShowWithoutPermission(self, run_dialog):
+    def test_show_without_permission(self, run_dialog):
         # Our only permission now is to see details
         pm = PermissionManager.get_permission_manager()
         pm.set('Product', pm.PERM_ONLY_DETAILS)
@@ -100,7 +100,7 @@ class TestProductSearch(GUITest):
         self.assertEquals(kwargs['visual_mode'], True)
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
-    def testPrintButton(self, print_report):
+    def test_print_button(self, print_report):
         search = self._show_search()
 
         self.assertSensitive(search._details_slave, ['print_button'])
@@ -112,7 +112,7 @@ class TestProductSearch(GUITest):
             filters=search.search.get_search_filters())
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
-    def testPrintPriceButton(self, print_report):
+    def test_print_price_button(self, print_report):
         search = self._show_search()
 
         self.assertSensitive(search._print_slave, ['print_price_button'])
@@ -125,7 +125,7 @@ class TestProductSearch(GUITest):
             branch_name=search.branch_filter.combo.get_active_text())
 
     @mock.patch('stoqlib.gui.search.productsearch.SpreadSheetExporter.export')
-    def testPrintExportCSVButton(self, export):
+    def test_print_export_c_s_v_button(self, export):
         search = self._show_search()
 
         self.assertSensitive(search, ['csv_button'])
@@ -136,7 +136,7 @@ class TestProductSearch(GUITest):
                                        name=_('Product'),
                                        filename_prefix=_('product'))
 
-    def testSearch(self):
+    def test_search(self):
         self.clean_domain([StockTransactionHistory, ProductSupplierInfo,
                            ProductStockItem, Storable, Product])
 
@@ -232,7 +232,7 @@ class TestProductSearchQuantity(GUITest):
         self.add_payments(sale, date=self.today)
         sale.confirm()
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -254,7 +254,7 @@ class TestProductSearchQuantity(GUITest):
         self.check_search(search, 'product-quantity-date-day-filter')
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
-    def testPrintButton(self, print_report):
+    def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
 
@@ -304,7 +304,7 @@ class TestProductsSoldSearch(GUITest):
         self.add_payments(sale, date=self.today)
         sale.confirm()
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -333,7 +333,7 @@ class TestProductsSoldSearch(GUITest):
         self.check_search(search, 'product-sold-date-day-filter')
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
-    def testPrintButton(self, print_report):
+    def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
 
@@ -392,7 +392,7 @@ class TestProductStockSearch(GUITest):
                                          12)
         receiving.confirm()
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -409,7 +409,7 @@ class TestProductStockSearch(GUITest):
         self.check_search(search, 'product-stock-branch-filter')
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
-    def testPrintButton(self, print_report):
+    def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
 
@@ -449,7 +449,7 @@ class TestProductBrandSearch(GUITest):
         product.sellable.code = u'2'
         product.sellable.description = u'Botas'
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -466,7 +466,7 @@ class TestProductBrandSearch(GUITest):
         self.check_search(search, 'brand-branch-filter')
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
-    def testPrintButton(self, print_report):
+    def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
 
@@ -508,7 +508,7 @@ class TestProductClosedStockSearch(GUITest):
         product.sellable.description = u'Botas'
         product.sellable.status = Sellable.STATUS_CLOSED
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -525,7 +525,7 @@ class TestProductClosedStockSearch(GUITest):
         self.check_search(search, 'product-closed-stock-branch-filter')
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
-    def testPrintButton(self, print_report):
+    def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
 

@@ -28,6 +28,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestProductManufacturerEditor(GUITest):
-    def testCreate(self):
+    def test_create(self):
         editor = ProductManufacturerEditor(self.store)
         self.check_editor(editor, 'editor-productmanufacturer-create')

@@ -27,7 +27,7 @@ from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
 
 
 class TestLoanDetails(GUITest):
-    def testCreate(self):
+    def test_create(self):
         loan = self.create_loan()
         self.create_loan_item(loan=loan)
 

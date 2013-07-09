@@ -41,7 +41,7 @@ from stoqlib.reporting.production import ProductionItemReport
 
 
 class TestProductionProductSearch(GUITest):
-    def testSearch(self):
+    def test_search(self):
         branches = self.store.find(Branch)
 
         product = self.create_product()
@@ -104,7 +104,7 @@ class TestProductionItemsSearch(GUITest):
         item.order.identifier = 45978
         item.product.sellable.description = u'Botas'
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -120,7 +120,7 @@ class TestProductionItemsSearch(GUITest):
         self.check_search(search, 'production-items-status-filter')
 
     @mock.patch('stoqlib.gui.search.productionsearch.print_report')
-    def testPrintButton(self, print_report):
+    def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
 
@@ -174,7 +174,7 @@ class TestProductionHistorySearch(GUITest):
                        production_date=datetime.date(2012, 4, 4),
                        store=self.store)
 
-    def testSearch(self):
+    def test_search(self):
         self._create_domain()
         search = self._show_search()
 
@@ -197,7 +197,7 @@ class TestProductionHistorySearch(GUITest):
         self.check_search(search, 'production-history-date-day-filter')
 
     @mock.patch('stoqlib.gui.search.productionsearch.print_report')
-    def testPrintButton(self, print_report):
+    def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
 

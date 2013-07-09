@@ -27,7 +27,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestAddressAdditionDialog(GUITest):
-    def testShow(self):
+    def test_show(self):
         p = self.create_person()
         for city, state, country, main in [
                 (u'São Carlos', u'SP', u'Brazil', True),

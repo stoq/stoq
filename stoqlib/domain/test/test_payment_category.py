@@ -27,7 +27,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestPaymentCategrory(DomainTest):
-    def testGetByType(self):
+    def test_get_by_type(self):
         pcs = PaymentCategory.get_by_type(self.store, PaymentCategory.TYPE_RECEIVABLE)
         self.assertTrue(pcs.is_empty())
         pcs = PaymentCategory.get_by_type(self.store, PaymentCategory.TYPE_PAYABLE)
