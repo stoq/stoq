@@ -731,6 +731,31 @@ class SellableItemSlave(BaseEditorSlave):
                        self.stock_quantity, self.stock_quantity_lbl]:
             widget.set_visible(self.stock_labels_visible and visible)
 
+    def _try_get_sellable(self):
+        """Try to get the sellable based on the barcode typed
+        This will try to get the sellable using the barcode the user entered.
+           If one is not found, than an advanced search will be displayed for
+        the user, and the string he typed in the barcode entry will be
+        used to filter the results.
+        """
+        sellable = self._get_sellable()
+
+        if not sellable:
+            if self.add_sellable_on_barcode_activate:
+                return
+            search_str = unicode(self.barcode.get_text())
+            self._run_advanced_search(search_str)
+            return
+
+        self.sellable_selected(sellable)
+
+        if (self.add_sellable_on_barcode_activate and
+                self.add_sellable_button.get_sensitive()):
+            self._add_sellable()
+        else:
+            self.sellable_selected(sellable)
+            self.quantity.grab_focus()
+
     #
     #  Callbacks
     #
@@ -755,26 +780,10 @@ class SellableItemSlave(BaseEditorSlave):
         self._add_sellable()
 
     def on_product_button__clicked(self, button):
-        self._run_advanced_search()
+        self._try_get_sellable()
 
     def on_barcode__activate(self, widget):
-        sellable = self._get_sellable()
-
-        if not sellable:
-            if self.add_sellable_on_barcode_activate:
-                return
-            search_str = unicode(self.barcode.get_text())
-            self._run_advanced_search(search_str)
-            return
-
-        self.sellable_selected(sellable)
-
-        if (self.add_sellable_on_barcode_activate and
-                self.add_sellable_button.get_sensitive()):
-            self._add_sellable()
-        else:
-            self.sellable_selected(sellable)
-            self.quantity.grab_focus()
+        self._try_get_sellable()
 
     def on_quantity__activate(self, entry):
         if self.add_sellable_button.get_sensitive():
