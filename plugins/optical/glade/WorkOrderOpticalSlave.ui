@@ -232,7 +232,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTable" id="table5">
+          <object class="GtkTable" id="optical_table">
             <property name="visible">True</property>
             <property name="n_rows">2</property>
             <property name="n_columns">2</property>
@@ -243,310 +243,100 @@
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkLabel" id="label5">
-                    <property name="visible">True</property>
-                    <property name="yalign">1</property>
-                    <property name="label" translatable="yes">Distance</property>
-                    <property name="angle">90</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkTable" id="table2">
-                    <property name="visible">True</property>
-                    <property name="n_rows">3</property>
-                    <property name="n_columns">6</property>
-                    <property name="column_spacing">6</property>
-                    <property name="row_spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label12">
-                        <property name="visible">True</property>
-                        <property name="xalign">1</property>
-                        <property name="label" translatable="yes" comments="short for Right Eye">RE:</property>
-                      </object>
-                      <packing>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label13">
-                        <property name="visible">True</property>
-                        <property name="xalign">1</property>
-                        <property name="label" translatable="yes" comments="Short for Left Eye">LE:</property>
-                      </object>
-                      <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label14">
-                        <property name="visible">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label15">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Spherical</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label16">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Cylindrical</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label17">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Axis</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label18">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes" comments="Short for Pupil Distance.&#10;In pt_BR this should be abbreviated as DNP">PD</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">5</property>
-                        <property name="right_attach">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxySpinButton" id="re_distance_cylindrical">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="xalign">1</property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">Decimal</property>
-                        <property name="model_attribute">re_distance_cylindrical</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxySpinButton" id="le_distance_cylindrical">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="xalign">1</property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">Decimal</property>
-                        <property name="model_attribute">le_distance_cylindrical</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxySpinButton" id="re_distance_axis">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="xalign">1</property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">Decimal</property>
-                        <property name="model_attribute">re_distance_axis</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxySpinButton" id="le_distance_axis">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="xalign">1</property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">Decimal</property>
-                        <property name="model_attribute">le_distance_axis</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxySpinButton" id="re_distance_pd">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="xalign">1</property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">Decimal</property>
-                        <property name="model_attribute">re_distance_pd</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">5</property>
-                        <property name="right_attach">6</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxySpinButton" id="le_distance_pd">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="xalign">1</property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">Decimal</property>
-                        <property name="model_attribute">le_distance_pd</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">5</property>
-                        <property name="right_attach">6</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkVSeparator" id="vseparator1">
-                        <property name="visible">True</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">4</property>
-                        <property name="right_attach">5</property>
-                        <property name="bottom_attach">3</property>
-                        <property name="x_options">GTK_FILL</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxySpinButton" id="re_distance_spherical">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="xalign">1</property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">Decimal</property>
-                        <property name="model_attribute">re_distance_spherical</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxySpinButton" id="le_distance_spherical">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="xalign">1</property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">Decimal</property>
-                        <property name="model_attribute">le_distance_spherical</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
+              <packing>
+                <property name="right_attach">2</property>
+              </packing>
             </child>
             <child>
-              <object class="GtkTable" id="distance_box2">
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox2">
+            <property name="visible">True</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="yalign">1</property>
+                <property name="label" translatable="yes">Distance</property>
+                <property name="angle">90</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkTable" id="distance_table1">
                 <property name="visible">True</property>
                 <property name="n_rows">3</property>
-                <property name="n_columns">4</property>
+                <property name="n_columns">10</property>
                 <property name="column_spacing">6</property>
                 <property name="row_spacing">6</property>
                 <child>
-                  <object class="GtkLabel" id="label19">
+                  <object class="GtkLabel" id="label12">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Height</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes" comments="short for Right Eye">RE:</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label13">
+                    <property name="visible">True</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes" comments="Short for Left Eye">LE:</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label14">
+                    <property name="visible">True</property>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label30">
+                  <object class="GtkLabel" id="label15">
+                    <property name="width_request">80</property>
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Prism</property>
+                    <property name="label" translatable="yes">Spherical</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label31">
+                  <object class="GtkLabel" id="label16">
+                    <property name="width_request">80</property>
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Base</property>
+                    <property name="label" translatable="yes">Cylindrical</property>
                   </object>
                   <packing>
                     <property name="left_attach">2</property>
@@ -554,13 +344,217 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label7">
+                  <object class="GtkLabel" id="label17">
+                    <property name="width_request">80</property>
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Addition</property>
+                    <property name="label" translatable="yes">Axis</property>
                   </object>
                   <packing>
                     <property name="left_attach">3</property>
                     <property name="right_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label18">
+                    <property name="width_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes" comments="Short for Pupil Distance.&#10;In pt_BR this should be abbreviated as DNP">PD</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">5</property>
+                    <property name="right_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="re_distance_cylindrical">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">re_distance_cylindrical</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="le_distance_cylindrical">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">le_distance_cylindrical</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="re_distance_axis">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">re_distance_axis</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="right_attach">4</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="le_distance_axis">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">le_distance_axis</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="right_attach">4</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="re_distance_pd">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">re_distance_pd</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">5</property>
+                    <property name="right_attach">6</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="le_distance_pd">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">le_distance_pd</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">5</property>
+                    <property name="right_attach">6</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVSeparator" id="vseparator1">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">4</property>
+                    <property name="right_attach">5</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="re_distance_spherical">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">re_distance_spherical</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="le_distance_spherical">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">le_distance_spherical</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label19">
+                    <property name="width_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Height</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">6</property>
+                    <property name="right_attach">7</property>
                   </packing>
                 </child>
                 <child>
@@ -578,69 +572,8 @@
                     <property name="model_attribute">re_distance_height</property>
                   </object>
                   <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="ProxySpinButton" id="re_distance_prism">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="xalign">1</property>
-                    <property name="invisible_char_set">True</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">Decimal</property>
-                    <property name="model_attribute">re_distance_prism</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="ProxySpinButton" id="re_distance_base">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="xalign">1</property>
-                    <property name="invisible_char_set">True</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">Decimal</property>
-                    <property name="model_attribute">re_distance_base</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="ProxySpinButton" id="re_addition">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="xalign">1</property>
-                    <property name="invisible_char_set">True</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">Decimal</property>
-                    <property name="model_attribute">re_addition</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
+                    <property name="left_attach">6</property>
+                    <property name="right_attach">7</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
                   </packing>
@@ -660,8 +593,42 @@
                     <property name="model_attribute">le_distance_height</property>
                   </object>
                   <packing>
+                    <property name="left_attach">6</property>
+                    <property name="right_attach">7</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label30">
+                    <property name="width_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Prism</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">7</property>
+                    <property name="right_attach">8</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="re_distance_prism">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">re_distance_prism</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">7</property>
+                    <property name="right_attach">8</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -679,10 +646,42 @@
                     <property name="model_attribute">le_distance_prism</property>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
+                    <property name="left_attach">7</property>
+                    <property name="right_attach">8</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label31">
+                    <property name="width_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Base</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">8</property>
+                    <property name="right_attach">9</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="re_distance_base">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">re_distance_base</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">8</property>
+                    <property name="right_attach">9</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -700,10 +699,42 @@
                     <property name="model_attribute">le_distance_base</property>
                   </object>
                   <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
+                    <property name="left_attach">8</property>
+                    <property name="right_attach">9</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label7">
+                    <property name="width_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Addition</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">9</property>
+                    <property name="right_attach">10</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="re_addition">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">re_addition</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">9</property>
+                    <property name="right_attach">10</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -721,18 +752,30 @@
                     <property name="model_attribute">le_addition</property>
                   </object>
                   <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
+                    <property name="left_attach">9</property>
+                    <property name="right_attach">10</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox3">
+            <property name="visible">True</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
@@ -757,7 +800,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkTable" id="table3">
+                      <object class="GtkTable" id="near_table">
                         <property name="visible">True</property>
                         <property name="n_rows">3</property>
                         <property name="n_columns">6</property>
@@ -796,16 +839,19 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label23">
+                            <property name="width_request">80</property>
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Spherical</property>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="right_attach">2</property>
+                            <property name="x_options">GTK_FILL</property>
                           </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="label24">
+                            <property name="width_request">80</property>
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Cylindrical</property>
                           </object>
@@ -816,6 +862,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label25">
+                            <property name="width_request">80</property>
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Axis</property>
                           </object>
@@ -826,6 +873,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label26">
+                            <property name="width_request">80</property>
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">PD</property>
                           </object>
@@ -864,6 +912,7 @@
                             <property name="right_attach">2</property>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
+                            <property name="x_options">GTK_FILL</property>
                           </packing>
                         </child>
                         <child>
@@ -885,6 +934,7 @@
                             <property name="right_attach">2</property>
                             <property name="top_attach">2</property>
                             <property name="bottom_attach">3</property>
+                            <property name="x_options">GTK_FILL</property>
                           </packing>
                         </child>
                         <child>
@@ -1015,7 +1065,7 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="expand">True</property>
+                        <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
@@ -1039,8 +1089,9 @@
                 </child>
               </object>
               <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -1067,7 +1118,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkTable" id="table4">
+                      <object class="GtkTable" id="frame_table">
                         <property name="visible">True</property>
                         <property name="n_rows">4</property>
                         <property name="n_columns">3</property>
@@ -1075,6 +1126,7 @@
                         <property name="row_spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label27">
+                            <property name="width_request">90</property>
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">M.V.A</property>
                           </object>
@@ -1085,6 +1137,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label28">
+                            <property name="width_request">90</property>
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">M.H.A</property>
                           </object>
@@ -1097,6 +1150,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label29">
+                            <property name="width_request">90</property>
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Bridge</property>
                           </object>
@@ -1225,17 +1279,16 @@
                 </child>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>

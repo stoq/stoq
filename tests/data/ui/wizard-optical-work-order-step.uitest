@@ -25,43 +25,44 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   ProxyDateEntry(prescription_date): None
                   GtkLabel(estimated_finish_lbl): 'Previs\xc3\xa3o de entrega:'
                   ProxyDateEntry(estimated_finish): None
-                GtkTable(table5, expand=True, fill=True):
+                GtkTable(optical_table, expand=True, fill=True):
                   GtkHBox(distance_box1):
-                    GtkLabel(label5, fill=True): 'Distance'
-                    GtkTable(table2, expand=True, fill=True):
-                      GtkLabel(label14):
-                      GtkLabel(label15): 'Spherical'
-                      GtkLabel(label16): 'Cylindrical'
-                      GtkLabel(label17): 'Axis'
-                      GtkLabel(label18): 'PD'
-                      GtkVSeparator(vseparator1):
-                      GtkLabel(label12): 'RE:'
-                      ProxySpinButton(re_distance_spherical): '0.00'
-                      ProxySpinButton(re_distance_cylindrical): '0.00'
-                      ProxySpinButton(re_distance_axis): '0'
-                      ProxySpinButton(re_distance_pd): '0.0'
-                      GtkLabel(label13): 'LE:'
-                      ProxySpinButton(le_distance_spherical): '0.00'
-                      ProxySpinButton(le_distance_cylindrical): '0.00'
-                      ProxySpinButton(le_distance_axis): '0'
-                      ProxySpinButton(le_distance_pd): '0.0'
-                  GtkTable(distance_box2):
+                GtkHBox(hbox2, expand=True, fill=True):
+                  GtkLabel(label5, fill=True): 'Distance'
+                  GtkTable(distance_table1, fill=True):
+                    GtkLabel(label14):
+                    GtkLabel(label15): 'Spherical'
+                    GtkLabel(label16): 'Cylindrical'
+                    GtkLabel(label17): 'Axis'
+                    GtkLabel(label18): 'PD'
                     GtkLabel(label19): 'Height'
                     GtkLabel(label30): 'Prism'
                     GtkLabel(label31): 'Base'
                     GtkLabel(label7): 'Addition'
+                    GtkVSeparator(vseparator1):
+                    GtkLabel(label12): 'RE:'
+                    ProxySpinButton(re_distance_spherical): '0.00'
+                    ProxySpinButton(re_distance_cylindrical): '0.00'
+                    ProxySpinButton(re_distance_axis): '0'
+                    ProxySpinButton(re_distance_pd): '0.0'
                     ProxySpinButton(re_distance_height): '0.00'
                     ProxySpinButton(re_distance_prism): '0.00'
                     ProxySpinButton(re_distance_base): '0.00'
                     ProxySpinButton(re_addition): '0.00'
+                    GtkLabel(label13): 'LE:'
+                    ProxySpinButton(le_distance_spherical): '0.00'
+                    ProxySpinButton(le_distance_cylindrical): '0.00'
+                    ProxySpinButton(le_distance_axis): '0'
+                    ProxySpinButton(le_distance_pd): '0.0'
                     ProxySpinButton(le_distance_height): '0.00'
                     ProxySpinButton(le_distance_prism): '0.00'
                     ProxySpinButton(le_distance_base): '0.00'
                     ProxySpinButton(le_addition): '0.00'
-                  GtkVBox(vbox2):
+                GtkHBox(hbox3, expand=True, fill=True):
+                  GtkVBox(vbox2, fill=True):
                     GtkHBox(near_box, fill=True):
                       GtkLabel(label6, fill=True): 'Near'
-                      GtkTable(table3, expand=True, fill=True):
+                      GtkTable(near_table, fill=True):
                         GtkLabel(label22):
                         GtkLabel(label23): 'Spherical'
                         GtkLabel(label24): 'Cylindrical'
@@ -79,10 +80,10 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                         ProxySpinButton(le_near_axis): '0'
                         ProxySpinButton(le_near_pd): '0.0'
                     GtkLabel(label2, expand=True, fill=True):
-                  GtkAlignment(alignment1):
+                  GtkAlignment(alignment1, fill=True):
                     GtkHBox(frame_box):
                       GtkLabel(label33, fill=True): 'Frame'
-                      GtkTable(table4, expand=True, fill=True):
+                      GtkTable(frame_table, expand=True, fill=True):
                         GtkCheckButton(client_frame_check): 'Arma\xc3\xa7\xc3\xa3o do cliente'
                         GtkLabel(label10):
                         GtkLabel(label27): 'M.V.A'
