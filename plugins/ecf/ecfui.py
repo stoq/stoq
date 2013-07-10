@@ -144,6 +144,10 @@ class ECFUI(object):
         elif appname == 'till':
             self._create_printer()
             self._add_till_menus(uimanager)
+        elif appname == 'sales':
+            # The sales app needs the printer to check if the
+            # sale being returned is the last sale on the ECF.
+            self._create_printer()
         elif appname == 'admin':
             self._add_admin_menus(uimanager)
             app.tasks.add_item(
@@ -186,9 +190,9 @@ class ECFUI(object):
           <menubar name="menubar">
             <placeholder name="ExtraMenubarPH">
               <menu action="ECFMenu">
-                <menuitem action="CancelLastDocument" name="CancelLastDocument"/>
-                <menuitem action="Summary" name="Summary"/>
-                <menuitem action="ReadMemory" name="ReadMemory"/>
+                <menuitem action="CancelLastDocument"/>
+                <menuitem action="Summary"/>
+                <menuitem action="ReadMemory"/>
               </menu>
             </placeholder>
           </menubar>
@@ -215,6 +219,7 @@ class ECFUI(object):
           <menubar name="menubar">
             <placeholder name="ExtraMenubarPH">
               <menu action="ECFMenu">
+                <menuitem action="CancelLastDocument"/>
                 <menuitem action="Summary"/>
                 <menuitem action="ReadMemory"/>
               </menu>
@@ -228,6 +233,8 @@ class ECFUI(object):
             ('ECFMenu', None, _('ECF')),
             ('ReadMemory', None, _('Read Memory'),
              group.get('read_memory'), None, self._on_ReadMemory__activate),
+            ('CancelLastDocument', None, _('Cancel Last Document'),
+             None, None, self._on_CancelLastDocument__activate),
         ])
         ag.add_action_with_accel(self._till_summarize_action,
                                  group.get('summarize'))
