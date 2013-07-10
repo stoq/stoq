@@ -22,8 +22,9 @@ GtkDialog(toplevel): title='Item search', hidden
             column: title='Description', expand
             column: title='Manufacturer', hidden
             column: title='Model', hidden
+            column: title='Price'
             column: title='In Stock'
-            row: u'', u'', None, u'Description', None, u'', Decimal('0')
+            row: u'', u'', None, u'Description', None, u'', <currency $10>, Decimal('0')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden

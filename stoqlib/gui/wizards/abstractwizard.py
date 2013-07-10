@@ -146,6 +146,11 @@ class AdvancedSellableSearch(SearchEditor):
                    SearchColumn('model', title=_('Model'),
                                 data_type=str, visible=False)]
 
+        if hasattr(self._table, 'price'):
+            columns.append(SearchColumn('price',
+                                        title=_(u'Price'),
+                                        data_type=currency, visible=True))
+
         if hasattr(self._table, 'minimum_quantity'):
             columns.append(SearchColumn('minimum_quantity',
                                         title=_(u'Minimum Qty'),
