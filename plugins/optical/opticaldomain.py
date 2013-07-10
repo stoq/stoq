@@ -37,7 +37,7 @@ class OpticalMedic(Domain):
 
     __storm_table__ = 'optical_medic'
 
-    person_id = IdCol()
+    person_id = IdCol(allow_none=False)
     person = Reference(person_id, 'Person.id')
 
     # TODO: Find out a better name for crm
@@ -71,7 +71,7 @@ class OpticalProduct(Domain):
     #: Contact lenses
     TYPE_CONTACT_LENSES = 2
 
-    product_id = IdCol()
+    product_id = IdCol(allow_none=False)
     product = Reference(product_id, 'Product.id')
 
     # The type indicates what of the following fields should be edited.
@@ -209,7 +209,7 @@ class OpticalWorkOrder(Domain):
     #: The frame is made 3 pieces
     FRAME_TYPE_3_PIECES = 2
 
-    work_order_id = IdCol()
+    work_order_id = IdCol(allow_none=False)
     work_order = Reference(work_order_id, 'WorkOrder.id')
 
     medic_id = IdCol()

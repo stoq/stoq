@@ -3,7 +3,7 @@
 CREATE TABLE optical_medic (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE,
+    person_id uuid UNIQUE NOT NULL REFERENCES person(id) ON UPDATE CASCADE,
     crm_number text UNIQUE
 );
 
@@ -11,7 +11,7 @@ CREATE TABLE optical_product (
     id uuid NOT NULL PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    product_id uuid UNIQUE REFERENCES product(id) ON UPDATE CASCADE,
+    product_id uuid UNIQUE NOT NULL REFERENCES product(id) ON UPDATE CASCADE,
 
     optical_type integer,
 
@@ -47,7 +47,7 @@ CREATE TABLE optical_work_order (
     id uuid NOT NULL PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    work_order_id uuid UNIQUE REFERENCES work_order(id) ON UPDATE CASCADE,
+    work_order_id uuid UNIQUE NOT NULL REFERENCES work_order(id) ON UPDATE CASCADE,
     medic_id uuid REFERENCES optical_medic(id) ON UPDATE CASCADE,
     prescription_date timestamp,
     patient text,
