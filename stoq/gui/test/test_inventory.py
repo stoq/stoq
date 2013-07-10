@@ -27,6 +27,7 @@ import mock
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.inventory import Inventory
+from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
 from stoqlib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
 from stoqlib.gui.editors.inventoryeditor import InventoryOpenEditor
 from stoqlib.gui.wizards.inventorywizard import InventoryCountWizard
@@ -85,6 +86,28 @@ class TestInventory(BaseGUITest):
                                               u"Don't cancel")
                 self.assertEquals(results[0].status, Inventory.STATUS_CANCELLED)
 
+    @mock.patch('stoq.gui.inventory.yesno')
+    @mock.patch('stoq.gui.inventory.api.new_store')
+    def test_cancel_inventory_false(self, new_store, yesno):
+        new_store.return_value = self.store
+        yesno.return_value = False
+
+        self.create_inventory(branch=get_current_branch(self.store))
+
+        app = self.create_app(InventoryApp, u'inventory')
+        results = app.results
+        results.select(results[0])
+
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.activate(app.Cancel)
+                yesno.assert_called_once_with(u'Are you sure you want to cancel '
+                                              u'this inventory ?',
+                                              gtk.RESPONSE_NO,
+                                              u"Cancel inventory",
+                                              u"Don't cancel")
+                self.assertEquals(results[0].status, Inventory.STATUS_OPEN)
+
     def test_run_dialogs(self):
         inventory = self.create_inventory(branch=get_current_branch(self.store))
 
@@ -122,3 +145,33 @@ class TestInventory(BaseGUITest):
         self.activate(app.PrintProductListing)
         print_report.assert_called_once_with(ProductCountingReport,
                                              [item.product.sellable])
+
+    @mock.patch('stoq.gui.inventory.api.new_store')
+    @mock.patch('stoq.gui.inventory.InventoryApp.run_dialog')
+    def test_show_inventory_details(self, run_dialog, new_store):
+        new_store.return_value = self.store
+        self.create_inventory(branch=get_current_branch(self.store))
+
+        app = self.create_app(InventoryApp, u'inventory')
+        results = app.results
+        results.select(results[0])
+
+        with mock.patch.object(self.store, 'close'):
+            self.activate(app.Details)
+
+        run_dialog.assert_called_once_with(InventoryDetailsDialog, self.store, results[0])
+
+    @mock.patch('stoq.gui.inventory.warning')
+    @mock.patch('stoq.gui.inventory.api.new_store')
+    def test_new_activate(self, new_store, warning):
+        new_store.return_value = self.store
+        self.create_inventory(branch=get_current_branch(self.store))
+
+        app = self.create_app(InventoryApp, u'inventory')
+        self.activate(app.window.NewToolItem)
+        warning.assert_called_once_with("You cannot open an inventory without having a "
+                                        "branch with stock in it.")
+
+    def test_deactivate(self):
+        app = self.create_app(InventoryApp, u'inventory')
+        self.activate(app.window.Close)
