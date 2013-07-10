@@ -24,11 +24,14 @@
 
 import datetime
 import locale
+import mock
 import os
 import unittest
 
 from dateutil import relativedelta
 from dateutil.relativedelta import SU, MO, SA, relativedelta as delta
+from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.search.productsearch import ProductSearch
 
 from stoqlib.api import api
 from stoqlib.domain.test.domaintest import DomainTest
@@ -38,6 +41,7 @@ from stoqlib.gui.search.searchfilters import (StringSearchFilter, DateSearchFilt
                                               ComboSearchFilter, NumberSearchFilter)
 from stoqlib.gui.search.searchoptions import (ThisWeek, LastWeek, NextWeek, ThisMonth,
                                               LastMonth, NextMonth)
+from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.introspection import get_all_classes
 
@@ -168,6 +172,25 @@ class TestDateOptions(unittest.TestCase):
                 next_month_day = month_day + delta(months=+1)
                 self.assertEqual(option.get_interval(),
                                  self._get_month_interval(next_month_day))
+
+
+class TestSearchEditor(GUITest):
+    """Tests for SearchEditor"""
+
+    @mock.patch('stoqlib.gui.search.searcheditor.api.new_store')
+    @mock.patch('stoqlib.gui.search.searcheditor.run_dialog')
+    def test_run_editor(self, run_dialog, new_store):
+        run_dialog.return_value = True
+        new_store.return_value = self.store
+        dialog = ProductSearch(store=self.store)
+        dialog.search.refresh()
+        dialog.results.select(dialog.results[0])
+        product = dialog.results[0].product
+
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.click(dialog._toolbar.edit_button)
+                run_dialog.assert_called_once_with(ProductEditor, dialog, self.store, product, visual_mode=False)
 
 
 class TestSearchGeneric(DomainTest):

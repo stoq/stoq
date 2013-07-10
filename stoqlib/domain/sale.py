@@ -1588,7 +1588,7 @@ class ReturnedSaleItemsView(Viewable):
     def new_sale(self):
         if not self._new_sale_id:
             return None
-        return Sale.get(self._new_sale_id, self.store)
+        return self.store.get(Sale, self._new_sale_id)
 
     #
     #  Classmethods

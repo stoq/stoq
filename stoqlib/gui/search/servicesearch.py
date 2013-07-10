@@ -92,7 +92,7 @@ class ServiceSearch(SearchEditor):
     #
 
     def get_editor_model(self, model):
-        return Service.get(model.service_id, store=self.store)
+        return self.store.get(Service, model.service_id)
 
     def get_columns(self):
         columns = [SearchColumn('code', title=_('Code'), data_type=str, sorted=True,

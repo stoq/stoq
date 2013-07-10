@@ -23,7 +23,9 @@
 ##
 
 import datetime
+import mock
 import unittest
+from stoqlib.gui.editors.accounteditor import AccountEditor
 
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.test.uitestutils import GUITest
@@ -60,6 +62,20 @@ class TestAccountTransactionEditor(GUITest):
         editor.main_dialog.confirm()
         self.check_editor(editor, 'editor-transaction-confirm',
                           [editor.retval, account])
+
+    @mock.patch('stoqlib.gui.editors.accounttransactioneditor.api.new_store')
+    @mock.patch('stoqlib.gui.editors.accounttransactioneditor.run_dialog')
+    def test_add_account(self, run_dialog, new_store):
+        new_account = self.create_account()
+        new_store.return_value = self.store
+        run_dialog.return_value = new_account
+        editor = AccountTransactionEditor(self.store, None, new_account)
+        parent_account = editor._get_account()
+
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.click(editor.add_account)
+                run_dialog.assert_called_once_with(AccountEditor, editor, self.store, parent_account=parent_account)
 
 
 if __name__ == '__main__':

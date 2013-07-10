@@ -232,7 +232,7 @@ class SearchEditor(SearchDialog):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(retval, ORMObject):
-                retval = type(retval).get(retval.id, store=self.store)
+                retval = self.store.get(type(retval), retval.id)
         store.close()
         return retval
 

@@ -191,7 +191,7 @@ class AccountTransactionEditor(BaseEditor):
         model = run_dialog(AccountEditor, self, store,
                            parent_account=parent_account)
         if store.confirm(model):
-            account = Account.get(model.id, store=self.store)
+            account = self.store.get(Account, model.id)
             self._populate_accounts()
             self.account.select(account)
             self.emit('account-added')

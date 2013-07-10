@@ -28,6 +28,7 @@ from decimal import Decimal
 from kiwi.currency import currency
 import mock
 from nose.exc import SkipTest
+from stoqlib.domain.returnedsale import ReturnedSaleItem
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
@@ -37,7 +38,7 @@ from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import Storable
-from stoqlib.domain.sale import Sale, SalePaymentMethodView
+from stoqlib.domain.sale import Sale, SalePaymentMethodView, ReturnedSaleItemsView
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
@@ -1387,3 +1388,23 @@ class TestSalePaymentMethodView(DomainTest):
         res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         self.assertEquals(res.count(), 1)
         self.assertTrue(sale_two_inst in [r.sale for r in res])
+
+
+class TestReturnedSaleItemsView(DomainTest):
+    def testNewSale(self):
+        branch = self.create_branch()
+        client = self.create_client(name=u'Test')
+        returned = self.create_returned_sale()
+        sale_item = self.create_sale_item(sale=returned.sale)
+        returned_item = ReturnedSaleItem(store=self.store,
+                                         returned_sale_id=returned.id,
+                                         sale_item=sale_item)
+        returned_item_view = self.store.find(ReturnedSaleItemsView,
+                                             id=returned_item.id).one()
+        self.assertEquals(returned_item_view.new_sale, None)
+
+        new_sale = self.create_sale(branch=branch, client=client)
+        returned.new_sale_id = new_sale.id
+        returned_item_view = self.store.find(ReturnedSaleItemsView,
+                                             id=returned_item.id).one()
+        self.assertEquals(returned_item_view.new_sale, returned.new_sale)

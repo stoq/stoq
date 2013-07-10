@@ -188,7 +188,7 @@ class AdvancedSellableSearch(SearchEditor):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(product, ORMObject):
-                product = type(product).get(product.id, store=self.store)
+                product = self.store.get(type(product), product.id)
 
             # If we created a new object, confirm the dialog automatically
             if obj is None:

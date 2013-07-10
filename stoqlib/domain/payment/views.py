@@ -210,14 +210,12 @@ class InPaymentView(BasePaymentView):
     @property
     def renegotiation(self):
         if self.renegotiation_id:
-            return PaymentRenegotiation.get(self.renegotiation_id,
-                                            store=self.store)
+            return self.store.get(PaymentRenegotiation, self.renegotiation_id)
 
     @property
     def renegotiated(self):
         if self.renegotiated_id:
-            return PaymentRenegotiation.get(self.renegotiated_id,
-                                            store=self.store)
+            return self.store.get(PaymentRenegotiation, self.renegotiated_id)
 
     def get_parent(self):
         return self.sale or self.renegotiation

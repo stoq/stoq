@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.service import Service
+from stoqlib.domain.service import Service, ServiceView
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -42,3 +42,13 @@ class TestServiceSearch(GUITest):
         search.set_searchbar_search_string('e')
         search.search.refresh()
         self.check_search(search, 'service-description-filter')
+
+    def test_get_editor_model(self):
+        sellable = self.create_sellable(product=True, description=u'Test')
+        service = self.create_service(u'Delivery', 25)
+        service.sellable = sellable
+
+        dialog = ServiceSearch(self.store)
+        service_item = self.store.find(ServiceView, service_id=service.id).one()
+        results = dialog.get_editor_model(model=service_item)
+        self.assertEquals(service, results)
