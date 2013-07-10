@@ -239,6 +239,12 @@ def _enable_plugins():
             # precaution to avoid trying to install it again
             manager.install_plugin(plugin)
 
+        else:
+            # Make sure that the plugin is imported so sys.path is properly
+            # setup
+            plugin = manager.get_plugin(plugin)
+            plugin  # pyflakes
+
 
 def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
                     password=u"", station_name=None, quick=False):
@@ -268,6 +274,7 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
 
     if quick and not empty:
         provide_utilities(station_name)
+        _enable_plugins()
         return
 
     # XXX: Why clearing_cache if initialize_system will drop the
