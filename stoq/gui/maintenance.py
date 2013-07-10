@@ -360,7 +360,7 @@ class MaintenanceApp(ShellApp):
 
     def get_columns(self):
         return [
-            IdentifierColumn('identifier'),
+            IdentifierColumn('identifier', sorted=True),
             IdentifierColumn('sale_identifier', title=_("Sale #"), visible=False),
             SearchColumn('work_order.status_str', title=_(u'Status'),
                          search_attribute='status', data_type=str,
