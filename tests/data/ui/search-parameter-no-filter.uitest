@@ -66,6 +66,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Bill instructions ', u''
     row: u'Sales', u'Booklet instructions ', u'Payable at any branch on presentation of this booklet'
     row: u'Sales', u'Printing of promissory notes on loans', u'0'
+    row: u'Sales', u'Set authorization number mandatory', u'1'
     row: u'Sales', u'Default Sales C.F.O.P.', uuid.uuid()
     row: u'Sales', u'Default Return Sales C.F.O.P.', uuid.uuid()
     row: u'Smart lists', u'Load items intelligently from the database', u'1'

@@ -761,7 +761,7 @@ class CardMethodSlave(BaseEditorSlave):
         return True
 
     def update_view(self):
-        pass
+        self._refresh_next()
 
     #
     # BaseEditor Slave hooks
@@ -774,6 +774,9 @@ class CardMethodSlave(BaseEditorSlave):
         # Workaround for a kiwi bug. report me
         self.credit_provider.select_item_by_position(1)
         self.credit_provider.select_item_by_position(0)
+
+        is_mandatory = sysparam(self.store).MANDATORY_CARD_AUTH_NUMBER
+        self.auth_number.set_property('mandatory', is_mandatory)
 
     def create_model(self, store):
         if store.find(CardPaymentDevice).is_empty():
@@ -830,8 +833,16 @@ class CardMethodSlave(BaseEditorSlave):
         self._selected_type = radio.get_data('type')
         self._setup_max_installments()
 
+    def _validate_auth_number(self):
+        is_auth_number_mandatory = sysparam(self.store).MANDATORY_CARD_AUTH_NUMBER
+        if is_auth_number_mandatory and self.auth_number.read() == ValueUnset:
+            return False
+        return True
+
     def _refresh_next(self, validation_ok=True):
-        validation_ok = validation_ok and self.model.installments_number
+        validation_ok = (validation_ok and self.model.installments_number and
+                         self._validate_auth_number())
+
         self.wizard.refresh_next(validation_ok)
 
     def _setup_max_installments(self):

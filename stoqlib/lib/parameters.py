@@ -735,6 +735,12 @@ _details = [
           u'mandatory.'),
         bool, initial=False),
 
+    ParameterDetails(
+        u'MANDATORY_CARD_AUTH_NUMBER',
+        _(u'Sales'),
+        _(u'Set authorization number mandatory'),
+        _(u'Set the authorization number on card payments as mandatory or not.'),
+        bool, initial=True),
 ]
 
 
