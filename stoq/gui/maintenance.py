@@ -284,7 +284,8 @@ class MaintenanceApp(ShellApp):
         self.window.SearchToolItem.set_tooltip(
             _(u"Search for work order categories"))
 
-        self._update_view()
+        if refresh:
+            self._update_view()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.maintenance_ui)

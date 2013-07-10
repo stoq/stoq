@@ -169,7 +169,8 @@ class TillApp(ShellApp):
                                       self.SearchClient,
                                       self.SearchSale])
         self.window.Print.set_tooltip(_("Print a report of these sales"))
-        self.refresh()
+        if refresh:
+            self.refresh()
         self._printer.run_initial_checks()
         self.check_open_inventory()
 

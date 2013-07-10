@@ -183,6 +183,9 @@ class StockApp(ShellApp):
         self.window.SearchToolItem.set_tooltip(
             _("Search for stock items"))
 
+        if refresh:
+            self.refresh()
+
         self.check_open_inventory()
         self._update_widgets()
 

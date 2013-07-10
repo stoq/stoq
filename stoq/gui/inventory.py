@@ -112,8 +112,9 @@ class InventoryApp(ShellApp):
             _("Print a report of these inventories"))
 
     def activate(self, refresh=True):
-        # Avoid letting this sensitive if has-rows is never emitted
-        self.refresh()
+        if refresh:
+            # Avoid letting this sensitive if has-rows is never emitted
+            self.refresh()
         self._update_widgets()
         self.window.SearchToolItem.set_sensitive(False)
 
