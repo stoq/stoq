@@ -25,6 +25,8 @@
 """Database Interfaces: Connection, Settings etc
 """
 
+# pylint: disable=E0102,E0211,E0213
+
 from zope.interface import Attribute
 from zope.interface.interface import Interface
 
@@ -61,3 +63,5 @@ class ISearchFilter(Interface):
         Gets the state.
         :rtype: :class:`QueryState`
         """
+
+# pylint: enable=E0102,E0211,E0213

@@ -24,6 +24,8 @@
 
 """ Stoqlib Interfaces """
 
+# pylint: disable=E0102,E0211,E0213
+
 from zope.interface.interface import Interface, Attribute
 
 
@@ -336,3 +338,5 @@ class IPermissionManager(Interface):
     def can_see_details(key):
         """Returns if the user has permission to see details of objects of the
         given feature"""
+
+# pylint: enable=E0102,E0211,E0213

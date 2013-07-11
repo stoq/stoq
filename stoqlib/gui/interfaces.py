@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+# pylint: disable=E0102,E0211,E0213
+
 from zope.interface import Interface
 
 
@@ -124,3 +126,5 @@ class ISearchResultView(Interface):
 
     def clear_message():
         pass
+
+# pylint: enable=E0102,E0211,E0213
