@@ -32,6 +32,7 @@ import reportlab.pdfbase._fontdata_widths_zapfdingbats
 from stoq.main import main
 
 # Pyflakes
+# pylint: disable=W0104
 reportlab.pdfbase._fontdata
 reportlab.pdfbase._fontdata_enc_macexpert
 reportlab.pdfbase._fontdata_enc_macroman
@@ -53,6 +54,7 @@ reportlab.pdfbase._fontdata_widths_timesbolditalic
 reportlab.pdfbase._fontdata_widths_timesbold
 reportlab.pdfbase._fontdata_widths_timesroman
 reportlab.pdfbase._fontdata_widths_zapfdingbats
+# pylint: enable=W0104
 
 pkg_resources.require('stoqdrivers')
 sys.exit(main(sys.argv))

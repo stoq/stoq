@@ -641,7 +641,7 @@ def set_current_branch_station(store, station_name):
     # knows about Branch which might not have
     # been imported yet
     from stoqlib.domain.person import Branch
-    Branch  # pyflakes
+    Branch  # pylint: disable=W0104
 
     if station_name is None:
         # For LTSP systems we cannot use the hostname as stoq is run

@@ -27,7 +27,7 @@ from stoqlib.lib.dateutils import localtoday
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.test.uitestutils import GUITest
 
-PaymentRenegotiation  # pyflakes
+PaymentRenegotiation  # pylint: disable=W0104
 
 
 class TestStockDecreaseDetailsDialog(GUITest):

@@ -57,7 +57,7 @@ from stoqlib.lib.validators import is_date_in_interval
 _ = stoqlib_gettext
 
 # pyflakes: Sellable.has_image requires that Image is imported at least once
-Image
+Image  # pylint: disable=W0104
 
 #
 # Base Domain Classes

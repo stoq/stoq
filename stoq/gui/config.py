@@ -545,7 +545,7 @@ class InstallPostgresStep(BaseWizardStep):
     def _can_install(self):
         try:
             import aptdaemon
-            aptdaemon  # pyflakes
+            aptdaemon  # pylint: disable=W0104
             return True
         except ImportError:
             return False

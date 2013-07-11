@@ -39,7 +39,7 @@ create_log = logging.getLogger('stoqlib.importer.create')
 # python changes it's default encoding to utf-8,
 # we could also call sys.setdefaultencoding, but then
 # we're have to reload(sys) since it's deleted by site
-pango  # pyflakes
+pango  # pylint: disable=W0104
 
 _available_importers = {
     'account.ofx': 'ofximporter.OFXImporter',

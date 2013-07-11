@@ -15,7 +15,7 @@ from kiwi.ui.widgets.textview import ProxyTextView
 from kiwi.ui.widgets.button import ProxyButton
 
 
-# pyflakes
+# pylint: disable=W0104
 HyperLink
 ObjectList
 ObjectTree
@@ -29,6 +29,7 @@ ProxyEntry
 ProxyDateEntry
 ProxySpinButton
 ProxyTextView
+# pylint: enable=W0104
 
 
 def main(args):

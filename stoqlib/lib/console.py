@@ -29,7 +29,7 @@ import datetime
 import os
 import readline
 import rlcompleter
-rlcompleter  # pyflakes
+rlcompleter  # pylint: disable=W0104
 
 from stoqlib.api import api
 from stoqlib.database.tables import get_table_types

@@ -25,7 +25,7 @@ class Stoq(Plugin):
     # by tests.base
     def begin(self):
         import tests.base
-        tests.base  # pyflakes
+        tests.base  # pylint: disable=W0104
 
 
 ATTRIBUTES = dict(bold=1, dark=2, underline=4, blink=5,

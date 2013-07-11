@@ -30,13 +30,13 @@ import platform
 
 try:
     import gudev
-    gudev  # pyflakes
+    gudev  # pylint: disable=W0104
 except ImportError:
     gudev = None
 
 try:
     import dbus
-    dbus  # pyflakes
+    dbus  # pylint: disable=W0104
 except ImportError:
     dbus = None
 

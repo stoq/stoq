@@ -73,7 +73,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 # pyflakes: Reference requires that CostCenter is imported at least once
-CostCenter
+CostCenter  # pylint: disable=W0104
 
 #
 # Base Domain Classes

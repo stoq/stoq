@@ -129,7 +129,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         # This is to keep the clients in cache
         clients_cache = list(Client.get_active_clients(self.store))
-        clients_cache  # pyflakes
+        clients_cache  # pylint: disable=W0104
 
         # We are using ClientView here to show the fancy name as well
         clients = ClientView.get_active_clients(self.store)

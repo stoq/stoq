@@ -30,7 +30,7 @@ import mock
 import unittest
 
 from stoqlib.lib.kiwilibrary import library
-library  # pyflakes
+library  # pylint: disable=W0104
 
 from stoqlib.database.runtime import (get_current_branch,
                                       new_store,

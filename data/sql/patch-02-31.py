@@ -10,7 +10,7 @@ from stoqlib.domain.service import Service
 from stoqlib.domain.product import Product
 from stoqlib.lib.parameters import sysparam
 
-Product  # pyflakes
+Product  # pylint: disable=W0104
 
 
 def apply_patch(store):

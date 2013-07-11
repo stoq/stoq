@@ -51,7 +51,7 @@ _ = stoqlib_gettext
 #
 # pyflakes
 #
-Person
+Person  # pylint: disable=W0104
 
 
 class ProductSupplierInfo(Domain):

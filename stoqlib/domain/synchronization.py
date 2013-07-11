@@ -31,7 +31,7 @@ from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol, IdCol
 from stoqlib.domain.person import Branch
 
-Branch  # pyflakes
+Branch  # pylint: disable=W0104
 
 
 class BranchSynchronization(ORMObject):

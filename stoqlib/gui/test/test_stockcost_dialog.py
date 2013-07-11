@@ -29,7 +29,7 @@ from stoqlib.domain.image import Image
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.test.uitestutils import GUITest
 
-Image  # pyflakes
+Image  # pylint: disable=W0104
 
 
 class TestStockCostDialog(GUITest):

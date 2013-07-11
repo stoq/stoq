@@ -154,7 +154,7 @@ class DependencyChecker(object):
     def _check_pygtk(self, pygtk_version, gtk_version):
         try:
             import gtk
-            gtk  # stuid pyflakes
+            gtk  # pylint: disable=W0104
         except ImportError:
             try:
                 import pygtk
@@ -229,7 +229,7 @@ class DependencyChecker(object):
     def _check_pygtkwebkit(self, version):
         try:
             import webkit
-            webkit  # pyflakes
+            webkit  # pylint: disable=W0104
         except ImportError:
             self._missing(project='pywebkitgtk',
                           url='http://code.google.com/p/pywebkitgtk/',
@@ -238,7 +238,7 @@ class DependencyChecker(object):
     def _check_zope_interface(self, version):
         try:
             import zope.interface
-            zope  # pyflakes
+            zope  # pylint: disable=W0104
         except ImportError:
             self._missing(project='ZopeInterface',
                           url='http://www.zope.org/Products/ZopeInterface',
@@ -375,7 +375,7 @@ class DependencyChecker(object):
     def _check_pyserial(self, version):
         try:
             import serial
-            serial  # pyflakes
+            serial  # pylint: disable=W0104
         except ImportError:
             self._missing(project='pySerial',
                           url='http://pyserial.sourceforge.net/',
@@ -384,7 +384,7 @@ class DependencyChecker(object):
     def _check_twisted_core(self, version):
         try:
             import twisted
-            twisted  # pyflakes
+            twisted  # pylint: disable=W0104
         except ImportError:
             self._missing(project='TwistedCore',
                           url='http://twistedmatrix.com/',
@@ -415,7 +415,7 @@ class DependencyChecker(object):
     def _check_weasyprint(self, version):
         try:
             import weasyprint
-            weasyprint  # pyflakes
+            weasyprint  # pylint: disable=W0104
         except ImportError:
             self._missing(project='weasyprint',
                           url='http://weasyprint.org/',
@@ -431,7 +431,7 @@ class DependencyChecker(object):
     def _check_xlwt(self, version):
         try:
             import xlwt
-            xlwt  # pyflakes
+            xlwt  # pylint: disable=W0104
         except ImportError:
             self._missing(project='xlwt',
                           url='http://www.python-excel.org/',
@@ -447,7 +447,7 @@ class DependencyChecker(object):
     def _check_pyobjc(self, version):
         try:
             import objc
-            objc  # pyflakes
+            objc  # pylint: disable=W0104
         except ImportError:
             self._missing(project='pyobjc',
                           url='http://pyobjc.sf.net/',
@@ -462,7 +462,7 @@ class DependencyChecker(object):
 
         try:
             import AppKit
-            AppKit  # pyflakes
+            AppKit  # pylint: disable=W0104
         except ImportError:
             self._missing(project='pyobjc with cocoa support',
                           url='http://pyobjc.sf.net/',

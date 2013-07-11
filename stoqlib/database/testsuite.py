@@ -28,7 +28,7 @@
 # This needs to before the other commits, so the externals/
 # path is properly setup.
 from stoqlib.lib.kiwilibrary import library
-library  # pyflakes
+library  # pylint: disable=W0104
 
 import logging
 import os
@@ -243,7 +243,7 @@ def _enable_plugins():
             # Make sure that the plugin is imported so sys.path is properly
             # setup
             plugin = manager.get_plugin(plugin)
-            plugin  # pyflakes
+            plugin  # pylint: disable=W0104
 
 
 def bootstrap_suite(address=None, dbname=None, port=5432, username=None,

@@ -31,8 +31,8 @@ import sys
 try:
     from gi.repository import GObject
     from gi.repository import Gtk
-    GObject  # pyflakes
-    Gtk  # pyflakes
+    GObject  # pylint: disable=W0104
+    Gtk  # pylint: disable=W0104
 except ImportError:
     import mock
     GObject = mock.Mock()
