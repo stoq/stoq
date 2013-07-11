@@ -401,8 +401,8 @@ class ProductBranchStockView(Viewable):
     ]
 
     @classmethod
-    def find_by_storable(csl, store, storable):
-        return store.find(ProductBranchStockView, storable_id=storable.id)
+    def find_by_storable(cls, store, storable):
+        return store.find(cls, storable_id=storable.id)
 
 
 class SellableFullStockView(Viewable):

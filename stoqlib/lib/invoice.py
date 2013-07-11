@@ -348,8 +348,8 @@ class InvoiceFieldDescription(object):
         self.store = self.sale.store
 
     @classmethod
-    def get_description(self):
-        return self.description or self.name
+    def get_description(cls):
+        return cls.description or cls.name
 
 invoice_fields = {}
 

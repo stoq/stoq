@@ -1323,7 +1323,6 @@ class LoginUser(Domain):
 
         return user
 
-    @classmethod
     def get_status_str(self):
         """Returns the status description of a user"""
         if self.is_active:
