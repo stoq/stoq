@@ -101,7 +101,6 @@ DISABLED = [
     'W0621',  # Redefining name 'xxx' from outer scope
     'W0622',  # Redefined built-in variable
     'W0623',  # Redefining name 'xxx' from outer scope in exception handler
-    'W0631',  # Using possibly undefined loop variable
     'W0702',  # No exception type(s) specified
     'W0703',  # Catching too general exception Exception
     'W0704',  # Except doesn't do anything

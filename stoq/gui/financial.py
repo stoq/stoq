@@ -505,11 +505,11 @@ class FinancialApp(ShellApp):
     def _close_page(self, page):
         for page_id, child in enumerate(self.notebook.get_children()):
             if getattr(child, 'page', None) == page:
+                self.notebook.remove_page(page_id)
+                del self._pages[page.account_view.id]
                 break
         else:
             raise AssertionError(page)
-        self.notebook.remove_page(page_id)
-        del self._pages[page.account_view.id]
 
     def _is_accounts_tab(self):
         page_id = self.notebook.get_current_page()

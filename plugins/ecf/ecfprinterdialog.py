@@ -307,7 +307,7 @@ class ECFEditor(BaseEditor):
             DeviceConstant(constant_enum=int(payment_enum),
                            constant_name=unicode(constant_name),
                            constant_type=DeviceConstant.TYPE_PAYMENT,
-                           constant_value=value,
+                           constant_value=None,
                            device_value=device_value,
                            printer=model,
                            store=self.store)
