@@ -312,7 +312,7 @@ class SintegraRegister(object):
                           for field in zip(self.sintegra_fields, args)])
         for key in kwargs:
             if key in sent_args:
-                raise SintegraRegister("%s specified two times" % (key, ))
+                raise SintegraError("%s specified two times" % (key, ))
 
         total = 0
         self._values = {}
