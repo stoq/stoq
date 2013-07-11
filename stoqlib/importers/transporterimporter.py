@@ -23,6 +23,8 @@
 ##
 ##
 
+import decimal
+
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Company, Person, Transporter
 from stoqlib.importers.csvimporter import CSVImporter
@@ -72,6 +74,7 @@ class TransporterImporter(CSVImporter):
             district=data.district
         )
 
-        dict(open_contract_date=self.parse_date(data.open_contract),
-             freight_percentage=data.freight_percentage),
-        Transporter(person=person, store=store)
+        Transporter(person=person,
+                    open_contract_date=self.parse_date(data.open_contract),
+                    freight_percentage=decimal.Decimal(data.freight_percentage),
+                    store=store)
