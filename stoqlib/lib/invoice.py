@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -354,8 +354,9 @@ class InvoiceFieldDescription(object):
 invoice_fields = {}
 
 
-def _add_invoice_field(field):
+def _register_invoice_field(field):
     invoice_fields[field.name] = field
+    return field
 
 
 def get_invoice_field_by_name(field_name):
@@ -366,7 +367,8 @@ def get_invoice_fields():
     return list(invoice_fields.values())
 
 
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class CompanyDocumentField(InvoiceFieldDescription):
     name = u"COMPANY_DOCUMENT"
     description = _("Company document number")
     length = 4
@@ -374,10 +376,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.branch.person.company.cnpj
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class OutgoingInvoiceField(InvoiceFieldDescription):
     field_type = bool
     name = u"OUTGOING_INVOICE"
     description = _("Outgoing invoice")
@@ -386,10 +387,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return isinstance(self.invoice, SaleInvoice)
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class IncomingInvoiceField(InvoiceFieldDescription):
     field_type = bool
     name = u"INCOMING_INVOICE"
     description = _("Incoming invoice")
@@ -398,10 +398,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return isinstance(self.invoice, PurchaseInvoice)
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientNameField(InvoiceFieldDescription):
     name = u"CLIENT_NAME"
     description = _('Client name')
     length = 35
@@ -409,10 +408,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.client.person.name
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientAddressField(InvoiceFieldDescription):
     name = u"CLIENT_ADDRESS"
     description = _('Client Address')
     length = 34
@@ -420,10 +418,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.client.person.address.get_address_string()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientDocumentField(InvoiceFieldDescription):
     name = u"CLIENT_DOCUMENT"
     description = _("Client's document number")
     length = 14
@@ -437,10 +434,9 @@ class F(InvoiceFieldDescription):
         if company is not None:
             return company.cnpj
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientDistrictField(InvoiceFieldDescription):
     name = u"CLIENT_DISTRICT"
     description = _("Client's district")
     length = 15
@@ -448,10 +444,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.client.person.address.district
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientPostalCodeField(InvoiceFieldDescription):
     name = u"CLIENT_POSTAL_CODE"
     description = _("Client's postal code")
     length = 8
@@ -459,10 +454,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.client.person.address.postal_code
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientCityField(InvoiceFieldDescription):
     name = u"CLIENT_CITY"
     description = _("Client's city")
     length = 34
@@ -470,10 +464,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.client.person.address.get_city()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientPhoneField(InvoiceFieldDescription):
     name = u"CLIENT_PHONE"
     description = _('Client Phone number')
     length = 12
@@ -481,10 +474,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.client.person.phone_number
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientFaxField(InvoiceFieldDescription):
     name = u"CLIENT_FAX"
     description = _('Client Fax number')
     length = 12
@@ -492,10 +484,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.client.person.fax_number
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientPhoneFaxFieldF(InvoiceFieldDescription):
     name = u"CLIENT_PHONE_FAX"
     description = _('Client Phone/Fax number')
     length = 12
@@ -505,10 +496,9 @@ class F(InvoiceFieldDescription):
             self.sale.client.person.phone_number,
             self.sale.client.person.fax_number)
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientStateField(InvoiceFieldDescription):
     name = u"CLIENT_STATE"
     description = _('Client state abbreviation')
     length = 2
@@ -516,10 +506,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.client.person.address.get_state()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ClientStateRegistryDocumentField(InvoiceFieldDescription):
     name = u"CLIENT_STATE_REGISTRY_DOCUMENT"
     description = _('Clients state registry number or document number')
     length = 14
@@ -531,10 +520,9 @@ class F(InvoiceFieldDescription):
 
         return company.state_registry
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class OrderEmissionDateField(InvoiceFieldDescription):
     name = u"ORDER_EMISSION_DATE"
     description = _('Emission date')
     length = 10
@@ -542,10 +530,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.invoice.today.strftime(self.invoice.date_format)
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class OrderCreationDateField(InvoiceFieldDescription):
     name = u"ORDER_CREATION_DATE"
     description = _('Creation date')
     length = 10
@@ -553,10 +540,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.invoice.today.strftime(self.invoice.date_format)
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class OrderCreationTimeField(InvoiceFieldDescription):
     name = u"ORDER_CREATION_TIME"
     description = _('Creation time')
     length = 8
@@ -564,10 +550,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.invoice.today.strftime('%H:%S')
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class PaymentNumbersField(InvoiceFieldDescription):
     name = u"PAYMENT_NUMBERS"
     description = _('Number of payments')
     length = 4
@@ -575,10 +560,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return str(self.sale.payments.count())
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class PaymentDueDatesField(InvoiceFieldDescription):
     name = u"PAYMENT_DUE_DATES"
     description = _('Payment due dates')
     length = 1
@@ -588,10 +572,9 @@ class F(InvoiceFieldDescription):
                  for p in self.sale.payments]
         return ', '.join(dates)
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class PaymentValuesField(InvoiceFieldDescription):
     name = u"PAYMENT_VALUES"
     description = _('Payment values')
     length = 1
@@ -600,10 +583,9 @@ class F(InvoiceFieldDescription):
         dates = [str(p.value) for p in self.sale.payments]
         return ', '.join(dates)
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class BaseDeCalculoICMSField(InvoiceFieldDescription):
     name = u"BASE_DE_CALCULO_ICMS"
     length = 1
     field_type = Decimal
@@ -617,10 +599,9 @@ class F(InvoiceFieldDescription):
             total += sale_item.get_total()
         return total
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ICMSValueField(InvoiceFieldDescription):
     name = u"VALOR_ICMS"
     length = 1
     field_type = Decimal
@@ -634,10 +615,9 @@ class F(InvoiceFieldDescription):
                 total += sale_item.get_total() * (tax.tax_value / 100)
         return total
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class BaseDeCalculoICMSSubstField(InvoiceFieldDescription):
     name = u"BASE_DE_CALCULO_ICMS_SUBST"
     length = 1
     field_type = Decimal
@@ -650,10 +630,9 @@ class F(InvoiceFieldDescription):
                 total += sale_item.get_total()
         return total
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorICMSSubstField(InvoiceFieldDescription):
     name = u"VALOR_ICMS_SUBST"
     length = 1
     field_type = Decimal
@@ -667,10 +646,9 @@ class F(InvoiceFieldDescription):
                 total += sale_item.get_total() * (Decimal(tax_value) / 100)
         return total
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class BaseDeCalculoISSField(InvoiceFieldDescription):
     name = u"BASE_DE_CALCULO_ISS"
     length = 1
     field_type = Decimal
@@ -684,10 +662,9 @@ class F(InvoiceFieldDescription):
             total += sale_item.get_total()
         return total
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorISSField(InvoiceFieldDescription):
     name = u"VALOR_ISS"
     length = 1
     field_type = Decimal
@@ -701,10 +678,9 @@ class F(InvoiceFieldDescription):
                 total += sale_item.get_total() * (Decimal(tax_value) / 100)
         return total
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ServiceItemCodeDescriptionField(InvoiceFieldDescription):
     name = u"SERVICE_ITEM_CODE_DESCRIPTION"
     description = _('Service item code / description')
     length = 35
@@ -717,10 +693,9 @@ class F(InvoiceFieldDescription):
                 code.replace(' ', '0'),
                 sale_item.get_description())
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ServiceItemDescriptionField(InvoiceFieldDescription):
     name = u"SERVICE_ITEM_DESCRIPTION"
     description = _('Service item description')
     length = 30
@@ -730,10 +705,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.services:
             yield '%s' % sale_item.get_description()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ServiceItemCodeField(InvoiceFieldDescription):
     name = u"SERVICE_ITEM_CODE"
     description = _('Service item code')
     length = 5
@@ -744,10 +718,9 @@ class F(InvoiceFieldDescription):
             code = '%05s' % sale_item.sellable.code
             yield code[-width:]
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ServiceItemCodeUnitField(InvoiceFieldDescription):
     name = u"SERVICE_ITEM_CODE_UNIT"
     description = _('Service item unit')
     length = 2
@@ -757,10 +730,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.services:
             yield sale_item.sellable.get_unit_description()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ServiceItemQuantityField(InvoiceFieldDescription):
     name = u"SERVICE_ITEM_QUANTITY"
     description = _('Service item quantity')
     length = 5
@@ -770,10 +742,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.services:
             yield sale_item.quantity
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ServiceItemPriceField(InvoiceFieldDescription):
     name = u"SERVICE_ITEM_PRICE"
     description = _('Service item price')
     length = 5
@@ -783,10 +754,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.services:
             yield sale_item.price
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ServiceItemTotalField(InvoiceFieldDescription):
     name = u"SERVICE_ITEM_TOTAL"
     description = _('Service item total (price * quantity)')
     length = 7
@@ -796,10 +766,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.services:
             yield sale_item.get_total()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ServiceItemTaxField(InvoiceFieldDescription):
     name = u"SERVICE_ITEM_TAX"
     description = _('Service item tax')
     length = 2
@@ -814,10 +783,9 @@ class F(InvoiceFieldDescription):
                 value = None
             yield value
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorTotalServicosField(InvoiceFieldDescription):
     name = u"VALOR_TOTAL_SERVICOS"
     length = 1
     field_type = Decimal
@@ -826,10 +794,9 @@ class F(InvoiceFieldDescription):
         return sum([s.quantity * s.price for s in self.sale.services],
                    Decimal(0))
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorTotalProductsField(InvoiceFieldDescription):
     name = u"VALOR_TOTAL_PRODUTOS"
     length = 1
     field_type = Decimal
@@ -837,50 +804,45 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.get_sale_subtotal()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorFreteField(InvoiceFieldDescription):
     name = u"VALOR_FRETE"
     length = 1
 
     def fetch(self, width, height):
         return 0
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorSeguroField(InvoiceFieldDescription):
     name = u"VALOR_SEGURO"
     length = 1
 
     def fetch(self, width, height):
         return 0
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorDespesasField(InvoiceFieldDescription):
     name = u"VALOR_DESPESAS"
     length = 1
 
     def fetch(self, width, height):
         return 0
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorIPIField(InvoiceFieldDescription):
     name = u"VALOR_IPI"
     length = 1
 
     def fetch(self, width, height):
         return 0
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ValorTotalNotaField(InvoiceFieldDescription):
     name = u"VALOR_TOTAL_NOTA"
     length = 1
     field_type = Decimal
@@ -888,40 +850,36 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.get_sale_subtotal()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class AdditionalSaleNotesField(InvoiceFieldDescription):
     name = u"ADDITIONAL_SALE_NOTES"
     lenght = 1
 
     def fetch(self, width, height):
         return ''
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class SaleNumberField(InvoiceFieldDescription):
     name = u"SALE_NUMBER"
     length = 1
 
     def fetch(self, width, height):
         return unicode(self.sale.identifier)
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class SalesPersonNameField(InvoiceFieldDescription):
     name = u"SALESPERSON_NAME"
     length = 1
 
     def fetch(self, width, height):
         return self.sale.get_salesperson_name()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemCounterField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_COUNTER"
     description = _('Product item counter')
     length = 3
@@ -931,10 +889,9 @@ class F(InvoiceFieldDescription):
         for i in range(self.sale.products.count()):
             yield '%03d' % (i + 1, )
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemCodeDescriptionField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_CODE_DESCRIPTION"
     description = _('Product item code / description')
     length = 35
@@ -947,10 +904,9 @@ class F(InvoiceFieldDescription):
                 code.replace(' ', '0'),
                 sale_item.get_description())
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemDescriptionField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_DESCRIPTION"
     description = _('Product item description')
     length = 30
@@ -960,10 +916,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.products:
             yield '%s' % sale_item.get_description()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemCodeField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_CODE"
     description = _('Product item code')
     length = 5
@@ -974,10 +929,9 @@ class F(InvoiceFieldDescription):
             code = '%05s' % sale_item.sellable.code
             yield code[-width:]
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemCodeSituationField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_CODE_SITUATION"
     description = _('Product item situation')
     length = 1
@@ -987,10 +941,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.products:
             yield 'N'
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemCodeUnitField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_CODE_UNIT"
     description = _('Product item unit')
     length = 2
@@ -1000,10 +953,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.products:
             yield sale_item.sellable.get_unit_description()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemQuantityField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_QUANTITY"
     description = _('Product item quantity')
     length = 5
@@ -1013,10 +965,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.products:
             yield sale_item.quantity
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemPriceField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_PRICE"
     description = _('Product item price')
     length = 5
@@ -1026,10 +977,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.products:
             yield sale_item.price
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemTotalField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_TOTAL"
     description = _('Product item total (price * quantity)')
     length = 7
@@ -1039,10 +989,9 @@ class F(InvoiceFieldDescription):
         for sale_item in self.sale.products:
             yield sale_item.get_total()
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class ProductItemTaxField(InvoiceFieldDescription):
     name = u"PRODUCT_ITEM_TAX"
     description = _('Product item tax')
     length = 2
@@ -1057,10 +1006,9 @@ class F(InvoiceFieldDescription):
                 value = None
             yield value
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class InvoiceTypeField(InvoiceFieldDescription):
     name = u"INVOICE_TYPE"
     description = _("Invoice Type")
     length = 10
@@ -1068,10 +1016,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.invoice.type
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class CfopField(InvoiceFieldDescription):
     name = u"CFOP"
     length = 4
 
@@ -1079,10 +1026,9 @@ class F(InvoiceFieldDescription):
         if self.sale.cfop:
             return self.sale.cfop.code
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class StateRegistryField(InvoiceFieldDescription):
     name = u"STATE_REGISTRY"
     description = _("State registry number")
     length = 14
@@ -1090,10 +1036,9 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.branch.person.company.state_registry
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class CityRegistryField(InvoiceFieldDescription):
     name = u"CITY_REGISTRY"
     description = _("City registry number")
     length = 14
@@ -1101,24 +1046,21 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         return self.sale.branch.person.company.city_registry
 
-_add_invoice_field(F)
 
-
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class InscrEstadualSubstitudoField(InvoiceFieldDescription):
     name = u"INSCR_ESTADUAL_SUBSTITUTO_TRIB"
     length = 4
 
     def fetch(self, width, height):
         return ''
-_add_invoice_field(F)
 
 
-class F(InvoiceFieldDescription):
+@_register_invoice_field
+class InvoiceNumberField(InvoiceFieldDescription):
     name = u"INVOICE_NUMBER"
     description = _(u"Invoice number")
     length = 6
 
     def fetch(self, width, height):
         return '%09d' % self.sale.invoice_number
-
-_add_invoice_field(F)

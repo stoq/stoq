@@ -45,7 +45,6 @@ DISABLED = [
     'C0322',  # Operator not preceded by a space
 
     # Errors
-    'E0102',  # TODO: class already defined
     'E1002',  # Use of super on an old style class
     'E1101',  # Instance of XXX has no yyy member
     'E1102',  # TODO: class is not callable
