@@ -225,6 +225,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
                 lower, upper, digits, step, page = self.optical_widgets[element]
                 widget = _setup_widget(name, lower, upper, digits, step, page)
                 widget.connect('validate', self._on_field_validate, element)
+                widget.connect('event', self._on_event)
                 if element in ['near_spherical', 'distance_spherical',
                                'addition']:
                     widget.connect_after('changed', self._after_spherical_field_changed, eye, element)
@@ -233,6 +234,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             lower, upper, digits, step, page = self.frame_widgets[name]
             widget = _setup_widget(name, lower, upper, digits, step, page)
             widget.connect('validate', self._on_frame_field_validate, name)
+            widget.connect('event', self._on_event)
 
         return widget_names
 
@@ -273,6 +275,23 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     #
     #   Callbacks
     #
+
+    def _on_event(self, widget, event):
+        """This callback will select the text when the user clicks the entry,
+        making it easier for him to change the value
+        (just like if he was navigating using the tab key)
+        """
+        if event.type == gtk.gdk.FOCUS_CHANGE:
+            # Create a flag to control the focus change between widgets
+            self._focus_change = True
+
+        elif event.type == gtk.gdk.BUTTON_RELEASE:
+            if self._focus_change:
+                # Select all text on entry box
+                widget.select_region(0, -1)
+
+            # Set flag false to avoid text selection if focus hasn't changed
+            self._focus_change = False
 
     def _on_field_validate(self, widget, value, field):
         if value == 0:
