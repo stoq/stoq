@@ -53,12 +53,11 @@ DISABLED = [
     'E1121',  # TODO: Too many positional arguments for function call
     'E0211',  # Method has no argument - Interfaces
     'E0213',  # Method should have "self" as first argument - Interfaces
-    'E0611',  # Pylint is confused about GTK
+    'E0611',  # Pylint is confused about modules it cannot import
     'E0702',  # Raising NoneType while only classes, instances or string
     'E0710',  # Raising a new style class which doesn't inherit from Base
 
     # Fatal
-    'F0202',  # Bug in pylint
     'F0401',  # Unable to import 'gudev'
 
     # Info
