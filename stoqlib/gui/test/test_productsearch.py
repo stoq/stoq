@@ -54,6 +54,13 @@ from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
 
 
 class TestProductSearch(GUITest):
+    def tearDown(self):
+        GUITest.tearDown(self)
+
+        # Reset the permitions so they wont influence other tests
+        pm = PermissionManager.get_permission_manager()
+        pm.set('Product', PermissionManager.PERM_ALL)
+
     def _show_search(self):
         search = ProductSearch(self.store)
         search.search.refresh()

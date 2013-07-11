@@ -40,7 +40,6 @@ from stoqlib.gui.wizards.stockdecreasewizard import (StockDecreaseWizard,
                                                      DecreaseItemStep)
 from stoqlib.gui.wizards.stocktransferwizard import (StockTransferWizard,
                                                      StockTransferItemStep)
-from stoqlib.lib.permissions import PermissionManager
 
 
 class BaseTest(object):
@@ -50,10 +49,6 @@ class BaseTest(object):
 
     def setUp(self):
         super(BaseTest, self).setUp()
-
-        # The final interface depends on this
-        pm = PermissionManager.get_permission_manager()
-        pm.set('Product', PermissionManager.PERM_ALL)
 
         self.wizard = self.wizard_class(self.store)
         self.step = self.step_class(self.wizard, None, self.store, self.wizard.model)
