@@ -25,7 +25,6 @@
 """Interface for manipulating Device Constants"""
 
 import re
-import string
 
 import gtk
 from kiwi.decorators import signal_block
@@ -51,12 +50,15 @@ def dec2hex(dec):
 
 
 def hex2dec(hex):
+    # pylint: disable=W0402
+    import string
     dec = ""
     for data in _HEX_REGEXP.findall(hex):
         data = data.zfill(2).decode("hex")
         if not data in string.printable:
             data = UNKNOWN_CHARACTER
         dec += data
+    # pylint: enable=W0402
     return dec
 
 

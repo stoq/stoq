@@ -88,7 +88,6 @@ DISABLED = [
     'W0231',  # __init__ method from base class is not called
     'W0232',  # Class has no __init__ method
     'W0233',  # __init__ method from a non direct base class is called
-    'W0402',  # Uses of a deprecated module 'string'
     'W0404',  # TODO: Reimport 'XX'
     'W0511',  # FIXME/TODO/XXX
     'W0603',  # Using the global statement

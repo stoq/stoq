@@ -25,7 +25,6 @@
 """Generate a CAT archive from the Stoqlib domain classes."""
 
 import os
-import string
 
 from kiwi.component import get_utility
 from storm.expr import And
@@ -76,7 +75,10 @@ class StoqlibCATGenerator(object):
 
     def _get_file_name(self):
         # FFM12345.DMA
+        # pylint: disable=W0402
+        import string
         base = string.digits + string.uppercase
+        # pylint: enable=W0402
 
         brand = BRAND_CODES[self.printer.brand]
         model = MODEL_CODES[(self.printer.brand, self.printer.model)]
