@@ -74,7 +74,8 @@ DISABLED = [
     'R0913',  # Too many arguments
     'R0915',  # Too many statements
     'R0914',  # Too many local variables
-    'R0921',  # TODO: Abstract class not referenced
+    'R0921',  # Abstract class not referenced
+              # Bug in Pylint: http://www.logilab.org/ticket/111138
     'R0922',  # Abstract class is only referenced 1 times
 
     # Warnings
@@ -82,7 +83,6 @@ DISABLED = [
     'W0102',  # Dangerous default value [] as argument
     'W0104',  # Statement seems to have no effect
     'W0105',  # String statement has no effect
-    'W0109',  # TODO: Duplicate key 'XX' in dictionary
     'W0141',  # TODO: Used builtin function 'map'
     'W0142',  # Used * or ** magic
     'W0201',  # Attribute 'loaded_uis' defined outside __init__
