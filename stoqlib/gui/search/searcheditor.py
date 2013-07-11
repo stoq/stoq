@@ -82,6 +82,7 @@ class SearchEditor(SearchDialog):
         it uses the rest of the available width.
 
     """
+    editor_class = None
     has_new_button = has_edit_button = True
     model_list_lookup_attr = 'id'
 

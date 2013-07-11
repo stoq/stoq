@@ -51,7 +51,6 @@ DISABLED = [
     'E1103',  # Instance of XXX has no yyy member (some not inferred)
     'E1120',  # No value passed for parameter 'xxx' in function call
     'E1121',  # TODO: Too many positional arguments for function call
-    'E0203',  # TODO: Access to member before its definition
     'E0211',  # Method has no argument - Interfaces
     'E0213',  # Method should have "self" as first argument - Interfaces
     'E0611',  # Pylint is confused about GTK
