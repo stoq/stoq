@@ -278,11 +278,13 @@ class BasicDialog(GladeDelegate, RunnableView):
     def action_area(self):
         return self.get_toplevel().action_area
 
-    def set_message(self, message, message_type=gtk.MESSAGE_INFO):
+    def set_message(self, message, message_type=None):
         """Sets a message for this editor
         :param message: message to add or None to remove previous message
         :param message_type: type of message to add
         """
+        if message_type is None:
+            message_type = gtk.MESSAGE_INFO
         if self._message_bar is not None:
             self._message_bar.destroy()
             self._message_bar = None
@@ -434,7 +436,9 @@ class DialogSystemNotifier:
     def error(self, short, description):
         error(short, description, get_current_toplevel())
 
-    def yesno(self, text, default=gtk.RESPONSE_YES, *verbs):
+    def yesno(self, text, default=None, *verbs):
+        if default is None:
+            default = gtk.RESPONSE_YES
         if len(verbs) != 2:
             raise ValueError(
                 "Button descriptions must be a tuple with 2 items")

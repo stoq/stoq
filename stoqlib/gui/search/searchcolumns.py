@@ -107,10 +107,12 @@ class IdentifierColumn(SearchColumn):
     """
 
     def __init__(self, attribute, title=None, data_type=int,
-                 format_func=str, width=60, justify=gtk.JUSTIFY_RIGHT,
+                 format_func=str, width=60, justify=None,
                  **kwargs):
         if title is None:
             title = _(u"#")
+        if justify is None:
+            justify = gtk.JUSTIFY_RIGHT
 
         super(IdentifierColumn, self).__init__(
             attribute=attribute, title=title, data_type=data_type,

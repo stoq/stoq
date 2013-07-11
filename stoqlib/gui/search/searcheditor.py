@@ -87,7 +87,7 @@ class SearchEditor(SearchDialog):
 
     def __init__(self, store, editor_class=None, interface=None,
                  search_spec=None, hide_footer=True,
-                 title='', selection_mode=gtk.SELECTION_BROWSE,
+                 title='', selection_mode=None,
                  hide_toolbar=False, double_click_confirm=False):
         """
         Create a new SearchEditor object.
@@ -107,6 +107,8 @@ class SearchEditor(SearchDialog):
           confirm the dialog, instead of opening the editor).
         """
 
+        if selection_mode is None:
+            selection_mode = gtk.SELECTION_BROWSE
         self.interface = interface
         self._read_only = False
         self._message_bar = None

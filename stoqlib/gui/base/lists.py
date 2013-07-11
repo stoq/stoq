@@ -49,11 +49,13 @@ class ModelListSlave(ListSlave):
     columns = None
 
     def __init__(self, parent=None, store=None,
-                 orientation=gtk.ORIENTATION_VERTICAL):
+                 orientation=None):
         """
         Create a new ModelListDialog object.
         :param store: a store connection
         """
+        if orientation is None:
+            orientation = gtk.ORIENTATION_VERTICAL
         if self.columns is None:
             fmt = "%s needs to set it's columns attribute"
             raise TypeError(fmt % (self.__class__.__name__, ))

@@ -69,7 +69,7 @@ class ProductSearch(SearchEditor):
     footer_ok_label = _('Add products')
 
     def __init__(self, store, hide_footer=True, hide_toolbar=False,
-                 selection_mode=gtk.SELECTION_BROWSE,
+                 selection_mode=None,
                  hide_cost_column=False, use_product_statuses=None,
                  hide_price_column=False):
         """
@@ -86,6 +86,8 @@ class ProductSearch(SearchEditor):
         :param hide_price_column: if it's True no need to show the
                                   column 'price'
         """
+        if selection_mode is None:
+            selection_mode = gtk.SELECTION_BROWSE
         self.use_product_statuses = use_product_statuses
         self.hide_cost_column = hide_cost_column
         self.hide_price_column = hide_price_column
@@ -443,9 +445,11 @@ class ProductClosedStockSearch(ProductSearch):
     has_new_button = False
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True,
-                 selection_mode=gtk.SELECTION_BROWSE,
+                 selection_mode=None,
                  hide_cost_column=True, use_product_statuses=None,
                  hide_price_column=True):
+        if selection_mode is None:
+            selection_mode = gtk.SELECTION_BROWSE
         ProductSearch.__init__(self, store, hide_footer, hide_toolbar,
                                selection_mode, hide_cost_column,
                                use_product_statuses, hide_price_column)

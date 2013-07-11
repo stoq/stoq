@@ -52,9 +52,11 @@ class ServiceSearch(SearchEditor):
     footer_ok_label = _('Add services')
 
     def __init__(self, store, hide_footer=True, hide_toolbar=False,
-                 selection_mode=gtk.SELECTION_BROWSE,
+                 selection_mode=None,
                  hide_cost_column=False, use_product_statuses=None,
                  hide_price_column=False):
+        if selection_mode is None:
+            selection_mode = gtk.SELECTION_BROWSE
         self.hide_cost_column = hide_cost_column
         self.hide_price_column = hide_price_column
         self.use_product_statuses = use_product_statuses

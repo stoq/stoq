@@ -468,11 +468,13 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         """
         self.main_dialog.set_confirm_widget(widget_name)
 
-    def set_message(self, message, message_type=gtk.MESSAGE_INFO):
+    def set_message(self, message, message_type=None):
         """Sets a message for this editor
         :param message: message to add
         :param message_type: type of message to add
         """
+        if message_type is None:
+            message_type = gtk.MESSAGE_INFO
         self.main_dialog.set_message(message, message_type)
 
     # RunnableView

@@ -55,7 +55,7 @@ class SellableSearch(SearchEditor):
     search_label = _('Show items matching:')
 
     def __init__(self, store, hide_footer=False, hide_toolbar=True,
-                 selection_mode=gtk.SELECTION_BROWSE, search_str=None,
+                 selection_mode=None, search_str=None,
                  sale_items=None, quantity=None, double_click_confirm=False,
                  info_message=None):
         """
@@ -72,6 +72,8 @@ class SellableSearch(SearchEditor):
         :param double_click_confirm: If double click a item in the list should
             automatically confirm
         """
+        if selection_mode is None:
+            selection_mode = gtk.SELECTION_BROWSE
         self._first_search = True
         self._first_search_string = search_str
         self.quantity = quantity
