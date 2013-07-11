@@ -79,8 +79,14 @@ jenkins: check-source-all
 	tar xfz stoq-$$VERSION.tar.gz; \
 	cd stoq-$$VERSION; \
 	python runtests.py \
+	    --with-xcoverage \
 	    --with-xunit \
-	    $(TEST_MODULES)
+	    --cover-package=stoq,stoqlib,plugins \
+	    --cover-erase \
+	    --cover-inclusive \
+	    $(TEST_MODULES); \
+	cd ../..; \
+	tools/validatecoverage jenkins-test/stoq-$$VERSION/coverage.xml
 
 external:
 	@cat requirements.txt | \
