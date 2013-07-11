@@ -271,5 +271,4 @@ def register_config(config):
 
 
 def get_config():
-    global _config
     return _config

@@ -476,7 +476,6 @@ class KeyBindingGroup(object):
 
 
 def add_bindings(bindings):
-    global _bindings
     _bindings.extend(bindings)
 
 
@@ -489,12 +488,10 @@ def load_user_keybindings():
 
 
 def set_user_binding(binding, value):
-    global _user_bindings
     _user_bindings[binding] = value
 
 
 def remove_user_binding(binding):
-    global _user_bindings
     try:
         del _user_bindings[binding]
     except KeyError:
@@ -507,7 +504,6 @@ def remove_user_bindings():
 
 
 def get_bindings(category=None):
-    global _bindings
     for binding in _bindings:
         if category is not None and not binding[0].startswith(category):
             continue

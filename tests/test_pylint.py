@@ -42,6 +42,7 @@ DISABLED = [
     'C0301',  # Line too long
     'C0302',  # Too many lines in module
     'C0322',  # Operator not preceded by a space
+              # bug in pylint: Only happens for keyword lambda arguments
 
     # Errors
     'E1101',  # Instance of XXX has no yyy member
@@ -94,7 +95,6 @@ DISABLED = [
     'W0402',  # Uses of a deprecated module 'string'
     'W0404',  # TODO: Reimport 'XX'
     'W0511',  # FIXME/TODO/XXX
-    'W0602',  # Using global for 'xxx' but no assignment is done
     'W0603',  # Using the global statement
     'W0612',  # Unused variable
     'W0613',  # Unused argument
