@@ -182,6 +182,21 @@ class TestReceivingOrder(DomainTest):
             else:
                 self.failIf(pay.value <= payment_dict[pay])
 
+    def test_receiving_with_cif_freight(self):
+        from stoqlib.domain.purchase import PurchaseOrder
+        from stoqlib.domain.receiving import ReceivingOrder
+        purchase = self.create_purchase_order()
+        purchase.freight_type = PurchaseOrder.FREIGHT_CIF
+
+        order = self.create_receiving_order(purchase_order=purchase)
+        self.assertEqual(order.guess_freight_type(),
+                         ReceivingOrder.FREIGHT_CIF_UNKNOWN)
+
+        purchase.expected_freight = 10
+        order = self.create_receiving_order(purchase_order=purchase)
+        self.assertEqual(order.guess_freight_type(),
+                         ReceivingOrder.FREIGHT_CIF_INVOICE)
+
 
 class TestReceivingOrderItem(DomainTest):
 
