@@ -435,6 +435,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         for p in self.payment_list:
             if p.payment_number is None or p.payment_number == u'':
                 return False
+        return True
 
     def is_payment_list_valid(self):
         if not self.are_due_dates_valid():
@@ -656,16 +657,27 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def after_first_duedate__changed(self, *args):
         self.setup_payments()
 
-    def after_bank_id__changed(self, *args):
+    def after_bank_id__changed(self, widget):
+        # FIXME: When the last character of the entry is removed, kiwi does not
+        # update the model anymore, leaving the last valid content as the value
+        # of the model.
+        if widget.read() == ValueUnset:
+            self.model.bank_id = None
         self.setup_payments()
 
-    def after_bank_branch__changed(self, *args):
+    def after_bank_branch__changed(self, widget):
+        if widget.read() == ValueUnset:
+            self.model.bank_branch = None
         self.setup_payments()
 
-    def after_bank_account__changed(self, *args):
+    def after_bank_account__changed(self, widget):
+        if widget.read() == ValueUnset:
+            self.model.bank_account = None
         self.setup_payments()
 
     def after_bank_first_check_number__changed(self, widget):
+        if widget.read() == ValueUnset:
+            self.model.bank_first_check_number = None
         self.setup_payments()
 
     def on_installments_number__validate(self, widget, value):

@@ -89,6 +89,30 @@ class TestCheckPaymentSlaves(GUITest):
                                  Decimal(200))
         self.check_slave(slave, 'slave-check-method')
 
+    def test_check_payment_mandatory_check_number(self):
+        sysparam(self.store).update_parameter(u'MANDATORY_CHECK_NUMBER', u'True')
+
+        wizard = PurchaseWizard(self.store)
+
+        method = PaymentMethod.get_by_name(self.store, u'check')
+        order = self.create_purchase_order()
+        order.identifier = 123456
+        CheckMethodSlave(wizard, None, self.store, order, method, Decimal(200))
+
+        self.assertNotSensitive(wizard, ['next_button'])
+
+    def test_check_payment(self):
+        sysparam(self.store).update_parameter(u'MANDATORY_CHECK_NUMBER', u'False')
+
+        wizard = PurchaseWizard(self.store)
+
+        method = PaymentMethod.get_by_name(self.store, u'check')
+        order = self.create_purchase_order()
+        order.identifier = 1234567
+        CheckMethodSlave(wizard, None, self.store, order, method, Decimal(200))
+
+        self.assertSensitive(wizard, ['next_button'])
+
 
 class TestCardPaymentSlaves(GUITest):
     def test_create(self):

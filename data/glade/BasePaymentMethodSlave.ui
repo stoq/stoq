@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="BasePaymentMethodSlave">
     <property name="default_width">250</property>

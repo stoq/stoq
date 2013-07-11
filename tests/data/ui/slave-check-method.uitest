@@ -30,7 +30,7 @@ GtkFrame(frame1):
           column: title='Bank ID'
           column: title='Bank branch'
           column: title='Bank account'
-          column: title='Number'
+          column: title='Number (*)'
           column: title='Due date'
           column: title='Value'
           row: u'1/1 Check for order 12345', None, None, None, None, date.today(), <currency $200>
