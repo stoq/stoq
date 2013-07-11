@@ -123,30 +123,29 @@ class DependencyChecker(object):
         raise SystemExit
 
     def _missing(self, project, url=None, version=None):
-        msg = _("""<b>%s</b> could not be found on your system.
-%s %s or higher is required for Stoq to run.
-
-You can find a recent version of %s on it's homepage at\n%s""") % (
+        msg = _("<b>%s</b> could not be found on your system.\n"
+                "%s %s or higher is required for Stoq to run.\n\n"
+                "You can find a recent version of %s on it's homepage at\n%s") % (
             project, project, _tuple2str(version),
             project, url)
 
         self._error(_("Missing dependency"), msg)
 
     def _too_old(self, project, url=None, required=None, found=None):
-        msg = _("""<b>%s</b> was found on your system, but it is
-too old for Stoq to be able to run. %s %s was found, but %s is required.
-
-You can find a recent version of %s on it's homepage at\n%s""") % (
+        msg = _("<b>%s</b> was found on your system, but it is\n"
+                "too old for Stoq to be able to run. %s %s was found, "
+                "but %s is required.\n\n"
+                "You can find a recent version of %s on it's homepage at\n%s") % (
             project, project, found, _tuple2str(required),
             project, url)
 
         self._error(_("Out-dated dependency"), msg)
 
     def _incompatible(self, project, url=None, required=None, found=None):
-        msg = _("""<b>%s</b> was found on your system, but its version,
-%s incompatible with Stoq, you need to downgrade to %s for Stoq to work.
-
-You can find an older version of %s on it's homepage at\n%s""") % (
+        msg = _("<b>%s</b> was found on your system, but its version,\n"
+                "%s incompatible with Stoq, you need to downgrade to %s "
+                "for Stoq to work.\n\n"
+                "You can find an older version of %s on it's homepage at\n%s") % (
             project, found, _tuple2str(required),
             project, url)
 
