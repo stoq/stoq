@@ -583,7 +583,6 @@ class ProductBranchSearch(SearchDialog):
 
 
 def test():  # pragma: no cover
-    from stoqlib.api import api
     from stoqlib.gui.base.dialogs import run_dialog
     ec = api.prepare_test()
     run_dialog(ProductSearch, None, ec.store)

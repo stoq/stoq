@@ -252,7 +252,6 @@ class ObjectListReport(TableReport):
         for c in self._objectlist.get_columns():
             if not c.treeview_column.get_visible():
                 continue
-            import gtk
             if c.data_type == gtk.gdk.Pixbuf:
                 continue
 

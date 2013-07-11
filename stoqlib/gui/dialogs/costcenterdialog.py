@@ -182,7 +182,6 @@ class CostCenterDialog(BaseEditor):
 def test():  # pragma: no cover
     from stoqlib.gui.base.dialogs import run_dialog
 
-    from stoqlib.api import api
     ec = api.prepare_test()
     model = ec.store.find(CostCenter).any()
     run_dialog(CostCenterDialog, None, ec.store, model)

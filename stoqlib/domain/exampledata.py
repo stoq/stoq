@@ -871,7 +871,6 @@ class ExampleCreator(object):
         return PaymentComment(store=self.store, comment=comment)
 
     def create_sellable_tax_constant(self):
-        from stoqdrivers.enum import TaxType
         from stoqlib.domain.sellable import SellableTaxConstant
         return SellableTaxConstant(description=u"18",
                                    tax_type=int(TaxType.CUSTOM),

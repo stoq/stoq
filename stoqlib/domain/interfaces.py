@@ -24,9 +24,12 @@
 ##
 """ Interfaces definition for all domain classes """
 
+# pylint: disable=E0102,E0211,E0213,W0404
+
 from zope.interface import Attribute, Interface
 
-# pylint: disable=E0102,E0211,E0213
+# pylint: enable=W0404
+
 
 #
 # Interfaces
@@ -121,3 +124,5 @@ class IReversal(Interface):
         """Takes a financial entry and reverse it, creating a new instance
         with an oposite value
         """
+
+# pylint: enable=E0102,E0211,E0213
