@@ -103,7 +103,8 @@ class GnuCashXMLImporter(Importer):
             elif data[:2] == '\x1f\x8b':
                 use_gzip = True
             else:
-                raise ValueError("Unknown content in filename: " % (filename, ))
+                raise ValueError("Unknown content in filename: %s" % (
+                    filename, ))
 
         fp = open(filename)
         if use_gzip:
