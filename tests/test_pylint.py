@@ -39,7 +39,6 @@ DISABLED = [
     'C0103',  # Invalid name "xxx" for type variable
               #  (should match [a-z_][a-z0-9_]{2,30}$)
     'C0111',  # Missing docstring
-    'C0202',  # Class method xxx should have 'cls' as first argument
     'C0301',  # Line too long
     'C0302',  # Too many lines in module
     'C0322',  # Operator not preceded by a space
