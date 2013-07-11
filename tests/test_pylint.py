@@ -107,7 +107,6 @@ DISABLED = [
     'W0702',  # No exception type(s) specified
     'W0703',  # Catching too general exception Exception
     'W0704',  # Except doesn't do anything
-    'W1401',  # Anomalous backslash in string: '\d'
 ]
 
 if pylint.__pkginfo__.numversion >= (0, 26):

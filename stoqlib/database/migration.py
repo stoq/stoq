@@ -171,7 +171,8 @@ class SchemaMigration(object):
 
     def _patchname_is_valid(self, filename):
         # simple checking of the patch naming convention
-        valid_patterns = ["patch-\d\d-\d\d.sql", "patch-\d\d-\d\d.py"]
+        valid_patterns = [r"patch-\d\d-\d\d.sql",
+                          r"patch-\d\d-\d\d.py"]
         for valid_pattern in valid_patterns:
             if re.match(valid_pattern, filename) is not None:
                 return True

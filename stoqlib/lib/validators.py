@@ -98,7 +98,7 @@ def validate_area_code(code):
 
 
 def validate_cpf(cpf):
-    cpf = ''.join(re.findall('\d', str(cpf)))
+    cpf = ''.join(re.findall(r'\d', str(cpf)))
 
     if not cpf or len(cpf) < 11:
         return False
@@ -130,7 +130,7 @@ def validate_cnpj(cnpj):
     :param cnpj: the cnpj to validate. Can be a string or number. If it's a
       string, only the digits will be used.
     """
-    cnpj = ''.join(re.findall('\d', str(cnpj)))
+    cnpj = ''.join(re.findall(r'\d', str(cnpj)))
 
     if not cnpj or len(cnpj) < 14:
         return False
@@ -238,5 +238,5 @@ def validate_percentage(value):
 def validate_email(value):
     """Try to validate an email address.
     """
-    exp = "^[^@]+@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$"
+    exp = r"^[^@]+@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$"
     return re.match(exp, value) is not None
