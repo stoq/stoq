@@ -119,7 +119,7 @@ class ParameterSearch(BaseEditor):
         for param in self._parameters:
             if (query not in param.get_group().lower() and
                 query not in param.get_short_description().lower()):
-                    self.results.remove(param)
+                self.results.remove(param)
 
     #
     # Kiwi Callbacks

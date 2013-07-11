@@ -86,14 +86,13 @@ DISABLED = [
     'W0141',  # TODO: Used builtin function 'map'
     'W0142',  # Used * or ** magic
     'W0201',  # Attribute 'loaded_uis' defined outside __init__
-    'W0212',  # Method could be a function (SQLObject from/to_python)
+    'W0212',  # Access to protected member
     'W0222',  # Signature differs from overriden method
     'W0221',  # Arguments number differs from overriden method
     'W0223',  # Method 'add' is abstract in class 'xxx' but is not overriden
     'W0231',  # __init__ method from base class is not called
     'W0232',  # Class has no __init__ method
     'W0233',  # __init__ method from a non direct base class is called
-    'W0311',  # TODO: Bad indentation
     'W0402',  # Uses of a deprecated module 'string'
     'W0404',  # TODO: Reimport 'XX'
     'W0511',  # FIXME/TODO/XXX
