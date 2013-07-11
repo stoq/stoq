@@ -133,11 +133,13 @@ class TableReport(HTMLReport):
     template_filename = "objectlist.html"
 
     def __init__(self, filename, data, title=None, blocked_records=0,
-                 status_name=None, filter_strings=[], status=None):
+                 status_name=None, filter_strings=None, status=None):
         self.title = title or self.title
         self.blocked_records = blocked_records
         self.status_name = status_name
         self.status = status
+        if filter_strings is None:
+            filter_strings = []
         self.filter_strings = filter_strings
         self.data = data
         self.columns = self.get_columns()
