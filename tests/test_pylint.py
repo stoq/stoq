@@ -78,7 +78,6 @@ DISABLED = [
     'R0922',  # Abstract class is only referenced 1 times
 
     # Warnings
-    'W0101',  # TODO: Unreachable code
     'W0102',  # Dangerous default value [] as argument
     'W0104',  # Statement seems to have no effect
     'W0105',  # String statement has no effect

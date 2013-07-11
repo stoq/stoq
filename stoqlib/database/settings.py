@@ -412,8 +412,8 @@ class DatabaseSettings(object):
                     log.info("Dropped database %s" % (dbname, ))
                     break
                 except Exception as e:
+                    # time.sleep(1)
                     raise
-                    time.sleep(1)
             else:
                 if _database_exists(super_store, dbname):
                     raise e

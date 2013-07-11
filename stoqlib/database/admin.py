@@ -31,7 +31,6 @@ tables, removing tables and configuring administration user.
 import glob
 import logging
 import os
-import sys
 import tempfile
 
 from kiwi.component import provide_utility
@@ -53,7 +52,6 @@ from stoqlib.domain.profile import ProfileSettings, UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.exceptions import StoqlibError
 from stoqlib.importers.invoiceimporter import InvoiceImporter
-from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.message import error
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.template import render_template_string
@@ -398,9 +396,9 @@ def initialize_system(password=None, testsuite=False,
         if not testsuite:
             create_default_profile_settings()
             ensure_admin_user(password)
-    except Exception as e:
+    except Exception:
+        # if not testsuite:
+        #     collect_traceback(sys.exc_info(), submit=True)
+        # raise SystemExit("Could not initialize system: %r" % (e, ))
         raise
-        if not testsuite:
-            collect_traceback(sys.exc_info(), submit=True)
-        raise SystemExit("Could not initialize system: %r" % (e, ))
     create_log("INIT DONE")

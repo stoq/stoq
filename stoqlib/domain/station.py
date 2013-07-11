@@ -28,7 +28,6 @@ from zope.interface import implementer
 
 from stoqlib.database.properties import UnicodeCol, BoolCol, IdCol
 from stoqlib.domain.base import Domain
-from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IActive
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
@@ -99,12 +98,12 @@ class BranchStation(Domain):
     # Events
 
     def on_create(self):
-        # Should be done after_create()
         return
-        fmt = u"Created computer '%s' for branch '%s'"
-        Event.log(self.store,
-                  Event.TYPE_SYSTEM,
-                  _(fmt) % (self.name, self.branch.person.name))
+        # This Should be done after_create()
+        # fmt = u"Created computer '%s' for branch '%s'"
+        # Event.log(self.store,
+        #           Event.TYPE_SYSTEM,
+        #           _(fmt) % (self.name, self.branch.person.name))
 
     #
     # IActive implementation
