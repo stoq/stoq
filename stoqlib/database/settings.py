@@ -435,16 +435,16 @@ class DatabaseSettings(object):
 
         # We are trying to delete another database. This happens when restoring a
         # backup
-        db_settings = self
-        if dbname != db_settings.dbname:
-            db_settings = db_settings.copy()
-            db_settings.dbname = dbname
+        db_settings_ = self
+        if dbname != db_settings_.dbname:
+            db_settings_ = db_settings_.copy()
+            db_settings_.dbname = dbname
 
         # There is no database. Safe to drop.
-        if not db_settings.has_database():
+        if not db_settings_.has_database():
             return False
 
-        store = db_settings.create_store()
+        store = db_settings_.create_store()
 
         # There is no transaction_entry table. Safe to drop.
         if not store.table_exists('transaction_entry'):

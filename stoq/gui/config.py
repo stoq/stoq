@@ -417,7 +417,7 @@ class TefStep(WizardEditorStep):
             self.wizard.tef_request_done = True
             self.wizard.go_to_next()
 
-    def _on_response_error(self, error):
+    def _on_response_error(self, err):
         self._show_error()
 
 
@@ -580,7 +580,7 @@ class InstallPostgresStep(BaseWizardStep):
     #   Callbacks
     #
 
-    def _on_apt_install__done(self, api, error):
+    def _on_apt_install__done(self, apt, err):
         if error is not None:
             warning(_("Something went wrong while trying to install "
                       "the PostgreSQL server."))
@@ -596,7 +596,7 @@ class InstallPostgresStep(BaseWizardStep):
             #        to tell him that postgres installation succeeded.
             self.wizard.go_to_next()
 
-    def _on_apt_install__auth_failed(self, api):
+    def _on_apt_install__auth_failed(self, apt):
         self.wizard.enable_back()
         self.wizard.enable_next()
         self.label.set_markup(

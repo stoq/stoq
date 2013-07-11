@@ -60,6 +60,10 @@ person_document = PersonDocument()
 # This is not actually a state, it's more like a country subdivsion, see:
 # http://en.wikipedia.org/wiki/Country_subdivision
 
+# FIXME: We don't want to disable this warning, but we have to change
+#        the api to fix it.
+# pylint: disable=W0621
+
 
 class State(object):
     label = _('State')
@@ -79,3 +83,5 @@ class City(object):
         return True
 
 city = City()
+
+# pylint: enable=W0621

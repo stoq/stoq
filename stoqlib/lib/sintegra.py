@@ -28,11 +28,11 @@ from decimal import Decimal
 from stoqlib.lib import latscii
 latscii.register_codec()
 
-number = (int, long, Decimal)
+_number_type = (int, long, Decimal)
 
 
 def argtype_name(argtype):
-    if argtype == number:
+    if argtype == _number_type:
         return 'number'
     else:
         return argtype.__name__
@@ -359,7 +359,7 @@ class SintegraRegister(object):
         if value is None:
             return ' ' * length
 
-        if argtype == number:
+        if argtype == _number_type:
             # If a value is higher the the maximum allowed,
             # set it to the maximum allowed value instead.
             max_value = (10 ** length) - 1
@@ -387,14 +387,14 @@ class SintegraRegister(object):
 class SintegraRegister10(SintegraRegister):
     sintegra_number = 10
     sintegra_fields = [
-        ('cgc', 14, number),
+        ('cgc', 14, _number_type),
         ('estadual', 14, basestring),
         ('company', 35, basestring),
         ('city', 30, basestring),
         ('state', 2, basestring),
-        ('fax', 10, number),
-        ('start_date', 8, number),
-        ('end_date', 8, number),
+        ('fax', 10, _number_type),
+        ('start_date', 8, _number_type),
+        ('end_date', 8, _number_type),
         ('codes', 3, basestring),
         # 1: 1..3
         # 2: 1..3
@@ -407,12 +407,12 @@ class SintegraRegister11(SintegraRegister):
     sintegra_number = 11
     sintegra_fields = [
         ('place', 34, basestring),
-        ('number', 5, number),
+        ('number', 5, _number_type),
         ('complement', 22, basestring),
         ('dibasestringict', 15, basestring),
-        ('postal', 8, number),
+        ('postal', 8, _number_type),
         ('name', 28, basestring),
-        ('phone', 12, number),
+        ('phone', 12, _number_type),
     ]
 
     sintegra_requires = 10,
@@ -423,16 +423,16 @@ class SintegraRegister60M(SintegraRegister):
     sintegra_number = 60
     sintegra_fields = [
         ('type', 1, basestring),
-        ('date', 8, number),
+        ('date', 8, _number_type),
         ('printerserial', 20, basestring),
-        ('printerid', 3, number),
+        ('printerid', 3, _number_type),
         ('model', 2, basestring),
-        ('start_coo', 6, number),
-        ('end_coo', 6, number),
-        ('crz', 6, number),
-        ('cro', 3, number),
-        ('period_total', 16, number),
-        ('total', 16, number),
+        ('start_coo', 6, _number_type),
+        ('end_coo', 6, _number_type),
+        ('crz', 6, _number_type),
+        ('cro', 3, _number_type),
+        ('period_total', 16, _number_type),
+        ('total', 16, _number_type),
     ]
     sintegra_requires = 10, 11
 
@@ -441,10 +441,10 @@ class SintegraRegister60A(SintegraRegister):
     sintegra_number = 60
     sintegra_fields = [
         ('type', 1, basestring),
-        ('date', 8, number),
+        ('date', 8, _number_type),
         ('printerserial', 20, basestring),
         ('tax', 4, basestring),
-        ('total', 12, number),
+        ('total', 12, _number_type),
     ]
     sintegra_requires = 10, 11
 
@@ -453,11 +453,11 @@ class SintegraRegister60R(SintegraRegister):
     sintegra_number = 60
     sintegra_fields = [
         ('type', 1, basestring),
-        ('date', 6, number),
+        ('date', 6, _number_type),
         ('product_code', 14, basestring),
-        ('product_quantity', 13, number),
-        ('total_liquido_produto', 16, number),
-        ('total_icms_base', 16, number),
+        ('product_quantity', 13, _number_type),
+        ('total_liquido_produto', 16, _number_type),
+        ('total_icms_base', 16, _number_type),
         ('icms_aliquota', 4, basestring),
         ('blank', 54, basestring),
     ]
@@ -466,21 +466,21 @@ class SintegraRegister60R(SintegraRegister):
 class SintegraRegister50(SintegraRegister):
     sintegra_number = 50
     sintegra_fields = [
-        ('cnpj', 14, number),
+        ('cnpj', 14, _number_type),
         ('estadual', 14, basestring),
-        ('date', 8, number),
+        ('date', 8, _number_type),
         ('state', 2, basestring),
-        ('modelo', 2, number),
+        ('modelo', 2, _number_type),
         ('serial', 3, basestring),
-        ('numero', 6, number),
-        ('cfop', 4, number),
+        ('numero', 6, _number_type),
+        ('cfop', 4, _number_type),
         ('emitente', 1, basestring),
-        ('total', 13, number),
-        ('icms_base', 13, number),
-        ('icms_total', 13, number),
-        ('isenta', 13, number),
-        ('outras', 13, number),
-        ('aliquota_icms', 4, number),
+        ('total', 13, _number_type),
+        ('icms_base', 13, _number_type),
+        ('icms_total', 13, _number_type),
+        ('isenta', 13, _number_type),
+        ('outras', 13, _number_type),
+        ('aliquota_icms', 4, _number_type),
         ('situacao', 1, basestring),
     ]
 
@@ -488,38 +488,38 @@ class SintegraRegister50(SintegraRegister):
 class SintegraRegister54(SintegraRegister):
     sintegra_number = 54
     sintegra_fields = [
-        ('cnpj', 14, number),
-        ('modelo', 2, number),
+        ('cnpj', 14, _number_type),
+        ('modelo', 2, _number_type),
         ('serial', 3, basestring),
-        ('numero', 6, number),
-        ('cfop', 4, number),
+        ('numero', 6, _number_type),
+        ('cfop', 4, _number_type),
         ('cst', 3, basestring),
-        ('numero_item', 3, number),
+        ('numero_item', 3, _number_type),
         ('product_code', 14, basestring),
-        ('product_quantity', 11, number),
-        ('valor_bruto_produto', 12, number),
-        ('desconto', 12, number),
-        ('icms_base', 12, number),
-        ('icms_subst_trib', 12, number),
-        ('ipi', 12, number),
-        ('icms_aliquota', 4, number),
+        ('product_quantity', 11, _number_type),
+        ('valor_bruto_produto', 12, _number_type),
+        ('desconto', 12, _number_type),
+        ('icms_base', 12, _number_type),
+        ('icms_subst_trib', 12, _number_type),
+        ('ipi', 12, _number_type),
+        ('icms_aliquota', 4, _number_type),
     ]
 
 
 class SintegraRegister74(SintegraRegister):
     sintegra_number = 74
     sintegra_fields = [
-        ('inventory_date', 8, number),
+        ('inventory_date', 8, _number_type),
         ('product_code', 14, basestring),
-        ('product_quantity', 13, number),
-        ('total_product_value', 13, number),
+        ('product_quantity', 13, _number_type),
+        ('total_product_value', 13, _number_type),
         # 'owner_code' accept the following values:
         # 1, Mercadorias de propriedade do Informante e em seu poder
         # 2, Mercadorias de propriedade do Informante em poder de terceiros
         # 3, Mercadorias de propriedade de terceiros em poder do Informante
         # according to the document linked in #3708
-        ('owner_code', 1, number),
-        ('owner_cnpj', 14, number),
+        ('owner_code', 1, _number_type),
+        ('owner_cnpj', 14, _number_type),
         # The 'owner_state_registry' field must conform to the value in
         # 'owner_code' eg 'owner_state_registry' must be filled with the
         # company's data that really owns the product.
@@ -532,28 +532,28 @@ class SintegraRegister74(SintegraRegister):
 class SintegraRegister75(SintegraRegister):
     sintegra_number = 75
     sintegra_fields = [
-        ('start_date', 8, number),
-        ('end_date', 8, number),
+        ('start_date', 8, _number_type),
+        ('end_date', 8, _number_type),
         ('product_code', 14, basestring),
         ('ncm', 8, basestring),
         ('descricao', 53, basestring),
         ('unit', 6, basestring),
-        ('aliquota_ipi', 5, number),
-        ('aliquota_icms', 4, number),
-        ('reducao_icms', 5, number),
-        ('base_icms', 13, number),
+        ('aliquota_ipi', 5, _number_type),
+        ('aliquota_icms', 4, _number_type),
+        ('reducao_icms', 5, _number_type),
+        ('base_icms', 13, _number_type),
     ]
 
 
 class SintegraRegister90(SintegraRegister):
     sintegra_number = 90
     sintegra_fields = [
-        ('cgc', 14, number),
+        ('cgc', 14, _number_type),
         ('estadual', 14, basestring),
-        ('type', 2, number),
-        ('registers', 8, number),
+        ('type', 2, _number_type),
+        ('registers', 8, _number_type),
         ('blank', 85, basestring),
-        ('number', 1, number),
+        ('number', 1, _number_type),
     ]
     sintegra_requires = 10, 11
 

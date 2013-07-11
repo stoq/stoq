@@ -277,12 +277,12 @@ class TestProduct(DomainTest):
         self.assertEqual(product.get_max_lead_time(1, branch), 20)
 
         # Now for composed products
-        product = self.create_product(create_supplier=False)
+        product = self.create_product(with_supplier=False)
         product.is_composed = True
         product.production_time = 5
         Storable(product=product, store=self.store)
 
-        component = self.create_product(create_supplier=False)
+        component = self.create_product(with_supplier=False)
         Storable(product=component, store=self.store)
         ProductSupplierInfo(store=self.store, product=component,
                             supplier=supplier1, lead_time=7)

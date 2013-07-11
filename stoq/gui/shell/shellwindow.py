@@ -1092,8 +1092,8 @@ class VersionChecker(object):
 
     def _download_details(self):
         log.debug('Downloading new version information')
-        api = WebService()
-        response = api.version(self.store, stoq.version)
+        webapi = WebService()
+        response = webapi.version(self.store, stoq.version)
         response.addCallback(self._on_response_done)
 
     def _on_response_done(self, details):

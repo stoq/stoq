@@ -88,7 +88,6 @@ DISABLED = [
     'W0603',  # Using the global statement
     'W0612',  # Unused variable
     'W0613',  # Unused argument
-    'W0621',  # Redefining name 'xxx' from outer scope
     'W0622',  # Redefined built-in variable
     'W0623',  # Redefining name 'xxx' from outer scope in exception handler
     'W0702',  # No exception type(s) specified

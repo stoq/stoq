@@ -115,6 +115,10 @@ class State(object):
             return True
         return False
 
+# FIXME: We don't want to disable this warning, but we have to change
+#        the api to fix it.
+# pylint: disable=W0621
+
 state = State()
 
 
@@ -131,3 +135,5 @@ class City(object):
                                    state=state, country=country)
 
 city = City()
+
+# pylint: enable=W0621

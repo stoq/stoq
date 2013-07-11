@@ -63,49 +63,49 @@ def _get_revision(module):
 
 
 def collect_report():
-    report = {}
+    report_ = {}
 
     # Date and uptime
-    report['date'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    report['tz'] = time.tzname
-    report['uptime'] = get_uptime()
-    report['locale'] = get_system_locale()
+    report_['date'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    report_['tz'] = time.tzname
+    report_['uptime'] = get_uptime()
+    report_['locale'] = get_system_locale()
 
     # Python and System
     import platform
-    report['architecture'] = platform.architecture()
-    report['distribution'] = platform.dist()
-    report['python_version'] = tuple(sys.version_info)
-    report['system'] = platform.system()
-    report['uname'] = platform.uname()
+    report_['architecture'] = platform.architecture()
+    report_['distribution'] = platform.dist()
+    report_['python_version'] = tuple(sys.version_info)
+    report_['system'] = platform.system()
+    report_['uname'] = platform.uname()
 
     # Stoq application
     info = get_utility(IAppInfo, None)
     if info and info.get('name'):
-        report['app_name'] = info.get('name')
-        report['app_version'] = info.get('ver')
+        report_['app_name'] = info.get('name')
+        report_['app_version'] = info.get('ver')
 
     # External dependencies
     import gtk
-    report['pygtk_version'] = gtk.pygtk_version
-    report['gtk_version'] = gtk.gtk_version
+    report_['pygtk_version'] = gtk.pygtk_version
+    report_['gtk_version'] = gtk.gtk_version
 
     import kiwi
-    report['kiwi_version'] = kiwi.__version__.version + (_get_revision(kiwi),)
+    report_['kiwi_version'] = kiwi.__version__.version + (_get_revision(kiwi),)
 
     import psycopg2
     try:
         parts = psycopg2.__version__.split(' ')
         extra = ' '.join(parts[1:])
-        report['psycopg_version'] = tuple(map(int, parts[0].split('.'))) + (extra,)
+        report_['psycopg_version'] = tuple(map(int, parts[0].split('.'))) + (extra,)
     except:
-        report['psycopg_version'] = psycopg2.__version__
+        report_['psycopg_version'] = psycopg2.__version__
 
     import reportlab
-    report['reportlab_version'] = reportlab.Version.split('.')
+    report_['reportlab_version'] = reportlab.Version.split('.')
 
     import stoqdrivers
-    report['stoqdrivers_version'] = stoqdrivers.__version__ + (
+    report_['stoqdrivers_version'] = stoqdrivers.__version__ + (
         _get_revision(stoqdrivers),)
 
     # PostgreSQL database server
@@ -114,23 +114,23 @@ def collect_report():
         result = default_store.execute('SHOW server_version;')
         pg_version = result.get_one()
         result.close()
-        report['postgresql_version'] = list(map(int, pg_version[0].split('.')))
+        report_['postgresql_version'] = list(map(int, pg_version[0].split('.')))
     except StoqlibError:
         pass
 
     # Tracebacks
-    report['tracebacks'] = {}
+    report_['tracebacks'] = {}
     for i, trace in enumerate(_tracebacks):
         t = ''.join(traceback.format_exception(*trace))
         # Eliminate duplicates:
         md5sum = hashlib.md5(t).hexdigest()
-        report['tracebacks'][md5sum] = t
+        report_['tracebacks'][md5sum] = t
 
     if info and info.get('log'):
-        report['log'] = open(info.get('log')).read()
-        report['log_name'] = info.get('log')
+        report_['log'] = open(info.get('log')).read()
+        report_['log_name'] = info.get('log')
 
-    return report
+    return report_
 
 
 def collect_traceback(tb, output=True, submit=False):

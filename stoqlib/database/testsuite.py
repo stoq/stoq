@@ -163,7 +163,7 @@ def _provide_app_info():
 
 
 def provide_database_settings(dbname=None, address=None, port=None, username=None,
-                              password=None, create=True):
+                              password=None, createdb=True):
     """
     Provide database settings.
     :param dbname:
@@ -265,7 +265,7 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     #psycopg2.extras.register_uuid()
 
     empty = provide_database_settings(dbname, address, port, username, password,
-                                      create=not quick)
+                                      createdb=not quick)
 
     # Reset the user settings (loaded from ~/.stoq/settings), so that user
     # preferences don't affect the tests.

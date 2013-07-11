@@ -168,9 +168,9 @@ def get_missing_items(order, store):
 
 if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
-    sale = ec.create_sale()
-    sale.status = Sale.STATUS_QUOTE
-    missing = [Settable(description='foo',
-                        ordered=False,
-                        stock=True)]
-    run_dialog(MissingItemsDialog, None, sale, missing)
+    sale_ = ec.create_sale()
+    sale_.status = Sale.STATUS_QUOTE
+    missingitems = [Settable(description='foo',
+                             ordered=False,
+                             stock=True)]
+    run_dialog(MissingItemsDialog, None, sale_, missingitems)

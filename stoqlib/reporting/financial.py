@@ -250,9 +250,9 @@ if __name__ == '__main__':
     import os
     import tempfile
     ec = api.prepare_test()
-    store = api.get_default_store()
-    fir = FinancialIntervalReport(store, year=2012)
-    with tempfile.NamedTemporaryFile(suffix='.xls', delete=False) as temporary:
+    store_ = api.get_default_store()
+    fir = FinancialIntervalReport(store_, year=2012)
+    with tempfile.NamedTemporaryFile(suffix='.xls', delete=False) as temporary_:
         if fir.run():
-            fir.write(temporary)
-        os.system("soffice %s" % (temporary.name, ))
+            fir.write(temporary_)
+        os.system("soffice %s" % (temporary_.name, ))

@@ -92,7 +92,7 @@ def parse_barcode(barcode, fmt=BarcodeInfo.OPTION_4_DIGITS_PRICE):
 
 
 if __name__ == '__main__':  # pragma nocover
-    barcode = '2000100005279'
+    barcode_ = '2000100005279'
     # 2 0001 00 00527 9
 
     print(parse_barcode('2000100005279', BarcodeInfo.OPTION_4_DIGITS_PRICE))

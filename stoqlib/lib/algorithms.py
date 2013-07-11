@@ -62,11 +62,11 @@ def modulo10(num):
 
     resto10 = soma % 10
     if resto10 == 0:
-        modulo10 = 0
+        valor = 0
     else:
-        modulo10 = 10 - resto10
+        valor = 10 - resto10
 
-    return modulo10
+    return valor
 
 
 def modulo11(num, base=9, r=0):

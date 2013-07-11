@@ -407,7 +407,7 @@ class ExampleCreator(object):
 
     def create_product_supplier_info(self, supplier=None, product=None):
         from stoqlib.domain.product import ProductSupplierInfo
-        product = product or self.create_product(create_supplier=False)
+        product = product or self.create_product(with_supplier=False)
         supplier = supplier or self.create_supplier()
         return ProductSupplierInfo(
             store=self.store,
@@ -416,11 +416,11 @@ class ExampleCreator(object):
             is_main_supplier=True,
         )
 
-    def create_product(self, price=None, create_supplier=True,
+    def create_product(self, price=None, with_supplier=True,
                        branch=None, stock=None, storable=False, code=u''):
         from stoqlib.domain.product import Storable, StockTransactionHistory
         sellable = self.create_sellable(price=price, code=code)
-        if create_supplier:
+        if with_supplier:
             self.create_product_supplier_info(product=sellable.product)
         product = sellable.product
         if not branch:

@@ -551,18 +551,18 @@ def get_default_store():
     return _default_store
 
 
-def set_default_store(new_store):
+def set_default_store(store):
     """This sets a new default store and closes the
     existing one if any.
 
     This is only called during Startup and should not be used elsewhere
-    :param new_store: the new store to set
+    :param store: the new store to set
     """
 
     global _default_store
-    if new_store is None and _default_store is not None:
+    if store is None and _default_store is not None:
         _default_store.close()
-    _default_store = new_store
+    _default_store = store
 
 
 def new_store():

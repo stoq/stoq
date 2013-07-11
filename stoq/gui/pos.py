@@ -478,10 +478,10 @@ class PosApp(ShellApp):
         fmt = api.sysparam(self.store).SCALE_BARCODE_FORMAT
 
         # Check if this barcode is from a scale
-        info = parse_barcode(barcode, fmt)
-        if info:
-            barcode = info.code
-            weight = info.weight
+        barinfo = parse_barcode(barcode, fmt)
+        if barinfo:
+            barcode = barinfo.code
+            weight = barinfo.weight
 
         sellable = self.store.find(Sellable, barcode=barcode,
                                    status=Sellable.STATUS_AVAILABLE).one()
@@ -493,10 +493,10 @@ class PosApp(ShellApp):
 
         # If the barcode has the price information, we need to calculate the
         # corresponding weight.
-        if info and sellable and info.mode == BarcodeInfo.MODE_PRICE:
+        if barinfo and sellable and barinfo.mode == BarcodeInfo.MODE_PRICE:
             weight = info.price / sellable.price
 
-        if info and sellable:
+        if barinfo and sellable:
             self.quantity.set_value(weight)
 
         return sellable
