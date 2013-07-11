@@ -90,7 +90,7 @@ class ISystemNotifier(Interface):
 
 
 class IPluginManager(Interface):
-    """
+    """A manager for plugins.
     """
 
 

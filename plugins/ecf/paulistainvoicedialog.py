@@ -37,7 +37,7 @@ _ = stoqlib_gettext
 
 
 class PaulistaInvoiceDialog(BaseEditor):
-    """"""
+    """A dialog to generate Paulista invoices"""
     title = _(u"Paulista Invoice")
     hide_footer = False
     size = (260, 160)

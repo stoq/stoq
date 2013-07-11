@@ -239,11 +239,15 @@ class CancelPendingPaymentsEvent(Event):
 
 class GerencialReportPrintEvent(Event):
     """
+    This is emitted when the user requests a gerencial report
+    for fiscal printers.
     """
 
 
 class GerencialReportCancelEvent(Event):
     """
+    This is emitted when the user cancels a gerencial report
+    for fiscal printers.
     """
 
 

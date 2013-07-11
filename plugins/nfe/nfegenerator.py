@@ -1710,7 +1710,7 @@ class NFeVolume(BaseNFeXMLGroup):
 
 # Pg. 126 - Cobranca
 class NFeBilling(BaseNFeXMLGroup):
-    """
+    """NFe Billing node
     """
     tag = u'cobr'
     txttag = 'Y'
@@ -1718,7 +1718,7 @@ class NFeBilling(BaseNFeXMLGroup):
 
 # Fatura
 class NFeInvoice(BaseNFeXMLGroup):
-    """
+    """NFe Invoice node
     """
     tag = u'fat'
     txttag = 'Y02'
@@ -1743,7 +1743,7 @@ class NFeInvoice(BaseNFeXMLGroup):
 
 
 class NFeDuplicata(BaseNFeXMLGroup):
-    """
+    """NFE Duplicate node
     """
     tag = u'dup'
     txttag = 'Y07'

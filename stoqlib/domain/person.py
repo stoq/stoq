@@ -1990,7 +1990,7 @@ class UserView(Viewable):
 
 
 class CreditCheckHistoryView(Viewable):
-    """
+    """A view that displays client credit history
     """
 
     User_Person = ClassAlias(Person, 'user_person')

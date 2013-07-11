@@ -368,7 +368,7 @@ class QualityTestResultSlave(BaseEditorSlave):
 
 
 class ProducedItemSlave(BaseEditorSlave):
-    """
+    """A slave that shows produced production items.
     """
     gladefile = 'ProducedItemSlave'
     model_type = Settable

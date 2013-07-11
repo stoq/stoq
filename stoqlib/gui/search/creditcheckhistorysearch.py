@@ -39,7 +39,7 @@ _ = stoqlib_gettext
 
 
 class CreditCheckHistorySearch(SearchEditor):
-    """
+    """A search dialog for querying the credit history for a |client|
     """
     title = _("Client Credit Check History Search")
     editor_class = CreditCheckHistoryEditor
