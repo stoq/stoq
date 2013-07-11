@@ -235,7 +235,6 @@ def get_obj_info(obj):
                 fake.add_ormobject(value, attr)
     elif module.name == 'stoqlib.lib.parameters':
         fake.add_parameter_access()
-
     #elif module.name == 'stoqlib.gui.wizards.purchasewizard':
     #    fake.add_wizard_step(module)
 
