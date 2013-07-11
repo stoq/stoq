@@ -675,18 +675,18 @@ class ShellWindow(GladeDelegate):
         label.set_padding(12, 0)
         label.show()
 
-        bar = gtk.InfoBar()
-        bar.get_content_area().add(label)
+        infobar = gtk.InfoBar()
+        infobar.get_content_area().add(label)
         if action_widget:
-            bar.add_action_widget(action_widget, 0)
+            infobar.add_action_widget(action_widget, 0)
             action_widget.show()
-        bar.set_message_type(message_type)
-        bar.show()
+        infobar.set_message_type(message_type)
+        infobar.show()
 
-        self.main_vbox.pack_start(bar, False, False, 0)
-        self.main_vbox.reorder_child(bar, 2)
+        self.main_vbox.pack_start(infobar, False, False, 0)
+        self.main_vbox.reorder_child(infobar, 2)
 
-        return bar
+        return infobar
 
     def add_ui_actions(self, ui_string,
                        actions,

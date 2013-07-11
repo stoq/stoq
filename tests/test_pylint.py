@@ -36,7 +36,6 @@ DISABLED = [
     'similarities',  # Similarity report
 
     # Convention
-    'C0102',  # TODO: Black listed name "bar"
     'C0103',  # Invalid name "xxx" for type variable
               #  (should match [a-z_][a-z0-9_]{2,30}$)
     'C0111',  # Missing docstring
