@@ -380,7 +380,7 @@ class FiscalCoupon(gobject.GObject):
             #    gobject.type_name(self), signal)
             # traceback.print_exception(sys.last_type, sys.last_value,
             #                          sys.last_traceback)
-            raise sys.last_value
+            raise sys.last_value  # pylint: disable=E0702
         return retval
 
     #
