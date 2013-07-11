@@ -138,6 +138,6 @@ def get_idle_seconds():
         return int(millis / 1000.0)
 
     else:
-        raise NotImplemented(_system)
+        raise NotImplementedError(_system)
 
     return _idle.get_idle()

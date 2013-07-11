@@ -56,7 +56,6 @@ DISABLED = [
     'E0611',  # Pylint is confused about GTK
     'E0702',  # Raising NoneType while only classes, instances or string
     'E0710',  # Raising a new style class which doesn't inherit from Base
-    'E0711',  # TODO: NotImplemented raised - should raise NotImplementedError
     'E1305',  # TODO: Too many arguments for format string
 
     # Fatal
