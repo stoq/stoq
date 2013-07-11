@@ -24,13 +24,17 @@
 
 import datetime
 
-import mock
 import gtk
+import mock
+from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderItem, WorkOrder
+from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.search.personsearch import ClientSearch
+from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.servicesearch import ServiceSearch
 
 from stoq.gui.maintenance import MaintenanceApp
 from stoq.gui.test.baseguitest import BaseGUITest
@@ -200,3 +204,33 @@ class TestMaintenance(BaseGUITest):
             self.activate(app.Clients)
             rd.assert_called_once_with(ClientSearch, app.store,
                                        hide_footer=True)
+
+    def test_on_ViewKanban__toggled(self):
+        raise SkipTest('Changing to kan ban view is not working in tests')
+        app = self.create_app(MaintenanceApp, u'maintenance')
+        self.activate(app.ViewKanban)
+
+    @mock.patch('stoq.gui.maintenance.api.new_store')
+    def test_on_Categories__activate(self, new_store):
+        new_store.return_value = self.store
+        app = self.create_app(MaintenanceApp, u'maintenance')
+
+        with mock.patch.object(self.store, 'close'):
+            with mock.patch.object(app, 'run_dialog') as rd:
+                self.activate(app.Categories)
+                rd.assert_called_once_with(WorkOrderCategoryDialog, self.store)
+
+    def test_on_Services__activate(self):
+        app = self.create_app(MaintenanceApp, u'maintenance')
+
+        with mock.patch.object(app, 'run_dialog') as rd:
+            self.activate(app.Services)
+            rd.assert_called_once_with(ServiceSearch, self.store)
+
+    def test_on_Products__activate(self):
+        app = self.create_app(MaintenanceApp, u'maintenance')
+
+        with mock.patch.object(app, 'run_dialog') as rd:
+            self.activate(app.Products)
+            rd.assert_called_once_with(ProductSearch, self.store,
+                                       hide_footer=True, hide_toolbar=True)

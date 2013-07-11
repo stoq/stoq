@@ -401,6 +401,11 @@ class MaintenanceApp(ShellApp):
     #
 
     def _format_state_icon(self, item, data):
+        # This happens with lazy object lists. Sometimes it calls this function
+        # without actually having the real object.
+        if not isinstance(item, WorkOrderView):
+            return
+
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
             # We are using self.results because render_icon is a gtk.Widget's
