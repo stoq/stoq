@@ -32,6 +32,7 @@ from stoqlib.domain.person import ClientCategory
 from stoqlib.domain.sellable import ClientCategoryPrice, Sellable
 from stoqlib.gui.editors.baseeditor import (BaseRelationshipEditorSlave,
                                             BaseEditorSlave)
+from stoqlib.gui.editors.sellableeditor import CategoryPriceEditor
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import info
@@ -81,7 +82,6 @@ class SellableDetailsSlave(BaseEditorSlave):
 
 
 class CategoryPriceSlave(BaseRelationshipEditorSlave):
-    from stoqlib.gui.editors.sellableeditor import CategoryPriceEditor
     """A slave for changing the suppliers for a product.
     """
     target_name = _(u'Category')

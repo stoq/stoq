@@ -607,14 +607,13 @@ class BankCaixa(BankInfo):
     # Nosso numero (sem dv) sao 10 digitos
     def _nosso_numero_get(self):
         return self._nosso_numero
-    '''
-        Nosso Número sem DV, máximo 8 chars
-    '''
+
     def _nosso_numero_set(self, val):
         self._nosso_numero = (self.inicio_nosso_numero +
                               self.formata_numero(val, 8))
 
-    nosso_numero = property(_nosso_numero_get, _nosso_numero_set)
+    nosso_numero = property(_nosso_numero_get, _nosso_numero_set,
+                            '''Nosso Número sem DV, máximo 8 chars''')
 
     @property
     def dv_nosso_numero(self):

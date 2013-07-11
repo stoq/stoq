@@ -78,7 +78,6 @@ DISABLED = [
     'R0922',  # Abstract class is only referenced 1 times
 
     # Warnings
-    'W0105',  # String statement has no effect
     'W0141',  # TODO: Used builtin function 'map'
     'W0142',  # Used * or ** magic
     'W0201',  # Attribute 'loaded_uis' defined outside __init__
