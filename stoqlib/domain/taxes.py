@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 
 from storm.info import get_cls_info

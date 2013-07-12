@@ -22,6 +22,9 @@
 ##
 """Domain implementation for Cost Centers
 """
+
+# pylint: enable=E1101
+
 from storm.expr import And, Ne
 from stoqlib.database.properties import (BoolCol, PriceCol,
                                          UnicodeCol, IdCol)

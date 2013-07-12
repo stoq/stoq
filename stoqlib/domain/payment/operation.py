@@ -29,6 +29,8 @@ for the logic needed by a payment method.
 Such as storing the kind of credit card or associate a check with a bank account.
 """
 
+# pylint: enable=E1101
+
 from kiwi.component import get_utility, provide_utility
 from zope.interface import implementer
 

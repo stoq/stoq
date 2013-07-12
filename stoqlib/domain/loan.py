@@ -30,6 +30,8 @@ The main class is :class:`Loan` which can hold a
 set of :class:`LoanItem`.
 """
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 
 from kiwi.currency import currency

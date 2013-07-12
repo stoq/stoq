@@ -23,6 +23,7 @@
 ##
 """ Stock Decrease object and related objects implementation """
 
+# pylint: enable=E1101
 
 from kiwi.currency import currency
 from storm.references import Reference

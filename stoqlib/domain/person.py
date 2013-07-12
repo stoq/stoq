@@ -52,6 +52,8 @@ Then to add a client, you can will do:
 
 """
 
+# pylint: enable=E1101
+
 import hashlib
 
 from kiwi.currency import currency

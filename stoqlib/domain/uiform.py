@@ -21,6 +21,8 @@
 ##
 """ Domain classes to define required and visible fields """
 
+# pylint: enable=E1101
+
 from storm.references import Reference
 
 from stoqlib.database.properties import BoolCol, UnicodeCol, IdCol

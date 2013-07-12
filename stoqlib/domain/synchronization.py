@@ -24,6 +24,8 @@
 ##
 """ BranchSynchronization domain class """
 
+# pylint: enable=E1101
+
 from storm.references import Reference
 from storm.store import AutoReload
 

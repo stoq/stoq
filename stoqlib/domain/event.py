@@ -24,6 +24,8 @@
 """Logging of events.
 """
 
+# pylint: enable=E1101
+
 # FIXME: This should probably be moved over to stoqlib.domain.logging to
 #        avoid confusing it with stoqlib.domain.events.
 #        Another possiblity would be to move events out of domain.

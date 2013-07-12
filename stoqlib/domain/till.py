@@ -24,6 +24,8 @@
 """Implementation of classes related to Fiscal operations.
 """
 
+# pylint: enable=E1101
+
 import logging
 
 from kiwi.currency import currency

@@ -24,6 +24,8 @@
 
 """Work order implementation and utils"""
 
+# pylint: enable=E1101
+
 from kiwi.currency import currency
 from storm.expr import (Count, Join, LeftJoin, Alias, Select, Sum, Coalesce,
                         In, And, Eq, Cast)

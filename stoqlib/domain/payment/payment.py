@@ -32,6 +32,8 @@ to or from a |branch|.
 Certain changes to a payment is saved in :class:`PaymentChangeHistory`
 """
 
+# pylint: enable=E1101
+
 import logging
 
 from kiwi.currency import currency

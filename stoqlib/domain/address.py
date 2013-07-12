@@ -30,6 +30,8 @@ CityLocation contains the city, state and country, Address contains
 street, district, postal code and a reference to a |person|.
 """
 
+# pylint: enable=E1101
+
 from storm.expr import And
 from storm.references import Reference
 from storm.store import AutoReload

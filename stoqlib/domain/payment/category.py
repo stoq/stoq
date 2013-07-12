@@ -24,6 +24,8 @@
 """Payment category, user defined grouping of payments
 """
 
+# pylint: enable=E1101
+
 from zope.interface import implementer
 
 from stoqlib.database.properties import IntCol, UnicodeCol

@@ -23,6 +23,8 @@
 ##
 """  Product transfer management """
 
+# pylint: enable=E1101
+
 from storm.expr import Join, LeftJoin, Sum, Cast
 from storm.info import ClassAlias
 from storm.references import Reference

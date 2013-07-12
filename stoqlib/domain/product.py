@@ -23,6 +23,8 @@
 
 """ Base classes to manage product's informations """
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 
 from kiwi.currency import currency

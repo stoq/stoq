@@ -25,6 +25,8 @@
 Commission management
 """
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 
 from storm.expr import Join, Cast

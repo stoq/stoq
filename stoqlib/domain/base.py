@@ -26,6 +26,8 @@ The base :class:`Domain` class for Stoq.
 
 """
 
+# pylint: enable=E1101
+
 import warnings
 
 from storm.expr import And, Like

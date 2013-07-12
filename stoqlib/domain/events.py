@@ -26,6 +26,8 @@
 Events used in the domain code
 """
 
+# pylint: enable=E1101
+
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.lib.event import Event
 from stoqlib.lib.decorators import public

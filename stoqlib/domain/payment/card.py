@@ -32,6 +32,8 @@ This includes:
   be saved with the card related information
 """
 
+# pylint: enable=E1101
+
 from zope.interface import implementer
 from storm.expr import And, Delete, Or, Update
 from storm.references import Reference

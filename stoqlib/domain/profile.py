@@ -24,6 +24,8 @@
 ##
 """ User profile management for applications"""
 
+# pylint: enable=E1101
+
 from kiwi.component import get_utility
 from storm.references import Reference, ReferenceSet
 

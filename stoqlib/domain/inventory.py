@@ -23,6 +23,8 @@
 ##
 """ Inventory object and related objects implementation """
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 
 from storm.expr import And, Eq, Cast, Join

@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+# pylint: enable=E1101
+
 import datetime
 
 from dateutil.relativedelta import relativedelta

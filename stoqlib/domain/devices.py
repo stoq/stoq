@@ -25,6 +25,8 @@
 Domain classes related to stoqdrivers package.
 """
 
+# pylint: enable=E1101
+
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort

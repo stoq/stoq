@@ -23,6 +23,8 @@
 ##
 """ Station, a branch station per computer """
 
+# pylint: enable=E1101
+
 from storm.references import Reference
 from zope.interface import implementer
 

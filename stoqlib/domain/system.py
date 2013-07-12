@@ -24,6 +24,8 @@
 ##
 """ Routines for system data management"""
 
+# pylint: enable=E1101
+
 from storm.store import AutoReload
 
 from stoqlib.database.orm import ORMObject

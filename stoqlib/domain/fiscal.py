@@ -27,6 +27,8 @@
 Note that this whole module is Brazil-specific.
 """
 
+# pylint: enable=E1101
+
 from storm.expr import LeftJoin, Join
 from storm.references import Reference
 from zope.interface import implementer

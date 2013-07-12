@@ -24,6 +24,8 @@
 
 """Images domains"""
 
+# pylint: enable=E1101
+
 import base64
 
 from zope.interface import implementer

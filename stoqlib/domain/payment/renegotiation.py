@@ -23,6 +23,8 @@
 ##
 """ Domain classes for renegotiation management """
 
+# pylint: enable=E1101
+
 from kiwi.currency import currency
 from storm.references import Reference
 from zope.interface import implementer

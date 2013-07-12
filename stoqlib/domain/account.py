@@ -34,6 +34,8 @@ Finally there's a :class:`AccountTransactionView` that is used by
 the financial application to efficiently display a ledger.
 """
 
+# pylint: enable=E1101
+
 import datetime
 
 from kiwi.currency import currency

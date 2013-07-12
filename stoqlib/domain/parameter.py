@@ -24,6 +24,8 @@
 ##
 """ Domain classes for handling parameters """
 
+# pylint: enable=E1101
+
 from stoqlib.database.properties import BoolCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext as _

@@ -26,6 +26,8 @@ Domain objects related to the sale process in Stoq.
 
 Sale object and related objects implementation """
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 
 from kiwi.currency import currency

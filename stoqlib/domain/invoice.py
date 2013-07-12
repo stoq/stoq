@@ -24,6 +24,9 @@
 ##
 """Invoice domain classes; field, layout and printer
 """
+
+# pylint: enable=E1101
+
 from storm.references import Reference
 from zope.interface import implementer
 

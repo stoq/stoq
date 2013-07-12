@@ -23,6 +23,8 @@
 ##
 """ Base classes to manage production informations """
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 
 from storm.expr import And, Join

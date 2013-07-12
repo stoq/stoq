@@ -33,6 +33,8 @@ or a |service|.
 * :class:`ClientCategoryPrice` provides a price for |clients| in a |clientcategory|.
 """
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 
 from kiwi.currency import currency

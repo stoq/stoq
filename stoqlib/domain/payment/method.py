@@ -23,6 +23,8 @@
 ##
 """Payment methods"""
 
+# pylint: enable=E1101
+
 from decimal import Decimal
 import operator
 

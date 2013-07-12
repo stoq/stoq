@@ -25,6 +25,8 @@
 
 Allows other tables to have any kinds of attachments."""
 
+# pylint: enable=E1101
+
 from zope.interface import implementer
 
 from stoqlib.database.properties import BLOBCol, UnicodeCol

@@ -35,6 +35,8 @@ All of them contains a set of payments and they behaves slightly
 differently
 """
 
+# pylint: enable=E1101
+
 from kiwi.currency import currency
 from storm.expr import And, In, Not
 from storm.references import Reference

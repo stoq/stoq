@@ -23,6 +23,8 @@
 ##
 """ Base classes to manage services informations """
 
+# pylint: enable=E1101
+
 from storm.expr import Join, LeftJoin
 from storm.references import Reference
 from zope.interface import implementer

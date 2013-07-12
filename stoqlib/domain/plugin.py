@@ -23,6 +23,8 @@
 ##
 
 
+# pylint: enable=E1101
+
 from stoqlib.domain.base import Domain
 from stoqlib.database.properties import UnicodeCol, IntCol
 
