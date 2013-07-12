@@ -2,6 +2,7 @@
 
 # Populates PaymentFlowHistory based on the existing payments.
 
+# pylint: disable=E0611
 from stoqlib.domain.payment.payment import Payment, PaymentFlowHistory
 from stoqlib.lib.message import info
 

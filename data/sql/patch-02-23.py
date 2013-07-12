@@ -6,7 +6,7 @@
 
 from stoqlib.database.admin import get_admin_user
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.interfaces import IUser, IEmployee
+from stoqlib.domain.interfaces import IUser, IEmployee  # pylint: disable=E0611
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem

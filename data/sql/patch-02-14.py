@@ -4,7 +4,7 @@
 
 from stoqlib.database.properties import IntCol, PriceCol
 
-from stoqlib.domain.payment.method import CreditCardData
+from stoqlib.domain.payment.method import CreditCardData  # pylint: disable=E0611
 
 
 def apply_patch(store):

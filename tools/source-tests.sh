@@ -18,7 +18,6 @@ PYLINT_DISABLED=(
     E1103  # Instance of XXX has no yyy member (some not inferred)
     E1120  # No value passed for parameter xxx in function call
     E1121  # TODO: Too many positional arguments for function call
-    E0611  # Pylint is confused about modules it cannot import
 
     # Fatal
     F0401  # Unable to import gudev

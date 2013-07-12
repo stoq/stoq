@@ -388,7 +388,7 @@ class ShellBootstrap(object):
 
         appname = 'unknown'
         try:
-            from stoq.gui.shell import get_shell
+            from stoq.gui.shell.shell import get_shell
             shell = get_shell()
             if shell:
                 appname = shell.get_current_app_name()

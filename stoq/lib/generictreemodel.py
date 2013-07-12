@@ -29,8 +29,8 @@ import sys
 
  # GObject
 try:
-    from gi.repository import GObject
-    from gi.repository import Gtk
+    from gi.repository import GObject  # pylint: disable=E0611
+    from gi.repository import Gtk  # pylint: disable=E0611
     GObject  # pylint: disable=W0104
     Gtk  # pylint: disable=W0104
 except ImportError:

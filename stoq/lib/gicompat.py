@@ -7,7 +7,7 @@ Py_DecRef = lambda obj: ctypes.pythonapi.Py_DecRef(ctypes.py_object(obj))
 
 
 def install_enums(mod, dest=None):
-    from gi.repository import GObject
+    from gi.repository import GObject  # pylint: disable=E0611
 
     if dest is None:
         dest = mod
@@ -49,11 +49,11 @@ def enable():
     enable_vte()
 
     # glib
-    from gi.repository import GLib
+    from gi.repository import GLib  # pylint: disable=E0611
     sys.modules['glib'] = GLib
 
     # gobject
-    from gi.repository import GObject
+    from gi.repository import GObject  # pylint: disable=E0611
     GObject.GObjectMeta = GObject.GObject.__base__.__base__
 
     def set_data(self, key, value):
@@ -76,7 +76,7 @@ def enable():
     propertyhelper.property = propertyhelper.Property
 
     # gio
-    from gi.repository import Gio
+    from gi.repository import Gio  # pylint: disable=E0611
     sys.modules['gio'] = Gio
 
 _unset = object()
@@ -88,30 +88,30 @@ def enable_gtk(version='2.0'):
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-    from gi.repository import GLib
+    from gi.repository import GLib  # pylint: disable=E0611
 
     # atk
     gi.require_version('Atk', '1.0')
-    from gi.repository import Atk
+    from gi.repository import Atk  # pylint: disable=E0611
     sys.modules['atk'] = Atk
     install_enums(Atk)
 
     # pango
     gi.require_version('Pango', '1.0')
-    from gi.repository import Pango
+    from gi.repository import Pango  # pylint: disable=E0611
     sys.modules['pango'] = Pango
     install_enums(Pango)
 
     # pangocairo
     gi.require_version('PangoCairo', '1.0')
-    from gi.repository import PangoCairo
+    from gi.repository import PangoCairo  # pylint: disable=E0611
     sys.modules['pangocairo'] = PangoCairo
 
     # gdk
     gi.require_version('Gdk', version)
     gi.require_version('GdkPixbuf', '2.0')
-    from gi.repository import Gdk
-    from gi.repository import GdkPixbuf
+    from gi.repository import Gdk  # pylint: disable=E0611
+    from gi.repository import GdkPixbuf  # pylint: disable=E0611
     sys.modules['gtk.gdk'] = Gdk
     install_enums(Gdk)
     install_enums(GdkPixbuf, dest=Gdk)
@@ -139,7 +139,7 @@ def enable_gtk(version='2.0'):
 
     # gtk
     gi.require_version('Gtk', version)
-    from gi.repository import Gtk
+    from gi.repository import Gtk  # pylint: disable=E0611
     sys.modules['gtk'] = Gtk
     Gtk.gdk = Gdk
 
@@ -259,7 +259,7 @@ def enable_gtk(version='2.0'):
         pass
     Gtk.GenericCellRenderer = GenericCellRenderer
 
-    from gi.repository import GObject
+    from gi.repository import GObject  # pylint: disable=E0611
 
     # TreeModel
     def tree_model_foreach(treemodel, func):
@@ -278,7 +278,7 @@ def enable_gtk(version='2.0'):
         return orig_row_changed(self, _coerce_path(path), iter)
     Gtk.TreeModel.row_changed = row_changed
 
-    from .generictreemodel import GenericTreeModel
+    from .generictreemodel import GenericTreeModel  # pylint: disable=E0611
     Gtk.GenericTreeModel = GenericTreeModel
 
     # TreePath
@@ -422,14 +422,14 @@ def enable_gtk(version='2.0'):
 def enable_vte():
     import gi
     gi.require_version('Vte', '2.90')
-    from gi.repository import Vte
+    from gi.repository import Vte  # pylint: disable=E0611
     sys.modules['vte'] = Vte
 
 
 def enable_poppler():
     import gi
     gi.require_version('Poppler', '0.18')
-    from gi.repository import Poppler
+    from gi.repository import Poppler  # pylint: disable=E0611
     sys.modules['poppler'] = Poppler
     Poppler.pypoppler_version = (1, 0, 0)
 
@@ -437,7 +437,7 @@ def enable_poppler():
 def enable_webkit(version='1.0'):
     import gi
     gi.require_version('WebKit', version)
-    from gi.repository import WebKit
+    from gi.repository import WebKit  # pylint: disable=E0611
     sys.modules['webkit'] = WebKit
     WebKit.WebView.get_web_inspector = WebKit.WebView.get_inspector
 
@@ -445,5 +445,5 @@ def enable_webkit(version='1.0'):
 def enable_gudev():
     import gi
     gi.require_version('GUdev', '1.0')
-    from gi.repository import GUdev
+    from gi.repository import GUdev  # pylint: disable=E0611
     sys.modules['gudev'] = GUdev
