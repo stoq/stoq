@@ -24,3 +24,14 @@ hr {
     width: 40%;
 }
 
+#sale_summary {
+    display: inline-block;
+    width: 70%;
+}
+
+#sale_payments {
+    display: inline-block;
+    width: 29%;
+    box-sizing: border-box;
+    border-left: 0.5cm solid white;
+}

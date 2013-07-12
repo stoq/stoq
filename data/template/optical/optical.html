@@ -13,53 +13,8 @@
 <div class="page">
 
   ${ header(complete_header, title, report.subtitle, notes) }
+  <%include file="saledetails.html" />
 
-  <section id="client_receipt">
-    <table class="details">
-      <tbody>
-        <tr>
-          <td>${ _("Sale #") }:</td>
-          <td>${ report.sale.identifier }</td>
-          <td>${ _("Open Date") }:</td>
-          <td>${ format_date(report.sale.open_date) }</td>
-        </tr>
-        <tr>
-          <td>${ _("Client") }:</td>
-          <td>${ report.sale.client.person.name }</td>
-          <td>${ _("Sales Person") }:</td>
-          <td>${ report.sale.salesperson.person.name }</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <table>
-      <thead>
-        <tr>
-          <td>${ _("Code") }</td>
-          <td>${ _("Item") }</td>
-          <td>${ _("Quantity") }</td>
-          <td>${ _("Price") }</td>
-          <td>${ _("Total") }</td>
-        </tr>
-      </thead>
-
-      <tbody class="list">
-        % for item in report.sale.get_items():
-        <tr>
-          <td>${ item.sellable.code }</td>
-          <td>${ item.sellable.get_description() }</td>
-          <td>${ format_quantity(item.quantity) }</td>
-          <td>${ format_price(item.price) }</td>
-          <td>${ format_price(item.get_total()) }</td>
-        </tr>
-        % endfor
-        <tr class="summary">
-          <td colspan="4">${ _("Total") }:</td>
-          <td>${ format_price(report.sale.get_total_sale_amount()) }</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
 
   <hr />
 

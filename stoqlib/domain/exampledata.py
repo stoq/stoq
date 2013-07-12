@@ -1008,6 +1008,7 @@ class ExampleCreator(object):
 
     def add_payments(self, obj, method_type=u'money', installments=1,
                      date=None):
+        from stoqlib.domain.payment.group import PaymentGroup
         from stoqlib.domain.payment.payment import Payment
         from stoqlib.domain.purchase import PurchaseOrder
         from stoqlib.domain.sale import Sale
@@ -1029,6 +1030,9 @@ class ExampleCreator(object):
             payment_type = Payment.TYPE_OUT
         else:
             raise ValueError(obj)
+
+        if obj.group is None:
+            obj.group = PaymentGroup(store=obj.store)
 
         method = self.get_payment_method(method_type)
         payments = method.create_payments(

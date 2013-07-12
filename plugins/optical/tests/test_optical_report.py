@@ -32,16 +32,26 @@ from .test_optical_domain import OpticalDomainTest
 class OpticalReportTest(ReportTest, OpticalDomainTest):
 
     def test_optical_report(self):
-        opt_wo = self.create_optical_work_order()
-        wo = opt_wo.work_order
-        wo.identifier = 12345
-        wo.client = self.create_client()
-        sale = self.create_sale()
+        sellable = self.create_sellable()
+        client = self.create_client(u'Juca')
+        sale = self.create_sale(client=client)
         sale.identifier = 23456
         sale.open_date = localdate(2012, 1, 1)
-        sale.client = self.create_client()
         sale.salesperson = self.create_sales_person()
+        sale.add_sellable(sellable)
+
+        payment = self.add_payments(sale)[0]
+        payment.set_pending()
+        payment.pay()
+
+        opt_wo = self.create_optical_work_order()
+        wo = opt_wo.work_order
+        wo.equipament = u'Equipamento 1'
+        wo.identifier = 12345
+        wo.client = client
         wo.sale = sale
+        wo.branch = sale.branch
+
         self._diff_expected(OpticalWorkOrderReceiptReport,
                             'optical-work-order-receipt-report',
                             [opt_wo.work_order])

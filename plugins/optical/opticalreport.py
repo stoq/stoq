@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.reporting.report import HTMLReport
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -38,9 +39,34 @@ class OpticalWorkOrderReceiptReport(HTMLReport):
         # The workorders are always from the same sale.
         self.sale = workorders[0].sale
         self.subtitle = _("Sale number: %s") % self.sale.identifier
+
+        self.method_summary = {}
+        payments = self.sale.payments
+        for payment in payments.find(Payment.status == Payment.STATUS_PAID):
+            self.method_summary.setdefault(payment.method, 0)
+            self.method_summary[payment.method] += payment.value
+
+        max_finish = self.workorders[0].estimated_finish
+        for workorder in workorders:
+            max_finish = max(max_finish, workorder.estimated_finish)
+        self.max_estimated_finish = max_finish
+
         super(OpticalWorkOrderReceiptReport, self).__init__(filename)
 
     def get_optical_data(self, workorder):
         from optical.opticaldomain import OpticalWorkOrder
         store = self.sale.store
         return store.find(OpticalWorkOrder, work_order=workorder).one()
+
+
+def test():  # pragma nocover
+    from stoqlib.domain.workorder import WorkOrder
+    from stoqlib.api import api
+    creator = api.prepare_test()
+    orders = creator.store.find(WorkOrder)
+    r = OpticalWorkOrderReceiptReport('teste.pdf', orders)
+    #r.save_html('teste.html')
+    r.save()
+
+if __name__ == '__main__':  # pragma nocover
+    test()

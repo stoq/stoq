@@ -1,0 +1,77 @@
+  <section id="client_receipt">
+    <table class="details" id="sale_items">
+      <tbody>
+        <tr>
+          <td>${ _("Client") }:</td>
+          <td>${ report.sale.client.person.name }</td>
+          <td>${ _("Sale #") }:</td>
+          <td>${ unicode(report.sale.identifier) }</td>
+        </tr>
+        <tr>
+          <td>${ _("Sales Person") }:</td>
+          <td>${ report.sale.salesperson.person.name }</td>
+          <td>${ _("Open Date") }:</td>
+          <td>${ format_date(report.sale.open_date) }</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>${ _("Estimated finish") }:</td>
+          <td>${ format_date(report.max_estimated_finish) }</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="sale_summary">
+        <table>
+          <thead>
+            <tr>
+              <td>${ _("Code") }</td>
+              <td>${ _("Item") }</td>
+              <td>${ _("Quantity") }</td>
+              <td>${ _("Price") }</td>
+              <td>${ _("Total") }</td>
+            </tr>
+          </thead>
+
+          <tbody class="list">
+            % for item in report.sale.get_items():
+            <tr>
+              <td>${ item.sellable.code }</td>
+              <td>${ item.sellable.get_description() }</td>
+              <td>${ format_quantity(item.quantity) }</td>
+              <td>${ format_price(item.price) }</td>
+              <td>${ format_price(item.get_total()) }</td>
+            </tr>
+            % endfor
+            <tr class="summary">
+              <td colspan="4">${ _("Total") }:</td>
+              <td>${ format_price(report.sale.get_total_sale_amount()) }</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+
+    <div id="sale_payments">
+        <table class="details" id="sale_payments">
+            <thead>
+                <tr>
+                    <td>${ _('Method')}</td>
+                    <td>${ _('Value')}</td>
+                </tr>
+            </thead>
+            <tbody>
+                % for method, value in report.method_summary.items():
+                <tr>
+                    <td>${ method.description }</td>
+                    <td>${ value }</td>
+                </tr>
+                % endfor
+                <tr>
+                    <td>${ _('Missing') }</td>
+                    <td>${ report.sale.get_total_to_pay() }</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  </section>
