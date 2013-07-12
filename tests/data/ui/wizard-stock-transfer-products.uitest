@@ -31,11 +31,10 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
                   column: title='Total'
                   row: u'Product to transfer', None, Decimal('1.000'), Decimal('125.000')
               GtkHBox(hbox1, fill=True):
-                GtkAlignment(alignment1, fill=True):
-                  GtkHButtonBox(hbuttonbox1):
-                    GtkButton(add_button): hidden
-                    GtkButton(delete_button): insensitive
-                    GtkButton(edit_button): hidden, insensitive
+                GtkHBox(button_box):
+                  GtkButton(add_button): hidden
+                  GtkButton(edit_button): hidden, insensitive
+                  GtkButton(delete_button): insensitive
                 GtkHBox(message_hbox, expand=True, fill=True): hidden
                   GtkLabel(message_label, expand=True, fill=True):
                   GtkButton(message_details_button, fill=True): 'Details'

@@ -227,6 +227,18 @@ class SaleItem(Domain):
                                     batch=self.batch)
             self.quantity_decreased = Decimal(0)
 
+    def set_discount(self, discount):
+        """Apply *discount* on this item
+
+        Note that the discount will be applied based on :obj:`.base_price`
+        and then substitute :obj:`.price`, making any previous
+        discount/surcharge being lost
+
+        :param decimal.Decimal discount: the discount to be applied
+            as a percentage, e.g. 10.0, 22.5
+        """
+        self.price = self.base_price * (1 - discount / 100)
+
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price
         # * quantity may have more than 2, so we need to round it.
@@ -1060,6 +1072,42 @@ class Sale(Domain, Adaptable):
         :meth:`.get_total_sale_amount` - :meth:`.get_total_paid`
         """
         return currency(self.get_total_sale_amount() - self.get_total_paid())
+
+    def get_available_discount_for_items(self, user=None, exclude_item=None):
+        """Get available discount for items in this sale
+
+        The available items discount is the total discount not used
+        by items in this sale. For instance, if we have 2 products
+        with a price of 100 and they can have 10% of discount, we have
+        20 of discount available. If one of those products price
+        is set to 98, that is, using 2 of it's discount, the available
+        discount is now 18.
+
+        :param user: passed to
+            :meth:`stoqlib.domain.sellable.Sellable.get_maximum_discount`
+            together with :obj:`.client_category` to check for the max
+            discount for sellables on this sale
+        :param exclude_item: a |saleitem| to exclude from the calculations.
+            Useful if you are trying to get some extra discount for that
+            item and you don't want it's discount to be considered here
+        :returns: the available discount
+        """
+        available_discount = currency(0)
+        used_discount = currency(0)
+
+        for item in self.get_items():
+            if item == exclude_item:
+                continue
+            # Don't put surcharges on the discount, or it can end up negative
+            if item.price > item.base_price:
+                continue
+
+            used_discount += item.base_price - item.price
+            max_discount = item.sellable.get_maximum_discount(
+                category=self.client_category, user=user) / 100
+            available_discount += item.base_price * max_discount
+
+        return available_discount - used_discount
 
     def get_details_str(self):
         """Returns the sale details. The details are composed by the sale

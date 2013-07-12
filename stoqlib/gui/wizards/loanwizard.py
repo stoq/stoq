@@ -222,6 +222,12 @@ class LoanItemStep(SaleQuoteItemStep):
     validate_stock = True
     batch_selection_dialog = BatchDecreaseSelectionDialog
 
+    def get_extra_discount(self, sellable):
+        # TODO: Maybe we should also allow the same rules of discount for the
+        # loan that the sale has, but this require the Loan to implement the
+        # same interface Sale implements
+        return None
+
     def get_sellable_view_query(self):
         branch = self.model.branch
         # Also include products that are not storable

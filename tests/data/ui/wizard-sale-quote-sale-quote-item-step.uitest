@@ -46,11 +46,11 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$20.00</b>'
               GtkHBox(hbox1, fill=True):
-                GtkAlignment(alignment1, fill=True):
-                  GtkHButtonBox(hbuttonbox1):
-                    GtkButton(add_button): hidden
-                    GtkButton(delete_button): insensitive
-                    GtkButton(edit_button): insensitive
+                GtkHBox(button_box):
+                  GtkButton(add_button): hidden
+                  GtkButton(edit_button): insensitive
+                  GtkButton(delete_button): insensitive
+                  GtkButton(step.discount_btn, pack-end): 'Apply discount'
                 GtkHBox(message_hbox, expand=True, fill=True):
                   GtkLabel(message_label, expand=True, fill=True): '<b>Not enough stock. Estimated time to obtain missing items: 0 days.</b>'
                   GtkButton(message_details_button, fill=True): 'Details'

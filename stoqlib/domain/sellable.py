@@ -730,6 +730,15 @@ class Sellable(Domain):
             return info.price
         return self.price
 
+    def get_maximum_discount(self, category=None, user=None):
+        user_discount = user.profile.max_discount if user else 0
+        if category is not None:
+            info = self.get_category_price_info(category) or self
+        else:
+            info = self
+
+        return max(user_discount, info.max_discount)
+
     def check_code_exists(self, code):
         """Check if there is another sellable with the same code.
 
@@ -786,38 +795,41 @@ class Sellable(Domain):
 
         return True
 
-    def is_valid_price(self, newprice, category=None, user=None):
-        """Returns a dict indicating whether the new price is a valid price as
+    def is_valid_price(self, newprice, category=None, user=None,
+                       extra_discount=None):
+        """Checks if *newprice* is valid for this sellable
+
+        Returns a dict indicating whether the new price is a valid price as
         allowed by the discount by the user, by the category or by the sellable
-        maximum discount.
+        maximum discount
 
         :param newprice: The new price that we are trying to sell this
-          sellable for.
-        :param category: Optionally define a |clientcategory| that we will get the
-          price info from.
+            sellable for
+        :param category: Optionally define a |clientcategory| that we will get
+            the price info from
         :param user: The user role may allow a different discount percentage.
-        :returns: A tuple with the keys:
-            * is_valid: A boolean with ``True`` if the price is valid, else
-            ``False``.
+        :param extra_discount: some extra discount for the sellable
+            to be considered for the min_price
+        :returns: A dict with the following keys:
+            * is_valid: ``True`` if the price is valid, else ``False``
             * min_price: The minimum price for this sellable.
             * max_discount: The maximum discount for this sellable.
         """
-        info = None
-        user_discount = 0
-        if category:
-            info = self.get_category_price_info(category)
-        if not info:
-            info = self
-        if user:
-            user_discount = user.profile.max_discount
-        max_discount = max(user_discount, info.max_discount)
-        min_price = info.price * (1 - max_discount / 100)
-        if newprice < min_price:
-            is_valid = False
+        if category is not None:
+            info = self.get_category_price_info(category) or self
         else:
-            is_valid = True
+            info = self
+
+        max_discount = self.get_maximum_discount(category=category, user=user)
+        min_price = info.price * (1 - max_discount / 100)
+
+        if extra_discount is not None:
+            # The extra discount can be greater than the min_price, and
+            # a negative min_price doesn't make sense
+            min_price = max(currency(0), min_price - extra_discount)
+
         return {
-            'is_valid': is_valid,
+            'is_valid': newprice >= min_price,
             'min_price': min_price,
             'max_discount': max_discount,
         }

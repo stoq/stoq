@@ -34,155 +34,150 @@
             <property name="visible">True</property>
             <property name="spacing">5</property>
             <child>
-              <object class="GtkAlignment" id="alignment1">
+              <object class="GtkHBox" id="button_box">
                 <property name="visible">True</property>
-                <property name="yalign">0.0099999997764825821</property>
-                <property name="yscale">3.1225022567582528e-17</property>
+                <property name="spacing">6</property>
                 <child>
-                  <object class="GtkHButtonBox" id="hbuttonbox1">
+                  <object class="GtkButton" id="add_button">
                     <property name="visible">True</property>
-                    <property name="spacing">5</property>
-                    <property name="layout_style">start</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
                     <child>
-                      <object class="GtkButton" id="add_button">
+                      <object class="GtkAlignment" id="alignment2">
                         <property name="visible">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment2">
+                          <object class="GtkHBox" id="hbox2">
                             <property name="visible">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox2">
+                              <object class="GtkImage" id="image1">
                                 <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkImage" id="image1">
-                                    <property name="visible">True</property>
-                                    <property name="stock">gtk-add</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label1">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">New...</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
+                                <property name="stock">gtk-add</property>
                               </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label1">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">New...</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
                             </child>
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="delete_button">
-                        <property name="visible">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
-                        <child>
-                          <object class="GtkAlignment" id="GtkAlignment12">
-                            <property name="visible">True</property>
-                            <child>
-                              <object class="GtkHBox" id="GtkHBox12">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkImage" id="GtkImage12">
-                                    <property name="visible">True</property>
-                                    <property name="stock">gtk-remove</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="GtkLabel12">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">_Delete</property>
-                                    <property name="use_underline">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="edit_button">
-                        <property name="visible">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
-                        <child>
-                          <object class="GtkAlignment" id="GtkAlignment1">
-                            <property name="visible">True</property>
-                            <child>
-                              <object class="GtkHBox" id="GtkHBox1">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkImage" id="GtkImage1">
-                                    <property name="visible">True</property>
-                                    <property name="stock">gtk-edit</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="GtkLabel1">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">_Edit...</property>
-                                    <property name="use_underline">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">2</property>
-                      </packing>
                     </child>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="edit_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <child>
+                      <object class="GtkAlignment" id="GtkAlignment1">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkHBox" id="GtkHBox1">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkImage" id="GtkImage1">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-edit</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="GtkLabel1">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">_Edit...</property>
+                                <property name="use_underline">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="delete_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <child>
+                      <object class="GtkAlignment" id="GtkAlignment12">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkHBox" id="GtkHBox12">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkImage" id="GtkImage12">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-remove</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="GtkLabel12">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">_Delete</property>
+                                <property name="use_underline">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
                 </child>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">True</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>

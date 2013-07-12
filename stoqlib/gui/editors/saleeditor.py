@@ -73,8 +73,9 @@ class SaleQuoteItemEditor(BaseEditor):
     def _setup_widgets(self):
         self.sale.set_text(unicode(self.model.sale.identifier))
         self.description.set_text(self.model.sellable.get_description())
-        self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
-                                                    upper=MAX_INT))
+        for widget in [self.quantity, self.price]:
+            widget.set_adjustment(gtk.Adjustment(lower=1, upper=MAX_INT,
+                                                 step_incr=1, page_incr=10))
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 
@@ -146,9 +147,16 @@ class SaleQuoteItemEditor(BaseEditor):
         sellable = self.model.sellable
         self.manager = self.manager or api.get_current_user(self.store)
 
-        valid_data = sellable.is_valid_price(value,
-                                             self.model.sale.client_category,
-                                             self.manager)
+        if api.sysparam(self.store).REUTILIZE_DISCOUNT:
+            extra_discount = self.model.sale.get_available_discount_for_items(
+                user=self.manager, exclude_item=self.model)
+        else:
+            extra_discount = None
+
+        valid_data = sellable.is_valid_price(
+            value, category=self.model.sale.client_category,
+            user=self.manager, extra_discount=extra_discount)
+
         if not valid_data['is_valid']:
             return ValidationError(
                 _(u'Max discount for this product is %.2f%%.' %

@@ -380,6 +380,19 @@ _details = [
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
+        u'REUTILIZE_DISCOUNT',
+        _(u'Sales'),
+        _(u'Reutilize not used discounts on sale quotes'),
+        _(u'Whether we should reutilize the discount not used on some '
+          u'products to other products. For instance, if two products with '
+          u'a price of 100,00 are on a sale, and they both have a max '
+          u'discount of 10%, that means we could sell each one for 90,00. '
+          u'If this parameter is true, we could still sell one of those '
+          u'items for 100,00 and reutilize it\'s not used discount on the '
+          u'other product, selling it for 80,00'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'SALE_PAY_COMMISSION_WHEN_CONFIRMED',
         _(u'Sales'),
         _(u'Commission Payment At Sale Confirmation'),

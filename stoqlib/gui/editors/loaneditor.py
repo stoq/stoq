@@ -74,11 +74,10 @@ class LoanItemEditor(BaseEditor):
     def _setup_widgets(self):
         self.sale.set_text(unicode(self.model.loan.identifier))
         self.description.set_text(self.model.sellable.get_description())
-        for widget in [self.sale_quantity, self.return_quantity]:
+        for widget in [self.quantity, self.price,
+                       self.sale_quantity, self.return_quantity]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
-        self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
-                                                    upper=MAX_INT))
         self._configure_expanded_edition()
         self.tabs.set_show_tabs(False)
         self.cfop.hide()

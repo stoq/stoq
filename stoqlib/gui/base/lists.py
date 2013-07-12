@@ -390,6 +390,28 @@ class AdditionListSlave(SearchSlave):
     # Public API
     #
 
+    def add_extra_button(self, label=None, stock=None):
+        """Add an extra button on the this slave
+
+        The extra button will be appended at the end of the button box,
+        the one containing the add/edit/delete buttons
+
+        :param label: label of the button, can be ``None`` if stock is passed
+        :param stock: stock label of the button, can be ``None`` if label
+            is passed
+        :param returns: the button added
+        :rtype: gtk.Button
+        """
+        if label is None and stock is None:
+            raise TypeError("You need to provide a label or a stock argument")
+
+        button = gtk.Button(label=label, stock=stock)
+        button.set_property('can_focus', True)
+        self.button_box.pack_end(button, False, False)
+        button.show()
+
+        return button
+
     def set_message(self, message, details_callback=None):
         """Display a simple message on a label, next to the add, edit, delete buttons
         :param message: a message with properly escaped markup

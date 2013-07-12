@@ -130,27 +130,6 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyEntry" id="price">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="xalign">1</property>
-                    <property name="primary_icon_activatable">True</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">currency</property>
-                    <property name="mandatory">True</property>
-                    <property name="model_attribute">price</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">3</property>
-                    <property name="bottom_attach">4</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="ProxyComboEntry" id="cfop">
                     <property name="visible">True</property>
                     <property name="data_type">object</property>
@@ -262,6 +241,30 @@
                     <property name="right_attach">4</property>
                     <property name="top_attach">4</property>
                     <property name="bottom_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="price">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">True</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="digits">2</property>
+                    <property name="numeric">True</property>
+                    <property name="data_type">currency</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">price</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">3</property>
+                    <property name="bottom_attach">4</property>
                   </packing>
                 </child>
               </object>

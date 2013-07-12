@@ -586,6 +586,23 @@ class SellableItemSlave(BaseEditorSlave):
 
         return order_items
 
+    def get_extra_discount(self, sellable):
+        """Called to get an extra discount for the sellable being added
+
+        Subclasses can implement this to allow some extra discount for the
+        sellable being added. For example, one can implement this to
+        allow some extra discount based on the unused discount on the
+        already added items
+
+        Note that, if you need to get the manager to check for max discount,
+        you can use :obj:`.manager`
+
+        :param sellable: the sellable being added
+        :returns: the extra discount for the sellable being added,
+            or ``None`` if not extra discount should be allowed
+        """
+        return None
+
     #
     #  Private
     #
@@ -835,7 +852,10 @@ class SellableItemSlave(BaseEditorSlave):
             self.manager = self.manager or api.get_current_user(self.store)
             client = getattr(self.model, 'client', None)
             category = client and client.category
-            valid_data = sellable.is_valid_price(value, category, self.manager)
+            extra_discount = self.get_extra_discount(sellable)
+            valid_data = sellable.is_valid_price(value, category, self.manager,
+                                                 extra_discount=extra_discount)
+
             if not valid_data['is_valid']:
                 return ValidationError(
                     _(u'Max discount for this product is %.2f%%.' %

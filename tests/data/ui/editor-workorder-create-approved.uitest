@@ -105,11 +105,10 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                             GtkLabel(): '<b>$ 0.00</b>'
                         GtkHBox(hbox1, fill=True):
-                          GtkAlignment(alignment1, fill=True):
-                            GtkHButtonBox(hbuttonbox1):
-                              GtkButton(add_button): hidden
-                              GtkButton(delete_button): insensitive
-                              GtkButton(edit_button): insensitive
+                          GtkHBox(button_box):
+                            GtkButton(add_button): hidden
+                            GtkButton(edit_button): insensitive
+                            GtkButton(delete_button): insensitive
                           GtkHBox(message_hbox, expand=True, fill=True): hidden
                             GtkLabel(message_label, expand=True, fill=True):
                             GtkButton(message_details_button, fill=True): 'Details'

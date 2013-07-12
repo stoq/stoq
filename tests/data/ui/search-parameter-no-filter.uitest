@@ -52,6 +52,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Change salesperson', u'0'
     row: u'Sales', u'Return policy on sales', u'0'
     row: u'Sales', u'Max discount for sales', u'5'
+    row: u'Sales', u'Reutilize not used discounts on sale quotes', u'0'
     row: u'Sales', u'Commission Payment At Sale Confirmation', u'0'
     row: u'Sales', u'Default operation nature', u'Sale'
     row: u'Sales', u'Ask for Sale Order C.F.O.P.', u'0'
