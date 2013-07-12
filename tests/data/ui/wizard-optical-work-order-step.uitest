@@ -27,7 +27,7 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   ProxyDateEntry(estimated_finish): None
                 GtkTable(optical_table, expand=True, fill=True):
                   GtkHBox(distance_box1):
-                GtkHBox(hbox2, expand=True, fill=True):
+                GtkHBox(distance_box, expand=True, fill=True):
                   GtkLabel(label5, fill=True): 'Distance'
                   GtkTable(distance_table1, fill=True):
                     GtkLabel(label14):

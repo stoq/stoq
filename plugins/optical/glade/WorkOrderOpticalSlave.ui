@@ -267,7 +267,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox2">
+          <object class="GtkHBox" id="distance_box">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>

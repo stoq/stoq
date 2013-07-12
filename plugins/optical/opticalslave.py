@@ -261,8 +261,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     def update_visual_mode(self):
         for widget in [self.prescription_date, self.patient, self.lens_type,
                        self.frame_type, self.medic_combo, self.medic_create,
-                       self.estimated_finish, self.distance_box1,
-                       self.distance_box2, self.near_box, self.frame_box]:
+                       self.estimated_finish, self.distance_box,
+                       self.near_box, self.frame_box]:
 
             widget.set_sensitive(False)
 

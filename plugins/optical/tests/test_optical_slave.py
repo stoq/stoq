@@ -25,16 +25,19 @@
 
 from stoqlib.gui.test.uitestutils import GUITest
 
-from ..opticaldomain import OpticalMedic
-from ..opticaleditor import MedicEditor
+from ..opticalslave import WorkOrderOpticalSlave
 
 
-class TestMedicEditor(GUITest):
+class TestWorkOrder(GUITest):
 
-    def testShow(self):
-        individual = self.create_individual()
-        medic = OpticalMedic(person=individual.person, store=self.store)
-        medic.crm_number = u'123456'
+    def testShowOpticalSlave(self):
+        workorder = self.create_workorder()
+        slave = WorkOrderOpticalSlave(self.store, workorder)
 
-        editor = MedicEditor(self.store, model=medic)
-        self.check_editor(editor, 'editor-medic-show')
+        self.check_slave(slave, 'work-order-optical-slave')
+
+    def testVisualModeOpticalSlave(self):
+        workorder = self.create_workorder()
+        slave = WorkOrderOpticalSlave(self.store, workorder, visual_mode=True)
+
+        self.check_slave(slave, 'work-order-optical-slave-visual-mode')
