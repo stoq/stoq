@@ -40,10 +40,10 @@ schemadocs:
 	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/tables/*html
 
 check-source:
-	tools/source-tests.sh --modified
+	@tools/source-tests.sh --modified
 
 check-source-all:
-	tools/source-tests.sh
+	@tools/source-tests.sh
 
 pylint:
 	pylint --load-plugins tools/pylint_stoq -E \
