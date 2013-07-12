@@ -198,7 +198,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     db_settings.password = password
 
     rv = False
-    if create or not db_settings.database_exists(dbname):
+    if createdb or not db_settings.database_exists(dbname):
         db_settings.clean_database(dbname, force=True)
         rv = True
 
