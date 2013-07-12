@@ -120,7 +120,8 @@ class TestPylint(unittest.TestCase):
             raise Exception("Pylint errors")
 
     def test_stoq(self):
-        self.pylint(["stoq"])
+        self.pylint(["stoq"],
+                    args=["--load-plugins", "tools/pylint_stoq"])
 
     def test_stoqlib(self):
         self.pylint(["stoqlib.database",
@@ -132,13 +133,14 @@ class TestPylint(unittest.TestCase):
                      "stoqlib.lib",
                      "stoqlib.migration",
                      "stoqlib.net",
-                     "stoqlib.reporting"])
+                     "stoqlib.reporting"],
+                    args=["--load-plugins", "tools/pylint_stoq"])
 
     def test_stoqlib_domain(self):
         self.pylint(["stoqlib.domain"],
-                    args=["--load-plugins",
-                          "tools/pylint_stoq",
+                    args=["--load-plugins", "tools/pylint_stoq",
                           "--enable=E1101"])
 
     def test_plugins(self):
-        self.pylint(["plugins"])
+        self.pylint(["plugins"],
+                    args=["--load-plugins", "tools/pylint_stoq"])

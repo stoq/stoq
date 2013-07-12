@@ -4,6 +4,7 @@ import os
 from kiwi.python import namedAny
 from logilab.astng import MANAGER, From
 from logilab.astng.builder import ASTNGBuilder
+from logilab.astng.raw_building import build_function
 from storm.info import get_cls_info
 from storm.references import Reference
 
@@ -110,33 +111,39 @@ class FakeBuilder(object):
         t += '    _connection = None\n'
 
         orm_ti = dt.orm_classes.get(orm_name)
-        for name in sorted(orm_ti.get_column_names()):
-            t += '    %s = None\n' % (name, )
+        if orm_ti is not None:
+            for name in sorted(orm_ti.get_column_names()):
+                t += '    %s = None\n' % (name, )
 
-        for name, class_name in sorted(orm_ti.get_foreign_columns()):
-            self.add_ormobject(dt.orm_classes[class_name].orm_type,
-                               class_name)
-            t += '    %s = None\n' % (class_name, )
-            t += '    %s = %s()\n' % (name, class_name)
+            for name, class_name in sorted(orm_ti.get_foreign_columns()):
+                self.add_ormobject(dt.orm_classes[class_name].orm_type,
+                                   class_name)
+                t += '    %s = None\n' % (class_name, )
+                t += '    %s = %s()\n' % (name, class_name)
 
-        for name, class_name in sorted(orm_ti.get_single_joins()):
-            self.add_ormobject(
-                dt.orm_classes[class_name].orm_type,
-                class_name)
-            t += '    %s = %s()\n' % (name, class_name)
+            for name, class_name in sorted(orm_ti.get_single_joins()):
+                self.add_ormobject(
+                    dt.orm_classes[class_name].orm_type,
+                    class_name)
+                t += '    %s = %s()\n' % (name, class_name)
 
         t += '\n'
         nodes = self.builder.string_build(t)
         for key, value in nodes[orm_name].items():
             class_node.locals[key] = [value]
 
-    def add_parameter_access(self):
-        name = 'ParameterAccess'
-        t = 'class %s(object):\n' % (name, )
+    def add_parameter_access(self, module):
+        # def DEFAULT_SALES_CFOP(): pass
+        # ParameterAccess.DEFAULT_SALES_CFOP = DEFAULT_SALES_CFOP
+        # etc
+        ParameterAccess = self.module.locals['ParameterAccess'][0]
         for detail in get_all_details():
-            t += '    def %s(self): pass\n' % (detail.key, )
-        nodes = self.builder.string_build(t)
-        self.module.locals[name] = nodes.locals[name]
+            func = build_function(detail.key)
+            # FIXME: We should use ParameterAccess.add_local_node,
+            #        to add the function at the right place in the ast,
+            #        but it breaks for some reasons
+            func.parent = ParameterAccess
+            ParameterAccess.set_local(detail.key, func)
 
     def add_interfaces(self, module):
         f = namedAny(module.name).__file__.replace('.pyc', '.py')
@@ -234,7 +241,7 @@ def get_obj_info(obj):
             if my_issubclass(value, ORMObject):
                 fake.add_ormobject(value, attr)
     elif module.name == 'stoqlib.lib.parameters':
-        fake.add_parameter_access()
+        fake.add_parameter_access(module)
     #elif module.name == 'stoqlib.gui.wizards.purchasewizard':
     #    fake.add_wizard_step(module)
 
