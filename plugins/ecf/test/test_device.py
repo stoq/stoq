@@ -90,8 +90,9 @@ class TestECFPrinter(ECFTest):
             DeviceError, self.ecf_printer.get_tax_constant_for_device, sellable)
 
     def test_get_payment_constant(self):
-        raise SkipTest(
-            "Need to configure money payment method on fiscal printer")
+        if True:
+            raise SkipTest(
+                "Need to configure money payment method on fiscal printer")
         constant = self.ecf_printer.get_payment_constant(self.create_payment())
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_PAYMENT)
         self.assertEquals(constant.constant_enum, PaymentMethodType.MONEY)

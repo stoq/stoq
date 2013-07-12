@@ -79,9 +79,9 @@ class TestViewsGeneric(DomainTest):
             ids_set.add(result.id)
 
 
-for view in _get_all_views():
-    name = 'test' + view.__name__
-    func = lambda s, v=view: TestViewsGeneric._test_view(s, v)
+for view_ in _get_all_views():
+    name = 'test' + view_.__name__
+    func = lambda s, v=view_: TestViewsGeneric._test_view(s, v)
     func.__name__ = name
     setattr(TestViewsGeneric, name, func)
     del func
@@ -222,7 +222,6 @@ class TestProductFullStockView(DomainTest):
 
     def test_with_unblocked_sellables_query(self):
         # This is used in the purchase wizard and breaks storm
-        from stoqlib.domain.product import ProductSupplierInfo
         from stoqlib.domain.sellable import Sellable
 
         p1 = self.create_product()
@@ -513,7 +512,6 @@ class TestAccountView(DomainTest):
 class TestProductFullStockItemView(DomainTest):
 
     def test_select(self):
-        from stoqlib.domain.product import Product
         product = self.store.find(Product)[0]
 
         order = self.create_purchase_order()

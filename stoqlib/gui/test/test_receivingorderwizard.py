@@ -85,7 +85,7 @@ class TestReceivingOrderWizard(GUITest):
                 args, kwargs = emit.call_args
                 self.assertTrue(isinstance(args[0], ReceivingOrder))
                 self.assertEqual(yesno.call_count, 0)
-                api.sysparam(self.store).LABEL_TEMPLATE_PATH.path = u'C:\nppdf32Log\debuglog.txt'
+                api.sysparam(self.store).LABEL_TEMPLATE_PATH.path = ur'C:\nppdf32Log\debuglog.txt'
                 emit.reset_mock()
                 confirm.reset_mock()
                 self.click(wizard.next_button)

@@ -34,6 +34,11 @@ from stoq.gui.config import (DatabaseSettingsStep,
                              FirstTimeConfigWizard)
 
 
+class MockDatabaseSettings(DatabaseSettings):
+    def has_database(self):
+        return False
+
+
 class TestFirstTimeConfigWizard(GUITest):
 
     def setUp(self):
@@ -46,13 +51,12 @@ class TestFirstTimeConfigWizard(GUITest):
         options.verbose = False
 
         if self.settings is None:
-            self.settings = DatabaseSettings(address=u'localhost',
-                                             port=12345,
-                                             dbname=u'dbname',
-                                             username=u'username',
-                                             password=u'password')
+            self.settings = MockDatabaseSettings(address=u'localhost',
+                                                 port=12345,
+                                                 dbname=u'dbname',
+                                                 username=u'username',
+                                                 password=u'password')
 
-        self.settings.has_database = lambda: False
         self.config = self.fake.StoqConfig(self.settings)
         wizard = FirstTimeConfigWizard(options, self.config)
         return wizard

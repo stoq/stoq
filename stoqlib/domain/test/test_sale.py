@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -904,8 +904,9 @@ class TestSale(DomainTest):
         self.assertEquals(commissions[0].value, Decimal('56.00'))
 
     def test_commission_amount_when_sale_returns_completly(self):
-        raise SkipTest(u"See stoqlib.domain.returned_sale.ReturnedSale.return_ "
-                       u"and bug 5215.")
+        if True:
+            raise SkipTest(u"See stoqlib.domain.returned_sale.ReturnedSale.return_ "
+                           u"and bug 5215.")
 
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
@@ -931,8 +932,9 @@ class TestSale(DomainTest):
         self.failIf(commissions[-1].value >= 0)
 
     def test_commission_amount_when_sale_returns_partially(self):
-        raise SkipTest(u"See stoqlib.domain.returnedsale.ReturnedSale.return_ "
-                       u"and bug 5215.")
+        if True:
+            raise SkipTest(u"See stoqlib.domain.returnedsale.ReturnedSale.return_ "
+                           u"and bug 5215.")
 
         sale = self.create_sale()
         sellable = self.add_product(sale, quantity=2, price=200)

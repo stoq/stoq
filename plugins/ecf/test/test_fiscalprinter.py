@@ -54,15 +54,16 @@ class TestCouponPrinter(ECFTest):
 
 class TestFiscalCoupon(ECFTest):
     def setUp(self):
-        super(TestFiscalCoupon, self).setUp()
+        ECFTest.setUp(self)
 
         self.sale = self.create_sale()
         self.coupon = self.printer.create_coupon(self.sale)
 
     def test_add_item_product(self):
-        raise SkipTest(
-            "Producing 'Connection closed error', traceback starting at kiwi. "
-            "Just happen when running all tests, not alone")
+        if True:
+            raise SkipTest(
+                "Producing 'Connection closed error', traceback starting at kiwi. "
+                "Just happen when running all tests, not alone")
         product = self.create_product()
         sellable = product.sellable
         item = self.sale.add_sellable(sellable)
@@ -103,8 +104,9 @@ class _TestFiscalCouponPayments(object):
         self.sale.order()
 
     def test_setup_payment(self):
-        raise SkipTest(
-            "Need to configure %s payment method on fiscal printer" % self.method)
+        if True:
+            raise SkipTest(
+                "Need to configure %s payment method on fiscal printer" % self.method)
         product = self.create_product()
         self._open_and_add(product)
         self._add_sale_payments(self.sale, self.constant, self.method)

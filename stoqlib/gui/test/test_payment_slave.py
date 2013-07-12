@@ -111,8 +111,10 @@ class TestCardPaymentSlaves(GUITest):
         # Select a option for multiple installments
         for radio in slave.types_box.get_children():
             if radio.get_label() == 'Credit Card Installments Store':
+                radio.set_active(True)
                 break
-        radio.set_active(True)
+        else:
+            raise AssertionError
 
         self.check_slave(slave, 'slave-card-installments-store')
 

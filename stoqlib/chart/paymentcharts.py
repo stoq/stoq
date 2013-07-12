@@ -21,7 +21,7 @@
 """ Payment charts """
 
 import datetime
-import string
+import string  # pylint: disable=W0402
 
 from dateutil.relativedelta import relativedelta
 from kiwi.currency import currency

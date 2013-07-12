@@ -32,12 +32,12 @@ ATTRIBUTES = dict(bold=1, dark=2, underline=4, blink=5,
                   reverse=7, concealed=8)
 COLORS = dict(grey=30, red=31, green=32, yellow=33, blue=34,
               magenta=35, cyan=36, white=37)
-RESET = '\033[0m'
+RESET = '\033[0m'  # pylint: disable=W1401
 
 
 def colored(text, color=None, attrs=None):
     if os.getenv('ANSI_COLORS_DISABLED') is None:
-        fmt_str = '\033[%dm%s'
+        fmt_str = '\033[%dm%s'  # pylint: disable=W1401
         if color is not None:
             text = fmt_str % (COLORS[color], text)
 
@@ -67,7 +67,7 @@ class ColorStream(object):
             for label in labels:
                 self._color_map[label] = color
                 if len(label) > 1:
-                    self._patten_map[label] = re.compile("%s=\d+" % label)
+                    self._patten_map[label] = re.compile(r"%s=\d+" % label)
 
     def __getattr__(self, key):
         return getattr(self._stream, key)

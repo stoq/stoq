@@ -77,14 +77,15 @@ class TestLauncher(BaseGUITest):
 
     def _test_open_app(self, app_name):
         app = self.create_app(LauncherApp, u'launcher')
+        emitname = 'stoq.gui.shell.shellwindow.StartApplicationEvent.emit'
         for row in app.model:
             if row[COL_APP].name == app_name:
+                with mock.patch(emitname) as emit:
+                    app.iconview.item_activated(row.path)
+                    self.check_app(app, u'launcher-app-' + app_name)
                 break
-
-        with mock.patch(
-            'stoq.gui.shell.shellwindow.StartApplicationEvent.emit') as emit:
-            app.iconview.item_activated(row.path)
-            self.check_app(app, u'launcher-app-' + app_name)
+        else:
+            raise AssertionError
 
         emit.assert_called_once_with(self.window.current_app.app_name,
                                      self.window.current_app)

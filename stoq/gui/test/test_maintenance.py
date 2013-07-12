@@ -206,7 +206,8 @@ class TestMaintenance(BaseGUITest):
                                        hide_footer=True)
 
     def test_on_ViewKanban__toggled(self):
-        raise SkipTest('Changing to kan ban view is not working in tests')
+        if True:
+            raise SkipTest('Changing to kan ban view is not working in tests')
         app = self.create_app(MaintenanceApp, u'maintenance')
         self.activate(app.ViewKanban)
 

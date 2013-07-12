@@ -198,7 +198,6 @@ class TestProduct(DomainTest):
         self.assertFalse(product.can_remove())
 
         # Product is a component.
-        from stoqlib.domain.product import ProductComponent
         product = self.create_product(10)
         component = self.create_product(5)
         Storable(product=component, store=self.store)

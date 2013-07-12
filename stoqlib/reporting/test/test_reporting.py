@@ -34,7 +34,8 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
+from stoqlib.domain.payment.views import (InPaymentView,
+                                          OutPaymentView,
                                           InCheckPaymentView,
                                           OutCheckPaymentView)
 from stoqlib.domain.person import CallsView
@@ -65,7 +66,8 @@ from stoqlib.reporting.workorder import WorkOrdersReport
 class TestReport(ReportTest):
 
     def test_payable_payment_report(self):
-        raise SkipTest('We need a SearchDialog to test this report.')
+        if True:
+            raise SkipTest('We need a SearchDialog to test this report.')
 
         out_payments = list(self.store.find(OutPaymentView))
         for item in out_payments:
@@ -73,7 +75,8 @@ class TestReport(ReportTest):
         # self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
 
     def test_receivable_payment_report(self):
-        raise SkipTest('We need a SearchDialog to test this report.')
+        if True:
+            raise SkipTest('We need a SearchDialog to test this report.')
 
         payments = self.store.find(InPaymentView).order_by(InPaymentView.identifier)
         in_payments = list(payments)

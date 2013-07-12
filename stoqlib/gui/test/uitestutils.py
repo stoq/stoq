@@ -63,7 +63,8 @@ def _get_table_packing_properties(parent, child):
 
 
 class GUIDumper(object):
-    """
+    """A class used to dump the state of a widget tree and serialize
+    it into a string that can be saved on disk.
     """
 
     def __init__(self):

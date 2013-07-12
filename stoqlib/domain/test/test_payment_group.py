@@ -30,8 +30,8 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
 
@@ -206,8 +206,9 @@ class TestPaymentGroup(DomainTest):
         self.assertEquals(commissions[2].value, Decimal("22.50"))
 
     def test_installments_commission_amount_when_sale_return(self):
-        raise SkipTest(u"See stoqlib.domain.returnedsale.ReturnedSale.return_ "
-                       u"and bug 5215.")
+        if True:
+            raise SkipTest(u"See stoqlib.domain.returnedsale.ReturnedSale.return_ "
+                           u"and bug 5215.")
 
         self._payComissionWhenConfirmed()
         sale = self.create_sale()

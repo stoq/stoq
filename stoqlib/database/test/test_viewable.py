@@ -98,10 +98,9 @@ class ViewableTest(DomainTest):
         views = self.store.find(ClientView)
         for view in views:
             if view.client == client:
+                self.assertEquals(view.person, client.person)
+                self.assertEquals(view.person_name, u'Fulano')
+                self.assertEquals(view.total_sales, 364)
                 break
         else:
             raise AssertionError('client should be found in the view')
-
-        self.assertEquals(view.person, client.person)
-        self.assertEquals(view.person_name, u'Fulano')
-        self.assertEquals(view.total_sales, 364)
