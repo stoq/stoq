@@ -36,6 +36,13 @@ from stoq.gui.shell.shellwindow import ShellWindow
 gtk.set_interactive(False)
 
 
+class MockShellWindow(ShellWindow):
+    in_ui_test = True
+
+    def add_info_bar(self, message_type, label, action_widget=None):
+        pass
+
+
 class BaseGUITest(GUITest):
     def setUp(self):
         original_refresh = ShellApp.refresh
@@ -66,9 +73,8 @@ class BaseGUITest(GUITest):
         self.shell = mock.Mock()
         self.options = mock.Mock(spec=[u'debug'])
         self.options.debug = False
-        self.window = ShellWindow(self.options, self.shell, store=self.store)
+        self.window = MockShellWindow(self.options, self.shell, store=self.store)
         self.window.in_ui_test = True
-        self.window.add_info_bar = lambda *x: None
         self.window.statusbar.push(0, u'Test Statusbar test')
 
         shell_app = self.window.run_application(app_name)

@@ -31,7 +31,7 @@ from ..opticaleditor import MedicEditor
 
 class TestMedicEditor(GUITest):
 
-    def testShow(self):
+    def test_show(self):
         individual = self.create_individual()
         medic = OpticalMedic(person=individual.person, store=self.store)
         medic.crm_number = u'123456'

@@ -396,11 +396,21 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
         # HINT_DIALOG
         toplevel.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
 
+    log.info("%s: Opening" % dialog_name)
+
     if hasattr(parent, 'on_dialog__opened'):
         parent.on_dialog__opened(orig_dialog)
 
-    log.info("%s: Opening" % dialog_name)
+    retval = run_dialog_internal(dialog, parent, toplevel)
 
+    _pop_current_toplevel()
+
+    return retval
+
+
+# Mainly for mocking
+
+def run_dialog_internal(dialog, parent, toplevel):
     # FIXME: We should avoid calling dialog.run() here
     # See http://tinyurl.com/lj6ske4
     toplevel.run()
@@ -408,7 +418,6 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     retval = dialog.retval
     dialog.destroy()
 
-    _pop_current_toplevel()
     return retval
 
 _fullscreen = None

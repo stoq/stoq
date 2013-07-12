@@ -23,6 +23,7 @@
 ##
 
 import datetime
+
 import gtk
 import mock
 

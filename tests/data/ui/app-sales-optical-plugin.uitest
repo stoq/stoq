@@ -1,0 +1,164 @@
+app: SalesApp
+GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Sale quote...'
+              GtkImageMenuItem(): 'Loan...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Close loan...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...'
+          GtkImageMenuItem(): 'Export to spreadsheet...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Sale'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Details...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Edit...', insensitive
+          GtkImageMenuItem(): 'Cancel quote...', insensitive
+          GtkImageMenuItem(): 'Return...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_Print invoice...', insensitive
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Sold items by branch...'
+          GtkImageMenuItem(): 'Sales by payment method...'
+          GtkImageMenuItem(): 'Total sales made by salesperson...'
+          GtkImageMenuItem(): 'Products...'
+          GtkImageMenuItem(): 'Services...'
+          GtkImageMenuItem(): 'Deliveries...'
+          GtkImageMenuItem(): 'Clients...'
+          GtkImageMenuItem(): 'Commissions...'
+          GtkImageMenuItem(): 'Client Calls...'
+          GtkImageMenuItem(): 'Client credit check history...'
+          GtkImageMenuItem(): 'Returned sales...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Loans...'
+          GtkImageMenuItem(): 'Loan items...'
+      GtkImageMenuItem(): 'Optical'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Optical pre sale...'
+          GtkImageMenuItem(): 'Medics...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Sales help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Sale quote'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Products'
+            GtkImageMenuItem(): 'Clients'
+            GtkImageMenuItem(): 'Services'
+            GtkImageMenuItem(): 'Deliveries'
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print'
+      GtkToolButton(): 'Quit', hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Details', insensitive
+      GtkToolButton(): 'Return', insensitive
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkHBox(menu_hbox, fill=True): hidden
+        GtkVBox(vbox4, expand=True, fill=True):
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
+            GtkVBox(vbox):
+              GtkVBox(filters_box, fill=True):
+                GtkHBox(hbox):
+                  ComboSearchFilter():
+                    GtkLabel(): 'Show sales'
+                    ProxyComboBox(padding=6):
+                      item: 'All Sales', selected
+                      item: 'Sold'
+                      item: 'Sold today'
+                      item: 'Sold in the last 7 days'
+                      item: 'Sold in the last 28 days'
+                      item: 'Expired quotes'
+                      item: 'sep'
+                      item: 'Opened'
+                      item: 'Confirmed'
+                      item: 'Paid'
+                      item: 'Cancelled'
+                      item: 'Returned'
+                      item: 'Quoting'
+                      item: 'Renegotiated'
+                  SearchFilter(_primary_filter):
+                    GtkLabel(): 'matching:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains All Words', selected
+                      item: 'Contains Exactly'
+                      item: 'Does Not Contain'
+                    HintedEntry(search_entry, padding=6): ''
+                  GtkButton(search_button): 'gtk-find'
+              SearchResultListView(result_view, expand=True, fill=True):
+                column: title='#'
+                column: title='Open date', hidden
+                column: title='Close date', hidden
+                column: title='Confirm date'
+                column: title='Cancel date', hidden
+                column: title='Return date', hidden
+                column: title='Expire date', hidden
+                column: title='Status', hidden
+                column: title='Client', expand
+                column: title='Salesperson'
+                column: title='Items'
+                column: title='Total'
+                row: 1, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Paid', u'Vitalina Claudino', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
+                row: 2, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Alessandra Almeida Itaber\xe1', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+                row: 3, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
+          GtkVBox(list_vbox, fill=True):
+          GtkEventBox(list_toolbar_holder, fill=True):
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+        GtkHBox(_summary_label):
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+          GtkLabel(): '<b>$2015.00</b>'
+
+popup: SaleSelection
+GtkMenu(popup): hidden
+  GtkImageMenuItem(): 'Details...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Edit...', insensitive
+  GtkImageMenuItem(): 'Cancel quote...', insensitive
+  GtkImageMenuItem(): 'Return...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): '_Print invoice...', insensitive

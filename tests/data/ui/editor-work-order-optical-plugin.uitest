@@ -1,0 +1,225 @@
+editor: WorkOrderEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave WorkOrderEditor is attached
+        GtkVBox(toplevel):
+          GtkAlignment(alignment1, fill=True):
+            GtkTable(table1):
+              GtkLabel(label4): 'Work order:'
+              ProxyLabel(identifier): '<span >01234</span>'
+              GtkLabel(label20): 'Status:'
+              GtkHBox(hbox2):
+                ProxyLabel(status_str, fill=True): '<span >Opened</span>'
+                GtkImage(state_icon): hidden
+              GtkButton(toggle_status_btn): 'Approve', insensitive
+              GtkLabel(label8): 'Client:'
+              ProxyComboEntry(client): mandatory
+                item: 'Alessandra Almeida Itaber\xc3\xa1'
+                item: 'Franciso Elisio de Lima Junior'
+                item: 'Luis Sergio da Silva Marin'
+                item: 'Vitalina Claudino'
+              GtkButton(client_create):
+              GtkButton(client_info): insensitive
+              GtkLabel(label5): 'Category:'
+              ProxyComboBox(category):
+                item: 'No category', selected
+              GtkButton(category_create):
+              GtkButton(category_edit): insensitive
+              GtkLabel(label19): 'Equipment:'
+              ProxyEntry(equipment): '', mandatory
+              GtkHBox(hbox1):
+          GtkNotebook(slaves_notebook, expand=True, fill=True):
+            GtkEventBox(opening_holder): slave WorkOrderOpeningSlave is attached
+              GtkVBox(toplevel):
+                GtkHBox(hbox7, fill=True):
+                  GtkLabel(label6, fill=True): 'Opening date:'
+                  ProxyDateEntry(open_date, expand=True, fill=True): datetime.date(2012, 1, 1)
+                GtkLabel(label9, fill=True): 'Defect reported by client:'
+                GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+                  ProxyTextView(defect_reported):
+            GtkEventBox(quote_holder): slave WorkOrderQuoteSlave is attached
+              GtkVBox(toplevel):
+                GtkTable(table2, fill=True):
+                  GtkLabel(label16): 'Quote responsible:'
+                  ProxyComboEntry(quote_responsible):
+                    item: 'Administrator'
+                    item: 'Cleusa Blanc Ferreira Norbiato'
+                    item: 'Deivis Alexandre Junior'
+                    item: 'Maria Aparecida Ardana'
+                    item: 'Osvaldo Denadai Marin'
+                  GtkLabel(label10): 'Estimated time:'
+                  ProxyEntry(estimated_hours): ''
+                  GtkLabel(label11): 'Estimated cost:'
+                  ProxyEntry(estimated_cost): ''
+                  GtkLabel(label5): 'Estimated start:'
+                  ProxyDateEntry(estimated_start): None
+                  GtkLabel(label18): 'Estimated finish:'
+                  ProxyDateEntry(estimated_finish): None
+                GtkLabel(label12, fill=True): 'Defect detected by responsible:'
+                GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
+                  ProxyTextView(defect_detected):
+            GtkEventBox(execution_holder): slave WorkOrderExecutionSlave is attached, insensitive
+              GtkVBox(toplevel):
+                GtkTable(table3, fill=True):
+                  GtkLabel(label17): 'Execution responsible:'
+                  ProxyComboEntry(execution_responsible):
+                    item: 'Administrator'
+                    item: 'Cleusa Blanc Ferreira Norbiato'
+                    item: 'Deivis Alexandre Junior'
+                    item: 'Maria Aparecida Ardana'
+                    item: 'Osvaldo Denadai Marin'
+                GtkHSeparator(hseparator1, fill=True):
+                GtkEventBox(sellable_item_holder, expand=True, fill=True): slave _WorkOrderItemSlave is attached
+                  GtkVBox(toplevel):
+                    GtkTable(item_table, fill=True): hidden
+                      GtkHBox(hbox2):
+                        ProxyLabel(item_lbl, fill=True): 'Item:'
+                        GtkEntry(barcode, fill=True): ''
+                        GtkButton(product_button):
+                      ProxyLabel(kiwilabel2): 'Quantity:'
+                      ProxySpinButton(quantity): '0.000', insensitive
+                      ProxyLabel(unit_label): '<span weight="bold"></span>'
+                      ProxyLabel(cost_label): 'Cost:'
+                      ProxySpinButton(cost): '0.00', insensitive
+                      GtkButton(add_sellable_button): insensitive
+                      ProxyLabel(sellable_description): '<span ></span>'
+                      GtkLabel(minimum_quantity_lbl): 'Minimum:', hidden
+                      ProxyLabel(minimum_quantity): '<span >0.0</span>', hidden
+                      GtkLabel(stock_quantity_lbl): 'Stock:', hidden
+                      ProxyLabel(stock_quantity): '<span >0.0</span>', hidden
+                    GtkEventBox(list_holder, expand=True, fill=True): slave AdditionListSlave is attached
+                      GtkVBox(toplevel):
+                        GtkVBox(list_vbox, expand=True, fill=True):
+                          ObjectList(klist, expand=True, fill=True):
+                            column: title='Code', hidden
+                            column: title='Barcode', hidden
+                            column: title='Description', expand
+                            column: title='Price'
+                            column: title='Quantity'
+                            column: title='Total'
+                          GtkHBox(summary, fill=True):
+                            GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+                            GtkLabel(): '<b>$ 0.00</b>'
+                        GtkHBox(hbox1, fill=True):
+                          GtkHBox(button_box):
+                            GtkButton(add_button): hidden
+                            GtkButton(edit_button): hidden, insensitive
+                            GtkButton(delete_button): hidden, insensitive
+                          GtkHBox(message_hbox, expand=True, fill=True): hidden
+                            GtkLabel(message_label, expand=True, fill=True):
+                            GtkButton(message_details_button, fill=True): 'Details'
+            GtkEventBox(history_holder): slave WorkOrderHistorySlave is attached
+              GtkAlignment(toplevel):
+                GtkVBox(vbox1):
+                  ObjectList(details_list, expand=True, fill=True):
+                    column: title='Date'
+                    column: title='Who', expand
+                    column: title='What', expand
+                    column: title='Old value'
+                    column: title='New value'
+                    column: title='Notes'
+                  GtkHBox(hbox1, fill=True):
+                    GtkButton(details_btn, fill=True): 'gtk-info', insensitive
+            GtkEventBox(): slave WorkOrderOpticalSlave is attached
+              GtkVBox(toplevel):
+                GtkTable(table1, fill=True):
+                  GtkLabel(label3): 'M\xc3\xa9dico:'
+                  ProxyComboEntry(medic_combo):
+                    item: ''
+                  GtkHBox(hbox1):
+                    GtkButton(medic_create, expand=True, fill=True):
+                    GtkButton(medic_details, expand=True, fill=True): insensitive
+                  GtkLabel(label11): 'Tipo da Lente:'
+                  ProxyComboBox(lens_type):
+                    item: 'Contact'
+                    item: 'Ophtalmic', selected
+                  GtkLabel(label1): 'Owner:'
+                  ProxyEntry(patient): '', mandatory
+                  GtkLabel(label4): 'Data da receita:'
+                  ProxyDateEntry(prescription_date): None
+                  GtkLabel(estimated_finish_lbl): 'Previs\xc3\xa3o de entrega:', hidden
+                  ProxyDateEntry(estimated_finish): None, hidden
+                GtkTable(optical_table, expand=True, fill=True):
+                  GtkHBox(distance_box1):
+                GtkHBox(distance_box, expand=True, fill=True):
+                  GtkLabel(label5, fill=True): 'Distance'
+                  GtkTable(distance_table1, fill=True):
+                    GtkLabel(label14):
+                    GtkLabel(label15): 'Spherical'
+                    GtkLabel(label16): 'Cylindrical'
+                    GtkLabel(label17): 'Axis'
+                    GtkLabel(label18): 'PD'
+                    GtkLabel(label19): 'Height'
+                    GtkLabel(label30): 'Prism'
+                    GtkLabel(label31): 'Base'
+                    GtkLabel(label7): 'Addition'
+                    GtkVSeparator(vseparator1):
+                    GtkLabel(label12): 'RE:'
+                    ProxySpinButton(re_distance_spherical): '0.00'
+                    ProxySpinButton(re_distance_cylindrical): '0.00'
+                    ProxySpinButton(re_distance_axis): '0'
+                    ProxySpinButton(re_distance_pd): '0.0'
+                    ProxySpinButton(re_distance_height): '0.00'
+                    ProxySpinButton(re_distance_prism): '0.00'
+                    ProxySpinButton(re_distance_base): '0.00'
+                    ProxySpinButton(re_addition): '0.00'
+                    GtkLabel(label13): 'LE:'
+                    ProxySpinButton(le_distance_spherical): '0.00'
+                    ProxySpinButton(le_distance_cylindrical): '0.00'
+                    ProxySpinButton(le_distance_axis): '0'
+                    ProxySpinButton(le_distance_pd): '0.0'
+                    ProxySpinButton(le_distance_height): '0.00'
+                    ProxySpinButton(le_distance_prism): '0.00'
+                    ProxySpinButton(le_distance_base): '0.00'
+                    ProxySpinButton(le_addition): '0.00'
+                GtkHBox(hbox3, expand=True, fill=True):
+                  GtkVBox(vbox2, fill=True):
+                    GtkHBox(near_box, fill=True):
+                      GtkLabel(label6, fill=True): 'Near'
+                      GtkTable(near_table, fill=True):
+                        GtkLabel(label22):
+                        GtkLabel(label23): 'Spherical'
+                        GtkLabel(label24): 'Cylindrical'
+                        GtkLabel(label25): 'Axis'
+                        GtkLabel(label26): 'PD'
+                        GtkVSeparator(vseparator2):
+                        GtkLabel(label20): 'RE:'
+                        ProxySpinButton(re_near_spherical): '0.00'
+                        ProxySpinButton(re_near_cylindrical): '0.00'
+                        ProxySpinButton(re_near_axis): '0'
+                        ProxySpinButton(re_near_pd): '0.0'
+                        GtkLabel(label21): 'LE:'
+                        ProxySpinButton(le_near_spherical): '0.00'
+                        ProxySpinButton(le_near_cylindrical): '0.00'
+                        ProxySpinButton(le_near_axis): '0'
+                        ProxySpinButton(le_near_pd): '0.0'
+                    GtkLabel(label2, expand=True, fill=True):
+                  GtkAlignment(alignment1, fill=True):
+                    GtkHBox(frame_box):
+                      GtkLabel(label33, fill=True): 'Frame'
+                      GtkTable(frame_table, expand=True, fill=True):
+                        GtkCheckButton(client_frame_check): 'Arma\xc3\xa7\xc3\xa3o do cliente'
+                        GtkLabel(label10):
+                        GtkLabel(label27): 'M.V.A'
+                        GtkLabel(label28): 'M.H.A'
+                        GtkLabel(label29): 'Bridge'
+                        ProxySpinButton(frame_mva): '0.0'
+                        ProxySpinButton(frame_mha): '0.0'
+                        ProxySpinButton(frame_bridge): '0.0'
+                        GtkLabel(label8): 'Type:'
+                        ProxyComboBox(frame_type):
+                          item: '3 pieces', selected
+                          item: 'Closed ring'
+                          item: 'Nylon String'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(): 'gtk-print'
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(main_dialog.help_button): 'gtk-help'

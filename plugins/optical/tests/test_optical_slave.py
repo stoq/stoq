@@ -30,13 +30,13 @@ from ..opticalslave import WorkOrderOpticalSlave
 
 class TestWorkOrder(GUITest):
 
-    def testShowOpticalSlave(self):
+    def test_show_optical_slave(self):
         workorder = self.create_workorder()
         slave = WorkOrderOpticalSlave(self.store, workorder)
 
         self.check_slave(slave, 'work-order-optical-slave')
 
-    def testVisualModeOpticalSlave(self):
+    def test_visual_mode_optical_slave(self):
         workorder = self.create_workorder()
         slave = WorkOrderOpticalSlave(self.store, workorder, visual_mode=True)
 

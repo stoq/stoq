@@ -30,17 +30,18 @@ from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 EditorCreateEvent, RunDialogEvent)
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.translation import stoqlib_gettext
 
-from optical.medicssearch import OpticalMedicSearch
-from optical.opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
-from optical.opticalwizard import OpticalSaleQuoteWizard
+from .medicssearch import OpticalMedicSearch
+from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
+from .opticalwizard import OpticalSaleQuoteWizard
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -95,14 +96,13 @@ class OpticalUI(object):
         self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _remove_app_ui(self, uimanager):
-        if not self._ui:
+        if not self._ui:  # pragma nocover
             return
         uimanager.remove_ui(self._ui)
         self._ui = None
 
     def _add_work_order_editor_slave(self, editor, model, store):
-        from stoqlib.gui.utils.printing import print_report
-        from optical.opticalreport import OpticalWorkOrderReceiptReport
+        from .opticalreport import OpticalWorkOrderReceiptReport
         slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
                                       visual_mode=editor.visual_mode)
         editor.add_extra_tab('Ótico', slave)
