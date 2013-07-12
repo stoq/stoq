@@ -85,7 +85,7 @@ class HTMLReport(object):
         return html.render(stylesheets=[weasyprint.CSS(string=stylesheet)])
 
     def save(self):
-        document = self.render()
+        document = self.render(stylesheet='')
         document.write_pdf(self.filename)
 
     #

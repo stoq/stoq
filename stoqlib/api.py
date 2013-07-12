@@ -232,6 +232,7 @@ class StoqAPI(object):
         options = parser.parse_args(sys.argv[1:])[0]
         options.wizard = False
         options.splashscreen = False
+        options.autoreload = False
         options.login_username = u'admin'
         shell = boot_shell(options, initial=False)
         shell._dbconn.connect()
