@@ -123,6 +123,9 @@ class OpticalUI(object):
         with api.trans() as store:
             run_dialog(OpticalSaleQuoteWizard, self._current_app, store)
 
+        if store.committed:
+            self._current_app.refresh()
+
     #
     # Events
     #

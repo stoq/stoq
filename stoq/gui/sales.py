@@ -550,3 +550,11 @@ class SalesApp(ShellApp):
         if self.check_open_inventory():
             return
         self.sale_toolbar.return_sale()
+
+    # Sale toobar
+
+    def on_sale_toolbar__sale_edited(self, widget, sale):
+        self.refresh()
+
+    def on_sale_toolbar__sale_returned(self, widget, sale):
+        self.refresh()
