@@ -117,7 +117,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
                       reverse=7, concealed=8)
     COLORS = dict(grey=30, red=31, green=32, yellow=33, blue=34,
                   magenta=35, cyan=36, white=37)
-    RESET = r'\033[0m'
+    RESET = '\033[0m'   # pylint: disable=W1401
 
     def __init__(self, stream=None):
         # This colors will be used to highlight the transaction
@@ -133,7 +133,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
 
     def _colored(self, text, color=None, attrs=None):
         if os.getenv('ANSI_COLORS_DISABLED') is None:
-            fmt_str = r'\033[%dm%s'
+            fmt_str = '\033[%dm%s'   # pylint: disable=W1401
             if color is not None:
                 text = fmt_str % (self.COLORS[color], text)
 
