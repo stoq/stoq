@@ -417,9 +417,9 @@ class ExampleCreator(object):
         )
 
     def create_product(self, price=None, create_supplier=True,
-                       branch=None, stock=None, storable=False):
+                       branch=None, stock=None, storable=False, code=u''):
         from stoqlib.domain.product import Storable, StockTransactionHistory
-        sellable = self.create_sellable(price=price)
+        sellable = self.create_sellable(price=price, code=code)
         if create_supplier:
             self.create_product_supplier_info(product=sellable.product)
         product = sellable.product
@@ -452,7 +452,7 @@ class ExampleCreator(object):
                                 store=self.store)
 
     def create_sellable(self, price=None, product=True,
-                        description=u'Description'):
+                        description=u'Description', code=u''):
         from stoqlib.domain.product import Product
         from stoqlib.domain.service import Service
         from stoqlib.domain.sellable import Sellable
@@ -463,6 +463,7 @@ class ExampleCreator(object):
                             price=price,
                             description=description,
                             store=self.store)
+        sellable.code = code
         sellable.tax_constant = tax_constant
         if product:
             Product(sellable=sellable, store=self.store)
@@ -985,9 +986,9 @@ class ExampleCreator(object):
         from stoqlib.domain.address import CityLocation
         return CityLocation.get_default(self.store)
 
-    def add_product(self, sale, price=None, quantity=1):
+    def add_product(self, sale, price=None, quantity=1, code=u''):
         from stoqlib.domain.product import Storable, StockTransactionHistory
-        product = self.create_product(price=price)
+        product = self.create_product(price=price, code=code)
         sellable = product.sellable
         sellable.tax_constant = self.create_sellable_tax_constant()
         sale.add_sellable(sellable, quantity=quantity)

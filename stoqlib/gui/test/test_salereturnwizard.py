@@ -49,8 +49,8 @@ class TestSaleReturnWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
     def test_sale_return_items_step(self, info):
         sale = self.create_sale()
-        self.add_product(sale)
-        self.add_product(sale, quantity=2)
+        self.add_product(sale, code=u'1234')
+        self.add_product(sale, quantity=2, code=u'5678')
         self.add_payments(sale)
         sale.order()
         sale.confirm()

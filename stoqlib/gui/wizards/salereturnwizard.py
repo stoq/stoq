@@ -213,7 +213,7 @@ class SaleReturnItemsStep(SellableItemStep):
             Column('will_return', title=_('Return'),
                    data_type=bool, editable=editable),
             Column('sellable.code', title=_('Code'),
-                   data_type=str, visible=False),
+                   data_type=str, visible=False, sorted=True),
             Column('sellable.barcode', title=_('Barcode'),
                    data_type=str, visible=False),
             Column('sellable.description', title=_('Description'),
