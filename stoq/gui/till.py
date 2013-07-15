@@ -463,12 +463,11 @@ class TillApp(ShellApp):
 
     def on_Confirm__activate(self, action):
         selected = self.results.get_selected()
-        query = WorkOrder.status != WorkOrder.STATUS_WORK_FINISHED
 
         # If there are unfinished workorders associated with the sale, we
         # cannot print the coupon yet. Instead lets just create the payments.
-        unfinished = WorkOrder.find_by_sale(self.store, selected.sale).find(query)
-        if not unfinished.is_empty():
+        workorders = WorkOrder.find_by_sale(self.store, selected.sale)
+        if not all(wo.can_close() for wo in workorders):
             self._create_sale_payments(selected)
         else:
             self._confirm_order(selected)
