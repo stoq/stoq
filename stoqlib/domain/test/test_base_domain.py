@@ -24,7 +24,6 @@
 
 from storm.exceptions import NotOneError
 
-from stoqlib.database.runtime import new_store
 from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 
@@ -37,21 +36,23 @@ class Ding(Domain):
     str_field = UnicodeCol(default=u'')
 
 
-RECREATE_SQL = """
-DROP TABLE IF EXISTS ding;
-CREATE TABLE ding (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    int_field integer default 0,
-    str_field text default ''
-    );
-"""
-store = new_store()
-store.execute(RECREATE_SQL)
-store.commit()
-
-
 class TestSelect(DomainTest):
+
+    @classmethod
+    def setUpClass(cls):
+        DomainTest.setUpClass()
+        RECREATE_SQL = """
+        DROP TABLE IF EXISTS ding;
+        CREATE TABLE ding (
+            id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+            te_id bigint UNIQUE REFERENCES transaction_entry(id),
+            int_field integer default 0,
+            str_field text default ''
+        );
+        """
+        cls.store.execute(RECREATE_SQL)
+        cls.store.commit()
+
     def test_select_one(self):
         self.assertEquals(self.store.find(Ding).one(), None)
         ding1 = Ding(store=self.store)
