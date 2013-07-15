@@ -72,6 +72,7 @@ coverage: clean
 	tools/validatecoverage
 
 jenkins: check-source-all
+	unset STOQLIB_TEST_QUICK; \
 	VERSION=`python -c "from stoq import version; print version"`; \
 	rm -fr jekins-test; \
 	python setup.py -q sdist -d jenkins-test; \
