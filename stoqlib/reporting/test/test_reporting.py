@@ -24,9 +24,9 @@
 """ This module test reporties """
 
 import datetime
-import mock
 from decimal import Decimal
 
+import mock
 from nose.exc import SkipTest
 
 from stoqlib.database.runtime import get_current_station
@@ -287,11 +287,19 @@ class TestReport(ReportTest):
         sale.identifier = 1000
         sale.order()
 
-        method = PaymentMethod.get_by_name(self.store, u'money')
         till = Till.get_last_opened(self.store)
-        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
-                                        sale.get_sale_subtotal(),
-                                        till=till)
+        device = self.create_card_device(description=u'MAQ1')
+        provider = self.create_credit_provider(u'PRO1')
+        credit_card = self.create_credit_card_data(
+            device=device,
+            provider=provider,
+            payment_type=Payment.TYPE_IN,
+            payment_value=sale.get_sale_subtotal())
+        credit_card.auth = 1234
+        payment = credit_card.payment
+        payment.group = sale.group
+        payment.branch = sale.branch
+        payment.till = till
         sale.confirm()
         sale.group.pay()
 
@@ -322,9 +330,11 @@ class TestReport(ReportTest):
         address.person = drawee.person
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        group = self.create_payment_group()
+        purchase = self.create_purchase_order()
+        purchase.identifier = 12345
         branch = self.create_branch()
-        payment = method.create_payment(Payment.TYPE_OUT, group, branch, Decimal(100))
+        payment = method.create_payment(Payment.TYPE_OUT,
+                                        purchase.group, branch, Decimal(100))
         payment.description = u"Test payable account"
         payment.group.recipient = drawee.person
         payment.set_pending()
@@ -332,9 +342,41 @@ class TestReport(ReportTest):
         payment.identifier = 1002
         payment.paid_date = date
 
+        # create sale payment
+        sale = self.create_sale()
+        self.add_product(sale)
+        self.add_product(sale)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+        sale.identifier = 23456
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
+
+        payment = returned_sale.group.get_items()[1]
+        payment.branch = branch
+        payment.till = till
+        payment.identifier = 1003
+        payment.pay()
+        payment.paid_date = date
+
         # create lonely output payment
+        group = self.create_payment_group()
+        method = PaymentMethod.get_by_name(self.store, u'money')
+        payment = method.create_payment(Payment.TYPE_OUT, group, branch, Decimal(100))
+        payment.branch = branch
+        payment.till = till
+        payment.identifier = 1004
+        payment.paid_date = date
+        payment.status = Payment.STATUS_PAID
+
         self._diff_expected(TillDailyMovementReport,
                             'till-daily-movement-report', self.store, date)
+
+        end_date = datetime.date(2013, 6, 1)
+        self._diff_expected(TillDailyMovementReport,
+                            'till-daily-movement-report-end', self.store, date,
+                            end_date)
 
     def test_sales_person_report(self):
         sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1

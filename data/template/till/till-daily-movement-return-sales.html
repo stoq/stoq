@@ -6,14 +6,12 @@
           <td>${ _("Code") }</td>
           <td>${ _("Sales Person") }</td>
           <td>${ _("Client") }</td>
-          <td>${ _("Notes") }</td>
           <td>${ _("Return Date") }</td>
           <td class="align-right">${ _("Sale Value") }</td>
         </tr>
       </tdead>
       <tfoot>
         <tr>
-          <td></td>
           <td></td>
           <td></td>
           <td></td>
@@ -27,7 +25,6 @@
             <td>${ sale.identifier }</td>
             <td>${ sale.get_salesperson_name() }</td>
             <td>${ sale.get_client_name() }</td>
-            <td>${ sale.notes }</td>
             <td>${ format_date(sale.return_date) }</td>
             <td class="align-right">${ format_price(sale.get_total_sale_amount()) }</td>
           </tr>
@@ -44,7 +41,7 @@
               </thead>
               <tbody>
 
-              % for sale_payment in report.sales[sale]:
+              % for sale_payment in report.return_sales[sale]:
               <tr class="align-left">
                 <td>${ sale_payment.identifier }</td>
                 <td>${ sale_payment.method.get_description()}</td>

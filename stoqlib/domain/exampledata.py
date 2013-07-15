@@ -842,7 +842,7 @@ class ExampleCreator(object):
         return CardPaymentOperation()
 
     def create_card_payment(self, date=None, provider_id=u'AMEX', device=None,
-                            payment_value=None):
+                            payment_value=None, payment_type=None):
         from stoqlib.domain.payment.card import CreditCardData, CreditProvider
         if date is None:
             date = localnow()
@@ -851,6 +851,7 @@ class ExampleCreator(object):
 
         payment = self.create_payment(date=date,
                                       method=self.get_payment_method(u'card'),
+                                      payment_type=payment_type,
                                       value=payment_value)
 
         CreditCardData(payment=payment, provider=provider,
@@ -860,11 +861,12 @@ class ExampleCreator(object):
         return payment
 
     def create_credit_card_data(self, provider=None, device=None,
-                                payment_value=None):
+                                payment_type=None, payment_value=None):
         from stoqlib.domain.payment.card import CreditCardData
         payment = self.create_card_payment(date=None,
                                            provider_id=provider.provider_id,
                                            device=device,
+                                           payment_type=payment_type,
                                            payment_value=payment_value)
 
         return self.store.find(CreditCardData, payment_id=payment.id).one()
