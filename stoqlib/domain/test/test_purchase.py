@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,15 +22,112 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ This module test all class in stoq/domain/purchase.py """
+from decimal import Decimal, InvalidOperation
 
+from kiwi.currency import currency
 
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
-
+from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup, PurchaseItem, \
+    PurchaseOrderAdaptToPaymentTransaction, PurchaseOrderView, _
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
+from stoqlib.lib.dateutils import localnow, localdate
+from stoqlib.lib.formatters import format_quantity
+
+
+class TestPurchaseItem(DomainTest):
+    def test_constructor_without_sellable(self):
+        order = self.create_purchase_order()
+
+        # If we dont pass a Sellable, the constructor should raise an TypeError:
+        # 'You must provide a sellable argument'
+        with self.assertRaises(TypeError):
+            PurchaseItem(store=self.store, order=order)
+
+    def test_constructor_without_order(self):
+        sellable = self.create_sellable()
+
+        # If we dont pass a Order, the constructor should raise an TypeError:
+        # 'You must provide a order argument'
+        with self.assertRaises(TypeError):
+            PurchaseItem(store=self.store, sellable=sellable)
+
+    def test_constructor_cost(self):
+        order = self.create_purchase_order()
+        sellable = self.create_sellable()
+        sellable.cost = 97
+
+        # If we dont pass a cost, the constructor should get from the sellable
+        item = PurchaseItem(store=self.store, sellable=sellable, order=order)
+        self.assertEquals(item.cost, 97)
+
+        # Now the cost of the sellable should be ignored.
+        item = PurchaseItem(store=self.store, sellable=sellable, order=order,
+                            cost=58)
+        self.assertEquals(item.cost, 58)
+
+    def test_get_total_sold(self):
+        item = self.create_purchase_order_item()
+        solded = 5
+        item.quantity_sold = solded
+        total_sold = item.get_total_sold()
+        self.assertEquals(total_sold, currency(solded * item.cost))
+
+    def test_get_received_total(self):
+        item = self.create_purchase_order_item()
+        received = 3
+        item.quantity_received = received
+        total_received = item.get_received_total()
+        self.assertEquals(total_received, currency(received * item.cost))
+
+    def test_get_pending_quantity(self):
+        # Default value of item.quantity is 8
+        item = self.create_purchase_order_item()
+        pending = item.get_pending_quantity()
+
+        # Check in case of received quantity is 0
+        self.assertEquals(pending, Decimal(8))
+
+        # Check in case of received quantity is 8, because in this case we dont
+        # have any pending products to delivery
+        item.quantity_received = 6
+        pending = item.get_pending_quantity()
+        self.assertEquals(pending, Decimal(2))
+
+        item.quantity_received = 8
+        pending = item.get_pending_quantity()
+        self.assertEquals(pending, Decimal(0))
+
+    def test_get_quantity_as_string(self):
+        item = self.create_purchase_order_item()
+        item.sellable.unit = self.create_sellable_unit(description=u'XX')
+        str = u"%s XX" % (format_quantity(item.quantity),)
+        str_quantity = item.get_quantity_as_string()
+        self.assertEquals(str, str_quantity)
+
+    def test_get_quantity_received_as_string(self):
+        item = self.create_purchase_order_item()
+        item.quantity_received = 8
+        item.sellable.unit = self.create_sellable_unit(description=u'XX')
+        str = u"%s XX" % (format_quantity(item.quantity_received),)
+        str_received = item.get_quantity_received_as_string()
+        self.assertEquals(str, str_received)
+
+    def test_get_ordered_quantity(self):
+        item = self.create_purchase_order_item()
+        ordered = item.get_ordered_quantity(store=self.store,
+                                            sellable=item.sellable)
+        self.assertEquals(ordered, Decimal(0))
+        item.order.status = item.order.ORDER_PENDING
+        item.order.confirm()
+        ordered = item.get_ordered_quantity(store=self.store,
+                                            sellable=item.sellable)
+        self.assertEquals(ordered, Decimal(8))
 
 
 class TestPurchaseOrder(DomainTest):
+
     def test_confirm_order(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.confirm)
@@ -54,12 +151,34 @@ class TestPurchaseOrder(DomainTest):
         order.close()
         self.assertEqual(order.status, PurchaseOrder.ORDER_CLOSED)
 
+    def test_can_close(self):
+        item = self.create_purchase_order_item()
+        result = item.order.can_close()
+        self.assertEquals(result, False)
+        item.order.status = item.order.ORDER_CONFIRMED
+        result = item.order.can_close()
+        self.assertEquals(result, False)
+        item.quantity_received = 8
+        result = item.order.can_close()
+        self.assertEquals(result, True)
+
     def test_close_consigned(self):
         order = self.create_purchase_order()
         order.consigned = True
         order.status = PurchaseOrder.ORDER_PENDING
         order.set_consigned()
         self.failIf(order.can_close())
+
+    def test_set_consigned(self):
+        order = self.create_purchase_order()
+        order.status = PurchaseOrder.ORDER_PENDING
+        order.set_consigned()
+        current = get_current_user(store=self.store)
+        self.assertEquals(current, order.responsible)
+        self.assertEquals(order.status, order.ORDER_CONSIGNED)
+        order.status = PurchaseOrder.ORDER_CONFIRMED
+        with self.assertRaises(ValueError):
+            order.set_consigned()
 
     def test_cancel_not_paid(self):
         order = self.create_purchase_order()
@@ -80,6 +199,103 @@ class TestPurchaseOrder(DomainTest):
         for payment in payments:
             self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
 
+    def test_receive_item_with_not_items(self):
+        order = self.create_purchase_order()
+        self.create_purchase_order_item(order=order)
+        item2 = self.create_purchase_order_item()
+        with self.assertRaises(StoqlibError):
+            order.receive_item(item=item2, quantity_to_receive=2)
+
+    def test_receive_item_with_quantity_to_receive_greater_than_quantity(self):
+        order = self.create_purchase_order()
+        item = self.create_purchase_order_item(order=order)
+        item.quantity = 5
+        with self.assertRaises(StoqlibError):
+            order.receive_item(item=item, quantity_to_receive=20)
+
+    def test_increase_quantity_received_with_not_qty(self):
+        order = self.create_purchase_order()
+        item = self.create_purchase_order_item()
+        with self.assertRaises(ValueError):
+            order.increase_quantity_received(purchase_item=item,
+                                             quantity_received=3)
+
+    def test_get_branch_name(self):
+        branch = self.create_branch(name=u'Test')
+        order = self.create_purchase_order(branch=branch)
+        name = order.get_branch_name()
+        self.assertEquals(name, u'Test shop')
+
+    def test_get_responsible_name(self):
+        current_user = get_current_user(self.store)
+        name = current_user.person.name
+        order = self.create_purchase_order()
+        value = order.get_responsible_name()
+        self.assertEquals(name, value)
+
+    def test_get_freight_type_name(self):
+        order = self.create_purchase_order()
+        order.freight_type = 9
+        with self.assertRaises(DatabaseInconsistency):
+            order.get_freight_type_name()
+
+    def test_get_transporter_name_with_transporter(self):
+        order = self.create_purchase_order()
+        transporter = self.create_transporter(name=u'Transporter')
+        order.transporter = transporter
+        transporter_name = order.get_transporter_name()
+        self.assertEquals(transporter_name, u'Transporter')
+
+    def test_get_purchase_total_with_negative_total(self):
+        item = self.create_purchase_order_item()
+        item.order._set_discount_by_percentage(101)
+        with self.assertRaises(ValueError):
+            item.order.get_purchase_total()
+
+    def test_get_remaining_total(self):
+        item = self.create_purchase_order_item()
+        item.quantity_received = 4
+        result = item.order.get_remaining_total()
+        self.assertEquals(result, currency(500))
+
+    def test_get_partially_received_items(self):
+        item = self.create_purchase_order_item()
+        result = item.order.get_partially_received_items().one()
+        self.assertEquals(result, None)
+        item.quantity_received = 8
+        result = item.order.get_partially_received_items().one()
+        self.assertNotEquals(result, None)
+
+    def test_get_open_date_as_string(self):
+        order = self.create_purchase_order()
+        now = localnow().strftime("%x")
+        open_date = order.get_open_date_as_string()
+        self.assertEquals(open_date, now)
+
+    def test_get_quote_deadline_as_string(self):
+        order = self.create_purchase_order()
+        order.quote_deadline = localnow()
+        quote_deadline = order.get_quote_deadline_as_string()
+        self.assertEquals(quote_deadline, localnow().strftime("%x"))
+
+    def test_get_receiving_orders(self):
+        order = self.create_purchase_order()
+        count = order.get_receiving_orders().count()
+        self.assertEquals(count, 0)
+        self.create_receiving_order(purchase_order=order)
+        count = order.get_receiving_orders().count()
+        self.assertEquals(count, 1)
+
+    def test_get_data_for_labels(self):
+        order = self.create_purchase_order()
+        items = list(order.get_data_for_labels())
+        self.assertEqual(items, [])
+        purchase_item = self.create_purchase_order_item(order=order)
+        purchase_item.sellable.description = u'Test'
+        items = order.get_data_for_labels()
+        settable = items.next()
+        self.assertEquals(settable.description, u'Test')
+
     def test_remove_item(self):
         purchase_order = self.create_purchase_order()
         self.create_purchase_order_item(order=purchase_order)
@@ -91,6 +307,67 @@ class TestPurchaseOrder(DomainTest):
         items = purchase_order.get_items()
 
         self.assertFalse(items)
+
+        # If we pass an item who the order doesn't is the current purchase,
+        # order returns an error
+        item = self.create_purchase_order_item()
+        item.order = None
+        with self.assertRaises(ValueError):
+            purchase_order.remove_item(item)
+
+    def test_set_discount_by_percentage(self):
+        order = self.create_purchase_order()
+        self.create_purchase_order_item(order=order)
+        percent = Decimal(50)
+        order._set_discount_by_percentage(percent)
+        self.assertEquals(order.discount_percentage, percent)
+
+    def test_get_discount_by_percentage(self):
+        item = self.create_purchase_order_item()
+        discount = item.order._get_discount_by_percentage()
+        self.assertEquals(discount, 0)
+        percent = Decimal(39)
+        item.order.discount_percentage = percent
+        discount = item.order._get_discount_by_percentage()
+        self.assertEquals(discount, percent)
+
+    def test_set_surcharge_by_percentage(self):
+        item = self.create_purchase_order_item()
+        surcharge = Decimal(39)
+        item.order._set_surcharge_by_percentage(surcharge)
+        surcharge_str = currency(item.order._get_percentage_value(surcharge))
+        self.assertEquals(item.order.surcharge_value, surcharge_str)
+
+    def test_get_surcharge_by_percentage(self):
+        item = self.create_purchase_order_item()
+        surcharge_str = item.order._get_surcharge_by_percentage()
+        self.assertEquals(surcharge_str, currency(0))
+        surcharge = Decimal(39)
+        item.order._set_surcharge_by_percentage(surcharge)
+        surcharge_str = item.order._get_surcharge_by_percentage()
+        self.assertEquals(surcharge_str, currency(surcharge))
+
+    def test_get_percentage_value(self):
+        item = self.create_purchase_order_item()
+        percent = None
+        val = item.order._get_percentage_value(percent)
+        self.assertEquals(val, currency(0))
+        percent = Decimal(15)
+        val = item.order._get_percentage_value(percent)
+        result = (item.order.get_purchase_subtotal() * (percent / 100))
+        self.assertEquals(val, result)
+        percent = u'test'
+        with self.assertRaises(InvalidOperation):
+            item.order._get_percentage_value(percent)
+
+    def test_translate_status(self):
+        order = self.create_purchase_order()
+        statuses = []
+        for i in range(5):
+            statuses.append(order.translate_status(i))
+            self.assertEquals(order.statuses[i], statuses[i])
+        with self.assertRaises(DatabaseInconsistency):
+            order.translate_status(99)
 
     def test_cancel_paid(self):
         order = self.create_purchase_order()
@@ -243,8 +520,16 @@ class TestPurchaseOrder(DomainTest):
         self.assertTrue(order.has_batch_item())
 
 
-class TestQuoteGroup(DomainTest):
+class TestQuotation(DomainTest):
+    def test_get_description(self):
+        quotation = self.create_quotation()
+        quotation.purchase.supplier.person.name = u'Test'
+        str = u"Group %s - %s" % (quotation.group.identifier, u'Test')
+        quotation_description = quotation.get_description()
+        self.assertEquals(quotation_description, str)
 
+
+class TestQuoteGroup(DomainTest):
     def test_cancel(self):
         order = self.create_purchase_order()
         quote = QuoteGroup(store=self.store, branch=order.branch)
@@ -254,6 +539,9 @@ class TestQuoteGroup(DomainTest):
         self.assertEqual(order.status, PurchaseOrder.ORDER_QUOTING)
         order.cancel()
         self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
+
+        quote.add_item(item=order)
+        quote.cancel()
 
     def test_close(self):
         order = self.create_purchase_order()
@@ -271,9 +559,17 @@ class TestQuoteGroup(DomainTest):
 
         self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
 
+    def test_get_description(self):
+        quote = self.create_quote_group()
+        description = quote.get_description()
+        str = _(u"quote number %s") % quote.identifier
+        self.assertEquals(description, str)
+
     def test_remove_item(self):
         order = self.create_purchase_order()
-        quote = QuoteGroup(store=self.store, branch=order.branch)
+        self.create_purchase_order_item(order=order)
+        self.create_purchase_order_item(order=order)
+        quote = self.create_quote_group(branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 
@@ -284,3 +580,90 @@ class TestQuoteGroup(DomainTest):
         quote.remove_item(item)
         items = quote.get_items()
         self.assertFalse(items)
+
+        # If the group of the item do not is the current, return an ValueError
+        order.group = self.create_payment_group()
+        with self.assertRaises(ValueError):
+            quote.remove_item(order)
+
+
+class TestPurchaseOrderAdaptToPaymentTransaction(DomainTest):
+    def test_pay(self):
+        purchase_item = self.create_purchase_order_item()
+        adapt = PurchaseOrderAdaptToPaymentTransaction(
+            purchase=purchase_item.order)
+        payment = adapt.pay()
+        self.assertEquals(payment, None)
+        self.create_payment(group=adapt.purchase.group)
+        with self.assertRaises(ValueError):
+            adapt.pay()
+
+    def test_return_(self):
+        purchase = self.create_purchase_order()
+        adapt = PurchaseOrderAdaptToPaymentTransaction(purchase=purchase)
+        self.assertEquals(adapt.return_(renegotiation=None), None)
+
+    def test_create_commission(self):
+        purchase = self.create_purchase_order()
+        adapt = PurchaseOrderAdaptToPaymentTransaction(purchase=purchase)
+        payment = self.create_payment(group=purchase.group)
+        result = adapt.create_commission(payment=payment)
+        self.assertEquals(result, None)
+
+
+class TestPurchaseOrderView(DomainTest):
+    def test_post_search_callback(self):
+        branch = self.create_branch(name=u'Test')
+        order = self.create_purchase_order(branch=branch)
+
+        self.create_purchase_order_item(order=order)
+        self.create_purchase_order_item(order=order)
+
+        sresults = self.store.find(PurchaseOrderView)
+        postresults = PurchaseOrderView.post_search_callback(sresults)
+        self.assertEqual(postresults[0], ('count', 'sum'))
+        self.assertEqual(self.store.execute(postresults[1]).get_one(),
+                         (2L, Decimal('9930.000')))
+
+    def test_get_sub_total(self):
+        order = self.create_purchase_order_item()
+        results = self.store.find(PurchaseOrderView, id=order.order_id).one()
+        self.assertEquals(results.get_subtotal(), Decimal(1000))
+
+    def test_get_branch_name(self):
+        branch = self.create_branch(name=u'Test')
+        order = self.create_purchase_order(branch=branch)
+        self.create_purchase_order_item(order=order)
+        result = self.store.find(PurchaseOrderView, id=order.id).one()
+        self.assertEquals(result.get_branch_name(), u'Test')
+
+    def test_get_transporter_name(self):
+        order = self.create_purchase_order()
+        self.create_purchase_order_item(order=order)
+        transporter = self.create_transporter(name=u'Transporter')
+        order.transporter = transporter
+        result = self.store.find(PurchaseOrderView, id=order.id).one()
+        self.assertEquals(result.get_transporter_name(), u'Transporter')
+
+    def test_get_open_date_as_string(self):
+        item = self.create_purchase_order_item()
+        result = self.store.find(PurchaseOrderView, id=item.order.id).one()
+        self.assertEquals(result.get_open_date_as_string(), localnow().strftime("%x"))
+
+    def test_find_confirmed(self):
+        item = self.create_purchase_order_item()
+        item.order.status = item.order.ORDER_CONFIRMED
+        item.order.expected_receival_date = localdate(2013, 07, 15)
+        due_date = localdate(2013, 07, 14), localdate(2013, 07, 16)
+        result = self.store.find(PurchaseOrderView, id=item.order.id).one()
+        found = result.find_confirmed(store=self.store, due_date=due_date).count()
+        self.assertEquals(found, 1)
+
+        due_date = localdate(2013, 07, 15)
+        found = result.find_confirmed(store=self.store,
+                                      due_date=due_date).count()
+        self.assertEquals(found, 1)
+        due_date = localdate(2025, 07, 15)
+        found = result.find_confirmed(store=self.store,
+                                      due_date=due_date).count()
+        self.assertEquals(found, 0)

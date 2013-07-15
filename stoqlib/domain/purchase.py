@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -126,8 +126,6 @@ class PurchaseItem(Domain):
         return self.quantity_received > 0
 
     def get_pending_quantity(self):
-        if not self.has_been_received:
-            return Decimal(0)
         return self.quantity - self.quantity_received
 
     def get_quantity_as_string(self):
