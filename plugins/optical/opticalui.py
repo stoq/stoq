@@ -83,10 +83,10 @@ class OpticalUI(object):
         ag = gtk.ActionGroup('OpticalMenuActions')
         ag.add_actions([
             ('OpticalMenu', None, _(u'Optical')),
-            ('OpticalPreSale', None, _(u'Optical pre sale'),
+            ('OpticalPreSale', None, _(u'Optical pre sale...'),
              group.get('pre_sale'), None,
              self._on_OpticalPreSale__activate),
-            ('OpticalMedicSearch', None, _(u'Medics ...'),
+            ('OpticalMedicSearch', None, _(u'Medics...'),
              group.get('search_medics'), None,
              self._on_MedicsSearch__activate),
         ])
