@@ -25,8 +25,9 @@
 from storm.expr import Join
 from storm.references import Reference
 
+from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.properties import (IntCol, DecimalCol, DateTimeCol,
-                                         UnicodeCol, IdCol)
+                                         UnicodeCol, IdCol, BoolCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
@@ -317,6 +318,319 @@ class OpticalWorkOrder(Domain):
     @property
     def lens_type_str(self):
         return self.lens_types.get(self.lens_type, '')
+
+
+class OpticalPatientHistory(Domain):
+
+    __storm_table__ = 'optical_patient_history'
+
+    #: Never used lenses before
+    TYPE_FIRST_USER = 0
+
+    #: Is currently a user
+    TYPE_SECOND_USER = 1
+
+    #: Has used lenses before, but stopped
+    TYPE_EX_USER = 2
+
+    user_types = {
+        TYPE_FIRST_USER: _('First User'),
+        TYPE_SECOND_USER: _('Second User'),
+        TYPE_EX_USER: _('Ex-User'),
+    }
+
+    create_date = DateTimeCol(default_factory=StatementTimestamp)
+
+    client_id = IdCol(allow_none=False)
+    #: The related client
+    client = Reference(client_id, 'Client.id')
+
+    responsible_id = IdCol(allow_none=False)
+    #: The user that registred this information
+    responsible = Reference(responsible_id, 'LoginUser.id')
+
+    #
+    #   Section 1: General questions
+    #
+
+    #: If the patient is a first time user for contact lenses or not.
+    user_type = IntCol(default=TYPE_FIRST_USER)
+
+    #: What is the occupation of the patient
+    occupation = UnicodeCol()
+
+    #: Details about the work environment (if it as air conditioning, dust,
+    #: chemical products)
+    work_environment = UnicodeCol()
+
+    #
+    #   First time user
+    #
+
+    #: If the patient has ever tested any contact lenses
+    has_tested = UnicodeCol()
+
+    #: What brands the patient has tested
+    tested_brand = UnicodeCol()
+
+    #: If previous tests irritated the eye
+    eye_irritation = UnicodeCol()
+
+    #: What is the main purpose for using contact lenses?
+    purpose_of_use = UnicodeCol()
+
+    #: How many hours per day the patient intends to use the contact lenses
+    intended_hour_usage = UnicodeCol()
+
+    #
+    #   Second time / ex user
+    #
+
+    #: Previous brand of the client.
+    previous_brand = UnicodeCol()
+
+    #: What the previous brand felt like
+    previous_feeling = UnicodeCol()
+
+    #: Have ever had any cornea issues
+    cornea_issues = UnicodeCol()
+
+    #: How many hours per day the client used the lenses
+    hours_per_day_usage = UnicodeCol()
+
+    #
+    #   Second time user
+    #
+
+    #: For how long is a user
+    user_since = UnicodeCol()
+
+    #: Bring the previous lenses?
+    has_previous_lenses = UnicodeCol()
+
+    #: Previous lenses observations
+    previous_lenses_notes = UnicodeCol()
+
+    #
+    #   Ex User
+    #
+
+    #: How long since the last use.
+    last_use = UnicodeCol()
+
+    #: why stopped using
+    stop_reason = UnicodeCol()
+
+    #: Did frequent removal of proteins?
+    protein_removal = UnicodeCol()
+
+    #: What cleaning product used?
+    cleaning_product = UnicodeCol()
+
+    #: Free notes.
+    history_notes = UnicodeCol()
+
+    #
+    #   Section 2: Adaptation test
+    #
+
+    #: If the patient ever had eye injuries
+    eye_injury = UnicodeCol()
+
+    #: Any kind of recent pathology, like pink-eye
+    recent_pathology = UnicodeCol()
+
+    #: Is currently using eye drops
+    using_eye_drops = UnicodeCol()
+
+    #: Does the patient have health problems
+    health_problems = UnicodeCol()
+
+    #: Is the patient is using any kind of medicament
+    using_medicament = UnicodeCol()
+
+    #: Does the patient family has any health problems
+    family_health_problems = UnicodeCol()
+
+    #: How the eyes feel at the end of the day (burn, itch, etc...)
+    end_of_day_feeling = UnicodeCol()
+
+    #: Free notes.
+    adaptation_notes = UnicodeCol()
+
+    @property
+    def responsible_name(self):
+        return self.responsible.get_description()
+
+
+class OpticalPatientMeasures(Domain):
+
+    __storm_table__ = 'optical_patient_measures'
+
+    EYE_LEFT = 0
+    EYE_RIGHT = 1
+
+    eye_options = {
+        EYE_LEFT: _('Left Eye'),
+        EYE_RIGHT: _('Right Eye'),
+    }
+
+    create_date = DateTimeCol(default_factory=StatementTimestamp)
+
+    client_id = IdCol(allow_none=False)
+    #: The related client
+    client = Reference(client_id, 'Client.id')
+
+    responsible_id = IdCol(allow_none=False)
+    #: The user that registred this information
+    responsible = Reference(responsible_id, 'LoginUser.id')
+
+    dominant_eye = IntCol(default=0)
+
+    le_keratometer_horizontal = UnicodeCol()
+    le_keratometer_vertical = UnicodeCol()
+    le_keratometer_axis = UnicodeCol()
+
+    re_keratometer_horizontal = UnicodeCol()
+    re_keratometer_vertical = UnicodeCol()
+    re_keratometer_axis = UnicodeCol()
+
+    le_eyebrown = UnicodeCol()
+    le_eyelash = UnicodeCol()
+    le_conjunctiva = UnicodeCol()
+    le_sclerotic = UnicodeCol()
+    le_iris_diameter = UnicodeCol()
+    le_eyelid = UnicodeCol()
+    le_eyelid_opening = UnicodeCol()
+    le_cornea = UnicodeCol()
+    #: Tear breakup time. How much time the eye takes to produce a tear
+    le_tbut = UnicodeCol()
+
+    #: test that checks how much tear the eye produces
+    le_schirmer = UnicodeCol()
+
+    re_eyebrown = UnicodeCol()
+    re_eyelash = UnicodeCol()
+    re_conjunctiva = UnicodeCol()
+    re_sclerotic = UnicodeCol()
+    re_iris_diameter = UnicodeCol()
+    re_eyelid = UnicodeCol()
+    re_eyelid_opening = UnicodeCol()
+    re_cornea = UnicodeCol()
+
+    #: Tear breakup time. How much time the eye takes to produce a tear
+    re_tbut = UnicodeCol()
+
+    #: test that checks how much tear the eye produces
+    re_schirmer = UnicodeCol()
+
+    notes = UnicodeCol()
+
+    @property
+    def responsible_name(self):
+        return self.responsible.get_description()
+
+
+class OpticalPatientTest(Domain):
+    __storm_table__ = 'optical_patient_test'
+
+    create_date = DateTimeCol(default_factory=StatementTimestamp)
+
+    client_id = IdCol(allow_none=False)
+    #: The related client
+    client = Reference(client_id, 'Client.id')
+
+    responsible_id = IdCol(allow_none=False)
+    #: The user that registred this information
+    responsible = Reference(responsible_id, 'LoginUser.id')
+
+    #: The contact lens that is being tested. This could be a reference to a
+    #: |product in the future
+    le_item = UnicodeCol()
+
+    #: The brand of the tested contact lenses
+    le_brand = UnicodeCol()
+
+    #: Curva Base - CB
+    le_base_curve = UnicodeCol()
+
+    le_spherical_degree = UnicodeCol()
+    le_cylindrical = UnicodeCol()
+    le_axis = UnicodeCol()
+    le_diameter = UnicodeCol()
+    le_movement = UnicodeCol()
+    le_centralization = UnicodeCol()
+    le_spin = UnicodeCol()
+    le_fluorescein = UnicodeCol()
+
+    #: Sobre refração - SRF
+    le_over_refraction = UnicodeCol()
+    le_bichrome = UnicodeCol()
+
+    #: If the client is satisfied with this product
+    le_client_approved = BoolCol()
+
+    #: If the client has purchased this product after the test.
+    le_client_purchased = BoolCol()
+
+    #: If the product being tested was delivered to the client
+    le_delivered = BoolCol()
+
+    re_item = UnicodeCol()
+    re_brand = UnicodeCol()
+    re_base_curve = UnicodeCol()
+    re_spherical_degree = UnicodeCol()
+    re_cylindrical = UnicodeCol()
+    re_axis = UnicodeCol()
+    re_diameter = UnicodeCol()
+    re_movement = UnicodeCol()
+    re_centralization = UnicodeCol()
+    re_spin = UnicodeCol()
+    re_fluorescein = UnicodeCol()
+    re_over_refraction = UnicodeCol()
+    re_bichrome = UnicodeCol()
+    re_client_approved = BoolCol()
+    re_client_purchased = BoolCol()
+    re_delivered = BoolCol()
+
+    #: Free notes
+    notes = UnicodeCol()
+
+    @property
+    def responsible_name(self):
+        return self.responsible.get_description()
+
+
+class OpticalPatientVisualAcuity(Domain):
+    __storm_table__ = 'optical_patient_visual_acuity'
+
+    create_date = DateTimeCol(default_factory=StatementTimestamp)
+
+    client_id = IdCol(allow_none=False)
+    #: The related client
+    client = Reference(client_id, 'Client.id')
+
+    responsible_id = IdCol(allow_none=False)
+    #: The user that registred this information
+    responsible = Reference(responsible_id, 'LoginUser.id')
+
+    be_distance_glasses = UnicodeCol()
+    le_distance_glasses = UnicodeCol()
+    re_distance_glasses = UnicodeCol()
+
+    be_distance_lenses = UnicodeCol()
+    le_distance_lenses = UnicodeCol()
+    re_distance_lenses = UnicodeCol()
+
+    be_near_glasses = UnicodeCol()
+    be_near_lenses = UnicodeCol()
+
+    #: Free notes
+    notes = UnicodeCol()
+
+    @property
+    def responsible_name(self):
+        return self.responsible.get_description()
 
 
 class OpticalMedicView(Viewable):

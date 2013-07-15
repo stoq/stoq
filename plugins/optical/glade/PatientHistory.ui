@@ -1,0 +1,1523 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="PatientHistory">
+    <property name="border_width">6</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkHBox" id="hbox16">
+            <property name="visible">True</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label18">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes" comments="pt_BR: Tipo de usuário:">User type:</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyComboBox" id="user_type">
+                <property name="visible">True</property>
+                <property name="data_type">int</property>
+                <property name="model_attribute">user_type</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label19">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkNotebook" id="notebook1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkVBox" id="vbox5">
+                <property name="visible">True</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkVBox" id="first_box">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkHBox" id="hbox0">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label1">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Já fez algum teste de lente de contato?">Has ever tested any contact lenses?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label7">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Qual a principal finalidade de uso?">What is the main purpose of use</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox1">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="has_tested">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="purpose_of_use">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox2">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label3">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Qual marca fez teste?">What brand was tested?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label6">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Quantas horas por dia pretende usar?">How many daily hours do you intend to use?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox3">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="tested_brand">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="intended_hour_usage">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox4">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label5">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Apresentou alguma irritação?">Did it irritate the eyes?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox5">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="eye_irritation">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">5</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVBox" id="second_box">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkHBox" id="hbox23">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label28">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Há quanto tempo utiliza?">Since when do you use?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label29">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Quantas horas usa por dia?">How many daily hours do you use?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox24">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="user_since">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="s_hours_per_day_usage">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                            <property name="model_attribute">hours_per_day_usage</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox25">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label30">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Qual marca usa?">What brand do you use?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label31">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Trouxe as lentes de contato anterior?">Did you bring your previous contact lenses?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox26">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="s_previous_brand">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                            <property name="model_attribute">previous_brand</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="has_previous_lenses">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox27">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label32">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Como se sente com as lentes?">How do you feel with the lenses?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label34">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Teve algum problema na córnea?">Have ever had any cornea problem?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox28">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="s_previous_feeling">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                            <property name="model_attribute">previous_feeling</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="s_cornea_issues">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                            <property name="model_attribute">cornea_issues</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox29">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label33">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Observações da lente anterior">Previous lenses observations</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox30">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="previous_lenses_notes">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">7</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVBox" id="ex_box">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkHBox" id="hbox6">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label20">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Há quanto tempo deixou de usar?">When did you stop using?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label21">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Teve algum problema na córnea?">Have ever had any cornea problem?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox7">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="last_use">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="e_cornea_issues">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                            <property name="model_attribute">cornea_issues</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox17">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label22">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Por que deixou de usar?">Why did you stop using?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label23">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Quantas horas usava por dia?">What was the daily hour usage?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox18">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="stop_reason">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="e_hours_per_day_usage">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                            <property name="model_attribute">hours_per_day_usage</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox19">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label24">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Qual marca utilizou?">What brand did you use?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label27">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Fazia remoção de proteína com frequencia?">Did frequent protein removals?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox20">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="e_previous_brand">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                            <property name="model_attribute">previous_brand</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="protein_removal">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox21">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label25">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Sentia-se bem com as lentes anteriores?">Did you feel good with the previous lenses?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label26">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="yalign">1</property>
+                            <property name="label" translatable="yes" comments="pt_BR: Qual produto de assepsia usava?">What cleaning product did you use?</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox22">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="ProxyEntry" id="e_previous_feeling">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                            <property name="model_attribute">previous_feeling</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyEntry" id="cleaning_product">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">7</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label35">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes" comments="pt_BR: Anamnese">Patient History</property>
+              </object>
+              <packing>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox4">
+                <property name="visible">True</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkHBox" id="hbox8">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel" id="label10">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">1</property>
+                        <property name="label" translatable="yes" comments="pt_BR: Já teve alguma lesão no olho?">Have you ever had any eye injury?</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label11">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">1</property>
+                        <property name="label" translatable="yes" comments="pt_BR: Fez uso de algum medicamento?">Are you using any medication?</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="hbox9">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="ProxyEntry" id="eye_injury">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyEntry" id="using_medicament">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="hbox10">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel" id="label13">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">1</property>
+                        <property name="label" translatable="yes" comments="pt_BR: Teve algum tipo de conjuntivite ou patologia nos \n olhos recentemente?">Did you have conjunctivitis or pathology
+in the eyes recently?</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label12">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">1</property>
+                        <property name="label" translatable="yes" comments="pt_BR: Alguém na família apresenta problema de saúde?">Does anyone in the family have health issues?</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="hbox11">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="ProxyEntry" id="recent_pathology">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyEntry" id="family_health_problems">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="hbox12">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel" id="label14">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">1</property>
+                        <property name="label" translatable="yes" comments="pt_BR: Está usando algum tipo de colírio agora?">Are you using any eye drops now?</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label15">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">1</property>
+                        <property name="label" translatable="yes" comments="pt_BR: Ardência, coceira ou sensação de corpo estranho no final do dia?">Burning, itching or strange feeling by the end of the day?</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="hbox13">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="ProxyEntry" id="using_eye_drops">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyEntry" id="end_of_day_feeling">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="hbox14">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel" id="label16">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">1</property>
+                        <property name="label" translatable="yes" comments="pt_BR: Tem algum poblema de saúde?">Do you have any health issues?</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label17">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">1</property>
+                        <property name="label" translatable="yes" comments="pt_BR: Observações">Observations</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="hbox15">
+                    <property name="visible">True</property>
+                    <property name="spacing">6</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="ProxyEntry" id="health_problems">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyEntry" id="adaptation_notes">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">7</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label36">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes" comments="pt_BR: Adaptation Test">Adaptation Test</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child type="tab">
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="general_box">
+            <property name="visible">True</property>
+            <property name="spacing">6</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkLabel" id="label2">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">1</property>
+                    <property name="label" translatable="yes" comments="pt_BR: Qual sua profissão?">What is your occupation?</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyEntry" id="occupation">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">unicode</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label4">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">1</property>
+                    <property name="label" translatable="yes" comments="O ambiente onde trabalha tem \n ar-condicionado/poeira/produto químico?">Does your work environment has 
+air-conditioning/dust/chemical products??</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyEntry" id="work_environment">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">unicode</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox3">
+                <property name="visible">True</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkLabel" id="label8">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">1</property>
+                    <property name="label" translatable="yes" comments="pt_BR: Observações">Observations</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkViewport" id="viewport1">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkScrolledWindow" id="scrolledwindow1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="hscrollbar_policy">automatic</property>
+                        <property name="vscrollbar_policy">automatic</property>
+                        <child>
+                          <object class="ProxyTextView" id="history_notes">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="data_type">unicode</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

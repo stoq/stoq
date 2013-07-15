@@ -1,0 +1,66 @@
+editor: OpticalPatientTestEditor
+GtkDialog(main_dialog.toplevel): title='Test', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave OpticalPatientTestEditor is attached
+        GtkTable(table1):
+          GtkLabel(label4):
+          GtkLabel(label15): 'RE'
+          GtkLabel(label16): 'LE'
+          GtkLabel(label1): 'Item:'
+          ProxyEntry(re_item): ''
+          ProxyEntry(le_item): ''
+          GtkLabel(label2): 'Brand:'
+          ProxyEntry(re_brand): ''
+          ProxyEntry(le_brand): ''
+          GtkLabel(label3): 'Base Curve:'
+          ProxyEntry(re_base_curve): ''
+          ProxyEntry(le_base_curve): ''
+          GtkLabel(label5): 'Spherical Degree:'
+          ProxyEntry(re_spherical_degree): ''
+          ProxyEntry(le_spherical_degree): ''
+          GtkLabel(label14): 'Cylindrical'
+          ProxyEntry(re_cylindrical): ''
+          ProxyEntry(le_cylindrical): ''
+          GtkLabel(label6): 'Axis:'
+          ProxyEntry(re_axis): ''
+          ProxyEntry(le_axis): ''
+          GtkLabel(label7): 'Diameter:'
+          ProxyEntry(re_diameter): ''
+          ProxyEntry(le_diameter): ''
+          GtkLabel(label8): 'Movement:'
+          ProxyEntry(re_movement): ''
+          ProxyEntry(le_movement): ''
+          GtkLabel(label9): 'Centralization:'
+          ProxyEntry(re_centralization): ''
+          ProxyEntry(le_centralization): ''
+          GtkLabel(label10): 'Spin:'
+          ProxyEntry(re_spin): ''
+          ProxyEntry(le_spin): ''
+          GtkLabel(label12): 'Fluorescein:'
+          ProxyEntry(re_fluorescein): ''
+          ProxyEntry(le_fluorescein): ''
+          GtkLabel(label11): 'Over Refraction:'
+          ProxyEntry(re_over_refraction): ''
+          ProxyEntry(le_over_refraction): ''
+          GtkLabel(label13): 'Bichrome:'
+          ProxyEntry(re_bichrome): ''
+          ProxyEntry(le_bichrome): ''
+          GtkLabel(label17):
+          ProxyCheckButton(le_client_approved): 'Client approved'
+          ProxyCheckButton(re_client_approved): 'Client approved'
+          GtkLabel(label18):
+          ProxyCheckButton(le_delivered): 'Delivered to client'
+          ProxyCheckButton(re_delivered): 'Delivered to client'
+          GtkLabel(label19):
+          ProxyCheckButton(le_client_purchased): 'Client purchased'
+          ProxyCheckButton(re_client_purchased): 'Client purchased'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

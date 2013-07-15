@@ -1,0 +1,125 @@
+editor: OpticalPatientHistoryEditor
+GtkDialog(main_dialog.toplevel): title='Patient History', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave OpticalPatientHistoryEditor is attached
+        GtkVBox(toplevel):
+          GtkHBox(hbox16, fill=True):
+            GtkLabel(label18, fill=True): 'User type:'
+            ProxyComboBox(user_type, fill=True):
+              item: 'First User', selected
+              item: 'Second User'
+              item: 'Ex-User'
+            GtkLabel(label19, expand=True, fill=True):
+          GtkNotebook(notebook1, fill=True):
+            GtkVBox(vbox5):
+              GtkVBox(first_box, fill=True):
+                GtkHBox(hbox0, fill=True):
+                  GtkLabel(label1, expand=True, fill=True): 'Has ever tested any contact lenses?'
+                  GtkLabel(label7, expand=True, fill=True): 'What is the main purpose of use'
+                GtkHBox(hbox1, fill=True):
+                  ProxyEntry(has_tested, expand=True, fill=True): ''
+                  ProxyEntry(purpose_of_use, expand=True, fill=True): ''
+                GtkHBox(hbox2, fill=True):
+                  GtkLabel(label3, expand=True, fill=True): 'What brand was tested?'
+                  GtkLabel(label6, expand=True, fill=True): 'How many daily hours do you intend to use?'
+                GtkHBox(hbox3, fill=True):
+                  ProxyEntry(tested_brand, expand=True, fill=True): ''
+                  ProxyEntry(intended_hour_usage, expand=True, fill=True): ''
+                GtkHBox(hbox4, fill=True):
+                  GtkLabel(label5, expand=True, fill=True): 'Did it irritate the eyes?'
+                GtkHBox(hbox5, fill=True):
+                  ProxyEntry(eye_irritation, expand=True, fill=True): ''
+              GtkVBox(second_box, fill=True): hidden
+                GtkHBox(hbox23, fill=True):
+                  GtkLabel(label28, expand=True, fill=True): 'Since when do you use?'
+                  GtkLabel(label29, expand=True, fill=True): 'How many daily hours do you use?'
+                GtkHBox(hbox24, fill=True):
+                  ProxyEntry(user_since, expand=True, fill=True): ''
+                  ProxyEntry(s_hours_per_day_usage, expand=True, fill=True): ''
+                GtkHBox(hbox25, fill=True):
+                  GtkLabel(label30, expand=True, fill=True): 'What brand do you use?'
+                  GtkLabel(label31, expand=True, fill=True): 'Did you bring your previous contact lenses?'
+                GtkHBox(hbox26, fill=True):
+                  ProxyEntry(s_previous_brand, expand=True, fill=True): ''
+                  ProxyEntry(has_previous_lenses, expand=True, fill=True): ''
+                GtkHBox(hbox27, fill=True):
+                  GtkLabel(label32, expand=True, fill=True): 'How do you feel with the lenses?'
+                  GtkLabel(label34, expand=True, fill=True): 'Have ever had any cornea problem?'
+                GtkHBox(hbox28, fill=True):
+                  ProxyEntry(s_previous_feeling, expand=True, fill=True): ''
+                  ProxyEntry(s_cornea_issues, expand=True, fill=True): ''
+                GtkHBox(hbox29, fill=True):
+                  GtkLabel(label33, expand=True, fill=True): 'Previous lenses observations'
+                GtkHBox(hbox30, fill=True):
+                  ProxyEntry(previous_lenses_notes, expand=True, fill=True): ''
+              GtkVBox(ex_box, fill=True): hidden
+                GtkHBox(hbox6, fill=True):
+                  GtkLabel(label20, expand=True, fill=True): 'When did you stop using?'
+                  GtkLabel(label21, expand=True, fill=True): 'Have ever had any cornea problem?'
+                GtkHBox(hbox7, fill=True):
+                  ProxyEntry(last_use, expand=True, fill=True): ''
+                  ProxyEntry(e_cornea_issues, expand=True, fill=True): ''
+                GtkHBox(hbox17, fill=True):
+                  GtkLabel(label22, expand=True, fill=True): 'Why did you stop using?'
+                  GtkLabel(label23, expand=True, fill=True): 'What was the daily hour usage?'
+                GtkHBox(hbox18, fill=True):
+                  ProxyEntry(stop_reason, expand=True, fill=True): ''
+                  ProxyEntry(e_hours_per_day_usage, expand=True, fill=True): ''
+                GtkHBox(hbox19, fill=True):
+                  GtkLabel(label24, expand=True, fill=True): 'What brand did you use?'
+                  GtkLabel(label27, expand=True, fill=True): 'Did frequent protein removals?'
+                GtkHBox(hbox20, fill=True):
+                  ProxyEntry(e_previous_brand, expand=True, fill=True): ''
+                  ProxyEntry(protein_removal, expand=True, fill=True): ''
+                GtkHBox(hbox21, fill=True):
+                  GtkLabel(label25, expand=True, fill=True): 'Did you feel good with the previous lenses?'
+                  GtkLabel(label26, expand=True, fill=True): 'What cleaning product did you use?'
+                GtkHBox(hbox22, fill=True):
+                  ProxyEntry(e_previous_feeling, expand=True, fill=True): ''
+                  ProxyEntry(cleaning_product, expand=True, fill=True): ''
+            GtkVBox(vbox4):
+              GtkHBox(hbox8, fill=True):
+                GtkLabel(label10, expand=True, fill=True): 'Have you ever had any eye injury?'
+                GtkLabel(label11, expand=True, fill=True): 'Are you using any medication?'
+              GtkHBox(hbox9, fill=True):
+                ProxyEntry(eye_injury, expand=True, fill=True): ''
+                ProxyEntry(using_medicament, expand=True, fill=True): ''
+              GtkHBox(hbox10, fill=True):
+                GtkLabel(label13, expand=True, fill=True): 'Did you have conjunctivitis or pathology\nin the eyes recently?'
+                GtkLabel(label12, expand=True, fill=True): 'Does anyone in the family have health issues?'
+              GtkHBox(hbox11, fill=True):
+                ProxyEntry(recent_pathology, expand=True, fill=True): ''
+                ProxyEntry(family_health_problems, expand=True, fill=True): ''
+              GtkHBox(hbox12, fill=True):
+                GtkLabel(label14, expand=True, fill=True): 'Are you using any eye drops now?'
+                GtkLabel(label15, expand=True, fill=True): 'Burning, itching or strange feeling by the end of the day?'
+              GtkHBox(hbox13, fill=True):
+                ProxyEntry(using_eye_drops, expand=True, fill=True): ''
+                ProxyEntry(end_of_day_feeling, expand=True, fill=True): ''
+              GtkHBox(hbox14, fill=True):
+                GtkLabel(label16, expand=True, fill=True): 'Do you have any health issues?'
+                GtkLabel(label17, expand=True, fill=True): 'Observations'
+              GtkHBox(hbox15, fill=True):
+                ProxyEntry(health_problems, expand=True, fill=True): ''
+                ProxyEntry(adaptation_notes, expand=True, fill=True): ''
+          GtkHBox(general_box, fill=True):
+            GtkVBox(vbox2, expand=True, fill=True):
+              GtkLabel(label2, expand=True, fill=True): 'What is your occupation?'
+              ProxyEntry(occupation, expand=True, fill=True): ''
+              GtkLabel(label4, expand=True, fill=True): 'Does your work environment has \nair-conditioning/dust/chemical products??'
+              ProxyEntry(work_environment, expand=True, fill=True): ''
+            GtkVBox(vbox3, expand=True, fill=True):
+              GtkLabel(label8, fill=True): 'Observations'
+              GtkViewport(viewport1, expand=True, fill=True):
+                GtkScrolledWindow(scrolledwindow1):
+                  ProxyTextView(history_notes):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

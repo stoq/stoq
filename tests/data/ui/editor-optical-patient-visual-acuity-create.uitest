@@ -1,0 +1,40 @@
+editor: OpticalPatientVisualAcuityEditor
+GtkDialog(main_dialog.toplevel): title='Visual Acuity', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave OpticalPatientVisualAcuityEditor is attached
+        GtkVBox(toplevel):
+          GtkTable(table1, fill=True):
+            GtkLabel(label1): 'Distance with glasses'
+            GtkLabel(label2): 'Distance with lenses'
+            GtkLabel(label5): 'BE'
+            ProxyEntry(be_distance_glasses): ''
+            GtkLabel(label6): 'BE'
+            ProxyEntry(be_distance_lenses): ''
+            GtkLabel(label7): 'RE'
+            ProxyEntry(re_distance_glasses): ''
+            GtkLabel(label8): 'RE'
+            ProxyEntry(re_distance_lenses): ''
+            GtkLabel(label9): 'LE'
+            ProxyEntry(le_distance_glasses): ''
+            GtkLabel(label10): 'LE'
+            ProxyEntry(le_distance_lenses): ''
+            GtkLabel(label3): 'Near with glasses'
+            GtkLabel(label4): 'Near with lenses'
+            GtkLabel(label11): 'BE'
+            ProxyEntry(be_near_glasses): ''
+            GtkLabel(label12): 'BE'
+            ProxyEntry(be_near_lenses): ''
+          GtkLabel(label13, fill=True): 'Obervations'
+          GtkViewport(viewport1, expand=True, fill=True):
+            GtkScrolledWindow(scrolledwindow1):
+              ProxyTextView(notes):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

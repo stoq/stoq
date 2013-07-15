@@ -22,9 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.test.domaintest import DomainTest
 
-from ..opticaldomain import OpticalMedic, OpticalWorkOrder
+from ..opticaldomain import (OpticalMedic, OpticalWorkOrder,
+                             OpticalPatientHistory, OpticalPatientMeasures,
+                             OpticalPatientTest, OpticalPatientVisualAcuity)
 
 
 class OpticalDomainTest(DomainTest):
@@ -39,6 +42,24 @@ class OpticalDomainTest(DomainTest):
         work_order = self.create_workorder()
         return OpticalWorkOrder(store=self.store,
                                 work_order=work_order)
+
+    def create_optical_patient_history(self, client):
+        return OpticalPatientHistory(store=self.store, client=client,
+                                     responsible=get_current_user(self.store))
+
+    # XXX: This is not a typo. If we include the word 'test' in the method
+    # name, it will be considered a unit test
+    def create_optical_patient_tes(self, client):
+        return OpticalPatientTest(store=self.store, client=client,
+                                  responsible=get_current_user(self.store))
+
+    def create_optical_patient_measures(self, client):
+        return OpticalPatientMeasures(store=self.store, client=client,
+                                      responsible=get_current_user(self.store))
+
+    def create_optical_patient_visual_acuity(self, client):
+        return OpticalPatientVisualAcuity(store=self.store, client=client,
+                                          responsible=get_current_user(self.store))
 
 
 class OpticalMedicTest(OpticalDomainTest):

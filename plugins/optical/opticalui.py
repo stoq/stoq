@@ -30,6 +30,7 @@ from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
@@ -43,6 +44,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from .medicssearch import OpticalMedicSearch
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
 from .opticalwizard import OpticalSaleQuoteWizard
+from .opticalhistory import OpticalPatientDetails
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -140,6 +142,13 @@ class OpticalUI(object):
         if store.committed:
             self._current_app.refresh()
 
+    def _add_patient_history_button(self, editor, model):
+        button = editor.add_button(_(u'Patient History'))
+        button.connect('clicked', self._on_patient_history_clicked, editor, model)
+
+        # Save the button on the editor, so the tests can click on it
+        editor.patient_history_button = button
+
     #
     # Events
     #
@@ -160,6 +169,8 @@ class OpticalUI(object):
             self._add_product_slave(editor, model, store)
         elif editor_type is WorkOrderEditor:
             self._add_work_order_editor_slave(editor, model, store)
+        elif editor_type is ClientEditor:
+            self._add_patient_history_button(editor, model)
 
     def _on_RunDialogEvent(self, dialog, parent, *args, **kwargs):
         # If we are editing a sale that already has some workorders, we need to
@@ -177,6 +188,9 @@ class OpticalUI(object):
     #
     # Callbacks
     #
+
+    def _on_patient_history_clicked(self, widget, editor, client):
+        run_dialog(OpticalPatientDetails, editor, client.store, client)
 
     def _on_OpticalPreSale__activate(self, action):
         self._create_pre_sale()

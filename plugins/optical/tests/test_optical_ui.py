@@ -26,9 +26,11 @@ import gtk
 import mock
 
 from stoqlib.database.runtime import StoqlibStore
+from stoqlib.domain.person import Person
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.workorder import WorkOrderCategory
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
@@ -38,12 +40,14 @@ from stoq.gui.test.baseguitest import BaseGUITest
 from stoq.gui.sales import SalesApp
 
 from ..medicssearch import OpticalMedicSearch
+from ..opticalhistory import OpticalPatientDetails
 from ..opticalreport import OpticalWorkOrderReceiptReport
 from ..opticalui import OpticalUI
 from ..opticalwizard import OpticalSaleQuoteWizard
 
 
 class TestOpticalUI(BaseGUITest):
+
     @classmethod
     def setUpClass(cls):
         cls.ui = OpticalUI()
@@ -143,3 +147,12 @@ class TestOpticalUI(BaseGUITest):
             run_dialog(SaleQuoteWizard, None, self.store, None)
             args, kwargs = run_dialog_internal.call_args
             self.assertTrue(isinstance(args[0], SaleQuoteWizard))
+
+    def test_person_editor(self):
+        client = self.create_client()
+        editor = ClientEditor(self.store, client, role_type=Person.ROLE_INDIVIDUAL)
+        self.check_editor(editor, 'editor-client-optical-plugin')
+
+        with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
+            self.click(editor.patient_history_button)
+            run_dialog_.assert_called_once_with(OpticalPatientDetails, editor, self.store, client)

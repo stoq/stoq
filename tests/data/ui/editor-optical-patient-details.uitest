@@ -1,0 +1,63 @@
+editor: OpticalPatientDetails
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave OpticalPatientDetails is attached
+        GtkVBox(toplevel):
+          GtkTable(table1, fill=True):
+            GtkLabel(label1): 'Client:'
+            ProxyLabel(name): '<span >Client</span>'
+          GtkNotebook(notebook2, expand=True, fill=True):
+            GtkVBox(vbox2):
+              GtkEventBox(history_holder, expand=True, fill=True): slave OpticalPatientHistoryListSlave is attached
+                kiwi+ui+listdialog+ListContainer(listcontainer):
+                  ObjectList(expand=True, fill=True):
+                    column: title='Date'
+                    column: title='Responsible', expand
+                    row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
+                  GtkVBox(fill=True, padding=6):
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
+            GtkVBox(vbox3):
+              GtkEventBox(measures_holder, expand=True, fill=True): slave OpticalPatientMeasuresListSlave is attached
+                kiwi+ui+listdialog+ListContainer(listcontainer):
+                  ObjectList(expand=True, fill=True):
+                    column: title='Date'
+                    column: title='Responsible', expand
+                    row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
+                  GtkVBox(fill=True, padding=6):
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
+            GtkVBox(vbox4):
+              GtkEventBox(tests_holder, expand=True, fill=True): slave OpticalPatientTestListSlave is attached
+                kiwi+ui+listdialog+ListContainer(listcontainer):
+                  ObjectList(expand=True, fill=True):
+                    column: title='Date'
+                    column: title='Responsible', expand
+                    row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
+                  GtkVBox(fill=True, padding=6):
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
+            GtkVBox(vbox5):
+              GtkEventBox(visual_acuity_holder, expand=True, fill=True): slave OpticalPatientVisualAcuityListSlave is attached
+                kiwi+ui+listdialog+ListContainer(listcontainer):
+                  ObjectList(expand=True, fill=True):
+                    column: title='Date'
+                    column: title='Responsible', expand
+                    row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
+                  GtkVBox(fill=True, padding=6):
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

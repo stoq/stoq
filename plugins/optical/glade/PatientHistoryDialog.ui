@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkWindow" id="PatientHistoryDialog">
+    <property name="border_width">6</property>
+    <property name="default_width">440</property>
+    <property name="default_height">250</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkTable" id="table1">
+            <property name="visible">True</property>
+            <property name="n_columns">4</property>
+            <property name="column_spacing">6</property>
+            <property name="row_spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Client:</property>
+              </object>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="name">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">name</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkNotebook" id="notebook2">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkEventBox" id="history_holder">
+                    <property name="visible">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label4">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes" comments="Translate as 'Anamnese'">Patient History</property>
+              </object>
+              <packing>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox3">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkEventBox" id="measures_holder">
+                    <property name="visible">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label11">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Measures</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox4">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkEventBox" id="tests_holder">
+                    <property name="visible">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Tests</property>
+              </object>
+              <packing>
+                <property name="position">2</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox5">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkEventBox" id="visual_acuity_holder">
+                    <property name="visible">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label6">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Visual Acuity</property>
+              </object>
+              <packing>
+                <property name="position">3</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

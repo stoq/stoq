@@ -1,0 +1,75 @@
+editor: OpticalPatientMeasuresEditor
+GtkDialog(main_dialog.toplevel): title='Measures', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave OpticalPatientMeasuresEditor is attached
+        GtkVBox(toplevel):
+          GtkHBox(hbox1, fill=True):
+            GtkVBox(vbox2, fill=True):
+              GtkLabel(label2, fill=True): 'Keratometer'
+              GtkTable(table1, fill=True):
+                GtkLabel(label7):
+                GtkLabel(label5): 'RE'
+                GtkLabel(label6): 'LE'
+                GtkLabel(label11): 'Horizontal:'
+                ProxyEntry(re_keratometer_horizontal): ''
+                ProxyEntry(le_keratometer_horizontal): ''
+                GtkLabel(label12): 'Vertical:'
+                ProxyEntry(re_keratometer_vertical): ''
+                ProxyEntry(le_keratometer_vertical): ''
+                GtkLabel(label13): 'Axis:'
+                ProxyEntry(re_keratometer_axis): ''
+                ProxyEntry(le_keratometer_axis): ''
+              GtkLabel(label4, fill=True): 'Dominant eye'
+              ProxyComboBox(dominant_eye, fill=True):
+                item: 'Left Eye', selected
+                item: 'Right Eye'
+              GtkLabel(label1, fill=True): 'Observations'
+              GtkViewport(viewport1, expand=True, fill=True):
+                GtkScrolledWindow(scrolledwindow1):
+                  ProxyTextView(notes):
+            GtkVBox(vbox3, expand=True, fill=True):
+              GtkLabel(label3, fill=True): 'Biomicroscope'
+              GtkTable(table2, fill=True):
+                GtkLabel(label10):
+                GtkLabel(label8): 'RE'
+                GtkLabel(label9): 'LE'
+                GtkLabel(label14): 'Eyebrow'
+                ProxyEntry(re_eyebrown): ''
+                ProxyEntry(le_eyebrown): ''
+                GtkLabel(label15): 'Eyelashes'
+                ProxyEntry(re_eyelash): ''
+                ProxyEntry(le_eyelash): ''
+                GtkLabel(label16): 'Conjunctiva'
+                ProxyEntry(re_conjunctiva): ''
+                ProxyEntry(le_conjunctiva): ''
+                GtkLabel(label17): 'Sclerotic'
+                ProxyEntry(re_sclerotic): ''
+                ProxyEntry(le_sclerotic): ''
+                GtkLabel(label18): 'Iris Diameter'
+                ProxyEntry(re_iris_diameter): ''
+                ProxyEntry(le_iris_diameter): ''
+                GtkLabel(label19): 'Eyelid'
+                ProxyEntry(re_eyelid): ''
+                ProxyEntry(le_eyelid): ''
+                GtkLabel(label20): 'Eyelid opening'
+                ProxyEntry(re_eyelid_opening): ''
+                ProxyEntry(le_eyelid_opening): ''
+                GtkLabel(label21): 'Cornea'
+                ProxyEntry(re_cornea): ''
+                ProxyEntry(le_cornea): ''
+                GtkLabel(label22): 'TBUT'
+                ProxyEntry(re_tbut): ''
+                ProxyEntry(le_tbut): ''
+                GtkLabel(label23): 'Schrirmer'
+                ProxyEntry(re_schirmer): ''
+                ProxyEntry(le_schirmer): ''
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
