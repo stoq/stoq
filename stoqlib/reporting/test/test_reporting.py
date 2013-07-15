@@ -352,6 +352,7 @@ class TestReport(ReportTest):
         sale.identifier = 23456
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
+        sale.return_date = date
 
         payment = returned_sale.group.get_items()[1]
         payment.branch = branch

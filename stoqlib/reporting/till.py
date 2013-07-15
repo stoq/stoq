@@ -32,6 +32,8 @@ from stoqlib.domain.till import TillEntry
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.report import ObjectListReport, HTMLReport
 
+N_ = _
+
 
 class TillHistoryReport(ObjectListReport):
     """This report show a list of the till history returned by a SearchBar,
@@ -69,7 +71,7 @@ class TillDailyMovementReport(HTMLReport):
 
         # values are lists with the first element the summary of the input, and
         # the second the summary of the output
-        self.method_summary = {}
+        method_summary = {}
         self.card_summary = {}
 
         for p in store.find(InPaymentView, query).order_by(Payment.identifier):
@@ -79,8 +81,8 @@ class TillDailyMovementReport(HTMLReport):
             else:
                 self.lonely_in_payments.append(p)
 
-            self.method_summary.setdefault(p.method, [0, 0])
-            self.method_summary[p.method][0] += p.value
+            method_summary.setdefault(p.method, [0, 0])
+            method_summary[p.method][0] += p.value
             if p.card_data:
                 type_desc = p.card_data.short_desc[p.card_data.card_type]
                 key = (p.card_data.provider.short_name, type_desc)
@@ -97,8 +99,15 @@ class TillDailyMovementReport(HTMLReport):
             else:
                 self.lonely_out_payments.append(p)
 
-            self.method_summary.setdefault(p.method, [0, 0])
-            self.method_summary[p.method][1] += p.value
+            method_summary.setdefault(p.method, [0, 0])
+            method_summary[p.method][1] += p.value
+
+        self.method_summary = []
+        for method, (in_value, out_value) in method_summary.items():
+            self.method_summary.append((N_(method.description),
+                                        in_value,
+                                        out_value))
+        self.method_summary.sort()
 
         # Till removals
         query = And(Eq(TillEntry.payment_id, None),

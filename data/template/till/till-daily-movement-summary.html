@@ -20,15 +20,15 @@
             in_sum = 0
             out_sum = 0
         %>
-        % for (method, values) in report.method_summary.items():
+        % for (method_name, in_value, out_value) in report.method_summary:
             <tr>
-                <td>${ method.description }</td>
-                <td class="align-right">${ format_price(values[0]) }</td>
-                <td class="align-right">${ format_price(values[1]) }</td>
+                <td>${ method_name }</td>
+                <td class="align-right">${ format_price(in_value) }</td>
+                <td class="align-right">${ format_price(out_value) }</td>
             </tr>
             <%
-                in_sum += values[0]
-                out_sum += values[1]
+                in_sum += in_value
+                out_sum += out_value
             %>
         % endfor
 
