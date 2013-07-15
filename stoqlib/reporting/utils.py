@@ -59,9 +59,9 @@ def get_header_data():
     company = person.company
     main_address = person.get_main_address()
 
-    if not person.name:
-        raise DatabaseInconsistency("The person by ID %d should have a "
-                                    "name at this point" % person.id)
+    if not person.name:  # pragma nocover
+        raise DatabaseInconsistency("The person by ID %r should have a "
+                                    "name at this point" % (person.id, ))
 
     data = {
         'title': person.name,

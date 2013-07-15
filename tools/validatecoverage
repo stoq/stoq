@@ -391,7 +391,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/reporting/sale.py', 65.64),
     ('stoqlib/reporting/stockdecreasereceipt.py', 37.5),
     ('stoqlib/reporting/till.py', 84.48),
-    ('stoqlib/reporting/utils.py', 96.3),
 ))
 
 # Make sure that the list of exceptions is sorted
