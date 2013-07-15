@@ -62,11 +62,11 @@ class IdentifierCol(Int):
         >>> from stoqlib.domain.base import Domain
         >>> from stoqlib.database.runtime import new_store
         >>>
-        >>> class Product(Domain):
+        >>> class TestProduct(Domain):
         ...     identifier = IdentifierCol()
         >>>
         >>> store = new_store()
-        >>> p = Product(store=store)
+        >>> p = TestProduct(store=store)
         >>> p.identifier = 666
         >>>
         >>> p.identifier
