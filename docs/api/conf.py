@@ -280,6 +280,10 @@ rst_epilog = """
     :class:`payments <stoqlib.domain.payment.payment.Payment>`
 .. |paymentcategory| replace::
     :class:`category <stoqlib.domain.payment.category.PaymentCategory>`
+.. |paymentcomment| replace::
+    :class:`payment comment <stoqlib.domain.payment.comments.PaymentComment>`
+.. |paymentcomments| replace::
+    :class:`payment comments <stoqlib.domain.payment.comments.PaymentComment>`
 .. |paymentgroup| replace::
     :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`
 .. |paymentgroups| replace::

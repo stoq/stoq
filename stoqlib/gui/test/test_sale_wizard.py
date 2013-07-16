@@ -384,5 +384,6 @@ class TestConfirmSaleWizard(GUITest):
             'Do you want to print the booklets for this sale?',
             gtk.RESPONSE_YES, 'Print booklets', "Don't print")
 
-        print_report.assert_called_once_with(BookletReport,
-                                             list(sale.group.get_payments_by_method_name(u'store_credit')))
+        print_report.assert_called_once_with(
+            BookletReport,
+            list(sale.group.get_payments_by_method_name(u'store_credit')))

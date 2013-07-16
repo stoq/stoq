@@ -100,10 +100,11 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
     the model of row deletion.
     """
 
-    leak_references = GObject.Property(default=True, type=bool,
-                                       blurb="If True, strong references to user data attached to iters are "
-                                       "stored in a dictionary pool (default). Otherwise the user data is "
-                                       "stored as a raw pointer to a python object without a reference.")
+    leak_references = GObject.Property(
+        default=True, type=bool,
+        blurb=("If True, strong references to user data attached to iters are "
+               "stored in a dictionary pool (default). Otherwise the user data is "
+               "stored as a raw pointer to a python object without a reference."))
 
     #
     # Methods

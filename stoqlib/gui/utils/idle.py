@@ -76,8 +76,9 @@ class IdleXScreenSaver(object):
         import gtk
         gtk  # pylint: disable=W0104
 
-        # has_extension = XScreenSaverQueryExtension(GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
-        #                                            &event_base, &error_base);
+        # has_extension = XScreenSaverQueryExtension(
+        #     GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
+        #     &event_base, &error_base);
         event_base = ctypes.c_int()
         error_base = ctypes.c_int()
         gtk_display = self.gdk.gdk_display_get_default()

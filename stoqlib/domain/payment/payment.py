@@ -318,7 +318,7 @@ class Payment(Domain):
 
     @property
     def comments_number(self):
-        """The number of :class:`comments <stoqlib.domain.payment.comments.PaymentComment>` for this payment"""
+        """The number of |paymentcomments| for this payment"""
         return self.comments.count()
 
     @property

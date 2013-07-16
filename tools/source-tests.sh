@@ -69,7 +69,7 @@ PEP8_BIN=`dirname $0`/pep8.py
 # We probably don't want to fix these for now
 # E125 - continuation line does not distinguish itself from next logical line
 PEP8_ARGS="--count --repeat \
-           --ignore=E125 --max-line-length=120"
+           --ignore=E125 --max-line-length=100"
 
 
 _run_pylint() {

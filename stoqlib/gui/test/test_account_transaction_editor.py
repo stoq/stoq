@@ -75,7 +75,9 @@ class TestAccountTransactionEditor(GUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.click(editor.add_account)
-                run_dialog.assert_called_once_with(AccountEditor, editor, self.store, parent_account=parent_account)
+                run_dialog.assert_called_once_with(AccountEditor, editor,
+                                                   self.store,
+                                                   parent_account=parent_account)
 
 
 if __name__ == '__main__':

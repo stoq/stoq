@@ -123,7 +123,8 @@ class StoqAPI(object):
           def _run_a_dialog(self):
               model = yield run_dialog(SomeDialog, parent, store)
 
-        If the function returns a value, you need to use :py:func:`~stoqlib.api.StoqAPI.asyncReturn`, eg::
+        If the function returns a value, you need to use
+        :py:func:`~stoqlib.api.StoqAPI.asyncReturn`, eg::
 
           api.asyncReturn(model)
 

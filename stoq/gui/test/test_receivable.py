@@ -79,15 +79,16 @@ class TestReceivable(BaseGUITest):
         app = self.create_app(ReceivableApp, u'receivable')
 
         # Note that set_message is always called twice (once from
-        # stoqlib.gui.search.search{editor,dialog,slave} and later by stoq.gui.application), so we
-        # cannot use assert_called_once_with
+        # stoqlib.gui.search.search{editor,dialog,slave} and later by
+        # stoq.gui.application), so we cannot use assert_called_once_with
         set_message = mock.MagicMock()
         app.search.set_message = set_message
 
         app.main_filter.set_state(None)
         app.search.refresh()
-        set_message.assert_called_with('No payments found.\n\nWould you '
-                                       'like to <a href="new_payment">create a new payment</a>?')
+        set_message.assert_called_with(
+            'No payments found.\n\nWould you '
+            'like to <a href="new_payment">create a new payment</a>?')
 
         set_message.reset_mock()
         app.main_filter.set_state(None, 'Received payments')
@@ -103,9 +104,10 @@ class TestReceivable(BaseGUITest):
 
         set_message.reset_mock()
         app.main_filter.set_state(None, category.id)
-        set_message.assert_called_with('No payments in the <b>Sample '
-                                       'category</b> category were found.\n\nWould you like to <a '
-                                       'href="new_payment?Sample%20category">create a new payment</a>?')
+        set_message.assert_called_with(
+            'No payments in the <b>Sample '
+            'category</b> category were found.\n\nWould you like to <a '
+            'href="new_payment?Sample%20category">create a new payment</a>?')
 
         # Reset the state to None, since thats the expected by the other tests
         app.main_filter.set_state(None)

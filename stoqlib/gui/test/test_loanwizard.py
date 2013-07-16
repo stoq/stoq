@@ -31,9 +31,6 @@ from stoqlib.domain.sale import Sale
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard, NewLoanWizard
 from stoqlib.lib.dateutils import localdatetime, localtoday
-from stoqlib.lib.translation import stoqlib_gettext
-
-_ = stoqlib_gettext
 
 
 class TestNewLoanWizard(GUITest):
@@ -67,7 +64,7 @@ class TestNewLoanWizard(GUITest):
         self.check_wizard(wizard, 'new-loan-wizard-item-step',
                           [wizard.retval, loan_item])
 
-        yesno.assert_called_once_with(_('Would you like to print the receipt now?'),
+        yesno.assert_called_once_with('Would you like to print the receipt now?',
                                       gtk.RESPONSE_YES, 'Print receipt', "Don't print")
         self.assertEquals(print_report.call_count, 1)
 
@@ -124,6 +121,7 @@ class TestCloseLoanWizard(GUITest):
         branch = loan.branch
         self.assertEquals(loan_item.storable.get_balance_for_branch(branch), 2)
 
-        info.assert_called_once_with(_('Close loan details...'), _("A sale was "
-                                                                   "created from loan items. You can confirm "
-                                                                   "that sale in the Till application later."))
+        info.assert_called_once_with('Close loan details...',
+                                     "A sale was created from loan items. "
+                                     "You can confirm that sale in the Till "
+                                     "application later.")

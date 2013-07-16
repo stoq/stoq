@@ -863,7 +863,8 @@ class Client(Domain):
         tied with the current client
         """
         from stoqlib.domain.sale import ReturnedSaleView
-        returned_sale_view = self.store.find(ReturnedSaleView, ReturnedSaleView.client_id == self.id)
+        returned_sale_view = self.store.find(ReturnedSaleView,
+                                             ReturnedSaleView.client_id == self.id)
         return returned_sale_view.order_by(ReturnedSaleView.return_date)
 
     def get_client_services(self):

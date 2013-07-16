@@ -53,9 +53,12 @@ _ = stoqlib_gettext
 class ProductionItemEditor(BaseEditor):
     """This is a base class for all items used in a production:
 
-    * :py:class:`~stoqlib.domain.production.ProductionItem` (For both Produced and Lost items)
-    * :py:class:`~stoqlib.domain.production.ProductionService` (When adding services to a production order)
-    * :py:class:`~stoqlib.domain.production.ProductionMaterial` (The material that will be consumed by an order)
+    * :py:class:`~stoqlib.domain.production.ProductionItem`
+      (For both Produced and Lost items)
+    * :py:class:`~stoqlib.domain.production.ProductionService`
+      (When adding services to a production order)
+    * :py:class:`~stoqlib.domain.production.ProductionMaterial`
+      (The material that will be consumed by an order)
 
     """
 

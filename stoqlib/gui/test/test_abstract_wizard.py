@@ -51,4 +51,6 @@ class TestAbstractWizard(GUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.click(dialog._toolbar.edit_button)
-                run_dialog.assert_called_once_with(ProductEditor, dialog, self.store, product, visual_mode=False)
+                run_dialog.assert_called_once_with(ProductEditor, dialog,
+                                                   self.store, product,
+                                                   visual_mode=False)

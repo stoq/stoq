@@ -222,7 +222,9 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
                 widget.connect('event', self._on_event)
                 if element in ['near_spherical', 'distance_spherical',
                                'addition']:
-                    widget.connect_after('changed', self._after_spherical_field_changed, eye, element)
+                    widget.connect_after('changed',
+                                         self._after_spherical_field_changed,
+                                         eye, element)
 
         for name in self.frame_widgets:
             lower, upper, digits, step, page = self.frame_widgets[name]

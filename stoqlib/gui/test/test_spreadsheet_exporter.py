@@ -36,7 +36,8 @@ class TestXLSExporter(GUITest):
 
     def _run_exporter(self, sse):
         objectlist = ObjectList()
-        with mock.patch('stoqlib.gui.dialogs.spreadsheetexporterdialog.gio.app_info_get_default_for_type') as gio:
+        path = 'stoqlib.gui.dialogs.spreadsheetexporterdialog.gio.app_info_get_default_for_type'
+        with mock.patch(path) as gio:
             app_info = mock.Mock()
             app_info.get_name.return_value = 'App Name'
             gio.return_value = app_info

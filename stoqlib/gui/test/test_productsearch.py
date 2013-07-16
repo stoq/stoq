@@ -540,10 +540,11 @@ class TestProductClosedStockSearch(GUITest):
 
         self.click(search._details_slave.print_button)
         args, kwargs = print_report.call_args
-        print_report.assert_called_once_with(ProductClosedStockReport,
-                                             search.results,
-                                             filters=search.search.get_search_filters(),
-                                             branch_name=search.branch_filter.combo.get_active_text())
+        print_report.assert_called_once_with(
+            ProductClosedStockReport,
+            search.results,
+            filters=search.search.get_search_filters(),
+            branch_name=search.branch_filter.combo.get_active_text())
 
 
 class TestFormatData(GUITest):

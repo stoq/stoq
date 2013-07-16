@@ -300,9 +300,9 @@ class PaymentMethod(Domain):
         payments = []
         payments_total = Decimal(0)
         for i, due_date in enumerate(due_dates):
-            payment = self.create_payment(payment_type,
-                                          group, branch, normalized_value, due_date,
-                                          description=self.describe_payment(group, i + 1, installments))
+            payment = self.create_payment(
+                payment_type, group, branch, normalized_value, due_date,
+                description=self.describe_payment(group, i + 1, installments))
             payments.append(payment)
             payments_total += normalized_value
 

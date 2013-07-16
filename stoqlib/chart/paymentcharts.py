@@ -182,7 +182,8 @@ ORDER BY $date_columns;
         else:
             description = _("Total revenue, expenses and gross profit for all months in a year")
 
-        date_columns = "extract(year FROM paid_date)||'-'||lpad(extract(month FROM paid_date)::char, 2, '0')"
+        date_columns = ("extract(year FROM paid_date)||'-'||"
+                        "lpad(extract(month FROM paid_date)::char, 2, '0')")
         months = {}
         ns = dict(date_columns=date_columns,
                   start=start.strftime('%Y-%m-%d'),
