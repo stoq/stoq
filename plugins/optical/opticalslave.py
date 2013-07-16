@@ -38,7 +38,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 from .opticaldomain import OpticalWorkOrder, OpticalProduct, OpticalMedic
 from .opticaleditor import MedicEditor
-
 _ = stoqlib_gettext
 
 #: Number of days that we will consider the prescription to be old, and warn the
@@ -58,10 +57,7 @@ class MedicDetailsSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     def create_model(self, store):
-        model = store.find(OpticalMedic, person=self._medic.person).one()
-        if model is None:
-            model = OpticalMedic(medic=self._product, store=store)
-        return model
+        return store.find(OpticalMedic, person=self._medic.person).one()
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, MedicDetailsSlave.proxy_widgets)
@@ -168,6 +164,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         :param show_finish_date: If the estimated finish date property of the
           work order should be editable in this slave.
         """
+        self._update_level = 0
         self._show_finish_date = show_finish_date
         self._workorder = workorder
         model = self._create_model(store)
@@ -281,7 +278,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             # Create a flag to control the focus change between widgets
             self._focus_change = True
 
-        elif event.type == gtk.gdk.BUTTON_RELEASE:
+        elif event.type == gtk.gdk.BUTTON_RELEASE:  # pragma: nocover
             if self._focus_change:
                 # Select all text on entry box
                 widget.select_region(0, -1)
@@ -400,6 +397,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         :param field: The field of the eye that was eddited. One of 'distance',
           'addition' or 'near'
         """
+        self._update_level += 1
         last = self._update_order[eye]
         if not last or field != last[-1]:
             last.append(field)
@@ -433,11 +431,12 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             else:
                 getattr(self, eye + '_near_cylindrical').update(0)
                 getattr(self, eye + '_near_axis').update(0)
+        self._update_level -= 1
 
     def _after_spherical_field_changed(self, widget, eye, name):
         # This is called after near spherical, distance spherical or addition is
         # changed and is used to update the value of the other field.
-        if not widget.is_focus():
+        if self._update_level > 0:
             return
         self._update_spherical(eye, name)
 

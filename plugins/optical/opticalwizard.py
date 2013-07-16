@@ -86,10 +86,10 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
         # Salesperson combo
         salespersons = self.store.find(SalesPerson)
         self.salesperson.prefill(api.for_person_combo(salespersons))
-        if not sysparam(self.store).ACCEPT_CHANGE_SALESPERSON:
-            self.salesperson.set_sensitive(False)
-        else:
+        if sysparam(self.store).ACCEPT_CHANGE_SALESPERSON:
             self.salesperson.grab_focus()
+        else:
+            self.salesperson.set_sensitive(False)
 
         self._fill_clients_combo()
         self._fill_wo_categories_combo()
@@ -162,10 +162,9 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
         retval = store.confirm(client)
         client = self.store.fetch(client)
         store.close()
-        if not retval:
-            return
-        self._fill_clients_combo()
-        self.client.select(client)
+        if retval:
+            self._fill_clients_combo()
+            self.client.select(client)
 
     def on_client__changed(self, widget):
         self.toogle_client_details()
@@ -195,6 +194,7 @@ class OpticalWorkOrderStep(BaseWizardStep):
     def __init__(self, store, wizard, previous, model):
         self.model = model
         BaseWizardStep.__init__(self, store, wizard, previous)
+        self._work_order_ids = {0}
         self._create_ui()
 
     #
@@ -217,23 +217,26 @@ class OpticalWorkOrderStep(BaseWizardStep):
         new_button.show()
         new_button.connect('clicked', self._on_new_work_order__clicked)
         self.work_orders_nb.set_action_widget(new_button, gtk.PACK_END)
+        self.new_tab_button = new_button
 
         saved_orders = list(WorkOrder.find_by_sale(self.store, self.model))
         # This sale does not have any work order yet. Create the first for it.
         if not saved_orders:
-            self._add_workorder(self._create_work_order())
+            self._add_work_order(self._create_work_order())
             return
 
         # This sale already have some workorders, restore them so the user can
         # edit
         for order in saved_orders:
-            self._add_workorder(order)
+            self._add_work_order(order)
 
-    def _add_workorder(self, workorder):
-        self.wizard.workorders.add(workorder)
-        total_os = self.work_orders_nb.get_n_pages() + 1
+    def _add_work_order(self, work_order):
+        self.wizard.workorders.add(work_order)
+
+        work_order_id = max(self._work_order_ids) + 1
+        self._work_order_ids.add(work_order_id)
         # Translators: WO is short for Work Order
-        label = _('WO %d') % total_os
+        label = _('WO %d') % (work_order_id)
 
         button = NotebookCloseButton()
         hbox = gtk.HBox(spacing=6)
@@ -243,28 +246,32 @@ class OpticalWorkOrderStep(BaseWizardStep):
 
         holder = gtk.EventBox()
         holder.show()
-        slave = WorkOrderOpticalSlave(self.store, workorder,
+        slave = WorkOrderOpticalSlave(self.store, work_order,
                                       show_finish_date=True)
+        slave.close_button = button
         self.work_orders_nb.append_page(holder, hbox)
         self.attach_slave(label, slave, holder)
-        button.connect('clicked', self._on_remove_wo_clicked, holder, workorder)
+        button.connect('clicked', self._on_remove_work_order__clicked, holder,
+                       work_order, work_order_id)
 
-    def _remove_workorder(self, holder, workorder):
-        if not workorder.get_items().find().is_empty():
+    def _remove_work_order(self, holder, work_order, work_order_id):
+        if not work_order.get_items().find().is_empty():
             warning(_('This workorder already has items and cannot be removed'))
             return
+
+        self._work_order_ids.remove(work_order_id)
 
         # Remove the tab
         pagenum = self.work_orders_nb.page_num(holder)
         self.work_orders_nb.remove_page(pagenum)
 
         # And remove the WO
-        self.wizard.workorders.remove(workorder)
+        self.wizard.workorders.remove(work_order)
 
         # We cannot remove the WO from the database (since it already has some
         # history), but we can disassociate it from the sale and cancel it.
-        workorder.sale = None
-        workorder.cancel()
+        work_order.sale = None
+        work_order.cancel()
 
     #
     #   BaseWizardStep hooks
@@ -282,16 +289,17 @@ class OpticalWorkOrderStep(BaseWizardStep):
     #
 
     def _on_new_work_order__clicked(self, button):
-        self._add_workorder(self._create_work_order())
+        self._add_work_order(self._create_work_order())
 
-    def _on_remove_wo_clicked(self, button, slave_holder, workorder):
+    def _on_remove_work_order__clicked(self, button, slave_holder, work_order,
+                                       work_order_id):
         # Dont let the user remove the last WO. TODO: Hide the button from the
         # last tab.
         total_pages = self.work_orders_nb.get_n_pages()
         if total_pages == 1:
             return
 
-        self._remove_workorder(slave_holder, workorder)
+        self._remove_work_order(slave_holder, work_order, work_order_id)
 
 
 # This is used so we can display on what work order an item is in.
@@ -468,13 +476,12 @@ class OpticalItemStep(BaseWizardStep):
 
     def _create_ui(self):
         self._setup_workorders_widget()
-        slave = _ItemSlave(self.store, self.wizard, self.model)
-        slave.connect('get-work-order', self._on_item_slave__get_work_order)
-        self.attach_slave('slave_holder', slave)
+        self.item_slave = _ItemSlave(self.store, self.wizard, self.model)
+        self.attach_slave('slave_holder', self.item_slave)
 
-        slave.hide_add_button()
-        slave.cost_label.set_label('Price:')
-        slave.cost.set_editable(True)
+        self.item_slave.hide_add_button()
+        self.item_slave.cost_label.set_label('Price:')
+        self.item_slave.cost.set_editable(True)
 
     def _add_radio(self, desc, workorder):
         widget = gtk.RadioButton(self._radio_group, desc)
@@ -531,7 +538,7 @@ class OpticalItemStep(BaseWizardStep):
     #   Callbacks
     #
 
-    def _on_item_slave__get_work_order(self, widget):
+    def on_item_slave__get_work_order(self, widget):
         return self.get_work_order()
 
     def _on_radio__toggled(self, radio):

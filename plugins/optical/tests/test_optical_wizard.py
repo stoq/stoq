@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'plugins/optical/opticalwizard.py'
+
 import mock
 import gtk
 
@@ -30,6 +32,8 @@ from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.dateutils import localdate
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 from ...optical.opticalwizard import OpticalSaleQuoteWizard
@@ -110,3 +114,90 @@ class TestSaleQuoteWizard(GUITest):
         yesno.assert_called_once_with(_('Would you like to print the quote '
                                         'details now?'), gtk.RESPONSE_YES,
                                       _("Print quote details"), _("Don't print"))
+
+    def test_param_accept_change_salesperson(self):
+        sysparam(self.store).update_parameter(
+            u'ACCEPT_CHANGE_SALESPERSON',
+            u'True')
+        wizard = OpticalSaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+        self.assertTrue(step.salesperson.get_sensitive())
+
+        sysparam(self.store).update_parameter(
+            u'ACCEPT_CHANGE_SALESPERSON',
+            u'False')
+
+        wizard = OpticalSaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+        self.assertFalse(step.salesperson.get_sensitive())
+
+    @mock.patch('plugins.optical.opticalwizard.localtoday')
+    def test_expire_date_validate(self, localtoday_):
+        localtoday_.return_value = localdate(2014, 1, 1)
+
+        wizard = OpticalSaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+
+        res = step.expire_date.emit('validate', localdate(2013, 1, 1).date())
+        self.assertEquals(
+            unicode(res),
+            u"The expire date must be set to today or a future date.")
+
+    @mock.patch('plugins.optical.opticalwizard.warning')
+    @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
+    def test_multiple_work_orders(self, run_person_role_dialog, warning):
+        client = self.create_client()
+
+        run_person_role_dialog.return_value = client
+
+        wizard = OpticalSaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+        for i in range(3):
+            wo = self.create_workorder()
+            wo.sale = step.model
+
+        wo.add_sellable(self.create_sellable())
+
+        self.click(step.create_client)
+        self.click(wizard.next_button)
+        self.check_wizard(wizard, 'wizard-optical-work-order-step-multiple-wo')
+
+        step = wizard.get_current_step()
+        assert step.work_orders_nb.get_n_pages() == 3
+
+        # Test removing the first, with no items
+        self.click(step.slaves['WO 1'].close_button)
+
+        # Test removing the third, which has items
+        self.click(step.slaves['WO 3'].close_button)
+        warning.assert_called_once_with(
+            'This workorder already has items and cannot be removed')
+
+        # Test removing the second, which has no items
+        self.click(step.slaves['WO 2'].close_button)
+
+        # Test removing the third, which is not possible any more since
+        # it's the last
+        self.click(step.slaves['WO 3'].close_button)
+
+        # Add a new
+        self.click(step.new_tab_button)
+
+    @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
+    def test_item_step(self, run_person_role_dialog):
+        client = self.create_client()
+        run_person_role_dialog.return_value = client
+        wizard = OpticalSaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+        wo = self.create_workorder()
+        wo.sale = step.model
+
+        self.click(step.create_client)
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        slave = step.slaves['WO 1']
+        slave.patient.update('Patient')
+        self.click(wizard.next_button)
+
+        # FIXME: WIP

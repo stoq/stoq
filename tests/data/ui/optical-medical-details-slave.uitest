@@ -1,0 +1,14 @@
+slave: MedicDetailsSlave
+GtkVBox(toplevel):
+  GtkHBox(hbox1, expand=True, fill=True):
+    GtkLabel(label6):
+    GtkFrame(frame1, expand=True, fill=True):
+      GtkAlignment(alignment1):
+        GtkTable(table1):
+          GtkLabel(label1): 'CRM:'
+          ProxyEntry(crm_number): '1234'
+          GtkLabel(label2): '\n'
+      GtkLabel(label4):
+    GtkLabel(label5):
+  GtkLabel(label3, expand=True, fill=True):
+  GtkLabel(label8, expand=True, fill=True):

@@ -23,23 +23,23 @@
 ##
 
 
-from stoqlib.domain.person import Person
 from stoqlib.gui.test.uitestutils import GUITest
 
-from ..opticaldomain import OpticalMedic
-from ..opticaleditor import MedicEditor
+from ..medicssearch import OpticalMedicSearch
+from .test_optical_domain import OpticalDomainTest
 
 
-class TestMedicEditor(GUITest):
+class TestMedicSearch(GUITest, OpticalDomainTest):
 
     def test_show(self):
-        individual = self.create_individual()
-        medic = OpticalMedic(person=individual.person, store=self.store)
-        medic.crm_number = u'123456'
+        search = OpticalMedicSearch(self.store)
+        search.search.refresh()
+        self.check_search(search, 'opticalmedic-show')
 
-        editor = MedicEditor(self.store, model=medic)
-        self.check_editor(editor, 'editor-medic-show')
-
-    def test_create(self):
-        editor = MedicEditor(self.store, role_type=Person.ROLE_COMPANY)
-        self.check_editor(editor, 'editor-medic-create')
+    def test_get_editor_model(self):
+        medic = self.create_optical_medic()
+        search = OpticalMedicSearch(self.store)
+        search.search.refresh()
+        view = search.search.result_view[0]
+        assert search.get_editor_model(view)
+        assert search.get_editor_model(view).id == medic.id

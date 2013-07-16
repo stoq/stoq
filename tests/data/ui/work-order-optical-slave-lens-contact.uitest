@@ -1,0 +1,91 @@
+slave: WorkOrderOpticalSlave
+GtkVBox(toplevel):
+  GtkTable(table1, fill=True):
+    GtkLabel(label3): 'M\xc3\xa9dico:'
+    ProxyComboEntry(medic_combo):
+      item: ''
+    GtkHBox(hbox1):
+      GtkButton(medic_create, expand=True, fill=True):
+      GtkButton(medic_details, expand=True, fill=True): insensitive
+    GtkLabel(label11): 'Tipo da Lente:'
+    ProxyComboBox(lens_type):
+      item: 'Contact', selected
+      item: 'Ophtalmic'
+    GtkLabel(label1): 'Owner:'
+    ProxyEntry(patient): '', mandatory
+    GtkLabel(label4): 'Data da receita:'
+    ProxyDateEntry(prescription_date): None
+    GtkLabel(estimated_finish_lbl): 'Previs\xc3\xa3o de entrega:', hidden
+    ProxyDateEntry(estimated_finish): None, hidden
+  GtkTable(optical_table, expand=True, fill=True):
+    GtkHBox(distance_box1):
+  GtkHBox(distance_box, expand=True, fill=True):
+    GtkLabel(label5, fill=True): 'Distance'
+    GtkTable(distance_table1, fill=True):
+      GtkLabel(label14):
+      GtkLabel(label15): 'Spherical'
+      GtkLabel(label16): 'Cylindrical'
+      GtkLabel(label17): 'Axis'
+      GtkLabel(label18): 'PD'
+      GtkLabel(label19): 'Height'
+      GtkLabel(label30): 'Prism'
+      GtkLabel(label31): 'Base'
+      GtkLabel(label7): 'Addition'
+      GtkVSeparator(vseparator1):
+      GtkLabel(label12): 'RE:'
+      ProxySpinButton(re_distance_spherical): '0.00'
+      ProxySpinButton(re_distance_cylindrical): '0.00'
+      ProxySpinButton(re_distance_axis): '0'
+      ProxySpinButton(re_distance_pd): '0.0', insensitive
+      ProxySpinButton(re_distance_height): '0.00', insensitive
+      ProxySpinButton(re_distance_prism): '0.00'
+      ProxySpinButton(re_distance_base): '0.00'
+      ProxySpinButton(re_addition): '0.00'
+      GtkLabel(label13): 'LE:'
+      ProxySpinButton(le_distance_spherical): '0.00'
+      ProxySpinButton(le_distance_cylindrical): '0.00'
+      ProxySpinButton(le_distance_axis): '0'
+      ProxySpinButton(le_distance_pd): '0.0', insensitive
+      ProxySpinButton(le_distance_height): '0.00', insensitive
+      ProxySpinButton(le_distance_prism): '0.00'
+      ProxySpinButton(le_distance_base): '0.00'
+      ProxySpinButton(le_addition): '0.00'
+  GtkHBox(hbox3, expand=True, fill=True):
+    GtkVBox(vbox2, fill=True):
+      GtkHBox(near_box, fill=True):
+        GtkLabel(label6, fill=True): 'Near'
+        GtkTable(near_table, fill=True):
+          GtkLabel(label22):
+          GtkLabel(label23): 'Spherical'
+          GtkLabel(label24): 'Cylindrical'
+          GtkLabel(label25): 'Axis'
+          GtkLabel(label26): 'PD'
+          GtkVSeparator(vseparator2):
+          GtkLabel(label20): 'RE:'
+          ProxySpinButton(re_near_spherical): '0.00'
+          ProxySpinButton(re_near_cylindrical): '0.00'
+          ProxySpinButton(re_near_axis): '0'
+          ProxySpinButton(re_near_pd): '0.0', insensitive
+          GtkLabel(label21): 'LE:'
+          ProxySpinButton(le_near_spherical): '0.00'
+          ProxySpinButton(le_near_cylindrical): '0.00'
+          ProxySpinButton(le_near_axis): '0'
+          ProxySpinButton(le_near_pd): '0.0', insensitive
+      GtkLabel(label2, expand=True, fill=True):
+    GtkAlignment(alignment1, fill=True):
+      GtkHBox(frame_box): insensitive
+        GtkLabel(label33, fill=True): 'Frame'
+        GtkTable(frame_table, expand=True, fill=True):
+          GtkCheckButton(client_frame_check): 'Arma\xc3\xa7\xc3\xa3o do cliente'
+          GtkLabel(label10):
+          GtkLabel(label27): 'M.V.A'
+          GtkLabel(label28): 'M.H.A'
+          GtkLabel(label29): 'Bridge'
+          ProxySpinButton(frame_mva): '0.0'
+          ProxySpinButton(frame_mha): '0.0'
+          ProxySpinButton(frame_bridge): '0.0'
+          GtkLabel(label8): 'Type:'
+          ProxyComboBox(frame_type):
+            item: '3 pieces', selected
+            item: 'Closed ring'
+            item: 'Nylon String'
