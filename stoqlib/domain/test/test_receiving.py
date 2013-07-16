@@ -199,6 +199,94 @@ class TestReceivingOrder(DomainTest):
         self.assertEqual(order.guess_freight_type(),
                          ReceivingOrder.FREIGHT_CIF_INVOICE)
 
+    def test_get_transporter_name(self):
+        receiving_order = self.create_receiving_order()
+
+        # Without transporter, the transporter name should be empty
+        receiving_order.transporter = None
+        name = receiving_order.get_transporter_name()
+        self.assertEqual(name, '')
+
+        # Now there is a transporter...
+        transporter = self.create_transporter(u'Juca')
+        receiving_order.transporter = transporter
+        name = receiving_order.get_transporter_name()
+        self.assertEqual(name, u'Juca')
+
+    def test_get_supplier_name(self):
+        receiving_order = self.create_receiving_order()
+
+        # Without supplier, the supplier name should be empty
+        receiving_order.supplier = None
+        name = receiving_order.get_supplier_name()
+        self.assertEqual(name, '')
+
+        # With a supplier 'test'
+        transporter = self.create_supplier(u'test')
+        receiving_order.supplier = transporter
+        name = receiving_order.get_supplier_name()
+        self.assertEqual(name, u'test')
+
+    def test_get_percentage_value(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('35')
+        receiving_order = self.create_receiving_order()
+        ro = receiving_order._get_percentage_value(None)
+        self.assertEqual(currency(0), ro)
+
+        self.create_receiving_order_item(receiving_order, quantity=1,
+                                         sellable=sellable)
+        self.assertEqual(receiving_order._get_percentage_value(5),
+                         Decimal('1.75'))
+
+    def test_set_discount_by_percentage(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('190')
+        receiving_order = self.create_receiving_order()
+        self.create_receiving_order_item(receiving_order, quantity=1,
+                                         sellable=sellable)
+
+        receiving_order.discount_percentage = Decimal('10')
+        self.assertEqual(receiving_order.discount_value, Decimal('19'))
+
+    def test_get_discount_by_percentage(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('220')
+
+        receiving_order = self.create_receiving_order()
+        receiving_order.discount_value = 22
+        with self.assertRaises(AssertionError):
+            receiving_order._get_discount_by_percentage()
+
+        self.create_receiving_order_item(receiving_order, quantity=1,
+                                         sellable=sellable)
+
+        self.assertEqual(receiving_order.discount_percentage, 10)
+
+    def test_set_surcharge_by_percentage(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('200')
+        receiving_order = self.create_receiving_order()
+        self.create_receiving_order_item(receiving_order, quantity=1,
+                                         sellable=sellable)
+
+        receiving_order.surcharge_percentage = Decimal('10')
+        self.assertEqual(receiving_order.surcharge_value, Decimal('20'))
+
+    def test_get_surcharge_by_percentage(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('210')
+
+        receiving_order = self.create_receiving_order()
+        receiving_order.surcharge_value = 42
+        with self.assertRaises(AssertionError):
+            receiving_order._get_surcharge_by_percentage()
+
+        self.create_receiving_order_item(receiving_order, quantity=2,
+                                         sellable=sellable)
+
+        self.assertEqual(receiving_order.surcharge_percentage, 10)
+
 
 class TestReceivingOrderItem(DomainTest):
 
