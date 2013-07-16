@@ -32,6 +32,8 @@ from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderItem, WorkOrder
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor, Note
+from stoqlib.reporting.workorder import (WorkOrderReceiptReport,
+                                         WorkOrderQuoteReport)
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -235,3 +237,28 @@ class TestMaintenance(BaseGUITest):
             self.activate(app.Products)
             rd.assert_called_once_with(ProductSearch, self.store,
                                        hide_footer=True, hide_toolbar=True)
+
+    @mock.patch('stoq.gui.maintenance.print_report')
+    def test_on_PrintReceipt(self, print_report):
+        workorder = self.create_workorder(equipment=u'teste')
+        workorder.status = WorkOrder.STATUS_WORK_FINISHED
+
+        app = self.create_app(MaintenanceApp, u'maintenance')
+        results = app.results
+        results.select(results[0])
+        self.activate(app.PrintReceipt)
+        print_report.assert_called_once_with(WorkOrderReceiptReport,
+                                             results[0].work_order)
+
+    @mock.patch('stoq.gui.maintenance.print_report')
+    def test_on_PrintQuote(self, print_report):
+        workorder = self.create_workorder(equipment=u'teste')
+        workorder.defect_detected = u'quote'
+        workorder.status = WorkOrder.STATUS_WORK_FINISHED
+
+        app = self.create_app(MaintenanceApp, u'maintenance')
+        results = app.results
+        results.select(results[0])
+        self.activate(app.PrintQuote)
+        print_report.assert_called_once_with(WorkOrderQuoteReport,
+                                             results[0].work_order)
