@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/payment/category.py'
+
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.test.domaintest import DomainTest
 

@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/payment/renegotiation.py'
+
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.test.domaintest import DomainTest
 

@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/sellable.py'
+
 from decimal import Decimal
 
 from kiwi.currency import currency

@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/payment/card.py'
+
 from decimal import Decimal
 
 from stoqlib.domain.test.domaintest import DomainTest

@@ -23,6 +23,8 @@
 ##
 """ This module test all class in stoqlib/domain/production.py """
 
+__tests__ = 'stoqlib/domain/production.py'
+
 from decimal import Decimal
 
 from stoqlib.domain.product import ProductQualityTest

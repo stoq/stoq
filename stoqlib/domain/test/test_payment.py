@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/payment/payment.py'
+
 import datetime
 from decimal import Decimal
 

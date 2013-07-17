@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/costcenter.py'
+
 from stoqlib.domain.costcenter import CostCenter, CostCenterEntry
 from stoqlib.domain.test.domaintest import DomainTest
 

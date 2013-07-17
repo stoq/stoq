@@ -22,13 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/sale.py'
+
 import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
 import mock
 from nose.exc import SkipTest
-from stoqlib.domain.returnedsale import ReturnedSaleItem
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
@@ -38,6 +39,7 @@ from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import Storable
+from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import Sale, SalePaymentMethodView, ReturnedSaleItemsView
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
@@ -1393,7 +1395,7 @@ class TestSalePaymentMethodView(DomainTest):
 
 
 class TestReturnedSaleItemsView(DomainTest):
-    def testNewSale(self):
+    def test_new_sale(self):
         branch = self.create_branch()
         client = self.create_client(name=u'Test')
         returned = self.create_returned_sale()

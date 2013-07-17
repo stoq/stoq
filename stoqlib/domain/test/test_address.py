@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/address.py'
+
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.lib.parameters import sysparam
 

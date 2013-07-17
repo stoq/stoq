@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/payment/event.py'
+
 from stoqlib.domain.event import Event
 from stoqlib.domain.test.domaintest import DomainTest
 

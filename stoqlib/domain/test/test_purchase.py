@@ -22,6 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ This module test all class in stoq/domain/purchase.py """
+
+__tests__ = 'stoqlib/domain/purchase.py'
+
 from decimal import Decimal, InvalidOperation
 
 from kiwi.currency import currency

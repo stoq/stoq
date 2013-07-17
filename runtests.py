@@ -172,6 +172,38 @@ def _init(self, test, optionflags=0, setUp=None, tearDown=None,
 DocFileCase.__init__ = _init
 
 
+def _collect_coverage_modules(filenames):
+    # Collects a list of coverage modules given a set of filenames
+
+    # stoqlib/domain -> stoqlib.domain
+    # stoqlib/domain/test -> stoqlib.domain
+    # stoqlib/domain/test/test_account -> stoqlib.domain.account
+    # stoqlib/domain/test/test_account.py -> stoqlib.domain.account
+    # (for instance via __tests__ global attribute in test_account.py)
+    for filename in filenames:
+        if os.path.isdir(filename):
+            filename = filename.rstrip('/')
+            if filename.endswith('/test'):
+                filename = filename[:-5]
+            yield filename.replace('/', '.')
+            continue
+
+        try:
+            fd = open(filename)
+        except IOError:
+            continue
+
+        for line in fd.readlines():
+            if not line.startswith('__tests__'):
+                continue
+            line = line[:-1]
+            test_filename = line.split(' = ', 1)[1][1:-1]
+            if test_filename.endswith('.py'):
+                test_filename = test_filename[:-3]
+            test_filename = test_filename.replace('/', '.')
+            yield test_filename
+            break
+
 # FIXME: This is mimicking what is done on the module containing the IPlugin
 # implemented class. Different from stoq that will always import that module,
 # nosetests will try to look for tests in each .py, producing ImportErrors.
@@ -179,6 +211,14 @@ DocFileCase.__init__ = _init
 plugins_topdir = os.path.join(os.path.dirname(__file__), 'plugins')
 for plugin_dir in os.listdir(plugins_topdir):
     sys.path.append(os.path.join(plugins_topdir, plugin_dir))
+
+if '--coverage' in sys.argv:
+    sys.argv.remove('--coverage')
+
+    modules = _collect_coverage_modules(sys.argv[1:])
+    if modules:
+        sys.argv.insert(1, '--with-coverage')
+        sys.argv.insert(2, '--cover-package=%s' % (','.join(modules), ))
 
 argv = sys.argv[:] + [
     # Disable capturing of stdout, we often use this for print debugging

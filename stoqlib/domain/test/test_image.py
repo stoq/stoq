@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/image.py'
+
 import base64
 
 from stoqlib.domain.image import Image

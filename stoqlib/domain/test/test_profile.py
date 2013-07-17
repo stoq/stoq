@@ -23,6 +23,8 @@
 ##
 """ This module tests all classes in stoq/domain/profile.py"""
 
+__tests__ = 'stoqlib/domain/profile.py'
+
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
 from stoqlib.domain.profile import update_profile_applications

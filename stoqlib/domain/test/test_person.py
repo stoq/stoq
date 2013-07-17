@@ -23,13 +23,15 @@
 ##
 """ Test case for stoq/domain/person.py module.  """
 
-from dateutil.relativedelta import relativedelta
+__tests__ = 'stoqlib/domain/person.py'
+
 from decimal import Decimal
+
+from dateutil.relativedelta import relativedelta
+from kiwi.currency import currency
 from storm.exceptions import NotOneError
 from storm.expr import And
 from storm.store import AutoReload
-
-from kiwi.currency import currency
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
 from stoqlib.domain.person import Calls, ContactInfo

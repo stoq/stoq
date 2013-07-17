@@ -23,10 +23,10 @@
 ##
 """ This module test all class in stoqlib/domain/product.py """
 
+__tests__ = 'stoqlib/domain/product.py'
+
 from decimal import Decimal
 
-# Import domaintest first so that externals is setup properly
-from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch, new_store
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent)
@@ -41,6 +41,7 @@ from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localtoday
 
 

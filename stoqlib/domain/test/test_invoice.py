@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/invoice.py'
+
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 
 from stoqlib.domain.test.domaintest import DomainTest

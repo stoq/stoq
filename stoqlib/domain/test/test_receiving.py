@@ -24,6 +24,8 @@
 
 """ This module test all class in stoq/domain/receiving.py """
 
+__tests__ = 'stoqlib/domain/receiving.py'
+
 from decimal import Decimal
 from kiwi.currency import currency
 

@@ -23,6 +23,8 @@
 ##
 """ This module tests all fiscal data"""
 
+__tests__ = 'stoqlib/domain/fiscal.py'
+
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 
 from stoqlib.domain.test.domaintest import DomainTest

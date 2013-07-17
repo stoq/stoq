@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+__tests__ = 'stoqlib/domain/loan.py'
+
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan, LoanItem
