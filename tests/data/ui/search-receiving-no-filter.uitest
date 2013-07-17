@@ -11,10 +11,10 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
                 GtkLabel(): 'In branch:'
                 ProxyComboBox(padding=6):
                   item: 'Any'
-                  item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
-                  item: 'Stoq Com\xc3\xa9rcio Ltda ME'
-                  item: 'Dummy'
-                  item: 'Dummy (1)'
+                  item: 'Moda Stoq', selected
+                  item: 'Stoq Elite Fashion'
+                  item: 'Dummy shop'
+                  item: 'Dummy shop (1)'
               SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden

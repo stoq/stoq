@@ -313,7 +313,7 @@ class Loan(Domain):
 
     def get_branch_name(self):
         if self.branch:
-            return self.branch.person.name
+            return self.branch.get_description()
         return u''
 
     def get_responsible_name(self):

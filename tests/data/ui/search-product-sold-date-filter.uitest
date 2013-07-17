@@ -33,8 +33,8 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
               GtkLabel(): 'In Branch:'
               ProxyComboBox(padding=6):
                 item: 'Any', selected
-                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
-                item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+                item: 'Moda Stoq'
+                item: 'Stoq Elite Fashion'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Code'
             column: title='Product', expand

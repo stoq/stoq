@@ -6,7 +6,7 @@ GtkVBox(details_vbox):
     GtkLabel(label1): 'Confirm Date:'
     ProxyLabel(confirm_date): '<span ></span>'
     ProxyLabel(kiwilabel3): 'Branch:'
-    ProxyLabel(branch_name): '<span >Stoq Roupas e Acess\xc3\xb3rios Ltda</span>'
+    ProxyLabel(branch_name): '<span >Moda Stoq</span>'
     GtkLabel(label2): 'Expire Date:'
     ProxyLabel(expire_date): '<span ></span>'
     ProxyLabel(kiwilabel5): 'Responsible:'

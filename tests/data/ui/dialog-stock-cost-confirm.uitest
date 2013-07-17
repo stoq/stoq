@@ -1,6 +1,6 @@
 dialog: StockCostDialog
 GtkVBox(toplevel):
-  GtkLabel(branch_label, fill=True): 'Fixing stock cost for products in <b>Stoq Roupas e Acess\xc3\xb3rios Ltda</b>'
+  GtkLabel(branch_label, fill=True): 'Fixing stock cost for products in <b>Moda Stoq</b>'
   GtkEventBox(on_slave_holder, expand=True, fill=True): slave ListSlave is attached
     kiwi+ui+listdialog+ListContainer(listcontainer):
       ObjectList(expand=True, fill=True):

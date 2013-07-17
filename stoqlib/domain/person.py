@@ -1488,7 +1488,7 @@ class Branch(Domain):
 
     def on_create(self):
         Event.log(self.store, Event.TYPE_SYSTEM,
-                  _(u"Created branch '%s'") % (self.person.name, ))
+                  _(u"Created branch '%s'") % (self.get_description(), ))
 
     # Classmethods
 

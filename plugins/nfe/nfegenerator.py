@@ -227,6 +227,7 @@ class NFeGenerator(object):
 
     def _add_issuer(self, branch):
         cnpj = self._get_cnpj(branch)
+        # FIXME: Should we use branch.get_description here?
         name = branch.person.name
         person = branch.person
         company = person.company

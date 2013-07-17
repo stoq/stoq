@@ -54,7 +54,7 @@ class UserBranchAccessSlave(BaseRelationshipEditorSlave):
 
         if UserBranchAccess.has_access(self._store, user, branch):
             info(_(u'%s is already associated with %s.') %
-                 (user.person.name, branch.person.company.fancy_name))
+                 (user.person.name, branch.get_description()))
             return
 
         return UserBranchAccess(store=self._store,
@@ -62,7 +62,7 @@ class UserBranchAccessSlave(BaseRelationshipEditorSlave):
                                 branch=branch)
 
     def get_columns(self):
-        return [Column('branch.person.company.fancy_name', title=_('Branch Name'),
+        return [Column('branch.description', title=_('Branch Name'),
                        data_type=str, expand=True), ]
 
     def get_targets(self):

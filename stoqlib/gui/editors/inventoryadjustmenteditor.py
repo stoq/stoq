@@ -64,7 +64,7 @@ class InventoryAdjustmentEditor(BaseEditor):
 
         company = self.model.branch.person.company
         if company is not None:
-            self.branch_lbl.set_text(company.fancy_name)
+            self.branch_lbl.set_text(self.model.branch.get_description())
             self.state_registry_lbl.set_text(company.state_registry)
             self.cnpj_lbl.set_text(company.cnpj)
 

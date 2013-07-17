@@ -238,11 +238,11 @@ class TransferOrder(Domain):
 
     def get_source_branch_name(self):
         """Returns the source |branch| name"""
-        return self.source_branch.person.name
+        return self.source_branch.get_description()
 
     def get_destination_branch_name(self):
         """Returns the destination |branch| name"""
-        return self.destination_branch.person.name
+        return self.destination_branch.get_description()
 
     def get_source_responsible_name(self):
         """Returns the name of the |employee| responsible for the transfer

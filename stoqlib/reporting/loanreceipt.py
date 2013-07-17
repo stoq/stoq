@@ -81,7 +81,7 @@ class LoanReceipt(HTMLReport):
             order_identifier=order_identifier,
             payment_number=None,
             drawee=drawee_person.name,
-            drawer=drawer_person.name,
+            drawer=branch.get_description(),
             drawee_document=self._get_person_document(drawee_person),
             drawer_document=self._get_person_document(drawer_person),
             drawee_address=self._get_person_address(drawee_person),

@@ -105,7 +105,7 @@ class BranchStation(Domain):
         # fmt = u"Created computer '%s' for branch '%s'"
         # Event.log(self.store,
         #           Event.TYPE_SYSTEM,
-        #           _(fmt) % (self.name, self.branch.person.name))
+        #           _(fmt) % (self.name, self.branch.get_description()))
 
     #
     # IActive implementation

@@ -11,8 +11,8 @@ GtkDialog(toplevel): title='Products Sold Search', hidden
                 GtkLabel(): 'In branch:'
                 ProxyComboBox(padding=6):
                   item: 'Any', selected
-                  item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
-                  item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+                  item: 'Moda Stoq'
+                  item: 'Stoq Elite Fashion'
               SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden

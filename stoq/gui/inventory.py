@@ -148,7 +148,7 @@ class InventoryApp(ShellApp):
                              data_type=str, width=100,
                              valid_values=self._get_status_values(),
                              search_attribute='status'),
-                Column('branch.person.name', title=_('Branch'),
+                Column('branch.description', title=_('Branch'),
                        data_type=str, expand=True),
                 SearchColumn('open_date', title=_('Opened'),
                              long_title=_('Date Opened'),
@@ -170,7 +170,7 @@ class InventoryApp(ShellApp):
         return self.store.find(Branch)
 
     def _get_branches_for_filter(self):
-        items = [(b.person.name, b.id) for b in self._get_branches()]
+        items = [(b.get_description(), b.id) for b in self._get_branches()]
         if not items:
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'

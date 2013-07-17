@@ -208,7 +208,7 @@ class ProductionOrder(Domain):
         return ProductionOrder.statuses[self.status]
 
     def get_branch_name(self):
-        return self.branch.person.name
+        return self.branch.get_description()
 
     def get_responsible_name(self):
         if self.responsible is not None:

@@ -99,12 +99,11 @@ class TestTransferOrder(DomainTest):
 
     def test_get_source_branch_name(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.get_source_branch_name(), u'Source')
+        self.assertEquals(order.get_source_branch_name(), u'Source shop')
 
     def test_get_destination_branch_name(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.get_destination_branch_name(),
-                          u'Dest')
+        self.assertEquals(order.get_destination_branch_name(), u'Dest shop')
 
     def test_get_source_responsible_name(self):
         order = self.create_transfer_order()

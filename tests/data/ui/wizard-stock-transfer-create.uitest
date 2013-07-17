@@ -7,7 +7,7 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
         GtkVBox(step.toplevel):
           GtkTable(step.table1, fill=True):
             ProxyLabel(step.kiwilabel3): 'Sending branch:'
-            ProxyLabel(step.source_branch): '<span >Stoq Roupas e Acess\xc3\xb3rios Ltda</span>'
+            ProxyLabel(step.source_branch): '<span >Moda Stoq</span>'
             ProxyLabel(step.kiwilabel1): 'Open date:'
             ProxyLabel(step.open_date): '<span >YYYY-MM-DD</span>'
             ProxyLabel(step.kiwilabel4): 'Receiving branch:'

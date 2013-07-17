@@ -79,7 +79,7 @@ class StoqlibSintegraGenerator(object):
 
         self.sintegra.add_header(company.get_cnpj_number(),
                                  str(state_registry) or 'ISENTO',
-                                 company.fancy_name,
+                                 branch.get_description(),
                                  address.get_city(),
                                  state,
                                  branch.person.get_fax_number_number(),

@@ -32,7 +32,6 @@ from kiwi.datatypes import converter
 from kiwi.ui.objectlist import Column
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.person import Branch
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
@@ -208,8 +207,9 @@ class StockApp(ShellApp):
     def create_filters(self):
         self.search.set_query(self._query)
         self.set_text_field_columns(['description'])
+        branches = Branch.get_active_branches(self.store)
         self.branch_filter = ComboSearchFilter(
-            _('Show by:'), self._get_branches())
+            _('Show by:'), api.for_combo(branches, empty=_("All branches")))
         self.branch_filter.select(api.get_current_branch(self.store))
         self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
 
@@ -245,16 +245,6 @@ class StockApp(ShellApp):
     def _query(self, store):
         branch = self.branch_filter.get_state().value
         return self.search_spec.find_by_branch(store, branch)
-
-    def _get_branches(self):
-        items = [(b.person.name, b)
-                 for b in self.store.find(Branch)]
-        if not items:
-            raise DatabaseInconsistency('You should have at least one '
-                                        'branch on your database.'
-                                        'Found zero')
-        items.insert(0, [_('All branches'), None])
-        return items
 
     def _update_widgets(self):
         branch = api.get_current_branch(self.store)

@@ -427,7 +427,7 @@ class Inventory(Domain):
         This method returns the name for Branch of Person reference object
         :return: branch_name
         """
-        return self.branch.person.name
+        return self.branch.get_description()
 
 
 class InventoryItemsView(Viewable):

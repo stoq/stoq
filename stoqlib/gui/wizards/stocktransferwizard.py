@@ -74,7 +74,7 @@ class StockTransferInitialStep(WizardEditorStep):
         branches = Branch.get_active_remote_branches(self.store)
         self.destination_branch.prefill(api.for_person_combo(branches))
 
-        self.source_branch.set_text(self.branch.person.name)
+        self.source_branch.set_text(self.branch.get_description())
 
         employees = self.store.find(Employee)
         self.source_responsible.prefill(api.for_person_combo(employees))

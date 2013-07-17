@@ -20,9 +20,9 @@
       <tbody>
         <tr>
           <td>${ _("Source") }:</td>
-          <td>${ order.source_branch.person.name }</td>
+          <td>${ order.source_branch.get_description() }</td>
           <td>${ _("Destination") }:</td>
-          <td>${ order.destination_branch.person.name }</td>
+          <td>${ order.destination_branch.get_description() }</td>
         </tr>
         <tr>
           <td>${ _("Responsible") }:</td>

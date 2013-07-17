@@ -147,7 +147,7 @@ class TestInventory(DomainTest):
                                               fax_number=u'6125371231')
 
         inventory_branch_name = inventory.get_branch_name()
-        self.assertEqual(inventory_branch_name, u'Dummy')
+        self.assertEqual(inventory_branch_name, u'Dummy shop')
 
 
 class TestInventoryItem(DomainTest):

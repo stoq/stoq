@@ -153,7 +153,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     size = (800, 450)
 
     def _get_branch_values(self):
-        items = [(b.person.name, b.id) for b
+        items = [(b.get_description(), b.id) for b
                  in Branch.get_active_branches(self.store)]
         items.insert(0, (_('Any'), None))
         return items

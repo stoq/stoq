@@ -13,7 +13,7 @@ GtkDialog(main_dialog.toplevel): title='Production Details', hidden
             GtkLabel(label2): 'Close Date:'
             ProxyLabel(close_date): '<span ></span>'
             GtkLabel(label6): 'Branch:'
-            ProxyLabel(branch): '<span >Stoq Roupas e Acess\xc3\xb3rios Ltda</span>'
+            ProxyLabel(branch): '<span >Moda Stoq</span>'
             GtkLabel(label9): 'Responsible:'
             ProxyLabel(responsible_name): '<span >SalesPerson</span>'
             GtkLabel(label3): 'Order Status:'
