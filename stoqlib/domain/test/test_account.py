@@ -25,6 +25,7 @@
 __tests__ = 'stoqlib/domain/account.py'
 
 import datetime
+from storm.exceptions import OrderLoopError
 
 from stoqlib.domain.account import (Account, AccountTransaction,
                                     AccountTransactionView,
@@ -66,6 +67,12 @@ class TestAccount(DomainTest):
         a3.description = u"third"
         a3.parent = a2
 
+        # Testing Loop error
+        with self.assertRaises(OrderLoopError):
+            a1.parent = a2
+            self.assertEquals(a1.long_description, u'first')
+
+        a1.parent = None
         self.assertEquals(a1.long_description, u'first')
         self.assertEquals(a2.long_description, u'first:second')
         self.assertEquals(a3.long_description, u'first:second:third')
@@ -127,6 +134,11 @@ class TestAccount(DomainTest):
         t2 = self.create_account_transaction(a2)
         t2.source_account = a1
         self.store.flush()
+
+        a2.parent = a1
+        with self.assertRaises(TypeError):
+            a1.remove(self.store)
+        a2.parent = None
 
         a1.station = self.create_station()
         self.assertRaises(TypeError, a1.remove)
@@ -227,8 +239,34 @@ class TestAccount(DomainTest):
         self.assertRaises(TypeError, a.get_total_for_interval, good, bad)
         self.assertRaises(TypeError, a.get_total_for_interval, bad, good)
 
+    def test_matches(self):
+        a1 = self.create_account()
+        a2 = self.create_account()
+        a2.parent = a1
+        accounts = list(self.store.find(Account))
+        for account in accounts:
+            if a1.matches(account.id):
+                result1 = True
+            if a2.matches(account.id):
+                result2 = True
+        self.assertTrue(result1)
+        self.assertTrue(result2)
+        a3 = self.create_account()
+        result3 = a1.matches(a3.id)
+        self.assertFalse(result3)
+
 
 class TestAccountTransaction(DomainTest):
+
+    def test_create_reverse(self):
+        at = self.create_account_transaction()
+        reversed = self.store.find(AccountTransaction,
+                                   account=at.account).count()
+        self.assertEquals(reversed, 1)
+        at.create_reverse()
+        reversed = self.store.find(AccountTransaction,
+                                   account=at.account).count()
+        self.assertEquals(reversed, 2)
 
     def test_get_other_account(self):
         a1 = self.create_account()
@@ -247,6 +285,10 @@ class TestAccountTransaction(DomainTest):
 
         self.assertEquals(t2.get_other_account(a1), a2)
         self.assertEquals(t2.get_other_account(a2), a1)
+
+        a3 = self.create_account()
+        with self.assertRaises(AssertionError):
+            t1.get_other_account(account=a3)
 
     def test_set_other_account(self):
         a1 = self.create_account()
@@ -277,6 +319,11 @@ class TestAccountTransaction(DomainTest):
         self.store.flush()
         self.assertEquals(t2.account, a2)
         self.assertEquals(t2.source_account, a2)
+
+        a3 = self.create_account()
+        with self.assertRaises(AssertionError):
+            t1.set_other_account(a3, a1)
+            t2.set_other_account(a3, a2)
 
     def test_create_from_payment(self):
         sale = self.create_sale()
@@ -317,6 +364,7 @@ class TestAccountTransactionView(DomainTest):
         a1.description = u"Source Account"
         a2 = self.create_account()
         a2.description = u"Account"
+        a3 = self.create_account()
         t = self.create_account_transaction(a1)
         t.value = 100
         t.source_account = a1
@@ -326,6 +374,8 @@ class TestAccountTransactionView(DomainTest):
         views = AccountTransactionView.get_for_account(a1, self.store)
         self.assertEquals(views[0].get_account_description(a1), u"Account")
         self.assertEquals(views[0].get_account_description(a2), u"Source Account")
+        with self.assertRaises(AssertionError):
+            views[0].get_account_description(a3)
 
     def test_get_value(self):
         a1 = self.create_account()

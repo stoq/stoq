@@ -236,10 +236,9 @@ class Account(Domain):
         parts = []
         account = self
         while account:
-            if account in parts:
-                break
-            parts.append(account)
-            account = account.parent
+            if not account in parts:
+                parts.append(account)
+                account = account.parent
         return u':'.join([a.description for a in reversed(parts)])
 
     @property
