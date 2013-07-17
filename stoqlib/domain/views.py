@@ -29,17 +29,15 @@ from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
                         Alias, Count, Cast)
 from storm.info import ClassAlias
 
-from stoqlib.database.expr import Date, Distinct, Field
+from stoqlib.database.expr import Date, Distinct, Field, NullIf
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.loan import Loan, LoanItem
-from stoqlib.domain.person import (Person, Supplier,
-                                   LoginUser, Branch,
-                                   Client, Employee,
-                                   Transporter)
+from stoqlib.domain.person import (Person, Supplier, Company, LoginUser,
+                                   Branch, Client, Employee, Transporter)
 from stoqlib.domain.product import (Product,
                                     ProductStockItem,
                                     ProductHistory,
@@ -392,13 +390,14 @@ class ProductBranchStockView(Viewable):
     branch = Branch
 
     id = Branch.id
-    branch_name = Person.name
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person.name)
     storable_id = ProductStockItem.storable_id
     stock = ProductStockItem.quantity
 
     tables = [
         Branch,
         Join(Person, Person.id == Branch.person_id),
+        Join(Company, Company.person_id == Person.id),
         Join(ProductStockItem, ProductStockItem.branch_id == Branch.id),
     ]
 
@@ -648,7 +647,7 @@ class StockDecreaseView(Viewable):
     identifier = StockDecrease.identifier
     confirm_date = StockDecrease.confirm_date
 
-    branch_name = _PersonBranch.name
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), _PersonBranch.name)
     removed_by_name = Person.name
 
     tables = [
@@ -657,6 +656,7 @@ class StockDecreaseView(Viewable):
         Join(Person, Employee.person_id == Person.id),
         Join(Branch, StockDecrease.branch_id == Branch.id),
         Join(_PersonBranch, Branch.person_id == _PersonBranch.id),
+        Join(Company, Company.person_id == _PersonBranch.id),
     ]
 
 
@@ -691,7 +691,7 @@ class SoldItemsByBranchView(SoldItemView):
     """Store information about the all sold items by branch.
     """
 
-    branch_name = Person.name
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person.name)
 
     # Aggregates
     total = Sum(SaleItem.quantity * SaleItem.price)
@@ -699,7 +699,9 @@ class SoldItemsByBranchView(SoldItemView):
     tables = SoldItemView.tables[:]
     tables.extend([
         LeftJoin(Branch, Branch.id == Sale.branch_id),
-        LeftJoin(Person, Branch.person_id == Person.id)])
+        LeftJoin(Person, Branch.person_id == Person.id),
+        LeftJoin(Company, Company.person_id == Person.id),
+    ])
 
     clause = Or(SoldItemView.clause,
                 Sale.status == Sale.STATUS_RENEGOTIATED)
@@ -962,7 +964,7 @@ class ReturnedSalesView(Viewable):
     sale_identifier_str = Cast(Sale.identifier, 'text')
 
     responsible_name = PersonResponsible.name
-    branch_name = PersonBranch.name
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), PersonBranch.name)
     client_name = PersonClient.name
 
     tables = [
@@ -972,6 +974,7 @@ class ReturnedSalesView(Viewable):
         Join(PersonResponsible, PersonResponsible.id == LoginUser.person_id),
         Join(Branch, Branch.id == ReturnedSale.branch_id),
         Join(PersonBranch, PersonBranch.id == Branch.person_id),
+        Join(Company, Company.person_id == PersonBranch.id),
         LeftJoin(Client, Client.id == Sale.client_id),
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
     ]
@@ -995,7 +998,7 @@ class LoanView(Viewable):
     client_id = Loan.client_id
     branch_id = Loan.branch_id
 
-    branch_name = PersonBranch.name
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), PersonBranch.name)
     responsible_name = PersonResponsible.name
     client_name = PersonClient.name
 
@@ -1010,6 +1013,7 @@ class LoanView(Viewable):
         LeftJoin(LoginUser, Loan.responsible_id == LoginUser.id),
         LeftJoin(Client, Loan.client_id == Client.id),
         LeftJoin(PersonBranch, Branch.person_id == PersonBranch.id),
+        LeftJoin(Company, Company.person_id == PersonBranch.id),
         LeftJoin(PersonResponsible,
                  LoginUser.person_id == PersonResponsible.id),
         LeftJoin(PersonClient, Client.person_id == PersonClient.id),

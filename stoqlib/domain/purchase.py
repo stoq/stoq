@@ -29,13 +29,13 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from kiwi.python import Settable
-from storm.expr import (Alias, And, Cast, Count, Eq, Join, LeftJoin, Select,
-                        Sum)
+from storm.expr import (Alias, And, Cast, Coalesce, Count, Eq, Join, LeftJoin,
+                        Select, Sum)
 from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implementer
 
-from stoqlib.database.expr import Date, Field, TransactionTimestamp
+from stoqlib.database.expr import Date, Field, NullIf, TransactionTimestamp
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, BoolCol, QuantityCol,
                                          IdentifierCol, IdCol)
@@ -48,10 +48,8 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import Product, Storable
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
-from stoqlib.domain.person import (Person, Branch,
-                                   Supplier,
-                                   Transporter,
-                                   LoginUser)
+from stoqlib.domain.person import (Person, Branch, Company, Supplier,
+                                   Transporter, LoginUser)
 from stoqlib.domain.sellable import Sellable, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.component import Adaptable
@@ -822,7 +820,7 @@ class PurchaseOrderView(Viewable):
     supplier_id = Supplier.id
     supplier_name = Person_Supplier.name
     transporter_name = Person_Transporter.name
-    branch_name = Person_Branch.name
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
     responsible_name = Person_Responsible.name
 
     ordered_quantity = Field('_purchase_item', 'ordered_quantity')
@@ -844,6 +842,7 @@ class PurchaseOrderView(Viewable):
         LeftJoin(Person_Supplier, Supplier.person_id == Person_Supplier.id),
         LeftJoin(Person_Transporter, Transporter.person_id == Person_Transporter.id),
         LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
+        LeftJoin(Company, Company.person_id == Person_Branch.id),
         LeftJoin(Person_Responsible, LoginUser.person_id == Person_Responsible.id),
     ]
 

@@ -23,14 +23,15 @@ GtkDialog(toplevel): title='Branch Search', hidden
               GtkButton(search_button): 'gtk-find'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Name', expand
+            column: title='Fancy name', hidden, expand
             column: title='Acronym', hidden
             column: title='Phone Number'
             column: title='Manager'
             column: title='Status'
-            row: u'Dante', None, u'12345678', None, u'Active'
-            row: u'Las Vegas', None, u'12345678', None, u'Active'
-            row: u'Stoq Com\xe9rcio Ltda ME', None, u'33227766', None, u'Active'
-            row: u'Stoq Roupas e Acess\xf3rios Ltda', None, u'48763983', None, u'Active'
+            row: u'Dante', u'Dante shop', None, u'12345678', None, u'Active'
+            row: u'Las Vegas', u'Las Vegas shop', None, u'12345678', None, u'Active'
+            row: u'Stoq Com\xe9rcio Ltda ME', u'Stoq Elite Fashion', None, u'33227766', None, u'Active'
+            row: u'Stoq Roupas e Acess\xf3rios Ltda', u'Moda Stoq', None, u'48763983', None, u'Active'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):

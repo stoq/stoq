@@ -25,17 +25,18 @@
 
 # pylint: enable=E1101
 
-from storm.expr import Join, LeftJoin, Sum, Cast
+from storm.expr import Join, LeftJoin, Sum, Cast, Coalesce
 from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implementer
 
+from stoqlib.database.expr import NullIf
 from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
                                          IntCol, PriceCol, QuantityCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
-from stoqlib.domain.person import Person, Branch
+from stoqlib.domain.person import Person, Branch, Company
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
@@ -268,6 +269,7 @@ class TransferOrder(Domain):
 class TransferOrderView(Viewable):
     BranchDest = ClassAlias(Branch, 'branch_dest')
     PersonDest = ClassAlias(Person, 'person_dest')
+    CompanyDest = ClassAlias(Company, 'company_dest')
 
     transfer_order = TransferOrder
 
@@ -279,8 +281,9 @@ class TransferOrderView(Viewable):
     receival_date = TransferOrder.receival_date
     source_branch_id = TransferOrder.source_branch_id
     destination_branch_id = TransferOrder.destination_branch_id
-    source_branch_name = Person.name
-    destination_branch_name = PersonDest.name
+    source_branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person.name)
+    destination_branch_name = Coalesce(NullIf(CompanyDest.fancy_name, u''),
+                                       PersonDest.name)
 
     # Aggregates
     total_items = Sum(TransferOrderItem.quantity)
@@ -294,7 +297,9 @@ class TransferOrderView(Viewable):
         # Source
         LeftJoin(Branch, TransferOrder.source_branch_id == Branch.id),
         LeftJoin(Person, Branch.person_id == Person.id),
+        LeftJoin(Company, Company.person_id == Person.id),
         # Destination
         LeftJoin(BranchDest, TransferOrder.destination_branch_id == BranchDest.id),
         LeftJoin(PersonDest, BranchDest.person_id == PersonDest.id),
+        LeftJoin(CompanyDest, CompanyDest.person_id == PersonDest.id),
     ]

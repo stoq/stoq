@@ -1921,12 +1921,14 @@ class BranchView(Viewable):
     is_active = Branch.is_active
     person_id = Person.id
     name = Person.name
+    fancy_name = Company.fancy_name
     phone_number = Person.phone_number
     manager_name = Manager_Person.name
 
     tables = [
         Branch,
         Join(Person, Person.id == Branch.person_id),
+        LeftJoin(Company, Company.person_id == Person.id),
         LeftJoin(Employee, Branch.manager_id == Employee.id),
         LeftJoin(Manager_Person, Employee.person_id == Manager_Person.id),
     ]

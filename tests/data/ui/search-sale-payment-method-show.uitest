@@ -36,9 +36,9 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
             column: title='Salesperson'
             column: title='Items'
             column: title='Total'
-            row: 3, datetime.datetime(2008, 9, 1, 0, 0), u'Luis Sergio da Silva Marin', u'Stoq Roupas e Acess\xf3rios Ltda', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
-            row: 2, datetime.datetime(2008, 6, 1, 0, 0), u'Alessandra Almeida Itaber\xe1', u'Stoq Roupas e Acess\xf3rios Ltda', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
-            row: 1, datetime.datetime(2008, 1, 1, 0, 0), u'Vitalina Claudino', u'Stoq Roupas e Acess\xf3rios Ltda', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
+            row: 3, datetime.datetime(2008, 9, 1, 0, 0), u'Luis Sergio da Silva Marin', u'Moda Stoq', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
+            row: 2, datetime.datetime(2008, 6, 1, 0, 0), u'Alessandra Almeida Itaber\xe1', u'Moda Stoq', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+            row: 1, datetime.datetime(2008, 1, 1, 0, 0), u'Vitalina Claudino', u'Moda Stoq', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
           GtkHBox(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$2015.00</b>'

@@ -34,12 +34,12 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from storm.expr import (And, Avg, Count, LeftJoin, Join, Max,
-                        Or, Sum, Alias, Select, Cast, Eq)
+                        Or, Sum, Alias, Select, Cast, Eq, Coalesce)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import Date, Field, TransactionTimestamp
+from stoqlib.database.expr import Date, Field, TransactionTimestamp, NullIf
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol)
@@ -55,7 +55,7 @@ from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer, IPaymentTransaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
-                                   SalesPerson)
+                                   SalesPerson, Company)
 from stoqlib.domain.product import (Product, ProductHistory, Storable,
                                     StockTransactionHistory)
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
@@ -1766,7 +1766,7 @@ class SaleView(Viewable):
     client_id = Client.id
     salesperson_name = Person_SalesPerson.name
     client_name = Person_Client.name
-    branch_name = Person_Branch.name
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
 
     # Summaries
     v_ipi = Field('_sale_item', 'v_ipi')
@@ -1783,6 +1783,7 @@ class SaleView(Viewable):
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
 
         LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
+        LeftJoin(Company, Company.person_id == Person_Branch.id),
         LeftJoin(Person_Client, Client.person_id == Person_Client.id),
         LeftJoin(Person_SalesPerson, SalesPerson.person_id == Person_SalesPerson.id),
     ]
@@ -1960,7 +1961,7 @@ class ReturnedSaleView(Viewable):
     #: Name of Client Person
     client_name = Person_Client.name
     #: Name of Branch Person
-    branch_name = Person_Branch.name
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
     # Name of Responsible for Returned Sale
     responsible_name = Person_LoginUser.name
 
@@ -1976,6 +1977,7 @@ class ReturnedSaleView(Viewable):
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(LoginUser, LoginUser.id == ReturnedSale.responsible_id),
         LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
+        LeftJoin(Company, Company.person_id == Person_Branch.id),
         LeftJoin(Person_Client, Client.person_id == Person_Client.id),
         LeftJoin(Person_SalesPerson,
                  SalesPerson.person_id == Person_SalesPerson.id),

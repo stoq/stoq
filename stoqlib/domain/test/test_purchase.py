@@ -638,7 +638,7 @@ class TestPurchaseOrderView(DomainTest):
         order = self.create_purchase_order(branch=branch)
         self.create_purchase_order_item(order=order)
         result = self.store.find(PurchaseOrderView, id=order.id).one()
-        self.assertEquals(result.get_branch_name(), u'Test')
+        self.assertEquals(result.get_branch_name(), u'Test shop')
 
     def test_get_transporter_name(self):
         order = self.create_purchase_order()

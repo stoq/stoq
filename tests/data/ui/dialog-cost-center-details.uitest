@@ -45,7 +45,7 @@ GtkVBox(toplevel):
         column: title='Open date', hidden
         column: title='Confirm date'
         column: title='Total'
-        row: 1234, u'', u'Stoq Roupas e Acess\xf3rios Ltda', datetime.today(), None, <currency $100>
+        row: 1234, u'', u'Moda Stoq', datetime.today(), None, <currency $100>
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$100.00</b>'
@@ -55,4 +55,4 @@ GtkVBox(toplevel):
         column: title='Date'
         column: title='Branch', expand
         column: title='Removed By'
-        row: 5678, datetime.today(), u'Stoq Roupas e Acess\xf3rios Ltda', u'SalesPerson'
+        row: 5678, datetime.today(), u'Moda Stoq', u'SalesPerson'

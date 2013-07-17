@@ -296,6 +296,8 @@ class BranchSearch(BasePersonSearch):
 
     def get_columns(self):
         return [SearchColumn('name', _('Name'), str, expand=True, sorted=True),
+                SearchColumn('fancy_name', _('Fancy name'), str, expand=True,
+                             visible=False),
                 SearchColumn('acronym', _('Acronym'), data_type=str,
                              visible=False),
                 SearchColumn('phone_number', _('Phone Number'), str,

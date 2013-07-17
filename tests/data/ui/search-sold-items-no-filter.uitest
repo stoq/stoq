@@ -42,7 +42,7 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
             column: title='Branch'
             column: title='Quantity'
             column: title='Total'
-            row: u'1', u'Luvas', None, u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('100.00000')
+            row: u'1', u'Luvas', None, u'Moda Stoq', Decimal('1.000'), Decimal('100.00000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):

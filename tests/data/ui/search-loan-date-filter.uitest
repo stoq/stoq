@@ -36,7 +36,7 @@ GtkDialog(toplevel): title='Loan Search', hidden
             column: title='Branch', expand
             column: title='Client'
             column: title='Removed by'
-            row: 45978, datetime.datetime(2012, 2, 2, 0, 0), None, u'Stoq Roupas e Acess\xf3rios Ltda', u'Carmen Sandiego', u''
+            row: 45978, datetime.datetime(2012, 2, 2, 0, 0), None, u'Moda Stoq', u'Carmen Sandiego', u''
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
