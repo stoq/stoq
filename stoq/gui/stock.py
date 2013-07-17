@@ -368,12 +368,12 @@ class StockApp(ShellApp):
     def on_StockInitial__activate(self, action):
         if self.check_open_inventory():
             return
-        branch = self.branch_filter.get_state().value
-        store = api.new_store()
-        retval = self.run_dialog(InitialStockDialog, store, branch)
-        store.confirm(retval)
-        store.close()
-        self.refresh()
+
+        with api.trans() as store:
+            self.run_dialog(InitialStockDialog, store)
+
+        if store.committed:
+            self.refresh()
 
     def on_StockPictureViewer__activate(self, button):
         if self.image_viewer:

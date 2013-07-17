@@ -101,9 +101,8 @@ class TestStock(BaseGUITest):
                                ProductStockEditor, [results[0].product])
         self._check_run_dialog(app.NewStockDecrease,
                                StockDecreaseWizard, [])
-        branch = app.branch_filter.get_state().value
         self._check_run_dialog(app.StockInitial,
-                               InitialStockDialog, [branch])
+                               InitialStockDialog, [])
         self._check_run_dialog(app.LoanNew,
                                NewLoanWizard, [])
         self._check_run_dialog(app.LoanClose,

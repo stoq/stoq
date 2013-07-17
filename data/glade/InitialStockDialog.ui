@@ -1,22 +1,54 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="InitialStockDialog">
-    <property name="default_height">250</property>
     <property name="default_width">440</property>
+    <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
-        <property name="spacing">6</property>
         <property name="visible">True</property>
+        <property name="spacing">6</property>
         <child>
-          <object class="GtkLabel" id="branch_label">
-            <property name="label" translatable="yes">&lt;b&gt;&lt;/b&gt;</property>
-            <property name="use_markup">True</property>
+          <object class="GtkAlignment" id="alignment1">
             <property name="visible">True</property>
-            <property name="xalign">0.0</property>
+            <property name="left_padding">6</property>
+            <child>
+              <object class="GtkHBox" id="hbox1">
+                <property name="visible">True</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Branch:</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyComboEntry" id="branch">
+                    <property name="visible">True</property>
+                    <property name="data_type">object</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">branch</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -27,6 +59,8 @@
             </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>

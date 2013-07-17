@@ -1,6 +1,11 @@
 dialog: InitialStockDialog
 GtkVBox(toplevel):
-  GtkLabel(branch_label, fill=True): 'Registering initial stock for products in <b>Stoq Roupas e Acess\xc3\xb3rios Ltda</b>'
+  GtkAlignment(alignment1, fill=True):
+    GtkHBox(hbox1):
+      GtkLabel(label1, fill=True): 'Branch:'
+      ProxyComboEntry(branch, fill=True):
+        item: 'Moda Stoq', selected
+        item: 'Stoq Elite Fashion'
   GtkEventBox(on_slave_holder, expand=True, fill=True): slave ListSlave is attached
     kiwi+ui+listdialog+ListContainer(listcontainer):
       ObjectList(storables, expand=True, fill=True):

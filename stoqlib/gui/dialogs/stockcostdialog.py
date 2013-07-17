@@ -48,7 +48,7 @@ class _TemporaryItem(object):
 
 # FIXME: Create a generic (spreadsheet like) table editor
 class StockCostDialog(BaseEditor):
-    gladefile = "InitialStockDialog"
+    gladefile = "StockCostDialog"
     model_type = object
     title = _(u"Product - Stock Cost")
     size = (750, 450)

@@ -29,10 +29,12 @@ import gtk
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.enums import ListType
+from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
+from stoqlib.domain.person import Branch
 from stoqlib.domain.product import Storable
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
@@ -73,30 +75,22 @@ class _TemporaryStorableItem(object):
 
 class InitialStockDialog(BaseEditor):
     gladefile = "InitialStockDialog"
-    model_type = object
+    model_type = Settable
     title = _(u"Initial Stock")
     size = (850, 450)
     help_section = 'stock-register-initial'
+    proxy_widgets = ['branch']
 
-    def __init__(self, store, branch=None):
-        if branch is None:
-            self._branch = api.get_current_branch(store)
-        else:
-            self._branch = branch
-        BaseEditor.__init__(self, store, model=object())
+    #
+    # Private
+    #
 
-        self._setup_widgets()
-
-    def _setup_widgets(self):
-        self.branch_label.set_markup(
-            _(u"Registering initial stock for products in <b>%s</b>") %
-            api.escape(self._branch.person.name))
-
-        self.slave.listcontainer.add_items(self._get_storables())
+    def _refresh_storables(self):
+        self.slave.listcontainer.list.add_list(self._get_storables())
 
     def _get_storables(self):
         for s in Storable.get_storables_without_stock_item(self.store,
-                                                           self._branch):
+                                                           self.model.branch):
             yield _TemporaryStorableItem(s)
 
     def _get_columns(self):
@@ -136,12 +130,12 @@ class InitialStockDialog(BaseEditor):
             if item.is_batch:
                 for batch_item in item.batches:
                     storable.register_initial_stock(batch_item.quantity,
-                                                    self._branch,
+                                                    self.model.branch,
                                                     item.unit_cost,
                                                     batch_number=batch_item.batch)
             else:
                 storable.register_initial_stock(item.initial_stock,
-                                                self._branch,
+                                                self.model.branch,
                                                 item.unit_cost)
 
     def _add_initial_stock(self):
@@ -152,6 +146,14 @@ class InitialStockDialog(BaseEditor):
     # BaseEditorSlave
     #
 
+    def create_model(self, store):
+        return Settable(branch=api.get_current_branch(store))
+
+    def setup_proxies(self):
+        self.branch.prefill(
+            api.for_combo(Branch.get_active_branches(self.store)))
+        self.add_proxy(self.model, self.proxy_widgets)
+
     def setup_slaves(self):
         self.slave = ListSlave(self._get_columns())
         self.slave.set_list_type(ListType.READONLY)
@@ -159,6 +161,8 @@ class InitialStockDialog(BaseEditor):
         self.storables.set_cell_data_func(
             self._on_storables__cell_data_func)
         self.attach_slave("on_slave_holder", self.slave)
+
+        self._refresh_storables()
 
     def on_confirm(self):
         self._add_initial_stock()
@@ -205,3 +209,6 @@ class InitialStockDialog(BaseEditor):
         else:
             storables.unselect_all()
             self.main_dialog.ok_button.grab_focus()
+
+    def after_branch__content_changed(self, widget):
+        self._refresh_storables()
