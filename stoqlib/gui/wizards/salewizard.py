@@ -512,10 +512,19 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.total_lbl.update(to_pay)
 
     def _update_widgets(self):
-        has_client = bool(self.client.get_selected())
-        self.pm_slave.method_set_sensitive(u'store_credit', has_client)
+        client = self.client.get_selected()
+        client_credit = client.credit_account_balance
+        has_client = bool(client)
+        has_credit = False
+        has_store_credit = False
+        if has_client:
+            total_amount = self.model.get_total_sale_amount()
+            has_credit = bool(client_credit)
+            has_store_credit = bool(client.credit_limit >= total_amount)
+
         self.pm_slave.method_set_sensitive(u'bill', has_client)
-        self.pm_slave.method_set_sensitive(u'credit', has_client)
+        self.pm_slave.method_set_sensitive(u'credit', has_credit)
+        self.pm_slave.method_set_sensitive(u'store_credit', has_store_credit)
 
     def _fill_clients_combo(self):
         marker('Filling clients')
@@ -732,6 +741,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.toogle_client_details()
         self._update_widgets()
         self.discount_slave.update_max_discount()
+        self.pm_slave.set_client(
+            client=self.model.client,
+            total_amount=self.model.get_total_sale_amount())
 
     def on_payment_method_changed(self, slave, method_name):
         self.client.validate(force=True)

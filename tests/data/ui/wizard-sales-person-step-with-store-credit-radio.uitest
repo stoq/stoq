@@ -1,0 +1,106 @@
+wizard: ConfirmSaleWizard
+GtkDialog(PluggableWizard): title='Sale Checkout', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave SalesPersonStep is attached
+        GtkVBox(step.toplevel):
+          GtkHBox(step.hbox1, fill=True):
+            GtkVBox(step.vbox3, expand=True, fill=True):
+              GtkTable(step.table3, fill=True):
+                ProxyLabel(step.salesperson_lbl): 'Salesperson:'
+                ProxyComboEntry(step.salesperson): insensitive
+                  item: 'Administrator'
+                  item: 'Cleusa Blanc Ferreira Norbiato'
+                  item: 'Deivis Alexandre Junior'
+                  item: 'Maria Aparecida Ardana'
+                  item: 'Osvaldo Denadai Marin'
+                  item: 'SalesPerson', selected
+                GtkLabel(step.label1): 'Client:'
+                ProxyComboEntry(step.client):
+                  item: 'Alessandra Almeida Itaber\xc3\xa1'
+                  item: 'Client01', selected
+                  item: 'Client02'
+                  item: 'Franciso Elisio de Lima Junior'
+                  item: 'Luis Sergio da Silva Marin'
+                  item: 'Vitalina Claudino'
+                GtkButton(step.create_client):
+                GtkButton(step.client_details):
+                GtkLabel(step.transporter_lbl): 'Transporter:'
+                ProxyComboEntry(step.transporter):
+                  item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                GtkButton(step.create_transporter):
+                GtkLabel(step.nature_lbl): 'Operation Nature:', hidden
+                ProxyEntry(step.operation_nature): '', hidden
+            GtkVBox(step.vbox4, expand=True, fill=True):
+              GtkTable(step.table4, fill=True):
+                GtkLabel(step.invoice_number_label): 'Invoice Number:'
+                ProxySpinButton(step.invoice_number): '1004'
+                GtkLabel(step.expire_label): 'Expire', hidden
+                ProxyDateEntry(step.expire_date): None, hidden
+                GtkLabel(step.cfop_lbl): 'C.F.O.P.:', hidden
+                ProxyComboEntry(step.cfop): hidden
+                GtkButton(step.create_cfop): hidden
+                GtkLabel(step.client_category_lbl): 'Client Category:', hidden
+                ProxyComboBox(step.client_category): hidden
+                GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
+                ProxyComboBox(step.cost_center): hidden
+          GtkHSeparator(step.hseparator1, fill=True):
+          GtkVBox(step.total_box, fill=True):
+            GtkHBox(step.hbox2, fill=True):
+              GtkTable(step.table1, expand=True, fill=True):
+                ProxyLabel(step.kiwilabel3): 'Subtotal:'
+                ProxyLabel(step.subtotal_lbl): '<span >$100.00</span>'
+                ProxyLabel(step.kiwilabel1): 'Already paid:'
+                ProxyLabel(step.total_paid_lbl): '<span >$ 0.00</span>'
+                ProxyLabel(step.kiwilabel5): 'Total:'
+                ProxyLabel(step.total_lbl): '<span >$100.00</span>'
+              GtkLabel(step.label3, expand=True, fill=True):
+              GtkHButtonBox(step.hbuttonbox1, pack-end):
+                GtkButton(step.observations_button, pack-end): 'Observations...'
+            GtkHBox(step.hbox4, expand=True, fill=True):
+              GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
+                GtkVBox(toplevel):
+                  GtkTable(table1, padding=6):
+                    ProxyLabel(title_lbl): '<span underline="single">Cash Change</span>'
+                    ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
+                    ProxyEntry(received_value): '$100.00'
+                    ProxyLabel(kiwilabel2): 'Change:'
+                    ProxyLabel(change_value_lbl): '<span weight="bold">$ 0.00</span>'
+              GtkExpander(step.subtotal_expander, expand=True, fill=True):
+                GtkEventBox(step.discount_surcharge_slave): slave SaleDiscountSlave is attached
+                  GtkVBox(toplevel):
+                    GtkHBox(hbox6, fill=True):
+                      ProxyLabel(kiwilabel9, fill=True): 'Discount:'
+                    GtkTable(table1, fill=True):
+                      ProxyRadioButton(discount_perc_ck): active
+                      GtkHBox(hbox2):
+                        ProxyEntry(discount_perc, fill=True): '0.0'
+                        ProxyLabel(kiwilabel1, fill=True): '%'
+                      ProxyRadioButton(discount_value_ck):
+                      GtkHBox(hbox4):
+                        ProxyEntry(discount_value, fill=True): '0.00', insensitive
+                        GtkLabel(label4, expand=True, fill=True):
+                GtkLabel(step.label2): 'Order Details'
+          GtkEventBox(step.select_method_holder, fill=True, pack-end): slave SelectPaymentMethodSlave is attached
+            GtkVBox(toplevel):
+              GtkFrame(frame1, expand=True, fill=True):
+                GtkHBox(methods_box):
+                  GtkRadioButton(padding=6): 'Money', active
+                  GtkRadioButton(padding=6): 'Bill'
+                  GtkRadioButton(padding=6): 'Card'
+                  GtkRadioButton(padding=6): 'Check'
+                  GtkRadioButton(padding=6): 'Credit', hidden
+                  GtkRadioButton(padding=6): 'Deposit'
+                  GtkRadioButton(padding=6): 'Store Credit'
+                  GtkRadioButton(padding=6): 'Multiple'
+                GtkLabel(): 'Payment method:'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(help_button): 'gtk-help'
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

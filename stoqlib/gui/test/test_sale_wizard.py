@@ -387,3 +387,38 @@ class TestConfirmSaleWizard(GUITest):
         print_report.assert_called_once_with(
             BookletReport,
             list(sale.group.get_payments_by_method_name(u'store_credit')))
+
+
+class TestSalesPersonStep(GUITest):
+    def test_update_widgets(self):
+        client1 = self.create_client(name=u'Client01')
+        client2 = self.create_client(name=u'Client02')
+        client1.credit_limit = 1000
+        sale_item = self.create_sale_item()
+        subtotal = sale_item.sale.get_sale_subtotal()
+        wizard = ConfirmSaleWizard(store=self.store, model=sale_item.sale,
+                                   subtotal=subtotal, total_paid=0)
+        salespersonstep = wizard._first_step
+
+        # Right now, there should be no client selected and the methods store
+        # credit and credit should be disabled
+        self.check_wizard(wizard=wizard,
+                          ui_test_name='wizard-sales-person-step')
+
+        # After selecting the client1, the option store credit should be available
+        salespersonstep.client.select(client1)
+        self.check_wizard(wizard=wizard,
+                          ui_test_name=
+                          'wizard-sales-person-step-with-store-credit-radio')
+
+        # selecting the client2 should disable the store credit again.
+        salespersonstep.client.select(client2)
+        self.check_wizard(wizard=wizard,
+                          ui_test_name=
+                          'wizard-sales-person-step-without-store-credit-radio')
+
+        # De-selecting the client should not break, and also disable the methods
+        # IE, they should be just like when the dialog was opened
+        salespersonstep.client.select(None)
+        self.check_wizard(wizard=wizard,
+                          ui_test_name='wizard-sales-person-step-client-none')

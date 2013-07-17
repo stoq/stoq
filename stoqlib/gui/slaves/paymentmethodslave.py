@@ -24,6 +24,8 @@
 """ Slaves for payment methods management"""
 
 import gtk
+from kiwi.currency import currency
+from kiwi.datatypes import converter
 
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
@@ -126,9 +128,27 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         if selected_method and selected_method.method_name == method_name:
             self._select_default_method()
 
+    def set_client(self, client, total_amount):
+        self.select_method(u'credit')
+        if client and client.credit_account_balance > 0:
+            client_credit = converter.as_string(
+                currency, client.credit_account_balance)
+            self._widgets[u'credit'].set_label(
+                _("Credit (%s)") % client_credit)
+            has_enough_credit = client.credit_account_balance >= total_amount
+            if has_enough_credit:
+                self.select_method(u'credit')
+            else:
+                self.select_method(u'money')
+            self._widgets[u'credit'].set_sensitive(has_enough_credit)
+        else:
+            self.select_method(u'money')
+        self._client = client
+
     #
     # Kiwi callbacks
     #
+
     def _on_method__toggled(self, radio):
         if not radio.get_active():
             return

@@ -234,7 +234,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/slaves/employeeslave.py', 85.48),
     ('stoqlib/gui/slaves/imageslaveslave.py', 54.69),
     ('stoqlib/gui/slaves/paymentconfirmslave.py', 65.3),
-    ('stoqlib/gui/slaves/paymentmethodslave.py', 94.12),
+    ('stoqlib/gui/slaves/paymentmethodslave.py', 87.21),
     ('stoqlib/gui/slaves/paymentslave.py', 72.52),
     ('stoqlib/gui/slaves/productionslave.py', 76),
     ('stoqlib/gui/slaves/productslave.py', 76),

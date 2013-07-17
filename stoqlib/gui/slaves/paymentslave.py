@@ -36,7 +36,7 @@ import gtk
 from kiwi import ValueUnset
 from kiwi.component import get_utility
 from kiwi.currency import format_price, currency
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import ValidationError, converter
 from kiwi.python import Settable
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate
@@ -1290,11 +1290,24 @@ class MultipleMethodSlave(BaseEditorSlave):
             group = children[0]
         else:
             group = None
+        if (payment_method.method_name == 'credit' and
+            self.model.client and
+            self.model.client.credit_account_balance > 0):
+            credit = converter.as_string(
+                currency, self.model.client.credit_account_balance)
+            description = u"%s (%s)" % (payment_method.get_description(),
+                                        credit)
+            select = True
+        else:
+            description = payment_method.get_description()
+            select = False
 
-        radio = gtk.RadioButton(group, payment_method.get_description())
+        radio = gtk.RadioButton(group, description)
         self.methods_box.pack_start(radio)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', payment_method)
+        if select:
+            radio.set_active(True)
         radio.show()
 
     def _can_add_payment(self):
