@@ -55,6 +55,7 @@ class SaleQuoteItemEditor(BaseEditor):
     def __init__(self, store, model):
         manager = get_plugin_manager()
         self.nfe_is_active = manager.is_active('nfe')
+        self.proxy = None
         self.icms_slave = None
         self.ipi_slave = None
 
@@ -128,7 +129,7 @@ class SaleQuoteItemEditor(BaseEditor):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model, SaleQuoteItemEditor.proxy_widgets)
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     #
     # Kiwi callbacks
@@ -139,6 +140,13 @@ class SaleQuoteItemEditor(BaseEditor):
             self.icms_slave.update_values()
         if self.ipi_slave:
             self.ipi_slave.update_values()
+
+        if self.proxy:
+            self.proxy.update('total')
+
+    def after_quantity__changed(self, widget):
+        if self.proxy:
+            self.proxy.update('total')
 
     def on_price__validate(self, widget, value):
         if value <= 0:

@@ -47,6 +47,7 @@ class PurchaseItemEditor(BaseEditor):
                      'total']
 
     def __init__(self, store, model, visual_mode=False):
+        self.proxy = None
         BaseEditor.__init__(self, store, model, visual_mode)
         order = self.model.order
         if order.status == PurchaseOrder.ORDER_CONFIRMED:
@@ -72,11 +73,19 @@ class PurchaseItemEditor(BaseEditor):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     #
     # Kiwi callbacks
     #
+
+    def after_cost__changed(self, widget):
+        if self.proxy:
+            self.proxy.update('total')
+
+    def after_quantity__changed(self, widget):
+        if self.proxy:
+            self.proxy.update('total')
 
     def on_expected_receival_date__validate(self, widget, value):
         if value < localtoday().date():

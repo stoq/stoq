@@ -32,4 +32,12 @@ class TestPurchaseItemEditor(GUITest):
         item = self.create_purchase_order_item()
         editor = PurchaseItemEditor(self.store, item)
         editor.order.set_label("12345")
+
+        # quantity=8, price=125
+        self.assertEqual(editor.total.read(), 1000)
+        editor.quantity.update(10)
+        self.assertEqual(editor.total.read(), 1250)
+        editor.cost.update(150)
+        self.assertEqual(editor.total.read(), 1500)
+
         self.check_editor(editor, 'editor-purchaseitem-show')

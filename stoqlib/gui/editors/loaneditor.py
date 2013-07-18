@@ -57,6 +57,7 @@ class LoanItemEditor(BaseEditor):
         :param expanded_edition: whether or not we should enable sale_quantity
                                  and return_quantity fields to be edited.
         """
+        self.proxy = None
         self._expanded_edition = expanded_edition
         self._branch = model.loan.branch
 
@@ -105,11 +106,19 @@ class LoanItemEditor(BaseEditor):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model, LoanItemEditor.proxy_widgets)
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     #
     # Kiwi callbacks
     #
+
+    def after_price__changed(self, widget):
+        if self.proxy:
+            self.proxy.update('total')
+
+    def after_quantity__changed(self, widget):
+        if self.proxy:
+            self.proxy.update('total')
 
     def on_price__validate(self, widget, value):
         if value <= 0:

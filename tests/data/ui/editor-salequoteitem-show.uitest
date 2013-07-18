@@ -16,9 +16,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               GtkLabel(return_quantity_lbl): 'Return Quantity:', hidden
               ProxySpinButton(return_quantity): '', hidden
               GtkLabel(label4): 'Price:'
-              ProxySpinButton(price): '100.00'
+              ProxySpinButton(price): '150.00'
               GtkLabel(label5): 'Quantity:'
-              ProxySpinButton(quantity): '1.00'
+              ProxySpinButton(quantity): '2.00'
               GtkLabel(cfop_label): 'CFOP:'
               ProxyComboEntry(cfop):
                 item: '5.102 Venda de Mercadoria Adquirida', selected
@@ -26,7 +26,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
                 item: '1.102 Compra para Comercializacao'
                 item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
               GtkLabel(label6): 'Total:'
-              ProxyLabel(total): '<span >$100.00</span>'
+              ProxyLabel(total): '<span >$300.00</span>'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

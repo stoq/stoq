@@ -33,6 +33,14 @@ class TestSaleQuoteItemEditor(GUITest):
         sale_item = self.create_sale_item()
         editor = SaleQuoteItemEditor(self.store, sale_item)
         editor.sale.set_label('12345')
+
+        # quantity=1, price=100
+        self.assertEqual(editor.total.read(), 100)
+        editor.quantity.update(2)
+        self.assertEqual(editor.total.read(), 200)
+        editor.price.update(150)
+        self.assertEqual(editor.total.read(), 300)
+
         self.check_editor(editor, 'editor-salequoteitem-show')
 
         module = 'stoqlib.lib.pluginmanager.PluginManager.is_active'

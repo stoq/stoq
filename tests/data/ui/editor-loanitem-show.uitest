@@ -16,13 +16,13 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Loan Item"', hidden
               GtkLabel(return_quantity_lbl): 'Return Quantity:', hidden
               ProxySpinButton(return_quantity): '0', hidden
               GtkLabel(label4): 'Price:'
-              ProxySpinButton(price): '10.00'
+              ProxySpinButton(price): '15.00'
               GtkLabel(label5): 'Quantity:'
-              ProxySpinButton(quantity): '1.00'
+              ProxySpinButton(quantity): '2.00'
               GtkLabel(cfop_label): 'CFOP:', hidden
               ProxyComboEntry(cfop): hidden
               GtkLabel(label6): 'Total:'
-              ProxyLabel(total): '<span >$10.00</span>'
+              ProxyLabel(total): '<span >$30.00</span>'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

@@ -32,4 +32,12 @@ class TestLoanItemEditor(GUITest):
         loan_item = self.create_loan_item()
         editor = LoanItemEditor(self.store, loan_item)
         editor.sale.set_label("12345")
+
+        # quantity=1, price=10
+        self.assertEqual(editor.total.read(), 10)
+        editor.quantity.update(2)
+        self.assertEqual(editor.total.read(), 20)
+        editor.price.update(15)
+        self.assertEqual(editor.total.read(), 30)
+
         self.check_editor(editor, 'editor-loanitem-show')
