@@ -85,8 +85,8 @@ jenkins: check-source-all
 	    --cover-package=stoq,stoqlib,plugins \
 	    --cover-erase \
 	    --cover-inclusive \
-	    $(TEST_MODULES); \
-	cd ../..; \
+	    $(TEST_MODULES) && \
+	cd ../.. && \
 	tools/validatecoverage jenkins-test/stoq-$$VERSION/coverage.xml
 
 external:
