@@ -31,6 +31,7 @@ from storm.references import Reference
 from storm.variables import (BoolVariable, DateTimeVariable,
                              RawStrVariable, DecimalVariable,
                              IntVariable, UnicodeVariable)
+from stoqlib.domain.product import Storable
 
 from stoqlib.domain.base import Domain
 from stoqlib.database.properties import (UnicodeCol, IdCol,
@@ -281,3 +282,11 @@ class TestDomain(DomainTest):
         item_b = ProductionProducedItem.get_or_create(
             self.store, serial_number=456, product=None)
         self.assertEquals(item_a, item_b)
+
+    def test_validate_batch(self):
+        sellable = self.create_sellable()
+        with self.assertRaises(ValueError) as msg:
+            sellable.validate_batch(batch=Storable, sellable=sellable)
+        expected = 'Batches should only be used with storables,' \
+                   ' but %r is not one' % sellable
+        self.assertEquals(msg.exception.message, expected)
