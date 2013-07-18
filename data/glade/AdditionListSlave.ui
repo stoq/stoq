@@ -49,6 +49,7 @@
                         <child>
                           <object class="GtkHBox" id="hbox2">
                             <property name="visible">True</property>
+                            <property name="spacing">3</property>
                             <child>
                               <object class="GtkImage" id="image1">
                                 <property name="visible">True</property>
@@ -94,6 +95,7 @@
                         <child>
                           <object class="GtkHBox" id="GtkHBox1">
                             <property name="visible">True</property>
+                            <property name="spacing">3</property>
                             <child>
                               <object class="GtkImage" id="GtkImage1">
                                 <property name="visible">True</property>
@@ -140,6 +142,7 @@
                         <child>
                           <object class="GtkHBox" id="GtkHBox12">
                             <property name="visible">True</property>
+                            <property name="spacing">3</property>
                             <child>
                               <object class="GtkImage" id="GtkImage12">
                                 <property name="visible">True</property>
