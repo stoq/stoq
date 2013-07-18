@@ -16,7 +16,7 @@ GtkDialog(main_dialog.toplevel): title='Reverse Payment', hidden
           GtkTable(table2, expand=True, fill=True):
             GtkLabel(reason_lbl): 'Reason:'
             GtkLabel(label1):
-            ProxyEntry(reason): '', invalid
+            ProxyEntry(reason): '', mandatory
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

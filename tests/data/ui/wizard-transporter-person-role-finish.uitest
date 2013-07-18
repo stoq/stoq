@@ -132,7 +132,7 @@ GtkDialog(PluggableWizard): title='New Transporter', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: Transporter<1>
-  freight_percentage: Decimal('0.0')
+  freight_percentage: Decimal('0')
   is_active: True
   open_contract_date: datetime.today()
   person_id: Person<2>

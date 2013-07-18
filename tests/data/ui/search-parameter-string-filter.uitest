@@ -2,7 +2,7 @@ search: ParameterSearch
 GtkVBox(toplevel):
   GtkHBox(hbox1, fill=True):
     GtkLabel(label8, fill=True): 'Filter:'
-    ProxyEntry(entry, expand=True, fill=True): 'account', invalid
+    ProxyEntry(entry, expand=True, fill=True): 'account'
     ProxyButton(show_all_button, fill=True): '_Show All'
   ObjectList(results, expand=True, fill=True):
     column: title='Group'
