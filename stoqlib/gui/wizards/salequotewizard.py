@@ -476,6 +476,8 @@ class SaleQuoteItemStep(SellableItemStep):
             item.set_discount(rv.discount)
             self.slave.klist.update(item)
 
+        self._update_total()
+
 
 class SaleQuotePaymentStep(WizardEditorStep):
     """A step for creating payments for a |sale|

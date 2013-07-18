@@ -22,15 +22,19 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import decimal
+
 import mock
 import gtk
+from kiwi.python import Settable
 
+from stoqlib.api import api
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard, _DiscountEditor
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -148,3 +152,36 @@ class TestSaleQuoteWizard(GUITest):
         self.assertTrue(isinstance(args[2], list))
         self.assertTrue(isinstance(args[3], list))
         self.assertEquals(kwargs['title'], 'Missing products')
+
+    @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
+    def test_apply_discount(self, run_dialog):
+        sellable = self.create_sellable(price=100, product=True)
+        sellable.barcode = u'123'
+
+        wizard = SaleQuoteWizard(self.store)
+
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        step.barcode.set_text(u'123')
+        self.activate(step.barcode)
+        self.click(step.add_sellable_button)
+
+        label = step.summary.get_value_widget()
+        self.assertEqual(label.get_text(), '$100.00')
+
+        # 10% of discount
+        run_dialog.return_value = Settable(discount=decimal.Decimal(10))
+        self.click(step.discount_btn)
+        run_dialog.assert_called_once_with(
+            _DiscountEditor, step.parent, step.store,
+            user=api.get_current_user(step.store))
+        self.assertEqual(label.get_text(), '$90.00')
+
+        # Cancelling the dialog this time
+        run_dialog.reset_mock()
+        run_dialog.return_value = None
+        self.click(step.discount_btn)
+        run_dialog.assert_called_once_with(
+            _DiscountEditor, step.parent, step.store,
+            user=api.get_current_user(step.store))
+        self.assertEqual(label.get_text(), '$90.00')
