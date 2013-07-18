@@ -21,13 +21,13 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-
 __tests__ = 'stoqlib/domain/address.py'
 
-from stoqlib.domain.address import Address, CityLocation
-from stoqlib.lib.parameters import sysparam
+import decimal
 
+from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.parameters import sysparam
 
 
 class TestCityLocation(DomainTest):
@@ -68,14 +68,36 @@ class TestCityLocation(DomainTest):
             self.assertEqual(CityLocation.get_or_create(self.store, city,
                                                         state, country),
                              location)
-        for city, state, country in [
-                (u'Sao', u'SP', u'Brazil'),
-                (u'sao', u'SP', u'Brazil'),
-                (u'Carlos', u'SP', u'Brazil'),
-                (u'carlos', u'SP', u'Brazil')]:
-            self.assertNotEqual(CityLocation.get_or_create(self.store, city,
-                                                           state, country),
-                                location)
+        loc2 = CityLocation(store=self.store)
+        loc2.city = u'Sao Carlos'
+        loc2.state = u'SP'
+        loc2.country = u'Brazil'
+        loc2.city_code = 00000
+        location = CityLocation.get_or_create(self.store, u'São Carlos',
+                                              u'SP', u'Brazil')
+        self.assertEquals(location.city_code, 3548906)
+        loc3 = CityLocation(store=self.store)
+        loc3.city = u'City ABC'
+        loc3.state = u'SP'
+        loc3.country = u'Brazil'
+        loc3.city_code = None
+        loc4 = CityLocation(store=self.store)
+        loc4.city = u'City ABĆ'
+        loc4.state = u'SP'
+        loc4.country = u'Brazil'
+        loc4.city_code = None
+        location = CityLocation.get_or_create(self.store, u'City ABC',
+                                              u'SP', u'Brazil')
+        self.assertNotEquals(location, loc4)
+        loc4.city_code = 13560
+        location = CityLocation.get_or_create(self.store, u'City ABC',
+                                              u'SP', u'Brazil')
+        self.assertEquals(location, loc4)
+
+        for city, state, country in [(u'Sao', u'SP', 'Brazil'),
+                                     (u'carlos', decimal.Decimal(8), u'Brazil')]:
+            with self.assertRaises(TypeError):
+                CityLocation.get_or_create(self.store, city, state, country)
 
     def test_get_cities_by(self):
         location = CityLocation.get_or_create(self.store, u'Sao Carlos',
@@ -123,6 +145,17 @@ class TestCityLocation(DomainTest):
 
 
 class TestAddress(DomainTest):
+    def test_get_description(self):
+        addr = self.create_address()
+        self.assertEquals(addr.get_description(),
+                          u'Mainstreet 138, Cidade Araci')
+        addr.district = None
+        self.assertEquals(addr.get_description(), u'Mainstreet 138')
+        addr.streetnumber = None
+        self.assertEquals(addr.get_description(), u'Mainstreet')
+        addr.street = None
+        self.assertEquals(addr.get_description(), u'')
+
     def test_is_valid_model(self):
         person = self.create_person()
         empty_location = CityLocation(store=self.store)
@@ -175,6 +208,10 @@ class TestAddress(DomainTest):
                           postal_code=u'12345-678', store=self.store)
 
         self.assertEquals(address.get_postal_code_number(), 12345678)
+        address.postal_code = u'13560-xxx'
+        self.assertEquals(address.get_postal_code_number(), 13560)
+        address.postal_code = None
+        self.assertEquals(address.get_postal_code_number(), 0)
 
     def test_get_details_string(self):
         person = self.create_person()
