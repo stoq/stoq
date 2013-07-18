@@ -26,8 +26,10 @@ from decimal import Decimal
 
 import gtk
 import mock
-from stoqlib.lib.dateutils import localdate
+
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.dateutils import localdate
 
 from ..opticaldomain import OpticalWorkOrder
 from ..opticaleditor import MedicEditor
@@ -78,6 +80,20 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
 
         e = gtk.gdk.Event(type=gtk.gdk.FOCUS_CHANGE)
         slave.le_near_pd.send_focus_change(e)
+
+    def test_notes_button(self):
+        workorder = self.create_workorder()
+        slave = WorkOrderOpticalSlave(self.store, workorder, show_finish_date=True)
+        name = 'plugins.optical.opticalslave.run_dialog'
+        with mock.patch(name) as run_dialog:
+            run_dialog.return_value = False
+            self.click(slave.notes_button)
+            self.assertEquals(run_dialog.call_count, 1)
+            args, kwargs = run_dialog.call_args
+            assert args[0] == NoteEditor
+            assert args[3] == workorder
+            assert args[4] == 'defect_reported'
+            assert kwargs['title'] == 'Observations'
 
     def test_validate_field(self):
         workorder = self.create_workorder()

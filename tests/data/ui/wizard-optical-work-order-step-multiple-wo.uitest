@@ -23,10 +23,9 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   ProxyEntry(patient): '', mandatory
                   GtkLabel(label4): 'Data da receita:'
                   ProxyDateEntry(prescription_date): None
+                  GtkButton(notes_button): 'Observations'
                   GtkLabel(estimated_finish_lbl): 'Previs\xc3\xa3o de entrega:'
                   ProxyDateEntry(estimated_finish): None
-                GtkTable(optical_table, expand=True, fill=True):
-                  GtkHBox(distance_box1):
                 GtkHBox(distance_box, expand=True, fill=True):
                   GtkLabel(label5, fill=True): 'Distance'
                   GtkTable(distance_table1, fill=True):
@@ -114,10 +113,9 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   ProxyEntry(patient): '', mandatory
                   GtkLabel(label4): 'Data da receita:'
                   ProxyDateEntry(prescription_date): None
+                  GtkButton(notes_button): 'Observations'
                   GtkLabel(estimated_finish_lbl): 'Previs\xc3\xa3o de entrega:'
                   ProxyDateEntry(estimated_finish): None
-                GtkTable(optical_table, expand=True, fill=True):
-                  GtkHBox(distance_box1):
                 GtkHBox(distance_box, expand=True, fill=True):
                   GtkLabel(label5, fill=True): 'Distance'
                   GtkTable(distance_table1, fill=True):
@@ -205,10 +203,9 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   ProxyEntry(patient): '', mandatory
                   GtkLabel(label4): 'Data da receita:'
                   ProxyDateEntry(prescription_date): None
+                  GtkButton(notes_button): 'Observations'
                   GtkLabel(estimated_finish_lbl): 'Previs\xc3\xa3o de entrega:'
                   ProxyDateEntry(estimated_finish): None
-                GtkTable(optical_table, expand=True, fill=True):
-                  GtkHBox(distance_box1):
                 GtkHBox(distance_box, expand=True, fill=True):
                   GtkLabel(label5, fill=True): 'Distance'
                   GtkTable(distance_table1, fill=True):

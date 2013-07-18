@@ -15,10 +15,9 @@ GtkVBox(toplevel):
     ProxyEntry(patient): '', ineditable, insensitive
     GtkLabel(label4): 'Data da receita:'
     ProxyDateEntry(prescription_date): None, insensitive
+    GtkButton(notes_button): 'Observations', hidden
     GtkLabel(estimated_finish_lbl): 'Previs\xc3\xa3o de entrega:', hidden
     ProxyDateEntry(estimated_finish): None, hidden, insensitive
-  GtkTable(optical_table, expand=True, fill=True):
-    GtkHBox(distance_box1):
   GtkHBox(distance_box, expand=True, fill=True): insensitive
     GtkLabel(label5, fill=True): 'Distance'
     GtkTable(distance_table1, fill=True):

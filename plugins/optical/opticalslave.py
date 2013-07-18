@@ -29,9 +29,9 @@ import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
-
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
@@ -256,6 +256,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         else:
             self.estimated_finish_lbl.hide()
             self.estimated_finish.hide()
+            self.notes_button.hide()
 
     def update_visual_mode(self):
         for widget in [self.prescription_date, self.patient, self.lens_type,
@@ -461,3 +462,12 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             self.le_distance_axis.update(self.model.le_near_axis)
         elif self.model.le_distance_axis:
             self.le_near_axis.update(self.model.le_distance_axis)
+
+    def on_notes_button__clicked(self, *args):
+        self.store.savepoint('before_run_notes_editor')
+
+        parent = self.get_toplevel().get_toplevel().get_toplevel()
+        rv = run_dialog(NoteEditor, parent, self.store, self._workorder, 'defect_reported',
+                        title=_('Observations'))
+        if not rv:
+            self.store.rollback_to_savepoint('before_run_notes_editor')
