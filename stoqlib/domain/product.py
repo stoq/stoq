@@ -918,6 +918,37 @@ class StorableBatch(Domain):
     #: The storable that is in this batch
     storable = Reference(storable_id, 'Storable.id')
 
+    #
+    #  Classmethods
+    #
+
+    @classmethod
+    def is_batch_number_available(cls, store, batch_number,
+                                  exclude_storable=None):
+        """Test if batch_number is available
+
+        Useful to find if a batch number is available to be used on a
+        new |batch|.
+
+        If you are increasing the stock of a storable, you probably
+        want to allow an existing batch number for it, in this case,
+        you can use exclude_storable param for that.
+
+        :param store: a store
+        :param batch_number: the batch number to check for availability
+        :param exclude_storable: if not ``None``, the |storable| to
+            exclude from the test
+        """
+        query = cls.batch_number == batch_number
+        if exclude_storable is not None:
+            query = And(query, cls.storable_id != exclude_storable.id)
+
+        return store.find(cls, query).is_empty()
+
+    #
+    #  Public API
+    #
+
     def get_balance_for_branch(self, branch):
         """Return the stock balance for this |batch| in a |branch|.
 

@@ -4,13 +4,12 @@ CREATE TABLE storable_batch (
     id serial NOT NULL PRIMARY KEY,
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    batch_number text NOT NULL,
+    batch_number text UNIQUE NOT NULL,
     create_date timestamp NOT NULL,
     expire_date timestamp,
     notes text,
 
-    storable_id bigint NOT NULL REFERENCES storable(id) ON UPDATE CASCADE,
-    UNIQUE (storable_id, batch_number)
+    storable_id bigint NOT NULL REFERENCES storable(id) ON UPDATE CASCADE
 );
 
 ALTER TABLE storable ADD COLUMN is_batch boolean DEFAULT False;

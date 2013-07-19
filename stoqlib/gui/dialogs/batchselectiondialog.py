@@ -34,11 +34,12 @@ from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.spinbutton import ProxySpinButton
 
 from stoqlib.api import api
-from stoqlib.domain.product import Storable, StorableBatchView
+from stoqlib.domain.product import Storable, StorableBatch, StorableBatchView
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import warning
+from stoqlib.lib.stringutils import next_value_for, max_value_for
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -280,8 +281,9 @@ class BatchSelectionDialog(BaseEditor):
     def _append_initial_rows(self, batches=None):
         self._append_dumb_row_lock += 1
 
-        # No problem if we have _default_batches because they will update this
-        self._append_or_update_row(self._quantity, mandatory=True)
+        batches = batches or []
+        if not batches:
+            self._append_or_update_row(self._quantity, mandatory=True)
 
         for item in batches or []:
             batch, quantity = item.batch, item.quantity
@@ -554,6 +556,14 @@ class BatchDecreaseSelectionDialog(BatchSelectionDialog):
                                      "the given batch") % available_qty)
 
 
+# Editors/wizards using BatchIncreaseSelectionDialog will create the
+# StorableBatch after confirming it, so we need this dict to known which ones
+# are being used at the moment. That makes possible for us to validate already
+# used batch numbers (they should be unique among all batches) and also to get
+# the next value of the sequence based on the maximum here
+_used_batches_mapper = {}
+
+
 class BatchIncreaseSelectionDialog(BatchSelectionDialog):
     """Batch selection for storable increases
 
@@ -573,5 +583,77 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
     #  _BatchSelectionDialog
     #
 
+    def on_confirm(self):
+        super(BatchIncreaseSelectionDialog, self).on_confirm()
+
+        used = set(batch_item.batch for batch_item in self.retval)
+        # Replace the existing one instead of replacing since some batches
+        # may have been removed and thus are allowed for other storables
+        _used_batches_mapper[(self.store, self.model.id)] = used
+
     def get_batch_item(self, batch):
-        return batch and batch.batch_number
+        if batch is not None:
+            return batch.batch_number
+        if not api.sysparam(self.store).SUGGEST_BATCH_NUMBER:
+            return None
+
+        return self._get_next_batch_number()
+
+    def validate_entry(self, entry):
+        batch_number = unicode(entry.get_text())
+        if not batch_number:
+            return
+
+        available = StorableBatch.is_batch_number_available(
+            self.store, batch_number, exclude_storable=self.model)
+        if (not available or
+            batch_number in self._get_used_batches(exclude=batch_number)):
+            return ValidationError(_("'%s' is already in use") % batch_number)
+
+    #
+    #  Private
+    #
+
+    def _get_next_batch_number(self):
+        max_db = StorableBatch.get_max_value(self.store,
+                                             StorableBatch.batch_number)
+        max_used = max_value_for(self._get_used_batches() | set([max_db]))
+        if not api.sysparam(self.store).SYNCHRONIZED_MODE:
+            return next_value_for(max_used)
+
+        # On synchronized mode we need to append the branch acronym
+        # to avoid conflicts
+        max_used_list = max_used.split('-')
+        if len(max_used_list) == 1:
+            # '123'
+            max_used = max_used_list[0]
+        elif len(max_used_list) == 2:
+            # '123-AB'
+            max_used = max_used_list[0]
+        else:
+            # '123-456-AB'
+            max_used = ''.join(max_used_list[:-1])
+
+        branch = api.get_current_branch(self.store)
+        if not branch.acronym:
+            raise ValueError("branch '%s' needs an acronym since we are on "
+                             "synchronized mode" % (branch.get_description(),))
+        return '-'.join([next_value_for(max_used), branch.acronym])
+
+    def _get_used_batches(self, exclude=None):
+        in_use = set()
+
+        for k in _used_batches_mapper:
+            # Excluding our batches from the used to avoid 'already in use'
+            # problems when editing the same batches a second time
+            if k == (self.store, self.model.id):
+                continue
+            in_use.update(_used_batches_mapper[k])
+
+        for entry in self._entries.values():
+            batch_number = entry.read()
+            if batch_number == exclude:
+                continue
+            in_use.add(entry.read())
+
+        return in_use

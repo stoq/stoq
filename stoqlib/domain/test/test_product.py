@@ -36,7 +36,8 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductStockItem,
                                     ProductHistory, ProductComponent,
                                     ProductQualityTest, Storable,
-                                    StockTransactionHistory, StorableBatchView, ProductManufacturer)
+                                    StorableBatch, StorableBatchView,
+                                    StockTransactionHistory, ProductManufacturer)
 from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
@@ -640,14 +641,14 @@ class TestStorable(DomainTest):
         self.assertEqual(storable_with_batch.get_balance_for_branch(b1), 0)
         self.assertEqual(storable_with_batch.get_balance_for_branch(b2), 0)
         storable_with_batch.register_initial_stock(10, b1, unit_cost=1,
-                                                   batch_number=u'123456')
+                                                   batch_number=u'123457')
         self.assertEqual(storable_with_batch.get_balance_for_branch(b1), 10)
         self.assertEqual(storable_with_batch.get_balance_for_branch(b2), 0)
         available_batches_b1 = storable_with_batch.get_available_batches(b1)
         available_batches_b2 = storable_with_batch.get_available_batches(b2)
         self.assertEqual(available_batches_b1.count(), 1)
         self.assertEqual(available_batches_b2.count(), 0)
-        self.assertEqual(available_batches_b1.one().batch_number, u'123456')
+        self.assertEqual(available_batches_b1.one().batch_number, u'123457')
 
         with self.assertRaises(ValueError):
             # We should be forced to pass a batch_number if the storable
@@ -707,6 +708,28 @@ class TestStorable(DomainTest):
 
 
 class TestStorableBatch(DomainTest):
+    def test_is_batch_number_available(self):
+        self.assertTrue(StorableBatch.is_batch_number_available(
+            self.store, u'123'))
+        self.assertTrue(StorableBatch.is_batch_number_available(
+            self.store, u'321'))
+
+        storable = self.create_storable(is_batch=True)
+        self.create_storable_batch(storable=storable, batch_number=u'123')
+        self.create_storable_batch(batch_number=u'321')
+
+        # Should not be available anymore since they now exist
+        self.assertFalse(StorableBatch.is_batch_number_available(
+            self.store, u'123'))
+        self.assertFalse(StorableBatch.is_batch_number_available(
+            self.store, u'321'))
+
+        # But when excluding storable, only u'123' should be available
+        self.assertTrue(StorableBatch.is_batch_number_available(
+            self.store, u'123', exclude_storable=storable))
+        self.assertFalse(StorableBatch.is_batch_number_available(
+            self.store, u'321', exclude_storable=storable))
+
     def test_get_balance_batch(self):
         storable = self.create_storable(is_batch=True)
         branch = self.create_branch()

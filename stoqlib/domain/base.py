@@ -26,19 +26,17 @@ The base :class:`Domain` class for Stoq.
 
 """
 
-# pylint: enable=E1101
-
 import warnings
 
-from storm.expr import And, Like
+from storm.expr import And, Alias, Like, Max, Select
 from storm.info import get_cls_info, get_obj_info
+from storm.properties import Property
 from storm.references import Reference
 from storm.store import AutoReload
 
-# pylint: disable=E1101
-from stoqlib.database.expr import StatementTimestamp
+from stoqlib.database.expr import CharLength, Field, LPad, StatementTimestamp
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import IntCol, IdCol
+from stoqlib.database.properties import IntCol, IdCol, UnicodeCol
 from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
 
@@ -90,7 +88,9 @@ class Domain(ORMObject):
         self._listen_to_events()
         self._creating = False
 
-    # Private
+    #
+    #  Private
+    #
 
     def _listen_to_events(self):
         event = get_obj_info(self).event
@@ -185,7 +185,6 @@ class Domain(ORMObject):
 
         :returns: the copy of ourselves
         """
-
         warnings.warn("don't use this", DeprecationWarning, stacklevel=2)
         kwargs = {}
         for column in get_cls_info(self.__class__).columns:
@@ -223,12 +222,13 @@ class Domain(ORMObject):
         :param case_sensitive: If the checking should be case sensitive or
           not.
         """
-
         if all([value in ['', None] for value in values.values()]):
             return False
 
         clauses = []
         for attr, value, in values.items():
+            self.__class__.validate_attr(attr)
+
             if not isinstance(value, unicode) or case_sensitive:
                 clauses.append(attr == value)
             else:
@@ -256,12 +256,50 @@ class Domain(ORMObject):
             empty strings) will be removed from the results
         :returns: an iterator of the results
         """
+        cls.validate_attr(attr)
+
         results = store.find(cls)
         results.config(distinct=True)
         for value in results.values(attr):
             if exclude_empty and not value:
                 continue
             yield value
+
+    @classmethod
+    def get_max_value(cls, store, attr):
+        """Get the maximum value for a given attr
+
+        On text columns, trying to find the max value for them using MAX()
+        on postgres would result in some problems, like '9' being considered
+        greater than '10' (because the comparison is done from left to right).
+
+        This will 0-"pad" the values for the comparison, making it compare
+        the way we want. Note that because of that, in the example above,
+        it would return '09' instead of '9'
+
+        :para store: a store
+        :param attr: the attribute to find the max value for
+        :returns: the maximum value for the attr
+        """
+        cls.validate_attr(attr, expected_type=UnicodeCol)
+
+        max_length = Alias(
+            Select(columns=[Alias(Max(CharLength(attr)), 'max_length')],
+                   tables=[cls]),
+            '_max_length')
+        # Using LPad with max_length will workaround most of the cases where
+        # the string comparison fails. For example, the common case would
+        # consider '9' to be greater than '10'. We could test just strings
+        # with length equal to max_length, but than '010' would be greater
+        # than '001' would be greater than '10' (that would be excluded from
+        # the comparison). By doing lpad, '09' is lesser than '10' and '001'
+        # is lesser than '010', working around those cases
+        max_batch = store.using(cls, max_length).find(cls).max(
+            LPad(attr, Field('_max_length', 'max_length'), u'0'))
+
+        # Make the api consistent and return an ampty string instead of None
+        # if there's no batch registered on the database
+        return max_batch or u''
 
     @classmethod
     def get_or_create(cls, store, **kwargs):
@@ -287,6 +325,39 @@ class Domain(ORMObject):
             setattr(obj, key, value)
 
         return obj
+
+    @classmethod
+    def validate_attr(cls, attr, expected_type=None):
+        """Make sure attr belongs to cls and has the expected type
+
+        :param attr: the attr we will check if it is on cls
+        :param expected_type: the expected type for the attr to be
+            an instance of. If ``None`` will default to Property
+        :raises: :exc:`TypeError` if the attr is not an instance
+            of expected_type
+        :raises: :exc:`ValueError` if the attr does not belong to
+            this class
+        """
+        expected_type = expected_type or Property
+        if not issubclass(expected_type, Property):
+            raise TypeError(
+                "expected_type %s needs to be a %s subclass" % (
+                    expected_type, Property))
+
+        # We need to iterate over cls._storm_columns to find the
+        # attr's property because there's no reference to that property
+        # (the descriptor) on the attr
+        for attr_property, column in cls._storm_columns.items():
+            if column is attr:
+                break
+        else:
+            attr_property = None  # pylint
+            raise ValueError("Domain %s does not have a column %s" % (
+                cls.__name__, attr.name))
+
+        if not isinstance(attr_property, expected_type):
+            raise TypeError("attr %s needs to be a %s instance" % (
+                attr.name, expected_type))
 
     @classmethod
     def validate_batch(cls, batch, sellable):

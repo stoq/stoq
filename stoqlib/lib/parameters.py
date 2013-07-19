@@ -556,6 +556,17 @@ _details = [
         u'sellable.SellableTaxConstant'),
 
     ParameterDetails(
+        u'SUGGEST_BATCH_NUMBER',
+        _(u'General'),
+        _(u'Suggest batch number'),
+        _(u"If false, you should enter the batch number by hand. That's "
+          u"useful if the batch number is already present on the barcode "
+          u"of the products for instance. If true a sequencial number will "
+          u"be used for suggestion when registering new batches. That's "
+          u"useful if you generate your own batches."),
+        bool, initial=False),
+
+    ParameterDetails(
         u'LABEL_TEMPLATE_PATH',
         _(u'General'),
         _(u'Glabels template file'),

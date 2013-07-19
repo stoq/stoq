@@ -113,6 +113,20 @@ class StatementTimestamp(NamedFunc):
     date = lambda: None  # pylint
 
 
+class CharLength(NamedFunc):
+    """The size of the char, just like len() in python"""
+    # http://www.postgresql.org/docs/8.4/static/functions-string.html
+    __slots__ = ()
+    name = "CHAR_LENGTH"
+
+
+class LPad(NamedFunc):
+    """Fill up the string to length by prepending the characters fill"""
+    # http://www.postgresql.org/docs/8.4/static/functions-string.html
+    __slots__ = ()
+    name = "LPAD"
+
+
 class StoqNormalizeString(NamedFunc):
     """This removes accents and other modifiers from a charater,
     it's similar to NLKD normailzation in unicode, but it is run

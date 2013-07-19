@@ -25,10 +25,12 @@
 import decimal
 
 import gtk
+from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
+from stoqlib.domain.product import StorableBatch
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.dialogs.batchselectiondialog import (BatchSelectionDialog,
@@ -94,6 +96,23 @@ class _InventoryBatchSelectionDialog(BatchSelectionDialog):
     show_existing_batches_list = False
     confirm_dialog_on_entry_activate = True
     allow_no_quantity = True
+
+    #
+    #  BatchSelectionDialog
+    #
+
+    def validate_entry(self, entry):
+        # FIXME: For now we are not allowing not registered batches to be
+        # counted. That makes sense though, but we should find a way to
+        # validate the batch properly (since storable/batch_number should
+        # be unique)
+        batch_number = unicode(entry.get_text())
+        if not batch_number:
+            return
+
+        if self.store.find(StorableBatch, batch_number=batch_number).is_empty():
+            return ValidationError(
+                _("The batch '%s' does not exist") % (batch_number,))
 
 
 class InventoryCountTypeStep(BaseWizardStep):

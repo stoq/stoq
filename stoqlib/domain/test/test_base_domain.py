@@ -26,7 +26,7 @@ __tests__ = 'stoqlib/domain/base.py'
 
 from storm.exceptions import NotOneError
 
-from stoqlib.database.properties import IntCol, UnicodeCol
+from stoqlib.database.properties import IntCol, UnicodeCol, BoolCol
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -36,6 +36,11 @@ class Ding(Domain):
     __storm_table__ = 'ding'
     int_field = IntCol(default=0)
     str_field = UnicodeCol(default=u'')
+
+
+class Dong(Domain):
+    __storm_table__ = 'dong'
+    bool_field = BoolCol(default=False)
 
 
 class TestSelect(DomainTest):
@@ -50,6 +55,12 @@ class TestSelect(DomainTest):
             te_id bigint UNIQUE REFERENCES transaction_entry(id),
             int_field integer default 0,
             str_field text default ''
+        );
+        DROP TABLE IF EXISTS dong;
+        CREATE TABLE dong (
+            id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+            te_id bigint UNIQUE REFERENCES transaction_entry(id),
+            bool_field boolean default false
         );
         """
         cls.store.execute(RECREATE_SQL)
@@ -73,6 +84,31 @@ class TestSelect(DomainTest):
         Ding(store=self.store, int_field=1)
         self.assertRaises(NotOneError, self.store.find(Ding, int_field=1).one)
 
+    def test_validate_attr(self):
+        with self.assertRaisesRegexp(
+                TypeError,
+                ("expected_type <type 'object'> needs to be a "
+                 "<class 'storm.properties.Property'> subclass")):
+            Ding.validate_attr(Ding.str_field, expected_type=object)
+
+        with self.assertRaisesRegexp(
+                TypeError,
+                ("attr str_field needs to be a "
+                 "<class 'storm.properties.Bool'> instance")):
+            Ding.validate_attr(Ding.str_field, expected_type=BoolCol)
+
+        with self.assertRaisesRegexp(
+                ValueError, "Domain Ding does not have a column bool_field"):
+            Ding.validate_attr(Dong.bool_field)
+
+        # Those should pass
+        for cls, field, expected_type in [
+                (Ding, Ding.str_field, UnicodeCol),
+                (Ding, Ding.int_field, IntCol),
+                (Dong, Dong.bool_field, BoolCol)]:
+            cls.validate_attr(field)
+            cls.validate_attr(field, expected_type=expected_type)
+
     def test_find_distinct_values(self):
         # One empty, 2 duplicates and an extra one
         for value in [u'', u'xxx', u'xxx', u'yyy']:
@@ -85,6 +121,36 @@ class TestSelect(DomainTest):
 
         self.assertEqual(r1, [u'xxx', u'yyy'])
         self.assertEqual(r2, [u'', u'xxx', u'yyy'])
+
+    def test_max_value(self):
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'')
+
+        Ding(store=self.store, str_field=u'1')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'1')
+        Ding(store=self.store, str_field=u'2')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'2')
+        Ding(store=self.store, str_field=u'10')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'10')
+        Ding(store=self.store, str_field=u'9')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'10')
+        Ding(store=self.store, str_field=u'001')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'010')
+        Ding(store=self.store, str_field=u'a')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'010')
+        Ding(store=self.store, str_field=u'aa')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'0aa')
+        Ding(store=self.store, str_field=u'99')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'0aa')
+        Ding(store=self.store, str_field=u'999')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'999')
+        Ding(store=self.store, str_field=u'AB0000')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'AB0000')
+        Ding(store=self.store, str_field=u'AB0001')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'AB0001')
+        Ding(store=self.store, str_field=u'AB9')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'AB0001')
+        Ding(store=self.store, str_field=u'AB0010')
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'AB0010')
 
     def test_check_unique_value_exists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1')

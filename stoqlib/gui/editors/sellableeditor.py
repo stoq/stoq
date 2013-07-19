@@ -305,7 +305,7 @@ class SellableEditor(BaseEditor):
                                self._on_reopen_sellable_button__clicked)
 
     def _update_default_sellable_code(self):
-        code = self.store.find(Sellable).max(Sellable.code)
+        code = Sellable.get_max_value(self.store, Sellable.code)
         self.code.update(next_value_for(code))
 
     def _setup_ui_forms(self):
