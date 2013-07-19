@@ -31,7 +31,7 @@ from kiwi.currency import currency
 from stoqlib.domain.payment.card import CreditCardData
 
 from stoqlib.domain.account import AccountTransaction
-from stoqlib.domain.commission import Commission
+from stoqlib.domain.commission import Commission, CommissionView
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
@@ -134,16 +134,21 @@ class TestPayment(DomainTest):
             self.assertRaises(ValueError, payment.get_interest, paid_date.date())
 
     def test_has_commission(self):
-        sale = self.create_sale()
-        self.add_payments(sale, method_type=u'check', installments=2)
+        item = self.create_sale_item()
+        self.add_payments(item.sale, method_type=u'check', installments=2)
 
-        for p in sale.payments:
+        for p in item.sale.payments:
             self.assertFalse(p.has_commission())
-            Commission(store=self.store,
-                       payment=p,
-                       sale=sale,
-                       salesperson=sale.salesperson)
+            commission = Commission(store=self.store,
+                                    payment=p,
+                                    sale=item.sale,
+                                    salesperson=item.sale.salesperson)
             self.assertTrue(p.has_commission())
+            p.value = Decimal(2)
+            commission = self.store.find(CommissionView, payment_id=p.id).one()
+            self.assertEquals(commission.quantity_sold(), Decimal(1))
+            commission.sale_status = item.sale.STATUS_RETURNED
+            self.assertEquals(commission.quantity_sold(), Decimal(0))
 
     def test_is_paid(self):
         method = PaymentMethod.get_by_name(self.store, u'check')

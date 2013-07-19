@@ -78,7 +78,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/database/settings.py', 38),
     ('stoqlib/database/tables.py', 86.96),
     ('stoqlib/domain/address.py', 91.49),
-    ('stoqlib/domain/commission.py', 94.94),
     ('stoqlib/domain/exampledata.py', 91.25),
     ('stoqlib/domain/inventory.py', 87),
     ('stoqlib/domain/loan.py', 81.65),
