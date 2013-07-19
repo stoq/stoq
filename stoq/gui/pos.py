@@ -33,11 +33,13 @@ from kiwi.datatypes import converter, ValidationError
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
+from storm.expr import And, Lower
 
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
@@ -317,15 +319,6 @@ class PosApp(ShellApp):
                               self._on_PrinterHelper__ecf_changed)
         self._printer.setup_midnight_check()
 
-    def _set_product_on_sale(self):
-        sellable = self._get_sellable()
-        # If the sellable has a weight unit specified and we have a scale
-        # configured for this station, go and check out what the printer says.
-        if (sellable and sellable.unit and
-            sellable.unit.unit_index == UnitType.WEIGHT and
-            self._scale_settings):
-            self._read_scale()
-
     def _setup_proxies(self):
         self.sellableitem_proxy = self.add_proxy(
             Settable(quantity=Decimal(1)), ['quantity'])
@@ -403,7 +396,7 @@ class PosApp(ShellApp):
         self._reset_quantity_proxy()
         self._update_totals()
 
-    def _update_list(self, sellable):
+    def _update_list(self, sellable, batch=None):
         assert isinstance(sellable, Sellable)
         try:
             sellable.check_taxes_validity()
@@ -414,7 +407,7 @@ class PosApp(ShellApp):
 
         quantity = self.sellableitem_proxy.model.quantity
         if sellable.product:
-            self._add_product_sellable(sellable, quantity)
+            self._add_product_sellable(sellable, quantity, batch=batch)
         elif sellable.service:
             self._add_service_sellable(sellable, quantity)
 
@@ -436,9 +429,9 @@ class PosApp(ShellApp):
 
         self._update_added_item(sale_item)
 
-    def _add_product_sellable(self, sellable, quantity):
+    def _add_product_sellable(self, sellable, quantity, batch=None):
         product = sellable.product
-        if product.storable and product.storable.is_batch:
+        if product.storable and not batch and product.storable.is_batch:
             available_batches = list(product.storable.get_available_batches(
                 api.get_current_branch(self.store)))
             # The trivial case, where there's just one batch, use it directly
@@ -463,33 +456,52 @@ class PosApp(ShellApp):
                 self._update_added_item(sale_item)
         else:
             sale_item = TemporarySaleItem(sellable=sellable,
-                                          quantity=quantity)
+                                          quantity=quantity,
+                                          batch=batch)
             self._update_added_item(sale_item)
 
     def _get_subtotal(self):
         return currency(sum([item.total for item in self.sale_items]))
 
-    def _get_sellable(self):
-        barcode = self.barcode.get_text()
-        if not barcode:
-            raise StoqlibError("_get_sellable needs a barcode")
-        barcode = unicode(barcode)
+    def _get_sellable_and_batch(self):
+        text = self.barcode.get_text()
+        if not text:
+            raise StoqlibError("_get_sellable_and_batch needs a barcode")
+        text = unicode(text)
 
         fmt = api.sysparam(self.store).SCALE_BARCODE_FORMAT
 
         # Check if this barcode is from a scale
-        barinfo = parse_barcode(barcode, fmt)
+        barinfo = parse_barcode(text, fmt)
         if barinfo:
-            barcode = barinfo.code
+            text = barinfo.code
             weight = barinfo.weight
 
-        sellable = self.store.find(Sellable, barcode=barcode,
-                                   status=Sellable.STATUS_AVAILABLE).one()
+        batch = None
+        query = Sellable.status == Sellable.STATUS_AVAILABLE
+
+        # FIXME: Put this logic for getting the sellable based on
+        # barcode/code/batch_number on domain. Note that something very
+        # simular is done on abstractwizard.py
+
+        sellable = self.store.find(
+            Sellable, And(query, Lower(Sellable.barcode) == text.lower())).one()
 
         # If the barcode didnt match, maybe the user typed the product code
         if not sellable:
-            sellable = self.store.find(Sellable, code=barcode,
-                                       status=Sellable.STATUS_AVAILABLE).one()
+            sellable = self.store.find(
+                Sellable, And(query, Lower(Sellable.code) == text.lower())).one()
+
+        # If none of the above found, try to get the batch number
+        if not sellable:
+            query = Lower(StorableBatch.batch_number) == text.lower()
+            batch = self.store.find(StorableBatch, query).one()
+            if batch:
+                sellable = batch.storable.product.sellable
+                if not sellable.is_available:
+                    # If the sellable is not available, reset both
+                    sellable = None
+                    batch = None
 
         # If the barcode has the price information, we need to calculate the
         # corresponding weight.
@@ -499,7 +511,7 @@ class PosApp(ShellApp):
         if barinfo and sellable:
             self.quantity.set_value(weight)
 
-        return sellable
+        return sellable, batch
 
     def _select_first_item(self):
         if len(self.sale_items):
@@ -654,7 +666,7 @@ class PosApp(ShellApp):
     #
 
     def _add_sale_item(self, search_str=None):
-        sellable = self._get_sellable()
+        sellable, batch = self._get_sellable_and_batch()
         if not sellable:
             message = (_("The barcode '%s' does not exist. "
                          "Searching for a product instead...")
@@ -662,9 +674,9 @@ class PosApp(ShellApp):
             self._run_advanced_search(search_str, message)
             return
 
-        self._add_sellable(sellable)
+        self._add_sellable(sellable, batch=batch)
 
-    def _add_sellable(self, sellable):
+    def _add_sellable(self, sellable, batch=None):
         quantity = self._read_quantity()
         if quantity == 0:
             return
@@ -693,7 +705,7 @@ class PosApp(ShellApp):
                 self.barcode.grab_focus()
                 return
 
-        self._update_list(sellable)
+        self._update_list(sellable, batch=batch)
         self.barcode.grab_focus()
 
     def _check_available_stock(self, storable, sellable):

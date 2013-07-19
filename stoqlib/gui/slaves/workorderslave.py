@@ -205,8 +205,8 @@ class _WorkOrderItemSlave(SellableItemSlave):
         # we can't pass anything here. Find a better way to do this
         return []
 
-    def sellable_selected(self, sellable):
-        super(_WorkOrderItemSlave, self).sellable_selected(sellable)
+    def sellable_selected(self, sellable, batch=None):
+        super(_WorkOrderItemSlave, self).sellable_selected(sellable, batch=batch)
 
         for item in self.slave.klist:
             if item.sellable == sellable and item.batch is not None:

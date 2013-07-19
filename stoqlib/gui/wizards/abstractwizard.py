@@ -41,7 +41,7 @@ from storm.expr import And, Lower
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObject
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.product import Product, ProductSupplierInfo
+from stoqlib.domain.product import Product, ProductSupplierInfo, StorableBatch
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.views import (ProductFullStockItemView,
                                   ProductComponentView, SellableFullStockView,
@@ -346,13 +346,22 @@ class SellableItemSlave(BaseEditorSlave):
         storable = sellable.product_storable
         order_items = []
 
-        if (storable is not None and
-            storable.is_batch and
+        batch = self.proxy.model.batch
+        # If a batch_number is selected, we will add that item directly. But
+        # we need to adjust the batch's type since places using any
+        # batch selection different from BatchDecreaseSelectionDialog will
+        # be expecting the batch number
+        if batch and not isinstance(self.batch_selection_dialog,
+                                    BatchDecreaseSelectionDialog):
+            batch = batch.batch_number
+
+        if (storable is not None and storable.is_batch and batch is None and
             self.batch_selection_dialog is not None):
             order_items.extend(self.get_batch_order_items(sellable,
                                                           value, quantity))
         else:
-            order_item = self.get_order_item(sellable, value, quantity)
+            order_item = self.get_order_item(sellable, value, quantity,
+                                             batch=batch)
             if order_item is not None:
                 order_items.append(order_item)
 
@@ -501,11 +510,14 @@ class SellableItemSlave(BaseEditorSlave):
         """
         return True
 
-    def sellable_selected(self, sellable):
+    def sellable_selected(self, sellable, batch=None):
         """This will be called when a sellable is selected in the combo.
         It can be overriden in a subclass if they wish to do additional
         logic at that point
-        :param sellable: the selected sellable
+
+        :param sellable: the selected |sellable|
+        :param batch: the |batch|, if the |sellable| was selected
+            by it's batch_number
         """
         has_storable = False
         minimum = Decimal(0)
@@ -532,7 +544,8 @@ class SellableItemSlave(BaseEditorSlave):
                          minimum_quantity=minimum,
                          stock_quantity=stock,
                          sellable_description=description,
-                         unit_label=unit_label)
+                         unit_label=unit_label,
+                         batch=batch)
 
         self.proxy.set_model(model)
 
@@ -690,33 +703,48 @@ class SellableItemSlave(BaseEditorSlave):
         self.sellable_selected(sellable)
         self.quantity.grab_focus()
 
-    def _find_sellable(self, code=None, barcode=None):
-        """Find a sellable given a code or barcode.
+    def _find_sellable_and_batch(self, text):
+        """Find a sellable given a code, barcode or batch_number
 
         When searching using the code attribute of the sellable, the search will
         be case insensitive.
 
+        :param text: the code, barcode or batch_number
         :returns: The sellable that matches the given barcode or code or
           ``None`` if nothing was found.
         """
         viewable, default_query = self.get_sellable_view_query()
-        if barcode:
-            query = (Lower(viewable.barcode) == barcode.lower())
-        else:
-            query = (Lower(viewable.code) == code.lower())
 
-        if default_query:
-            query = And(query, default_query)
+        # FIXME: Put this logic for getting the sellable based on
+        # barcode/code/batch_number on domain. Note that something very
+        # simular is done on POS app
 
-        # FIXME: doing list() here is wrong. But there is a bug in one of
-        # the queries, that len() == 1 but results.count() == 2.
-        results = list(self.store.find(viewable, query))
-        if len(results) != 1:
-            return None
+        # First try barcode, then code since there might be a product
+        # with a code equal to another product's barcode
+        for attr in [viewable.barcode, viewable.code]:
+            query = Lower(attr) == text.lower()
+            if default_query:
+                query = And(query, default_query)
 
-        return results[0].sellable
+            result = self.store.find(viewable, query).one()
+            if result:
+                return result.sellable, None
 
-    def _get_sellable(self):
+        # if none of the above worked, try to find by batch number
+        query = Lower(StorableBatch.batch_number) == text.lower()
+        batch = self.store.find(StorableBatch, query).one()
+        if batch:
+            sellable = batch.storable.product.sellable
+            query = viewable.id == sellable.id
+            if default_query:
+                query = And(query, default_query)
+            # Make sure batch's sellable is in the view
+            if not self.store.find(viewable, query).is_empty():
+                return sellable, batch
+
+        return None, None
+
+    def _get_sellable_and_batch(self):
         """This method always read the barcode and searches de database.
 
         If you only need the current selected sellable, use
@@ -724,21 +752,17 @@ class SellableItemSlave(BaseEditorSlave):
         """
         barcode = self.barcode.get_text()
         if not barcode:
-            return None
+            return None, None
         barcode = unicode(barcode, 'utf-8')
 
-        # First search using the barcode. If the sellable was not found, then
-        # try using the internal code.
-        sellable = self._find_sellable(barcode=barcode)
-        if not sellable:
-            sellable = self._find_sellable(code=barcode)
+        sellable, batch = self._find_sellable_and_batch(barcode)
 
         if not sellable:
-            return None
+            return None, None
         elif not self.can_add_sellable(sellable):
-            return
+            return None, None
 
-        return sellable
+        return sellable, batch
 
     def _add_sellable(self):
         sellable = self.proxy.model.sellable
@@ -765,7 +789,7 @@ class SellableItemSlave(BaseEditorSlave):
         the user, and the string he typed in the barcode entry will be
         used to filter the results.
         """
-        sellable = self._get_sellable()
+        sellable, batch = self._get_sellable_and_batch()
 
         if not sellable:
             if self.add_sellable_on_barcode_activate:
@@ -774,7 +798,7 @@ class SellableItemSlave(BaseEditorSlave):
             self._run_advanced_search(search_str)
             return
 
-        self.sellable_selected(sellable)
+        self.sellable_selected(sellable, batch=batch)
 
         if (self.add_sellable_on_barcode_activate and
                 self.add_sellable_button.get_sensitive()):

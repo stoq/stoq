@@ -261,8 +261,8 @@ class PurchaseItemStep(SellableItemStep):
     def get_saved_items(self):
         return list(self.model.get_items())
 
-    def sellable_selected(self, sellable):
-        super(PurchaseItemStep, self).sellable_selected(sellable)
+    def sellable_selected(self, sellable, batch=None):
+        super(PurchaseItemStep, self).sellable_selected(sellable, batch=batch)
         supplier_info = self._get_supplier_info()
         if not supplier_info:
             return
@@ -306,7 +306,10 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def _get_supplier_info(self):
-        sellable = self.proxy.model.sellable or self._get_sellable()
+        sellable = self.proxy.model.sellable
+        if not sellable:
+            # FIXME: We should not be accessing a private method here
+            sellable, batch = self._get_sellable_and_batch()
         if not sellable:
             return
         product = sellable.product

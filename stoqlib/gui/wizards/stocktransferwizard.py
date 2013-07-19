@@ -163,8 +163,8 @@ class StockTransferItemStep(SellableItemStep):
     def _setup_summary(self):
         self.summary = None
 
-    def sellable_selected(self, sellable):
-        SellableItemStep.sellable_selected(self, sellable)
+    def sellable_selected(self, sellable, batch=None):
+        SellableItemStep.sellable_selected(self, sellable, batch=batch)
 
         if sellable is None:
             return

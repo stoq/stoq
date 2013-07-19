@@ -358,8 +358,8 @@ class SaleQuoteItemStep(SellableItemStep):
 
         return columns
 
-    def sellable_selected(self, sellable):
-        SellableItemStep.sellable_selected(self, sellable)
+    def sellable_selected(self, sellable, batch=None):
+        SellableItemStep.sellable_selected(self, sellable, batch=batch)
         if sellable:
             price = sellable.get_price_for_category(
                 self.model.client_category)

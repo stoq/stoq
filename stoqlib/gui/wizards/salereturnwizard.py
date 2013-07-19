@@ -263,8 +263,8 @@ class SaleReturnItemsStep(SellableItemStep):
         _adjust_returned_sale_item(item)
         return item
 
-    def sellable_selected(self, sellable):
-        SellableItemStep.sellable_selected(self, sellable)
+    def sellable_selected(self, sellable, batch=None):
+        SellableItemStep.sellable_selected(self, sellable, batch=batch)
         if sellable:
             self.cost.update(sellable.price)
 
