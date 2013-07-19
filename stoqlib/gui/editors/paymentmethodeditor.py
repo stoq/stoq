@@ -301,7 +301,8 @@ class CreditProviderEditor(BaseEditor):
         """ Populate device widgets
         """
         devices = CardPaymentDevice.get_devices(self.store)
-        self.default_device.prefill(api.for_combo(devices))
+        self.default_device.prefill(api.for_combo(devices,
+                                                  empty=_(u"No device")))
 
     def create_model(self, store):
         return CreditProvider(store=store)

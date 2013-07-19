@@ -14,7 +14,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "CreditProvider"', hidde
             ProxySpinButton(max_installments): '1'
             ProxyLabel(device_lbl): 'Card Device:'
             ProxyComboBox(default_device):
-              item: 'Default', selected
+              item: 'No device', selected
+              item: 'Default'
             ProxyLabel(kiwilabel5): 'Open Contract Date:'
             ProxyDateEntry(open_contract_date): datetime.date(2006, 1, 1)
       GtkHBox(fill=True):
