@@ -317,7 +317,7 @@
               <object class="GtkLabel" id="label19">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Avaiability:</property>
+                <property name="label" translatable="yes">Availability:</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>

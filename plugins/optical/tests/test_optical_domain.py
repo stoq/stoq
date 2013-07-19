@@ -44,7 +44,7 @@ class OpticalDomainTest(DomainTest):
 class OpticalMedicTest(OpticalDomainTest):
     def test_get_description(self):
         medic = self.create_optical_medic()
-        assert medic.get_description() == u'Medic (crm: 1234)'
+        assert medic.get_description() == u'Medic (upid: 1234)'
 
 
 class OpticalWorkOrderTest(OpticalDomainTest):

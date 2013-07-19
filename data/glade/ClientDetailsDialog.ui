@@ -281,7 +281,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label9">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Conta de Crédito</property>
+                <property name="label" translatable="yes">Credit Account</property>
               </object>
               <packing>
                 <property name="position">7</property>

@@ -42,7 +42,7 @@
                           <object class="GtkLabel" id="label1">
                             <property name="visible">True</property>
                             <property name="xalign">1</property>
-                            <property name="label" translatable="yes">CRM:</property>
+                            <property name="label" translatable="yes">UPID:</property>
                           </object>
                           <packing>
                             <property name="x_padding">6</property>

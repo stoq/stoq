@@ -229,8 +229,7 @@ class WorkOrderEditor(BaseEditor):
         elif self.model.can_work():
             self.model.work()
         elif self.model.can_pause():
-            msg_text = _(u"This will inform the order that we are waiting. "
-                         u"Are you sure?")
+            msg_text = _(u"This will pause the order. Are you sure?")
             rv = run_dialog(
                 NoteEditor, self, self.store, model=Note(),
                 message_text=msg_text, label_text=_(u"Reason"), mandatory=True)

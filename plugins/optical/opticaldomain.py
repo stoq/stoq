@@ -49,7 +49,7 @@ class OpticalMedic(Domain):
     #
 
     def get_description(self):
-        return _('%s (crm: %s)') % (self.person.name, self.crm_number)
+        return _('%s (upid: %s)') % (self.person.name, self.crm_number)
 
 
 class OpticalProduct(Domain):

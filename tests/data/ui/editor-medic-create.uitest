@@ -87,7 +87,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkFrame(frame1, expand=True, fill=True):
                             GtkAlignment(alignment1):
                               GtkTable(table1):
-                                GtkLabel(label1): 'CRM:'
+                                GtkLabel(label1): 'UPID:'
                                 ProxyEntry(crm_number): '', mandatory
                                 GtkLabel(label2): '\n'
                             GtkLabel(label4):

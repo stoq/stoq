@@ -20,14 +20,14 @@
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Médico:</property>
+                <property name="label" translatable="yes">Medic:</property>
               </object>
             </child>
             <child>
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Data da receita:</property>
+                <property name="label" translatable="yes">Prescription date:</property>
               </object>
               <packing>
                 <property name="left_attach">5</property>
@@ -57,7 +57,7 @@
               <object class="GtkLabel" id="label11">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Tipo da Lente:</property>
+                <property name="label" translatable="yes">Lens type:</property>
               </object>
               <packing>
                 <property name="left_attach">5</property>
@@ -68,7 +68,7 @@
               <object class="GtkLabel" id="estimated_finish_lbl">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Previsão de entrega:</property>
+                <property name="label" translatable="yes">Delivery date:</property>
               </object>
               <packing>
                 <property name="left_attach">5</property>
@@ -1099,7 +1099,7 @@
                           <object class="GtkLabel" id="label27">
                             <property name="width_request">90</property>
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">M.V.A</property>
+                            <property name="label" translatable="yes" comments="Frame Vertical Measure&#10;pt_BR: Traduzir como M.V.A. (Medida Vertical da Armação)">F.V.M.</property>
                           </object>
                           <packing>
                             <property name="top_attach">1</property>
@@ -1110,7 +1110,7 @@
                           <object class="GtkLabel" id="label28">
                             <property name="width_request">90</property>
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">M.H.A</property>
+                            <property name="label" translatable="yes" comments="Frame Horizontal Measure&#10;pt_BR: Traduzir como M.H.A. (Medida Horizontal da Armação)">F.H.M.</property>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1195,7 +1195,7 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="client_frame_check">
-                            <property name="label" translatable="yes">Armação do cliente</property>
+                            <property name="label" translatable="yes">Client's frame</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>

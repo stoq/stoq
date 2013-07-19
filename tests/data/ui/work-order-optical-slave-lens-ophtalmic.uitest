@@ -1,22 +1,22 @@
 slave: WorkOrderOpticalSlave
 GtkVBox(toplevel):
   GtkTable(table1, fill=True):
-    GtkLabel(label3): 'M\xc3\xa9dico:'
+    GtkLabel(label3): 'Medic:'
     ProxyComboEntry(medic_combo):
       item: ''
     GtkHBox(hbox1):
       GtkButton(medic_create, expand=True, fill=True):
       GtkButton(medic_details, expand=True, fill=True): insensitive
-    GtkLabel(label11): 'Tipo da Lente:'
+    GtkLabel(label11): 'Lens type:'
     ProxyComboBox(lens_type):
       item: 'Contact'
       item: 'Ophtalmic', selected
     GtkLabel(label1): 'Owner:'
     ProxyEntry(patient): '', mandatory
-    GtkLabel(label4): 'Data da receita:'
+    GtkLabel(label4): 'Prescription date:'
     ProxyDateEntry(prescription_date): None
     GtkButton(notes_button): 'Observations', hidden
-    GtkLabel(estimated_finish_lbl): 'Previs\xc3\xa3o de entrega:', hidden
+    GtkLabel(estimated_finish_lbl): 'Delivery date:', hidden
     ProxyDateEntry(estimated_finish): None, hidden
   GtkHBox(distance_box, expand=True, fill=True):
     GtkLabel(label5, fill=True): 'Distance'
@@ -75,10 +75,10 @@ GtkVBox(toplevel):
       GtkHBox(frame_box):
         GtkLabel(label33, fill=True): 'Frame'
         GtkTable(frame_table, expand=True, fill=True):
-          GtkCheckButton(client_frame_check): 'Arma\xc3\xa7\xc3\xa3o do cliente'
+          GtkCheckButton(client_frame_check): "Client's frame"
           GtkLabel(label10):
-          GtkLabel(label27): 'M.V.A'
-          GtkLabel(label28): 'M.H.A'
+          GtkLabel(label27): 'F.V.M.'
+          GtkLabel(label28): 'F.H.M.'
           GtkLabel(label29): 'Bridge'
           ProxySpinButton(frame_mva): '0.0'
           ProxySpinButton(frame_mha): '0.0'

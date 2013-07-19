@@ -6,7 +6,7 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave OpticalItemStep is attached
         GtkVBox(step.toplevel):
           GtkHBox(step.hbox1, fill=True):
-            GtkLabel(step.label1, fill=True): 'Ordem de Servi\xc3\xa7o:'
+            GtkLabel(step.label1, fill=True): 'Work Order:'
             ProxyComboBox(step.work_orders_combo, fill=True): hidden
             GtkHBox(step.work_orders_box, expand=True, fill=True):
               GtkRadioButton(step._radio_group, padding=6): 'Work order for Patient', active

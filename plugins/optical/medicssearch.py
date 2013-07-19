@@ -54,7 +54,7 @@ class OpticalMedicSearch(BasePersonSearch):
                              data_type=str, searchable=True, expand=True),
                 SearchColumn('phone_number', title=_('Phone Number'),
                              width=150, data_type=str),
-                SearchColumn('crm_number', title=_('CRM'), width=150,
+                SearchColumn('crm_number', title=_('UPID'), width=150,
                              data_type=str)]
 
     def get_editor_model(self, model):

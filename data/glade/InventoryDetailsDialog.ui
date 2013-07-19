@@ -230,7 +230,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label15">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Itens</property>
+                <property name="label" translatable="yes">Items</property>
               </object>
               <packing>
                 <property name="tab_fill">False</property>

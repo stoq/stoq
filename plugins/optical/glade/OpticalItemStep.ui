@@ -18,7 +18,7 @@
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Ordem de Serviço:</property>
+                <property name="label" translatable="yes">Work Order:</property>
               </object>
               <packing>
                 <property name="expand">False</property>

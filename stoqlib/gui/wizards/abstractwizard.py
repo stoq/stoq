@@ -846,7 +846,7 @@ class SellableItemSlave(BaseEditorSlave):
             default_price = sellable.get_price_for_category(category)
             if (not sysparam(self.store).ALLOW_HIGHER_SALE_PRICE and
                 value > default_price):
-                return ValidationError(_(u'The sell price cannot be greater'
+                return ValidationError(_(u'The sell price cannot be greater '
                                          'than %s.') % default_price)
 
             self.manager = self.manager or api.get_current_user(self.store)

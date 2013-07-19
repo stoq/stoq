@@ -150,7 +150,7 @@ class InventoryAdjustmentEditor(BaseEditor):
         self.model.close()
 
     def on_cancel(self):
-        if yesno(_("Some products were already adjusted. Do you want to"
+        if yesno(_("Some products were already adjusted. Do you want to "
                    "save that information or discard them?"),
                  gtk.RESPONSE_NO, _("Save adjustments"), _("Discard adjustments")):
             # change retval to True so the store gets commited

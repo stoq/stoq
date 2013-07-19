@@ -119,7 +119,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "individual"', hidden
                           GtkFrame(frame1, expand=True, fill=True):
                             GtkAlignment(alignment1):
                               GtkTable(table1):
-                                GtkLabel(label1): 'CRM:'
+                                GtkLabel(label1): 'UPID:'
                                 ProxyEntry(crm_number): '123456'
                                 GtkLabel(label2): '\n'
                             GtkLabel(label4):

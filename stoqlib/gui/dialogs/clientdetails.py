@@ -85,7 +85,7 @@ class ClientDetailsDialog(BaseEditor):
         self.account_list.add_list(self.model.get_credit_transactions())
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
-        saldo_label = "<b>%s</b>" % api.escape(_("Saldo:"))
+        saldo_label = "<b>%s</b>" % api.escape(_("Balance:"))
 
         sales_summary_label = SummaryLabel(klist=self.sales_list,
                                            column='total',

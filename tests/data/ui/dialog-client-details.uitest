@@ -71,7 +71,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Description', expand
                 column: title='Value'
               GtkHBox(fill=True):
-                GtkLabel(expand=True, fill=True, padding=6): '<b>Saldo:</b>'
+                GtkLabel(expand=True, fill=True, padding=6): '<b>Balance:</b>'
                 GtkLabel(): '<b>$ 0.00</b>'
             ObjectList(work_order_list):
               column: title='#'

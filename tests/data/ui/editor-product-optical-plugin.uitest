@@ -164,7 +164,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                 ProxyEntry(gl_diameter): ''
                 GtkLabel(label10): 'Height:'
                 ProxyEntry(gl_height): ''
-                GtkLabel(label19): 'Avaiability:'
+                GtkLabel(label19): 'Availability:'
                 ProxyEntry(gl_availability): ''
               GtkTable(cl_details, fill=True): hidden
                 GtkLabel(label11): 'Classification:'
