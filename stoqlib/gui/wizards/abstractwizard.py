@@ -58,6 +58,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import WizardSellableItemStepEvent
 from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.lib.defaults import sort_sellable_code, MAX_INT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -269,6 +270,11 @@ class SellableItemSlave(BaseEditorSlave):
     item_editor = None
     batch_selection_dialog = None
 
+    #: the mode to pass to the
+    #: :class:`stoqlib.gui.widgets.calculator.CalculatorPopup`.
+    #: If ``None``, the calculator will not be attached
+    calculator_mode = None
+
     #: If we should add the sellable on the list when activating the barcode.
     #: This is useful when the barcode is supposed to work with barcode
     #: readers. Note that, if the sellable with the given barcode wasn't found,
@@ -300,6 +306,9 @@ class SellableItemSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
+        if self.calculator_mode is not None:
+            self.calculator_popup = CalculatorPopup(self.cost,
+                                                    self.calculator_mode)
         self.proxy = self.add_proxy(None, self.proxy_widgets)
 
     def setup_slaves(self):

@@ -31,6 +31,7 @@ from stoqlib.domain.loan import LoanItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -73,6 +74,9 @@ class LoanItemEditor(BaseEditor):
         BaseEditor.__init__(self, store, model)
 
     def _setup_widgets(self):
+        self._calc = CalculatorPopup(self.price,
+                                     CalculatorPopup.MODE_SUB)
+
         self.sale.set_text(unicode(self.model.loan.identifier))
         self.description.set_text(self.model.sellable.get_description())
         for widget in [self.quantity, self.price,

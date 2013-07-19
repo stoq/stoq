@@ -1,0 +1,10 @@
+widget: CalculatorPopup
+GtkWindow(): title=None, hidden
+  GtkFrame():
+    GtkAlignment():
+      GtkVBox():
+        GtkLabel(_main_label, expand=True, fill=True):
+        ProxyEntry(_entry, expand=True, fill=True): ''
+        GtkHBox(expand=True, fill=True):
+          GtkLabel(_label, expand=True, fill=True):
+          GtkImage(_warning): hidden

@@ -66,6 +66,7 @@ from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.sale import SaleOrderReport
@@ -237,6 +238,7 @@ class SaleQuoteItemStep(SellableItemStep):
     item_editor = SaleQuoteItemEditor
     validate_price = True
     value_column = 'base_price'
+    calculator_mode = CalculatorPopup.MODE_SUB
 
     #
     # SellableItemStep

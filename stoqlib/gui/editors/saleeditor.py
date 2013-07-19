@@ -33,6 +33,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
+from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -72,6 +73,9 @@ class SaleQuoteItemEditor(BaseEditor):
         self.return_quantity.hide()
 
     def _setup_widgets(self):
+        self._calc = CalculatorPopup(self.price,
+                                     CalculatorPopup.MODE_SUB)
+
         self.sale.set_text(unicode(self.model.sale.identifier))
         self.description.set_text(self.model.sellable.get_description())
         for widget in [self.quantity, self.price]:

@@ -47,6 +47,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -361,6 +362,8 @@ class _ItemEditor(BaseEditor):
         self._original_price = model.price
         self._original_quantity = model.quantity
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
+        self._calc = CalculatorPopup(self.price,
+                                     CalculatorPopup.MODE_SUB)
 
     #
     #  BaseEditor
@@ -421,6 +424,11 @@ class _ItemSlave(SellableItemSlave):
     #
     #   SellableItemSlave implementation
     #
+
+    def setup_proxies(self):
+        SellableItemSlave.setup_proxies(self)
+        self._calc = CalculatorPopup(self.cost,
+                                     CalculatorPopup.MODE_SUB)
 
     def setup_slaves(self):
         SellableItemSlave.setup_slaves(self)

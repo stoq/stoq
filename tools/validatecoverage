@@ -264,6 +264,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/utils/printing.py', 26.62),
     ('stoqlib/gui/utils/workorderutils.py', 81.82),
     ('stoqlib/gui/widgets/accounttree.py', 80.73),
+    ('stoqlib/gui/widgets/calculator.py', 74.76),
     ('stoqlib/gui/widgets/fieldgrid.py', 24.76),
     ('stoqlib/gui/widgets/hintedentry.py', 81.82),
     ('stoqlib/gui/widgets/kanbanview.py', 22.41),

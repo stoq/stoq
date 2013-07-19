@@ -396,6 +396,12 @@ class GUIDumper(object):
 
         self._write_widget(objectlist, indent, extra=extra)
 
+    def dump_widget(self, widget):
+        self._add_namespace(widget)
+
+        self.output += 'widget: %s\n' % (widget.__class__.__name__, )
+        self._dump_widget(widget)
+
     def dump_editor(self, editor):
         self._add_namespace(editor)
         self._add_namespace(editor.main_dialog, 'main_dialog.')
@@ -590,6 +596,15 @@ class GUITest(DomainTest):
             if value.get_visible():
                 self.fail("%s.%s should not be visible" % (
                     dialog.__class__.__name__, attr))
+
+    def check_widget(self, widget, ui_test_name, models=None, ignores=None):
+        models = models or []
+        ignores = ignores or []
+
+        dumper = GUIDumper()
+        dumper.dump_widget(widget)
+        dumper.dump_models(models)
+        self.check_filename(dumper, ui_test_name, ignores)
 
     def check_wizard(self, wizard, ui_test_name, models=None, ignores=None):
         models = models or []

@@ -17,6 +17,14 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`calculator` Module
+------------------------
+
+.. automodule:: stoqlib.gui.widgets.calculator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`fieldgrid` Module
 -----------------------
 
