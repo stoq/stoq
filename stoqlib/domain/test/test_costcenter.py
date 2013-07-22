@@ -93,6 +93,13 @@ class TestCostCenter(DomainTest):
         self.assertEquals(list(cost_center2.get_stock_trasaction_entries()),
                           [cost_center_entry3])
 
+    def test_stock_decreases(self):
+        cost_center = self.create_cost_center()
+        stock_decrease = self.create_stock_decrease()
+        stock_decrease.cost_center = cost_center
+        results = cost_center.get_stock_decreases()
+        self.assertEquals(results.one(), stock_decrease)
+
     def test_get_sales(self):
         cost_center1 = self.create_cost_center()
         cost_center2 = self.create_cost_center()
@@ -126,3 +133,9 @@ class TestCostCenter(DomainTest):
         cost_centers = CostCenter.get_active(self.store)
 
         self.assertEquals([cost_center], list(cost_centers))
+
+    def test_get_payments(self):
+        cost_center_entry = self.create_cost_center_entry()
+        payment = cost_center_entry.payment
+        results = cost_center_entry.cost_center.get_payments()
+        self.assertEquals(results.one(), payment)
