@@ -24,8 +24,6 @@
 
 __tests__ = 'stoqlib/domain/image.py'
 
-import base64
-
 from stoqlib.domain.image import Image
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.events import (ImageCreateEvent, ImageEditEvent)
@@ -40,15 +38,16 @@ class TestImage(DomainTest):
         image.image = 'teste'
 
         # the second argument is the string 'teste' with base64 encoding
-        self.assertEquals(base64.b64encode(image.image), 'dGVzdGU=')
+        self.assertEquals(image.get_base64_encoded(), 'dGVzdGU=')
 
     def test_get_description(self):
         image = self.create_image()
         image.description = u'Test test'
 
-        description = image.get_description()
+        self.assertEqual(image.get_description(), u'Test test')
+        image.description = None
 
-        self.assertEqual(description, u'Test test')
+        self.assertEqual(image.get_description(), u'Stoq image')
 
     def test_delete(self):
         image = self.create_image()
