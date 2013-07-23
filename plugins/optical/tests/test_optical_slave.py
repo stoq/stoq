@@ -44,6 +44,15 @@ class MedicDetailsSlaveTest(GUITest, OpticalDomainTest):
         slave = MedicDetailsSlave(self.store, medic=medic)
         self.check_slave(slave, 'optical-medical-details-slave')
 
+    def test_crm_number_validator(self):
+        self.create_optical_medic(crm_number=u'1234')
+        medic2 = self.create_optical_medic(crm_number=u'2223')
+        slave = MedicDetailsSlave(self.store, medic=medic2)
+        slave.crm_number.set_text('2222')
+        self.assertValid(slave, ['crm_number'])
+        slave.crm_number.set_text('1234')
+        self.assertInvalid(slave, ['crm_number'])
+
 
 class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
 

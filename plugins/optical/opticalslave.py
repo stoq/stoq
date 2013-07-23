@@ -62,6 +62,15 @@ class MedicDetailsSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, MedicDetailsSlave.proxy_widgets)
 
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_crm_number__validate(self, entry, value):
+        if self.model.check_unique_value_exists(attribute=OpticalMedic.crm_number,
+                                                value=value):
+            return ValidationError(u"This CRM number is already in use.")
+
 
 # FIXME: Implement this completely:
 # - Improve interface

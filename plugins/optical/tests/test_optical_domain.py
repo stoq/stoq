@@ -28,11 +28,11 @@ from ..opticaldomain import OpticalMedic, OpticalWorkOrder
 
 
 class OpticalDomainTest(DomainTest):
-    def create_optical_medic(self):
+    def create_optical_medic(self, crm_number=None):
         person = self.create_person()
         person.name = u'Medic'
         return OpticalMedic(store=self.store,
-                            crm_number=u'1234',
+                            crm_number=crm_number or u'1234',
                             person=person)
 
     def create_optical_work_order(self):
