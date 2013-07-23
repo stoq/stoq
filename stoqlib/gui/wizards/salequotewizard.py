@@ -27,15 +27,12 @@
 from decimal import Decimal
 import operator
 
-import gtk
-
 from dateutil.relativedelta import relativedelta
-
+import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.ui.forms import PercentageField
-from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
+from kiwi.ui.widgets.list import Column
 from storm.expr import And, Eq, Or
 
 from stoqlib.api import api
@@ -59,9 +56,8 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import locale_sorted
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
+from stoqlib.gui.editors.discounteditor import DiscountEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -75,56 +71,6 @@ from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
-
-
-class DiscountEditor(BaseEditor):
-    """A simple editor to choose a discount to apply
-
-    It will have a simple spinbutton to choose the discount percentage,
-    and when confirmed, will return a :class:`kiwi.python.Settable`
-    with a *discount* attr set to the value chosen here.
-    """
-
-    title = _('Select discount to apply')
-    model_type = Settable
-    size = (250, -1)
-    confirm_widgets = ['discount']
-
-    fields = dict(
-        discount=PercentageField(_('Discount to apply'), proxy=True)
-    )
-
-    def __init__(self, store, model=None, user=None, visual_mode=False):
-        self._user = user
-        BaseEditor.__init__(self, store, model=model, visual_mode=visual_mode)
-
-    #
-    #  BaseEditor
-    #
-
-    def create_model(self, store):
-        return Settable(discount=Decimal(0))
-
-    #
-    #  Callbacks
-    #
-
-    def on_discount__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
-            return
-
-        # Ask for the credentials of a different user that can possibly allow
-        # a bigger discount
-        self._user = run_dialog(CredentialsDialog, self, self.store)
-        if self._user:
-            self.discount.validate(force=True)
-
-    def on_discount__validate(self, widget, value):
-        max_discount = self._user.profile.max_discount if self._user else 0
-        if value > max_discount:
-            return ValidationError(
-                _("You are only allowed to give a discount of %d%%") % (
-                    max_discount, ))
 
 
 #
@@ -473,13 +419,12 @@ class SaleQuoteItemStep(SellableItemStep):
         self.discount_btn.set_sensitive(has_rows)
 
     def on_discount_btn__clicked(self, button):
-        rv = run_dialog(DiscountEditor, self.parent, self.store,
+        rv = run_dialog(DiscountEditor, self.parent, self.store, self.model,
                         user=self.manager or api.get_current_user(self.store))
         if not rv:
             return
 
-        for item in self.model.get_items():
-            item.set_discount(rv.discount)
+        for item in self.slave.klist:
             self.slave.klist.update(item)
 
         self.update_total()

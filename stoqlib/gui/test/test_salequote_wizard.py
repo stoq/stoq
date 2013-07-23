@@ -26,7 +26,6 @@ import decimal
 
 import mock
 import gtk
-from kiwi.python import Settable
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
@@ -170,10 +169,11 @@ class TestSaleQuoteWizard(GUITest):
         self.assertEqual(label.get_text(), '$100.00')
 
         # 10% of discount
-        run_dialog.return_value = Settable(discount=decimal.Decimal(10))
+        step.model.set_items_discount(decimal.Decimal(10))
+        run_dialog.return_value = True
         self.click(step.discount_btn)
         run_dialog.assert_called_once_with(
-            DiscountEditor, step.parent, step.store,
+            DiscountEditor, step.parent, step.store, step.model,
             user=api.get_current_user(step.store))
         self.assertEqual(label.get_text(), '$90.00')
 
@@ -182,6 +182,6 @@ class TestSaleQuoteWizard(GUITest):
         run_dialog.return_value = None
         self.click(step.discount_btn)
         run_dialog.assert_called_once_with(
-            DiscountEditor, step.parent, step.store,
+            DiscountEditor, step.parent, step.store, step.model,
             user=api.get_current_user(step.store))
         self.assertEqual(label.get_text(), '$90.00')

@@ -237,7 +237,7 @@ class SaleItem(Domain):
         :param decimal.Decimal discount: the discount to be applied
             as a percentage, e.g. 10.0, 22.5
         """
-        self.price = self.base_price * (1 - discount / 100)
+        self.price = quantize(self.base_price * (1 - discount / 100))
 
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price
@@ -1005,6 +1005,24 @@ class Sale(Domain, Adaptable):
 
         Event.log(self.store, Event.TYPE_SALE, msg)
 
+    def set_items_discount(self, discount):
+        """Apply discount on this sale's items
+
+        :param decimal.Decimal discount: the discount to be applied
+            as a percentage, e.g. 10.0, 22.5
+        """
+        new_total = currency(0)
+
+        for item in self.get_items():
+            item.set_discount(discount)
+            new_total += item.price * item.quantity
+
+        discount_value = (self.get_sale_base_subtotal() * discount) / 100
+        diff = new_total - self.get_sale_base_subtotal() + discount_value
+        if diff:
+            item = self.get_items().any()
+            item.price -= diff
+
     #
     # Accessors
     #
@@ -1041,6 +1059,17 @@ class Sale(Domain, Adaptable):
             total += i.get_total()
 
         return currency(total)
+
+    def get_sale_base_subtotal(self):
+        """Get the base subtotal of items
+
+        Just a helper that, unlike :meth:`.get_sale_subtotal`, will
+        return the total based on item's base price.
+
+        :returns: the base subtotal
+        """
+        subtotal = self.get_items().sum(SaleItem.quantity * SaleItem.base_price)
+        return currency(subtotal)
 
     def get_items_total_quantity(self):
         """Fetches the total number of items in the sale

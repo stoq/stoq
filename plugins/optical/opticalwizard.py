@@ -42,6 +42,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizardStep, WizardEditorStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.editors.discounteditor import DiscountEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -49,7 +50,7 @@ from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard, DiscountEditor
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.formatters import (format_quantity,
@@ -305,7 +306,7 @@ class OpticalWorkOrderStep(BaseWizardStep):
 # This is used so we can display on what work order an item is in.
 class _TempSaleItem(object):
     def __init__(self, sale_item):
-        self._sale_item = sale_item
+        self.sale_item = sale_item
 
         self.sellable = sale_item.sellable
         self.base_price = sale_item.base_price
@@ -326,12 +327,7 @@ class _TempSaleItem(object):
 
     @property
     def sale_discount(self):
-        return self._sale_item.get_sale_discount()
-
-    def set_discount(self, discount):
-        self._sale_item.set_discount(discount)
-        self.price = self._sale_item.price
-        self.update()
+        return self.sale_item.get_sale_discount()
 
     def remove(self):
         # First remove the item from the work order
@@ -339,16 +335,16 @@ class _TempSaleItem(object):
         work_order.remove_item(self._work_item)
 
         # then remove it from the sale
-        sale = self._sale_item.sale
-        sale.remove_item(self._sale_item)
+        sale = self.sale_item.sale
+        sale.remove_item(self.sale_item)
 
     def update(self):
         self._work_item.price = self.price
         self._work_item.quantity = self.quantity
-        self._sale_item.price = self.price
-        self._sale_item.quantity = self.quantity
+        self.sale_item.price = self.price
+        self.sale_item.quantity = self.quantity
 
-        self.total = self._sale_item.get_total()
+        self.total = self.sale_item.get_total()
 
 
 class _ItemEditor(BaseEditor):
@@ -471,13 +467,14 @@ class _ItemSlave(SellableItemSlave):
     #
 
     def _show_discount_editor(self):
-        rv = run_dialog(DiscountEditor, self.parent, self.store,
+        rv = run_dialog(DiscountEditor, self.parent, self.store, self.model,
                         user=self.manager or api.get_current_user(self.store))
         if not rv:
             return
 
         for item in self.slave.klist:
-            item.set_discount(rv.discount)
+            item.price = item.sale_item.price
+            item.update()
             self.slave.klist.update(item)
 
         self.update_total()

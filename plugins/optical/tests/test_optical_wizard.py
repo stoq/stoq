@@ -26,7 +26,6 @@ __tests__ = 'plugins/optical/opticalwizard.py'
 
 import decimal
 
-from kiwi.python import Settable
 import mock
 import gtk
 
@@ -235,11 +234,12 @@ class TestSaleQuoteWizard(GUITest):
         self.assertEqual(label.get_text(), '$100.00')
 
         # 10% of discount
-        run_dialog.return_value = Settable(discount=decimal.Decimal(10))
+        step.model.set_items_discount(decimal.Decimal(10))
+        run_dialog.return_value = True
         self.click(step.item_slave.discount_btn)
         run_dialog.assert_called_once_with(
             DiscountEditor, step.item_slave.parent, step.item_slave.store,
-            user=api.get_current_user(step.store))
+            step.item_slave.model, user=api.get_current_user(step.store))
         self.assertEqual(label.get_text(), '$90.00')
 
         # Cancelling the dialog this time
@@ -248,5 +248,5 @@ class TestSaleQuoteWizard(GUITest):
         self.click(step.item_slave.discount_btn)
         run_dialog.assert_called_once_with(
             DiscountEditor, step.item_slave.parent, step.item_slave.store,
-            user=api.get_current_user(step.item_slave.store))
+            step.item_slave.model, user=api.get_current_user(step.store))
         self.assertEqual(label.get_text(), '$90.00')

@@ -1198,6 +1198,26 @@ class TestSale(DomainTest):
         sale.surcharge_value = 5
         self.assertEqual(sale.get_total_sale_amount(subtotal), 45)
 
+    def test_set_items_discount(self):
+        sale = self.create_sale()
+        sale_item1 = sale.add_sellable(self.store.find(Sellable, code=u'01').one())
+        self.assertEqual(sale_item1.price, currency('149'))
+        sale_item2 = sale.add_sellable(self.store.find(Sellable, code=u'02').one())
+        self.assertEqual(sale_item2.price, currency('198'))
+        self.assertEqual(sale.get_sale_subtotal(), currency('347'))
+
+        # 10% discount
+        sale.set_items_discount(Decimal('10'))
+        self.assertEqual(sale.get_sale_subtotal(), currency('312.3'))
+        self.assertEqual(sale_item1.price, currency('134.1'))
+        self.assertEqual(sale_item2.price, currency('178.2'))
+
+        # $10 discount (represented as it's percentage)
+        sale.set_items_discount(Decimal('2.881844380403458213256484150'))
+        self.assertEqual(sale.get_sale_subtotal(), currency('337'))
+        self.assertEqual(sale_item1.price, currency('144.71'))
+        self.assertEqual(sale_item2.price, currency('192.29'))
+
 
 class TestSaleItem(DomainTest):
     def test_sell_product(self):

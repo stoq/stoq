@@ -113,6 +113,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`discounteditor` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.discounteditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`fiscaleditor` Module
 --------------------------
 
