@@ -24,14 +24,19 @@
 
 __tests__ = 'plugins/optical/opticalwizard.py'
 
+import decimal
+
+from kiwi.python import Settable
 import mock
 import gtk
 
+from stoqlib.api import api
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.gui.wizards.salequotewizard import DiscountEditor
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -200,4 +205,48 @@ class TestSaleQuoteWizard(GUITest):
         slave.patient.update('Patient')
         self.click(wizard.next_button)
 
-        # FIXME: WIP
+    @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
+    @mock.patch('plugins.optical.opticalwizard.run_dialog')
+    def test_apply_discount(self, run_dialog, run_person_role_dialog):
+        client = self.create_client()
+        self.create_address(person=client.person)
+        run_person_role_dialog.return_value = client
+
+        sellable = self.create_sellable(price=100, product=True)
+        sellable.barcode = u'123'
+
+        wizard = OpticalSaleQuoteWizard(self.store)
+
+        step = wizard.get_current_step()
+        self.click(step.create_client)
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        slave = step.slaves['WO 1']
+        slave.patient.update('Patient')
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.item_slave.barcode.set_text(u'123')
+        self.activate(step.item_slave.barcode)
+        self.click(step.item_slave.add_sellable_button)
+
+        label = step.item_slave.summary.get_value_widget()
+        self.assertEqual(label.get_text(), '$100.00')
+
+        # 10% of discount
+        run_dialog.return_value = Settable(discount=decimal.Decimal(10))
+        self.click(step.item_slave.discount_btn)
+        run_dialog.assert_called_once_with(
+            DiscountEditor, step.item_slave.parent, step.item_slave.store,
+            user=api.get_current_user(step.store))
+        self.assertEqual(label.get_text(), '$90.00')
+
+        # Cancelling the dialog this time
+        run_dialog.reset_mock()
+        run_dialog.return_value = None
+        self.click(step.item_slave.discount_btn)
+        run_dialog.assert_called_once_with(
+            DiscountEditor, step.item_slave.parent, step.item_slave.store,
+            user=api.get_current_user(step.item_slave.store))
+        self.assertEqual(label.get_text(), '$90.00')

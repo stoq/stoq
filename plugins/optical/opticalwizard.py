@@ -49,7 +49,7 @@ from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard, DiscountEditor
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.formatters import (format_quantity,
@@ -328,6 +328,11 @@ class _TempSaleItem(object):
     def sale_discount(self):
         return self._sale_item.get_sale_discount()
 
+    def set_discount(self, discount):
+        self._sale_item.set_discount(discount)
+        self.price = self._sale_item.price
+        self.update()
+
     def remove(self):
         # First remove the item from the work order
         work_order = self._work_item.order
@@ -403,6 +408,13 @@ class _ItemSlave(SellableItemSlave):
     #   SellableItemSlave implementation
     #
 
+    def setup_slaves(self):
+        SellableItemSlave.setup_slaves(self)
+
+        self.discount_btn = self.slave.add_extra_button(label=_("Apply discount"))
+        self.discount_btn.set_sensitive(False)
+        self.slave.klist.connect('has-rows', self._on_klist__has_rows)
+
     def get_order_item(self, sellable, price, quantity, batch=None):
         work_order = self.emit('get-work-order')
         assert work_order
@@ -453,6 +465,32 @@ class _ItemSlave(SellableItemSlave):
             Column('total', title=_(u'Total'),
                    data_type=currency),
         ]
+
+    #
+    #  Private
+    #
+
+    def _show_discount_editor(self):
+        rv = run_dialog(DiscountEditor, self.parent, self.store,
+                        user=self.manager or api.get_current_user(self.store))
+        if not rv:
+            return
+
+        for item in self.slave.klist:
+            item.set_discount(rv.discount)
+            self.slave.klist.update(item)
+
+        self.update_total()
+
+    #
+    #  Callbacks
+    #
+
+    def _on_klist__has_rows(self, klist, has_rows):
+        self.discount_btn.set_sensitive(has_rows)
+
+    def on_discount_btn__clicked(self, button):
+        self._show_discount_editor()
 
 
 class OpticalItemStep(BaseWizardStep):

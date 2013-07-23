@@ -77,7 +77,14 @@ from stoqlib.reporting.sale import SaleOrderReport
 _ = stoqlib_gettext
 
 
-class _DiscountEditor(BaseEditor):
+class DiscountEditor(BaseEditor):
+    """A simple editor to choose a discount to apply
+
+    It will have a simple spinbutton to choose the discount percentage,
+    and when confirmed, will return a :class:`kiwi.python.Settable`
+    with a *discount* attr set to the value chosen here.
+    """
+
     title = _('Select discount to apply')
     model_type = Settable
     size = (250, -1)
@@ -307,9 +314,8 @@ class SaleQuoteItemStep(SellableItemStep):
         self.discount_btn.set_sensitive(False)
         self.slave.klist.connect('has-rows', self._on_klist__has_rows)
 
-    # FIXME: We should not override a private method
-    def _update_total(self):
-        SellableItemStep._update_total(self)
+    def update_total(self):
+        SellableItemStep.update_total(self)
         quantities = {}
         missing = {}
         lead_time = 0
@@ -467,7 +473,7 @@ class SaleQuoteItemStep(SellableItemStep):
         self.discount_btn.set_sensitive(has_rows)
 
     def on_discount_btn__clicked(self, button):
-        rv = run_dialog(_DiscountEditor, self.parent, self.store,
+        rv = run_dialog(DiscountEditor, self.parent, self.store,
                         user=self.manager or api.get_current_user(self.store))
         if not rv:
             return
@@ -476,7 +482,7 @@ class SaleQuoteItemStep(SellableItemStep):
             item.set_discount(rv.discount)
             self.slave.klist.update(item)
 
-        self._update_total()
+        self.update_total()
 
 
 class SaleQuotePaymentStep(WizardEditorStep):

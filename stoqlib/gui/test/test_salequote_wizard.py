@@ -34,7 +34,7 @@ from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard, _DiscountEditor
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard, DiscountEditor
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -173,7 +173,7 @@ class TestSaleQuoteWizard(GUITest):
         run_dialog.return_value = Settable(discount=decimal.Decimal(10))
         self.click(step.discount_btn)
         run_dialog.assert_called_once_with(
-            _DiscountEditor, step.parent, step.store,
+            DiscountEditor, step.parent, step.store,
             user=api.get_current_user(step.store))
         self.assertEqual(label.get_text(), '$90.00')
 
@@ -182,6 +182,6 @@ class TestSaleQuoteWizard(GUITest):
         run_dialog.return_value = None
         self.click(step.discount_btn)
         run_dialog.assert_called_once_with(
-            _DiscountEditor, step.parent, step.store,
+            DiscountEditor, step.parent, step.store,
             user=api.get_current_user(step.store))
         self.assertEqual(label.get_text(), '$90.00')

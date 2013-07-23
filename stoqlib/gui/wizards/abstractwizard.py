@@ -353,7 +353,7 @@ class SellableItemSlave(BaseEditorSlave):
             else:
                 self.slave.klist.append(item)
 
-        self._update_total()
+        self.update_total()
 
         if len(order_items):
             self._reset_sellable()
@@ -432,6 +432,12 @@ class SellableItemSlave(BaseEditorSlave):
             balance = storable.get_balance_for_branch(branch)
 
         return balance - total_quatity
+
+    def update_total(self):
+        """Update the summary label with the current total"""
+        if self.summary:
+            self.summary.update_total()
+        self.force_validation()
 
     def get_parent(self):
         return self.get_toplevel().get_toplevel()
@@ -738,11 +744,6 @@ class SellableItemSlave(BaseEditorSlave):
         self.proxy.set_model(None)
         self.sellable_selected(None)
 
-    def _update_total(self):
-        if self.summary:
-            self.summary.update_total()
-        self.force_validation()
-
     def _update_product_labels_visibility(self, visible):
         for widget in [self.minimum_quantity_lbl, self.minimum_quantity,
                        self.stock_quantity, self.stock_quantity_lbl]:
@@ -778,20 +779,20 @@ class SellableItemSlave(BaseEditorSlave):
     #
 
     def _on_klist__cell_edited(self, klist, obj, attr):
-        self._update_total()
+        self.update_total()
 
     def _on_list_slave__before_delete_items(self, slave, items):
         self.remove_items(items)
         self.force_validation()
 
     def _on_list_slave__after_delete_items(self, slave):
-        self._update_total()
+        self.update_total()
 
     def _on_list_slave__add_item(self, slave, item):
-        self._update_total()
+        self.update_total()
 
     def _on_list_slave__edit_item(self, slave, item):
-        self._update_total()
+        self.update_total()
 
     def on_add_sellable_button__clicked(self, button):
         self._add_sellable()
