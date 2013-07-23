@@ -16,25 +16,37 @@
 
 </%block>
 
-<div class="page">
-  ${ header(complete_header, title, report.get_subtitle(), notes) }
+${ header(complete_header, title, report.get_subtitle(), notes) }
 
+
+% if report.has_in_payments():
 <h3>${ _("Input Payments:") }</h3>
-<%include file="till-daily-movement-sales.html" />
-<%include file="till-daily-movement-lonely-payments.html" args="payments=report.lonely_in_payments" />
+<%include file="sales.html" />
+<%include file="lonely-payments.html" args="payments=report.lonely_in_payments" />
+% endif
 
-<h3>${ _("Output Payments:") }</h3>
-<%include file="till-daily-movement-purchases.html" />
-<%include file="till-daily-movement-lonely-payments.html" args="payments=report.lonely_out_payments" />
-<%include file="till-daily-movement-return-sales.html" />
+% if report.has_out_payments():
+  <h3>${ _("Output Payments:") }</h3>
+  <%include file="purchases.html" />
+  <%include file="lonely-payments.html" args="payments=report.lonely_out_payments" />
+  <%include file="return-sales.html" />
+% endif
 
-<h3>${ _("Till Supply/Removal Operations:") }</h3>
-<%include file="till-daily-movement-supplies.html" />
-<%include file="till-daily-movement-removals.html" />
+% if report.has_till_entries():
+  <h3>${ _("Till Supply/Removal Operations:") }</h3>
+  <%include file="supplies.html" />
+  <%include file="removals.html" />
+% endif
 
 <h3>${ _("Summary:") }</h3>
-<%include file="till-daily-movement-summary.html" />
-<%include file="till-daily-movement-card-summary.html" />
+<div id="summary">
+  <div>
+  <%include file="summary.html" />
+  </div>
+  <div>
+  <%include file="card-summary.html" />
+  </div>
+</div>
 
 <br/><br/><br/>
 <h3>${ _("Observations:") }</h3>

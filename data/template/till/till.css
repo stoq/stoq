@@ -15,6 +15,11 @@ tr.align-right td {
     background-color: #f1f1f1;
 }
 
+.highlight td {
+    border-top: 2px solid black;
+    border-bottom: 1px dotted black;
+}
+
 .highlight td:last-child {
     text-align: right;
 }
@@ -38,3 +43,8 @@ table.subtable td {
     border: 0;
 }
 
+
+#summary > div {
+    display: table-cell;
+    padding: 5px;
+}

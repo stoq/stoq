@@ -55,8 +55,7 @@
 
 
 
-<div class="page">
-  
+
     <header>
       <div id="title">
         <h1>Daily Movement</h1>
@@ -64,6 +63,7 @@
         <div class="logo"></div>
       </div>
     </header>
+
 
 
 <h3>Input Payments:</h3>
@@ -74,17 +74,11 @@
           <td>Code</td>
           <td>Sales Person</td>
           <td>Client</td>
-          <td>Payment</td>
-          <td>Method</td>
-          <td>Details</td>
           <td class="align-right">Value</td>
         </tr>
       </tdead>
       <tfoot>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
           <td></td>
           <td></td>
           <td></td>
@@ -96,26 +90,21 @@
             <td>01000</td>
             <td>SalesPerson</td>
             <td>Not Specified</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
             <td class="align-right">$100.00</td>
           </tr>
-
               <tr class="align-left">
                 <td></td>
+                <td>Card Credit</td>
+                <td>1234 - PRO1 - MAQ1</td>
+                <td class="align-right">$100.00
+                      (1x)</td>
+              </tr>
+              <tr class="align-left">
                 <td></td>
-                <td></td>
-                <td>01010</td>
-                <td>Card</td>
-                <td>
-                  <span>
-                    Auth:  1234 |
-                    Provider:  PRO1 |
-                    Device:  MAQ1 
-                  </span>
-
-                <td class="align-right">$100.00</td>
+                <td>Card Debit</td>
+                <td>1234 - PRO1 - MAQ1</td>
+                <td class="align-right">$100.00
+                      (1x)</td>
               </tr>
       </tbody>
     </table>
@@ -154,8 +143,8 @@
     </table>
 
 
-<h3>Output Payments:</h3>
-<h4>Purchases</h4>
+  <h3>Output Payments:</h3>
+  <h4>Purchases</h4>
     <table>
       <thead>
         <tr class="align-left">
@@ -216,7 +205,7 @@
     </table>
 
 
-
+  
 <h4>Lonely Payments</h4>
 
     <table>
@@ -248,7 +237,7 @@
       </tbody>
     </table>
 
-<h4>Return Sales</h4>
+  <h4>Return Sales</h4>
     <table>
       <thead>
         <tr class="align-left">
@@ -305,12 +294,11 @@
 
 
 
-<h3>Till Supply/Removal Operations:</h3>
-
-
 
 <h3>Summary:</h3>
-<h4>Per Payment Method</h4>
+<div id="summary">
+  <div>
+  <h4>Per Payment Method</h4>
     <table class="list">
       <thead>
         <tr>
@@ -330,7 +318,7 @@
         
             <tr>
                 <td>Card</td>
-                <td class="align-right">$100.00</td>
+                <td class="align-right">$200.00</td>
                 <td class="align-right">$ 0.00</td>
             </tr>
             
@@ -343,14 +331,16 @@
 
             <tr class="summary">
                 <td><b>Total:</b></td>
-                <td  class="align-right"><b>$200.00</b></td>
+                <td  class="align-right"><b>$300.00</b></td>
                 <td  class="align-right"><b>$220.00</b></td>
             </tr>
 
       </tbody>
     </table>
 
-<h4>Per Card Provider</h4>
+  </div>
+  <div>
+  <h4>Per Card Provider</h4>
     <table class="list">
       <thead>
         <tr>
@@ -372,15 +362,23 @@
                 <td class="align-right">$100.00</td>
             </tr>
             
+            <tr>
+                <td>PRO1
+                    Debit</td>
+                <td class="align-right">$100.00</td>
+            </tr>
+            
 
             <tr class="summary">
                 <td><b>Total:</b></td>
-                <td class="align-right"><b>$100.00</b></td>
+                <td class="align-right"><b>$200.00</b></td>
             </tr>
 
       </tbody>
     </table>
 
+  </div>
+</div>
 
 <br/><br/><br/>
 <h3>Observations:</h3>

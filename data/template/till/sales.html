@@ -1,0 +1,41 @@
+% if report.sales:
+<h4>${ _("Sales") }</h4>
+    <table>
+      <thead>
+        <tr class="align-left">
+          <td>${ _("Code") }</td>
+          <td>${ _("Sales Person") }</td>
+          <td>${ _("Client") }</td>
+          <td class="align-right">${ _("Value") }</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        % for sale in report.sales:
+          <tr class="highlight">
+            <td>${ sale.identifier }</td>
+            <td>${ sale.get_salesperson_name() }</td>
+            <td>${ sale.get_client_name() }</td>
+            <td class="align-right">${ format_price(sale.get_total_sale_amount()) }</td>
+          </tr>
+              % for details, values in report.sales[sale].items():
+              <tr class="align-left">
+                <td></td>
+                <td>${ details[0] }</td>
+                <td>${ details[1] }</td>
+                <td class="align-right">${ format_price(values[0]) }
+                      (${ values[1] }x)</td>
+              </tr>
+              % endfor
+        % endfor
+      </tbody>
+    </table>
+% endif
+

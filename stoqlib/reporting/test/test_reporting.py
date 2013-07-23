@@ -32,6 +32,7 @@ from nose.exc import SkipTest
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
+from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import (InPaymentView,
@@ -279,34 +280,54 @@ class TestReport(ReportTest):
                             dialog.results, list(dialog.results))
 
     def test_till_daily_movement(self):
+        # Data used to create the examples
+        till = Till.get_last_opened(self.store)
+        device = self.create_card_device(description=u'MAQ1')
+        provider = self.create_credit_provider(u'PRO1')
         date = datetime.date(2013, 1, 1)
-        # create sale payment
+
+        # First, create one sale
         sale = self.create_sale()
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
         sale.identifier = 1000
         sale.order()
 
-        till = Till.get_last_opened(self.store)
-        device = self.create_card_device(description=u'MAQ1')
-        provider = self.create_credit_provider(u'PRO1')
-        credit_card = self.create_credit_card_data(
+        # With two card payments
+        card_data1 = self.create_credit_card_data(
             device=device,
             provider=provider,
             payment_type=Payment.TYPE_IN,
             payment_value=sale.get_sale_subtotal())
-        credit_card.auth = 1234
-        payment = credit_card.payment
-        payment.group = sale.group
-        payment.branch = sale.branch
-        payment.till = till
+        card_data1.auth = 1234
+        card_data1.card_type = CreditCardData.TYPE_CREDIT
+        card_data1.payment.group = sale.group
+        card_data1.payment.branch = sale.branch
+        card_data1.payment.till = till
+        card_data1.payment.identifier = 1010
+
+        card_data2 = self.create_credit_card_data(
+            device=device,
+            provider=provider,
+            payment_type=Payment.TYPE_IN,
+            payment_value=sale.get_sale_subtotal())
+        card_data2.auth = 1234
+        card_data2.card_type = CreditCardData.TYPE_DEBIT
+
+        card_data2.payment.group = sale.group
+        card_data2.payment.branch = sale.branch
+        card_data2.payment.till = till
+        card_data2.payment.identifier = 1011
+
+        # Confirm the sale and pay the payments
         sale.confirm()
         sale.group.pay()
 
         sale.confirm_date = date
 
-        payment.identifier = 1010
-        payment.paid_date = date
+        # After calling sale.group.pay(), we need to fix the paid_date
+        card_data1.payment.paid_date = date
+        card_data2.payment.paid_date = date
 
         # create lonely input payment
         payer = self.create_client()
