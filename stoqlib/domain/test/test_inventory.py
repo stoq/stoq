@@ -21,17 +21,39 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-
 __tests__ = 'stoqlib/domain/inventory.py'
 
 from decimal import Decimal
 
+from kiwi.currency import currency
+
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.inventory import Inventory, InventoryView, InventoryItemsView
+from stoqlib.domain.inventory import (Inventory, InventoryView,
+                                      InventoryItemsView, InventoryItem)
 from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestInventory(DomainTest):
+
+    def test_add_sellable(self):
+        inventory = self.create_inventory()
+        sellable = self.create_sellable()
+        with self.assertRaises(TypeError) as error:
+            inventory.add_sellable(sellable=sellable)
+        expected = "product %r has no storable" % (sellable.product, )
+        self.assertEquals(error.exception.message, expected)
+
+        storable = self.create_storable(product=sellable.product)
+        result = inventory.add_sellable(sellable=sellable)
+        item = self.store.find(InventoryItem, product=sellable.product).one()
+        self.assertEquals(result, item)
+
+        storable.is_batch = True
+        batch = self.create_storable_batch(storable=storable,
+                                           batch_number=u'1')
+        item = inventory.add_sellable(sellable=sellable, batch_number=u'1')
+        result = self.store.find(InventoryItem, batch=batch).one()
+        self.assertEquals(item, result)
 
     def test_is_open(self):
         inventory = self.create_inventory()
@@ -59,6 +81,13 @@ class TestInventory(DomainTest):
         item.adjust(invoice_number=13)
         self.assertRaises(AssertionError, inventory.cancel)
         self.assertEqual(inventory.status, Inventory.STATUS_OPEN)
+
+    def test_get_status_str(self):
+        inventory = self.create_inventory()
+        for status in inventory.statuses:
+            inventory.status = status
+            self.assertEquals(inventory.get_status_str(),
+                              inventory.statuses[status])
 
     def test_has_adjusted_items(self):
         inventory = self.create_inventory()
@@ -102,6 +131,16 @@ class TestInventory(DomainTest):
         self.assertEqual(inventory_items.count(), 3)
         self.assertEqual(sorted(inventory_items), sorted(items))
 
+    def test_has_open(self):
+        inventory = self.create_inventory()
+        branch = self.create_branch()
+        result = inventory.has_open(store=self.store, branch=branch)
+        self.assertIsNone(result)
+        inventory.branch = branch
+        inventory.is_open()
+        result = inventory.has_open(store=self.store, branch=branch)
+        self.assertEquals(result, inventory)
+
     def test_get_items_for_adjustment(self):
         inventory = self.create_inventory()
         items = []
@@ -117,6 +156,12 @@ class TestInventory(DomainTest):
 
     def test_close(self):
         inventory = self.create_inventory()
+        for i in range(5):
+            if i % 5 == 0:
+                item = self.create_inventory_item(inventory=inventory)
+                item.counted_quantity = item.recorded_quantity
+            else:
+                self.create_inventory_item(inventory=inventory)
         self.assertEqual(inventory.status, inventory.STATUS_OPEN)
 
         inventory.close()
@@ -139,6 +184,9 @@ class TestInventory(DomainTest):
 
         item2.counted_quantity = 2
         self.failUnless(inventory.all_items_counted())
+
+        inventory.status = inventory.STATUS_CLOSED
+        self.assertFalse(inventory.all_items_counted())
 
     def test_get_branch_name(self):
         inventory = self.create_inventory()
@@ -171,6 +219,43 @@ class TestInventoryItem(DomainTest):
         self.failIf(entry is None)
         self.assertEqual(entry.cfop, item.cfop_data)
         self.assertEqual(entry.branch, item.inventory.branch)
+
+        item.is_adjusted = False
+        item.actual_quantity = item.recorded_quantity
+        item.inventory.status = Inventory.STATUS_OPEN
+        self.assertEquals(item.adjust(invoice_number=invoice_number), None)
+
+        storable.product = None
+        item.is_adjusted = False
+        item.inventory.status = Inventory.STATUS_OPEN
+        with self.assertRaises(TypeError) as error:
+            item.adjust(invoice_number=invoice_number)
+        expected = "The adjustment item must be a storable product."
+        self.assertEquals(error.exception.message, expected)
+
+    def test_get_code(self):
+        item = self.create_inventory_item()
+        item.product.sellable.code = u'81726'
+        self.assertEquals(item.get_code(), u'81726')
+
+    def test_get_description(self):
+        item = self.create_inventory_item()
+        self.assertEquals(item.get_description(), u'Description')
+
+    def test_get_unit_description(self):
+        item = self.create_inventory_item()
+        self.assertIsNone(item.get_unit_description())
+        unit = self.create_sellable_unit(description=u'Kg')
+        item.product.sellable.unit = unit
+        self.assertEquals(item.get_unit_description(), u'Kg')
+
+    def test_get_total_cost(self):
+        item = self.create_inventory_item()
+        self.assertEquals(item.get_total_cost(), Decimal(0))
+        item.is_adjusted = True
+        item.product_cost = Decimal(100)
+        item.actual_quantity = 8
+        self.assertEquals(item.get_total_cost(), currency(800))
 
     def test_adjusted(self):
         item = self.create_inventory_item()
