@@ -78,7 +78,7 @@ class IORMObject(Interface):
     id = Attribute("Object ID")
 
     def delete(obj_id, store):
-        pass
+        "Delete an ORM Interface Object"
 
 
 class IPaymentTransaction(Interface):
