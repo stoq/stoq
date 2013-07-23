@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2010-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,15 +21,38 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-
 __tests__ = 'stoqlib/domain/loan.py'
 
-from stoqlib.domain.test.domaintest import DomainTest
+import decimal
+
+from kiwi.currency import currency
+
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.loan import Loan, LoanItem
+from stoqlib.domain.loan import Loan, LoanItem, _
+from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestLoan(DomainTest):
+
+    def test_get_status_name(self):
+        loan = self.create_loan()
+        for status in loan.statuses:
+            self.assertEquals(loan.get_status_name(status),
+                              loan.statuses[status])
+        with self.assertRaises(DatabaseInconsistency) as error:
+            loan.get_status_name(9)
+        expected = _("Invalid status %d") % 9
+        self.assertEquals(error.exception.message, expected)
+
+    def test_add_item(self):
+        loan = self.create_loan()
+        loan_item = self.create_loan_item()
+        with self.assertRaises(AssertionError):
+            loan.add_item(loan_item)
+        loan_item.loan = None
+        loan.add_item(loan_item)
+        self.assertEquals(loan_item.loan, loan)
 
     def test_add_sellable(self):
         loan = self.create_loan()
@@ -41,6 +64,70 @@ class TestLoan(DomainTest):
         self.assertEquals(len(items), 1)
         self.failIf(items[0].sellable is not sellable)
 
+    def test_get_total_amount(self):
+        loan_item = self.create_loan_item()
+        self.assertEquals(loan_item.loan.get_total_amount(), currency(10))
+
+    def test_get_client_name(self):
+        loan = self.create_loan()
+        self.assertIs(loan.get_client_name(), u'')
+        client = self.create_client(name=u'Client XX')
+        loan.client = client
+        self.assertEquals(loan.get_client_name(), u'Client XX')
+
+    def test_get_branch_name(self):
+        loan = self.create_loan()
+        self.assertEquals(loan.get_branch_name(), u'Moda Stoq')
+        branch = self.create_branch(name=u'New Branch')
+        loan.branch = branch
+        self.assertEquals(loan.get_branch_name(), u'New Branch shop')
+        loan.branch = None
+        self.assertEquals(loan.get_branch_name(), u'')
+
+    def test_get_responsible_name(self):
+        loan = self.create_loan()
+        self.assertEquals(loan.get_responsible_name(), u'Administrator')
+        loan.responsible.person.name = u''
+        self.assertEquals(loan.get_responsible_name(), u'')
+
+    def test_sync_stock(self):
+        loan = self.create_loan()
+        for i in range(5):
+            item = self.create_loan_item(loan=loan)
+            if i % 2 == 0:
+                item.sellable.product.manage_stock = False
+            elif i % 3 == 0:
+                item._original_quantity = 10 * i
+                item.quantity = i * 5
+                item.return_quantity = 0
+                item._original_return_quantity = 0
+            else:
+                item._original_quantity = 3
+                item.quantity = 5
+                item.return_quantity = 5
+                item._original_return_quantity = 6
+        results = self.store.find(LoanItem, loan=loan)
+        stock_item = results[1].storable.get_stock_item(branch=loan.branch,
+                                                        batch=None)
+
+        before_quantity = stock_item.quantity
+        loan.sync_stock()
+        after_quantity = stock_item.quantity
+        compare = [[before_quantity, after_quantity]]
+
+        stock_item = results[3].storable.get_stock_item(branch=loan.branch,
+                                                        batch=None)
+
+        before_quantity = stock_item.quantity
+        loan.sync_stock()
+        after_quantity = stock_item.quantity
+        compare.append([before_quantity, after_quantity])
+
+        expected = [[decimal.Decimal(10), decimal.Decimal(7)],
+                    [decimal.Decimal(25), decimal.Decimal(25)]]
+
+        self.assertEquals(compare, expected)
+
     def test_can_close(self):
         loan_item = self.create_loan_item()
         loan = loan_item.loan
@@ -49,6 +136,10 @@ class TestLoan(DomainTest):
 
         loan_item.return_quantity = loan_item.quantity
         self.failUnless(loan.can_close())
+
+        loan.status = Loan.STATUS_CLOSED
+        result = loan.can_close()
+        self.assertFalse(result)
 
     def test_close(self):
         loan_item = self.create_loan_item()
@@ -75,6 +166,18 @@ class TestLoan(DomainTest):
 
 
 class TestLoanItem(DomainTest):
+
+    def test_storm_loaded(self):
+        item = self.create_loan_item()
+        item.return_quantity = 2
+
+        self.assertEquals(item._original_quantity, 0)
+        self.assertEquals(item._original_return_quantity, 0)
+
+        item.__storm_loaded__()
+
+        self.assertEquals(item._original_quantity, 1)
+        self.assertEquals(item._original_return_quantity, 2)
 
     def test_sync_stock(self):
         loan = self.create_loan()
@@ -161,3 +264,12 @@ class TestLoanItem(DomainTest):
         self.assertEqual(loan_item.get_remaining_quantity(), 3)
         loan_item.return_quantity = 2
         self.assertEqual(loan_item.get_remaining_quantity(), 1)
+
+    def test_get_quantity_unit_string(self):
+        loan_item = self.create_loan_item()
+        loan_item.sellable.unit = self.create_sellable_unit(description=u'Kg')
+        self.assertEquals(loan_item.get_quantity_unit_string(), u'1.000 Kg')
+
+    def test_get_total(self):
+        item = self.create_loan_item()
+        self.assertEquals(item.get_total(), currency(10))
