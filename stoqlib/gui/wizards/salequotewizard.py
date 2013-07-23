@@ -311,7 +311,7 @@ class SaleQuoteItemStep(SellableItemStep):
         self.cost.set_editable(True)
 
         self.discount_btn = self.slave.add_extra_button(label=_("Apply discount"))
-        self.discount_btn.set_sensitive(False)
+        self.discount_btn.set_sensitive(bool(len(self.slave.klist)))
         self.slave.klist.connect('has-rows', self._on_klist__has_rows)
 
     def update_total(self):
