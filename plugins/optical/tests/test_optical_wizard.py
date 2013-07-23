@@ -40,9 +40,53 @@ from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
-from ...optical.opticalwizard import OpticalSaleQuoteWizard
+from ...optical.opticalwizard import (OpticalSaleQuoteWizard, _ItemEditor,
+                                      _TempSaleItem)
+from .test_optical_domain import OpticalDomainTest
 
 _ = stoqlib_gettext
+
+
+class TestItemEditor(GUITest, OpticalDomainTest):
+    def test_show(self):
+        editor = self._create_editor()
+        self.check_editor(editor, 'editor-optical-item')
+
+    def test_confirm(self):
+        editor = self._create_editor()
+        with mock.patch.object(editor.model, 'update') as update:
+            self.click(editor.main_dialog.ok_button)
+            update.assert_called_once()
+
+    def test_cancel(self):
+        editor = self._create_editor()
+        editor.price.update(200)
+        self.assertEqual(editor.model.price, 200)
+        self.click(editor.main_dialog.cancel_button)
+        self.assertEqual(editor.model.price, 100)
+
+    def test_price_validation(self):
+        user = api.get_current_user(self.store)
+        user.profile.max_discount = 2
+        editor = self._create_editor()
+        self.assertValid(editor, ['price'])
+        editor.price.update(98)
+        self.assertValid(editor, ['price'])
+        editor.price.update(97)
+        self.assertInvalid(editor, ['price'])
+
+    def _create_editor(self):
+        sale = self.create_sale()
+        sellable = self.create_sellable()
+        sellable.base_price = 100
+        sale_item = sale.add_sellable(sellable)
+        optical_wo = self.create_optical_work_order()
+        wo = optical_wo.work_order
+        wo.sale = sale
+        wo_item = wo.add_sellable(sellable)
+        wo_item.sale_item = sale_item
+
+        return _ItemEditor(self.store, _TempSaleItem(sale_item))
 
 
 class TestSaleQuoteWizard(GUITest):

@@ -42,8 +42,9 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizardStep, WizardEditorStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.editors.discounteditor import DiscountEditor
+from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.discounteditor import DiscountEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.utils.printing import print_report
@@ -309,6 +310,7 @@ class _TempSaleItem(object):
     def __init__(self, sale_item):
         self.sale_item = sale_item
 
+        self.sale = sale_item.sale
         self.sellable = sale_item.sellable
         self.base_price = sale_item.base_price
         self.price = sale_item.price
@@ -360,6 +362,7 @@ class _ItemEditor(BaseEditor):
     )
 
     def __init__(self, store, model, visual_mode=False):
+        self._user = None
         self._original_price = model.price
         self._original_quantity = model.quantity
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
@@ -387,12 +390,25 @@ class _ItemEditor(BaseEditor):
 
     def on_price__validate(self, widget, value):
         if value <= 0:
-            return ValidationError(_(u"The price must be greater than 0"))
+            return ValidationError(_(u"The price must be greater than zero."))
 
         sellable = self.model.sellable
-        if not sellable.is_valid_price(value):
-            return ValidationError(_(u"Max discount for this product "
-                                     u"is %.2f%%") % sellable.max_discount)
+        self._user = self._user or api.get_current_user(self.store)
+
+        if api.sysparam(self.store).REUTILIZE_DISCOUNT:
+            extra_discount = self.model.sale.get_available_discount_for_items(
+                user=self._user, exclude_item=self.model)
+        else:
+            extra_discount = None
+
+        valid_data = sellable.is_valid_price(
+            value, category=self.model.sale.client_category,
+            user=self._user, extra_discount=extra_discount)
+
+        if not valid_data['is_valid']:
+            return ValidationError(
+                _(u'Max discount for this product is %.2f%%.' %
+                  valid_data['max_discount']))
 
     def on_quantity__validate(self, entry, value):
         sellable = self.model.sellable
@@ -406,6 +422,16 @@ class _ItemEditor(BaseEditor):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
                                    sellable.get_unit_description())
+
+    def on_price__icon_press(self, entry, icon_pos, event):
+        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+            return
+
+        # Ask for the credentials of a different user that can possibly allow a
+        # bigger discount.
+        self._user = run_dialog(CredentialsDialog, self, self.store)
+        if self._user:
+            self.price.validate(force=True)
 
 
 class _ItemSlave(SellableItemSlave):
@@ -472,6 +498,11 @@ class _ItemSlave(SellableItemSlave):
     def remove_items(self, items):
         for temp_item in items:
             temp_item.remove()
+
+    def get_extra_discount(self, sellable):
+        if not api.sysparam(self.store).REUTILIZE_DISCOUNT:
+            return None
+        return self.model.get_available_discount_for_items(user=self.manager)
 
     def get_columns(self, editable=True):
         return [
