@@ -35,7 +35,7 @@ from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client, ClientView, SalesPerson
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderItem)
 from stoqlib.gui.base.dialogs import run_dialog
@@ -182,8 +182,15 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
             return ValidationError(msg)
 
     def on_observations_button__clicked(self, *args):
-        run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
-                   title=_("Additional Information"))
+        self.store.savepoint('before_run_notes_editor')
+        model = self.model.comments.order_by(SaleComment.date).first()
+        if not model:
+            model = SaleComment(store=self.store, sale=self.model,
+                                author=api.get_current_user(self.store))
+        rv = run_dialog(NoteEditor, self.wizard, self.store, model, 'comment',
+                        title=_('Additional Information'))
+        if not rv:
+            self.store.rollback_to_savepoint('before_run_notes_editor')
 
 
 class OpticalWorkOrderStep(BaseWizardStep):

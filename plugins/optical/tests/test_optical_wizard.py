@@ -30,7 +30,7 @@ import mock
 import gtk
 
 from stoqlib.api import api
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -128,12 +128,12 @@ class TestSaleQuoteWizard(GUITest):
         self.click(step.observations_button)
         self.assertEquals(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
-        editor, parent, store, model, notes = args
+        editor, parent, store, model, comment = args
         self.assertEquals(editor, NoteEditor)
         self.assertEquals(parent, wizard)
         self.assertTrue(store is not None)
-        self.assertEquals(model, wizard.model)
-        self.assertEquals(notes, 'notes')
+        self.assertTrue(isinstance(model, SaleComment))
+        self.assertEquals(comment, 'comment')
         self.assertEquals(kwargs['title'], _("Additional Information"))
 
         self.check_wizard(wizard, 'wizard-optical-start-sale-quote-step')
