@@ -404,10 +404,12 @@ class ShellBootstrap(object):
         except ImportError:
             pass
 
-        log.info('An error occurred in application "%s", toplevel window=%s:' % (
+        log.info('An error occurred in application "%s", toplevel window=%s' % (
             appname, window_name))
 
-        traceback.print_exception(exctype, value, tb, file=self.stream)
+        exc_lines = traceback.format_exception(exctype, value, tb)
+        for line in ''.join(exc_lines).split('\n')[:-1]:
+            log.error(line)
 
         from stoqlib.lib.crashreport import collect_traceback
         collect_traceback((exctype, value, tb))
