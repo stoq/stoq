@@ -357,8 +357,26 @@ class _ItemEditor(BaseEditor):
         quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
     )
 
+    def __init__(self, store, model, visual_mode=False):
+        self._original_price = model.price
+        self._original_quantity = model.quantity
+        BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
+
+    #
+    #  BaseEditor
+    #
+
     def on_confirm(self):
         self.model.update()
+
+    def on_cancel(self):
+        # Simulate a rollback
+        self.model.price = self._original_price
+        self.model.quantity = self._original_quantity
+
+    #
+    #  Callbacks
+    #
 
     def on_price__validate(self, widget, value):
         if value <= 0:
