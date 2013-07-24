@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -29,12 +29,17 @@ from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
 from kiwi.currency import currency
-from storm.exceptions import NotOneError
+import mock
+from storm.exceptions import NotOneError, IntegrityError
 from storm.expr import And
 from storm.store import AutoReload
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
-from stoqlib.domain.person import Calls, ContactInfo
+from stoqlib.domain.event import Event
+from stoqlib.domain.person import (Calls, ContactInfo, ClientView, EmployeeView,
+                                   SupplierView, TransporterView, BranchView,
+                                   UserView, CreditCheckHistoryView, CallsView,
+                                   ClientSalaryHistoryView)
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
@@ -52,7 +57,7 @@ from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.enums import LatePaymentPolicy
-from stoqlib.exceptions import SellError
+from stoqlib.exceptions import SellError, LoginError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.parameters import sysparam
@@ -60,6 +65,12 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
+
+
+class TestContactInfo(DomainTest):
+    def test_get_description(self):
+        contactinfo = ContactInfo(description=u'description')
+        self.assertEquals(contactinfo.get_description(), u'description')
 
 
 class TestEmployeeRoleHistory(DomainTest):
@@ -81,6 +92,15 @@ class TestEmployeeRole(DomainTest):
 
 
 class TestPerson(DomainTest):
+    def test_address(self):
+        person = self.create_person()
+        self.assertIsNone(person.get_main_address())
+        ctlocs = self.store.find(CityLocation)
+        assert not ctlocs.is_empty()
+        ctloc = ctlocs[0]
+        Address(store=self.store, person=person,
+                city_location=ctloc, is_main_address=True)
+        self.assertEquals(person.address, person.get_main_address())
 
     def test_addresses(self):
         person = self.create_person()
@@ -113,8 +133,9 @@ class TestPerson(DomainTest):
         self.assertEquals(len(list(person.contact_infos)), 1)
         self.assertEquals(list(person.contact_infos)[0], contact_info)
 
-    def test_getaddress_string(self):
+    def test_get_address_string(self):
         person = self.create_person()
+        self.assertEquals(person.get_address_string(), u'')
         ctloc = CityLocation(store=self.store)
         address = Address(store=self.store, person=person,
                           city_location=ctloc, street=u'bla', streetnumber=2,
@@ -163,7 +184,9 @@ class TestPerson(DomainTest):
 
     def test_get_by_phone_number(self):
         person = self.create_person()
-
+        result = person.get_by_phone_number(store=self.store,
+                                            phone_number=None).one()
+        self.assertIsNone(result)
         self.assertTrue(Person.get_by_phone_number(
             self.store, u'1138').is_empty())
         person.phone_number = u'1138'
@@ -175,6 +198,13 @@ class TestPerson(DomainTest):
         person.mobile_number = u'1138'
         self.assertFalse(Person.get_by_phone_number(
             self.store, u'1138').is_empty())
+
+    def test_get_total_addresses(self):
+        person = self.create_person()
+        self.assertEquals(person.get_total_addresses(), 0)
+        for i in range(3):
+            self.create_address(person=person)
+        self.assertEquals(person.get_total_addresses(), 3)
 
 
 class _PersonFacetTest(object):
@@ -206,6 +236,12 @@ class _PersonFacetTest(object):
 class TestIndividual(_PersonFacetTest, DomainTest):
     facet = Individual
 
+    def test_get_status_string(self):
+        individual = Individual(store=self.store)
+        self.assertEquals(individual.get_status_string(), u'Active')
+        individual.is_active = False
+        self.assertEquals(individual.get_status_string(), u'Inactive')
+
     def test_individual(self):
         person = self.create_person()
         individual = Individual(person=person, store=self.store)
@@ -216,6 +252,14 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEqual(type(statuses[0]), tuple)
         self.assertEqual(type(statuses[0][0]), unicode)
         self.assertEqual(type(statuses[0][1]), int)
+
+    def test_check_cpf_exist(self):
+        individual = self.create_individual()
+        individual.cpf = u'123.456.789-203'
+        self.assertFalse(individual.check_cpf_exists(u'123.456.789-203'))
+        individual2 = self.create_individual()
+        individual2.cpf = u'123.456.789-203'
+        self.assertTrue(individual.check_cpf_exists(u'123.456.789-203'))
 
     def test_get_c_p_f_number(self):
         individual = self.create_individual()
@@ -302,10 +346,36 @@ class TestIndividual(_PersonFacetTest, DomainTest):
 class TestCompany(_PersonFacetTest, DomainTest):
     facet = Company
 
+    def test_get_status_string(self):
+        company = self.create_company()
+        self.assertEqual(company.get_status_string(), u'Active')
+        company.is_active = False
+        self.assertEqual(company.get_status_string(), u'Inactive')
+
     def test_get_cnpj_number_number(self):
         company = self.create_company()
         company.cnpj = u'111.222.333.444'
         self.assertEquals(company.get_cnpj_number(), 111222333444)
+        company.cnpj = u'testcnpjasstring'
+        self.assertFalse(company.get_cnpj_number())
+        company.cnpj = None
+        self.assertFalse(company.get_cnpj_number())
+
+    def test_get_state_registry_number(self):
+        company = self.create_company()
+        self.assertFalse(company.get_state_registry_number())
+        company.state_registry = u'12345.23'
+        self.assertEquals(company.get_state_registry_number(), 1234523)
+        company.state_registry = u'registry.company'
+        self.assertFalse(company.get_state_registry_number())
+
+    def test_check_cnpj_exists(self):
+        company = self.create_company()
+        company.cnpj = u'123456789'
+        self.assertFalse(company.check_cnpj_exists(cnpj=u'123456789'))
+        company2 = self.create_company()
+        company2.cnpj = u'123456789'
+        self.assertTrue(company.check_cnpj_exists(u'123456789'))
 
 
 class TestClient(_PersonFacetTest, DomainTest):
@@ -321,6 +391,9 @@ class TestClient(_PersonFacetTest, DomainTest):
         status = client.status
         status = client.statuses[status]
         self.assertEquals(client.get_status_string(), status)
+        client.status = 999
+        with self.assertRaises(DatabaseInconsistency):
+            client.get_status_string()
 
     def test_getactive_clients(self):
         table = Client
@@ -329,6 +402,13 @@ class TestClient(_PersonFacetTest, DomainTest):
         client.status = table.STATUS_SOLVENT
         one_more_active_client = table.get_active_clients(self.store).count()
         self.assertEquals(active_clients + 1, one_more_active_client)
+
+    def test_set_is_active(self):
+        client = self.create_client()
+        client._set_is_active(value=None)
+        self.assertFalse(client.is_active)
+        client._set_is_active(value=True)
+        self.assertTrue(client.is_active)
 
     def test_getclient_sales(self):
         client = self.store.find(Client)
@@ -367,6 +447,58 @@ class TestClient(_PersonFacetTest, DomainTest):
         after_return_count = len(list(client.get_client_returned_sales()))
         self.assertEquals(after_return_count, 1)
 
+    def test_get_client_services(self):
+        client = self.create_client()
+        self.assertIsNone(client.get_client_services().one())
+        sale = self.create_sale(client=client)
+        sellable = self.create_sellable(description=u'Test')
+        sale.add_sellable(sellable=sellable)
+        service = self.create_service()
+        service.sellable = sellable
+        soldserviceview = client.get_client_services().one()
+        self.assertEquals(soldserviceview.description, u'Test')
+
+    def test_get_client_work_orders(self):
+        client = self.create_client(name=u'Client Test')
+        self.assertIsNone(client.get_client_work_orders().one())
+        workorder = self.create_workorder()
+        workorder.client = client
+        result = client.get_client_work_orders().one()
+        result_client_name = result.client.person.name
+        self.assertEquals(result_client_name, u'Client Test')
+
+    def test_get_client_products(self):
+        client = self.create_client(name=u'Client Test')
+        self.assertIsNone(client.get_client_products().one())
+        sale = self.create_sale()
+        item = self.create_sale_item(sale=sale)
+        sale.add_sellable(sellable=item.sellable)
+        sale.client = client
+        client_name = client.get_client_products().one().client_name
+        self.assertEquals(client_name, u'Client Test')
+
+    def test_get_client_payments(self):
+        client = self.create_client()
+        group = self.create_payment_group(payer=client.person)
+        self.assertIsNone(client.get_client_payments().one())
+        payment = self.create_payment(payment_type=Payment.TYPE_IN,
+                                      group=group)
+        item = self.create_sale_item()
+        item.sale.client = client
+        payment.sale = item.sale
+        payment.group.payer = client.person
+        group.payer = client.person
+        result_client_name = client.get_client_payments().one().drawee
+        self.assertEquals(result_client_name, client.person.name)
+
+    def test_get_last_purchase_date(self):
+        client = self.create_client()
+        self.assertIsNone(client.get_last_purchase_date())
+        sale_item = self.create_sale_item()
+        sale_item.sale.client = client
+        self.assertEquals(client.get_last_purchase_date(),
+                          localnow().date())
+
     def test_client_category(self):
         categories = self.store.find(ClientCategory, name=u'Category')
         self.assertEquals(categories.count(), 0)
@@ -398,6 +530,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
         check_method = PaymentMethod.get_by_name(self.store, u'check')
         money_method = PaymentMethod.get_by_name(self.store, u'money')
+        credit_method = PaymentMethod.get_by_name(self.store, u'credit')
         store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         u'store_credit')
         today = localtoday()
@@ -413,10 +546,12 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertTrue(client.can_purchase(check_method, currency("200")))
 
         # client can pay even if he does have overdue payments
-        payment = self.create_payment(Payment.TYPE_IN,
-                                      today - relativedelta(days=1), method=check_method)
-        payment.group = self.create_payment_group()
+        payment = self.create_payment(payment_type=payment.TYPE_OUT, value=2000,
+                                      method=credit_method)
+        payment.set_pending()
+        payment.pay()
         payment.group.payer = client.person
+        self.assertTrue(client.can_purchase(credit_method, currency("200")))
         self.assertTrue(client.can_purchase(store_credit_method, currency("200")))
 
         # But he cannot pay if its above the credit limit
@@ -607,9 +742,28 @@ class TestClient(_PersonFacetTest, DomainTest):
 
         self.assertEquals(client.credit_account_balance, 100)
 
+        payment.payment_type = payment.TYPE_IN
+        self.assertEquals(client.credit_account_balance, -100)
+
+
+class TestClientCategory(DomainTest):
+    def test_get_description(self):
+        category = self.create_client_category(name=u'Control')
+        self.assertEquals(category.get_description(), u'Control')
+
 
 class TestSupplier(_PersonFacetTest, DomainTest):
     facet = Supplier
+
+    def test_get_status_string(self):
+        supplier = self.create_supplier()
+        self.assertEquals(supplier.get_status_string(), u'Active')
+        supplier.is_active = False
+        self.assertEquals(supplier.get_status_string(), u'Inactive')
+
+    def test_get_name(self):
+        supplier = self.create_supplier(name=u'Supplier Test')
+        self.assertEquals(supplier.get_name(), u'Supplier Test')
 
     def test_get_active_suppliers(self):
         for supplier in Supplier.get_active_suppliers(self.store):
@@ -650,6 +804,18 @@ class TestSupplier(_PersonFacetTest, DomainTest):
 class TestEmployee(_PersonFacetTest, DomainTest):
     facet = Employee
 
+    def test_get_status_string(self):
+        employee = self.create_employee()
+        self.assertEquals(employee.get_status_string(), u'Active')
+        employee.is_active = False
+        self.assertEquals(employee.get_status_string(), u'Inactive')
+
+    def test_get_active_employees(self):
+        employee = self.create_employee()
+        employees = list(employee.get_active_employees(store=self.store))
+        results = list(self.store.find(Employee, status=Employee.STATUS_NORMAL))
+        self.assertEquals(employees, results)
+
     def test_role_history(self):
         # this test depends bug 2457
         employee = self.create_employee()
@@ -689,13 +855,92 @@ class TestEmployee(_PersonFacetTest, DomainTest):
 class TestUser(_PersonFacetTest, DomainTest):
     facet = LoginUser
 
-    def test_getstatus_str(self):
-        users = self.store.find(LoginUser)
-        assert not users.is_empty()
-        user = users[0]
+    def test_get_status_string(self):
+        user = self.create_user()
+        self.assertEquals(user.get_status_string(), u'Active')
         user.is_active = False
-        string = user.get_status_string()
-        self.assertEquals(string, _(u'Inactive'))
+        self.assertEquals(user.get_status_string(), u'Inactive')
+
+    def test_authenticate(self):
+        branch = get_current_branch(store=self.store)
+        user = self.create_user()
+        with self.assertRaises(LoginError) as error:
+            user.authenticate(store=self.store, username=u'username',
+                              pw_hash=u'anything', current_branch=branch)
+        expected = "Invalid user or password"
+        self.assertEquals(error.exception.message, expected)
+
+        with self.assertRaises(LoginError) as error:
+            user.authenticate(store=self.store, username=u'username',
+                              pw_hash=user.pw_hash, current_branch=branch)
+        expected = u'This user does not have access to this branch.'
+        self.assertEquals(error.exception.message, expected)
+
+        user.add_access_to(branch=branch)
+        result = user.authenticate(store=self.store, username=u'username',
+                                   pw_hash=user.pw_hash, current_branch=branch)
+        self.assertEquals(result, user)
+
+    def test_get_status_str(self):
+        user = self.create_user()
+        self.assertEquals(user.get_status_str(), u'Active')
+        user.is_active = False
+        self.assertEquals(user.get_status_str(), u'Inactive')
+
+    def test_get_associated_branches(self):
+        user = self.create_user()
+        self.assertIsNone(user.get_associated_branches().one())
+        branch = get_current_branch(store=self.store)
+        new_branch = self.create_branch(name=u'New Branch')
+        user.add_access_to(branch)
+        user.add_access_to(new_branch)
+        self.assertEquals(user.get_associated_branches().count(), 2)
+
+    def test_has_access_to(self):
+        user = self.create_user()
+        branch = self.create_branch()
+        self.assertFalse(user.has_access_to(branch))
+        user.add_access_to(branch)
+        self.assertTrue(user.has_access_to(branch))
+        user_profile = self.create_user_profile(name=u'admin')
+        self.create_profile_settings(user_profile=user_profile,
+                                     app=u'admin')
+        user.profile = user_profile
+        self.assertTrue(user.has_access_to(branch))
+
+    @mock.patch('stoqlib.domain.person.get_current_station')
+    @mock.patch('stoqlib.domain.person.Event.log')
+    def test_login(self, log, get_current_station):
+        user = self.create_user()
+        user.login()
+        station = get_current_station(store=self.store)
+
+        expected = _(u"User '%s' logged in on '%s'") % (user.username,
+                                                        station.name)
+        log.assert_called_with(self.store, Event.TYPE_USER, expected)
+
+        get_current_station.return_value = None
+        user.login()
+        expected = _(u"User '%s' logged in") % (user.username, )
+        log.assert_called_with(self.store, Event.TYPE_USER, expected)
+
+    @mock.patch('stoqlib.domain.person.get_current_station')
+    @mock.patch('stoqlib.domain.person.Event.log')
+    def test_logout(self, log, get_current_station):
+        user = self.create_user()
+        new_station = self.create_station()
+        get_current_station.return_value = new_station
+        station = get_current_station()
+        user.logout()
+
+        expected = _(u"User '%s' logged out from '%s'") % (user.username,
+                                                           station.name)
+        log.assert_called_with(self.store, Event.TYPE_USER, expected)
+
+        get_current_station.return_value = None
+        user.logout()
+        expected = _(u"User '%s' logged out") % (user.username, )
+        log.assert_called_with(self.store, Event.TYPE_USER, expected)
 
     def test_get_active_users(self):
         active_users_count = LoginUser.get_active_users(self.store).count()
@@ -713,6 +958,31 @@ class TestUser(_PersonFacetTest, DomainTest):
 
 class TestBranch(_PersonFacetTest, DomainTest):
     facet = Branch
+
+    def test_get_status_string(self):
+        branch = self.create_branch()
+        self.assertEquals(branch.get_status_string(), u'Active')
+        branch.is_active = False
+        self.assertEquals(branch.get_status_string(), u'Inactive')
+
+    def test_set_acronym(self):
+        branch = self.create_branch()
+        self.assertIsNone(branch.acronym)
+        branch.set_acronym(value=u'Async')
+        self.assertEquals(branch.acronym, u'Async')
+        branch.set_acronym(value=u'')
+        self.assertIsNone(branch.acronym)
+
+    def test_check_acronym_exists(self):
+        branch = self.create_branch()
+        branch.set_acronym(value=u'acronym')
+
+        branch2 = self.create_branch()
+        self.assertTrue(branch2.check_acronym_exists(acronym=u'acronym'))
+        branch2.set_acronym(value=u'acronym')
+
+        with self.assertRaises(IntegrityError):
+            branch.check_acronym_exists(acronym=u'acronym')
 
     def test_getstatus_str(self):
         branches = self.store.find(Branch)
@@ -748,8 +1018,11 @@ class TestBranch(_PersonFacetTest, DomainTest):
         branch2.person.company.cnpj = u'111.222.333/0002-22'
         self.assertTrue(branch1.is_from_same_company(branch2))
 
+        branch2.person.company.cnpj = None
+        self.assertFalse(branch1.is_from_same_company(branch2))
 
-class SalesPersonTest(_PersonFacetTest, DomainTest):
+
+class TestSalesPerson(_PersonFacetTest, DomainTest):
 
     facet = SalesPerson
 
@@ -761,18 +1034,20 @@ class SalesPersonTest(_PersonFacetTest, DomainTest):
 
     def test_get_status_string(self):
         salesperson = self.create_sales_person()
-        string = salesperson.get_status_string()
-        self.assertEquals(string, _(u'Active'))
+        self.assertEquals(salesperson.get_status_string(), _(u'Active'))
+        salesperson.is_active = False
+        self.assertEquals(salesperson.get_status_string(), _(u'Inactive'))
 
 
-class TransporterTest(_PersonFacetTest, DomainTest):
+class TestTransporter(_PersonFacetTest, DomainTest):
 
     facet = Transporter
 
     def test_get_status_string(self):
         transporter = self.create_transporter()
-        string = transporter.get_status_string()
-        self.assertEquals(string, _(u'Active'))
+        self.assertEquals(transporter.get_status_string(), _(u'Active'))
+        transporter.is_active = False
+        self.assertEquals(transporter.get_status_string(), _(u'Inactive'))
 
     def test_get_active_transporters(self):
         count = Transporter.get_active_transporters(self.store).count()
@@ -793,3 +1068,173 @@ class TestClientSalaryHistory(DomainTest):
 
         self.assertEquals(last_salary_history.client, client)
         self.assertEquals(last_salary_history.new_salary, 20)
+
+
+class TestClientView(DomainTest):
+    def test_get_description(self):
+        client = self.create_client()
+        company = self.create_company()
+        company.person = client.person
+        result = self.store.find(ClientView, id=client.id).one()
+        self.assertEquals(result.get_description(), u'Client (Dummy shop)')
+
+    def test_cnpj_or_cpf(self):
+        client = self.create_client()
+        client.person.individual.cpf = u'123.123.123.-12'
+        result = self.store.find(ClientView, id=client.id).one()
+        self.assertEquals(result.cnpj_or_cpf, u'123.123.123.-12')
+        company = self.create_company()
+        company.cnpj = u'60.746.948.0001-12'
+        company.person = client.person
+        result = self.store.find(ClientView, id=client.id).one()
+        self.assertEquals(result.cnpj_or_cpf, u'60.746.948.0001-12')
+
+    def test_get_active_clients(self):
+        client = self.create_client()
+        view = ClientView.get_active_clients(store=self.store)
+        self.assertEquals(view.count(), 5)
+        client.status = client.STATUS_INACTIVE
+        view = ClientView.get_active_clients(store=self.store)
+        self.assertEquals(view.count(), 4)
+
+
+class TestEmployeeView(DomainTest):
+    def test_get_description(self):
+        employee = self.create_employee()
+        employee.person.name = u'Test'
+        result = self.store.find(EmployeeView, id=employee.id).one()
+        self.assertEquals(result.get_description(), u'Test')
+
+    def test_get_status_string(self):
+        employee = self.create_employee()
+        employee.status = employee.STATUS_AWAY
+        result = self.store.find(EmployeeView, id=employee.id).one()
+        self.assertEquals(result.get_status_string(),
+                          employee.statuses[employee.STATUS_AWAY])
+
+    def test_get_active_employees(self):
+        for i in range(4):
+            if i % 2 == 0:
+                employee = self.create_employee()
+                employee.status = employee.STATUS_OFF
+                employee.is_active = True
+            elif i % 3 == 0:
+                employee2 = self.create_employee()
+                employee2.status = employee.STATUS_NORMAL
+                employee2.is_active = False
+            else:
+                employee3 = self.create_employee()
+                employee3.status = employee3.STATUS_NORMAL
+        active = EmployeeView.get_active_employees(store=self.store)
+        self.assertEquals(active.count(), 6)
+
+
+class TestSupplierView(DomainTest):
+    def test_get_description(self):
+        supplier = self.create_supplier()
+        view = self.store.find(SupplierView, id=supplier.id).one()
+        self.assertEquals(view.get_description(), u'Supplier')
+
+    def test_get_status_string(self):
+        supplier = self.create_supplier()
+        supplier.status = supplier.STATUS_BLOCKED
+        view = self.store.find(SupplierView, id=supplier.id).one()
+        self.assertEquals(view.get_status_string(),
+                          supplier.statuses[supplier.STATUS_BLOCKED])
+
+
+class TestTransporterView(DomainTest):
+    def test_get_description(self):
+        transporter = self.create_transporter()
+        view = self.store.find(TransporterView, id=transporter.id).one()
+        self.assertEquals(view.get_description(), u'John')
+
+
+class TestBranchView(DomainTest):
+    def test_get_description(self):
+        branch = self.create_branch()
+        view = self.store.find(BranchView, id=branch.id).one()
+        self.assertEquals(view.get_description(), u'Dummy')
+
+    def test_get_status_str(self):
+        branch = self.create_branch()
+        view = self.store.find(BranchView, id=branch.id).one()
+        self.assertEquals(view.get_status_str(), u'Active')
+        branch.is_active = False
+        view = self.store.find(BranchView, id=branch.id).one()
+        self.assertEquals(view.get_status_str(), u'Inactive')
+
+
+class TestUserView(DomainTest):
+    def test_get_description(self):
+        user = self.create_user()
+        view = self.store.find(UserView, id=user.id).one()
+        self.assertEquals(view.get_description(), u'individual')
+
+    def test_get_status_str(self):
+        user = self.create_user()
+        view = self.store.find(UserView, id=user.id).one()
+        self.assertEquals(view.get_status_str(), u'Active')
+        user.is_active = False
+        view = self.store.find(UserView, id=user.id).one()
+        self.assertEquals(view.get_status_str(), u'Inactive')
+
+
+class TestCreditCheckHistoryView(DomainTest):
+    def test_find_by_client(self):
+        client = self.create_client()
+        result = CreditCheckHistoryView.find_by_client(store=self.store,
+                                                       client=client).count()
+        self.assertEquals(result, 0)
+        check_history = self.create_credit_check_history()
+        check_history.client = client
+        result = CreditCheckHistoryView.find_by_client(store=self.store,
+                                                       client=client).count()
+        self.assertEquals(result, 1)
+
+
+class TestCallsView(DomainTest):
+    def test_get_description(self):
+        call = self.create_call()
+        view = self.store.find(CallsView, id=call.id).one()
+        self.assertEquals(view.get_description(), u'Test call')
+
+    def test_find_by_client_date(self):
+        call = self.create_call()
+        client = self.create_client()
+        result = CallsView.find_by_client_date(store=self.store,
+                                               client=client,
+                                               date=Date(localnow())).count()
+        self.assertFalse(result)
+        call.date = localnow()
+        result = CallsView.find_by_client_date(store=self.store,
+                                               client=call.person,
+                                               date=Date(localnow())).count()
+        self.assertTrue(result)
+        date = Date(localnow()), Date(localnow())
+        result = CallsView.find_by_client_date(store=self.store,
+                                               client=call.person,
+                                               date=date).count()
+        self.assertTrue(result)
+
+    def test_find_by_date(self):
+        call = self.create_call()
+        result = CallsView.find_by_date(store=self.store,
+                                        date=Date(localnow())).count()
+        self.assertFalse(result)
+        call.date = localnow()
+        result = CallsView.find_by_date(store=self.store,
+                                        date=Date(localnow())).count()
+        self.assertTrue(result)
+
+
+class TestClientSalaryHistoryView(DomainTest):
+    def test_find_by_client(self):
+        client = self.create_client()
+        result = ClientSalaryHistoryView.find_by_client(store=self.store,
+                                                        client=client).count()
+        self.assertFalse(result)
+        ClientSalaryHistory(client=client)
+        result = ClientSalaryHistoryView.find_by_client(store=self.store,
+                                                        client=client).count()
+        self.assertTrue(result)

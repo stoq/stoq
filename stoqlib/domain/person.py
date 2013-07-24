@@ -2022,9 +2022,10 @@ class CreditCheckHistoryView(Viewable):
 
     @classmethod
     def find_by_client(cls, store, client):
-        if client:
-            return store.find(cls, CreditCheckHistory.client == client)
-        return store.find(cls)
+        resultset = store.find(cls)
+        if client is not None:
+            resultset = resultset.find(CreditCheckHistory.client == client)
+        return resultset
 
 
 @implementer(IDescribable)
@@ -2111,7 +2112,7 @@ class ClientSalaryHistoryView(Viewable):
 
     @classmethod
     def find_by_client(cls, store, client):
-        if client:
-            return store.find(cls, ClientSalaryHistory.client == client)
-
-        return store.find(cls)
+        resultset = store.find(cls)
+        if client is not None:
+            resultset = resultset.find(ClientSalaryHistory.client == client)
+        return resultset
