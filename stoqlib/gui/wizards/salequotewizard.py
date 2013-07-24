@@ -545,6 +545,8 @@ class SaleQuoteWizard(BaseWizard):
     def finish(self):
         # Confirm the payments created on SaleQuotePaymentStep
         # They were created as preview on the step
+        if self.model.client:
+            self.model.group.payer = self.model.client.person
         self.model.group.confirm()
 
         self.retval = self.model
