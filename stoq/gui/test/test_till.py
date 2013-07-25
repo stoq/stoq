@@ -61,6 +61,7 @@ class TestTill(BaseGUITest):
         sale.status = Sale.STATUS_CONFIRMED
 
         app = self.create_app(TillApp, u'till')
+        app.status_filter.select(Sale.STATUS_CONFIRMED)
         results = app.results
         results.select(results[0])
 

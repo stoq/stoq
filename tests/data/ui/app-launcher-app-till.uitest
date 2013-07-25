@@ -89,12 +89,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
                     ProxyComboBox(padding=6):
                       item: 'Any'
                       item: 'Opened'
-                      item: 'Confirmed', selected
+                      item: 'Confirmed'
                       item: 'Paid'
                       item: 'Cancelled'
                       item: 'Ordered'
                       item: 'Returned'
-                      item: 'Quoting'
+                      item: 'Quoting', selected
                       item: 'Renegotiated'
                   SearchFilter():
                     GtkLabel(): 'Search:'

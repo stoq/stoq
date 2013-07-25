@@ -198,7 +198,7 @@ class TillApp(ShellApp):
                                      'identifier_str'])
         self.status_filter = ComboSearchFilter(_(u"Show orders"),
                                                self._get_status_values())
-        self.status_filter.select(Sale.STATUS_CONFIRMED)
+        self.status_filter.select(Sale.STATUS_QUOTE)
         self.add_filter(self.status_filter, position=SearchFilterPosition.TOP,
                         columns=['status'])
 
