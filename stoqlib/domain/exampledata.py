@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -39,140 +39,8 @@ from stoqlib.lib.parameters import sysparam
 # Do not remove, these are used by doctests
 
 
-def create_person(store):
-    return ExampleCreator.create(store, 'Person')
-
-
 def create_branch(store):
     return ExampleCreator.create(store, 'Branch')
-
-
-def create_supplier(store):
-    return ExampleCreator.create(store, 'Supplier')
-
-
-def create_employee(store):
-    return ExampleCreator.create(store, 'Employee')
-
-
-def create_salesperson(store):
-    return ExampleCreator.create(store, 'SalesPerson')
-
-
-def create_client(store):
-    return ExampleCreator.create(store, 'Client')
-
-
-def create_individual(store):
-    return ExampleCreator.create(store, 'Individual')
-
-
-def create_user(store):
-    return ExampleCreator.create(store, 'LoginUser')
-
-
-def create_storable(store):
-    return ExampleCreator.create(store, 'Storable')
-
-
-def create_product(store):
-    return ExampleCreator.create(store, 'Product')
-
-
-def create_sellable(store):
-    return ExampleCreator.create(store, 'Sellable')
-
-
-def create_sellable_unit(store):
-    return ExampleCreator.create(store, 'SellableUnit')
-
-
-def create_sale(store):
-    return ExampleCreator.create(store, 'Sale')
-
-
-def create_sale_item_icms(store):
-    return ExampleCreator.create(store, 'SaleItemIcms')
-
-
-def create_stock_decrease(store):
-    return ExampleCreator.create(store, 'StockDecrease')
-
-
-def create_city_location(store):
-    return ExampleCreator.create(store, 'CityLocation')
-
-
-def create_parameter_data(store):
-    return ExampleCreator.create(store, 'ParameterData')
-
-
-def create_company(store):
-    return ExampleCreator.create(store, 'Company')
-
-
-def create_till(store):
-    return ExampleCreator.create(store, 'Till')
-
-
-def create_user_profile(store):
-    return ExampleCreator.create(store, 'UserProfile')
-
-
-def get_station(store):
-    return ExampleCreator.create(store, 'BranchStation')
-
-
-def get_location(store):
-    return ExampleCreator.create(store, 'CityLocation')
-
-
-def create_production_order(store):
-    return ExampleCreator.create(store, 'ProductionOrder')
-
-
-def create_production_item(store):
-    return ExampleCreator.create(store, 'ProductionItem')
-
-
-def create_production_material(store):
-    return ExampleCreator.create(store, 'ProductionMaterial')
-
-
-def create_production_service(store):
-    return ExampleCreator.create(store, 'ProductionService')
-
-
-def create_loan(store):
-    return ExampleCreator.create(store, 'Loan')
-
-
-def create_loan_item(store):
-    return ExampleCreator.create(store, 'LoanItem')
-
-
-def create_call(store):
-    return ExampleCreator.create(store, 'Calls')
-
-
-def create_credit_check_history(store):
-    return ExampleCreator.create(store, 'CreditCheckHistory')
-
-
-def create_client_category(store):
-    return ExampleCreator.create(store, 'ClientCategory')
-
-
-def create_client_category_price(store):
-    return ExampleCreator.create(store, 'ClientCategoryPrice')
-
-
-def create_bank_account(store):
-    return ExampleCreator.create(store, 'BankAccount')
-
-
-def create_quote_group(store):
-    return ExampleCreator.create(store, 'QuoteGroup')
 
 
 class ExampleCreator(object):
@@ -210,14 +78,12 @@ class ExampleCreator(object):
             'Branch': self.create_branch,
             'BranchStation': self.get_station,
             'Calls': self.create_call,
-            'CardPaymentOperation': self.create_card_operation_payment,
             'CfopData': self.create_cfop_data,
             'CityLocation': self.get_location,
             'Client': self.create_client,
             'ClientCategory': self.create_client_category,
             'ClientCategoryPrice': self.create_client_category_price,
             'Company': self.create_company,
-            'ContactInfo': self.create_contact_info,
             'CostCenter': self.create_cost_center,
             'CreditCheckHistory': self.create_credit_check_history,
             'CreditProvider': self.create_credit_provider,
@@ -486,7 +352,7 @@ class ExampleCreator(object):
                                 category=parent,
                                 store=self.store)
 
-    def create_sale(self, id_=None, branch=None, client=None):
+    def create_sale(self, branch=None, client=None):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
         till = Till.get_current(self.store)
@@ -506,9 +372,6 @@ class ExampleCreator(object):
                     group=group,
                     client=client,
                     store=self.store)
-        if id_:
-            sale.id = id_
-            sale.identifier = id_
         return sale
 
     def create_sale_comment(self, sale, comment=u'Foo bar', user=None):
@@ -615,8 +478,6 @@ class ExampleCreator(object):
 
     def create_profile_settings(self, user_profile=None, app=u'admin'):
         from stoqlib.domain.profile import ProfileSettings
-        if not user_profile:
-            user_profile = self.create_user_profile()
         return ProfileSettings(store=self.store, app_dir_name=app,
                                has_permission=True,
                                user_profile=user_profile)
@@ -837,10 +698,6 @@ class ExampleCreator(object):
                        store=self.store,
                        payment_type=payment_type)
 
-    def create_card_operation_payment(self):
-        from stoqlib.domain.payment.operation import CardPaymentOperation
-        return CardPaymentOperation()
-
     def create_card_payment(self, date=None, provider_id=u'AMEX', device=None,
                             payment_value=None, payment_type=None):
         from stoqlib.domain.payment.card import CreditCardData, CreditProvider
@@ -966,20 +823,16 @@ class ExampleCreator(object):
                     branch=branch or get_current_branch(self.store),
                     store=self.store)
 
-    def create_loan_item(self, loan=None, product=None, quantity=1):
+    def create_loan_item(self, loan=None, quantity=1):
         from stoqlib.domain.loan import LoanItem
         from stoqlib.domain.product import Storable, StockTransactionHistory
         loan = loan or self.create_loan()
-        if not product:
-            sellable = self.create_sellable()
-            storable = Storable(product=sellable.product,
-                                store=self.store)
-            storable.increase_stock(10, loan.branch,
-                                    type=StockTransactionHistory.TYPE_INITIAL,
-                                    object_id=None)
-        else:
-            sellable = product.sellable
-            storable = product.storable
+        sellable = self.create_sellable()
+        storable = Storable(product=sellable.product,
+                            store=self.store)
+        storable.increase_stock(10, loan.branch,
+                                type=StockTransactionHistory.TYPE_INITIAL,
+                                object_id=None)
         return LoanItem(loan=loan, sellable=sellable, price=10,
                         quantity=quantity, store=self.store)
 
@@ -1008,7 +861,6 @@ class ExampleCreator(object):
 
     def add_payments(self, obj, method_type=u'money', installments=1,
                      date=None):
-        from stoqlib.domain.payment.group import PaymentGroup
         from stoqlib.domain.payment.payment import Payment
         from stoqlib.domain.purchase import PurchaseOrder
         from stoqlib.domain.sale import Sale
@@ -1028,11 +880,8 @@ class ExampleCreator(object):
         elif isinstance(obj, PurchaseOrder):
             value = obj.get_purchase_total()
             payment_type = Payment.TYPE_OUT
-        else:
+        else:  # pragma: nocover
             raise ValueError(obj)
-
-        if obj.group is None:
-            obj.group = PaymentGroup(store=obj.store)
 
         method = self.get_payment_method(method_type)
         payments = method.create_payments(
@@ -1120,15 +969,11 @@ class ExampleCreator(object):
                                   client=client or self.create_client(),
                                   store=self.store)
 
-    def create_commission_source(self, category=None):
+    def create_commission_source(self, category):
         from stoqlib.domain.commission import CommissionSource
-        if not category:
-            sellable = self.create_sellable()
-        else:
-            sellable = None
         return CommissionSource(direct_value=10,
                                 category=category,
-                                sellable=sellable,
+                                sellable=None,
                                 installments_value=1,
                                 store=self.store)
 
@@ -1141,13 +986,6 @@ class ExampleCreator(object):
     def create_delivery(self):
         from stoqlib.domain.sale import Delivery
         return Delivery(store=self.store)
-
-    def create_contact_info(self):
-        from stoqlib.domain.person import ContactInfo
-        return ContactInfo(store=self.store,
-                           person=self.create_person(),
-                           description=u'description',
-                           contact_info=u'12345678')
 
     def create_work_permit_data(self):
         from stoqlib.domain.person import WorkPermitData
