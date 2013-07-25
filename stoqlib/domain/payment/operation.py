@@ -391,6 +391,9 @@ class CreditPaymentOperation(object):
         return True
 
     def creatable(self, method, payment_type, separate):
+        # Credit is only allowed when selling.
+        if payment_type != Payment.TYPE_IN:
+            return False
         return True
 
     def can_cancel(self, payment):

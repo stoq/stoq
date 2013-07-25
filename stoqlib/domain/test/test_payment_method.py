@@ -269,12 +269,11 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         methods = PaymentMethod.get_creatable_methods(
             self.store, Payment.TYPE_OUT, separate=False)
         self.assertTrue(methods)
-        self.assertEquals(len(methods), 5)
+        self.assertEquals(len(methods), 4)
         self.assertEquals(methods[0].method_name, u'bill')
         self.assertEquals(methods[1].method_name, u'check')
-        self.assertEquals(methods[2].method_name, u'credit')
-        self.assertEquals(methods[3].method_name, u'deposit')
-        self.assertEquals(methods[4].method_name, u'money')
+        self.assertEquals(methods[2].method_name, u'deposit')
+        self.assertEquals(methods[3].method_name, u'money')
 
     def test_get_creditable_methods_separate(self):
         methods = PaymentMethod.get_creatable_methods(
@@ -292,12 +291,11 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         methods = PaymentMethod.get_creatable_methods(
             self.store, Payment.TYPE_OUT, separate=True)
         self.assertTrue(methods)
-        self.assertEquals(len(methods), 5)
+        self.assertEquals(len(methods), 4)
         self.assertEquals(methods[0].method_name, u'bill')
         self.assertEquals(methods[1].method_name, u'check')
-        self.assertEquals(methods[2].method_name, u'credit')
-        self.assertEquals(methods[3].method_name, u'deposit')
-        self.assertEquals(methods[4].method_name, u'money')
+        self.assertEquals(methods[2].method_name, u'deposit')
+        self.assertEquals(methods[3].method_name, u'money')
 
     def test_get_editable_methods(self):
         methods = PaymentMethod.get_editable_methods(self.store)
