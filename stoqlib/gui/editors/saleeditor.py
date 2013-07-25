@@ -78,6 +78,7 @@ class SaleQuoteItemEditor(BaseEditor):
 
         self.sale.set_text(unicode(self.model.sale.identifier))
         self.description.set_text(self.model.sellable.get_description())
+        self.original_price.update(self.model.price)
         for widget in [self.quantity, self.price]:
             widget.set_adjustment(gtk.Adjustment(lower=1, upper=MAX_INT,
                                                  step_incr=1, page_incr=10))

@@ -79,6 +79,7 @@ class LoanItemEditor(BaseEditor):
 
         self.sale.set_text(unicode(self.model.loan.identifier))
         self.description.set_text(self.model.sellable.get_description())
+        self.original_price.update(self.model.price)
         for widget in [self.quantity, self.price,
                        self.sale_quantity, self.return_quantity]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,

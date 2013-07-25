@@ -354,6 +354,7 @@ class _ItemEditor(BaseEditor):
     confirm_widgets = ['price', 'quantity']
 
     fields = dict(
+        base_price=PriceField(label=u'Original Price', proxy=True),
         price=PriceField(_(u'Price'), proxy=True, mandatory=True),
         quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
     )
@@ -368,6 +369,9 @@ class _ItemEditor(BaseEditor):
     #
     #  BaseEditor
     #
+
+    def setup_proxies(self):
+        self.base_price.set_editable(False)
 
     def on_confirm(self):
         self.model.update()
