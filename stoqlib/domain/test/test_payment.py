@@ -28,7 +28,6 @@ import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
-from stoqlib.domain.payment.card import CreditCardData
 
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.commission import Commission, CommissionView
@@ -315,21 +314,3 @@ class TestPaymentComment(DomainTest):
                                  store=self.store)
         self.assertEqual(payment.comments_number, 1)
         self.assertEqual(list(payment.comments)[0], comment)
-
-
-class TestCardPaymentOperation(DomainTest):
-    def test_payment_delete(self):
-        method = PaymentMethod.get_by_name(self.store, u'card')
-
-        payment = self.create_payment(method=method)
-        credit_card_data = payment.method.operation.payment_create(payment=payment)
-
-        total = self.store.find(CreditCardData,
-                                payment=credit_card_data.payment).count()
-        self.assertEquals(total, 1)
-
-        payment.delete()
-        total = self.store.find(CreditCardData,
-                                payment=credit_card_data.payment).count()
-
-        self.assertEquals(total, 0)

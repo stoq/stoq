@@ -32,6 +32,7 @@ Such as storing the kind of credit card or associate a check with a bank account
 # pylint: enable=E1101
 
 from kiwi.component import get_utility, provide_utility
+from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implementer
 
 from stoqlib.domain.account import BankAccount
@@ -39,8 +40,6 @@ from stoqlib.domain.payment.card import CreditProvider, CreditCardData
 from stoqlib.domain.payment.method import CheckData, Payment
 from stoqlib.lib.interfaces import IPaymentOperation, IPaymentOperationManager
 from stoqlib.lib.translation import stoqlib_gettext
-
-from stoqdrivers.enum import PaymentMethodType
 
 _ = stoqlib_gettext
 
@@ -88,7 +87,7 @@ class MoneyPaymentOperation(object):
     def can_set_not_paid(self, payment):
         return True
 
-    def print_(self, payment):
+    def print_(self, payments):
         pass
 
     def require_person(self, payment_type):
@@ -145,7 +144,7 @@ class CheckPaymentOperation(object):
     def can_set_not_paid(self, payment):
         return True
 
-    def print_(self, payment):
+    def print_(self, payments):
         pass
 
     def require_person(self, payment_type):
@@ -184,9 +183,6 @@ class BillPaymentOperation(object):
         return True
 
     def creatable(self, method, payment_type, separate):
-        return True
-
-    def payable(self, payment_type):
         return True
 
     def can_cancel(self, payment):
@@ -276,7 +272,7 @@ class CardPaymentOperation(object):
     def can_set_not_paid(self, payment):
         return True
 
-    def print_(self, payment):
+    def print_(self, payments):
         pass
 
     def get_constant(self, payment):
@@ -465,7 +461,7 @@ class DepositPaymentOperation(object):
     def can_set_not_paid(self, payment):
         return True
 
-    def print_(self, payment):
+    def print_(self, payments):
         pass
 
     def require_person(self, payment_type):
@@ -516,7 +512,7 @@ class OnlinePaymentOperation(object):
     def can_set_not_paid(self, payment):
         return True
 
-    def print_(self, payment):
+    def print_(self, payments):
         pass
 
     def require_person(self, payment_type):
@@ -564,7 +560,7 @@ class TradePaymentOperation(object):
     def can_set_not_paid(self, payment):
         return False
 
-    def print_(self, payment):
+    def print_(self, payments):
         pass
 
     def get_constant(self, payment):
@@ -627,7 +623,7 @@ class MultiplePaymentOperation(object):
     def can_set_not_paid(self, payment):
         return False
 
-    def print_(self, payment):
+    def print_(self, payments):
         pass
 
     def get_constant(self, payment):
@@ -684,7 +680,7 @@ class InvalidPaymentOperation(object):
     def can_set_not_paid(self, payment):
         return True
 
-    def print_(self, payment):
+    def print_(self, payments):
         pass
 
     def require_person(self, payment_type):
@@ -726,7 +722,7 @@ def get_payment_operation(method_name):
     """
     pmm = get_payment_operation_manager()
     pm = pmm.get(method_name)
-    if not pm:
+    if not pm:  # pragma: nocover
         raise KeyError(u"There's no payment operation for method '%s'" %
                        method_name)
 
