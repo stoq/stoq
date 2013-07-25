@@ -210,7 +210,7 @@ class CalculatorPopup(gtk.Window):
         elif self._mode == self.MODE_SUB:
             examples.extend([
                 _("%s - Will decrement value by %s") % ('75.4', '75.4'),
-                _("%s - Will decrement value by %s") % ('2.5%o', '2.5%'),
+                _("%s - Will decrement value by %s") % ('2.5%', '2.5%'),
                 _("%s - Will decrement value by %s") % ('.25%', '0.25%'),
             ])
 
