@@ -363,7 +363,10 @@ class Shell(object):
         """
         if not self.windows:
             return ''
-        return self.windows[0].current_app.app_name
+        app = self.windows[0].current_app
+        if not app:
+            return ''
+        return app.app_name
 
     def create_window(self):
         """
