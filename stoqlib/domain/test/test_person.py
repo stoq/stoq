@@ -386,6 +386,17 @@ class TestClient(_PersonFacetTest, DomainTest):
         client.person.name = u'Laun'
         self.assertEquals(client.get_name(), u'Laun')
 
+    def test_get_active_items(self):
+        company = self.create_company()
+        company.fancy_name = u'fancy'
+        company.person.name = u'Company'
+
+        Client(person=company.person, store=self.store)
+
+        items = Client.get_active_items(self.store)
+        self.assertEquals(len(items), 5)
+        self.assertEquals(items[4][0], u'fancy (Company)')
+
     def test_get_status_string(self):
         client = self.create_client()
         status = client.status
@@ -394,14 +405,6 @@ class TestClient(_PersonFacetTest, DomainTest):
         client.status = 999
         with self.assertRaises(DatabaseInconsistency):
             client.get_status_string()
-
-    def test_getactive_clients(self):
-        table = Client
-        active_clients = table.get_active_clients(self.store).count()
-        client = self.create_client()
-        client.status = table.STATUS_SOLVENT
-        one_more_active_client = table.get_active_clients(self.store).count()
-        self.assertEquals(active_clients + 1, one_more_active_client)
 
     def test_set_is_active(self):
         client = self.create_client()
@@ -1088,14 +1091,6 @@ class TestClientView(DomainTest):
         company.person = client.person
         result = self.store.find(ClientView, id=client.id).one()
         self.assertEquals(result.cnpj_or_cpf, u'60.746.948.0001-12')
-
-    def test_get_active_clients(self):
-        client = self.create_client()
-        view = ClientView.get_active_clients(store=self.store)
-        self.assertEquals(view.count(), 5)
-        client.status = client.STATUS_INACTIVE
-        view = ClientView.get_active_clients(store=self.store)
-        self.assertEquals(view.count(), 4)
 
 
 class TestEmployeeView(DomainTest):

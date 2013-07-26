@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
-from stoqlib.domain.person import Client, ClientView, SalesPerson
+from stoqlib.domain.person import Client, SalesPerson
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderItem)
@@ -102,14 +102,7 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
         #        we need a specialized widget that does the searching
         #        on demand.
 
-        # This is to keep the clients in cache
-        clients_cache = list(Client.get_active_clients(self.store))
-        clients_cache  # pylint: disable=W0104
-
-        # We are using ClientView here to show the fancy name as well
-        clients = ClientView.get_active_clients(self.store)
-        items = [(c.get_description(), c.client) for c in clients]
-        items = locale_sorted(items, key=operator.itemgetter(0))
+        items = Client.get_active_items(self.store)
         self.client.prefill(items)
 
         # TODO: Implement a has_items() in kiwi

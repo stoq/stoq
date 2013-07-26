@@ -204,8 +204,8 @@ class WorkOrderEditor(BaseEditor):
         self.slaves_notebook.set_current_page(page_num)
 
     def _fill_clients_combo(self):
-        clients = Client.get_active_clients(self.store)
-        self.client.prefill(api.for_person_combo(clients))
+        items = Client.get_active_items(self.store)
+        self.client.prefill(items)
 
     def _fill_categories_combo(self):
         categories = self.store.find(WorkOrderCategory)

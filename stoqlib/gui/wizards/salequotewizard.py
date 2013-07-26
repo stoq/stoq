@@ -25,7 +25,6 @@
 """ Sale quote wizard"""
 
 from decimal import Decimal
-import operator
 
 from dateutil.relativedelta import relativedelta
 import gtk
@@ -38,8 +37,7 @@ from storm.expr import And, Eq, Or
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.person import (ClientCategory, SalesPerson, Client,
-                                   ClientView)
+from stoqlib.domain.person import ClientCategory, Client, SalesPerson
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleItem, SaleComment
 from stoqlib.domain.sellable import Sellable
@@ -53,7 +51,6 @@ from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
-from stoqlib.lib.translation import locale_sorted
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -127,14 +124,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         #        we need a specialized widget that does the searching
         #        on demand.
 
-        # This is to keep the clients in cache
-        clients_cache = list(Client.get_active_clients(self.store))
-        clients_cache  # pylint: disable=W0104
-
-        # We are using ClientView here to show the fancy name as well
-        clients = ClientView.get_active_clients(self.store)
-        items = [(c.get_description(), c.client) for c in clients]
-        items = locale_sorted(items, key=operator.itemgetter(0))
+        items = Client.get_active_items(self.store)
         self.client.prefill(items)
 
         # TODO: Implement a has_items() in kiwi

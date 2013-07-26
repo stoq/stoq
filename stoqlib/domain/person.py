@@ -55,16 +55,17 @@ Then to add a client, you can will do:
 # pylint: enable=E1101
 
 import hashlib
+import operator
 
 from kiwi.currency import currency
 from kiwi.datatypes import converter
-from storm.expr import And, Eq, Join, LeftJoin, Like, Or, Update
+from storm.expr import And, Coalesce, Eq, Join, LeftJoin, Like, Or, Update
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from storm.store import EmptyResultSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
+from stoqlib.database.expr import Age, Case, Concat, Date, DateTrunc, Interval
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          IntCol, PercentCol,
                                          PriceCol,
@@ -85,7 +86,7 @@ from stoqlib.exceptions import DatabaseInconsistency, LoginError, SellError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.formatters import raw_phone_number, format_phone_number
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -764,7 +765,9 @@ class Client(Domain):
     #: How many days is this client indebted
     days_late = IntCol(default=0)
 
-    #: How much the user can spend on store credit
+    #: How much the user can spend on store credit, this is not
+    #: related to credit given when returning a sale. It's basically
+    #: how much this client can buy before having to pay.
     credit_limit = PriceCol(default=0)
 
     category_id = IdCol(default=None)
@@ -816,17 +819,27 @@ class Client(Domain):
     # Public API
     #
 
+    @classmethod
+    def get_active_items(cls, store):
+        """
+        Return a list of active items (name, client)
+
+        :param store: a store
+        :returns: the items
+        """
+
+        join1 = LeftJoin(Person, Person.id == Client.person_id)
+        join2 = LeftJoin(Company, Company.person_id == Person.id)
+        items = store.using(Client, join1, join2).find((
+            Coalesce(Concat(Company.fancy_name, u" (", Person.name, u")"), Person.name),
+            cls),
+            And(cls.status != cls.STATUS_INACTIVE))
+        return locale_sorted(items, key=operator.itemgetter(0))
+
     def get_name(self):
         """Name of the client
         """
         return self.person.name
-
-    @classmethod
-    def get_active_clients(cls, store):
-        """Return a list of active clients.
-        An active client is a person who are authorized to make new sales
-        """
-        return store.find(cls, cls.status == cls.STATUS_SOLVENT)
 
     @classmethod
     def update_credit_limit(cls, percent, store):
@@ -1784,13 +1797,6 @@ class ClientView(Viewable):
     @property
     def cnpj_or_cpf(self):
         return self.cnpj or self.cpf
-
-    @classmethod
-    def get_active_clients(cls, store):
-        """Return a list of active clients.
-        An active client is a person who are authorized to make new sales
-        """
-        return store.find(cls, status=Client.STATUS_SOLVENT).order_by(cls.name)
 
 
 @implementer(IDescribable)

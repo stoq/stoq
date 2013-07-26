@@ -148,13 +148,28 @@ class Case(Expr):
 
 
 @expr_compile.when(Case)
-def compile_prefix_expr(compile, expr, state):
+def compile_case(compile, expr, state):
     stmt = "CASE WHEN %s THEN %s" % (expr_compile(expr.condition, state),
                                      expr_compile(expr.result, state))
     if expr.else_:
         stmt += ' ELSE ' + expr_compile(expr.else_, state)
     stmt += ' END'
     return stmt
+
+
+class Concat(Expr):
+    """Concatenates string together using the || operator."""
+    # http://www.postgresql.org/docs/8.4/static/functions-string.html
+    __slots__ = ("inputs",)
+    prefix = "(unknown)"
+
+    def __init__(self, *inputs):
+        self.inputs = inputs
+
+
+@expr_compile.when(Concat)
+def compile_concat(compile, expr, state):
+    return " || ".join(expr_compile(input_, state) for input_ in expr.inputs)
 
 
 def is_sql_identifier(identifier):

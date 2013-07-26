@@ -532,8 +532,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         #        we need a specialized widget that does the searching
         #        on demand.
 
-        clients = Client.get_active_clients(self.store)
-        self.client.prefill(api.for_person_combo(clients))
+        items = Client.get_active_items(self.store)
+        self.client.prefill(items)
         self.client.set_sensitive(len(self.client.get_model()))
         marker('Filled clients')
 

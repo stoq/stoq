@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -259,26 +259,30 @@ class PersonField(DomainChoiceField):
             objects = Supplier.get_active_suppliers(store)
             self.add_button.set_tooltip_text(_("Add a new supplier"))
             self.edit_button.set_tooltip_text(_("Edit the selected supplier"))
+            items = api.for_person_combo(objects)
         elif person_type == Client:
-            objects = Client.get_active_clients(store)
             self.add_button.set_tooltip_text(_("Add a new client"))
             self.edit_button.set_tooltip_text(_("Edit the selected client"))
+            items = Client.get_active_items(store)
         elif person_type == Transporter:
             objects = Transporter.get_active_transporters(store)
             self.add_button.set_tooltip_text(_("Add a new transporter"))
             self.edit_button.set_tooltip_text(_("Edit the selected transporter"))
+            items = api.for_person_combo(objects)
         elif person_type == SalesPerson:
             objects = SalesPerson.get_active_salespersons(store)
             self.add_button.set_tooltip_text(_("Add a new sales person"))
             self.edit_button.set_tooltip_text(_("Edit the selected sales person"))
+            items = api.for_person_combo(objects)
         elif person_type == Branch:
             objects = Branch.get_active_branches(store)
             self.add_button.set_tooltip_text(_("Add a new branch"))
             self.edit_button.set_tooltip_text(_("Edit the selected branch"))
+            items = api.for_person_combo(objects)
         else:
             raise AssertionError(self.person_type)
 
-        self.widget.prefill(api.for_person_combo(objects))
+        self.widget.prefill(items)
 
         if person:
             assert isinstance(person, person_type)
