@@ -29,6 +29,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.forms import TextField
 
+from stoqlib.api import api
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
@@ -130,7 +131,8 @@ class DiscountEditor(BaseEditor):
         if not discount:
             return ValidationError(_("The discount syntax is not valid"))
 
-        max_discount = self._user.profile.max_discount if self._user else 0
+        self._user = self._user or api.get_current_user(self.store)
+        max_discount = self._user.profile.max_discount
         if discount > max_discount:
             return ValidationError(
                 _("You are only allowed to give a discount of %d%%") % (
