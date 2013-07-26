@@ -1,5 +1,5 @@
 wizard: OpticalSaleQuoteWizard
-GtkDialog(PluggableWizard): title='New Sale Quote', hidden
+GtkDialog(PluggableWizard): title='Sale with work order', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

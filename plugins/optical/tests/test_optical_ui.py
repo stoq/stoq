@@ -71,6 +71,15 @@ class TestOpticalUI(BaseGUITest):
             self.assertEquals(args[1], app)
             self.assertTrue(isinstance(args[2], StoqlibStore))
 
+        with mock.patch('plugins.optical.opticalui.warning') as warning_:
+            # We need to mock this since it's a cached_function and thus it
+            # will return None for some time even if we create an inventory here
+            with mock.patch.object(app, 'has_open_inventory') as has_open_inventory:
+                has_open_inventory.return_value = True
+                self.activate(action)
+                warning_.assert_called_once_with(
+                    "You cannot create a pre-sale with an open inventory.")
+
     def test_optical_sales_medic_search(self):
         app = self.create_app(SalesApp, u'sales')
         action = app.uimanager.get_action(

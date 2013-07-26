@@ -487,7 +487,7 @@ class SaleQuoteWizard(BaseWizard):
     help_section = 'sale-quote'
 
     def __init__(self, store, model=None):
-        title = self._get_title(model)
+        title = self.get_title(model)
         model = model or self._create_model(store)
 
         if model.status != Sale.STATUS_QUOTE:
@@ -507,7 +507,7 @@ class SaleQuoteWizard(BaseWizard):
         """
         return StartSaleQuoteStep(store, self, model)
 
-    def _get_title(self, model=None):
+    def get_title(self, model=None):
         if not model:
             return _('New Sale Quote')
         return _('Edit Sale Quote')

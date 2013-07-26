@@ -37,6 +37,7 @@ from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 from .medicssearch import OpticalMedicSearch
@@ -75,7 +76,8 @@ class OpticalUI(object):
             </menubar>
         </ui>"""
 
-    def _add_sale_menus(self, uimanager):
+    def _add_sale_menus(self, sale_app):
+        uimanager = sale_app.uimanager
         menu_items_str = '''<menuitem action="OpticalPreSale"/>
                             <menuitem action="OpticalMedicSearch"/>'''
         ui_string = self._get_menu_ui_string() % menu_items_str
@@ -84,13 +86,21 @@ class OpticalUI(object):
         ag = gtk.ActionGroup('OpticalMenuActions')
         ag.add_actions([
             ('OpticalMenu', None, _(u'Optical')),
-            ('OpticalPreSale', None, _(u'Optical pre sale...'),
+            ('OpticalPreSale', None, _(u'Sale with work order...'),
              group.get('pre_sale'), None,
              self._on_OpticalPreSale__activate),
             ('OpticalMedicSearch', None, _(u'Medics...'),
              group.get('search_medics'), None,
              self._on_MedicsSearch__activate),
         ])
+
+        pre_sale = ag.get_action('OpticalPreSale')
+        pre_sale.set_sensitive(not sale_app.has_open_inventory())
+
+        sale_app.window.tool_items.extend(
+            sale_app.window.NewToolItem.add_actions(uimanager, [pre_sale],
+                                                    add_separator=False,
+                                                    position=1))
 
         uimanager.insert_action_group(ag, 0)
         self._ui = uimanager.add_ui_from_string(ui_string)
@@ -120,6 +130,10 @@ class OpticalUI(object):
                              ProductOpticSlave(store, model))
 
     def _create_pre_sale(self):
+        if self._current_app.check_open_inventory():
+            warning(_("You cannot create a pre-sale with an open inventory."))
+            return
+
         with api.trans() as store:
             run_dialog(OpticalSaleQuoteWizard, self._current_app, store)
 
@@ -133,8 +147,7 @@ class OpticalUI(object):
     def _on_StartApplicationEvent(self, appname, app):
         self._current_app = app
         if appname == 'sales':
-            app.new_activate = self._create_pre_sale
-            self._add_sale_menus(app.uimanager)
+            self._add_sale_menus(app)
 
     def _on_StopApplicationEvent(self, appname, app):
         self._remove_app_ui(app.uimanager)

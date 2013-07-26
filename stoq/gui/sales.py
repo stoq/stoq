@@ -60,7 +60,7 @@ from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
-from stoqlib.lib.message import info, yesno
+from stoqlib.lib.message import info, yesno, warning
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.sale import SalesReport
@@ -430,6 +430,10 @@ class SalesApp(ShellApp):
         return self.search_spec.find_by_branch(store, branch)
 
     def _new_sale_quote(self):
+        if self.check_open_inventory():
+            warning(_("You cannot create a quote with an open inventory."))
+            return
+
         store = api.new_store()
         model = self.run_dialog(SaleQuoteWizard, store)
         store.confirm(model)

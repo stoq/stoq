@@ -56,7 +56,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkImageMenuItem(): 'Loan items...'
       GtkImageMenuItem(): 'Optical'
         GtkMenu(): hidden
-          GtkImageMenuItem(): 'Optical pre sale...'
+          GtkImageMenuItem(): 'Sale with work order...'
           GtkImageMenuItem(): 'Medics...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
@@ -72,6 +72,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
       GtkMenuToolButton(): 'New'
           GtkMenu(): hidden
             GtkImageMenuItem(): 'Sale quote'
+            GtkImageMenuItem(): 'Sale with work order'
             GtkSeparatorMenuItem():
             GtkImageMenuItem(): '_Window'
       GtkMenuToolButton(): 'Search'

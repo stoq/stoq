@@ -30,6 +30,7 @@ from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Client, Branch
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderPackage,
@@ -157,10 +158,15 @@ class WorkOrderEditor(BaseEditor):
     def _update_view(self):
         self.proxy.update('status_str')
 
+        has_open_inventory = bool(Inventory.has_open(
+            self.store, api.get_current_branch(self.store)))
+
+        tab = self._get_tab('execution_holder')
         # If it's not opened, it's at least approved.
         # So, we can enable the execution slave
-        tab = self._get_tab('execution_holder')
-        tab.set_sensitive(self.model.status == WorkOrder.STATUS_WORK_IN_PROGRESS)
+        tab.set_sensitive(
+            self.model.status == WorkOrder.STATUS_WORK_IN_PROGRESS and
+            not has_open_inventory and not self.visual_mode)
 
         has_items = bool(self.model.order_items.count())
         if self.model.can_approve():

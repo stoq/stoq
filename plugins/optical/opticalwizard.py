@@ -657,9 +657,13 @@ class OpticalSaleQuoteWizard(SaleQuoteWizard):
     create some workorders, and the item step is changed a little bit, to allow
     the sales person to select in what work order the item should be added to.
     """
+
     def __init__(self, *args, **kwargs):
         self.workorders = set()
         SaleQuoteWizard.__init__(self, *args, **kwargs)
+
+    def get_title(self, model=None):
+        return _("Sale with work order")
 
     def get_first_step(self, store, model):
         return OpticalStartSaleQuoteStep(store, self, model)

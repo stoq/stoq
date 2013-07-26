@@ -279,6 +279,8 @@ class MaintenanceApp(ShellApp):
         self.results.set_cell_data_func(self._on_results__cell_data_func)
 
     def activate(self, refresh=True):
+        self.check_open_inventory()
+
         self.window.NewToolItem.set_tooltip(
             _(u"Create a new work order"))
         self.window.SearchToolItem.set_tooltip(
@@ -396,6 +398,13 @@ class MaintenanceApp(ShellApp):
             SearchColumn('total', title=_(u'Total'),
                          data_type=currency),
         ]
+
+    def set_open_inventory(self):
+        # This needs to be implemented because we are calling check_open_inventory.
+        # We won't do anything here tough, WorkOrderEditor will, but we call
+        # check_open_inventory to display the open inventory bar and make
+        # it explicit for the user that there's an open inventory
+        pass
 
     #
     # Private

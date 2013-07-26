@@ -28,7 +28,7 @@ import gtk
 
 
 class ToolMenuAction(gtk.Action):
-    def add_actions(self, uimanager, actions):
+    def add_actions(self, uimanager, actions, add_separator=True, position=None):
         new_item = self.get_proxies()[0]
         # FIXME: Temporary workaround until set_tool_item_type works
         if not hasattr(new_item, 'get_menu'):
@@ -37,7 +37,7 @@ class ToolMenuAction(gtk.Action):
 
         menu_items = []
         # Insert a separator only if menu already had children
-        if len(menu.get_children()):
+        if add_separator and len(menu.get_children()):
             sep = gtk.SeparatorMenuItem()
             sep.set_visible(True)
             menu_items.append(sep)
@@ -50,7 +50,10 @@ class ToolMenuAction(gtk.Action):
             # Toolmenus doesn't use the trailing '...' menu pattern
             menu_item.set_label(menu_item.get_label().replace('...', ''))
             menu_items.append(menu_item)
-            menu.prepend(menu_item)
+            if position is not None:
+                menu.insert(menu_item, position)
+            else:
+                menu.prepend(menu_item)
 
         return menu_items
 
