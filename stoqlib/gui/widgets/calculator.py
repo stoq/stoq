@@ -160,7 +160,7 @@ class CalculatorPopup(gtk.Window):
         # will always return None. Check proxywidget.py's FIXME to see why
         self._entry.model_attribute = 'not_used'
         self._entry.connect('validate', self._on_entry__validate)
-        self._entry.connect('changed', self._on_entry__changed)
+        self._entry.connect_after('changed', self._after_entry__changed)
         self._entry.set_alignment(1.0)
         vbox.pack_start(self._entry, True, True)
         self._entry.show()
@@ -367,7 +367,7 @@ class CalculatorPopup(gtk.Window):
 
         self._set_warning(warning)
 
-    def _on_entry__changed(self, entry):
+    def _after_entry__changed(self, entry):
         entry.validate(force=True)
 
     def _on_popped_entry_sensitive__notify(self, obj, pspec):
