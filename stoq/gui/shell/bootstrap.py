@@ -218,6 +218,20 @@ class ShellBootstrap(object):
         settings = gtk.settings_get_default()
         settings.props.gtk_button_images = True
 
+        from stoqlib.lib.environment import is_developer_mode
+        if is_developer_mode():
+            from gtk import gdk
+
+            # Install a Control-Q handler that forcefully exits
+            # the program without saving any kind of state
+            def event_handler(event):
+                if (event.type == gdk.KEY_PRESS and
+                    event.state & gdk.CONTROL_MASK and
+                    event.keyval == gtk.keysyms.q):
+                    os._exit(0)
+                gtk.main_do_event(event)
+            gdk.event_handler_set(event_handler)
+
     def _setup_kiwi(self):
         from kiwi.ui.views import set_glade_loader_func
         set_glade_loader_func(self._glade_loader_func)
