@@ -30,6 +30,8 @@ from kiwi.ui.widgets.label import ProxyLabel
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.settings import get_settings
 
+import stoq
+from stoq.main import main
 from stoq.gui.shell.bootstrap import ShellBootstrap
 
 
@@ -87,3 +89,31 @@ class TestMain(unittest.TestCase):
         finally:
             for mocked in mocks:
                 mocked.stop()
+
+    @mock.patch('stoq.gui.shell.bootstrap.boot_shell')
+    def test_main(self, boot_shell):
+        main(['stoq'])
+        boot_shell().main.assert_called_once_with(None, None)
+        boot_shell.reset_mock()
+
+        main(['stoq', 'payable'])
+        boot_shell().main.assert_called_once_with('payable', None)
+        boot_shell.reset_mock()
+
+        main(['stoq', 'payable/'])
+        boot_shell().main.assert_called_once_with('payable', None)
+        boot_shell.reset_mock()
+
+        main(['stoq', 'payable', 'AddPayment'])
+        boot_shell().main.assert_called_once_with('payable', 'AddPayment')
+        boot_shell.reset_mock()
+
+        with self.assertRaisesRegexp(SystemExit,
+                                     stoq.version):
+            main(['stoq', '--version'])
+
+        with self.assertRaisesRegexp(
+            SystemExit,
+            r"'no-such-app' is not an application. "
+            r"Valid applications are: \[[a-z,\' ]+\]"):
+            main(['stoq', 'no-such-app'])

@@ -77,6 +77,7 @@ def get_shell(args):
 def main(args):
     args, shell = get_shell(args)
 
+    action_name = None
     if len(args) < 2:
         appname = None
     else:
@@ -91,4 +92,6 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                              "Valid applications are: %s" % (appname, apps))
 
-    shell.main(appname)
+        if len(args) > 2:
+            action_name = args[2]
+    shell.main(appname, action_name)

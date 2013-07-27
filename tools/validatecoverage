@@ -65,7 +65,6 @@ EXCEPTIONS = OrderedDict((
     ('stoq/lib/generictreemodel.py', 38.71),
     ('stoq/lib/gicompat.py', 04.386),
     ('stoq/lib/startup.py', 51.95),
-    ('stoq/main.py', 18),
     ('stoqlib/api.py', 76.53),
     ('stoqlib/chart/chart.py', 65.22),
     ('stoqlib/chart/paymentcharts.py', 17.39),

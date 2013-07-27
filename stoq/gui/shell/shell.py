@@ -395,7 +395,7 @@ class Shell(object):
         shell_window.close()
         self.windows.remove(shell_window)
 
-    def main(self, appname):
+    def main(self, appname, action_name=None):
         """
         Start the shell.
         This will:
@@ -409,6 +409,7 @@ class Shell(object):
         is shutdown.
 
         :param appname: name of the application to run
+        :param action_name: action to activate or ``None``
         """
         self._dbconn.connect()
         if not self._do_login():
@@ -416,8 +417,13 @@ class Shell(object):
         if appname is None:
             appname = u'launcher'
         shell_window = self.create_window()
-        shell_window.run_application(unicode(appname))
+        app = shell_window.run_application(unicode(appname))
         shell_window.show()
+
+        if action_name is not None:
+            action = getattr(app, action_name, None)
+            if action is not None:
+                action.activate()
 
         log.debug("Entering reactor")
         self._bootstrap.entered_main = True
