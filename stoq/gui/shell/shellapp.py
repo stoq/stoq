@@ -193,16 +193,7 @@ class ShellApp(GladeDelegate):
         if self.search_spec is None:
             raise NotImplementedError
 
-        if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
-            results = self.results.get_selected_rows()
-        else:
-            result = self.results.get_selected()
-            results = [result] if result else None
-
-        # There are no itens selected. We should print the entire list
-        if not results:
-            results = list(self.search.get_last_results())
-
+        results = list(self.search.get_last_results())
         self.print_report(self.report_table, self.results, results)
 
     def export_spreadsheet_activate(self):

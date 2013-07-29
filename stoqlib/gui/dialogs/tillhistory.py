@@ -110,8 +110,7 @@ class TillHistoryDialog(SearchDialog):
         button.show()
 
     def _print_button_clicked(self, button):
-        till_entries = self.results.get_selected_rows() or list(self.results)
-        print_report(TillHistoryReport, self.results, till_entries,
+        print_report(TillHistoryReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
     def _run_editor(self, button, editor_class):

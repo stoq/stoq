@@ -475,9 +475,8 @@ class ProductClosedStockSearch(ProductSearch):
     #
 
     def on_print_button_clicked(self, widget):
-        print_report(ProductClosedStockReport, self.results,
-                     filters=self.search.get_search_filters(),
-                     branch_name=self.branch_filter.combo.get_active_text())
+        print_report(ProductClosedStockReport, self.results, list(self.results),
+                     filters=self.search.get_search_filters())
 
 
 class ProductBrandSearch(SearchEditor):
