@@ -27,7 +27,6 @@ import binascii
 from ConfigParser import SafeConfigParser
 import os
 
-from kiwi.component import provide_utility
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -256,6 +255,7 @@ class StoqConfig:
 
 
 def register_config(config):
+    from kiwi.component import provide_utility
     global _config
     _config = config
 
