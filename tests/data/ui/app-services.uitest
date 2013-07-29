@@ -1,5 +1,5 @@
-app: LauncherApp
-GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
+app: ServicesApp
+GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
   GtkVBox():
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
@@ -13,8 +13,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
           GtkImageMenuItem(): 'Send orders...'
           GtkImageMenuItem(): 'Receive orders...'
           GtkSeparatorMenuItem():
-          GtkImageMenuItem(): 'Print...', insensitive
-          GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
+          GtkImageMenuItem(): 'Print...'
+          GtkImageMenuItem(): 'Export to spreadsheet...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Change password...', hidden
           GtkImageMenuItem(): 'Sign out...', hidden
@@ -57,7 +57,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
           GtkImageMenuItem(): 'Clients...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkImageMenuItem(): 'Maintenance help'
+          GtkImageMenuItem(): 'Services help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Get support online...'
@@ -77,7 +77,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
             GtkImageMenuItem(): 'Services'
             GtkImageMenuItem(): 'Categories'
       GtkSeparatorToolItem():
-      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Print'
       GtkToolButton(): 'Quit', hidden
       GtkSeparatorToolItem():
       GtkToolButton(): 'Edit', insensitive
@@ -85,14 +85,14 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
       GtkToolButton(): 'Cancel...', insensitive
       GtkToolButton(): 'Details...', insensitive
     GtkVBox(expand=True, fill=True):
-      GtkVBox(expand=True, fill=True):
-        GtkHBox(fill=True):
-        GtkVBox(expand=True, fill=True):
-          GtkEventBox(expand=True, fill=True):
-            GtkVBox():
-              GtkVBox(fill=True):
-                GtkHBox():
-                  ComboSearchFilter():
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkHBox(menu_hbox, fill=True):
+        GtkVBox(list_vbox, expand=True, fill=True):
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
+            GtkVBox(vbox):
+              GtkVBox(filters_box, fill=True):
+                GtkHBox(hbox):
+                  ComboSearchFilter(main_filter):
                     GtkLabel(): 'Show'
                     ProxyComboBox(padding=6):
                       item: 'Not delivered', selected
@@ -106,15 +106,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                       item: 'Approved'
                       item: 'In transport'
                       item: 'Rejected'
-                  SearchFilter():
+                  SearchFilter(_primary_filter):
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains All Words', selected
                       item: 'Contains Exactly'
                       item: 'Does Not Contain'
-                    HintedEntry(padding=6): ''
-                  GtkButton(): 'gtk-find'
-              SearchResultListView(expand=True, fill=True):
+                    HintedEntry(search_entry, padding=6): ''
+                  GtkButton(search_button): 'gtk-find'
+              SearchResultListView(result_view, expand=True, fill=True):
                 column: title='#'
                 column: title='Sale #', hidden
                 column: title='Status', hidden
@@ -132,6 +132,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                 column: title='Estimated finish', hidden
                 column: title='Finish date', hidden
                 column: title='Total'
+                row: 666, None, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 1, 1, 0, 0), None, None, None, None, Decimal('0')
+                row: 667, None, u'Opened', None, u'', None, None, None, u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 1, 1, 0, 0), None, None, None, None, Decimal('0')
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
@@ -143,12 +145,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox():
+        GtkHBox(_summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-          GtkLabel():
+          GtkLabel(): '<b>$ 0.00</b>'
 
-popup: MaintenanceSelection
-GtkMenu(): hidden
+popup: ServicesSelection
+GtkMenu(popup): hidden
   GtkImageMenuItem(): 'Details...', insensitive
   GtkSeparatorMenuItem():
   GtkImageMenuItem(): 'Edit...', insensitive

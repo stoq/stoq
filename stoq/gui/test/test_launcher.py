@@ -42,8 +42,8 @@ class TestLauncher(BaseGUITest):
     def test_open_receivable(self):
         self._test_open_app('receivable')
 
-    def test_open_maintenance(self):
-        self._test_open_app('maintenance')
+    def test_open_services(self):
+        self._test_open_app('services')
 
     def test_open_financial(self):
         self._test_open_app('financial')

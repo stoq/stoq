@@ -69,7 +69,7 @@
     </menu>
   </placeholder>
 </menubar>
-<popup name="MaintenanceSelection">
+<popup name="ServicesSelection">
   <menuitem action="Details"/>
   <separator/>
   <menuitem action="Edit"/>

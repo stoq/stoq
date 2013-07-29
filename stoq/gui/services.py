@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 #
 
-"""Main gui definition for maintenance application"""
+"""Main gui definition for services application"""
 
 import datetime
 import urllib
@@ -156,11 +156,11 @@ class _FilterItem(object):
         return '<_FilterItem "%s">' % (self.name, )
 
 
-class MaintenanceApp(ShellApp):
-    """Maintenance app"""
+class ServicesApp(ShellApp):
+    """Services app"""
 
-    app_title = _(u'Maintenance')
-    gladefile = 'maintenance'
+    app_title = _(u'Services')
+    gladefile = 'services'
     search_spec = WorkOrderView
     search_label = _(u'matching:')
     report_table = WorkOrdersReport
@@ -188,7 +188,7 @@ class MaintenanceApp(ShellApp):
     #
 
     def create_actions(self):
-        group = get_accels('app.maintenance')
+        group = get_accels('app.services')
         actions = [
             # File
             ("OrderMenu", None, _(u"Order")),
@@ -234,8 +234,8 @@ class MaintenanceApp(ShellApp):
             ("UndoRejection", None, _(u"Undo order rejection...")),
             ("Reopen", None, _(u"Reopen order...")),
         ]
-        self.maintenance_ui = self.add_ui_actions("", actions,
-                                                  filename="maintenance.xml")
+        self.services_ui = self.add_ui_actions("", actions,
+                                               filename="services.xml")
 
         radio_actions = [
             ('ViewKanban', '', _("View as Kanban"),
@@ -256,8 +256,8 @@ class MaintenanceApp(ShellApp):
         self.Edit.props.is_important = True
         self.Finish.props.is_important = True
 
-        self.set_help_section(_(u"Maintenance help"), 'app-maintenance')
-        self.popup = self.uimanager.get_widget('/MaintenanceSelection')
+        self.set_help_section(_(u"Services help"), 'app-services')
+        self.popup = self.uimanager.get_widget('/ServicesSelection')
 
     def create_ui(self):
         if api.sysparam(self.store).SMART_LIST_LOADING:
@@ -293,7 +293,7 @@ class MaintenanceApp(ShellApp):
             self._update_view()
 
     def deactivate(self):
-        self.uimanager.remove_ui(self.maintenance_ui)
+        self.uimanager.remove_ui(self.services_ui)
 
     def setup_focus(self):
         self.refresh()

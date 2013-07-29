@@ -46,11 +46,11 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                       row: u'Financial'
                       row: 'General'
                       row: u'Inventory'
-                      row: u'Maintenance'
                       row: u'Point of Sales'
                       row: u'Production'
                       row: u'Purchase'
                       row: u'Sales'
+                      row: u'Services'
                       row: u'Stock'
                       row: u'Till'
                     GtkVBox(expand=True, fill=True):

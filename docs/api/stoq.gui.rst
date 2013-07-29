@@ -57,14 +57,6 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`maintenance` Module
--------------------------
-
-.. automodule:: stoq.gui.maintenance
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`payable` Module
 ---------------------
 
@@ -109,6 +101,14 @@ gui Package
 -------------------
 
 .. automodule:: stoq.gui.sales
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`services` Module
+----------------------
+
+.. automodule:: stoq.gui.services
     :members:
     :undoc-members:
     :show-inheritance:

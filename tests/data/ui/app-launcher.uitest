@@ -62,8 +62,6 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
 <small>Control accounts and financial transactions.</small>, stock: stoq-calc
               markup: <b>Inventory</b>
 <small>Audit and adjust the product stock.</small>
-              markup: <b>Maintenance</b>
-<small>Perform maintenance, installation or repair.</small>
               markup: <b>Point of Sales</b>
 <small>Terminal and cash register for selling products and services.</small>
               markup: <b>Production</b>
@@ -72,6 +70,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
 <small>Create purchase orders and quotes</small>
               markup: <b>Sales</b>
 <small>Quotes management and commission calculation.</small>
+              markup: <b>Services</b>
+<small>Perform services like maintenance, installation or repair.</small>
               markup: <b>Stock</b>
 <small>Stock management, receive products and transfer them between branches.</small>
               markup: <b>Till</b>

@@ -38,24 +38,24 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 
-from stoq.gui.maintenance import MaintenanceApp
+from stoq.gui.services import ServicesApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
 
-class TestMaintenance(BaseGUITest):
+class TestServices(BaseGUITest):
     def test_initial(self):
         for i in xrange(2):
             wo = self.create_workorder()
             wo.identifier = 666 + i
             wo.open_date = datetime.datetime(2013, 1, 1)
 
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
         self.assertEqual(len(app.results), 2)
 
-        self.check_app(app, u'maintenance')
+        self.check_app(app, u'services')
 
-    @mock.patch('stoq.gui.maintenance.MaintenanceApp.run_dialog')
-    @mock.patch('stoq.gui.maintenance.api.new_store')
+    @mock.patch('stoq.gui.services.ServicesApp.run_dialog')
+    @mock.patch('stoq.gui.services.api.new_store')
     def test_cancel_workorder_dont_confirm(self, new_store, run_dialog):
         new_store.return_value = self.store
 
@@ -63,7 +63,7 @@ class TestMaintenance(BaseGUITest):
         workorder = self.create_workorder()
 
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
 
         olist = app.results
         olist.select(olist[0])
@@ -87,8 +87,8 @@ class TestMaintenance(BaseGUITest):
                 # Status should not be altered. ie, its still opened
                 self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
 
-    @mock.patch('stoq.gui.maintenance.MaintenanceApp.run_dialog')
-    @mock.patch('stoq.gui.maintenance.api.new_store')
+    @mock.patch('stoq.gui.services.ServicesApp.run_dialog')
+    @mock.patch('stoq.gui.services.api.new_store')
     def test_cancel_workorder_confirm(self, new_store, run_dialog):
         new_store.return_value = self.store
 
@@ -96,7 +96,7 @@ class TestMaintenance(BaseGUITest):
         workorder = self.create_workorder()
 
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
 
         olist = app.results
         olist.select(olist[0])
@@ -120,8 +120,8 @@ class TestMaintenance(BaseGUITest):
                 # Status should be updated to cancelled.
                 self.assertEquals(workorder.status, WorkOrder.STATUS_CANCELLED)
 
-    @mock.patch('stoq.gui.maintenance.yesno')
-    @mock.patch('stoq.gui.maintenance.api.new_store')
+    @mock.patch('stoq.gui.services.yesno')
+    @mock.patch('stoq.gui.services.api.new_store')
     def test_finish_workorder_dont_confirm(self, new_store, yesno):
         new_store.return_value = self.store
 
@@ -132,7 +132,7 @@ class TestMaintenance(BaseGUITest):
         workorder.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
 
         olist = app.results
         olist.select(olist[0])
@@ -160,8 +160,8 @@ class TestMaintenance(BaseGUITest):
         # Status should not be altered. ie, its still in Progress
         self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
-    @mock.patch('stoq.gui.maintenance.yesno')
-    @mock.patch('stoq.gui.maintenance.api.new_store')
+    @mock.patch('stoq.gui.services.yesno')
+    @mock.patch('stoq.gui.services.api.new_store')
     def test_finish_workorder_confirm(self, new_store, yesno):
         new_store.return_value = self.store
 
@@ -172,7 +172,7 @@ class TestMaintenance(BaseGUITest):
         workorder.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
 
         olist = app.results
         olist.select(olist[0])
@@ -200,7 +200,7 @@ class TestMaintenance(BaseGUITest):
         self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
 
     def test_client_search(self):
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
 
         with mock.patch.object(app, 'run_dialog') as rd:
             self.activate(app.Clients)
@@ -210,13 +210,13 @@ class TestMaintenance(BaseGUITest):
     def test_on_ViewKanban__toggled(self):
         if True:
             raise SkipTest('Changing to kan ban view is not working in tests')
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
         self.activate(app.ViewKanban)
 
-    @mock.patch('stoq.gui.maintenance.api.new_store')
+    @mock.patch('stoq.gui.services.api.new_store')
     def test_on_Categories__activate(self, new_store):
         new_store.return_value = self.store
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(app, 'run_dialog') as rd:
@@ -224,39 +224,39 @@ class TestMaintenance(BaseGUITest):
                 rd.assert_called_once_with(WorkOrderCategoryDialog, self.store)
 
     def test_on_Services__activate(self):
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
 
         with mock.patch.object(app, 'run_dialog') as rd:
             self.activate(app.Services)
             rd.assert_called_once_with(ServiceSearch, self.store)
 
     def test_on_Products__activate(self):
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
 
         with mock.patch.object(app, 'run_dialog') as rd:
             self.activate(app.Products)
             rd.assert_called_once_with(ProductSearch, self.store,
                                        hide_footer=True, hide_toolbar=True)
 
-    @mock.patch('stoq.gui.maintenance.print_report')
+    @mock.patch('stoq.gui.services.print_report')
     def test_on_PrintReceipt(self, print_report):
         workorder = self.create_workorder(equipment=u'teste')
         workorder.status = WorkOrder.STATUS_WORK_FINISHED
 
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
         results = app.results
         results.select(results[0])
         self.activate(app.PrintReceipt)
         print_report.assert_called_once_with(WorkOrderReceiptReport,
                                              results[0].work_order)
 
-    @mock.patch('stoq.gui.maintenance.print_report')
+    @mock.patch('stoq.gui.services.print_report')
     def test_on_PrintQuote(self, print_report):
         workorder = self.create_workorder(equipment=u'teste')
         workorder.defect_detected = u'quote'
         workorder.status = WorkOrder.STATUS_WORK_FINISHED
 
-        app = self.create_app(MaintenanceApp, u'maintenance')
+        app = self.create_app(ServicesApp, u'services')
         results = app.results
         results.select(results[0])
         self.activate(app.PrintQuote)

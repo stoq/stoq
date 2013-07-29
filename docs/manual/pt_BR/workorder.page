@@ -10,7 +10,7 @@
       <link xref="workorder-close" />...
     </desc>
 
-    <link type="guide" xref="app-maintenance" />
+    <link type="guide" xref="app-services" />
     <link type="seealso" xref="product" />
     <link type="seealso" xref="service" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>

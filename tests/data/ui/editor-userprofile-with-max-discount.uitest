@@ -20,13 +20,16 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "assistant"', hidden
                     ProxyCheckButton(financial, expand=True, fill=True, padding=6): 'Financial'
                     GtkImage():
                   GtkHBox(fill=True):
-                    ProxyCheckButton(pos, expand=True, fill=True, padding=6): 'Point of Sales'
-                    GtkImage():
-                  GtkHBox(fill=True):
                     ProxyCheckButton(sales, expand=True, fill=True, padding=6): 'Sales'
                     GtkImage():
                   GtkHBox(fill=True):
+                    ProxyCheckButton(pos, expand=True, fill=True, padding=6): 'Point of Sales'
+                    GtkImage():
+                  GtkHBox(fill=True):
                     ProxyCheckButton(payable, expand=True, fill=True, padding=6): 'Accounts Payable'
+                    GtkImage():
+                  GtkHBox(fill=True):
+                    ProxyCheckButton(services, expand=True, fill=True, padding=6): 'Services'
                     GtkImage():
                   GtkHBox(fill=True):
                     ProxyCheckButton(calendar, expand=True, fill=True, padding=6): 'Calendar'
@@ -48,9 +51,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "assistant"', hidden
                     GtkImage():
                   GtkHBox(fill=True):
                     ProxyCheckButton(inventory, expand=True, fill=True, padding=6): 'Inventory'
-                    GtkImage():
-                  GtkHBox(fill=True):
-                    ProxyCheckButton(maintenance, expand=True, fill=True, padding=6): 'Maintenance'
                     GtkImage():
                   GtkHBox(fill=True):
                     ProxyCheckButton(stock, expand=True, fill=True, padding=6): 'Stock'

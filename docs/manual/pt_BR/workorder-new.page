@@ -31,7 +31,7 @@
   <steps>
     <item>
       <p>
-        Abra o <link xref="app-maintenance" /> e selecione
+        Abra o <link xref="app-services" /> e selecione
         <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Ordem de serviço</gui></guiseq>.
       </p>
       <note style="tip">
