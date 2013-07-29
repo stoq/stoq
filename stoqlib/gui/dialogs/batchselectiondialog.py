@@ -515,6 +515,11 @@ class BatchDecreaseSelectionDialog(BatchSelectionDialog):
     #  BatchSelectionDialog
     #
 
+    def setup_proxies(self):
+        BatchSelectionDialog.setup_proxies(self)
+        # For decreases, it's very useful for this to be expanded
+        self.existing_batches_expander.set_expanded(True)
+
     def setup_entry(self, entry):
         entry.set_mode(ENTRY_MODE_DATA)
         entry.set_exact_completion()
