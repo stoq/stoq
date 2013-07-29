@@ -455,12 +455,12 @@ class ECFUI(object):
         elif last_doc.last_till_entry.value > 0:
             msg = _("Do you really want to cancel the last cash added "
                     "number %d and value %.2f ?") % (
-                last_doc.last_till_entry.id,
+                last_doc.last_till_entry.identifier,
                 last_doc.last_till_entry.value)
         else:
             msg = _("Do you really want to cancel the last cash removed "
                     "number %d and value %.2f ?") % (
-                last_doc.last_till_entry.id,
+                last_doc.last_till_entry.identifier,
                 last_doc.last_till_entry.value)
         return yesno(msg, gtk.RESPONSE_NO, _("Cancel Last Document"),
                      _("Not now"))
@@ -512,7 +512,7 @@ class ECFUI(object):
                 warning(_("You do not have this value on till."))
                 store.close()
                 return
-            cancelled = self._printer.cancel()
+            cancelled = self._printer.cancel_last_coupon()
             if not cancelled:
                 info(_("Cancelling sale failed, nothing to cancel"))
                 store.close()

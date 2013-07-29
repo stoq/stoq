@@ -116,7 +116,13 @@ class CouponPrinter(object):
 
     def cancel_last_coupon(self):
         """Cancel the last non-fiscal coupon or sale."""
-        self._driver.cancel_last_coupon()
+        try:
+            self._driver.cancel_last_coupon()
+        except DriverError as details:
+            warning(_("Could not cancel coupon"),
+                    str(details))
+            return False
+        return True
 
     def add_cash(self, value):
         """
