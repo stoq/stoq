@@ -25,7 +25,6 @@
 
 # pylint: enable=E1101
 
-from decimal import Decimal
 import operator
 
 from kiwi import ValueUnset
@@ -154,45 +153,6 @@ class PaymentMethod(Domain):
         return get_payment_operation(self.method_name)
 
     #
-    # Private API
-    #
-
-    def _check_installments_number(self, installments_number, maximum=None):
-        if maximum is None:
-            maximum = self.max_installments
-        if installments_number > maximum:
-            raise ValueError(
-                _('The number of installments can not be greater than %d '
-                  'for payment method %r') % (maximum, self))
-
-    def _check_penalty_value(self, penalty):
-        penalty = penalty or Decimal(0)
-        if not isinstance(penalty, (int, Decimal)):
-            raise TypeError('penalty argument must be integer '
-                            'or Decimal, got %s instead'
-                            % type(penalty))
-        if not (0 <= penalty <= 100):
-            raise ValueError(_("Penalty must be "
-                               "between 0 and 100, not %s")
-                             % penalty)
-
-    def _calculate_payment_value(self, total_value, installments_number,
-                                 payment_type, penalty=None):
-        if not installments_number:
-            raise ValueError(_('The payment_qty argument must be greater '
-                               'than zero'))
-        if payment_type == Payment.TYPE_IN:
-            self._check_installments_number(installments_number)
-
-        self._check_penalty_value(penalty)
-
-        if not penalty:
-            return total_value / installments_number
-
-        penalty_rate = penalty / 100 + 1
-        return (total_value / installments_number) * penalty_rate
-
-    #
     # Public API
     #
 
@@ -286,30 +246,38 @@ class PaymentMethod(Domain):
         :returns: a list of |payments|
         """
         installments = len(due_dates)
-        penalty = Decimal(0)
+        if not installments:
+            raise ValueError(_('Need at least one installment'))
+        if payment_type == Payment.TYPE_IN:
+            if installments > self.max_installments:
+                raise ValueError(
+                    _('The number of installments can not be greater than %d '
+                      'for payment method %s') % (self.max_installments,
+                                                  self.method_name))
 
-        normalized_value = self._calculate_payment_value(
-            value, installments, payment_type, penalty)
-
-        normalized_value = quantize(normalized_value)
-        if penalty:
-            penalty_total = normalized_value * installments - value
-        else:
-            penalty_total = Decimal(0)
+        # Round off the individual installments
+        # For instance, let's say we're buying something costing 100.00 and paying
+        # in 3 installments, then we should have these payment values:
+        # - Installment #1: 33.33
+        # - Installment #2: 33.33
+        # - Installment #3: 33.34
+        normalized_value = quantize(value / installments)
 
         payments = []
-        payments_total = Decimal(0)
         for i, due_date in enumerate(due_dates):
             payment = self.create_payment(
                 payment_type, group, branch, normalized_value, due_date,
                 description=self.describe_payment(group, i + 1, installments))
             payments.append(payment)
-            payments_total += normalized_value
 
-        # Adjust the last payment so it the total will sum up nicely.
-        difference = -(payments_total - penalty_total - value)
+        # Maybe adjust the last payment so it the total will sum up nicely,
+        # for instance following the example above, this will add
+        # 0.01 to the third installment, 100 - (33.33 * 3)
+        # This is not always needed, since the individual installments might
+        # sum up exact, eg 50 + 50
+        difference = value - (normalized_value * installments)
         if difference:
-            payment.value += difference
+            payments[-1].value += difference
         return payments
 
     def describe_payment(self, payment_group, installment=1, installments=1):
