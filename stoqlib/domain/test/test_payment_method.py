@@ -30,11 +30,11 @@ from decimal import Decimal
 from kiwi import ValueUnset
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.method import PaymentMethod, _
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till
-from stoqlib.exceptions import TillError
+from stoqlib.exceptions import TillError, PaymentMethodError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.defaults import quantize
 
@@ -197,12 +197,78 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
 class TestPaymentMethod(DomainTest, _TestPaymentMethod):
     method_type = u'check'
 
+    def test_activate(self):
+        acc = self.create_account()
+        method = PaymentMethod(method_name=u'Test', destination_account=acc)
+        with self.assertRaises(AssertionError) as error:
+            method.activate()
+        self.assertEquals(str(error.exception), 'This provider is already '
+                                                'active')
+        method.is_active = False
+        self.assertIsNone(method.activate())
+
+    def test_inactivate(self):
+        acc = self.create_account()
+        method = PaymentMethod(method_name=u'Test', destination_account=acc)
+        self.assertIsNone(method.inactivate())
+        method.is_active = False
+        with self.assertRaises(AssertionError) as error:
+            method.inactivate()
+        self.assertEquals(str(error.exception), 'This provider is already '
+                                                'inactive')
+
+    def test_get_status_string(self):
+        acc = self.create_account()
+        method = PaymentMethod(method_name=u'Test', destination_account=acc)
+        self.assertEquals(method.get_status_string(), u'Active')
+        method.inactivate()
+        self.assertEquals(method.get_status_string(), u'Inactive')
+
     def _createUnclosedTill(self):
         till = Till(station=get_current_station(self.store),
                     store=self.store)
         till.open_till()
         yesterday = localtoday() - datetime.timedelta(1)
         till.opening_date = yesterday
+
+    def test_create_payment(self):
+        acc = self.create_account()
+        branch = self.create_branch()
+        method = PaymentMethod(method_name=u'Test', destination_account=acc)
+        group = self.create_payment_group()
+        self.create_payment(payment_type=Payment.TYPE_IN, date=None,
+                            value=100, method=method, branch=branch,
+                            group=group)
+        with self.assertRaises(PaymentMethodError):
+            method.create_payment(payment_type=Payment.TYPE_IN, payment_group=group,
+                                  branch=branch, value=100, due_date=None,
+                                  description=None, base_value=None,
+                                  till=ValueUnset, payment_number=None)
+        self.create_payment(payment_type=Payment.TYPE_IN, date=None,
+                            value=100, method=method, branch=branch,
+                            group=group)
+        with self.assertRaises(DatabaseInconsistency):
+            method.create_payment(payment_type=Payment.TYPE_IN, payment_group=group,
+                                  branch=branch, value=100, due_date=None,
+                                  description=None, base_value=None,
+                                  till=ValueUnset, payment_number=None)
+        with self.assertRaises(AssertionError):
+            method.create_payment(payment_type=9, payment_group=group,
+                                  branch=branch, value=100, due_date=None,
+                                  description=None, base_value=None,
+                                  till=ValueUnset, payment_number=None)
+
+    def test_create_payments_without_installments(self):
+        acc = self.create_account()
+        branch = self.create_branch()
+        method = PaymentMethod(method_name=u'Test', destination_account=acc)
+        group = self.create_payment_group()
+        with self.assertRaises(ValueError) as error:
+            method.create_payments(payment_type=Payment.TYPE_IN, group=group,
+                                   branch=branch, value=Decimal(100),
+                                   due_dates=[])
+        self.assertEquals(str(error.exception), _('Need at least one '
+                                                  'installment'))
 
     def test_create_out_payment_un_closed_till(self):
         self._createUnclosedTill()

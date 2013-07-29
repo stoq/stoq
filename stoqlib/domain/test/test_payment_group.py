@@ -60,6 +60,32 @@ class TestPaymentGroup(DomainTest):
         self.failUnless(
             sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED)
 
+    def test_remove_item(self):
+        payment = self.create_payment()
+        with self.assertRaises(AttributeError):
+            payment.group.remove_item(payment=None)
+        self.assertIsNone(payment.group.remove_item(payment=payment))
+
+    def test_installments_number(self):
+        payment = self.create_payment()
+        self.assertEquals(payment.group.installments_number, 1)
+
+    def test_get_payments_sum(self):
+        payment = self.create_payment()
+        payments = payment.group.get_valid_payments()
+        result = payment.group._get_payments_sum(payments=payments,
+                                                 attr=Payment.value)
+        self.assertEquals(result, 10)
+
+    def test_clear_unused(self):
+        payment = self.create_payment()
+        payment2 = self.create_payment(group=payment.group)
+        payment2.status = Payment.STATUS_PREVIEW
+        self.assertEquals(payment.group._get_preview_payments().count(), 2)
+        payment.group.clear_unused()
+        with self.assertRaises(AttributeError):
+            payment.group._get_preview_payments()
+
     def test_confirm(self):
         branch = self.create_branch()
         group = self.create_payment_group()
@@ -515,11 +541,13 @@ class TestPaymentGroup(DomainTest):
         renegotiation = self.create_payment_renegotiation()
         group = self.create_payment_group()
         decrease = self.create_stock_decrease(group=group)
+        payment_group = self.create_payment_group()
 
         self.assertEquals(sale, sale.group.get_parent())
         self.assertEquals(purchase, purchase.group.get_parent())
         self.assertEquals(renegotiation, renegotiation.group.get_parent())
         self.assertEquals(decrease, decrease.group.get_parent())
+        self.assertEquals(None, payment_group.get_parent())
 
     def test_get_description(self):
         sale = self.create_sale()

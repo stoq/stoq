@@ -191,9 +191,8 @@ class PaymentGroup(Domain):
         """Cancel all pending |payments| in this group
         """
         for payment in self.get_pending_payments():
-            if payment.is_cancelled():
-                continue
-            payment.cancel()
+            if not payment.is_cancelled():
+                payment.cancel()
 
     def get_total_paid(self):
         """Returns the sum of all paid |payment| values within this group.

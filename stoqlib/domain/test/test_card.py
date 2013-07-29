@@ -223,3 +223,26 @@ class TestCreditCardData(DomainTest):
         self.assertEquals(credit_card.fee, Decimal(5))
         self.assertEquals(credit_card.fare, 10)
         self.assertEquals(credit_card.fee_value, 50)
+        with self.assertRaises(TypeError) as error:
+            credit_card.update_card_data(device=None, provider=provider,
+                                         card_type=credit_card.TYPE_DEBIT,
+                                         installments=1)
+        expected = 'device must be CardPaymentDevice instance and not None'
+        self.assertEquals(str(error.exception), expected)
+        with self.assertRaises(TypeError) as error:
+            credit_card.update_card_data(device=device, provider=None,
+                                         card_type=credit_card.TYPE_DEBIT,
+                                         installments=1)
+        expected = 'provider must be CreditProvider instance and not None'
+        self.assertEquals(str(error.exception), expected)
+        with self.assertRaises(ValueError) as error:
+            credit_card.update_card_data(device=device, provider=provider,
+                                         card_type=None,
+                                         installments=1)
+        self.assertEquals(str(error.exception), "card_type cannot be None")
+        with self.assertRaises(ValueError) as error:
+            credit_card.update_card_data(device=device, provider=provider,
+                                         card_type=credit_card.TYPE_DEBIT,
+                                         installments=None)
+        self.assertEquals(str(error.exception), "installments cannot be"
+                                                " None")

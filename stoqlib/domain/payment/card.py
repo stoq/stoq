@@ -384,11 +384,11 @@ class CreditCardData(Domain):
         """
 
         if device is None or not isinstance(device, CardPaymentDevice):
-            raise TypeError("device must be CardPaymentDevice instance and"
+            raise TypeError("device must be CardPaymentDevice instance and "
                             "not %r" % (device, ))
         if provider is None or not isinstance(provider, CreditProvider):
             raise TypeError("provider must be CreditProvider instance and"
-                            "not %r" % (provider, ))
+                            " not %r" % (provider, ))
         if card_type is None:
             raise ValueError("card_type cannot be None")
         if installments is None:

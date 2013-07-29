@@ -871,13 +871,13 @@ class TestUser(_PersonFacetTest, DomainTest):
             user.authenticate(store=self.store, username=u'username',
                               pw_hash=u'anything', current_branch=branch)
         expected = "Invalid user or password"
-        self.assertEquals(error.exception.message, expected)
+        self.assertEquals(str(error.exception), expected)
 
         with self.assertRaises(LoginError) as error:
             user.authenticate(store=self.store, username=u'username',
                               pw_hash=user.pw_hash, current_branch=branch)
         expected = u'This user does not have access to this branch.'
-        self.assertEquals(error.exception.message, expected)
+        self.assertEquals(str(error.exception), expected)
 
         user.add_access_to(branch=branch)
         result = user.authenticate(store=self.store, username=u'username',

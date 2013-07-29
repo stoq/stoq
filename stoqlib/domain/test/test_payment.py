@@ -26,6 +26,7 @@ __tests__ = 'stoqlib/domain/payment/payment.py'
 
 import datetime
 from decimal import Decimal
+import mock
 
 from kiwi.currency import currency
 
@@ -37,10 +38,23 @@ from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import (INTERVALTYPE_MONTH, localdate,
                                    localdatetime, localnow, localtoday)
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 
 
 class TestPayment(DomainTest):
+    def test_get_status_string_without_status(self):
+        payment = self.create_payment()
+        payment.status = 9
+        with self.assertRaises(DatabaseInconsistency):
+            payment.get_status_str()
+
     def test_new(self):
+        with self.assertRaises(TypeError):
+            Payment(due_date=localnow(),
+                    branch=self.create_branch(),
+                    payment_type=Payment.TYPE_OUT,
+                    store=self.store)
+
         payment = Payment(value=currency(10), due_date=localnow(),
                           branch=self.create_branch(),
                           method=None,
@@ -50,6 +64,10 @@ class TestPayment(DomainTest):
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
         self.failUnless(payment.status == Payment.STATUS_PREVIEW)
+
+    def test_installment_number(self):
+        payment = self.create_payment()
+        self.assertEquals(payment.installment_number, 1)
 
     def _get_relative_day(self, days):
         return localtoday() + datetime.timedelta(days)
@@ -149,6 +167,15 @@ class TestPayment(DomainTest):
             commission.sale_status = item.sale.STATUS_RETURNED
             self.assertEquals(commission.quantity_sold(), Decimal(0))
 
+    @mock.patch('stoqlib.domain.payment.payment.Event.log')
+    def test_pay(self, log):
+        payment = self.create_payment(value=Decimal(101))
+        payment.status = Payment.STATUS_PENDING
+        payment.pay(paid_value=Decimal(102))
+        expected = (u'Money payment with value original value 101.00 was paid'
+                    u' with value 102.00')
+        log.assert_called_with(self.store, 4, expected)
+
     def test_is_paid(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
@@ -184,6 +211,9 @@ class TestPayment(DomainTest):
         self.failIf(payment.is_cancelled())
         payment.cancel()
         self.failUnless(payment.is_cancelled())
+        with self.assertRaises(StoqlibError):
+            payment.status = Payment.STATUS_CANCELLED
+            payment.cancel()
 
     def test_get_paid_date_string(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
@@ -214,6 +244,13 @@ class TestPayment(DomainTest):
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
         self.assertNotEqual(payment.get_open_date_string(), u"")
+        payment.open_date = None
+        self.assertEquals(payment.get_open_date_string(), u"")
+
+    def test_is_separate_payment_with_renegotiation(self):
+        payment = self.create_payment()
+        self.create_payment_renegotiation(group=payment.group)
+        self.assertFalse(payment.is_separate_payment())
 
     def test_get_days_late(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
@@ -230,6 +267,8 @@ class TestPayment(DomainTest):
                           store=self.store)
         payment.set_pending()
         self.assertEqual(payment.get_days_late(), 4)
+        payment.due_date = self._get_relative_day(+4)
+        self.assertFalse(payment.get_days_late())
         payment.pay()
         self.assertEqual(payment.get_days_late(), 0)
 
@@ -246,13 +285,42 @@ class TestPayment(DomainTest):
                           store=self.store)
         payment.set_pending()
         payment.pay()
-        payment.cancel()
+        payment.cancel(change_entry=payment)
         self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
+
+    def test_change_due_date(self):
+        payment = self.create_payment()
+        self.assertEquals(payment.due_date, localtoday())
+        payment.change_due_date(new_due_date=self._get_relative_day(-2))
+        self.assertEquals(payment.due_date, self._get_relative_day(-2))
+        payment.status = Payment.STATUS_PAID
+        with self.assertRaises(StoqlibError):
+            payment.change_due_date(new_due_date=self._get_relative_day(-1))
+
+    def test_update_value(self):
+        payment = self.create_payment()
+        self.assertEquals(payment.value, 10)
+        payment.update_value(Decimal(101))
+        self.assertEquals(payment.value, 101)
+
+    def test_get_payable_value(self):
+        payment = self.create_payment()
+        self.assertEquals(payment.get_payable_value(), 10)
+        payment.status = Payment.STATUS_PAID
+        payment.paid_value = 10
+        self.assertEquals(payment.get_payable_value(), 10)
+        payment.status = 9
+        self.assertEquals(payment.get_payable_value(), 10)
 
     def test_create_repeated_month(self):
         p = self.create_payment()
         p.description = u'Rent'
         p.category = self.create_payment_category()
+        with self.assertRaises(AssertionError):
+            Payment.create_repeated(self.store, p,
+                                    INTERVALTYPE_MONTH,
+                                    localdate(2012, 1, 1).date(),
+                                    localdate(2012, 1, 1).date())
         payments = Payment.create_repeated(self.store, p,
                                            INTERVALTYPE_MONTH,
                                            localdate(2012, 1, 1).date(),

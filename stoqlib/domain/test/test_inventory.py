@@ -41,7 +41,7 @@ class TestInventory(DomainTest):
         with self.assertRaises(TypeError) as error:
             inventory.add_sellable(sellable=sellable)
         expected = "product %r has no storable" % (sellable.product, )
-        self.assertEquals(error.exception.message, expected)
+        self.assertEquals(str(error.exception), expected)
 
         storable = self.create_storable(product=sellable.product)
         result = inventory.add_sellable(sellable=sellable)
@@ -231,7 +231,7 @@ class TestInventoryItem(DomainTest):
         with self.assertRaises(TypeError) as error:
             item.adjust(invoice_number=invoice_number)
         expected = "The adjustment item must be a storable product."
-        self.assertEquals(error.exception.message, expected)
+        self.assertEquals(str(error.exception), expected)
 
     def test_get_code(self):
         item = self.create_inventory_item()

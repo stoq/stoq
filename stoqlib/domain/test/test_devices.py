@@ -58,11 +58,11 @@ class TestDeviceSettings(DomainTest):
                                          model=device.model,
                                          port=port)
         device.type = DeviceSettings._UNUSED
-        with self.assertRaises(DatabaseInconsistency) as msg:
+        with self.assertRaises(DatabaseInconsistency) as error:
             device.get_interface()
         expected = "The device type referred by this record" \
                    " (%r) is invalid, given 2." % device
-        self.assertEquals(msg.exception.message, expected)
+        self.assertEquals(str(error.exception), expected)
 
     def test_is_a_printer(self):
         device = DeviceSettings(store=self.store,

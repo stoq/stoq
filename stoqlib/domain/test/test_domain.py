@@ -285,8 +285,8 @@ class TestDomain(DomainTest):
 
     def test_validate_batch(self):
         sellable = self.create_sellable()
-        with self.assertRaises(ValueError) as msg:
+        with self.assertRaises(ValueError) as error:
             sellable.validate_batch(batch=Storable, sellable=sellable)
         expected = 'Batches should only be used with storables,' \
                    ' but %r is not one' % sellable
-        self.assertEquals(msg.exception.message, expected)
+        self.assertEquals(str(error.exception), expected)

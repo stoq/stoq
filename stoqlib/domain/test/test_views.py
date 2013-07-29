@@ -22,13 +22,24 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+
 __tests__ = 'stoqlib/domain/views.py'
 
 import datetime
 from decimal import Decimal
 
+from kiwi.datatypes import converter
+
+from stoqlib.database.expr import Date
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
+from stoqlib.domain.payment.card import CreditProvider
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
+from stoqlib.domain.payment.views import (BasePaymentView, InPaymentView,
+                                          OutPaymentView, CardPaymentView,
+                                          InCheckPaymentView,
+                                          PaymentChangeHistoryView)
 from stoqlib.domain.product import (ProductSupplierInfo, ProductStockItem,
                                     Storable, Product, StockTransactionHistory)
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
@@ -87,6 +98,212 @@ for view_ in _get_all_views():
     func.__name__ = name
     setattr(TestViewsGeneric, name, func)
     del func
+
+
+class TestBasePaymentView(DomainTest):
+    def test_post_search_callback(self):
+        self.create_payment()
+        sresults = BasePaymentView.find_pending(self.store)
+        results = BasePaymentView.post_search_callback(sresults=sresults)
+        self.assertEquals(results[0], ('count', 'sum'))
+        self.assertIsNotNone(results[1])
+
+    def test_can_cancel_payment(self):
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        payment.status = Payment.STATUS_PENDING
+        payment_view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertTrue(payment_view.can_cancel_payment())
+
+        payment.status = Payment.STATUS_PREVIEW
+        payment_view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertFalse(payment_view.can_cancel_payment())
+
+        sale = self.create_sale()
+        payment = self.add_payments(sale)[0]
+        view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertFalse(view.can_cancel_payment())
+
+        purchase = self.create_purchase_order()
+        payment = self.add_payments(purchase)[0]
+        view = self.store.find(OutPaymentView, id=payment.id).one()
+        self.assertFalse(view.can_cancel_payment())
+
+    def test_is_late(self):
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        payment.due_date = localtoday() + datetime.timedelta(-4)
+        payment.status = Payment.STATUS_PREVIEW
+        view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertTrue(view.is_late())
+        payment.status = Payment.STATUS_PAID
+        view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertFalse(view.is_late())
+
+    def test_get_days_late(self):
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertFalse(view.get_days_late())
+
+        payment.due_date = localtoday() + datetime.timedelta(-4)
+        view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertEquals(view.get_days_late(), 4)
+
+        payment.due_date = localtoday() + datetime.timedelta(+4)
+        view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertFalse(view.get_days_late())
+
+    def test_is_paid(self):
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        payment.status = Payment.STATUS_PENDING
+        view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertFalse(view.is_paid())
+
+        payment.status = Payment.STATUS_PAID
+        view = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertTrue(view.is_paid())
+
+    def test_find_pending(self):
+        due_date = localtoday() + datetime.timedelta(-4), localtoday()
+        for i in range(5):
+            if i % 2 == 0:
+                payment = self.create_payment(payment_type=Payment.TYPE_IN)
+                payment.status = Payment.STATUS_PENDING
+                payment.due_date = localtoday() + datetime.timedelta(-2)
+            else:
+                payment = self.create_payment(payment_type=Payment.TYPE_IN)
+                payment.status = Payment.STATUS_PENDING
+                payment.due_date = Date(localtoday())
+
+        result = InPaymentView.find_pending(store=self.store, due_date=due_date)
+        self.assertEquals(result.count(), 5)
+
+        result = InPaymentView.find_pending(store=self.store,
+                                            due_date=Date(localtoday()))
+        self.assertEquals(result.count(), 2)
+        result = InPaymentView.find_pending(store=self.store,
+                                            due_date=None)
+        self.assertEquals(result.count(), 7)
+
+
+class TestInPaymentView(DomainTest):
+    def test_renegotiation(self):
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        self.create_payment_renegotiation(group=payment.group)
+        result = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertEquals(result.renegotiation.client.person.name, u'Client')
+
+    def test_renegotiated(self):
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        payment.set_pending()
+        payment.group.renegotiation = self.create_payment_renegotiation(
+            group=payment.group)
+        payment.group.renegotiation.set_renegotiated()
+        result = self.store.find(InPaymentView, id=payment.id).one()
+        self.assertEquals(result.renegotiated.client.person.name, u'Client')
+
+    def test_get_parent(self):
+        sale = self.create_sale()
+        payment = self.add_payments(sale)
+        result = self.store.find(InPaymentView, id=payment[0].id).one()
+        self.assertIs(result.get_parent(), sale)
+
+
+class TestCardPaymentView(DomainTest):
+    def test_get_status_str(self):
+        payment = self.create_card_payment(payment_type=Payment.TYPE_IN)
+        result = self.store.find(CardPaymentView, id=payment.id).one()
+        self.assertEquals(result.get_status_str(), u'Preview')
+
+    def test_renegotiation(self):
+        payment = self.create_card_payment(payment_type=Payment.TYPE_IN)
+        self.create_payment_renegotiation(group=payment.group)
+        result = self.store.find(CardPaymentView, id=payment.id).one()
+        self.assertEquals(result.renegotiation.client.person.name, u'Client')
+
+    def test_find_by_provider(self):
+
+        self.create_card_payment(payment_type=Payment.TYPE_IN,
+                                 provider_id=u'VISANET')
+        payment = self.create_card_payment(payment_type=Payment.TYPE_IN)
+        provider = self.store.find(CreditProvider, provider_id=u'AMEX').one()
+
+        payments = CardPaymentView.find_by_provider(store=self.store,
+                                                    provider=None).count()
+        self.assertEquals(payments, 2)
+
+        card_payment = CardPaymentView.find_by_provider(store=self.store,
+                                                        provider=provider).one()
+        self.assertIs(card_payment.payment, payment)
+
+
+class Test_BillandCheckPaymentView(DomainTest):
+    def test_get_status_str(self):
+        method = self.store.find(PaymentMethod, method_name=u'check').one()
+        self.create_payment(payment_type=Payment.TYPE_IN,
+                            method=method)
+        view = self.store.find(InCheckPaymentView)
+        status = view[0].get_status_str()
+        self.assertEquals(status, u'To Pay')
+
+    def test_method_description(self):
+        method = self.store.find(PaymentMethod, method_name=u'check').one()
+        self.create_payment(payment_type=Payment.TYPE_IN,
+                            method=method)
+        view = self.store.find(InCheckPaymentView)
+        self.assertEquals(view[0].method_description, u'Check')
+
+
+class TestPaymentChangeHistoryView(DomainTest):
+    def test_changed_field(self):
+        payment = self.create_payment()
+        history = PaymentChangeHistory(payment=payment,
+                                       change_reason=u'Teste test test')
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertIsNone(view.changed_field)
+
+        history.last_due_date = Date(localtoday())
+        history.last_status = Payment.STATUS_PENDING
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertEquals(view.changed_field, u'Due Date')
+
+        history.last_due_date = None
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertEquals(view.changed_field, u'Status')
+
+    def test_from_value(self):
+        payment = self.create_payment()
+        history = PaymentChangeHistory(payment=payment,
+                                       change_reason=u'Teste test test')
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertIsNone(view.from_value)
+
+        history.last_due_date = Date(localtoday())
+        due_date = converter.as_string(datetime.date, history.last_due_date)
+        history.last_status = Payment.STATUS_PENDING
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertEquals(view.from_value, due_date)
+
+        history.last_due_date = None
+        status = Payment.statuses[history.last_status]
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertEquals(view.from_value, status)
+
+    def test_to_value(self):
+        payment = self.create_payment()
+        history = PaymentChangeHistory(payment=payment,
+                                       change_reason=u'Teste test test')
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertIsNone(view.to_value)
+
+        history.new_due_date = Date(localtoday())
+        due_date = converter.as_string(datetime.date, history.new_due_date)
+        history.new_status = Payment.STATUS_CONFIRMED
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertEquals(view.to_value, due_date)
+
+        history.new_due_date = None
+        status = Payment.statuses[history.new_status]
+        view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
+        self.assertEquals(view.to_value, status)
 
 
 class TestProductFullStockView(DomainTest):

@@ -130,6 +130,20 @@ class BasePaymentView(Viewable):
         LeftJoin(CommentsSummary, Field('_comments', 'payment_id') == Payment.id),
     ]
 
+    #
+    # Private
+    #
+
+    def _get_due_date_delta(self):
+        if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
+            return datetime.timedelta(0)
+
+        return localtoday().date() - self.due_date.date()
+
+    #
+    # Public API
+    #
+
     @classmethod
     def post_search_callback(cls, sresults):
         select = sresults.get_select_expr(Count(1), Sum(cls.value))
@@ -151,20 +165,10 @@ class BasePaymentView(Viewable):
         return Payment.statuses[self.status]
 
     def is_late(self):
-        if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
-            return False
-
-        return (localtoday().date() - self.due_date.date()).days > 0
+        return self._get_due_date_delta().days > 0
 
     def get_days_late(self):
-        if not self.is_late():
-            return 0
-
-        days_late = localtoday().date() - self.due_date.date()
-        if days_late.days < 0:
-            return 0
-
-        return days_late.days
+        return max(self._get_due_date_delta().days, 0)
 
     def is_paid(self):
         return self.status == Payment.STATUS_PAID

@@ -28,7 +28,7 @@ from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.test.domaintest import DomainTest
 
 
-class TestPaymentCategrory(DomainTest):
+class TestPaymentCategory(DomainTest):
     def test_get_by_type(self):
         pcs = PaymentCategory.get_by_type(self.store, PaymentCategory.TYPE_RECEIVABLE)
         self.assertTrue(pcs.is_empty())
@@ -52,3 +52,7 @@ class TestPaymentCategrory(DomainTest):
         self.assertFalse(pcs.is_empty())
         pcs = PaymentCategory.get_by_type(self.store, PaymentCategory.TYPE_PAYABLE)
         self.assertFalse(pcs.is_empty())
+
+    def test_get_description(self):
+        category = self.create_payment_category()
+        self.assertEquals(category.get_description(), u'category')

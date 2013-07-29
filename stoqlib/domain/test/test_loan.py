@@ -43,7 +43,7 @@ class TestLoan(DomainTest):
         with self.assertRaises(DatabaseInconsistency) as error:
             loan.get_status_name(9)
         expected = _("Invalid status %d") % 9
-        self.assertEquals(error.exception.message, expected)
+        self.assertEquals(str(error.exception), expected)
 
     def test_add_item(self):
         loan = self.create_loan()
