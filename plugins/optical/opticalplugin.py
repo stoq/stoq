@@ -52,7 +52,13 @@ class OpticalPlugin(object):
         return PluginSchemaMigration(self.name, 'opticalsql', ['*.sql'])
 
     def get_tables(self):
-        return [('opticaldomain', ['WorkOrderOpticalDetails'])]
+        return [('opticaldomain', ['OpticalMedic',
+                                   'OpticalProduct',
+                                   'OpticalWorkOrder',
+                                   'OpticalPatientHistory',
+                                   'OpticalPatientMeasures',
+                                   'OpticalPatientTest',
+                                   'OpticalPatientVisualAcuity'])]
 
     def activate(self):
         environ.add_resource('glade',
@@ -62,7 +68,7 @@ class OpticalPlugin(object):
     def get_dbadmin_commands(self):
         return []
 
-    def handle_dbadmin_command(self, command, options, args):
+    def handle_dbadmin_command(self, command, options, args):  # pragma: nocoverage
         assert False
 
 

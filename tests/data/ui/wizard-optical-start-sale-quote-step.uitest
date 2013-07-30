@@ -32,6 +32,8 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                 ProxyDateEntry(step.expire_date): None
                 GtkLabel(step.wo_categories_lbl): 'W.O. Category:'
                 ProxyComboBox(step.wo_categories):
+                  item: 'No category', selected
+                  item: 'Category'
           GtkHSeparator(step.hseparator1, fill=True):
           GtkVBox(step.total_box, fill=True):
             GtkHBox(step.hbox2, fill=True):

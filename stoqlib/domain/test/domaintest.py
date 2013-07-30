@@ -218,6 +218,26 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         yield tracer
         tracer.remove()
 
+    @contextlib.contextmanager
+    def sysparam(self, **kwargs):
+        """
+        Updates a set of system parameters within a context.
+        The values will be reverted when leaving the scope.
+        kwargs contains a dictionary of parameter name->value
+        """
+        from stoqlib.lib.parameters import sysparam
+        s = sysparam(self.store)
+        old_values = {}
+        for param, value in kwargs.items():
+            old_values[param] = getattr(s, param)
+            s.update_parameter(unicode(param), value)
+
+        try:
+            yield
+        finally:
+            for param, value in old_values.items():
+                s.update_parameter(unicode(param), value)
+
     def collect_sale_models(self, sale):
         models = [sale,
                   sale.group]

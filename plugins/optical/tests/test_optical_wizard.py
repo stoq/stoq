@@ -31,15 +31,16 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale, SaleComment
+from stoqlib.domain.workorder import WorkOrderCategory
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salequotewizard import DiscountEditor
 from stoqlib.lib.dateutils import localdate
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
+from ..opticalreport import OpticalWorkOrderReceiptReport
 from ...optical.opticalwizard import (OpticalSaleQuoteWizard, _ItemEditor,
                                       _TempSaleItem)
 from .test_optical_domain import OpticalDomainTest
@@ -48,6 +49,22 @@ _ = stoqlib_gettext
 
 
 class TestItemEditor(GUITest, OpticalDomainTest):
+    def _create_editor(self):
+        return _ItemEditor(self.store, self._create_sale_item())
+
+    def _create_sale_item(self):
+        sale = self.create_sale()
+        sellable = self.create_sellable()
+        sellable.base_price = 100
+        sale_item = sale.add_sellable(sellable)
+        optical_wo = self.create_optical_work_order()
+        wo = optical_wo.work_order
+        wo.sale = sale
+        wo_item = wo.add_sellable(sellable)
+        wo_item.sale_item = sale_item
+
+        return _TempSaleItem(sale_item)
+
     def test_show(self):
         editor = self._create_editor()
         self.check_editor(editor, 'editor-optical-item')
@@ -74,19 +91,46 @@ class TestItemEditor(GUITest, OpticalDomainTest):
         self.assertValid(editor, ['price'])
         editor.price.update(97)
         self.assertInvalid(editor, ['price'])
+        editor.price.update(-1)
+        self.assertInvalid(editor, ['price'])
 
-    def _create_editor(self):
-        sale = self.create_sale()
-        sellable = self.create_sellable()
-        sellable.base_price = 100
-        sale_item = sale.add_sellable(sellable)
-        optical_wo = self.create_optical_work_order()
-        wo = optical_wo.work_order
-        wo.sale = sale
-        wo_item = wo.add_sellable(sellable)
-        wo_item.sale_item = sale_item
+        with self.sysparam(REUTILIZE_DISCOUNT=u'1'):
+            editor.price.update(10)
+            self.assertInvalid(editor, ['price'])
 
-        return _ItemEditor(self.store, _TempSaleItem(sale_item))
+        with self.sysparam(REUTILIZE_DISCOUNT=u'0'):
+            editor.price.update(10)
+            self.assertInvalid(editor, ['price'])
+
+    @mock.patch('stoqlib.domain.sellable.Sellable.is_valid_quantity')
+    def test_quantity_validation(self, is_valid_quantity):
+        editor = self._create_editor()
+        self.assertValid(editor, ['quantity'])
+        editor.quantity.update(-1)
+        self.assertInvalid(editor, ['quantity'])
+        is_valid_quantity.return_value = False
+        editor.quantity.update(1)
+        self.assertInvalid(editor, ['quantity'])
+
+    @mock.patch('plugins.optical.opticalwizard.run_dialog')
+    def test_icon_press(self, run_dialog):
+        user = api.get_current_user(self.store)
+        run_dialog.return_value = user
+        editor = self._create_editor()
+        editor.price.emit('icon-press', gtk.ENTRY_ICON_SECONDARY, None)
+        editor.price.emit('icon-press', gtk.ENTRY_ICON_PRIMARY, None)
+
+    def test_sale_item_description(self):
+        sale_item = self._create_sale_item()
+        self.assertEquals(sale_item.description, u'Description')
+
+    def test_sale_item_sale_discount(self):
+        sale_item = self._create_sale_item()
+        self.assertEquals(sale_item.sale_discount, 0)
+
+    def test_sale_item_remove(self):
+        sale_item = self._create_sale_item()
+        sale_item.remove()
 
 
 class TestSaleQuoteWizard(GUITest):
@@ -94,6 +138,9 @@ class TestSaleQuoteWizard(GUITest):
     @mock.patch('plugins.optical.opticalwizard.run_dialog')
     @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
     def test_confirm(self, run_person_role_dialog, run_dialog, yesno):
+        WorkOrderCategory(store=self.store,
+                          name=u'Category',
+                          color=u'#ff0000')
         client = self.create_client()
         self.create_address(person=client.person)
 
@@ -125,6 +172,7 @@ class TestSaleQuoteWizard(GUITest):
         self.assertTrue(store is not None)
         self.assertEquals(model, client)
 
+        run_dialog.return_value = False
         self.click(step.observations_button)
         self.assertEquals(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
@@ -163,21 +211,28 @@ class TestSaleQuoteWizard(GUITest):
                                         'details now?'), gtk.RESPONSE_YES,
                                       _("Print quote details"), _("Don't print"))
 
+    def test_with_work_order(self):
+        category = WorkOrderCategory(store=self.store,
+                                     name=u'Category',
+                                     color=u'#ff0000')
+
+        sale = self.create_sale()
+        sale.status = Sale.STATUS_QUOTE
+        workorder = self.create_workorder()
+        workorder.sale = sale
+        workorder.category = category
+        OpticalSaleQuoteWizard(self.store, model=sale)
+
     def test_param_accept_change_salesperson(self):
-        sysparam(self.store).update_parameter(
-            u'ACCEPT_CHANGE_SALESPERSON',
-            u'True')
-        wizard = OpticalSaleQuoteWizard(self.store)
-        step = wizard.get_current_step()
-        self.assertTrue(step.salesperson.get_sensitive())
+        with self.sysparam(ACCEPT_CHANGE_SALESPERSON=u'1'):
+            wizard = OpticalSaleQuoteWizard(self.store)
+            step = wizard.get_current_step()
+            self.assertTrue(step.salesperson.get_sensitive())
 
-        sysparam(self.store).update_parameter(
-            u'ACCEPT_CHANGE_SALESPERSON',
-            u'False')
-
-        wizard = OpticalSaleQuoteWizard(self.store)
-        step = wizard.get_current_step()
-        self.assertFalse(step.salesperson.get_sensitive())
+        with self.sysparam(ACCEPT_CHANGE_SALESPERSON=u'0'):
+            wizard = OpticalSaleQuoteWizard(self.store)
+            step = wizard.get_current_step()
+            self.assertFalse(step.salesperson.get_sensitive())
 
     @mock.patch('plugins.optical.opticalwizard.localtoday')
     def test_expire_date_validate(self, localtoday_):
@@ -232,21 +287,66 @@ class TestSaleQuoteWizard(GUITest):
         self.click(step.new_tab_button)
 
     @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
-    def test_item_step(self, run_person_role_dialog):
+    def test_item_step_slave(self, run_person_role_dialog):
         client = self.create_client()
         run_person_role_dialog.return_value = client
         wizard = OpticalSaleQuoteWizard(self.store)
         step = wizard.get_current_step()
-        wo = self.create_workorder()
-        wo.sale = step.model
+        for i in range(2):
+            wo = self.create_workorder()
+            wo.sale = step.model
 
         self.click(step.create_client)
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
-        slave = step.slaves['WO 1']
-        slave.patient.update('Patient')
+        for slave in step.slaves.values():
+            slave.patient.update('Patient')
         self.click(wizard.next_button)
+
+        sellable = self.create_sellable()
+        step = wizard.get_current_step()
+        item_slave = step.item_slave
+
+        m = 'plugins.optical.opticalwizard._ItemSlave.get_remaining_quantity'
+        with mock.patch(m) as get_remaining_quantity:
+            get_remaining_quantity.return_value = decimal.Decimal("5")
+            item_slave.get_order_item(sellable,
+                                      decimal.Decimal("1"),
+                                      decimal.Decimal("10"))
+        saved = list(item_slave.get_saved_items())
+        item_slave.remove_items(saved)
+
+        with self.sysparam(REUTILIZE_DISCOUNT=u'0'):
+            self.assertIsNone(item_slave.get_extra_discount(sellable))
+
+        with self.sysparam(REUTILIZE_DISCOUNT=u'1'):
+            self.assertIsNotNone(item_slave.get_extra_discount(sellable))
+
+        for radio in step._radio_group.get_group():
+            radio.toggled()
+
+    @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
+    def test_item_step_too_many(self, run_person_role_dialog):
+        client = self.create_client()
+        run_person_role_dialog.return_value = client
+        wizard = OpticalSaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+        for i in range(4):
+            wo = self.create_workorder()
+            wo.sale = step.model
+
+        self.click(step.create_client)
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        for slave in step.slaves.values():
+            slave.patient.update('Patient')
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.work_orders_combo.show()
+        self.assertEquals(step.get_work_order(), step.work_orders_combo.read())
 
     @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
     @mock.patch('plugins.optical.opticalwizard.run_dialog')
@@ -294,3 +394,20 @@ class TestSaleQuoteWizard(GUITest):
             DiscountEditor, step.item_slave.parent, step.item_slave.store,
             step.item_slave.model, user=api.get_current_user(step.store))
         self.assertEqual(label.get_text(), '$90.00')
+
+    @mock.patch('plugins.optical.opticalwizard.yesno')
+    @mock.patch('plugins.optical.opticalwizard.print_report')
+    def test_print_quote_details(self, print_report, yesno):
+        sale = self.create_sale()
+        sale.status = Sale.STATUS_QUOTE
+        workorder = self.create_workorder()
+        workorder.sale = sale
+
+        wizard = OpticalSaleQuoteWizard(self.store, model=sale)
+        wizard.print_quote_details(workorder)
+
+        yesno.assert_called_once_with('Would you like to print the quote details now?',
+                                      gtk.RESPONSE_YES,
+                                      'Print quote details',
+                                      "Don't print")
+        print_report.assert_called_once_with(OpticalWorkOrderReceiptReport, [workorder])
