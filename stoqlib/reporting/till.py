@@ -56,7 +56,7 @@ class TillDailyMovementReport(HTMLReport):
         self.end_date = end_date
 
         query = And(Payment.status == Payment.STATUS_PAID,
-                    Date(Payment.paid_date) == Date(start_date))
+                    self._get_date_interval_query(Payment.paid_date))
 
         # Keys are the sale objects, and values are lists with all payments
         self.sales = {}
@@ -111,17 +111,21 @@ class TillDailyMovementReport(HTMLReport):
 
         # Till removals
         query = And(Eq(TillEntry.payment_id, None),
-                    Date(TillEntry.date) == Date(start_date),
+                    self._get_date_interval_query(TillEntry.date),
                     TillEntry.value < 0)
         self.till_removals = store.find(TillEntry, query)
 
         # Till supply
         query = And(Eq(TillEntry.payment_id, None),
-                    Date(TillEntry.date) == Date(start_date),
+                    self._get_date_interval_query(TillEntry.date),
                     TillEntry.value > 0)
         self.till_supplies = store.find(TillEntry, query)
 
         HTMLReport.__init__(self, filename)
+
+    #
+    #  HTMLReport
+    #
 
     def get_subtitle(self):
         """Returns a subtitle text
@@ -130,3 +134,13 @@ class TillDailyMovementReport(HTMLReport):
             return _('Till movement on %s to %s') % (self.start_date,
                                                      self.end_date)
         return _('Till movement on %s') % self.start_date
+
+    #
+    #  Private
+    #
+
+    def _get_date_interval_query(self, attr):
+        if self.end_date is None:
+            return Date(attr) == Date(self.start_date)
+        return And(Date(attr) >= Date(self.start_date),
+                   Date(attr) <= Date(self.end_date))

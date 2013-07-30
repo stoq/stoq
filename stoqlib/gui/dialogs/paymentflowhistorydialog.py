@@ -23,14 +23,10 @@
 ##
 """Payment Flow History Report Dialog"""
 
-
-import gtk
 from storm.expr import And, Eq, Or
 
 from stoqlib.database.expr import Date
-from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.search.searchoptions import Today, Yesterday, LastWeek, LastMonth
+from stoqlib.gui.dialogs.daterangedialog import DateRangeDialog
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
@@ -175,11 +171,10 @@ class PaymentFlowDay(object):
         return history
 
 
-class PaymentFlowHistoryDialog(BasicDialog):
+class PaymentFlowHistoryDialog(DateRangeDialog):
     title = _(u'Payment Flow History Dialog')
     desc = _("Select a date or a range to be visualised in the report:")
     size = (-1, -1)
-    model_type = PaymentFlowDay
 
     def __init__(self, store):
         """A dialog to print the PaymentFlowHistoryReport report.
@@ -187,21 +182,16 @@ class PaymentFlowHistoryDialog(BasicDialog):
         :param store: a store
         """
         self.store = store
-        BasicDialog.__init__(self, header_text='<b>%s</b>' % self.desc,
-                             title=self.title)
-        self._setup_widgets()
+        DateRangeDialog.__init__(self, title=self.title, header_text=self.desc)
 
     #
     # BasicDialog
     #
 
     def confirm(self):
-        state = self._date_filter.get_state()
-        from stoqlib.database.queryexecuter import DateQueryState
-        if isinstance(state, DateQueryState):
-            start, end = state.date, state.date
-        else:
-            start, end = state.start, state.end
+        DateRangeDialog.confirm(self)
+        start = self.retval.start
+        end = self.retval.end
 
         results = PaymentFlowDay.get_flow_history(self.store, start, end)
         if not results:
@@ -210,21 +200,3 @@ class PaymentFlowHistoryDialog(BasicDialog):
 
         print_report(PaymentFlowHistoryReport, payment_histories=results)
         return True
-
-    #
-    # Private
-    #
-
-    def _setup_widgets(self):
-        self.ok_button.set_label(gtk.STOCK_PRINT)
-
-        self._date_filter = DateSearchFilter(_(u'Date:'))
-        # FIXME: add a remove_option method in DateSearchFilter.
-        self._date_filter.clear_options()
-        self._date_filter.add_custom_options()
-        for option in [Today, Yesterday, LastWeek, LastMonth]:
-            self._date_filter.add_option(option)
-        self._date_filter.select(position=0)
-
-        self.vbox.pack_start(self._date_filter, False, False)
-        self._date_filter.show_all()

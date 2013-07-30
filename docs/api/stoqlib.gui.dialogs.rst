@@ -97,6 +97,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`daterangedialog` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.dialogs.daterangedialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`devices` Module
 ---------------------
 

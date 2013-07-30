@@ -1,9 +1,8 @@
-dialog: PaymentFlowHistoryDialog
-GtkDialog(toplevel): title='Payment Flow History Dialog', hidden
+dialog: DateRangeDialog
+GtkDialog(toplevel): title='Select a date range', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header):
-        GtkLabel(): '<b>Select a date or a range to be visualised in the report:</b>'
       GtkEventBox(main, expand=True, fill=True):
         GtkLabel(main_label):
       GtkHBox(fill=True):

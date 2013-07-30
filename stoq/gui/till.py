@@ -33,7 +33,6 @@ from kiwi.currency import currency
 from kiwi.datatypes import converter
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Or
-
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
@@ -46,10 +45,11 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.daterangedialog import DateRangeDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (MissingItemsDialog,
                                                     get_missing_items)
-from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
@@ -64,9 +64,9 @@ from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.utils.printing import print_report
-from stoqlib.lib.dateutils import localtoday
 from stoqlib.reporting.sale import SalesReport
 from stoqlib.reporting.till import TillDailyMovementReport
+
 from stoq.gui.shell.shellapp import ShellApp
 
 log = logging.getLogger(__name__)
@@ -522,8 +522,12 @@ class TillApp(ShellApp):
             self._update_total()
 
     def on_TillDailyMovement__activate(self, button):
-        today = localtoday()
-        print_report(TillDailyMovementReport, self.store, today)
+        date_range = self.run_dialog(DateRangeDialog)
+        if not date_range:
+            return
+
+        print_report(TillDailyMovementReport, self.store,
+                     start_date=date_range.start, end_date=date_range.end)
 
     # Search
 
