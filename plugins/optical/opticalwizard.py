@@ -32,10 +32,14 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PriceField, NumericField
 from kiwi.ui.objectlist import Column
 from kiwi.utils import gsignal
+from storm.expr import And, Or, Eq
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client, SalesPerson
+from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleComment
+from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderItem)
 from stoqlib.gui.base.dialogs import run_dialog
@@ -54,10 +58,10 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.dateutils import localtoday
-from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.formatters import (format_quantity,
                                     format_sellable_description,
                                     get_formatted_percentage)
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
@@ -461,6 +465,15 @@ class _ItemSlave(SellableItemSlave):
     summary_label_text = "<b>%s</b>" % api.escape(_('Total:'))
     value_column = 'price'
     validate_price = True
+    sellable_view = SellableFullStockView
+
+    def get_sellable_view_query(self):
+        branch = api.get_current_branch(self.store)
+        branch_query = Or(ProductStockItem.branch_id == branch.id,
+                          Eq(ProductStockItem.branch_id, None))
+        query = And(branch_query,
+                    Sellable.get_available_sellables_query(self.store))
+        return self.sellable_view, query
 
     #
     #   SellableItemSlave implementation
