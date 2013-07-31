@@ -111,7 +111,7 @@ class TillApp(ShellApp):
              group.get('search_sale'),
              _("Search for sales")),
             ("SearchCardPayment", None, _("Card payments..."),
-             _("Search for card payments")),
+             None, _("Search for card payments")),
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              group.get('search_sold_items_by_branch'),
              _("Search for items sold by branch")),
