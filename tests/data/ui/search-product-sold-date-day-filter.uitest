@@ -27,8 +27,8 @@ GtkDialog(toplevel): title='Products Sold Search', hidden
                 item: 'Any'
                 item: 'Today'
                 item: 'Yesterday'
-                item: 'Last 7 days'
-                item: 'Last 30 days'
+                item: 'Last week'
+                item: 'Last month'
                 item: 'Custom day'
                 item: 'Custom interval', selected
               GtkLabel(): 'From:'

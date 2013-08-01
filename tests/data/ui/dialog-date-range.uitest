@@ -15,8 +15,8 @@ GtkDialog(toplevel): title='Select a date range', hidden
         ProxyComboBox(padding=6):
           item: 'Today', selected
           item: 'Yesterday'
-          item: 'Last 7 days'
-          item: 'Last 30 days'
+          item: 'Last week'
+          item: 'Last month'
           item: 'Custom day'
           item: 'Custom interval'
         GtkLabel(): 'From:', insensitive

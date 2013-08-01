@@ -82,7 +82,7 @@ class Today(DateSearchOption):
 
 
 class LastWeek(DateSearchOption):
-    name = _('Last 7 days')
+    name = _('Last week')
 
     def get_interval(self):
         today = self.get_today_date()
@@ -117,7 +117,7 @@ class NextWeek(DateSearchOption):
 
 
 class LastMonth(DateSearchOption):
-    name = _('Last 30 days')
+    name = _('Last month')
 
     def get_interval(self):
         today = self.get_today_date()
