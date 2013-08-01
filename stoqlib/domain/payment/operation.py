@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -44,6 +44,51 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+def payment_operation(method_name=None, fallback=False):
+    """
+    A class decorator to register a payment operation which contains some
+    of the business logic for a certain payment method.
+
+    :param method_name: name of the method or ``None``
+    :param fallback: if ``True``, will be registered as a fallback
+    """
+    def wrapper(cls):
+        pmm = get_payment_operation_manager()
+        if fallback:
+            pmm.register_fallback(cls())
+        else:
+            pmm.register(method_name, cls())
+        return cls
+    return wrapper
+
+
+def get_payment_operation_manager():
+    """Returns the payment operation manager"""
+    pmm = get_utility(IPaymentOperationManager, None)
+
+    if not pmm:
+        from stoqlib.lib.payment import PaymentOperationManager
+        pmm = PaymentOperationManager()
+        provide_utility(IPaymentOperationManager, pmm)
+
+    return pmm
+
+
+def get_payment_operation(method_name):
+    """Returns the payment operation for method_name
+
+    :param method_name: the method name
+    """
+    pmm = get_payment_operation_manager()
+    pm = pmm.get(method_name)
+    if not pm:  # pragma: nocover
+        raise KeyError(u"There's no payment operation for method '%s'" %
+                       method_name)
+
+    return pm
+
+
+@payment_operation(u'money')
 @implementer(IPaymentOperation)
 class MoneyPaymentOperation(object):
 
@@ -94,6 +139,7 @@ class MoneyPaymentOperation(object):
         return False
 
 
+@payment_operation(u'check')
 @implementer(IPaymentOperation)
 class CheckPaymentOperation(object):
 
@@ -160,6 +206,7 @@ class CheckPaymentOperation(object):
         return store.find(CheckData, payment=payment).one()
 
 
+@payment_operation(u'bill')
 @implementer(IPaymentOperation)
 class BillPaymentOperation(object):
 
@@ -217,6 +264,7 @@ class BillPaymentOperation(object):
         return False
 
 
+@payment_operation(u'card')
 @implementer(IPaymentOperation)
 class CardPaymentOperation(object):
 
@@ -292,6 +340,7 @@ class CardPaymentOperation(object):
         return store.find(CreditCardData, payment=payment).one()
 
 
+@payment_operation(u'store_credit')
 @implementer(IPaymentOperation)
 class StoreCreditPaymentOperation(object):
 
@@ -357,6 +406,7 @@ class StoreCreditPaymentOperation(object):
         return False
 
 
+@payment_operation(u'credit')
 @implementer(IPaymentOperation)
 class CreditPaymentOperation(object):
     """This payment method is used to register deposits (inpayments) and
@@ -418,6 +468,7 @@ class CreditPaymentOperation(object):
         return True
 
 
+@payment_operation(u'deposit')
 @implementer(IPaymentOperation)
 class DepositPaymentOperation(object):
 
@@ -468,6 +519,7 @@ class DepositPaymentOperation(object):
         return False
 
 
+@payment_operation(u'online')
 @implementer(IPaymentOperation)
 class OnlinePaymentOperation(object):
 
@@ -519,6 +571,7 @@ class OnlinePaymentOperation(object):
         return True
 
 
+@payment_operation(u'trade')
 @implementer(IPaymentOperation)
 class TradePaymentOperation(object):
 
@@ -574,6 +627,7 @@ class TradePaymentOperation(object):
 # The MultiplePaymentOperation is not a payment operation, but we need to
 # register it, so it could be activated or not. It will not create anything
 # related to payments.
+@payment_operation(u'multiple')
 @implementer(IPaymentOperation)
 class MultiplePaymentOperation(object):
 
@@ -633,6 +687,7 @@ class MultiplePaymentOperation(object):
         return False
 
 
+@payment_operation(fallback=True)
 @implementer(IPaymentOperation)
 class InvalidPaymentOperation(object):
     """This operation will be used as a fallback for methods that wore removed
@@ -685,45 +740,3 @@ class InvalidPaymentOperation(object):
 
     def require_person(self, payment_type):
         return False
-
-
-def get_payment_operation_manager():
-    """Returns the payment operation manager"""
-    pmm = get_utility(IPaymentOperationManager, None)
-
-    if not pmm:
-        from stoqlib.lib.payment import PaymentOperationManager
-        pmm = PaymentOperationManager()
-        provide_utility(IPaymentOperationManager, pmm)
-
-        for method_name, klass in [
-                (u'money', MoneyPaymentOperation),
-                (u'check', CheckPaymentOperation),
-                (u'bill', BillPaymentOperation),
-                (u'card', CardPaymentOperation),
-                (u'store_credit', StoreCreditPaymentOperation),
-                (u'trade', TradePaymentOperation),
-                (u'multiple', MultiplePaymentOperation),
-                (u'deposit', DepositPaymentOperation),
-                (u'online', OnlinePaymentOperation),
-                (u'credit', CreditPaymentOperation),
-        ]:
-            pmm.register(method_name, klass())
-        # Also, register InvalidPaymentOperation as a fallback operation
-        pmm.register_fallback(InvalidPaymentOperation())
-
-    return pmm
-
-
-def get_payment_operation(method_name):
-    """Returns the payment operation for method_name
-
-    :param method_name: the method name
-    """
-    pmm = get_payment_operation_manager()
-    pm = pmm.get(method_name)
-    if not pm:  # pragma: nocover
-        raise KeyError(u"There's no payment operation for method '%s'" %
-                       method_name)
-
-    return pm
