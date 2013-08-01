@@ -43,15 +43,5 @@ class TestPaymentFunctions(DomainTest):
         self.assertEqual(sum(values), Decimal(101))
 
         # Test 2
-        values = generate_payments_values(Decimal('10.5'), 5,
-                                          Decimal('1'))
-        expected = [Decimal('2.12'), Decimal('2.12'), Decimal('2.12'),
-                    Decimal('2.12'), Decimal('2.12')]
-        self.assertEqual(values, expected)
-        self.assertEqual(len(values), 5)
-
-        self.assertEqual(sum(values), (Decimal('10.5') + Decimal('0.10')))
-
-        # Test 3
-        self.assertRaises(AssertionError, generate_payments_values,
+        self.assertRaises(ValueError, generate_payments_values,
                           Decimal('2'), 0)

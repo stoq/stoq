@@ -40,7 +40,7 @@ from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
-from stoqlib.lib.defaults import quantize
+from stoqlib.lib.payment import generate_payments_values
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -255,29 +255,24 @@ class PaymentMethod(Domain):
                       'for payment method %s') % (self.max_installments,
                                                   self.method_name))
 
-        # Round off the individual installments
-        # For instance, let's say we're buying something costing 100.00 and paying
-        # in 3 installments, then we should have these payment values:
-        # - Installment #1: 33.33
-        # - Installment #2: 33.33
-        # - Installment #3: 33.34
-        normalized_value = quantize(value / installments)
-
+        # Create the requested payments with the right:
+        # - due_date
+        # - description for the specific group
+        # - normalized value
         payments = []
-        for i, due_date in enumerate(due_dates):
+        normalized_values = generate_payments_values(value, installments)
+        for (i, due_date), normalized_value in zip(enumerate(due_dates),
+                                                   normalized_values):
+            description = self.describe_payment(group, i + 1, installments)
             payment = self.create_payment(
-                payment_type, group, branch, normalized_value, due_date,
-                description=self.describe_payment(group, i + 1, installments))
+                payment_type=payment_type,
+                payment_group=group,
+                branch=branch,
+                value=normalized_value,
+                due_date=due_date,
+                description=description)
             payments.append(payment)
 
-        # Maybe adjust the last payment so it the total will sum up nicely,
-        # for instance following the example above, this will add
-        # 0.01 to the third installment, 100 - (33.33 * 3)
-        # This is not always needed, since the individual installments might
-        # sum up exact, eg 50 + 50
-        difference = value - (normalized_value * installments)
-        if difference:
-            payments[-1].value += difference
         return payments
 
     def describe_payment(self, payment_group, installment=1, installments=1):

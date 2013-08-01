@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,8 +21,6 @@
 ##
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-
-from decimal import Decimal
 
 from zope.interface import implementer
 
@@ -68,35 +66,32 @@ class PaymentOperationManager(object):
         return operation
 
 
-def generate_payments_values(value, installments_number,
-                             interest=Decimal(0)):
+def generate_payments_values(value, n_values):
     """Calculates the values of payments
 
-    :param value: value of payment
-    :param installments_number: the number of installments
-    :param interest: a :class:`Decimal` with the interest
+    :param value: value of payment to split
+    :param n_values: the number of installments to split the value in
     :returns: a list with the values
     """
-    assert installments_number > 0
+    if not n_values:
+        raise ValueError(_('Need at least one value'))
 
-    if interest:
-        interest_rate = interest / 100 + 1
-        normalized_value = quantize((value / installments_number)
-                                    * interest_rate)
-        interest_total = normalized_value * installments_number - value
-    else:
-        normalized_value = quantize(value / installments_number)
-        interest_total = Decimal(0)
+    # Round off the individual installments
+    # For instance, let's say we're buying something costing 100.00 and paying
+    # in 3 installments, then we should have these payment values:
+    # - Installment #1: 33.33
+    # - Installment #2: 33.33
+    # - Installment #3: 33.34
+    normalized_value = quantize(value / n_values)
+    normalized_values = [normalized_value] * n_values
 
-    payments = []
-    payments_total = Decimal(0)
-    for i in range(installments_number):
-        payments.append(normalized_value)
-        payments_total += normalized_value
-
-    # Adjust the last payment so the total will sum up nicely.
-    difference = -(payments_total - interest_total - value)
+    # Maybe adjust the last payment so it the total will sum up nicely,
+    # for instance following the example above, this will add
+    # 0.01 to the third installment, 100 - (33.33 * 3)
+    # This is not always needed, since the individual installments might
+    # sum up exact, eg 50 + 50
+    difference = value - (normalized_value * n_values)
     if difference:
-        payments[-1] += difference
+        normalized_values[-1] += difference
 
-    return payments
+    return normalized_values
