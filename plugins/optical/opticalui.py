@@ -34,17 +34,20 @@ from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
-                                EditorCreateEvent, RunDialogEvent)
+                                EditorCreateEvent, RunDialogEvent,
+                                PrintReportEvent)
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.sale import SaleOrderReport
 
 from .medicssearch import OpticalMedicSearch
+from .opticalhistory import OpticalPatientDetails
+from .opticalreport import OpticalWorkOrderReceiptReport
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
 from .opticalwizard import OpticalSaleQuoteWizard
-from .opticalhistory import OpticalPatientDetails
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -58,6 +61,7 @@ class OpticalUI(object):
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
         EditorCreateEvent.connect(self._on_EditorCreateEvent)
         RunDialogEvent.connect(self._on_RunDialogEvent)
+        PrintReportEvent.connect(self._on_PrintReportEvent)
         add_bindings([
             ('plugin.optical.pre_sale', ''),
             ('plugin.optical.search_medics', ''),
@@ -114,7 +118,6 @@ class OpticalUI(object):
         self._ui = None
 
     def _add_work_order_editor_slave(self, editor, model, store):
-        from .opticalreport import OpticalWorkOrderReceiptReport
         slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
                                       visual_mode=editor.visual_mode)
         editor.add_extra_tab('Ótico', slave)
@@ -188,6 +191,17 @@ class OpticalUI(object):
     #
     # Callbacks
     #
+
+    def _on_PrintReportEvent(self, report_class, *args, **kwargs):
+        if issubclass(report_class, SaleOrderReport):
+            sale = args[0]
+            store = sale.store
+            workorders = list(WorkOrder.find_by_sale(store, sale))
+            if len(workorders):
+                print_report(OpticalWorkOrderReceiptReport, workorders)
+                return True
+
+        return False
 
     def _on_patient_history_clicked(self, widget, editor, client):
         run_dialog(OpticalPatientDetails, editor, client.store, client)

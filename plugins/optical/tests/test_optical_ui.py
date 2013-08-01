@@ -33,9 +33,11 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
+from stoqlib.gui.events import PrintReportEvent
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
+from stoqlib.reporting.sale import SaleOrderReport
 from stoq.gui.test.baseguitest import BaseGUITest
 from stoq.gui.sales import SalesApp
 
@@ -44,10 +46,13 @@ from ..opticalhistory import OpticalPatientDetails
 from ..opticalreport import OpticalWorkOrderReceiptReport
 from ..opticalui import OpticalUI
 from ..opticalwizard import OpticalSaleQuoteWizard
+from .test_optical_domain import OpticalDomainTest
 
 
-class TestOpticalUI(BaseGUITest):
+__tests__ = 'plugins.optical.opticalui.py'
 
+
+class TestOpticalUI(BaseGUITest, OpticalDomainTest):
     @classmethod
     def setUpClass(cls):
         cls.ui = OpticalUI()
@@ -156,3 +161,25 @@ class TestOpticalUI(BaseGUITest):
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
             self.click(editor.patient_history_button)
             run_dialog_.assert_called_once_with(OpticalPatientDetails, editor, self.store, client)
+
+    @mock.patch('plugins.optical.opticalui.print_report')
+    def test_print_report_event(self, print_report):
+
+        # Emitting with something different from SaleOrderReport
+        rv = PrintReportEvent.emit(object)
+        self.assertFalse(rv)
+        self.assertEquals(print_report.call_count, 0)
+
+        # Emitting with SaleOrderReport, but without workorders
+        sale = self.create_sale()
+        rv = PrintReportEvent.emit(SaleOrderReport, sale)
+        self.assertFalse(rv)
+        self.assertEquals(print_report.call_count, 0)
+
+        # Emitting with SaleOrderReport and with workorders
+        optical_wo = self.create_optical_work_order()
+        optical_wo.work_order.sale = sale
+        rv = PrintReportEvent.emit(SaleOrderReport, sale)
+        self.assertTrue(rv)
+        print_report.assert_called_once_with(OpticalWorkOrderReceiptReport,
+                                             [optical_wo.work_order])

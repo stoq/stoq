@@ -126,6 +126,24 @@ class EditorSlaveCreateEvent(Event):
 
 
 #
+#  Printing events
+#
+
+@public(since="1.8.0")
+class PrintReportEvent(Event):
+    """Emitted when a report is going to be printed
+
+    Useful if the report is going to be replaced by another. In that
+    case, the callback connected to this event should return ``True``
+    and the original printing won't happen.
+
+    :param report_class: the report class
+    :param *args: extra args for the report class
+    :param **kwargs: extra kwargs for the report class
+    """
+
+
+#
 # CouponCreatedEvent
 #
 

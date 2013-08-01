@@ -34,6 +34,7 @@ import pango
 import poppler
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
+from stoqlib.gui.events import PrintReportEvent
 from stoqlib.lib.message import warning
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
@@ -320,6 +321,10 @@ def describe_search_filters_for_reports(filters, **kwargs):
 
 
 def print_report(report_class, *args, **kwargs):
+    rv = PrintReportEvent.emit(report_class, *args, **kwargs)
+    if rv:
+        return rv
+
     filters = kwargs.pop('filters', None)
     if filters:
         kwargs = describe_search_filters_for_reports(filters, **kwargs)
