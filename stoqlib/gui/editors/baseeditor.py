@@ -34,7 +34,8 @@ from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.base.dialogs import RunnableView, BasicDialog, run_dialog
-from stoqlib.gui.events import EditorSlaveCreateEvent, EditorCreateEvent
+from stoqlib.gui.events import (EditorSlaveCreateEvent, EditorSlaveConfirmEvent,
+                                EditorCreateEvent)
 from stoqlib.lib.decorators import public
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -167,6 +168,8 @@ class BaseEditorSlave(GladeSlaveDelegate):
 
         for slave in slaves:
             slave.on_confirm()
+
+        EditorSlaveConfirmEvent.emit(self, self.model, self.store, self.visual_mode)
 
         return True
 

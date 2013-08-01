@@ -96,6 +96,7 @@ class DialogCreateEvent(Event):
     """
 
 
+@public(since="1.8.0")
 class EditorCreateEvent(Event):
     """Emitted when an editor is instantiated.
 
@@ -106,19 +107,33 @@ class EditorCreateEvent(Event):
 
     :param editor: a subclass of
         :class:`stoqlib.gui.editor.baseeditor.BaseEditor`
-    :param model: a subclass of :class:`stoqlib.domain.base.Domain`
+    :param model: usually a subclass of :class:`stoqlib.domain.base.Domain`
     :param store: the database store used in editor and model
     :param visual_mode: a bool defining if the editor was created
         on visual_mode.
     """
 
 
+@public(since="1.7.0")
 class EditorSlaveCreateEvent(Event):
-    """Emitted when a editor slave is instantiated
+    """Emitted when a slave editor is instantiated
 
     :param editor: a subclass of
         :class:`stoqlib.gui.editor.baseeditor.BaseEditorSlave`
-    :param model: a subclass of :class:`stoqlib.domain.base.Domain`
+    :param model: usually a subclass of :class:`stoqlib.domain.base.Domain`
+    :param store: the database store used in editor and model
+    :param visual_mode: a bool defining if the editor was created
+        on visual_mode.
+    """
+
+
+@public(since="1.8.0")
+class EditorSlaveConfirmEvent(Event):
+    """Emitted when a slave editor is confirmed
+
+    :param editor: a subclass of
+        :class:`stoqlib.gui.editor.baseeditor.BaseEditorSlave`
+    :param model: usually a subclass of :class:`stoqlib.domain.base.Domain`
     :param store: the database store used in editor and model
     :param visual_mode: a bool defining if the editor was created
         on visual_mode.
