@@ -26,7 +26,6 @@ from decimal import Decimal
 import mock
 import gtk
 
-
 from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.events import TillOpenEvent
@@ -51,6 +50,8 @@ from stoqlib.gui.search.servicesearch import ServiceSearch
 
 from stoq.gui.pos import PosApp, TemporarySaleItem
 from stoq.gui.test.baseguitest import BaseGUITest
+
+__tests__ = 'stoq/gui/pos.py'
 
 
 class TestPos(BaseGUITest):
