@@ -16,7 +16,7 @@
 
         <tr>
           <td>${ _("Transporter:") }</td>
-          <td>${ report.order.get_transporter_name() or _('Not Specified') }</td>
+          <td>${ report.order.get_transporter_name() or _("Not Specified") }</td>
           <td>${ _("Agreed Freight:") }</td>
           <td>${ report.get_agreed_freight() }</td>
         </tr>
@@ -26,7 +26,7 @@
           % if report.order.expected_receival_date:
             <td>${ report.order.expected_receival_date.strftime('%x') }</td>
           % else:
-            <td>${ _('Not Specified') }</td>
+            <td>${ _("Not Specified") }</td>
           % endif
 
           % if report.receiving_orders:

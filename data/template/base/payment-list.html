@@ -7,11 +7,11 @@
     %>
     <h3>
     % if total_payments:
-      ${ stoqlib_ngettext('Payments: %d installment',
-                          'Payments: %d installments', total_payments) % total_payments
+      ${ stoqlib_ngettext("Payments: %d installment",
+                          "Payments: %d installments", total_payments) % total_payments
       }
     % else:
-        ${ _('There are no payments defined for this order.') }
+        ${ _("There are no payments defined for this order.") }
     % endif
     </h3>
 

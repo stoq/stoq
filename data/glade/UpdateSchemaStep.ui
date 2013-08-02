@@ -57,7 +57,7 @@
         </child>
         <child>
           <object class="GtkExpander" id="expander">
-            <property name="label">Click for more details</property>
+            <property name="label" translatable="yes">Click for more details</property>
             <property name="visible">True</property>
           </object>
           <packing>

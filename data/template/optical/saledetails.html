@@ -56,8 +56,8 @@
         <table class="details" id="sale_payments">
             <thead>
                 <tr>
-                    <td>${ _('Method')}</td>
-                    <td>${ _('Value')}</td>
+                    <td>${ _("Method") }</td>
+                    <td>${ _("Value") }</td>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +68,7 @@
                 </tr>
                 % endfor
                 <tr>
-                    <td>${ _('Missing') }</td>
+                    <td>${ _("Missing") }</td>
                     <td>${ report.sale.get_total_to_pay() }</td>
                 </tr>
             </tbody>

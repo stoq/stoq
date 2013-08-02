@@ -29,7 +29,7 @@
             <td>${ format_price(item.price) }
               % if item.get_sale_discount():
                 <span class="small"><br/>
-                  ${ _('{discount_value} discount').format(
+                  ${ _("{discount_value} discount").format(
                         discount_value=format_percentage(item.get_sale_discount()))}
                 </span>
                 % endif
@@ -44,7 +44,7 @@
           <td></td>
           <td></td>
           <td>${ report.order.get_items_total_quantity() }</td>
-          <td>${ _('Subtotal:') }</td>
+          <td>${ _("Subtotal:") }</td>
           <td>${ format_price(report.order.get_sale_subtotal()) }</td>
         </tr>
         % if report.order.discount_value:
@@ -52,7 +52,7 @@
               <td></td>
               <td></td>
               <td></td>
-              <td>${ _('Discount:') }</td>
+              <td>${ _("Discount:") }</td>
               <td>${ format_price(report.order.discount_value) }</td>
             </tr>
         % endif
@@ -60,7 +60,7 @@
           <td></td>
           <td></td>
           <td></td>
-          <td>${ _('Total:') }</td>
+          <td>${ _("Total:") }</td>
           <td>${ format_price(report.order.get_total_sale_amount()) }</td>
         </tr>
       </tbody>

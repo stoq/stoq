@@ -4,9 +4,9 @@
 
 % if report.order.get_details_str() or report.order.comments.count() > 0:
   <section>
-    <h3>${ _('Additional Information') }</h3>
+    <h3>${ _("Additional Information") }</h3>
       % for comment in report.order.comments:
-        ${ _('* Comment from {person} on {date}:').format(
+        ${ _("* Comment from {person} on {date}:").format(
                person=comment.author.get_description(),
                date=get_full_date(comment.date.date())) }
         <pre>${ comment.comment }</pre>
