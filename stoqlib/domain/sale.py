@@ -63,8 +63,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
 from stoqlib.domain.till import Till
-from stoqlib.exceptions import (SellError, StockError, DatabaseInconsistency,
-                                StoqlibError)
+from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.component import Adaptable
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
@@ -881,12 +880,6 @@ class Sale(Domain, Adaptable):
         Marking a sale as paid means that all the payments have been received.
         """
         assert self.can_set_paid()
-
-        for payment in self.payments:
-            if not payment.is_paid():
-                raise StoqlibError(
-                    _(u"You cannot close a sale without paying all the payment. "
-                      u"Payment %r is still not paid") % (payment, ))
 
         transaction = IPaymentTransaction(self)
         transaction.pay()
@@ -1788,21 +1781,21 @@ class SaleView(Viewable):
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
 
     # Summaries
-    v_ipi = Field('_sale_item', 'v_ipi')
+    v_ipi = Coalesce(Field('_sale_item', 'v_ipi'), 0)
 
     #: the sum of all items in the sale
-    subtotal = Field('_sale_item', 'subtotal')
+    subtotal = Coalesce(Field('_sale_item', 'subtotal'), 0)
 
     #: the items total quantity for the sale
-    total_quantity = Field('_sale_item', 'total_quantity')
+    total_quantity = Coalesce(Field('_sale_item', 'total_quantity'), 0)
 
     #: the subtotal - discount + charge
-    total = Field('_sale_item', 'subtotal') - \
+    total = Coalesce(Field('_sale_item', 'subtotal'), 0) - \
         Sale.discount_value + Sale.surcharge_value
 
     tables = [
         Sale,
-        Join(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
+        LeftJoin(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
         LeftJoin(Branch, Sale.branch_id == Branch.id),
         LeftJoin(Client, Sale.client_id == Client.id),
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
@@ -1866,16 +1859,10 @@ class SaleView(Viewable):
         return currency(self.discount_value or 0)
 
     def get_subtotal(self):
-        if self.v_ipi is not None:
-            return currency(self.subtotal + self.v_ipi)
-
-        return currency(self.subtotal)
+        return currency(self.subtotal + self.v_ipi)
 
     def get_total(self):
-        if self.v_ipi is not None:
-            return currency(self.total + self.v_ipi)
-
-        return currency(self.total)
+        return currency(self.total + self.v_ipi)
 
     def get_client_name(self):
         return unicode(self.client_name or u"")

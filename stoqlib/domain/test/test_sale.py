@@ -30,26 +30,34 @@ from decimal import Decimal
 from kiwi.currency import currency
 import mock
 from nose.exc import SkipTest
+from storm.exceptions import IntegrityError
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
+from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import Storable
 from stoqlib.domain.returnedsale import ReturnedSaleItem
-from stoqlib.domain.sale import Sale, SalePaymentMethodView, ReturnedSaleItemsView
+from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
+                                 ReturnedSaleItemsView, SaleItem,
+                                 SaleAdaptToPaymentTransaction, SaleView,
+                                 SalesPersonSalesView)
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.exceptions import SellError
-from stoqlib.lib.dateutils import localdatetime
+from stoqlib.exceptions import SellError, DatabaseInconsistency
+from stoqlib.lib.dateutils import localdatetime, localdate
 from stoqlib.lib.parameters import sysparam
 
 
 class TestSale(DomainTest):
+    def test_constructor_without_cfop(self):
+        sale = Sale(store=self.store, branch=self.create_branch())
+        self.assertEquals(sale.cfop, sysparam(self.store).DEFAULT_SALES_CFOP)
 
     def test_sale_payments_ordered(self):
         sale = self.create_sale()
@@ -144,8 +152,22 @@ class TestSale(DomainTest):
 
     def test_get_status_name(self):
         sale = self.create_sale()
+        self.assertEquals(sale.get_status_name(sale.STATUS_CONFIRMED),
+                          u'Confirmed')
+
         self.failUnlessRaises(TypeError,
                               sale.get_status_name, u'invalid status')
+
+    def test_add_item(self):
+        sale = self.create_sale()
+        item = self.create_sale_item()
+        with self.assertRaises(AssertionError):
+            sale.add_item(item)
+
+        self.assertIsNone(sale.get_items().one())
+        item.sale = None
+        sale.add_item(item)
+        self.assertEquals(sale.get_items().one(), item)
 
     def test_get_items_missing_batch(self):
         product1_with_batch = self.create_product()
@@ -181,6 +203,11 @@ class TestSale(DomainTest):
     def test_order(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
+
+        with self.assertRaisesRegexp(SellError, 'The sale must have sellable '
+                                                'items'):
+            sale.order()
+
         sale.add_sellable(sellable, quantity=5)
 
         self.failUnless(sale.can_order())
@@ -195,6 +222,14 @@ class TestSale(DomainTest):
         self.failUnless(sale.can_order())
         sale.order()
         self.failIf(sale.can_order())
+
+        sale.client = self.create_client()
+        sale.client.is_active = False
+        sale.status = sale.STATUS_INITIAL
+        expected = ('Unable to make sales for clients with status %s' %
+                    sale.client.get_status_string())
+        with self.assertRaisesRegexp(SellError, expected):
+            sale.order()
 
     def test_confirm_money(self):
         sale = self.create_sale()
@@ -304,6 +339,11 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.failIf(sale.can_set_paid())
 
+        sale.status = sale.STATUS_CONFIRMED
+
+        self.assertFalse(sale.can_set_paid())
+        sale.status = sale.STATUS_INITIAL
+
         self.add_product(sale)
         sale.order()
         self.failIf(sale.can_set_paid())
@@ -316,6 +356,55 @@ class TestSale(DomainTest):
         self.failUnless(sale.close_date)
         self.assertEqual(sale.status, Sale.STATUS_PAID)
         self.assertEqual(sale.close_date.date(), datetime.date.today())
+
+    def test_get_total_paid(self):
+        sale = self.create_sale()
+        payment = self.add_payments(sale)
+        payment[0].value = Decimal(35)
+        payment[0].payment_type = Payment.TYPE_OUT
+        self.assertEquals(sale.get_total_paid(), -35)
+
+    @mock.patch('stoqlib.domain.sale.Event.log')
+    def test_set_paid(self, log_):
+        sale = self.create_sale()
+        sale.client = self.create_client()
+        sale.status = Sale.STATUS_CONFIRMED
+
+        log_.return_value = None
+
+        payment = self.add_payments(sale, method_type=u'card')
+        payment[0].status = Payment.STATUS_PAID
+        sale.set_paid()
+        expected = ((u"Sale {sale_number} to client {client_name} was paid "
+                     u"with value {total_value:.2f}.").format(
+                    sale_number=sale.identifier,
+                    client_name=sale.client.person.name,
+                    total_value=sale.get_total_sale_amount()))
+        log_.assert_called_once_with(self.store, Event.TYPE_SALE, expected)
+
+    @mock.patch('stoqlib.domain.sale.Event.log')
+    def test_return_(self, log_):
+        returned = self.create_returned_sale()
+        sale = returned.sale
+        sale.client = self.create_client()
+        sale.status = Sale.STATUS_CONFIRMED
+
+        item = self.create_sale_item(sale=sale)
+        item.quantity += item.returned_quantity
+
+        self.add_payments(sale)
+
+        log_.return_value = None
+
+        sale.return_(returned)
+        expected = (u"Sale {sale_number} to client {client_name} was "
+                    u"partially returned with value {total_value:.2f}. "
+                    u"Reason: {reason}")
+        expected = expected.format(sale_number=sale.identifier,
+                                   client_name=sale.client.person.name,
+                                   total_value=returned.returned_total,
+                                   reason=returned.reason)
+        log_.assert_called_once_with(self.store, Event.TYPE_SALE, expected)
 
     def test_total_return(self):
         sale = self.create_sale(branch=get_current_branch(self.store))
@@ -400,6 +489,9 @@ class TestSale(DomainTest):
 
         sale.group.pay()
         self.failUnless(sale.can_return())
+
+        item = self.create_sale_item(sale=sale)
+        item.quantity = item.returned_quantity
 
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
@@ -852,6 +944,13 @@ class TestSale(DomainTest):
         self.assertEqual([u'111', u'123', u'124', u'125', u'222'],
                          [i.sellable.code for i in sale.services])
 
+    def test_set_not_paid(self):
+        sale = self.create_sale()
+        self.add_payments(sale)
+        sale.status = Sale.STATUS_PAID
+        sale.set_not_paid()
+        self.assertEquals(sale.get_status_name(sale.status), u'Confirmed')
+
     def test_sale_with_delivery(self):
         sale = self.create_sale()
         self.failIf(sale.can_set_paid())
@@ -1089,10 +1188,18 @@ class TestSale(DomainTest):
         client_role = sale.get_client_role()
         self.failIf(client_role is None)
 
+        sale.client.person.individual = None
+
+        with self.assertRaises(DatabaseInconsistency):
+            sale.get_client_role()
+
     def test_only_paid_with_money(self):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
+
+        self.assertFalse(sale.only_paid_with_money())
+
         self.add_payments(sale, method_type=u'money')
         sale.confirm()
 
@@ -1198,6 +1305,11 @@ class TestSale(DomainTest):
         sale.surcharge_value = 5
         self.assertEqual(sale.get_total_sale_amount(subtotal), 45)
 
+    def test_get_total_to_pay(self):
+        item = self.create_sale_item()
+        self.add_payments(item.sale)
+        self.assertEquals(item.sale.get_total_to_pay(), 100)
+
     def test_set_items_discount(self):
         sale = self.create_sale()
         sale_item1 = sale.add_sellable(self.store.find(Sellable, code=u'01').one())
@@ -1218,8 +1330,83 @@ class TestSale(DomainTest):
         self.assertEqual(sale_item1.price, currency('144.71'))
         self.assertEqual(sale_item2.price, currency('192.29'))
 
+        item = self.create_sale_item(sale)
+        item.base_price = Decimal(999)
+        sale.set_items_discount(20)
+
+        expected = ('new row for relation "sale_item" violates check constraint'
+                    ' "positive_price"')
+        with self.assertRaisesRegexp(IntegrityError, expected):
+            sale.get_items().any()
+
+    def test_get_available_discount_for_items(self):
+        item = self.create_sale_item()
+        item2 = self.create_sale_item(sale=item.sale)
+        self.create_sale_item(sale=item.sale)
+
+        item.price = (item.base_price - (item.base_price / 2))
+        item.sale.get_available_discount_for_items(exclude_item=item2)
+
+    def test_get_details_str(self):
+        details = []
+        item = self.create_sale_item()
+        item.delivery = self.create_delivery()
+        item.delivery.address = self.create_address()
+        self.assertEquals(item.sale.get_details_str(), (u'Delivery Address: '
+                                                        u'Mainstreet 138, '
+                                                        u'Cidade Araci'))
+
+        item.delivery = None
+        item.notes = u'Testing!!!'
+        details.append(item.sale.get_details_str())
+        self.assertEquals(details[0], (u'"Description" Notes: %s' % item.notes))
+        service = self.create_service()
+        item2 = self.create_sale_item(sale=item.sale)
+        item2.sellable = service.sellable
+        str = item2.sale.get_details_str()
+        details.append((u'"%s" Estimated Fix Date: %s') % (
+                       item2.get_description(),
+                       item2.estimated_fix_date.strftime('%x')))
+        self.assertEquals(str, u'\n'.join(details))
+
+    def test_get_salesperson_name(self):
+        item = self.create_sale_item()
+        self.assertEquals(item.sale.get_salesperson_name(), u'SalesPerson')
+
+    def test_get_client_name(self):
+        sale = self.create_sale()
+        self.assertEquals(sale.get_client_name(), u'Not Specified')
+
+        sale.client = self.create_client()
+        self.assertEquals(sale.get_client_name(), u'Client')
+
+    def test_get_nfe_coupon_info(self):
+        sale = self.create_sale()
+        self.assertIsNone(sale.get_nfe_coupon_info())
+
+        sale.coupon_id = 982738
+        self.assertEquals(sale.get_nfe_coupon_info().coo, 982738)
+
 
 class TestSaleItem(DomainTest):
+    def test__init__(self):
+        with self.assertRaises(TypeError) as error:
+            SaleItem()
+        self.assertEquals(str(error.exception), 'You must provide a sellable '
+                                                'argument')
+
+    @mock.patch('stoqlib.domain.sale.get_current_branch')
+    def test_sell_branch(self, get_current_branch_):
+        get_current_branch_.return_value = self.create_branch()
+        item = self.create_sale_item()
+        expected = (u"Stoq still doesn't support sales for branch companies "
+                    u"different than the current one")
+        with self.assertRaisesRegexp(SellError, expected):
+            item.sell(branch=None)
+        with self.assertRaisesRegexp(SellError, expected):
+            item.sell(branch=item.sale.branch)
+        get_current_branch_.assert_called_once_with(self.store)
+
     def test_sell_product(self):
         sale_item1 = self.create_sale_item(product=True)
         sale_item1.sellable.description = u'Product 666'
@@ -1277,14 +1464,56 @@ class TestSaleItem(DomainTest):
         sale = self.create_sale()
         product = self.create_product(price=10)
         sale_item = sale.add_sellable(product.sellable, quantity=5)
+        sale_item.ipi_info.v_ipi = 30
 
+        self.assertEqual(sale_item.get_total(), 80)
+
+        sale_item.ipi_info = None
         self.assertEqual(sale_item.get_total(), 50)
+
+    def test_get_quantity_unit_string(self):
+        item = self.create_sale_item()
+        item.sellable.unit = self.create_sellable_unit(description=u'Kg')
+        str = u"%s %s" % (item.quantity, item.sellable.get_unit_description())
+        self.assertEquals(item.get_quantity_unit_string(), str)
 
     def test_get_description(self):
         sale = self.create_sale()
         product = self.create_product()
         sale_item = sale.add_sellable(product.sellable)
         self.assertEqual(sale_item.get_description(), u'Description')
+
+    def test_get_nfe_icms_info(self):
+        item = self.create_sale_item()
+        self.assertIs(item.get_nfe_icms_info(), item.icms_info)
+
+        item.sale.coupon_id = 123456
+        self.assertIsNone(item.get_nfe_icms_info())
+
+    def test_get_nfe_ipi_info(self):
+        item = self.create_sale_item()
+        self.assertIs(item.get_nfe_ipi_info(), item.ipi_info)
+
+    def test_get_nfe_cfop_code(self):
+        item = self.create_sale_item()
+        client = self.create_client()
+        self.create_address(person=client.person)
+        item.sale.client = client
+        item.sale.coupon_id = 912839712
+
+        # Test if branch address isn't the same of client
+        self.assertEquals(item.get_nfe_cfop_code(), u'6929')
+
+        # Test if branch address is the same of client
+        item.sale.branch.person = client.person
+        self.assertEquals(item.get_nfe_cfop_code(), u'5929')
+
+        # Test without sale coupon
+        item.sale.coupon_id = None
+        cfop_code = item.get_nfe_cfop_code()
+
+        item.cfop = None
+        self.assertEquals(item.get_nfe_cfop_code(), cfop_code)
 
     def test_get_sale_discount(self):
         sale = self.create_sale()
@@ -1353,6 +1582,64 @@ class TestSaleItem(DomainTest):
         # storable
         self.assertRaises(ValueError, sale.add_sellable,
                           storable3.product.sellable, batch=batch)
+
+
+class TestDelivery(DomainTest):
+    def test_status_str(self):
+        delivery = self.create_delivery()
+        self.assertEquals(delivery.status_str, u'Waiting')
+
+    def test_address_str(self):
+        delivery = self.create_delivery()
+        delivery.address = self.create_address()
+        self.assertEquals(delivery.address_str, u'Mainstreet 138, Cidade '
+                                                u'Araci')
+
+        delivery.address = None
+        self.assertEquals(delivery.address_str, u'')
+
+    def test_client_str(self):
+        delivery = self.create_delivery()
+        delivery.service_item = self.create_sale_item()
+        delivery.service_item.sale.client = self.create_client()
+        self.assertEquals(delivery.client_str, 'Client')
+
+        delivery.service_item.sale.client = None
+        self.assertEquals(delivery.client_str, u'')
+
+    @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
+    def test_set_initial(self, emit):
+        delivery = self.create_delivery()
+        emit.return_value = None
+        delivery.set_initial()
+        emit.assert_called_once_with(delivery, 0)
+
+    @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
+    def test_set_sent(self, emit):
+        delivery = self.create_delivery()
+        emit.return_value = None
+        delivery.set_sent()
+        emit.assert_called_once_with(delivery, 0)
+        delivery.set_sent()
+        emit.assert_called_with(delivery, 1)
+
+    @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
+    def test_set_received(self, emit):
+        delivery = self.create_delivery()
+        emit.return_value = None
+        delivery.set_sent()
+        delivery.set_received()
+        emit.assert_called_with(delivery, 1)
+
+    def test_remove_item(self):
+        delivery = self.create_delivery()
+        item = self.create_sale_item()
+        delivery.add_item(item)
+
+        self.assertEquals(len(delivery.get_items()), 1)
+
+        delivery.remove_item(item)
+        self.assertEquals(len(delivery.get_items()), 0)
 
 
 class TestSalePaymentMethodView(DomainTest):
@@ -1432,3 +1719,150 @@ class TestReturnedSaleItemsView(DomainTest):
         returned_item_view = self.store.find(ReturnedSaleItemsView,
                                              id=returned_item.id).one()
         self.assertEquals(returned_item_view.new_sale, returned.new_sale)
+
+        found = returned_item_view.find_by_sale(store=self.store,
+                                                sale=returned.sale).one()
+        self.assertEquals(found.id, returned_item_view.id)
+
+
+class TestSaleAdaptToPaymentTransaction(DomainTest):
+    def test_get_iss_total(self):
+        item = self.create_sale_item()
+        service = self.create_service()
+        service.sellable = item.sellable
+        adapt = SaleAdaptToPaymentTransaction(item.sale)
+        iss = adapt._get_iss_total(av_difference=10)
+        self.assertEquals(iss, Decimal('19.80000'))
+
+    def test_cancel(self):
+        adapt = SaleAdaptToPaymentTransaction(self.create_sale)
+        self.assertIsNone(adapt.cancel())
+
+    def test_add_inpayments(self):
+        sale = self.create_sale()
+        adapt = SaleAdaptToPaymentTransaction(sale)
+        expected = ('You must have at least one payment for each payment '
+                    'group')
+        with self.assertRaisesRegexp(ValueError, expected):
+            adapt._add_inpayments()
+
+    def test_get_average_difference(self):
+        sale = self.create_sale()
+        adapt = SaleAdaptToPaymentTransaction(sale)
+        expected = (u"Sale orders must have items, which means products or "
+                    u"services")
+        with self.assertRaisesRegexp(DatabaseInconsistency, expected):
+            adapt._get_average_difference()
+
+        self.add_product(sale, quantity=0)
+
+        expected = (u"Sale total quantity should never be zero")
+        with self.assertRaisesRegexp(DatabaseInconsistency, expected):
+            adapt._get_average_difference()
+
+    def test_get_iss_entry(self):
+        sale = self.create_sale()
+        fiscal = self.create_fiscal_book_entry(
+            entry_type=FiscalBookEntry.TYPE_SERVICE)
+        fiscal.payment_group = sale.group
+        adapt = SaleAdaptToPaymentTransaction(sale)
+        self.assertIs(adapt._get_iss_entry(), fiscal)
+
+    def test_create_fiscal_entries(self):
+        sale = self.create_sale()
+        sale.service_invoice_number = 82739
+        service = self.create_service()
+        sale.add_sellable(sellable=service.sellable)
+
+        fiscal = self.create_fiscal_book_entry(
+            entry_type=FiscalBookEntry.TYPE_SERVICE)
+        fiscal.payment_group = sale.group
+        adapt = SaleAdaptToPaymentTransaction(sale)
+
+        adapt._create_fiscal_entries()
+
+        results = self.store.find(FiscalBookEntry, payment_group=sale.group)
+        self.assertIn(fiscal, list(results))
+
+
+class TestSaleView(DomainTest):
+    def test_find_by_branch(self):
+        sale = self.create_sale()
+        views = SaleView.find_by_branch(store=self.store,
+                                        branch=sale.branch)
+
+        self.assertIn(sale, [view.sale for view in views])
+
+        views = SaleView.find_by_branch(store=self.store, branch=None)
+        self.assertIn(sale, [view.sale for view in views])
+
+    def test_returned_sales(self):
+        sale = self.create_sale()
+
+        view = self.store.find(SaleView, id=sale.id).one()
+        self.assertFalse(view.returned_sales.count())
+
+        returned = self.create_returned_sale()
+
+        view = self.store.find(SaleView, id=returned.sale.id).one()
+        self.assertTrue(view.returned_sales.count())
+
+    def test_get_subtotal(self):
+        item = self.create_sale_item()
+
+        view = self.store.find(SaleView, id=item.sale.id).one()
+        self.assertEquals(view.get_subtotal(), 100)
+
+    def test_get_total(self):
+        item = self.create_sale_item()
+        item.ipi_info.v_ipi = 30
+
+        view = self.store.find(SaleView, id=item.sale.id).one()
+        self.assertEquals(view.get_total(), Decimal(130))
+
+        item.ipi_info = None
+        view = self.store.find(SaleView, id=item.sale.id).one()
+        self.assertEquals(view.get_total(), Decimal(100))
+
+    def test_get_salesperson_name(self):
+        sale = self.create_sale()
+        view = self.store.find(SaleView, id=sale.id).one()
+        self.assertEquals(view.get_salesperson_name(), u'SalesPerson')
+
+    def test_get_open_date_as_string(self):
+        sale = self.create_sale()
+        view = self.store.find(SaleView, id=sale.id).one()
+        self.assertEquals(view.get_open_date_as_string(),
+                          sale.open_date.strftime("%x"))
+
+    def test_get_status_name(self):
+        sale = self.create_sale()
+        view = self.store.find(SaleView, id=sale.id).one()
+        self.assertEquals(view.get_status_name(), u'Opened')
+
+
+class TestSalesPersonSalesView(DomainTest):
+    def test_find_by_date(self):
+        sale = self.create_sale()
+
+        date1 = localdate(2012, 1, 1)
+        date2 = localdate(2012, 1, 3)
+
+        sale.confirm_date = localdate(2012, 1, 2)
+        sale.status = 1
+
+        date = date1, date2
+        views = list(SalesPersonSalesView.find_by_date(store=self.store,
+                                                       date=date))
+        for view in views:
+            if view.id == sale.salesperson.id:
+                self.assertEquals(view.name, sale.salesperson.person.name)
+
+        date = localdate(2012, 1, 2)
+        view = SalesPersonSalesView.find_by_date(store=self.store,
+                                                 date=date).one()
+
+        self.assertEquals(view.name, sale.salesperson.person.name)
+
+        views = SalesPersonSalesView.find_by_date(store=self.store, date=None)
+        self.assertIn(sale.salesperson.id, [view.id for view in views])
