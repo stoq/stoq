@@ -46,13 +46,11 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import Product, Storable
-from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
-                                       IDescribable)
+from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.domain.person import (Person, Branch, Company, Supplier,
                                    Transporter, LoginUser)
 from stoqlib.domain.sellable import Sellable, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.component import Adaptable
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
@@ -153,7 +151,7 @@ class PurchaseItem(Domain):
 
 
 @implementer(IContainer)
-class PurchaseOrder(Domain, Adaptable):
+class PurchaseOrder(Domain):
     """Purchase and order definition."""
 
     __storm_table__ = 'purchase_order'
@@ -207,14 +205,6 @@ class PurchaseOrder(Domain, Adaptable):
     responsible = Reference(responsible_id, 'LoginUser.id')
     group_id = IdCol()
     group = Reference(group_id, 'PaymentGroup.id')
-
-    def __init__(self, **kwargs):
-        super(PurchaseOrder, self).__init__(**kwargs)
-        self.addFacet(IPaymentTransaction)
-
-    def __storm_loaded__(self):
-        super(PurchaseOrder, self).__storm_loaded__()
-        self.addFacet(IPaymentTransaction)
 
     #
     # IContainer Implementation
@@ -303,6 +293,21 @@ class PurchaseOrder(Domain, Adaptable):
         percentage = Decimal(percentage)
         return subtotal * (percentage / 100)
 
+    def _payback_paid_payments(self):
+        paid_value = self.group.get_total_paid()
+
+        # If we didn't pay anything yet, there is no need to create a payback.
+        if not paid_value:
+            return
+
+        money = PaymentMethod.get_by_name(self.store, u'money')
+        payment = money.create_payment(
+            Payment.TYPE_IN, self.group, self.branch,
+            paid_value, description=_(u'%s Money Returned for Purchase %s') % (
+                u'1/1', self.identifier))
+        payment.set_pending()
+        payment.pay()
+
     #
     # Public API
     #
@@ -355,8 +360,10 @@ class PurchaseOrder(Domain, Adaptable):
                     u'ORDER_PENDING or ORDER_CONSIGNED, got %s')
             raise ValueError(fmt % (self.get_status_str(), ))
 
-        transaction = IPaymentTransaction(self)
-        transaction.confirm()
+        # In consigned purchases there is no payments at this point.
+        if self.status != PurchaseOrder.ORDER_CONSIGNED:
+            for payment in self.payments:
+                payment.set_pending()
 
         if self.supplier:
             self.group.recipient = self.supplier.person
@@ -400,8 +407,8 @@ class PurchaseOrder(Domain, Adaptable):
         assert self.can_cancel()
 
         # we have to cancel the payments too
-        transaction = IPaymentTransaction(self)
-        transaction.cancel()
+        self._payback_paid_payments()
+        self.group.cancel()
 
         self.status = self.ORDER_CANCELLED
 
@@ -640,61 +647,6 @@ class QuoteGroup(Domain):
         for quote in self.get_items():
             quote.close()
             store.remove(quote)
-
-
-@implementer(IPaymentTransaction)
-class PurchaseOrderAdaptToPaymentTransaction(object):
-
-    def __init__(self, purchase):
-        self.purchase = purchase
-
-    #
-    # IPaymentTransaction implementation
-    #
-
-    def confirm(self):
-        # In consigned purchases there is no payments at this point.
-        if self.purchase.status == PurchaseOrder.ORDER_CONSIGNED:
-            return
-
-        for payment in self.purchase.payments:
-            payment.set_pending()
-
-    def pay(self):
-        for payment in self.purchase.payments:
-            payment.pay()
-
-    def cancel(self):
-        self._payback_paid_payments()
-        self.purchase.group.cancel()
-
-    def return_(self, renegotiation):
-        pass
-
-    def create_commission(self, payment):
-        pass
-
-    #
-    # Private API
-    #
-
-    def _payback_paid_payments(self):
-        paid_value = self.purchase.group.get_total_paid()
-
-        # If we didn't pay anything yet, there is no need to create a payback.
-        if not paid_value:
-            return
-
-        money = PaymentMethod.get_by_name(self.purchase.store, u'money')
-        payment = money.create_payment(
-            Payment.TYPE_IN, self.purchase.group, self.purchase.branch,
-            paid_value, description=_(u'%s Money Returned for Purchase %s') % (
-                u'1/1', self.purchase.identifier))
-        payment.set_pending()
-        payment.pay()
-
-
-PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentTransaction, IPaymentTransaction)
 
 
 class PurchaseItemView(Viewable):

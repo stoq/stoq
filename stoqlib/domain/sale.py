@@ -52,7 +52,7 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    DeliveryStatusChangedEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.interfaces import IContainer, IPaymentTransaction
+from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
                                    SalesPerson, Company)
@@ -64,7 +64,6 @@ from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
-from stoqlib.lib.component import Adaptable
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
@@ -466,11 +465,8 @@ class Delivery(Domain):
 
 
 @implementer(IContainer)
-class Sale(Domain, Adaptable):
+class Sale(Domain):
     """Sale logic, the process of selling a |sellable| to a |client|.
-
-    A large part of the payment processing logic is done via
-    the :class:`SaleAdaptToPaymentTransaction` adapter.
 
     * calculates the sale price including discount/interest/markup
     * creates payments
@@ -682,11 +678,6 @@ class Sale(Domain, Adaptable):
         self.branch = kw.pop('branch', None)
         if not 'cfop' in kw:
             self.cfop = sysparam(store).DEFAULT_SALES_CFOP
-        self.addFacet(IPaymentTransaction)
-
-    def __storm_loaded__(self):
-        super(Sale, self).__storm_loaded__()
-        self.addFacet(IPaymentTransaction)
 
     #
     # Classmethods
@@ -846,8 +837,13 @@ class Sale(Domain, Adaptable):
 
         self.total_amount = self.get_total_sale_amount()
 
-        transaction = IPaymentTransaction(self)
-        transaction.confirm()
+        self.group.confirm()
+        self._add_inpayments()
+        self._create_fiscal_entries()
+
+        if self._create_commission_at_confirm():
+            for payment in self.payments:
+                self.create_commission(payment)
 
         if self.client:
             self.group.payer = self.client.person
@@ -881,8 +877,13 @@ class Sale(Domain, Adaptable):
         """
         assert self.can_set_paid()
 
-        transaction = IPaymentTransaction(self)
-        transaction.pay()
+        # Right now commissions are created when the payment is confirmed
+        # (if the parameter is set) or when the payment is confirmed.
+        # This code is still here for the users that some payments created
+        # (and paid) but no commission created yet.
+        # This can be removed sometime in the future.
+        for payment in self.payments:
+            self.create_commission(payment)
 
         self.close_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_PAID)
@@ -966,9 +967,6 @@ class Sale(Domain, Adaptable):
         if totally_returned:
             self.return_date = TransactionTimestamp()
             self._set_sale_status(Sale.STATUS_RETURNED)
-
-        transaction = IPaymentTransaction(self)
-        transaction.return_(returned_sale)
 
         if self.client:
             if totally_returned:
@@ -1309,6 +1307,28 @@ class Sale(Domain, Adaptable):
             )
         return returned_sale
 
+    def create_commission(self, payment):
+        """Creates a commission for the *payment*
+
+        This will create a |commission| for the given |payment|,
+        :obj:`.sale` and :obj:`.sale.salesperson`. Note that, if the
+        payment already has a commission, nothing will be done.
+        """
+        from stoqlib.domain.commission import Commission
+        if payment.has_commission():
+            return
+
+        commission = Commission(
+            commission_type=self._get_commission_type(),
+            sale=self,
+            payment=payment,
+            salesperson=self.salesperson,
+            store=self.store)
+        if payment.is_outpayment():
+            commission.value = -commission.value
+
+        return commission
+
     #
     # Properties
     #
@@ -1444,120 +1464,27 @@ class Sale(Domain, Adaptable):
         # discount/surchage cannot have more than 2 decimal points
         return quantize(currency(perc_value))
 
-
-class SaleComment(Domain):
-    """A simple holder for |sale| comments
-
-    See also:
-    `schema <http://doc.stoq.com.br/schema/tables/sale_comment.html>`__
-    """
-
-    __storm_table__ = 'sale_comment'
-
-    #: When this comment was created
-    date = DateTimeCol(default_factory=localnow)
-
-    #: The comment itself.
-    comment = UnicodeCol()
-
-    author_id = IdCol()
-    #: The author of the comment
-    author = Reference(author_id, 'LoginUser.id')
-
-    sale_id = IdCol()
-    #: The |sale| that was commented
-    sale = Reference(sale_id, 'Sale.id')
-
-
-#
-# Adapters
-#
-
-
-@implementer(IPaymentTransaction)
-class SaleAdaptToPaymentTransaction(object):
-
-    def __init__(self, sale):
-        self.sale = sale
-
-    #
-    # IPaymentTransaction
-    #
-
-    def confirm(self):
-        self.sale.group.confirm()
-        self._add_inpayments()
-        self._create_fiscal_entries()
-
-        if self._create_commission_at_confirm():
-            for payment in self.sale.payments:
-                self.create_commission(payment)
-
-    def pay(self):
-        # Right now commissions are created when the payment is confirmed
-        # (if the parameter is set) or when the payment is confirmed.
-        # This code is still here for the users that some payments created
-        # (and paid) but no commission created yet.
-        # This can be removed sometime in the future.
-        for payment in self.sale.payments:
-            self.create_commission(payment)
-
-    def cancel(self):
-        pass
-
-    def return_(self, returned_sale):
-        # TODO: As we are now supporting partial returns, all logic in here
-        # were moved to stoqlib.domain.returned_sale. Is that the right
-        # move, or can we expect some drawbacks? Thiago Bellini - 09/12/2012
-        pass
-
-    def create_commission(self, payment):
-        """Creates a commission for the *payment*
-
-        This will create a |commission| for the given |payment|,
-        :obj:`.sale` and :obj:`.sale.salesperson`. Note that, if the
-        payment already has a commission, nothing will be done.
-        """
-        from stoqlib.domain.commission import Commission
-        if payment.has_commission():
-            return
-
-        commission = Commission(
-            commission_type=self._get_commission_type(),
-            sale=self.sale,
-            payment=payment,
-            salesperson=self.sale.salesperson,
-            store=self.sale.store)
-        if payment.is_outpayment():
-            commission.value = -commission.value
-
-        return commission
-
-    #
-    # Private
-    #
-
     def _add_inpayments(self):
-        payments = self.sale.payments
+        payments = self.payments
         if not payments.count():
             raise ValueError(
                 _('You must have at least one payment for each payment group'))
 
-        till = Till.get_current(self.sale.store)
+        till = Till.get_current(self.store)
         assert till
         for payment in payments:
             assert payment.is_inpayment()
             till.add_entry(payment)
 
     def _create_commission_at_confirm(self):
-        store = self.sale.store
+        store = self.store
         return sysparam(store).SALE_PAY_COMMISSION_WHEN_CONFIRMED
 
     def _get_commission_type(self):
         from stoqlib.domain.commission import Commission
 
         nitems = 0
-        for item in self.sale.payments:
+        for item in self.payments:
             if not item.is_outpayment():
                 nitems += 1
 
@@ -1581,7 +1508,7 @@ class SaleAdaptToPaymentTransaction(object):
                               applied over all sale items
         """
         icms_total = Decimal(0)
-        for item in self.sale.products:
+        for item in self.products:
             price = item.price + av_difference
             sellable = item.sellable
             tax_constant = sellable.get_tax_constant()
@@ -1601,34 +1528,33 @@ class SaleAdaptToPaymentTransaction(object):
                               applied over all sale items
         """
         iss_total = Decimal(0)
-        store = self.sale.store
+        store = self.store
         iss_tax = sysparam(store).ISS_TAX / Decimal(100)
-        for item in self.sale.services:
+        for item in self.services:
             price = item.price + av_difference
             iss_total += iss_tax * (price * item.quantity)
         return iss_total
 
     def _get_average_difference(self):
-        sale = self.sale
-        if sale.get_items().is_empty():
+        if self.get_items().is_empty():
             raise DatabaseInconsistency(
                 _(u"Sale orders must have items, which means products or "
                   u"services"))
-        total_quantity = sale.get_items_total_quantity()
+        total_quantity = self.get_items_total_quantity()
         if not total_quantity:
             raise DatabaseInconsistency(
                 _(u"Sale total quantity should never be zero"))
         # If there is a discount or a surcharge applied in the whole total
         # sale amount, we must share it between all the item values
         # otherwise the icms and iss won't be calculated properly
-        total = (sale.get_total_sale_amount() -
+        total = (self.get_total_sale_amount() -
                  self._get_pm_commission_total())
-        subtotal = sale.get_sale_subtotal()
+        subtotal = self.get_sale_subtotal()
         return (total - subtotal) / total_quantity
 
     def _get_iss_entry(self):
         return FiscalBookEntry.get_entry_by_payment_group(
-            self.sale.store, self.sale.group,
+            self.store, self.group,
             FiscalBookEntry.TYPE_SERVICE)
 
     def _create_fiscal_entries(self):
@@ -1640,22 +1566,43 @@ class SaleAdaptToPaymentTransaction(object):
         ICMS. Only product values and surcharge which applies increasing the
         product totals are considered here.
         """
-        sale = self.sale
         av_difference = self._get_average_difference()
 
-        if not sale.products.is_empty():
+        if not self.products.is_empty():
             FiscalBookEntry.create_product_entry(
-                sale.store,
-                sale.group, sale.cfop, sale.coupon_id,
+                self.store,
+                self.group, self.cfop, self.coupon_id,
                 self._get_icms_total(av_difference))
 
-        if not sale.services.is_empty() and sale.service_invoice_number:
+        if not self.services.is_empty() and self.service_invoice_number:
             FiscalBookEntry.create_service_entry(
-                sale.store,
-                sale.group, sale.cfop, sale.service_invoice_number,
+                self.store,
+                self.group, self.cfop, self.service_invoice_number,
                 self._get_iss_total(av_difference))
 
-Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
+
+class SaleComment(Domain):
+    """A simple holder for |sale| comments
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/sale_comment.html>`__
+    """
+
+    __storm_table__ = 'sale_comment'
+
+    #: When this comment was created
+    date = DateTimeCol(default_factory=localnow)
+
+    #: The comment itself.
+    comment = UnicodeCol()
+
+    author_id = IdCol()
+    #: The author of the comment
+    author = Reference(author_id, 'LoginUser.id')
+
+    sale_id = IdCol()
+    #: The |sale| that was commented
+    sale = Reference(sale_id, 'Sale.id')
 
 
 #

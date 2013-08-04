@@ -170,6 +170,8 @@ class TestPayment(DomainTest):
     @mock.patch('stoqlib.domain.payment.payment.Event.log')
     def test_pay(self, log):
         payment = self.create_payment(value=Decimal(101))
+        with self.assertRaises(ValueError):
+            payment.pay()
         payment.status = Payment.STATUS_PENDING
         payment.pay(paid_value=Decimal(102))
         expected = (u'Money payment with value original value 101.00 was paid'

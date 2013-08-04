@@ -36,15 +36,13 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import Storable
 from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
                                  ReturnedSaleItemsView, SaleItem,
-                                 SaleAdaptToPaymentTransaction, SaleView,
-                                 SalesPersonSalesView)
+                                 SaleView, SalesPersonSalesView)
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
@@ -1142,13 +1140,12 @@ class TestSale(DomainTest):
                 self.store.find(Commission, payment=p).count(), 0)
 
         sale.confirm()
-        transaction = IPaymentTransaction(sale)
         fake = lambda p: None
 
         payments = list(sale.payments)
         # Mimic out old behaviour of only creating commissions for payments
         # when all payments on a sale are set as paid.
-        with mock.patch.object(transaction, 'create_commission', new=fake):
+        with mock.patch.object(sale, 'create_commission', new=fake):
             for p in payments[:-1]:
                 # Confirming should not create commissions
                 self.assertEqual(
@@ -1380,6 +1377,55 @@ class TestSale(DomainTest):
 
         sale.coupon_id = 982738
         self.assertEquals(sale.get_nfe_coupon_info().coo, 982738)
+
+    def test_get_iss_total(self):
+        item = self.create_sale_item()
+        service = self.create_service()
+        service.sellable = item.sellable
+        iss = item.sale._get_iss_total(av_difference=10)
+        self.assertEquals(iss, Decimal('19.80000'))
+
+    def test_add_inpayments(self):
+        sale = self.create_sale()
+        expected = ('You must have at least one payment for each payment '
+                    'group')
+        with self.assertRaisesRegexp(ValueError, expected):
+            sale._add_inpayments()
+
+    def test_get_average_difference(self):
+        sale = self.create_sale()
+        expected = (u"Sale orders must have items, which means products or "
+                    u"services")
+        with self.assertRaisesRegexp(DatabaseInconsistency, expected):
+            sale._get_average_difference()
+
+        self.add_product(sale, quantity=0)
+
+        expected = (u"Sale total quantity should never be zero")
+        with self.assertRaisesRegexp(DatabaseInconsistency, expected):
+            sale._get_average_difference()
+
+    def test_get_iss_entry(self):
+        sale = self.create_sale()
+        fiscal = self.create_fiscal_book_entry(
+            entry_type=FiscalBookEntry.TYPE_SERVICE)
+        fiscal.payment_group = sale.group
+        self.assertIs(sale._get_iss_entry(), fiscal)
+
+    def test_create_fiscal_entries(self):
+        sale = self.create_sale()
+        sale.service_invoice_number = 82739
+        service = self.create_service()
+        sale.add_sellable(sellable=service.sellable)
+
+        fiscal = self.create_fiscal_book_entry(
+            entry_type=FiscalBookEntry.TYPE_SERVICE)
+        fiscal.payment_group = sale.group
+
+        sale._create_fiscal_entries()
+
+        results = self.store.find(FiscalBookEntry, payment_group=sale.group)
+        self.assertIn(fiscal, list(results))
 
 
 class TestSaleItem(DomainTest):
@@ -1717,66 +1763,6 @@ class TestReturnedSaleItemsView(DomainTest):
         found = returned_item_view.find_by_sale(store=self.store,
                                                 sale=returned.sale).one()
         self.assertEquals(found.id, returned_item_view.id)
-
-
-class TestSaleAdaptToPaymentTransaction(DomainTest):
-    def test_get_iss_total(self):
-        item = self.create_sale_item()
-        service = self.create_service()
-        service.sellable = item.sellable
-        adapt = SaleAdaptToPaymentTransaction(item.sale)
-        iss = adapt._get_iss_total(av_difference=10)
-        self.assertEquals(iss, Decimal('19.80000'))
-
-    def test_cancel(self):
-        adapt = SaleAdaptToPaymentTransaction(self.create_sale)
-        self.assertIsNone(adapt.cancel())
-
-    def test_add_inpayments(self):
-        sale = self.create_sale()
-        adapt = SaleAdaptToPaymentTransaction(sale)
-        expected = ('You must have at least one payment for each payment '
-                    'group')
-        with self.assertRaisesRegexp(ValueError, expected):
-            adapt._add_inpayments()
-
-    def test_get_average_difference(self):
-        sale = self.create_sale()
-        adapt = SaleAdaptToPaymentTransaction(sale)
-        expected = (u"Sale orders must have items, which means products or "
-                    u"services")
-        with self.assertRaisesRegexp(DatabaseInconsistency, expected):
-            adapt._get_average_difference()
-
-        self.add_product(sale, quantity=0)
-
-        expected = (u"Sale total quantity should never be zero")
-        with self.assertRaisesRegexp(DatabaseInconsistency, expected):
-            adapt._get_average_difference()
-
-    def test_get_iss_entry(self):
-        sale = self.create_sale()
-        fiscal = self.create_fiscal_book_entry(
-            entry_type=FiscalBookEntry.TYPE_SERVICE)
-        fiscal.payment_group = sale.group
-        adapt = SaleAdaptToPaymentTransaction(sale)
-        self.assertIs(adapt._get_iss_entry(), fiscal)
-
-    def test_create_fiscal_entries(self):
-        sale = self.create_sale()
-        sale.service_invoice_number = 82739
-        service = self.create_service()
-        sale.add_sellable(sellable=service.sellable)
-
-        fiscal = self.create_fiscal_book_entry(
-            entry_type=FiscalBookEntry.TYPE_SERVICE)
-        fiscal.payment_group = sale.group
-        adapt = SaleAdaptToPaymentTransaction(sale)
-
-        adapt._create_fiscal_entries()
-
-        results = self.store.find(FiscalBookEntry, payment_group=sale.group)
-        self.assertIn(fiscal, list(results))
 
 
 class TestSaleView(DomainTest):

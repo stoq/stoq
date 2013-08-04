@@ -81,42 +81,6 @@ class IORMObject(Interface):
         "Delete an ORM Interface Object"
 
 
-class IPaymentTransaction(Interface):
-    """ Interface specification for PaymentGroups. """
-
-    def confirm():
-        """Transaction is confirmed.
-        Payments might occur at this time, in case of money payment,
-        others may happen later
-        """
-
-    def pay():
-        """All payment for this transaction are paid.
-        """
-
-    def cancel():
-        """Cancels the transaction before it's completed.
-        """
-
-    def return_(renegotiation):
-        """Returns the goods purchased.
-        This means that all paid payments are paid back and
-        all pending onces are cancelled.
-        Commissions may also reversed.
-
-        :param renegotiation: renegotiation data
-        """
-
-    def create_commission(payment):
-        """Creates a commission for the *payment*
-        This will create a |commission| for the given |payment|,
-        |sale| and |salesperson|.
-        Note that, if the payment already has a commission, nothing will
-        be done.
-        :param payment: a |payment|
-        """
-
-
 class IReversal(Interface):
     """A financial entry which support reversal operations"""
 

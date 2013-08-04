@@ -46,7 +46,6 @@ from stoqlib.database.properties import (DateTimeCol, IntCol, BoolCol,
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
-from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.dateutils import create_date_interval, localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
@@ -411,8 +410,7 @@ class Payment(Domain):
 
         sale = self.group and self.group.sale
         if sale:
-            transaction = IPaymentTransaction(sale)
-            transaction.create_commission(self)
+            sale.create_commission(self)
 
             # When paying payments of a sale, check if the other payments are
             # paid. If they are, this means you can change the sale status to

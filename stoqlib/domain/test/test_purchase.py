@@ -32,7 +32,7 @@ from kiwi.currency import currency
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup, PurchaseItem, \
-    PurchaseOrderAdaptToPaymentTransaction, PurchaseOrderView, _
+    PurchaseOrderView, _
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow, localdate
@@ -588,30 +588,6 @@ class TestQuoteGroup(DomainTest):
         order.group = self.create_payment_group()
         with self.assertRaises(ValueError):
             quote.remove_item(order)
-
-
-class TestPurchaseOrderAdaptToPaymentTransaction(DomainTest):
-    def test_pay(self):
-        purchase_item = self.create_purchase_order_item()
-        adapt = PurchaseOrderAdaptToPaymentTransaction(
-            purchase=purchase_item.order)
-        payment = adapt.pay()
-        self.assertEquals(payment, None)
-        self.create_payment(group=adapt.purchase.group)
-        with self.assertRaises(ValueError):
-            adapt.pay()
-
-    def test_return_(self):
-        purchase = self.create_purchase_order()
-        adapt = PurchaseOrderAdaptToPaymentTransaction(purchase=purchase)
-        self.assertEquals(adapt.return_(renegotiation=None), None)
-
-    def test_create_commission(self):
-        purchase = self.create_purchase_order()
-        adapt = PurchaseOrderAdaptToPaymentTransaction(purchase=purchase)
-        payment = self.create_payment(group=purchase.group)
-        result = adapt.create_commission(payment=payment)
-        self.assertEquals(result, None)
 
 
 class TestPurchaseOrderView(DomainTest):

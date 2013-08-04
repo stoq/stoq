@@ -297,7 +297,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/lib/cardinals/cardinals.py', 56.),
     ('stoqlib/lib/cardinals/generic.py', 88.57),
     ('stoqlib/lib/cardinals/pt.py', 95.33),
-    ('stoqlib/lib/component.py', 49.48),
     ('stoqlib/lib/configparser.py', 24.69),
     ('stoqlib/lib/console.py', 36.59),
     ('stoqlib/lib/cookie.py', 94.87),
