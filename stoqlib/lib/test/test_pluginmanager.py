@@ -67,6 +67,9 @@ class TestPluginManager(DomainTest):
         # Since the plugins are commited inside pluginmanager, try to remove
         # it first, or we will have problems if STOQLIB_TEST_QUICK is set.
         store = new_store()
+        plugins = set(InstalledPlugin.get_plugin_names(store=self.store))
+        expected = set([u'ecf', u'nfe', u'optical'])
+        self.assertTrue(expected.issubset(plugins))
         test_plugin = store.find(InstalledPlugin,
                                  plugin_name=_TestPlugin.name).one()
         if test_plugin:

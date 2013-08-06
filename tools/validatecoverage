@@ -74,7 +74,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/database/runtime.py', 72.13),
     ('stoqlib/database/settings.py', 38),
     ('stoqlib/database/tables.py', 86.96),
-    ('stoqlib/domain/plugin.py', 85.71),
     ('stoqlib/domain/product.py', 91.79),
     ('stoqlib/domain/production.py', 91.42),
     ('stoqlib/domain/receiving.py', 79.64),
