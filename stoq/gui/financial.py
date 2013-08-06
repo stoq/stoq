@@ -37,6 +37,7 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.dialogs import selectfile
 from kiwi.ui.objectlist import ColoredColumn, Column
+import pango
 from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
@@ -119,6 +120,7 @@ class TransactionPage(object):
         self.search.set_result_view(FinancialSearchResults)
         self.result_view = self.search.result_view
         self.result_view.page = self
+        self.result_view.set_cell_data_func(self._on_result_view__cell_data_func)
         tree_view = self.search.result_view.get_treeview()
         tree_view.set_rules_hint(True)
         tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
@@ -203,6 +205,21 @@ class TransactionPage(object):
         else:
             return self._get_account_columns()
 
+    def _on_result_view__cell_data_func(self, column, renderer, account_view, text):
+        if not isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        trans = account_view.transaction
+        is_imbalance = self.app._imbalance_account.id in [
+            trans.dest_account_id,
+            trans.source_account_id]
+
+        renderer.set_property('weight-set', is_imbalance)
+        if is_imbalance:
+            renderer.set_property('weight', pango.WEIGHT_BOLD)
+
+        return text
+
     def _get_account_columns(self):
         def format_withdrawal(value):
             if value < 0:
@@ -281,15 +298,15 @@ class TransactionPage(object):
         transaction = run_dialog(AccountTransactionEditor, self.app,
                                  store, account_transaction, model)
 
+        store.confirm(transaction)
         if transaction:
-            store.flush()
+            item.transaction.sync()
             self._update_transaction(item, transaction,
                                      transaction.edited_account.description,
                                      transaction.value)
             self.update_totals()
             self.search.result_view.update(item)
             self.app.accounts.refresh_accounts(self.app.store)
-        store.confirm(transaction)
         store.close()
 
     def on_dialog__opened(self, dialog):
