@@ -1865,4 +1865,4 @@ class TestSalesPersonSalesView(DomainTest):
         self.assertEquals(view.name, sale.salesperson.person.name)
 
         views = SalesPersonSalesView.find_by_date(store=self.store, date=None)
-        self.assertIn(sale.salesperson.id, [view.id for view in views])
+        self.assertIn(sale.salesperson.id, [row.id for row in views])
