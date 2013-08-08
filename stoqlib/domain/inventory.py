@@ -27,7 +27,7 @@
 
 from decimal import Decimal
 
-from storm.expr import And, Eq, Cast, Join
+from storm.expr import And, Eq, Cast, Join, LeftJoin
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
@@ -275,6 +275,15 @@ class Inventory(Domain):
     #: the |inventoryitems| of this inventory
     inventory_items = ReferenceSet('id', 'InventoryItem.inventory_id')
 
+    @property
+    def status_str(self):
+        return self.statuses[self.status]
+
+    @property
+    def branch_name(self):
+        """The |branch| name for this inventory"""
+        return self.branch.get_description()
+
     #
     # Public API
     #
@@ -419,16 +428,6 @@ class Inventory(Domain):
 
         self.status = Inventory.STATUS_CANCELLED
 
-    def get_status_str(self):
-        return self.statuses[self.status]
-
-    def get_branch_name(self):
-        """
-        This method returns the name for Branch of Person reference object
-        :return: branch_name
-        """
-        return self.branch.get_description()
-
 
 class InventoryItemsView(Viewable):
     """Holds information about |inventoryitems|
@@ -445,6 +444,12 @@ class InventoryItemsView(Viewable):
     #: the |inventory|
     inventory = Inventory
 
+    #: the |sellable|
+    sellable = Sellable
+
+    #: The |StorableBatch|
+    batch = StorableBatch
+
     # InventoryItem
     id = InventoryItem.id
     product_id = InventoryItem.product_id
@@ -459,9 +464,13 @@ class InventoryItemsView(Viewable):
     open_date = Inventory.open_date
     close_date = Inventory.close_date
 
-    # Person
+    #: The name of the person that performed the inventory
     responsible_name = Person.name
 
+    #: The code of the sellable
+    code = Sellable.code
+
+    #: The description of the product
     description = Sellable.description
 
     tables = [
@@ -470,11 +479,23 @@ class InventoryItemsView(Viewable):
              InventoryItem.inventory_id == Inventory.id),
         Join(Product, Product.id == InventoryItem.product_id),
         Join(Sellable, Sellable.id == Product.sellable_id),
+        LeftJoin(StorableBatch, InventoryItem.batch_id == StorableBatch.id),
         Join(LoginUser,
              Inventory.responsible_id == LoginUser.id),
         Join(Person,
              LoginUser.person_id == Person.id),
     ]
+
+    @classmethod
+    def find_by_inventory(cls, store, inventory):
+        """find results for this view that are related to the given inventory
+
+        :param store: the store that will be used to find the results
+        :param inventory: the |inventory| that should be filtered
+        :returns: the matching views
+        :rtype: a sequence of :class:`InventoryItemView`
+        """
+        return store.find(cls, Inventory.id == inventory.id)
 
     @classmethod
     def find_by_product(cls, store, product):
@@ -483,7 +504,7 @@ class InventoryItemsView(Viewable):
         :param store: the store that will be used to find the results
         :param product: the |product| used to filter the results
         :returns: the matching views
-        :rtype: a sequence of :cimporlass:`InventoryItemView`
+        :rtype: a sequence of :class:`InventoryItemView`
         """
         return store.find(cls, product_id=product.id)
 

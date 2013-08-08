@@ -82,11 +82,11 @@ class TestInventory(DomainTest):
         self.assertRaises(AssertionError, inventory.cancel)
         self.assertEqual(inventory.status, Inventory.STATUS_OPEN)
 
-    def test_get_status_str(self):
+    def test_status_str(self):
         inventory = self.create_inventory()
         for status in inventory.statuses:
             inventory.status = status
-            self.assertEquals(inventory.get_status_str(),
+            self.assertEquals(inventory.status_str,
                               inventory.statuses[status])
 
     def test_has_adjusted_items(self):
@@ -188,14 +188,12 @@ class TestInventory(DomainTest):
         inventory.status = inventory.STATUS_CLOSED
         self.assertFalse(inventory.all_items_counted())
 
-    def test_get_branch_name(self):
+    def test_branch_name(self):
         inventory = self.create_inventory()
         inventory.branch = self.create_branch(name=u'Dummy',
                                               phone_number=u'12345678',
                                               fax_number=u'6125371231')
-
-        inventory_branch_name = inventory.get_branch_name()
-        self.assertEqual(inventory_branch_name, u'Dummy shop')
+        self.assertEqual(inventory.branch_name, u'Dummy shop')
 
 
 class TestInventoryItem(DomainTest):
@@ -284,6 +282,17 @@ class TestInventoryItem(DomainTest):
 
 
 class TestInventoryItemsView(DomainTest):
+
+    def test_find_by_inventory(self):
+        inventory1 = self.create_inventory()
+        inventory2 = self.create_inventory()
+        item1 = self.create_inventory_item(inventory=inventory1)
+        self.create_inventory_item(inventory=inventory2)
+
+        views = InventoryItemsView.find_by_inventory(self.store, inventory1)
+        self.assertEquals(views.count(), 1)
+        self.assertEquals(views[0].id, item1.id)
+
     def test_find(self):
         inventory = self.create_inventory()
         item1 = self.create_inventory_item(inventory=inventory)

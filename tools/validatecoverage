@@ -113,7 +113,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/dialogs/financialreportdialog.py', 84.62),
     ('stoqlib/gui/dialogs/importerdialog.py', 23.61),
     ('stoqlib/gui/dialogs/initialstockdialog.py', 82),
-    ('stoqlib/gui/dialogs/inventorydetails.py', 76.67),
     ('stoqlib/gui/dialogs/invoicedialog.py', 94.44),
     ('stoqlib/gui/dialogs/labeldialog.py', 96.77),
     ('stoqlib/gui/dialogs/manufacturerdialog.py', 73.91),

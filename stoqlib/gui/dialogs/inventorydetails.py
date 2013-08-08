@@ -26,15 +26,15 @@
 
 import decimal
 
-import gtk
 from kiwi.currency import currency
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.reporting.inventory import InventoryReport
-from stoqlib.domain.inventory import Inventory
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.domain.inventory import Inventory, InventoryItemsView
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.lib.formatters import format_sellable_description
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.inventory import InventoryReport
 
 _ = stoqlib_gettext
 
@@ -63,36 +63,26 @@ class InventoryDetailsDialog(BaseEditor):
                      'close_date',
                      'invoice_number', )
 
-    def __init__(self, store, model=None, visual_mode=False):
-        """ Creates a new InventoryDetailsDialog object
-
-        :param store: a store
-        :param model: a :class:`stoqlib.domain.inventory.InventoryView` object
-        """
-        BaseEditor.__init__(self, store, model,
-                            visual_mode=visual_mode)
-
     def _setup_widgets(self):
         self.items_list.set_columns(self._get_items_columns())
 
-        self.items_list.add_list(self.model.get_items())
+        # Create a list to avoid the query being executed twice (object list
+        # does a if objects somewhere)
+        items = list(InventoryItemsView.find_by_inventory(self.store, self.model))
+        self.items_list.add_list(items)
 
     def _get_items_columns(self):
-        return [Column('code', _("Code"), sorted=True,
-                       data_type=str, justify=gtk.JUSTIFY_CENTER),
-                Column('description',
-                       _("Description"), data_type=str, width=200,
-                       expand=True, justify=gtk.JUSTIFY_LEFT),
-                Column('recorded_quantity',
-                       _("Recorded"), data_type=decimal.Decimal,
-                       justify=gtk.JUSTIFY_LEFT),
-                Column('actual_quantity',
-                       _("Actual"), data_type=decimal.Decimal,
-                       justify=gtk.JUSTIFY_LEFT),
-                Column('is_adjusted', _("Adjusted"), data_type=bool,
-                       justify=gtk.JUSTIFY_CENTER),
-                Column('product_cost', _("Cost"), data_type=currency,
-                       justify=gtk.JUSTIFY_LEFT, visible=False)]
+        return [Column('code', _("Code"), sorted=True, data_type=str),
+                Column('description', _("Description"), data_type=str, width=200,
+                       expand=True, format_func=self._format_description, format_func_data=True),
+                Column('recorded_quantity', _("Recorded"), data_type=decimal.Decimal),
+                Column('counted_quantity', _("Counted"), data_type=decimal.Decimal),
+                Column('actual_quantity', _("Actual"), data_type=decimal.Decimal),
+                Column('is_adjusted', _("Adjusted"), data_type=bool),
+                Column('product_cost', _("Cost"), data_type=currency, visible=False)]
+
+    def _format_description(self, item, data):  # pragma no cover
+        return format_sellable_description(item.sellable, item.batch)
 
     #
     # BaseEditor hooks
@@ -106,5 +96,6 @@ class InventoryDetailsDialog(BaseEditor):
     # Kiwi handlers
     #
 
-    def on_print_button__clicked(self, button):
+    # FIXME: There is no print button in the glade anymore
+    def on_print_button__clicked(self, button):  # pragma no cover
         print_report(InventoryReport, self.model)

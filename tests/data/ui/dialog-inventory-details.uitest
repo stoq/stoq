@@ -1,0 +1,40 @@
+editor: InventoryDetailsDialog
+GtkDialog(main_dialog.toplevel): title='Inventory Details', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave InventoryDetailsDialog is attached
+        GtkVBox(toplevel):
+          GtkTable(table1, fill=True):
+            GtkLabel(label9): 'Inventory Number:'
+            ProxyLabel(identifier): '<span >00123</span>'
+            GtkLabel(label14): 'Invoice Number:'
+            ProxyLabel(invoice_number): '<span ></span>'
+            GtkLabel(label1): 'Open Date:'
+            ProxyLabel(open_date): '<span >12/01/10</span>'
+            GtkLabel(label5): 'Branch:'
+            ProxyLabel(branch_name): '<span >Moda Stoq</span>'
+            GtkLabel(label6): 'Status:'
+            ProxyLabel(status_str): '<span >Opened</span>'
+            GtkLabel(label2): 'Close Date:'
+            ProxyLabel(close_date): '<span ></span>'
+          GtkNotebook(details_notebook, expand=True, fill=True):
+            GtkVBox(vbox):
+              GtkVBox(items_vbox, expand=True, fill=True):
+                ObjectList(items_list, expand=True, fill=True):
+                  column: title='Code'
+                  column: title='Description', expand
+                  column: title='Recorded'
+                  column: title='Counted'
+                  column: title='Actual'
+                  column: title='Adjusted'
+                  column: title='Cost', hidden
+                  row: u'', u'Description', Decimal('5.000'), None, None, False, <currency $125>
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', hidden
