@@ -13,7 +13,10 @@
 <div class="page">
 
   ${ header(complete_header, title, report.subtitle, notes) }
-  <%include file="saledetails.html" />
+
+  % if report.sale:
+    <%include file="saledetails.html" />
+  % endif
 
 
   <hr />

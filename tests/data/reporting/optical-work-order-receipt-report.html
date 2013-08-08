@@ -63,7 +63,8 @@
       </div>
     </header>
 
-    <section id="client_receipt">
+
+      <section id="client_receipt">
     <table class="details" id="sale_items">
       <tbody>
         <tr>
@@ -82,7 +83,7 @@
           <td></td>
           <td></td>
           <td>Estimated finish:</td>
-          <td></td>
+          <td>01/09/13</td>
         </tr>
       </tbody>
     </table>
@@ -91,24 +92,27 @@
         <table>
           <thead>
             <tr>
-              <td>Code</td>
               <td>Item</td>
-              <td>Quantity</td>
               <td>Price</td>
               <td>Total</td>
             </tr>
           </thead>
 
           <tbody class="list">
-            <tr>
+            
+              
+              <tr>
+                <td>1 x
+                    Description</td>
+                <td>$10.00</td>
+                <td>$10.00</td>
+              </tr>
+          </tbody>
+
+          <tbody class="summary">
+            <tr class="bold">
               <td></td>
-              <td>Description</td>
-              <td>1</td>
-              <td>$10.00</td>
-              <td>$10.00</td>
-            </tr>
-            <tr class="summary">
-              <td colspan="4">Total:</td>
+              <td>Total:</td>
               <td>$10.00</td>
             </tr>
           </tbody>
@@ -128,10 +132,6 @@
                     <td>Money</td>
                     <td>10.00</td>
                 </tr>
-                <tr>
-                    <td>Missing</td>
-                    <td>0.00</td>
-                </tr>
             </tbody>
         </table>
     </div>
@@ -148,48 +148,38 @@
 
     <table class="details">
       <tbody>
-        <tr>
-          <td>Sales Person:</td>
-          <td colspan="3">SalesPerson</td>
-        </tr>
+          <tr>
+            <td>Sales Person:</td>
+            <td colspan="3">SalesPerson</td>
+          </tr>
 
         <tr>
           <td>Client:</td>
-          <td colspan="3">Juca</td>
+          <td colspan="3">Juca
+          <br/> Endereço: 
+          </td>
         </tr>
 
 
-        <tr>
-          <td>Sale #:</td>
-          <td>23456</td>
-          <td>Work Order #:</td>
-          <td>12345</td>
-        </tr>
-        <tr>
-          <td>Open Date:</td>
-          <td>01/01/12</td>
-          <td>Estimated Finish:</td>
-          <td></td>
-        </tr>
       </tbody>
     </table>
 
-    <table>
-      <thead>
-        <tr>
-          <td>Code</td>
-          <td>Item</td>
-          <td>Quantity</td>
-        </tr>
-      </thead>
+      <table>
+        <thead>
+          <tr>
+            <td>Code</td>
+            <td>Item</td>
+            <td>Qty</td>
+          </tr>
+        </thead>
 
-      <tbody class="list">
-      </tbody>
-    </table>
+        <tbody class="list">
+        </tbody>
+      </table>
 
     <p>
       <b>Observations</b><br/>
-      None
+      
     </p>
 
       </div>
@@ -200,15 +190,149 @@
       <tbody>
         <tr>
           <td>Sale:</td>
-          <td>23456</td>
-          <td>Date:</td>
-          <td>01/01/12</td>
+          <td colspan="3">23456</td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
+          <td>Date:</td>
+          <td>01/01/12</td>
           <td>Deliver:</td>
-          <td></td>
+          <td>01/01/13</td>
+        </tr>
+        <tr>
+          <td>Owner:</td>
+          <td colspan="3">None</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="optical_data">
+      <thead>
+      <tr>
+        <td>Longe</td>
+        <td>Esf</td>
+        <td>Cil</td>
+        <td>Eixo</td>
+        <td>DNP</td>
+        <td>Alt</td>
+        <td>Prima</td>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>OD:</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+      </tr>
+      <tr>
+        <td>OE:</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+      </tr>
+    </table>
+
+    <table class="optical_data">
+      <thead>
+      <tr>
+        <td>Perto</td>
+        <td>Esf</td>
+        <td>Cil</td>
+        <td>Eixo</td>
+        <td>DNP</td>
+        <td>Adição</td>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>OD:</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+      </tr>
+      <tr>
+        <td>OE:</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+      </tr>
+      </tbody>
+
+    </table>
+
+    </table>
+
+      </div>
+  </div>
+  <hr/>
+  
+  <div class="workorder_details">
+      <div class="optical_details">
+        
+
+    <table class="details">
+      <tbody>
+          <tr>
+            <td>Sales Person:</td>
+            <td colspan="3">SalesPerson</td>
+          </tr>
+
+        <tr>
+          <td>Client:</td>
+          <td colspan="3">Juca
+          <br/> Endereço: 
+          </td>
+        </tr>
+
+
+      </tbody>
+    </table>
+
+      <table>
+        <thead>
+          <tr>
+            <td>Code</td>
+            <td>Item</td>
+            <td>Qty</td>
+          </tr>
+        </thead>
+
+        <tbody class="list">
+        </tbody>
+      </table>
+
+    <p>
+      <b>Observations</b><br/>
+      
+    </p>
+
+      </div>
+      <div class="optical_prescription">
+        
+
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>Sale:</td>
+          <td colspan="3">23456</td>
+        </tr>
+        <tr>
+          <td>Date:</td>
+          <td>01/01/12</td>
+          <td>Deliver:</td>
+          <td>01/09/13</td>
         </tr>
         <tr>
           <td>Owner:</td>

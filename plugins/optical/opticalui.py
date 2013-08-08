@@ -117,7 +117,7 @@ class OpticalUI(object):
         uimanager.remove_ui(self._ui)
         self._ui = None
 
-    def _add_work_order_editor_slave(self, editor, model, store):
+    def _fix_work_order_editor(self, editor, model, store):
         slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
                                       visual_mode=editor.visual_mode)
         editor.add_extra_tab('Ótico', slave)
@@ -126,9 +126,8 @@ class OpticalUI(object):
             print_report(OpticalWorkOrderReceiptReport, [model])
 
         # Also add an print button
-        if model.sale:
-            print_button = editor.add_button(_('Print'), gtk.STOCK_PRINT)
-            print_button.connect('clicked', _print_report)
+        print_button = editor.add_button(_('Print'), gtk.STOCK_PRINT)
+        print_button.connect('clicked', _print_report)
 
     def _add_product_slave(self, editor, model, store):
         editor.add_extra_tab(ProductOpticSlave.title,
@@ -171,7 +170,7 @@ class OpticalUI(object):
         if editor_type is ProductEditor:
             self._add_product_slave(editor, model, store)
         elif editor_type is WorkOrderEditor:
-            self._add_work_order_editor_slave(editor, model, store)
+            self._fix_work_order_editor(editor, model, store)
         elif editor_type is ClientEditor:
             self._add_patient_history_button(editor, model)
 

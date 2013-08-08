@@ -148,17 +148,17 @@ tfoot {
 
 thead td {
     border-bottom: 2px solid black;
-    padding: 2mm;
+    padding: 1mm;
     vertical-align: bottom;
 }
 
 tbody td {
-    padding: 2mm;
+    padding: 1mm;
     border-left: 1px solid #ddd;
 }
 
 tfoot td {
-    padding: 2mm;
+    padding: 1mm;
     border-top: 2px solid black;
     font-weight: bold;
 }

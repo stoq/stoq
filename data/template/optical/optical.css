@@ -2,6 +2,14 @@
     font-size: 8pt;
 }
 
+
+#sale_summary .summary td:nth-child(2),
+#sale_summary .summary td:nth-child(3),
+#sale_summary .list td:nth-child(2),
+#sale_summary .list td:nth-child(3) {
+    text-align: right;
+}
+
 hr {
     border-top: 1px dashed black;
 }

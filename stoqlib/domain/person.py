@@ -453,6 +453,14 @@ class Person(Domain):
             return format_phone_number(self.fax_number)
         return u""
 
+    def get_formatted_mobile_number(self):
+        """
+        :returns: a dash-separated fax number or an empty string
+        """
+        if self.mobile_number:
+            return format_phone_number(self.mobile_number)
+        return u""
+
     #
     # Public API
     #

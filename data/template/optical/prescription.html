@@ -3,14 +3,14 @@
     <table class="details">
       <tbody>
         <tr>
+          % if report.sale:
           <td>${ _("Sale") }:</td>
-          <td>${ report.sale.identifier }</td>
-          <td>${ _("Date") }:</td>
-          <td>${ format_date(report.sale.open_date) }</td>
+          <td colspan="3">${ report.sale.identifier }</td>
+          % endif
         </tr>
         <tr>
-          <td></td>
-          <td></td>
+          <td>${ _("Date") }:</td>
+          <td>${ format_date(workorder.open_date) }</td>
           <td>${ _("Deliver") }:</td>
           <td>${ format_date(workorder.estimated_finish) }</td>
         </tr>

@@ -38,24 +38,29 @@ class OpticalWorkOrderReceiptReport(HTMLReport):
         self.workorders = workorders
         # The workorders are always from the same sale.
         self.sale = workorders[0].sale
-        self.subtitle = _("Sale number: %s") % self.sale.identifier
+        if self.sale:
+            self.subtitle = _("Sale number: %s") % self.sale.identifier
+        else:
+            assert len(workorders) == 1
+            self.subtitle = _("Work order: %s") % self.workorders[0].identifier
 
         self.method_summary = {}
-        payments = self.sale.payments
-        for payment in payments.find(Payment.status == Payment.STATUS_PAID):
-            self.method_summary.setdefault(payment.method, 0)
-            self.method_summary[payment.method] += payment.value
+        if self.sale:
+            payments = self.sale.payments
+            for payment in payments.find(Payment.status == Payment.STATUS_PAID):
+                self.method_summary.setdefault(payment.method, 0)
+                self.method_summary[payment.method] += payment.value
 
-        max_finish = self.workorders[0].estimated_finish
-        for workorder in workorders:
-            max_finish = max(max_finish, workorder.estimated_finish)
-        self.max_estimated_finish = max_finish
+        self.max_estimated_finish = None
+        dates = [wo.estimated_finish for wo in workorders if wo.estimated_finish]
+        if dates:
+            self.max_estimated_finish = max(dates)
 
         super(OpticalWorkOrderReceiptReport, self).__init__(filename)
 
     def get_optical_data(self, workorder):
         from optical.opticaldomain import OpticalWorkOrder
-        store = self.sale.store
+        store = self.workorders[0].store
         return store.find(OpticalWorkOrder, work_order=workorder).one()
 
 

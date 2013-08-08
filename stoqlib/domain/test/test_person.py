@@ -182,6 +182,13 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_formatted_fax_number(),
                           fax)
 
+    def test_get_formatted_mobile_number(self):
+        person = self.create_person()
+        self.assertEquals(person.get_formatted_mobile_number(), u"")
+        person.mobile_number = u'91231234'
+        self.assertEquals(person.get_formatted_mobile_number(),
+                          u'9123-1234')
+
     def test_get_by_phone_number(self):
         person = self.create_person()
         result = person.get_by_phone_number(store=self.store,

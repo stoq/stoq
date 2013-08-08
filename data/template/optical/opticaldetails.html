@@ -2,61 +2,66 @@
 
     <table class="details">
       <tbody>
-        <tr>
-          <td>${ _("Sales Person") }:</td>
-          <td colspan="3">${ report.sale.salesperson.person.name }</td>
-        </tr>
+        % if report.sale:
+          <tr>
+            <td>${ _("Sales Person") }:</td>
+            <td colspan="3">${ report.sale.salesperson.person.name }</td>
+          </tr>
+        % endif
 
         <tr>
           <td>${ _("Client") }:</td>
-          <td colspan="3">${ workorder.client.person.name }</td>
+          <td colspan="3">${ workorder.client.person.name }
+          <br/> Endereço: ${ workorder.client.person.get_address_string() }
+          % if workorder.client.person.phone_number:
+              <br/> ${ _("Phone") }:
+                ${ workorder.client.person.get_formatted_phone_number() }
+          % endif
+          % if workorder.client.person.mobile_number:
+              <br/> ${ _("Mobile") }:
+              ${ workorder.client.person.get_formatted_mobile_number() }
+          % endif
+          </td>
         </tr>
 
         % if optical_data.medic:
             <tr>
               <td>${ _("Medic") }:</td>
-              <td>${ optical_data.medic.person.name }</td>
-              <td>${ _("UPID") }:</td>
-              <td>${ optical_data.medic.crm_number }</td>
+              <td colspan="3">${ optical_data.medic.person.name }
+               (${ optical_data.medic.crm_number })</td>
             </tr>
         % endif
 
-        <tr>
-          <td>${ _("Sale #") }:</td>
-          <td>${ report.sale.identifier }</td>
-          <td>${ _("Work Order #") }:</td>
-          <td>${ workorder.identifier }</td>
-        </tr>
-        <tr>
-          <td>${ _("Open Date") }:</td>
-          <td>${ format_date(report.sale.open_date) }</td>
-          <td>${ _("Estimated Finish") }:</td>
-          <td>${ format_date(workorder.estimated_finish) }</td>
-        </tr>
       </tbody>
     </table>
 
-    <table>
-      <thead>
-        <tr>
-          <td>${ _("Code") }</td>
-          <td>${ _("Item") }</td>
-          <td>${ _("Quantity") }</td>
-        </tr>
-      </thead>
+    % if not report.sale:
+      <p>
+        ${ workorder.equipment }
+      </p>
+    % else:
+      <table>
+        <thead>
+          <tr>
+            <td>${ _("Code") }</td>
+            <td>${ _("Item") }</td>
+            <td>${ _("Qty") }</td>
+          </tr>
+        </thead>
 
-      <tbody class="list">
-        % for item in workorder.get_items():
-        <tr>
-          <td>${ item.sellable.code }</td>
-          <td>${ item.sellable.get_description() }</td>
-          <td>${ format_quantity(item.quantity) }</td>
-        </tr>
-        % endfor
-      </tbody>
-    </table>
+        <tbody class="list">
+          % for item in workorder.get_items():
+          <tr>
+            <td>${ item.sellable.code }</td>
+            <td>${ item.sellable.get_description() }</td>
+            <td>${ format_quantity(item.quantity) }</td>
+          </tr>
+          % endfor
+        </tbody>
+      </table>
+    % endif
 
     <p>
       <b>${ _("Observations") }</b><br/>
-      ${ workorder.defect_reported }
+      ${ workorder.defect_reported or '' }
     </p>

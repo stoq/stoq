@@ -26,26 +26,36 @@
         <table>
           <thead>
             <tr>
-              <td>${ _("Code") }</td>
               <td>${ _("Item") }</td>
-              <td>${ _("Quantity") }</td>
               <td>${ _("Price") }</td>
               <td>${ _("Total") }</td>
             </tr>
           </thead>
 
           <tbody class="list">
+            <% items_discount = 0 %>
             % for item in report.sale.get_items():
-            <tr>
-              <td>${ item.sellable.code }</td>
-              <td>${ item.sellable.get_description() }</td>
-              <td>${ format_quantity(item.quantity) }</td>
-              <td>${ format_price(item.price) }</td>
-              <td>${ format_price(item.get_total()) }</td>
-            </tr>
+              <% items_discount += item.base_price - item.price %>
+              <tr>
+                <td>${ format_quantity(item.quantity) } x
+                    ${ item.sellable.get_description() }</td>
+                <td>${ format_price(item.price) }</td>
+                <td>${ format_price(item.get_total()) }</td>
+              </tr>
             % endfor
-            <tr class="summary">
-              <td colspan="4">${ _("Total") }:</td>
+          </tbody>
+
+          <tbody class="summary">
+            % if items_discount:
+                <tr>
+                  <td></td>
+                  <td>${ _("Items Discount:") }</td>
+                  <td>${ format_price(items_discount) }</td>
+                </tr>
+            % endif
+            <tr class="bold">
+              <td></td>
+              <td>${ _("Total:") }</td>
               <td>${ format_price(report.sale.get_total_sale_amount()) }</td>
             </tr>
           </tbody>
@@ -67,10 +77,12 @@
                     <td>${ value }</td>
                 </tr>
                 % endfor
-                <tr>
-                    <td>${ _("Missing") }</td>
-                    <td>${ report.sale.get_total_to_pay() }</td>
-                </tr>
+                % if report.sale.get_total_to_pay():
+                  <tr>
+                      <td>${ _("Missing") }</td>
+                      <td>${ report.sale.get_total_to_pay() }</td>
+                  </tr>
+                % endif
             </tbody>
         </table>
     </div>
