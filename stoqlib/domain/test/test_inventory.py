@@ -30,28 +30,63 @@ from kiwi.currency import currency
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.inventory import (Inventory, InventoryView,
                                       InventoryItemsView, InventoryItem)
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestInventory(DomainTest):
 
-    def test_add_sellable(self):
+    def test_create_inventory(self):
+        branch = self.create_branch()
+        # A category so that we can filter the products we want in the
+        # inventory
+        cat = self.create_sellable_category()
+
+        #  First, lets create some sellables for our test
+        # One storable with stock (it should be in the inventory)
+        storable1 = self.create_storable(branch=branch, stock=10)
+        storable1.product.sellable.category = cat
+
+        # One storable without stock (it should NOT be in the inventory)
+        storable2 = self.create_storable()
+        storable2.product.sellable.category = cat
+
+        # One storable with one batch, and stock (it should be in the inventory)
+        storable3 = self.create_storable()
+        storable3.is_batch = True
+        storable3.product.sellable.category = cat
+        batch = self.create_storable_batch(storable3, u'123')
+        storable3.increase_stock(3, branch, batch=batch,
+                                 type=0, object_id=None, unit_cost=10)
+
+        # Then, lets open the inventory
+        responsible = self.create_user()
+        query = Sellable.category == cat
+        inventory = Inventory.create_inventory(self.store, branch, responsible, query)
+
+        self.assertEquals(inventory.branch, branch)
+        self.assertEquals(inventory.responsible, responsible)
+
+        # There should be only 3 items in the inventory
+        items = inventory.get_items()
+        self.assertEqual(items.count(), 2)
+        products = set(i.product for i in items)
+        self.assertEquals(products,
+                          set([storable1.product, storable3.product]))
+
+    def test_add_storable(self):
         inventory = self.create_inventory()
         sellable = self.create_sellable()
-        with self.assertRaises(TypeError) as error:
-            inventory.add_sellable(sellable=sellable)
-        expected = "product %r has no storable" % (sellable.product, )
-        self.assertEquals(str(error.exception), expected)
-
         storable = self.create_storable(product=sellable.product)
-        result = inventory.add_sellable(sellable=sellable)
+        result = inventory.add_storable(storable, 10)
+
         item = self.store.find(InventoryItem, product=sellable.product).one()
         self.assertEquals(result, item)
 
         storable.is_batch = True
         batch = self.create_storable_batch(storable=storable,
                                            batch_number=u'1')
-        item = inventory.add_sellable(sellable=sellable, batch_number=u'1')
+        item = inventory.add_storable(storable, 5, batch_number=u'1')
         result = self.store.find(InventoryItem, batch=batch).one()
         self.assertEquals(item, result)
 

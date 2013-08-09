@@ -240,7 +240,7 @@ class TestSellable(DomainTest):
                                                      supplier=supplier)
         self.assertTrue(sellable in list(available))
 
-    def test_get_unblocked_by_category(self):
+    def test_get_unblocked_by_category_query(self):
         s1 = self.create_sellable()
         s2 = self.create_sellable()
         s3 = self.create_sellable()
@@ -250,30 +250,35 @@ class TestSellable(DomainTest):
         s1.category = c1
         s2.category = c2
 
+        query = Sellable.get_unblocked_by_categories_query(
+            self.store, [c1, c2], include_uncategorized=True)
         self.assertEqual(
             set([s1, s2, s3]),
-            set(Sellable.get_unblocked_by_categories(
-                self.store, [c1, c2], include_uncategorized=True)))
+            set(self.store.find(Sellable, query)))
 
+        query = Sellable.get_unblocked_by_categories_query(
+            self.store, [c1], include_uncategorized=True)
         self.assertEqual(
             set([s1, s3]),
-            set(Sellable.get_unblocked_by_categories(
-                self.store, [c1], include_uncategorized=True)))
+            set(self.store.find(Sellable, query)))
 
+        query = Sellable.get_unblocked_by_categories_query(
+            self.store, [c1], include_uncategorized=True)
         self.assertEqual(
             set([s1, s3]),
-            set(Sellable.get_unblocked_by_categories(
-                self.store, [c1], include_uncategorized=True)))
+            set(self.store.find(Sellable, query)))
 
+        query = Sellable.get_unblocked_by_categories_query(
+            self.store, [c1], include_uncategorized=False)
         self.assertEqual(
             set([s1]),
-            set(Sellable.get_unblocked_by_categories(
-                self.store, [c1], include_uncategorized=False)))
+            set(self.store.find(Sellable, query)))
 
+        query = Sellable.get_unblocked_by_categories_query(
+            self.store, [], include_uncategorized=True)
         self.assertEqual(
             set([s3]),
-            set(Sellable.get_unblocked_by_categories(
-                self.store, [], include_uncategorized=True)))
+            set(self.store.find(Sellable, query)))
 
     def test_is_valid_quantity(self):
         sellable = self.create_sellable()

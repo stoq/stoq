@@ -27,7 +27,7 @@
 
 from decimal import Decimal
 
-from storm.expr import And, Eq, Cast, Join, LeftJoin
+from storm.expr import And, Eq, Cast, Join, LeftJoin, Or
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
@@ -38,7 +38,8 @@ from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import LoginUser, Person
-from stoqlib.domain.product import StockTransactionHistory, StorableBatch, Product
+from stoqlib.domain.product import (StockTransactionHistory, StorableBatch, Product,
+                                    Storable, ProductStockItem)
 from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
@@ -288,36 +289,31 @@ class Inventory(Domain):
     # Public API
     #
 
-    def add_sellable(self, sellable, batch_number=None):
-        """Add a sellable in this inventory
+    def add_storable(self, storable, quantity,
+                     batch_number=None, batch=None):
+        """Add a storable to this inventory.
 
-        Note that the :attr:`item's quantity <InventoryItem.recorded_quantity>`
-        will be set based on the registered sellable's stock
+        The parameters product, storable and batch are passed here to avoid
+        future queries, increase the performance when opening the inventory
 
-        :param sellable: the |sellable| to be added
+        :param storable: the |storable| to be added
+        :param quantity: the current quantity of the product in stock
         :param batch_number: a batch number representing a |batch|
             for the given sellable. It's used like that instead of
             getting the |batch| directly since we may be adding an item
             not registered before
+        :param batch: the corresponding batch to the batch_number
         """
-        product = sellable.product
-        storable = product.storable
-        if storable is None:
-            raise TypeError("product %r has no storable" % (product, ))
-
-        if batch_number is not None:
+        if batch_number is not None and not batch:
             batch = StorableBatch.get_or_create(self.store,
                                                 storable=storable,
                                                 batch_number=batch_number)
-            quantity = batch.get_balance_for_branch(self.branch)
-        else:
-            batch = None
-            quantity = storable.get_balance_for_branch(self.branch)
 
-        self.validate_batch(batch, sellable)
-
+        product = storable.product
+        sellable = product.sellable
+        self.validate_batch(batch, sellable, storable=storable)
         return InventoryItem(store=self.store,
-                             product=sellable.product,
+                             product=product,
                              batch=batch,
                              product_cost=sellable.cost,
                              recorded_quantity=quantity,
@@ -427,6 +423,61 @@ class Inventory(Domain):
                 "You can't cancel an inventory that has adjusted items!")
 
         self.status = Inventory.STATUS_CANCELLED
+
+    @classmethod
+    def get_sellables_for_inventory(cls, store, branch, extra_query=None):
+        """Returns a generator with the necessary data about the stock to open an Inventory
+
+        :param store: The store to fetch data from
+        :param branch: The branch that is being inventoried
+        :param query: A query that should be used to restrict the storables for
+            the inventory. This can filter based on categories or other aspects
+            of the product.
+
+        :returns: a generator of the following objects:
+            (Sellable, Product, Storable, StorableBatch, ProductStockItem)
+        """
+        # XXX: If we should want all storables to be inclued in the inventory, even if if
+        #      never had a ProductStockItem before, than we should inclue this query in the
+        #      LeftJoin with ProductStockItem below
+        query = ProductStockItem.branch_id == branch.id
+        if extra_query:
+            query = And(query, extra_query)
+
+        tables = [Sellable,
+                  Join(Product, Product.sellable_id == Sellable.id),
+                  Join(Storable, Storable.product_id == Product.id),
+                  LeftJoin(StorableBatch, StorableBatch.storable_id == Storable.id),
+                  LeftJoin(ProductStockItem,
+                           And(ProductStockItem.storable_id == Storable.id,
+                               Or(ProductStockItem.batch_id == StorableBatch.id,
+                                  Eq(ProductStockItem.batch_id, None)))),
+                  ]
+        return store.using(*tables).find(
+            (Sellable, Product, Storable, StorableBatch, ProductStockItem),
+            query)
+
+    @classmethod
+    def create_inventory(cls, store, branch, responsible, query=None):
+        """Create a inventory with products that match the given query
+
+        :param store: A store to open the inventory in
+        :param query: A query to restrict the products that should be in the inventory.
+        """
+        inventory = cls(store=store,
+                        open_date=localnow(),
+                        branch=branch,
+                        responsible=responsible)
+
+        for data in cls.get_sellables_for_inventory(store, branch, query):
+            sellable, product, storable, batch, stock_item = data
+            quantity = stock_item and stock_item.quantity or 0
+            if storable.is_batch:
+                if batch and stock_item and quantity > 0:
+                    inventory.add_storable(storable, quantity, batch=batch)
+            else:
+                inventory.add_storable(storable, quantity)
+        return inventory
 
 
 class InventoryItemsView(Viewable):

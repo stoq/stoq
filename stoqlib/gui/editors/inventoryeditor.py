@@ -24,11 +24,12 @@
 """ Dialog to open the inventory """
 
 from kiwi.ui.objectlist import Column
+from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
-from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.product import Product, ProductManufacturer
+from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.message import info
@@ -131,25 +132,23 @@ class InventoryOpenEditor(BaseEditor):
 
         return tmp_category
 
-    def _get_sellables(self):
-        selected = [c.category for c in self.category_tree if
-                    c.selected and c is not self._uncategorized_products]
+    def _get_sellables_query(self):
+        categories = [c.category for c in self.category_tree if
+                      c.selected and c is not self._uncategorized_products]
         include_uncategorized = self._uncategorized_products.selected
 
-        sellables = Sellable.get_unblocked_by_categories(
-            self.store, selected, include_uncategorized)
+        query = Sellable.get_unblocked_by_categories_query(
+            self.store, categories, include_uncategorized)
 
+        queries = [query]
         if self.model.product_manufacturer:
-            sellables = sellables.find(Product.manufacturer ==
-                                       self.model.product_manufacturer)
+            queries.append(Product.manufacturer == self.model.product_manufacturer)
         if self.model.product_brand:
-            sellables = sellables.find(Product.brand ==
-                                       self.model.product_brand)
+            queries.append(Product.brand == self.model.product_brand)
         if self.model.product_family:
-            sellables = sellables.find(Product.family ==
-                                       self.model.product_family)
+            queries.append(Product.family == self.model.product_family)
 
-        return sellables
+        return And(*queries)
 
     def _select(self, categories, select_value):
         if not categories:
@@ -183,9 +182,9 @@ class InventoryOpenEditor(BaseEditor):
         self._update_widgets()
 
     def validate_confirm(self):
-        # This is a generator. It'll be evaluated to True
-        # even if it's len should be 0. Use a list for comparison instead.
-        if not list(self._get_sellables()):
+        query = self._get_sellables_query()
+        sellables = Inventory.get_sellables_for_inventory(self.store, self.model.branch, query)
+        if sellables.is_empty():
             info(_(u'No products have been found in the selected '
                    'categories.'))
             return False
@@ -196,20 +195,8 @@ class InventoryOpenEditor(BaseEditor):
         # We are using this hook as a callback for the finish button
         branch = self.store.fetch(self.model.branch)
         responsible = self.store.fetch(self.model.user)
-        inventory = Inventory(open_date=self.model.open_date,
-                              branch=branch, responsible=responsible,
-                              store=self.store)
-        for sellable in self._get_sellables():
-            storable = sellable.product_storable
-            if storable is None:
-                continue
-
-            if storable.is_batch:
-                for batch in storable.get_available_batches(inventory.branch):
-                    inventory.add_sellable(sellable,
-                                           batch_number=batch.batch_number)
-            else:
-                inventory.add_sellable(sellable)
+        query = self._get_sellables_query()
+        return Inventory.create_inventory(self.store, branch, responsible, query)
 
     #
     # Kiwi Callback
