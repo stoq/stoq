@@ -74,6 +74,18 @@ class TestInventory(DomainTest):
         self.assertEquals(products,
                           set([storable1.product, storable3.product]))
 
+        # Use this examples to also test get_inventory_data
+        data = list(inventory.get_inventory_data())
+        self.assertEquals(len(data), 2)
+
+        # each row should have 5 items
+        row = data[0]
+        self.assertEquals(len(row), 5)
+
+        self.assertEquals(set(i[0] for i in data), set(items))
+        self.assertEquals(set(i[1] for i in data), set([storable1, storable3]))
+        self.assertEquals(set(i[4] for i in data), set([None, batch]))
+
     def test_add_storable(self):
         inventory = self.create_inventory()
         sellable = self.create_sellable()

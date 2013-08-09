@@ -424,6 +424,27 @@ class Inventory(Domain):
 
         self.status = Inventory.STATUS_CANCELLED
 
+    def get_inventory_data(self):
+        """Returns a generator with the details of the Inventory
+
+        Each item contains:
+
+        - The |inventoryitem|
+        - the |storable|
+        - the |product|
+        - the |sellable|
+        - the |storablebatch|
+        """
+        store = self.store
+        tables = [InventoryItem,
+                  Join(Product, Product.id == InventoryItem.product_id),
+                  Join(Storable, Storable.product_id == Product.id),
+                  Join(Sellable, Sellable.id == Product.sellable_id),
+                  LeftJoin(StorableBatch, StorableBatch.id == InventoryItem.batch_id)]
+        return store.using(*tables).find(
+            (InventoryItem, Storable, Product, Sellable, StorableBatch),
+            InventoryItem.inventory_id == self.id)
+
     @classmethod
     def get_sellables_for_inventory(cls, store, branch, extra_query=None):
         """Returns a generator with the necessary data about the stock to open an Inventory

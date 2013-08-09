@@ -42,12 +42,12 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class _TemporaryInventoryItem(object):
-    def __init__(self, sellable, quantity, batch_number=None):
+    def __init__(self, sellable, storable, quantity, batch_number=None):
         self.sellable = sellable
         self.code = sellable.code
         self.description = sellable.description
         self.category_description = sellable.get_category_description()
-        self.storable = sellable.product_storable
+        self.storable = storable
         self.is_batch = self.storable.is_batch
         self.batches = []
         self.changed = False
@@ -179,8 +179,7 @@ class InventoryCountItemStep(SellableItemStep):
 
         # We use this to check if the sellable the user is trying to add
         # really is on the inventory
-        self._inventory_sellables = set(i.product.sellable for i in
-                                        self.model.get_items())
+        self._inventory_sellables = set(i[3] for i in self.model.get_inventory_data())
 
         self.proxy.remove_widget('cost')
         self.cost.hide()
@@ -216,19 +215,19 @@ class InventoryCountItemStep(SellableItemStep):
         return item
 
     def get_saved_items(self):
-        for item in self.model.get_items():
-            sellable = item.product.sellable
+        data = self.model.get_inventory_data()
+        for item, storable, product, sellable, batch in data:
             if (sellable in self.wizard.temporary_items and
-                item.batch and item.counted_quantity is not None):
+                    batch and item.counted_quantity is not None):
                 tmp_item = self.wizard.temporary_items[sellable]
-                tmp_item.add_or_update_batch(item.batch.batch_number,
+                tmp_item.add_or_update_batch(batch.batch_number,
                                              item.counted_quantity or 0)
                 tmp_item.changed = (tmp_item.changed and
                                     item.counted_quantity is not None)
             elif sellable in self.wizard.temporary_items:
                 continue
             else:
-                tmp_item = _TemporaryInventoryItem(item.product.sellable,
+                tmp_item = _TemporaryInventoryItem(sellable, storable,
                                                    item.counted_quantity or 0)
                 tmp_item.changed = item.counted_quantity is not None
                 self.wizard.temporary_items[sellable] = tmp_item
@@ -242,7 +241,7 @@ class InventoryCountItemStep(SellableItemStep):
         if sellable not in self._inventory_sellables:
             return []
 
-        storable = sellable.product_storable
+        storable = sellable.product.storable
         available_batches = list(
             storable.get_available_batches(self.model.branch))
         # The trivial case, where there's just one batch, we count it directly
@@ -278,7 +277,7 @@ class InventoryCountItemStep(SellableItemStep):
         # FIXME: Maybe we should not require all to be changed if
         # we are doing an assisted count
         self.wizard.refresh_next(value and
-                                 all(i.changed for i in self.slave.klist))
+                                 any(i.changed for i in self.slave.klist))
 
     #
     #  Private
@@ -367,9 +366,10 @@ class InventoryCountWizard(BaseWizard):
 
     def _update_items(self):
         model_items = {}
-        for item in self.model.get_items():
-            batch_number = item.batch and item.batch.batch_number
-            model_items[(item.product.sellable, batch_number)] = item
+        data = self.model.get_inventory_data()
+        for item, storable, product, sellable, batch in data:
+            batch_number = batch.batch_number if batch else None
+            model_items[(sellable, batch_number)] = item
 
         for sellable, tmp_item in self.temporary_items.items():
             if tmp_item.is_batch:
@@ -381,8 +381,8 @@ class InventoryCountWizard(BaseWizard):
                         # If a KeyError happens, it means that we counted some
                         # quantity for a batch that wasn't registered on stoq
                         # yet, so add a new InventoryItem for it
-                        item = self.model.add_sellable(
-                            sellable, batch_number=batch_number)
+                        item = self.model.add_storable(
+                            sellable.product.storable, batch_number=batch_number)
 
                     item.counted_quantity = quantity
             else:

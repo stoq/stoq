@@ -50,6 +50,10 @@ class InventoryAdjustmentEditor(BaseEditor):
     size = (750, 450)
 
     def __init__(self, store, model):
+        # Cache the data. this will save all storables, products and sellables
+        # in cache, avoiding future quries when populating the list bellow.
+        self._data = list(model.get_inventory_data())
+
         self._has_adjusted_any = False
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
