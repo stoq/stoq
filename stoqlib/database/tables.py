@@ -30,11 +30,12 @@
  (classA, classB, ...).
 """
 
-
+import collections
 import logging
 
 from kiwi.python import namedAny
 
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -148,18 +149,29 @@ _tables = [
     ('event', ['Event']),
 ]
 
-# fullname (eg "stoqlib.domain.person.Person") -> class
-_table_cache = {}
-# list of classes, used by get_table_types where order is important
-_table_list = []
+# table name (e.g. "Person") -> class
+_tables_cache = collections.OrderedDict()
 
 
-def _import():
+def _get_tables_cache():
+    if _tables_cache:
+        return _tables_cache
+
     for path, table_names in _tables:
         for table_name in table_names:
             klass = namedAny('stoqlib.domain.%s.%s' % (path, table_name))
-            _table_cache[table_name] = klass
-            _table_list.append(klass)
+            _tables_cache[table_name] = klass
+
+    p_manager = get_plugin_manager()
+    for p_name in p_manager.installed_plugins_names:
+        plugin = p_manager.get_plugin(p_name)
+        for path, table_names in plugin.get_tables():
+            for table_name in table_names:
+                desc = p_manager.get_description_by_name(p_name)
+                klass = namedAny('.'.join([desc.name, path, table_name]))
+                _tables_cache[table_name] = klass
+
+    return _tables_cache
 
 
 def get_table_type_by_name(table_name):
@@ -167,15 +179,8 @@ def get_table_type_by_name(table_name):
 
     :param table_name: name of the table
     """
-
-    if not _table_cache:
-        _import()
-
-    return _table_cache[table_name]
+    return _get_tables_cache()[table_name]
 
 
 def get_table_types():
-    if not _table_list:
-        _import()
-
-    return _table_list
+    return _get_tables_cache().values()

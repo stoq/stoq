@@ -52,7 +52,7 @@ class BooksPlugin(object):
         return PluginSchemaMigration(self.name, 'booksql', ['*.sql'])
 
     def get_tables(self):
-        return [('bookdomain', ['BookPublisher', 'Book'])]
+        return [('booksdomain', ['BookPublisher', 'Book'])]
 
     def activate(self):
         environ.add_resource('glade',

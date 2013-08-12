@@ -49,7 +49,8 @@ class ECFPlugin(object):
         return PluginSchemaMigration(self.name, 'ecfsql', ['*.sql'])
 
     def get_tables(self):
-        return [('ecfdomain', ["ECFPrinter", "DeviceConstant"])]
+        return [('ecfdomain', ["ECFPrinter", "DeviceConstant",
+                               "FiscalSaleHistory", "ECFDocumentHistory"])]
 
     def activate(self):
         environ.add_resource('glade',

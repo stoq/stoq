@@ -25,6 +25,7 @@
 
 import contextlib
 import datetime
+import os
 
 import mock
 import unittest
@@ -32,6 +33,7 @@ import unittest
 from stoqlib.lib.kiwilibrary import library
 library  # pylint: disable=W0104
 
+import stoqlib
 from stoqlib.database.runtime import (get_current_branch,
                                       new_store,
                                       StoqlibStore)
@@ -197,6 +199,18 @@ class DomainTest(unittest.TestCase, ExampleCreator):
     def tearDown(self):
         self.store.rollback(close=False)
         self.clear()
+
+    def get_oficial_plugins_names(self):
+        """Get official plugins names
+
+        Since pluginmanager is prepared to work with plugins defined on
+        the same directory as stoq repository, this is a helper for getting
+        only the ones defined on stoq repository's themselves.
+        """
+        base_dir = os.path.dirname(os.path.dirname(stoqlib.__file__))
+        plugins_dir = os.path.join(base_dir, 'plugins')
+        return set(unicode(d) for d in os.listdir(plugins_dir) if
+                   not d.startswith('__init__'))
 
     @contextlib.contextmanager
     def count_tracer(self):

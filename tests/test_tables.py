@@ -22,56 +22,60 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import glob
+import itertools
 import unittest
 
-from kiwi.python import namedAny
+import mock
 
-from stoqlib import domain
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.tables import get_table_types
+from stoqlib.database.tables import get_table_types, _tables_cache
+from stoqlib.domain.plugin import InstalledPlugin
+from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.introspection import get_all_classes
 
 
 def _introspect_tables():
-    base_dir = domain.__path__[0]
-    filenames = []
-    filenames.extend(glob.glob(base_dir + '/*.py'))
-    filenames.extend(glob.glob(base_dir + '/payment/*.py'))
-    tables = []
-
-    for filename in filenames:
-        if '__init__' in filename:
+    for klass in itertools.chain(get_all_classes('stoqlib/domain'),
+                                 get_all_classes('plugins')):
+        try:
+            if not issubclass(klass, ORMObject):
+                continue
+        except TypeError:
             continue
-        module_name = filename[len(base_dir) + 1:-3]
-        module_name = 'stoqlib.domain.' + module_name.replace('/', '.')
-        module = namedAny(module_name)
-        for attr in dir(module):
-            value = getattr(module, attr)
-            try:
-                if not issubclass(value, ORMObject):
-                    continue
-            except TypeError:
-                continue
-            if value.__dict__.get('__storm_table__', 'invalid') == 'invalid':
-                continue
 
-            tables.append(value)
+        if getattr(klass, '__storm_table__', 'invalid') == 'invalid':
+            continue
 
-    return tables
+        yield klass
 
 
-class TableTypeTest(unittest.TestCase):
+class TableTypeTest(DomainTest):
+    @mock.patch('stoqlib.lib.pluginmanager.get_default_store')
+    def test(self, get_default_store):
+        # FIXME: get_table_types need plugins to be installed to get the
+        # plugin's tables. PluginManager.installed_plugins_names will use the
+        # default store to get the installed plugins, so mock it to the tests'
+        # store, create all the missing InstalledPlugin. Change this to a mock
+        # on installed_plugins_names when we can use newer versions of
+        # python-mock (which suports properly property mocking)
+        get_default_store.return_value = self.store
+        for p_name in self.get_oficial_plugins_names():
+            if self.store.find(InstalledPlugin, plugin_name=p_name).is_empty():
+                InstalledPlugin(store=self.store,
+                                plugin_name=p_name, plugin_version=1)
 
-    def test(self):
-        expected = set(get_table_types())
-        introspected = set(_introspect_tables())
-        if expected != introspected:
-            candidate = expected.difference(introspected)
-            if not candidate:
-                candidate = introspected.difference(expected)
-            tbls = sorted([t.__name__ for t in candidate])
-            self.fail("Missing tables: %s.\nPlease add them to "
-                      "stoqlib.database.tables" % (', '.join(tbls, )))
+        # Depending on the order this test is runned, the cache will be
+        # already filled. Clear it so it imports again and get plugins too
+        _tables_cache.clear()
+        expected = set(t.__name__ for t in get_table_types())
+        introspected = set(t.__name__ for t in _introspect_tables())
+
+        # Tables in either expected or introspected but not both
+        difference = expected ^ introspected
+        if difference:
+            self.fail("Missing tables: %s\n"
+                      "Please add them to stoqlib.database.tables or to the "
+                      "plugin's get_tables" % (', '.join(sorted(difference), )))
 
 
 if __name__ == '__main__':
