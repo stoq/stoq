@@ -43,7 +43,7 @@ from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Client, SalesPerson, Transporter
-from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.domain.sale import Sale, SaleItem, SaleComment
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import SellError, StoqlibError
 from stoqlib.lib.formatters import get_formatted_cost
@@ -785,8 +785,16 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.client.validate()
 
     def on_observations_button__clicked(self, *args):
-        run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
-                   title=_("Additional Information"))
+        self.store.savepoint('before_run_notes_editor')
+
+        model = self.model.comments.order_by(SaleComment.date).first()
+        if not model:
+            model = SaleComment(store=self.store, sale=self.model,
+                                author=api.get_current_user(self.store))
+        rv = run_dialog(NoteEditor, self.wizard, self.store, model, 'comment',
+                        title=_('Sale observations'))
+        if not rv:
+            self.store.rollback_to_savepoint('before_run_notes_editor')
 
     def on_create_cfop__clicked(self, widget):
         self.store.savepoint('before_run_editor_cfop')
