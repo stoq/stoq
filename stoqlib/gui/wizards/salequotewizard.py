@@ -247,7 +247,7 @@ class SaleQuoteItemStep(SellableItemStep):
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
-        self.cost_label.set_label('Price:')
+        self.cost_label.set_label(_('Price:'))
         self.cost.set_editable(True)
 
         self.discount_btn = self.slave.add_extra_button(label=_("Apply discount"))

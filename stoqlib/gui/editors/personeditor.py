@@ -76,7 +76,7 @@ class ClientEditor(BasePersonRoleEditor):
 
         credit_slave = ClientCreditSlave(self.store, self.model,
                                          visual_mode=self.visual_mode)
-        self.main_slave._person_slave.add_extra_tab('Credit Details',
+        self.main_slave._person_slave.add_extra_tab(_('Credit Details'),
                                                     credit_slave)
 
 
