@@ -76,12 +76,12 @@ header p {
 header .subtitle {
     margin: 0;
     font-weight: bold;
-    color: #444;
+    color: #333;
 }
 
 header .notes {
     font-size: 10pt;
-    color: #777;
+    color: #333;
     margin-bottom: 5mm;
 }
 
