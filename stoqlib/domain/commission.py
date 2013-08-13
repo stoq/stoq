@@ -205,18 +205,26 @@ class CommissionView(Viewable):
         sale and payment.
     """
 
+    # Sale
     id = Sale.id
     identifier = Sale.identifier
     identifier_str = Cast(Sale.identifier, 'text')
     sale_status = Sale.status
+    confirm_date = Sale.confirm_date
+
+    # Commission
     code = Commission.id
     commission_value = Commission.value
     commission_percentage = Commission.value / Payment.value * 100
-    salesperson_name = Person.name
+
+    # Payment
     payment_id = Payment.id
     payment_value = Payment.value
-    confirm_date = Sale.confirm_date
     paid_date = Payment.paid_date
+
+    # Salesperson
+    salesperson_id = SalesPerson.id
+    salesperson_name = Person.name
 
     tables = [
         Sale,

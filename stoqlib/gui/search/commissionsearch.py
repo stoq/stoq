@@ -29,6 +29,7 @@ import datetime
 from kiwi.currency import currency
 from kiwi.ui.objectlist import ColoredColumn, Column
 
+from stoqlib.api import api
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.person import SalesPerson
 from stoqlib.enums import SearchFilterPosition
@@ -56,14 +57,10 @@ class CommissionSearch(SearchDialog):
     def create_filters(self):
         self.set_text_field_columns(['salesperson_name', 'identifier_str'])
 
-        persons = [p.person.name for p in
-                   self.store.find(SalesPerson)]
-        persons = list(zip(persons, persons))
-        persons.insert(0, (_('Anyone'), None))
-        salesperson_filter = ComboSearchFilter(_('Sold by:'), persons)
-        self.add_filter(salesperson_filter, SearchFilterPosition.TOP,
-                        ['salesperson_name'])
-        self._salesperson_filter = salesperson_filter
+        items = api.for_combo(self.store.find(SalesPerson), empty=_("Anyone"))
+        self._salesperson_filter = ComboSearchFilter(_("Sold by:"), items)
+        self.add_filter(self._salesperson_filter, SearchFilterPosition.TOP,
+                        callback=self._get_salesperson_query)
 
     def get_columns(self):
         columns = [
@@ -98,7 +95,16 @@ class CommissionSearch(SearchDialog):
         return columns
 
     def on_print_button_clicked(self, button):
-        salesperson_name = self._salesperson_filter.combo.get_selected()
+        salesperson = self._salesperson_filter.combo.get_selected()
         print_report(SalesPersonReport, list(self.results),
-                     salesperson_name=salesperson_name,
+                     salesperson=salesperson,
                      filters=self.search.get_search_filters())
+
+    #
+    #  Callbacks
+    #
+
+    def _get_salesperson_query(self, state):
+        salesperson = state.value
+        if salesperson:
+            return CommissionView.salesperson_id == salesperson.id

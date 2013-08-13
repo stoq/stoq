@@ -119,10 +119,12 @@ class SoldItemsByBranchReport(ObjectListReport):
 class SalesPersonReport(TableReport):
     title = _("Sales")
 
-    def __init__(self, filename, payments_list, salesperson_name,
+    def __init__(self, filename, payments_list, salesperson,
                  *args, **kwargs):
         branch = get_current_branch(get_default_store()).get_description()
         self.payments_list = payments_list
+        self._sales_person = salesperson
+        salesperson_name = salesperson.get_description()
         if salesperson_name:
             singular = _("payment for {salesperson} on branch {branch}").format(
                 salesperson=salesperson_name, branch=branch)
@@ -134,7 +136,6 @@ class SalesPersonReport(TableReport):
 
         self.main_object_name = (singular, plural)
         self.landscape = (salesperson_name is None)
-        self._sales_person = salesperson_name
 
         TableReport.__init__(self, filename, payments_list,
                              self.title, *args, **kwargs)

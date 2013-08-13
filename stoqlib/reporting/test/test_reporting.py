@@ -407,13 +407,13 @@ class TestReport(ReportTest):
         sale.confirm()
         sale.group.pay()
 
-        salesperson_name = salesperson.person.name
+        salesperson = salesperson
         commissions = list(self.store.find(CommissionView))
         commissions[0].identifier = 1
         commissions[1].identifier = 139
 
-        self._diff_expected(SalesPersonReport, 'sales-person-report', commissions,
-                            salesperson_name)
+        self._diff_expected(SalesPersonReport, 'sales-person-report',
+                            commissions, salesperson)
 
     def test_sale_order_report(self):
         product = self.create_product(price=100)

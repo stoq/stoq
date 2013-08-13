@@ -13,8 +13,8 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
                   item: 'Anyone'
                   item: 'Administrator'
                   item: 'Cleusa Blanc Ferreira Norbiato'
-                  item: 'Maria Aparecida Ardana', selected
                   item: 'Deivis Alexandre Junior'
+                  item: 'Maria Aparecida Ardana', selected
                   item: 'Osvaldo Denadai Marin'
                   item: 'SalesPerson'
                   item: 'SalesPerson (1)'
