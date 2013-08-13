@@ -29,6 +29,7 @@ from stoqlib.database.expr import Date
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.till import TillEntry
+from stoqlib.domain.sale import Sale
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.report import ObjectListReport, HTMLReport
 
@@ -76,6 +77,8 @@ class TillDailyMovementReport(HTMLReport):
 
         for p in store.find(InPaymentView, query).order_by(Payment.identifier):
             if p.sale:
+                if p.sale.status == Sale.STATUS_RETURNED:
+                    continue
                 sale_payments = self.sales.setdefault(p.sale, [])
                 sale_payments.append(p)
             else:

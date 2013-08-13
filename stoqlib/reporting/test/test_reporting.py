@@ -342,17 +342,18 @@ class TestReport(ReportTest):
         payment.identifier = 1002
         payment.paid_date = date
 
-        # create sale payment
+        # Create a returned sale
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale)
-        self.add_payments(sale)
+        payment = self.add_payments(sale, date=date)[0]
         sale.order()
         sale.confirm()
         sale.identifier = 23456
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
         sale.return_date = date
+        payment.paid_date = date
 
         payment = returned_sale.group.get_items()[1]
         payment.branch = branch
