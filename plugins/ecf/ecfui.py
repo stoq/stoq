@@ -466,15 +466,21 @@ class ECFUI(object):
                      _("Not now"))
 
     def _cancel_last_till_entry(self, last_doc, store):
-        till_entry = store.fetch(last_doc.last_till_entry)
+        last_till_entry = store.fetch(last_doc.last_till_entry)
+        value = last_till_entry.value
+        till = Till.get_current(store)
         try:
             self._printer.cancel_last_coupon()
-            if till_entry.value > 0:
-                till_entry.description = _(u"Cash out")
+            if last_till_entry.value > 0:
+                till_entry = till.add_debit_entry(value,
+                                                  _(u"Cash out: Cancel the "
+                                                    "last cash added"))
+                self._set_last_till_entry(till_entry, store)
             else:
-                till_entry.description = _(u"Cash in")
-            till_entry.value = -till_entry.value
-            last_doc.last_till_entry = None
+                till_entry = till.add_credit_entry(-value,
+                                                   _(u"Cash in: Cancel the "
+                                                     "last cash removed"))
+                self._set_last_till_entry(till_entry, store)
             info(_("Document was cancelled"))
         except:
             info(_("Cancelling failed, nothing to cancel"))
@@ -484,9 +490,12 @@ class ECFUI(object):
         if last_doc.last_sale.status == Sale.STATUS_RETURNED:
             return
         sale = store.fetch(last_doc.last_sale)
+        value = sale.total_amount
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.reason = _(u"Cancelling last document on ECF")
         returned_sale.return_()
+        till = Till.get_current(store)
+        till.add_debit_entry(value, _(u"Cash out: Cancel the last sale"))
         last_doc.last_sale = None
         info(_("Document was cancelled"))
 
