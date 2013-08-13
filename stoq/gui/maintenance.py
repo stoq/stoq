@@ -170,8 +170,11 @@ class MaintenanceApp(ShellApp):
                       WorkOrder.status == WorkOrder.STATUS_WORK_WAITING),
         'in-progress': WorkOrder.status == WorkOrder.STATUS_WORK_IN_PROGRESS,
         'finished': WorkOrder.status == WorkOrder.STATUS_WORK_FINISHED,
-        'delivered': Or(WorkOrder.status == WorkOrder.STATUS_CANCELLED,
-                        WorkOrder.status == WorkOrder.STATUS_DELIVERED),
+        'delivered': WorkOrder.status == WorkOrder.STATUS_DELIVERED,
+        'cancelled': WorkOrder.status == WorkOrder.STATUS_CANCELLED,
+        'all-orders': None,
+        'not-delivered': And(WorkOrder.status != WorkOrder.STATUS_CANCELLED,
+                             WorkOrder.status != WorkOrder.STATUS_DELIVERED),
     }
     _flags_query_mapper = {
         'approved': And(WorkOrder.status != WorkOrder.STATUS_OPENED,
@@ -424,9 +427,6 @@ class MaintenanceApp(ShellApp):
 
     def _get_main_query(self, state):
         item = state.value
-        if item is None:
-            return
-
         kind, value = item.value.split(':')
         if kind == 'category':
             return WorkOrder.category_id == item.id
@@ -483,10 +483,13 @@ class MaintenanceApp(ShellApp):
 
     def _update_filters(self):
         options = [
+            _FilterItem(_(u'Not delivered'), 'status:not-delivered'),
             _FilterItem(_(u'Pending'), 'status:pending'),
             _FilterItem(_(u'In progress'), 'status:in-progress'),
             _FilterItem(_(u'Finished'), 'status:finished'),
-            _FilterItem(_(u'Delivered or cancelled'), 'status:delivered'),
+            _FilterItem(_(u'Delivered'), 'status:delivered'),
+            _FilterItem(_(u'Cancelled'), 'status:cancelled'),
+            _FilterItem(_(u'All work orders'), 'status:all-orders'),
             _FilterItem('sep', 'sep'),
             _FilterItem(_(u'Approved'), 'flag:approved'),
             _FilterItem(_(u'In transport'), 'flag:in-transport'),
@@ -503,7 +506,6 @@ class MaintenanceApp(ShellApp):
                                        obj_id=category.id))
 
         self.main_filter.update_values(
-            [(_(u'All work orders'), None)] +
             [(item.name, item) for item in options])
 
     def _new_order(self, category=None):

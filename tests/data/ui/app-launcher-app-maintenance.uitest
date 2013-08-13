@@ -95,11 +95,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                   ComboSearchFilter():
                     GtkLabel(): 'Show'
                     ProxyComboBox(padding=6):
-                      item: 'All work orders', selected
+                      item: 'Not delivered', selected
                       item: 'Pending'
                       item: 'In progress'
                       item: 'Finished'
-                      item: 'Delivered or cancelled'
+                      item: 'Delivered'
+                      item: 'Cancelled'
+                      item: 'All work orders'
                       item: 'sep'
                       item: 'Approved'
                       item: 'In transport'
