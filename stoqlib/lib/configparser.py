@@ -103,7 +103,6 @@ class StoqConfig:
         self.set('Database', 'address', settings.address)
         self.set('Database', 'port', str(settings.port))
         self.set('Database', 'dbname', settings.dbname)
-        self.set('Database', 'testdb', settings.dbname)
         self.set('Database', 'dbusername', settings.username)
         if settings.password:
             self.store_password(settings.password)
@@ -127,9 +126,6 @@ class StoqConfig:
 
     def get_config_directory(self):
         return os.path.join(get_application_dir(self.domain))
-
-    def use_test_database(self):
-        self.set('Database', 'dbname', self.get('Database', 'testdb'))
 
     def store_password(self, password):
         configdir = self.get_config_directory()
