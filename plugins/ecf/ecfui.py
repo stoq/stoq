@@ -472,14 +472,14 @@ class ECFUI(object):
         try:
             self._printer.cancel_last_coupon()
             if last_till_entry.value > 0:
-                till_entry = till.add_debit_entry(value,
-                                                  _(u"Cash out: Cancel the "
-                                                    "last cash added"))
+                till_entry = till.add_debit_entry(
+                    # TRANSLATORS: cash out = sangria, cash in = suprimento
+                    value, _(u"Cash out: last cash in cancelled"))
                 self._set_last_till_entry(till_entry, store)
             else:
-                till_entry = till.add_credit_entry(-value,
-                                                   _(u"Cash in: Cancel the "
-                                                     "last cash removed"))
+                till_entry = till.add_credit_entry(
+                    # TRANSLATORS: cash out = sangria, cash in = suprimento
+                    -value, _(u"Cash in: last cash out cancelled"))
                 self._set_last_till_entry(till_entry, store)
             info(_("Document was cancelled"))
         except:
@@ -495,7 +495,8 @@ class ECFUI(object):
         returned_sale.reason = _(u"Cancelling last document on ECF")
         returned_sale.return_()
         till = Till.get_current(store)
-        till.add_debit_entry(value, _(u"Cash out: Cancel the last sale"))
+        # TRANSLATORS: cash out = sangria
+        till.add_debit_entry(value, _(u"Cash out: last sale cancelled"))
         last_doc.last_sale = None
         info(_("Document was cancelled"))
 
