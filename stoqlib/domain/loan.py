@@ -260,7 +260,8 @@ class Loan(Domain):
         return self.store.find(LoanItem, loan=self)
 
     def remove_item(self, loan_item):
-        self.store.remove(loan_item)
+        loan_item.loan = None
+        self.store.maybe_remove(loan_item)
 
     #
     # Public API

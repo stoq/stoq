@@ -62,6 +62,30 @@ class TestReturnedSale(DomainTest):
         self.assertEquals(total, 0)
         self.assertEquals(total_items, 0)
 
+    def test_remove_item(self):
+        item = self.create_returned_sale_item()
+        order = item.returned_sale
+
+        before_remove = self.store.find(ReturnedSaleItem).count()
+        order.remove_item(item)
+        after_remove = self.store.find(ReturnedSaleItem).count()
+
+        self.assertEqual(before_remove, after_remove + 1)
+
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            item = self.create_returned_sale_item()
+            order = item.returned_sale
+
+            before_remove = self.store.find(ReturnedSaleItem).count()
+            order.remove_item(item)
+            after_remove = self.store.find(ReturnedSaleItem).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(ReturnedSaleItem, returned_sale=order).count(), 0)
+
     def test_client(self):
         branch = self.create_branch()
         client = self.create_client()

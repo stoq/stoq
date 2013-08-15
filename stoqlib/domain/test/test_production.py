@@ -86,6 +86,25 @@ class TestProductionOrder(DomainTest):
              u'order instance.')):
             order.remove_item(item)
 
+        item = self.create_production_item()
+        order = item.order
+        order.remove_item(item)
+        self.assertEquals(order.get_items().count(), 0)
+
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            item = self.create_production_item()
+            order = item.order
+
+            before_remove = self.store.find(ProductionItem).count()
+            order.remove_item(item)
+            after_remove = self.store.find(ProductionItem).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(ProductionItem, order=order).count(), 0)
+
     def test_remove_service_item(self):
         order = self.create_production_order()
         item = ProductionService(store=self.store)
@@ -94,8 +113,25 @@ class TestProductionOrder(DomainTest):
                          u'associated with the current production '
                          u'order instance.')):
             order.remove_service_item(item)
-        item.order = order
+
+        item = self.create_production_service()
+        order = item.order
         order.remove_service_item(item)
+        self.assertEquals(order.get_service_items().count(), 0)
+
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            item = self.create_production_service()
+            order = item.order
+
+            before_remove = self.store.find(ProductionService).count()
+            order.remove_service_item(item)
+            after_remove = self.store.find(ProductionService).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(ProductionService, order=order).count(), 0)
 
     def test_get_status_string(self):
         order = self.create_production_order()

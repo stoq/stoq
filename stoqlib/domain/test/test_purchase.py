@@ -318,6 +318,20 @@ class TestPurchaseOrder(DomainTest):
         with self.assertRaises(ValueError):
             purchase_order.remove_item(item)
 
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            item = self.create_purchase_order_item()
+            order = item.order
+
+            before_remove = self.store.find(PurchaseItem).count()
+            order.remove_item(item)
+            after_remove = self.store.find(PurchaseItem).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(PurchaseItem, order=order).count(), 0)
+
     def test_discount_percentage_getter(self):
         order = self.create_purchase_order()
         self.create_purchase_order_item(order=order)

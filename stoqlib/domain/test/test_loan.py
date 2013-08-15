@@ -164,6 +164,20 @@ class TestLoan(DomainTest):
         total_items = self.store.find(LoanItem, loan=loan).count()
         self.assertEquals(total_items, 0)
 
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            loan_item = self.create_loan_item()
+            loan = loan_item.loan
+
+            before_remove = self.store.find(LoanItem).count()
+            loan.remove_item(loan_item)
+            after_remove = self.store.find(LoanItem).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(LoanItem, loan=loan).count(), 0)
+
 
 class TestLoanItem(DomainTest):
 

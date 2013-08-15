@@ -699,7 +699,8 @@ class WorkOrder(Domain):
         assert item.order is self
         if item.quantity_decreased > 0:
             item.return_to_stock(item.quantity_decreased)
-        self.store.remove(item)
+        item.order = None
+        self.store.maybe_remove(item)
 
     #
     #  Public API

@@ -265,6 +265,8 @@ class Payment(Domain):
         # First call hooks, do this first so the hook
         # have access to everything it needs
         self.method.operation.payment_delete(self)
+        # FIXME: BUG 5581 check if it is really safe to remove the payment
+        # when using with synced databases
         self.store.remove(self)
 
     @classmethod

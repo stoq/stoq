@@ -230,7 +230,8 @@ class PurchaseOrder(Domain):
         if item.order is not self:
             raise ValueError(_(u'Argument item must have an order attribute '
                                'associated with the current purchase instance'))
-        self.store.remove(item)
+        item.order = None
+        self.store.maybe_remove(item)
 
     def add_item(self, sellable, quantity=Decimal(1)):
         store = self.store
@@ -633,6 +634,8 @@ class QuoteGroup(Domain):
                                u'belong to this group.'))
 
         order = item.purchase
+        # FIXME: Bug 5581 Removing objects with synced databases is dangerous.
+        # Investigate this usage
         self.store.remove(item)
         for order_item in order.get_items():
             order.remove_item(order_item)
@@ -659,6 +662,8 @@ class QuoteGroup(Domain):
         store = self.store
         for quote in self.get_items():
             quote.close()
+            # FIXME: Bug 5581 Removing objects with synced databases is
+            # dangerous. Investigate this usage
             store.remove(quote)
 
 

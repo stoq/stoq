@@ -24,6 +24,7 @@
 
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.transfer import TransferOrderItem
 
 __tests__ = 'stoqlib/domain/transfer.py'
 
@@ -98,6 +99,20 @@ class TestTransferOrder(DomainTest):
         order = self.create_transfer_order()
         item = self.create_transfer_order_item()
         self.assertRaises(ValueError, order.remove_item, item)
+
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            item = self.create_transfer_order_item()
+            order = item.transfer_order
+
+            before_remove = self.store.find(TransferOrderItem).count()
+            order.remove_item(item)
+            after_remove = self.store.find(TransferOrderItem).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(TransferOrderItem, transfer_order=order).count(), 0)
 
     def test_get_source_branch_name(self):
         order = self.create_transfer_order()

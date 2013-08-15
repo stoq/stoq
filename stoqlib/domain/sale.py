@@ -787,7 +787,8 @@ class Sale(Domain):
         return store.find(SaleItem, sale=self)
 
     def remove_item(self, sale_item):
-        self.store.remove(sale_item)
+        sale_item.sale = None
+        self.store.maybe_remove(sale_item)
 
     # Status
 

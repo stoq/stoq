@@ -64,6 +64,20 @@ class TestStockDecrease(DomainTest):
         decrease.remove_item(item)
         self.assertEqual(decrease.get_items().count(), 0)
 
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            item = self.create_stock_decrease_item()
+            order = item.stock_decrease
+
+            before_remove = self.store.find(StockDecreaseItem).count()
+            order.remove_item(item)
+            after_remove = self.store.find(StockDecreaseItem).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(StockDecreaseItem, stock_decrease=order).count(), 0)
+
     def test_get_items(self):
         decrease = self.create_stock_decrease()
         sellable = self.create_sellable()

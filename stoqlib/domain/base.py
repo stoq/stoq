@@ -113,7 +113,10 @@ class Domain(ORMObject):
             if self._creating:
                 return
             store = obj_info.get("store")
-            store.add_modified_object(self)
+            # Some times this gets called even after the object was removed
+            # from the store
+            if store:
+                store.add_modified_object(self)
 
     def _on_object_added(self, obj_info):
         store = obj_info.get("store")

@@ -87,6 +87,8 @@ class TemporaryProductComponent(object):
     def delete_product_component(self, store):
         component = self._get_product_component(store)
         if component is not None:
+            # FIXME: bug 5581 Check if we can really remove this object when
+            # working with synced databases
             store.remove(component)
 
     def add_or_update_product_component(self, store):

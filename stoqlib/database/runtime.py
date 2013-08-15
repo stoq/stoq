@@ -306,6 +306,18 @@ class StoqlibStore(Store):
         cursor.close()
         return stmt
 
+    def maybe_remove(self, obj):
+        """Maybe remove an object from the database
+
+        This will depend on the parameter SYNCHRONIZED_MODE. When working with
+        synchronized databases, we should be very carefull when removing
+        objects, since they will not be removed from the remote database (at
+        least until we fix bug 5581)
+        """
+        from stoqlib.lib.parameters import sysparam
+        if not sysparam.get_bool('SYNCHRONIZED_MODE'):
+            self.remove(obj)
+
     def add_created_object(self, obj):
         """Record an object that was created in the store.
         This is an internal method that should only be called by Domain.

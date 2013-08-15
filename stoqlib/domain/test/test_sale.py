@@ -147,6 +147,20 @@ class TestSale(DomainTest):
         sale.remove_item(item)
         self.assertEqual(sale.get_items().count(), 0)
 
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            item = self.create_sale_item()
+            sale = item.sale
+
+            before_remove = self.store.find(SaleItem).count()
+            sale.remove_item(item)
+            after_remove = self.store.find(SaleItem).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(SaleItem, sale=sale).count(), 0)
+
     def test_get_status_name(self):
         sale = self.create_sale()
         self.assertEquals(sale.get_status_name(sale.STATUS_CONFIRMED),

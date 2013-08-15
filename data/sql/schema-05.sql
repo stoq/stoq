@@ -1343,7 +1343,7 @@ CREATE TABLE transfer_order_item (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     sellable_id uuid NOT NULL REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
-    transfer_order_id uuid NOT NULL REFERENCES transfer_order(id) ON UPDATE CASCADE,
+    transfer_order_id uuid REFERENCES transfer_order(id) ON UPDATE CASCADE,
     quantity numeric(20, 3) NOT NULL CONSTRAINT positive_quantity
         CHECK (quantity > 0),
     stock_cost numeric(20, 8) NOT NULL DEFAULT 0 CONSTRAINT positive_stock_cost

@@ -201,7 +201,8 @@ class StockDecrease(Domain):
         return self.store.find(StockDecreaseItem, stock_decrease=self)
 
     def remove_item(self, item):
-        self.store.remove(item)
+        item.stock_decrease = None
+        self.store.maybe_remove(item)
 
     # Status
 

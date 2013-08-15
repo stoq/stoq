@@ -389,6 +389,17 @@ class ExampleCreator(object):
             sale = self.create_sale()
         return sale.create_sale_return_adapter()
 
+    def create_returned_sale_item(self):
+        from stoqlib.domain.returnedsale import ReturnedSaleItem
+        sale_item = self.create_sale_item()
+        returned_sale = self.create_returned_sale()
+        return ReturnedSaleItem(store=self.store,
+                                quantity=1,
+                                price=100,
+                                sale_item=sale_item,
+                                returned_sale=returned_sale,
+                                sellable=sale_item.sellable)
+
     def create_sale_item(self, sale=None, product=True, quantity=1):
         from stoqlib.domain.sale import SaleItem
         sellable = self.create_sellable(product=product)

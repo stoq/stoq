@@ -290,7 +290,8 @@ class ReturnedSale(Domain):
         return self.returned_items
 
     def remove_item(self, item):
-        self.store.remove(item)
+        item.returned_sale = None
+        self.store.maybe_remove(item)
 
     #
     #  Public API
@@ -370,6 +371,7 @@ class ReturnedSale(Domain):
 
     def remove(self):
         """Remove this return and it's items from the database"""
+        # XXX: Why do we remove this object from the database
         for item in self.get_items():
             self.remove_item(item)
         self.store.remove(self)

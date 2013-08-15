@@ -309,14 +309,26 @@ class TestWorkOrder(DomainTest):
             product2.storable.get_balance_for_branch(workorder.branch), 10)
 
         for item in [item1, item2]:
-            with mock.patch.object(self.store, 'remove') as remove:
-                workorder.remove_item(item)
-                remove.assert_called_once_with(item)
-                storable = item.sellable.product.storable
-                # Everything should be back to the stock, like
-                # the item never existed
-                self.assertEqual(
-                    storable.get_balance_for_branch(workorder.branch), 10)
+            workorder.remove_item(item)
+            storable = item.sellable.product.storable
+            # Everything should be back to the stock, like
+            # the item never existed
+            self.assertEqual(
+                storable.get_balance_for_branch(workorder.branch), 10)
+
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            item = self.create_work_order_item()
+            order = item.order
+
+            before_remove = self.store.find(WorkOrderItem).count()
+            order.remove_item(item)
+            after_remove = self.store.find(WorkOrderItem).count()
+
+            # The item should still be on the database
+            self.assertEqual(before_remove, after_remove)
+
+            # But not related to the loan
+            self.assertEquals(self.store.find(WorkOrderItem, order=order).count(), 0)
 
     def test_add_sellable(self):
         sellable = self.create_sellable(price=50)
