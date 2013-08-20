@@ -77,23 +77,12 @@ class StoqAPI(object):
         When the execution of the with statement has finished this
         will commit the object, close the store.
         trans.retval will be used to determine if the store
-        should be committed or rolled back (via :py:func:`~stoqlib.api.StoqAPI.finish_transaction`)
+        should be committed or rolled back.
         """
         store = self.new_store()
         yield store
 
-        # Editors/Wizards requires the store.retval variable to
-        # be set or it won't be committed.
-        if store.needs_retval:
-            retval = bool(store.retval)
-            if store.confirm(retval):
-                store.committed = True
-            else:
-                store.committed = False
-        # Normal transaction, just commit it
-        else:
-            store.commit()
-            store.committed = True
+        store.committed = store.confirm(commit=store.retval)
         store.close()
 
     @property

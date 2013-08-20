@@ -77,7 +77,6 @@ class WorkOrderResultKanbanView(KanbanView):
                 return True
 
             work_order = store.fetch(work_order)
-            store.needs_retval = True
             try:
                 work_order.change_status(new_status)
             except InvalidStatus as e:
@@ -87,8 +86,6 @@ class WorkOrderResultKanbanView(KanbanView):
                 info(str(e), _("Make the change on the order's menu so "
                                "you can specify a reason"))
                 store.retval = False
-            else:
-                store.retval = True
 
         return store.retval
 

@@ -301,8 +301,6 @@ class BaseEditor(BaseEditorSlave, RunnableView):
     form_holder_name = 'toplevel'
 
     def __init__(self, store, model=None, visual_mode=False):
-        if store is not None and isinstance(store, StoqlibStore):
-            store.needs_retval = True
         self._confirm_disabled = False
 
         # FIXME:

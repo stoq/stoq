@@ -171,19 +171,20 @@ class TestSaleDetails(GUITest):
         self.click(dialog.print_button)
         print_report.assert_called_once_with(SaleOrderReport, sale)
 
+    @mock.patch('stoqlib.gui.dialogs.saledetails.api.new_store')
     @mock.patch('stoqlib.gui.dialogs.saledetails.run_dialog')
-    def test_add_note(self, run_dialog):
+    def test_add_note(self, run_dialog, new_store):
+        new_store.return_value = self.store
         run_dialog.return_value = False
+
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
         model = self.store.find(SaleView, id=sale.id).one()
 
         dialog = SaleDetailsDialog(self.store, model)
-        new_store = 'stoqlib.gui.dialogs.saledetails.api.new_store'
-        with mock.patch(new_store) as new_store:
+        with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                new_store.return_value = self.store
                 self.click(dialog.comment_add)
 
         args, kwargs = run_dialog.call_args

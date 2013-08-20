@@ -176,10 +176,9 @@ class StoqlibStore(Store):
     `storm tutorial <https://storm.canonical.com/Tutorial>`__
 
     :attribute retval: The return value of a operation this transaction
-      is covering. Usually a domain object that was modified
-    :attribute needs_retval: If this is set to True, the retval variable
-      needs to be set to a non-zero value to be committed, see
-      stoqlib.api.trans
+      is covering. Usually a domain object that was modified. By default
+      it's ``True``, but can be set to ``False`` to do a rollback instead
+      of a commit on :meth:`stoqlib.api.StoqApi.trans`
     """
     _result_set_factory = StoqlibResultSet
 
@@ -191,8 +190,7 @@ class StoqlibStore(Store):
         :param cache: storm cache to use or ``None``
         """
         self._savepoints = []
-        self.retval = None
-        self.needs_retval = False
+        self.retval = True
         self.obsolete = False
 
         if database is None:
