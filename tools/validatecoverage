@@ -243,6 +243,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/wizards/loanwizard.py', 87),
     ('stoqlib/gui/wizards/personwizard.py', 34.59),
     ('stoqlib/gui/wizards/productionwizard.py', 89.22),
+    ('stoqlib/gui/wizards/productwizard.py', 44.23),
     ('stoqlib/gui/wizards/purchasefinishwizard.py', 43.24),
     ('stoqlib/gui/wizards/purchasequotewizard.py', 30),
     ('stoqlib/gui/wizards/purchasewizard.py', 81.21),

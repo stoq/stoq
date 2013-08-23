@@ -63,7 +63,7 @@ class ProductInformationSlave(BaseEditorSlave):
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width',
                      'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero',
                      'product_model', 'brand', 'family']
-    storable_widgets = ['minimum_quantity', 'maximum_quantity', 'is_batch']
+    storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
     def __init__(self, store, model, db_form, visual_mode=False):
         self.db_form = db_form
@@ -126,12 +126,6 @@ class ProductInformationSlave(BaseEditorSlave):
             not self.genero.get_visible()):
             self.mercosul_lbl.hide()
 
-        # A batch can only be set if there is no stock items for the product yet
-        # (ie, it was never purchased or registrered the initial stock).
-        storable = self.model.storable
-        if storable and not storable.get_stock_items().is_empty():
-            self.is_batch.set_sensitive(False)
-
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(
@@ -142,24 +136,12 @@ class ProductInformationSlave(BaseEditorSlave):
             self.storable_proxy = self.add_proxy(
                 storable, ProductInformationSlave.storable_widgets)
         else:
-            self.set_has_storable(False)
+            self.minimum_quantity.set_sensitive(False)
+            self.maximum_quantity.set_sensitive(False)
 
     def update_visual_mode(self):
         self.minimum_quantity.set_sensitive(False)
         self.maximum_quantity.set_sensitive(False)
-
-    def set_allow_batch(self, sensitive):
-        """This will enable or disable the batch indication widget.
-
-        When disabled, the product will not be allowed to have batches.
-        """
-        self.is_batch.set_sensitive(sensitive)
-        self.is_batch.set_active(False)
-
-    def set_has_storable(self, has_storable):
-        self.minimum_quantity.set_sensitive(has_storable)
-        self.maximum_quantity.set_sensitive(has_storable)
-        self.is_batch.set_sensitive(has_storable)
 
     def hide_stock_details(self):
         self.min_lbl.hide()
@@ -173,7 +155,6 @@ class ProductInformationSlave(BaseEditorSlave):
         self.manufacturer.hide()
         self.model_lbl.hide()
         self.product_model.hide()
-        self.is_batch.hide()
         self.brand_lbl.hide()
         self.brand.hide()
         self.family_lbl.hide()
@@ -243,12 +224,6 @@ class ProductDetailsSlave(SellableDetailsSlave):
 
     def hide_stock_details(self):
         self.info_slave.hide_stock_details()
-
-    def set_allow_batch(self, sensitive):
-        self.info_slave.set_allow_batch(sensitive)
-
-    def set_has_storable(self, sensitive):
-        self.info_slave.set_has_storable(sensitive)
 
 
 class ProductTaxSlave(BaseEditorSlave):

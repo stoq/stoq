@@ -68,12 +68,7 @@ GtkDialog(main_dialog.toplevel): title='Add Service', hidden
                   item: 'Kg'
                   item: 'Lt'
                   item: 'm '
-              GtkLabel(consignment_lbl): 'Consignment:', hidden
-              GtkHBox(consignment_box): hidden
-                ProxyRadioButton(consignment_yes_button, expand=True, fill=True): 'Yes'
-                ProxyRadioButton(consignment_no_button, expand=True, fill=True): 'No', active
               ProxyLabel(requires_weighing_label): '<span size="small"></span>'
-              ProxyCheckButton(manage_stock): 'Manage Stock', active, hidden
               GtkEventBox(slave_holder): slave SellableDetailsSlave is attached
                 GtkVBox(toplevel):
                   GtkTable(table1, expand=True, fill=True):

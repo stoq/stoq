@@ -274,24 +274,36 @@ class ProductComponentEditor(BaseEditor):
 
 
 class ProductEditor(SellableEditor):
+
+    TYPE_COMMON = 0
+    TYPE_BATCH = 1
+    TYPE_WITHOUT_STOCK = 2
+    TYPE_CONSIGNED = 3
+
     model_name = _('Product')
     model_type = Product
     help_section = 'product'
     ui_form_name = u'product'
 
-    product_widgets = ['manage_stock']
-
-    _model_created = False
-
-    def __init__(self, store, model=None, visual_mode=False):
+    def __init__(self, store, model=None, visual_mode=False,
+                 product_type=TYPE_COMMON):
+        self._product_type = product_type
         SellableEditor.__init__(self, store, model, visual_mode=visual_mode)
         # This can't be done in setup_slaves() as we need to access
         # self.main_dialog when setting up the quality test slave
         self._add_extra_tabs()
 
+    #
+    # Private
+    #
+
     def _add_extra_tabs(self):
         for tabname, tabslave in self.get_extra_tabs():
             self.add_extra_tab(tabname, tabslave)
+
+    #
+    #  SellableEditor
+    #
 
     def get_taxes(self):
         query = (SellableTaxConstant.tax_type != int(TaxType.SERVICE))
@@ -309,9 +321,9 @@ class ProductEditor(SellableEditor):
                                                  self.db_form, self.visual_mode)
         self.add_extra_tab(_(u'Details'), self.details_slave)
 
-    def setup_proxies(self):
-        super(ProductEditor, self).setup_proxies()
-        self.product_proxy = self.add_proxy(self.model, self.product_widgets)
+    #
+    #   Callbacks
+    #
 
     def get_extra_tabs(self):
         from stoqlib.gui.slaves.productslave import (ProductTaxSlave,
@@ -328,11 +340,6 @@ class ProductEditor(SellableEditor):
 
     def setup_widgets(self):
         self.cost.set_digits(sysparam.get_int('COST_PRECISION_DIGITS'))
-        self.consignment_yes_button.set_active(self.model.consignment)
-        self.consignment_yes_button.set_sensitive(self._model_created)
-        self.consignment_no_button.set_sensitive(self._model_created)
-        self.manage_stock.set_sensitive(self._model_created)
-
         self.description.grab_focus()
 
     def create_model(self, store):
@@ -341,11 +348,16 @@ class ProductEditor(SellableEditor):
         sellable.tax_constant_id = sysparam.get_object_id('DEFAULT_PRODUCT_TAX_CONSTANT')
         sellable.unit_id = sysparam.get_object_id('SUGGESTED_UNIT')
         model = Product(store=store, sellable=sellable)
-        # FIXME: Instead of creating and then removing, we should only create
-        # the Storable if the user chooses to do so, but due to the way the
-        # editor is implemented, it is not that easy. Change this once we write
-        # the new product editor.
-        Storable(product=model, store=store)
+        if self._product_type != self.TYPE_WITHOUT_STOCK:
+            storable = Storable(product=model, store=store)
+
+        if self._product_type == self.TYPE_BATCH:
+            storable.is_batch = True
+        elif self._product_type == self.TYPE_WITHOUT_STOCK:
+            model.manage_stock = False
+        elif self._product_type == self.TYPE_CONSIGNED:
+            model.consigned = True
+
         return model
 
     def on_confirm(self):
@@ -353,18 +365,6 @@ class ProductEditor(SellableEditor):
         # remove the storable.
         if not self.model.manage_stock and self.model.storable:
             self.store.remove(self.model.storable)
-
-    #
-    #   Callbacks
-    #
-
-    def on_consignment_yes_button__toggled(self, widget):
-        self.model.consignment = widget.get_active()
-        # For now, we won't support consigned products with batches
-        self.details_slave.set_allow_batch(not widget.get_active())
-
-    def on_manage_stock__toggled(self, widget):
-        self.details_slave.set_has_storable(self.model.manage_stock)
 
 
 class ProductionProductEditor(ProductEditor):

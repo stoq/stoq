@@ -54,6 +54,7 @@ from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchfilters import (DateSearchFilter, ComboSearchFilter,
                                               Today)
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
@@ -153,6 +154,14 @@ class ProductSearch(SearchEditor):
     #
     # SearchEditor Hooks
     #
+
+    def run_editor(self, obj):
+        if obj is None:
+            with api.new_store() as store:
+                rv = self.run_dialog(ProductCreateWizard, self, store)
+            return rv
+
+        return super(ProductSearch, self).run_editor(obj)
 
     def get_editor_model(self, product_full_stock_view):
         return product_full_stock_view.product

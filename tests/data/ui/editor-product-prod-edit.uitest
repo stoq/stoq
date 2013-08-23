@@ -69,12 +69,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                   item: 'Kg'
                   item: 'Lt'
                   item: 'm '
-              GtkLabel(consignment_lbl): 'Consignment:'
-              GtkHBox(consignment_box):
-                ProxyRadioButton(consignment_yes_button, expand=True, fill=True): 'Yes', insensitive
-                ProxyRadioButton(consignment_no_button, expand=True, fill=True): 'No', active, insensitive
               ProxyLabel(requires_weighing_label): '<span size="small"></span>'
-              ProxyCheckButton(manage_stock): 'Manage Stock', active, insensitive
               GtkEventBox(slave_holder):
           GtkEventBox(): slave ProductDetailsSlave is attached
             GtkVBox(toplevel):
@@ -113,7 +108,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                     GtkHBox(max_hbox):
                       ProxySpinButton(maximum_quantity, expand=True, fill=True): '0.00'
                       GtkLabel(max_unit, fill=True): 'Unit(s)'
-                    ProxyCheckButton(is_batch): 'Control batches', insensitive
                     GtkLabel(mercosul_lbl): '<b>Mercosul Details</b>'
                     GtkLabel(ncm_lbl): 'NCM:'
                     ProxyEntry(ncm): ''

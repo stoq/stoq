@@ -32,10 +32,10 @@ from stoq.gui.purchase import PurchaseApp
 from stoq.gui.test.baseguitest import BaseGUITest
 from stoqlib.domain.purchase import PurchaseItem, PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
-from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.wizards.consignmentwizard import ConsignmentWizard
+from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import QuotePurchaseWizard
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
@@ -244,8 +244,8 @@ class TestPurchase(BaseGUITest):
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
                 self.activate(app.NewProduct)
-                run_dialog.assert_called_once_with(ProductEditor,
-                                                   self.store, model=None)
+                run_dialog.assert_called_once_with(ProductCreateWizard,
+                                                   self.store)
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
     def test_new_consignment(self, run_dialog):

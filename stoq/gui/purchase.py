@@ -37,7 +37,6 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.dialogs.manufacturerdialog import ProductManufacturerDialog
-from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.categorysearch import SellableCategorySearch
 from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
@@ -54,6 +53,7 @@ from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SUPPLIERS)
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
                                                    CloseInConsignmentWizard)
+from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
@@ -436,7 +436,7 @@ class PurchaseApp(ShellApp):
 
     def _new_product(self):
         with api.new_store() as store:
-            self.run_dialog(ProductEditor, store, model=None)
+            self.run_dialog(ProductCreateWizard, store)
 
     def _new_consignment(self):
         with api.new_store() as store:

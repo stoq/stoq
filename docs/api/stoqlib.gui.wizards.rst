@@ -57,6 +57,14 @@ wizards Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`productwizard` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.wizards.productwizard
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`purchasefinishwizard` Module
 ----------------------------------
 
