@@ -30,7 +30,6 @@ from decimal import Decimal
 from kiwi.currency import currency
 import mock
 from nose.exc import SkipTest
-from storm.exceptions import IntegrityError
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
@@ -1333,11 +1332,6 @@ class TestSale(DomainTest):
         item = self.create_sale_item(sale)
         item.base_price = Decimal(999)
         sale.set_items_discount(20)
-
-        expected = ('new row for relation "sale_item" violates check constraint'
-                    ' "positive_price"')
-        with self.assertRaisesRegexp(IntegrityError, expected):
-            sale.get_items().any()
 
     def test_get_available_discount_for_items(self):
         item = self.create_sale_item()

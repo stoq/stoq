@@ -1006,14 +1006,24 @@ class Sale(Domain, Adaptable):
         """
         new_total = currency(0)
 
+        item = None
+        candidate = None
         for item in self.get_items():
             item.set_discount(discount)
             new_total += item.price * item.quantity
+            if item.quantity == 1:
+                candidate = item
 
+        # Since we apply the discount percentage above, items can generate a
+        # 3rd decimal place, that will be rounded to the 2nd, making the value
+        # differ. Find that difference and apply it to a sale item, preferable
+        # to one with a quantity of 1 since, for instance, applying +0,1 to an
+        # item with a quantity of 4 would make it's total +0,4 (+0,3 extra than
+        # we are trying to adjust here).
         discount_value = (self.get_sale_base_subtotal() * discount) / 100
         diff = new_total - self.get_sale_base_subtotal() + discount_value
         if diff:
-            item = self.get_items().any()
+            item = candidate or item
             item.price -= diff
 
     #
