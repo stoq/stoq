@@ -69,6 +69,15 @@ class TestBatchSelectionDialog(GUITest):
 
 
 class TestBatchIncreaseSelectionDialog(GUITest):
+    def test_get_batch_item(self):
+        storable = self.create_storable()
+        batch = self.create_storable_batch(storable, batch_number=u'123456')
+        dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
+
+        self.assertEqual(dialog.get_batch_item(batch), u'123456')
+        self.assertEqual(dialog.get_batch_item(batch.batch_number), u'123456')
+        self.assertEqual(dialog.get_batch_item(None), None)
+
     def test_batch_number_suggestion(self):
         branch = api.get_current_branch(self.store)
         branch.acronym = u'AB'

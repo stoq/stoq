@@ -27,6 +27,7 @@ import datetime
 import decimal
 
 import gtk
+from kiwi import ValueUnset
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from kiwi.ui.entry import ENTRY_MODE_DATA
@@ -255,7 +256,7 @@ class BatchSelectionDialog(BaseEditor):
 
         for entry, spin in self._spins.items():
             batch = entry.read()
-            if not batch:
+            if not batch or batch == ValueUnset:
                 continue
             self.retval.append(BatchItem(batch=batch, quantity=spin.read()))
 
@@ -269,8 +270,8 @@ class BatchSelectionDialog(BaseEditor):
             self.store, self.model, branch=branch)
 
     def _get_total_sum(self):
-        return sum(spin.read() for spin in
-                   self._spins.values() if spin.get_sensitive())
+        return sum(spin.read() for entry, spin in self._spins.items() if
+                   entry.read() and entry.read() != ValueUnset)
 
     def _get_diff_quantity(self):
         if not self._validate_max_quantity:
@@ -592,6 +593,8 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
         _used_batches_mapper[(self.store, self.model.id)] = used
 
     def get_batch_item(self, batch):
+        if isinstance(batch, basestring):
+            return batch
         if batch is not None:
             return batch.batch_number
         if not api.sysparam(self.store).SUGGEST_BATCH_NUMBER:
