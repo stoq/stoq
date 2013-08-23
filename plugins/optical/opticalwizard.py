@@ -461,6 +461,7 @@ class _ItemSlave(SellableItemSlave):
 
     model_type = Sale
     batch_selection_dialog = BatchDecreaseSelectionDialog
+    allow_no_batch = True
     item_editor = _ItemEditor
     summary_label_text = "<b>%s</b>" % api.escape(_('Total:'))
     value_column = 'price'

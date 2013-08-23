@@ -270,6 +270,11 @@ class SellableItemSlave(BaseEditorSlave):
     item_editor = None
     batch_selection_dialog = None
 
+    #: if we should allow to add an item without available batches (no stock).
+    #: Can happen when selecting a product that control batches for decrease,
+    #: in that case, :meth:`.get_order_item` will receive *batch=None*
+    allow_no_batch = False
+
     #: the mode to pass to the
     #: :class:`stoqlib.gui.widgets.calculator.CalculatorPopup`.
     #: If ``None``, the calculator will not be attached
@@ -591,6 +596,11 @@ class SellableItemSlave(BaseEditorSlave):
             extra_kw = dict(decreased_batches=original_batch_items)
             available_batches = list(
                 storable.get_available_batches(self.model.branch))
+            # If there're no available batches (no stock) and we are allowing
+            # no batches, add the item without the batch.
+            if len(available_batches) == 0 and self.allow_no_batch:
+                return [self.get_order_item(sellable, value,
+                                            quantity=quantity)]
             # The trivial case, where there's just one batch, and since this
             # is a decrease, we can select it directly
             if len(available_batches) == 1:

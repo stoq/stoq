@@ -44,6 +44,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Client, SalesPerson, Transporter
 from stoqlib.domain.sale import Sale, SaleItem, SaleComment
+from stoqlib.domain.workorder import WorkOrderItem
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import SellError, StoqlibError
 from stoqlib.lib.formatters import get_formatted_cost
@@ -421,12 +422,15 @@ class ConfirmSaleBatchStep(WizardEditorStep):
     def _update_sale_items(self):
         for temp_item in self.sale_items:
             sale_item = temp_item.sale_item
+            wo_item = WorkOrderItem.get_from_sale_item(sale_item.store, sale_item)
             for i, b_item in enumerate(temp_item.batches):
                 if i == 0:
                     # The first is used to replace the existing one
                     sale_item.quantity = b_item.quantity
                     sale_item.batch = b_item.batch
                     new_item = sale_item
+                    if wo_item:
+                        wo_item.quantity = sale_item.quantity
                 else:
                     new_item = SaleItem(store=sale_item.store,
                                         sellable=sale_item.sellable,
@@ -437,6 +441,15 @@ class ConfirmSaleBatchStep(WizardEditorStep):
                                         base_price=sale_item.base_price,
                                         price=sale_item.price,
                                         notes=sale_item.notes)
+                    if wo_item:
+                        WorkOrderItem(store=wo_item.store,
+                                      sellable=wo_item.sellable,
+                                      quantity=wo_item.quantity,
+                                      price=wo_item.price,
+                                      batch=wo_item.batch,
+                                      sale_item=wo_item.sale_item,
+                                      order=wo_item.order)
+
                 if new_item.icms_info:
                     new_item.icms_info.update_values()
                 if new_item.ipi_info:

@@ -669,7 +669,10 @@ class WorkOrder(Domain):
           does not have batches.
         :returns: the created |workorderitem|
         """
-        self.validate_batch(batch, sellable=sellable)
+        # FIXME: This is only used by optical pre-sale when adding an item that
+        # doesn't have stock on any batch. Find a better way of workingaround this
+        if quantity > 0:
+            self.validate_batch(batch, sellable=sellable)
         if price is None:
             price = sellable.base_price
 
