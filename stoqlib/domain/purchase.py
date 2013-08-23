@@ -817,6 +817,7 @@ class PurchaseOrderView(Viewable):
     surcharge_value = PurchaseOrder.surcharge_value
     discount_value = PurchaseOrder.discount_value
 
+    branch_id = Branch.id
     supplier_id = Supplier.id
     supplier_name = Person_Supplier.name
     transporter_name = Person_Transporter.name

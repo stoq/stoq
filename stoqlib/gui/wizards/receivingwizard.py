@@ -30,6 +30,7 @@ from decimal import Decimal
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
+from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
@@ -120,7 +121,15 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.search.set_text_field_columns(['supplier_name', 'identifier_str'])
 
     def get_extra_query(self, states):
-        return PurchaseOrderView.status == PurchaseOrder.ORDER_CONFIRMED
+        query = PurchaseOrderView.status == PurchaseOrder.ORDER_CONFIRMED
+
+        # Dont let the user receive purchases from other branches when working
+        # in synchronized mode
+        if api.sysparam(self.store).SYNCHRONIZED_MODE:
+            branch = api.get_current_branch(self.store)
+            query = And(query,
+                        PurchaseOrderView.branch_id == branch.id)
+        return query
 
     def _get_columns(self):
         return [IdentifierColumn('identifier', sorted=True),

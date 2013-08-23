@@ -9,7 +9,7 @@ GtkDialog(PluggableWizard): title='Receive Purchase Order', hidden
             GtkVBox(toplevel):
               GtkTable(table, fill=True):
                 GtkLabel(label10): 'Branch:'
-                ProxyLabel(branch): '<span >Dummy shop</span>'
+                ProxyLabel(branch): '<span >Moda Stoq</span>'
                 ProxyLabel(kiwilabel4): 'Products Total ($CURRENCY):'
                 ProxyLabel(products_total): '<span >$125.00</span>'
                 ProxyLabel(purchase_supplier_label): 'Supplier:'

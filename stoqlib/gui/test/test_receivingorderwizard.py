@@ -44,8 +44,9 @@ class TestReceivingOrderWizard(GUITest):
     def test_complete_receiving(self, yesno, run_dialog, warning):
         yesno.return_value = True
         run_dialog.return_value = Settable(skip=Decimal('0'))
+        branch = api.get_current_branch(self.store)
 
-        order = self.create_purchase_order()
+        order = self.create_purchase_order(branch=branch)
         order.identifier = 65432
         order.open_date = localdatetime(2012, 10, 9)
         order.expected_receival_date = localdatetime(2012, 9, 25)
