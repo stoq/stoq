@@ -426,14 +426,19 @@ class ServicesApp(ShellApp):
             return self.results.render_icon(stock_id, gtk.ICON_SIZE_MENU)
 
     def _get_main_query(self, state):
+        # Only show branchs created or in current branch
+        current_branch = api.get_current_branch(self.store)
+        query = Or(WorkOrder.branch_id == current_branch.id,
+                   WorkOrder.current_branch_id == current_branch.id)
+
         item = state.value
         kind, value = item.value.split(':')
         if kind == 'category':
-            return WorkOrder.category_id == item.id
+            return And(query, WorkOrder.category_id == item.id)
         if kind == 'status':
-            return self._status_query_mapper[value]
+            return And(query, self._status_query_mapper[value])
         if kind == 'flag':
-            return self._flags_query_mapper[value]
+            return And(query, self._flags_query_mapper[value])
         else:
             raise AssertionError(kind, value)
 
