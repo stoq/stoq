@@ -524,21 +524,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.cash_change_slave.update_total_sale_amount(to_pay)
         self.total_lbl.update(to_pay)
 
-    def _update_widgets(self):
-        client = self.client.get_selected()
-        client_credit = client.credit_account_balance
-        has_client = bool(client)
-        has_credit = False
-        has_store_credit = False
-        if has_client:
-            total_amount = self.model.get_total_sale_amount()
-            has_credit = bool(client_credit)
-            has_store_credit = bool(client.credit_limit >= total_amount)
-
-        self.pm_slave.method_set_sensitive(u'bill', has_client)
-        self.pm_slave.method_set_sensitive(u'credit', has_credit)
-        self.pm_slave.method_set_sensitive(u'store_credit', has_store_credit)
-
     def _fill_clients_combo(self):
         marker('Filling clients')
         # FIXME: This should not be using a normal ProxyComboEntry,
@@ -605,7 +590,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         elif client.is_active:
             self.client.append_item(client.person.name, client)
             self.client.select(client)
-        self._update_widgets()
 
     #
     # Public API
@@ -704,12 +688,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         BaseMethodSelectionStep.setup_slaves(self)
         marker('Finished parent')
 
-        self.pm_slave.method_set_sensitive(u'store_credit',
-                                           bool(self.model.client))
-        self.pm_slave.method_set_sensitive(u'bill',
-                                           bool(self.model.client))
-        self.pm_slave.method_set_sensitive(u'credit',
-                                           bool(self.model.client))
+        self.pm_slave.set_client(self.model.client,
+                                 total_amount=self.wizard.get_total_to_pay())
 
         marker('Setting discount')
         self.discount_slave = SaleDiscountSlave(self.store, self.model,
@@ -748,15 +728,14 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def on_client__changed(self, entry):
         self.toogle_client_details()
-        self._update_widgets()
         self.discount_slave.update_max_discount()
         self.pm_slave.set_client(
-            client=self.model.client,
-            total_amount=self.model.get_total_sale_amount())
+            client=entry.read(),
+            total_amount=self.wizard.get_total_to_pay())
 
-    def on_payment_method_changed(self, slave, method_name):
-        self.client.validate(force=True)
-        self._update_next_step(method_name)
+    def on_payment_method_changed(self, slave, method):
+        self.force_validation()
+        self._update_next_step(method)
 
     def on_client__validate(self, widget, client):
         if not client:
@@ -769,9 +748,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         method = self.pm_slave.get_selected_method()
         try:
             client.can_purchase(method, self.model.get_total_sale_amount())
-            self.wizard.refresh_next(True)
         except SellError as e:
-            self.wizard.refresh_next(False)
             return ValidationError(e)
 
     def on_create_client__clicked(self, button):

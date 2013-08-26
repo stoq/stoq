@@ -34,6 +34,8 @@ from kiwi.ui.widgets.combo import ProxyComboEntry, ProxyComboBox
 
 from stoqlib.domain.base import Domain
 from stoqlib.domain.image import Image
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -176,7 +178,14 @@ class SystemParameterEditor(BaseEditor):
         if not data:
             detail = sysparam().get_detail_by_name(self.model.field_name)
             field_type = detail.get_parameter_type()
-            result = self.store.find(field_type)
+            # FIXME: DEFAULT_PAYMENT_METHOD needs to filter information from
+            # domain because it cannot be any non-creatable method.
+            # Find a way to implement this in a generic on ParameterDetails
+            if self.model.field_name == "DEFAULT_PAYMENT_METHOD":
+                result = PaymentMethod.get_creatable_methods(
+                    self.store, Payment.TYPE_IN, False)
+            else:
+                result = self.store.find(field_type)
             data = [(res.get_description(), unicode(res.id)) for res in result]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)

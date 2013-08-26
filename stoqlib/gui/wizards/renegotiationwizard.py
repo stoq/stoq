@@ -126,9 +126,9 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
         except SellError:
             can_purchase = False
 
-        self.pm_slave.method_set_sensitive('store_credit',
-                                           can_purchase and bool(client))
-        self.pm_slave.method_set_sensitive('bill', bool(client))
+        self.pm_slave.method_set_visible('store_credit',
+                                         can_purchase and bool(client))
+        self.pm_slave.method_set_visible('bill', bool(client))
 
     def setup_proxies(self):
         self._setup_widgets()

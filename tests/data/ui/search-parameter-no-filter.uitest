@@ -42,6 +42,7 @@ GtkVBox(toplevel):
     row: u'Purchase', u'Suggested unit', None
     row: u'Purchase', u'Default Receiving C.F.O.P.', uuid.uuid()
     row: u'Purchase', u'Suggested supplier', uuid.uuid()
+    row: u'Sales', u'Default payment method selected', uuid.uuid()
     row: u'Sales', u'Default Sales C.F.O.P.', uuid.uuid()
     row: u'Sales', u'Default Return Sales C.F.O.P.', uuid.uuid()
     row: u'Sales', u'Allow product sale with a higher price', u'1'

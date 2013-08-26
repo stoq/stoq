@@ -1153,6 +1153,8 @@ class MultipleMethodSlave(BaseEditorSlave):
         else:
             raise AssertionError
 
+        # FIXME: All this code is duplicating SelectPaymentMethodSlave.
+        # Replace this with it
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         self._add_method(money_method, payment_type)
         for method in PaymentMethod.get_creatable_methods(
@@ -1280,8 +1282,11 @@ class MultipleMethodSlave(BaseEditorSlave):
                 (payment_method.method_name == 'store_credit' or
                  payment_method.method_name == 'credit')):
             try:
-                self.model.client.can_purchase(payment_method,
-                                               self.model.group.get_total_to_pay())
+                # FIXME: If the client can pay at least 0.01 with
+                # store_credit/credit, allow those methods. This is not an
+                # "all or nothing" situation, since the value is being divided
+                # between multiple payments
+                self.model.client.can_purchase(payment_method, Decimal('0.01'))
             except SellError:
                 return
 
@@ -1297,18 +1302,18 @@ class MultipleMethodSlave(BaseEditorSlave):
                 currency, self.model.client.credit_account_balance)
             description = u"%s (%s)" % (payment_method.get_description(),
                                         credit)
-            select = True
         else:
             description = payment_method.get_description()
-            select = False
 
         radio = gtk.RadioButton(group, description)
         self.methods_box.pack_start(radio)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', payment_method)
-        if select:
-            radio.set_active(True)
         radio.show()
+
+        if api.sysparam().compare_object("DEFAULT_PAYMENT_METHOD",
+                                         payment_method):
+            radio.set_active(True)
 
     def _can_add_payment(self):
         if self.value.read() is ValueUnset:

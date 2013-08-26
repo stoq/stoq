@@ -251,7 +251,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/wizards/renegotiationwizard.py', 33.67),
     ('stoqlib/gui/wizards/salequotewizard.py', 52.24),
     ('stoqlib/gui/wizards/salereturnwizard.py', 87.56),
-    ('stoqlib/gui/wizards/salewizard.py', 71),
+    ('stoqlib/gui/wizards/salewizard.py', 69.81),
     ('stoqlib/gui/wizards/stockdecreasewizard.py', 90.48),
     ('stoqlib/gui/wizards/stocktransferwizard.py', 83.96),
     ('stoqlib/gui/wizards/workorderpackagewizard.py', 91.18),

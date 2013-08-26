@@ -26,10 +26,10 @@
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import converter
-
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
+from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -40,11 +40,8 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
-    def __init__(self, store=None,
-                 payment_type=None,
-                 methods=None,
-                 default_method=None):
-        methods = methods or []
+    def __init__(self, store=None, payment_type=None, default_method=None):
+        self._default_method = default_method
         self._widgets = {}
         self._methods = {}
         self._selected_method = None
@@ -55,11 +52,6 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
 
         self.store = store
         self._setup_payment_methods(payment_type)
-
-        if default_method is None:
-            default_method = 'money'
-        self._default_method = default_method
-        self._select_default_method()
 
     def _setup_payment_methods(self, payment_type):
         methods = PaymentMethod.get_creatable_methods(
@@ -77,7 +69,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
 
             self._methods[method_name] = method
             self._widgets[method_name] = widget
-            self.method_set_sensitive(method_name, True)
+            self.method_set_visible(method_name, True)
 
         # Don't allow the user to change the kind of payment method if
         # there's only one
@@ -95,6 +87,18 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
                 self.methods_box.reorder_child(
                     widget, len(self.methods_box) - 1)
 
+        if self._default_method is None:
+            default = api.sysparam().get_object(self.store,
+                                                "DEFAULT_PAYMENT_METHOD")
+            if default.method_name in self._widgets:
+                self._default_method = default.method_name
+            else:
+                # Fallback to money in case the widget was not created (that
+                # means the method is not active or not creatable)
+                self._default_method = u'money'
+
+        self._select_default_method()
+
     def _select_default_method(self):
         method = self._methods.get(self._default_method)
         # Fallback in case the requested method is not available
@@ -102,6 +106,33 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
             self._default_method, method = self._methods.items()[0]
         self._selected_method = method
         self._widgets[self._default_method].set_active(True)
+
+    def _set_credit_visible(self, client, total_amount):
+        if client is None:
+            self.method_set_visible(u'credit', False)
+            return
+
+        credit_widget = self._widgets.get(u'credit', None)
+        if credit_widget:
+            credit_balance = client.credit_account_balance
+            credit_widget.set_label(_("Credit (%s)") % (
+                converter.as_string(currency, credit_balance)))
+            self.method_set_visible(u'credit', bool(credit_balance))
+            credit_widget.set_sensitive(
+                credit_balance >= total_amount)
+
+    def _set_store_credit_visible(self, client, total_amount):
+        if client is None:
+            self.method_set_visible(u'store_credit', False)
+            return
+
+        store_credit_widget = self._widgets.get(u'store_credit', None)
+        if store_credit_widget:
+            store_credit_balance = client.credit_limit
+            self.method_set_visible(u'store_credit',
+                                    bool(store_credit_balance))
+            store_credit_widget.set_sensitive(
+                store_credit_balance >= total_amount)
 
     #
     #   Public API
@@ -117,33 +148,22 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         widget = self._widgets[method_name]
         widget.set_active(True)
 
-    def method_set_sensitive(self, method_name, sensitive):
-        if method_name in self._widgets:
-            widget = self._widgets[method_name]
-            widget.set_visible(sensitive)
+    def method_set_visible(self, method_name, visible):
+        if method_name not in self._widgets:
+            return
 
-        # This method was select, but is no longer available. Select the default
-        # method instead.
-        selected_method = self.get_selected_method()
-        if selected_method and selected_method.method_name == method_name:
+        widget = self._widgets[method_name]
+        # This method was select, but is no longer available.
+        # Select the default method instead.
+        if widget.get_active() and not visible:
             self._select_default_method()
 
+        widget.set_visible(visible)
+
     def set_client(self, client, total_amount):
-        self.select_method(u'credit')
-        if client and client.credit_account_balance > 0:
-            client_credit = converter.as_string(
-                currency, client.credit_account_balance)
-            self._widgets[u'credit'].set_label(
-                _("Credit (%s)") % client_credit)
-            has_enough_credit = client.credit_account_balance >= total_amount
-            if has_enough_credit:
-                self.select_method(u'credit')
-            else:
-                self.select_method(u'money')
-            self._widgets[u'credit'].set_sensitive(has_enough_credit)
-        else:
-            self.select_method(u'money')
-        self._client = client
+        self.method_set_visible(u'bill', bool(client))
+        self._set_credit_visible(client, total_amount)
+        self._set_store_credit_visible(client, total_amount)
 
     #
     # Kiwi callbacks

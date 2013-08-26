@@ -209,7 +209,9 @@ class TestConfirmSaleWizard(GUITest):
     # FIXME: add a test with a configured bank account
     @mock.patch('stoqlib.reporting.boleto.warning')
     def test_step_payment_method_bill(self, warning):
+        client = self.create_client()
         self._create_wizard()
+        self.step.client.select(client)
         self._select_method('bill')
         self._go_to_next()
 
@@ -276,16 +278,52 @@ class TestConfirmSaleWizard(GUITest):
 
         self._check_wizard('wizard-sale-step-payment-method-store-credit')
 
-    def test_sale_to_client_without_credit(self):
+    def test_sale_to_client_without_store_credit(self):
         client = self.create_client()
+        client2 = self.create_client()
+
+        # Give $2 of store credit limit for client2
+        client2.credit_limit = 2
 
         self._create_wizard()
         self.step.client.select(client)
-        self._select_method('store_credit')
+        self._select_method(u'store_credit')
+
+        # When the client has no credit at all, the option should not be there
+        self.assertFalse(self.step.pm_slave._widgets['store_credit'].get_visible())
+
+        self.step.client.select(client2)
+        self.assertTrue(self.step.pm_slave._widgets['store_credit'].get_visible())
 
         self.assertEquals(
-            str(self.step.client.emit('validate', self.sale.client)),
-            u'The available credit for this client ($ 0.00) is not enough.')
+            str(self.step.client.emit('validate', client2)),
+            'The available credit for this client ($2.00) is not enough.')
+
+    def test_sale_to_client_without_credit(self):
+        client = self.create_client()
+        client2 = self.create_client()
+
+        # Give $2 of credit to client2
+        method = self.store.find(PaymentMethod, method_name=u'credit').one()
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT,
+                                      value=2, method=method)
+        payment.group.payer = client2.person
+        payment.set_pending()
+        payment.pay()
+
+        self._create_wizard()
+        self.step.client.select(client)
+        self._select_method(u'credit')
+
+        # When the client has no credit at all, the option should not be there
+        self.assertFalse(self.step.pm_slave._widgets['credit'].get_visible())
+
+        self.step.client.select(client2)
+        self.assertTrue(self.step.pm_slave._widgets['credit'].get_visible())
+
+        self.assertEquals(
+            str(self.step.client.emit('validate', client2)),
+            'The available credit for this client ($2.00) is not enough.')
 
     @mock.patch('stoqlib.gui.wizards.salewizard.print_report')
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
@@ -305,6 +343,7 @@ class TestConfirmSaleWizard(GUITest):
         today = localtoday().date()
 
         sale.client.credit_limit = currency('90000000000')
+        step.client.emit('changed')
         step.pm_slave.select_method(u'money')
 
         # checks if a client can buy normally
@@ -379,7 +418,7 @@ class TestConfirmSaleWizard(GUITest):
 
         sale.client.credit_limit = currency("9000")
         # Force validation since we changed the credit limit.
-        step.client.validate(force=True)
+        step.force_validation()
 
         self.click(wizard.next_button)
 

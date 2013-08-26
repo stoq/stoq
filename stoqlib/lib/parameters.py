@@ -259,6 +259,13 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'DEFAULT_PAYMENT_METHOD',
+        _(u'Sales'),
+        _(u'Default payment method selected'),
+        _(u'The default method to select when doing a checkout on POS'),
+        u'payment.method.PaymentMethod'),
+
+    ParameterDetails(
         u'CITY_SUGGESTED',
         _(u'General'),
         _(u'Default city'),
@@ -777,6 +784,8 @@ class ParameterAccess(object):
         self.set_object_default(store, "SUGGESTED_SUPPLIER", None)
         self.set_object_default(store, "SUGGESTED_UNIT", None)
 
+        self._set_default_method_default(store)
+
         self._set_cfop_default(store,
                                u"DEFAULT_SALES_CFOP",
                                u"Venda de Mercadoria Adquirida",
@@ -797,6 +806,11 @@ class ParameterAccess(object):
         self.set_delivery_default(store)
         self._set_sales_person_role_default(store)
         self._set_product_tax_constant_default(store)
+
+    def _set_default_method_default(self, store):
+        from stoqlib.domain.payment.method import PaymentMethod
+        method = PaymentMethod.get_by_name(store, u'money')
+        self.set_object(store, u"DEFAULT_PAYMENT_METHOD", method)
 
     def _set_cfop_default(self, store, param_name, description, code):
         from stoqlib.domain.fiscal import CfopData
