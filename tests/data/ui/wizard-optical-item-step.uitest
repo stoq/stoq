@@ -70,7 +70,7 @@ model: Sale<1>
   close_date: None
   confirm_date: None
   discount_value: <currency $ 0>
-  expire_date: None
+  expire_date: datetime.datetime(2014, 1, 1, 0, 0)
   invoice_number: None
   open_date: datetime.today()
   operation_nature: u'Sale'

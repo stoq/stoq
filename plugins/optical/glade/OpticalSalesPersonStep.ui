@@ -212,6 +212,7 @@
                         <property name="can_focus">True</property>
                         <property name="data_type">date</property>
                         <property name="model_attribute">expire_date</property>
+                        <property name="mandatory">True</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>

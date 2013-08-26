@@ -153,6 +153,7 @@ class TestSaleQuoteWizard(GUITest):
         wizard = OpticalSaleQuoteWizard(self.store)
 
         step = wizard.get_current_step()
+        step.expire_date.update(localdate(2014, 1, 1))
 
         self.click(step.create_client)
         self.assertEquals(run_person_role_dialog.call_count, 1)
@@ -255,6 +256,7 @@ class TestSaleQuoteWizard(GUITest):
 
         wizard = OpticalSaleQuoteWizard(self.store)
         step = wizard.get_current_step()
+        step.expire_date.update(localdate(2014, 1, 1))
         for i in range(3):
             wo = self.create_workorder()
             wo.sale = step.model
@@ -292,6 +294,7 @@ class TestSaleQuoteWizard(GUITest):
         run_person_role_dialog.return_value = client
         wizard = OpticalSaleQuoteWizard(self.store)
         step = wizard.get_current_step()
+        step.expire_date.update(localdate(2014, 1, 1))
         for i in range(2):
             wo = self.create_workorder()
             wo.sale = step.model
@@ -338,6 +341,7 @@ class TestSaleQuoteWizard(GUITest):
             wo.sale = step.model
 
         self.click(step.create_client)
+        step.expire_date.update(localdate(2014, 1, 1))
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
@@ -362,6 +366,7 @@ class TestSaleQuoteWizard(GUITest):
         wizard = OpticalSaleQuoteWizard(self.store)
 
         step = wizard.get_current_step()
+        step.expire_date.update(localdate(2014, 1, 1))
         self.click(step.create_client)
         self.click(wizard.next_button)
 
