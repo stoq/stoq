@@ -111,6 +111,35 @@ class IdleXScreenSaver(object):
         return self.xss_info.contents.idle / 1000
 
 
+MOTION_NOTIFY = 3
+BUTTON_PRESS = 4
+BUTTON_RELEASE = 7
+KEY_PRESS = 8
+KEY_RELEASE = 9
+SCROLL = 31
+
+
+class IdleEventHandler(object):
+    def __init__(self):
+        import glib
+        import gtk
+        gtk.gdk.event_handler_set(self._filter_callback)
+        glib.timeout_add_seconds(1, self._increase_idle)
+        self._idle = 0
+
+    def _filter_callback(self, event):
+        if event.type in [MOTION_NOTIFY, BUTTON_PRESS, BUTTON_RELEASE,
+                          KEY_PRESS, KEY_RELEASE, SCROLL]:
+            self._idle = 0
+        return event
+
+    def _increase_idle(self):
+        self._idle += 1
+        return True
+
+    def get_idle(self):
+        return self._idle
+
 _idle = None
 _system = None
 
@@ -129,6 +158,12 @@ def get_idle_seconds():
     if _system == 'Linux':
         if _idle is None:
             _idle = IdleXScreenSaver()
+
+            # For X servers such as XMing which lacks the
+            # the screen saver extension
+            if _idle.xss_info is None:
+                _idle = IdleEventHandler()
+
     elif _system == 'Windows':
         # Same as pidgin:
         # http://stackoverflow.com/questions/911856/detecting-idle-time-in-python
