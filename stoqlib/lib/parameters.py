@@ -770,7 +770,7 @@ _details = [
         u'AUTOMATIC_LOGOUT',
         _(u'General'),
         _(u'Automatic logout after inactivity period'),
-        _(u'Set the maximum time for the user to remain idle, before being '
+        _(u'Set the maximum time in minutes for the user to remain idle, before being '
           u'automatically logout. \nSet to zero to disable the funcionality. '
           u'Requires restart to take effect.'),
         int, initial=0),

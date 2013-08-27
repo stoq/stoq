@@ -281,7 +281,7 @@ class Shell(object):
         # If user defined 0 minutes, ignore automatic logout.
         if minutes != 0:
             seconds = minutes * 60
-            glib.timeout_add_seconds(10, self._verify_idle_logout, seconds)
+            glib.timeout_add_seconds(5, self._verify_idle_logout, seconds)
 
     def _verify_idle_logout(self, seconds):
         # This is called once every 10 seconds
