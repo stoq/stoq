@@ -35,8 +35,8 @@ from kiwi.utils import gsignal
 from storm.expr import And, Or, Eq
 
 from stoqlib.api import api
+from stoqlib.database.expr import Field
 from stoqlib.domain.person import Client, SalesPerson
-from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
@@ -470,8 +470,8 @@ class _ItemSlave(SellableItemSlave):
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
-        branch_query = Or(ProductStockItem.branch_id == branch.id,
-                          Eq(ProductStockItem.branch_id, None))
+        branch_query = Or(Field('_stock_summary', 'branch_id') == branch.id,
+                          Eq(Field('_stock_summary', 'branch_id'), None))
         query = And(branch_query,
                     Sellable.get_available_sellables_query(self.store))
         return self.sellable_view, query

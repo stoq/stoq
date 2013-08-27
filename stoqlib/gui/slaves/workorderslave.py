@@ -36,8 +36,8 @@ import pango
 from storm.expr import And, Eq, Or
 
 from stoqlib.api import api
+from stoqlib.database.expr import Field
 from stoqlib.domain.person import LoginUser
-from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
@@ -195,8 +195,8 @@ class _WorkOrderItemSlave(SellableItemSlave):
     def get_sellable_view_query(self):
         return (self.sellable_view,
                 # FIXME: How to do this using sellable_view.find_by_branch ?
-                And(Or(ProductStockItem.branch_id == self.model.branch.id,
-                       Eq(ProductStockItem.branch_id, None)),
+                And(Or(Field('_stock_summary', 'branch_id') == self.model.branch.id,
+                       Eq(Field('_stock_summary', 'branch_id'), None)),
                     Sellable.get_available_sellables_query(self.store)))
 
     def get_batch_items(self):

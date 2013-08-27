@@ -74,12 +74,21 @@ _StockSummary = Alias(Select(
     tables=[ProductStockItem],
     group_by=[ProductStockItem.storable_id]), '_stock_summary')
 
-_StockBranchSummary = Alias(
-    Select(columns=_StockSummary.expr.columns + [ProductStockItem.branch_id],
-           tables=_StockSummary.expr.tables[:],
-           group_by=_StockSummary.expr.group_by + [
-               ProductStockItem.branch_id]),
-    '_stock_summary')
+# This subselect will be used to filter by branch, so it should include all
+# possible (branch, storable) combinations so that all storables appear in the
+# results
+_StockBranchSummary = Alias(Select(
+    columns=[Alias(Storable.id, 'storable_id'),
+             Alias(Branch.id, 'branch_id'),
+             Alias(Sum(ProductStockItem.quantity), 'stock'),
+             Alias(Sum(ProductStockItem.quantity *
+                       ProductStockItem.stock_cost), 'total_stock_cost')],
+    tables=[Storable,
+            # This is equivalent to a cross join
+            Join(Branch, And(True)),
+            LeftJoin(ProductStockItem, And(ProductStockItem.branch_id == Branch.id,
+                                           ProductStockItem.storable_id == Storable.id))],
+    group_by=[Storable.id, Branch.id]), '_stock_summary')
 
 
 class ProductFullStockView(Viewable):
@@ -176,8 +185,7 @@ class ProductFullStockView(Viewable):
                                        'storable_id') == Storable.id)
 
         # Also show products that were never purchased.
-        query = Or(Field('_stock_summary', 'branch_id') == branch.id,
-                   Eq(Field('_stock_summary', 'branch_id'), None))
+        query = Field('_stock_summary', 'branch_id') == branch.id
 
         return store.find(HighjackedViewable, query)
 
@@ -444,8 +452,7 @@ class SellableFullStockView(Viewable):
     manufacturer = ProductManufacturer.name
     category_description = SellableCategory.description
 
-    # Aggregates
-    stock = Coalesce(Sum(ProductStockItem.quantity), 0)
+    stock = Coalesce(Field('_stock_summary', 'stock'), 0)
 
     tables = [
         Sellable,
@@ -453,23 +460,18 @@ class SellableFullStockView(Viewable):
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
         LeftJoin(Product, Product.sellable_id == Sellable.id),
         LeftJoin(Storable, Storable.product_id == Product.id),
-        LeftJoin(ProductStockItem, ProductStockItem.storable_id == Storable.id),
+        LeftJoin(_StockBranchSummary,
+                 Field('_stock_summary', 'storable_id') == Storable.id),
         LeftJoin(ProductManufacturer,
                  Product.manufacturer_id == ProductManufacturer.id),
     ]
 
-    group_by = [Sellable, SellableUnit, product_id, model, unit,
-                manufacturer, category_description]
-
     @classmethod
     def find_by_branch(cls, store, branch):
-        if branch:
-            # We need the OR part to be able to list services
-            query = Or(ProductStockItem.branch == branch,
-                       Eq(ProductStockItem.branch_id, None))
-            return store.find(cls, query)
-
-        return store.find(cls)
+        assert branch
+        query = Or(Field('_stock_summary', 'branch_id') == branch.id,
+                   Eq(Field('_stock_summary', 'branch_id'), None))
+        return store.find(cls, query)
 
     @property
     def price(self):

@@ -73,11 +73,15 @@ class TestViewsGeneric(DomainTest):
     """Generic tests for views"""
 
     def _test_view(self, view):
+        from stoqlib.domain.person import Branch
         if view.__name__ == 'ProductWithStockBranchView':
             # This viewable must be queried with a branch
-            from stoqlib.domain.person import Branch
             branch = self.store.find(Branch).any()
             results_list = self.store.find(view, branch_id=branch.id)
+        elif view.__name__ == 'SellableFullStockView':
+            # This viewable must be queried with a branch
+            branch = self.store.find(Branch).any()
+            results_list = view.find_by_branch(self.store, branch)
         elif view.__name__ == 'ProductBranchStockView':
             # This viewable must be queried with a storable
             storable = self.store.find(Storable).any()
@@ -315,7 +319,9 @@ class TestProductFullStockView(DomainTest):
         self.failUnless(list(results))
         # FIXME: Storm does not support count() with group_by
         # self.assertEquals(results.count(), 1)
-        self.assertEquals(len(list(results)), 1)
+        # The results should have 11 items. 10 for the products that already
+        # exists, and 1 more for the one we created
+        self.assertEquals(len(list(results)), 11)
 
         results = ProductFullStockView.find_by_branch(self.store, branch)
         results = results.find(ProductFullStockView.product_id == p1.id)
@@ -499,7 +505,7 @@ class TestSellableFullStockView(DomainTest):
         self.failUnless(list(results))
 
         results = SellableFullStockView.find_by_branch(self.store, branch).find(
-            ProductFullStockView.product_id == p2.id,)
+            SellableFullStockView.product_id == p2.id,)
         self.failUnless(list(results))
         # FIXME: Storm does not support count() with group_by
         # self.assertEquals(results.count(), 1)
