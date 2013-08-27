@@ -48,6 +48,7 @@ class TestFormatters(DomainTest):
         self.assertEquals(format_phone_number("1052"), "1052")
         self.assertEquals(format_phone_number("10325"), "103 25")
 
+        self.assertEquals(format_phone_number("991236789"), "99123-6789")
         self.assertEquals(format_phone_number("0300123456"), "0300 123-456")
         self.assertEquals(format_phone_number("03001234567"), "0300 123-4567")
         self.assertEquals(format_phone_number("0500700600"), "0500 700-600")

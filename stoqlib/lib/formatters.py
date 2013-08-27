@@ -118,7 +118,8 @@ def format_phone_number(phone_number):
     elif digits == 8:
         return '%s-%s' % (phone[:4], phone[4:8])
     elif digits == 9:
-        return '(%s) %s-%s' % (phone[:2], phone[2:5], phone[5:9])
+        # This is for the new mobile numbers with 9 digits
+        return '%s-%s' % (phone[:5], phone[5:9])
     elif digits == 10:
         # 0[3589]00 XXX-XXX
         if phone[:4] in ['0300', '0500', '0800', '0900']:
