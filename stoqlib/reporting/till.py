@@ -25,6 +25,7 @@
 """ Till report implementation """
 from storm.expr import And, Eq
 
+from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.card import CreditCardData
@@ -56,8 +57,10 @@ class TillDailyMovementReport(HTMLReport):
     def __init__(self, filename, store, start_date, end_date=None):
         self.start_date = start_date
         self.end_date = end_date
+        self.branch = api.get_current_branch(store)
 
         query = And(Payment.status == Payment.STATUS_PAID,
+                    Payment.branch_id == self.branch.id,
                     self._get_date_interval_query(Payment.paid_date))
 
         # Keys are the sale objects, and values are lists with all payments
@@ -130,12 +133,14 @@ class TillDailyMovementReport(HTMLReport):
 
         # Till removals
         query = And(Eq(TillEntry.payment_id, None),
+                    TillEntry.branch_id == self.branch.id,
                     self._get_date_interval_query(TillEntry.date),
                     TillEntry.value < 0)
         self.till_removals = store.find(TillEntry, query)
 
         # Till supply
         query = And(Eq(TillEntry.payment_id, None),
+                    TillEntry.branch_id == self.branch.id,
                     self._get_date_interval_query(TillEntry.date),
                     TillEntry.value > 0)
         self.till_supplies = store.find(TillEntry, query)

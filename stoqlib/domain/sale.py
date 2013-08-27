@@ -2132,5 +2132,7 @@ class SalesPersonSalesView(Viewable):
         else:
             results = store.find(cls)
 
+        branch = get_current_branch(store)
+        results = results.find(Sale.branch_id == branch.id)
         results.config(distinct=True)
         return results

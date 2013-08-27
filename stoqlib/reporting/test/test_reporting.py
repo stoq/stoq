@@ -280,6 +280,8 @@ class TestReport(ReportTest):
                             dialog.results, list(dialog.results))
 
     def test_till_daily_movement(self):
+        branch = get_current_branch(self.store)
+
         # Data used to create the examples
         till = Till.get_last_opened(self.store)
         device = self.create_card_device(description=u'MAQ1')
@@ -287,7 +289,7 @@ class TestReport(ReportTest):
         date = datetime.date(2013, 1, 1)
 
         # First, create one sale
-        sale = self.create_sale()
+        sale = self.create_sale(branch=branch)
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
         sale.identifier = 1000
@@ -336,7 +338,6 @@ class TestReport(ReportTest):
 
         method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
-        branch = self.create_branch()
         payment_lonely_input = method.create_payment(Payment.TYPE_IN, group, branch, Decimal(100))
         payment_lonely_input.description = u"Test receivable account"
         payment_lonely_input.group.payer = payer.person
@@ -351,9 +352,8 @@ class TestReport(ReportTest):
         address.person = drawee.person
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        purchase = self.create_purchase_order()
+        purchase = self.create_purchase_order(branch=branch)
         purchase.identifier = 12345
-        branch = self.create_branch()
         payment = method.create_payment(Payment.TYPE_OUT,
                                         purchase.group, branch, Decimal(100))
         payment.description = u"Test payable account"
@@ -364,7 +364,7 @@ class TestReport(ReportTest):
         payment.paid_date = date
 
         # Create a returned sale
-        sale = self.create_sale()
+        sale = self.create_sale(branch=branch)
         self.add_product(sale)
         self.add_product(sale)
         payment = self.add_payments(sale, date=date)[0]
