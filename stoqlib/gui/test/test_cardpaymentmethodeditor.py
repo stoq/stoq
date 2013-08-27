@@ -220,8 +220,7 @@ class TestCardDeviceListSlave(GUITest):
         device = self.create_card_device(u'Cielo')
         self.create_card_device(u'Santander')
 
-        slave = CardDeviceListSlave(store=self.store)
-        slave.set_reuse_store(self.store)
+        slave = CardDeviceListSlave(store=self.store, reuse_store=True)
         self.check_slave(slave, 'slave-carddevicelist-show')
 
         slave.listcontainer.list.select(device)
@@ -240,8 +239,8 @@ class TestCardOperationCostListSlave(GUITest):
         device = self.create_card_device(u'Cielo')
         cost = self.create_operation_cost(device=device)
 
-        slave = CardOperationCostListSlave(store=self.store, device=device)
-        slave.set_reuse_store(self.store)
+        slave = CardOperationCostListSlave(store=self.store, device=device,
+                                           reuse_store=True)
         self.check_slave(slave, 'slave-cardoperationcost-show')
 
         slave.listcontainer.list.select(cost)

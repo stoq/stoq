@@ -118,8 +118,7 @@ class TestModelListSlave(GUITest):
     def test_remove_item_reuse_store(self, yesno):
         yesno.return_value = gtk.RESPONSE_OK
 
-        list_slave = _ModelListSlave(store=self.store)
-        list_slave.set_reuse_store(self.store)
+        list_slave = _ModelListSlave(store=self.store, reuse_store=True)
         item_to_remove = self.store.find(_TestModel, unicode_var=u'XXX').one()
 
         self.assertNotSensitive(list_slave.listcontainer, ['remove_button'])

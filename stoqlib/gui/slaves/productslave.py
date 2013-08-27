@@ -516,11 +516,11 @@ class ProductQualityTestSlave(ModelListSlave):
         Column('success_value_str', title=_(u'Success Value'), data_type=str),
     ]
 
-    def __init__(self, parent, store, product, visual_mode=False):
+    def __init__(self, parent, store, product,
+                 visual_mode=False, reuse_store=True):
         self._product = product
-        ModelListSlave.__init__(self, parent)
-        store = self._product.store
-        self.set_reuse_store(store)
+        ModelListSlave.__init__(self, parent, store=store,
+                                reuse_store=reuse_store)
         if visual_mode:
             self.set_list_type(ListType.READONLY)
 

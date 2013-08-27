@@ -134,8 +134,8 @@ class CardDeviceEditor(BaseEditor):
         return CardPaymentDevice(store=store)
 
     def setup_slaves(self):
-        slave = CardOperationCostListSlave(self.store, self.model)
-        slave.set_reuse_store(self.store)
+        slave = CardOperationCostListSlave(self.store, self.model,
+                                           reuse_store=True)
         self.attach_slave('cost_holder', slave)
 
     def setup_proxies(self):
@@ -443,9 +443,9 @@ class CardOperationCostListSlave(ModelListSlave):
         Column('fare', title=_('Fare'), data_type=currency),
     ]
 
-    def __init__(self, store, device):
+    def __init__(self, store, device, reuse_store=False):
         self.device = device
-        ModelListSlave.__init__(self, store=store)
+        ModelListSlave.__init__(self, store=store, reuse_store=reuse_store)
 
     def populate(self):
         return self.device.get_all_costs()

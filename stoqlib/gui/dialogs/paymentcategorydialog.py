@@ -82,10 +82,10 @@ class PaymentCategoryDialog(ModelListDialog):
     size = (620, 300)
     title = _('Payment categories')
 
-    def __init__(self, store, category_type=None):
+    def __init__(self, store, category_type=None, reuse_store=False):
         self.category_type = category_type
 
-        ModelListDialog.__init__(self, store)
+        ModelListDialog.__init__(self, store, reuse_store=reuse_store)
 
         column = self.list_slave.listcontainer.list.get_column_by_name('category_type')
         column.treeview_column.set_visible(category_type is None)

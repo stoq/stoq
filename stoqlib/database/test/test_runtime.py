@@ -77,14 +77,62 @@ class WillBeCommitted(Domain):
         self.on_update_called_count += 1
 
 
-class StoqlibTransactionTest(DomainTest):
+class StoqlibStoreTest(DomainTest):
 
     def setUp(self):
-        super(StoqlibTransactionTest, self).setUp()
+        super(StoqlibStoreTest, self).setUp()
 
         self.store.execute(''.join((WillBeCommitted.SQL_DROP,
                                     WillBeCommitted.SQL_CREATE)))
         self.store.commit()
+
+    def test_get_pending_count(self):
+        store = new_store()
+        self.assertEqual(store.get_pending_count(), 0)
+
+        obj = WillBeCommitted(store=store)
+        self.assertEqual(store.get_pending_count(), 1)
+
+        # obj was already dirty, no change here
+        obj.test_var = u'yyy'
+        self.assertEqual(store.get_pending_count(), 1)
+
+        # Changing obj after flush should set it dirty again and thus,
+        # increase the pending count
+        store.flush()
+        obj.test_var = u'zzz'
+        self.assertEqual(store.get_pending_count(), 2)
+
+        store.commit()
+        self.assertEqual(store.get_pending_count(), 0)
+
+        store.close()
+
+    def test_get_pending_count_with_savepoint(self):
+        store = new_store()
+        self.assertEqual(store.get_pending_count(), 0)
+
+        obj = WillBeCommitted(store=store)
+        self.assertEqual(store.get_pending_count(), 1)
+
+        # savepoint should trigger a flush, making the next change set
+        # obj dirty again
+        store.savepoint("savepoint_a")
+        obj.test_var = u'yyy'
+        self.assertEqual(store.get_pending_count(), 2)
+
+        store.savepoint("savepoint_b")
+        obj.test_var = u'zzz'
+        self.assertEqual(store.get_pending_count(), 3)
+
+        store.savepoint("savepoint_c")
+        obj.test_var = u'www'
+        self.assertEqual(store.get_pending_count(), 4)
+
+        store.rollback_to_savepoint("savepoint_b")
+        self.assertEqual(store.get_pending_count(), 2)
+
+        store.rollback()
 
     def test_dirty_flag(self):
         # Creating an object should set its dirty flag to True

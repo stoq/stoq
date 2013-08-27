@@ -218,6 +218,7 @@ class StoqlibStore(Store):
       it's ``True``, but can be set to ``False`` to do a rollback instead
       of a commit on :meth:`stoqlib.api.StoqApi.trans`
     """
+
     _result_set_factory = StoqlibResultSet
 
     def __init__(self, database=None, cache=None):
@@ -230,6 +231,7 @@ class StoqlibStore(Store):
         self._savepoints = []
         self.retval = True
         self.obsolete = False
+        self._reset_pending_objs()
 
         if database is None:
             database = get_default_store().get_database()
@@ -247,6 +249,12 @@ class StoqlibStore(Store):
         if exc_type is None:
             self.committed = self.confirm(commit=self.retval)
             self.close()
+
+    def _set_dirty(self, obj_info):
+        # Store calls _set_dirty when any object inside it gets modified.
+        # We use this to count if any change happened inside the actual savepoint
+        self._pending_count[-1] += 1
+        super(StoqlibStore, self)._set_dirty(obj_info)
 
     def find(self, cls_spec, *args, **kwargs):
         # Overwrite the default find method so we can support querying our own
@@ -355,6 +363,19 @@ class StoqlibStore(Store):
         from stoqlib.lib.parameters import sysparam
         if not sysparam.get_bool('SYNCHRONIZED_MODE'):
             self.remove(obj)
+
+    def get_pending_count(self):
+        """Get the quantity of pending changes
+
+        Every time :meth:`.add_created_object`, :meth:`.add_deleted_object`
+        or :meth:`.add_modified_object` gets called, this will increase by 1.
+
+        Note that this is in sync with savepoints so, if before doing a
+        savepoint there was 10 pending changes, then 2 more are done, when
+        rolling back to it it will be 10 again. The same applies to a full
+        rollback where this will go to 0.
+        """
+        return sum(self._pending_count)
 
     def add_created_object(self, obj):
         """Record an object that was created in the store.
@@ -482,6 +503,7 @@ class StoqlibStore(Store):
         self._created_object_sets.append(set())
         self._deleted_object_sets.append(set())
         self._savepoints.append(name)
+        self._pending_count.append(0)
 
     def rollback_to_savepoint(self, name):
         """Rollsback the store to a previous savepoint that was saved
@@ -506,6 +528,7 @@ class StoqlibStore(Store):
             self._created_object_sets.pop()
             self._deleted_object_sets.pop()
 
+            self._pending_count.pop()
             if self._savepoints.pop() == name:
                 break
 
@@ -595,6 +618,8 @@ class StoqlibStore(Store):
         self._created_object_sets = [set()]
         self._modified_object_sets = [set()]
         self._deleted_object_sets = [set()]
+        self._savepoints = []
+        self._pending_count = [0]
 
 
 def get_default_store():

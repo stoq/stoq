@@ -49,8 +49,8 @@ class ModelListSlave(ListSlave):
     editor_class = None
     columns = None
 
-    def __init__(self, parent=None, store=None,
-                 orientation=None):
+    def __init__(self, parent=None, store=None, orientation=None,
+                 reuse_store=False):
         """
         Create a new ModelListDialog object.
         :param store: a store connection
@@ -66,10 +66,12 @@ class ModelListSlave(ListSlave):
 
         if not store:
             store = api.get_default_store()
+            assert not reuse_store
+
         self.store = store
 
         self.parent = parent
-        self._reuse_store = False
+        self.reuse_store = reuse_store
         columns = self.columns or self.get_columns()
         ListSlave.__init__(self, columns, orientation)
         self._setup_permission()
@@ -92,19 +94,19 @@ class ModelListSlave(ListSlave):
         self.delete_model(store.fetch(model), store)
 
     def _delete_model(self, model):
-        if self._reuse_store:
-            self._delete_with_transaction(model, self._reuse_store)
+        if self.reuse_store:
+            self._delete_with_transaction(model, self.store)
         else:
             store = api.new_store()
             self._delete_with_transaction(model, store)
             store.commit(close=True)
 
     def _prepare_run_editor(self, item):
-        if self._reuse_store:
-            self._reuse_store.savepoint('before_run_editor_list')
-            retval = self.run_editor(self._reuse_store, item)
+        if self.reuse_store:
+            self.store.savepoint('before_run_editor_list')
+            retval = self.run_editor(self.store, item)
             if not retval:
-                self._reuse_store.rollback_to_savepoint('before_run_editor_list')
+                self.store.rollback_to_savepoint('before_run_editor_list')
         else:
             # 1) Create a new transaction
             # 2) Fetch the model from that transactions POW
@@ -129,11 +131,7 @@ class ModelListSlave(ListSlave):
     #
 
     def populate(self):
-        if self._reuse_store:
-            store = self._reuse_store
-        else:
-            store = self.store
-        return store.find(self.model_type)
+        return self.store.find(self.model_type)
 
     def add_item(self):
         return self._prepare_run_editor(None)
@@ -154,13 +152,6 @@ class ModelListSlave(ListSlave):
     #
     # Public API
     #
-
-    def set_reuse_store(self, store):
-        """
-        Reuse the store.
-        :param reuse_store: a store
-        """
-        self._reuse_store = store
 
     def run_dialog(self, dialog_class, *args, **kwargs):
         """A special variant of run_dialog which deletes objects
@@ -215,11 +206,12 @@ class ModelListDialog(BasicDialog):
     size = None
     title = None
 
-    def __init__(self, store=None):
+    def __init__(self, store=None, reuse_store=False):
         if self.list_slave_class is None:
             fmt = "%s needs to set it's list_slave_class attribute"
             raise TypeError(fmt % (self.__class__.__name__, ))
-        self.list_slave = self.list_slave_class(self, store=store)
+        self.list_slave = self.list_slave_class(self, store=store,
+                                                reuse_store=reuse_store)
 
         BasicDialog.__init__(self, title=self.title, size=self.size)
 

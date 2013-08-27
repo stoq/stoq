@@ -55,8 +55,7 @@ class TestClientCategoryDialog(GUITest):
         total_categoryes = self.store.find(ClientCategory).count()
         self.assertEquals(total_categoryes, 1)
 
-        dialog = ClientCategoryDialog(self.store)
-        dialog.list_slave.set_reuse_store(self.store)
+        dialog = ClientCategoryDialog(self.store, reuse_store=True)
         dialog.list_slave.listcontainer.list.select(category)
 
         with mock.patch.object(dialog.list_slave.listcontainer,
@@ -74,8 +73,7 @@ class TestClientCategoryDialog(GUITest):
         ClientCategoryPrice(category=category,
                             sellable=self.create_sellable(),
                             store=self.store)
-        dialog = ClientCategoryDialog(self.store)
-        dialog.list_slave.set_reuse_store(self.store)
+        dialog = ClientCategoryDialog(self.store, reuse_store=True)
         dialog.list_slave.listcontainer.list.select(category)
 
         with mock.patch.object(dialog.list_slave.listcontainer,

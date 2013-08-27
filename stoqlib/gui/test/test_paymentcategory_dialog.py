@@ -39,8 +39,7 @@ class TestPaymentCategoryDialog(GUITest):
     @mock.patch('kiwi.ui.listdialog.yesno')
     def test_delete(self, yesno):
         category = self.create_payment_category()
-        dialog = PaymentCategoryDialog(self.store)
-        dialog.list_slave.set_reuse_store(self.store)
+        dialog = PaymentCategoryDialog(self.store, reuse_store=True)
 
         dialog.list_slave.listcontainer.list.select(category)
 
@@ -61,8 +60,7 @@ class TestPaymentCategoryDialog(GUITest):
                 'PaymentCategoryListSlave.run_editor')
     def test_edit(self, run_editor):
         category = self.create_payment_category()
-        dialog = PaymentCategoryDialog(self.store)
-        dialog.list_slave.set_reuse_store(self.store)
+        dialog = PaymentCategoryDialog(self.store, reuse_store=True)
 
         dialog.list_slave.listcontainer.list.select(category)
 

@@ -62,6 +62,7 @@ class WorkOrderEditor(BaseEditor):
     model_type = WorkOrder
     model_name = _(u'Work order')
     help_section = 'workorder'
+    need_cancel_confirmation = True
     proxy_widgets = [
         'category',
         'client',

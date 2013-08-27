@@ -40,8 +40,7 @@ class TestInvoiceLayoutListSlave(GUITest):
         InvoiceLayout(store=self.store, description=u"Standard Invoice",
                       width=500, height=500)
 
-        dialog = InvoiceLayoutDialog(store=self.store)
-        dialog.list_slave.set_reuse_store(self.store)
+        dialog = InvoiceLayoutDialog(store=self.store, reuse_store=True)
 
         item = dialog.list_slave.listcontainer.list[0]
         dialog.list_slave.listcontainer.list.select(item)

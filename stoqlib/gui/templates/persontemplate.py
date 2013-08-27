@@ -26,7 +26,6 @@
 
 import gtk
 
-from stoqlib.api import api
 from stoqlib.domain.person import Company, Individual, Person, Supplier
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog
@@ -66,15 +65,6 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
         super(_PersonEditorTemplate, self).__init__(store, model,
                                                     visual_mode=visual_mode)
-        self._check_new_person()
-
-    def _check_new_person(self):
-        self.is_new_person = False
-        # If this person is not in the default store, then it was created
-        # inside another transaction that was not commited yet.
-        default_store = api.get_default_store()
-        if default_store.find(Person, id=self.model.id).is_empty():
-            self.is_new_person = True
 
     #
     # BaseEditorSlave hooks
@@ -147,7 +137,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
         result = run_dialog(AddressAdditionDialog, self._parent,
                             self.store, person=self.model,
-                            reuse_store=self.is_new_person)
+                            reuse_store=not self.visual_mode)
         if not result:
             return
 
@@ -157,15 +147,15 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
     def on_contact_info_button__clicked(self, button):
         run_dialog(ContactInfoListDialog, self._parent, self.store,
-                   person=self.model, reuse_store=self.is_new_person)
+                   person=self.model, reuse_store=not self.visual_mode)
 
     def on_calls_button__clicked(self, button):
         run_dialog(CallsSearch, self._parent, self.store,
-                   person=self.model, reuse_store=self.is_new_person)
+                   person=self.model, reuse_store=not self.visual_mode)
 
     def on_credit_check_history_button__clicked(self, button):
         run_dialog(CreditCheckHistorySearch, self._parent, self.store,
-                   client=self.model.client, reuse_store=self.is_new_person)
+                   client=self.model.client, reuse_store=not self.visual_mode)
 
     #
     # Private API
@@ -236,6 +226,7 @@ class BasePersonRoleEditor(BaseEditor):
     size = (-1, -1)
     help_section = None
     ui_form_name = None
+    need_cancel_confirmation = True
 
     def __init__(self, store, model=None, role_type=None, person=None,
                  visual_mode=False, parent=None, document=None):

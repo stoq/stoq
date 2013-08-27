@@ -37,6 +37,7 @@ from stoqlib.gui.base.dialogs import RunnableView, BasicDialog, run_dialog
 from stoqlib.gui.events import (EditorSlaveCreateEvent, EditorSlaveConfirmEvent,
                                 EditorCreateEvent)
 from stoqlib.lib.decorators import public
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 log = logging.getLogger(__name__)
@@ -305,6 +306,11 @@ class BaseEditor(BaseEditorSlave, RunnableView):
     size = ()
     title = None
     hide_footer = False
+
+    #: if we need to ask the user if he really wants to cancel the dialog if
+    #: there are any changes done that would be lost otherwise
+    need_cancel_confirmation = False
+
     #: a list of widget names that when activated will confirm the dialog
     confirm_widgets = ()
     help_section = None
@@ -345,6 +351,10 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         # We need to use self.model instead of model, since BaseEditorSlave
         # will create one if its None
         EditorCreateEvent.emit(self, self.model, store, visual_mode)
+
+        # This needs to be the last thing done on __init__ since we don't want
+        # to consider things like self.create_model as a change
+        self._store_pending_count = store.get_pending_count()
 
     def _get_title_format(self):
         if self.visual_mode:
@@ -412,6 +422,14 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         """
         Cancel the dialog.
         """
+        has_changes = (self.store.get_pending_count() >
+                       self._store_pending_count)
+        if (self.need_cancel_confirmation and has_changes and
+            not yesno(_("If you cancel this dialog all changes will be lost. "
+                        "Are you sure?"), gtk.RESPONSE_NO,
+                      _("Cancel"), _("Don't cancel"))):
+            return False
+
         # set this before runing BaseEditorSlave.cancel so
         # on_cancel can modify self.retval, if needed
         self.retval = False
@@ -423,6 +441,8 @@ class BaseEditor(BaseEditorSlave, RunnableView):
 
         log.info("%s: Closed (cancelled), retval=%r" % (
             self.__class__.__name__, self.retval))
+
+        return True
 
     def confirm(self):
         """
@@ -509,7 +529,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
     # Callbacks
 
     def _on_main_dialog__cancel(self, dialog, retval):
-        self.cancel()
+        return self.cancel()
 
     def _on_main_dialog__confirm(self, dialog, retval):
         return self.confirm()

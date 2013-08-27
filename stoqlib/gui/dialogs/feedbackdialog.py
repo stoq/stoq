@@ -52,7 +52,9 @@ class FeedbackDialog(BaseEditor):
     size = (350, 240)
 
     def __init__(self, application_screen=None):
-        BaseEditor.__init__(self, None)
+        # FIXME: BaseEditor expects a store, so we are passing one here, even
+        # though it won't be used. We should be inheriting from BaseDialog.
+        BaseEditor.__init__(self, api.get_default_store())
         self.main_dialog.set_title(self.model_name)
         self.application_screen = application_screen
 

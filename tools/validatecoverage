@@ -81,7 +81,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/base/lists.py', 59.53),
     ('stoqlib/gui/base/messagebar.py', 37.5),
     ('stoqlib/gui/base/wizards.py', 87.22),
-    ('stoqlib/gui/dialogs/addressdialog.py', 96.30),
     ('stoqlib/gui/dialogs/batchselectiondialog.py', 71.25),
     ('stoqlib/gui/dialogs/branchdialog.py', 98.84),
     ('stoqlib/gui/dialogs/clientdetails.py', 96.30),

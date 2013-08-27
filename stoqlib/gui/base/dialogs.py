@@ -235,7 +235,11 @@ class BasicDialog(GladeDelegate, RunnableView):
     def cancel(self):
         # SearchDialog overrides this
         self.retval = False
-        self.emit('cancel', self.retval)
+        # FIXME: See fixme on confirm
+        if (self.enable_confirm_validation and
+            not self.emit('cancel', self.retval)):
+            return
+
         self.close()
 
     def hide_footer(self):

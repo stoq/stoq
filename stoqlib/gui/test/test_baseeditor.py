@@ -22,6 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
+import mock
+
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.events import EditorCreateEvent
@@ -59,10 +62,6 @@ class _TestEditor(BaseEditor):
 class TestBaseEditorSlave(GUITest):
     """Tests for :class:`stoqlib.editors.baseeditor.BaseEditorSlave`"""
 
-    @property
-    def slaves(self):
-        return [self.slave_a, self.slave_b, self.slave_c, self.slave_d]
-
     def setUp(self):
         super(TestBaseEditorSlave, self).setUp()
 
@@ -70,6 +69,7 @@ class TestBaseEditorSlave(GUITest):
         self.slave_b = _TestEditorSlave(self.store, object())
         self.slave_c = _TestEditorSlave(self.store, object())
         self.slave_d = _TestEditorSlave(self.store, object())
+        self.slaves = [self.slave_a, self.slave_b, self.slave_c, self.slave_d]
 
         # This will generate the following:
         # [A [B [C, D]]]
@@ -114,7 +114,7 @@ class TestBaseEditorSlave(GUITest):
                 self.assertEqual(slave.on_cancel_count, 0)
 
 
-class TestEditor(GUITest):
+class TestBaseEditor(GUITest):
 
     def test_event_with_model(self):
         obj = _TempModel(name='existing model')
@@ -142,3 +142,28 @@ class TestEditor(GUITest):
 
         self.assertEqual(self._callcount, 1)
         EditorCreateEvent.disconnect(_callback)
+
+    @mock.patch('stoqlib.gui.editors.baseeditor.yesno')
+    def test_cancel(self, yesno):
+        yesno.return_value = False
+
+        sellable = self.create_sellable()
+        # Flush the store so any modifications to sellable will mark it as dirty
+        self.store.flush()
+
+        editor = _TestEditor(self.store, None)
+        self.assertTrue(editor.cancel())
+        self.assertEqual(yesno.call_count, 0)
+
+        # Any modification to change pending count
+        sellable.description = u'Other description'
+
+        self.assertTrue(editor.cancel())
+        self.assertEqual(yesno.call_count, 0)
+
+        # Set need_cancel_confirmation to trigger the yesno
+        editor.need_cancel_confirmation = True
+        self.assertFalse(editor.cancel())
+        yesno.assert_called_once_with(
+            "If you cancel this dialog all changes will be lost. "
+            "Are you sure?", gtk.RESPONSE_NO, "Cancel", "Don't cancel")

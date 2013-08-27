@@ -75,6 +75,4 @@ class CreditInfoListDialog(ModelListDialog):
     def __init__(self, store, person, reuse_store=False):
         self.person = person
         self.store = store
-        ModelListDialog.__init__(self, store)
-        if reuse_store:
-            self.list_slave.set_reuse_store(store)
+        ModelListDialog.__init__(self, store, reuse_store=reuse_store)
