@@ -185,7 +185,8 @@ class ProductFullStockView(Viewable):
                                        'storable_id') == Storable.id)
 
         # Also show products that were never purchased.
-        query = Field('_stock_summary', 'branch_id') == branch.id
+        query = Or(Field('_stock_summary', 'branch_id') == branch.id,
+                   Eq(Field('_stock_summary', 'branch_id'), None))
 
         return store.find(HighjackedViewable, query)
 
