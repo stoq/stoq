@@ -494,7 +494,14 @@ class Inventory(Domain):
             sellable, product, storable, batch, stock_item = data
             quantity = stock_item and stock_item.quantity or 0
             if storable.is_batch:
-                if batch and stock_item and quantity > 0:
+                # This used to test 'stock_item.quantity > 0' too to avoid
+                # creating inventory items for old batches not used anymore.
+                # We can't do that since that would make it impossible to
+                # adjust a batch that was wrongly set to 0. We need to find a
+                # way to mark the batches as "not used anymore" because they
+                # tend to grow to very large proportions and we are duplicating
+                # everyone here
+                if batch and stock_item:
                     inventory.add_storable(storable, quantity, batch=batch)
             else:
                 inventory.add_storable(storable, quantity)

@@ -55,9 +55,20 @@ class TestInventory(DomainTest):
         storable3 = self.create_storable()
         storable3.is_batch = True
         storable3.product.sellable.category = cat
-        batch = self.create_storable_batch(storable3, u'123')
-        storable3.increase_stock(3, branch, batch=batch,
+        batch1 = self.create_storable_batch(storable3, u'123')
+        storable3.increase_stock(3, branch, batch=batch1,
                                  type=0, object_id=None, unit_cost=10)
+
+        # One storable with one batch and a stock item (but without stock).
+        # it should be on the inventory
+        storable4 = self.create_storable()
+        storable4.is_batch = True
+        storable4.product.sellable.category = cat
+        batch2 = self.create_storable_batch(storable4, u'124')
+        storable4.increase_stock(1, branch, batch=batch2,
+                                 type=0, object_id=None, unit_cost=10)
+        storable4.decrease_stock(1, branch, batch=batch2,
+                                 type=0, object_id=None)
 
         # Then, lets open the inventory
         responsible = self.create_user()
@@ -69,22 +80,25 @@ class TestInventory(DomainTest):
 
         # There should be only 3 items in the inventory
         items = inventory.get_items()
-        self.assertEqual(items.count(), 2)
-        products = set(i.product for i in items)
-        self.assertEquals(products,
-                          set([storable1.product, storable3.product]))
+        self.assertEqual(items.count(), 3)
+        self.assertEqual(set(i.product for i in items),
+                         set([storable1.product,
+                              storable3.product,
+                              storable4.product]))
 
         # Use this examples to also test get_inventory_data
         data = list(inventory.get_inventory_data())
-        self.assertEquals(len(data), 2)
+        self.assertEquals(len(data), 3)
 
         # each row should have 5 items
         row = data[0]
         self.assertEquals(len(row), 5)
 
         self.assertEquals(set(i[0] for i in data), set(items))
-        self.assertEquals(set(i[1] for i in data), set([storable1, storable3]))
-        self.assertEquals(set(i[4] for i in data), set([None, batch]))
+        self.assertEquals(set(i[1] for i in data),
+                          set([storable1, storable3, storable4]))
+        self.assertEquals(set(i[4] for i in data),
+                          set([None, batch1, batch2]))
 
     def test_add_storable(self):
         inventory = self.create_inventory()
