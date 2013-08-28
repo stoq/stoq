@@ -59,10 +59,9 @@ import operator
 
 from kiwi.currency import currency
 from kiwi.datatypes import converter
-from storm.expr import And, Coalesce, Eq, Join, LeftJoin, Like, Or, Update
+from storm.expr import And, Coalesce, Eq, Join, LeftJoin, Or, Update
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
-from storm.store import EmptyResultSet
 from zope.interface import implementer
 
 from stoqlib.database.expr import Age, Case, Concat, Date, DateTrunc, Interval
@@ -371,22 +370,22 @@ class Person(Domain):
     #
 
     @classmethod
-    def get_by_phone_number(cls, store, phone_number):
+    def get_by_document(cls, store, document):
         """
-        Returns a list of |person| given a specific phone_number.
-        This looks at both phone_number and mobile_number.
+        Returns a |person| given a specific document.
 
         :param store: a database store
-        :param phone_number: number to look for
-        :returns: a list of |person|
+        :param document: a document can be a cpf from a |individual|
+        or a cnpj from a |company| (Brazil standard)
+        :returns: |person|
         """
-        if not phone_number:
-            return EmptyResultSet()
+        query = Or(Individual.cpf == document,
+                   Company.cnpj == document)
 
-        phone_number = u'%%%s%%' % raw_phone_number(phone_number)
-        query = Or(Like(cls.phone_number, phone_number),
-                   Like(cls.mobile_number, phone_number))
-        return store.find(cls, query)
+        tables = [Person,
+                  LeftJoin(Individual, Person.id == Individual.person_id),
+                  LeftJoin(Company, Person.id == Company.person_id)]
+        return store.using(*tables).find(Person, query).one()
 
     #
     # Acessors

@@ -11,11 +11,11 @@ GtkDialog(PluggableWizard): title='New Transporter', hidden
             GtkRadioButton(step.individual_check): 'A new individual', active
             ProxyLabel(step.kiwilabel3):
             GtkRadioButton(step.company_check): 'A new company'
-          ProxyLabel(step.kiwilabel4, fill=True): 'What is their phone number ?'
           GtkHBox(step.hbox2, fill=True):
-            ProxyLabel(step.kiwilabel5, expand=True, fill=True):
-            ProxyEntry(step.phone_number, fill=True): ''
-            ProxyLabel(step.kiwilabel6, expand=True, fill=True):
+            GtkLabel(step.label1, expand=True, fill=True):
+            ProxyLabel(step.document_label, fill=True): '<span >CPF</span>'
+            ProxyEntry(step.person_document, fill=True): '   .   .   -  '
+            GtkLabel(step.label2, expand=True, fill=True):
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

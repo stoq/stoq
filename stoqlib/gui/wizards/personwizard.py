@@ -25,8 +25,9 @@
 """ Person role wizards definition """
 
 from kiwi.python import Settable
-from kiwi.ui.widgets.list import Column
+from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
@@ -34,8 +35,6 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import BranchEditor, UserEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_phone_number
-
 
 _ = stoqlib_gettext
 
@@ -48,15 +47,15 @@ class RoleEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
 
     def __init__(self, wizard, store, previous, role_type, person=None,
-                 phone_number=None):
+                 document=None):
         BaseWizardStep.__init__(self, store, wizard, previous=previous)
         self.role_editor = self.wizard.role_editor(self.store,
                                                    person=person,
                                                    role_type=role_type,
-                                                   parent=self.wizard)
+                                                   parent=self.wizard,
+                                                   document=document)
+
         self.wizard.set_editor(self.role_editor)
-        if phone_number is not None:
-            self.role_editor.set_phone_number(phone_number)
         self.person_slave = self.role_editor.get_person_slave()
         self.person_slave.get_toplevel().reparent(self.place_holder)
 
@@ -75,56 +74,6 @@ class RoleEditorStep(BaseWizardStep):
         return False
 
 
-class ExistingPersonStep(BaseWizardStep):
-    gladefile = 'ExistingPersonStep'
-
-    def __init__(self, wizard, store, previous, role_type, person_list,
-                 phone_number=''):
-        self.phone_number = phone_number
-        self.role_type = role_type
-        BaseWizardStep.__init__(self, store, wizard, previous=previous)
-        self._setup_widgets(person_list)
-
-    def _setup_widgets(self, person_list):
-        role_name = self.wizard.get_role_name().lower()
-        self.question_label.set_text(
-            _("Does the %s already exist?") % role_name)
-        self.existing_person_check.set_label(_("Yes"))
-        self.new_person_check.set_label(
-            _("No, it's a new %s") % role_name)
-        self.question_label.set_size('large')
-        self.question_label.set_bold(True)
-        self.person_list.set_columns(self._get_columns())
-        self.person_list.add_list(person_list)
-        self.person_list.select(person_list[0])
-
-    def _get_columns(self):
-        return [Column('name', title=_('Name'), sorted=True,
-                       data_type=str, width=220),
-                Column('phone_number', title=_('Phone Number'),
-                       data_type=str, width=120,
-                       format_func=format_phone_number),
-                Column('mobile_number', title=_('Mobile'), data_type=str,
-                       format_func=format_phone_number,
-                       width=120)]
-
-    def on_existing_person_check__toggled(self, *args):
-        self.person_list.set_sensitive(True)
-
-    def on_new_person_check__toggled(self, *args):
-        self.person_list.set_sensitive(False)
-
-    def next_step(self):
-        if self.existing_person_check.get_active():
-            person = self.person_list.get_selected()
-            phone_number = None
-        else:
-            person = None
-            phone_number = self.phone_number
-        return RoleEditorStep(self.wizard, self.store, self,
-                              self.role_type, person, phone_number)
-
-
 class PersonRoleTypeStep(WizardEditorStep):
     gladefile = 'PersonRoleTypeStep'
     model_type = Settable
@@ -134,6 +83,12 @@ class PersonRoleTypeStep(WizardEditorStep):
         self._setup_widgets()
 
     def _setup_widgets(self):
+        self.document_l10n = api.get_l10n_field(self.store, 'person_document')
+        self.person_document.set_mask(self.document_l10n.entry_mask)
+        self.person_document.set_width_chars(17)
+
+        self.document_label.set_text(self.document_l10n.label)
+        # Just adding some labels
         label = _('What kind of %s are you adding?')
         role_editor = self.wizard.role_editor
         if role_editor == BranchEditor or role_editor == UserEditor:
@@ -144,6 +99,7 @@ class PersonRoleTypeStep(WizardEditorStep):
             else:
                 label = _('Adding a %s')
                 self.company_check.set_active(True)
+
         role_name = self.wizard.get_role_name().lower()
         self.person_role_label.set_text(label % role_name)
         self.person_role_label.set_size('large')
@@ -154,33 +110,67 @@ class PersonRoleTypeStep(WizardEditorStep):
     #
 
     def create_model(self, store):
-        return Settable(phone_number=u'')
+        return Settable(document=u'')
 
     def setup_proxies(self):
-        self.add_proxy(self.model, ['phone_number'])
+        self.add_proxy(self.model, ['person_document'])
 
     def next_step(self):
         if self.individual_check.get_active():
             role_type = Person.ROLE_INDIVIDUAL
         else:
             role_type = Person.ROLE_COMPANY
-        phone_number = self.model.phone_number
-        persons = Person.get_by_phone_number(self.store, phone_number)
-        if persons.is_empty():
-            return RoleEditorStep(self.wizard, self.store, self, role_type,
-                                  phone_number=phone_number)
-        else:
-            return ExistingPersonStep(self.wizard, self.store, self,
-                                      role_type, persons,
-                                      phone_number=phone_number)
+
+        # If someone wants to register with an empty document
+        if self.person_document.is_empty():
+            return RoleEditorStep(self.wizard, self.store, self, role_type)
+
+        person = Person.get_by_document(self.store, self.model.person_document)
+        return RoleEditorStep(self.wizard, self.store, self, role_type, person,
+                              document=self.model.person_document)
 
     def has_previous_step(self):
         return False
 
     # Callbacks
 
-    def on_phone_number__activate(self, entry):
+    def on_person_document__activate(self, entry):
         self.wizard.go_to_next()
+
+    def on_person_document__validate(self, entry, value):
+        # FIXME: There is a bug in kiwi that this method gets called when
+        # setting the mask.
+        if not self.person_document.mask:
+            return
+
+        # This will allow the user to use an empty value to this field
+        if self.person_document.is_empty():
+            return
+
+        if not self.document_l10n.validate(value):
+            return ValidationError(_('%s is not valid.') %
+                                   (self.document_l10n.label,))
+
+    def on_individual_check__toggled(self, *args):
+        """
+        Change document labels based on check button
+
+        Changes the document_label (proxy_widget) with the right document (CPF or CNPJ)
+        that will be inserted on the person_document entry. Also changes the mask of
+        person_document when is necessary
+        """
+        if self.individual_check.get_active():
+            self.document_l10n = api.get_l10n_field(self.store, 'person_document')
+            self.document_label.set_text(self.document_l10n.label + ':')
+            # Change the entry size (in chars) to accomodate the cpf
+            self.person_document.set_width_chars(17)
+        else:
+            self.document_l10n = api.get_l10n_field(self.store, 'company_document')
+            self.document_label.set_text(self.document_l10n.label + ':')
+            # Change the entry size (in chars) to accomodate the cnpj
+            self.person_document.set_width_chars(21)
+
+        self.person_document.set_mask(self.document_l10n.entry_mask)
 
 
 #

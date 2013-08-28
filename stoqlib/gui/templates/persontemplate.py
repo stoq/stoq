@@ -121,10 +121,6 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.person_notebook.reorder_child(event_box, position)
             self.person_notebook.set_current_page(position)
 
-    def set_phone_number(self, phone_number):
-        self.model.phone_number = phone_number
-        self.proxy.update('phone_number')
-
     def attach_role_slave(self, slave):
         self.attach_slave('role_holder', slave)
 
@@ -238,7 +234,7 @@ class BasePersonRoleEditor(BaseEditor):
     ui_form_name = None
 
     def __init__(self, store, model=None, role_type=None, person=None,
-                 visual_mode=False, parent=None):
+                 visual_mode=False, parent=None, document=None):
         """ Creates a new BasePersonRoleEditor object
 
         :param store: a store
@@ -256,6 +252,7 @@ class BasePersonRoleEditor(BaseEditor):
         self.main_slave = None
         self.role_type = role_type
         self.person = person
+        self.document = document
 
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         # FIXME: Implement and use IDescribable on the model
@@ -276,10 +273,10 @@ class BasePersonRoleEditor(BaseEditor):
                 self.role_type, ))
         if (self.role_type == Person.ROLE_INDIVIDUAL and
             not self.person.individual):
-            Individual(person=self.person, store=store)
+            Individual(person=self.person, store=store, cpf=self.document)
         elif (self.role_type == Person.ROLE_COMPANY and
               not self.person.company):
-            Company(person=self.person, store=store)
+            Company(person=self.person, store=store, cnpj=self.document)
         else:
             pass
         return self.person

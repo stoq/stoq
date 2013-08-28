@@ -189,29 +189,27 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_formatted_mobile_number(),
                           u'9123-1234')
 
-    def test_get_by_phone_number(self):
-        person = self.create_person()
-        result = person.get_by_phone_number(store=self.store,
-                                            phone_number=None).one()
-        self.assertIsNone(result)
-        self.assertTrue(Person.get_by_phone_number(
-            self.store, u'1138').is_empty())
-        person.phone_number = u'1138'
-        self.assertFalse(Person.get_by_phone_number(
-            self.store, u'1138').is_empty())
-        person.phone_number = u'0'
-        self.assertTrue(Person.get_by_phone_number(
-            self.store, u'1138').is_empty())
-        person.mobile_number = u'1138'
-        self.assertFalse(Person.get_by_phone_number(
-            self.store, u'1138').is_empty())
-
     def test_get_total_addresses(self):
         person = self.create_person()
         self.assertEquals(person.get_total_addresses(), 0)
         for i in range(3):
             self.create_address(person=person)
         self.assertEquals(person.get_total_addresses(), 3)
+
+    def test_get_by_document(self):
+        person = self.create_person()
+        self.assertIsNone(person.get_by_document(self.store,
+                                                 u'732.223.844-36'))
+        self.assertIsNone(person.get_by_document(self.store,
+                                                 u'57.310.832/0001-21'))
+        individual = self.create_individual()
+        individual.cpf = u'732.223.844-36'
+        self.assertEquals(person.get_by_document(self.store, individual.cpf),
+                          individual.person)
+        company = self.create_company()
+        company.cnpj = u'57.310.832/0001-21'
+        self.assertEquals(person.get_by_document(self.store, company.cnpj),
+                          company.person)
 
 
 class _PersonFacetTest(object):

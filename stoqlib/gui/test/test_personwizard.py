@@ -79,18 +79,14 @@ class TestPersonRoleWizard(GUITest):
 
     def test_employee(self):
         employee = self.create_employee()
-        employee.person.phone_number = u'12345678'
+        employee.person.individual.cpf = u'954.181.357-75'
         employee.person.name = u'employee name'
 
         wizard = PersonRoleWizard(self.store, EmployeeEditor)
 
         step = wizard.get_current_step()
-        step.phone_number.update(employee.person.phone_number)
+        step.person_document.update(employee.person.individual.cpf)
         self.check_wizard(wizard, 'wizard-employee-person-role-type-step')
-        self.click(wizard.next_button)
-
-        step = wizard.get_current_step()
-        self.check_wizard(wizard, 'wizard-employee-existing-person-step')
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
