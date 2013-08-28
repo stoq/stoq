@@ -79,6 +79,7 @@
             </child>
             <child>
               <object class="ProxyDateEntry" id="estimated_finish">
+                <property name="mandatory">True</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="data_type">date</property>

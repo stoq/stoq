@@ -29,7 +29,7 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
             GtkVBox(step.vbox4, expand=True, fill=True):
               GtkTable(step.right_col_table, fill=True):
                 GtkLabel(step.expire_label): 'Expire'
-                ProxyDateEntry(step.expire_date): datetime.date(2014, 1, 1)
+                ProxyDateEntry(step.expire_date): None
                 GtkLabel(step.client_credit_lbl): 'Client Credit:'
                 GtkLabel(step.client_credit): '$ 0.00'
                 GtkLabel(step.wo_categories_lbl): 'W.O. Category:'

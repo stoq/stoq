@@ -25,7 +25,7 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                   ProxyDateEntry(prescription_date): None
                   GtkButton(notes_button): 'Observations'
                   GtkLabel(estimated_finish_lbl): 'Delivery date:'
-                  ProxyDateEntry(estimated_finish): None
+                  ProxyDateEntry(estimated_finish): datetime.date(2020, 1, 5)
                 GtkHBox(distance_box, expand=True, fill=True):
                   GtkLabel(label5, fill=True): 'Distance'
                   GtkTable(distance_table1, fill=True):
