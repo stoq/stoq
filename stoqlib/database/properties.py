@@ -37,11 +37,15 @@ from storm.variables import (DateVariable, DateTimeVariable,
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 
 
-class _Identifier(int):
+class Identifier(int):
+
+    def __new__(cls, value):
+        instance = super(Identifier, cls).__new__(cls, value)
+        instance.prefix = ''
+        return instance
+
     def __str__(self):
-        # TODO: When the time comes, find a way to put
-        # the branch acronym in front. Take care on reporting/boleto.py
-        return '%05d' % (self, )
+        return '%s%05d' % (self.prefix, self)
 
     def __unicode__(self):
         return unicode(str(self))
@@ -49,7 +53,7 @@ class _Identifier(int):
 
 class _IdentifierVariable(IntVariable):
     def parse_get(self, value, to_db):
-        return _Identifier(value)
+        return Identifier(value)
 
 
 class IdentifierCol(Int):
@@ -84,6 +88,14 @@ class IdentifierCol(Int):
 
     def __init__(self):
         super(IdentifierCol, self).__init__(default=AutoReload)
+
+    def __get__(self, obj, cls=None):
+        # This will get the column definition or the variable
+        data = super(IdentifierCol, self).__get__(obj, cls)
+        # if there is an object, then its the variable
+        if obj and hasattr(obj, 'branch'):
+            data.prefix = obj.branch.acronym or ''
+        return data
 
 
 class PriceVariable(DecimalVariable):

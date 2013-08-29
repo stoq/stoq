@@ -801,6 +801,7 @@ class PurchaseOrderView(Viewable):
     Person_Responsible = ClassAlias(Person, 'person_responsible')
 
     purchase = PurchaseOrder
+    branch = Branch
 
     id = PurchaseOrder.id
     identifier = PurchaseOrder.identifier

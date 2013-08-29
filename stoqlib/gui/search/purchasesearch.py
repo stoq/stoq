@@ -66,7 +66,7 @@ class PurchasedItemsSearch(SearchEditor):
 
         # Branch
         self.branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(self.branch_filter, columns=['branch'],
+        self.add_filter(self.branch_filter, columns=['branch_id'],
                         position=SearchFilterPosition.TOP)
 
     #

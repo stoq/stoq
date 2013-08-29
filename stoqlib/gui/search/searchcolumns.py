@@ -107,7 +107,7 @@ class IdentifierColumn(SearchColumn):
     """
 
     def __init__(self, attribute, title=None, data_type=int,
-                 format_func=str, width=60, justify=None,
+                 format_func=str, width=80, justify=None,
                  **kwargs):
         if title is None:
             title = _(u"#")

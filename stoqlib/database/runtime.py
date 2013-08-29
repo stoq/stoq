@@ -42,6 +42,7 @@ from stoqlib.database.interfaces import (
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.expr import StatementTimestamp, is_sql_identifier
 from stoqlib.database.orm import ORMObject
+from stoqlib.database.properties import Identifier
 from stoqlib.database.settings import db_settings
 from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
@@ -110,8 +111,15 @@ class StoqlibResultSet(ResultSet):
         instance = self._viewable()
         # This will be removed later
         instance._store = self._store
+        identifiers = []
         for attr, value in zip(self._viewable.cls_attributes, values):
+            if type(value) is Identifier:
+                identifiers.append(value)
             setattr(instance, attr, value)
+        branch = getattr(instance, 'branch', None)
+        if branch:
+            for i in identifiers:
+                i.prefix = branch.acronym or ''
         return instance
 
     def _load_objects(self, result, values):

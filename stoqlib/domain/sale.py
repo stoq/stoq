@@ -1733,6 +1733,9 @@ class SaleView(Viewable):
     #: the |client| of the view
     client = Client
 
+    #: The branch this sale was sold
+    branch = Branch
+
     #: the id of the sale table
     id = Sale.id
 

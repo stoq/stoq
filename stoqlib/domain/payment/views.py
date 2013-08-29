@@ -44,7 +44,7 @@ from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.operation import get_payment_operation
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.dateutils import localtoday
@@ -71,6 +71,7 @@ class BasePaymentView(Viewable):
     purchase = PurchaseOrder
     sale = Sale
     method = PaymentMethod
+    branch = Branch
 
     card_data = CreditCardData
     check_data = CheckData
@@ -111,6 +112,7 @@ class BasePaymentView(Viewable):
 
     _count_tables = [
         Payment,
+        Join(Branch, Payment.branch_id == Branch.id),
         LeftJoin(PaymentGroup, PaymentGroup.id == Payment.group_id),
         LeftJoin(PaymentCategory, PaymentCategory.id == Payment.category_id),
         Join(PaymentMethod, Payment.method_id == PaymentMethod.id),

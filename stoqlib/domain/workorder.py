@@ -1195,6 +1195,7 @@ class WorkOrderView(Viewable):
     salesperson_name = _PersonSalesPerson.name
 
     # Branch
+    branch_id = WorkOrder.branch_id
     branch_name = Coalesce(NullIf(_CompanyOriginalBranch.fancy_name, u''),
                            _PersonOriginalBranch.name)
     current_branch_name = Coalesce(NullIf(_CompanyCurrentBranch.fancy_name, u''),
@@ -1249,6 +1250,10 @@ class WorkOrderView(Viewable):
         LeftJoin(_WorkOrderItemsSummary,
                  Field('_work_order_items', 'order_id') == WorkOrder.id),
     ]
+
+    @property
+    def branch(self):
+        return self.store.get(Branch, self.branch_id)
 
     @classmethod
     def post_search_callback(cls, sresults):

@@ -730,6 +730,7 @@ class PurchasedItemAndStockView(Viewable):
     """
 
     purchase_item = PurchaseItem
+    branch = Branch
 
     id = PurchaseItem.id
     purchased = PurchaseItem.quantity
@@ -739,7 +740,7 @@ class PurchasedItemAndStockView(Viewable):
     order_identifier = PurchaseOrder.identifier
     order_identifier_str = Cast(PurchaseOrder.identifier, 'text')
     purchased_date = PurchaseOrder.open_date
-    branch = PurchaseOrder.branch_id
+    branch_id = PurchaseOrder.branch_id
 
     code = Sellable.code
     description = Sellable.description
@@ -752,6 +753,7 @@ class PurchasedItemAndStockView(Viewable):
     tables = [
         PurchaseItem,
         LeftJoin(PurchaseOrder, PurchaseItem.order_id == PurchaseOrder.id),
+        LeftJoin(Branch, PurchaseOrder.branch_id == Branch.id),
         LeftJoin(Sellable, Sellable.id == PurchaseItem.sellable_id),
         LeftJoin(Product, Product.sellable_id == PurchaseItem.sellable_id),
         LeftJoin(Storable, Storable.product_id == Product.id),
@@ -762,7 +764,7 @@ class PurchasedItemAndStockView(Viewable):
                  PurchaseOrder.branch_id == ProductStockItem.branch_id,
                  PurchaseItem.quantity > PurchaseItem.quantity_received, )
 
-    group_by = [PurchaseItem, order_identifier, purchased_date, branch, code,
+    group_by = [PurchaseItem, Branch, order_identifier, purchased_date, branch_id, code,
                 description, product_id]
 
 
