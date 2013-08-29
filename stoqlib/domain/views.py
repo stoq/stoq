@@ -957,6 +957,9 @@ class ReturnedSalesView(Viewable):
 
     returned_sale = ReturnedSale
 
+    #: The branch this sale was sold
+    branch = Branch
+
     id = ReturnedSale.id
     identifier = ReturnedSale.identifier
     identifier_str = Cast(ReturnedSale.identifier, 'text')

@@ -33,6 +33,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 
+from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
@@ -71,6 +72,14 @@ class _BaseSaleSearch(SearchDialog):
 
         status_filter = ComboSearchFilter(_('Show sales with status'), items)
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
+
+        self.search.set_query(self.executer_query)
+
+    def executer_query(self, store):
+        if api.sysparam(self.store).SYNCHRONIZED_MODE:
+            current = api.get_current_branch(self.store)
+            return self.store.find(self.search_spec, Branch.id == current.id)
+        return self.store.find(self.search_spec)
 
     def get_columns(self):
         return [IdentifierColumn('identifier', sorted=True,
@@ -153,9 +162,13 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     size = (800, 450)
 
     def _get_branch_values(self):
-        items = [(b.get_description(), b.id) for b
-                 in Branch.get_active_branches(self.store)]
-        items.insert(0, (_('Any'), None))
+        if api.sysparam(self.store).SYNCHRONIZED_MODE:
+            current = api.get_current_branch(self.store)
+            items = [(current.get_description(), current.id)]
+        else:
+            items = [(b.get_description(), b.id) for b
+                     in Branch.get_active_branches(self.store)]
+            items.insert(0, (_('Any'), None))
         return items
 
     def create_filters(self):
@@ -168,7 +181,11 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
     def executer_query(self, store):
         method = self.payment_filter.get_state().value
-        return self.search_spec.find_by_payment_method(store, method)
+        resultset = self.search_spec.find_by_payment_method(store, method)
+        if api.sysparam(self.store).SYNCHRONIZED_MODE:
+            current = api.get_current_branch(self.store)
+            resultset = resultset.find(Branch.id == current.id)
+        return resultset
 
     def get_columns(self):
         columns = SaleWithToolbarSearch.get_columns(self)

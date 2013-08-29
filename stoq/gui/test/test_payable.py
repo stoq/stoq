@@ -34,6 +34,7 @@ from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
 from stoqlib.reporting.paymentsreceipt import OutPaymentReceipt
 
+from stoqlib.api import api
 from stoq.gui.payable import PayableApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
@@ -65,7 +66,8 @@ class TestPayable(BaseGUITest):
         BaseGUITest.setUp(self)
 
     def create_purchase_payment(self):
-        order = self.create_purchase_order()
+        branch = api.get_current_branch(self.store)
+        order = self.create_purchase_order(branch=branch)
         order.identifier = 12345
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)

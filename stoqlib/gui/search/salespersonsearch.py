@@ -26,8 +26,10 @@
 from decimal import Decimal
 
 from kiwi.currency import currency
+
+from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
-from stoqlib.domain.sale import SalesPersonSalesView
+from stoqlib.domain.sale import SalesPersonSalesView, Sale
 from stoqlib.gui.search.searchcolumns import SearchColumn, Column
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
@@ -74,4 +76,8 @@ class SalesPersonSalesSearch(SearchDialog):
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
 
-        return self.search_spec.find_by_date(store, date)
+        resultset = self.search_spec.find_by_date(store, date)
+        if api.sysparam(store).SYNCHRONIZED_MODE:
+            branch = api.get_current_branch(store)
+            resultset = resultset.find(Sale.branch_id == branch.id)
+        return resultset

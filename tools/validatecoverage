@@ -198,7 +198,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/search/receivingsearch.py', 58.82),
     ('stoqlib/gui/search/returnedsalesearch.py', 80.95),
     ('stoqlib/gui/search/salesearch.py', 82.64),
-    ('stoqlib/gui/search/salespersonsearch.py', 93.55),
     ('stoqlib/gui/search/searchcolumns.py', 91.89),
     ('stoqlib/gui/search/searchdialog.py', 88.52),
     ('stoqlib/gui/search/searcheditor.py', 82.52),

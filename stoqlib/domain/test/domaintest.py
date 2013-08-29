@@ -149,6 +149,7 @@ class FakeNamespace(object):
     """Commonly used mock objects goes in here"""
     def __init__(self):
         self.api = mock.Mock()
+        self.api.get_current_branch = get_current_branch
         self.api.trans = FakeAPITrans()
         self.DatabaseSettings = FakeDatabaseSettings
         self.StoqConfig = FakeStoqConfig

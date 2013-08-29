@@ -28,10 +28,11 @@ import datetime
 
 from kiwi.currency import currency
 from kiwi.ui.objectlist import ColoredColumn, Column
+from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.commission import CommissionView
-from stoqlib.domain.person import SalesPerson
+from stoqlib.domain.person import SalesPerson, Branch
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
@@ -105,6 +106,15 @@ class CommissionSearch(SearchDialog):
     #
 
     def _get_salesperson_query(self, state):
+        queries = []
+
+        if api.sysparam(self.store).SYNCHRONIZED_MODE:
+            current = api.get_current_branch(self.store)
+            queries.append(Branch.id == current.id)
+
         salesperson = state.value
         if salesperson:
-            return CommissionView.salesperson_id == salesperson.id
+            queries.append(CommissionView.salesperson_id == salesperson.id)
+
+        if queries:
+            return And(*queries)

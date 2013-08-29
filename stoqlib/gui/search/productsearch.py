@@ -257,8 +257,9 @@ class ProductSearchQuantity(SearchDialog):
         self.branch_filter = self.create_branch_filter(_('In branch:'))
         self.add_filter(self.branch_filter, columns=['branch'],
                         position=SearchFilterPosition.TOP)
-        # remove 'Any' option from branch_filter
-        self.branch_filter.combo.remove_text(0)
+        if not api.sysparam(self.store).SYNCHRONIZED_MODE:
+            # remove 'Any' option from branch_filter
+            self.branch_filter.combo.remove_text(0)
 
     #
     # SearchEditor Hooks

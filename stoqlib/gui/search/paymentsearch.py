@@ -32,6 +32,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 
+from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
 from stoqlib.domain.payment.card import CardPaymentDevice
@@ -73,7 +74,16 @@ class _BaseBillCheckSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['payment_number', 'account'])
+        self.set_text_field_columns(['payment_number', 'bank_account'])
+        self.search.set_query(self.query_executer)
+
+    def query_executer(self, store):
+        resultset = store.find(self.search_spec)
+        if api.sysparam(store).SYNCHRONIZED_MODE:
+            current = api.get_current_branch(self.store)
+            resultset = resultset.find(Payment.branch_id == current.id)
+
+        return resultset
 
     def get_columns(self):
         return [IdentifierColumn('identifier', sorted=True),
@@ -202,7 +212,13 @@ class CardPaymentSearch(SearchEditor):
 
     def executer_query(self, store):
         provider = self.provider_filter.get_state().value
-        return self.search_spec.find_by_provider(store, provider)
+        resultset = self.search_spec.find_by_provider(store, provider)
+
+        if api.sysparam(store).SYNCHRONIZED_MODE:
+            current = api.get_current_branch(self.store)
+            resultset = resultset.find(Payment.branch_id == current.id)
+
+        return resultset
 
     def _print_report(self):
         print_report(CardPaymentReport, self.results, list(self.results),

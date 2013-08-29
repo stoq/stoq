@@ -274,6 +274,9 @@ class CardPaymentView(Viewable):
     payment = Payment
     credit_card_data = CreditCardData
 
+    #: the branch this payment was created on
+    branch = Branch
+
     # Payment Columns
     id = Payment.id
     identifier = Payment.identifier
@@ -304,6 +307,7 @@ class CardPaymentView(Viewable):
         Join(PaymentMethod, PaymentMethod.id == Payment.method_id),
         Join(CreditCardData, CreditCardData.payment_id == Payment.id),
         Join(CreditProvider, CreditProvider.id == CreditCardData.provider_id),
+        Join(Branch, Branch.id == Payment.branch_id),
         LeftJoin(CardPaymentDevice, CardPaymentDevice.id == CreditCardData.device_id),
         LeftJoin(PaymentGroup, PaymentGroup.id == Payment.group_id),
         LeftJoin(_DraweePerson, _DraweePerson.id == PaymentGroup.payer_id),
@@ -332,6 +336,9 @@ class _BillandCheckPaymentView(Viewable):
 
     payment = Payment
 
+    #: The branch this paymet was created on
+    branch = Branch
+
     id = Payment.id
     identifier = Payment.identifier
     due_date = Payment.due_date
@@ -341,11 +348,12 @@ class _BillandCheckPaymentView(Viewable):
     payment_number = Payment.payment_number
     method_name = PaymentMethod.method_name
     bank_number = BankAccount.bank_number
-    branch = BankAccount.bank_branch
-    account = BankAccount.bank_account
+    bank_branch = BankAccount.bank_branch
+    bank_account = BankAccount.bank_account
 
     tables = [
         Payment,
+        Join(Branch, Payment.branch_id == Branch.id),
         LeftJoin(CheckData, Payment.id == CheckData.payment_id),
         Join(PaymentMethod, Payment.method_id == PaymentMethod.id),
         LeftJoin(BankAccount, BankAccount.id == CheckData.bank_account_id),

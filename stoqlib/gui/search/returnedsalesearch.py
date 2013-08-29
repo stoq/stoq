@@ -33,6 +33,8 @@ from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import ReturnedSalesReport
 
+from stoqlib.api import api
+from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 #from stoqlib.gui.utils.printing import print_report
@@ -88,6 +90,14 @@ class ReturnedSaleSearch(SearchDialog):
     def create_filters(self):
         self.set_text_field_columns(['identifier_str', 'sale_identifier_str',
                                      'client_name', 'responsible_name'])
+        self.search.set_query(self.query_executer)
+
+    def query_executer(self, store):
+        resultset = self.store.find(self.search_spec)
+        if api.sysparam(self.store).SYNCHRONIZED_MODE:
+            current = api.get_current_branch(self.store)
+            return resultset.find(Branch.id == current.id)
+        return resultset
 
     #
     # Callbacks

@@ -269,7 +269,11 @@ class BaseAccountWindow(ShellApp):
         return False
 
     def _on_main_filter__query_callback(self, state):
-        return self._create_main_query(state)
+        query = self._create_main_query(state)
+        current = api.get_current_branch(self.store)
+        if query:
+            return And(query, Payment.branch_id == current.id)
+        return Payment.branch_id == current.id
 
     def _on_results__cell_data_func(self, column, renderer, pv, text):
         if not isinstance(renderer, gtk.CellRendererText):

@@ -37,7 +37,7 @@ from stoqlib.database.properties import IntCol, IdCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import Person, SalesPerson
+from stoqlib.domain.person import Person, SalesPerson, Branch
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
@@ -205,6 +205,9 @@ class CommissionView(Viewable):
         sale and payment.
     """
 
+    #: the branch this commission was generated
+    branch = Branch
+
     # Sale
     id = Sale.id
     identifier = Sale.identifier
@@ -228,6 +231,7 @@ class CommissionView(Viewable):
 
     tables = [
         Sale,
+        Join(Branch, Sale.branch_id == Branch.id),
         Join(Commission, Commission.sale_id == Sale.id),
         Join(SalesPerson, SalesPerson.id == Commission.salesperson_id),
         Join(Person, Person.id == SalesPerson.person_id),
