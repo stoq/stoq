@@ -77,5 +77,6 @@ GtkVBox(toplevel):
     row: u'Sales', u'Default tax constant for products', uuid.uuid()
     row: u'Smart lists', u'Load items intelligently from the database', u'1'
     row: u'Stock', u'Default C.F.O.P. for Stock Decreases', uuid.uuid()
+    row: u'Work order', u'Defect detected template for work orders', u''
   GtkHButtonBox(hbuttonbox1, fill=True):
     ProxyButton(edit_button): 'gtk-edit', insensitive

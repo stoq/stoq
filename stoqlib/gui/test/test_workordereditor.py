@@ -55,7 +55,10 @@ class TestWorkOrderEditor(GUITest):
                                      name=u'Categoty XXX')
         client = self.create_client()
 
-        editor = WorkOrderEditor(self.store)
+        with self.sysparam(DEFECT_DETECTED_TEMPLATE=u"XXX\nYYY"):
+            editor = WorkOrderEditor(self.store)
+            self.assertEqual(editor.model.defect_detected, u"XXX\nYYY")
+
         editor.model.identifier = 654
         editor.proxy.update('identifier')
         opening_slave = editor.opening_slave

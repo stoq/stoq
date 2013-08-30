@@ -94,6 +94,7 @@ class WorkOrderEditor(BaseEditor):
     #
 
     def create_model(self, store):
+        defect_detected = api.sysparam.get_string('DEFECT_DETECTED_TEMPLATE')
         branch = api.get_current_branch(store)
         return WorkOrder(
             store=store,
@@ -101,6 +102,7 @@ class WorkOrderEditor(BaseEditor):
             description=u'',
             branch=branch,
             category=self._default_category,
+            defect_detected=defect_detected,
         )
 
     def setup_slaves(self):

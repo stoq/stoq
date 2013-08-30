@@ -232,6 +232,9 @@ class DomainTest(unittest.TestCase, ExampleCreator):
             elif isinstance(value, Domain) or value is None:
                 old_values[param] = sysparam.get_object(self.store, param)
                 sysparam.set_object(self.store, param, value)
+            elif isinstance(value, basestring):
+                old_values[param] = sysparam.get_string(param)
+                sysparam.set_string(self.store, param, value)
             else:
                 raise NotImplementedError(type(value))
         try:
@@ -242,6 +245,8 @@ class DomainTest(unittest.TestCase, ExampleCreator):
                     sysparam.set_bool(self.store, param, value)
                 elif isinstance(value, Domain) or value is None:
                     sysparam.set_object(self.store, param, value)
+                elif isinstance(value, basestring):
+                    sysparam.set_string(self.store, param, value)
                 else:
                     raise NotImplementedError(type(value))
 

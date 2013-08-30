@@ -768,6 +768,14 @@ _details = [
         bool, initial=True),
 
     ParameterDetails(
+        u'DEFECT_DETECTED_TEMPLATE',
+        _(u'Work order'),
+        _(u'Defect detected template for work orders'),
+        _(u'A template to be used to fill the "Defect detected" field when '
+          u'creating a new work order.'),
+        unicode, multiline=True, initial=u""),
+
+    ParameterDetails(
         u'AUTOMATIC_LOGOUT',
         _(u'General'),
         _(u'Automatic logout after inactivity period'),
@@ -886,11 +894,15 @@ class ParameterAccess(object):
         return detail
 
     def _set_param_internal(self, store, param_name, value, expected_type):
+        param = store.find(ParameterData, field_name=unicode(param_name)).one()
+        if param is None:
+            raise ValueError("param_name %s is not a valid parameter" % (
+                param_name, ))
+
         if value is not None and not type(value) is expected_type:
             raise TypeError("%s must be a decimal, not %r" % (
                 param_name, type(value).__name__))
 
-        param = store.find(ParameterData, field_name=unicode(param_name)).one()
         # bool are represented as 1/0
         if expected_type is bool:
             value = int(value)
