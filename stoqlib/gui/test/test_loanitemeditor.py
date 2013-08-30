@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,8 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-
-from stoqlib.gui.editors.loaneditor import LoanItemEditor
+from stoqlib.domain.loan import LoanItem
+from stoqlib.gui.editors.loanitemeditor import LoanItemEditor
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -41,3 +41,26 @@ class TestLoanItemEditor(GUITest):
         self.assertEqual(editor.total.read(), 30)
 
         self.check_editor(editor, 'editor-loanitem-show')
+
+    def test_quantity_validation(self):
+        # The storable is created with 10 of quantity
+        loan_item = self.create_loan_item()
+        editor = LoanItemEditor(self.store, loan_item)
+
+        editor.quantity.update(10)
+        self.assertValid(editor, ['quantity'])
+        editor.quantity.update(11)
+        self.assertInvalid(editor, ['quantity'])
+        editor.quantity.update(2)
+        self.assertValid(editor, ['quantity'])
+
+        # Create an item with 8 of quantity, so the item we are testing should
+        # only be able to loan 2 or less of quantity (10 available in the
+        # stock minus 8 already loaned in this new item)
+        LoanItem(store=self.store, loan=loan_item.loan,
+                 sellable=loan_item.sellable, price=10, quantity=8)
+
+        editor.quantity.update(3)
+        self.assertInvalid(editor, ['quantity'])
+        editor.quantity.update(2)
+        self.assertValid(editor, ['quantity'])

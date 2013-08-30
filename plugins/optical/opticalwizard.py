@@ -429,7 +429,8 @@ class _ItemEditor(BaseEditor):
         sellable = self.model.sellable
 
         # TODO: Validate quantity properly (checking if the current stock is
-        # enougth
+        # enough). Note that it need to consider the stock of all items
+        # from the same sellable on this item's order
         if value <= 0:
             return ValidationError(_(u"The quantity must be greater than 0"))
 

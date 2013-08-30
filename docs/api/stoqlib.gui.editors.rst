@@ -161,10 +161,10 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`loaneditor` Module
-------------------------
+:mod:`loanitemeditor` Module
+----------------------------
 
-.. automodule:: stoqlib.gui.editors.loaneditor
+.. automodule:: stoqlib.gui.editors.loanitemeditor
     :members:
     :undoc-members:
     :show-inheritance:

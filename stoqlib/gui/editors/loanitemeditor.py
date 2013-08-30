@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2010-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -102,12 +102,24 @@ class LoanItemEditor(BaseEditor):
                 widget.hide()
 
     def _has_stock(self, quantity):
-        storable = self.model.sellable.product_storable
-        if storable is not None:
-            available = storable.get_balance_for_branch(self._branch)
+        batch = self.model.batch
+        sellable = self.model.sellable
+        storable = sellable.product_storable
+        if storable is None:
+            return None
+
+        total_quatity = sum(
+            i.quantity for i in self.model.loan.loaned_items if
+            i != self.model and (i.sellable, i.batch) == (sellable, batch))
+
+        # FIXME: It would be better to just use storable.get_balance_for_branch
+        # and pass batch=batch there. That would avoid this if
+        if batch is not None:
+            balance = batch.get_balance_for_branch(self.model.loan.branch)
         else:
-            available = 0
-        return available >= quantity
+            balance = storable.get_balance_for_branch(self.model.loan.branch)
+
+        return quantity <= balance - total_quatity
 
     def setup_proxies(self):
         self._setup_widgets()

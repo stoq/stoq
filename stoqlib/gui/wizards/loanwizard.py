@@ -58,9 +58,9 @@ from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
 from stoqlib.gui.events import (NewLoanWizardFinishEvent,
                                 CloseLoanWizardFinishEvent,
                                 LoanItemSelectionStepEvent)
+from stoqlib.gui.editors.loanitemeditor import LoanItemEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
-from stoqlib.gui.editors.loaneditor import LoanItemEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.utils.printing import print_report
