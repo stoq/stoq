@@ -399,7 +399,7 @@ class WorkOrderItem(Domain):
         storable = self.sellable.product_storable
         if not storable:
             raise StockError(
-                "Sellable %s does not have a storable" % (self.sellable, ))
+                "Sellable %s does not have a storable" % (self.sellable.description, ))
 
         total_quantity = 0
         for item in self.order.get_items():

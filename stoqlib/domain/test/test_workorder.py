@@ -28,7 +28,7 @@ import contextlib
 
 import mock
 
-from stoqlib.exceptions import InvalidStatus, NeedReason
+from stoqlib.exceptions import InvalidStatus, NeedReason, StockError
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderPackage, WorkOrderPackageItem,
@@ -37,7 +37,9 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderApprovedAndFinishedView,
                                       WorkOrderFinishedView,
                                       WorkOrderPackageView,
-                                      WorkOrderPackageSentView)
+                                      WorkOrderPackageSentView,
+                                      WorkOrderHistory,
+                                      WorkOrderHistoryView)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localdate
 
@@ -182,10 +184,17 @@ class TestWorkOrderCategory(DomainTest):
 
 
 class TestWorkOrderItem(DomainTest):
+    def test_storm_loaded(self):
+        item = WorkOrderItem.__new__(WorkOrderItem)
+        item.quantity = 10
+        item.__storm_loaded__()
+        self.assertEquals(item._original_quantity, item.quantity)
+
     def test_get_remaining_quantity(self):
         branch = self.create_branch()
         sellable = self.create_sellable()
-        self.create_storable(product=sellable.product, branch=branch, stock=30)
+        self.create_storable(product=sellable.product,
+                             branch=branch, stock=30)
         workorder = self.create_workorder(branch=branch)
 
         item = workorder.add_sellable(sellable, quantity=10)
@@ -197,6 +206,29 @@ class TestWorkOrderItem(DomainTest):
         self.assertEqual(item.get_remaining_quantity(), 10)
         item.sync_stock()
         self.assertEqual(item.get_remaining_quantity(), 10)
+
+        # Test with a batch item
+        sellable = self.create_sellable()
+        storable, batch = self.create_storable(product=sellable.product,
+                                               branch=branch, stock=30,
+                                               is_batch=True)
+        item = workorder.add_sellable(sellable, batch=batch, quantity=10)
+        self.assertEqual(item.get_remaining_quantity(), 20)
+
+        # Test with several sellables/items
+        sellable2 = self.create_sellable()
+        self.create_storable(product=sellable2.product, branch=branch, stock=30)
+        item2 = workorder.add_sellable(sellable2, quantity=10)
+        self.assertEqual(item2.get_remaining_quantity(), 20)
+
+        # Test the error case
+        workorder = self.create_workorder(branch=branch)
+        sellable = self.create_sellable()
+        item = workorder.add_sellable(sellable, quantity=10)
+        with self.assertRaisesRegexp(
+            StockError,
+            "Sellable Description does not have a storable"):
+            item.get_remaining_quantity()
 
     def test_total(self):
         sellable = self.create_sellable()
@@ -502,10 +534,11 @@ class TestWorkOrder(DomainTest):
             # In transport cannot finish
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
                 self.assertFalse(workorder.can_finish())
-            # Cannot finish on other branch than the current one
-            with mock.patch('stoqlib.domain.workorder.get_current_branch',
-                            new=lambda store: self.create_branch()):
-                self.assertFalse(workorder.can_work())
+
+            old_branch = workorder.current_branch
+            workorder.current_branch = self.create_branch()
+            self.assertFalse(workorder.can_finish())
+            workorder.current_branch = old_branch
 
             if status in [WorkOrder.STATUS_WORK_IN_PROGRESS,
                           WorkOrder.STATUS_WORK_WAITING]:
@@ -525,10 +558,11 @@ class TestWorkOrder(DomainTest):
             # In transport cannot close
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
                 self.assertFalse(workorder.can_close())
-            # Cannot finish on other branch than the current one
-            with mock.patch('stoqlib.domain.workorder.get_current_branch',
-                            new=lambda store: self.create_branch()):
-                self.assertFalse(workorder.can_work())
+
+            old_branch = workorder.current_branch
+            workorder.current_branch = self.create_branch()
+            self.assertFalse(workorder.can_close())
+            workorder.current_branch = old_branch
 
             if status == WorkOrder.STATUS_WORK_FINISHED:
                 self.assertTrue(workorder.can_close())
@@ -700,6 +734,15 @@ class TestWorkOrder(DomainTest):
         self.assertEquals(str(se.exception),
                           'This work order cannot be finished')
 
+        # Reopen
+        with self.assertRaises(NeedReason) as exc:
+            workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
+            self.assertEquals(str(exc),
+                              "A reason is needed to reopen the work order")
+
+        workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS,
+                                reason=u'reason')
+
     def test_change_status_reverse(self):
         # FIXME: Improve this test by adding more status change cases
         workorder = self.create_workorder()
@@ -709,6 +752,9 @@ class TestWorkOrder(DomainTest):
             workorder.change_status(WorkOrder.STATUS_WORK_WAITING)
         self.assertEquals(str(se.exception),
                           'A reason is needed to pause the work order')
+
+        workorder.change_status(WorkOrder.STATUS_WORK_WAITING,
+                                reason=u"Pause")
 
     def test_find_by_sale(self):
         workorder1 = self.create_workorder()
@@ -928,3 +974,15 @@ class TestWorkOrderPackageSentView(_TestWorkOrderPackageView):
     default_status = [WorkOrderPackage.STATUS_SENT]
     excluded_status = [k for k in WorkOrderPackage.statuses.keys() if
                        k not in default_status]
+
+
+class TestWorkOrderHistoryView(DomainTest):
+    def test_find_by_work_order(self):
+        work_order = self.create_workorder()
+        user = self.create_user()
+        WorkOrderHistory(store=self.store,
+                         work_order=work_order,
+                         user=user,
+                         what=u"what!")
+        view = WorkOrderHistoryView.find_by_work_order(self.store, work_order).one()
+        self.assertEquals(view.user_name, u'individual')

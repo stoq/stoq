@@ -88,7 +88,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/domain/transfer.py', 98.7),
     ('stoqlib/domain/uiform.py', 57),
     ('stoqlib/domain/views.py', 95.56),
-    ('stoqlib/domain/workorder.py', 97.57),
     ('stoqlib/drivers/cheque.py', 38.46),
     ('stoqlib/drivers/scale.py', 50),
     ('stoqlib/exceptions.py', 79.41),

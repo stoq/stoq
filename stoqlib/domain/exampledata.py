@@ -233,10 +233,15 @@ class ExampleCreator(object):
             product = sellable.product
         storable = Storable(product=product, store=self.store, is_batch=is_batch)
         if branch and stock:
-            storable.increase_stock(stock, branch,
-                                    type=StockTransactionHistory.TYPE_INITIAL,
-                                    object_id=None,
-                                    unit_cost=unit_cost)
+            batch = self.create_storable_batch(storable) if is_batch else None
+            storable.increase_stock(
+                stock, branch,
+                type=StockTransactionHistory.TYPE_INITIAL,
+                object_id=None,
+                unit_cost=unit_cost,
+                batch=batch)
+            if is_batch:
+                return storable, batch
         return storable
 
     def create_storable_batch(self, storable=None, batch_number=u'1'):
