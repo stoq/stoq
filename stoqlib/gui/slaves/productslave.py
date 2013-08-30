@@ -36,6 +36,7 @@ from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, ProductComponent,
                                     ProductQualityTest, Product,
                                     ProductManufacturer)
+from stoqlib.domain.production import ProductionOrderProducingView
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -465,7 +466,8 @@ class ProductComponentSlave(BaseEditorSlave):
         self._update_widgets()
 
     def _validate_components(self):
-        return not self.model.product.is_being_produced()
+        return not ProductionOrderProducingView.is_product_being_produced(
+            self.model.product)
 
     #
     # BaseEditorSlave

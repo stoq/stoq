@@ -21,7 +21,64 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 
-""" Base classes to manage product's informations """
+"""
+Product, a physical goods that can be purchased, stored and sold.
+It's purchased by a supplier and sold to client.
+
+Imports that will be used in this doctest:
+
+    >>> from stoqlib.database.runtime import new_store, get_current_branch
+    >>> from stoqlib.domain.product import Product, ProductStockItem, Storable
+    >>> from stoqlib.domain.product import StockTransactionHistory
+
+Create a new store
+
+    >>> store = new_store()
+
+Create a branch we can use:
+
+    >>> from stoqlib.domain.exampledata import ExampleCreator
+    >>> branch = ExampleCreator.create(store, 'Branch')
+
+Create a sellable we can use:
+
+    >>> from stoqlib.domain.exampledata import ExampleCreator
+    >>> sellable = ExampleCreator.create(store, 'Sellable')
+
+The ExampleCreator already creates a Product for us. Now lets attach it a
+storable facet.
+
+    >>> product = sellable.product
+    >>> storable = Storable(product=product, store=store)
+
+The storable needs to have it's stock created, let's do so. Note that a reason
+is always required when changing the stock quantity
+
+    >>> storable.increase_stock(10, branch, StockTransactionHistory.TYPE_INITIAL, None)
+
+A stock item should now be available for the storable:
+
+    >>> stock_item = storable.get_stock_item(branch, batch=None)
+
+The branch and storable should be set properly
+
+    >>> stock_item.branch == branch
+    True
+
+    >>> stock_item.storable == storable
+    True
+
+Fetch the stock item for the current branch and verify that the
+stock_items are unique:
+
+    >>> current_branch = get_current_branch(store)
+    >>> stock_item2 = storable.get_stock_item(current_branch, batch=None)
+    >>> stock_item != stock_item2
+    True
+
+    >>> store.close()
+
+"""
 
 # pylint: enable=E1101
 
@@ -46,7 +103,7 @@ from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.person import Person, Branch
 from stoqlib.exceptions import StockError
 from stoqlib.lib.dateutils import localnow, localtoday
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
 _ = stoqlib_gettext
 
@@ -111,14 +168,9 @@ class ProductSupplierInfo(Domain):
             return self.supplier.get_description()
 
     def get_lead_time_str(self):
-        if self.lead_time > 1:
-            day_str = _(u"Days")
-            lead_time = self.lead_time
-        else:
-            day_str = _(u"Day")
-            lead_time = self.lead_time or 0
-
-        return u"%d %s" % (lead_time, day_str)
+        return u"%d %s" % (
+            self.lead_time,
+            stoqlib_ngettext(_(u"Day"), _(u"Days"), self.lead_time))
 
 
 class Product(Domain):
@@ -335,7 +387,8 @@ class Product(Domain):
 
     def get_main_supplier_name(self):
         supplier_info = self.get_main_supplier_info()
-        return supplier_info.get_name()
+        if supplier_info is not None:
+            return supplier_info.get_name()
 
     def get_main_supplier_info(self):
         """Gets a list of main suppliers for a Product, the main supplier
@@ -400,10 +453,6 @@ class Product(Domain):
             if component.component.is_composed_by(product):
                 return True
         return False
-
-    def is_being_produced(self):
-        from stoqlib.domain.production import ProductionOrderProducingView
-        return ProductionOrderProducingView.is_product_being_produced(self)
 
     #
     # Domain
@@ -551,7 +600,7 @@ class ProductHistory(Domain):
         """
         cls(branch=branch, sellable=consumed_item.product.sellable,
             quantity_consumed=consumed_item.consumed,
-            production_date=localtoday().date(),
+            production_date=localtoday(),
             store=store)
 
     @classmethod
@@ -566,7 +615,7 @@ class ProductHistory(Domain):
         """
         cls(branch=branch, sellable=produced_item.product.sellable,
             quantity_produced=produced_item.produced,
-            production_date=localtoday().date(), store=store)
+            production_date=localtoday(), store=store)
 
     @classmethod
     def add_lost_item(cls, store, branch, lost_item):
@@ -578,9 +627,12 @@ class ProductHistory(Domain):
         :param branch: the source branch
         :param lost_item: a ProductionItem or ProductionMaterial instance
         """
+        if lost_item.lost <= 0:
+            raise ValueError("lost_item must have a positive lost attribute")
+
         cls(branch=branch, sellable=lost_item.product.sellable,
             quantity_lost=lost_item.lost,
-            production_date=localtoday().date(), store=store)
+            production_date=localtoday(), store=store)
 
     @classmethod
     def add_decreased_item(cls, store, branch, item):
@@ -594,7 +646,7 @@ class ProductHistory(Domain):
         """
         cls(branch=branch, sellable=item.sellable,
             quantity_decreased=item.quantity,
-            decreased_date=localtoday().date(),
+            decreased_date=localtoday(),
             store=store)
 
 
@@ -919,6 +971,13 @@ class StorableBatch(Domain):
     storable = Reference(storable_id, 'Storable.id')
 
     #
+    #  IDescribable
+    #
+
+    def get_description(self):
+        return self.batch_number
+
+    #
     #  Classmethods
     #
 
@@ -959,13 +1018,6 @@ class StorableBatch(Domain):
         stock_items = store.find(ProductStockItem, storable=self.storable,
                                  batch=self, branch=branch)
         return stock_items.sum(ProductStockItem.quantity) or Decimal(0)
-
-    #
-    #  IDescribable
-    #
-
-    def get_description(self):
-        return self.batch_number
 
 
 class StockTransactionHistory(Domain):
@@ -1057,7 +1109,7 @@ class StockTransactionHistory(Domain):
                                  u'order %s'),
              TYPE_INITIAL: _(u'Registred initial stock'),
              TYPE_IMPORTED: _(u'Imported from previous version'),
-             TYPE_CONSIGNMENT_RETURNED: _(u'Consigned product returned.'),
+             TYPE_CONSIGNMENT_RETURNED: _(u'Consigned product returned %s.'),
              TYPE_WORK_ORDER_USED: _(u'Used on work order %s.'),
              }
 
@@ -1128,14 +1180,11 @@ class StockTransactionHistory(Domain):
         elif self.type == self.TYPE_CONSIGNMENT_RETURNED:
             from stoqlib.domain.purchase import PurchaseItem
             return self.store.get(PurchaseItem, self.object_id)
-        elif self.type == self.TYPE_CONSIGNMENT_RETURNED:
-            from stoqlib.domain.purchase import PurchaseItem
-            return self.store.get(PurchaseItem, self.object_id)
         elif self.type == self.TYPE_WORK_ORDER_USED:
             from stoqlib.domain.workorder import WorkOrderItem
             return self.store.get(WorkOrderItem, self.object_id)
-        else:
-            raise ValueError(_('%s has invalid type: %s.') % (self, self.type))
+        else:  # pragma: nocoverage
+            raise NotImplementedError(self.type)
 
     def get_object_parent(self):
         obj = self.get_object()
@@ -1146,6 +1195,7 @@ class StockTransactionHistory(Domain):
         from stoqlib.domain.loan import LoanItem
         from stoqlib.domain.production import ProductionItem
         from stoqlib.domain.production import ProductionMaterial
+        from stoqlib.domain.production import ProductionProducedItem
         from stoqlib.domain.purchase import PurchaseItem
         from stoqlib.domain.receiving import ReceivingOrderItem
         from stoqlib.domain.returnedsale import ReturnedSaleItem
@@ -1160,6 +1210,8 @@ class StockTransactionHistory(Domain):
             return obj.returned_sale
         elif isinstance(obj, ProductionItem):
             return obj.order
+        elif isinstance(obj, ProductionProducedItem):
+            return obj.order
         elif isinstance(obj, ProductionMaterial):
             return obj.order
         elif isinstance(obj, ReceivingOrderItem):
@@ -1173,12 +1225,11 @@ class StockTransactionHistory(Domain):
         elif isinstance(obj, InventoryItem):
             return obj.inventory
         elif isinstance(obj, PurchaseItem):
-            return obj.inventory
+            return obj.order
         elif isinstance(obj, WorkOrderItem):
             return obj.order
-        else:
-            raise TypeError(_('Object %s has invalid type (%s)') %
-                            (obj, type(obj)))
+        else:  # pragma: nocoverage
+            raise NotImplementedError(obj)
 
     def get_description(self):
         """ Based on the type of the transaction, returns the string
@@ -1252,7 +1303,7 @@ class ProductQualityTest(Domain):
             return True
         elif self.success_value == u'False':
             return False
-        else:
+        else:  # pragma: nocoverage
             raise ValueError(self.success_value)
 
     def get_range_value(self):

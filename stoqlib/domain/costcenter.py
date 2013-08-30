@@ -84,7 +84,7 @@ class CostCenter(Domain):
                                And(CostCenterEntry.cost_center == self,
                                    Ne(CostCenterEntry.payment_id, None)))
 
-    def get_stock_trasaction_entries(self):
+    def get_stock_transaction_entries(self):
         return self.store.find(CostCenterEntry,
                                And(CostCenterEntry.cost_center == self,
                                    Ne(CostCenterEntry.stock_transaction_id, None)))

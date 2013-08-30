@@ -32,7 +32,6 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.gui.base.dialogs import run_dialog
@@ -130,15 +129,6 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             self.consignment_items.update(item)
             self._validate_step(True)
 
-    def _return_single_item(self, item, quantity):
-        storable = item.sellable.product_storable
-        assert storable
-
-        branch = self.consignment.branch
-        storable.decrease_stock(quantity=quantity, branch=branch,
-                                type=StockTransactionHistory.TYPE_CONSIGNMENT_RETURNED,
-                                object_id=item.id)
-
     def get_saved_items(self):
         # we keep a copy of the important data to calculate values when we
         # finish this step
@@ -189,7 +179,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             to_return = final.quantity_returned - initial.returned
 
             if to_return > 0:
-                self._return_single_item(final, to_return)
+                final.return_consignment(to_return)
             if to_sold > 0:
                 total_charged = final.cost * to_sold
 

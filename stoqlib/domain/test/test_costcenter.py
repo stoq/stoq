@@ -88,9 +88,9 @@ class TestCostCenter(DomainTest):
             stock_transaction=stock_trans3)
         cost_center2 = cost_center_entry3.cost_center
 
-        self.assertEquals(list(cost_center1.get_stock_trasaction_entries()),
+        self.assertEquals(list(cost_center1.get_stock_transaction_entries()),
                           [cost_center_entry1, cost_center_entry2])
-        self.assertEquals(list(cost_center2.get_stock_trasaction_entries()),
+        self.assertEquals(list(cost_center2.get_stock_transaction_entries()),
                           [cost_center_entry3])
 
     def test_stock_decreases(self):

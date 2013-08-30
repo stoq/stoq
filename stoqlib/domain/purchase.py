@@ -45,7 +45,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.product import Product, Storable
+from stoqlib.domain.product import Product, StockTransactionHistory, Storable
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.domain.person import (Person, Branch, Company, Supplier,
                                    Transporter, LoginUser)
@@ -148,6 +148,19 @@ class PurchaseItem(Domain):
                     PurchaseOrder.status == PurchaseOrder.ORDER_CONFIRMED)
         ordered_items = store.find(PurchaseItem, query)
         return ordered_items.sum(PurchaseItem.quantity) or Decimal(0)
+
+    def return_consignment(self, quantity):
+        """
+        Return this as a consignment item
+
+        :param quantity: the quantity to return
+        """
+        storable = self.sellable.product_storable
+        assert storable
+        storable.decrease_stock(quantity=quantity,
+                                branch=self.order.branch,
+                                type=StockTransactionHistory.TYPE_CONSIGNMENT_RETURNED,
+                                object_id=self.id)
 
 
 @implementer(IContainer)

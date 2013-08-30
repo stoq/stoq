@@ -780,6 +780,7 @@ class ExampleCreator(object):
                                     object_id=None)
         return order.add_sellable(sellable, batch=None, quantity=quantity)
 
+    # FIXME: Rename to create_work_order
     def create_workorder(self, equipment=u'', branch=None, current_branch=None):
         from stoqlib.domain.workorder import WorkOrder
         return WorkOrder(
@@ -788,6 +789,18 @@ class ExampleCreator(object):
             branch=branch or get_current_branch(self.store),
             current_branch=current_branch)
 
+    def create_work_order_item(self, quantity=1, price=10):
+        order = self.create_workorder()
+        from stoqlib.domain.workorder import WorkOrderItem
+        sellable = self.create_sellable()
+        return WorkOrderItem(
+            store=self.store,
+            order=order,
+            quantity=quantity,
+            price=price,
+            sellable=sellable)
+
+    # FIXME: Rename to create_work_order_package
     def create_workorder_package(self, identifier=u'', source_branch=None):
         from stoqlib.domain.workorder import WorkOrderPackage
         return WorkOrderPackage(
