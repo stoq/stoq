@@ -106,6 +106,9 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         self._client_credit_set_visible(bool(self.client.read()))
 
+    def _get_client(self):
+        return self.store.get(Client, self.client.read())
+
     def _client_credit_set_visible(self, visible):
         if visible and self.model.client:
             self.client_credit.set_text(
@@ -157,7 +160,7 @@ class StartSaleQuoteStep(WizardEditorStep):
                                     relativedelta(days=expire_delta))
 
     def toogle_client_details(self):
-        client = self.client.read()
+        client = self._get_client()
         if client is not None:
             if client.status == Client.STATUS_SOLVENT:
                 self.info_image.set_from_stock(gtk.STOCK_INFO,
@@ -174,16 +177,15 @@ class StartSaleQuoteStep(WizardEditorStep):
         store = api.new_store()
         client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
         retval = store.confirm(client)
-        client = self.store.fetch(client)
         store.close()
         if not retval:
             return
         self._fill_clients_combo()
-        self.client.select(client)
+        self.client.select(client.id)
 
     def on_client__changed(self, widget):
         self.toogle_client_details()
-        client = self.client.get_selected()
+        client = self._get_client()
         self._client_credit_set_visible(bool(client))
         if not client:
             return

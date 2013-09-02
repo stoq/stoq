@@ -147,6 +147,10 @@ class StartNewLoanStep(WizardEditorStep):
         parent.remove(old_widget)
         parent.attach(new_widget, left, right, top, bottom)
 
+    def _get_client(self):
+        client_id = self.client.read()
+        return self.store.get(Client, client_id)
+
     #
     # WizardStep hooks
     #
@@ -179,16 +183,15 @@ class StartNewLoanStep(WizardEditorStep):
         store = api.new_store()
         client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
         retval = store.confirm(client)
-        client = self.store.fetch(client)
         store.close()
         if not retval:
             return
         self._fill_clients_combo()
-        self.client.select(client)
+        self.client.select(client.id)
 
     def on_client__changed(self, widget):
         self.toogle_client_details()
-        client = self.client.get_selected()
+        client = self._get_client()
         if not client:
             return
         self.client_category.select(client.category)

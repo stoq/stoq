@@ -44,7 +44,7 @@ class TestNewLoanWizard(GUITest):
         wizard = NewLoanWizard(self.store)
 
         step = wizard.get_current_step()
-        step.client.update(client)
+        step.client.update(client.id)
         step.expire_date.update(localtoday().date())
         self.check_wizard(wizard, 'new-loan-wizard-start-step')
         self.click(wizard.next_button)

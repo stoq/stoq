@@ -67,12 +67,12 @@ class _PaymentEditor(BaseEditor):
     payment_type = None
 
     fields = dict(
-        branch=PersonField(_('Branch'), proxy=True, person_type=Branch,
-                           can_add=False, can_edit=False, mandatory=True),
+        branch_id=PersonField(_('Branch'), proxy=True, person_type=Branch,
+                              can_add=False, can_edit=False, mandatory=True),
         method=PaymentMethodField(_('Method'), proxy=True, mandatory=True,
                                   separate=True),
         description=TextField(_('Description'), proxy=True, mandatory=True),
-        person=PersonField(proxy=True),
+        person_id=PersonField(proxy=True),
         value=PriceField(_('Value'), proxy=True, mandatory=True),
         due_date=DateField(_('Due date'), proxy=True, mandatory=True),
         category=PaymentCategoryField(_('Category'), proxy=True),
@@ -88,7 +88,7 @@ class _PaymentEditor(BaseEditor):
         :param model: a :class:`stoqlib.domain.payment.payment.Payment` object or None
 
         """
-        self.fields['person'].person_type = self.person_type
+        self.fields['person_id'].person_type = self.person_type
         self.fields['category'].category_type = self.category_type
         self.fields['method'].payment_type = self.payment_type
 
@@ -131,7 +131,7 @@ class _PaymentEditor(BaseEditor):
 
     def validate_confirm(self):
         if (self.repeat.get_selected() != _ONCE and
-            not self._validate_date()):
+                not self._validate_date()):
             return False
         # FIXME: the kiwi view should export it's state and it should
         #        be used by default
@@ -141,14 +141,15 @@ class _PaymentEditor(BaseEditor):
 
     def on_confirm(self):
         self.model.base_value = self.model.value
-        person = self.person.get_selected_data()
-        if (person is not None and person is not ValueUnset and
-            # FIXME: PersonField should never let get_selected_data()
-            #        return anything different from None and the model.
-            person != ""):
+        facet_id = self.person_id.get_selected_data()
+        if (facet_id is not None and facet_id is not ValueUnset and
+                # FIXME: PersonField should never let get_selected_data()
+                #        return anything different from None and the model.
+                facet_id != ""):
+            facet = self.store.get(self.person_type, facet_id)
             setattr(self.model.group,
                     self.person_attribute,
-                    self.store.fetch(person.person))
+                    facet.person)
 
         self.model.attachment = self.fields['attachment'].attachment
 
@@ -164,7 +165,7 @@ class _PaymentEditor(BaseEditor):
     # Private
 
     def _setup_widgets(self):
-        self.person_lbl.set_label(self._person_label)
+        self.person_id_lbl.set_label(self._person_label)
         if self.model.group.sale:
             label = _("Sale details")
         elif self.model.group.purchase:
@@ -179,8 +180,8 @@ class _PaymentEditor(BaseEditor):
 
         self.end_date.set_sensitive(False)
         if self.edit_mode:
-            for field_name in ['value', 'due_date', 'person',
-                               'repeat', 'end_date', 'branch', 'method']:
+            for field_name in ['value', 'due_date', 'person_id',
+                               'repeat', 'end_date', 'branch_id', 'method']:
                 field = self.fields[field_name]
                 field.can_add = False
                 field.can_edit = False
@@ -190,7 +191,7 @@ class _PaymentEditor(BaseEditor):
         if person:
             store = person.store
             facet = store.find(self.person_type, person=person).one()
-            self.person.select(facet)
+            self.person_id.select(facet.id)
 
     def _show_order_dialog(self):
         group = self.model.group
@@ -242,9 +243,9 @@ class _PaymentEditor(BaseEditor):
         payment_type = self.payment_type
         method = self.method.get_selected()
         if method.operation.require_person(payment_type):
-            self.person.set_property('mandatory', True)
+            self.person_id.set_property('mandatory', True)
         else:
-            self.person.set_property('mandatory', False)
+            self.person_id.set_property('mandatory', False)
 
     #
     # Kiwi Callbacks
@@ -277,7 +278,7 @@ class _PaymentEditor(BaseEditor):
         self._show_order_dialog()
 
     def on_method__content_changed(self, method):
-        self.person.validate(force=True)
+        self.person_id.validate(force=True)
         self._validate_person()
 
 
@@ -300,7 +301,7 @@ class InPaymentEditor(_PaymentEditor):
             return ValidationError(e)
 
     def on_value__changed(self, value):
-        self.person.validate(force=True)
+        self.person_id.validate(force=True)
 
 
 class OutPaymentEditor(_PaymentEditor):

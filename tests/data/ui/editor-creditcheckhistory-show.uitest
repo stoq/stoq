@@ -7,15 +7,15 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "client credit check his
         GtkEventBox(): slave BasicForm is attached
           GtkAlignment(toplevel):
             GtkTable():
-              ProxyLabel(client_lbl): 'Client:'
-              ProxyComboEntry(client): insensitive
+              ProxyLabel(client_id_lbl): 'Client:'
+              ProxyComboEntry(client_id): insensitive
                 item: 'Alessandra Almeida Itaber\xc3\xa1'
                 item: 'Client', selected
                 item: 'Franciso Elisio de Lima Junior'
                 item: 'Luis Sergio da Silva Marin'
                 item: 'Vitalina Claudino'
-              GtkButton(client_add_button): hidden
-              GtkButton(client_edit_button): hidden
+              GtkButton(client_id_add_button): hidden
+              GtkButton(client_id_edit_button): hidden
               ProxyLabel(identifier_lbl): 'Identifier:'
               ProxyEntry(identifier): 'identifier123'
               ProxyLabel(status_lbl): 'Status:'

@@ -204,8 +204,8 @@ class TestSaleQuoteWizard(GUITest):
         wizard = SaleQuoteWizard(self.store)
         step = wizard.get_current_step()
 
-        step.client.update(client_without_credit)
+        step.client.update(client_without_credit.id)
         self.check_wizard(wizard, 'wizard-salequote-client-without-credit')
 
-        step.client.update(client_with_credit)
+        step.client.update(client_with_credit.id)
         self.check_wizard(wizard, 'wizard-salequote-client-with-credit')

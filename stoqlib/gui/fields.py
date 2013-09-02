@@ -113,8 +113,7 @@ class DomainChoiceField(ChoiceField):
         model = self.run_dialog(store, model)
         rv = store.confirm(model)
         if rv:
-            main_store = get_store_for_field(self)
-            self.populate(main_store.fetch(model))
+            self.populate(model.id)
         store.close()
 
     def _update_add_button_sensitivity(self):
@@ -250,43 +249,34 @@ class PersonField(DomainChoiceField):
 
     # Field
 
-    def populate(self, person):
+    def populate(self, person_id):
         from stoqlib.domain.person import (Client, Supplier, Transporter,
                                            SalesPerson, Branch)
         store = get_store_for_field(self)
         person_type = self.person_type
         if person_type == Supplier:
-            objects = Supplier.get_active_suppliers(store)
             self.add_button.set_tooltip_text(_("Add a new supplier"))
             self.edit_button.set_tooltip_text(_("Edit the selected supplier"))
-            items = api.for_person_combo(objects)
         elif person_type == Client:
             self.add_button.set_tooltip_text(_("Add a new client"))
             self.edit_button.set_tooltip_text(_("Edit the selected client"))
-            items = Client.get_active_items(store)
         elif person_type == Transporter:
-            objects = Transporter.get_active_transporters(store)
             self.add_button.set_tooltip_text(_("Add a new transporter"))
             self.edit_button.set_tooltip_text(_("Edit the selected transporter"))
-            items = api.for_person_combo(objects)
         elif person_type == SalesPerson:
-            objects = SalesPerson.get_active_salespersons(store)
             self.add_button.set_tooltip_text(_("Add a new sales person"))
             self.edit_button.set_tooltip_text(_("Edit the selected sales person"))
-            items = api.for_person_combo(objects)
         elif person_type == Branch:
-            objects = Branch.get_active_branches(store)
             self.add_button.set_tooltip_text(_("Add a new branch"))
             self.edit_button.set_tooltip_text(_("Edit the selected branch"))
-            items = api.for_person_combo(objects)
         else:
             raise AssertionError(self.person_type)
 
+        items = person_type.get_active_items(store)
         self.widget.prefill(items)
 
-        if person:
-            assert isinstance(person, person_type)
-            self.widget.select(person)
+        if person_id:
+            self.widget.select(person_id)
 
     def run_dialog(self, store, person):
         from stoqlib.domain.person import Branch, Client, Supplier, Transporter
@@ -301,12 +291,18 @@ class PersonField(DomainChoiceField):
             Transporter: TransporterEditor,
         }
         editor = editors.get(self.person_type)
-        if editor is None:
+        if editor is None:  # pragma no cover
             raise NotImplementedError(self.person_type)
 
         from stoqlib.gui.wizards.personwizard import run_person_role_dialog
         return run_person_role_dialog(editor, self.toplevel, store, person,
                                       visual_mode=not self.can_edit)
+
+    def edit_button_clicked(self, button):
+        facet_id = self.widget.get_selected()
+        store = get_store_for_field(self)
+        facet = store.get(self.person_type, facet_id)
+        self._run_editor(facet)
 
 
 class CfopField(DomainChoiceField):

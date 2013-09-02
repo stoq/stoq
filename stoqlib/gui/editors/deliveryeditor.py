@@ -95,10 +95,10 @@ class CreateDeliveryEditor(BaseEditor):
     ]
 
     fields = dict(
-        client=PersonField(_("Client"), proxy=True, mandatory=True,
-                           person_type=Client),
-        transporter=PersonField(_("Transporter"), proxy=True,
-                                person_type=Transporter),
+        client_id=PersonField(_("Client"), proxy=True, mandatory=True,
+                              person_type=Client),
+        transporter_id=PersonField(_("Transporter"), proxy=True,
+                                   person_type=Transporter),
         address=AddressField(_("Address"), proxy=True, mandatory=True),
     )
 
@@ -130,10 +130,8 @@ class CreateDeliveryEditor(BaseEditor):
             user.profile.check_app_permission(u'admin'),
             user.profile.check_app_permission(u'purchase'),
         ))
-        self.fields['transporter'].can_add = can_modify_transporter
-        self.fields['transporter'].can_edit = can_modify_transporter
-
-        self.fields['client'].person_type = Client
+        self.fields['transporter_id'].can_add = can_modify_transporter
+        self.fields['transporter_id'].can_edit = can_modify_transporter
 
         self._update_widgets()
 
@@ -236,8 +234,8 @@ class DeliveryEditor(BaseEditor):
     ]
 
     fields = dict(
-        transporter=PersonField(_("Transporter"), proxy=True,
-                                person_type=Transporter),
+        transporter_id=PersonField(_("Transporter"), proxy=True,
+                                   person_type=Transporter),
         address=AddressField(_("Address"), proxy=True, mandatory=True)
     )
 
@@ -280,8 +278,8 @@ class DeliveryEditor(BaseEditor):
             user.profile.check_app_permission(u'admin'),
             user.profile.check_app_permission(u'purchase'),
         ))
-        self.fields['transporter'].can_add = can_modify_transporter
-        self.fields['transporter'].can_edit = can_modify_transporter
+        self.fields['transporter_id'].can_add = can_modify_transporter
+        self.fields['transporter_id'].can_edit = can_modify_transporter
 
     def _update_status_widgets(self):
         if self.model.status == Delivery.STATUS_INITIAL:
@@ -312,7 +310,7 @@ class DeliveryEditor(BaseEditor):
     def on_was_delivered_check__toggled(self, button):
         active = button.get_active()
         # When delivered, don't let user change transporter or address
-        self.transporter.set_sensitive(not active)
+        self.transporter_id.set_sensitive(not active)
         self.address.set_sensitive(not active)
         for widget in (self.deliver_date, self.tracking_code):
             widget.set_sensitive(active)

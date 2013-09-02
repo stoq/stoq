@@ -13,12 +13,12 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
             GtkEventBox(forms): slave BasicForm is attached
               GtkAlignment(toplevel):
                 GtkTable():
-                  ProxyLabel(transporter_lbl): 'Transporter:'
-                  ProxyComboEntry(transporter):
+                  ProxyLabel(transporter_id_lbl): 'Transporter:'
+                  ProxyComboEntry(transporter_id):
                     item: 'John', selected
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                  GtkButton(transporter_add_button):
-                  GtkButton(transporter_edit_button):
+                  GtkButton(transporter_id_add_button):
+                  GtkButton(transporter_id_edit_button):
                   ProxyLabel(address_lbl): 'Address:'
                   ProxyComboEntry(address): mandatory
                   GtkButton(address_add_button): insensitive

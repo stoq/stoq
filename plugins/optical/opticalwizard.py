@@ -112,6 +112,10 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
         # TODO: Implement a has_items() in kiwi
         self.client.set_sensitive(len(self.client.get_model()))
 
+    def _get_client(self):
+        client_id = self.client.read()
+        return self.store.get(Client, client_id)
+
     def _fill_wo_categories_combo(self):
         wo_categories = list(self.store.find(WorkOrderCategory))
         self.wo_categories.color_attribute = 'color'
@@ -149,7 +153,7 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
                                     OpticalStartSaleQuoteStep.proxy_widgets)
 
     def toogle_client_details(self):
-        client = self.client.read()
+        client = self._get_client()
         if client is not None:
             if client.status == Client.STATUS_SOLVENT:
                 self.info_image.set_from_stock(gtk.STOCK_INFO,
@@ -167,11 +171,10 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
         store = api.new_store()
         client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
         retval = store.confirm(client)
-        client = self.store.fetch(client)
         store.close()
         if retval:
             self._fill_clients_combo()
-            self.client.select(client)
+            self.client.select(client.id)
 
     def on_client__changed(self, widget):
         self.toogle_client_details()

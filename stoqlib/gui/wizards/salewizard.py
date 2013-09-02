@@ -498,7 +498,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def __init__(self, wizard, store, model, payment_group,
                  invoice_model, previous=None):
         self.invoice_model = invoice_model
-
+        self.pm_slave = None
         self.payment_group = payment_group
 
         BaseMethodSelectionStep.__init__(self)
@@ -512,6 +512,12 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     #
     # Private API
     #
+
+    def _get_client(self):
+        client_id = self.client.read()
+        if not client_id:
+            return None
+        return self.store.get(Client, client_id)
 
     def _update_totals(self):
         subtotal = self.wizard.get_subtotal()
@@ -568,28 +574,28 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         store = api.new_store()
         client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
         store.confirm(client)
-        client = self.store.fetch(client)
-        store.close()
+
         if not client:
             return
         if len(self.client) == 0:
             self._fill_clients_combo()
             return
         clients = self.client.get_model_items().values()
-        if client in clients:
+        if client.id in clients:
             if client.is_active:
-                self.client.select(client)
+                self.client.select(client.id)
             else:
                 # remove client from combo
-                self.client.select_item_by_data(client)
+                self.client.select_item_by_data(client.id)
                 iter = self.client.get_active_iter()
                 model = self.client.get_model()
                 model.remove(iter)
                 # just in case the inactive client was selected before.
                 self.client.select_item_by_position(0)
         elif client.is_active:
-            self.client.append_item(client.person.name, client)
-            self.client.select(client)
+            self.client.append_item(client.person.name, client.id)
+            self.client.select(client.id)
+        store.close()
 
     #
     # Public API
@@ -672,7 +678,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         BaseMethodSelectionStep.post_init(self)
 
         marker('Entering post_init')
-        self.toogle_client_details()
         if self.wizard.need_create_payment():
             self.wizard.payment_group.clear_unused()
         self.register_validate_function(self._refresh_next)
@@ -716,6 +721,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.create_client.set_sensitive(False)
         if sysparam().get_bool('ASK_SALES_CFOP'):
             self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
+        self.toogle_client_details()
         marker('Finished setting up proxies')
 
     def toogle_client_details(self):
@@ -727,24 +733,29 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     #
 
     def on_client__changed(self, entry):
+        # This gets called before setup_slaves, but we must wait until slaves
+        # are setup correctly
+        if not self.pm_slave:
+            return
         self.toogle_client_details()
         self.discount_slave.update_max_discount()
         self.pm_slave.set_client(
-            client=entry.read(),
+            client=self._get_client(),
             total_amount=self.wizard.get_total_to_pay())
 
     def on_payment_method_changed(self, slave, method):
         self.force_validation()
         self._update_next_step(method)
 
-    def on_client__validate(self, widget, client):
-        if not client:
+    def on_client__validate(self, widget, client_id):
+        if not client_id:
             return
 
         # this is used to avoid some tests from crashing
-        if not hasattr(self, 'pm_slave'):
+        if self.pm_slave is None:
             return
 
+        client = self.store.get(Client, client_id)
         method = self.pm_slave.get_selected_method()
         try:
             client.can_purchase(method, self.model.get_total_sale_amount())

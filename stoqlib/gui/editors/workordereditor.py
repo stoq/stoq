@@ -72,6 +72,7 @@ class WorkOrderEditor(BaseEditor):
 
     def __init__(self, store, model=None, visual_mode=False, category=None):
         self._default_category = category
+        self.proxy = None
         # Force visual_mode if the order is not in the current branch
         if model and model.current_branch != api.get_current_branch(store):
             visual_mode = True
@@ -79,6 +80,10 @@ class WorkOrderEditor(BaseEditor):
         super(WorkOrderEditor, self).__init__(store, model=model,
                                               visual_mode=visual_mode)
         self._setup_widgets()
+
+    def _get_client(self):
+        client_id = self.client.read()
+        return self.store.get(Client, client_id)
 
     #
     #  BaseEditor
@@ -219,7 +224,7 @@ class WorkOrderEditor(BaseEditor):
                                         visual_mode=self.visual_mode)
         if rv:
             self._fill_clients_combo()
-            self.client.select(self.store.fetch(rv))
+            self.client.select(rv.id)
 
     def _run_category_editor(self, category=None):
         with api.trans() as store:
@@ -255,7 +260,8 @@ class WorkOrderEditor(BaseEditor):
         self.client_info.set_sensitive(has_client)
 
     def after_client__content_changed(self, combo):
-        self._update_view()
+        if self.proxy:
+            self._update_view()
 
     def on_category__content_changed(self, combo):
         has_category = bool(combo.read())
@@ -265,8 +271,8 @@ class WorkOrderEditor(BaseEditor):
         self._run_client_editor()
 
     def on_client_info__clicked(self, button):
-        run_dialog(ClientDetailsDialog, self, self.store,
-                   self.client.read())
+        client = self._get_client()
+        run_dialog(ClientDetailsDialog, self, self.store, client)
 
     def on_category_create__clicked(self, button):
         self._run_category_editor()

@@ -40,8 +40,8 @@ class CreditCheckHistoryEditor(BaseEditor):
     size = (400, -1)
 
     fields = dict(
-        client=PersonField(_('Client'), proxy=True, person_type=Client,
-                           mandatory=True),
+        client_id=PersonField(_('Client'), proxy=True, person_type=Client,
+                              mandatory=True),
         identifier=TextField(_('Identifier'), proxy=True, mandatory=True),
         status=ChoiceField('Status', mandatory=True),
         check_date=DateField(_('Date'), proxy=True),
@@ -56,13 +56,13 @@ class CreditCheckHistoryEditor(BaseEditor):
         BaseEditor.__init__(self, store, model, visual_mode)
 
         if visual_mode or client:
-            self.client_add_button.hide()
-            self.client_edit_button.hide()
+            self.client_id_add_button.hide()
+            self.client_id_edit_button.hide()
 
         if self.model.client:
             self.set_description(_('client credit check history for %s') %
                                  self.model.client.person.name)
-            self.client.set_sensitive(False)
+            self.client_id.set_sensitive(False)
         else:
             self.set_description(_('client credit check history'))
 

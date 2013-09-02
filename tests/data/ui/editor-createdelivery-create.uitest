@@ -11,19 +11,19 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
             GtkEventBox(forms): slave BasicForm is attached
               GtkAlignment(toplevel):
                 GtkTable():
-                  ProxyLabel(client_lbl): 'Client:'
-                  ProxyComboEntry(client): mandatory
+                  ProxyLabel(client_id_lbl): 'Client:'
+                  ProxyComboEntry(client_id): mandatory
                     item: 'Alessandra Almeida Itaber\xc3\xa1'
                     item: 'Franciso Elisio de Lima Junior'
                     item: 'Luis Sergio da Silva Marin'
                     item: 'Vitalina Claudino'
-                  GtkButton(client_add_button):
-                  GtkButton(client_edit_button): insensitive
-                  ProxyLabel(transporter_lbl): 'Transporter:'
-                  ProxyComboEntry(transporter):
+                  GtkButton(client_id_add_button):
+                  GtkButton(client_id_edit_button): insensitive
+                  ProxyLabel(transporter_id_lbl): 'Transporter:'
+                  ProxyComboEntry(transporter_id):
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                  GtkButton(transporter_add_button):
-                  GtkButton(transporter_edit_button): insensitive
+                  GtkButton(transporter_id_add_button):
+                  GtkButton(transporter_id_edit_button): insensitive
                   ProxyLabel(address_lbl): 'Address:'
                   ProxyComboEntry(address): mandatory
                   GtkButton(address_add_button): insensitive

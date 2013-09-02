@@ -782,6 +782,17 @@ class TestSupplier(_PersonFacetTest, DomainTest):
         supplier.is_active = False
         self.assertEquals(supplier.get_status_string(), u'Inactive')
 
+    def test_get_active_items(self):
+        company = self.create_company()
+        company.fancy_name = u'fancy'
+        company.person.name = u'Company'
+
+        Supplier(person=company.person, store=self.store)
+
+        items = Supplier.get_active_items(self.store)
+        self.assertEquals(len(items), 2)
+        self.assertEquals(items[1][0], u'fancy (Company)')
+
     def test_get_name(self):
         supplier = self.create_supplier(name=u'Supplier Test')
         self.assertEquals(supplier.get_name(), u'Supplier Test')
@@ -986,6 +997,17 @@ class TestBranch(_PersonFacetTest, DomainTest):
         branch.is_active = False
         self.assertEquals(branch.get_status_string(), u'Inactive')
 
+    def test_get_active_items(self):
+        company = self.create_company()
+        company.fancy_name = u'fancy'
+        company.person.name = u'Company'
+
+        Branch(person=company.person, store=self.store)
+
+        items = Branch.get_active_items(self.store)
+        self.assertEquals(len(items), 3)
+        self.assertEquals(items[2][0], u'fancy')
+
     def test_set_acronym(self):
         branch = self.create_branch()
         self.assertIsNone(branch.acronym)
@@ -1059,6 +1081,14 @@ class TestSalesPerson(_PersonFacetTest, DomainTest):
         salesperson.is_active = False
         self.assertEquals(salesperson.get_status_string(), _(u'Inactive'))
 
+    def test_get_active_items(self):
+        salesperson = self.create_sales_person()
+        salesperson.person.name = u'Teste sales person'
+
+        items = SalesPerson.get_active_items(self.store)
+        self.assertEquals(len(items), 6)
+        self.assertEquals(items[5][0], u'Teste sales person')
+
 
 class TestTransporter(_PersonFacetTest, DomainTest):
 
@@ -1075,6 +1105,14 @@ class TestTransporter(_PersonFacetTest, DomainTest):
         transporter = self.create_transporter()
         one_more = transporter.get_active_transporters(self.store).count()
         self.assertEqual(count + 1, one_more)
+
+    def test_get_active_items(self):
+        transporter = self.create_transporter()
+        transporter.person.name = u'Teste transporter'
+
+        items = Transporter.get_active_items(self.store)
+        self.assertEquals(len(items), 2)
+        self.assertEquals(items[1][0], u'Teste transporter')
 
 
 class TestClientSalaryHistory(DomainTest):

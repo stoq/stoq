@@ -70,7 +70,7 @@ class TestWorkOrderEditor(GUITest):
         editor.equipment.update(u"Test equipment")
         editor.category.update(category)
         self.assertNotSensitive(editor, ['toggle_status_btn'])
-        editor.client.update(client)
+        editor.client.update(client.id)
         self.assertSensitive(editor, ['toggle_status_btn'])
         opening_slave.defect_reported.update(u"Defect reported")
         # Check initial state

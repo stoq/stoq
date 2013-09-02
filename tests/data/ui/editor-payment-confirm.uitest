@@ -7,12 +7,12 @@ GtkDialog(main_dialog.toplevel): title='Add payment', hidden
         GtkEventBox(): slave BasicForm is attached
           GtkAlignment(toplevel):
             GtkTable():
-              ProxyLabel(branch_lbl): 'Branch:'
-              ProxyComboEntry(branch):
+              ProxyLabel(branch_id_lbl): 'Branch:'
+              ProxyComboEntry(branch_id):
                 item: 'Moda Stoq', selected
                 item: 'Stoq Elite Fashion'
-              GtkButton(branch_add_button): insensitive
-              GtkButton(branch_edit_button):
+              GtkButton(branch_id_add_button): insensitive
+              GtkButton(branch_id_edit_button):
               ProxyLabel(method_lbl): 'Method:'
               ProxyComboBox(method):
                 item: 'Bill'
@@ -21,11 +21,11 @@ GtkDialog(main_dialog.toplevel): title='Add payment', hidden
                 item: 'Money', selected
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): 'Payment name'
-              ProxyLabel(person_lbl): 'Recipient:'
-              ProxyComboEntry(person):
-                item: 'Cia de Roupas S\xc3\xa3o Carlos'
-              GtkButton(person_add_button):
-              GtkButton(person_edit_button): insensitive
+              ProxyLabel(person_id_lbl): 'Recipient:'
+              ProxyComboEntry(person_id):
+                item: 'Cia de Roupas S\xc3\xa3o Carlos (Cia de Roupas S\xc3\xa3o Carlos)'
+              GtkButton(person_id_add_button):
+              GtkButton(person_id_edit_button): insensitive
               ProxyLabel(value_lbl): 'Value:'
               ProxyEntry(value): '100.00'
               ProxyLabel(due_date_lbl): 'Due date:'

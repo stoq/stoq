@@ -89,7 +89,8 @@ class TestConfirmSaleWizard(GUITest):
         # 1: select cost cebnter
         # 2: select invoice number
         # 1: select payment method
-        # 3: select sale_item (one is need_adjust_batches)
+        # 3: select sale_item
+        #  - one is need_adjust_batches
         # 1: select payment status
         # 1: select the branch acronym for sale repr()
         self.assertEquals(tracer.count, 15)
@@ -211,7 +212,7 @@ class TestConfirmSaleWizard(GUITest):
     def test_step_payment_method_bill(self, warning):
         client = self.create_client()
         self._create_wizard()
-        self.step.client.select(client)
+        self.step.client.select(client.id)
         self._select_method('bill')
         self._go_to_next()
 
@@ -267,7 +268,7 @@ class TestConfirmSaleWizard(GUITest):
         client.credit_limit = 1000
 
         self._create_wizard()
-        self.step.client.select(client)
+        self.step.client.select(client.id)
 
         self._select_method('store_credit')
         self._go_to_next()
@@ -286,17 +287,17 @@ class TestConfirmSaleWizard(GUITest):
         client2.credit_limit = 2
 
         self._create_wizard()
-        self.step.client.select(client)
+        self.step.client.select(client.id)
         self._select_method(u'store_credit')
 
         # When the client has no credit at all, the option should not be there
         self.assertFalse(self.step.pm_slave._widgets['store_credit'].get_visible())
 
-        self.step.client.select(client2)
+        self.step.client.select(client2.id)
         self.assertTrue(self.step.pm_slave._widgets['store_credit'].get_visible())
 
         self.assertEquals(
-            str(self.step.client.emit('validate', client2)),
+            str(self.step.client.emit('validate', client2.id)),
             'The available credit for this client ($2.00) is not enough.')
 
     def test_sale_to_client_without_credit(self):
@@ -312,17 +313,17 @@ class TestConfirmSaleWizard(GUITest):
         payment.pay()
 
         self._create_wizard()
-        self.step.client.select(client)
+        self.step.client.select(client.id)
         self._select_method(u'credit')
 
         # When the client has no credit at all, the option should not be there
         self.assertFalse(self.step.pm_slave._widgets['credit'].get_visible())
 
-        self.step.client.select(client2)
+        self.step.client.select(client2.id)
         self.assertTrue(self.step.pm_slave._widgets['credit'].get_visible())
 
         self.assertEquals(
-            str(self.step.client.emit('validate', client2)),
+            str(self.step.client.emit('validate', client2.id)),
             'The available credit for this client ($2.00) is not enough.')
 
     @mock.patch('stoqlib.gui.wizards.salewizard.print_report')
@@ -370,19 +371,19 @@ class TestConfirmSaleWizard(GUITest):
 
         # checks if a client can buy normally
         payment.due_date = today
-        self.assertEquals(step.client.emit('validate', sale.client), None)
+        self.assertEquals(step.client.emit('validate', sale.client.id), None)
         self.assertTrue(wizard.next_button.props.sensitive)
 
         # checks if a client with late payments can buy with money method
         step.pm_slave.select_method(u'money')
         payment.due_date = today - relativedelta(days=3)
-        self.assertEquals(step.client.emit('validate', sale.client), None)
+        self.assertEquals(step.client.emit('validate', sale.client.id), None)
         self.assertTrue(wizard.next_button.props.sensitive)
 
         # checks if a client with late payments can buy with store credit
         step.pm_slave.select_method(u'store_credit')
         self.assertEquals(
-            unicode(step.client.emit('validate', sale.client)),
+            unicode(step.client.emit('validate', sale.client.id)),
             u'It is not possible to sell with store credit for clients with '
             'late payments.')
         # self.assertFalse(wizard.next_button.props.sensitive)
@@ -397,19 +398,19 @@ class TestConfirmSaleWizard(GUITest):
 
         # checks if a client can buy normally
         payment.due_date = today
-        self.assertEquals(step.client.emit('validate', sale.client), None)
+        self.assertEquals(step.client.emit('validate', sale.client.id), None)
 
         # checks if a client with late payments can buy
         payment.due_date = today - relativedelta(days=3)
 
         step.pm_slave.select_method(u'store_credit')
         self.assertEquals(
-            unicode(step.client.emit('validate', sale.client)),
+            unicode(step.client.emit('validate', sale.client.id)),
             u'It is not possible to sell for clients with late payments.')
 
         step.pm_slave.select_method('check')
         self.assertEquals(
-            unicode(step.client.emit('validate', sale.client)),
+            unicode(step.client.emit('validate', sale.client.id)),
             u'It is not possible to sell for clients with late payments.')
 
         step.pm_slave.select_method(u'store_credit')
@@ -454,13 +455,13 @@ class TestSalesPersonStep(GUITest):
                           ui_test_name='wizard-sales-person-step')
 
         # After selecting the client1, the option store credit should be available
-        salespersonstep.client.select(client1)
+        salespersonstep.client.select(client1.id)
         self.check_wizard(wizard=wizard,
                           ui_test_name=
                           'wizard-sales-person-step-with-store-credit-radio')
 
         # selecting the client2 should disable the store credit again.
-        salespersonstep.client.select(client2)
+        salespersonstep.client.select(client2.id)
         self.check_wizard(wizard=wizard,
                           ui_test_name=
                           'wizard-sales-person-step-without-store-credit-radio')

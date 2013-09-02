@@ -58,7 +58,7 @@ class TestDeliveryEditor(GUITest):
         # transporter and address
         self.assertEqual(delivery.status, Delivery.STATUS_INITIAL)
         self.assertSensitive(editor,
-                             ['transporter', 'address',
+                             ['transporter_id', 'address',
                               'was_received_check', 'was_delivered_check'])
         self.assertNotSensitive(editor,
                                 ['deliver_date', 'tracking_code',
@@ -74,7 +74,7 @@ class TestDeliveryEditor(GUITest):
                              ['was_received_check', 'deliver_date', 'tracking_code',
                               'was_received_check', 'was_delivered_check'])
         self.assertNotSensitive(editor,
-                                ['transporter', 'address', 'receive_date'])
+                                ['transporter_id', 'address', 'receive_date'])
 
         # Received state. Like sent above, but in addition, should
         # not be possible to unmark was_delivered_check
@@ -85,7 +85,7 @@ class TestDeliveryEditor(GUITest):
                               'receive_date', 'tracking_code',
                               'was_received_check'])
         self.assertNotSensitive(editor,
-                                ['transporter', 'address',
+                                ['transporter_id', 'address',
                                  'was_delivered_check'])
 
 
