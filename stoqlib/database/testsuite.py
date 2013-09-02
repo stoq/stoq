@@ -48,7 +48,6 @@ from stoqlib.importers.stoqlibexamples import create
 from stoqlib.lib.interfaces import IApplicationDescriptions, ISystemNotifier
 from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.osutils import get_username
-from stoqlib.lib.parameters import ParameterAccess
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.settings import get_settings
 from stoqlib.net.socketutils import get_hostname
@@ -276,10 +275,6 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
         provide_utilities(station_name)
         _enable_plugins()
         return
-
-    # XXX: Why clearing_cache if initialize_system will drop the
-    # database?!
-    ParameterAccess.clear_cache()
 
     initialize_system(testsuite=True, force=True)
 

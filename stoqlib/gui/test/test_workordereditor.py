@@ -132,6 +132,8 @@ class TestWorkOrderEditor(GUITest):
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_show(self, localnow):
+        sysparam(self.store).update_parameter('ALLOW_OUTDATED_OPERATIONS', u'True')
+
         localnow.return_value = localdatetime(2013, 2, 1)
 
         workorder = self.create_workorder(equipment=u'Test equipment')

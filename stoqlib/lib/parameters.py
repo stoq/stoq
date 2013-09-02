@@ -791,8 +791,6 @@ class ParameterAccess(ClassInittableObject):
 
     """
 
-    _cache = {}
-
     @classmethod
     def __class_init__(cls, namespace):
         for detail in _details:
@@ -807,30 +805,35 @@ class ParameterAccess(ClassInittableObject):
         ClassInittableObject.__init__(self)
         self.store = store
 
+        # Mapping of database raw database values, name -> ParameterAccess
+        self._values = {}
+        # Mapping of details, name -> ParameterDetail
+        self._details = dict((detail.key, detail) for detail in _details)
+
+        for param in self.store.find(ParameterData):
+            self._values[param.field_name] = param
+
     def _remove_unused_parameters(self):
         """Remove any  parameter found in ParameterData table which is not
         used any longer.
         """
-        detail_keys = [detail.key for detail in _details]
-        for param in self.store.find(ParameterData):
-            if param.field_name not in detail_keys:
+        for param in self._values.values():
+            if param.field_name not in self._details:
                 self.store.remove(param)
 
     def _set_schema(self, field_name, field_value, is_editable=True):
         if field_value is not None:
             field_value = unicode(field_value)
 
-        data = self.store.find(ParameterData,
-                               field_name=field_name).one()
+        data = self._values.get(field_name)
         if data is None:
-            store = new_store()
-            ParameterData(store=store,
-                          field_name=field_name,
-                          field_value=field_value,
-                          is_editable=is_editable)
-            store.commit(close=True)
-        else:
-            data.field_value = field_value
+            data = ParameterData(store=self.store,
+                                 field_name=field_name,
+                                 field_value=field_value,
+                                 is_editable=is_editable)
+            self._values[field_name] = data
+
+        data.field_value = field_value
 
     def _set_default_value(self, detail, initial):
         if initial is None:
@@ -964,49 +967,6 @@ class ParameterAccess(ClassInittableObject):
             raise AssertionError
         param = get_parameter_by_field(parameter_name, self.store)
         param.field_value = unicode(value)
-        self.rebuild_cache_for(parameter_name)
-
-    def rebuild_cache_for(self, param_name):
-        from stoqlib.domain.base import Domain
-        try:
-            value = self._cache[param_name]
-        except KeyError:
-            return
-
-        param = get_parameter_by_field(param_name, self.store)
-        value_type = type(value)
-        if not issubclass(value_type, Domain):
-            # XXX: workaround to works with boolean types:
-            data = param.field_value
-            if value_type is bool:
-                if data == u'True':
-                    data = True
-                elif data == u'False':
-                    data = False
-                else:
-                    data = bool(int(data))
-            # this is necessary to avoid errors when the user writes an
-            # invalid input value for int fields
-            if value_type is int and not data:
-                initial = get_parameter_details(param.field_name).initial
-                if initial is not None:
-                    data = initial
-                else:
-                    data = 0
-            self._cache[param_name] = value_type(data)
-            return
-        table = value_type
-        obj_id = param.field_value
-        if not obj_id:
-            del self._cache[param_name]
-            return
-
-        self._cache[param_name] = self.store.get(table, unicode(obj_id))
-
-    @classmethod
-    def clear_cache(cls):
-        log.info("Clearing cache")
-        cls._cache = {}
 
     def get_parameter_constant(self, field_name):
         for detail in _details:
@@ -1027,17 +987,10 @@ class ParameterAccess(ClassInittableObject):
         from stoqlib.domain.base import Domain
         if isinstance(field_type, basestring):
             field_type = namedAny('stoqlib.domain.' + field_type)
-        if field_name in self._cache:
-            param = self._cache[field_name]
-            if issubclass(field_type, Domain):
-                return self.store.get(field_type, param.id)
-            elif issubclass(field_type, PathParameter):
-                return param
-            else:
-                return field_type(param)
-        value = self.store.find(ParameterData, field_name=field_name).one()
+        value = self._values.get(field_name)
         if value is None:
             return
+
         if issubclass(field_type, Domain):
             if value.field_value == u'' or value.field_value is None:
                 return
@@ -1061,7 +1014,6 @@ class ParameterAccess(ClassInittableObject):
                 param = value
             else:
                 param = field_type(value)
-        self._cache[field_name] = param
         return param
 
     def update(self):
@@ -1095,14 +1047,25 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, service.id)
         store.commit(close=True)
 
+    def get_parameter_data(self, field_name):
+        return self._values.get(field_name)
+
+
+_parameters = {}
+
 
 def sysparam(store):
-    return ParameterAccess(store)
+    access = _parameters.get(store, None)
+    if access is None:
+        access = ParameterAccess(store)
+        _parameters[store] = access
+    return access
 
 
 # FIXME: Move to a classmethod on ParameterData
 def get_parameter_by_field(field_name, store):
-    data = store.find(ParameterData, field_name=field_name).one()
+    access = ParameterAccess(store)
+    data = access.get_parameter_data(field_name)
     if data is None:
         raise DatabaseInconsistency(
             "Can't find a ParameterData object for the key %s" %
@@ -1152,11 +1115,11 @@ def check_parameter_presence(store):
 def ensure_system_parameters(update=False):
     # This is called when creating a new database or
     # updating an existing one
-    log.info("Creating default system parameters")
     store = new_store()
     param = sysparam(store)
     if update:
         param.update()
     else:
+        log.info("Creating default system parameters")
         param.set_defaults()
     store.commit(close=True)

@@ -124,7 +124,6 @@ class TestBatchIncreaseSelectionDialog(GUITest):
             # We need to do this by hand sincr update_parameter won't let us
             # update value for some parameters (SYNCHRONIZED_MODE is one of them)
             api.sysparam(self.store).SYNCHRONIZED_MODE = u'1'
-            api.sysparam(self.store).rebuild_cache_for(u'SYNCHRONIZED_MODE')
             storable.register_initial_stock(1, self.create_branch(), 0,
                                             batch_number=u'130')
             dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
@@ -156,7 +155,6 @@ class TestBatchIncreaseSelectionDialog(GUITest):
         finally:
             api.sysparam(self.store).update_parameter(u'SUGGEST_BATCH_NUMBER', u'0')
             api.sysparam(self.store).SYNCHRONIZED_MODE = u'0'
-            api.sysparam(self.store).rebuild_cache_for(u'SYNCHRONIZED_MODE')
 
     def test_batch_number_validation(self):
         storable = self.create_storable(is_batch=True)

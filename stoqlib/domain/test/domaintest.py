@@ -208,8 +208,6 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         it will clear common caches before starting, so the number in here
         will be higher than in the actual application.
         """
-        from stoqlib.lib.parameters import ParameterAccess
-        ParameterAccess.clear_cache()
         self.store.flush()
         self.store.invalidate()
 

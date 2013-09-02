@@ -107,6 +107,7 @@ class TestStockDecreaseWizard(GUITest):
 
     @mock.patch('stoqlib.gui.wizards.stockdecreasewizard.yesno')
     def test_wizard_with_cost_center(self, yesno):
+        sysparam(self.store).update_parameter('CREATE_PAYMENTS_ON_STOCK_DECREASE', u'True')
         yesno.return_value = False
 
         branch = api.get_current_branch(self.store)

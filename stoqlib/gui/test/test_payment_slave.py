@@ -80,6 +80,8 @@ class TestBillPaymentSlaves(GUITest):
 
 class TestCheckPaymentSlaves(GUITest):
     def test_create(self):
+        sysparam(self.store).update_parameter(u'MANDATORY_CHECK_NUMBER', u'True')
+
         wizard = PurchaseWizard(self.store)
 
         method = PaymentMethod.get_by_name(self.store, u'check')
