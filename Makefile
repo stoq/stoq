@@ -68,8 +68,8 @@ coverage: clean
 	    --cover-package=stoq,stoqlib,plugins \
 	    --cover-erase \
 	    --cover-inclusive \
-	    $(TEST_MODULES)
-	tools/validatecoverage
+	    $(TEST_MODULES) && \
+	tools/validatecoverage coverage.xml
 
 jenkins: check-source-all
 	unset STOQLIB_TEST_QUICK; \
