@@ -2047,6 +2047,16 @@ class SoldProductsView(SoldSellableView):
     tables.append(Join(Product, Sellable.id == Product.sellable_id))
 
 
+# Get the total amount already paid in a sale and group it by sales person
+_PaidSale = Select(columns=[Sale.salesperson_id,
+                            Alias(Sum(Payment.paid_value), 'paid_value')],
+                   tables=[Sale, LeftJoin(Payment,
+                                          Payment.group_id == Sale.group_id)],
+                   group_by=[Sale.salesperson_id])
+
+PaidSale = Alias(_PaidSale, '_paid_sale')
+
+
 class SalesPersonSalesView(Viewable):
 
     id = SalesPerson.id
@@ -2056,14 +2066,16 @@ class SalesPersonSalesView(Viewable):
     total_amount = Sum(Sale.total_amount)
     total_quantity = Sum(Field('_sale_item', 'total_quantity'))
     total_sales = Count(Sale.id)
+    paid_value = Field('_paid_sale', 'paid_value')
 
-    group_by = [id, name]
+    group_by = [id, name, paid_value]
 
     tables = [
         SalesPerson,
         LeftJoin(Sale, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
         LeftJoin(Person, Person.id == SalesPerson.person_id),
+        LeftJoin(PaidSale, Field('_paid_sale', 'salesperson_id') == SalesPerson.id),
     ]
 
     clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
