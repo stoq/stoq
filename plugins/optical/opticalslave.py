@@ -174,6 +174,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
           work order should be editable in this slave.
         """
         self._update_level = 0
+        self._focus_change = False
         self._show_finish_date = show_finish_date
         self._workorder = workorder
         model = self._create_model(store)
