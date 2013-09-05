@@ -436,6 +436,10 @@ class TestReport(ReportTest):
         self._diff_expected(SalesPersonReport, 'sales-person-report',
                             commissions, salesperson)
 
+        # Also test when there is no salesperson selected
+        self._diff_expected(SalesPersonReport, 'sales-person-report-without-salesperson',
+                            commissions, None)
+
     def test_sale_order_report(self):
         product = self.create_product(price=100)
         sellable = product.sellable

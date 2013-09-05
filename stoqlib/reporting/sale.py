@@ -124,8 +124,8 @@ class SalesPersonReport(TableReport):
         branch = get_current_branch(get_default_store()).get_description()
         self.payments_list = payments_list
         self._sales_person = salesperson
-        salesperson_name = salesperson.get_description()
-        if salesperson_name:
+        if salesperson:
+            salesperson_name = salesperson.get_description()
             singular = _("payment for {salesperson} on branch {branch}").format(
                 salesperson=salesperson_name, branch=branch)
             plural = _("payments for {salesperson} on branch {branch}").format(
@@ -135,7 +135,7 @@ class SalesPersonReport(TableReport):
             plural = _("payments on branch %s") % branch
 
         self.main_object_name = (singular, plural)
-        self.landscape = (salesperson_name is None)
+        self.landscape = (salesperson is None)
 
         TableReport.__init__(self, filename, payments_list,
                              self.title, *args, **kwargs)
@@ -213,7 +213,7 @@ class SalesPersonReport(TableReport):
         return summary_row
 
 
-def test():
+def test():  # pragma no cover
     from kiwi.ui.objectlist import ObjectList
     from stoqlib.api import api
     from stoq.gui.sales import SalesApp
@@ -233,5 +233,5 @@ def test():
     r.save_html('teste.html')
     r.save()
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma no cover
     test()
