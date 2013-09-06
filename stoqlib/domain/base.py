@@ -63,6 +63,10 @@ class Domain(ORMObject):
     # FIXME: this is only used by pylint
     __storm_table__ = 'invalid'
 
+    #: A list of fields from this object that should de added on the
+    #: representation of this object (when calling repr())
+    repr_fields = []
+
     #: id of this domain class, it's usually the primary key.
     #: it will automatically update when a new insert is created.
     #: Note that there might be holes in the sequence numbers, which happens
@@ -82,7 +86,12 @@ class Domain(ORMObject):
         self._creating = False
 
     def __repr__(self):
-        return '<%s %r>' % (self.__class__.__name__, self.id)
+        parts = ['%r' % self.id]
+        for field in self.repr_fields:
+            parts.append('%s=%r' % (field, getattr(self, field)))
+
+        desc = ' '.join(parts)
+        return '<%s %s>' % (self.__class__.__name__, desc)
 
     def __storm_loaded__(self):
         self._listen_to_events()

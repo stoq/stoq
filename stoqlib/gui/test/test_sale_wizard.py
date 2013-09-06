@@ -92,7 +92,8 @@ class TestConfirmSaleWizard(GUITest):
         # 1: select payment method
         # 3: select sale_item (one is need_adjust_batches)
         # 1: select payment status
-        self.assertEquals(tracer.count, 18)
+        # 1: select the branch acronym for sale repr()
+        self.assertEquals(tracer.count, 19)
 
     def test_create(self):
         self._create_wizard()

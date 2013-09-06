@@ -96,6 +96,8 @@ class SaleItem(Domain):
 
     __storm_table__ = 'sale_item'
 
+    repr_fields = ['sale_id']
+
     #: the quantity of the of sold item in this sale
     quantity = QuantityCol()
 
@@ -519,6 +521,8 @@ class Sale(Domain):
     """
 
     __storm_table__ = 'sale'
+
+    repr_fields = ['identifier', 'status']
 
     #: The sale is opened, products or other |sellable| items might have
     #: been added.
