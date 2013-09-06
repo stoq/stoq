@@ -108,8 +108,8 @@ class StoqAPI(object):
     def user_settings(self):
         return get_settings()
 
-    def sysparam(self, store):
-        return sysparam(store)
+    def sysparam(self):
+        return sysparam()
 
     def is_developer_mode(self):
         return is_developer_mode()
@@ -142,8 +142,8 @@ class StoqAPI(object):
         """
         return returnValue(value)
 
-    def get_l10n_field(self, store, field_name, country=None):
-        return get_l10n_field(store, field_name, country=country)
+    def get_l10n_field(self, field_name, country=None):
+        return get_l10n_field(field_name, country=country)
 
     def for_combo(self, resultset, attr=None, empty=None, sorted=True):
         """

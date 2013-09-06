@@ -402,7 +402,7 @@ class TestReport(ReportTest):
                             end_date)
 
     def test_sales_person_report(self):
-        sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
+        sysparam().set_bool(self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', True)
         salesperson = self.create_sales_person()
         product = self.create_product(price=100)
         sellable = product.sellable

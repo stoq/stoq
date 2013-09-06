@@ -64,7 +64,7 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
 
-        if api.sysparam(api.get_default_store()).DISABLE_COOKIES:
+        if api.sysparam().get_bool('DISABLE_COOKIES'):
             self.remember.hide()
             self.remember.set_active(False)
 
@@ -169,7 +169,7 @@ class LoginHelper:
         return user
 
     def cookie_login(self):
-        if api.sysparam(api.get_default_store()).DISABLE_COOKIES:
+        if api.sysparam().get_bool('DISABLE_COOKIES'):
             log.info("Cookies disable by parameter")
             return
 

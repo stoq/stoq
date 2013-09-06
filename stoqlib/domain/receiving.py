@@ -225,7 +225,7 @@ class ReceivingOrder(Domain):
         self.purchase = kw.pop('purchase', None)
         self.supplier = kw.pop('supplier', None)
         if not 'cfop' in kw:
-            self.cfop = sysparam(store).DEFAULT_RECEIVING_CFOP
+            self.cfop = sysparam().get_object(store, 'DEFAULT_RECEIVING_CFOP')
 
     #
     #  Public API

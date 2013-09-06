@@ -329,7 +329,7 @@ class ExampleCreator(object):
         from stoqlib.domain.product import Product
         from stoqlib.domain.service import Service
         from stoqlib.domain.sellable import Sellable
-        tax_constant = sysparam(self.store).DEFAULT_PRODUCT_TAX_CONSTANT
+        tax_constant_id = sysparam().get_object_id('DEFAULT_PRODUCT_TAX_CONSTANT')
         if price is None:
             price = 10
         sellable = Sellable(cost=125,
@@ -337,7 +337,7 @@ class ExampleCreator(object):
                             description=description,
                             store=self.store)
         sellable.code = code
-        sellable.tax_constant = tax_constant
+        sellable.tax_constant_id = tax_constant_id
         if product:
             Product(sellable=sellable, store=self.store)
         else:
@@ -373,7 +373,7 @@ class ExampleCreator(object):
                     open_date=TransactionTimestamp(),
                     salesperson=salesperson,
                     branch=branch or get_current_branch(self.store),
-                    cfop=sysparam(self.store).DEFAULT_SALES_CFOP,
+                    cfop_id=sysparam().get_object_id('DEFAULT_SALES_CFOP'),
                     group=group,
                     client=client,
                     store=self.store)
@@ -514,7 +514,6 @@ class ExampleCreator(object):
     def create_purchase_order_item(self, order=None):
         if not order:
             order = self.create_purchase_order()
-
         from stoqlib.domain.purchase import PurchaseItem
         return PurchaseItem(store=self.store,
                             quantity=8, quantity_received=0,
@@ -935,7 +934,7 @@ class ExampleCreator(object):
             date=localnow(),
             value=value,
             account=account,
-            source_account=sysparam(self.store).IMBALANCE_ACCOUNT,
+            source_account_id=sysparam().get_object_id('IMBALANCE_ACCOUNT'),
             store=self.store)
 
     def create_transfer(self):

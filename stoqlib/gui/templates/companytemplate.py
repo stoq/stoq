@@ -40,7 +40,7 @@ class CompanyDocumentsSlave(BaseEditorSlave):
                      'city_registry')
 
     def setup_proxies(self):
-        self.document_l10n = api.get_l10n_field(self.store, 'company_document')
+        self.document_l10n = api.get_l10n_field('company_document')
         self.cnpj_lbl.set_label(self.document_l10n.label + ':')
         self.cnpj.set_mask(self.document_l10n.entry_mask)
         self.proxy = self.add_proxy(self.model,

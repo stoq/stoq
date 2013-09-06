@@ -83,7 +83,7 @@ class PersonRoleTypeStep(WizardEditorStep):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        self.document_l10n = api.get_l10n_field(self.store, 'person_document')
+        self.document_l10n = api.get_l10n_field('person_document')
         self.person_document.set_mask(self.document_l10n.entry_mask)
         self.person_document.set_width_chars(17)
 
@@ -160,12 +160,12 @@ class PersonRoleTypeStep(WizardEditorStep):
         person_document when is necessary
         """
         if self.individual_check.get_active():
-            self.document_l10n = api.get_l10n_field(self.store, 'person_document')
+            self.document_l10n = api.get_l10n_field('person_document')
             self.document_label.set_text(self.document_l10n.label + ':')
             # Change the entry size (in chars) to accomodate the cpf
             self.person_document.set_width_chars(17)
         else:
-            self.document_l10n = api.get_l10n_field(self.store, 'company_document')
+            self.document_l10n = api.get_l10n_field('company_document')
             self.document_label.set_text(self.document_l10n.label + ':')
             # Change the entry size (in chars) to accomodate the cnpj
             self.person_document.set_width_chars(21)

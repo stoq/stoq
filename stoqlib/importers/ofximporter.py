@@ -162,10 +162,10 @@ class OFXImporter(Importer):
             account = Account(description=self.get_account_id(),
                               code=unicode(self.tp.account_id),
                               account_type=Account.TYPE_BANK,
-                              parent=sysparam(store).BANKS_ACCOUNT,
+                              parent=sysparam().get_object(store, 'BANKS_ACCOUNT'),
                               store=store)
         self.account_id = account.id
-        self.source_account_id = sysparam(store).IMBALANCE_ACCOUNT.id
+        self.source_account_id = sysparam().get_object_id('IMBALANCE_ACCOUNT')
         self.skipped = 0
 
     def get_n_items(self):

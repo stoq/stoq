@@ -59,7 +59,7 @@ class SaleDiscountSlave(BaseEditorSlave):
         self._proxy = None
         self.model = model
         self.model_type = model_type
-        self.default_max_discount = sysparam(store).MAX_SALE_DISCOUNT
+        self.default_max_discount = sysparam().get_decimal('MAX_SALE_DISCOUNT')
         self.max_discount = self.default_max_discount
         BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 

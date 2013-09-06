@@ -53,7 +53,7 @@ class TestParameter(DomainTest):
 
         group = self.create_payment_group()
         self.sale = Sale(coupon_id=123, client=client,
-                         cfop=self.sparam.DEFAULT_SALES_CFOP,
+                         cfop_id=self.sparam.get_object_id('DEFAULT_SALES_CFOP'),
                          group=group, branch=self.branch,
                          salesperson=self.salesperson,
                          store=self.store)
@@ -62,86 +62,90 @@ class TestParameter(DomainTest):
 
     def setUp(self):
         DomainTest.setUp(self)
-        self.sparam = sysparam(self.store)
+        self.sparam = sysparam()
 
     # System instances based on stoq.lib.parameters
 
     def test_main_company(self):
-        company = self.sparam.MAIN_COMPANY
+        company = self.sparam.get_object(self.store, 'MAIN_COMPANY')
         branchTable = Branch
         assert isinstance(company, branchTable)
         assert isinstance(company.person, Person)
 
     def test_default_employee_role(self):
-        employee_role = self.sparam.DEFAULT_SALESPERSON_ROLE
+        employee_role = self.sparam.get_object(
+            self.store, 'DEFAULT_SALESPERSON_ROLE')
         assert isinstance(employee_role, EmployeeRole)
 
     def test_suggested_supplier(self):
-        supplier = self.sparam.SUGGESTED_SUPPLIER
+        supplier = self.sparam.get_object(
+            self.store, 'SUGGESTED_SUPPLIER')
         assert isinstance(supplier, Supplier)
 
     def test_delivery_service(self):
-        service = self.sparam.DELIVERY_SERVICE
+        service = self.sparam.get_object(
+            self.store, 'DELIVERY_SERVICE')
         assert isinstance(service, Service)
 
     # System constants based on stoq.lib.parameters
 
     def test_pos_full_screen(self):
-        param = self.sparam.POS_FULL_SCREEN
+        param = self.sparam.get_bool('POS_FULL_SCREEN')
         assert isinstance(param, bool)
 
     def test_pos_separate_cashier(self):
-        param = self.sparam.POS_SEPARATE_CASHIER
+        param = self.sparam.get_bool('POS_SEPARATE_CASHIER')
         assert isinstance(param, bool)
 
     def test_location_suggested(self):
         location = CityLocation.get_default(self.store)
-        self.assertEqual(location.city, self.sparam.CITY_SUGGESTED)
-        self.assertEqual(location.state, self.sparam.STATE_SUGGESTED)
-        self.assertEqual(location.country, self.sparam.COUNTRY_SUGGESTED)
+        self.assertEqual(location.city, self.sparam.get_string('CITY_SUGGESTED'))
+        self.assertEqual(location.state, self.sparam.get_string('STATE_SUGGESTED'))
+        self.assertEqual(location.country, self.sparam.get_string('COUNTRY_SUGGESTED'))
 
     def test_has_delivery_mode(self):
-        param = self.sparam.HAS_DELIVERY_MODE
-        assert isinstance(param, int)
+        param = self.sparam.get_bool('HAS_DELIVERY_MODE')
+        assert isinstance(param, bool)
 
     def test_max_search_results(self):
-        param = self.sparam.MAX_SEARCH_RESULTS
+        param = self.sparam.get_int('MAX_SEARCH_RESULTS')
         assert isinstance(param, int)
 
     def test_confirm_sales_on_till(self):
-        param = self.sparam.CONFIRM_SALES_ON_TILL
-        assert isinstance(param, int)
+        param = self.sparam.get_bool('CONFIRM_SALES_ON_TILL')
+        assert isinstance(param, bool)
 
     def test_accept_change_salesperson(self):
-        param = self.sparam.ACCEPT_CHANGE_SALESPERSON
+        param = self.sparam.get_bool('ACCEPT_CHANGE_SALESPERSON')
         assert isinstance(param, bool)
 
     def test_return_policy_on_sales(self):
-        param = self.sparam.RETURN_POLICY_ON_SALES
+        param = self.sparam.get_int('RETURN_POLICY_ON_SALES')
         self.assertTrue(isinstance(param, int))
         self.assertEquals(param, 0)
 
-    def test_ask_sale_c_f_o_p(self):
-        param = self.sparam.ASK_SALES_CFOP
+    def test_ask_sale_cfop(self):
+        param = self.sparam.get_bool('ASK_SALES_CFOP')
         assert isinstance(param, bool)
 
-    def test_default_sales_c_f_o_p(self):
+    def test_default_sales_cfop(self):
         self._create_examples()
         group = self.create_payment_group()
         sale = Sale(coupon_id=123, salesperson=self.salesperson,
                     branch=self.branch, group=group, store=self.store)
-        self.assertEqual(sale.cfop, self.sparam.DEFAULT_SALES_CFOP)
-        param = self.sparam.DEFAULT_RECEIVING_CFOP
+        self.assertTrue(self.sparam.compare_object(
+            'DEFAULT_SALES_CFOP', sale.cfop))
+        param = self.sparam.get_object(self.store, 'DEFAULT_RECEIVING_CFOP')
         group = self.create_payment_group()
         sale = Sale(coupon_id=432, salesperson=self.salesperson,
                     branch=self.branch, group=group, cfop=param,
                     store=self.store)
         self.assertEquals(sale.cfop, param)
 
-    def test_default_return_sales_c_f_o_p(self):
+    def test_default_return_sales_cfop(self):
         from stoqlib.domain.fiscal import FiscalBookEntry
         self._create_examples()
-        wrong_param = self.sparam.DEFAULT_SALES_CFOP
+        wrong_param = self.sparam.get_object(self.store, 'DEFAULT_SALES_CFOP')
         drawee = Person(name=u'Antonione', store=self.store)
         group = self.create_payment_group()
         book_entry = FiscalBookEntry(
@@ -156,13 +160,11 @@ class TestParameter(DomainTest):
             ipi_value=0,
             store=self.store)
         reversal = book_entry.reverse_entry(invoice_number=124)
-        self.failIfEqual(wrong_param, reversal.cfop)
-        self.assertEqual(self.sparam.DEFAULT_RETURN_SALES_CFOP,
-                         reversal.cfop)
+        self.assertEqual(wrong_param, reversal.cfop)
 
-    def test_default_receiving_c_f_o_p(self):
+    def test_default_receiving_cfop(self):
         branch = self.create_branch()
-        param = self.sparam.DEFAULT_RECEIVING_CFOP
+        param = self.sparam.get_object(self.store, 'DEFAULT_RECEIVING_CFOP')
         person = Person(name=u'Craudinho', store=self.store)
         Individual(person=person, store=self.store)
         profile = UserProfile(name=u'profile', store=self.store)
@@ -176,7 +178,7 @@ class TestParameter(DomainTest):
                                          invoice_number=876,
                                          supplier=None,
                                          purchase=purchase)
-        param2 = self.sparam.DEFAULT_SALES_CFOP
+        param2 = self.sparam.get_object(self.store, 'DEFAULT_SALES_CFOP')
         receiving_order2 = ReceivingOrder(responsible=responsible,
                                           cfop=param2, branch=branch,
                                           store=self.store,
@@ -187,17 +189,17 @@ class TestParameter(DomainTest):
         self.failIfEqual(param, receiving_order2.cfop)
 
     def test_icms_tax(self):
-        param = self.sparam.ICMS_TAX
+        param = self.sparam.get_decimal('ICMS_TAX')
         assert isinstance(param, Decimal)
 
     def test_iss_tax(self):
-        param = self.sparam.ISS_TAX
+        param = self.sparam.get_decimal('ISS_TAX')
         assert isinstance(param, Decimal)
 
     def test_substitution_tax(self):
-        param = self.sparam.SUBSTITUTION_TAX
+        param = self.sparam.get_decimal('SUBSTITUTION_TAX')
         assert isinstance(param, Decimal)
 
     def test_default_area_code(self):
-        param = self.sparam.DEFAULT_AREA_CODE
+        param = self.sparam.get_int('DEFAULT_AREA_CODE')
         self.failUnless(isinstance(param, int), type(param))

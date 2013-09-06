@@ -100,9 +100,9 @@ class TestAccount(DomainTest):
         account = self.create_account()
         self.failUnless(account.can_remove())
 
-        self.failIf(sysparam(self.store).TILLS_ACCOUNT.can_remove())
-        self.failIf(sysparam(self.store).IMBALANCE_ACCOUNT.can_remove())
-        self.failIf(sysparam(self.store).BANKS_ACCOUNT.can_remove())
+        self.failIf(sysparam().get_object(self.store, 'TILLS_ACCOUNT').can_remove())
+        self.failIf(sysparam().get_object(self.store, 'IMBALANCE_ACCOUNT').can_remove())
+        self.failIf(sysparam().get_object(self.store, 'BANKS_ACCOUNT').can_remove())
 
         station = self.create_station()
         account.station = station
@@ -125,7 +125,7 @@ class TestAccount(DomainTest):
         a1 = self.create_account()
         a2 = self.create_account()
 
-        imbalance_account = sysparam(self.store).IMBALANCE_ACCOUNT
+        imbalance_account = sysparam().get_object(self.store, 'IMBALANCE_ACCOUNT')
 
         t1 = self.create_account_transaction(a1)
         t1.source_account = a2
@@ -338,7 +338,7 @@ class TestAccountTransaction(DomainTest):
         payment.pay()
         transaction = AccountTransaction.create_from_payment(payment)
 
-        imbalance_account = sysparam(self.store).IMBALANCE_ACCOUNT
+        imbalance_account = sysparam().get_object(self.store, 'IMBALANCE_ACCOUNT')
         self.assertEquals(transaction.source_account, imbalance_account)
         self.assertEquals(transaction.account, account)
         self.assertEquals(transaction.payment, payment)

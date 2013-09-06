@@ -87,13 +87,13 @@ class StartSaleQuoteStep(WizardEditorStep):
         # Salesperson combo
         salespersons = self.store.find(SalesPerson)
         self.salesperson.prefill(api.for_person_combo(salespersons))
-        if not sysparam(self.store).ACCEPT_CHANGE_SALESPERSON:
+        if not sysparam().get_bool('ACCEPT_CHANGE_SALESPERSON'):
             self.salesperson.set_sensitive(False)
         else:
             self.salesperson.grab_focus()
 
         # CFOP combo
-        if sysparam(self.store).ASK_SALES_CFOP:
+        if sysparam().get_bool('ASK_SALES_CFOP'):
             cfops = self.store.find(CfopData)
             self.cfop.prefill(api.for_combo(cfops))
         else:
@@ -148,10 +148,10 @@ class StartSaleQuoteStep(WizardEditorStep):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     StartSaleQuoteStep.proxy_widgets)
-        if sysparam(self.store).ASK_SALES_CFOP:
+        if sysparam().get_bool('ASK_SALES_CFOP'):
             self.add_proxy(self.model, StartSaleQuoteStep.cfop_widgets)
 
-        expire_delta = sysparam(self.store).EXPIRATION_SALE_QUOTE_DATE
+        expire_delta = sysparam().get_int('EXPIRATION_SALE_QUOTE_DATE')
         if expire_delta > 0:
             self.expire_date.update(localtoday() +
                                     relativedelta(days=expire_delta))
@@ -327,7 +327,7 @@ class SaleQuoteItemStep(SellableItemStep):
             Column('sellable.unit_description', title=_('Unit'),
                    data_type=str)]
 
-        if sysparam(self.store).SHOW_COST_COLUMN_IN_SALES:
+        if sysparam().get_bool('SHOW_COST_COLUMN_IN_SALES'):
             columns.append(Column('sellable.cost', title=_('Cost'), data_type=currency,
                                   width=80))
 
@@ -369,7 +369,7 @@ class SaleQuoteItemStep(SellableItemStep):
         return True
 
     def get_extra_discount(self, sellable):
-        if not api.sysparam(self.store).REUTILIZE_DISCOUNT:
+        if not api.sysparam().get_bool('REUTILIZE_DISCOUNT'):
             return None
         return self.model.get_available_discount_for_items(user=self.manager)
 
@@ -513,8 +513,8 @@ class SaleQuoteWizard(BaseWizard):
                     salesperson=salesperson,
                     branch=api.get_current_branch(store),
                     group=PaymentGroup(store=store),
-                    cfop=sysparam(store).DEFAULT_SALES_CFOP,
-                    operation_nature=sysparam(store).DEFAULT_OPERATION_NATURE,
+                    cfop_id=sysparam().get_object_id('DEFAULT_SALES_CFOP'),
+                    operation_nature=sysparam().get_string('DEFAULT_OPERATION_NATURE'),
                     store=store)
 
     @public(since='1.8.0')

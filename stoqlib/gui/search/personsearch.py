@@ -123,7 +123,7 @@ class SupplierSearch(BasePersonSearch):
     search_label = _('Suppliers Matching:')
 
     def __init__(self, store, **kwargs):
-        self.company_doc_l10n = api.get_l10n_field(store, 'company_document')
+        self.company_doc_l10n = api.get_l10n_field('company_document')
         SearchEditor.__init__(self, store, **kwargs)
 
     #
@@ -164,8 +164,8 @@ class ClientSearch(BasePersonSearch):
     search_label = _('matching:')
 
     def __init__(self, store, **kwargs):
-        self.company_doc_l10n = api.get_l10n_field(store, 'company_document')
-        self.person_doc_l10n = api.get_l10n_field(store, 'person_document')
+        self.company_doc_l10n = api.get_l10n_field('company_document')
+        self.person_doc_l10n = api.get_l10n_field('person_document')
         SearchEditor.__init__(self, store, **kwargs)
 
     #

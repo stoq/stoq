@@ -55,7 +55,7 @@ def _import_one(klass, filename):
 
 def _set_person_utilities():
     store = new_store()
-    branch = sysparam(store).MAIN_COMPANY
+    branch = sysparam().get_object(store, 'MAIN_COMPANY')
     provide_utility(ICurrentBranch, branch)
 
     station = BranchStation(name=u"Stoqlib station", branch=branch,

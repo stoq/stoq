@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from decimal import Decimal
 import mock
 
 from stoqlib.gui.dialogs.creditdialog import CreditInfoListDialog
@@ -38,9 +39,7 @@ _ = stoqlib_gettext
 class TestClientSlave(GUITest):
     def test_show(self):
         # this is necessary so previous tests will not interfere in here
-        sysparam(self.store).update_parameter(
-            u"CREDIT_LIMIT_SALARY_PERCENT",
-            u"0")
+        sysparam().set_decimal(self.store, "CREDIT_LIMIT_SALARY_PERCENT", Decimal(0))
 
         client = self.create_client()
         client.salary = 100
@@ -48,9 +47,7 @@ class TestClientSlave(GUITest):
         self.check_slave(slave, 'slave-clientstatus-show')
 
     def test_credit_limit_active(self):
-        sysparam(self.store).update_parameter(
-            u"CREDIT_LIMIT_SALARY_PERCENT",
-            u"10")
+        sysparam().set_decimal(self.store, "CREDIT_LIMIT_SALARY_PERCENT", Decimal(10))
 
         client = self.create_client()
         slave = ClientCreditSlave(self.store, client)
@@ -60,9 +57,7 @@ class TestClientSlave(GUITest):
         self.assertNotSensitive(slave, ['credit_limit'])
 
         # if salary percent is 0 credit limit should be editable
-        sysparam(self.store).update_parameter(
-            u"CREDIT_LIMIT_SALARY_PERCENT",
-            u"0")
+        sysparam().set_decimal(self.store, "CREDIT_LIMIT_SALARY_PERCENT", Decimal(0))
         slave = ClientCreditSlave(self.store, client)
         self.assertSensitive(slave, ['credit_limit'])
 
@@ -79,9 +74,7 @@ class TestClientSlave(GUITest):
                           str(slave.credit_limit.emit('validate', -10)))
 
     def test_credit_limit_update(self):
-        sysparam(self.store).update_parameter(
-            u"CREDIT_LIMIT_SALARY_PERCENT",
-            u"10")
+        sysparam().set_decimal(self.store, "CREDIT_LIMIT_SALARY_PERCENT", Decimal(10))
 
         client = self.create_client()
         client.salary = 50
@@ -95,9 +88,7 @@ class TestClientSlave(GUITest):
         slave.salary.emit('changed')
         self.assertEquals(slave.credit_limit.read(), 10)
 
-        sysparam(self.store).update_parameter(
-            u"CREDIT_LIMIT_SALARY_PERCENT",
-            u"0")
+        sysparam().set_decimal(self.store, "CREDIT_LIMIT_SALARY_PERCENT", Decimal(0))
 
         # checks if credit limit does not update (correct behavior)
         # when salary percent is 0 and salary changes

@@ -605,8 +605,9 @@ class TestPurchaseOrderView(DomainTest):
                          (2L, Decimal('9930.000')))
 
     def test_get_sub_total(self):
-        order = self.create_purchase_order_item()
-        results = self.store.find(PurchaseOrderView, id=order.order_id).one()
+        order = self.create_purchase_order()
+        self.create_purchase_order_item(order=order)
+        results = self.store.find(PurchaseOrderView, id=order.id).one()
         self.assertEquals(results.get_subtotal(), Decimal(1000))
 
     def test_get_branch_name(self):

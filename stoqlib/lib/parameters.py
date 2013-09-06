@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2012 Async Open Source
+## Copyright (C) 2005-2013 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -27,13 +27,12 @@ from decimal import Decimal
 import logging
 
 from kiwi.datatypes import ValidationError
-from kiwi.python import namedAny, ClassInittableObject
+from kiwi.python import namedAny
 from stoqdrivers.enum import TaxType
 
-from stoqlib.database.runtime import get_default_store, new_store
+from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.enums import LatePaymentPolicy, ReturnPolicy
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.barcode import BarcodeInfo
 from stoqlib.lib.countries import get_countries
@@ -41,7 +40,6 @@ from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_int,
                                     validate_decimal,
-                                    validate_directory,
                                     validate_area_code,
                                     validate_percentage)
 
@@ -52,7 +50,7 @@ log = logging.getLogger(__name__)
 def _credit_limit_salary_changed(new_value, store):
     from stoqlib.domain.person import Client
 
-    old_value = sysparam(store).CREDIT_LIMIT_SALARY_PERCENT
+    old_value = sysparam().get_decimal('CREDIT_LIMIT_SALARY_PERCENT')
     if new_value == old_value:
         return
 
@@ -60,24 +58,11 @@ def _credit_limit_salary_changed(new_value, store):
     Client.update_credit_limit(new_value, store)
 
 
-class PathParameter(object):
-    def __init__(self, path):
-        self.path = path
-
-
-class FileParameter(PathParameter):
-    pass
-
-
-class DirectoryParameter(PathParameter):
-    pass
-
-
 class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
                  initial=None, options=None, combo_data=None, range=None,
                  multiline=False, validator=None, onupgrade=None,
-                 change_callback=None):
+                 change_callback=None, editor=None):
         self.key = key
         self.group = group
         self.short_desc = short_desc
@@ -93,6 +78,7 @@ class ParameterDetails(object):
             onupgrade = initial
         self.onupgrade = onupgrade
         self.change_callback = change_callback
+        self.editor = editor
 
     #
     #  Public API
@@ -127,11 +113,6 @@ class ParameterDetails(object):
                                      "decimal values."))
 
     @staticmethod
-    def validate_directory(path):
-        if not validate_directory(path):
-            return ValidationError(_("'%s is not a valid path.'") % path)
-
-    @staticmethod
     def validate_area_code(code):
         if not validate_area_code(code):
             return ValidationError(_("'%s' is not a valid area code.\n"
@@ -146,7 +127,7 @@ class ParameterDetails(object):
 
     @staticmethod
     def validate_state(value):
-        state_l10n = get_l10n_field(get_default_store(), 'state')
+        state_l10n = get_l10n_field('state')
         if not state_l10n.validate(value):
             return ValidationError(
                 _("'%s' is not a valid %s.")
@@ -154,10 +135,9 @@ class ParameterDetails(object):
 
     @staticmethod
     def validate_city(value):
-        default_store = get_default_store()
-        city_l10n = get_l10n_field(default_store, 'city')
-        state = sysparam(default_store).STATE_SUGGESTED
-        country = sysparam(default_store).COUNTRY_SUGGESTED
+        city_l10n = get_l10n_field('city')
+        state = sysparam().get_string('STATE_SUGGESTED')
+        country = sysparam().get_string('COUNTRY_SUGGESTED')
         if not city_l10n.validate(value, state=state, country=country):
             return ValidationError(_("'%s' is not a valid %s.") %
                                    (value, city_l10n.label.lower()))
@@ -173,8 +153,7 @@ class ParameterDetails(object):
             return ParameterDetails.validate_int
         elif issubclass(p_type, Decimal):
             return ParameterDetails.validate_decimal
-        elif issubclass(p_type, PathParameter):
-            return ParameterDetails.validate_directory
+
 
 _details = [
     ParameterDetails(
@@ -572,14 +551,14 @@ _details = [
         _(u'Glabels template file'),
         _(u'The glabels file that will be used to print the labels. Check the '
           u'documentation to see how to setup this file.'),
-        FileParameter, initial=u""),
+        unicode, initial=u"", editor='file-chooser'),
 
     ParameterDetails(
         u'CAT52_DEST_DIR',
         _(u'General'),
         _(u'Cat 52 destination directory'),
         _(u'Where the file generated after a Z-reduction should be saved.'),
-        DirectoryParameter, initial=u'~/.stoq/cat52'),
+        unicode, initial=u'~/.stoq/cat52', editor='directory-chooser'),
 
     ParameterDetails(
         u'COST_PRECISION_DIGITS',
@@ -777,349 +756,425 @@ _details = [
 ]
 
 
-class ParameterAccess(ClassInittableObject):
-    """A mechanism to tie specific instances to constants that can be
-    made available cross-application. This class has a special hook that
-    allows the values to be looked up on-the-fly and cached.
-
-    Usage:
-
-    >>> from stoqlib.lib.parameters import sysparam
-    >>> from stoqlib.database.runtime import get_default_store
-    >>> default_store = get_default_store()
-    >>> parameter = sysparam(default_store).EDIT_CODE_PRODUCT
-
+class ParameterAccess(object):
+    """
+    API for accessing and updating system parameters
     """
 
-    @classmethod
-    def __class_init__(cls, namespace):
-        for detail in _details:
-            getter = lambda self, n=detail.key, v=detail.type: (
-                self.get_parameter_by_field(n, v))
-            setter = lambda self, value, n=detail.key: (
-                self._set_schema(n, value))
-            prop = property(getter, setter)
-            setattr(cls, detail.key, prop)
-
-    def __init__(self, store):
-        ClassInittableObject.__init__(self)
-        self.store = store
-
-        # Mapping of database raw database values, name -> ParameterAccess
-        self._values = {}
+    def __init__(self):
         # Mapping of details, name -> ParameterDetail
         self._details = dict((detail.key, detail) for detail in _details)
 
-        for param in self.store.find(ParameterData):
-            self._values[param.field_name] = param
+        # Mapping of database raw database values, name -> database value
+        self._values = dict((p.field_name, p.field_value)
+                            for p in get_default_store().find(ParameterData))
 
-    def _remove_unused_parameters(self):
-        """Remove any  parameter found in ParameterData table which is not
-        used any longer.
-        """
-        for param in self._values.values():
-            if param.field_name not in self._details:
-                self.store.remove(param)
-
-    def _set_schema(self, field_name, field_value, is_editable=True):
-        if field_value is not None:
-            field_value = unicode(field_value)
-
-        data = self._values.get(field_name)
-        if data is None:
-            data = ParameterData(store=self.store,
-                                 field_name=field_name,
-                                 field_value=field_value,
-                                 is_editable=is_editable)
-            self._values[field_name] = data
-
-        data.field_value = field_value
-
-    def _set_default_value(self, detail, initial):
-        if initial is None:
-            return
-
-        value = initial
-        if detail.type is bool:
-            if value != u"":
-                value = int(initial)
-        self._set_schema(detail.key, value)
-
-    def _create_default_values(self):
+    def _create_default_values(self, store):
         # Create default values for parameters that take objects
-        self._create_default_image()
-        self._create_default_sales_cfop()
-        self._create_default_return_sales_cfop()
-        self._create_default_receiving_cfop()
-        self._create_default_stock_decrease_cfop()
-        self._create_suggested_supplier()
-        self._create_suggested_unit()
-        self._create_default_salesperson_role()
-        self._create_main_company()
-        self._create_delivery_service()
-        self._create_product_tax_constant()
-        self._create_current_branch()
+        self.set_object_default(store, "CUSTOM_LOGO_FOR_REPORTS", None)
+        self.set_object_default(store, "LOCAL_BRANCH", None, is_editable=False)
+        self.set_object_default(store, "MAIN_COMPANY", None)
+        self.set_object_default(store, "SUGGESTED_SUPPLIER", None)
+        self.set_object_default(store, "SUGGESTED_UNIT", None)
 
-    def _create_default_image(self):
-        from stoqlib.domain.image import Image
-        key = u"CUSTOM_LOGO_FOR_REPORTS"
-        if self.get_parameter_by_field(key, Image):
-            return
-        self._set_schema(key, None)
+        self._set_cfop_default(store,
+                               u"DEFAULT_SALES_CFOP",
+                               u"Venda de Mercadoria Adquirida",
+                               u"5.102")
+        self._set_cfop_default(store,
+                               u"DEFAULT_RETURN_SALES_CFOP",
+                               u"Devolucao",
+                               u"5.202")
+        self._set_cfop_default(store,
+                               u"DEFAULT_RECEIVING_CFOP",
+                               u"Compra para Comercializacao",
+                               u"1.102")
+        self._set_cfop_default(store,
+                               u"DEFAULT_STOCK_DECREASE_CFOP",
+                               u"Outra saída de mercadoria ou "
+                               u"prestação de serviço não especificado",
+                               u"5.949")
+        self.set_delivery_default(store)
+        self._set_sales_person_role_default(store)
+        self._set_product_tax_constant_default(store)
 
-    def _create_suggested_supplier(self):
-        from stoqlib.domain.person import Supplier
-        key = u"SUGGESTED_SUPPLIER"
-        if self.get_parameter_by_field(key, Supplier):
-            return
-        self._set_schema(key, None)
-
-    def _create_suggested_unit(self):
-        from stoqlib.domain.sellable import SellableUnit
-        key = u"SUGGESTED_UNIT"
-        if self.get_parameter_by_field(key, SellableUnit):
-            return
-        self._set_schema(key, None)
-
-    def _create_default_salesperson_role(self):
-        from stoqlib.domain.person import EmployeeRole
-        key = u"DEFAULT_SALESPERSON_ROLE"
-        if self.get_parameter_by_field(key, EmployeeRole):
-            return
-        store = new_store()
-        role = EmployeeRole(name=_(u'Salesperson'),
-                            store=store)
-        store.commit(close=True)
-        self._set_schema(key, role.id, is_editable=False)
-
-    def _create_main_company(self):
-        from stoqlib.domain.person import Branch
-        key = u"MAIN_COMPANY"
-        if self.get_parameter_by_field(key, Branch):
-            return
-        self._set_schema(key, None)
-
-    def _create_delivery_service(self):
-        from stoqlib.domain.service import Service
-        key = u"DELIVERY_SERVICE"
-        if self.get_parameter_by_field(key, Service):
-            return
-
-        self.create_delivery_service()
-
-    def _create_cfop(self, key, description, code):
+    def _set_cfop_default(self, store, param_name, description, code):
         from stoqlib.domain.fiscal import CfopData
-        if self.get_parameter_by_field(key, CfopData):
+        if self.has_object(param_name):
             return
-        data = self.store.find(CfopData, code=code).one()
+        data = self.get_object(store, param_name)
         if not data:
-            store = new_store()
             data = CfopData(code=code, description=description,
                             store=store)
-        store.commit(close=True)
-        self._set_schema(key, data.id)
+            self.set_object(store, param_name, data)
 
-    def _create_default_return_sales_cfop(self):
-        self._create_cfop(u"DEFAULT_RETURN_SALES_CFOP",
-                          u"Devolucao",
-                          u"5.202")
+    def _set_sales_person_role_default(self, store):
+        if self.has_object("DEFAULT_SALESPERSON_ROLE"):
+            return
+        from stoqlib.domain.person import EmployeeRole
+        role = EmployeeRole(name=_(u'Salesperson'),
+                            store=store)
+        self.set_object(store, "DEFAULT_SALESPERSON_ROLE", role,
+                        is_editable=False)
 
-    def _create_default_sales_cfop(self):
-        self._create_cfop(u"DEFAULT_SALES_CFOP",
-                          u"Venda de Mercadoria Adquirida",
-                          u"5.102")
+    def _set_product_tax_constant_default(self, store):
+        if self.has_object("DEFAULT_PRODUCT_TAX_CONSTANT"):
+            return
 
-    def _create_default_receiving_cfop(self):
-        self._create_cfop(u"DEFAULT_RECEIVING_CFOP",
-                          u"Compra para Comercializacao",
-                          u"1.102")
-
-    def _create_default_stock_decrease_cfop(self):
-        self._create_cfop(u"DEFAULT_STOCK_DECREASE_CFOP",
-                          u"Outra saída de mercadoria ou "
-                          u"prestação de serviço não especificado",
-                          u"5.949")
-
-    def _create_product_tax_constant(self):
         from stoqlib.domain.sellable import SellableTaxConstant
-        key = u"DEFAULT_PRODUCT_TAX_CONSTANT"
-        if self.get_parameter_by_field(key, SellableTaxConstant):
+        tax_constant = SellableTaxConstant.get_by_type(TaxType.NONE, store)
+        self.set_object(store, "DEFAULT_PRODUCT_TAX_CONSTANT", tax_constant)
+
+    def _verify_detail(self, field_name, expected_type=None):
+        detail = self._details.get(field_name)
+        if detail is None:
+            raise ValueError("%s is not a valid parameter" % (field_name, ))
+
+        if expected_type is not None and detail.type != expected_type:
+            raise ValueError("%s is not a %s parameter" % (
+                field_name,
+                expected_type.__name__))
+        return detail
+
+    def _set_param_internal(self, store, param_name, value, expected_type):
+        if value is not None and not type(value) is expected_type:
+            raise TypeError("%s must be a decimal, not %r" % (
+                param_name, type(value).__name__))
+
+        param = store.find(ParameterData, field_name=unicode(param_name)).one()
+        # bool are represented as 1/0
+        if expected_type is bool:
+            value = int(value)
+        self._values[param_name] = param.field_value = unicode(value)
+
+    def _set_default_value(self, store, detail, value):
+        if value is None:
             return
 
-        tax_constant = SellableTaxConstant.get_by_type(
-            TaxType.NONE, self.store)
-        self._set_schema(key, tax_constant.id)
+        if detail.type is bool:
+            value = int(value)
+        if value is not None:
+            value = unicode(value)
 
-    def _create_current_branch(self):
-        from stoqlib.domain.person import Branch
-        key = u"LOCAL_BRANCH"
-        if self.get_parameter_by_field(key, Branch):
-            return
+        param_name = detail.key
+        data = self._values.get(param_name)
+        if data is None:
+            data = ParameterData(store=store,
+                                 field_name=param_name,
+                                 field_value=value,
+                                 is_editable=True)
+            self._values[param_name] = data.field_value
 
-        self._set_schema(key, None, is_editable=False)
+        data.field_value = value
+
+    def _remove_unused_parameters(self, store):
+        """
+        Remove any  parameter found in ParameterData table which is not
+        used any longer.
+        """
+        for param_name in self._values:
+            if param_name not in self._details:
+                param_id = self._values.get(param_name)
+                param = store.get(ParameterData, param_id)
+                store.remove(param)
 
     #
     # Public API
     #
 
-    def update_parameter(self, parameter_name, value):
-        if parameter_name in [u'DEMO_MODE', u'LOCAL_BRANCH', u'SYNCHRONIZED_MODE']:
-            raise AssertionError
-        param = get_parameter_by_field(parameter_name, self.store)
-        param.field_value = unicode(value)
+    def check_parameter_presence(self):
+        """
+        Check so the number of installed parameters are equal to
+        the number of available ones
 
-    def get_parameter_constant(self, field_name):
-        for detail in _details:
-            if detail.key == field_name:
-                return detail
-        else:
-            raise KeyError("No such a parameter: %s" % (field_name, ))
+        :returns: ``True`` if they're up to date, ``False`` otherwise
+        """
+        return len(self._values) == len(self._details)
 
-    def get_parameter_type(self, field_name):
-        detail = self.get_parameter_constant(field_name)
-
-        if isinstance(detail.type, basestring):
-            return namedAny('stoqlib.domain.' + detail.type)
-        else:
-            return detail.type
-
-    def get_parameter_by_field(self, field_name, field_type):
-        from stoqlib.domain.base import Domain
-        if isinstance(field_type, basestring):
-            field_type = namedAny('stoqlib.domain.' + field_type)
-        value = self._values.get(field_name)
-        if value is None:
-            return
-
-        if issubclass(field_type, Domain):
-            if value.field_value == u'' or value.field_value is None:
-                return
-            param = self.store.get(field_type, unicode(value.field_value))
-            if param is None:
-                return None
-        else:
-            # XXX: workaround to works with boolean types:
-            value = value.field_value
-            if field_type is bool:
-                if value == u'True':
-                    param = True
-                elif value == u'False':
-                    param = False
-                # This is a pre-1.0 migration specific hack
-                elif value == u"":
-                    return None
-                else:
-                    param = bool(int(value))
-            elif field_type is unicode:
-                param = value
-            else:
-                param = field_type(value)
-        return param
-
-    def update(self):
-        """Called when migrating the database"""
-        self._remove_unused_parameters()
-        for detail in _details:
-            param = self.get_parameter_by_field(detail.key, detail.type)
-            if param is not None:
+    def ensure_system_parameters(self, store, update=False):
+        """
+        :param update: ``True`` if we're upgrading a database,
+          otherwise ``False``
+        """
+        # This is called when creating a new database or
+        # updating an existing one
+        self._remove_unused_parameters(store)
+        for detail in self._details.values():
+            if update and detail.key in self._values:
                 continue
-            self._set_default_value(detail, detail.onupgrade)
-        self._create_default_values()
 
-    def set_defaults(self):
-        """Called when creating a new database"""
-        self._remove_unused_parameters()
-        for detail in _details:
-            self._set_default_value(detail, detail.initial)
-        self._create_default_values()
+            if update:
+                default = detail.onupgrade
+            else:
+                default = detail.initial
+            self._set_default_value(store, detail, default)
+        self._create_default_values(store)
 
-    def create_delivery_service(self):
+    def set_delivery_default(self, store):
+        if self.has_object("DELIVERY_SERVICE"):
+            return
         from stoqlib.domain.sellable import (Sellable,
                                              SellableTaxConstant)
         from stoqlib.domain.service import Service
-        key = u"DELIVERY_SERVICE"
-        store = new_store()
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, store)
         sellable = Sellable(description=_(u'Delivery'),
                             store=store)
         sellable.tax_constant = tax_constant
         service = Service(sellable=sellable, store=store)
-        self._set_schema(key, service.id)
-        store.commit(close=True)
+        self.set_object(store, "DELIVERY_SERVICE", service)
 
-    def get_parameter_data(self, field_name):
-        return self._values.get(field_name)
+    def set_bool(self, store, param_name, value):
+        """
+        Updates a database bool value for a given parameter.
+
+        :param store: a database store
+        :param param_name: the parameter name
+        :param value: the value to set
+        :type value: bool
+        """
+        self._verify_detail(param_name, bool)
+        self._set_param_internal(store, param_name, value, bool)
+
+    def get_bool(self, param_name):
+        """
+        Fetches a bool database value.
+
+        :param param_name: the parameter name
+        :returns: the database value
+        :rtype: bool
+        """
+        detail = self._verify_detail(param_name, bool)
+        value = self._values.get(param_name)
+        if value is None:
+            return detail.initial
+        return value == u'1'
+
+    def set_decimal(self, store, param_name, value):
+        """
+        Updates a database decimal value for a given parameter.
+
+        :param store: a database store
+        :param param_name: the parameter name
+        :param value: the value to set
+        :type value: decimal.Decimal
+        """
+        self._verify_detail(param_name, Decimal)
+        self._set_param_internal(store, param_name, value, Decimal)
+
+    def get_decimal(self, param_name):
+        """
+        Fetches a decimal database value.
+
+        :param param_name: the parameter name
+        :returns: the database value
+        :rtype: decimal.Decimal
+        """
+        detail = self._verify_detail(param_name, Decimal)
+        value = self._values.get(param_name)
+        if value is None:
+            return detail.initial
+
+        try:
+            return Decimal(value)
+        except ValueError:
+            return detail.initial
+
+    def set_int(self, store, param_name, value):
+        """
+        Updates a database int value for a given parameter.
+
+        :param store: a database store
+        :param param_name: the parameter name
+        :param value: the value to set
+        :type value: int
+        """
+        self._verify_detail(param_name, int)
+        self._set_param_internal(store, param_name, value, int)
+
+    def get_int(self, param_name):
+        """
+        Fetches an int database value.
+
+        :param param_name: the parameter name
+        :returns: the database value
+        :rtype: int
+        """
+        detail = self._verify_detail(param_name, int)
+        value = self._values.get(param_name)
+        if value is None:
+            return detail.initial
+
+        try:
+            return int(value)
+        except ValueError:
+            return detail.initial
+
+    def set_string(self, store, param_name, value):
+        """
+        Updates a database unicode value for a given parameter.
+
+        :param store: a database store
+        :param param_name: the parameter name
+        :param value: the value to set
+        :type value: unicode
+        """
+        self._verify_detail(param_name, unicode)
+        self._set_param_internal(store, param_name, value, unicode)
+
+    def get_string(self, param_name):
+        """
+        Fetches a unicode database value.
+
+        :param param_name: the parameter name
+        :returns: the database value
+        :rtype: unicode
+        """
+        detail = self._verify_detail(param_name, unicode)
+        value = self._values.get(param_name)
+        if value is None:
+            return detail.initial
+
+        return value
+
+    def set_object(self, store, param_name, value, is_editable=True):
+        """
+        Updates a database object.
+
+        :param store: a database store
+        :param param_name: the parameter name
+        :param value: the value to set
+        :type value: a domain object
+        :param is_editable: if the parameter can be modified interactivly
+        """
+        detail = self._details.get(param_name)
+        if detail is None:
+            raise ValueError("%s is not a valid parameter" % (param_name, ))
+
+        field_type = detail.get_parameter_type()
+        if (value is not None and
+            not isinstance(value, field_type)):
+            raise TypeError("%s must be a %s instance, not %r" % (
+                param_name, field_type.__name__,
+                type(value).__name__))
+
+        param = ParameterData.get_or_create(store, field_name=unicode(param_name))
+        if value is not None:
+            value = unicode(value.id)
+        param.field_value = value
+        param.is_editable = is_editable
+        self._values[param_name] = value
+
+    def set_object_default(self, store, param_name, value, is_editable=True):
+        """
+        Updates the default value for a database object. This works like
+        .set_object() but only updates if it doesn't have a value set.
+
+        :param store: a database store
+        :param param_name: the parameter name
+        :param value: the value to set
+        :type value: a domain object
+        :param is_editable: if the parameter can be modified interactivly
+        """
+        if self.has_object(param_name):
+            return
+        self.set_object(store, param_name, value, is_editable=is_editable)
+
+    def get_object(self, store, param_name):
+        """
+        Fetches an object from the database.
+
+        ..note..:: This has to query the database to build an object and
+                   it is slower than other getters, avoid it if you can.
+
+        :param store: a database store
+        :param param_name: the parameter name
+        :returns: the object
+        """
+        detail = self._verify_detail(param_name)
+        value = self._values.get(param_name)
+        if value is None:
+            return detail.initial
+
+        field_type = detail.get_parameter_type()
+        return store.get(field_type, unicode(value))
+
+    def get_object_id(self, param_name):
+        """
+        Fetches the database object id
+
+        :param param_name: the parameter name
+        :returns: the object id
+        """
+        self._verify_detail(param_name)
+        return self._values.get(param_name)
+
+    def has_object(self, param_name):
+        """
+        Check if an object is set.
+
+        :param param_name: the parameter name
+        """
+        self._verify_detail(param_name)
+        value = self._values.get(param_name)
+        return value is not None
+
+    def compare_object(self, param_name, other_object):
+        """
+        Compare the currently set value of a parameter with
+        a specified object.
+
+        :param param_name: the parameter name
+        :param other_object: object to compare
+        """
+        self._verify_detail(param_name)
+        object_id = self._values.get(param_name)
+        if object_id is None and other_object is None:
+            return True
+        if other_object is None:
+            return False
+
+        # FIXME: Enable this type checking in the future
+        # if type(other_object) != detail.get_parameter_type():
+        #     raise TypeError("Expected an object of type %s, but got a %s" % (
+        #         detail.get_parameter_type().__name__,
+        #         type(other_object).__name__))
+        return object_id == other_object.id
+
+    def set_value_generic(self, param_name, value):
+        """Update the internal cache for a parameter
+
+        :param param_name: the parameter name
+        :param value: value
+        :type value: unicode
+        """
+        self._values[param_name] = value
+
+    def get_all_details(self):
+        """
+        Returns all ParameterDetails classes
+
+        :returns: the details
+        """
+        return self._details.values()
+
+    def get_detail_by_name(self, param_name):
+        """
+        Returns a ParameterDetails class for the given parameter name
+
+        :param param_name: the parameter name
+        :returns: the detail
+        """
+        detail = self._details.get(param_name)
+        if detail is None:
+            raise KeyError("Unknown parameter: %r" % (param_name, ))
+        return detail
 
 
-_parameters = {}
+_access = None
 
 
-def sysparam(store):
-    access = _parameters.get(store, None)
-    if access is None:
-        access = ParameterAccess(store)
-        _parameters[store] = access
-    return access
-
-
-# FIXME: Move to a classmethod on ParameterData
-def get_parameter_by_field(field_name, store):
-    access = ParameterAccess(store)
-    data = access.get_parameter_data(field_name)
-    if data is None:
-        raise DatabaseInconsistency(
-            "Can't find a ParameterData object for the key %s" %
-            field_name)
-    return data
-
-
-def get_foreign_key_parameter(field_name, store):
-    parameter = get_parameter_by_field(field_name, store)
-    if not (parameter and parameter.foreign_key):
-        msg = _('There is no defined %s parameter data'
-                'in the database.') % field_name
-        raise DatabaseInconsistency(msg)
-    return parameter
-
-
-def get_all_details():
-    return _details
-
-
-def get_parameter_details(field_name):
-    """ Returns a ParameterDetails class for the given parameter name
-    """
-
-    for detail in _details:
-        if detail.key == field_name:
-            return detail
-    else:
-        raise NameError("Unknown parameter: %r" % (field_name, ))
-
-
-#
-# Ensuring everything
-#
-
-def check_parameter_presence(store):
-    """Check so the number of installed parameters are equal to
-    the number of available ones
-    :returns: True if they're up to date, False otherwise
-    """
-
-    results = store.find(ParameterData)
-
-    return results.count() == len(_details)
-
-
-def ensure_system_parameters(update=False):
-    # This is called when creating a new database or
-    # updating an existing one
-    store = new_store()
-    param = sysparam(store)
-    if update:
-        param.update()
-    else:
-        log.info("Creating default system parameters")
-        param.set_defaults()
-    store.commit(close=True)
+def sysparam():
+    global _access
+    if _access is None:
+        _access = ParameterAccess()
+    return _access

@@ -46,8 +46,7 @@ from stoqlib.exceptions import (DatabaseInconsistency, StoqlibError,
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.message import error, info
-from stoqlib.lib.parameters import (check_parameter_presence,
-                                    ensure_system_parameters)
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
@@ -345,7 +344,7 @@ class StoqlibSchemaMigration(SchemaMigration):
     def check_uptodate(self):
         retval = super(StoqlibSchemaMigration, self).check_uptodate()
 
-        if not check_parameter_presence(self.default_store):
+        if not sysparam().check_parameter_presence():
             return False
 
         return retval
@@ -453,10 +452,10 @@ class StoqlibSchemaMigration(SchemaMigration):
         # profiles on the system
         store = new_store()
         update_profile_applications(store)
-        store.commit(close=True)
 
         # Updating the parameter list
-        ensure_system_parameters(update=True)
+        sysparam().ensure_system_parameters(store, update=True)
+        store.commit(close=True)
 
     def generate_sql_for_patch(self, patch):
         return self.default_store.quote_query(

@@ -658,7 +658,7 @@ class SellableItemSlave(BaseEditorSlave):
 
         self._reset_sellable()
         self._setup_summary()
-        self.cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
+        self.cost.set_digits(sysparam().get_int('COST_PRECISION_DIGITS'))
         self.quantity.set_digits(3)
 
         self.barcode.grab_focus()
@@ -888,7 +888,7 @@ class SellableItemSlave(BaseEditorSlave):
         if self.validate_price:
             category = getattr(self.model, 'client_category', None)
             default_price = sellable.get_price_for_category(category)
-            if (not sysparam(self.store).ALLOW_HIGHER_SALE_PRICE and
+            if (not sysparam().get_bool('ALLOW_HIGHER_SALE_PRICE') and
                 value > default_price):
                 return ValidationError(_(u'The sell price cannot be greater '
                                          'than %s.') % default_price)

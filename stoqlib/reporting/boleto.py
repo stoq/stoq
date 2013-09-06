@@ -805,7 +805,7 @@ class BillReport(object):
 
     def _get_instrucoes(self, payment):
         instructions = []
-        data = sysparam(payment.store).BILL_INSTRUCTIONS
+        data = sysparam().get_string('BILL_INSTRUCTIONS')
         for line in data.split('\n')[:3]:
             line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
             instructions.append(line)
@@ -836,7 +836,7 @@ class BillReport(object):
         if parent:
             branch = parent.branch
         else:
-            branch = sysparam(payment.store).MAIN_COMPANY
+            branch = sysparam().get_object(payment.store, 'MAIN_COMPANY')
         return branch.get_description()
 
     def _get_account(self, payment):

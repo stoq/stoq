@@ -313,8 +313,8 @@ class BasePersonRoleEditor(BaseEditor):
 
     def on_confirm(self):
         if (isinstance(self.model, Supplier) and
-            not sysparam(self.store).SUGGESTED_SUPPLIER):
-            sysparam(self.store).SUGGESTED_SUPPLIER = self.model.id
+            not sysparam().has_object('SUGGESTED_SUPPLIER')):
+            sysparam().set_object(self.store, 'SUGGESTED_SUPPLIER', self.model)
 
     #
     # Public API

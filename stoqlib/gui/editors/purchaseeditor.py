@@ -65,7 +65,7 @@ class PurchaseItemEditor(BaseEditor):
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
-        self.cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
+        self.cost.set_digits(sysparam().get_int('COST_PRECISION_DIGITS'))
 
     def _set_not_editable(self):
         self.cost.set_sensitive(False)

@@ -32,7 +32,7 @@ from stoqlib.reporting.loanreceipt import LoanReceipt
 class TestLoanReceipt(ReportTest):
     @mock.patch('stoqlib.reporting.loanreceipt.datetime', ReportTest.fake.datetime)
     def test_loan_receipt(self):
-        sysparam_ = api.sysparam(self.store)
+        sysparam_ = api.sysparam()
         client = self.create_client()
         address = self.create_address()
         address.person = client.person
@@ -41,8 +41,8 @@ class TestLoanReceipt(ReportTest):
         for i in range(3):
             self.create_loan_item(loan=loan, quantity=i)
 
-        sysparam_.update_parameter(u'PRINT_PROMISSORY_NOTE_ON_LOAN', u'0')
+        sysparam_.set_bool(self.store, 'PRINT_PROMISSORY_NOTE_ON_LOAN', False)
         self._diff_expected(LoanReceipt, 'loan-receipt', loan)
 
-        sysparam_.update_parameter(u'PRINT_PROMISSORY_NOTE_ON_LOAN', u'1')
+        sysparam_.set_bool(self.store, 'PRINT_PROMISSORY_NOTE_ON_LOAN', True)
         self._diff_expected(LoanReceipt, 'loan-receipt-with-pn', loan)

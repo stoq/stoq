@@ -211,14 +211,20 @@ class StoqlibStore(Store):
         # results will be converted in instances of the viewable
 
         viewable = None
-        if not isinstance(cls_spec, tuple) and issubclass(cls_spec, Viewable):
-            args = list(args)
-            viewable = cls_spec
-            # Get the actual class spec for the viewable
-            cls_spec = viewable.cls_spec
+        if not isinstance(cls_spec, tuple):
+            try:
+                is_viewable = issubclass(cls_spec, Viewable)
+            except TypeError:
+                is_viewable = False
 
-            if viewable.clause:
-                args.append(viewable.clause)
+            if is_viewable:
+                args = list(args)
+                viewable = cls_spec
+                # Get the actual class spec for the viewable
+                cls_spec = viewable.cls_spec
+
+                if viewable.clause:
+                    args.append(viewable.clause)
 
         # kwargs are based on the properties of the viewable. We need to convert
         # it to the properties of the real tables.
@@ -602,7 +608,7 @@ def _register_branch(caller_store, station_name):
     import gtk
     from stoqlib.lib.parameters import sysparam
 
-    if not sysparam(caller_store).DEMO_MODE:
+    if not sysparam().get_bool('DEMO_MODE'):
         fmt = _(u"The computer '%s' is not registered to the Stoq "
                 u"server at %s.\n\n"
                 u"Do you want to register it "

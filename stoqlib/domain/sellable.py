@@ -579,7 +579,7 @@ class Sellable(Domain):
         :returns: ``True`` if the item can be sold, ``False`` otherwise.
         """
         # FIXME: Perhaps this should be done elsewhere. Johan 2008-09-26
-        if self.service == sysparam(self.store).DELIVERY_SERVICE:
+        if sysparam().compare_object('DELIVERY_SERVICE', self.service):
             return True
         return self.status == self.STATUS_AVAILABLE
 
@@ -890,8 +890,8 @@ class Sellable(Domain):
         :returns: a query expression
         """
 
-        service_sellable = sysparam(store).DELIVERY_SERVICE.sellable
-        return And(cls.id != service_sellable.id,
+        delivery = sysparam().get_object(store, 'DELIVERY_SERVICE')
+        return And(cls.id != delivery.sellable.id,
                    cls.status == cls.STATUS_AVAILABLE)
 
     @classmethod

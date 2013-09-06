@@ -274,10 +274,10 @@ class Account(Domain):
         Not all accounts can be removed, some are internal to Stoq
         and cannot be removed"""
         # Can't remove accounts that are used in a parameter
-        sparam = sysparam(self.store)
-        if self in [sparam.IMBALANCE_ACCOUNT,
-                    sparam.TILLS_ACCOUNT,
-                    sparam.BANKS_ACCOUNT]:
+        sparam = sysparam()
+        if (sparam.compare_object('IMBALANCE_ACCOUNT', self) or
+            sparam.compare_object('TILLS_ACCOUNT', self) or
+            sparam.compare_object('BANKS_ACCOUNT', self)):
             return False
 
         # Can't remove station accounts
@@ -299,16 +299,16 @@ class Account(Domain):
         if not self.can_remove():
             raise TypeError("Account %r cannot be removed" % (self, ))
 
-        imbalance_account = sysparam(store).IMBALANCE_ACCOUNT
+        imbalance_account_id = sysparam().get_object_id('IMBALANCE_ACCOUNT')
 
         for transaction in store.find(AccountTransaction,
                                       account=self):
-            transaction.account = imbalance_account
+            transaction.account_id = imbalance_account_id
             store.flush()
 
         for transaction in store.find(AccountTransaction,
                                       source_account=self):
-            transaction.source_account = imbalance_account
+            transaction.source_account_id = imbalance_account_id
             store.flush()
 
         bank = self.bank
@@ -426,7 +426,7 @@ class AccountTransaction(Domain):
         value = payment.paid_value
         if payment.is_outpayment():
             value = -value
-        return cls(source_account=sysparam(store).IMBALANCE_ACCOUNT,
+        return cls(source_account_id=sysparam().get_object_id('IMBALANCE_ACCOUNT'),
                    account=account or payment.method.destination_account,
                    value=value,
                    description=payment.description,

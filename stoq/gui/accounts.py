@@ -67,7 +67,7 @@ class BaseAccountWindow(ShellApp):
     #
 
     def create_ui(self):
-        if api.sysparam(self.store).SMART_LIST_LOADING:
+        if api.sysparam().get_bool('SMART_LIST_LOADING'):
             self.search.enable_lazy_search()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
@@ -243,7 +243,7 @@ class BaseAccountWindow(ShellApp):
             elif value == 'not-paid':
                 return payment_view.status == Payment.STATUS_PENDING
             elif value == 'late':
-                tolerance = api.sysparam(self.store).TOLERANCE_FOR_LATE_PAYMENTS
+                tolerance = api.sysparam().get_int('TOLERANCE_FOR_LATE_PAYMENTS')
                 return And(
                     payment_view.status == Payment.STATUS_PENDING,
                     payment_view.due_date < localtoday() -

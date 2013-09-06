@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,8 @@
 ##
 """ Listing dialog for system parameters """
 
+import decimal
+
 from kiwi.ui.objectlist import Column
 from storm.expr import And
 from zope.interface import providedBy
@@ -31,7 +33,7 @@ from stoqlib.api import api
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.lib.parameters import sysparam, PathParameter
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext, dgettext
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
@@ -79,17 +81,27 @@ class ParameterSearch(BaseEditor):
         """Given a ParameterData object, returns a string representation of
         its current value.
         """
-        constant = sysparam(self.store).get_parameter_constant(obj.field_name)
-        data = getattr(sysparam(self.store), obj.field_name)
+        detail = sysparam().get_detail_by_name(obj.field_name)
+        if detail.type == unicode:
+            data = sysparam().get_string(obj.field_name)
+        elif detail.type == bool:
+            data = sysparam().get_bool(obj.field_name)
+        elif detail.type == int:
+            data = sysparam().get_int(obj.field_name)
+        elif detail.type == decimal.Decimal:
+            data = sysparam().get_decimal(obj.field_name)
+        elif isinstance(detail.type, basestring):
+            data = sysparam().get_object(self.store, obj.field_name)
+        else:
+            raise NotImplementedError(detail.type)
+
         if isinstance(data, Domain):
             if not (IDescribable in providedBy(data)):
                 raise TypeError(u"Parameter `%s' must implement IDescribable "
                                 "interface." % obj.field_name)
             return data.get_description()
-        elif constant.options:
-            return constant.options[int(obj.field_value)]
-        elif isinstance(data, PathParameter):
-            return data.path
+        elif detail.options:
+            return detail.options[int(obj.field_value)]
         elif isinstance(data, bool):
             return [_(u"No"), _(u"Yes")][data]
         elif obj.field_name == u'COUNTRY_SUGGESTED':

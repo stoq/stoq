@@ -42,7 +42,7 @@ class TestSystemParameterEditor(GUITest):
         self.assertFalse(editor.validate_confirm())
         self.assertFalse(editor.confirm())
 
-        editor.model.field_value = u'25'
+        editor.model.field_value = self.create_account().id
         self.assertTrue(editor.confirm())
         self.check_editor(editor, 'editor-systemparameter-confirm',
                           [editor.retval])

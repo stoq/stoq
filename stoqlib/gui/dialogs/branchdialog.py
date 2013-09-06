@@ -61,20 +61,19 @@ class BranchDialog(BaseEditor):
     def __init__(self, store, model=None):
         model = create_main_branch(name=u"", store=store).person
 
-        self.param = sysparam(store)
+        self.param = sysparam()
         BaseEditor.__init__(self, store, model, visual_mode=False)
         self._setup_widgets()
 
     def _update_system_parameters(self, person):
         icms = self.tax_proxy.model.icms
-        self.param.update_parameter(u'ICMS_TAX', unicode(icms))
+        self.param.set_decimal(self.store, 'ICMS_TAX', icms)
 
         iss = self.tax_proxy.model.iss
-        self.param.update_parameter(u'ISS_TAX', unicode(iss))
+        self.param.set_decimal(self.store, 'ISS_TAX', iss)
 
         substitution = self.tax_proxy.model.substitution_icms
-        self.param.update_parameter(u'SUBSTITUTION_TAX',
-                                    unicode(substitution))
+        self.param.set_decimal(self.store, 'SUBSTITUTION_TAX', substitution)
 
         address = person.get_main_address()
         if not address:
@@ -82,20 +81,20 @@ class BranchDialog(BaseEditor):
                                "this point")
 
         city = address.city_location.city
-        self.param.update_parameter(u'CITY_SUGGESTED', city)
+        self.param.set_string(self.store, 'CITY_SUGGESTED', city)
 
         country = address.city_location.country
-        self.param.update_parameter(u'COUNTRY_SUGGESTED', country)
+        self.param.set_string(self.store, 'COUNTRY_SUGGESTED', country)
 
         state = address.city_location.state
-        self.param.update_parameter(u'STATE_SUGGESTED', state)
+        self.param.set_string(self.store, 'STATE_SUGGESTED', state)
 
         # Update the fancy name
         self.company_proxy.model.fancy_name = self.person_proxy.model.name
 
     def _setup_widgets(self):
         self.name.grab_focus()
-        self.document_l10n = api.get_l10n_field(self.store, 'company_document')
+        self.document_l10n = api.get_l10n_field('company_document')
         self.cnpj_lbl.set_label(self.document_l10n.label)
         self.cnpj.set_mask(self.document_l10n.entry_mask)
 
@@ -115,9 +114,9 @@ class BranchDialog(BaseEditor):
         self.person_proxy = self.add_proxy(self.model, widgets)
 
         widgets = self.tax_widgets
-        iss = Decimal(self.param.ISS_TAX)
-        icms = Decimal(self.param.ICMS_TAX)
-        substitution = Decimal(self.param.SUBSTITUTION_TAX)
+        iss = Decimal(self.param.get_decimal('ISS_TAX'))
+        icms = Decimal(self.param.get_decimal('ICMS_TAX'))
+        substitution = Decimal(self.param.get_decimal('SUBSTITUTION_TAX'))
         model = Settable(iss=iss, icms=icms,
                          substitution_icms=substitution)
         self.tax_proxy = self.add_proxy(model, widgets)

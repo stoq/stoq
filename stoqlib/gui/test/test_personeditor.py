@@ -90,13 +90,12 @@ class TestClientEditor(_BasePersonEditorTest):
         # 1: select ui form
         # 13: select ui field
         # 1: select address
-        # 5: select parameters
         # 4: select city location
         # 1: update individual
         # 2: select payment
         # 1: select current user
         # 1: select app permissions for the user
-        self.assertEquals(tracer.count, 42)
+        self.assertEquals(tracer.count, 37)
 
     def test_create_individual(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)

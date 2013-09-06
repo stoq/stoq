@@ -350,8 +350,8 @@ def print_report(report_class, *args, **kwargs):
 
 
 def print_labels(label_data, store, purchase=None):
-    param = sysparam(store).LABEL_TEMPLATE_PATH
-    if param and param.path and os.path.exists(param.path):
+    path = sysparam().get_string('LABEL_TEMPLATE_PATH')
+    if path and os.path.exists(path):
         if purchase:
             print_report(LabelReport, purchase.get_data_for_labels(),
                          label_data.skip, store=store)

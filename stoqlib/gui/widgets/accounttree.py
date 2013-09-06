@@ -25,7 +25,6 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectTree
 
-from stoqlib.api import api
 from stoqlib.domain.views import Account, AccountView
 from stoqlib.gui.stockicons import (STOQ_MONEY, STOQ_PAYABLE_APP, STOQ_BILLS,
                                     STOQ_TILL_APP)
@@ -130,7 +129,7 @@ class AccountTree(ObjectTree):
         elif kind == 'receivable':
             pixbuf = self._pixbuf_receivable
         elif kind == 'account':
-            till_account_id = sysparam(api.get_default_store()).TILLS_ACCOUNT.id
+            till_account_id = sysparam().get_object_id('TILLS_ACCOUNT')
             if model.matches(till_account_id):
                 pixbuf = self._pixbuf_till
             else:
@@ -147,7 +146,7 @@ class AccountTree(ObjectTree):
           In this case, this acount (and its decendents) will not be shown in
           the account tree.
         """
-        till_id = sysparam(api.get_default_store()).TILLS_ACCOUNT.id
+        till_id = sysparam().get_object_id('TILLS_ACCOUNT')
 
         if self.create_mode and edited_account:
             accounts = list(store.find(AccountView,

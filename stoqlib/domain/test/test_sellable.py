@@ -207,7 +207,7 @@ class TestSellable(DomainTest):
             self.store.find(Sellable,
                             Sellable.get_available_sellables_query(self.store)))
 
-        delivery_sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
+        delivery_sellable = sysparam().get_object(self.store, 'DELIVERY_SERVICE').sellable
         delivery_sellable.status = Sellable.STATUS_AVAILABLE
         # Deliveries are treated differently, that's why they should
         # not be present here
@@ -489,7 +489,7 @@ class TestSellable(DomainTest):
         self.assertTrue(sellable.can_close())
 
         # The delivery service cannot be closed.
-        sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
+        sellable = sysparam().get_object(self.store, 'DELIVERY_SERVICE').sellable
         self.failIf(sellable.can_close())
 
     def test_can_remove(self):
@@ -518,7 +518,7 @@ class TestSellable(DomainTest):
         self.assertFalse(sellable.can_remove())
 
         # The delivery service cannot be removed.
-        sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
+        sellable = sysparam().get_object(self.store, 'DELIVERY_SERVICE').sellable
         self.failIf(sellable.can_remove())
 
     def test_remove(self):

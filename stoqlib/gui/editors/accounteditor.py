@@ -112,7 +112,7 @@ class AccountEditor(BaseEditor):
         self.tree_box.pack_start(self.parent_accounts)
         self.tree_box.reorder_child(self.parent_accounts, 0)
 
-        if self.model == sysparam(self.store).IMBALANCE_ACCOUNT:
+        if sysparam().compare_object('IMBALANCE_ACCOUNT', self.model):
             self.account_type.set_sensitive(False)
 
         self.account_type.prefill(Account.account_type_descriptions)

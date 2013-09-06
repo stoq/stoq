@@ -227,7 +227,7 @@ class FiscalPrinterHelper(gobject.GObject):
         :returns: a new coupon
         """
 
-        if sysparam(self.store).DEMO_MODE:
+        if sysparam().get_bool('DEMO_MODE'):
             branch = api.get_current_branch(self.store)
             company = branch.person.company
             if company and company.cnpj not in ['24.198.774/7322-35',

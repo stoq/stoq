@@ -86,7 +86,7 @@ class WelcomeDialog(BasicDialog):
             content = environ.find_resource('html', 'welcome-pt_BR.html')
         else:
             content = environ.find_resource('html', 'welcome.html')
-        if api.sysparam(api.get_default_store()).DEMO_MODE:
+        if api.sysparam().get_bool('DEMO_MODE'):
             content += '?demo-mode'
         return 'file:///' + content
 

@@ -73,7 +73,8 @@ class TestBank(DomainTest):
                        bank_account=bank_account,
                        option=unicode(key),
                        value=value)
-        api.sysparam(self.store).BILL_INSTRUCTIONS = u'Primeia linha da instrução'
+        api.sysparam().set_string(self.store, 'BILL_INSTRUCTIONS',
+                                  u'Primeia linha da instrução')
 
     def _get_expected(self, filename, generated):
         fname = get_tests_datadir(filename + '.pdf.html')

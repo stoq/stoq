@@ -75,9 +75,7 @@ class TestStockDecreaseWizard(GUITest):
     def test_wizard_create_payment(self, yesno):
         yesno.return_value = False
 
-        sysparam(self.store).update_parameter(
-            u'CREATE_PAYMENTS_ON_STOCK_DECREASE',
-            u'True')
+        sysparam().set_bool(self.store, 'CREATE_PAYMENTS_ON_STOCK_DECREASE', True)
 
         till = self.create_till()
         till.open_till()
@@ -107,7 +105,7 @@ class TestStockDecreaseWizard(GUITest):
 
     @mock.patch('stoqlib.gui.wizards.stockdecreasewizard.yesno')
     def test_wizard_with_cost_center(self, yesno):
-        sysparam(self.store).update_parameter('CREATE_PAYMENTS_ON_STOCK_DECREASE', u'True')
+        sysparam().set_bool(self.store, 'CREATE_PAYMENTS_ON_STOCK_DECREASE', True)
         yesno.return_value = False
 
         branch = api.get_current_branch(self.store)

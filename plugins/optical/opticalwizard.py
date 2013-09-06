@@ -93,7 +93,7 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
         # Salesperson combo
         salespersons = self.store.find(SalesPerson)
         self.salesperson.prefill(api.for_person_combo(salespersons))
-        if sysparam(self.store).ACCEPT_CHANGE_SALESPERSON:
+        if sysparam().get_bool('ACCEPT_CHANGE_SALESPERSON'):
             self.salesperson.grab_focus()
         else:
             self.salesperson.set_sensitive(False)
@@ -410,7 +410,7 @@ class _ItemEditor(BaseEditor):
         sellable = self.model.sellable
         self._user = self._user or api.get_current_user(self.store)
 
-        if api.sysparam(self.store).REUTILIZE_DISCOUNT:
+        if api.sysparam().get_bool('REUTILIZE_DISCOUNT'):
             extra_discount = self.model.sale.get_available_discount_for_items(
                 user=self._user, exclude_item=self.model)
         else:
@@ -525,7 +525,7 @@ class _ItemSlave(SellableItemSlave):
             temp_item.remove()
 
     def get_extra_discount(self, sellable):
-        if not api.sysparam(self.store).REUTILIZE_DISCOUNT:
+        if not api.sysparam().get_bool('REUTILIZE_DISCOUNT'):
             return None
         return self.model.get_available_discount_for_items(user=self.manager)
 

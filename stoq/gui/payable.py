@@ -289,7 +289,7 @@ class PayableApp(BaseAccountWindow):
         purchase_order = payable_views[0].purchase
 
         if (purchase_order and
-            api.sysparam(self.store).BLOCK_INCOMPLETE_PURCHASE_PAYMENTS and
+            api.sysparam().get_bool('BLOCK_INCOMPLETE_PURCHASE_PAYMENTS') and
             not purchase_order.status == PurchaseOrder.ORDER_CLOSED):
 
             return warning(_("Can't confirm the payment if the purchase "

@@ -87,9 +87,9 @@ class CityLocationMixin(object):
     #
 
     def _cache_l10n_fields(self):
-        self._city_l10n = api.get_l10n_field(self.store, 'city',
+        self._city_l10n = api.get_l10n_field('city',
                                              self.model.country)
-        self._state_l10n = api.get_l10n_field(self.store, 'state',
+        self._state_l10n = api.get_l10n_field('state',
                                               self.model.country)
 
     def _prefill_states(self):
@@ -126,7 +126,7 @@ class CityLocationMixin(object):
         self.city.validate(force=True)
 
     def on_city__validate(self, entry, city):
-        if sysparam(self.store).ALLOW_REGISTER_NEW_LOCATIONS:
+        if sysparam().get_bool('ALLOW_REGISTER_NEW_LOCATIONS'):
             return
 
         if self.city.is_focus() and not self._confirming:
@@ -263,7 +263,7 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         for field, label in [
                 ('state', self.state_lbl),
                 ('city', self.city_lbl)]:
-            l10n_field = api.get_l10n_field(self.store, field)
+            l10n_field = api.get_l10n_field(field)
             label.set_text(l10n_field.label + ':')
 
         # Enable if we already have a number or if we are adding a new address.

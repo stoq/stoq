@@ -48,7 +48,7 @@ class TestBillPaymentSlaves(GUITest):
         self.check_slave(slave, 'slave-bill-method')
 
     def test_installments(self):
-        sysparam(self.store).update_parameter(u'ALLOW_OUTDATED_OPERATIONS', u'1')
+        sysparam().set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', True)
         wizard = PurchaseWizard(self.store)
 
         method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -63,7 +63,7 @@ class TestBillPaymentSlaves(GUITest):
         self.check_slave(slave, 'slave-bill-method-2-installments')
 
     def test_outdated(self):
-        sysparam(self.store).update_parameter(u'ALLOW_OUTDATED_OPERATIONS', u'0')
+        sysparam().set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', False)
         wizard = PurchaseWizard(self.store)
 
         method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -80,7 +80,7 @@ class TestBillPaymentSlaves(GUITest):
 
 class TestCheckPaymentSlaves(GUITest):
     def test_create(self):
-        sysparam(self.store).update_parameter(u'MANDATORY_CHECK_NUMBER', u'True')
+        sysparam().set_bool(self.store, 'MANDATORY_CHECK_NUMBER', True)
 
         wizard = PurchaseWizard(self.store)
 
@@ -92,7 +92,7 @@ class TestCheckPaymentSlaves(GUITest):
         self.check_slave(slave, 'slave-check-method')
 
     def test_check_payment_mandatory_check_number(self):
-        sysparam(self.store).update_parameter(u'MANDATORY_CHECK_NUMBER', u'True')
+        sysparam().set_bool(self.store, 'MANDATORY_CHECK_NUMBER', True)
 
         wizard = PurchaseWizard(self.store)
 
@@ -104,7 +104,7 @@ class TestCheckPaymentSlaves(GUITest):
         self.assertNotSensitive(wizard, ['next_button'])
 
     def test_check_payment(self):
-        sysparam(self.store).update_parameter(u'MANDATORY_CHECK_NUMBER', u'False')
+        sysparam().set_bool(self.store, 'MANDATORY_CHECK_NUMBER', False)
 
         wizard = PurchaseWizard(self.store)
 

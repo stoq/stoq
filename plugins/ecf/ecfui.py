@@ -183,7 +183,7 @@ class ECFUI(object):
         self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _add_pos_menus(self, uimanager):
-        if sysparam(self.default_store).POS_SEPARATE_CASHIER:
+        if sysparam().get_bool('POS_SEPARATE_CASHIER'):
             return
 
         ui_string = """<ui>
@@ -305,7 +305,7 @@ class ECFUI(object):
 
         printer = self._printer.get_printer()
 
-        if (sysparam(self.default_store).ENABLE_PAULISTA_INVOICE and not
+        if (sysparam().get_bool('ENABLE_PAULISTA_INVOICE') and not
             (printer.user_number and printer.register_date and
              printer.register_cro)):
             response = warning(
@@ -344,7 +344,7 @@ class ECFUI(object):
                 # XXX: Make sure this is tested
                 day = till.opening_date
 
-            dir = sysparam(self.default_store).CAT52_DEST_DIR.path
+            dir = sysparam().get_string('CAT52_DEST_DIR')
             dir = os.path.expanduser(dir)
             if not os.path.exists(dir):
                 os.mkdir(dir)
@@ -358,7 +358,7 @@ class ECFUI(object):
 
     def _needs_cat52(self, printer):
         # If the param is not enabled, we dont need.
-        if not sysparam(self.default_store).ENABLE_PAULISTA_INVOICE:
+        if not sysparam().get_bool('ENABLE_PAULISTA_INVOICE'):
             return False
 
         # Even if the parameter is enabled, we can only generate cat52 for
@@ -571,7 +571,7 @@ class ECFUI(object):
                             document=document)
 
     def _identify_customer(self, coupon, sale=None):
-        if not sysparam(self.default_store).ENABLE_PAULISTA_INVOICE:
+        if not sysparam().get_bool('ENABLE_PAULISTA_INVOICE'):
             return
 
         model = None

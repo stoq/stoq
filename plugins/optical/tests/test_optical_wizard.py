@@ -94,11 +94,11 @@ class TestItemEditor(GUITest, OpticalDomainTest):
         editor.price.update(-1)
         self.assertInvalid(editor, ['price'])
 
-        with self.sysparam(REUTILIZE_DISCOUNT=u'1'):
+        with self.sysparam(REUTILIZE_DISCOUNT=True):
             editor.price.update(10)
             self.assertInvalid(editor, ['price'])
 
-        with self.sysparam(REUTILIZE_DISCOUNT=u'0'):
+        with self.sysparam(REUTILIZE_DISCOUNT=False):
             editor.price.update(10)
             self.assertInvalid(editor, ['price'])
 
@@ -225,12 +225,12 @@ class TestSaleQuoteWizard(GUITest):
         OpticalSaleQuoteWizard(self.store, model=sale)
 
     def test_param_accept_change_salesperson(self):
-        with self.sysparam(ACCEPT_CHANGE_SALESPERSON=u'1'):
+        with self.sysparam(ACCEPT_CHANGE_SALESPERSON=True):
             wizard = OpticalSaleQuoteWizard(self.store)
             step = wizard.get_current_step()
             self.assertTrue(step.salesperson.get_sensitive())
 
-        with self.sysparam(ACCEPT_CHANGE_SALESPERSON=u'0'):
+        with self.sysparam(ACCEPT_CHANGE_SALESPERSON=False):
             wizard = OpticalSaleQuoteWizard(self.store)
             step = wizard.get_current_step()
             self.assertFalse(step.salesperson.get_sensitive())
@@ -320,10 +320,10 @@ class TestSaleQuoteWizard(GUITest):
         saved = list(item_slave.get_saved_items())
         item_slave.remove_items(saved)
 
-        with self.sysparam(REUTILIZE_DISCOUNT=u'0'):
+        with self.sysparam(REUTILIZE_DISCOUNT=False):
             self.assertIsNone(item_slave.get_extra_discount(sellable))
 
-        with self.sysparam(REUTILIZE_DISCOUNT=u'1'):
+        with self.sysparam(REUTILIZE_DISCOUNT=True):
             self.assertIsNotNone(item_slave.get_extra_discount(sellable))
 
         for radio in step._radio_group.get_group():

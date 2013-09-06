@@ -596,7 +596,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
         self._product = product
         BaseRelationshipEditorSlave.__init__(self, store, visual_mode=visual_mode)
 
-        suggested = sysparam(store).SUGGESTED_SUPPLIER
+        suggested = sysparam().get_object(store, 'SUGGESTED_SUPPLIER')
         if suggested is not None:
             self.target_combo.select(suggested)
 

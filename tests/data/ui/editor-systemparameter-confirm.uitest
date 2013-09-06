@@ -41,6 +41,6 @@ GtkDialog(main_dialog.toplevel): title="Edit 'Parent bank account' Parameter", h
 
 model: ParameterData<1>
   field_name: u'BANKS_ACCOUNT'
-  field_value: u'25'
+  field_value: uuid.uuid()
   is_editable: True
 

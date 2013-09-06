@@ -25,7 +25,6 @@ import re
 
 from kiwi.currency import format_price
 
-from stoqlib.database.runtime import get_default_store
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.cardinals.cardinals import get_cardinal_function
 from stoqlib.lib.translation import stoqlib_gettext
@@ -60,8 +59,7 @@ def get_price_format_str():
 
 def get_price_as_cardinal(value):
     function = get_cardinal_function('to_words_as_money')
-    currency_names = get_l10n_field(get_default_store(),
-                                    'currency_names')
+    currency_names = get_l10n_field('currency_names')
     return function(value, currency_names)
 
 
@@ -72,7 +70,7 @@ def get_formatted_price(float_value, symbol=True, precision=DECIMAL_PRECISION):
 
 def get_formatted_cost(float_value, symbol=True):
     from stoqlib.lib.parameters import sysparam
-    precision = sysparam(get_default_store()).COST_PRECISION_DIGITS
+    precision = sysparam().get_int('COST_PRECISION_DIGITS')
     return get_formatted_price(float_value, symbol=symbol,
                                precision=precision)
 
@@ -91,8 +89,7 @@ def get_full_date(date):
       January 01, 2012
 
     """
-    full_date_format = get_l10n_field(get_default_store(),
-                                      "full_date_format")
+    full_date_format = get_l10n_field("full_date_format")
     return date.strftime(full_date_format)
 
 

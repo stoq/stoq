@@ -77,7 +77,7 @@ class SellableSearch(SearchEditor):
         self._first_search = True
         self._first_search_string = search_str
         self.quantity = quantity
-        self._delivery_sellable = sysparam(store).DELIVERY_SERVICE.sellable
+        self._delivery_sellable = sysparam().get_object(store, 'DELIVERY_SERVICE').sellable
 
         # FIXME: This dictionary should be used to deduct from the
         #        current stock (in the current branch) and not others

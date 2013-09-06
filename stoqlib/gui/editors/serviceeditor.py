@@ -108,6 +108,6 @@ class ServiceEditor(SellableEditor):
                             price=currency(0),
                             store=store)
         sellable.tax_constant = tax_constant
-        sellable.unit = sysparam(self.store).SUGGESTED_UNIT
+        sellable.unit_id = sysparam().get_object_id('SUGGESTED_UNIT')
         model = Service(sellable=sellable, store=store)
         return model

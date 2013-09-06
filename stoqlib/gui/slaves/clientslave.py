@@ -82,7 +82,7 @@ class ClientCreditSlave(BaseEditorSlave):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        salary_percentage = sysparam(self.store).CREDIT_LIMIT_SALARY_PERCENT
+        salary_percentage = sysparam().get_decimal('CREDIT_LIMIT_SALARY_PERCENT')
         if salary_percentage > 0:
             self.credit_limit.set_sensitive(False)
 

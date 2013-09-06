@@ -54,7 +54,7 @@ from stoqlib.lib.parameters import sysparam
 class TestSale(DomainTest):
     def test_constructor_without_cfop(self):
         sale = Sale(store=self.store, branch=self.create_branch())
-        self.assertEquals(sale.cfop, sysparam(self.store).DEFAULT_SALES_CFOP)
+        self.assertTrue(sysparam().compare_object('DEFAULT_SALES_CFOP', sale.cfop))
 
     def test_sale_payments_ordered(self):
         sale = self.create_sale()
@@ -954,7 +954,7 @@ class TestSale(DomainTest):
 
         self.add_product(sale)
 
-        sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
+        sellable = sysparam().get_object(self.store, 'DELIVERY_SERVICE').sellable
         sale.add_sellable(sellable, quantity=1)
         sale.order()
         self.failIf(sale.can_set_paid())
@@ -1063,8 +1063,8 @@ class TestSale(DomainTest):
         self.failIf(commissions[-1].value >= 0)
 
     def test_commission_create_on_confirm(self):
-        api.sysparam(self.store).update_parameter(
-            u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'1')
+        api.sysparam().set_bool(
+            self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', True)
 
         sale = self.create_sale()
         self.add_product(sale, quantity=1, price=200)
@@ -1094,8 +1094,8 @@ class TestSale(DomainTest):
                 self.store.find(Commission, payment=p).count(), 1)
 
     def test_commission_create_on_pay(self):
-        api.sysparam(self.store).update_parameter(
-            u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'0')
+        api.sysparam().set_bool(
+            self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', False)
 
         sale = self.create_sale()
         self.add_product(sale, quantity=1, price=200)
@@ -1125,8 +1125,8 @@ class TestSale(DomainTest):
                 self.store.find(Commission, payment=p).count(), 1)
 
     def test_commission_create_at_end(self):
-        api.sysparam(self.store).update_parameter(
-            u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'0')
+        api.sysparam().set_bool(
+            self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', False)
 
         commissions_before = self.store.find(Commission).count()
 
@@ -1766,6 +1766,18 @@ class TestReturnedSaleItemsView(DomainTest):
 
 
 class TestSaleView(DomainTest):
+    def test_post_search_callback(self):
+        sale = self.create_sale()
+        sale.identifier = 1138
+        self.add_product(sale)
+        self.add_payments(sale)
+
+        sresults = self.store.find(SaleView, identifier=1138)
+        postresults = SaleView.post_search_callback(sresults)
+        self.assertEqual(postresults[0], ('count', 'sum'))
+        self.assertEqual(self.store.execute(postresults[1]).get_one(),
+                         (1L, Decimal("10")))
+
     def test_find_by_branch(self):
         sale = self.create_sale()
         views = SaleView.find_by_branch(store=self.store,

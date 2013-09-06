@@ -9,7 +9,7 @@ from storm.info import get_cls_info
 from storm.references import Reference
 
 from stoqlib.database.orm import ORMObject
-from stoqlib.lib.parameters import get_all_details
+from stoqlib.lib.parameters import sysparam
 import stoqlib.domain
 import stoqlib.domain.payment
 
@@ -137,7 +137,7 @@ class FakeBuilder(object):
         # ParameterAccess.DEFAULT_SALES_CFOP = DEFAULT_SALES_CFOP
         # etc
         ParameterAccess = self.module.locals['ParameterAccess'][0]
-        for detail in get_all_details():
+        for detail in sysparam().get_all_details():
             func = build_function(detail.key)
             # FIXME: We should use ParameterAccess.add_local_node,
             #        to add the function at the right place in the ast,

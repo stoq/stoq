@@ -183,7 +183,7 @@ class ProductSupplierEditor(BaseEditor):
         else:
             description = unit.description
         self.unit_label.set_text(description)
-        self.base_cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
+        self.base_cost.set_digits(sysparam().get_int('COST_PRECISION_DIGITS'))
         self.base_cost.set_adjustment(
             gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
         self.minimum_purchase.set_adjustment(
@@ -325,7 +325,7 @@ class ProductEditor(SellableEditor):
         return extra_tabs
 
     def setup_widgets(self):
-        self.cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
+        self.cost.set_digits(sysparam().get_int('COST_PRECISION_DIGITS'))
         self.consignment_yes_button.set_active(self.model.consignment)
         self.consignment_yes_button.set_sensitive(self._model_created)
         self.consignment_no_button.set_sensitive(self._model_created)
@@ -335,10 +335,9 @@ class ProductEditor(SellableEditor):
 
     def create_model(self, store):
         self._model_created = True
-        tax_constant = sysparam(store).DEFAULT_PRODUCT_TAX_CONSTANT
         sellable = Sellable(store=store)
-        sellable.tax_constant = tax_constant
-        sellable.unit = sysparam(self.store).SUGGESTED_UNIT
+        sellable.tax_constant_id = sysparam().get_object_id('DEFAULT_PRODUCT_TAX_CONSTANT')
+        sellable.unit_id = sysparam().get_object_id('SUGGESTED_UNIT')
         model = Product(store=store, sellable=sellable)
         # FIXME: Instead of creating and then removing, we should only create
         # the Storable if the user chooses to do so, but due to the way the

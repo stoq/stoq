@@ -323,7 +323,7 @@ class SearchSlave(SlaveDelegate):
         if self._query_executer is None:
             executer = QueryExecuter(self.store)
             if not self._lazy_search:
-                executer.set_limit(sysparam(self.store).MAX_SEARCH_RESULTS)
+                executer.set_limit(sysparam().get_int('MAX_SEARCH_RESULTS'))
             if self._search_spec is not None:
                 executer.set_search_spec(self._search_spec)
             self._query_executer = executer

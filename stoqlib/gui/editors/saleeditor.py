@@ -160,7 +160,7 @@ class SaleQuoteItemEditor(BaseEditor):
         sellable = self.model.sellable
         self.manager = self.manager or api.get_current_user(self.store)
 
-        if api.sysparam(self.store).REUTILIZE_DISCOUNT:
+        if api.sysparam().get_bool('REUTILIZE_DISCOUNT'):
             extra_discount = self.model.sale.get_available_discount_for_items(
                 user=self.manager, exclude_item=self.model)
         else:

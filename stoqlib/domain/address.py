@@ -110,9 +110,9 @@ class CityLocation(ORMObject):
 
         :returns: the default city location
         """
-        city = sysparam(store).CITY_SUGGESTED
-        state = sysparam(store).STATE_SUGGESTED
-        country = sysparam(store).COUNTRY_SUGGESTED
+        city = sysparam().get_string('CITY_SUGGESTED')
+        state = sysparam().get_string('STATE_SUGGESTED')
+        country = sysparam().get_string('COUNTRY_SUGGESTED')
 
         return cls.get_or_create(store, city, state, country)
 
@@ -187,7 +187,7 @@ class CityLocation(ORMObject):
     #
 
     def is_valid_model(self):
-        city_l10n = get_l10n_field(self.store, 'city', self.country)
+        city_l10n = get_l10n_field('city', self.country)
         return bool(self.country and self.city and self.state and
                     city_l10n.validate(self.city,
                                        state=self.state, country=self.country))

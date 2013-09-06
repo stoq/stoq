@@ -84,7 +84,6 @@ class TestConfirmSaleWizard(GUITest):
         # NOTE: Document increases/decreases
         # 3: select user/branch/station (normally cached)
         # 1: select sales_person
-        # 4: select parameters
         # 1: select client
         # 1: select transporter
         # 1: select cost cebnter
@@ -93,7 +92,7 @@ class TestConfirmSaleWizard(GUITest):
         # 3: select sale_item (one is need_adjust_batches)
         # 1: select payment status
         # 1: select the branch acronym for sale repr()
-        self.assertEquals(tracer.count, 19)
+        self.assertEquals(tracer.count, 15)
 
     def test_create(self):
         self._create_wizard()
@@ -185,6 +184,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertEquals(len(list(entry)), 1)
 
     def test_step_payment_method_check(self):
+        sysparam().set_bool(self.store, 'MANDATORY_CHECK_NUMBER', False)
         self._create_wizard()
         self._select_method('check')
         self._go_to_next()
@@ -281,8 +281,8 @@ class TestConfirmSaleWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
     def test_sale_to_client_with_late_payments(self, yesno, print_report):
         #: this parameter allows a client to buy even if he has late payments
-        sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
-                                              unicode(int(LatePaymentPolicy.ALLOW_SALES)))
+        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                           int(LatePaymentPolicy.ALLOW_SALES))
 
         sale = self.create_sale()
         sale.identifier = 12345
@@ -316,9 +316,8 @@ class TestConfirmSaleWizard(GUITest):
 
         #: this parameter disallows a client with late payments to buy with
         #: store credit
-        sysparam(self.store).update_parameter(
-            u'LATE_PAYMENTS_POLICY',
-            unicode(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
+        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                           int(LatePaymentPolicy.DISALLOW_STORE_CREDIT))
 
         # checks if a client can buy normally
         payment.due_date = today
@@ -344,9 +343,8 @@ class TestConfirmSaleWizard(GUITest):
 
         #: this parameter disallows a client with late payments to buy with
         #: store credit
-        sysparam(self.store).update_parameter(
-            u'LATE_PAYMENTS_POLICY',
-            unicode(int(LatePaymentPolicy.DISALLOW_SALES)))
+        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                           int(LatePaymentPolicy.DISALLOW_SALES))
 
         # checks if a client can buy normally
         payment.due_date = today
@@ -366,9 +364,8 @@ class TestConfirmSaleWizard(GUITest):
             u'It is not possible to sell for clients with late payments.')
 
         step.pm_slave.select_method(u'store_credit')
-        sysparam(self.store).update_parameter(
-            u'LATE_PAYMENTS_POLICY',
-            unicode(int(LatePaymentPolicy.ALLOW_SALES)))
+        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                           int(LatePaymentPolicy.ALLOW_SALES))
 
         sale.client.credit_limit = currency("9000")
         # Force validation since we changed the credit limit.

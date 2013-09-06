@@ -137,7 +137,7 @@ class AccountTransactionEditor(BaseEditor):
             payment=None,
             date=datetime.datetime.today(),
             account=self.parent_account,
-            source_account=sysparam(store).IMBALANCE_ACCOUNT)
+            source_account=sysparam().get_object(store, 'IMBALANCE_ACCOUNT'))
 
     def _populate_accounts(self):
         accounts = self.store.find(Account)

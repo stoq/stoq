@@ -541,8 +541,8 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_allow_all(self):
         #: This parameter always allows the client to purchase, no matter if he
         #: has late payments
-        sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
-                                              unicode(int(LatePaymentPolicy.ALLOW_SALES)))
+        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                           int(LatePaymentPolicy.ALLOW_SALES))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -578,8 +578,8 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_disallow_store_credit(self):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
-        sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
-                                              unicode(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
+        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                           int(LatePaymentPolicy.DISALLOW_STORE_CREDIT))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -614,8 +614,8 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_disallow_all(self):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
-        sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
-                                              unicode(int(LatePaymentPolicy.DISALLOW_SALES)))
+        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                           int(LatePaymentPolicy.DISALLOW_SALES))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -667,9 +667,10 @@ class TestClient(_PersonFacetTest, DomainTest):
 
         # just setting paramater to a value that won't interfere in
         # the tests
-        sysparam(self.store).update_parameter(
+        sysparam().set_decimal(
+            self.store,
             u"CREDIT_LIMIT_SALARY_PERCENT",
-            u"5")
+            Decimal(5))
 
         # testing if updates
         Client.update_credit_limit(10, self.store)
@@ -682,9 +683,10 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.credit_limit, 200)
 
     def test_set_salary(self):
-        sysparam(self.store).update_parameter(
+        sysparam().set_decimal(
+            self.store,
             u"CREDIT_LIMIT_SALARY_PERCENT",
-            u"10")
+            Decimal("10"))
 
         client = self.create_client()
 
@@ -696,9 +698,10 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.salary, 100)
         self.assertEquals(client.credit_limit, 10)
 
-        sysparam(self.store).update_parameter(
+        sysparam().set_decimal(
+            self.store,
             u"CREDIT_LIMIT_SALARY_PERCENT",
-            u"0")
+            Decimal(0))
         client.credit_limit = 100
         client.salary = 200
 

@@ -67,9 +67,7 @@ class TestSalesPersonSalesSearch(GUITest):
 
     def test_synchronized_mode(self):
         # This is a non editable parameter
-        api.sysparam(self.store).SYNCHRONIZED_MODE = u'1'
-
-        try:
+        with self.sysparam(SYNCHRONIZED_MODE=True):
             current = api.get_current_branch(self.store)
             other_branch = self.create_branch()
 
@@ -97,5 +95,3 @@ class TestSalesPersonSalesSearch(GUITest):
             dialog.date_filter.end_date.update(sale1.confirm_date)
             self.click(dialog.search.search_button)
             self.check_dialog(dialog, 'sales-person-sales-synchronized-show')
-        finally:
-            api.sysparam(self.store).SYNCHRONIZED_MODE = u'0'

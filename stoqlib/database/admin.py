@@ -53,7 +53,7 @@ from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.exceptions import StoqlibError
 from stoqlib.importers.invoiceimporter import InvoiceImporter
 from stoqlib.lib.message import error
-from stoqlib.lib.parameters import sysparam, ensure_system_parameters
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.template import render_template_string
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -123,7 +123,7 @@ def create_main_branch(store, name):
     Company(person=person, store=store)
     branch = Branch(person=person, store=store)
 
-    sysparam(store).MAIN_COMPANY = branch.id
+    sysparam().set_object(store, 'MAIN_COMPANY', branch)
 
     provide_utility(ICurrentBranch, branch)
     admin = get_admin_user(store)
@@ -157,14 +157,15 @@ def register_payment_methods(store):
     pom = get_payment_operation_manager()
 
     log.info("Creating domain objects for payment methods")
-    account = sysparam(store).IMBALANCE_ACCOUNT
+    account_id = sysparam().get_object_id('IMBALANCE_ACCOUNT')
+    assert account_id
     for operation_name in pom.get_operation_names():
         operation = pom.get(operation_name)
         pm = store.find(PaymentMethod, method_name=operation_name).one()
         if pm is None:
             pm = PaymentMethod(store=store,
                                method_name=operation_name,
-                               destination_account=account,
+                               destination_account_id=account_id,
                                max_installments=operation.max_installments)
 
 
@@ -192,11 +193,18 @@ def register_accounts(store):
             account = Account(store=store, description=name)
         account.account_type = atype
 
-    sparam = sysparam(store)
-    sparam.BANKS_ACCOUNT = store.find(Account, description=_(u"Banks")).one().id
-    sparam.TILLS_ACCOUNT = store.find(Account, description=_(u"Tills")).one().id
-    sparam.IMBALANCE_ACCOUNT = store.find(Account,
-                                          description=_(u"Imbalance")).one().id
+    sysparam().set_object(
+        store,
+        'BANKS_ACCOUNT',
+        store.find(Account, description=_(u"Banks")).one())
+    sysparam().set_object(
+        store,
+        'TILLS_ACCOUNT',
+        store.find(Account, description=_(u"Tills")).one())
+    sysparam().set_object(
+        store,
+        'IMBALANCE_ACCOUNT',
+        store.find(Account, description=_(u"Imbalance")).one())
 
 
 def _ensure_card_providers():
@@ -232,10 +240,9 @@ def get_admin_user(store):
                       username=USER_ADMIN_DEFAULT_NAME).one()
 
 
-def ensure_sellable_constants():
+def ensure_sellable_constants(store):
     """ Create native sellable constants. """
     log.info("Creating sellable units")
-    store = new_store()
     unit_list = [(u"Kg", UnitType.WEIGHT),
                  (u"Lt", UnitType.LITERS),
                  (u"m ", UnitType.METERS)]
@@ -254,8 +261,6 @@ def ensure_sellable_constants():
                             tax_type=int(enum),
                             tax_value=None,
                             store=store)
-
-    store.commit(close=True)
 
 
 def user_has_usesuper(store):
@@ -386,9 +391,9 @@ def initialize_system(password=None, testsuite=False,
         register_payment_methods(store)
         from stoqlib.domain.uiform import create_default_forms
         create_default_forms(store)
+        ensure_sellable_constants(store)
+        sysparam().ensure_system_parameters(store)
         store.commit(close=True)
-        ensure_sellable_constants()
-        ensure_system_parameters()
         _ensure_card_providers()
         create_default_profiles()
         _install_invoice_templates()

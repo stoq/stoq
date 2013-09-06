@@ -225,17 +225,22 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         kwargs contains a dictionary of parameter name->value
         """
         from stoqlib.lib.parameters import sysparam
-        s = sysparam(self.store)
+        s = sysparam()
         old_values = {}
         for param, value in kwargs.items():
-            old_values[param] = getattr(s, param)
-            s.update_parameter(unicode(param), value)
-
+            old_values[param] = s.get_bool(param)
+            if type(value) is bool:
+                s.set_bool(self.store, param, value)
+            else:
+                raise NotImplementedError(type(value))
         try:
             yield
         finally:
             for param, value in old_values.items():
-                s.update_parameter(unicode(param), value)
+                if type(value) is bool:
+                    s.set_bool(self.store, param, value)
+                else:
+                    raise NotImplementedError(type(value))
 
     def collect_sale_models(self, sale):
         models = [sale,

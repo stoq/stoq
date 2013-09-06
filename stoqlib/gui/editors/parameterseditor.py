@@ -37,8 +37,7 @@ from stoqlib.domain.image import Image
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.parameters import (sysparam, get_parameter_details,
-                                    DirectoryParameter, FileParameter)
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -63,7 +62,7 @@ class SystemParameterEditor(BaseEditor):
                                 'SYNCHRONIZED_MODE']:
             self.sensitive = False
 
-        self._parameter_details = get_parameter_details(model.field_name)
+        self._parameter_details = sysparam().get_detail_by_name(model.field_name)
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
@@ -94,10 +93,10 @@ class SystemParameterEditor(BaseEditor):
         self._entry = widget
 
     def _setup_spin_entry_slave(self, box=None):
-        data_type = self.constant.get_parameter_type()
+        data_type = self.detail.get_parameter_type()
         widget = ProxySpinButton(data_type=data_type)
         widget.props.sensitive = self.sensitive
-        widget.set_range(self.constant.range[0], self.constant.range[1])
+        widget.set_range(self.detail.range[0], self.detail.range[1])
         widget.set_value(data_type(self.model.field_value))
         widget.set_increments(1, 10)
         if issubclass(data_type, Decimal):
@@ -156,8 +155,7 @@ class SystemParameterEditor(BaseEditor):
         event_box.show()
 
         field_name = self.model.field_name
-        model = sysparam(self.store).get_parameter_by_field(field_name,
-                                                            Image)
+        model = sysparam().get_object(self.store, field_name)
 
         self.container.add(event_box)
         self._image_slave = ImageSlave(self.store, model)
@@ -176,7 +174,8 @@ class SystemParameterEditor(BaseEditor):
         widget.data_type = unicode
         widget.mandatory = True
         if not data:
-            field_type = sysparam(self.store).get_parameter_type(self.model.field_name)
+            detail = sysparam().get_detail_by_name(self.model.field_name)
+            field_type = detail.get_parameter_type()
             result = self.store.find(field_type)
             data = [(res.get_description(), unicode(res.id)) for res in result]
         widget.prefill(data)
@@ -212,7 +211,7 @@ class SystemParameterEditor(BaseEditor):
         widget.data_type = unicode
 
         data = [(value, unicode(key))
-                for key, value in self.constant.options.items()]
+                for key, value in self.detail.options.items()]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
@@ -232,31 +231,31 @@ class SystemParameterEditor(BaseEditor):
 
     def setup_slaves(self):
         self._slave = None
-        sparam = sysparam(self.store)
-        self.constant = sparam.get_parameter_constant(self.model.field_name)
-        field_type = self.constant.get_parameter_type()
+        sparam = sysparam()
+        self.detail = sparam.get_detail_by_name(self.model.field_name)
+        field_type = self.detail.get_parameter_type()
         if issubclass(field_type, Image):
             self._setup_image_slave()
         elif issubclass(field_type, Domain):
             self._setup_comboboxentry_slave()
-        elif issubclass(field_type, FileParameter):
+        elif self.detail.editor == 'file-chooser':
             self._setup_entry_with_filechooser_button_slave()
-        elif issubclass(field_type, DirectoryParameter):
+        elif self.detail.editor == 'directory-chooser':
             self._setup_entry_with_filechooser_button_slave(dir_only=True)
         elif issubclass(field_type, bool):
             self._setup_radio_slave()
         elif issubclass(field_type, (int, float, Decimal)):
-            if self.constant.options:
+            if self.detail.options:
                 self._setup_options_combo_slave()
-            elif self.constant.range:
+            elif self.detail.range:
                 self._setup_spin_entry_slave()
             else:
                 self._setup_entry_slave()
         elif issubclass(field_type, basestring):
-            if self.constant.multiline:
+            if self.detail.multiline:
                 self._setup_text_view_slave()
-            elif self.constant.combo_data:
-                self._setup_comboboxentry_slave(data=self.constant.combo_data())
+            elif self.detail.combo_data:
+                self._setup_comboboxentry_slave(data=self.detail.combo_data())
             else:
                 self._setup_entry_slave()
         else:
@@ -268,9 +267,12 @@ class SystemParameterEditor(BaseEditor):
         if self._block_none_value and self.model.field_value is None:
             return False
 
-        change_callback = self.constant.get_change_callback()
+        change_callback = self.detail.get_change_callback()
         if change_callback:
             change_callback(self.model.field_value, self.store)
+
+        sysparam().set_value_generic(self.model.field_name,
+                                     self.model.field_value)
 
         return True
 
@@ -285,7 +287,7 @@ class SystemParameterEditor(BaseEditor):
         if not value:
             return ValidationError(_("Field can not be empty."))
 
-        validate_func = self.constant.get_parameter_validator()
+        validate_func = self.detail.get_parameter_validator()
         if validate_func and callable(validate_func):
             return validate_func(value)
 
@@ -300,7 +302,7 @@ class SystemParameterEditor(BaseEditor):
         self.model.field_value = unicode(int(widget.get_active()))
 
     def _on_spin__value_changed(self, widget):
-        data_type = self.constant.get_parameter_type()
+        data_type = self.detail.get_parameter_type()
         if data_type is int:
             # float and Decimal are subclasses of int
             value = widget.get_value_as_int()

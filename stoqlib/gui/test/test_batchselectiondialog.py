@@ -88,7 +88,7 @@ class TestBatchIncreaseSelectionDialog(GUITest):
         dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
         self.assertEqual(dialog._last_entry.get_text(), '')
 
-        api.sysparam(self.store).update_parameter(u'SUGGEST_BATCH_NUMBER', u'1')
+        api.sysparam().set_bool(self.store, 'SUGGEST_BATCH_NUMBER', True)
         try:
             storable.register_initial_stock(1, self.create_branch(), 0,
                                             batch_number=u'123')
@@ -107,7 +107,7 @@ class TestBatchIncreaseSelectionDialog(GUITest):
             # it should consider it's batch numbers for the next suggestion
             self.assertEqual(dialog._last_entry.get_text(), '126')
         finally:
-            api.sysparam(self.store).update_parameter(u'SUGGEST_BATCH_NUMBER', u'0')
+            api.sysparam().set_bool(self.store, 'SUGGEST_BATCH_NUMBER', False)
 
     def test_batch_number_suggestion_synchronized_mode(self):
         branch = api.get_current_branch(self.store)
@@ -120,10 +120,10 @@ class TestBatchIncreaseSelectionDialog(GUITest):
         self.assertEqual(dialog._last_entry.get_text(), '')
 
         try:
-            api.sysparam(self.store).update_parameter(u'SUGGEST_BATCH_NUMBER', u'1')
+            api.sysparam().set_bool(self.store, 'SUGGEST_BATCH_NUMBER', True)
             # We need to do this by hand sincr update_parameter won't let us
             # update value for some parameters (SYNCHRONIZED_MODE is one of them)
-            api.sysparam(self.store).SYNCHRONIZED_MODE = u'1'
+            api.sysparam().set_bool(self.store, 'SYNCHRONIZED_MODE', True)
             storable.register_initial_stock(1, self.create_branch(), 0,
                                             batch_number=u'130')
             dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
@@ -153,8 +153,8 @@ class TestBatchIncreaseSelectionDialog(GUITest):
             #     "synchronized mode")):
             #    spinbutton.update(1)
         finally:
-            api.sysparam(self.store).update_parameter(u'SUGGEST_BATCH_NUMBER', u'0')
-            api.sysparam(self.store).SYNCHRONIZED_MODE = u'0'
+            api.sysparam().set_bool(self.store, 'SUGGEST_BATCH_NUMBER', False)
+            api.sysparam().set_bool(self.store, 'SYNCHRONIZED_MODE', False)
 
     def test_batch_number_validation(self):
         storable = self.create_storable(is_batch=True)

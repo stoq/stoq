@@ -139,7 +139,7 @@ class PosApp(ShellApp):
         ShellApp.__init__(self, window, store=store)
 
         self._delivery = None
-        self.param = api.sysparam(self.store)
+        self.param = api.sysparam()
         self._coupon = None
         # Cant use self._coupon to verify if there is a sale, since
         # CONFIRM_SALES_ON_TILL doesnt create a coupon
@@ -324,10 +324,10 @@ class PosApp(ShellApp):
             Settable(quantity=Decimal(1)), ['quantity'])
 
     def _update_parameter_widgets(self):
-        self.delivery_button.props.visible = self.param.HAS_DELIVERY_MODE
+        self.delivery_button.props.visible = self.param.get_bool('HAS_DELIVERY_MODE')
 
         window = self.get_toplevel()
-        if self.param.POS_FULL_SCREEN:
+        if self.param.get_bool('POS_FULL_SCREEN'):
             window.fullscreen()
             push_fullscreen(window)
         else:
@@ -335,9 +335,9 @@ class PosApp(ShellApp):
             window.unfullscreen()
 
         for widget in [self.TillOpen, self.TillClose, self.TillVerify]:
-            widget.set_visible(not self.param.POS_SEPARATE_CASHIER)
+            widget.set_visible(not self.param.get_bool('POS_SEPARATE_CASHIER'))
 
-        if self.param.CONFIRM_SALES_ON_TILL:
+        if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
             confirm_label = _("_Close")
         else:
             confirm_label = _("_Checkout")
@@ -469,7 +469,7 @@ class PosApp(ShellApp):
             raise StoqlibError("_get_sellable_and_batch needs a barcode")
         text = unicode(text)
 
-        fmt = api.sysparam(self.store).SCALE_BARCODE_FORMAT
+        fmt = api.sysparam().get_int('SCALE_BARCODE_FORMAT')
 
         # Check if this barcode is from a scale
         barinfo = parse_barcode(text, fmt)
@@ -588,11 +588,9 @@ class PosApp(ShellApp):
         sale_item = self.sale_items.get_selected()
 
         if sale_item is not None and sale_item.service:
-            store = sale_item.service.store
             # We are fetching DELIVERY_SERVICE into the sale_items' store
             # instead of the default store to avoid accidental commits.
-            delivery_service = store.fetch(self.param.DELIVERY_SERVICE)
-            can_edit = sale_item.service != delivery_service
+            can_edit = not self.param.compare_object('DELIVERY_SERVICE', sale_item.service)
         else:
             can_edit = False
         self.set_sensitive([self.edit_item_button], can_edit)
@@ -658,7 +656,8 @@ class PosApp(ShellApp):
     def _check_delivery_removed(self, sale_item):
         # If a delivery was removed, we need to remove all
         # the references to it eg self._delivery
-        if sale_item.sellable == self.param.DELIVERY_SERVICE.sellable:
+        if (sale_item.sellable ==
+            self.param.get_object(self.store, 'DELIVERY_SERVICE').sellable):
             self._delivery = None
 
     #
@@ -746,8 +745,7 @@ class PosApp(ShellApp):
 
     def _edit_sale_item(self, sale_item):
         if sale_item.service:
-            delivery_service = self.param.DELIVERY_SERVICE
-            if sale_item.service == delivery_service:
+            if self.param.compare_object('DELIVERY_SERVICE', sale_item.service):
                 self._edit_delivery()
                 return
             with api.trans() as store:
@@ -770,7 +768,7 @@ class PosApp(ShellApp):
                 return False
 
         log.info("Cancelling coupon")
-        if not self.param.CONFIRM_SALES_ON_TILL:
+        if not self.param.get_bool('CONFIRM_SALES_ON_TILL'):
             if self._coupon:
                 self._coupon.cancel()
         self._coupon = None
@@ -779,13 +777,13 @@ class PosApp(ShellApp):
         return True
 
     def _create_delivery(self):
-        delivery_sellable = self.param.DELIVERY_SERVICE.sellable
-        if delivery_sellable in self.sale_items:
-            self._delivery = delivery_sellable
+        delivery_param = self.param.get_object(self.store, 'DELIVERY_SERVICE')
+        if delivery_param.sellable in self.sale_items:
+            self._delivery = delivery_param.sellable
 
         delivery = self._edit_delivery()
         if delivery:
-            self._add_delivery_item(delivery, delivery_sellable)
+            self._add_delivery_item(delivery, delivery_param.sellable)
             self._delivery = delivery
 
     def _edit_delivery(self):
@@ -822,15 +820,16 @@ class PosApp(ShellApp):
         user = api.get_current_user(store)
         branch = api.get_current_branch(store)
         salesperson = user.person.salesperson
-        cfop = api.sysparam(store).DEFAULT_SALES_CFOP
+        cfop_id = api.sysparam().get_object_id('DEFAULT_SALES_CFOP')
+        nature = api.sysparam().get_string('DEFAULT_OPERATION_NATURE')
         group = PaymentGroup(store=store)
         sale = Sale(store=store,
                     branch=branch,
                     salesperson=salesperson,
                     group=group,
-                    cfop=cfop,
+                    cfop_id=cfop_id,
                     coupon_id=None,
-                    operation_nature=api.sysparam(store).DEFAULT_OPERATION_NATURE)
+                    operation_nature=nature)
 
         if self._delivery:
             sale.client = store.fetch(self._delivery.client)
@@ -890,7 +889,7 @@ class PosApp(ShellApp):
         else:
             sale = self._create_sale(store)
 
-        if self.param.CONFIRM_SALES_ON_TILL:
+        if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
             sale.order()
             store.commit(close=True)
         else:
@@ -983,7 +982,7 @@ class PosApp(ShellApp):
         See :class:`stoqlib.gui.fiscalprinter.FiscalCoupon` for more information
         """
         self._sale_started = True
-        if self.param.CONFIRM_SALES_ON_TILL:
+        if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
             return
 
         if self._coupon is None:
@@ -995,7 +994,7 @@ class PosApp(ShellApp):
         return self._coupon.add_item(sale_item)
 
     def _coupon_remove_item(self, sale_item):
-        if self.param.CONFIRM_SALES_ON_TILL:
+        if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
             return
 
         assert self._coupon

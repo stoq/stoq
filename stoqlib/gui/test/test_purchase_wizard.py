@@ -71,8 +71,7 @@ class TestPurchaseWizard(GUITest):
 
     def test_create(self):
         # Allow creating purchases in the past.
-        sysparam(self.store).update_parameter(
-            u"ALLOW_OUTDATED_OPERATIONS", u"1")
+        sysparam().set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', True)
 
         self.wizard = PurchaseWizard(self.store)
         purchase_branch = self.create_branch()
