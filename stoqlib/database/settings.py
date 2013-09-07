@@ -760,10 +760,10 @@ class DatabaseSettings(object):
                 log.info("Error getting pg version: %s" % (client_version, ))
                 return
 
-            cvs = map(int, client_version.split('.'))[:2]
+            cvs = tuple(map(int, client_version.split('.'))[:3])
 
             if svs != cvs:
-                server_version = '.'.join(svs)
+                server_version = '.'.join((str, svs))
                 warning(_(u"Problem with PostgreSQL version"),
                         _(u"The version of the PostgreSQL database server (%s) and the "
                           "postgres client tools (%s) differ. I will let you use "
