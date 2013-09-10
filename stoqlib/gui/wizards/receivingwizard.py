@@ -249,6 +249,8 @@ class ReceivingOrderItemStep(WizardEditorStep):
         if self.store.savepoint_exists('before_receivinginvoice_step'):
             self.store.rollback_to_savepoint('before_receivinginvoice_step')
 
+        self.edit_btn.set_sensitive(bool(self.purchase_items.get_selected()))
+
         self.register_validate_function(self._validation_func)
         self.force_validation()
 

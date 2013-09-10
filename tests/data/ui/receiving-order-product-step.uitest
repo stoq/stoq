@@ -16,7 +16,7 @@ GtkDialog(PluggableWizard): title='Receive Purchase Order', hidden
               column: title='Total'
               row: u'Description', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
             GtkHBox(step.hbox1, fill=True):
-              GtkButton(step.edit_btn): 'gtk-edit'
+              GtkButton(step.edit_btn): 'gtk-edit', insensitive
               GtkLabel(step.label1, expand=True, fill=True): 'Total Received:'
               ProxyLabel(step.total_received, fill=True): '<span >$125.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden
