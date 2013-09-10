@@ -25,12 +25,19 @@
 """socket utilities"""
 
 import errno
+import os
 import random
 import socket
 
 
 def get_hostname():
-    return unicode(socket.gethostname())
+    # For LTSP systems we cannot use the hostname as stoq is run
+    # on a shared serve system. Instead the ip of the client system
+    # is available in the LTSP_CLIENT environment variable
+    name = os.environ.get('LTSP_CLIENT_HOSTNAME', None)
+    if name is None:
+        name = socket.gethostname()
+    return unicode(name)
 
 
 def get_random_port():

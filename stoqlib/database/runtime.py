@@ -24,7 +24,6 @@
 """ Runtime routines for applications"""
 
 import logging
-import os
 import sys
 import warnings
 import weakref
@@ -664,12 +663,7 @@ def set_current_branch_station(store, station_name):
     Branch  # pylint: disable=W0104
 
     if station_name is None:
-        # For LTSP systems we cannot use the hostname as stoq is run
-        # on a shared serve system. Instead the ip of the client system
-        # is available in the LTSP_CLIENT environment variable
-        station_name = os.environ.get('LTSP_CLIENT_HOSTNAME', None)
-        if station_name is None:
-            station_name = get_hostname()
+        station_name = get_hostname()
 
     station_name = unicode(station_name)
     from stoqlib.domain.station import BranchStation

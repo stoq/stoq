@@ -860,7 +860,6 @@ class FirstTimeConfigWizard(BaseWizard):
         else:
             branch = None
 
-        # FIXME: what about LTSP
         station_name = get_hostname()
         if store.find(BranchStation, branch=branch, name=station_name).one():
             return
