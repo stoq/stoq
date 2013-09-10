@@ -203,6 +203,7 @@ class StoqlibStore(Store):
         _stores[self] = None
         trace('transaction_create', self)
         self._reset_pending_objs()
+        self._setup_application_name()
 
     def find(self, cls_spec, *args, **kwargs):
         # Overwrite the default find method so we can support querying our own
@@ -353,6 +354,9 @@ class StoqlibStore(Store):
             super(StoqlibStore, self).rollback()
             self._reset_pending_objs()
 
+        # Rolling back resets the application name.
+        self._setup_application_name()
+
         # sqlobject closes the connection after a rollback
         if close:
             self.close()
@@ -469,6 +473,14 @@ class StoqlibStore(Store):
     #
     #  Private
     #
+
+    def _setup_application_name(self):
+        """Sets a friendly name for postgres connection
+
+        This name will appear when selecting from pg_stat_activity, for instance,
+        and will allow to better debug the queries (specially when there is a deadlock)
+        """
+        self.execute("SET application_name = 'stoq - %s'" % (get_hostname()))
 
     def _check_obsolete(self):
         if self.obsolete:
