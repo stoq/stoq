@@ -39,6 +39,7 @@ from stoqlib.domain.person import Client
 from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
                                                OutPaymentEditor)
+from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
                                     STOQ_CALENDAR_WEEK,
                                     STOQ_CALENDAR_MONTH,
@@ -158,6 +159,7 @@ class CalendarView(WebView):
             out_payments=events.get('out-payments', True),
             purchase_orders=events.get('purchase-orders', True),
             client_calls=events.get('client-calls', True),
+            work_orders=events.get('work-orders', True),
         )
 
     def _save_user_settings(self):
@@ -166,6 +168,7 @@ class CalendarView(WebView):
         events['out-payments'] = self._show_events['out_payments']
         events['purchase-orders'] = self._show_events['purchase_orders']
         events['client-calls'] = self._show_events['client_calls']
+        events['work-orders'] = self._show_events['work_orders']
 
     def _update_calendar_size(self, width, height):
         self._calendar_run('option', 'aspectRatio', float(width) / height)
@@ -252,6 +255,9 @@ class CalendarApp(ShellApp):
     gladefile = 'calendar'
 
     def __init__(self, window, store=None):
+        # Create this here because CalendarView will update it.
+        # It will only be shown on create_ui though
+        self.date_label = gtk.Label('')
         self._calendar = CalendarView(self)
         ShellApp.__init__(self, window, store=store)
         self._setup_daemon()
@@ -279,6 +285,8 @@ class CalendarApp(ShellApp):
              group.get('new_payable'), _("Add a new account payable")),
             ('NewReceivable', None, _("Account receivable"),
              group.get('new_receivable'), _("Add a new account receivable")),
+            ('NewWorkOrder', None, _("Work order"),
+             group.get('new_work_order'), _("Add a new work order")),
             # View
             ('Back', gtk.STOCK_GO_BACK, _("Back"),
              group.get('go_back'), _("Go back")),
@@ -302,6 +310,8 @@ class CalendarApp(ShellApp):
              None, _("Show purchases in the list")),
             ('ClientCallEvents', None, _("Client Calls"),
              None, _("Show client calls in the list")),
+            ('WorkOrderEvents', None, _("Work orders"),
+             None, _("Show work orders in the list")),
         ]
         self.add_ui_actions('', toggle_actions, 'ToggleActions',
                             'toggle')
@@ -313,6 +323,7 @@ class CalendarApp(ShellApp):
                           u'payable'),
             purchase_orders=(self.PurchaseEvents, None, u'stock'),
             client_calls=(self.ClientCallEvents, self.NewClientCall, u'sales'),
+            work_orders=(self.WorkOrderEvents, self.NewWorkOrder, u'services'),
         )
 
         user = api.get_current_user(self.store)
@@ -367,7 +378,6 @@ class CalendarApp(ShellApp):
         toolbar.reparent(self.hbox)
 
         # A label to show the current calendar date.
-        self.date_label = gtk.Label('')
         self.date_label.show()
         self.hbox.pack_start(self.date_label, False, False, 6)
         self.hbox.show()
@@ -402,11 +412,19 @@ class CalendarApp(ShellApp):
             in_payments=self.AccountsReceivableEvents.get_active(),
             purchase_orders=self.PurchaseEvents.get_active(),
             client_calls=self.ClientCallEvents.get_active(),
+            work_orders=self.WorkOrderEvents.get_active(),
         )
 
     def _new_client_call(self):
         with api.new_store() as store:
             self.run_dialog(CallsEditor, store, None, None, Client)
+
+        if store.committed:
+            self._update_events()
+
+    def _new_work_order(self):
+        with api.trans() as store:
+            self.run_dialog(WorkOrderEditor, store)
 
         if store.committed:
             self._update_events()
@@ -443,6 +461,9 @@ class CalendarApp(ShellApp):
 
     def on_NewReceivable__activate(self, action):
         self._new_payment(InPaymentEditor)
+
+    def on_NewWorkOrder__activate(self, action):
+        self._new_work_order()
 
     def on_Back__activate(self, action):
         self._calendar.go_prev()

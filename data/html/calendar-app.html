@@ -38,7 +38,7 @@
       };
       options.eventRender = function(event, element) {
         element.qtip({
-          content: event.title,
+          content: event.tooltip || event.title,
           position: {
             my: 'top center',
             at: 'bottom center',
@@ -80,7 +80,8 @@
         startup({data: {'in_payments': true,
                         'out_payments':  true,
                         'purchase_orders': true,
-                        'client_calls': true,}});
+                        'client_calls': true,
+                        'work_orders': true}});
         //$('#calendar').fullCalendar('changeView', 'basicDay')
         //$('#calendar').fullCalendar('gotoDate', 2010, 10)
      }

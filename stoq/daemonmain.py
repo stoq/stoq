@@ -28,6 +28,7 @@ import logging
 import optparse
 import os
 import sys
+import pango
 
 from twisted.internet import reactor
 
@@ -38,8 +39,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoq.lib.options import get_option_parser
 
 _ = stoqlib_gettext
-
 log = logging.getLogger(__name__)
+# FIXME: pango is not used, but we're importing it so that python changes it's
+# default encoding to utf-8, we could also call sys.setdefaultencoding, but
+# then we're have to reload(sys) since it's deleted by site.
+# This is the same workaround done on stoqlib.importer.importers. Maybe we can
+# unify them all and remove them when using python3/unicode_literals
+pango  # pylint: disable=W0104
 
 
 class Daemon(object):

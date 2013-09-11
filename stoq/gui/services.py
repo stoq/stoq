@@ -48,7 +48,7 @@ from stoqlib.gui.interfaces import ISearchResultView
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.stockicons import STOQ_CLIENTS
@@ -406,6 +406,15 @@ class ServicesApp(ShellApp):
         # it explicit for the user that there's an open inventory
         pass
 
+    def search_for_date(self, date):
+        self.main_filter.combo.select(self._not_delivered_filter_item)
+        dfilter = DateSearchFilter(_("Estimated finish"))
+        dfilter.set_removable()
+        dfilter.mode.select_item_by_position(5)
+        self.add_filter(dfilter, columns=["estimated_finish"])
+        dfilter.start_date.set_date(date)
+        self.refresh()
+
     #
     # Private
     #
@@ -488,8 +497,10 @@ class ServicesApp(ShellApp):
             widget.set_visible(value)
 
     def _update_filters(self):
+        self._not_delivered_filter_item = _FilterItem(_(u'Not delivered'),
+                                                      'status:not-delivered')
         options = [
-            _FilterItem(_(u'Not delivered'), 'status:not-delivered'),
+            self._not_delivered_filter_item,
             _FilterItem(_(u'Pending'), 'status:pending'),
             _FilterItem(_(u'In progress'), 'status:in-progress'),
             _FilterItem(_(u'Finished'), 'status:finished'),

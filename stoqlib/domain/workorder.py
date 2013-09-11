@@ -28,7 +28,7 @@
 
 from kiwi.currency import currency
 from storm.expr import (Count, Join, LeftJoin, Alias, Select, Sum, Coalesce,
-                        In, And, Eq, Cast)
+                        In, And, Eq, Not, Cast)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
@@ -1349,6 +1349,30 @@ class WorkOrderView(Viewable):
     @classmethod
     def find_by_current_branch(cls, store, branch):
         return store.find(cls, WorkOrder.current_branch_id == branch.id)
+
+    @classmethod
+    def find_pending(cls, store, start_date=None, end_date=None):
+        """Find results for this view that are pending (not delivered yet)
+
+        :param store: the store that will be used to find the results
+        :param start_date: if not ``None``, the results will be filtered
+            to show only the ones with :attr:`.estimated_finish` greater
+            than it
+        :param end_date: if not ``None``, the results will be filtered
+            to show only the ones with :attr:`.estimated_finish` lesser
+            than it
+        :returns: the matching views
+        :rtype: a sequence of :class:`WorkOrderWithPackageView`
+        """
+        query = Not(In(WorkOrder.status,
+                       [WorkOrder.STATUS_DELIVERED,
+                        WorkOrder.STATUS_CANCELLED]))
+        if start_date:
+            query = And(query, WorkOrder.estimated_finish >= start_date)
+        if end_date:
+            query = And(query, WorkOrder.estimated_finish <= end_date)
+
+        return store.find(cls, query)
 
 
 class WorkOrderWithPackageView(WorkOrderView):

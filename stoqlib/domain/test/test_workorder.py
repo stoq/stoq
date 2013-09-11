@@ -800,6 +800,70 @@ class _TestWorkOrderView(DomainTest):
         workorders = self.view.find_by_current_branch(self.store, branch)
         self.assertEqual(workorders_ids, set([wo.id for wo in workorders]))
 
+    def test_find_pending(self):
+        wo1 = self.create_workorder()
+        wo1.status = WorkOrder.STATUS_OPENED
+        wo2 = self.create_workorder()
+        wo2.status = WorkOrder.STATUS_WORK_WAITING
+        wo3 = self.create_workorder()
+        wo3.status = WorkOrder.STATUS_WORK_IN_PROGRESS
+        wo4 = self.create_workorder()
+        wo4.status = WorkOrder.STATUS_WORK_FINISHED
+        # Those 2 should not appear on the results
+        wo5 = self.create_workorder()
+        wo5.status = WorkOrder.STATUS_DELIVERED
+        wo6 = self.create_workorder()
+        wo6.status = WorkOrder.STATUS_CANCELLED
+
+        work_orders = set(wov.work_order for wov in
+                          WorkOrderView.find_pending(self.store))
+        self.assertEqual(work_orders, set([wo1, wo2, wo3, wo4]))
+
+        wo1.estimated_finish = localdate(2013, 1, 1)
+        wo2.estimated_finish = localdate(2013, 2, 1)
+        wo3.estimated_finish = localdate(2013, 3, 1)
+        wo4.estimated_finish = localdate(2013, 4, 1)
+        wo5.estimated_finish = localdate(2013, 1, 1)
+        wo6.estimated_finish = localdate(2013, 2, 1)
+
+        # Filtering by start date only
+        work_orders = set(wov.work_order for wov in
+                          WorkOrderView.find_pending(
+                              self.store,
+                              start_date=localdate(2013, 1, 1)))
+        self.assertEqual(work_orders, set([wo1, wo2, wo3, wo4]))
+        work_orders = set(wov.work_order for wov in
+                          WorkOrderView.find_pending(
+                              self.store,
+                              start_date=localdate(2013, 1, 2)))
+        self.assertEqual(work_orders, set([wo2, wo3, wo4]))
+
+        # Filtering by end date only
+        work_orders = set(wov.work_order for wov in
+                          WorkOrderView.find_pending(
+                              self.store,
+                              end_date=localdate(2013, 1, 2)))
+        self.assertEqual(work_orders, set([wo1]))
+        work_orders = set(wov.work_order for wov in
+                          WorkOrderView.find_pending(
+                              self.store,
+                              end_date=localdate(2013, 4, 2)))
+        self.assertEqual(work_orders, set([wo1, wo2, wo3, wo4]))
+
+        # Filtering by both start and end dates
+        work_orders = set(wov.work_order for wov in
+                          WorkOrderView.find_pending(
+                              self.store,
+                              start_date=localdate(2013, 1, 1),
+                              end_date=localdate(2013, 4, 2)))
+        self.assertEqual(work_orders, set([wo1, wo2, wo3, wo4]))
+        work_orders = set(wov.work_order for wov in
+                          WorkOrderView.find_pending(
+                              self.store,
+                              start_date=localdate(2013, 3, 1),
+                              end_date=localdate(2013, 4, 2)))
+        self.assertEqual(work_orders, set([wo3, wo4]))
+
     def test_values(self):
         workorder1 = self.create_workorder()
         workorder1.status = self.default_status[0]

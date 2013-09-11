@@ -29,6 +29,7 @@
         <menuitem action="NewClientCall"/>
         <menuitem action="NewPayable"/>
         <menuitem action="NewReceivable"/>
+        <menuitem action="NewWorkOrder"/>
       </placeholder>
     </menu>
   </menu>
@@ -44,6 +45,7 @@
         <menuitem action="AccountsPayableEvents"/>
         <menuitem action="AccountsReceivableEvents"/>
         <menuitem action="PurchaseEvents"/>
+        <menuitem action="WorkOrderEvents"/>
       </menu>
       <menuitem action="Today"/>
       <menuitem action="Back"/>

@@ -103,21 +103,35 @@ class WebView(gtk.ScrolledWindow):
             self.refresh()
         store.close()
 
+    def _dialog_work_order(self, id):
+        from stoqlib.domain.workorder import WorkOrder
+        from stoqlib.gui.editors.workordereditor import WorkOrderEditor
+
+        with api.new_store() as store:
+            model = store.get(WorkOrder, id)
+            user = api.get_current_user(store)
+            visual_mode = not user.profile.check_app_permission(u'services')
+            run_dialog(WorkOrderEditor, self.app, store, model,
+                       visual_mode=visual_mode)
+
     def _show_search_by_date(self, date, app_name):
         y, m, d = map(int, date.split('-'))
         date = localdate(y, m, d).date()
-        shell_app = self.app.window.shell.run_app(
+        shell_app = self.app.window.run_application(
             app_name, refresh=False)
         shell_app.search_for_date(date)
 
     def _show_in_payments_by_date(self, date):
-        self._show_search_by_date(date, 'receivable')
+        self._show_search_by_date(date, u'receivable')
 
     def _show_out_payments_by_date(self, date):
-        self._show_search_by_date(date, 'payable')
+        self._show_search_by_date(date, u'payable')
 
     def _show_purchases_by_date(self, date):
-        self._show_search_by_date(date, 'purchase')
+        self._show_search_by_date(date, u'purchase')
+
+    def _show_work_orders_by_date(self, date):
+        self._show_search_by_date(date, u'services')
 
     def _show_client_calls_by_date(self, date):
         from stoqlib.gui.search.callsearch import ClientCallsSearch
@@ -136,6 +150,8 @@ class WebView(gtk.ScrolledWindow):
             self._dialog_purchase(**kwargs)
         elif path == '/call':
             self._dialog_call(**kwargs)
+        elif path == '/workorder':
+            self._dialog_work_order(**kwargs)
         else:
             raise NotImplementedError(path)
 
@@ -147,6 +163,8 @@ class WebView(gtk.ScrolledWindow):
             self._show_out_payments_by_date(**kwargs)
         elif path == '/purchases-by-date':
             self._show_purchases_by_date(**kwargs)
+        elif path == '/work-orders-by-date':
+            self._show_work_orders_by_date(**kwargs)
         elif path == '/client-calls-by-date':
             self._show_client_calls_by_date(**kwargs)
         else:
@@ -204,7 +222,9 @@ class WebView(gtk.ScrolledWindow):
                                                        policy):
         self._policy_decision(request.props.uri, policy)
 
+    #
     # Public API
+    #
 
     def refresh(self):
         pass

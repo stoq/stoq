@@ -31,6 +31,7 @@ from stoqlib.api import api
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.person import ClientCallsView
 from stoqlib.domain.purchase import PurchaseOrderView
+from stoqlib.domain.workorder import WorkOrderView
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
 _ = stoqlib_gettext
@@ -63,6 +64,8 @@ class CalendarEvents(Resource):
             self._collect_purchase_orders(start, end, day_events, store)
         if resource.args.get('client_calls', [''])[0] == 'true':
             self._collect_client_calls(start, end, day_events, store)
+        if resource.args.get('work_orders', [''])[0] == 'true':
+            self._collect_work_orders(start, end, day_events, store)
 
         # When grouping, events of the same type will be shown as only one, to
         # save space.
@@ -75,7 +78,7 @@ class CalendarEvents(Resource):
     def _append_event(cls, events, date, section, event):
         d = events.setdefault(date,
                               dict(receivable=[], payable=[], purchases=[],
-                                   client_calls=[]))
+                                   client_calls=[], work_orders=[]))
         d[section].append(event)
 
     #
@@ -102,6 +105,11 @@ class CalendarEvents(Resource):
             date, ev = self._create_order(ov)
             self._append_event(day_events, date, 'purchases', ev)
 
+    def _collect_work_orders(self, start, end, day_events, store):
+        for v in WorkOrderView.find_pending(store, start, end):
+            date, ev = self._create_work_order(v)
+            self._append_event(day_events, date, 'work_orders', ev)
+
     #
     #   Events creation
     #
@@ -115,6 +123,27 @@ class CalendarEvents(Resource):
                       "start": str(date),
                       "url": "stoq://dialog/call?id=" + str(call_view.id),
                       "className": 'client_call'}
+
+    def _create_work_order(self, wo_view):
+        date = wo_view.estimated_finish.date()
+        title = '%s: %s (%s)' % (
+            wo_view.identifier, wo_view.equipment, wo_view.client_name)
+        tooltip = '<br />'.join(['%s: %s'] * 6) % (
+            _("#"), wo_view.identifier,
+            _("Status"), wo_view.work_order.status_str,
+            _("Equipment"), wo_view.equipment,
+            _("Category"), wo_view.category_name,
+            _("Client"), wo_view.client_name,
+            _("Salesperson"), wo_view.salesperson_name)
+
+        return date, {
+            'title': title,
+            'tooltip': tooltip,
+            'id': wo_view.id,
+            'type': 'work-order',
+            'start': str(date),
+            'url': 'stoq://dialog/workorder?id=' + str(wo_view.id),
+            'className': 'work_order'}
 
     def _create_in_payment(self, payment_view):
         title = payment_view.description
@@ -198,6 +227,7 @@ class CalendarEvents(Resource):
                 normal_events.extend(events['payable'])
                 normal_events.extend(events['purchases'])
                 normal_events.extend(events['client_calls'])
+                normal_events.extend(events['work_orders'])
         return normal_events
 
     def _create_summary_events(self, date, events):
@@ -205,6 +235,7 @@ class CalendarEvents(Resource):
         out_payment_events = events['payable']
         purchase_events = events['purchases']
         client_calls = events['client_calls']
+        work_orders = events['work_orders']
 
         events = []
 
@@ -225,6 +256,18 @@ class CalendarEvents(Resource):
                 title = title_format % len(client_calls)
                 class_name = "client_call"
                 url = "stoq://show/client-calls-by-date?date=%s" % (date,)
+                add_event(title, url, date, class_name, False)
+
+        if work_orders:
+            if len(work_orders) == 1:
+                events.append(work_orders[0])
+            else:
+                title_format = stoqlib_ngettext(_("%d work order"),
+                                                _("%d work orders"),
+                                                len(work_orders))
+                title = title_format % len(work_orders)
+                class_name = "work_order"
+                url = "stoq://show/work-orders-by-date?date=%s" % (date,)
                 add_event(title, url, date, class_name, False)
 
         if in_payment_events:

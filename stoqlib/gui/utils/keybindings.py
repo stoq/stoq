@@ -112,6 +112,8 @@ _bindings = [
      _("Add a new account payable")),
     ('app.calendar.new_receivable', '',
      _("Add a new account receivable")),
+    ('app.calendar.new_work_order', '',
+     _("Add a new work order")),
     ('app.calendar.go_back', '',
      _("Go back")),
     ('app.calendar.go_forward', '',

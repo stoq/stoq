@@ -9,6 +9,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
               GtkImageMenuItem(): 'Client call'
               GtkImageMenuItem(): 'Account payable'
               GtkImageMenuItem(): 'Account receivable'
+              GtkImageMenuItem(): 'Work order'
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
@@ -35,6 +36,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
               GtkCheckMenuItem(): 'Accounts payable'
               GtkCheckMenuItem(): 'Accounts receivable'
               GtkCheckMenuItem(): 'Purchases'
+              GtkCheckMenuItem(): 'Work orders'
           GtkImageMenuItem(): 'Show today'
           GtkImageMenuItem(): 'Back'
           GtkImageMenuItem(): 'Forward'
