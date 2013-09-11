@@ -39,7 +39,7 @@ class TestWorkOrderQuoteReport(ReportTest):
         workorder.estimated_start = datetime.datetime(2013, 1, 1)
         workorder.estimated_finish = datetime.datetime(2013, 1, 5)
         workorder.estimated_cost = currency(299)
-        workorder.quote_responsible = self.create_user(u'Quote responsible')
+        workorder.quote_responsible = self.create_employee(u'Quote responsible')
         workorder.defect_detected = (
             u"Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
             u"sed do eiusmod tempor incididunt ut labore et dolore magna "
@@ -60,7 +60,7 @@ class TestWorkOrderReceiptReport(ReportTest):
         workorder.identifier = 666
         workorder.approval_date = datetime.datetime(2013, 1, 1)
         workorder.finish_date = datetime.datetime(2013, 1, 5)
-        workorder.execution_responsible = self.create_user(u'Quote responsible')
+        workorder.execution_responsible = self.create_employee(u'Quote responsible')
         for description, quantity, price in [
                 (u'Product A', 2, 20),
                 (u'Product B', 1, 500),

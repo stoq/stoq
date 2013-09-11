@@ -54,6 +54,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     item: 'Deivis Alexandre Junior'
                     item: 'Maria Aparecida Ardana'
                     item: 'Osvaldo Denadai Marin'
+                    item: 'SalesPerson'
                   GtkLabel(label10): 'Estimated time:'
                   ProxyEntry(estimated_hours): ''
                   GtkLabel(label11): 'Estimated cost:'
@@ -75,6 +76,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     item: 'Deivis Alexandre Junior'
                     item: 'Maria Aparecida Ardana'
                     item: 'Osvaldo Denadai Marin'
+                    item: 'SalesPerson'
                 GtkHSeparator(hseparator1, fill=True):
                 GtkEventBox(sellable_item_holder, expand=True, fill=True): slave _WorkOrderItemSlave is attached
                   GtkVBox(toplevel):

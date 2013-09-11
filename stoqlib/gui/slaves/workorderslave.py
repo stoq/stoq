@@ -38,7 +38,7 @@ from storm.expr import And, Eq, Or
 
 from stoqlib.api import api
 from stoqlib.database.expr import Field
-from stoqlib.domain.person import LoginUser
+from stoqlib.domain.person import Employee
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
@@ -357,8 +357,8 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
     #
 
     def _fill_quote_responsible_combo(self):
-        users = LoginUser.get_active_users(self.store)
-        self.quote_responsible.prefill(api.for_person_combo(users))
+        employees = Employee.get_active_employees(self.store)
+        self.quote_responsible.prefill(api.for_person_combo(employees))
 
     #
     #  Callbacks
@@ -412,8 +412,8 @@ class WorkOrderExecutionSlave(BaseEditorSlave):
     #
 
     def _fill_execution_responsible_combo(self):
-        users = LoginUser.get_active_users(self.store)
-        self.execution_responsible.prefill(api.for_person_combo(users))
+        employees = Employee.get_active_employees(self.store)
+        self.execution_responsible.prefill(api.for_person_combo(employees))
 
 
 class WorkOrderHistorySlave(BaseEditorSlave):

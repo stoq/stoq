@@ -668,12 +668,12 @@ class WorkOrder(Domain):
     execution_branch = Reference(execution_branch_id, 'Branch.id')
 
     quote_responsible_id = IdCol(default=None)
-    #: the |loginuser| responsible for the :obj:`.defect_detected`
-    quote_responsible = Reference(quote_responsible_id, 'LoginUser.id')
+    #: the |employee| responsible for the :obj:`.defect_detected`
+    quote_responsible = Reference(quote_responsible_id, 'Employee.id')
 
     execution_responsible_id = IdCol(default=None)
-    #: the |loginuser| responsible for the execution of the work
-    execution_responsible = Reference(execution_responsible_id, 'LoginUser.id')
+    #: the |employee| responsible for the execution of the work
+    execution_responsible = Reference(execution_responsible_id, 'Employee.id')
 
     client_id = IdCol(default=None)
     #: the |client|, owner of the equipment
