@@ -258,9 +258,13 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
+        self._new_model = False
         self._fill_quote_responsible_combo()
 
         self.add_proxy(self.model, self.proxy_widgets)
+
+    def on_attach(self, editor):
+        self._new_model = not editor.edit_mode
 
     #
     #  Private
@@ -276,19 +280,20 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
 
     def on_estimated_start__validate(self, widget, value):
         sysparam_ = api.sysparam(self.store)
-        if (value < localtoday().date() and
+        if (self._new_model and value < localtoday().date() and
                 not sysparam_.ALLOW_OUTDATED_OPERATIONS):
             return ValidationError(u"The start date cannot be on the past")
 
         self.estimated_finish.validate(force=True)
 
     def on_estimated_finish__validate(self, widget, value):
-        estimated_start = self.estimated_start.read()
-        if value and not estimated_start:
-            return ValidationError(
-                _(u"To define a finish date you must define a start date too"))
+        sysparam_ = api.sysparam(self.store)
+        if (self._new_model and value < localtoday().date() and
+                not sysparam_.ALLOW_OUTDATED_OPERATIONS):
+            return ValidationError(u"The end date cannot be on the past")
 
-        if value < estimated_start:
+        estimated_start = self.estimated_start.read()
+        if estimated_start and value < estimated_start:
             return ValidationError(
                 _(u"Finished date needs to be after start date"))
 
