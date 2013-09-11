@@ -11,3 +11,11 @@
 #notice pre {
     margin-left: 0.2cm;
 }
+
+section.signatures {
+    position: absolute;
+    top: 90%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

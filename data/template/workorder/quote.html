@@ -17,17 +17,25 @@
   <table class="details">
     <tbody>
       <tr>
+        <td>${ _("Order Number:") }:</td>
+        <td>${ report.workorder.identifier }</td>
         <td>${ _("Equipment") }:</td>
         <td colspan=3>${ report.workorder.equipment }</td>
       </tr>
       <tr>
         <td>${ _("Client") }:</td>
-        <td>${ report.workorder.client.person.name }</td>
+        <td colspan=5>${ report.workorder.client.person.name }</td>
+      </tr>
+      <tr>
+        <td>${ _("Phone") }:</td>
+        <td>${ report.workorder.client.person.get_formatted_phone_number()}</td>
+        <td>${ _("Cell Phone") }:</td>
+        <td colspan=3>${ report.workorder.client.person.get_formatted_mobile_number()}</td>
+      </tr>
+      <tr>
         <td>${ _("Estimated cost") }:</td>
         <td>${ format_price(report.workorder.estimated_cost) if \
                report.workorder.estimated_cost else '' }</td>
-      </tr>
-      <tr>
         <td>${ _("Estimated start") }:</td>
         <td>${ format_date(report.workorder.estimated_start) }</td>
         <td>${ _("Estimated finish") }:</td>
@@ -41,14 +49,21 @@
     <pre>${ report.workorder.defect_detected }</pre>
   </section>
 
-  % if report.workorder.quote_responsible:
     <section class="signatures">
       <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
                          if there is not enough space -->
+      <div>
+      <span class="signature">
+        <b>${ _("Client signature") }</b><br />
+        ${ report.workorder.client.get_description() }<br />
+      </div>
+      <div>
       <span class="signature">
         <b>${ _("Responsible signature") }</b><br />
-        ${ report.workorder.quote_responsible.get_description() }<br />
-      </span>
+        % if report.workorder.quote_responsible:
+            ${ report.workorder.quote_responsible.get_description() }<br />
+        % endif
+     </span>
+      <div>
     </section>
-  % endif
 </div>

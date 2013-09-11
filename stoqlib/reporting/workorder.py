@@ -40,7 +40,7 @@ class WorkOrdersReport(ObjectListReport):
 
 class _BaseWorkOrderReport(HTMLReport):
     title = _("Work order")
-    complete_header = False
+    complete_header = True
 
     def __init__(self, filename, workorder):
         self.workorder = workorder
@@ -56,3 +56,14 @@ class WorkOrderQuoteReport(_BaseWorkOrderReport):
 
 class WorkOrderReceiptReport(_BaseWorkOrderReport):
     template_filename = "workorder/receipt.html"
+
+
+if __name__ == '__main__':  # pragma nocover
+    from stoqlib.api import api
+    from stoqlib.domain.workorder import WorkOrder
+    import sys
+    creator = api.prepare_test()
+    wo = creator.store.find(WorkOrder, identifier=int(sys.argv[-1])).one()
+    r = WorkOrderQuoteReport('test.pdf', wo)
+    r.save_html('test.html')
+    r.save()

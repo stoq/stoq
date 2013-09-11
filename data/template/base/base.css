@@ -15,6 +15,7 @@
  *
  */
 .page {
+    width: 90%;
     page-break-after: always;
 }
 
@@ -27,10 +28,11 @@ section.signatures {
 .signature {
     float: right;
     text-align: center;
-    width: 100mm;
+    width: 40%;
+    bottom: 0px;
     border-top: 1px solid black;
     margin-left: 1cm;
-    margin-top: 1cm;
+    margin-bottom:1cm;
 }
 
 .bold {
@@ -106,6 +108,7 @@ body {
     .page {
         background-color: white;
         width: 267mm;
+        height: 100%;
         padding: 15mm;
         margin: 0 auto;
         box-shadow: 5px 5px 5px #888, -5px 5px 5px #888;
