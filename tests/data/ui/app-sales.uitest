@@ -105,6 +105,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                       item: 'Confirmed'
                       item: 'Paid'
                       item: 'Cancelled'
+                      item: 'Ordered'
                       item: 'Returned'
                       item: 'Quoting'
                       item: 'Renegotiated'

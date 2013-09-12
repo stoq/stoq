@@ -87,14 +87,14 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
                   ComboSearchFilter():
                     GtkLabel(): 'Show orders'
                     ProxyComboBox(padding=6):
-                      item: 'Any'
+                      item: 'Any', selected
                       item: 'Opened'
                       item: 'Confirmed'
                       item: 'Paid'
                       item: 'Cancelled'
                       item: 'Ordered'
                       item: 'Returned'
-                      item: 'Quoting', selected
+                      item: 'Quoting'
                       item: 'Renegotiated'
                   SearchFilter():
                     GtkLabel(): 'Search:'
@@ -106,7 +106,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
                   GtkButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
                 column: title='#'
-                column: title='Status', hidden
+                column: title='Status'
                 column: title='Date Started'
                 column: title='Client', expand
                 column: title='Salesperson'

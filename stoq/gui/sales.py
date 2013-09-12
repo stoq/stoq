@@ -105,6 +105,7 @@ class SalesApp(ShellApp):
     cols_info = {Sale.STATUS_INITIAL: 'open_date',
                  Sale.STATUS_CONFIRMED: 'confirm_date',
                  Sale.STATUS_PAID: 'close_date',
+                 Sale.STATUS_ORDERED: 'open_date',
                  Sale.STATUS_CANCELLED: 'cancel_date',
                  Sale.STATUS_QUOTE: 'open_date',
                  Sale.STATUS_RETURNED: 'return_date',
@@ -387,9 +388,7 @@ class SalesApp(ShellApp):
         self._create_summary_label()
 
     def _get_status_values(self):
-        items = [(value, key) for key, value in Sale.statuses.items()
-                 # No reason to show orders in sales app
-                 if key != Sale.STATUS_ORDERED]
+        items = [(value, key) for key, value in Sale.statuses.items()]
         items.insert(0, (_('Any'), None))
         return items
 
@@ -405,15 +404,14 @@ class SalesApp(ShellApp):
         ]
 
         for key, value in Sale.statuses.items():
-            if key == Sale.STATUS_ORDERED:
-                continue
-
             options.append((value, FilterItem('status', key)))
         return options
 
     def _get_status_query(self, state):
         if state.value is None:
-            return SaleView.status != Sale.STATUS_ORDERED
+            # FIXME; We cannot return None here, otherwise, the query will have
+            # a 'AND NULL', which will return nothing.
+            return True
 
         if state.value.name == 'custom':
             self._setup_columns(None)

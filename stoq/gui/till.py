@@ -198,7 +198,6 @@ class TillApp(ShellApp):
                                      'identifier_str'])
         self.status_filter = ComboSearchFilter(_(u"Show orders"),
                                                self._get_status_values())
-        self.status_filter.select(Sale.STATUS_QUOTE)
         self.add_filter(self.status_filter, position=SearchFilterPosition.TOP,
                         columns=['status'])
 
@@ -206,7 +205,7 @@ class TillApp(ShellApp):
         return [IdentifierColumn('identifier', long_title=_('Order #'),
                                  sorted=True),
                 Column('status_name', title=_(u'Status'), data_type=str,
-                       visible=False),
+                       visible=True),
                 SearchColumn('open_date', title=_('Date Started'), width=110,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('client_name', title=_('Client'),
