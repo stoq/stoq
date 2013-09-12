@@ -209,7 +209,8 @@ class StockApp(ShellApp):
 
     def create_filters(self):
         self.search.set_query(self._query)
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(['description', 'code', 'barcode',
+                                     'category_description', 'manufacturer'])
         branches = Branch.get_active_branches(self.store)
         self.branch_filter = ComboSearchFilter(
             _('Show by:'), api.for_combo(branches, empty=_("All branches")))
