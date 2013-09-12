@@ -22,23 +22,61 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-__tests__ = 'stoqlib/domain/sellable.py'
-
 from decimal import Decimal
 
 from kiwi.currency import currency
+import mock
+from stoqdrivers.enum import TaxType
 
-from stoqlib.exceptions import SellableError
-from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.exceptions import SellableError, TaxError
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import Storable
-from stoqlib.domain.sellable import (Sellable,
-                                     SellableCategory, ClientCategoryPrice)
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.sellable import (Sellable,
+                                     SellableCategory,
+                                     SellableUnit,
+                                     SellableTaxConstant,
+                                     ClientCategoryPrice)
+from stoqlib.domain.taxes import ProductTaxTemplate, ProductIcmsTemplate
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import (ProductFullStockView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)
+from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
+
+__tests__ = 'stoqlib/domain/sellable.py'
+
+
+class TestSellableUnit(DomainTest):
+    def test_get_description(self):
+        unit = SellableUnit(store=self.store,
+                            description=u'foo')
+        self.assertEquals(unit.get_description(), u'foo')
+
+
+class TestSellableTaxConstant(DomainTest):
+    def test_get_description(self):
+        constant = SellableTaxConstant(store=self.store,
+                                       description=u'foo')
+        self.assertEquals(constant.get_description(), u'foo')
+
+    def test_get_value(self):
+        constant = SellableTaxConstant(store=self.store,
+                                       tax_type=TaxType.NONE)
+        self.assertEquals(constant.get_value(), 'TAX_NONE')
+
+        constant = SellableTaxConstant(store=self.store,
+                                       tax_type=TaxType.EXEMPTION)
+        self.assertEquals(constant.get_value(), 'TAX_EXEMPTION')
+
+        constant = SellableTaxConstant(store=self.store,
+                                       tax_type=TaxType.SUBSTITUTION)
+        self.assertEquals(constant.get_value(), 'TAX_SUBSTITUTION')
+
+        constant = SellableTaxConstant(store=self.store,
+                                       tax_type=TaxType.SERVICE)
+        self.assertEquals(constant.get_value(), 'TAX_SERVICE')
 
 
 class TestSellableCategory(DomainTest):
@@ -95,10 +133,63 @@ class TestSellableCategory(DomainTest):
         category.tax_constant = constant2
         self.assertEquals(category.get_tax_constant(), constant2)
 
+    def test_get_children_recursively(self):
+        base_category = SellableCategory(description=u"Monitor",
+                                         store=self.store)
+        category = SellableCategory(description=u"LCD Monitor",
+                                    category=base_category,
+                                    store=self.store)
+
+        self.assertEquals(category.get_children_recursively(), set())
+        self.assertEquals(base_category.get_children_recursively(), set([category]))
+
+    def test_on_create(self):
+        category = self._create_category(u'cat')
+        with mock.patch('stoqlib.domain.sellable.CategoryCreateEvent') as f:
+            category.on_create()
+
+        f.emit.assert_called_once_with(category)
+
+    def test_on_update(self):
+        category = self._create_category(u'cat')
+        with mock.patch('stoqlib.domain.sellable.CategoryEditEvent') as f:
+            category.on_update()
+
+        f.emit.assert_called_once_with(category)
+
     def _create_category(self, description, parent=None):
         return SellableCategory(description=description,
                                 category=parent,
                                 store=self.store)
+
+
+class TestClientCategoryPrice(DomainTest):
+    def test_category_name(self):
+        sellable = Sellable(category=None,
+                            cost=50,
+                            description=u"Test",
+                            price=currency(100),
+                            store=self.store)
+        sellable.max_discount = 0
+        cat = self.create_client_category(u'Cat 1')
+        cat_price = ClientCategoryPrice(sellable=sellable, category=cat,
+                                        price=150, max_discount=0,
+                                        store=self.store)
+        self.assertEquals(cat_price.category_name, u'Cat 1')
+
+    def test_markup(self):
+        sellable = Sellable(category=None,
+                            cost=0,
+                            store=self.store)
+        cat = self.create_client_category(u'Cat 1')
+        cat_price = ClientCategoryPrice(sellable=sellable, category=cat,
+                                        price=150, max_discount=0,
+                                        store=self.store)
+        self.assertEquals(cat_price.markup, 0)
+        sellable.cost = 10
+        self.assertEquals(cat_price.markup, 1400)
+
+        cat_price.markup = 10
 
 
 class TestSellable(DomainTest):
@@ -110,6 +201,26 @@ class TestSellable(DomainTest):
                                           category=self._base_category,
                                           suggested_markup=10,
                                           store=self.store)
+
+    def test_get_description(self):
+        sellable = self.create_sellable()
+        sellable.category = self._category
+        self.assertEquals(sellable.get_description(), 'Description')
+        self.assertEquals(sellable.get_description(full_description=True),
+                          '[Hollywood] Description')
+
+    def test_get_category_description(self):
+        sellable = self.create_sellable()
+        sellable.category = self._category
+        self.assertEquals(sellable.get_category_description(), 'Hollywood')
+
+    def test_has_image(self):
+        sellable = self.create_sellable()
+        self.assertEquals(sellable.has_image, False)
+        sellable.image = self.create_image()
+        self.assertEquals(sellable.has_image, False)
+        sellable.image.image = '0xf00bar'
+        self.assertEquals(sellable.has_image, True)
 
     def test_price_based_on_category_markup(self):
         # When the price isn't defined, but the category and the cost. In this
@@ -190,6 +301,66 @@ class TestSellable(DomainTest):
         self.failUnless(sellable.markup == 0,
                         u"Expected markup %r, got %r" % (0, sellable.markup))
 
+    def test_price_on_sale_price_getter(self):
+        sellable = Sellable(category=self._category,
+                            cost=50,
+                            description=u"Test",
+                            price=100,
+                            store=self.store)
+
+        self.assertEquals(sellable.price, 100)
+        sellable.on_sale_price = 80
+        self.assertEquals(sellable.price, 80)
+
+        # - Old promotion
+        sellable.on_sale_start_date = localdate(2001, 1, 1)
+        sellable.on_sale_end_date = localdate(2002, 1, 1)
+        self.assertEquals(sellable.price, 100)
+
+        # - Future promotion
+        sellable.on_sale_start_date = localdate(3001, 1, 1)
+        sellable.on_sale_end_date = localdate(3002, 1, 1)
+        self.assertEquals(sellable.price, 100)
+
+        # Current promotion
+        sellable.on_sale_start_date = localdate(2001, 1, 1)
+        sellable.on_sale_end_date = localdate(3002, 1, 1)
+        self.assertEquals(sellable.price, 80)
+
+    def test_price_on_sale_price_setter(self):
+        sellable = Sellable(category=self._category,
+                            cost=50,
+                            description=u"Test",
+                            price=100,
+                            store=self.store)
+        sellable.on_sale_price = 80
+
+        # - Old promotion
+        sellable.on_sale_start_date = localdate(2001, 1, 1)
+        sellable.on_sale_end_date = localdate(2002, 1, 1)
+        sellable.price = 10
+        self.assertEquals(sellable.base_price, 10)
+        self.assertEquals(sellable.on_sale_price, 80)
+
+        # - Future promotion
+        sellable.on_sale_start_date = localdate(3001, 1, 1)
+        sellable.on_sale_end_date = localdate(3002, 1, 1)
+        sellable.price = 10
+        self.assertEquals(sellable.base_price, 10)
+        self.assertEquals(sellable.on_sale_price, 80)
+
+        # Current promotion
+        sellable.price = 100
+        sellable.on_sale_start_date = localdate(2001, 1, 1)
+        sellable.on_sale_end_date = localdate(3002, 1, 1)
+        sellable.price = 10
+        self.assertEquals(sellable.base_price, 100)
+        self.assertEquals(sellable.on_sale_price, 10)
+
+        sellable.price = -80
+        self.assertEquals(sellable.base_price, 100)
+        self.assertEquals(sellable.on_sale_price, 0)
+
     def test_get_available_sellables_query(self):
         # Sellable and query without supplier
         sellable = self.create_sellable()
@@ -216,6 +387,12 @@ class TestSellable(DomainTest):
             self.store.find(Sellable,
                             Sellable.get_available_sellables_query(self.store)))
 
+    def test_set_available(self):
+        sellable = self.create_sellable()
+        with self.assertRaisesRegexp(
+            ValueError, 'This sellable is already available'):
+            sellable.set_available()
+
     def test_get_unblocked_sellables(self):
         # Sellable and query without supplier
         sellable = self.create_sellable()
@@ -238,6 +415,12 @@ class TestSellable(DomainTest):
         # Now the sellable should appear in the results
         available = Sellable.get_unblocked_sellables(self.store,
                                                      supplier=supplier)
+        self.assertTrue(sellable in list(available))
+
+        # Now the sellable should appear in the results
+        storable = Storable(product=sellable.product, store=self.store)
+        available = Sellable.get_unblocked_sellables(self.store,
+                                                     storable=storable)
         self.assertTrue(sellable in list(available))
 
     def test_get_unblocked_by_category_query(self):
@@ -392,6 +575,10 @@ class TestSellable(DomainTest):
         valid_data = sellable.is_valid_price(50, None, user)
         isValidPriceAssert(valid_data, True, currency(50), 50)
 
+        # with discount
+        valid_data = sellable.is_valid_price(50, None, user, extra_discount=10)
+        isValidPriceAssert(valid_data, True, currency(40), 50)
+
     def test_get_tax_constant(self):
         base_category = SellableCategory(description=u"Monitor",
                                          store=self.store)
@@ -493,11 +680,14 @@ class TestSellable(DomainTest):
         self.failIf(sellable.can_close())
 
     def test_can_remove(self):
-        branch = get_current_branch(self.store)
+        sellable = Sellable(store=self.store)
+        self.failIf(sellable.can_remove())
+
         sellable = self.create_sellable()
         storable = Storable(product=sellable.product, store=self.store)
         self.failUnless(sellable.can_remove())
 
+        branch = get_current_branch(self.store)
         storable.increase_stock(1, branch, 0, None)
         sale = self.create_sale()
         sale.status = Sale.STATUS_QUOTE
@@ -583,3 +773,38 @@ class TestSellable(DomainTest):
         self.assertEquals(sellable.barcode, u'barcode')
         sellable2 = self.create_sellable(price=100)
         self.assertRaises(SellableError, setattr, sellable2, u'barcode', u'barcode')
+
+    def test_get_suggested_markup(self):
+        sellable = self.create_sellable()
+        self.assertEquals(sellable.get_suggested_markup(), None)
+
+        category = SellableCategory(description=u"LCD Monitor",
+                                    store=self.store)
+        sellable.category = category
+        self.assertEquals(sellable.get_suggested_markup(), 0)
+
+        category.suggested_markup = 10
+
+        self.assertEquals(sellable.get_suggested_markup(), 10)
+
+    def test_check_taxes_validity(self):
+        sellable = self.create_sellable()
+        sellable.check_taxes_validity()
+
+        tax = ProductTaxTemplate(store=self.store, name=u'foo')
+        sellable.product.icms_template = ProductIcmsTemplate(
+            store=self.store,
+            product_tax_template=tax)
+
+        sellable.check_taxes_validity()
+
+        sellable.product.icms_template.p_cred_sn = 10
+        sellable.product.icms_template.p_cred_sn_valid_until = localdate(2000, 1, 1)
+
+        with self.assertRaises(TaxError) as e:
+            sellable.check_taxes_validity()
+            self.assertEquals(str(e), ("You cannot sell this item before updating "
+                                       "the 'ICMS tax rate credit' field on 'foo' "
+                                       "Tax Class.\n"
+                                       "If you don't know what this means, contact "
+                                       "the system administrator."))

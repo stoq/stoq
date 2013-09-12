@@ -49,7 +49,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.image import Image
-from stoqlib.exceptions import DatabaseInconsistency, SellableError, TaxError
+from stoqlib.exceptions import SellableError, TaxError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.parameters import sysparam
@@ -504,12 +504,6 @@ class Sellable(Domain):
             cost = self.cost
         return currency(quantize(cost + (cost * (markup / currency(100)))))
 
-    def _get_status_string(self):
-        if not self.status in self.statuses:
-            raise DatabaseInconsistency(_('Invalid status for product got %d')
-                                        % self.status)
-        return self.statuses[self.status]
-
     #
     # Properties
     #
@@ -652,14 +646,6 @@ class Sellable(Domain):
 
     def get_commission(self):
         return self.commission
-
-    def get_short_description(self):
-        """Returns a short description of the current sellable
-
-        :returns: description
-        :rtype: unicode
-        """
-        return u'%s %s' % (self.id, self.description)
 
     def get_suggested_markup(self):
         """Returns the suggested markup for the sellable
