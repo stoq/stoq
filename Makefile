@@ -69,7 +69,8 @@ coverage: clean
 	    --cover-erase \
 	    --cover-inclusive \
 	    $(TEST_MODULES) && \
-	tools/validatecoverage coverage.xml
+	tools/validatecoverage coverage.xml && \
+	git show|tools/diff-coverage jenkins-test/stoq-$$VERSION/coverage.xml
 
 jenkins: check-source-all
 	unset STOQLIB_TEST_QUICK; \
@@ -87,7 +88,8 @@ jenkins: check-source-all
 	    --cover-inclusive \
 	    $(TEST_MODULES) && \
 	cd ../.. && \
-	tools/validatecoverage jenkins-test/stoq-$$VERSION/coverage.xml
+	tools/validatecoverage jenkins-test/stoq-$$VERSION/coverage.xml && \
+	git show|tools/diff-coverage jenkins-test/stoq-$$VERSION/coverage.xml
 
 external:
 	@cat requirements.txt | \
