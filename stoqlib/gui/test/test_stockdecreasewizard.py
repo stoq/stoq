@@ -61,7 +61,8 @@ class TestStockDecreaseWizard(GUITest):
         self.assertSensitive(wizard, ['next_button'])
         module = 'stoqlib.gui.events.StockDecreaseWizardFinishEvent.emit'
         with mock.patch(module) as emit:
-            self.click(wizard.next_button)
+            with mock.patch.object(self.store, 'commit'):
+                self.click(wizard.next_button)
             self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], StockDecrease))
@@ -131,7 +132,8 @@ class TestStockDecreaseWizard(GUITest):
         step.sellable_selected(sellable)
         step.quantity.update(1)
         self.click(step.add_sellable_button)
-        self.click(wizard.next_button)
+        with mock.patch.object(self.store, 'commit'):
+            self.click(wizard.next_button)
 
         self.assertEquals(wizard.model.cost_center, cost_center)
         entry = self.store.find(CostCenterEntry,

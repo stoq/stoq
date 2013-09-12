@@ -891,7 +891,7 @@ class PosApp(ShellApp):
 
         if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
             sale.order()
-            store.commit(close=True)
+            store.commit()
         else:
             assert self._coupon
 
@@ -911,10 +911,14 @@ class PosApp(ShellApp):
                 return
 
             log.info("Checking out")
-            store.close()
 
         self._coupon = None
         POSConfirmSaleEvent.emit(sale, self.sale_items[:])
+
+        # We must close the connection only after the event is emmited, since it
+        # may use value from the sale that will become invalid after it is
+        # closed
+        store.close()
         self._clear_order()
 
     def _remove_selected_item(self):

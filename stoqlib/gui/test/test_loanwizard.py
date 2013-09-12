@@ -57,7 +57,8 @@ class TestNewLoanWizard(GUITest):
         loan_item = self.store.find(LoanItem, sellable=sellable).one()
         module = 'stoqlib.gui.events.NewLoanWizardFinishEvent.emit'
         with mock.patch(module) as emit:
-            self.click(wizard.next_button)
+            with mock.patch.object(self.store, 'commit'):
+                self.click(wizard.next_button)
             self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], Loan))

@@ -504,6 +504,8 @@ class NewLoanWizard(BaseWizard):
         self.model.sync_stock()
         self.retval = self.model
         self.close()
+        # Confirm before printing to avoid losing data if something breaks
+        self.store.confirm(self.retval)
         NewLoanWizardFinishEvent.emit(self.model)
         self._print_receipt(self.model)
 

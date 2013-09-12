@@ -509,6 +509,8 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
         self.retval = self.model
         self.close()
 
+        # Commit before printing to avoid losing data if something breaks
+        self.store.confirm(self.retval)
         if self.credit:
             if yesno(_(u'Would you like to print the credit letter?'),
                      gtk.RESPONSE_YES, _(u"Print Letter"), _(u"Don't print")):

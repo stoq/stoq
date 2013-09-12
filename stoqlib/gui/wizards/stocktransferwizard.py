@@ -230,5 +230,8 @@ class StockTransferWizard(BaseWizard):
 
         self.retval = self.model
         self.close()
+
+        # Commit before printing to avoid losing data if something breaks
+        self.store.confirm(self.retval)
         StockTransferWizardFinishEvent.emit(self.model)
         self._receipt_dialog(self.model)

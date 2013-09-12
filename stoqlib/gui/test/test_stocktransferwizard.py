@@ -61,7 +61,8 @@ class TestStockTransferWizard(GUITest):
 
         module = 'stoqlib.gui.events.StockTransferWizardFinishEvent.emit'
         with mock.patch(module) as emit:
-            self.click(wizard.next_button)
+            with mock.patch.object(self.store, 'commit'):
+                self.click(wizard.next_button)
             self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], TransferOrder))

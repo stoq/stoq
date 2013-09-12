@@ -306,5 +306,8 @@ class StockDecreaseWizard(BaseWizard):
         self.retval = self.model
         self.model.confirm()
         self.close()
+
+        # Commit before printing to avoid losing data if something breaks
+        self.store.confirm(self.retval)
         StockDecreaseWizardFinishEvent.emit(self.model)
         self._receipt_dialog()

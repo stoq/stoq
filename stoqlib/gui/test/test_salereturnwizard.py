@@ -219,7 +219,8 @@ class TestSaleReturnWizard(GUITest):
         with mock.patch(module) as emit:
             # Cancel the payment, so returned_sale.total_amount will be 0
             payment.cancel()
-            self.click(wizard.next_button)
+            with mock.patch.object(self.store, 'commit'):
+                self.click(wizard.next_button)
             info.assert_called_once_with(
                 "The client does not have a debt to this sale anymore. "
                 "Any existing unpaid installment will be cancelled.")
@@ -240,7 +241,8 @@ class TestSaleReturnWizard(GUITest):
 
         module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
         with mock.patch(module) as emit:
-            self.click(wizard.next_button)
+            with mock.patch.object(self.store, 'commit'):
+                self.click(wizard.next_button)
             info.assert_called_once_with(
                 "A reversal payment to the client will be created. "
                 "You can see it on the Payable Application.")

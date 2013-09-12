@@ -202,7 +202,8 @@ class TestSaleQuoteWizard(GUITest):
 
         module = 'stoqlib.gui.events.SaleQuoteWizardFinishEvent.emit'
         with mock.patch(module) as emit:
-            self.click(wizard.next_button)
+            with mock.patch.object(self.store, 'commit'):
+                self.click(wizard.next_button)
             self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], Sale))

@@ -544,6 +544,9 @@ class SaleQuoteWizard(BaseWizard):
         self.model.group.confirm()
 
         self.retval = self.model
+
+        # Commit before printing to avoid losing data if something breaks
+        self.store.confirm(self.model)
         SaleQuoteWizardFinishEvent.emit(self.model)
         self.close()
         self.print_quote_details(self.model)

@@ -479,10 +479,10 @@ class ReceivingOrderWizard(BaseWizard):
                 continue
             self.store.remove(item)
 
-        self._maybe_print_labels()
-
-        ReceivingOrderWizardFinishEvent.emit(self.model)
-
-        self.retval = self.model
         self.model.confirm()
+        self.retval = self.model
+        # Confirm before printing to avoid losing data if something breaks
+        self.store.confirm(self.retval)
+        self._maybe_print_labels()
+        ReceivingOrderWizardFinishEvent.emit(self.model)
         self.close()

@@ -978,6 +978,9 @@ class ConfirmSaleWizard(BaseWizard):
         # FIXME: This is set too late on Sale.confirm(). If PaymentGroup don't
         #        have a payer, we won't be able to print bills/booklets.
         group.payer = self.model.client and self.model.client.person
+
+        # Commit before printing to avoid losing data if something breaks
+        self.store.confirm(self.retval)
         ConfirmSaleWizardFinishEvent.emit(self.model)
 
         booklets = list(group.get_payments_by_method_name(u'store_credit'))

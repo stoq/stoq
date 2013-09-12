@@ -80,7 +80,8 @@ class TestReceivingOrderWizard(GUITest):
             with mock.patch.object(wizard.model, 'confirm') as confirm:
                 api.sysparam().set_string(self.store, 'LABEL_TEMPLATE_PATH', u'')
                 self.assertEqual(confirm.call_count, 0)
-                self.click(wizard.next_button)
+                with mock.patch.object(self.store, 'commit'):
+                    self.click(wizard.next_button)
                 self.assertEqual(confirm.call_count, 1)
                 self.assertEquals(emit.call_count, 1)
                 args, kwargs = emit.call_args
@@ -90,7 +91,8 @@ class TestReceivingOrderWizard(GUITest):
                                           ur'C:\nppdf32Log\debuglog.txt')
                 emit.reset_mock()
                 confirm.reset_mock()
-                self.click(wizard.next_button)
+                with mock.patch.object(self.store, 'commit'):
+                    self.click(wizard.next_button)
                 self.assertEqual(emit.call_count, 1)
                 self.assertEqual(confirm.call_count, 1)
                 args, kwargs = emit.call_args

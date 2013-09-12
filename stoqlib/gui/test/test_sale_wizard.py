@@ -99,7 +99,8 @@ class TestConfirmSaleWizard(GUITest):
 
         module = 'stoqlib.gui.events.ConfirmSaleWizardFinishEvent.emit'
         with mock.patch(module) as emit:
-            self._go_to_next()
+            with mock.patch.object(self.store, 'commit'):
+                self._go_to_next()
             self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], Sale))
@@ -111,7 +112,8 @@ class TestConfirmSaleWizard(GUITest):
         # A trade just passes total_paid=value for the trade value (ie, the
         # products being returned)
         self._create_wizard(total_paid=3)
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
 
         self._check_wizard('wizard-sale-with-trade')
         self.assertEquals(self.sale.payments[0].method.method_name, u'money')
@@ -121,7 +123,8 @@ class TestConfirmSaleWizard(GUITest):
 
     def test_sale_with_trade_same_value(self):
         self._create_wizard(total_paid=10)
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
 
         self.assertFalse(self.wizard.need_create_payment())
         self.assertNotVisible(self.step, ['select_method_holder',
@@ -159,7 +162,8 @@ class TestConfirmSaleWizard(GUITest):
         self.assertNotVisible(self.step, ['select_method_holder',
                                           'subtotal_expander'])
 
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
         # Make sure no payments were created
         self.assertEqual(set(sale.payments), set([p1, p2]))
 
@@ -174,7 +178,8 @@ class TestConfirmSaleWizard(GUITest):
         entry = self.store.find(CostCenterEntry, cost_center=self.sale.cost_center)
         self.assertEquals(len(list(entry)), 0)
 
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
         # FiscalCoupon calls this method
         self.sale.confirm()
 
@@ -195,7 +200,8 @@ class TestConfirmSaleWizard(GUITest):
         self.bank_account = 789
 
         # Finish the checkout
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
         self.assertEquals(self.sale.payments[0].method.method_name, u'check')
 
         self._check_wizard('wizard-sale-step-payment-method-check')
@@ -208,7 +214,8 @@ class TestConfirmSaleWizard(GUITest):
         self._go_to_next()
 
         # Finish the checkout
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
 
         self.assertEquals(self.sale.payments[0].method.method_name, 'bill')
         self._check_wizard('wizard-sale-step-payment-method-bill')
@@ -228,7 +235,8 @@ class TestConfirmSaleWizard(GUITest):
         self.step._method_slave.auth_number.update(1234)
 
         # Finish the checkout
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
 
         self.assertEquals(self.sale.payments[0].method.method_name, 'card')
 
@@ -244,7 +252,8 @@ class TestConfirmSaleWizard(GUITest):
         self._go_to_next()
 
         # Finish the checkout
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
         self._check_wizard('wizard-sale-step-payment-method-deposit')
         self.assertEquals(self.sale.payments[0].method.method_name, 'deposit')
 
@@ -262,7 +271,8 @@ class TestConfirmSaleWizard(GUITest):
         self._go_to_next()
 
         # confirm the checkout
-        self._go_to_next()
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
 
         self._check_wizard('wizard-sale-step-payment-method-store-credit')
 
@@ -374,7 +384,8 @@ class TestConfirmSaleWizard(GUITest):
         self.click(wizard.next_button)
 
         # finish wizard
-        self.click(wizard.next_button)
+        with mock.patch.object(self.store, 'commit'):
+            self.click(wizard.next_button)
 
         self.assertEquals(sale.payments[0].method.method_name, u'store_credit')
 
