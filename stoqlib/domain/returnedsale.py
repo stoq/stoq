@@ -299,7 +299,7 @@ class ReturnedSale(Domain):
     def return_(self, method_name=u'money'):
         """Do the return of this returned sale.
 
-        :param str method_name: The name of the payment method that will be
+        :param unicode method_name: The name of the payment method that will be
           used to create this payment.
 
         If :attr:`.total_amount` is:
@@ -322,21 +322,20 @@ class ReturnedSale(Domain):
             self.group.cancel()
         elif self.total_amount < 0:
             # The user has paid more than it's returning
-            store = self.store
-            group = self.group
-            for payment in [p for p in
-                            group.get_pending_payments() if p.is_inpayment()]:
-                # We are returning money to client, that means he doesn't owe
-                # us anything, we do now. Cancel pending payments
-                payment.cancel()
-            method = PaymentMethod.get_by_name(store, method_name)
-            description = _(u'%s returned for sale %s') % (
-                method.operation.description, self.sale.identifier)
-            value = self.total_amount_abs
-            payment = method.create_payment(
-                Payment.TYPE_OUT,
-                group, self.branch, value,
-                description=description)
+            for payment in self.group.get_pending_payments():
+                if payment.is_inpayment():
+                    # We are returning money to client, that means he doesn't owe
+                    # us anything, we do now. Cancel pending payments
+                    payment.cancel()
+
+            method = PaymentMethod.get_by_name(self.store, method_name)
+            description = _(u'%s returned for sale %s') % (method.description,
+                                                           self.sale.identifier)
+            payment = method.create_payment(Payment.TYPE_OUT,
+                                            payment_group=self.group,
+                                            branch=self.branch,
+                                            value=self.total_amount_abs,
+                                            description=description)
             payment.set_pending()
             if method_name == u'credit':
                 payment.pay()
@@ -400,7 +399,6 @@ class ReturnedSale(Domain):
         if self.sale:
             # FIXME: For now, we are not reverting the comission as there is a
             # lot of things to consider. See bug 5215 for information about it.
-            # self._revert_commission(payment)
             self._revert_fiscal_entry()
             self.sale.return_(self)
 
@@ -419,29 +417,3 @@ class ReturnedSale(Domain):
             icms_value=entry.icms_value * returned_percentage,
             iss_value=entry.iss_value * returned_percentage,
             ipi_value=entry.ipi_value * returned_percentage)
-
-    def _revert_commission(self, payment):
-        from stoqlib.domain.commission import Commission
-        store = self.store
-        old_commissions = store.find(Commission, sale=self.sale)
-        old_commissions_total = old_commissions.sum(Commission.value)
-        if old_commissions_total <= 0:
-            # Comission total should not be negative
-            return
-
-        # old_commissions_paid, unlike old_commissions_total, contains the
-        # total positive generated commission, so we can revert it partially
-        old_commissions_paid = old_commissions.find(
-            Commission.value >= 0).sum(Commission.value)
-        value = old_commissions_paid * self._get_returned_percentage()
-        assert old_commissions_total - value >= 0
-
-        Commission(
-            store=store,
-            commission_type=old_commissions[0].commission_type,
-            sale=self.sale,
-            payment=payment,
-            salesperson=self.sale.salesperson,
-            # Generate a negative commission to compensate the returned items
-            value=-value,
-        )
