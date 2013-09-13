@@ -202,14 +202,16 @@ class StoqlibDebugTracer(BaseStatementTracer):
                                        params):
         pid = raw_cursor.connection.get_backend_pid()
         header_size = 9 + len(str(pid))
-        duration = datetime.datetime.now() - self._start_time
+        now = datetime.datetime.now()
+        duration = now - self._start_time
         seconds = duration.seconds + float(duration.microseconds) / 10 ** 6
         rows = raw_cursor.rowcount
 
-        text = '%s%s seconds | %s rows' % (
+        text = '%s%s seconds | %s rows | %s' % (
             ' ' * header_size,
             self._colored(seconds, attrs=['bold']),
-            self._colored(rows, attrs=['bold']))
+            self._colored(rows, attrs=['bold']),
+            self._colored(now.strftime('%F %T.%f'), attrs=['bold']))
 
         if statement.startswith('INSERT') and rows == 1:
             try:
