@@ -902,11 +902,11 @@ class TestUser(_PersonFacetTest, DomainTest):
                                    pw_hash=user.pw_hash, current_branch=branch)
         self.assertEquals(result, user)
 
-    def test_get_status_str(self):
+    def test_status_str(self):
         user = self.create_user()
-        self.assertEquals(user.get_status_str(), u'Active')
+        self.assertEquals(user.status_str, u'Active')
         user.is_active = False
-        self.assertEquals(user.get_status_str(), u'Inactive')
+        self.assertEquals(user.status_str, u'Inactive')
 
     def test_get_associated_branches(self):
         user = self.create_user()
@@ -1179,13 +1179,13 @@ class TestBranchView(DomainTest):
         view = self.store.find(BranchView, id=branch.id).one()
         self.assertEquals(view.get_description(), u'Dummy')
 
-    def test_get_status_str(self):
+    def test_status_str(self):
         branch = self.create_branch()
         view = self.store.find(BranchView, id=branch.id).one()
-        self.assertEquals(view.get_status_str(), u'Active')
+        self.assertEquals(view.status_str, u'Active')
         branch.is_active = False
         view = self.store.find(BranchView, id=branch.id).one()
-        self.assertEquals(view.get_status_str(), u'Inactive')
+        self.assertEquals(view.status_str, u'Inactive')
 
 
 class TestUserView(DomainTest):
@@ -1194,13 +1194,13 @@ class TestUserView(DomainTest):
         view = self.store.find(UserView, id=user.id).one()
         self.assertEquals(view.get_description(), u'individual')
 
-    def test_get_status_str(self):
+    def test_status_str(self):
         user = self.create_user()
         view = self.store.find(UserView, id=user.id).one()
-        self.assertEquals(view.get_status_str(), u'Active')
+        self.assertEquals(view.status_str, u'Active')
         user.is_active = False
         view = self.store.find(UserView, id=user.id).one()
-        self.assertEquals(view.get_status_str(), u'Inactive')
+        self.assertEquals(view.status_str, u'Inactive')
 
 
 class TestCreditCheckHistoryView(DomainTest):

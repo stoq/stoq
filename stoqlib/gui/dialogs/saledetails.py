@@ -69,7 +69,7 @@ class _TemporaryOutPayment(object):
         self.method.method_name = payment.method.method_name
         self.due_date = payment.due_date
         self.paid_date = payment.paid_date
-        self.status_str = payment.get_status_str()
+        self.status_str = payment.status_str
         self.value = -payment.base_value
         self.paid_value = -(payment.paid_value or 0)
 

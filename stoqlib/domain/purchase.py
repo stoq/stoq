@@ -371,7 +371,7 @@ class PurchaseOrder(Domain):
                                PurchaseOrder.ORDER_CONSIGNED]:
             fmt = _(u'Invalid order status, it should be '
                     u'ORDER_PENDING or ORDER_CONSIGNED, got %s')
-            raise ValueError(fmt % (self.get_status_str(), ))
+            raise ValueError(fmt % (self.status_str, ))
 
         # In consigned purchases there is no payments at this point.
         if self.status != PurchaseOrder.ORDER_CONSIGNED:
@@ -395,7 +395,7 @@ class PurchaseOrder(Domain):
         if self.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError(
                 _(u'Invalid order status, it should be '
-                  u'ORDER_PENDING, got %s') % (self.get_status_str(), ))
+                  u'ORDER_PENDING, got %s') % (self.status_str, ))
 
         self.responsible = get_current_user(self.store)
         self.status = PurchaseOrder.ORDER_CONSIGNED
@@ -405,7 +405,7 @@ class PurchaseOrder(Domain):
         """
         if self.status != PurchaseOrder.ORDER_CONFIRMED:
             raise ValueError(_(u'Invalid status, it should be confirmed '
-                               u'got %s instead') % self.get_status_str())
+                               u'got %s instead') % self.status_str)
         self.status = self.ORDER_CLOSED
 
         Event.log(self.store, Event.TYPE_ORDER,
@@ -447,7 +447,8 @@ class PurchaseOrder(Domain):
 
         purchase_item.quantity_received += quantity_received
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         return PurchaseOrder.translate_status(self.status)
 
     def get_freight_type_name(self):
@@ -840,7 +841,8 @@ class PurchaseOrderView(Viewable):
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         return PurchaseOrder.translate_status(self.status)
 
     @classmethod

@@ -53,7 +53,7 @@
             % for payment in payments:
               <tr>
                 <td>${ str(payment.identifier) }</td>
-                <td>${ payment.get_status_str() }</td>
+                <td>${ payment.status_str }</td>
                 <td>${ payment.description }</td>
                 <td>${ format_price(payment.value) }</td>
                 % if payment.paid_value:

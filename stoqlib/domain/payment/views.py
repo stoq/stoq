@@ -163,7 +163,8 @@ class BasePaymentView(Viewable):
 
         return self.status == Payment.STATUS_PENDING
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         return Payment.statuses[self.status]
 
     def is_late(self):
@@ -316,7 +317,8 @@ class CardPaymentView(Viewable):
                  PaymentRenegotiation.group_id == PaymentGroup.id),
     ]
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         return Payment.statuses[self.status]
 
     @property
@@ -362,7 +364,8 @@ class _BillandCheckPaymentView(Viewable):
     clause = Or(PaymentMethod.method_name == u'bill',
                 PaymentMethod.method_name == u'check')
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         return Payment.statuses[self.status]
 
     @property

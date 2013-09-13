@@ -340,7 +340,8 @@ class Payment(Domain):
             if self == payment:
                 return i + 1
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         """The :obj:`Payment.status` as a translated string"""
         if not self.status in self.statuses:
             raise DatabaseInconsistency('Invalid status for Payment '
@@ -438,7 +439,7 @@ class Payment(Domain):
         if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_PENDING,
                                Payment.STATUS_PAID]:
             raise StoqlibError(_(u"Invalid status for cancel operation, "
-                                 u"got %s") % self.get_status_str())
+                                 u"got %s") % self.status_str)
 
         if self.transaction:
             self.transaction.create_reverse()
@@ -463,7 +464,7 @@ class Payment(Domain):
         """
         if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
             raise StoqlibError(_(u"Invalid status for change_due_date operation, "
-                                 u"got %s") % self.get_status_str())
+                                 u"got %s") % self.status_str)
         self.due_date = new_due_date
 
     def update_value(self, new_value):

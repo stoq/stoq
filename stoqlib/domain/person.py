@@ -1352,7 +1352,8 @@ class LoginUser(Domain):
 
         return user
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         """Returns the status description of a user"""
         if self.is_active:
             return self.statuses[self.STATUS_ACTIVE]
@@ -1966,7 +1967,8 @@ class BranchView(Viewable):
     # Public API
     #
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         if self.is_active:
             return _(u'Active')
 
@@ -2014,7 +2016,8 @@ class UserView(Viewable):
     # Public API
     #
 
-    def get_status_str(self):
+    @property
+    def status_str(self):
         if self.is_active:
             return _(u'Active')
 

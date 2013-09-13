@@ -46,7 +46,7 @@ class TestPayment(DomainTest):
         payment = self.create_payment()
         payment.status = 9
         with self.assertRaises(DatabaseInconsistency):
-            payment.get_status_str()
+            self.status = payment.status_str
 
     def test_new(self):
         with self.assertRaises(TypeError):

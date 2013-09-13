@@ -212,10 +212,10 @@ class TestInPaymentView(DomainTest):
 
 
 class TestCardPaymentView(DomainTest):
-    def test_get_status_str(self):
+    def test_status_str(self):
         payment = self.create_card_payment(payment_type=Payment.TYPE_IN)
         result = self.store.find(CardPaymentView, id=payment.id).one()
-        self.assertEquals(result.get_status_str(), u'Preview')
+        self.assertEquals(result.status_str, u'Preview')
 
     def test_renegotiation(self):
         payment = self.create_card_payment(payment_type=Payment.TYPE_IN)
@@ -240,12 +240,12 @@ class TestCardPaymentView(DomainTest):
 
 
 class Test_BillandCheckPaymentView(DomainTest):
-    def test_get_status_str(self):
+    def test_status_str(self):
         method = self.store.find(PaymentMethod, method_name=u'check').one()
         self.create_payment(payment_type=Payment.TYPE_IN,
                             method=method)
         view = self.store.find(InCheckPaymentView)
-        status = view[0].get_status_str()
+        status = view[0].status_str
         self.assertEquals(status, u'To Pay')
 
     def test_method_description(self):

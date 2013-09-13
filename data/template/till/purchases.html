@@ -33,7 +33,7 @@
         % for purchase in report.purchases:
           <tr class="highlight">
             <td>${ purchase.identifier }</td>
-            <td>${ purchase.get_status_str() }</td>
+            <td>${ purchase.status_str }</td>
             <td>${ purchase.get_responsible_name() }</td>
             <td>${ purchase.get_branch_name() }</td>
             <td>${ purchase.notes }</td>
