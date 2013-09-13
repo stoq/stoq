@@ -140,7 +140,6 @@ class BatchSelectionDialog(BaseEditor):
         BaseEditor.__init__(self, store, model=model, visual_mode=False)
 
         self._append_initial_rows(original_batches)
-        self._update_view()
 
     #
     #  Public API
@@ -290,6 +289,7 @@ class BatchSelectionDialog(BaseEditor):
             batch, quantity = item.batch, item.quantity
             self._append_or_update_row(quantity, batch=batch)
 
+        self._update_view()
         self._append_dumb_row_lock -= 1
 
     def _create_entry(self, mandatory=False):
@@ -330,10 +330,13 @@ class BatchSelectionDialog(BaseEditor):
 
     def _append_or_update_row(self, quantity, batch=None, mandatory=False,
                               grab_focus=False):
+        last_entry = self._last_entry
+        last_spin = self._last_entry and self._spins[self._last_entry]
+
         # If the last entry is not valid (no batch set), use it
         # instead of appending a lot of invalids
-        if self._last_entry is not None and not self._last_entry.read():
-            last_spin = self._spins[self._last_entry]
+        if (last_entry is not None and
+            (not last_entry.read() or not last_spin.read())):
             last_spin.update(quantity)
             # The batch is already None. Only update it if not None
             # to avoid update_view being called again here (no problem
@@ -470,7 +473,8 @@ class BatchSelectionDialog(BaseEditor):
         return self._validate_entry(entry, value)
 
     def _after_entry__content_changed(self, entry):
-        self._spins[entry].set_sensitive(bool(entry.read()))
+        self._spins[entry].set_sensitive(
+            entry.read() not in [None, u'', ValueUnset])
         self._update_view()
 
     def _on_spinbutton__validate(self, spin, value):

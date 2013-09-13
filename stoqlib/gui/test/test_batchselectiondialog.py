@@ -67,6 +67,19 @@ class TestBatchSelectionDialog(GUITest):
 
         self.check_dialog(dialog, 'dialog-batch-selection-dialog-create')
 
+    def test_append_or_update_dumb_row(self):
+        storable = self.create_storable(is_batch=True)
+        dialog = BatchSelectionDialog(self.store, storable, 0)
+        last_entry = dialog._last_entry
+        self.assertEqual(len(dialog._entries), 1)
+
+        # This should not append a new row, since there's no diff
+        # quantity (quantity was passed as 0 on __init__)
+        spinbutton = dialog.get_spin_by_entry(last_entry)
+        spinbutton.update(10)
+        self.assertIs(dialog._last_entry, last_entry)
+        self.assertEqual(len(dialog._entries), 1)
+
 
 class TestBatchIncreaseSelectionDialog(GUITest):
     def test_get_batch_item(self):
@@ -88,8 +101,7 @@ class TestBatchIncreaseSelectionDialog(GUITest):
         dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
         self.assertEqual(dialog._last_entry.get_text(), '')
 
-        api.sysparam().set_bool(self.store, 'SUGGEST_BATCH_NUMBER', True)
-        try:
+        with self.sysparam(SUGGEST_BATCH_NUMBER=True):
             storable.register_initial_stock(1, self.create_branch(), 0,
                                             batch_number=u'123')
             dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
@@ -106,8 +118,6 @@ class TestBatchIncreaseSelectionDialog(GUITest):
             # Since the dialog above was confirmed on the same store this one is,
             # it should consider it's batch numbers for the next suggestion
             self.assertEqual(dialog._last_entry.get_text(), '126')
-        finally:
-            api.sysparam().set_bool(self.store, 'SUGGEST_BATCH_NUMBER', False)
 
     def test_batch_number_suggestion_synchronized_mode(self):
         branch = api.get_current_branch(self.store)
@@ -119,11 +129,7 @@ class TestBatchIncreaseSelectionDialog(GUITest):
         dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
         self.assertEqual(dialog._last_entry.get_text(), '')
 
-        try:
-            api.sysparam().set_bool(self.store, 'SUGGEST_BATCH_NUMBER', True)
-            # We need to do this by hand sincr update_parameter won't let us
-            # update value for some parameters (SYNCHRONIZED_MODE is one of them)
-            api.sysparam().set_bool(self.store, 'SYNCHRONIZED_MODE', True)
+        with self.sysparam(SUGGEST_BATCH_NUMBER=True, SYNCHRONIZED_MODE=True):
             storable.register_initial_stock(1, self.create_branch(), 0,
                                             batch_number=u'130')
             dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
@@ -152,9 +158,6 @@ class TestBatchIncreaseSelectionDialog(GUITest):
             #    ("branch 'Moda Stoq' needs an acronym since we are on "
             #     "synchronized mode")):
             #    spinbutton.update(1)
-        finally:
-            api.sysparam().set_bool(self.store, 'SUGGEST_BATCH_NUMBER', False)
-            api.sysparam().set_bool(self.store, 'SYNCHRONIZED_MODE', False)
 
     def test_batch_number_validation(self):
         storable = self.create_storable(is_batch=True)
@@ -167,3 +170,18 @@ class TestBatchIncreaseSelectionDialog(GUITest):
         self.assertInvalid(dialog, ['_last_entry'])
         dialog._last_entry.update(u'126')
         self.assertValid(dialog, ['_last_entry'])
+
+    def test_append_or_update_dumb_row(self):
+        for suggest in [True, False]:
+            with self.sysparam(SUGGEST_BATCH_NUMBER=suggest):
+                storable = self.create_storable(is_batch=True)
+                dialog = BatchSelectionDialog(self.store, storable, 0)
+                last_entry = dialog._last_entry
+                self.assertEqual(len(dialog._entries), 1)
+
+                # This should not append a new row, since there's no diff
+                # quantity (quantity was passed as 0 on __init__)
+                spinbutton = dialog.get_spin_by_entry(last_entry)
+                spinbutton.update(10)
+                self.assertIs(dialog._last_entry, last_entry)
+                self.assertEqual(len(dialog._entries), 1)
