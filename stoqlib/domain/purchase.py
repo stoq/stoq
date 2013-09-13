@@ -460,7 +460,8 @@ class PurchaseOrder(Domain):
     def get_branch_name(self):
         return self.branch.get_description()
 
-    def get_supplier_name(self):
+    @property
+    def supplier_name(self):
         return self.supplier.get_description()
 
     def get_transporter_name(self):
@@ -779,7 +780,7 @@ class PurchaseOrderView(Viewable):
     expected_pay_date = PurchaseOrder.expected_pay_date
     receival_date = PurchaseOrder.receival_date
     confirm_date = PurchaseOrder.confirm_date
-    salesperson_name = PurchaseOrder.salesperson_name
+    salesperson_name = NullIf(PurchaseOrder.salesperson_name, u'')
     expected_freight = PurchaseOrder.expected_freight
     surcharge_value = PurchaseOrder.surcharge_value
     discount_value = PurchaseOrder.discount_value
@@ -831,9 +832,6 @@ class PurchaseOrderView(Viewable):
 
     def get_branch_name(self):
         return unicode(self.branch_name or u"")
-
-    def get_supplier_name(self):
-        return unicode(self.supplier_name or u"")
 
     def get_transporter_name(self):
         return unicode(self.transporter_name or u"")

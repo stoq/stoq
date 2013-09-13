@@ -458,7 +458,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 self.quoted_items.append(Settable(
                     selected=True, order=quote.purchase, item=purchase_item,
                     description=sellable.get_description(),
-                    supplier=quote.purchase.get_supplier_name(),
+                    supplier=quote.purchase.supplier_name,
                     quantity=purchase_item.quantity,
                     ordered_quantity=ordered_qty,
                     cost=purchase_item.cost))

@@ -213,18 +213,18 @@ class TestReceivingOrder(DomainTest):
         name = receiving_order.get_transporter_name()
         self.assertEqual(name, u'Juca')
 
-    def test_get_supplier_name(self):
+    def test_supplier_name(self):
         receiving_order = self.create_receiving_order()
 
         # Without supplier, the supplier name should be empty
         receiving_order.supplier = None
-        name = receiving_order.get_supplier_name()
+        name = receiving_order.supplier_name
         self.assertEqual(name, '')
 
         # With a supplier 'test'
         transporter = self.create_supplier(u'test')
         receiving_order.supplier = transporter
-        name = receiving_order.get_supplier_name()
+        name = receiving_order.supplier_name
         self.assertEqual(name, u'test')
 
     def test_get_percentage_value(self):

@@ -365,6 +365,12 @@ class ReceivingOrder(Domain):
     def payments(self):
         return self.group.payments
 
+    @property
+    def supplier_name(self):
+        if not self.supplier:
+            return u""
+        return self.supplier.get_description()
+
     #
     # Accessors
     #
@@ -379,11 +385,6 @@ class ReceivingOrder(Domain):
 
     def get_branch_name(self):
         return self.branch.get_description()
-
-    def get_supplier_name(self):
-        if not self.supplier:
-            return u""
-        return self.supplier.get_description()
 
     def get_responsible_name(self):
         return self.responsible.get_description()
