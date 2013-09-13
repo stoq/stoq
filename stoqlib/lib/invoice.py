@@ -728,7 +728,7 @@ class ServiceItemCodeUnitField(InvoiceFieldDescription):
 
     def fetch(self, width, height):
         for sale_item in self.sale.services:
-            yield sale_item.sellable.get_unit_description()
+            yield sale_item.sellable.unit_description
 
 
 @_register_invoice_field
@@ -951,7 +951,7 @@ class ProductItemCodeUnitField(InvoiceFieldDescription):
 
     def fetch(self, width, height):
         for sale_item in self.sale.products:
-            yield sale_item.sellable.get_unit_description()
+            yield sale_item.sellable.unit_description
 
 
 @_register_invoice_field

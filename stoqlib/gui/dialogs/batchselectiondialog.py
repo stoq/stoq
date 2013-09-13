@@ -486,7 +486,7 @@ class BatchSelectionDialog(BaseEditor):
         if not self.model.product.sellable.is_valid_quantity(value):
             return ValidationError(_("This product unit (%s) does not "
                                      "support fractions.") %
-                                   sellable.get_unit_description())
+                                   sellable.unit_description)
 
         return self.validate_spin(spin=spin)
 

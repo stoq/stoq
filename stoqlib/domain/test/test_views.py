@@ -365,13 +365,13 @@ class TestProductFullStockView(DomainTest):
         results = results.find(ProductFullStockView.product_id == p1.id)
         self.failUnless(list(results))
         product_view = results[0]
-        self.assertEquals(product_view.get_unit_description(), u"kg")
+        self.assertEquals(product_view.unit_description, u"kg")
 
         results = ProductFullStockView.find_by_branch(self.store, None).find(
             ProductFullStockView.product_id == p2.id)
         self.failUnless(list(results))
         product_view = results[0]
-        self.assertEquals(product_view.get_unit_description(), u"un")
+        self.assertEquals(product_view.unit_description, u"un")
 
     def test_get_product_and_category_description(self):
         p1 = self.create_product()

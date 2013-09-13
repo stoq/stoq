@@ -284,7 +284,7 @@ class NFeGenerator(object):
                                          sale_item.get_nfe_cfop_code(),
                                          sale_item.quantity,
                                          sale_item.price,
-                                         sellable.get_unit_description(),
+                                         sellable.unit_description,
                                          barcode=sellable.barcode,
                                          ncm=ncm,
                                          ex_tipi=ex_tipi,

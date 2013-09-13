@@ -109,7 +109,7 @@ class _WorkOrderItemEditor(BaseEditor):
         if not sellable.is_valid_quantity(value):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
-                                   sellable.get_unit_description())
+                                   sellable.unit_description)
 
         try:
             remaining_quantity = self.model.get_remaining_quantity()

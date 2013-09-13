@@ -124,6 +124,14 @@ class InventoryItem(Domain):
 
         return self.counted_quantity - self.recorded_quantity
 
+    @property
+    def unit_description(self):
+        """Returns the product unit description or None if it's not set
+        """
+        sellable = self.product.sellable
+        if sellable.unit:
+            return sellable.unit.description
+
     #
     #  Private
     #
@@ -186,13 +194,6 @@ class InventoryItem(Domain):
     def get_fiscal_description(self):
         """Returns a description of the product tax constant"""
         return self.product.sellable.tax_constant.get_description()
-
-    def get_unit_description(self):
-        """Returns the product unit description or None if it's not set
-        """
-        sellable = self.product.sellable
-        if sellable.unit:
-            return sellable.unit.description
 
     def get_total_cost(self):
         """Returns the total cost of this item, the actual quantity multiplied

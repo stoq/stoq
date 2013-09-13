@@ -112,7 +112,7 @@ class ProductCountingReport(TableReport):
 
     def get_row(self, obj):
         return [obj.code, obj.description, obj.tax_constant.description, '',
-                obj.get_unit_description()]
+                obj.unit_description]
 
 
 def format_data(data):

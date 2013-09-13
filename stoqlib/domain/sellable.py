@@ -521,6 +521,16 @@ class Sellable(Domain):
                                              Product.sellable_id == self.id)).one()
 
     @property
+    def unit_description(self):
+        """Returns the description of the |sellableunit| of this sellable
+
+        :returns: the unit description or an empty string if no
+          |sellableunit| was set.
+        :rtype: unicode
+        """
+        return self.unit and self.unit.description or u""
+
+    @property
     def has_image(self):
         """
         :returns: ``True`` if this sellable has an image, ``False`` otherwise
@@ -654,15 +664,6 @@ class Sellable(Domain):
         :rtype: decimal
         """
         return self.category and self.category.get_markup()
-
-    def get_unit_description(self):
-        """Returns the description of the |sellableunit| of this sellable
-
-        :returns: the unit description or an empty string if no
-          |sellableunit| was set.
-        :rtype: unicode
-        """
-        return self.unit and self.unit.description or u""
 
     def get_category_description(self):
         """Returns the description of this sellables category

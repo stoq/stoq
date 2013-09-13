@@ -74,7 +74,7 @@ class SupplierDetailsDialog(BaseEditor):
                 qty = purchase_item.quantity
                 cost = purchase_item.cost
                 total_value = cost * qty
-                unit = purchase_item.sellable.get_unit_description()
+                unit = purchase_item.sellable.unit_description
                 qty_str = '%s %s' % (qty, unit)
                 product_codes = [item.code for item in product_dict.values()]
                 sellable = purchase_item.sellable

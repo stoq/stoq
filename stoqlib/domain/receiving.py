@@ -85,6 +85,15 @@ class ReceivingOrderItem(Domain):
     receiving_order = Reference(receiving_order_id, 'ReceivingOrder.id')
 
     #
+    # Properties
+    #
+
+    @property
+    def unit_description(self):
+        unit = self.sellable.unit
+        return u"%s" % (unit and unit.description or u"")
+
+    #
     # Accessors
     #
 
@@ -105,10 +114,6 @@ class ReceivingOrderItem(Domain):
         unit = self.sellable.unit
         return u"%s %s" % (self.quantity,
                            unit and unit.description or u"")
-
-    def get_unit_description(self):
-        unit = self.sellable.unit
-        return u"%s" % (unit and unit.description or u"")
 
     def add_stock_items(self):
         """This is normally called from ReceivingOrder when

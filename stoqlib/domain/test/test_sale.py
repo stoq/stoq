@@ -1514,7 +1514,7 @@ class TestSaleItem(DomainTest):
     def test_get_quantity_unit_string(self):
         item = self.create_sale_item()
         item.sellable.unit = self.create_sellable_unit(description=u'Kg')
-        str = u"%s %s" % (item.quantity, item.sellable.get_unit_description())
+        str = u"%s %s" % (item.quantity, item.sellable.unit_description)
         self.assertEquals(item.get_quantity_unit_string(), str)
 
     def test_get_description(self):

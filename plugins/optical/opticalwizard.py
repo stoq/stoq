@@ -437,7 +437,7 @@ class _ItemEditor(BaseEditor):
         if not sellable.is_valid_quantity(value):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
-                                   sellable.get_unit_description())
+                                   sellable.unit_description)
 
     def on_price__icon_press(self, entry, icon_pos, event):
         if icon_pos != gtk.ENTRY_ICON_PRIMARY:

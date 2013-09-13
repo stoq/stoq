@@ -119,7 +119,7 @@ class SaleQuoteItemEditor(BaseEditor):
         if not sellable.is_valid_quantity(new_quantity):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
-                                   sellable.get_unit_description())
+                                   sellable.unit_description)
 
     def add_tab(self, name, slave):
         event_box = gtk.EventBox()

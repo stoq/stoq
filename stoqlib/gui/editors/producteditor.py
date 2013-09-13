@@ -70,7 +70,7 @@ class TemporaryProductComponent(object):
             self.code = sellable.code
             self.description = sellable.get_description()
             self.category = sellable.get_category_description()
-            self.unit = sellable.get_unit_description()
+            self.unit = sellable.unit_description
             self.production_cost = self.component.get_production_cost()
 
     def _get_product_component(self, store):

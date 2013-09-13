@@ -87,7 +87,7 @@ class TemporarySaleItem(object):
         self.batch = batch
         self.sellable = sellable
         self.description = sellable.get_description()
-        self.unit = sellable.get_unit_description()
+        self.unit = sellable.unit_description
         self.code = sellable.code
         self.can_remove = can_remove
 
@@ -683,7 +683,7 @@ class PosApp(ShellApp):
         if not sellable.is_valid_quantity(quantity):
             warning(_(u"You cannot sell fractions of this product. "
                       u"The '%s' unit does not allow that") %
-                    sellable.get_unit_description())
+                    sellable.unit_description)
             return
 
         if sellable.product:

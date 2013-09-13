@@ -190,12 +190,6 @@ class ProductFullStockView(Viewable):
 
         return store.find(HighjackedViewable, query)
 
-    def get_unit_description(self):
-        unit = self.product.sellable.get_unit_description()
-        if unit == u"":
-            return u"un"
-        return unit
-
     def get_product_and_category_description(self):
         """Returns the product and the category description in one string.
         The category description will be formatted inside square
@@ -214,6 +208,13 @@ class ProductFullStockView(Viewable):
             return self.total_stock_cost / self.stock
 
         return 0
+
+    @property
+    def unit_description(self):
+        unit = self.product.sellable.unit_description
+        if unit == u"":
+            return u"un"
+        return unit
 
     @property
     def price(self):

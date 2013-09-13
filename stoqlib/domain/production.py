@@ -253,6 +253,14 @@ class ProductionItem(Domain):
         return self.product.sellable.get_description()
 
     #
+    # Properties
+    #
+
+    @property
+    def unit_description(self):
+        return self.product.sellable.unit_description
+
+    #
     # Private API
     #
 
@@ -264,9 +272,6 @@ class ProductionItem(Domain):
     #
     # Public API
     #
-
-    def get_unit_description(self):
-        return self.product.sellable.get_unit_description()
 
     def get_components(self):
         return self.product.get_components()
@@ -521,8 +526,9 @@ class ProductionMaterial(Domain):
 
     # Accessors
 
-    def get_unit_description(self):
-        return self.product.sellable.get_unit_description()
+    @property
+    def unit_description(self):
+        return self.product.sellable.unit_description
 
     def get_stock_quantity(self):
         storable = self.product.storable
@@ -557,10 +563,11 @@ class ProductionService(Domain):
     def get_description(self):
         return self.service.sellable.get_description()
 
-    # Accessors
+    # Properties
 
-    def get_unit_description(self):
-        return self.service.sellable.get_unit_description()
+    @property
+    def unit_description(self):
+        return self.service.sellable.unit_description
 
 
 class ProductionProducedItem(Domain):

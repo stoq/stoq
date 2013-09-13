@@ -537,7 +537,7 @@ class SellableItemSlave(BaseEditorSlave):
             cost = getattr(sellable, self.value_column)
             quantity = Decimal(1)
             storable = sellable.product_storable
-            unit_label = sellable.get_unit_description()
+            unit_label = sellable.unit_description
             if storable:
                 has_storable = True
                 minimum = storable.minimum_quantity
@@ -866,7 +866,7 @@ class SellableItemSlave(BaseEditorSlave):
         if sellable and not sellable.is_valid_quantity(value):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
-                                   sellable.get_unit_description())
+                                   sellable.unit_description)
 
         storable = sellable.product_storable
         if not self.validate_stock or not storable:

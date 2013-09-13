@@ -301,12 +301,12 @@ class TestInventoryItem(DomainTest):
         item = self.create_inventory_item()
         self.assertEquals(item.get_description(), u'Description')
 
-    def test_get_unit_description(self):
+    def test_unit_description(self):
         item = self.create_inventory_item()
-        self.assertIsNone(item.get_unit_description())
+        self.assertIsNone(item.unit_description)
         unit = self.create_sellable_unit(description=u'Kg')
         item.product.sellable.unit = unit
-        self.assertEquals(item.get_unit_description(), u'Kg')
+        self.assertEquals(item.unit_description, u'Kg')
 
     def test_get_total_cost(self):
         item = self.create_inventory_item()

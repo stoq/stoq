@@ -248,7 +248,7 @@ class SaleItem(Domain):
         return currency(quantize(self.price * self.quantity))
 
     def get_quantity_unit_string(self):
-        return u"%s %s" % (self.quantity, self.sellable.get_unit_description())
+        return u"%s %s" % (self.quantity, self.sellable.unit_description)
 
     def get_description(self):
         return self.sellable.get_description()

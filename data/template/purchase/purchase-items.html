@@ -49,11 +49,11 @@
             <td>${ item.sellable.get_category_description() }</td>
             <td>${ item.sellable.code }</td>
             <td>${ item.sellable.get_description() }</td>
-            <td>${ format_quantity(item.quantity) } ${ item.sellable.get_unit_description() }</td>
+            <td>${ format_quantity(item.quantity) } ${ item.sellable.unit_description }</td>
             <td>${ format_cost(item.cost) }</td>
             <td>${ format_price(item.get_total()) }</td>
             % if report.receiving_orders:
-            <td>${ format_quantity(item.quantity_received) } ${ item.sellable.get_unit_description() }</td>
+            <td>${ format_quantity(item.quantity_received) } ${ item.sellable.unit_description }</td>
             <td>${ format_price(item.get_received_total()) }</td>
             % endif
           </tr>

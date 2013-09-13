@@ -27,7 +27,7 @@
             <td>${ item.sellable.get_category_description() }</td>
             <td>${ item.sellable.get_description() }</td>
             <td></td>
-            <td>${ format_quantity(item.quantity) } ${ item.sellable.get_unit_description() }</td>
+            <td>${ format_quantity(item.quantity) } ${ item.sellable.unit_description }</td>
             <td></td>
           </tr>
         % endfor

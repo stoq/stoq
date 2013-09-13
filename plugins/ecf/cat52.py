@@ -302,7 +302,7 @@ class CATFile(object):
             item_description=item.get_description(),
             # precision = 2
             item_amount=item.quantity * 100,
-            item_unit=(item.sellable.get_unit_description() or 'un'),
+            item_unit=(item.sellable.unit_description or 'un'),
             item_unitary_value=item.price * 100,
             # We don't offer discount,
             item_discount=0,

@@ -59,7 +59,7 @@ class _TemporaryReceivingItem(object):
         self.purchase_item = item
         self.description = item.sellable.description
         self.category_description = item.sellable.get_category_description()
-        self.unit_description = item.sellable.get_unit_description()
+        self.unit_description = item.sellable.unit_description
         self.cost = item.cost
         self.remaining_quantity = item.get_pending_quantity()
         self.storable = item.sellable.product_storable
