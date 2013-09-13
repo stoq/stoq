@@ -40,6 +40,11 @@
       <menuitem action="TillClose"/>
     </placeholder>
   </menu>
+  <menu action="ViewMenu">
+    <placeholder name="ViewMenuPH">
+      <menuitem action="DetailsViewer"/>
+    </placeholder>
+  </menu>
   <menu action="EditMenu">
     <placeholder name="EditMenuPH">
     </placeholder>

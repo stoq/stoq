@@ -29,6 +29,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
+          GtkCheckMenuItem(): 'Details viewer', insensitive
+          GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Toolbar', hidden
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
@@ -85,13 +87,24 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHSeparator(fill=True):
               ProxyLabel(expand=True, fill=True): '<span weight="bold" size="xx-large">Till closed</span>\n\n<span size="large"><a href="open-till">Open till</a></span>'
               GtkHSeparator(fill=True):
-            ObjectList(expand=True, fill=True): hidden, insensitive
-              column: title='Reference'
-              column: title='Description', expand
-              column: title='Price'
-              column: title='Quantity'
-              column: title='Total'
-            GtkAlignment():
+            GtkHPaned(expand=True, fill=True): hidden
+              ObjectList(): insensitive
+                column: title='Reference'
+                column: title='Description', expand
+                column: title='Price'
+                column: title='Quantity'
+                column: title='Total'
+              GtkVBox():
+                ProxyLabel(fill=True):
+                GtkAspectFrame():
+                  GtkEventBox():
+                    GtkEventBox():
+                      GtkImage():
+                GtkLabel(expand=True, fill=True):
+                GtkExpander(fill=True):
+                  GtkLabel():
+                  GtkLabel(): 'More details'
+            GtkAlignment(fill=True):
               GtkHBox():
                 GtkVBox(fill=True):
                   GtkHButtonBox(fill=True):

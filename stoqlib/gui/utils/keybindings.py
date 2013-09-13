@@ -230,6 +230,8 @@ _bindings = [
      _("Search for deliveries")),
     ('app.pos.payment_receive', '',
      _("Receive payment")),
+    ('app.pos.toggle_details_viewer', '',
+     _("Toggle the details viewer")),
     # ecf till read memory: <Primary>F9
     # ecf till summarize: <Primary>F11
     # books search books: <Primary><Alt>B

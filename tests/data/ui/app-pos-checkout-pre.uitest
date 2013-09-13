@@ -29,6 +29,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
+          GtkCheckMenuItem(): 'Details viewer'
+          GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Toolbar', hidden
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
@@ -85,14 +87,25 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHSeparator(hseparator1, fill=True):
               ProxyLabel(till_status_label, expand=True, fill=True): '<span weight="bold" size="xx-large">Till open</span>'
               GtkHSeparator(hseparator2, fill=True):
-            ObjectList(sale_items, expand=True, fill=True):
-              column: title='Reference'
-              column: title='Description', expand
-              column: title='Price'
-              column: title='Quantity'
-              column: title='Total'
-              row: u'10', u'Vestido Vadalena', <currency $383>, u'1 ', Decimal('383.00')
-            GtkAlignment(alignment2):
+            GtkHPaned(sale_items_pane, expand=True, fill=True):
+              ObjectList(sale_items):
+                column: title='Reference'
+                column: title='Description', expand
+                column: title='Price'
+                column: title='Quantity'
+                column: title='Total'
+                row: u'10', u'Vestido Vadalena', <currency $383>, u'1 ', Decimal('383.00')
+              GtkVBox(details_box):
+                ProxyLabel(details_lbl, fill=True): '<b>Vestido Vadalena</b>\n1 x $383.00'
+                GtkAspectFrame(aspectframe1):
+                  GtkEventBox(image_holder):
+                    GtkEventBox(eventbox1):
+                      GtkImage(image):
+                GtkLabel(label1, expand=True, fill=True):
+                GtkExpander(expander1, fill=True):
+                  GtkLabel(extra_details_lbl):
+                  GtkLabel(label3): 'More details'
+            GtkAlignment(alignment2, fill=True):
               GtkHBox(footer_hbox):
                 GtkVBox(toolbar_vbox, fill=True):
                   GtkHButtonBox(toolbar_button_box, fill=True):

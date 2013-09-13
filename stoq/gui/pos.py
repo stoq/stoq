@@ -48,7 +48,8 @@ from stoqlib.gui.events import POSConfirmSaleEvent, CloseLoanWizardFinishEvent
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.decorators import cached_property, public
 from stoqlib.lib.defaults import quantize
-from stoqlib.lib.formatters import format_sellable_description
+from stoqlib.lib.formatters import (format_sellable_description,
+                                    format_quantity, get_formatted_price)
 from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -56,6 +57,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
+from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.deliveryeditor import CreateDeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
@@ -192,6 +194,13 @@ class PosApp(ShellApp):
         ]
         self.pos_ui = self.add_ui_actions('', actions,
                                           filename='pos.xml')
+
+        toggle_actions = [
+            ('DetailsViewer', None, _('Details viewer'),
+             group.get('toggle_details_viewer')),
+        ]
+        self.add_ui_actions('', toggle_actions, 'ToggleActions', 'toggle')
+
         self.set_help_section(_("POS help"), 'app-pos')
 
     def create_ui(self):
@@ -241,6 +250,9 @@ class PosApp(ShellApp):
         CloseLoanWizardFinishEvent.connect(self._on_CloseLoanWizardFinishEvent)
 
     def deactivate(self):
+        api.user_settings.set('pos-show-details-viewer',
+                              self.DetailsViewer.get_active())
+
         self.uimanager.remove_ui(self.pos_ui)
 
         # Re enable toolbar
@@ -359,6 +371,15 @@ class PosApp(ShellApp):
         self._create_context_menu()
 
         self.quantity.set_digits(3)
+
+        self._image_slave = SellableImageViewer(size=(175, 175))
+        self.attach_slave('image_holder', self._image_slave)
+        self.details_lbl.set_ellipsize(pango.ELLIPSIZE_END)
+        self.extra_details_lbl.set_ellipsize(pango.ELLIPSIZE_END)
+
+        self.details_box.set_visible(False)
+        self.DetailsViewer.set_active(
+            api.user_settings.get('pos-show-details-viewer', True))
 
     def _create_context_menu(self):
         menu = ContextMenu()
@@ -566,7 +587,8 @@ class PosApp(ShellApp):
                             self.NewDelivery,
                             self.ConfirmOrder), has_sale_items)
         # We can cancel an order whenever we have a coupon opened.
-        self.set_sensitive([self.CancelOrder], self._sale_started)
+        self.set_sensitive([self.CancelOrder, self.DetailsViewer],
+                           self._sale_started)
         has_products = False
         has_services = False
         for sale_item in self.sale_items:
@@ -592,11 +614,56 @@ class PosApp(ShellApp):
 
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
-        self.till_status_box.props.visible = not self._sale_started
-        self.sale_items.props.visible = self._sale_started
+        self.till_status_box.set_visible(not self._sale_started)
+        self.sale_items_pane.set_visible(self._sale_started)
 
         self._update_totals()
         self._update_buttons()
+        self._update_sellable_details()
+
+    def _update_sellable_details(self):
+        sale_item = self.sale_items.get_selected()
+        sellable = sale_item and sale_item.sellable
+        self._image_slave.set_sellable(sellable)
+
+        if sale_item:
+            markup = '<b>%s</b>\n%s x %s' % (
+                api.escape(sale_item.description),
+                api.escape(format_quantity(sale_item.quantity)),
+                api.escape(get_formatted_price(sale_item.price)))
+
+            if sellable.service:
+                fix_date = (sale_item.estimated_fix_date.strftime('%x')
+                            if sale_item.estimated_fix_date else '')
+                extra_markup_parts = [
+                    (_("Estimated fix date"), fix_date),
+                    (_("Notes"), sale_item.notes)]
+            elif sellable.product:
+                product = sellable.product
+                manufacturer = (product.manufacturer.name if
+                                product.manufacturer else '')
+                extra_markup_parts = [
+                    (_("Manufacturer"), manufacturer),
+                    (_("Brand"), product.brand),
+                    (_("Family"), product.family),
+                    (_("Model"), product.model),
+                    (_("Width"), product.width or ''),
+                    (_("Height"), product.height or ''),
+                    (_("Depth"), product.depth or ''),
+                    (_("Weight"), product.weight or '')]
+
+            extra_markup = '\n'.join(
+                '<b>%s</b>: %s' % (api.escape(label), api.escape(str(text)))
+                for label, text in extra_markup_parts if text)
+        else:
+            markup = ''
+            extra_markup = ''
+
+        self.details_lbl.set_markup(markup)
+        self.details_lbl.set_tooltip_markup(markup)
+
+        self.extra_details_lbl.set_markup(extra_markup)
+        self.extra_details_lbl.set_tooltip_markup(extra_markup)
 
     def _has_barcode_str(self):
         return self.barcode.get_text().strip() != ''
@@ -1051,6 +1118,9 @@ class PosApp(ShellApp):
 
     def on_TillVerify__activate(self, action):
         self._printer.verify_till()
+
+    def on_DetailsViewer__activate(self, button):
+        self.details_box.set_visible(button.get_active())
 
     def on_LoanClose__activate(self, action):
         if self.check_open_inventory():

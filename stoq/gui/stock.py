@@ -434,7 +434,7 @@ class StockApp(ShellApp):
             self.image_viewer = None
         else:
             self.StockPictureViewer.props.active = True
-            self.image_viewer = SellableImageViewer()
+            self.image_viewer = SellableImageViewer(size=(325, 325))
             selected = self.results.get_selected()
             if selected:
                 self.image_viewer.set_sellable(selected.product.sellable)

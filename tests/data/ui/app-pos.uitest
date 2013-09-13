@@ -29,6 +29,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
+          GtkCheckMenuItem(): 'Details viewer', insensitive
+          GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Toolbar', hidden
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
@@ -85,13 +87,24 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHSeparator(hseparator1, fill=True):
               ProxyLabel(till_status_label, expand=True, fill=True): '<span weight="bold" size="xx-large">Till closed</span>\n\n<span size="large"><a href="open-till">Open till</a></span>'
               GtkHSeparator(hseparator2, fill=True):
-            ObjectList(sale_items, expand=True, fill=True): hidden, insensitive
-              column: title='Reference'
-              column: title='Description', expand
-              column: title='Price'
-              column: title='Quantity'
-              column: title='Total'
-            GtkAlignment(alignment2):
+            GtkHPaned(sale_items_pane, expand=True, fill=True): hidden
+              ObjectList(sale_items): insensitive
+                column: title='Reference'
+                column: title='Description', expand
+                column: title='Price'
+                column: title='Quantity'
+                column: title='Total'
+              GtkVBox(details_box):
+                ProxyLabel(details_lbl, fill=True):
+                GtkAspectFrame(aspectframe1):
+                  GtkEventBox(image_holder):
+                    GtkEventBox(eventbox1):
+                      GtkImage(image):
+                GtkLabel(label1, expand=True, fill=True):
+                GtkExpander(expander1, fill=True):
+                  GtkLabel(extra_details_lbl):
+                  GtkLabel(label3): 'More details'
+            GtkAlignment(alignment2, fill=True):
               GtkHBox(footer_hbox):
                 GtkVBox(toolbar_vbox, fill=True):
                   GtkHButtonBox(toolbar_button_box, fill=True):
