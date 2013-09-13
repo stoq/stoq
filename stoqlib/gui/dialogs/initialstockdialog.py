@@ -36,26 +36,25 @@ from kiwi.ui.listdialog import ListSlave
 from stoqlib.api import api
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import Storable
+from stoqlib.domain.sellable import SellableCategory
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import MAX_INT
-from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
 class _TemporaryStorableItem(object):
-    def __init__(self, item):
-        self.obj = item
-        sellable = item.product.sellable
+    def __init__(self, sellable, product, storable):
+        self.storable = storable
+
         self.code = sellable.code
         self.barcode = sellable.barcode
         self.category_description = sellable.get_category_description()
         self.description = sellable.get_description()
         self.unit_cost = sellable.cost
-        self.storable = sellable.product_storable
         self.is_batch = self.storable and self.storable.is_batch
         self.batches = {}
         if not self.is_batch:
@@ -81,6 +80,8 @@ class InitialStockDialog(BaseEditor):
     help_section = 'stock-register-initial'
     proxy_widgets = ['branch']
 
+    need_cancel_confirmation = True
+
     #
     # Private
     #
@@ -89,9 +90,12 @@ class InitialStockDialog(BaseEditor):
         self.slave.listcontainer.list.add_list(self._get_storables())
 
     def _get_storables(self):
-        for s in Storable.get_storables_without_stock_item(self.store,
-                                                           self.model.branch):
-            yield _TemporaryStorableItem(s)
+        self._current_branch = self.model.branch
+        # Cache this data, to avoid more queries when building the list of storables.
+        self._categories = list(self.store.find(SellableCategory))
+        data = Storable.get_initial_stock_data(self.store, self.model.branch)
+        for sellable, product, storable in data:
+            yield _TemporaryStorableItem(sellable, product, storable)
 
     def _get_columns(self):
         adj = gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
@@ -119,14 +123,14 @@ class InitialStockDialog(BaseEditor):
         if quantity >= 0:
             return quantity
 
-    def _validate_initial_stock_quantity(self, item, store):
+    def _validate_initial_stock_quantity(self, item):
         if ValueUnset in [item.initial_stock, item.unit_cost]:
             return
 
         valid_stock = item.initial_stock > 0
         valid_cost = item.unit_cost >= 0
         if valid_stock and valid_cost:
-            storable = store.fetch(item.obj)
+            storable = item.storable
             if item.is_batch:
                 for batch, quantity in item.batches.items():
                     storable.register_initial_stock(quantity,
@@ -140,18 +144,24 @@ class InitialStockDialog(BaseEditor):
 
     def _add_initial_stock(self):
         for item in self.storables:
-            self._validate_initial_stock_quantity(item, self.store)
+            self._validate_initial_stock_quantity(item)
 
     #
     # BaseEditorSlave
     #
 
     def create_model(self, store):
-        return Settable(branch=api.get_current_branch(store))
+        self._current_branch = api.get_current_branch(store)
+        return Settable(branch=self._current_branch)
 
     def setup_proxies(self):
-        self.branch.prefill(
-            api.for_combo(Branch.get_active_branches(self.store)))
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            current = api.get_current_branch(self.store)
+            branches = [(current.get_description(), current)]
+        else:
+            branches = api.for_combo(Branch.get_active_branches(self.store))
+
+        self.branch.prefill(branches)
         self.add_proxy(self.model, self.proxy_widgets)
 
     def setup_slaves(self):
@@ -167,13 +177,8 @@ class InitialStockDialog(BaseEditor):
     def on_confirm(self):
         self._add_initial_stock()
 
-    def on_cancel(self):
-        if len(self.storables):
-            msg = _('Save data before close the dialog ?')
-            if yesno(msg, gtk.RESPONSE_NO, _("Save data"), _("Don't save")):
-                self._add_initial_stock()
-                # change retval to True so the store gets commited
-                self.retval = True
+    def has_changes(self):
+        return any(i.initial_stock > 0 for i in self.storables)
 
     #
     # Callbacks
@@ -211,4 +216,8 @@ class InitialStockDialog(BaseEditor):
             self.main_dialog.ok_button.grab_focus()
 
     def after_branch__content_changed(self, widget):
+        # There is a little bug in kiwi that causes this signal to be emmited
+        # after just losing focus
+        if self.model.branch == self._current_branch:
+            return
         self._refresh_storables()

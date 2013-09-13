@@ -25,6 +25,7 @@
 import mock
 import gtk
 
+from kiwi import ValueUnset
 from stoqlib.api import api
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.test.uitestutils import GUITest
@@ -44,16 +45,17 @@ class TestInitialStockDialog(GUITest):
         dialog = InitialStockDialog(self.store)
         self.check_dialog(dialog, 'initial-stock-dialog-show')
 
-    @mock.patch('stoqlib.gui.dialogs.initialstockdialog.yesno')
+    @mock.patch('stoqlib.gui.editors.baseeditor.yesno')
     def test_cancel(self, yesno):
         self.create_storable()
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            dialog = InitialStockDialog(self.store)
+            dialog.storables[0].initial_stock = 4
+            self.click(dialog.main_dialog.cancel_button)
 
-        dialog = InitialStockDialog(self.store)
-        self.click(dialog.main_dialog.cancel_button)
-
-        yesno.assert_called_once_with(_('Save data before close the dialog ?'),
-                                      gtk.RESPONSE_NO, _('Save data'),
-                                      _("Don't save"))
+        msg = 'If you cancel this dialog all changes will be lost. Are you sure?'
+        yesno.assert_called_once_with(msg, gtk.RESPONSE_NO, 'Cancel',
+                                      "Don't cancel")
 
     def test_save(self):
         storable = self.create_storable()
@@ -90,3 +92,8 @@ class TestInitialStockDialog(GUITest):
         dialog.slave.listcontainer.list.emit('cell-edited', item, 'initial_stock')
 
         self.assertNotEquals((rows, column), treeview.get_cursor())
+
+    def test_format_qty(self):
+        dialog = InitialStockDialog(self.store)
+        self.assertEquals(dialog._format_qty(10), 10)
+        self.assertEquals(dialog._format_qty(ValueUnset), None)

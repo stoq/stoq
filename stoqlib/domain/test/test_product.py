@@ -811,7 +811,7 @@ class TestStorable(DomainTest):
             # is set to control batches
             storable_with_batch.register_initial_stock(10, b2, unit_cost=1)
 
-    def test_get_storables_without_stock_item(self):
+    def test_get_initial_stock_data(self):
         self.clean_domain([StockTransactionHistory, ProductStockItem, Storable])
 
         s0_without_stock = self.create_storable()
@@ -825,13 +825,16 @@ class TestStorable(DomainTest):
         s2_without_stock = self.create_storable(branch=b2)
 
         # All but s1_with_stock should be here
+        data = Storable.get_initial_stock_data(self.store, b1)
         self.assertEqual(
-            set(Storable.get_storables_without_stock_item(self.store, b1)),
+            set(i[2] for i in data),
             set([s0_without_stock, s1_without_stock,
                  s2_without_stock, s2_with_stock]))
+
         # All but s2_with_stock should be here
+        data = Storable.get_initial_stock_data(self.store, b2)
         self.assertEqual(
-            set(Storable.get_storables_without_stock_item(self.store, b2)),
+            set(i[2] for i in data),
             set([s0_without_stock, s2_without_stock,
                  s1_without_stock, s1_with_stock]))
 

@@ -86,7 +86,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from storm.expr import And, Eq, LeftJoin, Alias, Sum, Coalesce, Select
+from storm.expr import And, Eq, LeftJoin, Alias, Sum, Coalesce, Select, Join
 from zope.interface import implementer
 
 from stoqlib.database.expr import Field, TransactionTimestamp
@@ -100,6 +100,7 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.person import Person, Branch
+from stoqlib.domain.sellable import Sellable
 from stoqlib.exceptions import StockError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
@@ -762,20 +763,27 @@ class Storable(Domain):
     #
 
     @classmethod
-    def get_storables_without_stock_item(cls, store, branch):
-        """Get |storables| without a |productstockitem|
+    def get_initial_stock_data(cls, store, branch):
+        """Get data about |storables| without a |productstockitem|
 
-        This will get all storables that doesn't have a
+        This will get all sellables, products and storables that dont have a
         |productstockitem| on the given branch.
 
         :param store: the store used to query the storables
         :param branch: the |branch| used to check for the stock item existence
-        :returns: a result set of |storables|
+        :returns: a result set of |sellable|, |product| and |storable|
         """
-        join = LeftJoin(ProductStockItem,
-                        And(ProductStockItem.storable_id == cls.id,
-                            ProductStockItem.branch_id == branch.id))
-        return store.using(cls, join).find(cls, Eq(ProductStockItem.id, None))
+        tables = [
+            Sellable,
+            Join(Product, Product.sellable_id == Sellable.id),
+            Join(Storable, Storable.product_id == Product.id),
+            LeftJoin(ProductStockItem,
+                     And(ProductStockItem.storable_id == cls.id,
+                         ProductStockItem.branch_id == branch.id))
+        ]
+        query = Eq(ProductStockItem.id, None)
+
+        return store.using(*tables).find((Sellable, Product, Storable), query)
 
     #
     #  Public API
