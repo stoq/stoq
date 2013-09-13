@@ -37,11 +37,15 @@ def get_shell(args):
     parser = get_option_parser()
 
     group = optparse.OptionGroup(parser, 'Stoq')
-    group.add_option('', '--wizard',
+    group.add_option('-A', '--autoreload',
                      action="store_true",
-                     dest="wizard",
-                     default=None,
-                     help='Run the wizard')
+                     dest="autoreload",
+                     help='Autoreload application when source is modified')
+    group.add_option('', '--fatal-warnings',
+                     action="store_false",
+                     dest="non_fatal_warnings",
+                     default=True,
+                     help='Make all warnings fatal')
     group.add_option('', '--login-username',
                      action="store",
                      dest="login_username",
@@ -52,14 +56,15 @@ def get_shell(args):
                      dest="splashscreen",
                      default=True,
                      help='Disable the splash screen')
-    group.add_option('-A', '--autoreload',
-                     action="store_true",
-                     dest="autoreload",
-                     help='Autoreload application when source is modified')
     group.add_option('', '--version',
                      action="store_true",
                      dest="version",
                      help='Show the application version')
+    group.add_option('', '--wizard',
+                     action="store_true",
+                     dest="wizard",
+                     default=None,
+                     help='Run the wizard')
     parser.add_option_group(group)
 
     options, args = parser.parse_args(args)

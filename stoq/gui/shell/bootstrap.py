@@ -155,8 +155,12 @@ class ShellBootstrap(object):
         from stoqlib.lib.environment import is_developer_mode
         if is_developer_mode():
             import warnings
+            if self._options.non_fatal_warnings:
+                action = "default"
+            else:
+                action = "error"
             warnings.filterwarnings(
-                "default", category=DeprecationWarning,
+                action, category=DeprecationWarning,
                 module="^(stoq|kiwi)")
 
     def _set_app_info(self):
