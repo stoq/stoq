@@ -64,8 +64,9 @@ class SalesPersonSalesSearch(SearchDialog):
                        data_type=Decimal),
                 Column('total_amount', title=_('Total amount'),
                        data_type=currency),
-                Column('paid_value', title=_('Paid'),
-                       data_type=currency, visible=True), ]
+                # Column('paid_value', title=_('Paid'),
+                #        data_type=currency, visible=True),
+                ]
 
     def setup_widgets(self):
         self.search.set_summary_label('total_amount', label=_(u'Total:'),

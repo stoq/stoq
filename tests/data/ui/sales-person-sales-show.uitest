@@ -34,9 +34,8 @@ GtkDialog(toplevel): title='Salesperson Total Sales', hidden
             column: title='Sold items'
             column: title='Total sales'
             column: title='Total amount'
-            column: title='Paid'
-            row: u'salesperson1', Decimal('8.000'), 2L, Decimal('80.00'), Decimal('30.00')
-            row: u'salesperson2', Decimal('15.000'), 1L, Decimal('150.00'), None
+            row: u'salesperson1', Decimal('8.000'), 2L, Decimal('80.00')
+            row: u'salesperson2', Decimal('15.000'), 1L, Decimal('150.00')
           GtkHBox(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$230.00</b>'
