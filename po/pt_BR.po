@@ -1892,7 +1892,7 @@ msgstr "Part-Number:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:16
 msgid "Control batches"
-msgstr "Lotes de controle"
+msgstr "Controlar lotes"
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:2
 msgid "Current Stock Balance:"
