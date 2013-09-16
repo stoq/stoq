@@ -628,31 +628,19 @@ def _register_branch(caller_store, station_name):
         if not user:
             error(_("Must login as 'admin'"))
 
-    from stoqlib.domain.person import Branch
     from stoqlib.domain.station import BranchStation
 
-    branches = caller_store.find(Branch)
-    if branches.is_empty():
-        error(_("Schema error, no branches found"))
-
-    # TODO
-    # Always select the first branch as the main branch, until we
-    # support multiple branches properly. And then, provide a way to the
-    # user choose which one will be the main branch.
-    branch = branches[0]
-
     store = new_store()
+    branch = sysparam().get_object(store, 'MAIN_COMPANY')
     try:
         station = BranchStation.create(store,
-                                       branch=store.fetch(branch),
+                                       branch=branch,
                                        name=station_name)
     except StoqlibError as e:
         error(_("ERROR: %s") % e)
 
-    station_id = station.id
     store.commit(close=True)
-
-    return caller_store.find(BranchStation, id=station_id).one()
+    return caller_store.fetch(station)
 
 
 def set_current_branch_station(store, station_name):
@@ -661,13 +649,6 @@ def set_current_branch_station(store, station_name):
     :param store: a store
     :param station_name: name of the station to register
     """
-
-    # This might be called early, so make sure SQLObject
-    # knows about Branch which might not have
-    # been imported yet
-    from stoqlib.domain.person import Branch
-    Branch  # pylint: disable=W0104
-
     if station_name is None:
         station_name = get_hostname()
 
@@ -685,6 +666,8 @@ def set_current_branch_station(store, station_name):
 
     provide_utility(ICurrentBranchStation, station, replace=True)
 
+    # The station may still not be associated with a branch when creating an
+    # empty database
     if station.branch:
         provide_utility(ICurrentBranch, station.branch, replace=True)
 
