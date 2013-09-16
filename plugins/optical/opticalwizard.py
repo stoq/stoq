@@ -371,7 +371,7 @@ class _ItemEditor(BaseEditor):
     confirm_widgets = ['price', 'quantity']
 
     fields = dict(
-        base_price=PriceField(label=u'Original Price', proxy=True),
+        base_price=PriceField(label=_(u'Original Price'), proxy=True),
         price=PriceField(_(u'Price'), proxy=True, mandatory=True),
         quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
     )
@@ -602,7 +602,7 @@ class OpticalItemStep(BaseWizardStep):
         self.attach_slave('slave_holder', self.item_slave)
 
         self.item_slave.hide_add_button()
-        self.item_slave.cost_label.set_label('Price:')
+        self.item_slave.cost_label.set_label(_(u'Price:'))
         self.item_slave.cost.set_editable(True)
 
     def _add_radio(self, desc, workorder):
