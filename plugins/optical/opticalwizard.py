@@ -407,6 +407,11 @@ class _ItemEditor(BaseEditor):
         if value <= 0:
             return ValidationError(_(u"The price must be greater than zero."))
 
+        if (not sysparam().get_bool('ALLOW_HIGHER_SALE_PRICE') and
+            value > self.model.base_price):
+            return ValidationError(_(u'The sell price cannot be greater '
+                                   'than %s.') % self.model.base_price)
+
         sellable = self.model.sellable
         self._user = self._user or api.get_current_user(self.store)
 

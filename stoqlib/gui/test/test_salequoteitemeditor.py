@@ -29,23 +29,37 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSaleQuoteItemEditor(GUITest):
-    def test_show(self):
+    def test_show_param_allow_higher_sale_price(self):
         sale_item = self.create_sale_item()
         editor = SaleQuoteItemEditor(self.store, sale_item)
         editor.sale.set_label('12345')
 
         # quantity=1, price=100
-        self.assertEqual(editor.total.read(), 100)
-        editor.quantity.update(2)
-        self.assertEqual(editor.total.read(), 200)
-        editor.price.update(150)
-        self.assertEqual(editor.total.read(), 300)
+        with self.sysparam(ALLOW_HIGHER_SALE_PRICE=True):
+            self.assertEqual(editor.total.read(), 100)
+            editor.quantity.update(2)
+            self.assertEqual(editor.total.read(), 200)
+            editor.price.update(150)
+            self.assertEqual(editor.total.read(), 300)
 
-        self.check_editor(editor, 'editor-salequoteitem-show')
+            self.check_editor(editor, 'editor-salequoteitem-show')
+            module = 'stoqlib.lib.pluginmanager.PluginManager.is_active'
+            with mock.patch(module) as patch:
+                patch.return_value = True
+                editor = SaleQuoteItemEditor(self.store, sale_item)
+                editor.sale.set_label('23456')
+                self.check_editor(editor, 'editor-salequoteitem-show-nfe')
 
-        module = 'stoqlib.lib.pluginmanager.PluginManager.is_active'
-        with mock.patch(module) as patch:
-            patch.return_value = True
-            editor = SaleQuoteItemEditor(self.store, sale_item)
-            editor.sale.set_label('23456')
-            self.check_editor(editor, 'editor-salequoteitem-show-nfe')
+    def test_show_param_no_allow_higher_sale_price(self):
+        sale_item = self.create_sale_item()
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        editor.sale.set_label('12345')
+
+        # quantity=1, price=100
+        with self.sysparam(ALLOW_HIGHER_SALE_PRICE=False):
+            self.assertEqual(editor.total.read(), 100)
+            editor.quantity.update(2)
+            self.assertEqual(editor.total.read(), 200)
+            editor.price.update(150)
+            # The price greater than 100 should be invalid.
+            self.assertInvalid(editor, ['price'])

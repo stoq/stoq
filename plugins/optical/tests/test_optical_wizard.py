@@ -86,13 +86,26 @@ class TestItemEditor(GUITest, OpticalDomainTest):
         user = api.get_current_user(self.store)
         user.profile.max_discount = 2
         editor = self._create_editor()
-        self.assertValid(editor, ['price'])
-        editor.price.update(98)
-        self.assertValid(editor, ['price'])
-        editor.price.update(97)
-        self.assertInvalid(editor, ['price'])
-        editor.price.update(-1)
-        self.assertInvalid(editor, ['price'])
+
+        with self.sysparam(ALLOW_HIGHER_SALE_PRICE=True):
+            editor.price.update(101)
+            self.assertValid(editor, ['price'])
+            editor.price.update(98)
+            self.assertValid(editor, ['price'])
+            editor.price.update(97)
+            self.assertInvalid(editor, ['price'])
+            editor.price.update(-1)
+            self.assertInvalid(editor, ['price'])
+
+        with self.sysparam(ALLOW_HIGHER_SALE_PRICE=False):
+            editor.price.update(101)
+            self.assertInvalid(editor, ['price'])
+            editor.price.update(98)
+            self.assertValid(editor, ['price'])
+            editor.price.update(97)
+            self.assertInvalid(editor, ['price'])
+            editor.price.update(-1)
+            self.assertInvalid(editor, ['price'])
 
         with self.sysparam(REUTILIZE_DISCOUNT=True):
             editor.price.update(10)

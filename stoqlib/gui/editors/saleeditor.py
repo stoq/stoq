@@ -35,6 +35,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
 from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.lib.defaults import MAX_INT
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -156,6 +157,11 @@ class SaleQuoteItemEditor(BaseEditor):
     def on_price__validate(self, widget, value):
         if value <= 0:
             return ValidationError(_(u"The price must be greater than zero."))
+
+        if (not sysparam().get_bool('ALLOW_HIGHER_SALE_PRICE') and
+            value > self.model.base_price):
+            return ValidationError(_(u'The sell price cannot be greater '
+                                   'than %s.') % self.model.base_price)
 
         sellable = self.model.sellable
         self.manager = self.manager or api.get_current_user(self.store)
