@@ -7,6 +7,27 @@ GtkDialog(toplevel): title='Brand Search', hidden
         GtkVBox(vbox):
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
+              ComboSearchFilter(category_filter):
+                GtkLabel(): 'Category'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'Bermudas'
+                  item: 'Bermudas:Bermudas Sarja'
+                  item: 'Bermudas:Bermudas Shorts'
+                  item: 'Blusas'
+                  item: 'Blusas:Blusas Algod\xc3\xa3o'
+                  item: 'Blusas:Blusas Poliester'
+                  item: 'Cal\xc3\xa7ados'
+                  item: 'Cal\xc3\xa7ados:Chinelos'
+                  item: 'Cal\xc3\xa7as'
+                  item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Jeans'
+                  item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Poliester'
+                  item: 'Camisetas'
+                  item: 'Camisetas:Tinturada'
+                  item: 'Casacos'
+                  item: 'Casacos:Algod\xc3\xa3o'
+                  item: 'Vestido'
+                  item: 'Vestido:Viscose'
               SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden

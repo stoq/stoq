@@ -45,6 +45,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, ProductStockItem,
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
+from stoqlib.domain.views import ProductBrandStockView
 from stoqlib.domain.views import ProductComponentView
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.domain.views import ProductFullStockItemView
@@ -767,3 +768,53 @@ class TestProductFullStockItemView(DomainTest):
         results = self.store.find(ProductFullStockItemView)
         ids = [r.id for r in results]
         self.assertEquals(ids.count(product.sellable.id), 1)
+
+
+class TestProductBrandStockView(DomainTest):
+    def test_find_by_branch_category(self):
+        branch = self.create_branch()
+        p1 = self.create_product(branch=branch, stock=5)
+        p1.sellable.category = self.create_sellable_category()
+        p1.sellable.category.description = u"category"
+        p1.brand = u"Black Mesa"
+
+        # Creates another product with same brand but without category
+        p2 = self.create_product(branch=branch, stock=1)
+        p2.brand = u"Black Mesa"
+
+        # Search without a specific category
+        results = ProductBrandStockView.find_by_branch_category(self.store, branch,
+                                                                None).find()
+        brand = results[0].brand
+        total_products = results[0].quantity
+
+        # P1 + P2 = 6
+        self.assertEqual(total_products, 6)
+        self.assertEqual(brand, u"Black Mesa")
+
+        results = ProductBrandStockView.find_by_branch_category(self.store, branch,
+                                                                p1.sellable.category).find()
+        brand = results[0].brand
+        total_products = results[0].quantity
+
+        # Igoring P2
+        self.assertEqual(total_products, 5)
+        self.assertEqual(brand, u"Black Mesa")
+
+        # Checking a different branch
+        branch2 = self.create_branch()
+        p3 = self.create_product(branch=branch2, stock=666)
+        p3.brand = u"Aperture Science"
+        results = ProductBrandStockView.find_by_branch_category(self.store,
+                                                                branch2,
+                                                                p1.sellable.category).find().one()
+
+        self.assertIsNone(results)
+
+        results = ProductBrandStockView.find_by_branch_category(self.store, branch2,
+                                                                None).find()
+        brand = results[0].brand
+        total_products = results[0].quantity
+
+        self.assertEqual(brand, u"Aperture Science")
+        self.assertEqual(total_products, 666)

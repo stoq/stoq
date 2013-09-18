@@ -34,6 +34,7 @@ from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import Product, ProductHistory
+from stoqlib.domain.sellable import SellableCategory
 from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
@@ -47,7 +48,8 @@ from stoqlib.gui.editors.producteditor import (ProductEditor,
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog, SearchDialogPrintSlave
 from stoqlib.gui.search.searcheditor import SearchEditor
-from stoqlib.gui.search.searchfilters import DateSearchFilter, Today
+from stoqlib.gui.search.searchfilters import (DateSearchFilter, ComboSearchFilter,
+                                              Today)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
@@ -509,6 +511,14 @@ class ProductBrandSearch(SearchEditor):
         self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
 
+        # Category
+        categories = self.store.find(SellableCategory)
+        items = api.for_combo(categories, attr='full_description')
+        items.insert(0, (_('Any'), None))
+        category_filter = ComboSearchFilter(_('Category'), items)
+        self.add_filter(category_filter, position=SearchFilterPosition.TOP)
+        self.category_filter = category_filter
+
     #
     # SearchEditor Hooks
     #
@@ -526,7 +536,13 @@ class ProductBrandSearch(SearchEditor):
         else:
             branch = store.get(Branch, branch_id)
 
-        return self.search_spec.find_by_branch(store, branch)
+        category_description = self.category_filter.get_state().value
+        if category_description:
+            category = category_description
+        else:
+            category = None
+
+        return self.search_spec.find_by_branch_category(store, branch, category)
 
     #
     # Callbacks

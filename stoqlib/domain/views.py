@@ -940,14 +940,20 @@ class ProductBrandStockView(Viewable):
                  Storable.product_id == Product.id),
         LeftJoin(ProductStockItem,
                  ProductStockItem.storable_id == Storable.id),
+        LeftJoin(Sellable, Sellable.id == Product.sellable_id),
         LeftJoin(Branch, Branch.id == ProductStockItem.branch_id)
     ]
     group_by = [id, brand]
 
     @classmethod
-    def find_by_branch(cls, store, branch):
+    def find_by_branch_category(cls, store, branch, category):
+        queries = []
         if branch:
-            return store.find(cls, ProductStockItem.branch_id == branch.id)
+            queries.append(ProductStockItem.branch_id == branch.id)
+        if category:
+            queries.append(Sellable.category_id == category.id)
+        if queries:
+            return store.find(cls, And(*queries))
 
         return store.find(cls)
 
