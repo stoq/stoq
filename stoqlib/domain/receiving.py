@@ -112,8 +112,10 @@ class ReceivingOrderItem(Domain):
 
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
-        return u"%s %s" % (self.quantity,
+        data = u"%s %s" % (self.quantity,
                            unit and unit.description or u"")
+        # The unit may be empty
+        return data.strip()
 
     def add_stock_items(self):
         """This is normally called from ReceivingOrder when
@@ -326,10 +328,10 @@ class ReceivingOrder(Domain):
         # If we have a transporter, the freight payment will be for him
         # (and in another payment group).
         if self.transporter is not None:
-            group = PaymentGroup(store=store)
-            group.recipient = self.transporter.person
+            group = PaymentGroup(store=store,
+                                 recipient=self.transporter.person)
         else:
-            group = self.purchase.group
+            group = self.group
 
         description = _(u'Freight for purchase %s') % (
             self.purchase.identifier, )
@@ -451,10 +453,10 @@ class ReceivingOrder(Domain):
             else:
                 freight_type = ReceivingOrder.FREIGHT_FOB_INSTALLMENTS
         elif self.purchase.freight_type == PurchaseOrder.FREIGHT_CIF:
-            if not self.purchase.expected_freight:
-                freight_type = ReceivingOrder.FREIGHT_CIF_UNKNOWN
-            else:
+            if self.purchase.expected_freight:
                 freight_type = ReceivingOrder.FREIGHT_CIF_INVOICE
+            else:
+                freight_type = ReceivingOrder.FREIGHT_CIF_UNKNOWN
 
         return freight_type
 

@@ -9,7 +9,7 @@ GtkVBox(toplevel):
         column: title='Quantity'
         column: title='Cost'
         column: title='Total'
-        row: u'', u'Description', u'8.000 ', <currency $125>, <currency $1000>
+        row: u'', u'Description', u'8.000', <currency $125>, <currency $1000>
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$1000.00</b>'
