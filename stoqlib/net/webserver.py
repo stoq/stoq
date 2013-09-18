@@ -22,45 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-import json
-
 from twisted.web.resource import Resource
 from twisted.web.static import File
 from kiwi.environ import environ
 
-from stoqlib.api import api
-from stoqlib.chart.chart import get_chart_class
 from stoqlib.net.calendarevents import CalendarEvents
-
-
-def _iso_to_datetime(iso):
-    # 2001-02-03 -> datetime
-    return datetime.date(*map(int, iso.split('-')))
-
-
-class ChartResource(Resource):
-    def render_GET(self, resource):
-        if not 'type' in resource.args:
-            raise TypeError
-
-        chart_type = resource.args['type'][0]
-        chart_class = get_chart_class(chart_type)
-        if chart_class is None:
-            raise TypeError("chart_class")
-
-        if (not 'start' in resource.args or
-            not 'end' in resource.args):
-            raise TypeError
-        start_str = resource.args['start'][0]
-        end_str = resource.args['end'][0]
-
-        args = dict(start=_iso_to_datetime(start_str),
-                    end=_iso_to_datetime(end_str))
-
-        chart = chart_class(api.get_default_store())
-        response = chart.run(args)
-        return json.dumps(response)
 
 
 class WebResource(Resource):
@@ -70,4 +36,3 @@ class WebResource(Resource):
         path = environ.get_resource_paths('html')[0]
         self.putChild('static', File(path))
         self.putChild('calendar-events.json', CalendarEvents())
-        self.putChild('chart.json', ChartResource())

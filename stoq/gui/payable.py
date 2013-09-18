@@ -147,12 +147,6 @@ class PayableApp(BaseAccountWindow):
             self.refresh()
         self._update_widgets()
 
-        # FIXME: Move this to a better place when done
-        if self.window.options.debug:
-            from stoqlib.gui.dialogs.chartdialog import ChartDialog
-            c = ChartDialog()
-            c.show_all()
-
     def deactivate(self):
         self.uimanager.remove_ui(self.payable_ui)
 

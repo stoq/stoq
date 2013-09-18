@@ -38,7 +38,6 @@ Subpackages
 
 .. toctree::
 
-    stoqlib.chart
     stoqlib.database
     stoqlib.domain
     stoqlib.drivers

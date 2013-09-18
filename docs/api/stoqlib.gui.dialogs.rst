@@ -33,14 +33,6 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`chartdialog` Module
--------------------------
-
-.. automodule:: stoqlib.gui.dialogs.chartdialog
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`clientcategorydialog` Module
 ----------------------------------
 
