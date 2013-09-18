@@ -27,7 +27,7 @@
 
 from decimal import Decimal
 
-from storm.expr import And, Eq, Cast, Join, LeftJoin, Or
+from storm.expr import And, Eq, Cast, Join, LeftJoin, Or, Coalesce
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
@@ -552,6 +552,10 @@ class InventoryItemsView(Viewable):
 
     #: The description of the product
     description = Sellable.description
+
+    #: The number of the batch that was adjusted
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+    batch_date = StorableBatch.create_date
 
     tables = [
         InventoryItem,

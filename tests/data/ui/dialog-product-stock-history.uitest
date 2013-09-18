@@ -16,42 +16,50 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
             GtkVBox(receiving_vbox):
               ObjectList(receiving_list, expand=True, fill=True):
                 column: title='#'
+                column: title='Batch', hidden
+                column: title='Batch Date', hidden
                 column: title='Date'
                 column: title='Purchase #'
                 column: title='Supplier', expand
                 column: title='Invoice'
                 column: title='Quantity'
                 column: title='Unit'
-                row: 222, datetime.datetime(2012, 1, 1, 0, 0), 111, u'Supplier', 222, Decimal('8.000'), None
+                row: 222, u'', None, datetime.datetime(2012, 1, 1, 0, 0), 111, u'Supplier', 222, Decimal('8.000'), None
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>8.0</b>'
             GtkVBox(sales_vbox):
               ObjectList(sales_list, expand=True, fill=True):
                 column: title='#'
+                column: title='Batch', hidden
+                column: title='Batch Date', hidden
                 column: title='Date Started'
                 column: title='Client', expand
                 column: title='Sold'
                 column: title='Unit'
-                row: 123, datetime.today(), None, Decimal('3.000'), None
+                row: 123, u'', None, datetime.today(), None, Decimal('3.000'), None
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>3.000</b>'
             GtkVBox(transfer_vbox):
               ObjectList(transfer_list, expand=True, fill=True):
                 column: title='#'
+                column: title='Batch', hidden
+                column: title='Batch Date', hidden
                 column: title='Date Created'
                 column: title='Destination', expand
                 column: title='Responsible', expand
                 column: title='Transfered'
-                row: 55, datetime.datetime(2012, 1, 1, 0, 0), u'Dest shop', u'Ipswich', Decimal('2.000')
-                row: 66, datetime.datetime(2012, 1, 1, 0, 0), u'Moda Stoq', u'Ipswich', Decimal('1.000')
+                row: 55, None, None, datetime.datetime(2012, 1, 1, 0, 0), u'Dest shop', u'Ipswich', Decimal('2.000')
+                row: 66, None, None, datetime.datetime(2012, 1, 1, 0, 0), u'Moda Stoq', u'Ipswich', Decimal('1.000')
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>3.0</b>'
             GtkVBox(loan_vbox):
               ObjectList(loan_list, expand=True, fill=True):
                 column: title='Loan #'
+                column: title='Batch', hidden
+                column: title='Batch Date', hidden
                 column: title='Opened'
                 column: title='Code', hidden
                 column: title='Category', hidden
@@ -65,17 +73,21 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
             GtkVBox(decrease_vbox):
               ObjectList(decrease_list, expand=True, fill=True):
                 column: title='#'
+                column: title='Batch', hidden
+                column: title='Batch Date', hidden
                 column: title='Date'
                 column: title='Removed By', expand
                 column: title='Quantity'
                 column: title='Unit'
-                row: 4, datetime.datetime(2012, 1, 1, 0, 0), u'SalesPerson', Decimal('1.000'), None
+                row: 4, u'', None, datetime.datetime(2012, 1, 1, 0, 0), u'SalesPerson', Decimal('1.000'), None
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>1.000</b>'
             GtkVBox(inventory_vbox):
               ObjectList(inventory_list, expand=True, fill=True):
                 column: title='#'
+                column: title='Batch', hidden
+                column: title='Batch Date', hidden
                 column: title='Responsible'
                 column: title='Open date'
                 column: title='Close date'
@@ -85,6 +97,8 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
             GtkVBox(returned_vbox):
               ObjectList(returned_list, expand=True, fill=True):
                 column: title='#'
+                column: title='Batch', hidden
+                column: title='Batch Date', hidden
                 column: title='Reason', expand
                 column: title='Quantity'
                 column: title='Invoice', hidden

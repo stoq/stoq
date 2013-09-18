@@ -45,7 +45,7 @@ from stoqlib.domain.product import (Product,
                                     ProductManufacturer,
                                     ProductSupplierInfo,
                                     StockTransactionHistory,
-                                    Storable)
+                                    Storable, StorableBatch)
 from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
@@ -676,9 +676,12 @@ class StockDecreaseItemsView(Viewable):
     date = StockDecrease.confirm_date
     removed_by_name = Person.name
     unit_description = SellableUnit.description
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+    batch_date = StorableBatch.create_date
 
     tables = [
         StockDecreaseItem,
+        LeftJoin(StorableBatch, StorableBatch.id == StockDecreaseItem.batch_id),
         Join(StockDecrease,
              StockDecreaseItem.stock_decrease_id == StockDecrease.id),
         LeftJoin(Sellable,
@@ -839,9 +842,12 @@ class SaleItemsView(Viewable):
     client_name = Person.name
     quantity = SaleItem.quantity
     unit_description = SellableUnit.description
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+    batch_date = StorableBatch.create_date
 
     tables = [
         SaleItem,
+        LeftJoin(StorableBatch, StorableBatch.id == SaleItem.batch_id),
         LeftJoin(Sellable, Sellable.id == SaleItem.sellable_id),
         LeftJoin(Sale, SaleItem.sale_id == Sale.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
@@ -884,9 +890,12 @@ class ReceivingItemView(Viewable):
     cost = ReceivingOrderItem.cost
     unit_description = SellableUnit.description
     supplier_name = Person.name
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+    batch_date = StorableBatch.create_date
 
     tables = [
         ReceivingOrderItem,
+        LeftJoin(StorableBatch, StorableBatch.id == ReceivingOrderItem.batch_id),
         LeftJoin(ReceivingOrder,
                  ReceivingOrderItem.receiving_order_id == ReceivingOrder.id),
         LeftJoin(PurchaseOrder, ReceivingOrder.purchase_id == PurchaseOrder.id),
@@ -1054,6 +1063,8 @@ class LoanItemView(Viewable):
     sellable_id = Sellable.id
     code = Sellable.code
     description = Sellable.description
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+    batch_date = StorableBatch.create_date
 
     category_description = SellableCategory.description
     unit_description = SellableUnit.description
@@ -1062,6 +1073,7 @@ class LoanItemView(Viewable):
 
     tables = [
         LoanItem,
+        LeftJoin(StorableBatch, StorableBatch.id == LoanItem.batch_id),
         LeftJoin(Loan, LoanItem.loan_id == Loan.id),
         LeftJoin(Sellable, LoanItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),

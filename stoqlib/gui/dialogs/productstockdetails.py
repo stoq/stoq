@@ -78,7 +78,6 @@ class ProductStockHistoryDialog(BaseEditor):
         self.returned_list.set_columns(self._get_returned_columns())
 
         items = self.store.find(ReceivingItemView, sellable_id=self.model.id)
-
         self.receiving_list.add_list(list(items))
 
         items = self.store.find(SaleItemsView, sellable_id=self.model.id)
@@ -137,6 +136,10 @@ class ProductStockHistoryDialog(BaseEditor):
 
     def _get_receiving_columns(self):
         return [IdentifierColumn("order_identifier", sorted=True),
+                Column('batch_number', title=_('Batch'), data_type=str,
+                       visible=False),
+                Column('batch_date', title=_('Batch Date'),
+                       data_type=datetime.date, visible=False),
                 Column("receival_date", title=_("Date"),
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 IdentifierColumn("purchase_identifier",
@@ -151,6 +154,10 @@ class ProductStockHistoryDialog(BaseEditor):
 
     def _get_sale_columns(self):
         return [IdentifierColumn("sale_identifier", sorted=True),
+                Column('batch_number', title=_('Batch'), data_type=str,
+                       visible=False),
+                Column('batch_date', title=_('Batch Date'),
+                       data_type=datetime.date, visible=False),
                 Column("sale_date",
                        title=_("Date Started"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT),
@@ -164,6 +171,10 @@ class ProductStockHistoryDialog(BaseEditor):
 
     def _get_transfer_columns(self):
         return [IdentifierColumn("transfer_order.identifier", sorted=True),
+                Column('batch.batch_number', title=_('Batch'), data_type=str,
+                       visible=False),
+                Column('batch_date', title=_('Batch Date'),
+                       data_type=datetime.date, visible=False),
                 Column("transfer_order.open_date",
                        title=_("Date Created"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT),
@@ -179,6 +190,10 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_loan_columns(self):
         return [IdentifierColumn("loan_identifier", title=_("Loan #"),
                                  sorted=True),
+                Column('batch_number', title=_('Batch'), data_type=str,
+                       visible=False),
+                Column('batch_date', title=_('Batch Date'),
+                       data_type=datetime.date, visible=False),
                 Column("opened", title=_(u"Opened"),
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column("code", title=_(u"Code"), data_type=str, visible=False),
@@ -193,6 +208,10 @@ class ProductStockHistoryDialog(BaseEditor):
 
     def _get_decrease_columns(self):
         return [IdentifierColumn("decrease_identifier", sorted=True),
+                Column('batch_number', title=_('Batch'), data_type=str,
+                       visible=False),
+                Column('batch_date', title=_('Batch Date'),
+                       data_type=datetime.date, visible=False),
                 Column("date", title=_("Date"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("removed_by_name", title=_("Removed By"), expand=True,
@@ -202,6 +221,10 @@ class ProductStockHistoryDialog(BaseEditor):
 
     def _get_inventory_columns(self):
         return [IdentifierColumn("inventory_identifier", sorted=True),
+                Column('batch_number', title=_('Batch'), data_type=str,
+                       visible=False),
+                Column('batch_date', title=_('Batch Date'),
+                       data_type=datetime.date, visible=False),
                 Column("responsible_name", title=_("Responsible"),
                        data_type=str),
                 Column("open_date", title=_("Open date"),
@@ -217,6 +240,10 @@ class ProductStockHistoryDialog(BaseEditor):
 
     def _get_returned_columns(self):
         return [IdentifierColumn("returned_identifier", sorted=True),
+                Column('batch_number', title=_('Batch'), data_type=str,
+                       visible=False),
+                Column('batch_date', title=_('Batch Date'),
+                       data_type=datetime.date, visible=False),
                 Column("reason", title=_(u"Reason"),
                        data_type=str, expand=True),
                 Column("quantity", title=_(u"Quantity"),

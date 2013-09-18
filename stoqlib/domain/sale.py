@@ -57,7 +57,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
                                    SalesPerson, Company)
 from stoqlib.domain.product import (Product, ProductHistory, Storable,
-                                    StockTransactionHistory)
+                                    StockTransactionHistory, StorableBatch)
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
@@ -1624,11 +1624,15 @@ class ReturnedSaleItemsView(Viewable):
     code = Sellable.code
     description = Sellable.description
 
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+    batch_date = StorableBatch.create_date
+
     # summaries
     total = SaleItem.price * ReturnedSaleItem.quantity
 
     tables = [
         ReturnedSaleItem,
+        LeftJoin(StorableBatch, StorableBatch.id == ReturnedSaleItem.batch_id),
         Join(SaleItem, SaleItem.id == ReturnedSaleItem.sale_item_id),
         Join(Sellable, Sellable.id == ReturnedSaleItem.sellable_id),
         Join(ReturnedSale, ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
