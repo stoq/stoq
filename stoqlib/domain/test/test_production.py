@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,15 +23,20 @@
 ##
 """ This module test all class in stoqlib/domain/production.py """
 
-__tests__ = 'stoqlib/domain/production.py'
-
 from decimal import Decimal
 
-from stoqlib.domain.product import ProductQualityTest
+import mock
+
+from stoqlib.domain.product import (ProductHistory, ProductQualityTest,
+                                    StockTransactionHistory)
 from stoqlib.domain.production import (ProductionOrder, ProductionMaterial,
                                        ProductionItem, ProductionService,
+                                       ProductionProducedItem,
+                                       ProductionItemQualityResult,
                                        ProductionOrderProducingView)
 from stoqlib.domain.test.domaintest import DomainTest
+
+__tests__ = 'stoqlib/domain/production.py'
 
 
 class TestProductionOrder(DomainTest):
@@ -64,8 +69,101 @@ class TestProductionOrder(DomainTest):
         order.set_production_waiting()
         self.assertEqual(order.status, ProductionOrder.ORDER_WAITING)
 
+    def test_add_item(self):
+        order = self.create_production_order()
+        sellable = self.create_sellable()
+        item = order.add_item(sellable)
+        self.assertTrue(isinstance(item, ProductionItem))
+        self.assertEquals(item.order, order)
+
+    def test_remove_item(self):
+        order = self.create_production_order()
+        item = ProductionItem(store=self.store)
+        with self.assertRaisesRegexp(
+            ValueError,
+            (u'Argument item must have an order attribute '
+             u'associated with the current production '
+             u'order instance.')):
+            order.remove_item(item)
+
+    def test_remove_service_item(self):
+        order = self.create_production_order()
+        item = ProductionService(store=self.store)
+        with self.assertRaisesRegexp(
+            ValueError, (u'Argument item must have an order attribute '
+                         u'associated with the current production '
+                         u'order instance.')):
+            order.remove_service_item(item)
+        item.order = order
+        order.remove_service_item(item)
+
+    def test_get_status_string(self):
+        order = self.create_production_order()
+        order.status = ProductionOrder.ORDER_OPENED
+        self.assertEquals(order.get_status_string(), u'Opened')
+        order.status = ProductionOrder.ORDER_WAITING
+        self.assertEquals(order.get_status_string(), u'Waiting')
+        order.status = ProductionOrder.ORDER_PRODUCING
+        self.assertEquals(order.get_status_string(), u'Producing')
+        order.status = ProductionOrder.ORDER_CLOSED
+        self.assertEquals(order.get_status_string(), u'Closed')
+        order.status = ProductionOrder.ORDER_QA
+        self.assertEquals(order.get_status_string(), u'Quality Assurance')
+
+    def test_is_completely_tested(self):
+        item = self.create_production_item(quantity=10)
+        order = item.order
+        self.assertTrue(order.is_completely_tested())
+
+        test1 = ProductQualityTest(store=self.store,
+                                   product=item.product,
+                                   test_type=ProductQualityTest.TYPE_BOOLEAN)
+        test1.set_boolean_value(True)
+
+        for material in item.order.get_material_items():
+            material.product.storable.increase_stock(
+                10, item.order.branch, 0, None)
+
+        order.start_production()
+        user = self.create_user()
+        item.produce(1, produced_by=user, serials=[1])
+
+        produced_item = order.produced_items.any()
+        produced_item.test_passed = False
+        self.assertFalse(order.is_completely_tested())
+        produced_item.test_passed = True
+        self.assertTrue(order.is_completely_tested())
+
+    def test_get_branch_name(self):
+        branch = self.create_branch()
+        branch.person.company.fancy_name = u'foo'
+        order = self.create_production_order(branch=branch)
+        self.assertEquals(order.get_branch_name(), u'foo')
+
+    def test_get_responsible_name(self):
+        order = self.create_production_order()
+        order.responsible = None
+        self.assertEquals(order.get_responsible_name(), u'')
+        order.responsible = self.create_employee(name=u'employee')
+        self.assertEquals(order.get_responsible_name(), u'employee')
+
+    def test_get_description(self):
+        order = self.create_production_order()
+        order.description = u'Description'
+        self.assertEquals(order.get_description(), u'Description')
+
 
 class TestProductionItem(DomainTest):
+
+    def test_get_description(self):
+        item = self.create_production_item()
+        item.product.sellable.description = u'product'
+        self.assertEquals(item.get_description(), u'product')
+
+    def test_unit_description(self):
+        item = self.create_production_item()
+        item.product.sellable.unit = self.create_sellable_unit(description=u'un')
+        self.assertEquals(item.unit_description, u'un')
 
     def test_can_produce(self):
         item = self.create_production_item()
@@ -101,6 +199,14 @@ class TestProductionItem(DomainTest):
         item.order.start_production()
         self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
 
+        with mock.patch(
+            'stoqlib.domain.production.ProductionMaterial.consume') as consume:
+            consume.side_effect = ValueError()
+            with self.assertRaises(ValueError):
+                item.produce(1)
+            assert self.store.find(ProductHistory,
+                                   sellable=item.product.sellable).is_empty()
+
         item.produce(1)
         self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
         self.assertEqual(item.produced, 1)
@@ -125,6 +231,14 @@ class TestProductionItem(DomainTest):
         self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
 
         self.assertRaises(AssertionError, item.add_lost, 0)
+
+        with mock.patch(
+            'stoqlib.domain.production.ProductionMaterial.add_lost') as add_lost:
+            add_lost.side_effect = ValueError
+            with self.assertRaises(ValueError):
+                item.add_lost(1)
+            assert self.store.find(ProductHistory,
+                                   sellable=item.product.sellable).is_empty()
 
         item.add_lost(1)
         self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
@@ -168,8 +282,30 @@ class TestProductionItem(DomainTest):
 
 class TestProductionMaterial(DomainTest):
 
-    def test_allocate_all(self):
+    def test_get_description(self):
         material = self.create_production_material()
+        material.product.sellable.description = u'product'
+        self.assertEquals(material.get_description(), u'product')
+
+    def test_unit_description(self):
+        material = self.create_production_material()
+        material.product.sellable.unit = self.create_sellable_unit(description=u'un')
+        self.assertEquals(material.unit_description, u'un')
+
+    def test_can_add_lost(self):
+        material = self.create_production_material()
+        self.assertFalse(material.can_add_lost(1))
+
+    def test_can_consume(self):
+        material = self.create_production_material()
+        self.assertFalse(material.can_consume(1))
+        material.order.start_production()
+        self.assertTrue(material.can_consume(1))
+        self.assertFalse(material.can_consume(2))
+
+    def test_allocate(self):
+        material = self.create_production_material()
+
         branch = material.order.branch
         product = material.product
         storable = product.storable
@@ -190,6 +326,10 @@ class TestProductionMaterial(DomainTest):
         self.assertEqual(material.get_stock_quantity(), 15)
         self.assertEqual(material.allocated, 20)
 
+        storable.product = None
+        material.allocate()
+        self.assertEquals(material.allocated, material.needed)
+
     def test_allocate_partial(self):
         material = self.create_production_material()
         branch = material.order.branch
@@ -208,13 +348,31 @@ class TestProductionMaterial(DomainTest):
 
         self.assertRaises(ValueError, material.allocate, 1)
 
+    def test_return_remaining(self):
+        item = self.create_production_item(quantity=1)
+        order = item.order
+        branch = order.branch
+        for material in order.get_material_items():
+            storable = material.product.storable
+            storable.increase_stock(10, branch, 0, None)
+
+        order.status = ProductionOrder.ORDER_CLOSED
+        material = order.get_material_items()[0]
+        material.allocated = 10
+        material.return_remaining()
+
+        self.assertTrue(
+            self.store.find(StockTransactionHistory,
+                            object_id=material.id,
+                            type=StockTransactionHistory.TYPE_PRODUCTION_RETURNED).one())
+
     def test_add_lost(self):
-        item = self.create_production_item()
+        item = self.create_production_item(quantity=3)
         order = item.order
         branch = order.branch
         for component in item.get_components():
             storable = component.component.storable
-            storable.increase_stock(1, branch, 0, None)
+            storable.increase_stock(3, branch, 0, None)
 
         order.start_production()
         self.assertRaises(AssertionError, item.add_lost, 0)
@@ -228,8 +386,16 @@ class TestProductionMaterial(DomainTest):
             lost = component.quantity
             self.assertEqual(material.lost, lost)
 
+        with self.assertRaisesRegexp(
+            ValueError, u'Cannot loose this quantity.'):
+            material.add_lost(100)
+        material.allocated = 2
+        with self.assertRaisesRegexp(
+            ValueError, u'Can not allocate this quantity.'):
+            material.add_lost(2)
+
     def test_consume(self):
-        item = self.create_production_item()
+        item = self.create_production_item(quantity=3)
         order = item.order
         branch = order.branch
         for material in item.order.get_material_items():
@@ -248,9 +414,12 @@ class TestProductionMaterial(DomainTest):
             consumed = component.quantity
             self.assertEqual(material.consumed, consumed)
 
+        with self.assertRaisesRegexp(
+            ValueError, u'Can not consume this quantity.'):
+            material.consume(100)
+
 
 class TestProductionQuality(DomainTest):
-
     def test_production_quality_complete_process(self):
         # Order with one product to produce 4 units
         order = self.create_production_order()
@@ -337,6 +506,88 @@ class TestProductionQuality(DomainTest):
 
         storable = item.product.storable
         self.assertEqual(storable.get_balance_for_branch(order.branch), 4)
+
+
+class TestProductionService(DomainTest):
+    def test_get_description(self):
+        item = ProductionService(store=self.store)
+        item.service = self.create_service()
+        item.service.sellable.description = u'service'
+        self.assertEquals(item.get_description(), u'service')
+
+    def test_unit_description(self):
+        item = ProductionService(store=self.store)
+        item.service = self.create_service()
+        item.service.sellable.unit = self.create_sellable_unit(description=u'un')
+        self.assertEquals(item.unit_description, u'un')
+
+
+class TestProductionProducedItem(DomainTest):
+    def test_get_pending_tests(self):
+        pitem = ProductionProducedItem(store=self.store)
+        pitem.product = self.create_product()
+        self.assertEquals(pitem.get_pending_tests(), [])
+
+    def test_get_last_serial_number(self):
+        pitem = ProductionProducedItem(store=self.store)
+        pitem.product = self.create_product()
+        last = ProductionProducedItem.get_last_serial_number(pitem.product,
+                                                             self.store)
+        self.assertEquals(last, 0)
+
+        pitem.serial_number = 10
+        last = ProductionProducedItem.get_last_serial_number(pitem.product,
+                                                             self.store)
+        self.assertEquals(last, 10)
+
+    def test_is_valid_serial_range(self):
+        pitem = ProductionProducedItem(store=self.store)
+        pitem.product = self.create_product()
+        self.assertTrue(ProductionProducedItem.is_valid_serial_range(
+            pitem.product, 1, 2, self.store))
+        pitem.serial_number = 1
+        self.assertFalse(ProductionProducedItem.is_valid_serial_range(
+            pitem.product, 1, 2, self.store))
+
+    def test_send_to_stock(self):
+        pitem = ProductionProducedItem(store=self.store)
+        pitem.order = self.create_production_order()
+        pitem.product = self.create_storable().product
+        pitem.send_to_stock()
+
+        self.assertTrue(
+            self.store.find(StockTransactionHistory,
+                            object_id=pitem.id,
+                            type=StockTransactionHistory.TYPE_PRODUCTION_SENT).one())
+        pitem.send_to_stock()
+        self.assertTrue(
+            self.store.find(StockTransactionHistory,
+                            object_id=pitem.id,
+                            type=StockTransactionHistory.TYPE_PRODUCTION_SENT).one())
+
+
+class TestProductionItemQualityResult(DomainTest):
+    def test_get_description(self):
+        r = ProductionItemQualityResult(store=self.store)
+        r.quality_test = ProductQualityTest(store=self.store,
+                                            description=u'description')
+        self.assertEquals(r.get_description(), u'description')
+
+    def test_result_value_str(self):
+        r = ProductionItemQualityResult(store=self.store)
+        r.result_value = u'True'
+        self.assertEquals(r.result_value_str, u'True')
+
+    def test_get_boolean_value(self):
+        r = ProductionItemQualityResult(store=self.store)
+
+        r.result_value = u'True'
+        self.assertEquals(r.get_boolean_value(), True)
+        r.result_value = u'False'
+        self.assertEquals(r.get_boolean_value(), False)
+        r.result_value = u'broken'
+        with self.assertRaises(ValueError):
+            r.get_boolean_value()
 
 
 class TestProductionOrderProducingView(DomainTest):

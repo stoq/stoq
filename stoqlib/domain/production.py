@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -49,28 +49,25 @@ _ = stoqlib_gettext
 @implementer(IDescribable)
 class ProductionOrder(Domain):
     """Production Order object implementation.
-
-    :cvar ORDER_OPENED: The production order is opened, production items might
-                        have been added.
-    :cvar ORDER_WAITING: The production order is waiting some conditions to
-                         start the manufacturing process.
-    :cvar ORDER_PRODUCING: The production order have already started.
-    :cvar ORDER_CLOSED: The production have finished.
-
-    :attribute status: the production order status
-    :attribute open_date: the date when the production order was created
-    :attribute close_date: the date when the production order have been closed
-    :attribute description: the production order description
-    :attribute responsible: the person responsible for the production order
     """
 
     __storm_table__ = 'production_order'
 
-    (ORDER_OPENED,
-     ORDER_WAITING,
-     ORDER_PRODUCING,
-     ORDER_CLOSED,
-     ORDER_QA) = range(5)
+    #: The production order is opened, production items might have been added.
+    ORDER_OPENED = 0
+
+    #: The production order is waiting some conditions to start the
+    #: manufacturing process.
+    ORDER_WAITING = 1
+
+    #: The production order have already started.
+    ORDER_PRODUCING = 2
+
+    #: The production have finished.
+    ORDER_CLOSED = 3
+
+    #: The production is in quality assurance phase.
+    ORDER_QA = 4
 
     statuses = {ORDER_OPENED: _(u'Opened'),
                 ORDER_WAITING: _(u'Waiting'),
@@ -83,15 +80,31 @@ class ProductionOrder(Domain):
     #: :obj:`Domain.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
+
+    #: the production order status
     status = IntCol(default=ORDER_OPENED)
+
+    #: the date when the production order was created
     open_date = DateTimeCol(default_factory=localnow)
-    expected_start_date = DateTimeCol(default=None)
-    start_date = DateTimeCol(default=None)
+
+    #: the date when the production order have been closed
     close_date = DateTimeCol(default=None)
+
+    #: the production order description
     description = UnicodeCol(default=u'')
+
+    expected_start_date = DateTimeCol(default=None)
+
+    start_date = DateTimeCol(default=None)
+
     responsible_id = IdCol(default=None)
+
+    #: the person responsible for the production order
     responsible = Reference(responsible_id, 'Employee.id')
+
     branch_id = IdCol()
+
+    #: branch this production belongs to
     branch = Reference(branch_id, 'Branch.id')
 
     produced_items = ReferenceSet('id', 'ProductionProducedItem.order_id')
@@ -155,21 +168,18 @@ class ProductionOrder(Domain):
         self.start_date = localtoday()
         self.status = ProductionOrder.ORDER_PRODUCING
 
-    # FIXME: Test
     def is_completely_produced(self):
         return all(i.is_completely_produced() for i in self.get_items())
 
-    # FIXME: Test
     def is_completely_tested(self):
         # Produced items are only stored if there are quality tests for this
         # product
-        produced_items = self.produced_items
+        produced_items = list(self.produced_items)
         if not produced_items:
             return True
 
-        return all([i.test_passed for i in produced_items])
+        return all([item.test_passed for item in produced_items])
 
-    # FIXME: Test
     def try_finalize_production(self):
         """When all items are completely produced, change the status of the
         production to CLOSED.
@@ -307,8 +317,7 @@ class ProductionItem(Domain):
             assert produced_by
             assert len(serials) == quantity
 
-        store = self.store
-        store.savepoint(u'before_produce')
+        self.store.savepoint(u'before_produce')
 
         for component in self.get_components():
             material = self._get_material_from_component(component)
@@ -317,7 +326,7 @@ class ProductionItem(Domain):
             try:
                 material.consume(needed_material)
             except ValueError:
-                store.rollback_to_savepoint(u'before_produce')
+                self.store.rollback_to_savepoint(u'before_produce')
                 raise
 
         if self.product.has_quality_tests():
@@ -338,7 +347,7 @@ class ProductionItem(Domain):
                                     self.id)
         self.produced += quantity
         self.order.try_finalize_production()
-        ProductHistory.add_produced_item(store, self.order.branch, self)
+        ProductHistory.add_produced_item(self.store, self.order.branch, self)
 
     def add_lost(self, quantity):
         """Adds a quantity that was lost. The maximum quantity that can be
@@ -409,7 +418,6 @@ class ProductionMaterial(Domain):
     # Public API
     #
 
-    # TESTME
     def can_add_lost(self, quantity):
         """Returns if we can loose a certain quantity of this material.
 
@@ -457,7 +465,6 @@ class ProductionMaterial(Domain):
                                     StockTransactionHistory.TYPE_PRODUCTION_ALLOCATED,
                                     self.id)
 
-    # TESTME
     def return_remaining(self):
         """Returns remaining allocated material to the stock
 
@@ -510,7 +517,7 @@ class ProductionMaterial(Domain):
             raise ValueError(_(u'Can not consume this quantity.'))
 
         required = self.consumed + self.lost + quantity
-        if required > self.allocated:
+        if required > self.allocated:  # pragma nocover
             self.allocate(required - self.allocated)
 
         self.consumed += quantity

@@ -521,9 +521,11 @@ class ExampleCreator(object):
                             sellable=self.create_sellable(),
                             order=order)
 
-    def create_production_order(self):
+    def create_production_order(self, branch=None):
+        if branch is None:
+            branch = get_current_branch(self.store)
         from stoqlib.domain.production import ProductionOrder
-        return ProductionOrder(branch=get_current_branch(self.store),
+        return ProductionOrder(branch=branch,
                                responsible=self.create_employee(),
                                description=u'production',
                                store=self.store)
