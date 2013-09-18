@@ -85,8 +85,8 @@ class StartNewLoanStep(WizardEditorStep):
 
     def _setup_widgets(self):
         # Hide total and subtotal
-        self.table1.hide()
-        self.hbox4.hide()
+        self.summary_table.hide()
+        self.total_box.hide()
 
         # Hide invoice number details
         self.invoice_number_label.hide()
@@ -125,10 +125,6 @@ class StartNewLoanStep(WizardEditorStep):
         self.removed_by.show()
         self._replace_widget(self.transporter, self.removed_by)
 
-        # Operation Nature widget
-        self.operation_nature.hide()
-        self.nature_lbl.hide()
-
     def _fill_clients_combo(self):
         # FIXME: This should not be using a normal ProxyComboEntry,
         #        we need a specialized widget that does the searching
@@ -150,8 +146,6 @@ class StartNewLoanStep(WizardEditorStep):
         right = parent.child_get_property(old_widget, 'right-attach')
         parent.remove(old_widget)
         parent.attach(new_widget, left, right, top, bottom)
-        parent.child_set_property(new_widget, 'y-padding', 3)
-        parent.child_set_property(new_widget, 'x-padding', 3)
 
     #
     # WizardStep hooks

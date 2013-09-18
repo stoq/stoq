@@ -627,10 +627,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.expire_date.hide()
         self.expire_label.hide()
 
-        # Hide operation nature widgets
-        self.operation_nature.hide()
-        self.nature_lbl.hide()
-
         # Hide client category widgets
         self.client_category_lbl.hide()
         self.client_category.hide()
