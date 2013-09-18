@@ -436,7 +436,11 @@ class ServicesApp(ShellApp):
         if kind == 'category':
             return And(query, WorkOrder.category_id == item.id)
         if kind == 'status':
-            return And(query, self._status_query_mapper[value])
+            new_query = self._status_query_mapper[value]
+            if new_query is not None:
+                return And(query, new_query)
+            else:
+                return query
         if kind == 'flag':
             return And(query, self._flags_query_mapper[value])
         else:
