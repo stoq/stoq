@@ -1358,7 +1358,7 @@ class TestSale(DomainTest):
         details.append((u'"%s" Estimated Fix Date: %s') % (
                        item2.get_description(),
                        item2.estimated_fix_date.strftime('%x')))
-        self.assertEquals(str, u'\n'.join(details))
+        self.assertEquals(str, u'\n'.join(sorted(details)))
 
     def test_get_salesperson_name(self):
         item = self.create_sale_item()

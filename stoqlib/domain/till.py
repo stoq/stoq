@@ -219,7 +219,7 @@ class Till(Domain):
             value = payment.value
         elif payment.is_outpayment():
             value = -payment.value
-        else:
+        else:  # pragma nocoverage
             raise AssertionError(payment)
 
         return self._add_till_entry(value, payment.description, payment)

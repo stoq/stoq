@@ -594,6 +594,22 @@ class TestSellableCategoryView(DomainTest):
         results = self.store.find(SellableCategoryView, id=category.id)
         self.assertEquals(results[0].get_installments_commission(), 1)
 
+    def test_get_suggested_markup(self):
+
+        parent_category = self.create_sellable_category()
+        parent_category.suggested_markup = 100
+
+        category = self.create_sellable_category()
+        category.suggested_markup = 200
+
+        view = self.store.find(SellableCategoryView, id=category.id).one()
+        self.assertEquals(view.get_suggested_markup(), 200)
+
+        category.category = parent_category
+        category.suggested_markup = None
+        view = self.store.find(SellableCategoryView, id=category.id).one()
+        self.assertEquals(view.get_suggested_markup(), 100)
+
 
 class TestQuotationView(DomainTest):
     def test_group_quotation_purchase(self):
@@ -663,9 +679,8 @@ class TestSoldItemView(DomainTest):
         self.add_payments(sale, method_type=u'money')
         sale.confirm()
 
-        results = self.store.find(SoldItemView, id=sellable.id)
-        self.assertFalse(results.is_empty())
-        self.assertEquals(results[0].average_cost, 0)
+        view = self.store.find(SoldItemView, id=sellable.id).one()
+        self.assertEquals(view.average_cost, 0)
 
 
 class TestAccountView(DomainTest):

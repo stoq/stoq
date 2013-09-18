@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,6 +24,8 @@
 
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.test.domaintest import DomainTest
+
+__tests__ = 'stoqlib/domain/transfer.py'
 
 
 class TestTransferOrderItem(DomainTest):
@@ -115,9 +117,25 @@ class TestTransferOrder(DomainTest):
         self.assertEquals(order.get_destination_responsible_name(),
                           u'Bolton')
 
+        order.destination_responsible = None
+        self.assertEquals(order.get_destination_responsible_name(),
+                          u'')
+
     def test_get_total_items_transfer(self):
         order = self.create_transfer_order()
         self.create_transfer_order_item(order)
         self.assertEquals(order.get_total_items_transfer(), 5)
         self.create_transfer_order_item(order)
         self.assertEquals(order.get_total_items_transfer(), 10)
+
+    def test_status_str(self):
+        order = self.create_transfer_order()
+        self.assertEquals(order.status_str, 'Pending')
+
+    def test_branch(self):
+        order = self.create_transfer_order()
+        self.assertTrue(order.branch)
+        self.assertEquals(order.branch, order.source_branch)
+        order.source_branch = None
+        self.assertFalse(order.branch)
+        self.assertEquals(order.branch, order.source_branch)

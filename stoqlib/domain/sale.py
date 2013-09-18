@@ -1176,7 +1176,7 @@ class Sale(Domain):
                 details.append(_(u'"%s" Estimated Fix Date: %s') % (
                     sale_item.get_description(),
                     sale_item.estimated_fix_date.strftime('%x')))
-        return u'\n'.join(details)
+        return u'\n'.join(sorted(details))
 
     def get_salesperson_name(self):
         """

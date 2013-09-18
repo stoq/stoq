@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" This module test all class in stoq/domain/station.py """
+""" This module test all class in stoqlib/domain/till.py """
 
 import datetime
 from decimal import Decimal
@@ -35,6 +35,8 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localnow, localtoday
+
+__tests__ = 'stoqlib/domain/till.py'
 
 
 class TestTill(DomainTest):
@@ -290,3 +292,11 @@ class TestTill(DomainTest):
         till.open_till()
         till.close_till()
         self.assertEquals(Till.get_last_closed(self.store), till)
+
+
+class TestTillEntry(DomainTest):
+
+    def test_time(self):
+        entry = TillEntry(store=self.store,
+                          date=datetime.datetime(2000, 1, 1, 12, 34, 59, 789))
+        self.assertEquals(entry.time, datetime.time(12, 34, 59))

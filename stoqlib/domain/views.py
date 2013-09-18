@@ -637,9 +637,10 @@ class SoldItemView(Viewable):
 
     @property
     def average_cost(self):
-        if self.quantity:
-            return self.total_cost / self.quantity
-        return 0
+        if not self.quantity:  # pragma: nocoverage
+            # FIXME: Will this ever happen?
+            return 0
+        return self.total_cost / self.quantity
 
 
 class StockDecreaseView(Viewable):

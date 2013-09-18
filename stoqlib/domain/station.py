@@ -94,18 +94,8 @@ class BranchStation(Domain):
         """
 
         if branch is None:
-            raise TypeError(u"%r must be a Branch" % (branch, ))
+            raise TypeError(u"BranchStation.get_station() requires a Branch")
         return store.find(cls, name=name, branch=branch).one()
-
-    # Events
-
-    def on_create(self):
-        return
-        # This Should be done after_create()
-        # fmt = u"Created computer '%s' for branch '%s'"
-        # Event.log(self.store,
-        #           Event.TYPE_SYSTEM,
-        #           _(fmt) % (self.name, self.branch.get_description()))
 
     #
     # IActive implementation

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" This module test all class in stoq/domain/station.py """
+""" This module test all class in stoqlib/domain/service.py """
 
 import decimal
 
@@ -32,6 +32,9 @@ from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
 from stoqlib.domain.sale import Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service, ServiceView
+from stoqlib.lib.parameters import sysparam
+
+__tests__ = 'stoqlib/domain/service.py'
 
 
 class _ServiceEventData(object):
@@ -174,7 +177,13 @@ class TestService(DomainTest):
 
     def test_can_remove(self):
         service = self.create_service()
-        self.assertTrue(service.can_remove())
+
+        old = sysparam().get_object(self.store, 'DELIVERY_SERVICE')
+        try:
+            sysparam().set_object(self.store, 'DELIVERY_SERVICE', service)
+            self.assertFalse(service.can_remove())
+        finally:
+            sysparam().set_object(self.store, 'DELIVERY_SERVICE', old)
 
         # Service already used.
         sale = self.create_sale()
@@ -190,10 +199,33 @@ class TestService(DomainTest):
                           store=self.store)
         self.assertFalse(service.can_remove())
 
+    def test_can_close(self):
+        service = self.create_service()
+        self.assertTrue(service.can_close())
+
+        old = sysparam().get_object(self.store, 'DELIVERY_SERVICE')
+        try:
+            sysparam().set_object(self.store, 'DELIVERY_SERVICE', service)
+            self.assertFalse(service.can_close())
+        finally:
+            sysparam().set_object(self.store, 'DELIVERY_SERVICE', old)
+
+    def test_get_description(self):
+        service = self.create_service(description=u'My Service')
+        self.assertEquals(service.get_description(), u'My Service')
+
 
 class TestServiceView(DomainTest):
 
-    def test_service_view_select(self):
+    def test_select(self):
         service = self.store.find(Service).any()
         service_ids = [s.service_id for s in self.store.find(ServiceView)]
         self.assertIn(service.id, service_ids)
+
+    def test_get_unit(self):
+        service = self.create_service()
+        sv = self.store.find(ServiceView, service_id=service.id).one()
+        self.assertEquals(sv.get_unit(), u'')
+        service.sellable.unit = self.create_sellable_unit(description=u'Unid.')
+        sv = self.store.find(ServiceView, service_id=service.id).one()
+        self.assertEquals(sv.get_unit(), u'Unid.')

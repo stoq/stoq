@@ -64,14 +64,13 @@ def _add_fields_to_form(store, ui_form, fields):
          visible, mandatory) in fields:
         ui_field = store.find(UIField, ui_form=ui_form,
                               field_name=field_name).one()
-        if ui_field is not None:
-            continue
-        UIField(store=store,
-                ui_form=ui_form,
-                field_name=field_name,
-                description=field_description,
-                visible=visible,
-                mandatory=mandatory)
+        if ui_field is None:
+            UIField(store=store,
+                    ui_form=ui_form,
+                    field_name=field_name,
+                    description=field_description,
+                    visible=visible,
+                    mandatory=mandatory)
 
 
 def _get_or_create_form(store, name, desc):

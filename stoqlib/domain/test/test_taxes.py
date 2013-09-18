@@ -31,6 +31,8 @@ from stoqlib.domain.taxes import (ProductIcmsTemplate,
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localnow
 
+__tests__ = 'stoqlib/domain/taxes.py'
+
 
 class TestBaseTax(DomainTest):
     def test_set_from_template(self):
@@ -109,6 +111,7 @@ class TestSaleItemIcms(DomainTest):
         sale_item_icms = self.create_sale_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item_icms.csosn = 101
+        sale_item_icms.update_values()
         sale_item_icms.p_cred_sn = Decimal("3.10")
         expected_v_cred_icms_sn = (sale_item.get_total() *
                                    sale_item_icms.p_cred_sn / 100)
@@ -216,5 +219,11 @@ class TestSaleItemIpi(DomainTest):
         sale_item_ipi = SaleItemIpi(store=self.store)
         self._get_sale_item(sale_item_ipi, 1, 10)
         sale_item_ipi.cst = 0
+        sale_item_ipi.calculo = SaleItemIpi.CALC_UNIDADE
+        sale_item_ipi.set_initial_values()
+
+        sale_item_ipi = SaleItemIpi(store=self.store)
+        self._get_sale_item(sale_item_ipi, 1, 10)
+        sale_item_ipi.cst = 1
         sale_item_ipi.calculo = SaleItemIpi.CALC_UNIDADE
         sale_item_ipi.set_initial_values()

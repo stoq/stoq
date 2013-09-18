@@ -77,11 +77,10 @@ class StockDecreaseItem(Domain):
     #: the quantity decreased for this item
     quantity = QuantityCol()
 
-    def __init__(self, store=None, **kw):
-        if not 'kw' in kw:
-            if not 'sellable' in kw:
-                raise TypeError('You must provide a sellable argument')
-        Domain.__init__(self, store=store, **kw)
+    def __init__(self, store=None, sellable=None, **kw):
+        if sellable is None:
+            raise TypeError('You must provide a sellable argument')
+        Domain.__init__(self, store=store, sellable=sellable, **kw)
 
     #
     #  Public API
@@ -108,7 +107,10 @@ class StockDecreaseItem(Domain):
         return currency(self.cost * self.quantity)
 
     def get_quantity_unit_string(self):
-        return u"%s %s" % (self.quantity, self.sellable.unit_description)
+        unit = self.sellable.unit_description
+        if unit:
+            return u"%s %s" % (self.quantity, unit)
+        return unicode(self.quantity)
 
     def get_description(self):
         return self.sellable.get_description()
