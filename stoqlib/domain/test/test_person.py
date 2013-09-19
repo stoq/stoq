@@ -411,11 +411,11 @@ class TestClient(_PersonFacetTest, DomainTest):
         with self.assertRaises(DatabaseInconsistency):
             client.get_status_string()
 
-    def test_set_is_active(self):
+    def test_active_setter(self):
         client = self.create_client()
-        client._set_is_active(value=None)
+        client.is_active = None
         self.assertFalse(client.is_active)
-        client._set_is_active(value=True)
+        client.is_active = True
         self.assertTrue(client.is_active)
 
     def test_get_active_clients(self):

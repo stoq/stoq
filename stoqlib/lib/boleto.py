@@ -181,56 +181,58 @@ class BankInfo(object):
     agencia = custom_property('agencia', 4)
     conta = custom_property('conta', 7)
 
-    def _get_valor(self):
+    @property
+    def valor(self):
         try:
             return "%.2f" % self._valor
         except AttributeError:
             pass
 
-    def _set_valor(self, val):
+    @valor.setter
+    def valor(self, val):
         if type(val) is Decimal:
             self._valor = val
         else:
             self._valor = Decimal(str(val), 2)
-    valor = property(_get_valor, _set_valor)
 
-    def _get_valor_documento(self):
+    @property
+    def valor_documento(self):
         try:
             return "%.2f" % self._valor_documento
         except AttributeError:
             pass
 
-    def _set_valor_documento(self, val):
+    @valor_documento.setter
+    def valor_documento(self, val):
         if type(val) is Decimal:
             self._valor_documento = val
         else:
             self._valor_documento = Decimal(str(val), 2)
-    valor_documento = property(
-        _get_valor_documento,
-        _set_valor_documento
-    )
 
-    def _instrucoes_get(self):
+    @property
+    def instrucoes(self):
         try:
             return self._instrucoes
         except AttributeError:
             pass
 
-    def _instrucoes_set(self, list_inst):
+    @instrucoes.setter
+    def instrucoes(self, list_inst):
         self._instrucoes = list_inst
-    instrucoes = property(_instrucoes_get, _instrucoes_set)
 
-    def _demonstrativo_get(self):
+    @property
+    def demonstrativo(self):
         try:
             return self._demonstrativo
         except AttributeError:
             pass
 
-    def _demonstrativo_set(self, list_dem):
+    @demonstrativo.setter
+    def demonstrativo(self, list_dem):
         self._demonstrativo = list_dem
-    demonstrativo = property(_demonstrativo_get, _demonstrativo_set)
 
-    def _sacado_get(self):
+    @property
+    def sacado(self):
         if not hasattr(self, '_sacado'):
             self.sacado = [
                 self.sacado_nome,
@@ -244,14 +246,14 @@ class BankInfo(object):
             ]
         return self._sacado
 
-    def _sacado_set(self, list_sacado):
+    @sacado.setter
+    def sacado(self, list_sacado):
         # Just get 3 lines
         list_sacado = list_sacado[:3]
         for i, line in enumerate(list_sacado):
             # Just get the first 80 characters
             list_sacado[i] = list_sacado[i][:80]
         self._sacado = list_sacado
-    sacado = property(_sacado_get, _sacado_set)
 
     @property
     def fator_vencimento(self):
@@ -516,10 +518,13 @@ class BankBB(BankInfo):
         )
 
     # Nosso numero (sem dv) sao 11 digitos
-    def _get_nosso_numero(self):
+
+    @property
+    def nosso_numero(self):
         return self.convenio + self._nosso_numero
 
-    def _set_nosso_numero(self, val):
+    @nosso_numero.setter
+    def nosso_numero(self, val):
         val = str(val)
         if self.len_convenio == 4:
             nn = val.zfill(7)
@@ -534,14 +539,13 @@ class BankBB(BankInfo):
             nn = val.zfill(9)
         self._nosso_numero = nn
 
-    nosso_numero = property(_get_nosso_numero, _set_nosso_numero)
-
-    def _get_convenio(self):
+    @property
+    def convenio(self):
         return self._convenio
 
-    def _set_convenio(self, val):
+    @convenio.setter
+    def convenio(self, val):
         self._convenio = str(val).ljust(self.len_convenio, '0')
-    convenio = property(_get_convenio, _set_convenio)
 
     @property
     def agencia_conta(self):
@@ -605,15 +609,15 @@ class BankCaixa(BankInfo):
     inicio_nosso_numero = '80'
 
     # Nosso numero (sem dv) sao 10 digitos
-    def _nosso_numero_get(self):
+    @property
+    def nosso_numero(self):
+        '''Nosso Número sem DV, máximo 8 chars'''
         return self._nosso_numero
 
-    def _nosso_numero_set(self, val):
+    @nosso_numero.setter
+    def nosso_numero(self, val):
         self._nosso_numero = (self.inicio_nosso_numero +
                               self.formata_numero(val, 8))
-
-    nosso_numero = property(_nosso_numero_get, _nosso_numero_set,
-                            '''Nosso Número sem DV, máximo 8 chars''')
 
     @property
     def dv_nosso_numero(self):

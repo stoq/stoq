@@ -1377,7 +1377,17 @@ class Sale(Domain):
         """
         return self.group.get_valid_payments().order_by(Payment.open_date)
 
-    def _get_discount_by_percentage(self):
+    @property
+    def discount_percentage(self):
+        """Sets a discount by percentage.
+
+        Note that percentage must be added as an absolute value, in other
+        words::
+
+            sale.total_sale_amount = 200
+            sale.discount_percentage = 5
+            # the price of the sale will now be be `190`
+        """
         discount_value = self.discount_value
         if not discount_value:
             return Decimal(0)
@@ -1388,24 +1398,22 @@ class Sale(Domain):
         percentage = (1 - total / subtotal) * 100
         return quantize(percentage)
 
-    def _set_discount_by_percentage(self, value):
+    @discount_percentage.setter
+    def discount_percentage(self, value):
         self.discount_value = self._get_percentage_value(value)
 
-    discount_percentage = property(_get_discount_by_percentage,
-                                   _set_discount_by_percentage,
-                                   doc=("""
-        Sets a discount by percentage.
+    @property
+    def surcharge_percentage(self):
+        """Sets a discount by percentage.
 
         Note that percentage must be added as an absolute value, in other
         words::
 
             sale.total_sale_amount = 200
-            sale.discount_percentage = 5
-            # the price of the sale will now be be `190`
-        """
-                                        ))
+            sale.surcharge_percentage = 5
+            # the price of the sale will now be `210`
 
-    def _get_surcharge_by_percentage(self):
+        """
         surcharge_value = self.surcharge_value
         if not surcharge_value:
             return Decimal(0)
@@ -1416,23 +1424,9 @@ class Sale(Domain):
         percentage = ((total / subtotal) - 1) * 100
         return quantize(percentage)
 
-    def _set_surcharge_by_percentage(self, value):
+    @surcharge_percentage.setter
+    def surcharge_percentage(self, value):
         self.surcharge_value = self._get_percentage_value(value)
-
-    surcharge_percentage = property(_get_surcharge_by_percentage,
-                                    _set_surcharge_by_percentage,
-                                    doc=("""
-        Sets a discount by percentage.
-
-        Note that percentage must be added as an absolute value, in other
-        words::
-
-            sale.total_sale_amount = 200
-            sale.surcharge_percentage = 5
-            # the price of the sale will now be `210`
-
-        """
-                                         ))
 
     #
     #   NF-e api

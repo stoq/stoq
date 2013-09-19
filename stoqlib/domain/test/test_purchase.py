@@ -251,7 +251,7 @@ class TestPurchaseOrder(DomainTest):
 
     def test_get_purchase_total_with_negative_total(self):
         item = self.create_purchase_order_item()
-        item.order._set_discount_by_percentage(101)
+        item.order.discount_percentage = 101
         with self.assertRaises(ValueError):
             item.order.get_purchase_total()
 
@@ -318,36 +318,36 @@ class TestPurchaseOrder(DomainTest):
         with self.assertRaises(ValueError):
             purchase_order.remove_item(item)
 
-    def test_set_discount_by_percentage(self):
+    def test_discount_percentage_getter(self):
         order = self.create_purchase_order()
         self.create_purchase_order_item(order=order)
         percent = Decimal(50)
-        order._set_discount_by_percentage(percent)
+        order.discount_percentage = percent
         self.assertEquals(order.discount_percentage, percent)
 
-    def test_get_discount_by_percentage(self):
+    def test_discount_percentage_setter(self):
         item = self.create_purchase_order_item()
-        discount = item.order._get_discount_by_percentage()
+        discount = item.order.discount_percentage
         self.assertEquals(discount, 0)
         percent = Decimal(39)
         item.order.discount_percentage = percent
-        discount = item.order._get_discount_by_percentage()
+        discount = item.order.discount_percentage
         self.assertEquals(discount, percent)
 
-    def test_set_surcharge_by_percentage(self):
+    def test_surcharge_percentage_getter(self):
         item = self.create_purchase_order_item()
         surcharge = Decimal(39)
-        item.order._set_surcharge_by_percentage(surcharge)
+        item.order.surcharge_percentage = surcharge
         surcharge_str = currency(item.order._get_percentage_value(surcharge))
         self.assertEquals(item.order.surcharge_value, surcharge_str)
 
-    def test_get_surcharge_by_percentage(self):
+    def test_surcharge_percentage_setter(self):
         item = self.create_purchase_order_item()
-        surcharge_str = item.order._get_surcharge_by_percentage()
+        surcharge_str = item.order.surcharge_percentage
         self.assertEquals(surcharge_str, currency(0))
         surcharge = Decimal(39)
-        item.order._set_surcharge_by_percentage(surcharge)
-        surcharge_str = item.order._get_surcharge_by_percentage()
+        item.order.surcharge_percentage = surcharge
+        surcharge_str = item.order.surcharge_percentage
         self.assertEquals(surcharge_str, currency(surcharge))
 
     def test_get_percentage_value(self):

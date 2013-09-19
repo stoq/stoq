@@ -100,9 +100,9 @@ class TestSale(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, quantity=5)
 
-        self.assertEqual(sale._get_discount_by_percentage(), Decimal('0.0'))
-        sale._set_discount_by_percentage(10)
-        self.assertEqual(sale._get_discount_by_percentage(), 10)
+        self.assertEqual(sale.discount_percentage, Decimal('0.0'))
+        sale.discount_percentage = 10
+        self.assertEqual(sale.discount_percentage, 10)
 
     def test_set_surcharge_by_percentage(self):
         sale = self.create_sale()
@@ -125,9 +125,9 @@ class TestSale(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, quantity=5)
 
-        self.assertEqual(sale._get_surcharge_by_percentage(), currency(0))
-        sale._set_surcharge_by_percentage(15)
-        self.assertEqual(sale._get_surcharge_by_percentage(), 15)
+        self.assertEqual(sale.surcharge_percentage, currency(0))
+        sale.surcharge_percentage = 15
+        self.assertEqual(sale.surcharge_percentage, 15)
 
     def test_get_items(self):
         sale = self.create_sale()

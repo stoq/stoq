@@ -241,14 +241,12 @@ class PurchaseOrder(Domain):
     # Properties
     #
 
-    def _set_discount_by_percentage(self, value):
-        """Sets a discount by percentage.
+    @property
+    def discount_percentage(self):
+        """Discount by percentage.
         Note that percentage must be added as an absolute value not as a
         factor like 1.05 = 5 % of surcharge
         The correct form is 'percentage = 3' for a discount of 3 %"""
-        self.discount_value = self._get_percentage_value(value)
-
-    def _get_discount_by_percentage(self):
         discount_value = self.discount_value
         if not discount_value:
             return currency(0)
@@ -259,17 +257,16 @@ class PurchaseOrder(Domain):
         percentage = (1 - total / subtotal) * 100
         return quantize(percentage)
 
-    discount_percentage = property(_get_discount_by_percentage,
-                                   _set_discount_by_percentage)
+    @discount_percentage.setter
+    def discount_percentage(self, value):
+        self.discount_value = self._get_percentage_value(value)
 
-    def _set_surcharge_by_percentage(self, value):
-        """Sets a surcharge by percentage.
+    @property
+    def surcharge_percentage(self):
+        """Surcharge by percentage.
         Note that surcharge must be added as an absolute value not as a
         factor like 0.97 = 3 % of discount.
         The correct form is 'percentage = 3' for a surcharge of 3 %"""
-        self.surcharge_value = self._get_percentage_value(value)
-
-    def _get_surcharge_by_percentage(self):
         surcharge_value = self.surcharge_value
         if not surcharge_value:
             return currency(0)
@@ -280,8 +277,9 @@ class PurchaseOrder(Domain):
         percentage = ((total / subtotal) - 1) * 100
         return quantize(percentage)
 
-    surcharge_percentage = property(_get_surcharge_by_percentage,
-                                    _set_surcharge_by_percentage)
+    @surcharge_percentage.setter
+    def surcharge_percentage(self, value):
+        self.surcharge_value = self._get_percentage_value(value)
 
     @property
     def payments(self):

@@ -338,15 +338,15 @@ class ClientCategoryPrice(Domain):
     #: The max discount that may be applied.
     max_discount = PercentCol(default=0)
 
-    def _get_markup(self):
+    @property
+    def markup(self):
         if self.sellable.cost == 0:
             return Decimal(0)
         return ((self.price / self.sellable.cost) - 1) * 100
 
-    def _set_markup(self, markup):
+    @markup.setter
+    def markup(self, markup):
         self.price = self.sellable._get_price_by_markup(markup)
-
-    markup = property(_get_markup, _set_markup)
 
     @property
     def category_name(self):
@@ -537,18 +537,22 @@ class Sellable(Domain):
         """
         return bool(self.image and self.image.image)
 
-    def _get_markup(self):
+    @property
+    def markup(self):
+        """Markup, the opposite of discount, a value added
+        on top of the sale. It's calculated as::
+          ((cost/price)-1)*100
+        """
         if self.cost == 0:
             return Decimal(0)
         return ((self.price / self.cost) - 1) * 100
 
-    def _set_markup(self, markup):
+    @markup.setter
+    def markup(self, markup):
         self.price = self._get_price_by_markup(markup)
 
-    #: ((cost/price)-1)*100
-    markup = property(_get_markup, _set_markup)
-
-    def _get_price(self):
+    @property
+    def price(self):
         if self.on_sale_price:
             today = localnow()
             start_date = self.on_sale_start_date
@@ -557,7 +561,8 @@ class Sellable(Domain):
                 return self.on_sale_price
         return self.base_price
 
-    def _set_price(self, price):
+    @price.setter
+    def price(self, price):
         if price < 0:
             # Just a precaution for gui validation fails.
             price = 0
@@ -570,8 +575,6 @@ class Sellable(Domain):
                 self.on_sale_price = price
                 return
         self.base_price = price
-
-    price = property(_get_price, _set_price)
 
     #
     #  Accessors

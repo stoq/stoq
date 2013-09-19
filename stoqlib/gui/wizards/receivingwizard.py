@@ -73,16 +73,16 @@ class _TemporaryReceivingItem(object):
     def total(self):
         return currency(self.cost * self.quantity)
 
-    def _get_quantity(self):
+    @property
+    def quantity(self):
         if self.is_batch:
             return sum(item.quantity for item in self.batches)
         return self._quantity
 
-    def _set_quantity(self, quantity):
+    @quantity.setter
+    def quantity(self, quantity):
         assert not self.is_batch
         self._quantity = quantity
-
-    quantity = property(_get_quantity, _set_quantity)
 
 #
 # Wizard Steps

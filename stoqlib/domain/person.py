@@ -805,15 +805,16 @@ class Client(Domain):
             raise AssertionError('This client is already active')
         self.status = self.STATUS_SOLVENT
 
-    def _get_is_active(self):
+    @property
+    def is_active(self):
         return self.status == self.STATUS_SOLVENT
 
-    def _set_is_active(self, value):
+    @is_active.setter
+    def is_active(self, value):
         if value:
             self.activate()
         else:
             self.inactivate()
-    is_active = property(_get_is_active, _set_is_active)
 
     #
     # IDescribable
@@ -991,7 +992,12 @@ class Client(Domain):
 
         return currency(balance)
 
-    def _set_salary(self, value):
+    @property
+    def salary(self):
+        return self._salary
+
+    @salary.setter
+    def salary(self, value):
         assert value >= 0
 
         self._salary = value
@@ -1000,11 +1006,6 @@ class Client(Domain):
 
         if salary_percentage > 0:
             self.credit_limit = value * salary_percentage / 100
-
-    def _get_salary(self):
-        return self._salary
-
-    salary = property(_get_salary, _set_salary)
 
     def can_purchase(self, method, total_amount):
         """This method checks the following to see if the client can

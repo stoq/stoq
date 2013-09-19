@@ -61,16 +61,16 @@ class _TemporaryStorableItem(object):
         if not self.is_batch:
             self.initial_stock = 0
 
-    def _get_initial_stock(self):
+    @property
+    def initial_stock(self):
         if self.is_batch:
             return sum(item.quantity for item in self.batches)
         return self._quantity
 
-    def _set_initial_stock(self, quantity):
+    @initial_stock.setter
+    def initial_stock(self, quantity):
         assert not self.is_batch
         self._quantity = quantity
-
-    initial_stock = property(_get_initial_stock, _set_initial_stock)
 
 
 class InitialStockDialog(BaseEditor):
