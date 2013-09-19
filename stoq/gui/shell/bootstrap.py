@@ -223,7 +223,7 @@ class ShellBootstrap(object):
         settings.props.gtk_button_images = True
 
         from stoqlib.lib.environment import is_developer_mode
-        if is_developer_mode():
+        if is_developer_mode() and gtk.gtk_version[0] == 2:
             from gtk import gdk
 
             # Install a Control-Q handler that forcefully exits
