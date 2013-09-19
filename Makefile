@@ -72,14 +72,14 @@ coverage: clean
 	tools/validatecoverage coverage.xml && \
 	git show|tools/diff-coverage jenkins-test/stoq-$$VERSION/coverage.xml
 
-jenkins: check-source-all
-	unset STOQLIB_TEST_QUICK; \
-	VERSION=`python -c "from stoq import version; print version"`; \
-	rm -fr jekins-test; \
-	python setup.py -q sdist -d jenkins-test; \
-	cd jenkins-test; \
-	tar xfz stoq-$$VERSION.tar.gz; \
-	cd stoq-$$VERSION; \
+jenkins:
+	unset STOQLIB_TEST_QUICK && \
+	VERSION=`python -c "from stoq import version; print version"` && \
+	rm -fr jenkins-test && \
+	python setup.py -q sdist -d jenkins-test && \
+	cd jenkins-test && \
+	tar xfz stoq-$$VERSION.tar.gz && \
+	cd stoq-$$VERSION && \
 	python runtests.py \
 	    --with-xcoverage \
 	    --with-xunit \
