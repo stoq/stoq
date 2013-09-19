@@ -87,7 +87,7 @@ class LazyObjectModel(gtk.GenericTreeModel, gtk.TreeSortable):
          self._sort_order) = old_model.get_sort_column_id()
         if self._sort_column_id is None:
             self._sort_column_id = 0
-        gtk.GenericTreeModel.__init__(self)
+        super(LazyObjectModel, self).__init__()
         self.props.leak_references = False
         self._load_result_set(result)
 

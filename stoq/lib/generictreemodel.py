@@ -112,7 +112,6 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
     def __init__(self):
         """Initialize. Make sure to call this from derived classes if overridden."""
         GObject.GObject.__init__(self)
-        Gtk.TreeModel.__init__(self)
         self.stamp = 0
 
         #: Dictionary of (id(user_data): user_data), used when leak-refernces=False
