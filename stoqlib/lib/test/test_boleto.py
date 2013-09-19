@@ -117,7 +117,8 @@ class TestBank(DomainTest):
         self._configure_boleto(u"001",
                                convenio=u"12345678",
                                agency=u"1172",
-                               account=u"00403005")
+                               account=u"00403005",
+                               especie_documento=u"DM")
         self._diff(sale, 'boleto-001')
 
     def test_banco_do_brasil_com_d_v(self):
@@ -125,14 +126,16 @@ class TestBank(DomainTest):
         self._configure_boleto(u"001",
                                convenio=u"12345678",
                                agency=u"1172-X",
-                               account=u"00403005-X")
+                               account=u"00403005-X",
+                               especie_documento=u"DM")
         self._diff(sale, 'boleto-001')
 
     def test_nossa_caixa(self):
         sale = self._create_bill_sale()
         self._configure_boleto(u"104",
                                agency=u"1565",
-                               account=u"414-3")
+                               account=u"414-3",
+                               especie_documento=u"DM")
 
         self._diff(sale, 'boleto-104')
 
@@ -141,7 +144,8 @@ class TestBank(DomainTest):
         self._configure_boleto(u"341",
                                account=u"13877",
                                agency=u"1565",
-                               carteira=u'175')
+                               carteira=u'175',
+                               especie_documento=u"DM")
 
         self._diff(sale, 'boleto-341')
 
@@ -150,7 +154,8 @@ class TestBank(DomainTest):
         self._configure_boleto(u"237",
                                account=u"029232-4",
                                agency=u"278-0",
-                               carteira=u'06')
+                               carteira=u'06',
+                               especie_documento=u"DM")
 
         self._diff(sale, 'boleto-237')
 
@@ -159,7 +164,8 @@ class TestBank(DomainTest):
         self._configure_boleto(u"356",
                                account=u"5705853",
                                agency=u"0531",
-                               carteira=u'06')
+                               carteira=u'06',
+                               especie_documento=u"DM")
 
         self._diff(sale, 'boleto-356')
 
@@ -169,6 +175,7 @@ class TestBancoBanrisul(unittest.TestCase):
         self.dados = BankBanrisul(
             agencia=u'1102',
             conta=u'9000150',
+            especie_documento=u'DM',
             data_vencimento=datetime.date(2000, 7, 4),
             valor_documento=550,
             nosso_numero=u'22832563',
@@ -206,6 +213,7 @@ class TestBB(unittest.TestCase):
             valor_documento=2952.95,
             agencia=u'9999',
             conta=u'99999',
+            especie_documento=u'DM',
             convenio=u'7777777',
             nosso_numero=u'87654',
         )
@@ -239,6 +247,7 @@ class TestBancoBradesco(unittest.TestCase):
             carteira=u'06',
             agencia=u'278-0',
             conta=u'039232-4',
+            especie_documento=u'DM',
             data_vencimento=datetime.date(2011, 2, 5),
             valor_documento=8280.00,
             nosso_numero=u'2125525',
@@ -248,6 +257,7 @@ class TestBancoBradesco(unittest.TestCase):
             carteira=u'06',
             agencia=u'1172',
             conta=u'403005',
+            especie_documento=u'DM',
             data_vencimento=datetime.date(2011, 3, 9),
             valor_documento=2952.95,
             nosso_numero=u'75896452',
@@ -313,6 +323,7 @@ class TestBancoCaixa(unittest.TestCase):
             carteira=u'SR',
             agencia=u'1565',
             conta=u'414-3',
+            especie_documento=u'DM',
             data_vencimento=datetime.date(2011, 2, 5),
             valor_documento=355.00,
             nosso_numero=u'19525086',
@@ -338,6 +349,7 @@ class TestBancoItau(unittest.TestCase):
             carteira=u'110',
             conta=u'12345-7',
             agencia=u'0057',
+            especie_documento=u'DM',
             data_vencimento=datetime.date(2002, 5, 1),
             valor_documento=123.45,
             nosso_numero=u'12345678',
@@ -360,6 +372,7 @@ class TestBancoReal(unittest.TestCase):
             carteira=u'06',
             agencia=u'0531',
             conta=u'5705853',
+            especie_documento=u'DM',
             data_vencimento=datetime.date(2011, 2, 5),
             valor_documento=355.00,
             nosso_numero=u'123',
@@ -381,6 +394,7 @@ class TestSantander(unittest.TestCase):
         self.dados = BankSantander(
             agencia=u'1333',
             conta=u'0707077',
+            especie_documento=u'DM',
             data_vencimento=datetime.date(2012, 1, 22),
             valor_documento=2952.95,
             nosso_numero=u'1234567',

@@ -56,6 +56,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Account"', hidden
           ProxyEntry(bank_branch): '', mandatory
           GtkLabel(): 'Account:'
           ProxyEntry(bank_account): '', mandatory
+          GtkLabel(): '<i>Especie_documento</i>:'
+          ProxyEntry(option0): ''
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

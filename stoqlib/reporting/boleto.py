@@ -168,31 +168,56 @@ class BoletoPDF(object):
 
         # Horizontal Lines
         self.pdfCanvas.setLineWidth(1)
+        # Cedente
         self._horizontalLine(0,
                              linhaInicial * self.heightLine, self.width)
+        # Endereço
         self._horizontalLine(0,
                             (linhaInicial + 1) * self.heightLine, self.width)
+        # Sacado
+        self._horizontalLine(0,
+                            (linhaInicial - 1) * self.heightLine, self.width)
 
         self.pdfCanvas.setLineWidth(2)
         self._horizontalLine(0,
                             (linhaInicial + 2) * self.heightLine, self.width)
 
         # Vertical Lines
+
+        # Vertical line 1
+        # Linha Sacado
+        self.pdfCanvas.setLineWidth(1)
+        self._verticalLine(
+            self.width - (35 * mm) - (30 * mm) - (40 * mm),
+            (linhaInicial - 1) * self.heightLine,
+            1 * self.heightLine)
+        # Linha Cedente
+        self._verticalLine(
+            self.width - (35 * mm) - (30 * mm) - (40 * mm),
+            (linhaInicial + 1) * self.heightLine,
+            1 * self.heightLine)
+
+        # Vertical line 2
+        # Cedente
+        self.pdfCanvas.setLineWidth(1)
+        self._verticalLine(
+            self.width - (35 * mm) - (30 * mm),
+            (linhaInicial + 1) * self.heightLine,
+            1 * self.heightLine)
+        # Sacado
+        self.pdfCanvas.setLineWidth(1)
+        self._verticalLine(
+            self.width - (35 * mm) - (30 * mm),
+            (linhaInicial - 1) * self.heightLine,
+            1 * self.heightLine)
+
+        # Vertical line 3
+        # Cedente/Endereço/Sacado
         self.pdfCanvas.setLineWidth(1)
         self._verticalLine(
             self.width - (35 * mm),
-            (linhaInicial + 0) * self.heightLine,
-            2 * self.heightLine)
-
-        self._verticalLine(
-            self.width - (35 * mm) - (30 * mm),
-            (linhaInicial + 0) * self.heightLine,
-            2 * self.heightLine)
-
-        self._verticalLine(
-            self.width - (35 * mm) - (30 * mm) - (40 * mm),
-            (linhaInicial + 0) * self.heightLine,
-            2 * self.heightLine)
+            (linhaInicial + -1) * self.heightLine,
+            3 * self.heightLine)
 
         # Head
         self.pdfCanvas.setLineWidth(2)
@@ -231,6 +256,7 @@ class BoletoPDF(object):
             self.heightLine,
             'Autenticação Mecânica')
 
+        # Linha Cedente
         self.pdfCanvas.drawString(
             0,
             (((linhaInicial + 1) * self.heightLine)) + self.deltaTitle,
@@ -248,36 +274,48 @@ class BoletoPDF(object):
             (((linhaInicial + 1) * self.heightLine)) + self.deltaTitle,
             'Vencimento')
 
+        # Linha Endereço
         self.pdfCanvas.drawString(
             0,
             (((linhaInicial + 0) * self.heightLine)) + self.deltaTitle,
-            'Sacado')
-        self.pdfCanvas.drawString(
-            self.width - (35 * mm) - (30 * mm) - (40 * mm) + self.space,
-            (((linhaInicial + 0) * self.heightLine)) + self.deltaTitle,
-            'Nosso Número')
-        self.pdfCanvas.drawString(
-            self.width - (35 * mm) - (30 * mm) + self.space,
-            (((linhaInicial + 0) * self.heightLine)) + self.deltaTitle,
-            'N. do documento')
+            'Endereço Cedente')
         self.pdfCanvas.drawString(
             self.width - (35 * mm) + self.space,
             (((linhaInicial + 0) * self.heightLine)) + self.deltaTitle,
+            'CNPJ Cedente')
+
+        # Linha Sacado
+        self.pdfCanvas.drawString(
+            0,
+            (((linhaInicial - 1) * self.heightLine)) + self.deltaTitle,
+            'Sacado')
+        self.pdfCanvas.drawString(
+            self.width - (35 * mm) - (30 * mm) - (40 * mm) + self.space,
+            (((linhaInicial - 1) * self.heightLine)) + self.deltaTitle,
+            'Nosso Número')
+        self.pdfCanvas.drawString(
+            self.width - (35 * mm) - (30 * mm) + self.space,
+            (((linhaInicial - 1) * self.heightLine)) + self.deltaTitle,
+            'N. do documento')
+        self.pdfCanvas.drawString(
+            self.width - (35 * mm) + self.space,
+            (((linhaInicial - 1) * self.heightLine)) + self.deltaTitle,
             'Valor Documento')
 
         self.pdfCanvas.drawString(
             0,
-            (((linhaInicial - 1) * self.heightLine)) + self.deltaTitle,
+            (((linhaInicial - 2) * self.heightLine)) + self.deltaTitle,
             'Demonstrativo')
 
         # Values
         self.pdfCanvas.setFont('Helvetica', 9)
         heighFont = 9 + 1
 
+        # Valores da linha Cedente
         self.pdfCanvas.drawString(
             0 + self.space,
             (((linhaInicial + 1) * self.heightLine)) + self.space,
-            boletoDados.cedente)
+            boletoDados.cedente[0])
         self.pdfCanvas.drawString(
             self.width - (35 * mm) - (30 * mm) - (40 * mm) + self.space,
             (((linhaInicial + 1) * self.heightLine)) + self.space,
@@ -291,31 +329,45 @@ class BoletoPDF(object):
             (((linhaInicial + 1) * self.heightLine)) + self.space,
             boletoDados.data_vencimento.strftime('%d/%m/%Y'))
 
+        # Valores da linha Endereço
+        # Endereço
+        self.pdfCanvas.drawString(
+            0 + self.space,
+            (((linhaInicial + 0) * self.heightLine)) + self.space,
+            '{endereco}, {detalhe_end}'.format(endereco=boletoDados.cedente[1],
+                                               detalhe_end=boletoDados.cedente[2]))
+        # CNPJ
+        self.pdfCanvas.drawString(
+            self.width - (35 * mm) + self.space,
+            (((linhaInicial + 0) * self.heightLine)) + self.space,
+            boletoDados.cedente[3])
+
+        # Valores da linha Sacado
         valorDocumento = self._formataValorParaExibir(
             boletoDados.valor_documento)
 
         self.pdfCanvas.drawString(
             0 + self.space,
-            (((linhaInicial + 0) * self.heightLine)) + self.space,
+            (((linhaInicial - 1) * self.heightLine)) + self.space,
             boletoDados.sacado[0])
         self.pdfCanvas.drawString(
             self.width - (35 * mm) - (30 * mm) - (40 * mm) + self.space,
-            (((linhaInicial + 0) * self.heightLine)) + self.space,
+            (((linhaInicial - 1) * self.heightLine)) + self.space,
             boletoDados.format_nosso_numero())
         self.pdfCanvas.drawString(
             self.width - (35 * mm) - (30 * mm) + self.space,
-            (((linhaInicial + 0) * self.heightLine)) + self.space,
+            (((linhaInicial - 1) * self.heightLine)) + self.space,
             boletoDados.numero_documento)
         self.pdfCanvas.drawString(
             self.width - (35 * mm) + self.space,
-            (((linhaInicial + 0) * self.heightLine)) + self.space,
+            (((linhaInicial - 1) * self.heightLine)) + self.space,
             valorDocumento)
 
         demonstrativo = boletoDados.demonstrativo[0:25]
         for i in range(len(demonstrativo)):
             self.pdfCanvas.drawString(
                 2 * self.space,
-                (((linhaInicial - 1) * self.heightLine)) - (i * heighFont),
+                (((linhaInicial - 2) * self.heightLine)) - (i * heighFont),
                 demonstrativo[i])
 
         self.pdfCanvas.restoreState()
@@ -567,7 +619,7 @@ class BoletoPDF(object):
             'Agência/Código cedente')
 
         self.pdfCanvas.setFont('Helvetica', self.fontSizeValue)
-        self.pdfCanvas.drawString(0, y + self.space, boletoDados.cedente)
+        self.pdfCanvas.drawString(0, y + self.space, boletoDados.cedente[0])
         self.pdfCanvas.drawRightString(
             self.width - 2 * self.space,
             y + self.space,
@@ -837,7 +889,12 @@ class BillReport(object):
             branch = parent.branch
         else:
             branch = sysparam().get_object(payment.store, 'MAIN_COMPANY')
-        return branch.get_description()
+
+        address = branch.person.get_main_address()
+        return [branch.get_description(),
+                address.get_address_string(),
+                address.get_details_string(),
+                branch.person.company.cnpj]
 
     def _get_account(self, payment):
         if self._account:

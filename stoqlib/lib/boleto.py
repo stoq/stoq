@@ -397,7 +397,8 @@ class BankBanrisul(BankInfo):
     bank_number = 41
     logo = 'logo_banrisul.jpg'
     options = {u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+               u'conta': BILL_OPTION_BANK_BRANCH,
+               u'especie_documento': BILL_OPTION_CUSTOM}
 
     nosso_numero = custom_property('nosso_numero', 8)
     conta = custom_property('conta', 6)
@@ -421,6 +422,7 @@ class BankBradesco(BankInfo):
     logo = "logo_bancobradesco.jpg"
 
     options = {u'carteira': BILL_OPTION_CUSTOM,
+               u'especie_documento': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}
 
@@ -487,7 +489,8 @@ class BankBB(BankInfo):
     logo = 'logo_bb.gif'
     options = {u'convenio': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+               u'conta': BILL_OPTION_BANK_BRANCH,
+               u'especie_documento': BILL_OPTION_CUSTOM}
 
     validate_field_func = 'modulo11'
     validate_field_dv_10 = 'x'
@@ -603,6 +606,7 @@ class BankCaixa(BankInfo):
     bank_number = 104
     logo = 'logo_bancocaixa.jpg'
     options = {u'carteira': BILL_OPTION_CUSTOM,
+               u'especie_documento': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}
 
@@ -644,6 +648,7 @@ class BankItau(BankInfo):
     bank_number = 341
     logo = 'logo_itau.gif'
     options = {u'carteira': BILL_OPTION_CUSTOM,
+               u'especie_documento': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}
 
@@ -694,6 +699,7 @@ class BankReal(BankInfo):
     bank_number = 356
     logo = 'logo_bancoreal.jpg'
     options = {u'carteira': BILL_OPTION_CUSTOM,
+               u'especie_documento': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}
 
@@ -724,6 +730,7 @@ class BankSantander(BankInfo):
     bank_number = 33
     logo = 'logo_santander.jpg'
     options = {u'carteira': BILL_OPTION_CUSTOM,
+               u'especie_documento': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}
 

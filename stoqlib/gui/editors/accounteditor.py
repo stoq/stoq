@@ -350,7 +350,7 @@ class AccountEditor(BaseEditor):
             nosso_numero=u'624533',
             numero_documento=u'1138',
             sacado=[_(u"Drawee"), _(u"Address"), _(u"Details")],
-            cedente=_(u"Supplier"),
+            cedente=[_(u"Supplier"), _(u"Address"), _(u"Details"), ("CNPJ")],
             demonstrativo=[_(u"Demonstration")],
             instrucoes=[_(u"Instructions")],
             agencia=self.bank_model.bank_branch,
