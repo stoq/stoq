@@ -13,10 +13,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkHBox(hbox2):
                 ProxyLabel(status_str, fill=True): '<span >Opened</span>'
                 GtkImage(state_icon): hidden
-              GtkButton(toggle_status_btn): 'Approve', insensitive
+              GtkButton(toggle_status_btn): 'Approve'
               GtkLabel(label8): 'Client:'
-              ProxyComboEntry(client): mandatory
+              ProxyComboEntry(client):
                 item: 'Alessandra Almeida Itaber\xc3\xa1'
+                item: 'Client', selected
                 item: 'Franciso Elisio de Lima Junior'
                 item: 'Luis Sergio da Silva Marin'
                 item: 'Vitalina Claudino'

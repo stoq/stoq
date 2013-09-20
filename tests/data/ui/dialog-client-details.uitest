@@ -14,9 +14,9 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
             ProxyLabel(last_purchase_date): '<span >YYYY-MM-DD</span>'
             GtkHBox(hbox1):
               GtkButton(further_details_button, fill=True): 'Further Details'
-          GtkNotebook(notebook2, expand=True, fill=True):
-            GtkVBox(sales_vbox):
-              ObjectList(sales_list, expand=True, fill=True):
+          GtkNotebook(details_notebook, expand=True, fill=True):
+            GtkVBox():
+              ObjectList(expand=True, fill=True):
                 column: title='#'
                 column: title='Invoice #'
                 column: title='Date'
@@ -27,45 +27,58 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>$200.00</b>'
-            ObjectList(returned_sales_list):
-              column: title='#'
-              column: title='Invoice #'
-              column: title='Return Date'
-              column: title='Product'
-              column: title='Salesperson', hidden
-              column: title='Responsible'
-              column: title='Reason', expand
-              column: title='Total'
-            ObjectList(product_list):
-              column: title='Code'
-              column: title='Description', expand
-              column: title='Total quantity'
-              column: title='Lastest purchase'
-              column: title='Avg. value'
-              column: title='Total value'
-              row: u'', u'Description', Decimal('1.000'), datetime.today(), Decimal('100.0000000000000000'), Decimal('100.00000')
-            ObjectList(services_list):
-              column: title='Code'
-              column: title='Description', expand
-              column: title='Estimated fix date'
-              row: u'', u'Description', datetime.today()
-            ObjectList(payments_list):
-              column: title='#'
-              column: title='Type'
-              column: title='Description', expand
-              column: title='Due date'
-              column: title='Paid date'
-              column: title='Status'
-              column: title='Value'
-              column: title='Days Late'
-              row: 999, u'money', u'1/1 Money for sale 00123', datetime.today(), None, u'Preview', <currency $200>, 0
-            ObjectList(calls_list):
-              column: title='Date'
-              column: title='Description', expand
-              column: title='Attendant', expand
-              row: datetime.datetime(2011, 1, 1, 0, 0), u'Test call', u'individual'
-            GtkVBox(account_vbox):
-              ObjectList(account_list, expand=True, fill=True):
+              GtkHButtonBox(pack-end):
+                GtkButton(expand=True, fill=True): 'Sale details', insensitive
+            GtkVBox():
+              ObjectList(expand=True, fill=True):
+                column: title='#'
+                column: title='Invoice #'
+                column: title='Return Date'
+                column: title='Product'
+                column: title='Salesperson', hidden
+                column: title='Responsible'
+                column: title='Reason', expand
+                column: title='Total'
+            GtkVBox():
+              ObjectList(expand=True, fill=True):
+                column: title='Code'
+                column: title='Description', expand
+                column: title='Total quantity'
+                column: title='Lastest purchase'
+                column: title='Avg. value'
+                column: title='Total value'
+                row: u'', u'Description', Decimal('1.000'), datetime.today(), Decimal('100.0000000000000000'), Decimal('100.00000')
+            GtkVBox():
+              ObjectList(expand=True, fill=True):
+                column: title='Code'
+                column: title='Description', expand
+                column: title='Estimated fix date'
+                row: u'', u'Description', datetime.today()
+            GtkVBox():
+              ObjectList(expand=True, fill=True):
+                column: title='#'
+                column: title='Equipment', expand
+                column: title='Equipment'
+                column: title='Equipment'
+                column: title='Open date'
+                column: title='Approve date'
+                column: title='Finish date'
+                column: title='Total'
+            GtkVBox():
+              ObjectList(expand=True, fill=True):
+                column: title='#'
+                column: title='Type'
+                column: title='Description', expand
+                column: title='Due date'
+                column: title='Paid date'
+                column: title='Status'
+                column: title='Value'
+                column: title='Days Late'
+                row: 999, u'money', u'1/1 Money for sale 00123', datetime.today(), None, u'Preview', <currency $200>, 0
+              GtkHButtonBox(pack-end):
+                GtkButton(expand=True, fill=True): 'Payment details', insensitive
+            GtkVBox():
+              ObjectList(expand=True, fill=True):
                 column: title='#'
                 column: title='Date'
                 column: title='Description', expand
@@ -73,15 +86,12 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Balance:</b>'
                 GtkLabel(): '<b>$ 0.00</b>'
-            ObjectList(work_order_list):
-              column: title='#'
-              column: title='Equipment', expand
-              column: title='Equipment'
-              column: title='Equipment'
-              column: title='Open date'
-              column: title='Approve date'
-              column: title='Finish date'
-              column: title='Total'
+            GtkVBox():
+              ObjectList(expand=True, fill=True):
+                column: title='Date'
+                column: title='Description', expand
+                column: title='Attendant', expand
+                row: datetime.datetime(2011, 1, 1, 0, 0), u'Test call', u'individual'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

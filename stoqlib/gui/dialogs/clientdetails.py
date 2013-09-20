@@ -42,8 +42,336 @@ from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 
+from kiwi.ui.objectlist import ObjectList
+from stoqlib.gui.base.dialogs import run_dialog
+
 
 _ = stoqlib_gettext
+
+
+class DetailsTab(gtk.VBox):
+    details_dialog_class = None
+
+    def __init__(self, model, parent):
+        super(DetailsTab, self).__init__()
+
+        self.model = model
+        self._parent = parent
+
+        self.set_spacing(6)
+        self.set_border_width(6)
+
+        self.klist = ObjectList(self.get_columns())
+        self.klist.add_list(self.populate())
+
+        self.pack_start(self.klist)
+        self.klist.show()
+
+        if len(self.klist) and self.get_details_dialog_class():
+            self.button_box = gtk.HButtonBox()
+            self.button_box.set_layout(gtk.BUTTONBOX_START)
+
+            details_button = gtk.Button(self.details_lbl)
+            self.button_box.pack_start(details_button)
+            details_button.set_sensitive(bool(self.klist.get_selected()))
+            details_button.show()
+
+            self.pack_end(self.button_box, False, False)
+            self.button_box.show()
+
+            self.button_box.details_button = details_button
+            details_button.connect('clicked', self._on_details_button__clicked)
+
+            self.klist.connect('row-activated', self._on_klist__row_activated)
+            self.klist.connect('selection-changed',
+                               self._on_klist__selection_changed)
+
+        self.setup_widgets()
+
+    def get_columns(self):
+        """Returns a list of columns this tab should show."""
+        raise NotImplementedError
+
+    def show_details(self):
+        """Called when the details button is clicked. Displays the details of
+        the selected object in the list."""
+        model = self.get_details_model(self.klist.get_selected())
+        run_dialog(self.get_details_dialog_class(),
+                   parent=self._parent,
+                   store=self._parent.store,
+                   model=model,
+                   visual_mode=True)
+
+    def get_label(self):
+        """Returns the name of the tab."""
+        label = gtk.Label(self.labels[1])
+        return label
+
+    def get_details_model(self, model):
+        """Subclassses can overwrite this method if the details dialog class
+        needs a model different than the one on the list."""
+        return model
+
+    def get_details_dialog_class(self):
+        """Subclasses must return the dialog that should be displayed for more
+        information about the item on the list"""
+        return self.details_dialog_class
+
+    def setup_widgets(self):
+        """Override this if tab needs to do some custom widget setup."""
+
+    #
+    # Callbacks
+    #
+
+    def _on_details_button__clicked(self, button):
+        self.show_details()
+
+    def _on_klist__row_activated(self, klist, item):
+        self.show_details()
+
+    def _on_klist__selection_changed(self, klist, data):
+        self.button_box.details_button.set_sensitive(bool(data))
+
+
+class SalesTab(DetailsTab):
+    labels = _('Sale'), _('Sales')
+    details_lbl = _('Sale details')
+
+    def setup_widgets(self):
+        value_format = '<b>%s</b>'
+        total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        sales_summary_label = SummaryLabel(klist=self.klist,
+                                           column='total',
+                                           label=total_label,
+                                           value_format=value_format)
+        sales_summary_label.show()
+        self.pack_start(sales_summary_label, False)
+
+    def get_columns(self):
+        return [IdentifierColumn('identifier', sorted=True),
+                Column("invoice_number", title=_("Invoice #"),
+                       data_type=int, width=90),
+                Column("open_date", title=_("Date"), data_type=datetime.date,
+                       justify=gtk.JUSTIFY_RIGHT, width=80),
+                Column("salesperson_name", title=_("Salesperson"),
+                       searchable=True, expand=True, data_type=str),
+                Column("status_name", title=_("Status"), width=80,
+                       data_type=str),
+                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
+                       data_type=currency, width=100)]
+
+    def populate(self):
+        return self.model.get_client_sales()
+
+    def get_details_dialog_class(self):
+        from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+        return SaleDetailsDialog
+
+
+class ReturnedSalesTab(DetailsTab):
+    labels = _('Returned Sale'), _('Returned Sales')
+    details_lbl = _('Returned sale details')
+
+    def get_columns(self):
+        return [IdentifierColumn('identifier', sorted=True),
+                Column("invoice_number", title=_("Invoice #"),
+                       data_type=int, width=90),
+                Column("return_date", title=_("Return Date"),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT,
+                       width=80),
+                Column("product_name", title=_("Product"),
+                       searchable=True, data_type=str),
+                Column("salesperson_name", title=_("Salesperson"),
+                       searchable=True, visible=False, data_type=str),
+                Column("responsible_name", title=_("Responsible"),
+                       searchable=True, data_type=str),
+                Column("reason", title=_("Reason"), searchable=False,
+                       expand=True, data_type=str),
+                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
+                       data_type=currency, width=100)]
+
+    def populate(self):
+        return self.model.get_client_returned_sales()
+
+    def get_details_model(self, model):
+        from stoqlib.domain.sale import Sale, SaleView
+        return self._parent.store.find(SaleView, Sale.id == model.sale_id).one()
+
+    def get_details_dialog_class(self):
+        from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+        return SaleDetailsDialog
+
+
+class ProductsTab(DetailsTab):
+    labels = _('Product'), _('Products')
+    details_lbl = _('Product details')
+
+    def get_columns(self):
+        return [Column("code", title=_("Code"), data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
+                Column("description", title=_("Description"), data_type=str,
+                       expand=True, searchable=True),
+                Column("quantity", title=_("Total quantity"),
+                       data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
+                Column("last_date", title=_("Lastest purchase"),
+                       data_type=datetime.date, width=150),
+                Column("avg_value", title=_("Avg. value"), width=100,
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT),
+                Column("total_value", title=_("Total value"), width=100,
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
+
+    def populate(self):
+        return self.model.get_client_products()
+
+
+class ServicesTab(DetailsTab):
+    labels = _('Service'), _('Services')
+    details_lbl = _('Service details')
+
+    def get_columns(self):
+        return [Column("code", title=_("Code"), data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
+                Column("description",
+                       title=_("Description"), data_type=str, expand=True,
+                       searchable=True),
+                Column("estimated_fix_date", title=_("Estimated fix date"),
+                       width=150, data_type=datetime.date)]
+
+    def populate(self):
+        return self.model.get_client_services()
+
+
+class WorkOrdersTab(DetailsTab):
+    labels = _('Work Order'), _('Work Orders')
+    details_lbl = _('Work order details')
+
+    def get_columns(self):
+        return [IdentifierColumn("identifier", sorted=True),
+                Column("equipment", title=_("Equipment"),
+                       data_type=str, expand=True, pack_end=True),
+                Column('category_color', title=_(u'Equipment'),
+                       column='equipment', data_type=gtk.gdk.Pixbuf,
+                       format_func=render_pixbuf),
+                Column('flag_icon', title=_(u'Equipment'), column='equipment',
+                       data_type=gtk.gdk.Pixbuf, format_func_data=True,
+                       format_func=self._format_state_icon),
+                Column("open_date", title=_("Open date"),
+                       data_type=datetime.date, width=120),
+                Column("approve_date", title=_("Approve date"),
+                       data_type=datetime.date, width=120),
+                Column("finish_date", title=_("Finish date"),
+                       data_type=datetime.date, width=120),
+                Column("total", title=_("Total"),
+                       data_type=currency, width=100)]
+
+    def populate(self):
+        return self.model.get_client_work_orders()
+
+    def get_details_model(self, model):
+        return model.work_order
+
+    def get_details_dialog_class(self):
+        from stoqlib.gui.editors.workordereditor import WorkOrderEditor
+        return WorkOrderEditor
+
+    def _format_state_icon(self, item, data):
+        stock_id, tooltip = get_workorder_state_icon(item.work_order)
+        if stock_id is not None:
+            # We are using self because render_icon is a gtk.Widget's # method.
+            # It has nothing to do with results tough.
+            return self.render_icon(stock_id, gtk.ICON_SIZE_MENU)
+
+
+class PaymentsTab(DetailsTab):
+    labels = _('Payment'), _('Payments')
+    details_lbl = _('Payment details')
+
+    def get_columns(self):
+        return [IdentifierColumn('identifier'),
+                Column("method_name", title=_("Type"),
+                       data_type=str, width=90),
+                Column("description", title=_("Description"),
+                       data_type=str, searchable=True, width=190,
+                       expand=True),
+                Column("due_date", title=_("Due date"), width=110,
+                       data_type=datetime.date, sorted=True),
+                Column("paid_date", title=_("Paid date"), width=110,
+                       data_type=datetime.date),
+                Column("status_str", title=_("Status"), width=80,
+                       data_type=str),
+                ColoredColumn("value", title=_("Value"),
+                              justify=gtk.JUSTIFY_RIGHT, data_type=currency,
+                              color='red', width=100,
+                              data_func=payment_value_colorize),
+                Column("days_late", title=_("Days Late"), width=110,
+                       format_func=(lambda days_late: days_late and
+                                    str(days_late) or u""),
+                       justify=gtk.JUSTIFY_RIGHT, data_type=str)]
+
+    def populate(self):
+        return self.model.get_client_payments()
+
+    def get_details_model(self, model):
+        return model.payment
+
+    def get_details_dialog_class(self):
+        from stoqlib.gui.editors.paymenteditor import InPaymentEditor
+        return InPaymentEditor
+
+    def show_details(self):
+        model = self.get_details_model(self.klist.get_selected())
+        run_dialog(self.get_details_dialog_class(),
+                   store=self._parent.store,
+                   model=model)
+
+
+class CreditAccountsTab(DetailsTab):
+    labels = _('Credit Account'), _('Credit Accounts')
+    details_lbl = _('Credit details')
+
+    def setup_widgets(self):
+        value_format = '<b>%s</b>'
+        balance_label = "<b>%s</b>" % api.escape(_("Balance:"))
+
+        account_summary_label = SummaryLabel(klist=self.klist,
+                                             column='paid_value',
+                                             label=balance_label,
+                                             value_format=value_format,
+                                             data_func=lambda p: p.is_outpayment())
+
+        account_summary_label.show()
+        self.pack_start(account_summary_label, False)
+
+    def get_columns(self):
+        return [IdentifierColumn('identifier', sorted=True),
+                Column('paid_date', title=_(u'Date'), data_type=datetime.date,
+                       width=150),
+                Column('description', title=_(u'Description'),
+                       data_type=str, width=150, expand=True),
+                ColoredColumn('paid_value', title=_(u'Value'), color='red',
+                              data_type=currency, width=100,
+                              use_data_model=True,
+                              data_func=lambda p: not p.is_outpayment())]
+
+    def populate(self):
+        return self.model.get_credit_transactions()
+
+
+class CallsTab(DetailsTab):
+    labels = _('Call'), _('Calls')
+    details_lbl = _('Call details')
+
+    def get_columns(self):
+        return [Column("date", title=_("Date"),
+                       data_type=datetime.date, width=150, sorted=True),
+                Column("description", title=_("Description"),
+                       data_type=str, width=150, expand=True),
+                Column("attendant.person.name", title=_("Attendant"),
+                       data_type=str, width=100, expand=True)]
+
+    def populate(self):
+        return self.model.person.calls
 
 
 class ClientDetailsDialog(BaseEditor):
@@ -67,159 +395,20 @@ class ClientDetailsDialog(BaseEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        self.sales_list.set_columns(self._get_sale_columns())
-        self.returned_sales_list.set_columns(self._get_returned_sale_columns())
-        self.product_list.set_columns(self._get_product_columns())
-        self.services_list.set_columns(self._get_services_columns())
-        self.work_order_list.set_columns(self._get_work_order_columns())
-        self.payments_list.set_columns(self._get_payments_columns())
-        self.calls_list.set_columns(self._get_calls_columns())
-        self.account_list.set_columns(self._get_account_columns())
-        self.sales_list.add_list(self.model.get_client_sales())
-        self.returned_sales_list.add_list(self.model.get_client_returned_sales())
-        self.product_list.add_list(self.model.get_client_products())
-        self.services_list.add_list(self.model.get_client_services())
-        self.work_order_list.add_list(self.model.get_client_work_orders())
-        self.payments_list.add_list(self.model.get_client_payments())
-        self.calls_list.add_list(self.model.person.calls)
-        self.account_list.add_list(self.model.get_credit_transactions())
-        value_format = '<b>%s</b>'
-        total_label = "<b>%s</b>" % api.escape(_("Total:"))
-        saldo_label = "<b>%s</b>" % api.escape(_("Balance:"))
-
-        sales_summary_label = SummaryLabel(klist=self.sales_list,
-                                           column='total',
-                                           label=total_label,
-                                           value_format=value_format)
-        account_summary_label = SummaryLabel(klist=self.account_list,
-                                             column='paid_value',
-                                             label=saldo_label,
-                                             value_format=value_format,
-                                             data_func=lambda p: p.is_outpayment())
-
-        sales_summary_label.show()
-        account_summary_label.show()
-        self.sales_vbox.pack_start(sales_summary_label, False)
-        self.account_vbox.pack_start(account_summary_label, False)
-
-    def _get_sale_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
-                Column("invoice_number", title=_("Invoice #"),
-                       data_type=int, width=90),
-                Column("open_date", title=_("Date"), data_type=datetime.date,
-                       justify=gtk.JUSTIFY_RIGHT, width=80),
-                Column("salesperson_name", title=_("Salesperson"),
-                       searchable=True, expand=True, data_type=str),
-                Column("status_name", title=_("Status"), width=80,
-                       data_type=str),
-                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
-                       data_type=currency, width=100)]
-
-    def _get_returned_sale_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
-                Column("invoice_number", title=_("Invoice #"),
-                       data_type=int, width=90),
-                Column("return_date", title=_("Return Date"), data_type=datetime.date,
-                       justify=gtk.JUSTIFY_RIGHT, width=80),
-                Column("product_name", title=_("Product"),
-                       searchable=True, data_type=str),
-                Column("salesperson_name", title=_("Salesperson"),
-                       searchable=True, visible=False, data_type=str),
-                Column("responsible_name", title=_("Responsible"),
-                       searchable=True, data_type=str),
-                Column("reason", title=_("Reason"), searchable=False, expand=True, data_type=str),
-                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
-                       data_type=currency, width=100)]
-
-    def _get_product_columns(self):
-        return [Column("code", title=_("Code"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
-                Column("description", title=_("Description"), data_type=str,
-                       expand=True, searchable=True),
-                Column("quantity", title=_("Total quantity"),
-                       data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
-                Column("last_date", title=_("Lastest purchase"),
-                       data_type=datetime.date, width=150),
-                Column("avg_value", title=_("Avg. value"), width=100,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT),
-                Column("total_value", title=_("Total value"), width=100,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
-
-    def _get_services_columns(self):
-        return [Column("code", title=_("Code"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
-                Column("description",
-                       title=_("Description"), data_type=str, expand=True,
-                       searchable=True),
-                Column("estimated_fix_date", title=_("Estimated fix date"),
-                       width=150, data_type=datetime.date)]
-
-    def _get_payments_columns(self):
-        return [IdentifierColumn('identifier'),
-                Column("method_name", title=_("Type"),
-                       data_type=str, width=90),
-                Column("description", title=_("Description"),
-                       data_type=str, searchable=True, width=190,
-                       expand=True),
-                Column("due_date", title=_("Due date"), width=110,
-                       data_type=datetime.date, sorted=True),
-                Column("paid_date", title=_("Paid date"), width=110,
-                       data_type=datetime.date),
-                Column("status_str", title=_("Status"), width=80,
-                       data_type=str),
-                ColoredColumn("value", title=_("Value"),
-                              justify=gtk.JUSTIFY_RIGHT, data_type=currency,
-                              color='red', width=100,
-                              data_func=payment_value_colorize),
-                Column("days_late", title=_("Days Late"), width=110,
-                       format_func=(lambda days_late: days_late and
-                                    str(days_late) or u""),
-                       justify=gtk.JUSTIFY_RIGHT, data_type=str)]
-
-    def _get_calls_columns(self):
-        return [Column("date", title=_("Date"),
-                       data_type=datetime.date, width=150, sorted=True),
-                Column("description", title=_("Description"),
-                       data_type=str, width=150, expand=True),
-                Column("attendant.person.name", title=_("Attendant"),
-                       data_type=str, width=100, expand=True)]
-
-    def _get_account_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
-                Column('paid_date', title=_(u'Date'), data_type=datetime.date,
-                       width=150),
-                Column('description', title=_(u'Description'),
-                       data_type=str, width=150, expand=True),
-                ColoredColumn('paid_value', title=_(u'Value'), color='red',
-                              data_type=currency, width=100,
-                              use_data_model=True,
-                              data_func=lambda p: not p.is_outpayment())]
-
-    def _get_work_order_columns(self):
-        return [IdentifierColumn("identifier", sorted=True),
-                Column("equipment", title=_("Equipment"),
-                       data_type=str, expand=True, pack_end=True),
-                Column('category_color', title=_(u'Equipment'),
-                       column='equipment', data_type=gtk.gdk.Pixbuf,
-                       format_func=render_pixbuf),
-                Column('flag_icon', title=_(u'Equipment'), column='equipment',
-                       data_type=gtk.gdk.Pixbuf, format_func_data=True,
-                       format_func=self._format_state_icon),
-                Column("open_date", title=_("Open date"),
-                       data_type=datetime.date, width=120),
-                Column("approve_date", title=_("Approve date"),
-                       data_type=datetime.date, width=120),
-                Column("finish_date", title=_("Finish date"),
-                       data_type=datetime.date, width=120),
-                Column("total", title=_("Total"),
-                       data_type=currency, width=100)]
-
-    def _format_state_icon(self, item, data):
-        stock_id, tooltip = get_workorder_state_icon(item.work_order)
-        if stock_id is not None:
-            # We are using self.sales_vbox because render_icon is a
-            # gtk.Widget's # method. It has nothing to do with results tough.
-            return self.sales_vbox.render_icon(stock_id, gtk.ICON_SIZE_MENU)
+        for tab_class in [SalesTab,
+                          ReturnedSalesTab,
+                          ProductsTab,
+                          ServicesTab,
+                          WorkOrdersTab,
+                          PaymentsTab,
+                          CreditAccountsTab,
+                          CallsTab]:
+            tab = tab_class(self.model, self)
+            label = tab.get_label()
+            label.set_sensitive(len(tab.klist))
+            self.details_notebook.append_page(tab, label)
+            label.show()
+            tab.show()
 
     #
     # BaseEditor Hooks

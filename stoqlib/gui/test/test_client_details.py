@@ -27,8 +27,14 @@ import unittest
 import mock
 
 from stoqlib.database.runtime import StoqlibStore
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.sale import SaleView
+from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localtoday
 
@@ -78,6 +84,47 @@ class TestClientDetails(GUITest):
         self.assertTrue(isinstance(store, StoqlibStore))
         self.assertEquals(kwargs.pop('visual_mode'), True)
         self.assertEquals(kwargs, {})
+
+    @mock.patch('stoqlib.gui.dialogs.clientdetails.run_dialog')
+    def test_tab_details(self, run_dialog):
+        client = self.create_client()
+        sale = self.create_sale(client=client)
+        self.create_returned_sale(sale)
+        self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
+        self.create_workorder(client=client)
+        dialog = ClientDetailsDialog(self.store, client)
+
+        # Test Sales tab details button
+        sales_tab = dialog.details_notebook.get_nth_page(0)
+        sales_tab.klist.select(sales_tab.klist[0])
+        self.click(sales_tab.button_box.details_button)
+        args, kwargs = run_dialog.call_args
+        self.assertEquals(args[0], SaleDetailsDialog)
+        self.assertTrue(isinstance(kwargs['model'], SaleView))
+
+        # Test Returned Sales tab details button
+        returned_sales_tab = dialog.details_notebook.get_nth_page(1)
+        returned_sales_tab.klist.select(returned_sales_tab.klist[0])
+        self.click(returned_sales_tab.button_box.details_button)
+        args, kwargs = run_dialog.call_args
+        self.assertEquals(args[0], SaleDetailsDialog)
+        self.assertTrue(isinstance(kwargs['model'], SaleView))
+
+        # Test Work Orders tab details button
+        work_orders_tab = dialog.details_notebook.get_nth_page(4)
+        work_orders_tab.klist.select(work_orders_tab.klist[0])
+        self.click(work_orders_tab.button_box.details_button)
+        args, kwargs = run_dialog.call_args
+        self.assertEquals(args[0], WorkOrderEditor)
+        self.assertTrue(isinstance(kwargs['model'], WorkOrder))
+
+        # Test Payment tab details button
+        payments_tab = dialog.details_notebook.get_nth_page(5)
+        payments_tab.klist.select(payments_tab.klist[0])
+        self.click(payments_tab.button_box.details_button)
+        args, kwargs = run_dialog.call_args
+        self.assertEquals(args[0], InPaymentEditor)
+        self.assertTrue(isinstance(kwargs['model'], Payment))
 
 
 if __name__ == '__main__':

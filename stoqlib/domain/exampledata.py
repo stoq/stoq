@@ -384,8 +384,9 @@ class ExampleCreator(object):
         return SaleComment(store=self.store, sale=sale, comment=comment,
                            author=user or get_current_user(self.store))
 
-    def create_returned_sale(self):
-        sale = self.create_sale()
+    def create_returned_sale(self, sale=None):
+        if not sale:
+            sale = self.create_sale()
         return sale.create_sale_return_adapter()
 
     def create_sale_item(self, sale=None, product=True):
@@ -784,11 +785,13 @@ class ExampleCreator(object):
         return order.add_sellable(sellable, batch=None, quantity=quantity)
 
     # FIXME: Rename to create_work_order
-    def create_workorder(self, equipment=u'', branch=None, current_branch=None):
+    def create_workorder(self, equipment=u'', branch=None, current_branch=None,
+                         client=None):
         from stoqlib.domain.workorder import WorkOrder
         return WorkOrder(
             store=self.store,
             equipment=equipment,
+            client=client or self.create_client(),
             branch=branch or get_current_branch(self.store),
             current_branch=current_branch)
 
