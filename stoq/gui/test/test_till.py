@@ -22,10 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 import decimal
 
 import mock
-
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -40,16 +40,18 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 
 class TestTill(BaseGUITest):
-    @mock.patch('stoq.gui.till.TillApp.run_dialog')
-    def _check_run_dialog(self, action, dialog, run_dialog):
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(action)
-                self.assertEquals(run_dialog.call_count, 1)
-                args, kwargs = run_dialog.call_args
-                called_dialog, store = args
-                self.assertEquals(called_dialog, dialog)
-                self.assertEquals(store, self.store)
+    def _check_run_dialog(self, action, dialog):
+        with contextlib.nested(
+                mock.patch('stoq.gui.till.TillApp.run_dialog'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as ctx:
+            self.activate(action)
+            run_dialog = ctx[0]
+            self.assertEquals(run_dialog.call_count, 1)
+            args, kwargs = run_dialog.call_args
+            called_dialog, store = args
+            self.assertEquals(called_dialog, dialog)
+            self.assertEquals(store, self.store)
 
     def test_initial(self):
         app = self.create_app(TillApp, u'till')
@@ -65,28 +67,32 @@ class TestTill(BaseGUITest):
         results = app.results
         results.select(results[0])
 
-    @mock.patch('stoqlib.gui.fiscalprinter.FiscalCoupon.confirm')
-    @mock.patch('stoq.gui.till.api.new_store')
-    def test_confirm_order(self, new_store, confirm):
-        new_store.return_value = self.store
+    def test_confirm_order(self):
+        with contextlib.nested(
+                mock.patch('stoqlib.gui.fiscalprinter.FiscalCoupon.confirm'),
+                mock.patch('stoq.gui.till.api.new_store'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as ctx:
+            new_store = ctx[1]
+            new_store.return_value = self.store
 
-        sale = self.create_sale(branch=get_current_branch(self.store))
-        self.add_product(sale)
-        sale.status = Sale.STATUS_ORDERED
+            sale = self.create_sale(branch=get_current_branch(self.store))
+            self.add_product(sale)
+            sale.status = Sale.STATUS_ORDERED
 
-        app = self.create_app(TillApp, u'till')
+            app = self.create_app(TillApp, u'till')
 
-        app.status_filter.select(Sale.STATUS_ORDERED)
+            app.status_filter.select(Sale.STATUS_ORDERED)
 
-        results = app.results
-        results.select(results[0])
+            results = app.results
+            results.select(results[0])
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(app.Confirm)
-                confirm.assert_called_once_with(
-                    sale, self.store,
-                    subtotal=decimal.Decimal("10.00"))
+            self.activate(app.Confirm)
+
+            confirm = ctx[0]
+            confirm.assert_called_once_with(
+                sale, self.store,
+                subtotal=decimal.Decimal("10.00"))
 
     @mock.patch('stoq.gui.till.api.new_store')
     def test_run_search_dialogs(self, new_store):

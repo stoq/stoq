@@ -22,10 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+import contextlib
 
-from stoq.gui.admin import AdminApp
-from stoq.gui.test.baseguitest import BaseGUITest
+import mock
 from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
@@ -53,6 +52,9 @@ from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 
+from stoq.gui.admin import AdminApp
+from stoq.gui.test.baseguitest import BaseGUITest
+
 
 class TestAdmin(BaseGUITest):
     def _activate_task(self, app, task_name):
@@ -61,21 +63,23 @@ class TestAdmin(BaseGUITest):
                 app.iconview.item_activated(row.path)
                 break
 
-    @mock.patch('stoq.gui.admin.AdminApp.run_dialog')
-    def _check_search_task(self, app, task_name, search_dialog, run_dialog):
-        self._activate_task(app, task_name)
-        self.assertEquals(run_dialog.call_count, 1)
-        args, kwargs = run_dialog.call_args
-        search, store = args
-        self.assertEquals(search, search_dialog)
-        self.assertTrue(isinstance(store, StoqlibStore))
+    def _check_search_task(self, app, task_name, search_dialog):
+        with mock.patch('stoq.gui.admin.AdminApp.run_dialog') as run_dialog:
+            self._activate_task(app, task_name)
+            self.assertEquals(run_dialog.call_count, 1)
+            args, kwargs = run_dialog.call_args
+            search, store = args
+            self.assertEquals(search, search_dialog)
+            self.assertTrue(isinstance(store, StoqlibStore))
 
-    @mock.patch('stoq.gui.admin.AdminApp.run_dialog')
-    def _check_dialog_task(self, app, task_name, dialog, run_dialog):
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self._activate_task(app, task_name)
-                run_dialog.assert_called_once_with(dialog, self.store)
+    def _check_dialog_task(self, app, task_name, dialog):
+        with contextlib.nested(
+                mock.patch('stoq.gui.admin.AdminApp.run_dialog'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as ctx:
+            self._activate_task(app, task_name)
+            run_dialog = ctx[0]
+            run_dialog.assert_called_once_with(dialog, self.store)
 
     def test_initial(self):
         app = self.create_app(AdminApp, u'admin')

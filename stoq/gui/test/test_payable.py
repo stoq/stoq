@@ -22,7 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
+
 import mock
+from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.dateutils import localdate
@@ -34,33 +37,35 @@ from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
 from stoqlib.reporting.paymentsreceipt import OutPaymentReceipt
 
-from stoqlib.api import api
 from stoq.gui.payable import PayableApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
 
 class TestPayable(BaseGUITest):
-    @mock.patch('stoq.gui.payable.run_dialog')
-    @mock.patch('stoq.gui.payable.api.new_store')
-    def _check_run_dialog(self, app, action, dialog, other_args,
-                          new_store, run_dialog):
-        new_store.return_value = self.store
+    def _check_run_dialog(self, app, action, dialog, other_args):
+        with contextlib.nested(
+                mock.patch('stoq.gui.payable.run_dialog'),
+                mock.patch('stoq.gui.payable.api.new_store'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as ctx:
+            new_store = ctx[1]
+            new_store.return_value = self.store
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(action)
-                run_dialog.assert_called_once()
-                args, kwargs = run_dialog.call_args
-                self.assertEquals(args[0], dialog)
-                self.assertEquals(args[1], app)
-                self.assertEquals(args[2], self.store)
+            self.activate(action)
 
-                if not other_args or len(other_args) != len(args[2:]):
-                    return
+            run_dialog = ctx[0]
+            run_dialog.assert_called_once()
+            args, kwargs = run_dialog.call_args
+            self.assertEquals(args[0], dialog)
+            self.assertEquals(args[1], app)
+            self.assertEquals(args[2], self.store)
 
-                for arg in args[2:]:
-                    for other_arg in other_args:
-                        self.assertEquals(arg, other_arg)
+            if not other_args or len(other_args) != len(args[2:]):
+                return
+
+            for arg in args[2:]:
+                for other_arg in other_args:
+                    self.assertEquals(arg, other_arg)
 
     def setUp(self):
         BaseGUITest.setUp(self)

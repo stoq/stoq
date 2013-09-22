@@ -22,9 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
+
 import gtk
 import mock
-
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.inventory import Inventory
 from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
@@ -38,19 +39,21 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 
 class TestInventory(BaseGUITest):
-    @mock.patch('stoq.gui.inventory.InventoryApp.run_dialog')
-    @mock.patch('stoq.gui.inventory.api.new_store')
-    def _check_run_dialog(self, action, dialog, other_args, new_store,
-                          run_dialog):
-        new_store.return_value = self.store
+    def _check_run_dialog(self, action, dialog, other_args):
+        with contextlib.nested(
+                mock.patch('stoq.gui.inventory.InventoryApp.run_dialog'),
+                mock.patch('stoq.gui.inventory.api.new_store'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as ctx:
+            new_store = ctx[1]
+            new_store.return_value = self.store
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(action)
-                expected_args = [dialog, self.store]
-                if other_args:
-                    expected_args.extend(other_args)
-                run_dialog.assert_called_once_with(*expected_args)
+            self.activate(action)
+            expected_args = [dialog, self.store]
+            if other_args:
+                expected_args.extend(other_args)
+            run_dialog = ctx[0]
+            run_dialog.assert_called_once_with(*expected_args)
 
     def test_initial(self):
         app = self.create_app(InventoryApp, u'inventory')

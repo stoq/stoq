@@ -16,7 +16,6 @@ PYLINT_DISABLED=(
     E1101  # Instance of XXX has no yyy member
     E1102  # TODO: class is not callable
     E1103  # Instance of XXX has no yyy member (some not inferred)
-    E1120  # No value passed for parameter xxx in function call
 
     # Fatal
     F0401  # Unable to import gudev

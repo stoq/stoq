@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
+
 import mock
 
 from stoqlib.database.runtime import StoqlibStore
@@ -46,26 +48,29 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 
 class TestStock(BaseGUITest):
-    @mock.patch('stoq.gui.stock.StockApp.run_dialog')
-    @mock.patch('stoq.gui.stock.api.new_store')
-    def _check_run_dialog(self, action, dialog, other_args, new_store,
-                          run_dialog):
-        new_store.return_value = self.store
+    def _check_run_dialog(self, action, dialog, other_args):
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close'),
+                mock.patch('stoq.gui.stock.StockApp.run_dialog'),
+                mock.patch('stoq.gui.stock.api.new_store')) as ctx:
+            new_store = ctx[3]
+            new_store.return_value = self.store
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(action)
-                self.assertEquals(run_dialog.call_count, 1)
-                args, kwargs = run_dialog.call_args
-                self.assertEquals(args[0], dialog)
-                self.assertEquals(args[1], self.store)
+            self.activate(action)
 
-                if not other_args or len(other_args) != len(args[2:]):
-                    return
+            run_dialog = ctx[2]
+            self.assertEquals(run_dialog.call_count, 1)
+            args, kwargs = run_dialog.call_args
+            self.assertEquals(args[0], dialog)
+            self.assertEquals(args[1], self.store)
 
-                for arg in args[2:]:
-                    for other_arg in other_args:
-                        self.assertEquals(arg, other_arg)
+            if not other_args or len(other_args) != len(args[2:]):
+                return
+
+            for arg in args[2:]:
+                for other_arg in other_args:
+                    self.assertEquals(arg, other_arg)
 
     def test_initial(self):
         app = self.create_app(StockApp, u'stock')

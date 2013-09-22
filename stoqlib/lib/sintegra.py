@@ -572,9 +572,9 @@ def test():  # pragma nocover
         int('07100000000')))
     s.add_fiscal_coupon(datetime.date(2007, 4, 1),
                         '12345678901234567890', 1,
-                        1, 10, 1, 1, 100)
+                        1, 10, 1, 1, 100, 1000)
     s.close()
-    s.write('/mondo/tmp/sintegra-dos.txt')
+    s.write('/tmp/sintegra-dos.txt')
 
 if __name__ == '__main__':  # pragma nocover
     test()

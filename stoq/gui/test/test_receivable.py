@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
+
 import mock
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import CheckData, PaymentMethod
@@ -42,20 +44,23 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 
 class TestReceivable(BaseGUITest):
-    @mock.patch('stoq.gui.receivable.run_dialog')
-    @mock.patch('stoq.gui.receivable.api.new_store')
-    def _check_run_dialog(self, app, action, dialog, new_store,
-                          run_dialog):
-        new_store.return_value = self.store
+    def _check_run_dialog(self, app, action, dialog):
+        with contextlib.nested(
+                mock.patch('stoq.gui.receivable.run_dialog'),
+                mock.patch('stoq.gui.receivable.api.new_store'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as ctx:
+            new_store = ctx[1]
+            new_store.return_value = self.store
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(action)
-                self.assertEquals(run_dialog.call_count, 1)
-                args, kwargs = run_dialog.call_args
-                self.assertEquals(args[0], dialog)
-                self.assertEquals(args[1], app)
-                self.assertEquals(args[2], self.store)
+            self.activate(action)
+
+            run_dialog = ctx[0]
+            self.assertEquals(run_dialog.call_count, 1)
+            args, kwargs = run_dialog.call_args
+            self.assertEquals(args[0], dialog)
+            self.assertEquals(args[1], app)
+            self.assertEquals(args[2], self.store)
 
     def setUp(self):
         BaseGUITest.setUp(self)

@@ -463,6 +463,7 @@ class FieldGrid(gtk.Layout):
     def do_drag_drop(self, context, x, y, time):
         return True
 
+    # pylint: disable=E1120
     def do_drag_data_received(self, context, x, y, data, info, time):
         if data.type == 'OBJECTLIST_ROW':
             row = pickle.loads(data.data)
@@ -479,6 +480,7 @@ class FieldGrid(gtk.Layout):
             context.finish(True, False, time)
 
         context.finish(False, False, time)
+    # pylint: enable=E1120
 
     def do_focus(self, direction):
         self.set_can_focus(False)
