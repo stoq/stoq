@@ -57,7 +57,7 @@ def apply_patch(store):
                                          store=store).order_by(Person.id)
             employee = employees[0]
 
-        default_branch = sysparam(store).MAIN_COMPANY
+        default_branch = sysparam().MAIN_COMPANY
         notes = _(u"Stock decrease imported from old retention.")
 
     history = store.execute("""

@@ -209,7 +209,7 @@ class TableReport(HTMLReport):
         """
         raise NotImplementedError
 
-    def get_row(self):
+    def get_row(self, obj):
         """Returns the data to be displayed in the row.
 
         Subclaases must implement this method and return a list of value for
