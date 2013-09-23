@@ -412,13 +412,6 @@ class PosApp(ShellApp):
             self._add_service_sellable(sellable, quantity)
 
     def _add_service_sellable(self, sellable, quantity):
-        if quantity > 1:
-            # It's not a common operation to add more than one item at
-            # a time, it's also problematic since you'd have to show
-            # one dialog per service item. See #3092
-            info(_("It's not possible to add more than one service "
-                   "at a time to an order. So, only one was added."))
-
         sale_item = TemporarySaleItem(sellable=sellable,
                                       quantity=quantity)
         with api.new_store() as store:

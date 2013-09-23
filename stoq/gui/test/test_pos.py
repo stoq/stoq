@@ -157,6 +157,19 @@ class TestPos(BaseGUITest):
 
         self.check_app(app, u'pos-add-sale-item')
 
+    @mock.patch('stoq.gui.pos.PosApp.run_dialog')
+    def test_add_service_sellable(self, run_dialog):
+        pos = self.create_app(PosApp, u'pos')
+        self._pos_open_till(pos)
+        service = self.create_service()
+
+        sale_item = TemporarySaleItem(sellable=service.sellable, quantity=2)
+        pos.add_sale_item(sale_item)
+
+        service.sellable.barcode = u'99991234'
+        pos.barcode.set_text(u'99991234')
+        self.activate(pos.barcode)
+
     @mock.patch('stoq.gui.pos.POSConfirmSaleEvent.emit')
     def test_pos_confirm_sale_event(self, emit):
         pos = self._get_pos_with_open_till()
