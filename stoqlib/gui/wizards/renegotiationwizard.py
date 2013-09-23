@@ -33,7 +33,6 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.api import api
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.exceptions import SellError
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.wizards.salewizard import BaseMethodSelectionStep
@@ -117,18 +116,7 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
-        method = self.pm_slave.get_method('store_credit')
-        client = self.model.client
-        can_purchase = True
-        try:
-            if client:
-                client.can_purchase(method, self.model.total)
-        except SellError:
-            can_purchase = False
-
-        self.pm_slave.method_set_visible('store_credit',
-                                         can_purchase and bool(client))
-        self.pm_slave.method_set_visible('bill', bool(client))
+        self.pm_slave.set_client(self.model.client, self.model.total)
 
     def setup_proxies(self):
         self._setup_widgets()

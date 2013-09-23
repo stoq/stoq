@@ -43,9 +43,9 @@ GtkDialog(PluggableWizard): title='Payments Renegotiation Wizard', hidden
                   GtkRadioButton(padding=6): 'Bill'
                   GtkRadioButton(padding=6): 'Card'
                   GtkRadioButton(padding=6): 'Check'
-                  GtkRadioButton(padding=6): 'Credit'
+                  GtkRadioButton(padding=6): 'Credit ($ 0.00)', hidden, insensitive
                   GtkRadioButton(padding=6): 'Deposit'
-                  GtkRadioButton(padding=6): 'Store Credit', hidden
+                  GtkRadioButton(padding=6): 'Store Credit', hidden, insensitive
                   GtkRadioButton(padding=6): 'Multiple'
                 GtkLabel(): 'Payment method:'
       ProxyLabel(notification_lbl, fill=True): hidden

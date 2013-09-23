@@ -63,7 +63,8 @@ class TestPaymentRenegotiationWizard(GUITest):
         wizard = PaymentRenegotiationWizard(self.store, [group])
 
         step = wizard.get_current_step()
-        step.pm_slave.select_method('store_credit')
+        widget = step.pm_slave._widgets['store_credit']
+        widget.set_active(True)
         self.check_wizard(wizard,
                           'wizard-renegotiation-store-credit-payment-list-step')
 

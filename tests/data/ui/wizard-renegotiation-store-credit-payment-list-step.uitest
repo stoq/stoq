@@ -43,7 +43,7 @@ GtkDialog(PluggableWizard): title='Payments Renegotiation Wizard', hidden
                   GtkRadioButton(padding=6): 'Bill'
                   GtkRadioButton(padding=6): 'Card'
                   GtkRadioButton(padding=6): 'Check'
-                  GtkRadioButton(padding=6): 'Credit'
+                  GtkRadioButton(padding=6): 'Credit ($ 0.00)', hidden, insensitive
                   GtkRadioButton(padding=6): 'Deposit'
                   GtkRadioButton(padding=6): 'Store Credit', active
                   GtkRadioButton(padding=6): 'Multiple'
@@ -53,6 +53,6 @@ GtkDialog(PluggableWizard): title='Payments Renegotiation Wizard', hidden
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
-          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

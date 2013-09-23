@@ -71,10 +71,8 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
             self._widgets[method_name] = widget
             self.method_set_visible(method_name, True)
 
-        # Don't allow the user to change the kind of payment method if
-        # there's only one
         if len(methods) == 1:
-            self._widgets[methods[0].method_name].set_sensitive(False)
+            self._default_method = methods[0].method_name
         else:
             # Money should be the first
             widget = self._widgets.get(u'money')
@@ -99,13 +97,22 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
 
         self._select_default_method()
 
-    def _select_default_method(self):
-        method = self._methods.get(self._default_method)
-        # Fallback in case the requested method is not available
-        if not method:
-            self._default_method, method = self._methods.items()[0]
+    def _select_method(self, method_name):
+        method = self._methods.get(method_name)
+        method_widget = self._widgets[method_name]
+
+        # In case method_name is not visible/sensitive, fallback to money.
+        # It's the only method that we can be sure is always active
+        if (not method_widget.get_visible() or
+            not method_widget.get_sensitive()):
+            self._select_method(u'money')
+            return
+
         self._selected_method = method
-        self._widgets[self._default_method].set_active(True)
+        method_widget.set_active(True)
+
+    def _select_default_method(self):
+        self._select_method(self._default_method)
 
     def _set_credit_visible(self, client, total_amount):
         if client is None:
@@ -118,8 +125,8 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
             credit_widget.set_label(_("Credit (%s)") % (
                 converter.as_string(currency, credit_balance)))
             self.method_set_visible(u'credit', bool(credit_balance))
-            credit_widget.set_sensitive(
-                credit_balance >= total_amount)
+            self.method_set_sensitive(u'credit',
+                                      credit_balance >= total_amount)
 
     def _set_store_credit_visible(self, client, total_amount):
         if client is None:
@@ -131,34 +138,39 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
             store_credit_balance = client.credit_limit
             self.method_set_visible(u'store_credit',
                                     bool(store_credit_balance))
-            store_credit_widget.set_sensitive(
-                store_credit_balance >= total_amount)
+            self.method_set_sensitive(u'store_credit',
+                                      store_credit_balance >= total_amount)
 
     #
     #   Public API
     #
 
-    def get_method(self, name):
-        return self._methods[name]
-
     def get_selected_method(self):
         return self._selected_method
 
-    def select_method(self, method_name):
+    def method_set_sensitive(self, method_name, sensitive):
+        if method_name not in self._widgets:
+            return
+
         widget = self._widgets[method_name]
-        widget.set_active(True)
+        widget.set_sensitive(sensitive)
+
+        # This method was select, but is no longer available.
+        # Select the default method instead.
+        if widget.get_active() and not sensitive:
+            self._select_default_method()
 
     def method_set_visible(self, method_name, visible):
         if method_name not in self._widgets:
             return
 
         widget = self._widgets[method_name]
+        widget.set_visible(visible)
+
         # This method was select, but is no longer available.
         # Select the default method instead.
         if widget.get_active() and not visible:
             self._select_default_method()
-
-        widget.set_visible(visible)
 
     def set_client(self, client, total_amount):
         self.method_set_visible(u'bill', bool(client))

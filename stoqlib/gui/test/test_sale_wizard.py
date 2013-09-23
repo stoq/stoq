@@ -59,7 +59,8 @@ class TestConfirmSaleWizard(GUITest):
         self.step = self.wizard.get_current_step()
 
     def _select_method(self, name):
-        self.step.pm_slave.select_method(name)
+        widget = self.step.pm_slave._widgets[name]
+        widget.set_active(True)
 
     def _check_wizard(self, name, extra_models=None):
         models = self.collect_sale_models(self.sale)
@@ -296,9 +297,9 @@ class TestConfirmSaleWizard(GUITest):
         self.step.client.select(client2.id)
         self.assertTrue(self.step.pm_slave._widgets['store_credit'].get_visible())
 
+        # It should have fallback to money
         self.assertEquals(
-            str(self.step.client.emit('validate', client2.id)),
-            'The available credit for this client ($2.00) is not enough.')
+            self.step.pm_slave.get_selected_method().method_name, u'money')
 
     def test_sale_to_client_without_credit(self):
         client = self.create_client()
@@ -322,9 +323,9 @@ class TestConfirmSaleWizard(GUITest):
         self.step.client.select(client2.id)
         self.assertTrue(self.step.pm_slave._widgets['credit'].get_visible())
 
+        # It should have fallback to money
         self.assertEquals(
-            str(self.step.client.emit('validate', client2.id)),
-            'The available credit for this client ($2.00) is not enough.')
+            self.step.pm_slave.get_selected_method().method_name, u'money')
 
     @mock.patch('stoqlib.gui.wizards.salewizard.print_report')
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
@@ -337,15 +338,16 @@ class TestConfirmSaleWizard(GUITest):
         sale.identifier = 12345
         self.add_product(sale)
         sale.client = self.create_client()
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
-        step = wizard.get_current_step()
+        self._create_wizard(sale=sale)
+        wizard = self.wizard
+        step = self.step
 
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         today = localtoday().date()
 
         sale.client.credit_limit = currency('90000000000')
         step.client.emit('changed')
-        step.pm_slave.select_method(u'money')
+        self._select_method(u'money')
 
         # checks if a client can buy normally
         self.assertTrue(wizard.next_button.props.sensitive)
@@ -358,10 +360,10 @@ class TestConfirmSaleWizard(GUITest):
         payment.group = self.create_payment_group()
         payment.group.payer = sale.client.person
 
-        step.pm_slave.select_method('bill')
+        self._select_method('bill')
         self.assertTrue(wizard.next_button.props.sensitive)
 
-        step.pm_slave.select_method(u'store_credit')
+        self._select_method(u'store_credit')
         self.assertTrue(wizard.next_button.props.sensitive)
 
         #: this parameter disallows a client with late payments to buy with
@@ -375,13 +377,13 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
 
         # checks if a client with late payments can buy with money method
-        step.pm_slave.select_method(u'money')
+        self._select_method(u'money')
         payment.due_date = today - relativedelta(days=3)
         self.assertEquals(step.client.emit('validate', sale.client.id), None)
         self.assertTrue(wizard.next_button.props.sensitive)
 
         # checks if a client with late payments can buy with store credit
-        step.pm_slave.select_method(u'store_credit')
+        self._select_method(u'store_credit')
         self.assertEquals(
             unicode(step.client.emit('validate', sale.client.id)),
             u'It is not possible to sell with store credit for clients with '
@@ -403,17 +405,17 @@ class TestConfirmSaleWizard(GUITest):
         # checks if a client with late payments can buy
         payment.due_date = today - relativedelta(days=3)
 
-        step.pm_slave.select_method(u'store_credit')
+        self._select_method(u'store_credit')
         self.assertEquals(
             unicode(step.client.emit('validate', sale.client.id)),
             u'It is not possible to sell for clients with late payments.')
 
-        step.pm_slave.select_method('check')
+        self._select_method('check')
         self.assertEquals(
             unicode(step.client.emit('validate', sale.client.id)),
             u'It is not possible to sell for clients with late payments.')
 
-        step.pm_slave.select_method(u'store_credit')
+        self._select_method(u'store_credit')
         sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
                            int(LatePaymentPolicy.ALLOW_SALES))
 

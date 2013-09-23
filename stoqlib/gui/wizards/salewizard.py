@@ -227,13 +227,13 @@ class BaseMethodSelectionStep(object):
                            self.subtotal_expander]:
                 widget.hide()
 
+        self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self._update_next_step(self.pm_slave.get_selected_method())
 
     def setup_slaves(self):
         marker('SelectPaymentMethodSlave')
         self.pm_slave = SelectPaymentMethodSlave(store=self.store,
                                                  payment_type=Payment.TYPE_IN)
-        self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
         marker('CashChangeSlave')

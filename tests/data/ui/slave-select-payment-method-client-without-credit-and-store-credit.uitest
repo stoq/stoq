@@ -1,0 +1,13 @@
+slave: SelectPaymentMethodSlave
+GtkVBox(toplevel):
+  GtkFrame(frame1, expand=True, fill=True):
+    GtkHBox(methods_box):
+      GtkRadioButton(padding=6): 'Money', active
+      GtkRadioButton(padding=6): 'Bill'
+      GtkRadioButton(padding=6): 'Card'
+      GtkRadioButton(padding=6): 'Check'
+      GtkRadioButton(padding=6): 'Credit ($ 0.00)', hidden, insensitive
+      GtkRadioButton(padding=6): 'Deposit'
+      GtkRadioButton(padding=6): 'Store Credit', hidden, insensitive
+      GtkRadioButton(padding=6): 'Multiple'
+    GtkLabel(): 'Payment method:'

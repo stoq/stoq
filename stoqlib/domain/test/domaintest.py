@@ -38,6 +38,7 @@ from stoqlib.database.runtime import (get_current_branch,
                                       new_store,
                                       StoqlibStore)
 from stoqlib.database.testsuite import StoqlibTestsuiteTracer
+from stoqlib.domain.base import Domain
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.lib.dateutils import localdate, localdatetime
 
@@ -242,9 +243,12 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         s = sysparam()
         old_values = {}
         for param, value in kwargs.items():
-            old_values[param] = s.get_bool(param)
             if type(value) is bool:
+                old_values[param] = s.get_bool(param)
                 s.set_bool(self.store, param, value)
+            elif isinstance(value, Domain) or value is None:
+                old_values[param] = s.get_object(self.store, param)
+                s.set_object(self.store, param, value)
             else:
                 raise NotImplementedError(type(value))
         try:
@@ -253,6 +257,8 @@ class DomainTest(unittest.TestCase, ExampleCreator):
             for param, value in old_values.items():
                 if type(value) is bool:
                     s.set_bool(self.store, param, value)
+                elif isinstance(value, Domain) or value is None:
+                    s.set_object(self.store, param, value)
                 else:
                     raise NotImplementedError(type(value))
 
