@@ -1170,14 +1170,6 @@ class ParameterAccess(object):
         """
         self._values[param_name] = value
 
-    def get_all_details(self):
-        """
-        Returns all ParameterDetails classes
-
-        :returns: the details
-        """
-        return self._details.values()
-
     def get_detail_by_name(self, param_name):
         """
         Returns a ParameterDetails class for the given parameter name

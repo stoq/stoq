@@ -132,19 +132,6 @@ class FakeBuilder(object):
         for key, value in nodes[orm_name].items():
             class_node.locals[key] = [value]
 
-    def add_parameter_access(self, module):
-        # def DEFAULT_SALES_CFOP(): pass
-        # ParameterAccess.DEFAULT_SALES_CFOP = DEFAULT_SALES_CFOP
-        # etc
-        ParameterAccess = self.module.locals['ParameterAccess'][0]
-        for detail in sysparam.get_all_details():
-            func = build_function(detail.key)
-            # FIXME: We should use ParameterAccess.add_local_node,
-            #        to add the function at the right place in the ast,
-            #        but it breaks for some reasons
-            func.parent = ParameterAccess
-            ParameterAccess.set_local(detail.key, func)
-
     def add_interfaces(self, module):
         f = namedAny(module.name).__file__.replace('.pyc', '.py')
         data = open(f).read()
@@ -240,8 +227,6 @@ def get_obj_info(obj):
 
             if my_issubclass(value, ORMObject):
                 fake.add_ormobject(value, attr)
-    elif module.name == 'stoqlib.lib.parameters':
-        fake.add_parameter_access(module)
     #elif module.name == 'stoqlib.gui.wizards.purchasewizard':
     #    fake.add_wizard_step(module)
 
