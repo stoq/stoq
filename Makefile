@@ -72,7 +72,7 @@ coverage: clean
 	tools/validatecoverage coverage.xml && \
 	git show|tools/diff-coverage jenkins-test/stoq-$$VERSION/coverage.xml
 
-jenkins:
+jenkins: check-source-all
 	unset STOQLIB_TEST_QUICK && \
 	VERSION=`python -c "from stoq import version; print version"` && \
 	rm -fr jenkins-test && \

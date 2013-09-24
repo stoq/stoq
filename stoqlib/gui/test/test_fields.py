@@ -40,4 +40,5 @@ class TestPersonField(GUITest):
 
         with mock.patch('stoqlib.gui.wizards.personwizard.run_dialog') as run_dialog:
             field.run_dialog(self.store, client)
-            run_dialog.assert_called_once_with(ClientEditor, None, self.store, client, visual_mode=False)
+            run_dialog.assert_called_once_with(ClientEditor, None, self.store, client,
+                                               visual_mode=False)
