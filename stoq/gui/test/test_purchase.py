@@ -57,7 +57,7 @@ class TestPurchase(BaseGUITest):
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
     def test_edit_quote_order(self, run_dialog):
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         purchase = self.create_purchase_order()
 
         app = self.create_app(PurchaseApp, u'purchase')
@@ -79,7 +79,7 @@ class TestPurchase(BaseGUITest):
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.print_report')
     def test_print_report(self, print_report):
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(PurchaseApp, u'purchase')
 
         self.activate(app.window.Print)
@@ -105,7 +105,7 @@ class TestPurchase(BaseGUITest):
         quotation.purchase.add_item(self.create_sellable(), 2)
         quotation.purchase.status = PurchaseOrder.ORDER_PENDING
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(PurchaseApp, u'purchase')
 
         olist = app.results
@@ -128,7 +128,7 @@ class TestPurchase(BaseGUITest):
         purchase = self.create_purchase_order()
         purchase.add_item(self.create_sellable(), 2)
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(PurchaseApp, u'purchase')
 
         olist = app.results
@@ -156,7 +156,7 @@ class TestPurchase(BaseGUITest):
         purchase.add_item(self.create_sellable(), 2)
         purchase.status = PurchaseOrder.ORDER_PENDING
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(PurchaseApp, u'purchase')
 
         olist = app.results
@@ -184,7 +184,7 @@ class TestPurchase(BaseGUITest):
         purchase.status = PurchaseOrder.ORDER_CONFIRMED
         purchase.received_quantity = 2
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(PurchaseApp, u'purchase')
 
         olist = app.results
@@ -209,7 +209,7 @@ class TestPurchase(BaseGUITest):
         purchase.add_item(self.create_sellable(), 2)
         purchase.status = PurchaseOrder.ORDER_PENDING
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(PurchaseApp, u'purchase')
 
         olist = app.results
@@ -235,7 +235,7 @@ class TestPurchase(BaseGUITest):
         purchase.add_item(self.create_sellable(), 2)
         purchase.status = PurchaseOrder.ORDER_PENDING
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(PurchaseApp, u'purchase')
 
         olist = app.results
@@ -249,7 +249,7 @@ class TestPurchase(BaseGUITest):
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
     def test_new_consignment(self, run_dialog):
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         purchase = self.create_purchase_order()
 
         app = self.create_app(PurchaseApp, u'purchase')

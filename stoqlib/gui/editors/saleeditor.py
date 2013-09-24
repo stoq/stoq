@@ -158,7 +158,7 @@ class SaleQuoteItemEditor(BaseEditor):
         if value <= 0:
             return ValidationError(_(u"The price must be greater than zero."))
 
-        if (not sysparam().get_bool('ALLOW_HIGHER_SALE_PRICE') and
+        if (not sysparam.get_bool('ALLOW_HIGHER_SALE_PRICE') and
             value > self.model.base_price):
             return ValidationError(_(u'The sell price cannot be greater '
                                    'than %s.') % self.model.base_price)
@@ -166,7 +166,7 @@ class SaleQuoteItemEditor(BaseEditor):
         sellable = self.model.sellable
         self.manager = self.manager or api.get_current_user(self.store)
 
-        if api.sysparam().get_bool('REUTILIZE_DISCOUNT'):
+        if api.sysparam.get_bool('REUTILIZE_DISCOUNT'):
             extra_discount = self.model.sale.get_available_discount_for_items(
                 user=self.manager, exclude_item=self.model)
         else:

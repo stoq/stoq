@@ -215,7 +215,7 @@ class ECFEditor(BaseEditor):
 
         # Allow to use virtual printer for both demo mode and developer mode
         # so it's easier for testers and developers to test ecf functionality
-        if sysparam().get_bool('DEMO_MODE') or is_developer_mode():
+        if sysparam.get_bool('DEMO_MODE') or is_developer_mode():
             from stoqdrivers.printers.virtual.Simple import Simple
             printer = _PrinterModel('virtual', Simple)
             printers.append((printer.get_description(), printer))

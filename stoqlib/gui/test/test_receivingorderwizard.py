@@ -78,7 +78,7 @@ class TestReceivingOrderWizard(GUITest):
         module = 'stoqlib.gui.events.ReceivingOrderWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             with mock.patch.object(wizard.model, 'confirm') as confirm:
-                api.sysparam().set_string(self.store, 'LABEL_TEMPLATE_PATH', u'')
+                api.sysparam.set_string(self.store, 'LABEL_TEMPLATE_PATH', u'')
                 self.assertEqual(confirm.call_count, 0)
                 with mock.patch.object(self.store, 'commit'):
                     self.click(wizard.next_button)
@@ -87,8 +87,8 @@ class TestReceivingOrderWizard(GUITest):
                 args, kwargs = emit.call_args
                 self.assertTrue(isinstance(args[0], ReceivingOrder))
                 self.assertEqual(yesno.call_count, 0)
-                api.sysparam().set_string(self.store, 'LABEL_TEMPLATE_PATH',
-                                          ur'C:\nppdf32Log\debuglog.txt')
+                api.sysparam.set_string(self.store, 'LABEL_TEMPLATE_PATH',
+                                        ur'C:\nppdf32Log\debuglog.txt')
                 emit.reset_mock()
                 confirm.reset_mock()
                 with mock.patch.object(self.store, 'commit'):

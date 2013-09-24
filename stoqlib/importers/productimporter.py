@@ -67,7 +67,7 @@ class ProductImporter(CSVImporter):
         for unit in default_store.find(SellableUnit):
             self.units[unit.description] = unit
 
-        self.tax_constant_id = sysparam().get_object_id(
+        self.tax_constant_id = sysparam.get_object_id(
             'DEFAULT_PRODUCT_TAX_CONSTANT')
         self._code = 1
 

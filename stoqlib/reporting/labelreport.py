@@ -60,7 +60,7 @@ class LabelReport(object):
         writer.writerows(self.rows)
         temp_csv.close()
 
-        template_file = sysparam().get_string('LABEL_TEMPLATE_PATH')
+        template_file = sysparam.get_string('LABEL_TEMPLATE_PATH')
         if not os.path.exists(template_file):
             raise ValueError(_('Template file for printing labels was not found.'))
 

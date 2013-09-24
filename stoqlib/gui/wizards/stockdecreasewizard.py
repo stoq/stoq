@@ -85,7 +85,7 @@ class StartStockDecreaseStep(WizardEditorStep):
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
-        sync_mode = api.sysparam().get_bool('SYNCHRONIZED_MODE')
+        sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
         self.branch.set_sensitive(not sync_mode)
 
     def _fill_cfop_combo(self):
@@ -112,7 +112,7 @@ class StartStockDecreaseStep(WizardEditorStep):
         self._fill_cfop_combo()
         self._fill_cost_center_combo()
 
-        if not sysparam().get_bool('CREATE_PAYMENTS_ON_STOCK_DECREASE'):
+        if not sysparam.get_bool('CREATE_PAYMENTS_ON_STOCK_DECREASE'):
             self.create_payments.hide()
 
     #
@@ -279,7 +279,7 @@ class StockDecreaseWizard(BaseWizard):
         branch = api.get_current_branch(store)
         user = api.get_current_user(store)
         employee = user.person.employee
-        cfop_id = sysparam().get_object_id('DEFAULT_STOCK_DECREASE_CFOP')
+        cfop_id = sysparam.get_object_id('DEFAULT_STOCK_DECREASE_CFOP')
         return StockDecrease(responsible=user,
                              removed_by=employee,
                              branch=branch,

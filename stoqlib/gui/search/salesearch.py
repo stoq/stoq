@@ -76,7 +76,7 @@ class _BaseSaleSearch(SearchDialog):
         self.search.set_query(self.executer_query)
 
     def executer_query(self, store):
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             current = api.get_current_branch(self.store)
             return self.store.find(self.search_spec, Branch.id == current.id)
         return self.store.find(self.search_spec)
@@ -162,7 +162,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     size = (800, 450)
 
     def _get_branch_values(self):
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             current = api.get_current_branch(self.store)
             items = [(current.get_description(), current.id)]
         else:
@@ -182,7 +182,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     def executer_query(self, store):
         method = self.payment_filter.get_state().value
         resultset = self.search_spec.find_by_payment_method(store, method)
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             current = api.get_current_branch(self.store)
             resultset = resultset.find(Branch.id == current.id)
         return resultset

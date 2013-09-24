@@ -164,7 +164,7 @@ class _BasePaymentDataEditor(BaseEditor):
     #
 
     def on_due_date__validate(self, widget, value):
-        if sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS'):
+        if sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS'):
             return
 
         if value < localtoday().date():
@@ -245,7 +245,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         return self.method.method_name == u'check'
 
     def _is_check_number_mandatory(self):
-        return (api.sysparam().get_bool('MANDATORY_CHECK_NUMBER') and
+        return (api.sysparam.get_bool('MANDATORY_CHECK_NUMBER') and
                 self._has_bank_account())
 
     def _get_columns(self):
@@ -412,7 +412,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         return (total_payments - self.total_value)
 
     def are_due_dates_valid(self):
-        if sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS'):
+        if sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS'):
             return True
 
         previous_date = localtoday().date() + datetime.timedelta(days=-1)
@@ -692,7 +692,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                    max_installments)
 
     def on_first_duedate__validate(self, widget, value):
-        if sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS'):
+        if sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS'):
             return
 
         if value < datetime.date.today():
@@ -787,7 +787,7 @@ class CardMethodSlave(BaseEditorSlave):
         self.credit_provider.select_item_by_position(1)
         self.credit_provider.select_item_by_position(0)
 
-        is_mandatory = sysparam().get_bool('MANDATORY_CARD_AUTH_NUMBER')
+        is_mandatory = sysparam.get_bool('MANDATORY_CARD_AUTH_NUMBER')
         self.auth_number.set_property('mandatory', is_mandatory)
 
     def create_model(self, store):
@@ -846,7 +846,7 @@ class CardMethodSlave(BaseEditorSlave):
         self._setup_max_installments()
 
     def _validate_auth_number(self):
-        is_auth_number_mandatory = sysparam().get_bool('MANDATORY_CARD_AUTH_NUMBER')
+        is_auth_number_mandatory = sysparam.get_bool('MANDATORY_CARD_AUTH_NUMBER')
         if is_auth_number_mandatory and self.auth_number.read() == ValueUnset:
             return False
         return True
@@ -1311,8 +1311,8 @@ class MultipleMethodSlave(BaseEditorSlave):
         radio.set_data('method', payment_method)
         radio.show()
 
-        if api.sysparam().compare_object("DEFAULT_PAYMENT_METHOD",
-                                         payment_method):
+        if api.sysparam.compare_object("DEFAULT_PAYMENT_METHOD",
+                                       payment_method):
             radio.set_active(True)
 
     def _can_add_payment(self):

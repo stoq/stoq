@@ -178,7 +178,7 @@ class WebService(object):
         :returns: a deferred with the version_string as a parameter
         """
         params = {
-            'demo': sysparam().get_bool('DEMO_MODE'),
+            'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': platform.dist(),
             'cnpj': self._get_cnpj(),
             'plugins': InstalledPlugin.get_plugin_names(store),
@@ -222,7 +222,7 @@ class WebService(object):
         default_store = get_default_store()
         params = {
             'cnpj': self._get_cnpj(),
-            'demo': sysparam().get_bool('DEMO_MODE'),
+            'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': ' '.join(platform.dist()),
             'email': email,
             'feedback': feedback,

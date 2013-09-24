@@ -79,7 +79,7 @@ class _BaseBillCheckSearch(SearchDialog):
 
     def query_executer(self, store):
         resultset = store.find(self.search_spec)
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             current = api.get_current_branch(self.store)
             resultset = resultset.find(Payment.branch_id == current.id)
 
@@ -214,7 +214,7 @@ class CardPaymentSearch(SearchEditor):
         provider = self.provider_filter.get_state().value
         resultset = self.search_spec.find_by_provider(store, provider)
 
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             current = api.get_current_branch(self.store)
             resultset = resultset.find(Payment.branch_id == current.id)
 

@@ -178,12 +178,12 @@ class TestService(DomainTest):
     def test_can_remove(self):
         service = self.create_service()
 
-        old = sysparam().get_object(self.store, 'DELIVERY_SERVICE')
+        old = sysparam.get_object(self.store, 'DELIVERY_SERVICE')
         try:
-            sysparam().set_object(self.store, 'DELIVERY_SERVICE', service)
+            sysparam.set_object(self.store, 'DELIVERY_SERVICE', service)
             self.assertFalse(service.can_remove())
         finally:
-            sysparam().set_object(self.store, 'DELIVERY_SERVICE', old)
+            sysparam.set_object(self.store, 'DELIVERY_SERVICE', old)
 
         # Service already used.
         sale = self.create_sale()
@@ -203,12 +203,12 @@ class TestService(DomainTest):
         service = self.create_service()
         self.assertTrue(service.can_close())
 
-        old = sysparam().get_object(self.store, 'DELIVERY_SERVICE')
+        old = sysparam.get_object(self.store, 'DELIVERY_SERVICE')
         try:
-            sysparam().set_object(self.store, 'DELIVERY_SERVICE', service)
+            sysparam.set_object(self.store, 'DELIVERY_SERVICE', service)
             self.assertFalse(service.can_close())
         finally:
-            sysparam().set_object(self.store, 'DELIVERY_SERVICE', old)
+            sysparam.set_object(self.store, 'DELIVERY_SERVICE', old)
 
     def test_get_description(self):
         service = self.create_service(description=u'My Service')

@@ -237,7 +237,7 @@ class InPaymentView(BasePaymentView):
           check if has late payments
         :returns: True if the person has overdue payments. False otherwise
         """
-        tolerance = sysparam().get_int('TOLERANCE_FOR_LATE_PAYMENTS')
+        tolerance = sysparam.get_int('TOLERANCE_FOR_LATE_PAYMENTS')
 
         query = And(
             cls.person_id == person.id,

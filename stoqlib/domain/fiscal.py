@@ -177,7 +177,7 @@ class FiscalBookEntry(Domain):
             iss_value=iss_value,
             icms_value=icms_value,
             ipi_value=ipi_value,
-            cfop_id=sysparam().get_object_id('DEFAULT_SALES_CFOP'),
+            cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
             branch=self.branch,
             invoice_number=invoice_number,
             drawee=self.drawee,

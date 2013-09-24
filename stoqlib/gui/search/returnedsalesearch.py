@@ -94,7 +94,7 @@ class ReturnedSaleSearch(SearchDialog):
 
     def query_executer(self, store):
         resultset = self.store.find(self.search_spec)
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             current = api.get_current_branch(self.store)
             return resultset.find(Branch.id == current.id)
         return resultset

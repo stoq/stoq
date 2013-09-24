@@ -350,9 +350,9 @@ class FinancialApp(ShellApp):
         self._pages = {}
         self.accounts = AccountTree()
         ShellApp.__init__(self, window, store=store)
-        self._tills_account_id = api.sysparam().get_object_id('TILLS_ACCOUNT')
-        self._imbalance_account_id = api.sysparam().get_object_id('IMBALANCE_ACCOUNT')
-        self._banks_account_id = api.sysparam().get_object_id('BANKS_ACCOUNT')
+        self._tills_account_id = api.sysparam.get_object_id('TILLS_ACCOUNT')
+        self._imbalance_account_id = api.sysparam.get_object_id('IMBALANCE_ACCOUNT')
+        self._banks_account_id = api.sysparam.get_object_id('BANKS_ACCOUNT')
 
     #
     # ShellApp overrides
@@ -498,7 +498,7 @@ class FinancialApp(ShellApp):
         if parent_account:
             if parent_account.kind in ['payable', 'receivable']:
                 parent_account = None
-            if api.sysparam().compare_object('IMBALANCE_ACCOUNT', parent_account):
+            if api.sysparam.compare_object('IMBALANCE_ACCOUNT', parent_account):
                 parent_account = None
         retval = self.run_dialog(AccountEditor, store, model=model,
                                  parent_account=parent_account)
@@ -540,7 +540,7 @@ class FinancialApp(ShellApp):
         if page.model.kind != 'account':
             return False
 
-        if (api.sysparam().compare_object('TILLS_ACCOUNT', page.model.account) or
+        if (api.sysparam.compare_object('TILLS_ACCOUNT', page.model.account) or
             page.model.parent_id == self._tills_account_id):
             return False
         return True
@@ -741,7 +741,7 @@ class FinancialApp(ShellApp):
         self.accounts.remove(account_view)
         self.accounts.flush()
 
-        imbalance_id = api.sysparam().get_object_id('IMBALANCE_ACCOUNT')
+        imbalance_id = api.sysparam.get_object_id('IMBALANCE_ACCOUNT')
         for method in methods:
             method.destination_account_id = imbalance_id
 

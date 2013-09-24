@@ -43,7 +43,7 @@ log = logging.getLogger(__name__)
 
 
 def get_logo_data(store):
-    logo_domain = sysparam().get_object(store, 'CUSTOM_LOGO_FOR_REPORTS')
+    logo_domain = sysparam.get_object(store, 'CUSTOM_LOGO_FOR_REPORTS')
     if logo_domain and logo_domain.image:
         data = logo_domain.image
     else:

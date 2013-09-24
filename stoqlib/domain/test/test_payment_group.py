@@ -54,12 +54,12 @@ class TestPaymentGroup(DomainTest):
         super(TestPaymentGroup, self).setUp()
 
     def _payComissionWhenConfirmed(self):
-        sysparam().set_bool(
+        sysparam.set_bool(
             self.store,
             "SALE_PAY_COMMISSION_WHEN_CONFIRMED",
             True)
         self.failUnless(
-            sysparam().get_bool('SALE_PAY_COMMISSION_WHEN_CONFIRMED'))
+            sysparam.get_bool('SALE_PAY_COMMISSION_WHEN_CONFIRMED'))
 
     def test_remove_item(self):
         payment = self.create_payment()

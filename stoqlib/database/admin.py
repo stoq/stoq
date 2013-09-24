@@ -123,7 +123,7 @@ def create_main_branch(store, name):
     Company(person=person, store=store)
     branch = Branch(person=person, store=store)
 
-    sysparam().set_object(store, 'MAIN_COMPANY', branch)
+    sysparam.set_object(store, 'MAIN_COMPANY', branch)
 
     provide_utility(ICurrentBranch, branch)
     admin = get_admin_user(store)
@@ -157,7 +157,7 @@ def register_payment_methods(store):
     pom = get_payment_operation_manager()
 
     log.info("Creating domain objects for payment methods")
-    account_id = sysparam().get_object_id('IMBALANCE_ACCOUNT')
+    account_id = sysparam.get_object_id('IMBALANCE_ACCOUNT')
     assert account_id
     for operation_name in pom.get_operation_names():
         operation = pom.get(operation_name)
@@ -193,15 +193,15 @@ def register_accounts(store):
             account = Account(store=store, description=name)
         account.account_type = atype
 
-    sysparam().set_object(
+    sysparam.set_object(
         store,
         'BANKS_ACCOUNT',
         store.find(Account, description=_(u"Banks")).one())
-    sysparam().set_object(
+    sysparam.set_object(
         store,
         'TILLS_ACCOUNT',
         store.find(Account, description=_(u"Tills")).one())
-    sysparam().set_object(
+    sysparam.set_object(
         store,
         'IMBALANCE_ACCOUNT',
         store.find(Account, description=_(u"Imbalance")).one())
@@ -392,7 +392,7 @@ def initialize_system(password=None, testsuite=False,
         from stoqlib.domain.uiform import create_default_forms
         create_default_forms(store)
         ensure_sellable_constants(store)
-        sysparam().ensure_system_parameters(store)
+        sysparam.ensure_system_parameters(store)
         store.commit(close=True)
         _ensure_card_providers()
         create_default_profiles()

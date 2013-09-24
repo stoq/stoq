@@ -36,7 +36,7 @@ from stoqlib.lib.parameters import sysparam
 # TODO: Test product editor for products without storable
 class TestProductEditor(GUITest):
     def tearDown(self):
-        sysparam().set_int(self.store, 'COST_PRECISION_DIGITS', 2)
+        sysparam.set_int(self.store, 'COST_PRECISION_DIGITS', 2)
         GUITest.tearDown(self)
 
     def test_create(self):
@@ -59,7 +59,7 @@ class TestProductEditor(GUITest):
 
     def test_cost_precision_digits(self):
         # Set a number of digts greated than 2
-        sysparam().set_int(self.store, 'COST_PRECISION_DIGITS', 5)
+        sysparam.set_int(self.store, 'COST_PRECISION_DIGITS', 5)
 
         product = self.create_product(storable=True)
         product.sellable.cost = Decimal('1.23456')

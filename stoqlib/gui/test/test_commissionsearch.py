@@ -61,9 +61,9 @@ class TestCommissionSearch(GUITest):
                    store=self.store)
 
         # First check for columns getting the confirm date of the sale
-        api.sysparam().set_bool(self.store,
-                                'SALE_PAY_COMMISSION_WHEN_CONFIRMED',
-                                True)
+        api.sysparam.set_bool(self.store,
+                              'SALE_PAY_COMMISSION_WHEN_CONFIRMED',
+                              True)
         search = CommissionSearch(self.store)
 
         search.search.refresh()
@@ -79,9 +79,9 @@ class TestCommissionSearch(GUITest):
         self.check_search(search, 'commission-confirmed-salesperson-filter')
 
         # Then check for columns getting the paid date of the payment
-        api.sysparam().set_bool(self.store,
-                                'SALE_PAY_COMMISSION_WHEN_CONFIRMED',
-                                False)
+        api.sysparam.set_bool(self.store,
+                              'SALE_PAY_COMMISSION_WHEN_CONFIRMED',
+                              False)
         search = CommissionSearch(self.store)
 
         search.search.refresh()

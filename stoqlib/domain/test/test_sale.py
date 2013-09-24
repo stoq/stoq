@@ -54,7 +54,7 @@ from stoqlib.lib.parameters import sysparam
 class TestSale(DomainTest):
     def test_constructor_without_cfop(self):
         sale = Sale(store=self.store, branch=self.create_branch())
-        self.assertTrue(sysparam().compare_object('DEFAULT_SALES_CFOP', sale.cfop))
+        self.assertTrue(sysparam.compare_object('DEFAULT_SALES_CFOP', sale.cfop))
 
     def test_sale_payments_ordered(self):
         sale = self.create_sale()
@@ -954,7 +954,7 @@ class TestSale(DomainTest):
 
         self.add_product(sale)
 
-        sellable = sysparam().get_object(self.store, 'DELIVERY_SERVICE').sellable
+        sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
         sale.add_sellable(sellable, quantity=1)
         sale.order()
         self.failIf(sale.can_set_paid())
@@ -1063,7 +1063,7 @@ class TestSale(DomainTest):
         self.failIf(commissions[-1].value >= 0)
 
     def test_commission_create_on_confirm(self):
-        api.sysparam().set_bool(
+        api.sysparam.set_bool(
             self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', True)
 
         sale = self.create_sale()
@@ -1094,7 +1094,7 @@ class TestSale(DomainTest):
                 self.store.find(Commission, payment=p).count(), 1)
 
     def test_commission_create_on_pay(self):
-        api.sysparam().set_bool(
+        api.sysparam.set_bool(
             self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', False)
 
         sale = self.create_sale()
@@ -1125,7 +1125,7 @@ class TestSale(DomainTest):
                 self.store.find(Commission, payment=p).count(), 1)
 
     def test_commission_create_at_end(self):
-        api.sysparam().set_bool(
+        api.sysparam.set_bool(
             self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', False)
 
         commissions_before = self.store.find(Commission).count()

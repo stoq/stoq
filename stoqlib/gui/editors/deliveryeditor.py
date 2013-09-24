@@ -188,7 +188,7 @@ class CreateDeliveryEditor(BaseEditor):
     #
 
     def create_model(self, store):
-        price = sysparam().get_object(store, 'DELIVERY_SERVICE').sellable.price
+        price = sysparam.get_object(store, 'DELIVERY_SERVICE').sellable.price
         return _CreateDeliveryModel(price=price)
 
     def setup_proxies(self):

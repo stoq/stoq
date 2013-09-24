@@ -53,8 +53,8 @@ _ = stoqlib_gettext
 
 def _create_transaction(store, till_entry):
     AccountTransaction(description=till_entry.description,
-                       source_account_id=sysparam().get_object_id('IMBALANCE_ACCOUNT'),
-                       account_id=sysparam().get_object_id('TILLS_ACCOUNT'),
+                       source_account_id=sysparam.get_object_id('IMBALANCE_ACCOUNT'),
+                       account_id=sysparam.get_object_id('TILLS_ACCOUNT'),
                        value=till_entry.value,
                        code=unicode(till_entry.id),
                        date=TransactionTimestamp(),

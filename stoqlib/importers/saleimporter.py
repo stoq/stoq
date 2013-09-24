@@ -75,7 +75,7 @@ class SaleImporter(CSVImporter):
                     invoice_number=int(data.coupon_id),
                     salesperson=salesperson,
                     branch=branch,
-                    cfop_id=sysparam().get_object_id('DEFAULT_SALES_CFOP'),
+                    cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
                     group=group,
                     store=store)
 

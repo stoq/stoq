@@ -606,7 +606,7 @@ def _register_branch(caller_store, station_name):
     import gtk
     from stoqlib.lib.parameters import sysparam
 
-    if not sysparam().get_bool('DEMO_MODE'):
+    if not sysparam.get_bool('DEMO_MODE'):
         fmt = _(u"The computer '%s' is not registered to the Stoq "
                 u"server at %s.\n\n"
                 u"Do you want to register it "
@@ -629,7 +629,7 @@ def _register_branch(caller_store, station_name):
     from stoqlib.domain.station import BranchStation
 
     store = new_store()
-    branch = sysparam().get_object(store, 'MAIN_COMPANY')
+    branch = sysparam.get_object(store, 'MAIN_COMPANY')
     try:
         station = BranchStation.create(store,
                                        branch=branch,

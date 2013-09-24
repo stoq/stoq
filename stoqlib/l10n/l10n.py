@@ -41,7 +41,7 @@ iso639_list = {
 def get_l10n_module(country=None):
     if not country:
         from stoqlib.lib.parameters import sysparam
-        country = sysparam().get_string('COUNTRY_SUGGESTED')
+        country = sysparam.get_string('COUNTRY_SUGGESTED')
 
     short = iso639_list.get(country.lower(), None)
     if short is None:

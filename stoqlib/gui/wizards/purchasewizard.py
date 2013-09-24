@@ -89,11 +89,11 @@ class StartPurchaseStep(WizardEditorStep):
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
-        sync_mode = api.sysparam().get_bool('SYNCHRONIZED_MODE')
+        sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
         self.branch.set_sensitive(not sync_mode)
 
     def _setup_widgets(self):
-        allow_outdated = sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS')
+        allow_outdated = sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS')
         self.open_date.set_sensitive(allow_outdated)
         self._fill_supplier_combo()
         self._fill_branch_combo()
@@ -174,7 +174,7 @@ class StartPurchaseStep(WizardEditorStep):
         self._edit_supplier()
 
     def on_open_date__validate(self, widget, date):
-        if sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS'):
+        if sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS'):
             return
         if date < localtoday().date():
             return ValidationError(
@@ -537,7 +537,7 @@ class FinishPurchaseStep(WizardEditorStep):
             self.transporter.select(model)
 
     def on_expected_receival_date__validate(self, widget, date):
-        if sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS'):
+        if sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS'):
             return
 
         if date < localtoday().date():
@@ -593,7 +593,7 @@ class PurchaseWizard(BaseWizard):
         return _('Edit Order')
 
     def _create_model(self, store):
-        supplier_id = sysparam().get_object_id('SUGGESTED_SUPPLIER')
+        supplier_id = sysparam.get_object_id('SUGGESTED_SUPPLIER')
         branch = api.get_current_branch(store)
         group = PaymentGroup(store=store)
         status = PurchaseOrder.ORDER_PENDING

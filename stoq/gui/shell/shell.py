@@ -154,7 +154,7 @@ class ShellDatabaseConnection(object):
 
         compaines = default_store.find(Company)
         if (compaines.count() == 0 or
-            not sysparam().has_object('MAIN_COMPANY')):
+            not sysparam.has_object('MAIN_COMPANY')):
             from stoqlib.gui.base.dialogs import run_dialog
             from stoqlib.gui.dialogs.branchdialog import BranchDialog
             if self._ran_wizard:
@@ -167,7 +167,7 @@ class ShellDatabaseConnection(object):
             if not person:
                 raise SystemExit
             branch = person.branch
-            sysparam().set_object(store, 'MAIN_COMPANY', branch)
+            sysparam.set_object(store, 'MAIN_COMPANY', branch)
             get_current_station(store).branch = branch
             store.commit()
             store.close()
@@ -225,7 +225,7 @@ class Shell(object):
         from stoqlib.lib.parameters import sysparam
         import gtk
 
-        if sysparam().get_bool('ONLINE_SERVICES') is None:
+        if sysparam.get_bool('ONLINE_SERVICES') is None:
             from kiwi.ui.dialogs import HIGAlertDialog
             # FIXME: All of this is to avoid having to set markup as the default
             #        in kiwi/ui/dialogs:HIGAlertDialog.set_details, after 1.0
@@ -244,7 +244,7 @@ class Shell(object):
             response = dialog.run()
             dialog.destroy()
             store = new_store()
-            sysparam().set_bool(store, 'ONLINE_SERVICES', response == gtk.RESPONSE_YES)
+            sysparam.set_bool(store, 'ONLINE_SERVICES', response == gtk.RESPONSE_YES)
             store.commit()
             store.close()
 
@@ -264,7 +264,7 @@ class Shell(object):
         from stoqlib.lib.parameters import sysparam
         from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
-        if (sysparam().get_bool('DEMO_MODE') and
+        if (sysparam.get_bool('DEMO_MODE') and
             manager.is_active(u'ecf')):
             pos = shell_window.toplevel.get_position()
             if pos[0] < 220:
@@ -273,7 +273,7 @@ class Shell(object):
     def _maybe_schedule_idle_logout(self):
         # Verify if the user will use automatic logout.
         from stoqlib.lib.parameters import sysparam
-        minutes = sysparam().get_int('AUTOMATIC_LOGOUT')
+        minutes = sysparam.get_int('AUTOMATIC_LOGOUT')
         # If user defined 0 minutes, ignore automatic logout.
         if minutes != 0:
             seconds = minutes * 60

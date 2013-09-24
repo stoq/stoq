@@ -344,7 +344,7 @@ class StoqlibSchemaMigration(SchemaMigration):
     def check_uptodate(self):
         retval = super(StoqlibSchemaMigration, self).check_uptodate()
 
-        if not sysparam().check_parameter_presence():
+        if not sysparam.check_parameter_presence():
             return False
 
         return retval
@@ -454,7 +454,7 @@ class StoqlibSchemaMigration(SchemaMigration):
         update_profile_applications(store)
 
         # Updating the parameter list
-        sysparam().ensure_system_parameters(store, update=True)
+        sysparam.ensure_system_parameters(store, update=True)
         store.commit(close=True)
 
     def generate_sql_for_patch(self, patch):

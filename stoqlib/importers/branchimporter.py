@@ -81,11 +81,11 @@ class BranchImporter(CSVImporter):
         self.branches.append(branch)
 
     def when_done(self, store):
-        if sysparam().has_object('MAIN_COMPANY'):
+        if sysparam.has_object('MAIN_COMPANY'):
             return
 
         if not self.branches:
             return
 
-        sysparam().set_object(store, 'MAIN_COMPANY', self.branches[0])
-        assert sysparam().has_object('MAIN_COMPANY')
+        sysparam.set_object(store, 'MAIN_COMPANY', self.branches[0])
+        assert sysparam.has_object('MAIN_COMPANY')

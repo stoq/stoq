@@ -108,9 +108,9 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         self.check_editor(editor, u'editor-product-optical-plugin')
 
     def test_work_order_editor(self):
-        sysparam().set_bool(self.store,
-                            'ALLOW_OUTDATED_OPERATIONS',
-                            True)
+        sysparam.set_bool(self.store,
+                          'ALLOW_OUTDATED_OPERATIONS',
+                          True)
 
         sale = self.create_sale()
         workorder = self.create_workorder()

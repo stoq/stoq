@@ -80,7 +80,7 @@ class CommissionSearch(SearchDialog):
         # FIXME: The date here depends on the parameter. We could use
         # it as a property on the view, but then it would not be searchable.
         # Find a better way of handling this sometime in the future.
-        if sysparam().get_bool('SALE_PAY_COMMISSION_WHEN_CONFIRMED'):
+        if sysparam.get_bool('SALE_PAY_COMMISSION_WHEN_CONFIRMED'):
             columns.append(SearchColumn('confirm_date', title=_('Date'),
                                         data_type=datetime.date))
         else:
@@ -108,7 +108,7 @@ class CommissionSearch(SearchDialog):
     def _get_salesperson_query(self, state):
         queries = []
 
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             current = api.get_current_branch(self.store)
             queries.append(Branch.id == current.id)
 

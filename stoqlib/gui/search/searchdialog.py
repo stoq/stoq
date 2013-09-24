@@ -303,7 +303,7 @@ class SearchDialog(BasicDialog):
     def create_branch_filter(self, label=None):
         from stoqlib.domain.person import Branch
         current = api.get_current_branch(self.store)
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             items = [(current.get_description(), current.id)]
         else:
             branches = Branch.get_active_branches(self.store)

@@ -299,7 +299,7 @@ class Account(Domain):
         if not self.can_remove():
             raise TypeError("Account %r cannot be removed" % (self, ))
 
-        imbalance_account_id = sysparam().get_object_id('IMBALANCE_ACCOUNT')
+        imbalance_account_id = sysparam.get_object_id('IMBALANCE_ACCOUNT')
 
         for transaction in store.find(AccountTransaction,
                                       account=self):
@@ -426,7 +426,7 @@ class AccountTransaction(Domain):
         value = payment.paid_value
         if payment.is_outpayment():
             value = -value
-        return cls(source_account_id=sysparam().get_object_id('IMBALANCE_ACCOUNT'),
+        return cls(source_account_id=sysparam.get_object_id('IMBALANCE_ACCOUNT'),
                    account=account or payment.method.destination_account,
                    value=value,
                    description=payment.description,

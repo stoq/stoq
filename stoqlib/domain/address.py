@@ -110,9 +110,9 @@ class CityLocation(ORMObject):
 
         :returns: the default city location
         """
-        city = sysparam().get_string('CITY_SUGGESTED')
-        state = sysparam().get_string('STATE_SUGGESTED')
-        country = sysparam().get_string('COUNTRY_SUGGESTED')
+        city = sysparam.get_string('CITY_SUGGESTED')
+        state = sysparam.get_string('STATE_SUGGESTED')
+        country = sysparam.get_string('COUNTRY_SUGGESTED')
 
         return cls.get_or_create(store, city, state, country)
 

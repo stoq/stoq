@@ -112,7 +112,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
     #
 
     def _allow_unknown_sales(self):
-        return sysparam().get_bool('ALLOW_TRADE_NOT_REGISTERED_SALES')
+        return sysparam.get_bool('ALLOW_TRADE_NOT_REGISTERED_SALES')
 
     def _validation_func(self, value):
         has_selected = self.slave.results.get_selected()
@@ -380,7 +380,7 @@ class SaleReturnInvoiceStep(WizardEditorStep):
                 not self.wizard.model.sale.client):
             self.credit_checkbutton.hide()
 
-        policy = sysparam().get_int('RETURN_POLICY_ON_SALES')
+        policy = sysparam.get_int('RETURN_POLICY_ON_SALES')
         self.credit_checkbutton.set_sensitive(policy == ReturnPolicy.CLIENT_CHOICE)
         self.credit_checkbutton.set_active(policy == ReturnPolicy.RETURN_CREDIT)
 

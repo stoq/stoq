@@ -129,7 +129,7 @@ class AccountTree(ObjectTree):
         elif kind == 'receivable':
             pixbuf = self._pixbuf_receivable
         elif kind == 'account':
-            till_account_id = sysparam().get_object_id('TILLS_ACCOUNT')
+            till_account_id = sysparam.get_object_id('TILLS_ACCOUNT')
             if model.matches(till_account_id):
                 pixbuf = self._pixbuf_till
             else:
@@ -146,7 +146,7 @@ class AccountTree(ObjectTree):
           In this case, this acount (and its decendents) will not be shown in
           the account tree.
         """
-        till_id = sysparam().get_object_id('TILLS_ACCOUNT')
+        till_id = sysparam.get_object_id('TILLS_ACCOUNT')
 
         if self.create_mode and edited_account:
             accounts = list(store.find(AccountView,

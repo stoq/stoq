@@ -80,7 +80,7 @@ class SalesPersonSalesSearch(SearchDialog):
             date = (date.start, date.end)
 
         resultset = self.search_spec.find_by_date(store, date)
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             branch = api.get_current_branch(store)
             resultset = resultset.find(Sale.branch_id == branch.id)
         return resultset

@@ -62,7 +62,7 @@ class TestServices(BaseGUITest):
         self.clean_domain([WorkOrderItem, WorkOrder])
         workorder = self.create_workorder()
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(ServicesApp, u'services')
 
         olist = app.results
@@ -95,7 +95,7 @@ class TestServices(BaseGUITest):
         self.clean_domain([WorkOrderItem, WorkOrder])
         workorder = self.create_workorder()
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(ServicesApp, u'services')
 
         olist = app.results
@@ -131,7 +131,7 @@ class TestServices(BaseGUITest):
         # Setted WorkOrder status for Work in Progress
         workorder.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(ServicesApp, u'services')
 
         olist = app.results
@@ -171,7 +171,7 @@ class TestServices(BaseGUITest):
         # Setted WorkOrder Status for work in Progress
         workorder.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
-        api.sysparam().set_bool(self.store, 'SMART_LIST_LOADING', False)
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(ServicesApp, u'services')
 
         olist = app.results

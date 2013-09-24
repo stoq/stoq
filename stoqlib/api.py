@@ -97,9 +97,6 @@ class StoqAPI(object):
     def user_settings(self):
         return get_settings()
 
-    def sysparam(self):
-        return sysparam()
-
     def is_developer_mode(self):
         return is_developer_mode()
 
@@ -235,3 +232,4 @@ class StoqAPI(object):
         return ec
 
 api = StoqAPI()
+api.sysparam = sysparam

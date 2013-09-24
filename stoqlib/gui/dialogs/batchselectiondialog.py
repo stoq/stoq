@@ -601,7 +601,7 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
             return batch
         if batch is not None:
             return batch.batch_number
-        if not api.sysparam().get_bool('SUGGEST_BATCH_NUMBER'):
+        if not api.sysparam.get_bool('SUGGEST_BATCH_NUMBER'):
             return None
 
         return self._get_next_batch_number()
@@ -625,7 +625,7 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
         max_db = StorableBatch.get_max_value(self.store,
                                              StorableBatch.batch_number)
         max_used = max_value_for(self._get_used_batches() | set([max_db]))
-        if not api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if not api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             return next_value_for(max_used)
 
         # On synchronized mode we need to append the branch acronym

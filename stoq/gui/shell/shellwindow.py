@@ -333,7 +333,7 @@ class ShellWindow(GladeDelegate):
         window_group.add_window(toplevel)
 
     def _check_demo_mode(self):
-        if not api.sysparam().get_bool('DEMO_MODE'):
+        if not api.sysparam.get_bool('DEMO_MODE'):
             return
 
         if api.user_settings.get('hide-demo-warning'):
@@ -351,7 +351,7 @@ class ShellWindow(GladeDelegate):
         self.add_info_bar(gtk.MESSAGE_WARNING, msg, action_widget=button)
 
     def _check_version(self):
-        if not api.sysparam().get_bool('ONLINE_SERVICES'):
+        if not api.sysparam.get_bool('ONLINE_SERVICES'):
             return
         self._version_checker = VersionChecker(self.store, self)
         self._version_checker.check_new_version()

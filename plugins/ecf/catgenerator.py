@@ -158,7 +158,7 @@ class StoqlibCATGenerator(object):
 
     def _add_fiscal_coupon_information(self):
         sales = list(self._get_sales())
-        iss_tax = sysparam().get_decimal('ISS_TAX') * 100
+        iss_tax = sysparam.get_decimal('ISS_TAX') * 100
 
         for sale in sales:
             client = sale.client

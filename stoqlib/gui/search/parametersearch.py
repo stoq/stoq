@@ -81,17 +81,17 @@ class ParameterSearch(BaseEditor):
         """Given a ParameterData object, returns a string representation of
         its current value.
         """
-        detail = sysparam().get_detail_by_name(obj.field_name)
+        detail = sysparam.get_detail_by_name(obj.field_name)
         if detail.type == unicode:
-            data = sysparam().get_string(obj.field_name)
+            data = sysparam.get_string(obj.field_name)
         elif detail.type == bool:
-            data = sysparam().get_bool(obj.field_name)
+            data = sysparam.get_bool(obj.field_name)
         elif detail.type == int:
-            data = sysparam().get_int(obj.field_name)
+            data = sysparam.get_int(obj.field_name)
         elif detail.type == decimal.Decimal:
-            data = sysparam().get_decimal(obj.field_name)
+            data = sysparam.get_decimal(obj.field_name)
         elif isinstance(detail.type, basestring):
-            data = sysparam().get_object(self.store, obj.field_name)
+            data = sysparam.get_object(self.store, obj.field_name)
         else:
             raise NotImplementedError(detail.type)
 

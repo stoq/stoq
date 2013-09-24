@@ -207,7 +207,7 @@ class SellableEditor(BaseEditor):
         from stoqlib.gui.slaves.sellableslave import CategoryPriceSlave
         is_new = not model
         self._sellable = None
-        self._demo_mode = sysparam().get_bool('DEMO_MODE')
+        self._demo_mode = sysparam.get_bool('DEMO_MODE')
         self._requires_weighing_text = (
             "<b>%s</b>" % api.escape(_("This unit type requires weighing")))
 
@@ -221,7 +221,7 @@ class SellableEditor(BaseEditor):
             self._add_demo_warning()
 
         # code suggestion
-        edit_code_product = sysparam().get_bool('EDIT_CODE_PRODUCT')
+        edit_code_product = sysparam.get_bool('EDIT_CODE_PRODUCT')
         self.code.set_sensitive(not edit_code_product and not self.visual_mode)
         if not self.code.read():
             self._update_default_sellable_code()
@@ -531,7 +531,7 @@ class SellableEditor(BaseEditor):
 
 def test_sellable_tax_constant():  # pragma nocover
     ec = api.prepare_test()
-    tax_constant = api.sysparam().get_object(ec.store, 'DEFAULT_PRODUCT_TAX_CONSTANT')
+    tax_constant = api.sysparam.get_object(ec.store, 'DEFAULT_PRODUCT_TAX_CONSTANT')
     run_dialog(SellableTaxConstantEditor,
                parent=None, store=ec.store, model=tax_constant)
     print(tax_constant)

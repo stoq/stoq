@@ -854,7 +854,7 @@ class FirstTimeConfigWizard(BaseWizard):
         #        be done at the same place.
         logger.info('_create_station')
         if self.enable_production:
-            branch = api.sysparam().get_object(store, 'MAIN_COMPANY')
+            branch = api.sysparam.get_object(store, 'MAIN_COMPANY')
             assert branch
             provide_utility(ICurrentBranch, branch)
         else:
@@ -882,7 +882,7 @@ class FirstTimeConfigWizard(BaseWizard):
     def _set_online_services(self, store):
         logger.info('_set_online_services (%s)' %
                     self.enable_online_services)
-        api.sysparam().set_bool(store, 'ONLINE_SERVICES', self.enable_online_services)
+        api.sysparam.set_bool(store, 'ONLINE_SERVICES', self.enable_online_services)
 
     # Public API
 

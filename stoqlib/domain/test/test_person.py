@@ -541,8 +541,8 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_allow_all(self):
         #: This parameter always allows the client to purchase, no matter if he
         #: has late payments
-        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
-                           int(LatePaymentPolicy.ALLOW_SALES))
+        sysparam.set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                         int(LatePaymentPolicy.ALLOW_SALES))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -578,8 +578,8 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_disallow_store_credit(self):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
-        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
-                           int(LatePaymentPolicy.DISALLOW_STORE_CREDIT))
+        sysparam.set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                         int(LatePaymentPolicy.DISALLOW_STORE_CREDIT))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -614,8 +614,8 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_disallow_all(self):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
-        sysparam().set_int(self.store, 'LATE_PAYMENTS_POLICY',
-                           int(LatePaymentPolicy.DISALLOW_SALES))
+        sysparam.set_int(self.store, 'LATE_PAYMENTS_POLICY',
+                         int(LatePaymentPolicy.DISALLOW_SALES))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -667,7 +667,7 @@ class TestClient(_PersonFacetTest, DomainTest):
 
         # just setting paramater to a value that won't interfere in
         # the tests
-        sysparam().set_decimal(
+        sysparam.set_decimal(
             self.store,
             u"CREDIT_LIMIT_SALARY_PERCENT",
             Decimal(5))
@@ -683,7 +683,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.credit_limit, 200)
 
     def test_set_salary(self):
-        sysparam().set_decimal(
+        sysparam.set_decimal(
             self.store,
             u"CREDIT_LIMIT_SALARY_PERCENT",
             Decimal("10"))
@@ -698,7 +698,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.salary, 100)
         self.assertEquals(client.credit_limit, 10)
 
-        sysparam().set_decimal(
+        sysparam.set_decimal(
             self.store,
             u"CREDIT_LIMIT_SALARY_PERCENT",
             Decimal(0))

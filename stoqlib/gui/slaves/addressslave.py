@@ -126,7 +126,7 @@ class CityLocationMixin(object):
         self.city.validate(force=True)
 
     def on_city__validate(self, entry, city):
-        if sysparam().get_bool('ALLOW_REGISTER_NEW_LOCATIONS'):
+        if sysparam.get_bool('ALLOW_REGISTER_NEW_LOCATIONS'):
             return
 
         if self.city.is_focus() and not self._confirming:

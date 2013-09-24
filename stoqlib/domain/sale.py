@@ -168,7 +168,7 @@ class SaleItem(Domain):
             if not kw.get('cfop'):
                 kw['cfop'] = kw['sellable'].default_sale_cfop
             if not kw.get('cfop'):
-                kw['cfop'] = sysparam().get_object(store, 'DEFAULT_SALES_CFOP')
+                kw['cfop'] = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 
             store = kw.get('store', store)
             kw['ipi_info'] = SaleItemIpi(store=store)
@@ -681,7 +681,7 @@ class Sale(Domain):
         # implicit flush.
         self.branch = kw.pop('branch', None)
         if not 'cfop' in kw:
-            self.cfop = sysparam().get_object(store, 'DEFAULT_SALES_CFOP')
+            self.cfop = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 
     #
     # Classmethods
@@ -1475,7 +1475,7 @@ class Sale(Domain):
             till.add_entry(payment)
 
     def _create_commission_at_confirm(self):
-        return sysparam().get_bool('SALE_PAY_COMMISSION_WHEN_CONFIRMED')
+        return sysparam.get_bool('SALE_PAY_COMMISSION_WHEN_CONFIRMED')
 
     def _get_commission_type(self):
         from stoqlib.domain.commission import Commission
@@ -1525,7 +1525,7 @@ class Sale(Domain):
                               applied over all sale items
         """
         iss_total = Decimal(0)
-        iss_tax = sysparam().get_decimal('ISS_TAX') / Decimal(100)
+        iss_tax = sysparam.get_decimal('ISS_TAX') / Decimal(100)
         for item in self.services:
             price = item.price + av_difference
             iss_total += iss_tax * (price * item.quantity)

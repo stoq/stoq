@@ -39,7 +39,7 @@ class TestBooklet(ReportTest):
     def setUp(self):
         super(TestBooklet, self).setUp()
 
-        api.sysparam().set_string(
+        api.sysparam.set_string(
             self.store,
             'BOOKLET_INSTRUCTIONS',
             u"Instruction line 1\n"

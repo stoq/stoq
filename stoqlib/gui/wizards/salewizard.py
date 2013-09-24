@@ -607,7 +607,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         # Sale in the POS application, i.e, we should not reset the
         # discount and surcharge if they are already set (this is the
         # case when CONFIRM_SALES_ON_TILL parameter is enabled).
-        if not sysparam().get_bool('CONFIRM_SALES_ON_TILL'):
+        if not sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
             self.model.discount_value = currency(0)
             self.model.surcharge_value = currency(0)
 
@@ -634,7 +634,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         marker('Finished filling sales persons')
 
         marker('Read parameter')
-        if not sysparam().get_bool('ACCEPT_CHANGE_SALESPERSON'):
+        if not sysparam.get_bool('ACCEPT_CHANGE_SALESPERSON'):
             self.salesperson.set_sensitive(False)
         else:
             self.salesperson.grab_focus()
@@ -643,7 +643,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self._fill_transporter_combo()
         self._fill_cost_center_combo()
 
-        if sysparam().get_bool('ASK_SALES_CFOP'):
+        if sysparam.get_bool('ASK_SALES_CFOP'):
             self._fill_cfop_combo()
         else:
             self.cfop_lbl.hide()
@@ -719,7 +719,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         if self.model.client:
             self.client.set_sensitive(False)
             self.create_client.set_sensitive(False)
-        if sysparam().get_bool('ASK_SALES_CFOP'):
+        if sysparam.get_bool('ASK_SALES_CFOP'):
             self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
         self.toogle_client_details()
         marker('Finished setting up proxies')
@@ -865,7 +865,7 @@ class ConfirmSaleWizard(BaseWizard):
 
         BaseWizard.__init__(self, store, first_step, model)
 
-        if not sysparam().get_bool('CONFIRM_SALES_ON_TILL'):
+        if not sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
             # This was added to allow us to work even if an error
             # happened while adding a payment, where we already order
             # but cannot confirm and are thrown back to the main

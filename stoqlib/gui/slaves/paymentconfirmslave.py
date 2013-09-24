@@ -420,7 +420,7 @@ class _PaymentConfirmSlave(BaseEditor):
     #
 
     def on_close_date__validate(self, widget, date):
-        if sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS'):
+        if sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS'):
             return
 
         if date > localtoday().date() or date < self.model.open_date:

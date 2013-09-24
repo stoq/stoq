@@ -80,7 +80,7 @@ class StartQuoteStep(WizardEditorStep):
 
         branches = Branch.get_active_branches(self.store)
         self.branch_combo.prefill(api.for_person_combo(branches))
-        sync_mode = api.sysparam().get_bool('SYNCHRONIZED_MODE')
+        sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
         self.branch_combo.set_sensitive(not sync_mode)
 
         self.notes.set_accepts_tab(False)
@@ -628,7 +628,7 @@ class QuotePurchaseWizard(BaseWizard):
         return _('Edit Quote')
 
     def _create_model(self, store):
-        supplier_id = sysparam().get_object_id('SUGGESTED_SUPPLIER')
+        supplier_id = sysparam.get_object_id('SUGGESTED_SUPPLIER')
         branch = api.get_current_branch(store)
         status = PurchaseOrder.ORDER_QUOTING
         group = PaymentGroup(store=store)

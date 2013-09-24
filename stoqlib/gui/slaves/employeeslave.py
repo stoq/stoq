@@ -145,8 +145,8 @@ class EmployeeRoleSlave(BaseEditorSlave):
             return None
 
     def _is_default_salesperson_role(self):
-        return sysparam().compare_object('DEFAULT_SALESPERSON_ROLE',
-                                         self.model.role)
+        return sysparam.compare_object('DEFAULT_SALESPERSON_ROLE',
+                                       self.model.role)
 
     def on_confirm(self):
         if self._is_default_salesperson_role():

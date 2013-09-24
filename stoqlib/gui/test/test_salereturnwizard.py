@@ -290,7 +290,7 @@ class TestSaleTradeWizard(GUITest):
             emit.assert_called_once_with(wizard.model)
 
     def test_sale_selection_step_unknown_sale(self):
-        sysparam().set_bool(self.store, 'ALLOW_TRADE_NOT_REGISTERED_SALES', True)
+        sysparam.set_bool(self.store, 'ALLOW_TRADE_NOT_REGISTERED_SALES', True)
         wizard = SaleTradeWizard(self.store)
         step = wizard.get_current_step()
         results = step.slave.results

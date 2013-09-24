@@ -50,7 +50,7 @@ log = logging.getLogger(__name__)
 def _credit_limit_salary_changed(new_value, store):
     from stoqlib.domain.person import Client
 
-    old_value = sysparam().get_decimal('CREDIT_LIMIT_SALARY_PERCENT')
+    old_value = sysparam.get_decimal('CREDIT_LIMIT_SALARY_PERCENT')
     if new_value == old_value:
         return
 
@@ -136,8 +136,8 @@ class ParameterDetails(object):
     @staticmethod
     def validate_city(value):
         city_l10n = get_l10n_field('city')
-        state = sysparam().get_string('STATE_SUGGESTED')
-        country = sysparam().get_string('COUNTRY_SUGGESTED')
+        state = sysparam.get_string('STATE_SUGGESTED')
+        country = sysparam.get_string('COUNTRY_SUGGESTED')
         if not city_l10n.validate(value, state=state, country=country):
             return ValidationError(_("'%s' is not a valid %s.") %
                                    (value, city_l10n.label.lower()))

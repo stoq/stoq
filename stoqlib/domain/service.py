@@ -67,7 +67,7 @@ class Service(Domain):
     #
 
     def can_remove(self):
-        if sysparam().compare_object('DELIVERY_SERVICE', self):
+        if sysparam.compare_object('DELIVERY_SERVICE', self):
             # The delivery item cannot be deleted as it's important
             # for creating deliveries.
             return False
@@ -81,7 +81,7 @@ class Service(Domain):
     def can_close(self):
         # The delivery item cannot be closed as it will be
         # used for deliveries.
-        return not sysparam().compare_object('DELIVERY_SERVICE', self)
+        return not sysparam.compare_object('DELIVERY_SERVICE', self)
 
     #
     # IDescribable implementation

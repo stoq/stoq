@@ -46,8 +46,8 @@ def _adjust_history_date(workorder):
 class TestWorkOrderEditor(GUITest):
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_create(self, localnow):
-        sysparam().set_bool(self.store, 'ALLOW_HIGHER_SALE_PRICE', True)
-        sysparam().set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', False)
+        sysparam.set_bool(self.store, 'ALLOW_HIGHER_SALE_PRICE', True)
+        sysparam.set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', False)
 
         localnow.return_value = localdatetime(2013, 1, 1)
 
@@ -84,7 +84,7 @@ class TestWorkOrderEditor(GUITest):
         quote_slave.estimated_finish.update(localdatetime(2013, 1, 2))
         self.assertInvalid(quote_slave, ['estimated_start'])
 
-        sysparam().set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', True)
+        sysparam.set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', True)
         quote_slave.estimated_start.validate(force=True)
         self.assertValid(quote_slave, ['estimated_start'])
         # Clicking the first time will approve the order (put it on waiting state)
@@ -132,7 +132,7 @@ class TestWorkOrderEditor(GUITest):
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_show(self, localnow):
-        sysparam().set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', True)
+        sysparam.set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', True)
 
         localnow.return_value = localdatetime(2013, 2, 1)
 

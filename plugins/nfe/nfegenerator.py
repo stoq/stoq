@@ -195,8 +195,8 @@ class NFeGenerator(object):
         assert nnf
 
         payments = self._sale.payments
-        series = sysparam().get_int('NFE_SERIAL_NUMBER')
-        orientation = sysparam().get_int('NFE_DANFE_ORIENTATION')
+        series = sysparam.get_int('NFE_SERIAL_NUMBER')
+        orientation = sysparam.get_int('NFE_DANFE_ORIENTATION')
         ecf_info = self._sale.get_nfe_coupon_info()
         nat_op = self._sale.operation_nature or ''
 
@@ -344,7 +344,7 @@ class NFeGenerator(object):
         total_tax_percentage = (self._total_taxes / sale_total) * 100
         tax_msg = "Val Aprox Tributos R$ {:0.2f} ({:0.2f}%) Fonte: IBPT - "
         fisco_info = tax_msg.format(self._total_taxes, total_tax_percentage)
-        fisco_info += sysparam().get_string('NFE_FISCO_INFORMATION')
+        fisco_info += sysparam.get_string('NFE_FISCO_INFORMATION')
         notes = '\n'.join([c.comment for c in
                            self._sale.comments.order_by(SaleComment.date)])
         nfe_info = NFeAdditionalInformation(fisco_info, notes)

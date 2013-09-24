@@ -329,7 +329,7 @@ class ExampleCreator(object):
         from stoqlib.domain.product import Product
         from stoqlib.domain.service import Service
         from stoqlib.domain.sellable import Sellable
-        tax_constant_id = sysparam().get_object_id('DEFAULT_PRODUCT_TAX_CONSTANT')
+        tax_constant_id = sysparam.get_object_id('DEFAULT_PRODUCT_TAX_CONSTANT')
         if price is None:
             price = 10
         sellable = Sellable(cost=125,
@@ -373,7 +373,7 @@ class ExampleCreator(object):
                     open_date=TransactionTimestamp(),
                     salesperson=salesperson,
                     branch=branch or get_current_branch(self.store),
-                    cfop_id=sysparam().get_object_id('DEFAULT_SALES_CFOP'),
+                    cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
                     group=group,
                     client=client,
                     store=self.store)
@@ -938,7 +938,7 @@ class ExampleCreator(object):
             date=localnow(),
             value=value,
             account=account,
-            source_account_id=sysparam().get_object_id('IMBALANCE_ACCOUNT'),
+            source_account_id=sysparam.get_object_id('IMBALANCE_ACCOUNT'),
             store=self.store)
 
     def create_transfer(self):

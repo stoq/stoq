@@ -72,7 +72,7 @@ class OpenProductionOrderStep(WizardEditorStep):
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
-        sync_mode = api.sysparam().get_bool('SYNCHRONIZED_MODE')
+        sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
         self.branch.set_sensitive(not sync_mode)
 
     def _fill_responsible_combo(self):
@@ -134,7 +134,7 @@ class ProductionServiceStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        delivery_sellable = sysparam().get_object(
+        delivery_sellable = sysparam.get_object(
             self.store, 'DELIVERY_SERVICE').sellable
 
         query = And(ServiceView.status == Sellable.STATUS_AVAILABLE,

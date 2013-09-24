@@ -137,11 +137,11 @@ class TestCityLocation(DomainTest):
         location = CityLocation.get_default(self.store)
         self.failUnless(isinstance(location, CityLocation))
         self.assertEquals(location.city,
-                          sysparam().get_string('CITY_SUGGESTED'))
+                          sysparam.get_string('CITY_SUGGESTED'))
         self.assertEquals(location.state,
-                          sysparam().get_string('STATE_SUGGESTED'))
+                          sysparam.get_string('STATE_SUGGESTED'))
         self.assertEquals(location.country,
-                          sysparam().get_string('COUNTRY_SUGGESTED'))
+                          sysparam.get_string('COUNTRY_SUGGESTED'))
 
 
 class TestAddress(DomainTest):

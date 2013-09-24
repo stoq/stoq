@@ -469,7 +469,7 @@ class PosApp(ShellApp):
             raise StoqlibError("_get_sellable_and_batch needs a barcode")
         text = unicode(text)
 
-        fmt = api.sysparam().get_int('SCALE_BARCODE_FORMAT')
+        fmt = api.sysparam.get_int('SCALE_BARCODE_FORMAT')
 
         # Check if this barcode is from a scale
         barinfo = parse_barcode(text, fmt)
@@ -820,8 +820,8 @@ class PosApp(ShellApp):
         user = api.get_current_user(store)
         branch = api.get_current_branch(store)
         salesperson = user.person.salesperson
-        cfop_id = api.sysparam().get_object_id('DEFAULT_SALES_CFOP')
-        nature = api.sysparam().get_string('DEFAULT_OPERATION_NATURE')
+        cfop_id = api.sysparam.get_object_id('DEFAULT_SALES_CFOP')
+        nature = api.sysparam.get_string('DEFAULT_OPERATION_NATURE')
         group = PaymentGroup(store=store)
         sale = Sale(store=store,
                     branch=branch,

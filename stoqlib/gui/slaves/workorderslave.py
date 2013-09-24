@@ -237,7 +237,7 @@ class WorkOrderOpeningSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.add_proxy(self.model, self.proxy_widgets)
 
-        if not api.sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS'):
+        if not api.sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS'):
             self.open_date.set_sensitive(False)
 
 
@@ -280,14 +280,14 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
 
     def on_estimated_start__validate(self, widget, value):
         if (self._new_model and value < localtoday().date() and
-            not api.sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS')):
+            not api.sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS')):
             return ValidationError(u"The start date cannot be on the past")
 
         self.estimated_finish.validate(force=True)
 
     def on_estimated_finish__validate(self, widget, value):
         if (self._new_model and value < localtoday().date() and
-            not api.sysparam().get_bool('ALLOW_OUTDATED_OPERATIONS')):
+            not api.sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS')):
             return ValidationError(u"The end date cannot be on the past")
 
         estimated_start = self.estimated_start.read()

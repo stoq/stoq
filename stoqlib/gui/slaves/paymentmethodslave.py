@@ -86,8 +86,8 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
                     widget, len(self.methods_box) - 1)
 
         if self._default_method is None:
-            default = api.sysparam().get_object(self.store,
-                                                "DEFAULT_PAYMENT_METHOD")
+            default = api.sysparam.get_object(self.store,
+                                              "DEFAULT_PAYMENT_METHOD")
             if default.method_name in self._widgets:
                 self._default_method = default.method_name
             else:

@@ -64,7 +64,7 @@ class SystemParameterEditor(BaseEditor):
                                 'SYNCHRONIZED_MODE']:
             self.sensitive = False
 
-        self._parameter_details = sysparam().get_detail_by_name(model.field_name)
+        self._parameter_details = sysparam.get_detail_by_name(model.field_name)
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
@@ -157,7 +157,7 @@ class SystemParameterEditor(BaseEditor):
         event_box.show()
 
         field_name = self.model.field_name
-        model = sysparam().get_object(self.store, field_name)
+        model = sysparam.get_object(self.store, field_name)
 
         self.container.add(event_box)
         self._image_slave = ImageSlave(self.store, model)
@@ -176,7 +176,7 @@ class SystemParameterEditor(BaseEditor):
         widget.data_type = unicode
         widget.mandatory = True
         if not data:
-            detail = sysparam().get_detail_by_name(self.model.field_name)
+            detail = sysparam.get_detail_by_name(self.model.field_name)
             field_type = detail.get_parameter_type()
             # FIXME: DEFAULT_PAYMENT_METHOD needs to filter information from
             # domain because it cannot be any non-creatable method.
@@ -280,8 +280,8 @@ class SystemParameterEditor(BaseEditor):
         if change_callback:
             change_callback(self.model.field_value, self.store)
 
-        sysparam().set_value_generic(self.model.field_name,
-                                     self.model.field_value)
+        sysparam.set_value_generic(self.model.field_name,
+                                   self.model.field_value)
 
         return True
 

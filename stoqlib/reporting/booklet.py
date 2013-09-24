@@ -99,7 +99,7 @@ class BookletReport(HTMLReport):
             yield booklet
 
     def _get_instructions(self):
-        instructions = sysparam().get_string('BOOKLET_INSTRUCTIONS')
+        instructions = sysparam.get_string('BOOKLET_INSTRUCTIONS')
         return instructions.split('\n')
 
     def _get_demonstrative(self, payment):
@@ -121,7 +121,7 @@ class BookletReport(HTMLReport):
         if sale and sale.branch:
             return sale.branch
 
-        return sysparam().get_object(payment.store, 'MAIN_COMPANY')
+        return sysparam.get_object(payment.store, 'MAIN_COMPANY')
 
     def _get_person_document(self, person):
         if person.individual:
@@ -153,7 +153,7 @@ class BookletReport(HTMLReport):
     #
 
     def get_namespace(self):
-        promissory_notes = sysparam().get_bool('PRINT_PROMISSORY_NOTES_ON_BOOKLETS')
+        promissory_notes = sysparam.get_bool('PRINT_PROMISSORY_NOTES_ON_BOOKLETS')
         return dict(booklets=self.booklets_data,
                     promissory_notes=promissory_notes)
 

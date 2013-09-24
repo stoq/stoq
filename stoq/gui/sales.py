@@ -203,7 +203,7 @@ class SalesApp(ShellApp):
         self.set_help_section(_("Sales help"), 'app-sales')
 
     def create_ui(self):
-        if api.sysparam().get_bool('SMART_LIST_LOADING'):
+        if api.sysparam.get_bool('SMART_LIST_LOADING'):
             self.search.enable_lazy_search()
 
         self.popup = self.uimanager.get_widget('/SaleSelection')
@@ -441,7 +441,7 @@ class SalesApp(ShellApp):
             self.refresh()
 
     def _search_product(self):
-        hide_cost_column = not api.sysparam().get_bool('SHOW_COST_COLUMN_IN_SALES')
+        hide_cost_column = not api.sysparam.get_bool('SHOW_COST_COLUMN_IN_SALES')
         self.run_dialog(ProductSearch, self.store, hide_footer=True,
                         hide_toolbar=True, hide_cost_column=hide_cost_column)
 

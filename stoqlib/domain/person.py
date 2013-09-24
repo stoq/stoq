@@ -1001,7 +1001,7 @@ class Client(Domain):
 
         self._salary = value
 
-        salary_percentage = sysparam().get_decimal('CREDIT_LIMIT_SALARY_PERCENT')
+        salary_percentage = sysparam.get_decimal('CREDIT_LIMIT_SALARY_PERCENT')
 
         if salary_percentage > 0:
             self.credit_limit = value * salary_percentage / 100
@@ -1039,7 +1039,7 @@ class Client(Domain):
                                                self.person):
             return True
 
-        param = sysparam().get_int('LATE_PAYMENTS_POLICY')
+        param = sysparam.get_int('LATE_PAYMENTS_POLICY')
         if param == LatePaymentPolicy.ALLOW_SALES:
             return True
         elif param == LatePaymentPolicy.DISALLOW_SALES:

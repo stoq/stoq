@@ -639,7 +639,7 @@ class ValorICMSSubstField(InvoiceFieldDescription):
 
     def fetch(self, width, height):
         total = Decimal(0)
-        tax_value = sysparam().get_decimal('SUBSTITUTION_TAX')
+        tax_value = sysparam.get_decimal('SUBSTITUTION_TAX')
         for sale_item in self.sale.products:
             tax = sale_item.sellable.get_tax_constant()
             if tax.tax_type == TaxType.SUBSTITUTION:
@@ -671,7 +671,7 @@ class ValorISSField(InvoiceFieldDescription):
 
     def fetch(self, width, height):
         total = Decimal(0)
-        tax_value = sysparam().get_decimal('ISS_TAX')
+        tax_value = sysparam.get_decimal('ISS_TAX')
         for sale_item in self.sale.services:
             tax = sale_item.sellable.get_tax_constant()
             if tax.tax_type == TaxType.SERVICE:

@@ -70,7 +70,7 @@ def get_formatted_price(float_value, symbol=True, precision=DECIMAL_PRECISION):
 
 def get_formatted_cost(float_value, symbol=True):
     from stoqlib.lib.parameters import sysparam
-    precision = sysparam().get_int('COST_PRECISION_DIGITS')
+    precision = sysparam.get_int('COST_PRECISION_DIGITS')
     return get_formatted_price(float_value, symbol=symbol,
                                precision=precision)
 

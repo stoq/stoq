@@ -50,11 +50,11 @@ class ParameterData(Domain):
 
     def get_group(self):
         from stoqlib.lib.parameters import sysparam
-        return sysparam().get_detail_by_name(self.field_name).group
+        return sysparam.get_detail_by_name(self.field_name).group
 
     def get_short_description(self):
         from stoqlib.lib.parameters import sysparam
-        return sysparam().get_detail_by_name(self.field_name).short_desc
+        return sysparam.get_detail_by_name(self.field_name).short_desc
 
     def get_field_value(self):
         # FIXME: This is a workaround to handle some parameters which are

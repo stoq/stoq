@@ -125,7 +125,7 @@ class PurchaseSelectionStep(BaseWizardStep):
 
         # Dont let the user receive purchases from other branches when working
         # in synchronized mode
-        if api.sysparam().get_bool('SYNCHRONIZED_MODE'):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             branch = api.get_current_branch(self.store)
             query = And(query,
                         PurchaseOrderView.branch_id == branch.id)
@@ -455,7 +455,7 @@ class ReceivingOrderWizard(BaseWizard):
         self.next_button.set_sensitive(False)
 
     def _maybe_print_labels(self):
-        param = api.sysparam().get_string('LABEL_TEMPLATE_PATH')
+        param = api.sysparam.get_string('LABEL_TEMPLATE_PATH')
         if not param:
             return
         if not yesno(_(u'Do you want to print the labels for the received products?'),
