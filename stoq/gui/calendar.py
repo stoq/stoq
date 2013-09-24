@@ -405,14 +405,14 @@ class CalendarApp(ShellApp):
         )
 
     def _new_client_call(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(CallsEditor, store, None, None, Client)
 
         if store.committed:
             self._update_events()
 
     def _new_payment(self, editor):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(editor, store)
 
         if store.committed:

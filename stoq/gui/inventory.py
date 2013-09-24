@@ -206,7 +206,7 @@ class InventoryApp(ShellApp):
         return self.store.find(ProductStockItem, branch=branch).count() > 0
 
     def _open_inventory(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             rv = self.run_dialog(InventoryOpenEditor, store)
 
         if rv:

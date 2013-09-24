@@ -256,7 +256,7 @@ class ProductionApp(ShellApp):
         self._start_production_order()
 
     def on_ProductionPurchaseQuote__activate(self, action):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(ProductionQuoteDialog, store)
 
     # Search

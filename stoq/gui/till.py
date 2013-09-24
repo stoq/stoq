@@ -390,7 +390,7 @@ class TillApp(ShellApp):
         run_dialog(SaleDetailsDialog, self, self.store, sale_view)
 
     def _run_add_cash_dialog(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             try:
                 run_dialog(CashInEditor, self, store)
             except TillError as err:
@@ -407,7 +407,7 @@ class TillApp(ShellApp):
 
         sale_view = self._check_selected()
 
-        with api.trans() as store:
+        with api.new_store() as store:
             return_sale(self.get_toplevel(), store.fetch(sale_view.sale), store)
 
         if store.committed:
@@ -515,7 +515,7 @@ class TillApp(ShellApp):
         self._run_add_cash_dialog()
 
     def on_TillRemoveCash__activate(self, action):
-        with api.trans() as store:
+        with api.new_store() as store:
             run_dialog(CashOutEditor, self, store)
         if store.committed:
             self._update_total()

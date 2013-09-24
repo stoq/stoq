@@ -133,7 +133,7 @@ class SaleDetailsDialog(BaseEditor):
                        title=_('Sale Comment'), visual_mode=True)
             return
 
-        with api.trans() as store:
+        with api.new_store() as store:
             item = SaleComment(store=store, sale=store.fetch(self.model.sale),
                                author=api.get_current_user(store))
             run_dialog(NoteEditor, self, store, item, 'comment',

@@ -219,7 +219,7 @@ class WorkOrderEditor(BaseEditor):
             api.for_combo(categories, empty=_(u"No category")))
 
     def _run_client_editor(self, client=None):
-        with api.trans() as store:
+        with api.new_store() as store:
             rv = run_person_role_dialog(ClientEditor, self, store, client,
                                         visual_mode=self.visual_mode)
         if rv:
@@ -227,7 +227,7 @@ class WorkOrderEditor(BaseEditor):
             self.client.select(rv.id)
 
     def _run_category_editor(self, category=None):
-        with api.trans() as store:
+        with api.new_store() as store:
             rv = run_dialog(WorkOrderCategoryEditor, self, store, category,
                             visual_mode=self.visual_mode)
         if rv:

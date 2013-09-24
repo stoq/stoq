@@ -72,7 +72,7 @@ _ = stoqlib_gettext
 class WorkOrderResultKanbanView(KanbanView):
 
     def _change_status(self, work_order, new_status):
-        with api.trans() as store:
+        with api.new_store() as store:
             if work_order.status == new_status:
                 return True
 
@@ -515,7 +515,7 @@ class ServicesApp(ShellApp):
             [(item.name, item) for item in options])
 
     def _new_order(self, category=None):
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = self.run_dialog(WorkOrderEditor, store,
                                          category=store.fetch(category))
 
@@ -527,7 +527,7 @@ class ServicesApp(ShellApp):
     def _edit_order(self, work_order=None):
         if work_order is None:
             work_order = self.search.get_selected_item().work_order
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(WorkOrderEditor, store,
                             model=store.fetch(work_order))
 
@@ -543,7 +543,7 @@ class ServicesApp(ShellApp):
             return
 
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.finish()
 
@@ -556,7 +556,7 @@ class ServicesApp(ShellApp):
             return
 
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.cancel(reason=rv.notes)
         self._update_view()
@@ -569,7 +569,7 @@ class ServicesApp(ShellApp):
             return
 
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.close()
 
@@ -582,7 +582,7 @@ class ServicesApp(ShellApp):
             return
 
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.approve()
 
@@ -596,7 +596,7 @@ class ServicesApp(ShellApp):
             return
 
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.pause(reason=rv.notes)
 
@@ -604,7 +604,7 @@ class ServicesApp(ShellApp):
 
     def _work(self):
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.work()
 
@@ -617,7 +617,7 @@ class ServicesApp(ShellApp):
             return
 
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.reject(reason=rv.notes)
 
@@ -631,7 +631,7 @@ class ServicesApp(ShellApp):
             return
 
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.undo_rejection(reason=rv.notes)
 
@@ -644,21 +644,21 @@ class ServicesApp(ShellApp):
             return
 
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             work_order = store.fetch(selection.work_order)
             work_order.reopen(reason=rv.notes)
 
         self._update_view(select_item=selection)
 
     def _send_orders(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(WorkOrderPackageSendEditor, store)
 
         if store.committed:
             self._update_view()
 
     def _receive_orders(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(WorkOrderPackageReceiveWizard, store)
 
         if store.committed:
@@ -666,13 +666,13 @@ class ServicesApp(ShellApp):
 
     def _run_order_details_dialog(self):
         selection = self.search.get_selected_item()
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(WorkOrderEditor, store,
                             model=store.fetch(selection.work_order),
                             visual_mode=True)
 
     def _run_order_category_dialog(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(WorkOrderCategoryDialog, store)
         self._update_view()
         self._update_filters()

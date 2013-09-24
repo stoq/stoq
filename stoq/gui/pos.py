@@ -421,7 +421,7 @@ class PosApp(ShellApp):
 
         sale_item = TemporarySaleItem(sellable=sellable,
                                       quantity=quantity)
-        with api.trans() as store:
+        with api.new_store() as store:
             rv = self.run_dialog(ServiceItemEditor, store, sale_item)
 
         if not rv:
@@ -748,7 +748,7 @@ class PosApp(ShellApp):
             if sysparam.compare_object('DELIVERY_SERVICE', sale_item.service):
                 self._edit_delivery()
                 return
-            with api.trans() as store:
+            with api.new_store() as store:
                 model = self.run_dialog(ServiceItemEditor, store, sale_item)
             if model:
                 self.sale_items.update(sale_item)
@@ -1024,7 +1024,7 @@ class PosApp(ShellApp):
         self.run_dialog(ClientSearch, self.store, hide_footer=True)
 
     def on_Sales__activate(self, action):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(SaleWithToolbarSearch, store)
 
     def on_SoldItemsByBranchSearch__activate(self, action):

@@ -1021,7 +1021,7 @@ class ShellWindow(GladeDelegate):
     # View
 
     def on_Preferences__activate(self, action):
-        with api.trans() as store:
+        with api.new_store() as store:
             run_dialog(PreferencesEditor, self, store)
         self._update_toolbar_style()
 

@@ -370,7 +370,7 @@ class StockApp(ShellApp):
         if self.check_open_inventory():
             return
 
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(InitialStockDialog, store)
 
         if store.committed:

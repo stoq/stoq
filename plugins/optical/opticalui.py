@@ -138,7 +138,7 @@ class OpticalUI(object):
             warning(_("You cannot create a pre-sale with an open inventory."))
             return
 
-        with api.trans() as store:
+        with api.new_store() as store:
             run_dialog(OpticalSaleQuoteWizard, self._current_app, store)
 
         if store.committed:
@@ -209,5 +209,5 @@ class OpticalUI(object):
         self._create_pre_sale()
 
     def _on_MedicsSearch__activate(self, action):
-        with api.trans() as store:
+        with api.new_store() as store:
             run_dialog(OpticalMedicSearch, None, store, hide_footer=True)

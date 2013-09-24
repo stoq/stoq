@@ -348,7 +348,7 @@ class UserSearch(BasePersonSearch):
     def on_details_button_clicked(self, *args):
         # FIXME: Person editor/slaves are depending on the store being a
         # StoqlibStore. See bug 5012
-        with api.trans() as store:
+        with api.new_store() as store:
             selected = self.results.get_selected()
             user = store.fetch(selected.user)
             run_dialog(UserEditor, self, store, user, visual_mode=True)

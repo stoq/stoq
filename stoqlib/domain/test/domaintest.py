@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -41,21 +41,6 @@ from stoqlib.database.testsuite import StoqlibTestsuiteTracer
 from stoqlib.domain.base import Domain
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.lib.dateutils import localdate, localdatetime
-
-
-class FakeAPITrans:
-    def __init__(self, store=None):
-        self.store = store
-
-    def __call__(self):
-        return self
-
-    def __enter__(self):
-        return self.store
-
-    def __exit__(self, *args):
-        if self.store is not None:
-            self.store.committed = True
 
 
 class FakeStoqConfig:
@@ -118,6 +103,7 @@ class ReadOnlyStore(StoqlibStore):
         # Intentionally *not* calling StoqlibStore.__init__ since this
         # creates an additional database connection
         self.real_store = real_store
+        self.retval = False
 
     # Store
 
@@ -135,7 +121,7 @@ class ReadOnlyStore(StoqlibStore):
     def fetch(self, obj):
         return obj
 
-    def rollback(self):
+    def rollback(self, close=True):
         pass
 
     def commit(self):
@@ -153,7 +139,6 @@ class FakeNamespace(object):
     def __init__(self):
         self.api = mock.Mock()
         self.api.get_current_branch = get_current_branch
-        self.api.trans = FakeAPITrans()
         self.DatabaseSettings = FakeDatabaseSettings
         self.StoqConfig = FakeStoqConfig
         self.datetime = mock.MagicMock(datetime)
@@ -166,14 +151,13 @@ class FakeNamespace(object):
         # when we get a store
         database = mock.Mock()
         rd_store = ReadOnlyStore(database, store)
-        self.api.trans.store = rd_store
+        self.api.store = rd_store
         self.api.new_store.return_value = ReadOnlyStore(database, store)
-        self.api.trans.return_value = rd_store
         if store is not None:
             store.readonly = rd_store
 
     def set_retval(self, retval):
-        self.api.trans.store.retval = retval
+        self.api.store.retval = retval
 
 
 class DomainTest(unittest.TestCase, ExampleCreator):

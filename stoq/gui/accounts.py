@@ -119,7 +119,7 @@ class BaseAccountWindow(ShellApp):
     #
 
     def add_payment(self, category=None):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(self.editor_class, store, category=category)
 
         if store.committed:
@@ -132,7 +132,7 @@ class BaseAccountWindow(ShellApp):
         """Shows some details about the payment, allowing to edit a few
         properties
         """
-        with api.trans() as store:
+        with api.new_store() as store:
             payment = store.fetch(payment_view.payment)
             run_dialog(self.editor_class, self, store, payment)
 
@@ -146,7 +146,7 @@ class BaseAccountWindow(ShellApp):
         """Shows a dialog with comments saved on the payment
         @param payment_view: an OutPaymentView or InPaymentView instance
         """
-        with api.trans() as store:
+        with api.new_store() as store:
             run_dialog(PaymentCommentsDialog, self, store,
                        payment_view.payment)
 
@@ -164,7 +164,7 @@ class BaseAccountWindow(ShellApp):
         """
         assert payment_view.can_change_due_date()
 
-        with api.trans() as store:
+        with api.new_store() as store:
             payment = store.fetch(payment_view.payment)
             order = store.fetch(order)
             run_dialog(PaymentDueDateChangeDialog, self, store,
@@ -183,7 +183,7 @@ class BaseAccountWindow(ShellApp):
           This will be used to show the identifier of the order
         :param status: The new status to set the payment to
         """
-        with api.trans() as store:
+        with api.new_store() as store:
             payment = store.fetch(payment_view.payment)
             order = store.fetch(payment_view.sale)
 

@@ -28,7 +28,6 @@
 Singleton object which makes it easier to common stoqlib APIs without
 having to import their symbols.
 """
-from contextlib import contextmanager
 import operator
 import sys
 
@@ -64,26 +63,6 @@ class StoqAPI(object):
 
     def get_current_user(self, store):
         return get_current_user(store)
-
-    @contextmanager
-    def trans(self):
-        """Creates a new store and commits/closes it when done.
-
-        It should be used as::
-
-          with api.trans() as store:
-              ...
-
-        When the execution of the with statement has finished this
-        will commit the object, close the store.
-        trans.retval will be used to determine if the store
-        should be committed or rolled back.
-        """
-        store = self.new_store()
-        yield store
-
-        store.committed = store.confirm(commit=store.retval)
-        store.close()
 
     @property
     def config(self):

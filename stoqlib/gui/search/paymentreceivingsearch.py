@@ -68,7 +68,7 @@ class PaymentReceivingSearch(SearchDialog):
         self._button_slave.button.set_sensitive(False)
 
     def _receive(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             till = Till.get_current(store)
             assert till
 

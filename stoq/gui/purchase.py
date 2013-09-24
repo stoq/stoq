@@ -326,7 +326,7 @@ class PurchaseApp(ShellApp):
         self.Finish.set_sensitive(can_finish)
 
     def _new_order(self, order=None, edit_mode=False):
-        with api.trans() as store:
+        with api.new_store() as store:
             order = store.fetch(order)
             self.run_dialog(PurchaseWizard, store, order, edit_mode)
 
@@ -377,7 +377,7 @@ class PurchaseApp(ShellApp):
         if not yesno(msg, gtk.RESPONSE_YES, confirm_label, _("Don't confirm")):
             return
 
-        with api.trans() as store:
+        with api.new_store() as store:
             for order_view in valid_order_views:
                 order = store.fetch(order_view.purchase)
                 order.confirm()
@@ -391,7 +391,7 @@ class PurchaseApp(ShellApp):
             raise ValueError('You should have only one order selected '
                              'at this point, got %d' % qty)
 
-        with api.trans() as store:
+        with api.new_store() as store:
             order = store.fetch(order_views[0].purchase)
             self.run_dialog(PurchaseFinishWizard, store, order)
 
@@ -409,7 +409,7 @@ class PurchaseApp(ShellApp):
         if not yesno(select_label, gtk.RESPONSE_YES,
                      cancel_label, _("Don't cancel")):
             return
-        with api.trans() as store:
+        with api.new_store() as store:
             for order_view in order_views:
                 order = store.fetch(order_view.purchase)
                 order.cancel()
@@ -424,7 +424,7 @@ class PurchaseApp(ShellApp):
         return items
 
     def _quote_order(self, quote=None):
-        with api.trans() as store:
+        with api.new_store() as store:
             quote = store.fetch(quote)
             self.run_dialog(QuotePurchaseWizard, store, quote)
 
@@ -434,11 +434,11 @@ class PurchaseApp(ShellApp):
             self.select_result(res)
 
     def _new_product(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(ProductEditor, store, model=None)
 
     def _new_consignment(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(ConsignmentWizard, store, model=None)
 
         if store.committed:
@@ -492,7 +492,7 @@ class PurchaseApp(ShellApp):
     # Consignment
 
     def on_CloseInConsignment__activate(self, action):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(CloseInConsignmentWizard, store)
 
     def on_SearchInConsignmentItems__activate(self, action):
@@ -502,7 +502,7 @@ class PurchaseApp(ShellApp):
         self.run_dialog(SellableCategorySearch, self.store)
 
     def on_SearchQuotes__activate(self, action):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(ReceiveQuoteWizard, store)
         self.refresh()
 
@@ -542,7 +542,7 @@ class PurchaseApp(ShellApp):
             warning(_("Can't use prices editor without client categories"))
             return
 
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(SellablePriceDialog, store)
 
     # Toolitem

@@ -202,6 +202,14 @@ class StoqlibStore(Store):
         self._reset_pending_objs()
         self._setup_application_name()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type is None:
+            self.committed = self.confirm(commit=self.retval)
+            self.close()
+
     def find(self, cls_spec, *args, **kwargs):
         # Overwrite the default find method so we can support querying our own
         # viewables. If the cls_spec is a Viewable, we first get the real

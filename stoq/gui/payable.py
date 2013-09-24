@@ -263,7 +263,7 @@ class PayableApp(BaseAccountWindow):
         return payable_views[0].can_change_due_date()
 
     def _edit(self, payable_views):
-        with api.trans() as store:
+        with api.new_store() as store:
             order = store.fetch(payable_views[0].purchase)
             run_dialog(PurchasePaymentsEditor, self, store, order)
 
@@ -289,7 +289,7 @@ class PayableApp(BaseAccountWindow):
             return warning(_("Can't confirm the payment if the purchase "
                              "is not completely received yet."))
 
-        with api.trans() as store:
+        with api.new_store() as store:
             payments = [store.fetch(view.payment) for view in payable_views]
 
             run_dialog(PurchasePaymentConfirmSlave, self, store,

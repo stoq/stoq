@@ -242,7 +242,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         return widget_names
 
     def _run_medic_editor(self, medic=None, visual_mode=False):
-        with api.trans() as store:
+        with api.new_store() as store:
             medic = run_person_role_dialog(MedicEditor, self, store, medic,
                                            visual_mode=True)
         if medic:
