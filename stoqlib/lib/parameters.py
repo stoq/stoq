@@ -774,9 +774,6 @@ class ParameterAccess(object):
 
         self._values_cache = None
 
-    def __call__(self):
-        return self
-
     # Lazy Mapping of database raw database values, name -> database value
     @property
     def _values(self):
