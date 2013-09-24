@@ -772,9 +772,19 @@ class ParameterAccess(object):
         # Mapping of details, name -> ParameterDetail
         self._details = dict((detail.key, detail) for detail in _details)
 
-        # Mapping of database raw database values, name -> database value
-        self._values = dict((p.field_name, p.field_value)
-                            for p in get_default_store().find(ParameterData))
+        self._values_cache = None
+
+    def __call__(self):
+        return self
+
+    # Lazy Mapping of database raw database values, name -> database value
+    @property
+    def _values(self):
+        if self._values_cache is None:
+            self._values_cache = dict(
+                (p.field_name, p.field_value)
+                for p in get_default_store().find(ParameterData))
+        return self._values_cache
 
     def _create_default_values(self, store):
         # Create default values for parameters that take objects
@@ -1184,11 +1194,4 @@ class ParameterAccess(object):
         return detail
 
 
-_access = None
-
-
-def sysparam():
-    global _access
-    if _access is None:
-        _access = ParameterAccess()
-    return _access
+sysparam = ParameterAccess()
