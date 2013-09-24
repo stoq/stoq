@@ -72,11 +72,9 @@ class FinancialIntervalReport(object):
             self._prepare_items(items, child, start, end)
 
     def get_data(self):
-        sysparam_ = sysparam()
-
         sheets = {}
         for account in Account.get_children_for(self.store, parent=None):
-            if sysparam_.compare_object('IMBALANCE_ACCOUNT', account):
+            if sysparam.compare_object('IMBALANCE_ACCOUNT', account):
                 continue
 
             columns = []

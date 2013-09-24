@@ -61,19 +61,18 @@ class BranchDialog(BaseEditor):
     def __init__(self, store, model=None):
         model = create_main_branch(name=u"", store=store).person
 
-        self.param = sysparam()
         BaseEditor.__init__(self, store, model, visual_mode=False)
         self._setup_widgets()
 
     def _update_system_parameters(self, person):
         icms = self.tax_proxy.model.icms
-        self.param.set_decimal(self.store, 'ICMS_TAX', icms)
+        sysparam.set_decimal(self.store, 'ICMS_TAX', icms)
 
         iss = self.tax_proxy.model.iss
-        self.param.set_decimal(self.store, 'ISS_TAX', iss)
+        sysparam.set_decimal(self.store, 'ISS_TAX', iss)
 
         substitution = self.tax_proxy.model.substitution_icms
-        self.param.set_decimal(self.store, 'SUBSTITUTION_TAX', substitution)
+        sysparam.set_decimal(self.store, 'SUBSTITUTION_TAX', substitution)
 
         address = person.get_main_address()
         if not address:
@@ -81,13 +80,13 @@ class BranchDialog(BaseEditor):
                                "this point")
 
         city = address.city_location.city
-        self.param.set_string(self.store, 'CITY_SUGGESTED', city)
+        sysparam.set_string(self.store, 'CITY_SUGGESTED', city)
 
         country = address.city_location.country
-        self.param.set_string(self.store, 'COUNTRY_SUGGESTED', country)
+        sysparam.set_string(self.store, 'COUNTRY_SUGGESTED', country)
 
         state = address.city_location.state
-        self.param.set_string(self.store, 'STATE_SUGGESTED', state)
+        sysparam.set_string(self.store, 'STATE_SUGGESTED', state)
 
         # Update the fancy name
         self.company_proxy.model.fancy_name = self.person_proxy.model.name
@@ -114,9 +113,9 @@ class BranchDialog(BaseEditor):
         self.person_proxy = self.add_proxy(self.model, widgets)
 
         widgets = self.tax_widgets
-        iss = Decimal(self.param.get_decimal('ISS_TAX'))
-        icms = Decimal(self.param.get_decimal('ICMS_TAX'))
-        substitution = Decimal(self.param.get_decimal('SUBSTITUTION_TAX'))
+        iss = Decimal(sysparam.get_decimal('ISS_TAX'))
+        icms = Decimal(sysparam.get_decimal('ICMS_TAX'))
+        substitution = Decimal(sysparam.get_decimal('SUBSTITUTION_TAX'))
         model = Settable(iss=iss, icms=icms,
                          substitution_icms=substitution)
         self.tax_proxy = self.add_proxy(model, widgets)

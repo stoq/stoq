@@ -240,15 +240,14 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         kwargs contains a dictionary of parameter name->value
         """
         from stoqlib.lib.parameters import sysparam
-        s = sysparam()
         old_values = {}
         for param, value in kwargs.items():
             if type(value) is bool:
-                old_values[param] = s.get_bool(param)
-                s.set_bool(self.store, param, value)
+                old_values[param] = sysparam.get_bool(param)
+                sysparam.set_bool(self.store, param, value)
             elif isinstance(value, Domain) or value is None:
-                old_values[param] = s.get_object(self.store, param)
-                s.set_object(self.store, param, value)
+                old_values[param] = sysparam.get_object(self.store, param)
+                sysparam.set_object(self.store, param, value)
             else:
                 raise NotImplementedError(type(value))
         try:
@@ -256,9 +255,9 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         finally:
             for param, value in old_values.items():
                 if type(value) is bool:
-                    s.set_bool(self.store, param, value)
+                    sysparam.set_bool(self.store, param, value)
                 elif isinstance(value, Domain) or value is None:
-                    s.set_object(self.store, param, value)
+                    sysparam.set_object(self.store, param, value)
                 else:
                     raise NotImplementedError(type(value))
 

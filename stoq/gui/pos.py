@@ -50,6 +50,7 @@ from stoqlib.lib.decorators import cached_property, public
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.formatters import format_sellable_description
 from stoqlib.lib.message import warning, info, yesno, marker
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
@@ -139,7 +140,6 @@ class PosApp(ShellApp):
         ShellApp.__init__(self, window, store=store)
 
         self._delivery = None
-        self.param = api.sysparam()
         self._coupon = None
         # Cant use self._coupon to verify if there is a sale, since
         # CONFIRM_SALES_ON_TILL doesnt create a coupon
@@ -324,10 +324,10 @@ class PosApp(ShellApp):
             Settable(quantity=Decimal(1)), ['quantity'])
 
     def _update_parameter_widgets(self):
-        self.delivery_button.props.visible = self.param.get_bool('HAS_DELIVERY_MODE')
+        self.delivery_button.props.visible = sysparam.get_bool('HAS_DELIVERY_MODE')
 
         window = self.get_toplevel()
-        if self.param.get_bool('POS_FULL_SCREEN'):
+        if sysparam.get_bool('POS_FULL_SCREEN'):
             window.fullscreen()
             push_fullscreen(window)
         else:
@@ -335,9 +335,9 @@ class PosApp(ShellApp):
             window.unfullscreen()
 
         for widget in [self.TillOpen, self.TillClose, self.TillVerify]:
-            widget.set_visible(not self.param.get_bool('POS_SEPARATE_CASHIER'))
+            widget.set_visible(not sysparam.get_bool('POS_SEPARATE_CASHIER'))
 
-        if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
+        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
             confirm_label = _("_Close")
         else:
             confirm_label = _("_Checkout")
@@ -590,7 +590,7 @@ class PosApp(ShellApp):
         if sale_item is not None and sale_item.service:
             # We are fetching DELIVERY_SERVICE into the sale_items' store
             # instead of the default store to avoid accidental commits.
-            can_edit = not self.param.compare_object('DELIVERY_SERVICE', sale_item.service)
+            can_edit = not sysparam.compare_object('DELIVERY_SERVICE', sale_item.service)
         else:
             can_edit = False
         self.set_sensitive([self.edit_item_button], can_edit)
@@ -657,7 +657,7 @@ class PosApp(ShellApp):
         # If a delivery was removed, we need to remove all
         # the references to it eg self._delivery
         if (sale_item.sellable ==
-            self.param.get_object(self.store, 'DELIVERY_SERVICE').sellable):
+            sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable):
             self._delivery = None
 
     #
@@ -745,7 +745,7 @@ class PosApp(ShellApp):
 
     def _edit_sale_item(self, sale_item):
         if sale_item.service:
-            if self.param.compare_object('DELIVERY_SERVICE', sale_item.service):
+            if sysparam.compare_object('DELIVERY_SERVICE', sale_item.service):
                 self._edit_delivery()
                 return
             with api.trans() as store:
@@ -768,7 +768,7 @@ class PosApp(ShellApp):
                 return False
 
         log.info("Cancelling coupon")
-        if not self.param.get_bool('CONFIRM_SALES_ON_TILL'):
+        if not sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
             if self._coupon:
                 self._coupon.cancel()
         self._coupon = None
@@ -777,7 +777,7 @@ class PosApp(ShellApp):
         return True
 
     def _create_delivery(self):
-        delivery_param = self.param.get_object(self.store, 'DELIVERY_SERVICE')
+        delivery_param = sysparam.get_object(self.store, 'DELIVERY_SERVICE')
         if delivery_param.sellable in self.sale_items:
             self._delivery = delivery_param.sellable
 
@@ -889,7 +889,7 @@ class PosApp(ShellApp):
         else:
             sale = self._create_sale(store)
 
-        if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
+        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
             sale.order()
             store.commit()
         else:
@@ -986,7 +986,7 @@ class PosApp(ShellApp):
         See :class:`stoqlib.gui.fiscalprinter.FiscalCoupon` for more information
         """
         self._sale_started = True
-        if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
+        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
             return
 
         if self._coupon is None:
@@ -998,7 +998,7 @@ class PosApp(ShellApp):
         return self._coupon.add_item(sale_item)
 
     def _coupon_remove_item(self, sale_item):
-        if self.param.get_bool('CONFIRM_SALES_ON_TILL'):
+        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
             return
 
         assert self._coupon

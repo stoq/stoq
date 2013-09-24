@@ -240,8 +240,7 @@ class SystemParameterEditor(BaseEditor):
 
     def setup_slaves(self):
         self._slave = None
-        sparam = sysparam()
-        self.detail = sparam.get_detail_by_name(self.model.field_name)
+        self.detail = sysparam.get_detail_by_name(self.model.field_name)
         field_type = self.detail.get_parameter_type()
         if issubclass(field_type, Image):
             self._setup_image_slave()

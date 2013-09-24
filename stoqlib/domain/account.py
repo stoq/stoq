@@ -274,10 +274,9 @@ class Account(Domain):
         Not all accounts can be removed, some are internal to Stoq
         and cannot be removed"""
         # Can't remove accounts that are used in a parameter
-        sparam = sysparam()
-        if (sparam.compare_object('IMBALANCE_ACCOUNT', self) or
-            sparam.compare_object('TILLS_ACCOUNT', self) or
-            sparam.compare_object('BANKS_ACCOUNT', self)):
+        if (sysparam.compare_object('IMBALANCE_ACCOUNT', self) or
+            sysparam.compare_object('TILLS_ACCOUNT', self) or
+            sysparam.compare_object('BANKS_ACCOUNT', self)):
             return False
 
         # Can't remove station accounts

@@ -77,10 +77,9 @@ class SupplierImporter(CSVImporter):
         self.suppliers.append(supplier)
 
     def when_done(self, store):
-        sparam = sysparam()
-        if sparam.has_object('SUGGESTED_SUPPLIER'):
+        if sysparam.has_object('SUGGESTED_SUPPLIER'):
             return
 
         if not self.suppliers:
             return
-        sparam.set_object(store, 'SUGGESTED_SUPPLIER', self.suppliers[0])
+        sysparam.set_object(store, 'SUGGESTED_SUPPLIER', self.suppliers[0])

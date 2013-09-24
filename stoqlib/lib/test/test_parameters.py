@@ -62,7 +62,7 @@ class TestParameter(DomainTest):
 
     def setUp(self):
         DomainTest.setUp(self)
-        self.sparam = sysparam()
+        self.sparam = sysparam
 
     # System instances based on stoq.lib.parameters
 
