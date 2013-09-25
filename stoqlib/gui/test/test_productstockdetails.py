@@ -93,10 +93,11 @@ class TestProductStockHistoryDialog(GUITest):
         transfer.receive(self.create_employee())
 
         # Loan
-        # FIXME: See bug 5147
-        # loan = self.create_loan(branch)
-        # loan.add_sellable(product.sellable, 2)
-        # loan.sync_stock()
+        loan = self.create_loan(branch)
+        loan.identifier = 33
+        loan.open_date = date
+        loan.add_sellable(product.sellable, 2, batch=batch)
+        loan.sync_stock()
 
         # Stock Decrease
         decrease = self.create_stock_decrease(branch, user)

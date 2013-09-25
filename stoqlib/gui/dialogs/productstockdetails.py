@@ -243,6 +243,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        expand=True),
                 Column("unit_description", title=_(u"Unit"), data_type=str),
                 Column("quantity", title=_(u"Loaned"), data_type=Decimal),
+                Column("sale_quantity", title=_(u"Sold"), data_type=Decimal),
                 Column("return_quantity", title=_(u"Returned"),
                        data_type=Decimal)]
 
