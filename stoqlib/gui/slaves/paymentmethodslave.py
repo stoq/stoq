@@ -85,14 +85,16 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
                 self.methods_box.reorder_child(
                     widget, len(self.methods_box) - 1)
 
-        if self._default_method is None:
+        # The default method could not have been passed to the constructor,
+        # or if it was, it could not be active. Fallback to the parameters'
+        # one or money in case it's not active too
+        if (self._default_method is None or
+            self._default_method not in self._widgets):
             default = api.sysparam.get_object(self.store,
                                               "DEFAULT_PAYMENT_METHOD")
             if default.method_name in self._widgets:
                 self._default_method = default.method_name
             else:
-                # Fallback to money in case the widget was not created (that
-                # means the method is not active or not creatable)
                 self._default_method = u'money'
 
         self._select_default_method()

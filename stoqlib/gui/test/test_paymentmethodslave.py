@@ -35,6 +35,44 @@ class TestSelectPaymentMethodSlave(GUITest):
         with self.assertRaisesRegexp(ValueError, "payment_type must be set"):
             SelectPaymentMethodSlave(payment_type=None)
 
+    def test_init_default_method(self):
+        check_method = self.store.find(PaymentMethod,
+                                       method_name=u'check').one()
+        multiple_method = self.store.find(PaymentMethod,
+                                          method_name=u'multiple').one()
+        money_method = self.store.find(PaymentMethod,
+                                       method_name=u'money').one()
+
+        # Check should be selected here since it was passed as default ethod
+        slave = SelectPaymentMethodSlave(store=self.store,
+                                         payment_type=Payment.TYPE_IN,
+                                         default_method=u'check')
+        self.assertEqual(slave.get_selected_method(), check_method)
+
+        with self.sysparam(DEFAULT_PAYMENT_METHOD=multiple_method):
+            # Even with multiple as default, the constructor default
+            # should overwrite it
+            slave = SelectPaymentMethodSlave(store=self.store,
+                                             payment_type=Payment.TYPE_IN,
+                                             default_method=u'check')
+            self.assertEqual(slave.get_selected_method(), check_method)
+
+            # Making check inactive should make the DEFAULT_PAYMENT_METHOD
+            # the default one on the slave
+            check_method.is_active = False
+            slave = SelectPaymentMethodSlave(store=self.store,
+                                             payment_type=Payment.TYPE_IN,
+                                             default_method=u'check')
+            self.assertEqual(slave.get_selected_method(), multiple_method)
+
+            # Making check and the DEFAULT_PAYMENT_METHOD inactive,
+            # the default should fallback to money
+            multiple_method.is_active = False
+            slave = SelectPaymentMethodSlave(store=self.store,
+                                             payment_type=Payment.TYPE_IN,
+                                             default_method=u'check')
+            self.assertEqual(slave.get_selected_method(), money_method)
+
     def test_created_methods(self):
         # Payment.TYPE_IN
         slave = SelectPaymentMethodSlave(store=self.store,
