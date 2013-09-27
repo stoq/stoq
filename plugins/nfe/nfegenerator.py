@@ -628,7 +628,7 @@ class NFeAddress(BaseNFeXMLGroup):
     - Attributes:
         - xLgr: logradouro.
         - nro: número.
-        - XCpl: complemento
+        - xCpl: complemento
         - xBairro: bairro.
         - cMun: código do município.
         - xMun: nome do município.
@@ -640,7 +640,7 @@ class NFeAddress(BaseNFeXMLGroup):
     """
     attributes = [(u'xLgr', ''),
                   (u'nro', ''),
-                  (u'XCpl', ''),
+                  (u'xCpl', ''),
                   (u'xBairro', ''),
                   (u'cMun', ''),
                   (u'xMun', ''),
