@@ -90,13 +90,48 @@ class TestDeliveryEditor(GUITest):
 
 
 class TestCreateDeliveryEditor(GUITest):
-    def test_create(self):
+    def _create_sale_items(self):
         sale = self.create_sale()
         sale_items = []
         for i in range(5):
             sale_item = self.create_sale_item(sale=sale)
             sale_item.sellable.description = u"Delivery item %s" % (i + 1)
             sale_items.append(sale_item)
+        return sale_items
 
+    def test_create(self):
+        sale_items = self._create_sale_items()
         editor = CreateDeliveryEditor(self.store, sale_items=sale_items)
         self.check_editor(editor, 'editor-createdelivery-create')
+
+    def test_on_client_changed(self):
+        client1 = self.create_client(name=u"Client01")
+        address1 = self.create_address(person=client1.person)
+        client2 = self.create_client(name=u"Client02")
+        addres2 = self.create_address(person=client2.person)
+        addres2.street = u"Mainstreet02"
+        sale_items = self._create_sale_items()
+        editor = CreateDeliveryEditor(self.store, sale_items=sale_items)
+
+        # No client
+        no_client = editor.client_id.get_selected_data()
+        self.assertEqual(no_client, None)
+        no_address = editor.address.get_selected_data()
+        self.assertEqual(no_address, None or "")
+        self.check_editor(editor, 'editor-createdelivery-noclient')
+
+        # Select a client
+        editor.client_id.select(client1.id)
+        first_client = editor.client_id.get_selected_data()
+        self.assertEqual(first_client, client1.id)
+        first_address = editor.address.get_selected_data()
+        self.assertEqual(first_address, address1)
+        self.check_editor(editor, 'editor-createdelivery-client')
+
+        # Change client
+        editor.client_id.select(client2.id)
+        new_client = editor.client_id.get_selected_data()
+        self.assertNotEquals(first_client, new_client)
+        new_address = editor.address.get_selected_data()
+        self.assertNotEquals(first_address, new_address)
+        self.check_editor(editor, 'editor-createdelivery-clientchanged')

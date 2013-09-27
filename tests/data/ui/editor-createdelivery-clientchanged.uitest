@@ -1,0 +1,64 @@
+editor: CreateDeliveryEditor
+GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave CreateDeliveryEditor is attached
+        GtkVBox(toplevel):
+          GtkTable(table2, fill=True):
+            ProxyLabel(label2): 'Delivery cost ($CURRENCY):'
+            ProxySpinButton(price): '0.00'
+            GtkEventBox(forms): slave BasicForm is attached
+              GtkAlignment(toplevel):
+                GtkTable():
+                  ProxyLabel(client_id_lbl): 'Client:'
+                  ProxyComboEntry(client_id):
+                    item: 'Alessandra Almeida Itaber\xc3\xa1'
+                    item: 'Client01'
+                    item: 'Client02', selected
+                    item: 'Franciso Elisio de Lima Junior'
+                    item: 'Luis Sergio da Silva Marin'
+                    item: 'Vitalina Claudino'
+                  GtkButton(client_id_add_button):
+                  GtkButton(client_id_edit_button):
+                  ProxyLabel(transporter_id_lbl): 'Transporter:'
+                  ProxyComboEntry(transporter_id):
+                    item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                  GtkButton(transporter_id_add_button):
+                  GtkButton(transporter_id_edit_button): insensitive
+                  ProxyLabel(address_lbl): 'Address:'
+                  ProxyComboEntry(address):
+                    item: 'Mainstreet02 138, Cidade Araci', selected
+                  GtkButton(address_add_button):
+                  GtkButton(address_edit_button):
+            GtkLabel(label1): 'Estimated Delivery _Date:'
+            ProxyDateEntry(estimated_fix_date): date.today()
+            GtkLabel(label5):
+            GtkLabel(label6):
+          GtkHSeparator(hseparator1, fill=True):
+          GtkLabel(label3, fill=True): 'Products to Deliver:'
+          GtkEventBox(addition_list_holder, expand=True, fill=True):
+            ObjectList(items):
+              column: title='Code'
+              column: title='Description', expand
+              column: title='Quantity'
+              column: title='Deliver'
+              row: None, u'Delivery item 1', Decimal('1.000'), True
+              row: None, u'Delivery item 2', Decimal('1.000'), True
+              row: None, u'Delivery item 3', Decimal('1.000'), True
+              row: None, u'Delivery item 4', Decimal('1.000'), True
+              row: None, u'Delivery item 5', Decimal('1.000'), True
+          GtkHSeparator(hseparator2, fill=True):
+          GtkTable(table1, fill=True):
+            GtkLabel(label4):
+            GtkButton(additional_info_button): 'Additional _Instructions'
+          GtkAlignment(alignment1, fill=True):
+            ProxyLabel(additional_info_label): '<span size="small">There is Additional Instructions</span>', hidden
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

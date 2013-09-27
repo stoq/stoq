@@ -175,9 +175,10 @@ class CreateDeliveryEditor(BaseEditor):
             return ValidationError(
                 _("The Delivery cost must be a positive value."))
 
-    def on_client__content_changed(self, combo):
-        client = combo.get_selected_data()
-        if client:
+    def on_client_id__content_changed(self, combo):
+        client_id = combo.get_selected_data()
+        if client_id:
+            client = self.store.get(Client, client_id)
             self.fields['address'].set_from_client(client)
 
     def _on_items__cell_edited(self, items, item, attribute):
