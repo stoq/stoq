@@ -659,7 +659,7 @@ class NFeAddress(BaseNFeXMLGroup):
                                address.postal_code if i in '1234567890'])
 
         self.set_attr('xLgr', address.street)
-        self.set_attr('nro', address.streetnumber or '')
+        self.set_attr('nro', address.streetnumber or '0')
         self.set_attr('xCpl', address.complement)
         self.set_attr('xBairro', address.district)
         self.set_attr('xMun', location.city)
