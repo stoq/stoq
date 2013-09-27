@@ -61,9 +61,15 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               GtkLabel(orig_label): 'Origin:'
               ProxyComboBox(orig): insensitive
                 item: None, selected
-                item: '0 - Nacional'
-                item: '1 - Estrangeira - importa\xc3\xa7\xc3\xa3o direta'
-                item: '2 - Estrangeira - adquirida no mercado interno'
+                item: '0 - Nacional, exceto as indicadas nos c\xc3\xb3digos 3, 4, 5 e 8'
+                item: '1 - Estrangeira - Importa\xc3\xa7\xc3\xa3o direta, exceto a indicada no c\xc3\xb3digo 6'
+                item: '2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no c\xc3\xb3digo 7'
+                item: '3 - Nacional, mercadoria ou bem com Conte\xc3\xbado de Importa\xc3\xa7\xc3\xa3o superior a 40% e inferior ou igual a 70%'
+                item: '4 - Nacional, cuja produ\xc3\xa7\xc3\xa3o tenha sido feita em conformidade com os processos produtivos b\xc3\xa1sicos'
+                item: '5 - Nacional, mercadoria ou bem com Conte\xc3\xbado de Importa\xc3\xa7\xc3\xa3o inferior ou igual a 40%'
+                item: '6 - Estrangeira - Importa\xc3\xa7\xc3\xa3o direta, sem similar nacional, constante na CAMEX'
+                item: '7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante na CAMEX'
+                item: '8 - Nacional, mercadoria ou bem com Conte\xc3\xbado de Importa\xc3\xa7\xc3\xa3o superior a 70%'
               GtkLabel(mod_bc_st_label): 'Modalidade BC ICMS ST:'
               ProxyComboBox(mod_bc_st): insensitive
                 item: None, selected

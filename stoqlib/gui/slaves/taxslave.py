@@ -168,11 +168,29 @@ class BaseICMSSlave(BaseTaxSlave):
             (u'900 - Outros', 900),
         ),
 
+        # http://www.fazenda.gov.br/confaz/confaz/ajustes/2012/AJ_020_12.htm
+        # http://www.fazenda.gov.br/confaz/confaz/ajustes/2013/AJ_015_13.htm
+        # http://www.fazenda.gov.br/confaz/confaz/Convenios/ICMS/2013/CV038_13.htm
         'orig': (
             (None, None),
-            (u'0 - Nacional', 0),
-            (u'1 - Estrangeira - importação direta', 1),
-            (u'2 - Estrangeira - adquirida no mercado interno', 2),
+            (u'0 - Nacional, '
+             u'exceto as indicadas nos códigos 3, 4, 5 e 8', 0),
+            (u'1 - Estrangeira - Importação direta, '
+             u'exceto a indicada no código 6', 1),
+            (u'2 - Estrangeira - Adquirida no mercado interno, '
+             u'exceto a indicada no código 7', 2),
+            (u'3 - Nacional, mercadoria ou bem com Conteúdo de '
+             u'Importação superior a 40% e inferior ou igual a 70%', 3),
+            (u'4 - Nacional, cuja produção tenha sido feita em '
+             u'conformidade com os processos produtivos básicos', 4),
+            (u'5 - Nacional, mercadoria ou bem com Conteúdo de '
+             u'Importação inferior ou igual a 40%', 5),
+            (u'6 - Estrangeira - Importação direta, '
+             u'sem similar nacional, constante na CAMEX', 6),
+            (u'7 - Estrangeira - Adquirida no mercado interno, '
+             u'sem similar nacional, constante na CAMEX', 7),
+            (u'8 - Nacional, mercadoria ou bem com Conteúdo de Importação '
+             u'superior a 70%', 8),
         ),
         'mod_bc': (
             (None, None),
