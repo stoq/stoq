@@ -49,6 +49,7 @@ class SearchEditor(SearchDialog):
 
     Simple example:
 
+    >>> from kiwi.ui.objectlist import Column
     >>> from stoqlib.domain.person import ClientView
     >>> from stoqlib.gui.editors.personeditor import ClientEditor
 

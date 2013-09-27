@@ -268,7 +268,6 @@ class QueryExecuter(object):
         emitted when the query has finished executing. In that callback,
         :meth:`.AsyncQueryOperation.finish` should be called, eg:
 
-        >>> import glib
         >>> from stoqlib.api import api
         >>> from stoqlib.domain.person import Person
 
@@ -279,7 +278,7 @@ class QueryExecuter(object):
         >>> operation = qe.search_async(resultset=resultset)
 
         >>> def finished(operation, loop):
-        ...     result = operation.finish()
+        ...     operation.finish()
         ...     # use result
         ...     loop.quit()
 
