@@ -810,7 +810,7 @@ class ParameterAccess(object):
                                u"Outra saída de mercadoria ou "
                                u"prestação de serviço não especificado",
                                u"5.949")
-        self.set_delivery_default(store)
+        self._set_delivery_default(store)
         self._set_sales_person_role_default(store)
         self._set_product_tax_constant_default(store)
 
@@ -845,6 +845,19 @@ class ParameterAccess(object):
         from stoqlib.domain.sellable import SellableTaxConstant
         tax_constant = SellableTaxConstant.get_by_type(TaxType.NONE, store)
         self.set_object(store, "DEFAULT_PRODUCT_TAX_CONSTANT", tax_constant)
+
+    def _set_delivery_default(self, store):
+        if self.has_object("DELIVERY_SERVICE"):
+            return
+        from stoqlib.domain.sellable import (Sellable,
+                                             SellableTaxConstant)
+        from stoqlib.domain.service import Service
+        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, store)
+        sellable = Sellable(store=store,
+                            description=_(u'Delivery'))
+        sellable.tax_constant = tax_constant
+        service = Service(sellable=sellable, store=store)
+        self.set_object(store, "DELIVERY_SERVICE", service)
 
     def _verify_detail(self, field_name, expected_type=None):
         detail = self._details.get(field_name)
@@ -930,19 +943,6 @@ class ParameterAccess(object):
                 default = detail.initial
             self._set_default_value(store, detail, default)
         self._create_default_values(store)
-
-    def set_delivery_default(self, store):
-        if self.has_object("DELIVERY_SERVICE"):
-            return
-        from stoqlib.domain.sellable import (Sellable,
-                                             SellableTaxConstant)
-        from stoqlib.domain.service import Service
-        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, store)
-        sellable = Sellable(description=_(u'Delivery'),
-                            store=store)
-        sellable.tax_constant = tax_constant
-        service = Service(sellable=sellable, store=store)
-        self.set_object(store, "DELIVERY_SERVICE", service)
 
     def set_bool(self, store, param_name, value):
         """
