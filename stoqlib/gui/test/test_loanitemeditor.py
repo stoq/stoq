@@ -42,7 +42,7 @@ class TestLoanItemEditor(GUITest):
 
         self.check_editor(editor, 'editor-loanitem-show')
 
-    def test_quantity_validation(self):
+    def test_quantity_validate(self):
         # The storable is created with 10 of quantity
         loan_item = self.create_loan_item()
         editor = LoanItemEditor(self.store, loan_item)
@@ -64,3 +64,20 @@ class TestLoanItemEditor(GUITest):
         self.assertInvalid(editor, ['quantity'])
         editor.quantity.update(2)
         self.assertValid(editor, ['quantity'])
+
+    def test_has_stock(self):
+        # The storable is created with 10 of quantity
+        loan_item = self.create_loan_item()
+        editor = LoanItemEditor(self.store, loan_item)
+
+        # Check if have exactly the same quantity on stock
+        result = editor._has_stock(10)
+        self.assertTrue(result)
+
+        # Check if have one more product than the quantity on stock
+        result = editor._has_stock(11)
+        self.assertFalse(result)
+
+        # Check if have one product less than the quantity on stock
+        result = editor._has_stock(9)
+        self.assertTrue(result)

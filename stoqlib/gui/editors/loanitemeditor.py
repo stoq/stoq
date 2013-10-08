@@ -37,40 +37,21 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class LoanItemEditor(BaseEditor):
-    gladefile = 'SaleQuoteItemEditor'
+    gladefile = 'LoanItemEditor'
     model_type = LoanItem
     model_name = _("Loan Item")
     proxy_widgets = ['price',
                      'quantity',
-                     'sale_quantity',
-                     'return_quantity',
                      'total']
 
-    #: The manager is someone that can allow a bigger discount for a sale item.
-    manager = None
+    def __init__(self, store, model):
+        """An editor for a loan item.
 
-    def __init__(self, store, model, expanded_edition=False):
-        """An editor for a loan item. If the expaned_edition is True, the
-        editor will enable the sale_quantity and return_quantity fields to be
-        edited and will lock the quantity and price fields.
         :param store: a store.
         :param model: a loan item.
-        :param expanded_edition: whether or not we should enable sale_quantity
-                                 and return_quantity fields to be edited.
         """
+        self.manager = None
         self.proxy = None
-        self._expanded_edition = expanded_edition
-        self._branch = model.loan.branch
-
-        default_store = api.get_default_store()
-        orig_model = default_store.find(LoanItem, id=model.id).one()
-        if orig_model:
-            self._original_sale_qty = orig_model.sale_quantity
-            self._original_return_qty = orig_model.return_quantity
-        else:
-            self._original_sale_qty = 0
-            self._original_return_qty = 0
-
         BaseEditor.__init__(self, store, model)
 
     def _setup_widgets(self):
@@ -80,26 +61,10 @@ class LoanItemEditor(BaseEditor):
         self.sale.set_text(unicode(self.model.loan.identifier))
         self.description.set_text(self.model.sellable.get_description())
         self.original_price.update(self.model.price)
-        for widget in [self.quantity, self.price,
-                       self.sale_quantity, self.return_quantity]:
+        for widget in [self.quantity, self.price]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
-        self._configure_expanded_edition()
         self.tabs.set_show_tabs(False)
-        self.cfop.hide()
-        self.cfop_label.hide()
-
-    def _configure_expanded_edition(self):
-        if self._expanded_edition:
-            self.quantity.set_sensitive(False)
-            self.price.set_sensitive(False)
-
-        for widget in [self.sale_quantity_lbl, self.sale_quantity,
-                       self.return_quantity_lbl, self.return_quantity]:
-            if self._expanded_edition:
-                widget.show()
-            else:
-                widget.hide()
 
     def _has_stock(self, quantity):
         batch = self.model.batch
@@ -161,25 +126,7 @@ class LoanItemEditor(BaseEditor):
             self.price.validate(force=True)
 
     def on_quantity__validate(self, widget, value):
-        if self._expanded_edition:
-            return
         if value <= 0:
             return ValidationError(_(u'The quantity should be positive.'))
         if value and not self._has_stock(value):
             return ValidationError(_(u'Quantity not available in stock.'))
-
-    def on_sale_quantity__validate(self, widget, value):
-        if value < self._original_sale_qty:
-            return ValidationError(_(u'Can not decrease this quantity.'))
-        total = value + self.model.return_quantity
-        if total > self.model.quantity:
-            return ValidationError(_(u'Sale and return quantity is greater '
-                                     'than the total quantity.'))
-
-    def on_return_quantity__validate(self, widget, value):
-        if value < self._original_return_qty:
-            return ValidationError(_(u'Can not decrease this quantity.'))
-        total = value + self.model.sale_quantity
-        if total > self.model.quantity:
-            return ValidationError(_(u'Sale and return quantity is greater '
-                                     'than the total quantity.'))
