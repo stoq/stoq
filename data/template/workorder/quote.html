@@ -19,8 +19,14 @@
       <tr>
         <td>${ _("Order Number:") }:</td>
         <td>${ report.workorder.identifier }</td>
+      </tr>
+      <tr>
         <td>${ _("Equipment") }:</td>
-        <td colspan=3>${ report.workorder.equipment }</td>
+        <td colspan=3>${ report.workorder.sellable.description }</td>
+      </tr>
+      <tr>
+        <td>${ _("Description") }:</td>
+        <td colspan=3>${ report.workorder.description }</td>
       </tr>
       <tr>
         <td>${ _("Client") }:</td>

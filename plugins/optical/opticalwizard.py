@@ -113,7 +113,7 @@ class OpticalItemStep(WorkOrderQuoteItemStep):
         optical_wo = self.store.find(
             OpticalWorkOrder, work_order=work_order).one()
 
-        work_order.equipment = _('Work order for %s') % optical_wo.patient
+        work_order.description = _('Work order for %s') % optical_wo.patient
         work_order.estimated_start = work_order.estimated_finish
 
     #

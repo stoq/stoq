@@ -26,6 +26,7 @@
 import datetime
 
 from kiwi.currency import currency
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderView,
                                       WorkOrderFinishedView)
@@ -51,8 +52,8 @@ class WorkOrderSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['equipment', 'client_name',
-                                     'identifier_str'])
+        self.set_text_field_columns(['sellable', 'description',
+                                     'client_name', 'identifier_str'])
 
     def get_columns(self):
         return [
@@ -60,8 +61,8 @@ class WorkOrderSearch(SearchDialog):
             SearchColumn('work_order.status_str', title=_('Status'),
                          search_attribute='status', visible=False,
                          valid_values=self._get_status_values(), data_type=str),
-            SearchColumn('equipment', title=_('Equipment'),
-                         data_type=str, expand=True),
+            Column('equipment', title=_('Equipment (Description)'),
+                   data_type=str, expand=True),
             SearchColumn('client_name', title=_('Client'),
                          data_type=str),
             SearchColumn('open_date', title=_('Open date'),

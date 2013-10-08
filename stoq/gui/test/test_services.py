@@ -246,7 +246,7 @@ class TestServices(BaseGUITest):
 
     @mock.patch('stoq.gui.services.print_report')
     def test_on_PrintReceipt(self, print_report):
-        workorder = self.create_workorder(equipment=u'teste')
+        workorder = self.create_workorder(description=u'teste')
         workorder.status = WorkOrder.STATUS_WORK_FINISHED
 
         app = self.create_app(ServicesApp, u'services')
@@ -258,7 +258,7 @@ class TestServices(BaseGUITest):
 
     @mock.patch('stoq.gui.services.print_report')
     def test_on_PrintQuote(self, print_report):
-        workorder = self.create_workorder(equipment=u'teste')
+        workorder = self.create_workorder(description=u'teste')
         workorder.defect_detected = u'quote'
         workorder.status = WorkOrder.STATUS_WORK_FINISHED
 

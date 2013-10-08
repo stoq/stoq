@@ -67,7 +67,7 @@ class TestWorkOrderEditor(GUITest):
         self.assertEqual(editor.model.status, WorkOrder.STATUS_OPENED)
         self.check_editor(editor, 'editor-workorder-create')
 
-        editor.equipment.update(u"Test equipment")
+        editor.description.update(u"Test equipment")
         editor.category.update(category)
         self.assertNotSensitive(editor, ['toggle_status_btn'])
         editor.client.update(client.id)
@@ -136,7 +136,7 @@ class TestWorkOrderEditor(GUITest):
 
         localnow.return_value = localdatetime(2013, 2, 1)
 
-        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder = self.create_workorder(description=u'Test equipment')
         workorder.identifier = 666
         workorder.client = self.create_client()
         workorder.category = WorkOrderCategory(store=self.store,
@@ -190,7 +190,7 @@ class TestWorkOrderPackageSendEditor(GUITest):
         workorders_ids = set()
 
         for i in xrange(10):
-            wo = self.create_workorder(u"Equipment %d" % i)
+            wo = self.create_workorder(description=u"Equipment %d" % i)
             wo.client = self.create_client()
             wo.identifier = 666 + i
             wo.open_date = localdatetime(2013, 1, 1)

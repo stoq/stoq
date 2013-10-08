@@ -50,6 +50,7 @@ from stoqlib.domain.person import (Branch, Client, Person, SalesPerson,
                                    Company, LoginUser)
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -600,8 +601,15 @@ class WorkOrder(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
-    #: defected equipment
-    equipment = UnicodeCol()
+    sellable_id = IdCol()
+    #: a corresponding sellable for this equipament. Can be `None` if it is
+    #: something that this shop does not sell
+    sellable = Reference(sellable_id, 'Sellable.id')
+
+    #: description of the specific item brought by the client. This can be used
+    #: to describe the equipament, if it is not one of the sellables available,
+    #: or even to describe the serial number of the object.
+    description = UnicodeCol()
 
     #: defect reported by the |client|
     defect_reported = UnicodeCol()
@@ -1268,7 +1276,7 @@ class WorkOrderView(Viewable):
     identifier = WorkOrder.identifier
     identifier_str = Cast(WorkOrder.identifier, 'text')
     status = WorkOrder.status
-    equipment = WorkOrder.equipment
+    description = WorkOrder.description
     open_date = WorkOrder.open_date
     approve_date = WorkOrder.approve_date
     estimated_start = WorkOrder.estimated_start
@@ -1300,6 +1308,9 @@ class WorkOrderView(Viewable):
     sale_identifier = Sale.identifier
     sale_identifier_str = Cast(Sale.identifier, 'text')
 
+    # Sellable
+    sellable = Sellable.description
+
     # WorkOrderItem
     quantity = Coalesce(Field('_work_order_items', 'quantity'), 0)
     total = Coalesce(Field('_work_order_items', 'total'), 0)
@@ -1314,6 +1325,8 @@ class WorkOrderView(Viewable):
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(_PersonSalesPerson,
                  SalesPerson.person_id == _PersonSalesPerson.id),
+
+        LeftJoin(Sellable, WorkOrder.sellable_id == Sellable.id),
 
         LeftJoin(_BranchOriginalBranch,
                  WorkOrder.branch_id == _BranchOriginalBranch.id),
@@ -1346,6 +1359,13 @@ class WorkOrderView(Viewable):
     @property
     def branch(self):
         return self.store.get(Branch, self.branch_id)
+
+    @property
+    def equipment(self):
+        return '%s - %s' % (
+            self.store.get(Sellable, self.work_order.sellable_id).description,
+            self.work_order.description,
+        )
 
     @classmethod
     def post_search_callback(cls, sresults):

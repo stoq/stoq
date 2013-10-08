@@ -42,6 +42,7 @@ from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.workordercategoryeditor import WorkOrderCategoryEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
+from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderQuoteSlave,
                                                WorkOrderExecutionSlave,
@@ -66,7 +67,7 @@ class WorkOrderEditor(BaseEditor):
     proxy_widgets = [
         'category',
         'client',
-        'equipment',
+        'description',
         'identifier',
         'status_str',
     ]
@@ -99,7 +100,8 @@ class WorkOrderEditor(BaseEditor):
         branch = api.get_current_branch(store)
         return WorkOrder(
             store=store,
-            equipment=u'',
+            sellable=None,
+            description=u'',
             branch=branch,
             category=self._default_category,
         )
@@ -130,7 +132,8 @@ class WorkOrderEditor(BaseEditor):
 
     def update_visual_mode(self):
         for widget in [self.toggle_status_btn, self.client_create,
-                       self.category_create]:
+                       self.category_create, self.sellable_desc,
+                       self.equip_search_button]:
             widget.set_sensitive(False)
 
     #
@@ -165,6 +168,9 @@ class WorkOrderEditor(BaseEditor):
                                    WorkOrder.STATUS_WORK_WAITING,
                                    WorkOrder.STATUS_DELIVERED]:
             self._set_current_tab('execution_holder')
+
+        if self.model.sellable:
+            self.sellable_desc.set_text(self.model.sellable.get_description())
 
     def _update_view(self):
         self.proxy.update('status_str')
@@ -289,6 +295,17 @@ class WorkOrderEditor(BaseEditor):
     def on_toggle_status_btn__clicked(self, button):
         self._maybe_toggle_status()
 
+    def on_equip_search_button__clicked(self, button):
+        ret = run_dialog(SellableSearch, self, self.store, hide_footer=True,
+                         hide_toolbar=True, double_click_confirm=True)
+
+        if not ret:
+            return
+
+        sellable = ret.sellable
+        self.sellable_desc.set_text(sellable.description)
+        self.model.sellable = sellable
+
 
 class WorkOrderPackageSendEditor(BaseEditor):
     """Editor responsible for creating and sending |workorderpackages|
@@ -352,7 +369,7 @@ class WorkOrderPackageSendEditor(BaseEditor):
             IdentifierColumn('identifier', sorted=True),
             IdentifierColumn('sale_identifier', title=_("Sale #"), visible=False),
             Column('work_order.status_str', _(u"Status"), data_type=str),
-            Column('equipment', _(u"Equipment"), data_type=str,
+            Column('equipment', _(u"Equipment (Description)"), data_type=str,
                    expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment'),
                    column='equipment', data_type=gtk.gdk.Pixbuf,

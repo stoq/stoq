@@ -37,7 +37,8 @@
 
     % if not report.sale:
       <p>
-        ${ workorder.equipment }
+        ${ workorder.sellable.description }<br />
+        ${ workorder.description }
       </p>
     % else:
       <table>
@@ -61,7 +62,9 @@
       </table>
     % endif
 
-    <p>
-      <b>${ _("Observations") }</b><br/>
-      ${ workorder.defect_reported or '' }
-    </p>
+    % if workorder.defect_reported:
+      <p>
+        <b>${ _("Observations") }:</b><br/>
+        ${ workorder.defect_reported }
+      </p>
+    % endif

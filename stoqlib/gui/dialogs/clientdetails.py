@@ -357,6 +357,28 @@ class CreditAccountsTab(DetailsTab):
     def populate(self):
         return self.model.get_credit_transactions()
 
+    def _get_work_order_columns(self):
+        return [IdentifierColumn("identifier", sorted=True),
+                Column("sellable", title=_("Equipment"),
+                       data_type=str, expand=True, pack_end=True),
+                Column("description", title=_("Description"),
+                       data_type=str, expand=True, pack_end=True),
+                Column('category_color', title=_(u'Equipment'),
+                       column='sellable', data_type=gtk.gdk.Pixbuf,
+                       format_func=render_pixbuf),
+                Column('flag_icon', title=_(u'Equipment'),
+                       column='sellable', data_type=gtk.gdk.Pixbuf,
+                       format_func_data=True,
+                       format_func=self._format_state_icon),
+                Column("open_date", title=_("Open date"),
+                       data_type=datetime.date, width=120),
+                Column("approve_date", title=_("Approve date"),
+                       data_type=datetime.date, width=120),
+                Column("finish_date", title=_("Finish date"),
+                       data_type=datetime.date, width=120),
+                Column("total", title=_("Total"),
+                       data_type=currency, width=100)]
+
 
 class CallsTab(DetailsTab):
     labels = _('Call'), _('Calls')

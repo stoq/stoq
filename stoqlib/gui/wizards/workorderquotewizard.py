@@ -54,8 +54,8 @@ _MAX_WORK_ORDERS_FOR_RADIO = 3
 
 
 class _WorkOrderQuoteSlave(WorkOrderQuoteSlave):
-    # The equipment entry is needed here to describe each O.S.
-    show_equipment_entry = True
+    # The description entry is needed here to describe each O.S.
+    show_description_entry = True
 
 
 class WorkOrderQuoteStartStep(StartSaleQuoteStep):
@@ -181,7 +181,8 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
         return WorkOrder(
             store=self.store,
             sale=self.model,
-            equipment=u'',
+            sellable=None,
+            description=u'',
             branch=api.get_current_branch(self.store),
             client=self.model.client)
 
@@ -294,14 +295,14 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
         wo_item = work_order.add_sellable(
             sellable, price=price, batch=batch, quantity=quantity)
         wo_item.sale_item = item
-        item._equipment = work_order.equipment
+        item._equipment = work_order.description
 
         return item
 
     def get_saved_items(self):
         for item in super(WorkOrderQuoteItemStep, self).get_saved_items():
             wo_item = WorkOrderItem.get_from_sale_item(self.store, item)
-            item._equipment = wo_item.order.equipment
+            item._equipment = wo_item.order.description
             yield item
 
     def remove_items(self, items):
@@ -369,7 +370,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
                 wo.approve()
 
             self.setup_work_order(wo)
-            data.append([wo.equipment, wo])
+            data.append([wo.description, wo])
 
         if len(data) <= _MAX_WORK_ORDERS_FOR_RADIO:
             self.work_orders_combo = None

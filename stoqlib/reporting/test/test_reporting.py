@@ -524,7 +524,7 @@ class TestReport(ReportTest):
     def test_work_orders_report(self):
         from stoqlib.gui.search.workordersearch import WorkOrderSearch
         for i in range(5):
-            wo = self.create_workorder(u'Work order %d' % i)
+            wo = self.create_workorder(description=u'Work order %d' % i)
             sellable = self.create_sellable(description=u'Sellable %d' % i)
             wo.client = self.create_client(u'Client %d' % i)
             wo.add_sellable(sellable, price=10 * i)

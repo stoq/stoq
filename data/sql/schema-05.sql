@@ -1552,7 +1552,7 @@ CREATE TABLE work_order (
     identifier serial NOT NULL,
     status integer CONSTRAINT valid_status
       CHECK (status >= 0 AND status <= 5),
-    equipment text,
+    description text,
     estimated_hours numeric(10,2),
     estimated_cost numeric(20,2),
     estimated_start timestamp,
@@ -1564,6 +1564,7 @@ CREATE TABLE work_order (
     defect_reported text,
     defect_detected text,
     branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
+    sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     quote_responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
     execution_responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
     category_id uuid REFERENCES work_order_category(id) ON UPDATE CASCADE,

@@ -324,16 +324,16 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
     proxy_widgets = [
         'defect_detected',
         'quote_responsible',
-        'equipment',
+        'description',
         'estimated_cost',
         'estimated_finish',
         'estimated_hours',
         'estimated_start',
     ]
 
-    #: If we should show an entry for the equipment
+    #: If we should show an entry for the description
     #: (allowing it to be set or changed).
-    show_equipment_entry = False
+    show_description_entry = False
 
     #
     #  BaseEditorSlave
@@ -343,9 +343,9 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
         self._new_model = False
         self._fill_quote_responsible_combo()
 
-        if not self.show_equipment_entry:
-            self.equipment.hide()
-            self.equipment_lbl.hide()
+        if not self.show_description_entry:
+            self.description.hide()
+            self.description_lbl.hide()
 
         self.add_proxy(self.model, self.proxy_widgets)
 

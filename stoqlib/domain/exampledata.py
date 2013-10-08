@@ -796,12 +796,13 @@ class ExampleCreator(object):
         return order.add_sellable(sellable, batch=None, quantity=quantity)
 
     # FIXME: Rename to create_work_order
-    def create_workorder(self, equipment=u'', branch=None, current_branch=None,
-                         client=None):
+    def create_workorder(self, sellable=None, description=u'',
+                         branch=None, current_branch=None, client=None):
         from stoqlib.domain.workorder import WorkOrder
         return WorkOrder(
             store=self.store,
-            equipment=equipment,
+            sellable=sellable or self.create_sellable(),
+            description=description,
             client=client or self.create_client(),
             branch=branch or get_current_branch(self.store),
             current_branch=current_branch)

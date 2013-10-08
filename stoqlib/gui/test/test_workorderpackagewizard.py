@@ -43,7 +43,7 @@ class TestSaleReturnWizard(GUITest):
         package.destination_branch = destination_branch
 
         for i in xrange(10):
-            wo = self.create_workorder(u"Equipment %d" % i)
+            wo = self.create_workorder(description=u"Equipment %d" % i)
             wo.current_branch = source_branch
             wo.client = self.create_client()
             wo.identifier = 666 + i

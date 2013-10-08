@@ -31,8 +31,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkButton(category_create):
               GtkButton(category_edit): insensitive
               GtkLabel(label19): 'Equipment:'
-              ProxyEntry(equipment): 'Test equipment'
-              GtkHBox(hbox1):
+              GtkLabel(sellable_desc): 'Description'
+              GtkButton(equip_search_button):
+              GtkLabel(equip_des): 'Description:'
+              ProxyEntry(description): 'Test equipment'
           GtkNotebook(slaves_notebook, expand=True, fill=True):
             GtkEventBox(opening_holder): slave WorkOrderOpeningSlave is attached
               GtkVBox(toplevel):
@@ -45,8 +47,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
             GtkEventBox(quote_holder): slave WorkOrderQuoteSlave is attached
               GtkVBox(toplevel):
                 GtkTable(table2, fill=True):
-                  GtkLabel(equipment_lbl): 'Equipment:', hidden
-                  ProxyEntry(equipment): 'Test equipment', hidden
+                  GtkLabel(description_lbl): 'Equipment:', hidden
+                  ProxyEntry(description): 'Test equipment', hidden
                   GtkLabel(label16): 'Quote responsible:'
                   ProxyComboEntry(quote_responsible):
                     item: 'Administrator'

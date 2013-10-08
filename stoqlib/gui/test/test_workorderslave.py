@@ -35,7 +35,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestWorkOrderItemEditor(GUITest):
     def test_show(self):
-        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder = self.create_workorder(description=u'Test equipment')
         workorder.client = self.create_client()
         workorder.client.category = self.create_client_category()
 
@@ -71,7 +71,7 @@ class TestWorkOrderItemEditor(GUITest):
             self.assertInvalid(editor, ['quantity'])
 
     def test_show_with_sale(self):
-        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder = self.create_workorder(description=u'Test equipment')
         workorder.sale = self.create_sale()
         workorder.client = self.create_client()
         workorder.client.category = self.create_client_category()
@@ -83,7 +83,7 @@ class TestWorkOrderItemEditor(GUITest):
         self.check_editor(editor, 'editor-workorderitem-with-sale-show')
 
     def test_on_confirm(self):
-        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder = self.create_workorder(description=u'Test equipment')
         workorder.client = self.create_client()
         workorder.client.category = self.create_client_category()
 
@@ -131,14 +131,14 @@ class TestWorkOrderItemEditor(GUITest):
 
 class TestWorkOrderItemSlave(GUITest):
     def test_show(self):
-        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder = self.create_workorder(description=u'Test equipment')
         workorder.client = self.create_client()
         editor = _WorkOrderItemSlave(store=self.store, parent=None,
                                      model=workorder)
         self.check_slave(editor, 'slave-workorderitem-show')
 
     def test_show_with_sale(self):
-        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder = self.create_workorder(description=u'Test equipment')
         workorder.sale = self.create_sale()
         workorder.client = self.create_client()
         editor = _WorkOrderItemSlave(store=self.store, parent=None,
@@ -146,7 +146,7 @@ class TestWorkOrderItemSlave(GUITest):
         self.check_slave(editor, 'slave-workorderitem-with-sale-show')
 
     def test_remove(self):
-        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder = self.create_workorder(description=u'Test equipment')
         workorder.client = self.create_client()
         editor = _WorkOrderItemSlave(store=self.store, parent=None,
                                      model=workorder)

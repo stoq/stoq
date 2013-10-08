@@ -115,8 +115,9 @@ class WorkOrderResultKanbanView(KanbanView):
             if column is None:
                 continue
             # FIXME: Figure out a better way of rendering
-            work_order_view.markup = '<b>%s</b>\n%s\n%s' % (
-                work_order_view.equipment,
+            work_order_view.markup = '<b>%s - %s</b>\n%s\n%s' % (
+                work_order_view.sellable,
+                work_order_view.description,
                 unicode(api.escape(work_order_view.client_name)),
                 work_order_view.open_date.strftime('%x'))
 
@@ -345,8 +346,9 @@ class ServicesApp(ShellApp):
         self.search.set_message(msg)
 
     def create_filters(self):
-        self.set_text_field_columns(['equipment', 'client_name',
-                                     'identifier_str', 'sale_identifier_str'])
+        self.set_text_field_columns(['sellable', 'description',
+                                     'client_name', 'identifier_str',
+                                     'sale_identifier_str'])
 
         self.main_filter = ComboSearchFilter(_('Show'), [])
         combo = self.main_filter.combo
@@ -370,12 +372,13 @@ class ServicesApp(ShellApp):
                          valid_values=self._get_status_values(), visible=False),
             SearchColumn('category_name', title=_(u'Category'),
                          data_type=str, visible=False),
-            SearchColumn('equipment', title=_(u'Equipment'),
-                         data_type=str, expand=True, pack_end=True),
-            Column('category_color', title=_(u'Equipment'), column='equipment',
-                   data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
-            Column('flag_icon', title=_(u'Equipment'), column='equipment',
-                   data_type=gtk.gdk.Pixbuf,
+            Column('equipment', title=_(u'Equipment (Description)'),
+                   data_type=str, expand=True, pack_end=True),
+            Column('category_color', title=_(u'Equipment (Description)'),
+                   column='equipment', data_type=gtk.gdk.Pixbuf,
+                   format_func=render_pixbuf),
+            Column('flag_icon', title=_(u'Equipment (Description)'),
+                   column='equipment', data_type=gtk.gdk.Pixbuf,
                    format_func=self._format_state_icon, format_func_data=True),
             SearchColumn('client_name', title=_(u'Client'),
                          data_type=str),
