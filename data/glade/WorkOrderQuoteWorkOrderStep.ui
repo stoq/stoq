@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkWindow" id="SaleQuoteWorkOrderStep">
+  <object class="GtkWindow" id="WorkOrderQuoteWorkOrderStep">
     <property name="border_width">6</property>
     <property name="default_width">600</property>
     <property name="default_height">330</property>

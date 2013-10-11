@@ -145,3 +145,12 @@ wizards Package
     :members:
     :undoc-members:
     :show-inheritance:
+
+
+:mod:`workorderquotewizard` Module
+----------------------------------
+
+.. automodule:: stoqlib.gui.wizards.workorderquotewizard
+    :members:
+    :undoc-members:
+    :show-inheritance:

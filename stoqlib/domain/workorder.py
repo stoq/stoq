@@ -874,7 +874,10 @@ class WorkOrder(Domain):
 
         :returns: ``True`` if can deliver, ``False`` otherwise
         """
-        if not self.is_items_totally_reserved():
+        # Because the way pre-sales are implemented, if we have a sale,
+        # we don't need to reserve all quantities here (since the sale will
+        # decrease the rest for us).
+        if self.sale is None and not self.is_items_totally_reserved():
             return False
         if self.is_rejected or self.is_in_transport():
             return False

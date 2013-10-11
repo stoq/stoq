@@ -208,7 +208,7 @@ class StartSaleQuoteStep(WizardEditorStep):
             model = SaleComment(store=self.store, sale=self.model,
                                 author=api.get_current_user(self.store))
         rv = run_dialog(NoteEditor, self.wizard, self.store, model, 'comment',
-                        title=_('Sale observations'))
+                        title=_('Additional Information'))
         if not rv:
             self.store.rollback_to_savepoint('before_run_notes_editor')
 
@@ -231,7 +231,7 @@ class SaleQuoteItemStep(SellableItemStep):
     sellable_view = SellableFullStockView
     item_editor = SaleQuoteItemEditor
     validate_price = True
-    value_column = 'base_price'
+    value_column = 'price'
     calculator_mode = CalculatorPopup.MODE_SUB
 
     #
@@ -306,8 +306,7 @@ class SaleQuoteItemStep(SellableItemStep):
                 continue
             stock = storable.get_balance_for_branch(self.model.branch)
             i._stock_quantity = stock
-
-        return list(items)
+            yield i
 
     def get_columns(self):
         columns = [

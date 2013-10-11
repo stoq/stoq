@@ -38,7 +38,7 @@ from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 PrintReportEvent)
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SaleOrderReport
@@ -99,14 +99,6 @@ class OpticalUI(object):
              group.get('search_medics'), None,
              self._on_MedicsSearch__activate),
         ])
-
-        pre_sale = ag.get_action('OpticalPreSale')
-        pre_sale.set_sensitive(not sale_app.has_open_inventory())
-
-        sale_app.window.tool_items.extend(
-            sale_app.window.NewToolItem.add_actions(uimanager, [pre_sale],
-                                                    add_separator=False,
-                                                    position=1))
 
         uimanager.insert_action_group(ag, 0)
         self._ui = uimanager.add_ui_from_string(ui_string)
@@ -175,17 +167,10 @@ class OpticalUI(object):
             self._add_patient_history_button(editor, model)
 
     def _on_RunDialogEvent(self, dialog, parent, *args, **kwargs):
-        # If we are editing a sale that already has some workorders, we need to
-        # use our own wizard.
-        if dialog is SaleQuoteWizard:
-            def select_wizard(store, model=None):
-                if not model:
-                    return
-                has_workorders = not WorkOrder.find_by_sale(store, model).is_empty()
-                if has_workorders:
-                    return OpticalSaleQuoteWizard
-
-            return select_wizard(*args, **kwargs)
+        # Every sale with work order should use OpticalSaleQuoteWizard instead
+        # of WorkOrderQuoteWizard when this plugin is enabled
+        if dialog is WorkOrderQuoteWizard:
+            return OpticalSaleQuoteWizard
 
     #
     # Callbacks

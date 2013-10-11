@@ -27,6 +27,7 @@
     <menu action="NewMenu">
       <placeholder name="NewMenuItemPH">
         <menuitem action="SaleQuote"/>
+        <menuitem action="WorkOrderQuote"/>
         <menuitem action="LoanNew"/>
       </placeholder>
     </menu>

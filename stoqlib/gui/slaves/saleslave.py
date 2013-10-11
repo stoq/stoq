@@ -24,22 +24,24 @@
 """ Slaves for sale management """
 
 import gtk
-from kiwi.utils import gsignal
-from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
+from kiwi.decorators import signal_block
 from kiwi.ui.delegates import GladeSlaveDelegate
+from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.domain.events import ECFIsLastSaleEvent
-from stoqlib.domain.sale import Sale
 from stoqlib.domain.inventory import Inventory
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.utils.printing import print_report
-from stoqlib.lib.message import yesno, info
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.formatters import get_price_format_str
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SalesReport
@@ -198,7 +200,15 @@ class SaleListToolbar(GladeSlaveDelegate):
             sale_view = self.sales.get_selected()
         store = api.new_store()
         sale = store.fetch(sale_view.sale)
-        model = run_dialog(SaleQuoteWizard, self.parent, store, sale)
+
+        # If we have work orders on the sale (the sale is a pre-sale), we need
+        # to run WorkOrderQuoteWizard instead of SaleQuoteWizard
+        has_workorders = not WorkOrder.find_by_sale(store, sale).is_empty()
+        if has_workorders:
+            wizard = WorkOrderQuoteWizard
+        else:
+            wizard = SaleQuoteWizard
+        model = run_dialog(wizard, self.parent, store, sale)
         retval = store.confirm(model)
         store.close()
 

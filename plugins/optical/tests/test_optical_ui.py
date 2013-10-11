@@ -34,7 +34,7 @@ from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.events import PrintReportEvent
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.sale import SaleOrderReport
@@ -143,15 +143,15 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         name = 'stoqlib.gui.base.dialogs.run_dialog_internal'
         with mock.patch(name) as run_dialog_internal:
             # Without a Sale that has workorders -> optical wizard
-            run_dialog(SaleQuoteWizard, None, self.store, sale)
+            run_dialog(WorkOrderQuoteWizard, None, self.store, sale)
             args, kwargs = run_dialog_internal.call_args
             self.assertTrue(isinstance(args[0], OpticalSaleQuoteWizard))
 
             # Without a Sale, normal wizard
             run_dialog_internal.reset_mock()
-            run_dialog(SaleQuoteWizard, None, self.store, None)
+            run_dialog(WorkOrderQuoteWizard, None, self.store, None)
             args, kwargs = run_dialog_internal.call_args
-            self.assertTrue(isinstance(args[0], SaleQuoteWizard))
+            self.assertTrue(isinstance(args[0], WorkOrderQuoteWizard))
 
     def test_person_editor(self):
         client = self.create_client()

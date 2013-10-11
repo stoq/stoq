@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 import decimal
 
 import mock
@@ -86,7 +87,7 @@ class TestSaleQuoteWizard(GUITest):
         self.assertTrue(store is not None)
         self.assertEquals(set(wizard.model.comments), set([model]))
         self.assertEquals(notes, 'comment')
-        self.assertEquals(kwargs['title'], _("Sale observations"))
+        self.assertEquals(kwargs['title'], "Additional Information")
 
         self.check_wizard(wizard, 'wizard-sale-quote-start-sale-quote-step')
         self.click(wizard.next_button)
@@ -209,3 +210,14 @@ class TestSaleQuoteWizard(GUITest):
 
         step.client.update(client_with_credit.id)
         self.check_wizard(wizard, 'wizard-salequote-client-with-credit')
+
+    @mock.patch('stoqlib.gui.wizards.salequotewizard.localtoday')
+    def test_expire_date_validate(self, localtoday_):
+        localtoday_.return_value = datetime.datetime(2020, 1, 5)
+
+        wizard = SaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+
+        self.assertEquals(
+            str(step.expire_date.emit('validate', datetime.date(2013, 1, 1))),
+            "The expire date must be set to today or a future date.")

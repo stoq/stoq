@@ -25,7 +25,10 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                 GtkButton(step.create_client):
                 GtkButton(step.client_details):
                 GtkLabel(step.nature_lbl): 'Operation Nature:'
-                ProxyEntry(step.operation_nature): '', invalid
+                ProxyEntry(step.operation_nature): 'Sale'
+                GtkLabel(step.cfop_lbl): 'C.F.O.P.:', hidden
+                ProxyComboEntry(step.cfop): hidden
+                GtkButton(step.create_cfop): hidden
             GtkVBox(step.vbox4, expand=True, fill=True):
               GtkTable(step.right_col_table, fill=True):
                 GtkLabel(step.expire_label): 'Expire'
@@ -36,11 +39,14 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                 ProxyComboBox(step.wo_categories):
                   item: 'No category', selected
                   item: 'Category'
+                GtkLabel(step.client_category_lbl): 'Client Category:', hidden
+                ProxyComboBox(step.client_category): hidden
+                  item: '', selected
           GtkHSeparator(step.hseparator1, fill=True):
           GtkVBox(step.total_box, fill=True):
             GtkHBox(step.hbox2, fill=True):
               GtkHButtonBox(step.hbuttonbox1, pack-end):
-                GtkButton(step.observations_button, pack-end): 'Observations...'
+                GtkButton(step.notes_button, pack-end): 'Observations...'
           GtkEventBox(step.select_method_holder, fill=True, pack-end):
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):

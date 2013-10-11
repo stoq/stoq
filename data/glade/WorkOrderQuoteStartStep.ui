@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="OpticalSalesPersonStep">
+  <object class="GtkWindow" id="WorkOrderQuoteStartStep">
     <property name="border_width">6</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
@@ -22,7 +22,7 @@
                 <child>
                   <object class="GtkTable" id="table3">
                     <property name="visible">True</property>
-                    <property name="n_rows">3</property>
+                    <property name="n_rows">4</property>
                     <property name="n_columns">4</property>
                     <child>
                       <object class="ProxyLabel" id="salesperson_lbl">
@@ -163,6 +163,62 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkLabel" id="cfop_lbl">
+                        <property name="visible">True</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">C.F.O.P.:</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyComboEntry" id="cfop">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">object</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">cfop</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="x_padding">3</property>
+                        <property name="y_padding">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="create_cfop">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="relief">none</property>
+                        <child>
+                          <object class="GtkImage" id="image3">
+                            <property name="visible">True</property>
+                            <property name="tooltip_text" translatable="yes">Add a new C.F.O.P.</property>
+                            <property name="stock">gtk-add</property>
+                            <property name="icon-size">1</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="x_options">GTK_SHRINK</property>
+                        <property name="y_options">GTK_SHRINK</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
                       <placeholder/>
                     </child>
                     <child>
@@ -194,7 +250,7 @@
                 <child>
                   <object class="GtkTable" id="right_col_table">
                     <property name="visible">True</property>
-                    <property name="n_rows">3</property>
+                    <property name="n_rows">4</property>
                     <property name="n_columns">3</property>
                     <child>
                       <object class="GtkLabel" id="expire_label">
@@ -271,6 +327,36 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkLabel" id="client_category_lbl">
+                        <property name="visible">True</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Client Category:</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyComboBox" id="client_category">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">object</property>
+                        <property name="model_attribute">client_category</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="x_padding">3</property>
+                        <property name="y_padding">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
                       <placeholder/>
                     </child>
                     <child>
@@ -327,7 +413,7 @@
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkButton" id="observations_button">
+                      <object class="GtkButton" id="notes_button">
                         <property name="label" translatable="yes">Observations...</property>
                         <property name="visible">True</property>
                         <property name="receives_default">False</property>

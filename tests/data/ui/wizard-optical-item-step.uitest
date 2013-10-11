@@ -5,59 +5,54 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave OpticalItemStep is attached
         GtkVBox(step.toplevel):
-          GtkHBox(step.hbox1, fill=True):
-            GtkLabel(step.label1, fill=True): 'Work Order:'
-            ProxyComboBox(step.work_orders_combo, fill=True): hidden
-            GtkHBox(step.work_orders_box, expand=True, fill=True):
-              GtkRadioButton(step._radio_group, padding=6): 'Work order for Patient', active
-            GtkLabel(step.label2, expand=True, fill=True):
-          GtkEventBox(step.slave_holder, expand=True, fill=True): slave _ItemSlave is attached
+          GtkHBox(step._work_orders_hbox, fill=True, padding=6):
+            GtkLabel(fill=True): 'Work order:'
+            GtkRadioButton(step._radio_group, padding=6): 'Work order for Patient', active
+          GtkTable(step.item_table, fill=True):
+            GtkHBox(step.hbox2):
+              ProxyLabel(step.item_lbl, fill=True): 'Item:'
+              GtkEntry(step.barcode, fill=True): '12345681'
+              GtkButton(step.product_button):
+            ProxyLabel(step.kiwilabel2): 'Quantity:'
+            ProxySpinButton(step.quantity): '0.000', insensitive
+            ProxyLabel(step.unit_label): '<span weight="bold"></span>'
+            ProxyLabel(step.cost_label): 'Price:'
+            ProxySpinButton(step.cost): '0.00', insensitive
+            GtkButton(step.add_sellable_button): insensitive
+            ProxyLabel(step.sellable_description): '<span ></span>'
+            GtkLabel(step.minimum_quantity_lbl): 'Minimum:', hidden
+            ProxyLabel(step.minimum_quantity): '<span >0.0</span>', hidden
+            GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
+            ProxyLabel(step.stock_quantity): '<span >0.0</span>', hidden
+          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
             GtkVBox(toplevel):
-              GtkTable(item_table, fill=True):
-                GtkHBox(hbox2):
-                  ProxyLabel(item_lbl, fill=True): 'Item:'
-                  GtkEntry(barcode, fill=True): '12345681'
-                  GtkButton(product_button):
-                ProxyLabel(kiwilabel2): 'Quantity:'
-                ProxySpinButton(quantity): '0.000', insensitive
-                ProxyLabel(unit_label): '<span weight="bold"></span>'
-                ProxyLabel(cost_label): 'Price:'
-                ProxySpinButton(cost): '0.00', insensitive
-                GtkButton(add_sellable_button): insensitive
-                ProxyLabel(sellable_description): '<span ></span>'
-                GtkLabel(minimum_quantity_lbl): 'Minimum:', hidden
-                ProxyLabel(minimum_quantity): '<span >0.0</span>', hidden
-                GtkLabel(stock_quantity_lbl): 'Stock:', hidden
-                ProxyLabel(stock_quantity): '<span >0.0</span>', hidden
-              GtkEventBox(list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-                GtkVBox(toplevel):
-                  GtkVBox(list_vbox, expand=True, fill=True):
-                    ObjectList(klist, expand=True, fill=True):
-                      column: title='Code', hidden
-                      column: title='Barcode', hidden
-                      column: title='Description', expand
-                      column: title='Owner'
-                      column: title='Quantity'
-                      column: title='Original Price'
-                      column: title='Sale Price'
-                      column: title='Discount'
-                      column: title='Total'
-                      row: u'', u'12345680', u'Description [Batch: 1]', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                      row: u'', u'12345678', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                      row: u'', u'12345679', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                      row: u'', u'12345681', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                    GtkHBox(summary, fill=True):
-                      GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-                      GtkLabel(): '<b>$40.00</b>'
-                  GtkHBox(hbox1, fill=True):
-                    GtkHBox(button_box):
-                      GtkButton(add_button): hidden
-                      GtkButton(edit_button): insensitive
-                      GtkButton(delete_button): insensitive
-                      GtkButton(discount_btn, pack-end): 'Apply discount'
-                    GtkHBox(message_hbox, expand=True, fill=True): hidden
-                      GtkLabel(message_label, expand=True, fill=True):
-                      GtkButton(message_details_button, fill=True): 'Details'
+              GtkVBox(list_vbox, expand=True, fill=True):
+                ObjectList(klist, expand=True, fill=True):
+                  column: title='Code', hidden
+                  column: title='Barcode', hidden
+                  column: title='Description', expand
+                  column: title='Owner'
+                  column: title='Quantity'
+                  column: title='Original Price'
+                  column: title='Sale Price'
+                  column: title='Discount'
+                  column: title='Total'
+                  row: u'', u'12345680', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                  row: u'', u'12345678', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                  row: u'', u'12345679', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                  row: u'', u'12345681', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                GtkHBox(step.summary, fill=True):
+                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
+                  GtkLabel(): '<b>$40.00</b>'
+              GtkHBox(hbox1, fill=True):
+                GtkHBox(button_box):
+                  GtkButton(add_button): hidden
+                  GtkButton(edit_button): insensitive
+                  GtkButton(delete_button): insensitive
+                  GtkButton(step.discount_btn, pack-end): 'Apply discount'
+                GtkHBox(message_hbox, expand=True, fill=True):
+                  GtkLabel(message_label, expand=True, fill=True): '<b>Not enough stock. Estimated time to obtain missing items: 0 days.</b>'
+                  GtkButton(message_details_button, fill=True): 'Details'
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

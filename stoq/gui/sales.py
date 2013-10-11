@@ -58,6 +58,7 @@ from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SERVICES,
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.message import info, yesno, warning
@@ -130,6 +131,8 @@ class SalesApp(ShellApp):
             # File
             ("SaleQuote", None, _("Sale quote..."), '',
              _('Create a new quote for a sale')),
+            ("WorkOrderQuote", None, _("Sale with work order..."), '',
+             _('Create a new quote for a sale with work orders')),
             ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
 
@@ -191,6 +194,7 @@ class SalesApp(ShellApp):
                                             filename="sales.xml")
 
         self.SaleQuote.set_short_label(_("New Sale Quote"))
+        self.SaleQuote.set_short_label(_("New Sale Quote with Work Order"))
         self.SearchClient.set_short_label(_("Clients"))
         self.SearchProduct.set_short_label(_("Products"))
         self.SearchService.set_short_label(_("Services"))
@@ -211,7 +215,7 @@ class SalesApp(ShellApp):
         self._setup_columns()
         self._setup_widgets()
 
-        self.window.add_new_items([self.SaleQuote])
+        self.window.add_new_items([self.SaleQuote, self.WorkOrderQuote])
         self.window.add_search_items([
             self.SearchProduct,
             self.SearchClient,
@@ -233,7 +237,7 @@ class SalesApp(ShellApp):
         self.uimanager.remove_ui(self.sales_ui)
 
     def new_activate(self):
-        self._new_sale_quote()
+        self._new_sale_quote(wizard=SaleQuoteWizard)
 
     def search_activate(self):
         self._search_product()
@@ -424,13 +428,13 @@ class SalesApp(ShellApp):
         branch = api.get_current_branch(self.store)
         return self.search_spec.find_by_branch(store, branch)
 
-    def _new_sale_quote(self):
+    def _new_sale_quote(self, wizard):
         if self.check_open_inventory():
             warning(_("You cannot create a quote with an open inventory."))
             return
 
         store = api.new_store()
-        model = self.run_dialog(SaleQuoteWizard, store)
+        model = self.run_dialog(wizard, store)
         store.confirm(model)
         store.close()
 
@@ -464,7 +468,10 @@ class SalesApp(ShellApp):
     # Sales
 
     def on_SaleQuote__activate(self, action):
-        self._new_sale_quote()
+        self._new_sale_quote(wizard=SaleQuoteWizard)
+
+    def on_WorkOrderQuote__activate(self, action):
+        self._new_sale_quote(wizard=WorkOrderQuoteWizard)
 
     def on_SalesCancel__activate(self, action):
         if not yesno(_('This will cancel the selected quote. Are you sure?'),

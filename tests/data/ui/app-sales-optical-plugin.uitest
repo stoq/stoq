@@ -7,6 +7,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
               GtkImageMenuItem(): 'Sale quote...'
+              GtkImageMenuItem(): 'Sale with work order...'
               GtkImageMenuItem(): 'Loan...'
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
