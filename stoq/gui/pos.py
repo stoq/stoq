@@ -449,10 +449,10 @@ class PosApp(ShellApp):
             if not rv:
                 return
 
-            for item in rv:
+            for batch, b_quantity in rv.items():
                 sale_item = TemporarySaleItem(sellable=sellable,
-                                              quantity=item.quantity,
-                                              batch=item.batch)
+                                              quantity=b_quantity,
+                                              batch=batch)
                 self._update_added_item(sale_item)
         else:
             sale_item = TemporarySaleItem(sellable=sellable,

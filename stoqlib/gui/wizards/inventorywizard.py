@@ -33,8 +33,7 @@ from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import StorableBatch
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
-from stoqlib.gui.dialogs.batchselectiondialog import (BatchSelectionDialog,
-                                                      BatchItem)
+from stoqlib.gui.dialogs.batchselectiondialog import BatchSelectionDialog
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity
@@ -49,7 +48,7 @@ class _TemporaryInventoryItem(object):
         self.category_description = sellable.get_category_description()
         self.storable = storable
         self.is_batch = self.storable.is_batch
-        self.batches = []
+        self.batches = {}
         self.changed = False
         if batch_number is not None:
             self.add_or_update_batch(batch_number, quantity)
@@ -59,7 +58,7 @@ class _TemporaryInventoryItem(object):
     @property
     def quantity(self):
         if self.is_batch:
-            return sum(item.quantity for item in self.batches)
+            return sum(quantity for quantity in self.batches.values())
         return self._quantity
 
     @quantity.setter
@@ -73,23 +72,9 @@ class _TemporaryInventoryItem(object):
 
     def add_or_update_batch(self, batch_number, quantity):
         assert self.is_batch
-        for item in self.batches:
-            if item.batch == batch_number:
-                # FIXME: namedtuple doesn't accept data to be changed, so we
-                # will remove the item and add another one at the same position
-                # This would't be necessary if we could use OrderedDict here
-                # (or ideally, if BatchItem was an OrderedDict) but for
-                # that we need to raise our python requirement to 2.7
-                index = self.batches.index(item)
-                self.batches.remove(item)
-                # And sum the quantity to mimic the update
-                quantity += item.quantity
-                break
-        else:
-            index = len(self.batches)
 
-        self.batches.insert(
-            index, BatchItem(batch=batch_number, quantity=quantity))
+        self.batches.setdefault(batch_number, 0)
+        self.batches[batch_number] += quantity
 
 
 class _InventoryBatchSelectionDialog(BatchSelectionDialog):
@@ -373,7 +358,7 @@ class InventoryCountWizard(BaseWizard):
 
         for sellable, tmp_item in self.temporary_items.items():
             if tmp_item.is_batch:
-                for batch_number, quantity in tmp_item.batches:
+                for batch_number, quantity in tmp_item.batches.items():
                     try:
                         # We will try to get the InventoryItem and update it
                         item = model_items.pop((sellable, batch_number))

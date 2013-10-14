@@ -65,7 +65,7 @@ class _TemporaryReceivingItem(object):
         self.storable = item.sellable.product_storable
         self.is_batch = self.storable and self.storable.is_batch
         self.need_adjust_batch = self.is_batch
-        self.batches = []
+        self.batches = {}
         if not self.is_batch:
             self.quantity = self.remaining_quantity
 
@@ -76,7 +76,7 @@ class _TemporaryReceivingItem(object):
     @property
     def quantity(self):
         if self.is_batch:
-            return sum(item.quantity for item in self.batches)
+            return sum(quantity for quantity in self.batches.values())
         return self._quantity
 
     @quantity.setter
@@ -311,11 +311,11 @@ class ReceivingOrderItemStep(WizardEditorStep):
     def _create_receiving_items(self):
         for item in self.purchase_items:
             if item.is_batch:
-                for batch_item in item.batches:
+                for batch, quantity in item.batches.items():
                     self.model.add_purchase_item(
                         item.purchase_item,
-                        quantity=batch_item.quantity,
-                        batch_number=batch_item.batch)
+                        quantity=quantity,
+                        batch_number=batch)
             elif item.quantity > 0:
                 self.model.add_purchase_item(item.purchase_item,
                                              item.quantity)

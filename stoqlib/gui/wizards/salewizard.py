@@ -89,11 +89,11 @@ class _TemporarySaleItem(object):
         self.category_description = sellable.get_category_description()
         self.price = item.price
         self.original_quantity = item.quantity
-        self.batches = []
+        self.batches = {}
 
     @property
     def quantity(self):
-        return sum(item.quantity for item in self.batches)
+        return sum(quantity for quantity in self.batches.values())
 
     @property
     def total(self):
@@ -423,11 +423,11 @@ class ConfirmSaleBatchStep(WizardEditorStep):
         for temp_item in self.sale_items:
             sale_item = temp_item.sale_item
             wo_item = WorkOrderItem.get_from_sale_item(sale_item.store, sale_item)
-            for i, b_item in enumerate(temp_item.batches):
+            for i, (batch, quantity) in enumerate(temp_item.batches.items()):
                 if i == 0:
                     # The first is used to replace the existing one
-                    sale_item.quantity = b_item.quantity
-                    sale_item.batch = b_item.batch
+                    sale_item.quantity = quantity
+                    sale_item.batch = batch
                     new_item = sale_item
                     if wo_item:
                         wo_item.quantity = sale_item.quantity
@@ -435,8 +435,8 @@ class ConfirmSaleBatchStep(WizardEditorStep):
                     new_item = SaleItem(store=sale_item.store,
                                         sellable=sale_item.sellable,
                                         sale=sale_item.sale,
-                                        quantity=b_item.quantity,
-                                        batch=b_item.batch,
+                                        quantity=quantity,
+                                        batch=batch,
                                         cfop=sale_item.cfop,
                                         base_price=sale_item.base_price,
                                         price=sale_item.price,

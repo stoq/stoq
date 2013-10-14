@@ -57,14 +57,14 @@ class _TemporaryStorableItem(object):
         self.unit_cost = sellable.cost
         self.storable = sellable.product_storable
         self.is_batch = self.storable and self.storable.is_batch
-        self.batches = []
+        self.batches = {}
         if not self.is_batch:
             self.initial_stock = 0
 
     @property
     def initial_stock(self):
         if self.is_batch:
-            return sum(item.quantity for item in self.batches)
+            return sum(quantity for quantity in self.batches.values())
         return self._quantity
 
     @initial_stock.setter
@@ -128,11 +128,11 @@ class InitialStockDialog(BaseEditor):
         if valid_stock and valid_cost:
             storable = store.fetch(item.obj)
             if item.is_batch:
-                for batch_item in item.batches:
-                    storable.register_initial_stock(batch_item.quantity,
+                for batch, quantity in item.batches.items():
+                    storable.register_initial_stock(quantity,
                                                     self.model.branch,
                                                     item.unit_cost,
-                                                    batch_number=batch_item.batch)
+                                                    batch_number=batch)
             else:
                 storable.register_initial_stock(item.initial_stock,
                                                 self.model.branch,

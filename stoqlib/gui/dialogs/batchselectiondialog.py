@@ -45,12 +45,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-#: a simple :py:`collections.namedtuple` used by this modules' editors
-#: to generate batch information. The *batch* element will represent a
-#: |batch| or it's batch number (which one is documented on the
-#: editor) and the *quantity* element represents the quantity of that batch
-BatchItem = collections.namedtuple('BatchItem', ['batch', 'quantity'])
-
 
 class BatchSelectionDialog(BaseEditor):
     """A dialog for selecting batch quantities
@@ -65,8 +59,8 @@ class BatchSelectionDialog(BaseEditor):
     will be appended below the last ones, so you can add more quantities
     to/from another batch.
 
-    When confirming, a list of :class:`batch items <.BatchItem>` will be
-    returned. Note that *batch' there can be a text (containing the
+    When confirming, a dict will be returned mapping the batch to it's
+    quantity. Note that *batch' there can be a text (containing the
     batch number) or an object (containing the |batch| in question).
     That will depend on the editor (see :class:`.BatchIncreaseSelectionDialog`
     and :class:`.BatchDecreaseSelectionDialog` for more information).
@@ -112,8 +106,8 @@ class BatchSelectionDialog(BaseEditor):
             dialog as a maximum quantity (see the attr doc for more
             information). Passing 0 here means forcing no validation
             (so the user can type whatever he wants)
-        :param original_batches: a sequence of :class:`batch item <.BatchItem>`
-            with original items to be populated on entries. Very useful when
+        :param original_batches: a dict mapping the batch to it's
+            original quantity to be populated on entries. Very useful when
             calling this editor to edit the same model
         :param visual_mode: if we are working on visual mode
         """
@@ -134,8 +128,8 @@ class BatchSelectionDialog(BaseEditor):
         self._last_entry = None
         # This dicts store what is the spin given an entry,
         # or the entry given the spin
-        self._spins = {}
-        self._entries = {}
+        self._spins = collections.OrderedDict()
+        self._entries = collections.OrderedDict()
 
         BaseEditor.__init__(self, store, model=model, visual_mode=False)
 
@@ -251,13 +245,14 @@ class BatchSelectionDialog(BaseEditor):
         self.add_proxy(self.model, self.proxy_widgets)
 
     def on_confirm(self):
-        self.retval = []
+        self.retval = collections.OrderedDict()
 
         for entry, spin in self._spins.items():
             batch = entry.read()
             if not batch or batch == ValueUnset:
                 continue
-            self.retval.append(BatchItem(batch=batch, quantity=spin.read()))
+
+            self.retval[batch] = spin.read()
 
     #
     #  Private
@@ -281,12 +276,11 @@ class BatchSelectionDialog(BaseEditor):
     def _append_initial_rows(self, batches=None):
         self._append_dumb_row_lock += 1
 
-        batches = batches or []
+        batches = batches or {}
         if not batches:
             self._append_or_update_row(self._quantity, mandatory=True)
 
-        for item in batches or []:
-            batch, quantity = item.batch, item.quantity
+        for batch, quantity in batches.items():
             self._append_or_update_row(quantity, batch=batch)
 
         self._update_view()
@@ -502,19 +496,19 @@ class BatchDecreaseSelectionDialog(BatchSelectionDialog):
     it will be validated for each batch (so no batch is allowed
     to have more quantity than the available in stock)
 
-    Also, the *batch* on the returned :class:`.BatchItem` will be a |batch|.
+    Also, the *batch* key on the returned dict will be a |batch|.
 
     """
 
     def __init__(self, store, model, quantity,
                  original_batches=None, decreased_batches=None):
         """
-        :param decreased_batches: a sequence of :class:`batch item <.BatchItem>`
-            of quantities already decreased. Useful when you have some quantity
+        :param decreased_batches: a dict mapping the batch to it's
+            already decreased. Useful when you have some quantity
             already decreased on a store for example and you want it to be
             taken in consideration when checking for stock availability
         """
-        self._decreased_batches = decreased_batches or []
+        self._decreased_batches = decreased_batches or {}
         BatchSelectionDialog.__init__(self, store, model, quantity,
                                       original_batches=original_batches)
 
@@ -552,9 +546,9 @@ class BatchDecreaseSelectionDialog(BatchSelectionDialog):
 
         branch = api.get_current_branch(self.store)
         available_qty = batch.get_balance_for_branch(branch)
-        for batch_item in self._decreased_batches:
-            if batch_item.batch == batch:
-                available_qty -= batch_item.quantity
+        for decreased_batch, decreased_quantity in self._decreased_batches.items():
+            if decreased_batch == batch:
+                available_qty -= decreased_quantity
 
         if quantity > available_qty:
             return ValidationError(_("There's only %s available in stock for "
@@ -577,7 +571,7 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
     there's no limit for quantities in each batch (unless specified
     by the *max_quantity* param)
 
-    Also, the *batch* on the returned :class:`.BatchItem` will
+    Also, the *batch* key on the returned dict will
     be a string object, containing the batch number.
 
     """
@@ -591,7 +585,7 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
     def on_confirm(self):
         super(BatchIncreaseSelectionDialog, self).on_confirm()
 
-        used = set(batch_item.batch for batch_item in self.retval)
+        used = set(batch for batch in self.retval)
         # Replace the existing one instead of replacing since some batches
         # may have been removed and thus are allowed for other storables
         _used_batches_mapper[(self.store, self.model.id)] = used

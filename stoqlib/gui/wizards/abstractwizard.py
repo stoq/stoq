@@ -29,6 +29,7 @@ not require some specific implementation details for the main wizard. Use
 instead signals and interfaces for that.
 """
 
+import collections
 from decimal import Decimal
 
 import gtk
@@ -51,8 +52,7 @@ from stoqlib.gui.search.productsearch import ProductBranchSearch
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardStep
-from stoqlib.gui.dialogs.batchselectiondialog import (BatchDecreaseSelectionDialog,
-                                                      BatchItem)
+from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.producteditor import ProductEditor
@@ -564,10 +564,9 @@ class SellableItemSlave(BaseEditorSlave):
     def get_batch_items(self):
         """Get batch items for sellables inside this slave
 
-        :returns: a sequence of
-            :class:`stoqlib.gui.batchselectiondialog.BatchItem`
+        :returns: a dict mapping the batch to it's quantity
         """
-        batch_items = {}
+        batch_items = collections.OrderedDict()
         for item in self.slave.klist:
             if item.batch is None:
                 continue
@@ -575,7 +574,7 @@ class SellableItemSlave(BaseEditorSlave):
             # Sum all quantities of the same batch
             batch_items[item.batch] += item.quantity
 
-        return [BatchItem(batch=k, quantity=v) for k, v in batch_items.items()]
+        return batch_items
 
     def get_batch_order_items(self, sellable, value, quantity):
         """Get order items for sellable considering it's |batches|
@@ -613,11 +612,12 @@ class SellableItemSlave(BaseEditorSlave):
         retval = run_dialog(
             self.batch_selection_dialog, self.get_parent(),
             store=self.store, model=storable, quantity=quantity, **extra_kw)
+        retval = retval or {}
 
-        for batch_item in retval or []:
+        for batch, b_quantity in retval.items():
             order_item = self.get_order_item(sellable, value,
-                                             quantity=batch_item.quantity,
-                                             batch=batch_item.batch)
+                                             quantity=b_quantity,
+                                             batch=batch)
             if order_item is None:
                 continue
             order_items.append(order_item)
