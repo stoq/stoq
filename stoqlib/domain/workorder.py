@@ -41,6 +41,7 @@ from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import InvalidStatus, NeedReason, StockError
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import SaleItemAfterSetBatchesEvent
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import (Branch, Client, Person, SalesPerson,
                                    Company, LoginUser)
@@ -449,6 +450,10 @@ class WorkOrderItem(Domain):
         # when the object as loaded from the database again.
         self._original_quantity = self.quantity
 
+    #
+    #  Classmethods
+    #
+
     @classmethod
     def get_from_sale_item(cls, store, sale_item):
         """Get the |workorderitem| given one |saleitem|
@@ -459,6 +464,29 @@ class WorkOrderItem(Domain):
         :rtype: |workorderitem|
         """
         return store.find(cls, cls.sale_item_id == sale_item.id).one()
+
+    #
+    #  Events
+    #
+
+    @SaleItemAfterSetBatchesEvent.connect
+    @classmethod
+    def _on_sale_item_after_set_batches(cls, sale_item, new_sale_items):
+        self = cls.get_from_sale_item(sale_item.store, sale_item)
+        if self is None:
+            return
+
+        self.quantity = sale_item.quantity
+        self.batch = sale_item.batch
+
+        for sale_item in new_sale_items:
+            cls(store=sale_item.store,
+                quantity=sale_item.quantity,
+                price=sale_item.price,
+                batch=sale_item.batch,
+                order=self.order,
+                sellable=self.sellable,
+                sale_item=sale_item)
 
 
 @implementer(IContainer)

@@ -193,6 +193,19 @@ class SaleItemBeforeIncreaseStockEvent(Event):
     """
 
 
+class SaleItemAfterSetBatchesEvent(Event):
+    """
+    This event is emitted after a |saleitem| set it's batches
+
+    This is called at the end of
+    :meth:`stoqlib.domain.sale.SaleItem.set_batches`
+
+    :param sale_item: the |saleitem| object
+    :param new_sale_items: a list of the new |saleitems| created
+        when setting the batches
+    """
+
+
 @public(since="1.5.0")
 class DeliveryStatusChangedEvent(Event):
     """

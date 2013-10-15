@@ -1435,6 +1435,66 @@ class TestSaleItem(DomainTest):
         self.assertEquals(str(error.exception), 'You must provide a sellable '
                                                 'argument')
 
+    def test_set_batches(self):
+        sale_item = self.create_sale_item(product=True, quantity=10)
+        batch1 = self.create_storable_batch(
+            storable=sale_item.sellable.product_storable, batch_number=u'1')
+        batch2 = self.create_storable_batch(
+            storable=sale_item.sellable.product_storable, batch_number=u'2')
+        batch3 = self.create_storable_batch(
+            storable=sale_item.sellable.product_storable, batch_number=u'3')
+
+        with self.assertRaisesRegexp(
+                ValueError,
+                ("The sum of batch quantities needs to be equal "
+                 "or less than the item's original quantity")):
+            sale_item.set_batches({batch1: 11})
+
+        sale_item.set_batches({batch1: 3, batch2: 6, batch3: 1})
+        self.assertEqual(
+            set((i.batch, i.quantity) for i in sale_item.sale.get_items()),
+            set([(batch1, 3), (batch2, 6), (batch3, 1)]))
+
+        with self.assertRaisesRegexp(ValueError,
+                                     "This item already has a batch"):
+            sale_item.set_batches({})
+
+    def test_set_batches_partially(self):
+        sale_item = self.create_sale_item(product=True, quantity=10)
+        batch1 = self.create_storable_batch(
+            storable=sale_item.sellable.product_storable, batch_number=u'1')
+        batch2 = self.create_storable_batch(
+            storable=sale_item.sellable.product_storable, batch_number=u'2')
+
+        sale_item.set_batches({batch1: 2, batch2: 3})
+        self.assertEqual(
+            set((i.batch, i.quantity) for i in sale_item.sale.get_items()),
+            set([(None, 5), (batch1, 2), (batch2, 3)]))
+
+    def test_set_batches_with_work_order_item(self):
+        sale_item = self.create_sale_item(product=True, quantity=10)
+        work_order_item = self.create_work_order_item(quantity=10)
+        work_order_item.sale_item = sale_item
+        work_order_item.sellable = sale_item.sellable
+        work_order_item.order.branch = sale_item.sale.branch
+
+        batch1 = self.create_storable_batch(
+            storable=sale_item.sellable.product_storable, batch_number=u'1')
+        batch2 = self.create_storable_batch(
+            storable=sale_item.sellable.product_storable, batch_number=u'2')
+        batch3 = self.create_storable_batch(
+            storable=sale_item.sellable.product_storable, batch_number=u'3')
+
+        sale_item.set_batches({batch1: 3, batch2: 6, batch3: 1})
+        self.assertEqual(
+            set((i.batch, i.quantity) for i in sale_item.sale.get_items()),
+            set([(batch1, 3), (batch2, 6), (batch3, 1)]))
+
+        self.assertEqual(work_order_item.order.order_items.count(), 3)
+        for wo_item in work_order_item.order.order_items:
+            self.assertEqual(wo_item.batch, wo_item.sale_item.batch)
+            self.assertEqual(wo_item.quantity, wo_item.sale_item.quantity)
+
     @mock.patch('stoqlib.domain.sale.get_current_branch')
     def test_sell_branch(self, get_current_branch_):
         get_current_branch_.return_value = self.create_branch()

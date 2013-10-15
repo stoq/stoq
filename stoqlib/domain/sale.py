@@ -52,6 +52,7 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    SaleItemBeforeDecreaseStockEvent,
                                    SaleItemBeforeIncreaseStockEvent,
+                                   SaleItemAfterSetBatchesEvent,
                                    DeliveryStatusChangedEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer
@@ -238,6 +239,63 @@ class SaleItem(Domain):
                                     self.id,
                                     batch=self.batch)
             self.quantity_decreased = Decimal(0)
+
+    def set_batches(self, batches):
+        """Set batches for this sale item
+
+        Set how much quantity of each |batch| this sale item represents.
+        Note that this will replicate this item and create others, since
+        the batch reference is one per sale item.
+
+        At the end, this sale item will contain the quantity not used
+        by any batch yet or, if the sum of quantities on batches are
+        equal to :obj:`.quantity`, it will be used for one of the batches
+
+        :param batches: a dict mapping the batch to it's quantity
+        :returns: a list of the new created items
+        :raises: :exc:`ValueError` if this item already has a batch
+        :raises: :exc:`ValueError` if the sum of the batches quantities
+            is greater than this item's original quantity
+        """
+        # Make a copy since we are going to modify this dict
+        batches = batches.copy()
+
+        if self.batch is not None:
+            raise ValueError("This item already has a batch")
+
+        quantities_sum = sum(quantity for quantity in batches.values())
+        if quantities_sum > self.quantity:
+            raise ValueError("The sum of batch quantities needs to be equal "
+                             "or less than the item's original quantity")
+
+        missing = self.quantity - quantities_sum
+        # If there's some quantity missing batch information, leave self
+        # with that missing quantity so it can be set again in the future
+        if missing:
+            self.quantity = missing
+        else:
+            self.batch, self.quantity = batches.popitem()
+            self.icms_info.update_values()
+            self.ipi_info.update_values()
+
+        new_sale_items = []
+        for batch, quantity in batches.items():
+            new_item = self.__class__(
+                store=self.store,
+                sellable=self.sellable,
+                sale=self.sale,
+                quantity=quantity,
+                batch=batch,
+                cfop=self.cfop,
+                base_price=self.base_price,
+                price=self.price,
+                notes=self.notes)
+            new_item.icms_info.update_values()
+            new_item.ipi_info.update_values()
+            new_sale_items.append(new_item)
+
+        SaleItemAfterSetBatchesEvent.emit(self, new_sale_items)
+        return new_sale_items
 
     def set_discount(self, discount):
         """Apply *discount* on this item
