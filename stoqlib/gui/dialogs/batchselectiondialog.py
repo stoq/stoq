@@ -322,8 +322,8 @@ class BatchSelectionDialog(BaseEditor):
 
         return spin
 
-    def _append_or_update_row(self, quantity, batch=None, mandatory=False,
-                              grab_focus=False):
+    def _append_or_update_row(self, quantity=None, batch=None,
+                              mandatory=False, grab_focus=False):
         last_entry = self._last_entry
         last_spin = self._last_entry and self._spins[self._last_entry]
 
@@ -331,7 +331,8 @@ class BatchSelectionDialog(BaseEditor):
         # instead of appending a lot of invalids
         if (last_entry is not None and
             (not last_entry.read() or not last_spin.read())):
-            last_spin.update(quantity)
+            if quantity is not None:
+                last_spin.update(quantity)
             # The batch is already None. Only update it if not None
             # to avoid update_view being called again here (no problem
             # for the spin because it should be insensitive)
@@ -345,7 +346,8 @@ class BatchSelectionDialog(BaseEditor):
 
         entry = self._create_entry(mandatory)
         spin = self._create_spin()
-        spin.set_value(quantity)
+        if quantity is not None:
+            spin.set_value(quantity)
         self._spins[entry] = spin
         self._entries[spin] = entry
         self._last_entry = entry
@@ -444,9 +446,10 @@ class BatchSelectionDialog(BaseEditor):
                 return
 
         diff = self._get_diff_quantity()
+        # The diff could be 0 or less if all the suggested quantity is filled.
+        # If that happens, pass None for the spin to use it's created value
         if diff <= 0:
-            # default to 1
-            diff = 1
+            diff = None
         self._append_or_update_row(diff, batch=batch, grab_focus=True)
 
     def _after_entry__changed(self, entry):

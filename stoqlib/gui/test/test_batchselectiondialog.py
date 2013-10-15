@@ -25,6 +25,7 @@
 import datetime
 
 from stoqlib.api import api
+from stoqlib.domain.product import StorableBatchView
 from stoqlib.gui.dialogs.batchselectiondialog import (BatchSelectionDialog,
                                                       BatchIncreaseSelectionDialog)
 from stoqlib.gui.test.uitestutils import GUITest
@@ -79,6 +80,32 @@ class TestBatchSelectionDialog(GUITest):
         spinbutton.update(10)
         self.assertIs(dialog._last_entry, last_entry)
         self.assertEqual(len(dialog._entries), 1)
+
+    def test_existing_batches(self):
+        branch = api.get_current_branch(self.store)
+        storable = self.create_storable(is_batch=True)
+        batch1 = self.create_storable_batch(storable=storable,
+                                            batch_number=u'1')
+        batch2 = self.create_storable_batch(storable=storable,
+                                            batch_number=u'2')
+        self.create_storable_batch(storable=storable, batch_number=u'3')
+
+        storable.increase_stock(10, branch, 0, None, batch=batch1)
+        storable.increase_stock(10, branch, 0, None, batch=batch2)
+
+        dialog = BatchSelectionDialog(self.store, storable, 5)
+        # The last batch should not appear since it doesn't have a storable
+        self.assertEqual(set([view.batch for view in dialog.existing_batches]),
+                         set([batch1, batch2]))
+
+        last_spin = dialog.get_spin_by_entry(dialog._last_entry)
+        # The spin (at the moment, the only one appended) should be filled
+        # with the total value (100, passed on the constructor)
+        self.assertEqual(last_spin.read(), 5)
+        view1 = self.store.find(StorableBatchView,
+                                StorableBatchView.id == batch1.id).one()
+        dialog.existing_batches.emit('row-activated', view1)
+        self.assertEqual(last_spin.read(), 5)
 
 
 class TestBatchIncreaseSelectionDialog(GUITest):
