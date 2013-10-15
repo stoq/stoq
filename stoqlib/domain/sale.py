@@ -50,6 +50,8 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
+                                   SaleItemBeforeDecreaseStockEvent,
+                                   SaleItemBeforeIncreaseStockEvent,
                                    DeliveryStatusChangedEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer
@@ -203,6 +205,11 @@ class SaleItem(Domain):
                               u"available first and then try again.") % (
                 self.sellable.get_description()))
 
+        # This is emitted here instead of inside the if bellow because one can
+        # connect on it and change this item in a way that, if it wasn't going
+        # to decrease stock before, it will after
+        SaleItemBeforeDecreaseStockEvent.emit(self)
+
         quantity_to_decrease = self.quantity - self.quantity_decreased
         storable = self.sellable.product_storable
         if storable and quantity_to_decrease:
@@ -218,6 +225,11 @@ class SaleItem(Domain):
             self.quantity_decreased += quantity_to_decrease
 
     def cancel(self, branch):
+        # This is emitted here instead of inside the if bellow because one can
+        # connect on it and change this item in a way that, if it wasn't going
+        # to increase stock before, it will after
+        SaleItemBeforeIncreaseStockEvent.emit(self)
+
         storable = self.sellable.product_storable
         if storable and self.quantity_decreased:
             storable.increase_stock(self.quantity_decreased,

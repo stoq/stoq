@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,9 +23,10 @@
 ##
 
 import logging
+import sys
 import weakref
 
-from kiwi.python import ClassInittableObject
+from kiwi.python import ClassInittableObject, namedAny
 
 log = logging.getLogger(__name__)
 # Returned when object is dead
@@ -109,6 +110,7 @@ class Event(ClassInittableObject):
         # a cls._callbacks_list, Event's one will be used.
         # Also, using a list instead of a set to keep the order
         cls._callbacks_list = _CallbacksList()
+        cls._lazy_callbacks = []
 
     #
     #  Public API
@@ -116,6 +118,8 @@ class Event(ClassInittableObject):
 
     @classmethod
     def emit(cls, *args, **kwargs):
+        cls._resolve_lazy_callbacks()
+
         log.info('emitting event %s %r %r' % (cls.__name__,
                                               args, kwargs))
         rv_list = []
@@ -140,11 +144,38 @@ class Event(ClassInittableObject):
 
     @classmethod
     def connect(cls, callback):
-        assert callable(callback)
-        weak_callback = _WeakRef(callback)
-        assert weak_callback not in cls._callbacks_list
-        cls._callbacks_list.append(weak_callback)
+        if callable(callback):
+            callback = _WeakRef(callback)
+        elif isinstance(callback, classmethod):
+            # FIXME: If the classmethod is not callable (the first case), then
+            # the connect was used as a decorator. In that case, the class
+            # still doesn't exist and we don't have any reference to it on the
+            # function itself, so we have to access the frame object and get
+            # the class when first emitting it. Is there any better way of
+            # doing this?
+            frame = sys._getframe()
+            module = frame.f_back.f_locals['__module__']
+            klass_name = frame.f_back.f_code.co_name
+            cls._lazy_callbacks.append(
+                ('%s.%s' % (module, klass_name), callback.__func__))
+            return
+        else:
+            raise TypeError("callback %r must be callable" % (callback, ))
+
+        assert callback not in cls._callbacks_list
+        cls._callbacks_list.append(callback)
 
     @classmethod
     def disconnect(cls, callback):
         cls._callbacks_list.remove(_WeakRef(callback))
+
+    #
+    #  Private
+    #
+
+    @classmethod
+    def _resolve_lazy_callbacks(cls):
+        for klass_string, func in cls._lazy_callbacks[:]:
+            klass = namedAny(klass_string)
+            cls._callbacks_list.append(lambda *a, **kw: func(klass, *a, **kw))
+            cls._lazy_callbacks.remove((klass_string, func))

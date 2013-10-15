@@ -171,6 +171,28 @@ class SaleStatusChangedEvent(Event):
     """
 
 
+class SaleItemBeforeDecreaseStockEvent(Event):
+    """
+    This event is emitted when a |saleitem| is about to decrease the stock
+
+    This is usually called at the beginning of
+    :meth:`stoqlib.domain.sale.SaleItem.sell`
+
+    :param sale_item: the |saleitem| object
+    """
+
+
+class SaleItemBeforeIncreaseStockEvent(Event):
+    """
+    This event is emitted when a |saleitem| is about to increase the stock
+
+    This is usually called at the beginning of
+    :meth:`stoqlib.domain.sale.SaleItem.cancel`
+
+    :param sale_item: the |saleitem| object
+    """
+
+
 @public(since="1.5.0")
 class DeliveryStatusChangedEvent(Event):
     """

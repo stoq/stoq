@@ -7,9 +7,19 @@ class ReturnStatus:
     pass
 
 
+class TestEvent(Event):
+    pass
+
+
 class TestObject(object):
     def callback(self):
         pass
+
+    @TestEvent.connect
+    @classmethod
+    def classmethod_callback(cls, list_):
+        # We use this to make sure this was called
+        list_.append(True)
 
 
 class EventTest(unittest.TestCase):
@@ -77,6 +87,23 @@ class EventTest(unittest.TestCase):
                           MyEvent.disconnect, self._stub_return_wrong_value)
         self.assertRaises(ValueError,
                           MyEvent.disconnect, lambda: 666)
+
+    def test_classmethod_callback(self):
+        list_ = []
+        TestEvent.emit(list_)
+        # The callback appends True to the list. This way we are sure it
+        # was called and just once
+        self.assertEqual(len(list_), 1)
+        self.assertEqual(list_[0], True)
+
+    def test_connect_not_callable(self):
+        class MyEvent(Event):
+            pass
+
+        with self.assertRaisesRegexp(
+                TypeError,
+                "callback <object object at 0x[0-9a-f]+> must be callable"):
+            MyEvent.connect(object())
 
     def test_weak_ref(self):
         class MyEvent(Event):
