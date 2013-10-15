@@ -99,6 +99,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                             column: title='Description', expand
                             column: title='Price'
                             column: title='Quantity'
+                            column: title='Consumed quantity'
                             column: title='Total'
                           GtkHBox(summary, fill=True):
                             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
@@ -106,11 +107,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                         GtkHBox(hbox1, fill=True):
                           GtkHBox(button_box):
                             GtkButton(add_button): hidden
-                            GtkButton(edit_button): hidden, insensitive
+                            GtkButton(edit_button): insensitive
                             GtkButton(delete_button): hidden, insensitive
-                          GtkHBox(message_hbox, expand=True, fill=True): hidden
-                            GtkLabel(message_label, expand=True, fill=True):
-                            GtkButton(message_details_button, fill=True): 'Details'
+                          GtkHBox(message_hbox, expand=True, fill=True):
+                            GtkLabel(message_label, expand=True, fill=True): 'This order is related to a sale. Edit the sale if you need to change the items'
+                            GtkButton(message_details_button, fill=True): 'Details', hidden
             GtkEventBox(history_holder): slave WorkOrderHistorySlave is attached
               GtkAlignment(toplevel):
                 GtkVBox(vbox1):

@@ -1099,8 +1099,7 @@ class PosApp(ShellApp):
                 self.add_sale_item(
                     TemporarySaleItem(sellable=item.sellable,
                                       quantity=item.quantity,
-                                      # Quantity was already decreased on work order
-                                      quantity_decreased=item.quantity,
+                                      quantity_decreased=item.quantity_decreased,
                                       price=item.price,
                                       can_remove=False))
             work_order.close()

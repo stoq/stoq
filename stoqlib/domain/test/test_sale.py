@@ -778,6 +778,18 @@ class TestSale(DomainTest):
         final_quantity = storable.get_balance_for_branch(sale.branch)
         self.assertEquals(inital_quantity, final_quantity)
 
+    def test_cancel_with_work_order(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        work_order = self.create_workorder()
+        work_order.sale = sale
+
+        with mock.patch.object(work_order, 'cancel') as cancel:
+            sale.cancel()
+            cancel.assert_called_once_with(
+                reason="The sale was cancelled")
+
     def test_cancel_decreased_quantity(self):
         sale = self.create_sale()
         branch = sale.branch
@@ -1497,6 +1509,189 @@ class TestSaleItem(DomainTest):
         for wo_item in work_order_item.order.order_items:
             self.assertEqual(wo_item.batch, wo_item.sale_item.batch)
             self.assertEqual(wo_item.quantity, wo_item.sale_item.quantity)
+
+    def test_cancel_with_work_order_item(self):
+        sale_item = self.create_sale_item(product=True, quantity=10)
+        branch = sale_item.sale.branch
+        sellable = sale_item.sellable
+        # This quantity will be used to test all the cases above
+        storable = self.create_storable(sellable.product,
+                                        branch=branch, stock=10)
+        work_order_item = self.create_work_order_item(quantity=10)
+        work_order_item.sale_item = sale_item
+        work_order_item.sellable = sellable
+        work_order_item.order.branch = branch
+
+        # Test the case where there's no storable
+        item_without_storable = self.create_sale_item(quantity=10)
+        item_without_storable.branch = branch
+        work_item_without_storable = self.create_work_order_item(quantity=10)
+        work_item_without_storable.sale_item = item_without_storable
+        work_item_without_storable.sellable = item_without_storable.sellable
+        item_without_storable.cancel(branch)
+
+        # Sale item being cancelled with quantity_decreased on both items
+        # equal to 0
+        sale_item.quantity_decreased = 0
+        work_order_item.quantity_decreased = 0
+        sale_item.cancel(branch)
+        self.assertEqual(sale_item.quantity_decreased, 0)
+        self.assertEqual(work_order_item.quantity_decreased, 0)
+        # 10 + 0 = 10
+        self.assertEqual(storable.get_balance_for_branch(branch), 10)
+
+        # Sale item being cancelled with an already decreased quantity on
+        # sale_item
+        sale_item.quantity_decreased = 5
+        work_order_item.quantity_decreased = 0
+        sale_item.cancel(branch)
+        self.assertEqual(sale_item.quantity_decreased, 0)
+        self.assertEqual(work_order_item.quantity_decreased, 0)
+        # 10 + 5 = 15
+        self.assertEqual(storable.get_balance_for_branch(branch), 15)
+
+        # Sale item being cancelled with an already decreased quantity on
+        # work_order_item
+        sale_item.quantity_decreased = 5
+        work_order_item.quantity_decreased = 0
+        sale_item.cancel(branch)
+        self.assertEqual(sale_item.quantity_decreased, 0)
+        self.assertEqual(work_order_item.quantity_decreased, 0)
+        # 15 + 5 = 20
+        self.assertEqual(storable.get_balance_for_branch(branch), 20)
+
+        # Sale item being cancelled with an already decreased quantity on
+        # work_order_item and sale_item (both equal)
+        sale_item.quantity_decreased = 5
+        work_order_item.quantity_decreased = 5
+        sale_item.cancel(branch)
+        self.assertEqual(sale_item.quantity_decreased, 0)
+        self.assertEqual(work_order_item.quantity_decreased, 0)
+        # 20 + 5 = 25
+        self.assertEqual(storable.get_balance_for_branch(branch), 25)
+
+        # Sale item being cancelled with an already decreased quantity on
+        # work_order_item and sale_item (both different. It should increase
+        # based on the max decreased)
+        sale_item.quantity_decreased = 2
+        work_order_item.quantity_decreased = 5
+        sale_item.cancel(branch)
+        self.assertEqual(sale_item.quantity_decreased, 0)
+        self.assertEqual(work_order_item.quantity_decreased, 0)
+        # 25 + 5 = 30
+        self.assertEqual(storable.get_balance_for_branch(branch), 30)
+
+        # Sale item being cancelled with an already decreased quantity on
+        # work_order_item and sale_item (both different. It should increase
+        # based on the max decreased)
+        sale_item.quantity_decreased = 5
+        work_order_item.quantity_decreased = 2
+        sale_item.cancel(branch)
+        self.assertEqual(sale_item.quantity_decreased, 0)
+        self.assertEqual(work_order_item.quantity_decreased, 0)
+        # 30 + 5 = 35
+        self.assertEqual(storable.get_balance_for_branch(branch), 35)
+
+        # Sale item being cancelled with all items decreased
+        sale_item.quantity_decreased = 10
+        work_order_item.quantity_decreased = 10
+        sale_item.cancel(branch)
+        self.assertEqual(sale_item.quantity_decreased, 0)
+        self.assertEqual(work_order_item.quantity_decreased, 0)
+        # 35 + 10 = 45
+        self.assertEqual(storable.get_balance_for_branch(branch), 45)
+
+    def test_sell_with_work_order_item(self):
+        sale_item = self.create_sale_item(product=True, quantity=10)
+        branch = sale_item.sale.branch
+        sellable = sale_item.sellable
+        # This quantity will be used to test all the cases above
+        storable = self.create_storable(sellable.product,
+                                        branch=branch, stock=1000)
+        work_order_item = self.create_work_order_item(quantity=10)
+        work_order_item.sale_item = sale_item
+        work_order_item.sellable = sellable
+        work_order_item.order.branch = branch
+
+        # Test the case where there's no storable
+        item_without_storable = self.create_sale_item(quantity=10)
+        item_without_storable.branch = branch
+        work_item_without_storable = self.create_work_order_item(quantity=10)
+        work_item_without_storable.sale_item = item_without_storable
+        work_item_without_storable.sellable = item_without_storable.sellable
+        item_without_storable.sell(branch)
+        self.assertEqual(sale_item.quantity_decreased, 0)
+        self.assertEqual(work_order_item.quantity_decreased, 0)
+
+        # Sale item being sold with quantity_decreased on both items
+        # equal to 0 (no one decreased nothing yet)
+        sale_item.quantity_decreased = 0
+        work_order_item.quantity_decreased = 0
+        sale_item.sell(branch)
+        self.assertEqual(sale_item.quantity_decreased, 10)
+        self.assertEqual(work_order_item.quantity_decreased, 10)
+        # 100 - 10 = 990
+        self.assertEqual(storable.get_balance_for_branch(branch), 990)
+
+        # Sale item being sold with an already decreased quantity on sale_item
+        sale_item.quantity_decreased = 5
+        work_order_item.quantity_decreased = 0
+        sale_item.sell(branch)
+        self.assertEqual(sale_item.quantity_decreased, 10)
+        self.assertEqual(work_order_item.quantity_decreased, 10)
+        # 990 - 5 = 985
+        self.assertEqual(storable.get_balance_for_branch(branch), 985)
+
+        # Sale item being sold with an already decreased quantity on
+        # work_order_item
+        sale_item.quantity_decreased = 0
+        work_order_item.quantity_decreased = 5
+        sale_item.sell(branch)
+        self.assertEqual(sale_item.quantity_decreased, 10)
+        self.assertEqual(work_order_item.quantity_decreased, 10)
+        # 985 - 5 = 980
+        self.assertEqual(storable.get_balance_for_branch(branch), 980)
+
+        # Sale item being sold with an already decreased quantity on
+        # work_order_item and sale_item (both equal)
+        sale_item.quantity_decreased = 5
+        work_order_item.quantity_decreased = 5
+        sale_item.sell(branch)
+        self.assertEqual(sale_item.quantity_decreased, 10)
+        self.assertEqual(work_order_item.quantity_decreased, 10)
+        # 980 - 5 = 975
+        self.assertEqual(storable.get_balance_for_branch(branch), 975)
+
+        # Sale item being sold with an already decreased quantity on
+        # work_order_item and sale_item (both different. It should decrease
+        # based on the max decreased)
+        sale_item.quantity_decreased = 8
+        work_order_item.quantity_decreased = 5
+        sale_item.sell(branch)
+        self.assertEqual(sale_item.quantity_decreased, 10)
+        self.assertEqual(work_order_item.quantity_decreased, 10)
+        # 975 - 2 = 9 973
+        self.assertEqual(storable.get_balance_for_branch(branch), 973)
+
+        # Sale item being sold with an already decreased quantity on
+        # work_order_item and sale_item (both different. It should decrease
+        # based on the max decreased)
+        sale_item.quantity_decreased = 5
+        work_order_item.quantity_decreased = 7
+        sale_item.sell(branch)
+        self.assertEqual(sale_item.quantity_decreased, 10)
+        self.assertEqual(work_order_item.quantity_decreased, 10)
+        # 973 - 3 = 9 970
+        self.assertEqual(storable.get_balance_for_branch(branch), 970)
+
+        # Sale item being sold with all quantity already decreased on both
+        sale_item.quantity_decreased = 10
+        work_order_item.quantity_decreased = 10
+        sale_item.sell(branch)
+        self.assertEqual(sale_item.quantity_decreased, 10)
+        self.assertEqual(work_order_item.quantity_decreased, 10)
+        # 970 - 0 = 970
+        self.assertEqual(storable.get_balance_for_branch(branch), 970)
 
     @mock.patch('stoqlib.domain.sale.get_current_branch')
     def test_sell_branch(self, get_current_branch_):

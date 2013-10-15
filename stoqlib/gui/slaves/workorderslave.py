@@ -30,6 +30,7 @@ import gtk
 
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
+from kiwi.python import Settable
 from kiwi.ui.forms import PriceField, NumericField
 from kiwi.ui.objectlist import Column
 import pango
@@ -42,7 +43,6 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderHistoryView)
-from stoqlib.exceptions import StockError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
@@ -50,29 +50,121 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
+class _WorkOrderItemBatchSelectionDialog(BatchDecreaseSelectionDialog):
+    # When indicating the batches to reserve items bellow, make sure the user
+    # doesn't select more batches than he selected to reserve.
+    validate_max_quantity = True
+
+
 class _WorkOrderItemEditor(BaseEditor):
     model_name = _(u'Work order item')
     model_type = WorkOrderItem
-    confirm_widgets = ['price', 'quantity']
+    confirm_widgets = ['price', 'quantity', 'quantity_reserved']
 
     fields = dict(
         price=PriceField(_(u'Price'), proxy=True, mandatory=True),
         quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
+        quantity_reserved=NumericField(_(u'Reserved quantity')),
     )
 
-    #: The manager is someone who can allow a bigger discount for a sale item.
-    manager = None
-
-    def __init__(self, *args, **kwargs):
-        BaseEditor.__init__(self, *args, **kwargs)
+    def __init__(self, store, model, visual_mode=False):
+        self._original_quantity_decreased = model.quantity_decreased
+        self.manager = None
+        BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         self.price.set_icon_activatable(gtk.ENTRY_ICON_PRIMARY,
                                         activatable=True)
+
+    #
+    #  BaseEditor
+    #
+
+    def setup_proxies(self):
+        unit = self.model.sellable.unit
+        if unit and unit.allow_fraction:
+            self.quantity.set_digits(QUANTITY_PRECISION)
+            self.quantity_reserved.set_digits(QUANTITY_PRECISION)
+
+        self.quantity.set_range(1, MAX_INT)
+        # If there's a sale, we can't change it's quantity, but we can
+        # reserve/return_to_stock them. On the other hand, if there's no sale,
+        # the quantity_reserved must be in sync with quantity
+        if self.model.order.sale_id is not None:
+            self.price.set_sensitive(False)
+            self.quantity.set_sensitive(False)
+            self.quantity_reserved.set_range(0, self.model.quantity)
+        else:
+            self.quantity_reserved.set_range(0, MAX_INT)
+            self.quantity_reserved.set_visible(False)
+            self.fields['quantity_reserved'].label_widget.set_visible(False)
+
+        # We need to add quantity_reserved to a proxy or else it's validate
+        # method won't do anything
+        self.add_proxy(
+            Settable(quantity_reserved=self.model.quantity_decreased),
+            ['quantity_reserved'])
+
+    def on_confirm(self):
+        diff = (self.quantity_reserved.read() -
+                self._original_quantity_decreased)
+
+        if diff == 0:
+            return
+        elif diff < 0:
+            self.model.return_to_stock(-diff)
+            return
+
+        storable = self.model.sellable.product_storable
+        # This can only happen for diff > 0. If the product is marked to
+        # control batches, no decreased should have been made without
+        # specifying a batch on the item
+        if storable and storable.is_batch and self.model.batch is None:
+            # The only way self.model.batch is None is that this item
+            # was created on a sale quote and thus it has a sale_item
+            sale_item = self.model.sale_item
+
+            batches = run_dialog(
+                _WorkOrderItemBatchSelectionDialog, self, self.store,
+                model=storable, quantity=diff)
+            if not batches:
+                return
+
+            for s_item in [sale_item] + sale_item.set_batches(batches):
+                wo_item = WorkOrderItem.get_from_sale_item(self.store,
+                                                           s_item)
+                if wo_item.batch is not None:
+                    wo_item.reserve(wo_item.quantity)
+        else:
+            self.model.reserve(diff)
+
+    #
+    #  Private
+    #
+
+    def _validate_quantity(self, value):
+        storable = self.model.sellable.product_storable
+        if storable is None:
+            return
+
+        if self.model.batch is not None:
+            balance = self.model.batch.get_balance_for_branch(
+                self.model.order.branch)
+        else:
+            balance = storable.get_balance_for_branch(self.model.order.branch)
+
+        if value > self._original_quantity_decreased + balance:
+            return ValidationError(
+                _(u"This quantity is not available in stock"))
+
+    #
+    #  Callbacks
+    #
 
     def on_price__validate(self, widget, value):
         if value <= 0:
@@ -100,26 +192,14 @@ class _WorkOrderItemEditor(BaseEditor):
         if self.manager:
             self.price.validate(force=True)
 
+    def on_quantity__content_changed(self, entry):
+        self.quantity_reserved.update(entry.read())
+
     def on_quantity__validate(self, entry, value):
-        sellable = self.model.sellable
+        return self._validate_quantity(value)
 
-        if value <= 0:
-            return ValidationError(_(u"The quantity must be greater than 0"))
-
-        if not sellable.is_valid_quantity(value):
-            return ValidationError(_(u"This product unit (%s) does not "
-                                     u"support fractions.") %
-                                   sellable.unit_description)
-
-        try:
-            remaining_quantity = self.model.get_remaining_quantity()
-        except StockError:
-            # No need to validate the quantity, the item doesn't have a storable
-            return
-
-        if value > self.model.quantity + remaining_quantity:
-            return ValidationError(
-                _(u"This quantity is not available in stock"))
+    def on_quantity_reserved__validate(self, widget, value):
+        return self._validate_quantity(value)
 
 
 class _WorkOrderItemSlave(SellableItemSlave):
@@ -140,16 +220,23 @@ class _WorkOrderItemSlave(SellableItemSlave):
         # to the work order, but must use the sale editor to do so.
         self.hide_add_button()
         if model.sale_id:
-            self.hide_edit_button()
             self.hide_del_button()
             self.hide_item_addition_toolbar()
+            self.slave.set_message(
+                _(u"This order is related to a sale. Edit the sale if you "
+                  u"need to change the items"))
+
+        # If the os is not on it's original branch, don't allow
+        # the user to edit it (the edit is used to change quantity or
+        # reserve/return_to_stock them)
+        if model.branch_id != model.current_branch_id:
+            self.hide_del_button()
+            self.hide_item_addition_toolbar()
+            self.hide_edit_button()
 
     #
     #  SellableItemSlave
     #
-
-    def on_confirm(self):
-        self.model.sync_stock()
 
     def get_columns(self, editable=True):
         return [
@@ -164,33 +251,32 @@ class _WorkOrderItemSlave(SellableItemSlave):
                    data_type=currency),
             Column('quantity', title=_(u'Quantity'),
                    data_type=decimal.Decimal, format_func=format_quantity),
+            Column('quantity_decreased', title=_(u'Consumed quantity'),
+                   data_type=decimal.Decimal, format_func=format_quantity),
             Column('total', title=_(u'Total'),
                    data_type=currency),
         ]
 
     def get_remaining_quantity(self, sellable, batch=None):
-        # We are overriding this method since we have to calculate it
-        # differently. The default get_remaining_quantity doesn't take
-        # the sync_stock implementation in consideration
-        for item in self.model.get_items():
-            if (sellable, batch) == (item.sellable, item.batch):
-                try:
-                    remaining_quantity = item.get_remaining_quantity()
-                except StockError:
-                    return None
-                else:
-                    return remaining_quantity
-
-        # The item is new, so fall back to the original method
-        return super(_WorkOrderItemSlave, self).get_remaining_quantity(
-            sellable, batch=batch)
+        # The original get_remaining_quantity will take items of the same
+        # sellable on the list here and discount them from the balance. We
+        # can't allow that since, unlike other SellableItemSlave subclasses,
+        # the stock is decreased as soon as the item is added.
+        storable = sellable.product_storable
+        if storable:
+            return storable.get_balance_for_branch(self.model.branch)
+        else:
+            return None
 
     def get_saved_items(self):
         return self.model.order_items
 
     def get_order_item(self, sellable, price, quantity, batch=None):
-        return self.model.add_sellable(sellable, price=price,
+        item = self.model.add_sellable(sellable, price=price,
                                        quantity=quantity, batch=batch)
+        # Items added here are consumed at the same time
+        item.reserve(quantity)
+        return item
 
     def get_sellable_view_query(self):
         return (self.sellable_view,
@@ -204,15 +290,6 @@ class _WorkOrderItemSlave(SellableItemSlave):
         # (on sellable_selected) and thus having it's stock decreased,
         # we can't pass anything here. Find a better way to do this
         return []
-
-    def sellable_selected(self, sellable, batch=None):
-        super(_WorkOrderItemSlave, self).sellable_selected(sellable, batch=batch)
-
-        for item in self.slave.klist:
-            if item.sellable == sellable and item.batch is not None:
-                # We need to synchronize stock here so so the batch selection
-                # dialog can check stock availability right
-                item.sync_stock()
 
     #
     #  Private

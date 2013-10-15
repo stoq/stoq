@@ -1,0 +1,40 @@
+slave: _WorkOrderItemSlave
+GtkVBox(toplevel):
+  GtkTable(item_table, fill=True):
+    GtkHBox(hbox2):
+      ProxyLabel(item_lbl, fill=True): 'Item:'
+      GtkEntry(barcode, fill=True): ''
+      GtkButton(product_button):
+    ProxyLabel(kiwilabel2): 'Quantity:'
+    ProxySpinButton(quantity): '0.000', insensitive
+    ProxyLabel(unit_label): '<span weight="bold"></span>'
+    ProxyLabel(cost_label): 'Cost:'
+    ProxySpinButton(cost): '0.00', insensitive
+    GtkButton(add_sellable_button): insensitive
+    ProxyLabel(sellable_description): '<span ></span>'
+    GtkLabel(minimum_quantity_lbl): 'Minimum:', hidden
+    ProxyLabel(minimum_quantity): '<span >0.0</span>', hidden
+    GtkLabel(stock_quantity_lbl): 'Stock:', hidden
+    ProxyLabel(stock_quantity): '<span >0.0</span>', hidden
+  GtkEventBox(list_holder, expand=True, fill=True): slave AdditionListSlave is attached
+    GtkVBox(toplevel):
+      GtkVBox(list_vbox, expand=True, fill=True):
+        ObjectList(klist, expand=True, fill=True):
+          column: title='Code', hidden
+          column: title='Barcode', hidden
+          column: title='Description', expand
+          column: title='Price'
+          column: title='Quantity'
+          column: title='Consumed quantity'
+          column: title='Total'
+        GtkHBox(summary, fill=True):
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+          GtkLabel(): '<b>$ 0.00</b>'
+      GtkHBox(hbox1, fill=True):
+        GtkHBox(button_box):
+          GtkButton(add_button): hidden
+          GtkButton(edit_button): insensitive
+          GtkButton(delete_button): insensitive
+        GtkHBox(message_hbox, expand=True, fill=True): hidden
+          GtkLabel(message_label, expand=True, fill=True):
+          GtkButton(message_details_button, fill=True): 'Details'

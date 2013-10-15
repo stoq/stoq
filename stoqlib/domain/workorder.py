@@ -39,9 +39,12 @@ from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          IdentifierCol, IdCol, BoolCol)
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.database.viewable import Viewable
-from stoqlib.exceptions import InvalidStatus, NeedReason, StockError
+from stoqlib.exceptions import InvalidStatus, NeedReason
 from stoqlib.domain.base import Domain
-from stoqlib.domain.events import SaleItemAfterSetBatchesEvent
+from stoqlib.domain.events import (SaleStatusChangedEvent,
+                                   SaleItemBeforeDecreaseStockEvent,
+                                   SaleItemBeforeIncreaseStockEvent,
+                                   SaleItemAfterSetBatchesEvent)
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import (Branch, Client, Person, SalesPerson,
                                    Company, LoginUser)
@@ -346,6 +349,11 @@ class WorkOrderItem(Domain):
     #: |sellable|'s quantity used on the |workorder|
     quantity = QuantityCol(default=0)
 
+    #: the quantity of |sellable| consumed (i.e. decreased from the stock).
+    #: This needs to be equal to :obj:`.quantity` for the work order
+    #: to be finished
+    quantity_decreased = QuantityCol(default=0)
+
     #: price of the |sellable|, this is how much the |client| is going
     #: to be charged for the sellable. This includes discounts and markup.
     price = PriceCol()
@@ -374,81 +382,67 @@ class WorkOrderItem(Domain):
         """
         return currency(self.price * self.quantity)
 
-    def __init__(self, *args, **kwargs):
-        self._original_quantity = 0
-        super(WorkOrderItem, self).__init__(*args, **kwargs)
-
-    def __storm_loaded__(self):
-        super(WorkOrderItem, self).__storm_loaded__()
-        self._original_quantity = self.quantity
-
     #
     #  Public API
     #
 
-    def get_remaining_quantity(self):
-        """Gets the remaining stock quantity for this item
+    def reserve(self, quantity):
+        """Reserve some quantity of this item
 
-        :returns: the stock balance of this item's sellable for the
-            workorder's branch, already considering the quantity that
-            will be removed once the stock information is synced for the
-            workorder items.
-        :rtype: decimal.Decimal
-        :raises: :class:`stoqlib.exceptions.StockError` if the
-            item is doesn't have a storable
+        Reserving some quantity of items means decreasing them from
+        the stock. All :obj:`.quantity` needs to be reserved for a
+        |workorder| to be finished. The already reserved quantity
+        will be stored at :obj:`.quantity_decreased`
+
+        :param quantity: the quantity to consume
+        :raises: :exc:`ValueError` if the quantity to reserve is
+            greater than the unreserved quantity
+            (:obj:`.quantity` - :obj:`.quantity_decreased`
         """
+        if quantity > self.quantity - self.quantity_decreased:
+            raise ValueError(
+                "Trying to reserve more than unreserved quantity")
+
         storable = self.sellable.product_storable
         if not storable:
-            raise StockError(
-                "Sellable %s does not have a storable" % (self.sellable.description, ))
-
-        total_quantity = 0
-        for item in self.order.get_items():
-            if (item.sellable, item.batch) != (self.sellable, self.batch):
-                continue
-            # Discounting the delta will do exactly what we want. We can't use
-            # quantity because it can be already decreased and that would mean
-            # us discounting it twice here.
-            delta_quantity = self._original_quantity - self.quantity
-            total_quantity -= delta_quantity
-
-        # FIXME: It would be better to just use storable.get_balance_for_branch
-        # and pass batch=batch there. That would avoid this if
-        if self.batch is not None:
-            balance = self.batch.get_balance_for_branch(self.order.branch)
-        else:
-            balance = storable.get_balance_for_branch(self.order.branch)
-
-        return balance - total_quantity
-
-    def sync_stock(self):
-        """Synchronizes the stock, increasing/decreasing it accordingly.
-
-        When setting :obj:`~.quantity` be sure to call this to properly
-        synchronize the stock (increase or decrease it). That counts
-        for object creation too.
-        """
-        storable = self.sellable.product_storable
-        if not storable:
-            # Not a product
+            self.quantity_decreased += quantity
             return
 
-        diff_quantity = self._original_quantity - self.quantity
-        if diff_quantity > 0:
-            storable.increase_stock(
-                diff_quantity, self.order.branch,
-                StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id,
-                batch=self.batch)
-        elif diff_quantity < 0:
-            diff_quantity = - diff_quantity
-            storable.decrease_stock(
-                diff_quantity, self.order.branch,
-                StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id,
-                batch=self.batch)
+        storable.decrease_stock(
+            quantity, self.order.branch,
+            StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id,
+            batch=self.batch)
 
-        # Reset the values used to calculate the stock quantity, just like
-        # when the object as loaded from the database again.
-        self._original_quantity = self.quantity
+        self.quantity_decreased += quantity
+
+    def return_to_stock(self, quantity):
+        """Return some quantity of this item to stock
+
+        Returning some quantity of items to the stock means increasing
+        the stock back.
+
+        :param quantity: the quantity to return to the stock
+        :raises: :exc:`ValueError` if the quantity to return to the stock
+            greater than the :obj:`.quantity_decreased`
+        """
+        if quantity > self.quantity_decreased:
+            raise ValueError(
+                "Trying to return more quantity than reserved")
+
+        storable = self.sellable.product_storable
+        if not storable:
+            self.quantity_decreased -= quantity
+            return
+
+        # TODO: Implement a way to say that this quantity was lost
+        # (probably by receiving an extra kwarg here). Then we would still
+        # remove the quantity from quantity_decreased, but not reincrease stock
+        storable.increase_stock(
+            quantity, self.order.branch,
+            StockTransactionHistory.TYPE_WORK_ORDER_RETURN_TO_STOCK, self.id,
+            batch=self.batch)
+
+        self.quantity_decreased -= quantity
 
     #
     #  Classmethods
@@ -468,6 +462,46 @@ class WorkOrderItem(Domain):
     #
     #  Events
     #
+
+    @SaleItemBeforeIncreaseStockEvent.connect
+    @classmethod
+    def _on_sale_item_before_increase_stock(cls, sale_item):
+        self = cls.get_from_sale_item(sale_item.store, sale_item)
+        if self is None:
+            return
+        if self.sellable.product_storable is None:
+            return
+
+        assert sale_item.quantity == self.quantity
+        # When a sale item has an corresponding work order item, they need to
+        # be in sync all the time, but the stock management
+        # (increasing/decreasing) must be done only once.
+        sale_item.quantity_decreased = max(sale_item.quantity_decreased,
+                                           self.quantity_decreased)
+        # This is why when a sale item is canceled (ie, the stock is returned),
+        # we must also inform that the quantity decreased for the work order
+        # item was also returned.
+        self.quantity_decreased = 0
+
+    @SaleItemBeforeDecreaseStockEvent.connect
+    @classmethod
+    def _on_sale_item_before_decrease_stock(cls, sale_item):
+        self = cls.get_from_sale_item(sale_item.store, sale_item)
+        if self is None:
+            return
+        if self.sellable.product_storable is None:
+            return
+
+        assert sale_item.quantity == self.quantity
+        # When a sale item has an corresponding work order item, they need to
+        # be in sync all the time, but the stock management
+        # (increasing/decreasing) must be done only once.
+        sale_item.quantity_decreased = max(sale_item.quantity_decreased,
+                                           self.quantity_decreased)
+        # sale_item will decrease everything that was missing, so there's
+        # nothing more to decrease here, that's why we are setting
+        # quantity_decreased = quantity
+        self.quantity_decreased = self.quantity
 
     @SaleItemAfterSetBatchesEvent.connect
     @classmethod
@@ -663,10 +697,8 @@ class WorkOrder(Domain):
 
     def remove_item(self, item):
         assert item.order is self
-        # Setting the quantity to 0 and calling sync_stock
-        # will return all the actual quantity to the stock
-        item.quantity = 0
-        item.sync_stock()
+        if item.quantity_decreased > 0:
+            item.return_to_stock(item.quantity_decreased)
         self.store.remove(item)
 
     #
@@ -697,9 +729,9 @@ class WorkOrder(Domain):
           does not have batches.
         :returns: the created |workorderitem|
         """
-        # FIXME: This is only used by optical pre-sale when adding an item that
-        # doesn't have stock on any batch. Find a better way of workingaround this
-        if quantity > 0:
+        # We only allow a batch to not be specified if we already have a sale
+        # with it (meaning this work order comes from a work order quote)
+        if not self.sale:
             self.validate_batch(batch, sellable=sellable)
         if price is None:
             price = sellable.base_price
@@ -712,14 +744,17 @@ class WorkOrder(Domain):
                              order=self)
         return item
 
-    def sync_stock(self):
-        """Synchronizes the stock for this work order's items
+    def is_items_totally_reserved(self):
+        """Check if this work order item's are fully reserved
 
-        Just a shortcut to call :meth:`WorkOrderItem.sync_stock` in all
-        items in this work order.
+        For a |workorderitem| to be fully synchronized, it's
+        :attr:`WorkOrderItem.quantity` should be equal to it's
+        :attr:`WorkOrderItem.quantity_decreased`
+
+        :returns: ``True`` if all is synchronized, ``False`` otherwise
         """
-        for item in self.get_items():
-            item.sync_stock()
+        return self.order_items.find(WorkOrderItem.quantity_decreased !=
+                                     WorkOrderItem.quantity).is_empty()
 
     def is_in_transport(self):
         """Checks if this work order is in transport
@@ -776,14 +811,8 @@ class WorkOrder(Domain):
         The order can be cancelled at any point, since it's not
         finished (this is done by checking :meth:`.is_finished`)
 
-        Also, we are not allowing to cancel an order with items, since
-        it's a more sophisticated process. e.g. An item can go back to the
-        stock and another can be already used so it's lost.
-
         :returns: ``True`` if can be cancelled, ``False`` otherwise
         """
-        if self.order_items.count():
-            return False
         return not self.is_finished()
 
     def can_approve(self):
@@ -839,8 +868,14 @@ class WorkOrder(Domain):
 
         Note that the work needs to be finished before you can deliver.
 
+        Also, all of it's items need to be already decreased from
+        the stock, that is, :attr:`WorkOrderItem.quantity` needs to
+        be equal to :attr:`WorkOrderItem.quantity`.
+
         :returns: ``True`` if can deliver, ``False`` otherwise
         """
+        if not self.is_items_totally_reserved():
+            return False
         if self.is_rejected or self.is_in_transport():
             return False
         # FIXME: We should not be calling get_current_branch on domain
@@ -917,9 +952,18 @@ class WorkOrder(Domain):
         Cancel the work order, probably because the |client|
         didn't approve it or simply gave up of doing it.
 
+        All reserved items (the ones with
+        :attr:`WorkOrderItem.quantity_decreased` > 0) will be
+        returned to stock.
+
         :param reason: an explanation to why this order was cancelled
         """
         assert self.can_cancel()
+
+        for item in self.order_items:
+            if item.quantity_decreased > 0:
+                item.return_to_stock(item.quantity_decreased)
+
         self._change_status(self.STATUS_CANCELLED, notes=reason)
 
     def approve(self):
@@ -1094,6 +1138,17 @@ class WorkOrder(Domain):
         :rtype: resultset
         """
         return store.find(cls, sale=sale)
+
+    #
+    #  Events
+    #
+
+    @SaleStatusChangedEvent.connect
+    @classmethod
+    def _on_sale_status_changed(cls, sale, old_status):
+        if sale.status == Sale.STATUS_CANCELLED:
+            for self in cls.find_by_sale(sale.store, sale):
+                self.cancel(reason=_(u"The sale was cancelled"))
 
 
 # TODO: Maybe this can be moved to a generic 'DomainHistory' (or something

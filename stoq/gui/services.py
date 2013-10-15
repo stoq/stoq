@@ -537,20 +537,28 @@ class ServicesApp(ShellApp):
             self._update_filters()
 
     def _finish_order(self):
-        if not yesno(_(u"This will finish the selected order, marking the "
-                       u"work as done. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Finish order"), _(u"Don't finish")):
+        work_order = self.search.get_selected_item().work_order
+
+        if work_order.is_items_totally_reserved():
+            msg = _(u"This will finish the selected order, marking the "
+                    u"work as done. Are you sure?")
+        else:
+            msg = _(u"Some items on this work order are not fully reserved. "
+                    u"Do you still want to mark it as finished?")
+
+        if not yesno(msg, gtk.RESPONSE_NO,
+                     _(u"Finish order"), _(u"Don't finish")):
             return
 
-        selection = self.search.get_selected_item()
         with api.new_store() as store:
-            work_order = store.fetch(selection.work_order)
+            work_order = store.fetch(work_order)
             work_order.finish()
 
         self._update_view()
 
     def _cancel_order(self):
-        msg_text = _(u"This will cancel the selected order. Are you sure?")
+        msg_text = _(u"This will cancel the selected order. Any reserved items "
+                     u"will return to stock. Are you sure?")
         rv = self._run_notes_editor(msg_text=msg_text, mandatory=True)
         if not rv:
             return

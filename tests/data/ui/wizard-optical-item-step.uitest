@@ -16,7 +16,7 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
               GtkTable(item_table, fill=True):
                 GtkHBox(hbox2):
                   ProxyLabel(item_lbl, fill=True): 'Item:'
-                  GtkEntry(barcode, fill=True): ''
+                  GtkEntry(barcode, fill=True): '12345681'
                   GtkButton(product_button):
                 ProxyLabel(kiwilabel2): 'Quantity:'
                 ProxySpinButton(quantity): '0.000', insensitive
@@ -42,15 +42,19 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                       column: title='Sale Price'
                       column: title='Discount'
                       column: title='Total'
+                      row: u'', u'12345680', u'Description [Batch: 1]', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                      row: u'', u'12345678', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                      row: u'', u'12345679', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                      row: u'', u'12345681', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
                     GtkHBox(summary, fill=True):
                       GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-                      GtkLabel(): '<b>$ 0.00</b>'
+                      GtkLabel(): '<b>$40.00</b>'
                   GtkHBox(hbox1, fill=True):
                     GtkHBox(button_box):
                       GtkButton(add_button): hidden
                       GtkButton(edit_button): insensitive
                       GtkButton(delete_button): insensitive
-                      GtkButton(discount_btn, pack-end): 'Apply discount', insensitive
+                      GtkButton(discount_btn, pack-end): 'Apply discount'
                     GtkHBox(message_hbox, expand=True, fill=True): hidden
                       GtkLabel(message_label, expand=True, fill=True):
                       GtkButton(message_details_button, fill=True): 'Details'
@@ -86,17 +90,47 @@ model: Client<2>
   days_late: 0
   status: 0
 
-model: Sellable<3>
-  barcode: u'12345678'
+model: SaleItem<3>
+  average_cost: <currency $ 0>
   base_price: <currency $10>
-  code: u''
-  commission: <currency $ 0>
-  cost: <currency $125>
-  description: u'Description'
-  max_discount: Decimal('0')
-  notes: u''
-  on_sale_end_date: None
-  on_sale_price: <currency $ 0>
-  on_sale_start_date: None
-  status: 0
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
+  sale_id: Sale<1>
+
+model: SaleItem<4>
+  average_cost: <currency $ 0>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
+  sale_id: Sale<1>
+
+model: SaleItem<5>
+  average_cost: <currency $ 0>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
+  sale_id: Sale<1>
+
+model: SaleItem<6>
+  average_cost: <currency $ 0>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
+  sale_id: Sale<1>
 

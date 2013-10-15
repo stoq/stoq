@@ -1087,8 +1087,12 @@ class StockTransactionHistory(Domain):
     TYPE_CONSIGNMENT_RETURNED = 16
 
     #: the transaction is the utilization of a
-    #: |product|/|service| on a |workorderitem|
+    #: |product| on a |workorderitem|
     TYPE_WORK_ORDER_USED = 17
+
+    #: the transaction is the return of a |product| on a
+    #: |workorderitem| to the stock
+    TYPE_WORK_ORDER_RETURN_TO_STOCK = 18
 
     types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
@@ -1111,6 +1115,7 @@ class StockTransactionHistory(Domain):
              TYPE_IMPORTED: _(u'Imported from previous version'),
              TYPE_CONSIGNMENT_RETURNED: _(u'Consigned product returned %s.'),
              TYPE_WORK_ORDER_USED: _(u'Used on work order %s.'),
+             TYPE_WORK_ORDER_RETURN_TO_STOCK: _(u'Returned to stock on work order %s.'),
              }
 
     #: the date and time the transaction was made
@@ -1180,7 +1185,8 @@ class StockTransactionHistory(Domain):
         elif self.type == self.TYPE_CONSIGNMENT_RETURNED:
             from stoqlib.domain.purchase import PurchaseItem
             return self.store.get(PurchaseItem, self.object_id)
-        elif self.type == self.TYPE_WORK_ORDER_USED:
+        elif self.type in [self.TYPE_WORK_ORDER_USED,
+                           self.TYPE_WORK_ORDER_RETURN_TO_STOCK]:
             from stoqlib.domain.workorder import WorkOrderItem
             return self.store.get(WorkOrderItem, self.object_id)
         else:  # pragma: nocoverage

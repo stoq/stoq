@@ -1259,7 +1259,7 @@ class TestStockTransactionHistory(DomainTest):
         work_order_item = self.create_work_order_item()
         self._check_stock(work_order_item.sellable.product)
 
-        work_order_item.sync_stock()
+        work_order_item.reserve(work_order_item.quantity)
 
         self._check_stock_history(work_order_item.sellable.product, -1,
                                   work_order_item,

@@ -160,8 +160,27 @@ class TestSaleQuoteWizard(GUITest):
         run_person_role_dialog.return_value = client
         yesno.return_value = False
 
+        # Test for reserve without storable
         sellable = self.create_sellable()
         sellable.barcode = u'12345678'
+        # Test for reserve with storable
+        sellable2 = self.create_sellable()
+        sellable2.barcode = u'12345679'
+        self.create_storable(
+            product=sellable2.product,
+            branch=api.get_current_branch(self.store),
+            stock=10)
+        # Test for reserve for a batch with storable
+        sellable3 = self.create_sellable()
+        sellable3.barcode = u'12345680'
+        storable, batch = self.create_storable(
+            product=sellable3.product,
+            branch=api.get_current_branch(self.store),
+            is_batch=True, stock=10)
+        # Test for return_to_stock
+        sellable4 = self.create_sellable()
+        sellable4.barcode = u'12345681'
+        self.create_storable(product=sellable4.product)
 
         wizard = OpticalSaleQuoteWizard(self.store)
 
@@ -209,9 +228,21 @@ class TestSaleQuoteWizard(GUITest):
         self.check_wizard(wizard, 'wizard-optical-work-order-step')
 
         self.click(wizard.next_button)
+        step = wizard.get_current_step()
+
+        for barcode in [batch.batch_number, sellable.barcode,
+                        sellable2.barcode, sellable4.barcode]:
+            step.item_slave.barcode.set_text(barcode)
+            self.activate(step.item_slave.barcode)
+            step.item_slave.quantity.update(1)
+            self.click(step.item_slave.add_sellable_button)
+
+        for item in step.item_slave.slave.klist:
+            if item.sellable == sellable4:
+                item._work_item.quantity_decreased = 10
 
         self.check_wizard(wizard, 'wizard-optical-item-step',
-                          [sale, client] + list(sale.get_items()) + [sellable])
+                          [sale, client] + list(sale.get_items()))
 
         module = 'stoqlib.gui.events.SaleQuoteWizardFinishEvent.emit'
         with mock.patch(module) as emit:

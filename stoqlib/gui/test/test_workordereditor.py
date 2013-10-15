@@ -173,6 +173,8 @@ class TestWorkOrderEditor(GUITest):
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-finished')
 
+        for item in workorder.order_items:
+            item.reserve(item.quantity)
         workorder.close()
         _adjust_history_date(workorder)
         # Create another editor to check closed state
@@ -229,3 +231,17 @@ class TestWorkOrderPackageSendEditor(GUITest):
             self.click(editor.main_dialog.ok_button)
             send.assert_called_once()
             self.assertEqual(editor.model.package_items.count(), 2)
+
+    @mock.patch('stoqlib.gui.editors.workordereditor.warning')
+    def test_validate_confirm(self, warning):
+        wo = self.create_workorder()
+        wo.identifier = 123
+        wo.approve()
+        sellable = self.create_sellable()
+        self.create_storable(product=sellable.product)
+
+        editor = WorkOrderPackageSendEditor(self.store)
+
+        self.assertFalse(editor.validate_confirm())
+        warning.assert_called_once_with(
+            u"You need to select at least one work order")

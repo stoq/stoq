@@ -100,9 +100,10 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                             column: title='Description', expand
                             column: title='Price'
                             column: title='Quantity'
+                            column: title='Consumed quantity'
                             column: title='Total'
-                            row: u'', u'9988776655', u'Description', <currency $50>, Decimal('99.000'), <currency $4950>
-                            row: u'', u'5566778899', u'Description', <currency $100>, Decimal('2.000'), <currency $200>
+                            row: u'', u'9988776655', u'Description', <currency $50>, Decimal('99.000'), Decimal('99.000'), <currency $4950>
+                            row: u'', u'5566778899', u'Description', <currency $100>, Decimal('2.000'), Decimal('2.000'), <currency $200>
                           GtkHBox(summary, fill=True):
                             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                             GtkLabel(): '<b>$5150.00</b>'

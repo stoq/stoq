@@ -24,11 +24,9 @@
 
 __tests__ = 'stoqlib/domain/workorder.py'
 
-import contextlib
-
 import mock
 
-from stoqlib.exceptions import InvalidStatus, NeedReason, StockError
+from stoqlib.exceptions import InvalidStatus, NeedReason
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderPackage, WorkOrderPackageItem,
@@ -184,52 +182,6 @@ class TestWorkOrderCategory(DomainTest):
 
 
 class TestWorkOrderItem(DomainTest):
-    def test_storm_loaded(self):
-        item = WorkOrderItem.__new__(WorkOrderItem)
-        item.quantity = 10
-        item.__storm_loaded__()
-        self.assertEquals(item._original_quantity, item.quantity)
-
-    def test_get_remaining_quantity(self):
-        branch = self.create_branch()
-        sellable = self.create_sellable()
-        self.create_storable(product=sellable.product,
-                             branch=branch, stock=30)
-        workorder = self.create_workorder(branch=branch)
-
-        item = workorder.add_sellable(sellable, quantity=10)
-        self.assertEqual(item.get_remaining_quantity(), 20)
-        item.sync_stock()
-        self.assertEqual(item.get_remaining_quantity(), 20)
-
-        item.quantity = 20
-        self.assertEqual(item.get_remaining_quantity(), 10)
-        item.sync_stock()
-        self.assertEqual(item.get_remaining_quantity(), 10)
-
-        # Test with a batch item
-        sellable = self.create_sellable()
-        storable, batch = self.create_storable(product=sellable.product,
-                                               branch=branch, stock=30,
-                                               is_batch=True)
-        item = workorder.add_sellable(sellable, batch=batch, quantity=10)
-        self.assertEqual(item.get_remaining_quantity(), 20)
-
-        # Test with several sellables/items
-        sellable2 = self.create_sellable()
-        self.create_storable(product=sellable2.product, branch=branch, stock=30)
-        item2 = workorder.add_sellable(sellable2, quantity=10)
-        self.assertEqual(item2.get_remaining_quantity(), 20)
-
-        # Test the error case
-        workorder = self.create_workorder(branch=branch)
-        sellable = self.create_sellable()
-        item = workorder.add_sellable(sellable, quantity=10)
-        with self.assertRaisesRegexp(
-            StockError,
-            "Sellable Description does not have a storable"):
-            item.get_remaining_quantity()
-
     def test_total(self):
         sellable = self.create_sellable()
         workorder = self.create_workorder()
@@ -255,6 +207,49 @@ class TestWorkOrderItem(DomainTest):
         item.sale_item = sale_item
         wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
         self.assertEquals(wo_item, item)
+
+    def test_reserve(self):
+        item = self.create_work_order_item()
+        item_without_storable = self.create_work_order_item()
+        item.quantity = 20
+        item_without_storable.quantity = 20
+        storable = self.create_storable(product=item.sellable.product,
+                                        branch=item.order.branch)
+
+        storable.increase_stock(10, item.order.branch, 0, None)
+        self.assertEqual(item.quantity_decreased, 0)
+        item.reserve(6)
+        self.assertEqual(item.quantity_decreased, 6)
+        self.assertEqual(storable.get_balance_for_branch(item.order.branch), 4)
+
+        with self.assertRaisesRegexp(
+                ValueError, "Trying to reserve more than unreserved quantity"):
+            item.reserve(50)
+
+        self.assertEqual(item_without_storable.quantity_decreased, 0)
+        item_without_storable.reserve(4)
+        self.assertEqual(item_without_storable.quantity_decreased, 4)
+
+    def test_return_to_stock(self):
+        item = self.create_work_order_item()
+        item_without_storable = self.create_work_order_item()
+        item.quantity = 20
+        item.quantity_decreased = 20
+        item_without_storable.quantity = 20
+        item_without_storable.quantity_decreased = 20
+        storable = self.create_storable(product=item.sellable.product,
+                                        branch=item.order.branch)
+
+        item.return_to_stock(6)
+        self.assertEqual(item.quantity_decreased, 14)
+        self.assertEqual(storable.get_balance_for_branch(item.order.branch), 6)
+
+        with self.assertRaisesRegexp(
+                ValueError, "Trying to return more quantity than reserved"):
+            item.return_to_stock(50)
+
+        item_without_storable.return_to_stock(4)
+        self.assertEqual(item_without_storable.quantity_decreased, 16)
 
 
 class TestWorkOrder(DomainTest):
@@ -305,9 +300,9 @@ class TestWorkOrder(DomainTest):
         workorder.add_item(item1)
         workorder.add_item(item2)
 
-        # Only item1 will sync stock. The other one is to test it being
+        # Only item1 will reserve stock. The other one is to test it being
         # removed without ever decreasing the stock
-        item1.sync_stock()
+        item1.reserve(item1.quantity)
         self.assertEqual(
             product1.storable.get_balance_for_branch(workorder.branch), 5)
         self.assertEqual(
@@ -327,9 +322,18 @@ class TestWorkOrder(DomainTest):
         sellable = self.create_sellable(price=50)
         workorder = self.create_workorder()
 
-        item1 = workorder.add_sellable(sellable)
-        item2 = workorder.add_sellable(sellable, price=60)
-        item3 = workorder.add_sellable(sellable, quantity=2)
+        with mock.patch.object(workorder, 'validate_batch') as validate_batch:
+            item1 = workorder.add_sellable(sellable)
+            validate_batch.assert_called_once_with(None, sellable=sellable)
+            validate_batch.reset_mock()
+
+            item2 = workorder.add_sellable(sellable, price=60)
+            validate_batch.assert_called_once_with(None, sellable=sellable)
+            validate_batch.reset_mock()
+
+            item3 = workorder.add_sellable(sellable, quantity=2)
+            validate_batch.assert_called_once_with(None, sellable=sellable)
+            validate_batch.reset_mock()
 
         for item in [item1, item2, item3]:
             self.assertEqual(item.order, workorder)
@@ -347,51 +351,11 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(set(workorder.order_items),
                          set([item1, item2, item3]))
 
-    def test_sync_stock(self):
-        product1 = self.create_product(stock=100)
-        storable1 = product1.storable
-        product2 = self.create_product(stock=100)
-        storable2 = product2.storable
-
-        workorder = self.create_workorder()
-        item1 = workorder.add_sellable(product1.sellable, quantity=5)
-        item2 = workorder.add_sellable(product2.sellable, quantity=10)
-
-        with contextlib.nested(
-                mock.patch.object(item1, 'sync_stock'),
-                mock.patch.object(item2, 'sync_stock')) as (sync_stock1,
-                                                            sync_stock2):
-            original_sync_stock = WorkOrderItem.sync_stock
-            # We are mocking to test if they were called just once.
-            # Put original on side effect so it will be called too
-            sync_stock1.side_effect = lambda: original_sync_stock(item1)
-            sync_stock2.side_effect = lambda: original_sync_stock(item2)
-
-            workorder.sync_stock()
-            sync_stock1.assert_called_once()
-            sync_stock2.assert_called_once()
-
-            # item1 should have removed 5 from stock, leaving it with 95
-            self.assertEqual(
-                storable1.get_balance_for_branch(workorder.branch), 95)
-            # item2 should have removed 10 from stock, leaving it with 90
-            self.assertEqual(
-                storable2.get_balance_for_branch(workorder.branch), 90)
-
-            item1.quantity = 10
-            item2.quantity = 5
-            sync_stock1.reset_mock()
-            sync_stock2.reset_mock()
-            workorder.sync_stock()
-            sync_stock1.assert_called_once()
-            sync_stock2.assert_called_once()
-
-            # item1 should have removed 10 from stock, leaving it with 90
-            self.assertEqual(
-                storable1.get_balance_for_branch(workorder.branch), 90)
-            # item2 should have removed 5 from stock, leaving it with 95
-            self.assertEqual(
-                storable2.get_balance_for_branch(workorder.branch), 95)
+        # If there's a sale, validate_batch should not be called
+        with mock.patch.object(workorder, 'validate_batch') as validate_batch:
+            workorder.sale = self.create_sale()
+            workorder.add_sellable(sellable)
+            self.assertEqual(validate_batch.call_count, 0)
 
     def test_is_in_transport(self):
         workorder = self.create_workorder()
@@ -456,15 +420,9 @@ class TestWorkOrder(DomainTest):
                 self.assertTrue(workorder.is_late())
 
     def test_can_cancel(self):
-        sellable = self.create_sellable()
+        workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
-            workorder = self.create_workorder()
             workorder.status = status
-
-            item = workorder.add_sellable(sellable)
-            # This should be False even at any state since there're items
-            self.assertFalse(workorder.can_cancel())
-            workorder.remove_item(item)
 
             # After adding, only STATUS_WORK_IN_PROGRESS should be True
             if status in [WorkOrder.STATUS_WORK_FINISHED,
@@ -548,6 +506,7 @@ class TestWorkOrder(DomainTest):
 
     def test_can_close(self):
         workorder = self.create_workorder()
+        wo_item = workorder.add_sellable(self.create_sellable(), quantity=1)
         for status in WorkOrder.statuses.keys():
             workorder.status = status
 
@@ -563,6 +522,15 @@ class TestWorkOrder(DomainTest):
             workorder.current_branch = self.create_branch()
             self.assertFalse(workorder.can_close())
             workorder.current_branch = old_branch
+
+            # Cannot close on other branch than the current one
+            with mock.patch('stoqlib.domain.workorder.get_current_branch',
+                            new=lambda store: self.create_branch()):
+                self.assertFalse(workorder.can_close())
+            # Cannot close if not all items have been decreased
+            wo_item.quantity_decreased = 0
+            self.assertFalse(workorder.can_close())
+            wo_item.quantity_decreased = wo_item.quantity
 
             if status == WorkOrder.STATUS_WORK_FINISHED:
                 self.assertTrue(workorder.can_close())
@@ -630,10 +598,22 @@ class TestWorkOrder(DomainTest):
 
     def test_cancel(self):
         workorder = self.create_workorder()
+        sellable = self.create_sellable()
+        storable = self.create_storable(sellable.product, stock=10,
+                                        branch=workorder.branch)
+        item1 = workorder.add_sellable(sellable, quantity=2)
+        item2 = workorder.add_sellable(sellable, quantity=4)
+        item3 = workorder.add_sellable(sellable, quantity=7)
+        item1.reserve(2)
+        item2.reserve(3)
+        self.assertEqual(storable.get_balance_for_branch(workorder.branch), 5)
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_CANCELLED)
 
         workorder.cancel()
         self.assertEqual(workorder.status, WorkOrder.STATUS_CANCELLED)
+        self.assertEqual(storable.get_balance_for_branch(workorder.branch), 10)
+        for item in [item1, item2, item3]:
+            self.assertEqual(item.quantity_decreased, 0)
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_approve(self, localnow):
@@ -695,6 +675,8 @@ class TestWorkOrder(DomainTest):
         workorder.approve()
         workorder.work()
         workorder.add_sellable(self.create_sellable())
+        for item in workorder.order_items:
+            item.reserve(item.quantity)
         workorder.finish()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_DELIVERED)
 

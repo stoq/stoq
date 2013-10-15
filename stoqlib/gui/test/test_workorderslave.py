@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 import decimal
 import gtk
 import mock
@@ -63,21 +64,87 @@ class TestWorkOrderItemEditor(GUITest):
             self.assertInvalid(editor, ['price'])
 
         self.assertValid(editor, ['quantity'])
-        editor.quantity.update(0)
-        self.assertInvalid(editor, ['quantity'])
         with mock.patch.object(storable, 'get_balance_for_branch') as gbfb:
-            gbfb.return_value = False
+            gbfb.return_value = 0
             editor.quantity.update(20)
             gbfb.assert_called_once_with(workorder.branch)
             self.assertInvalid(editor, ['quantity'])
-        with mock.patch.object(sellable, 'is_valid_quantity') as ivq:
-            ivq.return_value = False
-            editor.quantity.update(5)
-            ivq.assert_called_once_with(5)
-            self.assertInvalid(editor, ['quantity'])
+
+    def test_show_with_sale(self):
+        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder.sale = self.create_sale()
+        workorder.client = self.create_client()
+        workorder.client.category = self.create_client_category()
+
+        product = self.create_product(stock=10)
+
+        item = workorder.add_sellable(product.sellable)
+        editor = _WorkOrderItemEditor(self.store, model=item)
+        self.check_editor(editor, 'editor-workorderitem-with-sale-show')
+
+    def test_on_confirm(self):
+        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder.client = self.create_client()
+        workorder.client.category = self.create_client_category()
+
+        # Nothing made
+        product = self.create_product(stock=10)
+        item = workorder.add_sellable(product.sellable, quantity=1)
+        item.reserve(1)
+        editor = _WorkOrderItemEditor(self.store, model=item)
+        with contextlib.nested(
+                mock.patch.object(item, 'return_to_stock'),
+                mock.patch.object(item, 'reserve')) as (return_to_stock,
+                                                        reserve):
+            editor.on_confirm()
+            self.assertEqual(reserve.call_count, 0)
+            self.assertEqual(return_to_stock.call_count, 0)
+
+        # Reserving more quantity
+        product = self.create_product(stock=10)
+        item = workorder.add_sellable(product.sellable, quantity=10)
+        item.reserve(2)
+        editor = _WorkOrderItemEditor(self.store, model=item)
+        editor.quantity.update(8)
+        with contextlib.nested(
+                mock.patch.object(item, 'return_to_stock'),
+                mock.patch.object(item, 'reserve')) as (return_to_stock,
+                                                        reserve):
+            editor.on_confirm()
+            reserve.assert_called_once_with(6)
+            self.assertEqual(return_to_stock.call_count, 0)
+
+        # Returning some quantity to stock
+        product = self.create_product(stock=10)
+        item = workorder.add_sellable(product.sellable, quantity=10)
+        item.reserve(6)
+        editor = _WorkOrderItemEditor(self.store, model=item)
+        editor.quantity.update(4)
+        with contextlib.nested(
+                mock.patch.object(item, 'return_to_stock'),
+                mock.patch.object(item, 'reserve')) as (return_to_stock,
+                                                        reserve):
+            editor.on_confirm()
+            self.assertEqual(reserve.call_count, 0)
+            return_to_stock.assert_called_once_with(2)
 
 
 class TestWorkOrderItemSlave(GUITest):
+    def test_show(self):
+        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder.client = self.create_client()
+        editor = _WorkOrderItemSlave(store=self.store, parent=None,
+                                     model=workorder)
+        self.check_slave(editor, 'slave-workorderitem-show')
+
+    def test_show_with_sale(self):
+        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder.sale = self.create_sale()
+        workorder.client = self.create_client()
+        editor = _WorkOrderItemSlave(store=self.store, parent=None,
+                                     model=workorder)
+        self.check_slave(editor, 'slave-workorderitem-with-sale-show')
+
     def test_remove(self):
         workorder = self.create_workorder(equipment=u'Test equipment')
         workorder.client = self.create_client()
@@ -90,34 +157,22 @@ class TestWorkOrderItemSlave(GUITest):
         sellable.barcode = u'666333999'
         storable = product.storable
 
-        # Test synchronizing stoq (like if the user confirmed the wizard, came
-        # back and removed the item) and not synchronizing (like if he added
-        # and removed the item).
-        # sync_stock is called on WorkOrderEditor at on_confirm
-        for sync_stock in [True, False]:
-            editor.barcode.set_text(u'666333999')
-            self.activate(editor.barcode)
-            editor.quantity.update(6)
-            self.click(editor.add_sellable_button)
+        editor.barcode.set_text(u'666333999')
+        self.activate(editor.barcode)
+        editor.quantity.update(6)
+        self.click(editor.add_sellable_button)
 
-            # Make sure that the sellable (and only it) was added to the list
-            self.assertEqual(len(editor.slave.klist), 1)
-            self.assertEqual(sellable, editor.slave.klist[0].sellable)
+        # Make sure that the sellable (and only it) was added to the list
+        self.assertEqual(len(editor.slave.klist), 1)
+        self.assertEqual(sellable, editor.slave.klist[0].sellable)
 
-            if sync_stock:
-                # This is done on the WorkOrderEditor when closing it
-                # Mimicing the behaviour
-                workorder.sync_stock()
-                self.assertEqual(
-                    storable.get_balance_for_branch(workorder.branch), 4)
+        editor.slave.klist.select(editor.slave.klist[0])
+        with mock.patch('stoqlib.gui.base.lists.yesno') as yesno:
+            yesno.return_value = True
+            self.click(editor.slave.delete_button)
+            yesno.assert_called_once_with(
+                'Delete this item?', gtk.RESPONSE_NO, 'Delete item', 'Keep it')
 
-            editor.slave.klist.select(editor.slave.klist[0])
-            with mock.patch('stoqlib.gui.base.lists.yesno') as yesno:
-                yesno.return_value = True
-                self.click(editor.slave.delete_button)
-                yesno.assert_called_once_with(
-                    'Delete this item?', gtk.RESPONSE_NO, 'Delete item', 'Keep it')
-
-            self.assertEqual(len(editor.slave.klist), 0)
-            self.assertEqual(
-                storable.get_balance_for_branch(workorder.branch), 10)
+        self.assertEqual(len(editor.slave.klist), 0)
+        self.assertEqual(
+            storable.get_balance_for_branch(workorder.branch), 10)

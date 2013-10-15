@@ -506,22 +506,10 @@ class _ItemSlave(SellableItemSlave):
         assert work_order
 
         sale_item = self.model.add_sellable(sellable, quantity, price, batch=batch)
-
-        remaining_quantity = self.get_remaining_quantity(sellable, batch)
-        if remaining_quantity is not None:
-            available_quantity = min(quantity, remaining_quantity)
-        else:
-            available_quantity = quantity
-
-        # Decrease the available  quantity, so it does not get decreased twice
-        # when confirming the sale
-        sale_item.quantity_decreased = available_quantity
-
-        # Add only the avaiable quantity to the work order, so when it calls
-        # sync_stock below, the final quantity in the stock will be correct
         order_item = work_order.add_sellable(sellable, price=price, batch=batch,
-                                             quantity=available_quantity)
+                                             quantity=quantity)
         order_item.sale_item = sale_item
+
         return _TempSaleItem(sale_item)
 
     def get_saved_items(self):
@@ -710,6 +698,32 @@ class OpticalSaleQuoteWizard(SaleQuoteWizard):
         # changes the category after we have created workorders).
         for wo in self.workorders:
             wo.category = self.wo_category
-            wo.sync_stock()
+            for item in wo.order_items:
+                storable = item.sellable.product_storable
+                if storable:
+                    if item.batch is not None:
+                        balance = item.batch.get_balance_for_branch(
+                            item.order.branch)
+                    else:
+                        balance = storable.get_balance_for_branch(
+                            item.order.branch)
+                else:
+                    # No storable, consume it all
+                    balance = item.quantity
+
+                diff = item.quantity - item.quantity_decreased
+                # A corrner case. Can happen if the user edited the sale and
+                # reduced the quantity to less than was reserved before.
+                if diff < 0:
+                    item.return_to_stock(-diff)
+                if balance > 0:
+                    # FIXME: We should change this to have something on the
+                    # step before to say that some quantity will already be
+                    # reserved. obs. Then, the validation for the quantity in
+                    # stock should be there, not here
+                    quantity_to_reserve = min(balance, diff)
+                    item.reserve(quantity_to_reserve)
+
+                item.sale_item.quantity_decreased = item.quantity_decreased
 
         SaleQuoteWizard.finish(self)

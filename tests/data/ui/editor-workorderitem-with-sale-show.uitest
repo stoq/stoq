@@ -8,11 +8,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order item"', hidd
           GtkAlignment(toplevel):
             GtkTable():
               ProxyLabel(price_lbl): 'Price:'
-              ProxyEntry(price): '10.00'
+              ProxyEntry(price): '10.00', insensitive
               ProxyLabel(quantity_lbl): 'Quantity:'
-              ProxySpinButton(quantity): '1'
-              ProxyLabel(quantity_reserved_lbl): 'Reserved quantity:', hidden
-              ProxySpinButton(quantity_reserved): '0', hidden
+              ProxySpinButton(quantity): '1', insensitive
+              ProxyLabel(quantity_reserved_lbl): 'Reserved quantity:'
+              ProxySpinButton(quantity_reserved): '0'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

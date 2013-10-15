@@ -80,8 +80,9 @@ class TestServices(BaseGUITest):
 
                 run_dialog.assert_called_once_with(
                     NoteEditor, self.store,
-                    message_text=(u'This will cancel the selected order. '
-                                  u'Are you sure?'),
+                    message_text=(u"This will cancel the selected order. "
+                                  u"Any reserved items will return to stock. "
+                                  u"Are you sure?"),
                     model=Note(), mandatory=True, label_text=u'Reason')
 
                 # Status should not be altered. ie, its still opened
@@ -113,8 +114,9 @@ class TestServices(BaseGUITest):
 
                 run_dialog.assert_called_once_with(
                     NoteEditor, self.store,
-                    message_text=(u'This will cancel the selected order. '
-                                  u'Are you sure?'),
+                    message_text=(u"This will cancel the selected order. "
+                                  u"Any reserved items will return to stock. "
+                                  u"Are you sure?"),
                     model=Note(), mandatory=True, label_text=u'Reason')
 
                 # Status should be updated to cancelled.
@@ -138,6 +140,8 @@ class TestServices(BaseGUITest):
         olist.select(olist[0])
 
         workorder.add_sellable(self.create_sellable())
+        for item in workorder.order_items:
+            item.reserve(item.quantity)
         # Selecting again will update actions sensitivity
         olist.select(olist[0])
         self.assertSensitive(app, ['Finish'])
@@ -178,6 +182,8 @@ class TestServices(BaseGUITest):
         olist.select(olist[0])
 
         workorder.add_sellable(self.create_sellable())
+        for item in workorder.order_items:
+            item.reserve(item.quantity)
         # Selecting again will update actions sensitivity
         olist.select(olist[0])
         self.assertSensitive(app, ['Finish'])

@@ -612,7 +612,7 @@ CREATE TABLE stock_transaction_history (
     stock_cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (stock_cost >= 0),
     quantity numeric(20, 3),
-    type integer CONSTRAINT type_range CHECK (type >= 0 and type <= 17),
+    type integer CONSTRAINT type_range CHECK (type >= 0 and type <= 18),
     object_id uuid,
     responsible_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
     product_stock_item_id uuid NOT NULL REFERENCES product_stock_item(id)
@@ -1579,6 +1579,7 @@ CREATE TABLE work_order_item (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     quantity numeric(20,3),
+    quantity_decreased numeric(20,3),
     price numeric(20,2),
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,

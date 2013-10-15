@@ -101,6 +101,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                             column: title='Description', expand
                             column: title='Price'
                             column: title='Quantity'
+                            column: title='Consumed quantity'
                             column: title='Total'
                           GtkHBox(summary, fill=True):
                             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
