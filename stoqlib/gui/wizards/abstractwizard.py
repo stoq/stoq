@@ -356,7 +356,7 @@ class SellableItemSlave(BaseEditorSlave):
         # we need to adjust the batch's type since places using any
         # batch selection different from BatchDecreaseSelectionDialog will
         # be expecting the batch number
-        if batch and not isinstance(self.batch_selection_dialog,
+        if batch and not issubclass(self.batch_selection_dialog,
                                     BatchDecreaseSelectionDialog):
             batch = batch.batch_number
 
@@ -814,7 +814,6 @@ class SellableItemSlave(BaseEditorSlave):
                 self.add_sellable_button.get_sensitive()):
             self._add_sellable()
         else:
-            self.sellable_selected(sellable)
             self.quantity.grab_focus()
 
     #
