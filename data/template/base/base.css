@@ -48,7 +48,7 @@ header .logo {
     background-position: top right;
     background-size: auto 2cm;
     height: 2cm;
-    width: 6cm;;
+    width: 5cm;;
     position: absolute;
     top:0; right: 0;
 }
@@ -82,7 +82,7 @@ header .subtitle {
 }
 
 header .notes {
-    font-size: 10pt;
+    font-size: 8pt;
     color: #333;
     margin-bottom: 5mm;
 }
@@ -117,7 +117,7 @@ body {
 
 header {
     min-height: 3cm;
-    padding-right: 6cm;
+    padding-right: 4cm;
     position: relative;
 }
 

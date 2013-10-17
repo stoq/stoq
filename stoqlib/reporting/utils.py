@@ -55,7 +55,8 @@ def get_logo_data(store):
 def get_header_data():
     default_store = get_default_store()
 
-    person = get_current_branch(default_store).person
+    branch = get_current_branch(default_store)
+    person = branch.person
     company = person.company
     main_address = person.get_main_address()
 
@@ -64,33 +65,34 @@ def get_header_data():
                                     "name at this point" % (person.id, ))
 
     data = {
-        'title': person.name,
+        'title': branch.get_description(),
         'lines': [],
     }
 
     # Address
     if main_address:
-        data['lines'].append(main_address.get_address_string())
-
         address_parts = []
+        address_parts.append(main_address.get_address_string())
         if main_address.postal_code:
             address_parts.append(main_address.postal_code)
         if main_address.get_city():
             address_parts.append(main_address.get_city())
         if main_address.get_state():
             address_parts.append(main_address.get_state())
-
         if address_parts:
             data['lines'].append(' - '.join(address_parts))
 
     # Contact
     contact_parts = []
     if person.phone_number:
-        contact_parts.append(_("Phone: %s") %
-                             format_phone_number(person.phone_number))
+        contact_parts.append(format_phone_number(person.phone_number))
+    if person.mobile_number:
+        contact_parts.append(format_phone_number(person.mobile_number))
     if person.fax_number:
         contact_parts.append(_("Fax: %s") %
                              format_phone_number(person.fax_number))
+    if person.email:
+        contact_parts.append(person.email)
     if contact_parts:
         data['lines'].append(' - '.join(contact_parts))
 
