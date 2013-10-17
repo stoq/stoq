@@ -37,6 +37,10 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
             row: 74521, u'Deivis Alexandre Junior', Decimal('0E-20'), <currency $ 0>, datetime.datetime(2012, 1, 15, 0, 0), Decimal('-10.00'), Decimal('0')
             row: 85412, u'Maria Aparecida Ardana', Decimal('0E-20'), <currency $ 0>, datetime.datetime(2012, 2, 15, 0, 0), Decimal('-10.00'), Decimal('0')
       GtkHBox(fill=True):
+        GtkLabel(expand=True, fill=True):
+        GtkLabel(payments_label): 'Total payments: $ -20.00'
+        GtkLabel(sales_label): 'Total sales: $ 0.00'
+      GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):

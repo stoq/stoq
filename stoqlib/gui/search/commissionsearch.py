@@ -26,8 +26,10 @@
 from decimal import Decimal
 import datetime
 
+import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import ColoredColumn, Column
+import pango
 from storm.expr import And
 
 from stoqlib.api import api
@@ -40,6 +42,7 @@ from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -52,8 +55,55 @@ class CommissionSearch(SearchDialog):
     searching_by_date = True
 
     #
+    # Private
+    #
+
+    def _update_summary(self, results):
+        payments = sales = 0
+        sale_ids = set()
+        for obj in results:
+            payments += obj.payment_amount
+            # Each sale may appear more than once in the results (once for each payment)
+            if obj.id not in sale_ids:
+                # If the sale was returned, Dont include it in the summary
+                if not obj.sale_returned:
+                    sales += obj.total_amount
+                sale_ids.add(obj.id)
+
+        self.payments_label.set_label(_(u'Total payments: %s') % get_formatted_price(payments))
+        self.sales_label.set_label(_(u'Total sales: %s') % get_formatted_price(sales))
+
+    #
     # SearchDialog Hooks
     #
+
+    def setup_widgets(self):
+        def set_bold(widget):
+            bold = pango.AttrWeight(pango.WEIGHT_HEAVY, 0, -1)
+            attrs = pango.AttrList()
+            attrs.insert(bold)
+            widget.set_property('attributes', attrs)
+
+        hbox = gtk.HBox()
+        hbox.set_spacing(6)
+
+        self.vbox.pack_start(hbox, False, True)
+        self.vbox.reorder_child(hbox, 2)
+        self.vbox.set_spacing(6)
+
+        hbox.pack_start(gtk.Label(), True, True)
+
+        # Create two labels to show a summary for the search (kiwi's
+        # SummaryLabel supports only one column)
+        self.payments_label = gtk.Label()
+        hbox.pack_start(self.payments_label, False, False)
+
+        self.sales_label = gtk.Label()
+        hbox.pack_start(self.sales_label, False, False)
+        hbox.show_all()
+
+        set_bold(self.payments_label)
+        set_bold(self.sales_label)
 
     def create_filters(self):
         self.set_text_field_columns(['salesperson_name', 'identifier_str'])
@@ -62,6 +112,10 @@ class CommissionSearch(SearchDialog):
         self._salesperson_filter = ComboSearchFilter(_("Sold by:"), items)
         self.add_filter(self._salesperson_filter, SearchFilterPosition.TOP,
                         callback=self._get_salesperson_query)
+
+        # Dont set a limit here, otherwise it might break the summary
+        executer = self.search.get_query_executer()
+        executer.set_limit(-1)
 
     def get_columns(self):
         columns = [
@@ -104,6 +158,9 @@ class CommissionSearch(SearchDialog):
     #
     #  Callbacks
     #
+
+    def on_search__search_completed(self, search, result_view, states):
+        self._update_summary(result_view)
 
     def _get_salesperson_query(self, state):
         queries = []

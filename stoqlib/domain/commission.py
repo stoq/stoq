@@ -106,11 +106,6 @@ class Commission(Domain):
     #: The commission amount
     value = PriceCol(default=0)
 
-    salesperson_id = IdCol()
-
-    #: who sold the |sale| this commission applies to
-    salesperson = Reference(salesperson_id, 'SalesPerson.id')
-
     sale_id = IdCol()
 
     #: the |sale| this commission applies to
@@ -208,6 +203,9 @@ class CommissionView(Viewable):
     #: the branch this commission was generated
     branch = Branch
 
+    payment = Payment
+    sale = Sale
+
     # Sale
     id = Sale.id
     identifier = Sale.identifier
@@ -233,39 +231,38 @@ class CommissionView(Viewable):
         Sale,
         Join(Branch, Sale.branch_id == Branch.id),
         Join(Commission, Commission.sale_id == Sale.id),
-        Join(SalesPerson, SalesPerson.id == Commission.salesperson_id),
+        Join(SalesPerson, SalesPerson.id == Sale.salesperson_id),
         Join(Person, Person.id == SalesPerson.person_id),
         Join(Payment, Payment.id == Commission.payment_id),
     ]
 
+    # pylint: disable=E1120
     @property
-    def sale(self):
-        return self.store.get(Sale, self.id)
-
-    @property
-    def payment(self):
-        return self.store.get(Payment, self.payment_id)
-
     def quantity_sold(self):
-        if self.sale_returned():
+        if self.sale_returned:
             # zero means 'this sale does not changed our stock'
             return Decimal(0)
 
+        # FIXME: This is doing one extra query per row when printing the report
         return self.sale.get_items_total_quantity()
 
-    def get_payment_amount(self):
+    @property
+    def payment_amount(self):
         # the returning payment should be shown as negative one
         if self.payment.is_outpayment():
             return -self.payment_value
         return self.payment_value
 
-    def get_total_amount(self):
+    @property
+    def total_amount(self):
         # XXX: No, the sale amount does not change. But I return different
         # values based in type of the payment to guess how I might show the
         # total sale amount.
         if self.payment.is_outpayment():
             return -self.sale.total_amount
         return self.sale.total_amount
+    # pylint: enable=E1120
 
+    @property
     def sale_returned(self):
         return self.sale_status == Sale.STATUS_RETURNED

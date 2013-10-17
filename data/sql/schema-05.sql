@@ -1016,7 +1016,7 @@ CREATE TABLE credit_provider (
     short_name text,
     provider_id text,
     open_contract_date timestamp,
-    default_device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE 
+    default_device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE card_operation_cost (
@@ -1318,7 +1318,6 @@ CREATE TABLE commission (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     value numeric(20, 2) NOT NULL,
     commission_type integer NOT NULL,
-    salesperson_id uuid NOT NULL REFERENCES sales_person(id) ON UPDATE CASCADE,
     sale_id uuid NOT NULL REFERENCES sale(id) ON UPDATE CASCADE,
     payment_id uuid NOT NULL UNIQUE REFERENCES payment(id) ON UPDATE CASCADE
 );

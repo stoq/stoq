@@ -1403,7 +1403,6 @@ class Sale(Domain):
             commission_type=self._get_commission_type(),
             sale=self,
             payment=payment,
-            salesperson=self.salesperson,
             store=self.store)
         if payment.is_outpayment():
             commission.value = -commission.value

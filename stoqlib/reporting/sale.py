@@ -153,11 +153,11 @@ class SalesPersonReport(TableReport):
 
     def get_row(self, obj):
         data = [unicode(obj.identifier),
-                get_formatted_price(obj.get_total_amount()),
-                get_formatted_price(obj.get_payment_amount()),
+                get_formatted_price(obj.total_amount),
+                get_formatted_price(obj.payment_amount),
                 get_formatted_percentage(obj.commission_percentage),
                 get_formatted_price(obj.commission_value),
-                format_quantity(obj.quantity_sold())]
+                format_quantity(obj.quantity_sold)]
         if not self._sales_person:
             data.insert(1, obj.salesperson_name)
         return data
@@ -173,12 +173,11 @@ class SalesPersonReport(TableReport):
     def accumulate(self, obj):
         # Count sale value only once
         if obj.id not in self._sales:
-            self._total_amount += obj.get_total_amount()
-            self._total_sold += obj.quantity_sold()
-        if obj.sale_returned():
-            self._total_amount -= obj.get_total_amount()
+            if not obj.sale_returned:
+                self._total_amount += obj.total_amount
+            self._total_sold += obj.quantity_sold
 
-        self._total_payment += obj.get_payment_amount()
+        self._total_payment += obj.payment_amount
         self._total_value += obj.commission_value
 
         # payments_list might have multiples items that refers to the

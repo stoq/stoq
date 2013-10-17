@@ -158,14 +158,13 @@ class TestPayment(DomainTest):
             self.assertFalse(p.has_commission())
             commission = Commission(store=self.store,
                                     payment=p,
-                                    sale=item.sale,
-                                    salesperson=item.sale.salesperson)
+                                    sale=item.sale)
             self.assertTrue(p.has_commission())
             p.value = Decimal(2)
             commission = self.store.find(CommissionView, payment_id=p.id).one()
-            self.assertEquals(commission.quantity_sold(), Decimal(1))
+            self.assertEquals(commission.quantity_sold, Decimal(1))
             commission.sale_status = item.sale.STATUS_RETURNED
-            self.assertEquals(commission.quantity_sold(), Decimal(0))
+            self.assertEquals(commission.quantity_sold, Decimal(0))
 
     @mock.patch('stoqlib.domain.payment.payment.Event.log')
     def test_pay(self, log):

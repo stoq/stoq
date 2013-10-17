@@ -40,10 +40,10 @@ class TestCommissionSearch(GUITest):
         sale.identifier = 74521
         sale.open_date = localdatetime(2012, 1, 1)
         sale.confirm_date = localdatetime(2012, 1, 10)
+        sale.salesperson = salesperson
         payment = self.create_payment()
         payment.paid_date = localdatetime(2012, 1, 15)
-        Commission(salesperson=salesperson,
-                   sale=sale,
+        Commission(sale=sale,
                    payment=payment,
                    store=self.store)
 
@@ -53,10 +53,10 @@ class TestCommissionSearch(GUITest):
         sale.identifier = 85412
         sale.open_date = localdatetime(2012, 2, 2)
         sale.confirm_date = localdatetime(2012, 2, 10)
+        sale.salesperson = salesperson
         payment = self.create_payment()
         payment.paid_date = localdatetime(2012, 2, 15)
-        Commission(salesperson=salesperson,
-                   sale=sale,
+        Commission(sale=sale,
                    payment=payment,
                    store=self.store)
 
