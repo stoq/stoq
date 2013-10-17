@@ -501,6 +501,8 @@ class ProductBrandSearch(SearchEditor):
         self.csv_button = self.add_button(label=_('Export to spreadsheet...'))
         self.csv_button.show()
         self.csv_button.set_sensitive(False)
+        self.search.set_summary_label('quantity', label=_(u'Total:'),
+                                      format='<b>%s</b>')
 
     def create_filters(self):
         self.set_text_field_columns(['brand'])

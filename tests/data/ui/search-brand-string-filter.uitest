@@ -46,6 +46,9 @@ GtkDialog(toplevel): title='Brand Search', hidden
             column: title='Brand', expand
             column: title='Quantity'
             row: u'brand', Decimal('4.000')
+          GtkHBox(_summary_label):
+            GtkLabel(expand=True, fill=True, padding=6): 'Total:'
+            GtkLabel(): '<b>4.0</b>'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden
