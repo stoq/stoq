@@ -655,6 +655,10 @@ def set_current_branch_station(store, station_name):
     :param store: a store
     :param station_name: name of the station to register
     """
+    # This is called from stoq-daemon, which doesn't know about Branch yet
+    from stoqlib.domain.person import Branch
+    Branch  # pylint: disable=W0104
+
     if station_name is None:
         station_name = get_hostname()
 
