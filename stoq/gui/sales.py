@@ -323,9 +323,6 @@ class SalesApp(ShellApp):
         # Sale.can_cancel here.
         return bool(view and view.status == Sale.STATUS_QUOTE)
 
-    def _can_edit(self, view):
-        return bool(view and view.status == Sale.STATUS_QUOTE)
-
     def _update_toolbar(self, *args):
         sale_view = self.results.get_selected()
         # FIXME: Disable invoice printing if the sale was returned. Remove this
@@ -340,7 +337,7 @@ class SalesApp(ShellApp):
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Details],
                            bool(sale_view))
         self.set_sensitive([self.sale_toolbar.edit_button, self.Edit],
-                           self._can_edit(sale_view))
+                           bool(sale_view and sale_view.can_edit()))
 
         self.sale_toolbar.set_report_filters(self.search.get_search_filters())
 

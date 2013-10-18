@@ -738,6 +738,9 @@ class TestSale(DomainTest):
         sale.status = Sale.STATUS_QUOTE
         self.failUnless(sale.can_edit())
 
+        sale.status = Sale.STATUS_ORDERED
+        self.failUnless(sale.can_edit())
+
         self.add_payments(sale, u'check')
         sale.confirm()
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)

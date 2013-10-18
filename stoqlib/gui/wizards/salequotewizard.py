@@ -484,9 +484,9 @@ class SaleQuoteWizard(BaseWizard):
         title = self.get_title(model)
         model = model or self._create_model(store)
 
-        if model.status != Sale.STATUS_QUOTE:
+        if not model.can_edit():
             raise ValueError('Invalid sale status. It should '
-                             'be STATUS_QUOTE')
+                             'be STATUS_QUOTE or STATUS_ORDERED')
 
         first_step = self.get_first_step(store, model)
         BaseWizard.__init__(self, store, first_step, model, title=title,

@@ -869,7 +869,8 @@ class Sale(Domain):
 
         :returns: ``True`` if the sale can be edited
         """
-        return self.status == Sale.STATUS_QUOTE
+        return (self.status == Sale.STATUS_QUOTE or
+                self.status == Sale.STATUS_ORDERED)
 
     def order(self):
         """Orders the sale
@@ -1881,6 +1882,10 @@ class SaleView(Viewable):
     def can_cancel(self):
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
                                Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
+
+    def can_edit(self):
+        return (self.status == Sale.STATUS_QUOTE or
+                self.status == Sale.STATUS_ORDERED)
 
     def get_surcharge_value(self):
         return currency(self.surcharge_value or 0)
