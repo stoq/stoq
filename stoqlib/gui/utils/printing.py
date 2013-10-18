@@ -173,6 +173,15 @@ class PrintOperation(gtk.PrintOperation):
 class PrintOperationPoppler(PrintOperation):
 
     def render(self):
+        # FIXME: This is an specific fix for boleto printing in landscape
+        # orientation. We should find a better fix for it or simply remove
+        # PrintOperationPoppler when migrating the last reports using
+        # reportlab to weasyprint
+        if getattr(self._report, 'print_as_landscape', False):
+            default_page_setup = gtk.PageSetup()
+            default_page_setup.set_orientation(gtk.PAGE_ORIENTATION_LANDSCAPE)
+            self.set_default_page_setup(default_page_setup)
+
         self._report.save()
         uri = gio.File(path=self._report.filename).get_uri()
         self._document = poppler.document_new_from_file(uri, password="")

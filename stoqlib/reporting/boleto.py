@@ -51,17 +51,20 @@ class BoletoPDF(object):
         self.file_descr = file_descr
         self.width = 190 * mm
         self.widthCanhoto = 70 * mm
-        self.heightLine = 6.5 * mm
         self.space = 2
         self.fontSizeTitle = 6
         self.fontSizeValue = 9
-        self.deltaTitle = self.heightLine - (self.fontSizeTitle + 1)
-        self.deltaFont = self.fontSizeValue + 1
-        self.format = format
 
         pagesize = pagesizes.A4
         if format == self.FORMAT_CARNE:
             pagesize = pagesizes.landscape(pagesize)
+            self.heightLine = 5.75 * mm
+        else:
+            self.heightLine = 6.5 * mm
+
+        self.deltaTitle = self.heightLine - (self.fontSizeTitle + 1)
+        self.deltaFont = self.fontSizeValue + 1
+        self.format = format
 
         self.pdfCanvas = canvas.Canvas(self.file_descr, pagesize=pagesize)
         self.pdfCanvas.setStrokeColor(colors.black)
@@ -685,7 +688,11 @@ class BoletoPDF(object):
         return self.width, (y + self.heightLine) / mm
 
     def drawBoletoCarneDuplo(self, boletoDados1, boletoDados2):
-        y = 5
+        if self.format == self.FORMAT_CARNE:
+            y = 25
+        else:
+            y = 5
+
         d = self.drawBoletoCarne(boletoDados1, y)
         y += d[1] + 6
         # self.drawHorizontalCorteLine(0, y, d[0])
@@ -694,17 +701,17 @@ class BoletoPDF(object):
             self.drawBoletoCarne(boletoDados2, y)
 
     def drawBoletoCarne(self, boletoDados, y):
-        x = 15
+        x = 5
         d = self.drawReciboSacadoCanhoto(boletoDados, x, y)
-        x += d[0] + 8
+        x += d[0] + 6
         self.drawVerticalCorteLine(x, y, d[1])
-        x += 8
+        x += 6
         d = self.drawReciboCaixa(boletoDados, x, y)
         x += d[0]
         return x, d[1]
 
     def drawBoleto(self, boletoDados):
-        x = 10
+        x = 5
         y = 40
         self.drawHorizontalCorteLine(x, y, self.width / mm)
         y += 5
@@ -853,6 +860,9 @@ class BillReport(object):
         format = BoletoPDF.FORMAT_BOLETO
         if len(self._payments) > 1:
             format = BoletoPDF.FORMAT_CARNE
+            # This is a PrintOperationPoppler's workaround to really print
+            # the page in landscape, without cutting the edges
+            self.print_as_landscape = True
         return BoletoPDF(self._filename, format)
 
     def _get_instrucoes(self, payment):
