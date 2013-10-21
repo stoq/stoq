@@ -29,6 +29,7 @@ import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.editors.tilleditor import CashInEditor
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
@@ -67,7 +68,8 @@ class TestTill(BaseGUITest):
         results = app.results
         results.select(results[0])
 
-    def test_confirm_order(self):
+    @mock.patch('stoq.gui.till.run_dialog')
+    def test_confirm_order(self, run_dialog):
         with contextlib.nested(
                 mock.patch('stoqlib.gui.fiscalprinter.FiscalCoupon.confirm'),
                 mock.patch('stoq.gui.till.api.new_store'),
@@ -93,6 +95,21 @@ class TestTill(BaseGUITest):
             confirm.assert_called_once_with(
                 sale, self.store,
                 subtotal=decimal.Decimal("10.00"))
+
+            # Confirm a pre sale.
+            wo_sale = self.create_sale(branch=get_current_branch(self.store))
+            wo_sale.status = Sale.STATUS_QUOTE
+            wo_sale.add_sellable(self.create_sellable())
+
+            workorder = self.create_workorder()
+            workorder.sale = wo_sale
+
+            app.status_filter.select(Sale.STATUS_QUOTE)
+            results.select(results[0])
+            self.activate(app.Confirm)
+            run_dialog.assert_called_once_with(SalePaymentsEditor, app,
+                                               self.store, wo_sale)
+            self.assertEquals(sale.status, Sale.STATUS_ORDERED)
 
     @mock.patch('stoq.gui.till.api.new_store')
     def test_run_search_dialogs(self, new_store):

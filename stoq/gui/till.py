@@ -254,9 +254,12 @@ class TillApp(ShellApp):
 
     def _create_sale_payments(self, order_view):
         store = api.new_store()
-        # TODO: Maybe change the sale status to ORDERED
         sale = store.fetch(order_view.sale)
         retval = run_dialog(SalePaymentsEditor, self, store, sale)
+
+        # Change the sale status to ORDERED
+        if retval and sale.can_order():
+            sale.order()
 
         if store.confirm(retval):
             self.refresh()
