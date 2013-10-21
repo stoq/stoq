@@ -410,7 +410,7 @@ class ServicesApp(ShellApp):
         self.main_filter.combo.select(self._not_delivered_filter_item)
         dfilter = DateSearchFilter(_("Estimated finish"))
         dfilter.set_removable()
-        dfilter.mode.select_item_by_position(5)
+        dfilter.select(data=DateSearchFilter.Type.USER_DAY)
         self.add_filter(dfilter, columns=["estimated_finish"])
         dfilter.start_date.set_date(date)
         self.refresh()

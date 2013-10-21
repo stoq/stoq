@@ -139,7 +139,7 @@ class TransactionPage(object):
                            'year': year})
             self.date_filter.add_option(option, i + 1)
         self.date_filter.add_custom_options()
-        self.date_filter.mode.select_item_by_position(0)
+        self.date_filter.select(Any)
         self.search.add_filter(self.date_filter)
 
     def _append_date_query(self, field):

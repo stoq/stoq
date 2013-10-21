@@ -204,7 +204,7 @@ class ReceivableApp(BaseAccountWindow):
         self.main_filter.select(None)
         dfilter = DateSearchFilter(_("Paid or due date"))
         dfilter.set_removable()
-        dfilter.mode.select_item_by_position(5)
+        dfilter.select(data=DateSearchFilter.Type.USER_DAY)
         self.add_filter(dfilter, columns=["paid_date", "due_date"])
         dfilter.start_date.set_date(date)
         self.refresh()

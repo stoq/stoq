@@ -282,7 +282,7 @@ class PurchaseApp(ShellApp):
     def search_for_date(self, date):
         dfilter = DateSearchFilter(_("Expected receival date"))
         dfilter.set_removable()
-        dfilter.mode.select_item_by_position(5)
+        dfilter.select(data=DateSearchFilter.Type.USER_DAY)
         self.add_filter(dfilter, columns=["expected_receival_date"])
         dfilter.start_date.set_date(date)
         self.refresh()
