@@ -1,6 +1,6 @@
 -- Add quantity_decreased column on work_order_item
 
-ALTER TABLE work_order_item ADD COLUMN quantity_decreased DEFAULT 0;
+ALTER TABLE work_order_item ADD COLUMN quantity_decreased numeric(20,3) DEFAULT 0;
 UPDATE work_order_item SET quantity_decreased = quantity;
 
 -- Change type_range to accept a new type, TYPE_WORK_ORDER_RETURN_TO_STOCK (18)
