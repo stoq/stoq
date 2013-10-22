@@ -23,6 +23,8 @@
 ##
 ##
 """ Till report implementation """
+import collections
+
 from storm.expr import And, Eq
 
 from stoqlib.api import api
@@ -64,11 +66,11 @@ class TillDailyMovementReport(HTMLReport):
                     self._get_date_interval_query(Payment.paid_date))
 
         # Keys are the sale objects, and values are lists with all payments
-        self.sales = {}
+        self.sales = collections.OrderedDict()
 
         # Keys are the returned sale objects, and values are lists with all payments
-        self.return_sales = {}
-        self.purchases = {}
+        self.return_sales = collections.OrderedDict()
+        self.purchases = collections.OrderedDict()
 
         # lonely input and output payments
         self.lonely_in_payments = []
