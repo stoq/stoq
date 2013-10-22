@@ -51,6 +51,32 @@ _system = platform.system()
 log = logging.Logger(__name__)
 
 
+# https://github.com/Kozea/WeasyPrint/issues/130
+# http://pythonhosted.org/cairocffi/cffi_api.html#converting-pycairo-wrappers-to-cairocffi
+def _UNSAFE_pycairo_context_to_cairocffi(pycairo_context):
+    import cairocffi
+    # Sanity check. Continuing with another type would probably segfault.
+    if not isinstance(pycairo_context, gtk.gdk.CairoContext):
+        raise TypeError('Expected a cairo.Context, got %r' % pycairo_context)
+
+    # On CPython, id() gives the memory address of a Python object.
+    # pycairo implements Context as a C struct:
+    #     typedef struct {
+    #         PyObject_HEAD
+    #         cairo_t *ctx;
+    #         PyObject *base;
+    #     } PycairoContext;
+    # Still on CPython, object.__basicsize__ is the size of PyObject_HEAD,
+    # ie. the offset to the ctx field.
+    # ffi.cast() converts the integer address to a cairo_t** pointer.
+    # [0] dereferences that pointer, ie. read the ctx field.
+    # The result is a cairo_t* pointer that cairocffi can use.
+    return cairocffi.Context._from_pointer(
+        cairocffi.ffi.cast('cairo_t **',
+                           id(pycairo_context) + object.__basicsize__)[0],
+        incref=True)
+
+
 class PrintOperation(gtk.PrintOperation):
     def __init__(self, report):
         gtk.PrintOperation.__init__(self)
@@ -252,6 +278,10 @@ class PrintOperationWEasyPrint(PrintOperation):
         self.set_n_pages(len(self._document.pages))
 
     def draw_page(self, cr, page_no):
+        import weasyprint
+        weasyprint_version = tuple(map(int, weasyprint.__version__.split('.')))
+        if weasyprint_version >= (0, 18):
+            cr = _UNSAFE_pycairo_context_to_cairocffi(cr)
         # 0.75 is here because its also in weasyprint render_pdf()
         self._document.pages[page_no].paint(cr, scale=0.75)
 
