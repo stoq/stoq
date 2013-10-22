@@ -1338,6 +1338,9 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         method_values = {self._method: self._holder.value}
         for i, payment in enumerate(self.model.group.payments):
+            # Cancelled payments doesn't count
+            if payment.is_cancelled():
+                continue
             method_values.setdefault(payment.method, 0)
             method_values[payment.method] += payment.value
         for method, value in method_values.items():
