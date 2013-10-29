@@ -23,6 +23,7 @@
 ##
 
 import decimal
+import logging
 
 import gtk
 from kiwi.datatypes import ValidationError
@@ -38,6 +39,8 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
+
+log = logging.getLogger(__name__)
 
 
 class _TemporaryInventoryItem(object):
@@ -320,6 +323,11 @@ class InventoryCountItemStep(SellableItemStep):
         else:
             self.wizard.next_button.grab_focus()
 
+    def on_barcode__activate(self, widget):
+        barcode = widget.get_text()
+        log.info('Inventory barcode activate: %s', barcode)
+        self._try_get_sellable()
+
 
 class InventoryCountWizard(BaseWizard):
     """A wizard for counting items on an |inventory|"""
@@ -366,8 +374,10 @@ class InventoryCountWizard(BaseWizard):
                         # If a KeyError happens, it means that we counted some
                         # quantity for a batch that wasn't registered on stoq
                         # yet, so add a new InventoryItem for it
+                        log.info('storable batch not in inventory: %r, %r' %
+                                 (sellable.product.storable, batch_number))
                         item = self.model.add_storable(
-                            sellable.product.storable, batch_number=batch_number)
+                            sellable.product.storable, quantity, batch_number=batch_number)
 
                     item.counted_quantity = quantity
             else:
