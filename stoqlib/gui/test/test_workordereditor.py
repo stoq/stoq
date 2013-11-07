@@ -46,7 +46,6 @@ def _adjust_history_date(workorder):
 class TestWorkOrderEditor(GUITest):
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_create(self, localnow):
-        sysparam.set_bool(self.store, 'ALLOW_HIGHER_SALE_PRICE', True)
         sysparam.set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', False)
 
         localnow.return_value = localdatetime(2013, 1, 1)

@@ -36,6 +36,7 @@ from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.formatters import get_formatted_price, get_formatted_percentage
 
 _ = stoqlib_gettext
 
@@ -99,5 +100,68 @@ class Event(ORMObject):
         :param description: the message description
         """
         cls(event_type=event_type,
+            description=description,
+            store=store)
+
+    @classmethod
+    def log_sale_item_discount(cls, store, sale_number, user_name, discount_value,
+                               product, original_price, new_price):
+        """
+        Log the discount authorized by an user
+
+        This will log on the event system when a user authorizes a discount
+        greater than what is allowed on a sale item
+
+        :param store: a store
+        :param sale_number: the sale's id that the discount was applied
+        :param user_name: the user that authorized the discount
+        :param discount_value: the percentage of discount applied
+        :param product: the name of product that received the discount
+        :param original_price: the original price of product
+        :param new_price: the price of product after discount
+        """
+
+        description = _(u"Sale {sale_number}: User {user_name} authorized "
+                        u"{discount_value} of discount changing\n "
+                        u"{product} value from {original_price} to "
+                        u"{new_price}.").format(
+            sale_number=sale_number,
+            user_name=user_name,
+            discount_value=get_formatted_percentage(discount_value),
+            product=product,
+            original_price=get_formatted_price(original_price, symbol=True),
+            new_price=get_formatted_price(new_price, symbol=True))
+
+        cls(event_type=cls.TYPE_SALE,
+            description=description,
+            store=store)
+
+    @classmethod
+    def log_sale_discount(cls, store, sale_number, user_name, discount_value,
+                          original_price, new_price):
+        """
+        Log the discount authorized by an user
+
+        This will log on the event system when a user authorizes a discount
+        greater than what is allowed on a sale
+
+        :param store: a store
+        :param sale_number: the sale's id that the discount was applied
+        :param user_name: the user that authorized the discount
+        :param discount_value: the percentage of discount applied
+        :param original_price: the original price of product
+        :param new_price: the price of product after discount
+        """
+
+        description = _(u"sale {sale_number}: User {user_name} authorized "
+                        u"{discount_value} of discount changing the value from "
+                        u"{original_price} to {new_price}.").format(
+            sale_number=sale_number,
+            user_name=user_name,
+            discount_value=get_formatted_percentage(discount_value),
+            original_price=get_formatted_price(original_price, symbol=True),
+            new_price=get_formatted_price(new_price, symbol=True))
+
+        cls(event_type=cls.TYPE_SALE,
             description=description,
             store=store)

@@ -36,6 +36,7 @@ from storm.expr import And, Eq, Or
 
 from stoqlib.api import api
 from stoqlib.database.expr import Field
+from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import ClientCategory, Client, SalesPerson
@@ -45,8 +46,8 @@ from stoqlib.domain.views import SellableFullStockView
 from stoqlib.exceptions import TaxError
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.decorators import public
-from stoqlib.lib.formatters import (format_quantity, get_formatted_percentage,
-                                    format_sellable_description)
+from stoqlib.lib.formatters import (format_quantity, format_sellable_description,
+                                    get_formatted_percentage)
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -291,6 +292,25 @@ class SaleQuoteItemStep(SellableItemStep):
                 '<b>%s</b>' % (api.escape(msg)), self._show_missing_details)
         else:
             self.slave.clear_message()
+
+    def add_sellable(self, sellable):
+        price = sellable.get_price_for_category(self.model.client_category)
+        new_price = self.cost.read()
+
+        # Percentage of discount
+        discount = 100 - new_price * 100 / price
+
+        if discount > 0 and self.manager:
+            Event.log_sale_item_discount(
+                store=self.store,
+                sale_number=self.model.identifier,
+                user_name=self.manager.username,
+                discount_value=discount,
+                product=sellable.description,
+                original_price=price,
+                new_price=new_price)
+
+        SellableItemStep.add_sellable(self, sellable)
 
     def get_order_item(self, sellable, price, quantity, batch=None):
         item = self.model.add_sellable(sellable, quantity, price, batch=batch)

@@ -31,6 +31,7 @@ from kiwi.ui.forms import TextField
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.event import Event
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -70,6 +71,19 @@ class DiscountEditor(BaseEditor):
         self.add_proxy(Settable(discount=u''), ['discount'])
 
     def on_confirm(self):
+        price = self.model.get_sale_base_subtotal()
+        discount = self._get_discount_percentage()
+        new_price = price - (price * discount / 100)
+
+        # If user that authorized the discount is not the current user
+        if discount > 0 and self._user is not api.get_current_user(self.store):
+            Event.log_sale_discount(store=self.store,
+                                    sale_number=self.model.identifier,
+                                    user_name=self._user.username,
+                                    discount_value=discount,
+                                    original_price=price,
+                                    new_price=new_price)
+
         self.model.set_items_discount(self._get_discount_percentage())
 
     #

@@ -892,11 +892,11 @@ class SellableItemSlave(BaseEditorSlave):
                 return ValidationError(_(u'The sell price cannot be greater '
                                          'than %s.') % default_price)
 
-            self.manager = self.manager or api.get_current_user(self.store)
+            manager = self.manager or api.get_current_user(self.store)
             client = getattr(self.model, 'client', None)
             category = client and client.category
             extra_discount = self.get_extra_discount(sellable)
-            valid_data = sellable.is_valid_price(value, category, self.manager,
+            valid_data = sellable.is_valid_price(value, category, manager,
                                                  extra_discount=extra_discount)
 
             if not valid_data['is_valid']:

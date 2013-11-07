@@ -29,6 +29,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.api import api
+from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.gui.base.dialogs import run_dialog
@@ -171,7 +172,28 @@ class SaleQuoteItemEditor(BaseEditor):
         self.reserved_proxy = self.add_proxy(self.quantity_model,
                                              ['quantity', 'reserved'])
 
-    def on_confirm(self):
+    def _maybe_log_discount(self):
+        # If not authorized to apply a discount
+        if self.manager is None:
+            return
+
+        price = self.model.sellable.get_price_for_category(self.model.sale.client_category)
+        new_price = self.price.read()
+
+        if new_price >= price:
+            return
+
+        discount = 100 - new_price * 100 / price
+
+        Event.log_sale_item_discount(
+            store=self.store, sale_number=self.model.sale.identifier,
+            user_name=self.manager.username,
+            discount_value=discount,
+            product=self.model.sellable.description,
+            original_price=price,
+            new_price=new_price)
+
+    def _maybe_reserve_products(self):
         if not self._can_reserve():
             return
 
@@ -192,6 +214,10 @@ class SaleQuoteItemEditor(BaseEditor):
             # even if there is no products to reserve, we still need to set the
             # quantity value.
             self.model.quantity = self.quantity_model.quantity
+
+    def on_confirm(self):
+        self._maybe_log_discount()
+        self._maybe_reserve_products()
 
     #
     # Kiwi callbacks
@@ -223,17 +249,17 @@ class SaleQuoteItemEditor(BaseEditor):
                                    'than %s.') % self.model.base_price)
 
         sellable = self.model.sellable
-        self.manager = self.manager or api.get_current_user(self.store)
+        manager = self.manager or api.get_current_user(self.store)
 
         if api.sysparam.get_bool('REUTILIZE_DISCOUNT'):
             extra_discount = self.model.sale.get_available_discount_for_items(
-                user=self.manager, exclude_item=self.model)
+                user=manager, exclude_item=self.model)
         else:
             extra_discount = None
 
         valid_data = sellable.is_valid_price(
             value, category=self.model.sale.client_category,
-            user=self.manager, extra_discount=extra_discount)
+            user=manager, extra_discount=extra_discount)
 
         if not valid_data['is_valid']:
             return ValidationError(
@@ -265,11 +291,10 @@ class SaleQuoteItemEditor(BaseEditor):
             return ValidationError('Not enought stock to reserve.')
 
     def on_price__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+        if icon_pos != gtk.ENTRY_ICON_PRIMARY:  # pragma no cover
             return
 
         # Ask for the credentials of a different user that can possibly allow a
         # bigger discount.
         self.manager = run_dialog(CredentialsDialog, self, self.store)
-        if self.manager:
-            self.price.validate(force=True)
+        self.price.validate(force=True)
