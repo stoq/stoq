@@ -49,6 +49,7 @@ from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
 from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import warning
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -80,6 +81,11 @@ class WorkOrderEditor(BaseEditor):
         super(WorkOrderEditor, self).__init__(store, model=model,
                                               visual_mode=visual_mode)
         self._setup_widgets()
+        pm = PermissionManager.get_permission_manager()
+        if not pm.can_create('WorkOrderCategory'):
+            self.category_create.hide()
+        if not pm.can_edit('WorkOrderCategory'):
+            self.category_edit.hide()
 
     def _get_client(self):
         client_id = self.client.read()

@@ -58,6 +58,7 @@ from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.reporting.purchase import PurchaseOrderReport
 
@@ -81,6 +82,11 @@ class StartPurchaseStep(WizardEditorStep):
 
     def __init__(self, wizard, store, model):
         WizardEditorStep.__init__(self, store, wizard, model)
+        pm = PermissionManager.get_permission_manager()
+        if not pm.can_create('Supplier'):
+            self.add_supplier.hide()
+        if not pm.can_edit('Supplier'):
+            self.edit_supplier.hide()
 
     def _fill_supplier_combo(self):
         suppliers = Supplier.get_active_suppliers(self.store)
