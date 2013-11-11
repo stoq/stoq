@@ -253,6 +253,11 @@ class BasicDialog(GladeDelegate, RunnableView):
             icon = gtk.STOCK_OK
         change_button_appearance(self.ok_button, icon, text)
 
+    def set_cancel_label(self, text, icon=None):
+        if not icon:
+            icon = gtk.STOCK_CANCEL
+        change_button_appearance(self.cancel_button, icon, text)
+
     # FIXME: Remove
     # Callsites: stoqlib/gui/dialogs/sintegradialog.py
     def justify_label(self, just):

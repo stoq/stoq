@@ -40,7 +40,7 @@ class PaulistaInvoiceDialog(BaseEditor):
     """A dialog to generate Paulista invoices"""
     title = _(u"Paulista Invoice")
     hide_footer = False
-    size = (260, 160)
+    size = (-1, 160)
     model_type = Settable
     gladefile = "PaulistaInvoice"
     proxy_widgets = ("document", )
@@ -72,6 +72,7 @@ class PaulistaInvoiceDialog(BaseEditor):
         if self._initial_document_type == FiscalSaleHistory.TYPE_CPF:
             self.document.set_text(self._initial_document)
         self.document.grab_focus()
+        self.main_dialog.set_cancel_label(_(u"Without CPF"))
 
     def _set_cnpj(self):
         self.doc_label.set_text(_(u"CNPJ:"))
@@ -80,6 +81,7 @@ class PaulistaInvoiceDialog(BaseEditor):
         if self._initial_document_type == FiscalSaleHistory.TYPE_CNPJ:
             self.document.set_text(self._initial_document)
         self.document.grab_focus()
+        self.main_dialog.set_cancel_label(_(u"Without CNPJ"))
 
     #
     # BaseEditor

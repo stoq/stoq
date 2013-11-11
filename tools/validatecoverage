@@ -29,7 +29,7 @@ EXCEPTIONS = OrderedDict((
     ('plugins/ecf/ecfprinterdialog.py', 30.73),
     ('plugins/ecf/ecfprinterstatus.py', 31.88),
     ('plugins/ecf/ecfui.py', 21.88),
-    ('plugins/ecf/paulistainvoicedialog.py', 40.00),
+    ('plugins/ecf/paulistainvoicedialog.py', 92.00),
     ('plugins/nfe/nfegenerator.py', 74.10),
     ('plugins/nfe/nfeplugin.py', 83.33),
     ('plugins/nfe/nfeui.py', 47.22),
