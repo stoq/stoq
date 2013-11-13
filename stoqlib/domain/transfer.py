@@ -25,7 +25,7 @@
 
 # pylint: enable=E1101
 
-from storm.expr import Join, LeftJoin, Sum, Cast, Coalesce
+from storm.expr import Join, LeftJoin, Sum, Cast, Coalesce, And
 from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implementer
@@ -237,6 +237,17 @@ class TransferOrder(Domain):
         self.receival_date = receival_date or localnow()
         self.destination_responsible = responsible
         self.status = self.STATUS_RECEIVED
+
+    @classmethod
+    def get_pending_transfers(cls, store, branch):
+        """Get all the transfers that need to be recieved
+
+        Get all transfers that have STATUS_SENT and the current branch as the destination
+        This is useful if you want to list all the items that need to be
+        recieved in a certain branch
+        """
+        return store.find(cls, And(cls.status == cls.STATUS_SENT,
+                                   cls.destination_branch == branch))
 
     def get_source_branch_name(self):
         """Returns the source |branch| name"""

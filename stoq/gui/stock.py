@@ -28,12 +28,15 @@ import logging
 
 import pango
 import gtk
+
 from kiwi.datatypes import converter
 from kiwi.ui.objectlist import Column
+
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.domain.person import Branch
 from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.transfer import TransferOrder
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -186,13 +189,19 @@ class StockApp(ShellApp):
         if refresh:
             self.refresh()
 
-        self.check_open_inventory()
+        open_inventory = self.check_open_inventory()
+
+        if not open_inventory:
+            self.transfers_bar = self._create_pending_info_message()
         self._update_widgets()
 
     def setup_focus(self):
         self.refresh()
 
     def deactivate(self):
+        if self.transfers_bar:
+            self.transfers_bar.hide()
+
         self.uimanager.remove_ui(self.stock_ui)
 
     def new_activate(self):
@@ -315,6 +324,32 @@ class StockApp(ShellApp):
         store.close()
         self.refresh()
 
+    def _create_pending_info_message(self):
+        branch = api.get_current_branch(self.store)
+        n_transfers = TransferOrder.get_pending_transfers(self.store, branch).count()
+
+        if not n_transfers:
+            return None
+
+        msg = (_(u"You have %s incoming transfer(s)") % n_transfers)
+        info_bar = self.window.add_info_bar(gtk.MESSAGE_QUESTION, msg)
+        button = info_bar.add_button(_(u"Receive"), gtk.RESPONSE_OK)
+        button.connect('clicked', self._on_info_transfers__clicked)
+
+        return info_bar
+
+    def _search_transfers(self):
+        self.run_dialog(TransferOrderSearch, self.store)
+        if self.transfers_bar:
+            n_transfers = self._get_pending_transfers_count()
+
+            if n_transfers > 0:
+                msg = _(u"You have %s incoming transfers" % n_transfers)
+                self.transfers_bar.set_message(msg)
+            else:
+                self.transfers_bar.hide()
+        self.refresh()
+
     #
     # Callbacks
     #
@@ -348,6 +383,9 @@ class StockApp(ShellApp):
         model = self.run_dialog(ProductStockEditor, store, product)
         store.confirm(model)
         store.close()
+
+    def _on_info_transfers__clicked(self, button):
+        self._search_transfers()
 
     # Stock
 
@@ -423,8 +461,7 @@ class StockApp(ShellApp):
         self.run_dialog(PurchaseReceivingSearch, self.store)
 
     def on_SearchTransfer__activate(self, action):
-        self.run_dialog(TransferOrderSearch, self.store)
-        self.refresh()
+        self._search_transfers()
 
     def on_SearchPurchasedStockItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.store)

@@ -37,6 +37,7 @@ from stoqlib.api import api
 from stoqlib.gui.base.dialogs import (add_current_toplevel,
                                       get_current_toplevel,
                                       run_dialog)
+from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.events import StartApplicationEvent, StopApplicationEvent
 from stoqlib.gui.utils.help import show_contents, show_section
@@ -669,20 +670,11 @@ class ShellWindow(GladeDelegate):
         :param action_widget: optional, most likely a button
         :returns: the infobar
         """
-        label = gtk.Label(label)
-        label.set_use_markup(True)
-        label.set_line_wrap(True)
-        label.set_width_chars(100)
-        label.set_alignment(0, 0)
-        label.set_padding(12, 0)
-        label.show()
+        infobar = MessageBar(label, message_type)
 
-        infobar = gtk.InfoBar()
-        infobar.get_content_area().add(label)
         if action_widget:
             infobar.add_action_widget(action_widget, 0)
             action_widget.show()
-        infobar.set_message_type(message_type)
         infobar.show()
 
         self.main_vbox.pack_start(infobar, False, False, 0)

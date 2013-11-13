@@ -30,9 +30,28 @@ class MessageBar(gtk.InfoBar):
     def __init__(self, message, message_type=None):
         if message_type is None:
             message_type = gtk.MESSAGE_INFO
-        label = gtk.Label(message)
-        label.set_use_markup(True)
+        self.label = gtk.Label(message)
+        self.label.set_use_markup(True)
+        self.label.set_line_wrap(True)
+        self.label.set_width_chars(100)
+        self.label.set_alignment(0, 0)
+        self.label.set_padding(12, 0)
+        self.label.show()
 
         gtk.InfoBar.__init__(self)
-        self.get_content_area().add(label)
+        self.get_content_area().add(self.label)
         self.set_message_type(message_type)
+
+    def set_message(self, message, message_type=None):
+        """Sets or update a new message in the message bar. Can also be used to
+        change the message type
+
+        :param message: the message to be displayed
+        :param message_type: defines the color and urgency of a message. One of
+          gtk.MESSAGE_* .
+        """
+        # If the message type changed
+        if message_type:
+            self.set_message_type(message_type)
+
+        self.label.set_text(message)
