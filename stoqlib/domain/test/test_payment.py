@@ -274,6 +274,19 @@ class TestPayment(DomainTest):
         payment.pay()
         self.assertEqual(payment.get_days_late(), 0)
 
+    def test_can_cancel(self):
+        payment = self.create_payment()
+        self.failUnless(payment.can_cancel())
+
+        payment.set_pending()
+        self.failUnless(payment.can_cancel())
+
+        payment.pay()
+        self.failUnless(payment.can_cancel())
+
+        payment.cancel()
+        self.failIf(payment.can_cancel())
+
     def test_cancel(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),

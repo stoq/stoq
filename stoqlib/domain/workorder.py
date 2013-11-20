@@ -1152,6 +1152,11 @@ class WorkOrder(Domain):
     def _on_sale_status_changed(cls, sale, old_status):
         if sale.status == Sale.STATUS_CANCELLED:
             for self in cls.find_by_sale(sale.store, sale):
+                #FIXME: this is sort of hack, currently can not cancel a
+                #       finished work order. Maybe we should allow it.
+                if self.is_finished():
+                    self.reopen(reason=_(u"Reopening work order to "
+                                         "cancel the sale"))
                 self.cancel(reason=_(u"The sale was cancelled"))
 
 

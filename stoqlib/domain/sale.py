@@ -1015,7 +1015,7 @@ class Sale(Domain):
     def cancel(self):
         """Cancel the sale
         You can only cancel an ordered sale.
-        This does not cancel the payments, only the sale items.
+        This will cancel the payments.
         """
         assert self.can_cancel()
 
@@ -1025,6 +1025,11 @@ class Sale(Domain):
 
         self.cancel_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_CANCELLED)
+
+        # Cancel payments
+        for payment in self.payments:
+            if payment.can_cancel():
+                payment.cancel()
 
     def return_(self, returned_sale):
         """Returns a sale

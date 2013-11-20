@@ -46,6 +46,7 @@ from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.workorder import WorkOrder
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localdatetime, localdate
 from stoqlib.lib.parameters import sysparam
@@ -803,6 +804,22 @@ class TestSale(DomainTest):
             sale.cancel()
             cancel.assert_called_once_with(
                 reason="The sale was cancelled")
+
+    def test_cancel_with_payments(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        work_order = self.create_workorder()
+        work_order.sale = sale
+        self.add_payments(sale, method_type=u'card', installments=2)
+        sale.confirm()
+        sale.group.pay()
+
+        sale.cancel()
+        self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+        self.assertEquals(work_order.status, WorkOrder.STATUS_CANCELLED)
+        for payment in sale.payments:
+            self.failUnless(payment.is_cancelled())
 
     def test_cancel_decreased_quantity(self):
         sale = self.create_sale()

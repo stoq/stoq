@@ -438,8 +438,7 @@ class Payment(Domain):
         """
         # TODO Check for till entries here and call cancel_till_entry if
         # it's possible. Bug 2598
-        if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_PENDING,
-                               Payment.STATUS_PAID]:
+        if not self.can_cancel():
             raise StoqlibError(_(u"Invalid status for cancel operation, "
                                  u"got %s") % self.status_str)
 
@@ -474,6 +473,10 @@ class Payment(Domain):
 
         """
         self.value = new_value
+
+    def can_cancel(self):
+        return self.status in (Payment.STATUS_PREVIEW, Payment.STATUS_PENDING,
+                               Payment.STATUS_PAID)
 
     def get_payable_value(self):
         """Returns the calculated payment value with the daily interest.

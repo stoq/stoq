@@ -24,6 +24,7 @@
 
 __tests__ = 'stoqlib/domain/workorder.py'
 
+import contextlib
 import mock
 
 from stoqlib.exceptions import InvalidStatus, NeedReason
@@ -764,6 +765,23 @@ class TestWorkOrder(DomainTest):
         self.assertIn(workorder1, workorders)
         self.assertIn(workorder2, workorders)
         self.assertNotIn(workorder3, workorders)
+
+    def test_sale_status_changed(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        work_order = self.create_workorder()
+        work_order.sale = sale
+
+        with contextlib.nested(
+                mock.patch.object(work_order, 'reopen'),
+                mock.patch.object(work_order, 'cancel')) as (reopen, cancel):
+            work_order.approve()
+            work_order.finish()
+            sale.cancel()
+            reopen.assert_called_once_with(
+                reason="Reopening work order to cancel the sale")
+            cancel.assert_called_with(reason="The sale was cancelled")
 
 
 class _TestWorkOrderView(DomainTest):
