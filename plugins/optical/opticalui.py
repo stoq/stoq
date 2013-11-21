@@ -118,8 +118,9 @@ class OpticalUI(object):
             print_report(OpticalWorkOrderReceiptReport, [model])
 
         # Also add an print button
-        print_button = editor.add_button(_('Print'), gtk.STOCK_PRINT)
-        print_button.connect('clicked', _print_report)
+        if editor.edit_mode:
+            print_button = editor.add_button(_('Print'), gtk.STOCK_PRINT)
+            print_button.connect('clicked', _print_report)
 
     def _add_product_slave(self, editor, model, store):
         editor.add_extra_tab(ProductOpticSlave.title,
