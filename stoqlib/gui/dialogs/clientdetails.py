@@ -383,7 +383,7 @@ class ClientDetailsDialog(BaseEditor):
     """
     title = _(u"Client Details")
     hide_footer = True
-    size = (780, 400)
+    size = (-1, 400)
     model_type = Client
     gladefile = "ClientDetailsDialog"
     proxy_widgets = ('client',
