@@ -300,9 +300,11 @@ class SaleQuoteItemStep(SellableItemStep):
         for i in items:
             product = i.sellable.product
             if not product:
+                yield i
                 continue
             storable = product.storable
             if not storable:
+                yield i
                 continue
             stock = storable.get_balance_for_branch(self.model.branch)
             i._stock_quantity = stock
