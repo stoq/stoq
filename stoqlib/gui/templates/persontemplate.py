@@ -229,7 +229,7 @@ class BasePersonRoleEditor(BaseEditor):
     :cvar help_section: the help button for this wizard,
       usually describing how to create a new person
     """
-    size = (700, -1)
+    size = (-1, -1)
     help_section = None
     ui_form_name = None
 
