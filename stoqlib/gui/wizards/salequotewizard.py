@@ -54,19 +54,17 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.discounteditor import DiscountEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.events import SaleQuoteWizardFinishEvent
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.widgets.calculator import CalculatorPopup
+from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
@@ -102,8 +100,8 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.cfop.hide()
             self.create_cfop.hide()
 
-        self._fill_clients_combo()
         self._fill_clients_category_combo()
+        self._setup_clients_widget()
 
         self._client_credit_set_visible(bool(self.client.read()))
 
@@ -118,16 +116,12 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.client_credit.set_visible(visible)
         self.client_credit_lbl.set_visible(visible)
 
-    def _fill_clients_combo(self):
-        # FIXME: This should not be using a normal ProxyComboEntry,
-        #        we need a specialized widget that does the searching
-        #        on demand.
-
-        items = Client.get_active_items(self.store)
-        self.client.prefill(items)
-
-        # TODO: Implement a has_items() in kiwi
-        self.client.set_sensitive(len(self.client.get_model()))
+    def _setup_clients_widget(self):
+        self.client_gadget = ClientSearchEntryGadget(
+            entry=self.client,
+            store=self.store,
+            model=self.model,
+            parent=self.wizard)
 
     def _fill_clients_category_combo(self):
         categories = self.store.find(ClientCategory).order_by(ClientCategory.name)
@@ -162,40 +156,23 @@ class StartSaleQuoteStep(WizardEditorStep):
                                     relativedelta(days=expire_delta))
 
     def toogle_client_details(self):
-        client = self._get_client()
-        if client is not None:
-            if client.status == Client.STATUS_SOLVENT:
-                self.info_image.set_from_stock(gtk.STOCK_INFO,
-                                               gtk.ICON_SIZE_MENU)
-            else:
-                self.info_image.set_from_stock(gtk.STOCK_DIALOG_WARNING,
-                                               gtk.ICON_SIZE_MENU)
-        self.client_details.set_sensitive(bool(client))
+        client = self.model.client
+
+        if client and client.status != Client.STATUS_SOLVENT:
+            stock = gtk.STOCK_DIALOG_WARNING
+            self.client_gadget.set_edit_button_stock(stock)
+
     #
     #   Callbacks
     #
 
-    def on_create_client__clicked(self, button):
-        store = api.new_store()
-        client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
-        retval = store.confirm(client)
-        store.close()
-        if not retval:
-            return
-        self._fill_clients_combo()
-        self.client.select(client.id)
-
-    def on_client__changed(self, widget):
+    def after_client__content_changed(self, widget):
+        client = self.model.client
         self.toogle_client_details()
-        client = self._get_client()
         self._client_credit_set_visible(bool(client))
         if not client:
             return
         self.client_category.select(client.category)
-
-    def on_client_details__clicked(self, button):
-        client = self.model.client
-        run_dialog(ClientDetailsDialog, self.wizard, self.store, client)
 
     def on_expire_date__validate(self, widget, value):
         # open_date has a seconds precision, so that why we are rounding it to

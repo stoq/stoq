@@ -90,7 +90,8 @@ class SearchEditor(SearchDialog):
     def __init__(self, store, editor_class=None, interface=None,
                  search_spec=None, hide_footer=True,
                  title='', selection_mode=None,
-                 hide_toolbar=False, double_click_confirm=False):
+                 hide_toolbar=False, double_click_confirm=False,
+                 initial_string=''):
         """
         Create a new SearchEditor object.
         :param store:
@@ -107,6 +108,7 @@ class SearchEditor(SearchDialog):
           automatically confirm. Double click confirms takes precedence over
           editor_class (ie, if double_click_confirmis is True, it will
           confirm the dialog, instead of opening the editor).
+        :param initial_string: The string that should be initialy filtered
         """
 
         if selection_mode is None:
@@ -118,7 +120,8 @@ class SearchEditor(SearchDialog):
         SearchDialog.__init__(self, store, search_spec,
                               hide_footer=hide_footer, title=title,
                               selection_mode=selection_mode,
-                              double_click_confirm=double_click_confirm)
+                              double_click_confirm=double_click_confirm,
+                              initial_string=initial_string)
 
         self._setup_slaves()
         if hide_toolbar:

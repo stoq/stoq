@@ -16,19 +16,16 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                   item: 'Maria Aparecida Ardana'
                   item: 'Osvaldo Denadai Marin'
                 GtkLabel(step.label1): 'Client:'
-                ProxyComboEntry(step.client):
-                  item: 'Alessandra Almeida Itaber\xc3\xa1'
-                  item: 'Client', selected
-                  item: 'Franciso Elisio de Lima Junior'
-                  item: 'Luis Sergio da Silva Marin'
-                  item: 'Vitalina Claudino'
-                GtkButton(step.create_client):
-                GtkButton(step.client_details):
+                GtkHBox():
+                  ProxyEntry(step.client, expand=True, fill=True): 'Client'
+                  GtkButton():
+                  GtkButton():
                 GtkLabel(step.nature_lbl): 'Operation Nature:'
                 ProxyEntry(step.operation_nature): 'Sale'
                 GtkLabel(step.cfop_lbl): 'C.F.O.P.:', hidden
-                ProxyComboEntry(step.cfop): hidden
-                GtkButton(step.create_cfop): hidden
+                GtkHBox(step.hbox3):
+                  ProxyComboEntry(step.cfop, expand=True, fill=True): hidden
+                  GtkButton(step.create_cfop, expand=True, fill=True): hidden
             GtkVBox(step.vbox4, expand=True, fill=True):
               GtkTable(step.right_col_table, fill=True):
                 GtkLabel(step.expire_label): 'Expire'

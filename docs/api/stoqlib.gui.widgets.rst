@@ -81,6 +81,14 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`searchentry` Module
+-------------------------
+
+.. automodule:: stoqlib.gui.widgets.searchentry
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`splash` Module
 --------------------
 

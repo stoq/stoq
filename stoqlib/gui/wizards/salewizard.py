@@ -54,7 +54,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
@@ -67,6 +66,7 @@ from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
+from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 
 N_ = _ = stoqlib_gettext
@@ -506,15 +506,13 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.cash_change_slave.update_total_sale_amount(to_pay)
         self.total_lbl.update(to_pay)
 
-    def _fill_clients_combo(self):
+    def _setup_clients_widget(self):
         marker('Filling clients')
-        # FIXME: This should not be using a normal ProxyComboEntry,
-        #        we need a specialized widget that does the searching
-        #        on demand.
-
-        items = Client.get_active_items(self.store)
-        self.client.prefill(items)
-        self.client.set_sensitive(len(self.client.get_model()))
+        self.client_gadget = ClientSearchEntryGadget(
+            entry=self.client,
+            store=self.store,
+            model=self.model,
+            parent=self.wizard)
         marker('Filled clients')
 
     def _fill_transporter_combo(self):
@@ -554,7 +552,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         if not client:
             return
         if len(self.client) == 0:
-            self._fill_clients_combo()
+            self._setup_clients_widget()
             return
         clients = self.client.get_model_items().values()
         if client.id in clients:
@@ -617,7 +615,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         else:
             self.salesperson.grab_focus()
         marker('Finished reading parameter')
-        self._fill_clients_combo()
+        self._setup_clients_widget()
         self._fill_transporter_combo()
         self._fill_cost_center_combo()
 
@@ -701,26 +699,19 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                                             self.invoice_widgets)
         if self.model.client:
             self.client.set_sensitive(False)
-            self.create_client.set_sensitive(False)
         if sysparam.get_bool('ASK_SALES_CFOP'):
             self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
-        self.toogle_client_details()
         marker('Finished setting up proxies')
-
-    def toogle_client_details(self):
-        client = self.client.read()
-        self.client_details.set_sensitive(bool(client))
 
     #
     # Callbacks
     #
 
-    def on_client__changed(self, entry):
+    def on_client__content_changed(self, entry):
         # This gets called before setup_slaves, but we must wait until slaves
         # are setup correctly
         if not self.pm_slave:
             return
-        self.toogle_client_details()
         self.discount_slave.update_max_discount()
         self.pm_slave.set_client(
             client=self._get_client(),
@@ -795,10 +786,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                       Sale.id != self.model.id))
         if not exists.is_empty():
             return ValidationError(_(u'Invoice number already used.'))
-
-    def on_client_details__clicked(self, button):
-        client = self.model.client
-        run_dialog(ClientDetailsDialog, self.wizard, self.store, client)
 
 
 #

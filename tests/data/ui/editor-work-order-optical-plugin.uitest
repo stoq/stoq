@@ -15,14 +15,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                 GtkImage(state_icon): hidden
               GtkButton(toggle_status_btn): 'Approve'
               GtkLabel(label8): 'Client:'
-              ProxyComboEntry(client): insensitive
-                item: 'Alessandra Almeida Itaber\xc3\xa1'
-                item: 'Client', selected
-                item: 'Franciso Elisio de Lima Junior'
-                item: 'Luis Sergio da Silva Marin'
-                item: 'Vitalina Claudino'
-              GtkButton(client_create): insensitive
-              GtkButton(client_info):
+              GtkHBox():
+                ProxyEntry(client, expand=True, fill=True): 'Client', insensitive
+                GtkButton(): insensitive
+                GtkButton(): insensitive
               GtkLabel(label5): 'Category:'
               ProxyComboBox(category): insensitive
                 item: 'No category', selected

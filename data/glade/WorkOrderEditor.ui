@@ -43,15 +43,19 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyComboEntry" id="client">
+                  <object class="ProxyEntry" id="client">
                     <property name="visible">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">client_id</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
+                    <property name="right_attach">4</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
                   </packing>
@@ -102,7 +106,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
+                    <property name="right_attach">4</property>
                   </packing>
                 </child>
                 <child>
@@ -142,56 +146,6 @@
                     <property name="right_attach">6</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="client_create">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="relief">none</property>
-                    <child>
-                      <object class="GtkImage" id="image1">
-                        <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Add a new client</property>
-                        <property name="stock">gtk-add</property>
-                        <property name="icon-size">1</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_SHRINK</property>
-                    <property name="y_options">GTK_SHRINK</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="client_info">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="relief">none</property>
-                    <child>
-                      <object class="GtkImage" id="image2">
-                        <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Show client details</property>
-                        <property name="stock">gtk-info</property>
-                        <property name="icon-size">1</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_SHRINK</property>
-                    <property name="y_options">GTK_SHRINK</property>
                   </packing>
                 </child>
                 <child>
@@ -348,12 +302,6 @@
                     <property name="bottom_attach">4</property>
                     <property name="x_options">GTK_FILL</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>

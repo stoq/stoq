@@ -30,11 +30,9 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard, DiscountEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -45,12 +43,10 @@ _ = stoqlib_gettext
 class TestSaleQuoteWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.salequotewizard.yesno')
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
-    @mock.patch('stoqlib.gui.wizards.salequotewizard.run_person_role_dialog')
-    def test_confirm(self, run_person_role_dialog, run_dialog, yesno):
+    def test_confirm(self, run_dialog, yesno):
         client = self.create_client()
         self.create_address(person=client.person)
 
-        run_person_role_dialog.return_value = client
         yesno.return_value = False
 
         sellable = self.create_sellable()
@@ -59,26 +55,10 @@ class TestSaleQuoteWizard(GUITest):
         wizard = SaleQuoteWizard(self.store)
 
         step = wizard.get_current_step()
+        step.client_gadget.set_value(client)
 
-        self.click(step.create_client)
-        self.assertEquals(run_person_role_dialog.call_count, 1)
-        args, kwargs = run_person_role_dialog.call_args
-        editor, parent, store, model = args
-        self.assertEquals(editor, ClientEditor)
-        self.assertEquals(parent, wizard)
-        self.assertTrue(store is not None)
-        self.assertTrue(model is None)
-
-        self.click(step.client_details)
-        self.assertEquals(run_dialog.call_count, 1)
-        args, kwargs = run_dialog.call_args
-        dialog, parent, store, model = args
-        self.assertEquals(dialog, ClientDetailsDialog)
-        self.assertEquals(parent, wizard)
-        self.assertTrue(store is not None)
-        self.assertEquals(model, client)
         self.click(step.notes_button)
-        self.assertEquals(run_dialog.call_count, 2)
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, parent, store, model, notes = args
         self.assertEquals(editor, NoteEditor)
@@ -193,8 +173,10 @@ class TestSaleQuoteWizard(GUITest):
         method = PaymentMethod.get_by_name(self.store, u'credit')
 
         client_without_credit = self.create_client()
+        client_without_credit.person.name = u'Chico'
 
         client_with_credit = self.create_client()
+        client_with_credit.person.name = u'Juca'
         # Create a client and add some credit for it
         group = self.create_payment_group(payer=client_with_credit.person)
         payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=10,
@@ -205,10 +187,10 @@ class TestSaleQuoteWizard(GUITest):
         wizard = SaleQuoteWizard(self.store)
         step = wizard.get_current_step()
 
-        step.client.update(client_without_credit.id)
+        step.client_gadget.set_value(client_without_credit)
         self.check_wizard(wizard, 'wizard-salequote-client-without-credit')
 
-        step.client.update(client_with_credit.id)
+        step.client_gadget.set_value(client_with_credit)
         self.check_wizard(wizard, 'wizard-salequote-client-with-credit')
 
     @mock.patch('stoqlib.gui.wizards.salequotewizard.localtoday')

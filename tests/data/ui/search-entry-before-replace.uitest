@@ -1,0 +1,4 @@
+dialog: Window
+GtkWindow(): title=None, hidden
+  GtkVBox(): hidden
+    ProxyEntry(expand=True, fill=True): '', hidden

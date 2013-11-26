@@ -36,10 +36,8 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderPackage,
                                       WorkOrderApprovedAndFinishedView)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor, Note
-from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.workordercategoryeditor import WorkOrderCategoryEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.search.sellablesearch import SellableSearch
@@ -48,7 +46,7 @@ from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderExecutionSlave,
                                                WorkOrderHistorySlave)
 from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
 from stoqlib.lib.message import warning
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -75,7 +73,6 @@ class WorkOrderEditor(BaseEditor):
     def __init__(self, store, model=None, visual_mode=False, category=None):
         self._default_category = category
         self.proxy = None
-
         super(WorkOrderEditor, self).__init__(store, model=model,
                                               visual_mode=visual_mode)
         self._setup_widgets()
@@ -129,12 +126,12 @@ class WorkOrderEditor(BaseEditor):
         self._update_view()
 
     def setup_proxies(self):
-        self._fill_clients_combo()
         self._fill_categories_combo()
+        self._setup_client_widget()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def update_visual_mode(self):
-        for widget in [self.toggle_status_btn, self.client_create,
+        for widget in [self.toggle_status_btn,
                        self.category_create, self.sellable_desc,
                        self.equip_search_button]:
             widget.set_sensitive(False)
@@ -170,8 +167,7 @@ class WorkOrderEditor(BaseEditor):
             self._set_current_tab('execution_holder')
 
         if self.edit_mode and self.model.sale:
-            for widget in [self.client, self.client_create, self.category,
-                           self.category_create]:
+            for widget in [self.client, self.category, self.category_create]:
                 widget.set_sensitive(False)
 
         if self.model.sellable:
@@ -180,6 +176,7 @@ class WorkOrderEditor(BaseEditor):
     def _update_view(self):
         self.proxy.update('status_str')
 
+        # Cache this to avoid multiple queries
         has_open_inventory = bool(Inventory.has_open(
             self.store, api.get_current_branch(self.store)))
 
@@ -225,23 +222,18 @@ class WorkOrderEditor(BaseEditor):
         page_num = self._get_tab_pagenum(holder_name)
         self.slaves_notebook.set_current_page(page_num)
 
-    def _fill_clients_combo(self):
-        items = Client.get_active_items(self.store)
-        self.client.prefill(items)
+    def _setup_client_widget(self):
+        self.client_gadget = ClientSearchEntryGadget(
+            entry=self.client,
+            store=self.store,
+            model=self.model,
+            parent=self)
 
     def _fill_categories_combo(self):
         categories = self.store.find(WorkOrderCategory)
         self.category.color_attribute = 'color'
         self.category.prefill(
             api.for_combo(categories, empty=_(u"No category")))
-
-    def _run_client_editor(self, client=None):
-        with api.new_store() as store:
-            rv = run_person_role_dialog(ClientEditor, self, store, client,
-                                        visual_mode=self.visual_mode)
-        if rv:
-            self._fill_clients_combo()
-            self.client.select(rv.id)
 
     def _run_category_editor(self, category=None):
         with api.new_store() as store:
@@ -272,10 +264,6 @@ class WorkOrderEditor(BaseEditor):
     #  Callbacks
     #
 
-    def on_client__content_changed(self, combo):
-        has_client = bool(combo.read())
-        self.client_info.set_sensitive(has_client)
-
     def after_client__content_changed(self, combo):
         if self.proxy:
             self._update_view()
@@ -283,13 +271,6 @@ class WorkOrderEditor(BaseEditor):
     def on_category__content_changed(self, combo):
         has_category = bool(combo.read())
         self.category_edit.set_sensitive(has_category)
-
-    def on_client_create__clicked(self, button):
-        self._run_client_editor()
-
-    def on_client_info__clicked(self, button):
-        client = self._get_client()
-        run_dialog(ClientDetailsDialog, self, self.store, client)
 
     def on_category_create__clicked(self, button):
         self._run_category_editor()

@@ -116,7 +116,8 @@ class SearchDialog(BasicDialog):
     tree = False
 
     def __init__(self, store, search_spec=None, hide_footer=True,
-                 title='', selection_mode=None, double_click_confirm=False):
+                 title='', selection_mode=None, double_click_confirm=False,
+                 initial_string=''):
         """
         A base class for search dialog inheritance
 
@@ -127,6 +128,7 @@ class SearchDialog(BasicDialog):
         :param selection_mode:
         :param double_click_confirm: If double click a item in the list should
           automatically confirm
+        :param initial_string: the string that should be initially filtered
         """
 
         self.store = store
@@ -137,6 +139,7 @@ class SearchDialog(BasicDialog):
         self.summary_label = None
         self.double_click_confirm = double_click_confirm
         self.csv_button = None
+        self.initial_string = initial_string
 
         BasicDialog.__init__(self, hide_footer=hide_footer,
                              main_label_text=self.main_label_text,
@@ -153,6 +156,12 @@ class SearchDialog(BasicDialog):
         self.setup_widgets()
         if self.search_label:
             self.set_searchbar_label(self.search_label)
+
+        if self.initial_string:
+            search_filter = self.search.get_primary_filter()
+            search_filter.set_state(self.initial_string)
+            self.search.refresh()
+            search_filter.entry.grab_focus()
 
     def _setup_selection_mode(self, selection_mode):
         # For consistency do not allow none or single, in other words,

@@ -52,7 +52,6 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.events import (NewLoanWizardFinishEvent,
@@ -60,12 +59,11 @@ from stoqlib.gui.events import (NewLoanWizardFinishEvent,
                                 LoanItemSelectionStepEvent)
 from stoqlib.gui.editors.loanitemeditor import LoanItemEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteItemStep
 from stoqlib.reporting.loanreceipt import LoanReceipt
 
@@ -103,7 +101,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.salesperson.prefill(api.for_person_combo(users))
         self.salesperson.set_sensitive(False)
 
-        self._fill_clients_combo()
+        self._setup_clients_widget()
         self._fill_clients_category_combo()
 
         self.expire_date.mandatory = True
@@ -125,13 +123,13 @@ class StartNewLoanStep(WizardEditorStep):
         self.removed_by.show()
         self._replace_widget(self.transporter, self.removed_by)
 
-    def _fill_clients_combo(self):
-        # FIXME: This should not be using a normal ProxyComboEntry,
-        #        we need a specialized widget that does the searching
-        #        on demand.
-        items = Client.get_active_items(self.store)
-        self.client.prefill(items)
+    def _setup_clients_widget(self):
         self.client.mandatory = True
+        self.client_gadget = ClientSearchEntryGadget(
+            entry=self.client,
+            store=self.store,
+            model=self.model,
+            parent=self.wizard)
 
     def _fill_clients_category_combo(self):
         categories = self.store.find(ClientCategory)
@@ -156,7 +154,6 @@ class StartNewLoanStep(WizardEditorStep):
     #
 
     def post_init(self):
-        self.toogle_client_details()
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
@@ -171,26 +168,11 @@ class StartNewLoanStep(WizardEditorStep):
         self.proxy = self.add_proxy(self.model,
                                     StartNewLoanStep.proxy_widgets)
 
-    def toogle_client_details(self):
-        client = self.client.read()
-        self.client_details.set_sensitive(bool(client))
-
     #
     #   Callbacks
     #
 
-    def on_create_client__clicked(self, button):
-        store = api.new_store()
-        client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
-        retval = store.confirm(client)
-        store.close()
-        if not retval:
-            return
-        self._fill_clients_combo()
-        self.client.select(client.id)
-
     def on_client__changed(self, widget):
-        self.toogle_client_details()
         client = self._get_client()
         if not client:
             return
@@ -204,10 +186,6 @@ class StartNewLoanStep(WizardEditorStep):
     def on_observations_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
                    title=_("Additional Information"))
-
-    def on_client_details__clicked(self, button):
-        client = self.model.client
-        run_dialog(ClientDetailsDialog, self.wizard, self.store, client)
 
 
 class LoanItemStep(SaleQuoteItemStep):

@@ -66,8 +66,8 @@ class TestWorkOrderEditor(GUITest):
         execution_slave = editor.execution_slave
         item_slave = execution_slave.sellable_item_slave
         quote_slave = editor.quote_slave
-        self.assertSensitive(editor, ['client', 'client_create'])
-        self.assertNotSensitive(editor, ['client_info', 'category_edit'])
+        self.assertSensitive(editor, ['client'])
+        self.assertNotSensitive(editor, ['category_edit'])
         # Check creation state
         self.assertEqual(editor.model.status, WorkOrder.STATUS_OPENED)
         self.check_editor(editor, 'editor-workorder-create')
@@ -75,7 +75,7 @@ class TestWorkOrderEditor(GUITest):
         editor.description.update(u"Test equipment")
         editor.category.update(category)
         self.assertNotSensitive(editor, ['toggle_status_btn'])
-        editor.client.update(client.id)
+        editor.client_gadget.set_value(client)
         self.assertSensitive(editor, ['toggle_status_btn'])
         opening_slave.defect_reported.update(u"Defect reported")
         # Check initial state
@@ -151,7 +151,7 @@ class TestWorkOrderEditor(GUITest):
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-initial')
 
-        self.assertSensitive(editor, ['client', 'client_create', 'client_info'])
+        self.assertSensitive(editor, ['client'])
         self.assertSensitive(editor, ['category', 'category_create'])
         workorder.defect_detected = u"Defect detected"
         workorder.estimated_hours = 10
@@ -201,8 +201,7 @@ class TestWorkOrderEditor(GUITest):
         workorder.client = self.create_client()
         # Create the editor
         editor = WorkOrderEditor(self.store, model=workorder)
-        self.assertSensitive(editor, ['client_info'])
-        self.assertNotSensitive(editor, ['client', 'client_create'])
+        self.assertNotSensitive(editor, ['client'])
         self.assertNotSensitive(editor, ['category', 'category_create'])
         self.check_editor(editor, 'editor-workorder-with-sale-show')
 

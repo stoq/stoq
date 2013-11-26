@@ -32,9 +32,7 @@ import gtk
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.workorder import WorkOrderCategory, WorkOrderItem
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.translation import stoqlib_gettext
@@ -52,8 +50,7 @@ _ = stoqlib_gettext
 class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
     @mock.patch('plugins.optical.opticalwizard.yesno')
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
-    @mock.patch('stoqlib.gui.wizards.salequotewizard.run_person_role_dialog')
-    def test_confirm(self, run_person_role_dialog, run_dialog, yesno):
+    def test_confirm(self, run_dialog, yesno):
         WorkOrderCategory(store=self.store,
                           name=u'Category',
                           color=u'#ff0000')
@@ -61,7 +58,6 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         medic = self.create_optical_medic()
         self.create_address(person=client.person)
 
-        run_person_role_dialog.return_value = client
         yesno.return_value = False
 
         # Test for reserve without storable
@@ -89,28 +85,11 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         wizard = OpticalSaleQuoteWizard(self.store)
 
         step = wizard.get_current_step()
-
-        self.click(step.create_client)
-        self.assertEquals(run_person_role_dialog.call_count, 1)
-        args, kwargs = run_person_role_dialog.call_args
-        editor, parent, store, model = args
-        self.assertEquals(editor, ClientEditor)
-        self.assertEquals(parent, wizard)
-        self.assertTrue(store is not None)
-        self.assertTrue(model is None)
-
-        self.click(step.client_details)
-        self.assertEquals(run_dialog.call_count, 1)
-        args, kwargs = run_dialog.call_args
-        dialog, parent, store, model = args
-        self.assertEquals(dialog, ClientDetailsDialog)
-        self.assertEquals(parent, wizard)
-        self.assertTrue(store is not None)
-        self.assertEquals(model, client)
+        step.client_gadget.set_value(client)
 
         run_dialog.return_value = False
         self.click(step.notes_button)
-        self.assertEquals(run_dialog.call_count, 2)
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, parent, store, model, comment = args
         self.assertEquals(editor, NoteEditor)
@@ -193,21 +172,18 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
             self.assertFalse(step.salesperson.get_sensitive())
 
     @mock.patch('stoqlib.gui.wizards.workorderquotewizard.warning')
-    @mock.patch('stoqlib.gui.wizards.salequotewizard.run_person_role_dialog')
-    def test_multiple_work_orders(self, run_person_role_dialog, warning):
+    def test_multiple_work_orders(self, warning):
         client = self.create_client()
-
-        run_person_role_dialog.return_value = client
 
         wizard = OpticalSaleQuoteWizard(self.store)
         step = wizard.get_current_step()
+        step.client_gadget.set_value(client)
         for i in range(3):
             wo = self.create_workorder()
             wo.sale = step.model
 
         wo.add_sellable(self.create_sellable())
 
-        self.click(step.create_client)
         self.click(wizard.next_button)
         self.check_wizard(wizard, 'wizard-optical-work-order-step-multiple-wo')
 
@@ -232,18 +208,16 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         # Add a new
         self.click(step.new_tab_button)
 
-    @mock.patch('stoqlib.gui.wizards.salequotewizard.run_person_role_dialog')
-    def test_item_step(self, run_person_role_dialog):
+    def test_item_step(self):
         client = self.create_client()
         medic = self.create_optical_medic()
-        run_person_role_dialog.return_value = client
         wizard = OpticalSaleQuoteWizard(self.store)
         step = wizard.get_current_step()
+        step.client_gadget.set_value(client)
         for i in range(2):
             wo = self.create_workorder()
             wo.sale = step.model
 
-        self.click(step.create_client)
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
@@ -275,19 +249,17 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         for radio in item_slave._radio_group.get_group():
             radio.toggled()
 
-    @mock.patch('stoqlib.gui.wizards.salequotewizard.run_person_role_dialog')
-    def test_item_step_too_many(self, run_person_role_dialog):
+    def test_item_step_too_many(self):
         medic = self.create_optical_medic()
         client = self.create_client()
         client.status = client.STATUS_INDEBTED
-        run_person_role_dialog.return_value = client
         wizard = OpticalSaleQuoteWizard(self.store)
         step = wizard.get_current_step()
+        step.client_gadget.set_value(client)
         for i in range(4):
             wo = self.create_workorder()
             wo.sale = step.model
 
-        self.click(step.create_client)
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()

@@ -84,7 +84,6 @@ class TestConfirmSaleWizard(GUITest):
         # NOTE: Document increases/decreases
         # 3: select user/branch/station (normally cached)
         # 1: select sales_person
-        # 1: select client
         # 1: select transporter
         # 1: select cost cebnter
         # 2: select invoice number
@@ -93,7 +92,7 @@ class TestConfirmSaleWizard(GUITest):
         #  - one is need_adjust_batches
         # 1: select payment status
         # 1: select the branch acronym for sale repr()
-        self.assertEquals(tracer.count, 16)
+        self.assertEquals(tracer.count, 15)
 
     def test_create(self):
         self._create_wizard()
@@ -227,7 +226,7 @@ class TestConfirmSaleWizard(GUITest):
     def test_step_payment_method_bill(self):
         client = self.create_client()
         self._create_wizard()
-        self.step.client.select(client.id)
+        self.step.client_gadget.set_value(client)
         self._select_method('bill')
         self._go_to_next()
 
@@ -274,7 +273,7 @@ class TestConfirmSaleWizard(GUITest):
         client.credit_limit = 1000
 
         self._create_wizard()
-        self.step.client.select(client.id)
+        self.step.client_gadget.set_value(client)
 
         self._select_method('store_credit')
         self._go_to_next()
@@ -286,20 +285,21 @@ class TestConfirmSaleWizard(GUITest):
         self._check_wizard('wizard-sale-step-payment-method-store-credit')
 
     def test_sale_to_client_without_store_credit(self):
-        client = self.create_client()
-        client2 = self.create_client()
+        client = self.create_client(u'Juca')
+        client2 = self.create_client(u'Chico')
 
         # Give $2 of store credit limit for client2
         client2.credit_limit = 2
 
         self._create_wizard()
-        self.step.client.select(client.id)
+        self.step.client_gadget.set_value(client)
+
         self._select_method(u'store_credit')
 
         # When the client has no credit at all, the option should not be there
         self.assertFalse(self.step.pm_slave._widgets['store_credit'].get_visible())
 
-        self.step.client.select(client2.id)
+        self.step.client_gadget.set_value(client2)
         self.assertTrue(self.step.pm_slave._widgets['store_credit'].get_visible())
 
         # It should have fallback to money
@@ -307,8 +307,8 @@ class TestConfirmSaleWizard(GUITest):
             self.step.pm_slave.get_selected_method().method_name, u'money')
 
     def test_sale_to_client_without_credit(self):
-        client = self.create_client()
-        client2 = self.create_client()
+        client = self.create_client(name=u'Juca')
+        client2 = self.create_client(name=u'Chico')
 
         # Give $2 of credit to client2
         method = self.store.find(PaymentMethod, method_name=u'credit').one()
@@ -319,13 +319,14 @@ class TestConfirmSaleWizard(GUITest):
         payment.pay()
 
         self._create_wizard()
-        self.step.client.select(client.id)
+        self.step.client_gadget.set_value(client)
         self._select_method(u'credit')
 
         # When the client has no credit at all, the option should not be there
         self.assertFalse(self.step.pm_slave._widgets['credit'].get_visible())
 
-        self.step.client.select(client2.id)
+        self.step.client_gadget.set_value(client2)
+        self.assertNotEquals(client2, self.step.client.read())
         self.assertTrue(self.step.pm_slave._widgets['credit'].get_visible())
 
         # It should have fallback to money
@@ -452,19 +453,19 @@ class TestSalesPersonStep(GUITest):
                           ui_test_name='wizard-sales-person-step')
 
         # After selecting the client1, the option store credit should be available
-        salespersonstep.client.select(client1.id)
+        salespersonstep.client_gadget.set_value(client1)
         self.check_wizard(wizard=wizard,
                           ui_test_name=
                           'wizard-sales-person-step-with-store-credit-radio')
 
         # selecting the client2 should disable the store credit again.
-        salespersonstep.client.select(client2.id)
+        salespersonstep.client_gadget.set_value(client2)
         self.check_wizard(wizard=wizard,
                           ui_test_name=
                           'wizard-sales-person-step-without-store-credit-radio')
 
         # De-selecting the client should not break, and also disable the methods
         # IE, they should be just like when the dialog was opened
-        salespersonstep.client.select(None)
+        salespersonstep.client_gadget.set_value(None)
         self.check_wizard(wizard=wizard,
                           ui_test_name='wizard-sales-person-step-client-none')
