@@ -231,6 +231,22 @@ class TestWorkOrderItem(DomainTest):
         item_without_storable.reserve(4)
         self.assertEqual(item_without_storable.quantity_decreased, 4)
 
+    def test_reserve_with_sale(self):
+        sale = self.create_sale()
+        work_order = self.create_workorder(branch=sale.branch)
+
+        storable = self.create_storable(branch=sale.branch, stock=20)
+        sale_item = sale.add_sellable(storable.product.sellable, quantity=5)
+        wo_item = work_order.add_sellable(storable.product.sellable, quantity=5)
+        wo_item.sale_item = sale_item
+
+        self.assertEqual(sale_item.quantity_decreased, 0)
+
+        # When some stock is reserved for a work order item, the quantity
+        # reserved for the sale item should be the same
+        wo_item.reserve(4)
+        self.assertEqual(sale_item.quantity_decreased, 4)
+
     def test_return_to_stock(self):
         item = self.create_work_order_item()
         item_without_storable = self.create_work_order_item()

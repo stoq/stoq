@@ -93,7 +93,7 @@ model: SaleItem<3>
   notes: None
   price: <currency $10>
   quantity: Decimal('1.000')
-  quantity_decreased: Decimal('0.000')
+  quantity_decreased: Decimal('1.000')
   sale_id: Sale<1>
 
 model: SaleItem<4>
@@ -104,7 +104,7 @@ model: SaleItem<4>
   notes: None
   price: <currency $10>
   quantity: Decimal('1.000')
-  quantity_decreased: Decimal('0.000')
+  quantity_decreased: Decimal('1.000')
   sale_id: Sale<1>
 
 model: SaleItem<5>
@@ -115,7 +115,7 @@ model: SaleItem<5>
   notes: None
   price: <currency $10>
   quantity: Decimal('1.000')
-  quantity_decreased: Decimal('0.000')
+  quantity_decreased: Decimal('1.000')
   sale_id: Sale<1>
 
 model: SaleItem<6>

@@ -96,10 +96,31 @@ class OpticalItemStep(WorkOrderQuoteItemStep):
     #
 
     def get_order_item(self, sellable, price, quantity, batch=None):
-        item = super(OpticalItemStep, self).get_order_item(
+        sale_item = super(OpticalItemStep, self).get_order_item(
             sellable, price, quantity, batch=batch)
-        self._setup_patient(item)
-        return item
+        self._setup_patient(sale_item)
+
+        wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
+        # Now we must remove the products added to the workorders from the
+        # stock and we can associate the category selected to the workorders
+        storable = sale_item.sellable.product_storable
+        if storable:
+            if sale_item.batch is not None:
+                balance = sale_item.batch.get_balance_for_branch(
+                    sale_item.sale.branch)
+            else:
+                balance = storable.get_balance_for_branch(
+                    sale_item.sale.branch)
+        else:
+            # No storable, consume it all
+            balance = sale_item.quantity
+
+        quantity_to_reserve = min(balance, sale_item.quantity)
+        if quantity_to_reserve:
+            sale_item.reserve(quantity_to_reserve)
+
+        wo_item.quantity_decreased = sale_item.quantity_decreased
+        return sale_item
 
     def get_saved_items(self):
         for item in super(OpticalItemStep, self).get_saved_items():
@@ -149,39 +170,3 @@ class OpticalSaleQuoteWizard(WorkOrderQuoteWizard):
                  _("Print quote details"), _("Don't print")):
             orders = WorkOrder.find_by_sale(self.model.store, self.model)
             print_report(OpticalWorkOrderReceiptReport, list(orders))
-
-    def finish(self):
-        # Now we must remove the products added to the workorders from the
-        # stock and we can associate the category selected to the workorders
-        # (we only do this now so we don't have to pay attention if the user
-        # changes the category after we have created workorders).
-        for wo in self.workorders:
-            for item in wo.order_items:
-                storable = item.sellable.product_storable
-                if storable:
-                    if item.batch is not None:
-                        balance = item.batch.get_balance_for_branch(
-                            item.order.branch)
-                    else:
-                        balance = storable.get_balance_for_branch(
-                            item.order.branch)
-                else:
-                    # No storable, consume it all
-                    balance = item.quantity
-
-                diff = item.quantity - item.quantity_decreased
-                # A corrner case. Can happen if the user edited the sale and
-                # reduced the quantity to less than was reserved before.
-                if diff < 0:
-                    item.return_to_stock(-diff)
-                if diff > 0 and balance > 0:
-                    # FIXME: We should change this to have something on the
-                    # step before to say that some quantity will already be
-                    # reserved. obs. Then, the validation for the quantity in
-                    # stock should be there, not here
-                    quantity_to_reserve = min(balance, diff)
-                    item.reserve(quantity_to_reserve)
-
-                item.sale_item.quantity_decreased = item.quantity_decreased
-
-        super(OpticalSaleQuoteWizard, self).finish()

@@ -23,6 +23,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               ProxyLabel(original_price): '<span >$10.00</span>'
               GtkLabel(label5): 'Quantity:'
               ProxySpinButton(quantity): '2.00'
+              GtkLabel(reserved_lbl): 'Reserved:'
+              ProxySpinButton(reserved): '1.00'
               GtkLabel(label6): 'Total:'
               ProxyLabel(total): '<span >$300.00</span>'
           GtkEventBox(): slave SaleItemICMSSlave is attached

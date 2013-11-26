@@ -1094,6 +1094,9 @@ class StockTransactionHistory(Domain):
     #: |workorderitem| to the stock
     TYPE_WORK_ORDER_RETURN_TO_STOCK = 18
 
+    #: the transaction is a reserved product from a sale
+    TYPE_SALE_RESERVED = 19
+
     types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
              TYPE_LOANED: _(u'Loaned for loan %s'),
@@ -1116,6 +1119,7 @@ class StockTransactionHistory(Domain):
              TYPE_CONSIGNMENT_RETURNED: _(u'Consigned product returned %s.'),
              TYPE_WORK_ORDER_USED: _(u'Used on work order %s.'),
              TYPE_WORK_ORDER_RETURN_TO_STOCK: _(u'Returned to stock on work order %s.'),
+             TYPE_SALE_RESERVED: _(u'Reserved for sale %s.'),
              }
 
     #: the date and time the transaction was made
@@ -1151,7 +1155,8 @@ class StockTransactionHistory(Domain):
     def get_object(self):
         if self.type in [self.TYPE_INITIAL, self.TYPE_IMPORTED]:
             return None
-        elif self.type in [self.TYPE_SELL, self.TYPE_CANCELED_SALE]:
+        elif self.type in [self.TYPE_SELL, self.TYPE_CANCELED_SALE,
+                           self.TYPE_SALE_RESERVED]:
             from stoqlib.domain.sale import SaleItem
             return self.store.get(SaleItem, self.object_id)
         elif self.type == self.TYPE_RETURNED_SALE:

@@ -240,6 +240,33 @@ class SaleItem(Domain):
                                     batch=self.batch)
             self.quantity_decreased = Decimal(0)
 
+    def reserve(self, quantity):
+        """Reserve some quantity of this this item from stock
+
+        This will remove the informed quantity from the stock.
+        """
+        assert 0 < quantity <= (self.quantity - self.quantity_decreased)
+        storable = self.sellable.product_storable
+        if storable:
+            storable.decrease_stock(quantity, self.sale.branch,
+                                    StockTransactionHistory.TYPE_SALE_RESERVED,
+                                    self.id, batch=self.batch)
+        self.quantity_decreased += quantity
+
+    def return_to_stock(self, quantity):
+        """Return some reserved quantity to stock
+
+        This will return a previously reserved quantity to stock, so that it can
+        be sold in any other sale.
+        """
+        assert 0 < quantity <= self.quantity_decreased
+        storable = self.sellable.product_storable
+        if storable:
+            storable.increase_stock(quantity, self.sale.branch,
+                                    StockTransactionHistory.TYPE_SALE_RESERVED,
+                                    self.id, batch=self.batch)
+        self.quantity_decreased -= quantity
+
     def set_batches(self, batches):
         """Set batches for this sale item
 
@@ -787,6 +814,8 @@ class Sale(Domain):
         return store.find(SaleItem, sale=self)
 
     def remove_item(self, sale_item):
+        if sale_item.quantity_decreased > 0:
+            sale_item.return_to_stock(sale_item.quantity_decreased)
         sale_item.sale = None
         self.store.maybe_remove(sale_item)
 

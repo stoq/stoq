@@ -142,7 +142,8 @@ class TestSaleQuoteWizard(GUITest):
                 wo_item.quantity_decreased = 10
 
         self.check_wizard(wizard, 'wizard-optical-item-step',
-                          [sale, client] + list(sale.get_items()))
+                          [sale, client] +
+                          list(sale.get_items().order_by('te_id')))
 
         module = 'stoqlib.gui.events.SaleQuoteWizardFinishEvent.emit'
         with mock.patch(module) as emit:

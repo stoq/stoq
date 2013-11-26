@@ -405,16 +405,16 @@ class WorkOrderItem(Domain):
                 "Trying to reserve more than unreserved quantity")
 
         storable = self.sellable.product_storable
-        if not storable:
-            self.quantity_decreased += quantity
-            return
-
-        storable.decrease_stock(
-            quantity, self.order.branch,
-            StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id,
-            batch=self.batch)
+        if storable:
+            storable.decrease_stock(
+                quantity, self.order.branch,
+                StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id,
+                batch=self.batch)
 
         self.quantity_decreased += quantity
+        if self.sale_item:
+            # Keep the sale_item in sync, so the stock is not increased twice
+            self.sale_item.quantity_decreased += quantity
 
     def return_to_stock(self, quantity):
         """Return some quantity of this item to stock
@@ -430,20 +430,20 @@ class WorkOrderItem(Domain):
             raise ValueError(
                 "Trying to return more quantity than reserved")
 
-        storable = self.sellable.product_storable
-        if not storable:
-            self.quantity_decreased -= quantity
-            return
-
         # TODO: Implement a way to say that this quantity was lost
         # (probably by receiving an extra kwarg here). Then we would still
         # remove the quantity from quantity_decreased, but not reincrease stock
-        storable.increase_stock(
-            quantity, self.order.branch,
-            StockTransactionHistory.TYPE_WORK_ORDER_RETURN_TO_STOCK, self.id,
-            batch=self.batch)
+        storable = self.sellable.product_storable
+        if storable:
+            storable.increase_stock(
+                quantity, self.order.branch,
+                StockTransactionHistory.TYPE_WORK_ORDER_RETURN_TO_STOCK, self.id,
+                batch=self.batch)
 
         self.quantity_decreased -= quantity
+        if self.sale_item:
+            # Keep the sale_item in sync, so the stock is not decreased twice
+            self.sale_item.quantity_decreased -= quantity
 
     #
     #  Classmethods

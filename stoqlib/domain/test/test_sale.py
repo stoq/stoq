@@ -162,6 +162,17 @@ class TestSale(DomainTest):
             # But not related to the loan
             self.assertEquals(self.store.find(SaleItem, sale=sale).count(), 0)
 
+    def test_remove_item_reserved(self):
+        sale = self.create_sale()
+        storable = self.create_storable(branch=sale.branch, stock=10)
+        item = sale.add_sellable(storable.product.sellable, quantity=5)
+        item.reserve(4)
+        self.assertEqual(storable.get_balance_for_branch(sale.branch), 6)
+
+        # When we remove an item, the reserved quantity should go back to stock
+        sale.remove_item(item)
+        self.assertEqual(storable.get_balance_for_branch(sale.branch), 10)
+
     def test_get_status_name(self):
         sale = self.create_sale()
         self.assertEquals(sale.get_status_name(sale.STATUS_CONFIRMED),
@@ -1481,6 +1492,45 @@ class TestSaleItem(DomainTest):
             SaleItem()
         self.assertEquals(str(error.exception), 'You must provide a sellable '
                                                 'argument')
+
+    def test_return_to_stock(self):
+        sale = self.create_sale()
+        branch = sale.branch
+        storable = self.create_storable(branch=branch, stock=10)
+
+        sale_item = sale.add_sellable(storable.product.sellable, quantity=5)
+        sale_item.reserve(5)
+
+        self.assertEqual(storable.get_balance_for_branch(branch), 5)
+        sale_item.return_to_stock(2)
+        self.assertEqual(storable.get_balance_for_branch(branch), 7)
+
+        # We cant return more than what was reserved
+        with self.assertRaises(AssertionError):
+            sale_item.return_to_stock(30)
+
+    def test_reserve(self):
+        sale = self.create_sale()
+        branch = sale.branch
+        storable = self.create_storable(branch=branch, stock=10)
+
+        sale_item = sale.add_sellable(storable.product.sellable, quantity=5)
+        # We cannot reserve 0
+        with self.assertRaises(AssertionError):
+            sale_item.reserve(0)
+
+        self.assertEqual(storable.get_balance_for_branch(branch), 10)
+        sale_item.reserve(3)
+        self.assertEqual(storable.get_balance_for_branch(branch), 7)
+
+        # We cant reserve more than what is on a sale
+        with self.assertRaises(AssertionError):
+            sale_item.reserve(3)
+
+        # We should still be allowed to reserve without a stock
+        product = self.create_product(storable=False)
+        sale_item = sale.add_sellable(product.sellable, quantity=5)
+        sale_item.reserve(3)
 
     def test_set_batches(self):
         sale_item = self.create_sale_item(product=True, quantity=10)

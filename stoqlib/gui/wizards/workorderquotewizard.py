@@ -343,6 +343,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
         for sale_item in self.model.get_items():
             wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
             wo_item.quantity = sale_item.quantity
+            wo_item.quantity_decreased = sale_item.quantity_decreased
             wo_item.price = sale_item.price
 
         return super(WorkOrderQuoteItemStep, self).validate_step()

@@ -30,7 +30,10 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestSaleQuoteItemEditor(GUITest):
     def test_show_param_allow_higher_sale_price(self):
-        sale_item = self.create_sale_item()
+        sale = self.create_sale()
+        storable = self.create_storable(branch=sale.branch, stock=20)
+        sale_item = sale.add_sellable(storable.product.sellable)
+        sale_item.price = 100
         editor = SaleQuoteItemEditor(self.store, sale_item)
         editor.sale.set_label('12345')
 
@@ -41,6 +44,9 @@ class TestSaleQuoteItemEditor(GUITest):
             self.assertEqual(editor.total.read(), 200)
             editor.price.update(150)
             self.assertEqual(editor.total.read(), 300)
+
+            editor.reserved.update(1)
+            self.click(editor.main_dialog.ok_button)
 
             self.check_editor(editor, 'editor-salequoteitem-show')
             module = 'stoqlib.lib.pluginmanager.PluginManager.is_active'

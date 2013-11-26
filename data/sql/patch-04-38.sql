@@ -7,4 +7,4 @@ UPDATE work_order_item SET quantity_decreased = quantity;
 ALTER TABLE stock_transaction_history
     DROP CONSTRAINT type_range;
 ALTER TABLE stock_transaction_history
-    ADD CONSTRAINT type_range CHECK (type >= 0 and type <= 18);
+    ADD CONSTRAINT type_range CHECK (type >= 0 and type <= 19);

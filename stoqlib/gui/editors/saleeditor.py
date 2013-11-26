@@ -24,7 +24,9 @@
 """ Sale editors """
 
 import gtk
+from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
+from kiwi.python import Settable
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
@@ -34,7 +36,7 @@ from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
 from stoqlib.gui.widgets.calculator import CalculatorPopup
-from stoqlib.lib.defaults import MAX_INT
+from stoqlib.lib.defaults import MAX_INT, quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -47,9 +49,7 @@ class SaleQuoteItemEditor(BaseEditor):
     model_type = SaleItem
     model_name = _("Sale Quote Item")
     proxy_widgets = ['price',
-                     'quantity',
-                     'cfop',
-                     'total']
+                     'cfop']
 
     #: The manager is someone who can allow a bigger discount for a sale item.
     manager = None
@@ -60,6 +60,11 @@ class SaleQuoteItemEditor(BaseEditor):
         self.proxy = None
         self.icms_slave = None
         self.ipi_slave = None
+
+        # Use a temporary object to edit the quantities, so we can delay the
+        # database constraint checks
+        self.quantity_model = Settable(quantity=model.quantity,
+                                       reserved=model.quantity_decreased)
 
         BaseEditor.__init__(self, store, model)
 
@@ -77,12 +82,19 @@ class SaleQuoteItemEditor(BaseEditor):
         for widget in [self.quantity, self.price]:
             widget.set_adjustment(gtk.Adjustment(lower=1, upper=MAX_INT,
                                                  step_incr=1, page_incr=10))
+        self.reserved.set_adjustment(gtk.Adjustment(lower=0,
+                                                    upper=self.quantity_model.quantity,
+                                                    step_incr=1, page_incr=10))
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 
         if self.nfe_is_active:
             self.cfop_label.hide()
             self.cfop.hide()
+
+        if not self._can_reserve():
+            self.reserved.hide()
+            self.reserved_lbl.hide()
 
         # We populate this even if it's hidden because we need a default value
         # selected to add to the sale item
@@ -91,6 +103,21 @@ class SaleQuoteItemEditor(BaseEditor):
         self.cfop.prefill(cfop_items)
 
         self._setup_taxes()
+        self._update_total()
+
+    def _can_reserve(self):
+        # It is only possible to reserver for products with storable
+        product = self.model.sellable.product
+        if not product or not product.storable:
+            return False
+
+        # If the storable is has batches, but the sale item still dont have, its
+        # not possible to reserve.
+        storable = product.storable
+        if storable.is_batch and not self.model.batch:
+            return False
+
+        return True
 
     def _setup_taxes(self):
         # This taxes are only for products, not services
@@ -105,8 +132,16 @@ class SaleQuoteItemEditor(BaseEditor):
             self.ipi_slave = SaleItemIPISlave(self.store, self.model.ipi_info)
             self.add_tab(_('IPI'), self.ipi_slave)
 
-    def _validate_quantity(self, new_quantity):
-        if new_quantity <= 0:
+    def _update_total(self):
+        # We need to update the total manually, since the model quantity update
+        # is delayed
+        total = self.model.price * self.quantity_model.quantity
+        if self.model.ipi_info:
+            total += self.model.ipi_info.v_ipi
+        self.total.update(currency(quantize(total)))
+
+    def _validate_quantity(self, new_quantity, allow_zero=False):
+        if not allow_zero and new_quantity <= 0:
             return ValidationError(_(u"The quantity should be "
                                      u"greater than zero."))
 
@@ -131,6 +166,33 @@ class SaleQuoteItemEditor(BaseEditor):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
+        # Quantity is not in the proxy above so that it doen't get updated
+        # before quantity_reserved in the database
+        self.reserved_proxy = self.add_proxy(self.quantity_model,
+                                             ['quantity', 'reserved'])
+
+    def on_confirm(self):
+        if not self._can_reserve():
+            return
+
+        decreased = self.model.quantity_decreased
+        to_reserve = self.quantity_model.reserved
+        diff = to_reserve - decreased
+        if diff > 0:
+            # Update quantity first, so that the db constraint does not break
+            self.model.quantity = self.quantity_model.quantity
+            # We need to decrease a few more from the stock
+            self.model.reserve(diff)
+        elif diff < 0:
+            # We need to return some items to the stock
+            self.model.return_to_stock(abs(diff))
+            # Update quantity last, so that the db constraint does not break
+            self.model.quantity = self.quantity_model.quantity
+        else:
+            # even if there is no products to reserve, we still need to set the
+            # quantity value.
+            self.model.quantity = self.quantity_model.quantity
+
     #
     # Kiwi callbacks
     #
@@ -141,12 +203,15 @@ class SaleQuoteItemEditor(BaseEditor):
         if self.ipi_slave:
             self.ipi_slave.update_values()
 
-        if self.proxy:
-            self.proxy.update('total')
+        self._update_total()
 
     def after_quantity__changed(self, widget):
-        if self.proxy:
-            self.proxy.update('total')
+        self._update_total()
+
+        reserved = min(self.quantity_model.quantity,
+                       self.quantity_model.reserved)
+        self.reserved.get_adjustment().set_upper(self.quantity_model.quantity)
+        self.reserved.update(reserved)
 
     def on_price__validate(self, widget, value):
         if value <= 0:
@@ -177,6 +242,27 @@ class SaleQuoteItemEditor(BaseEditor):
 
     def on_quantity__validate(self, widget, value):
         return self._validate_quantity(value)
+
+    def on_reserved__validate(self, widget, value):
+        if not self._can_reserve():
+            return
+
+        # Do some pre-validation
+        valid = self._validate_quantity(value, allow_zero=True)
+        if valid:
+            return valid
+
+        storable = self.model.sellable.product.storable
+        decreased = self.model.quantity_decreased
+        to_reserve = value - decreased
+        # There is no need to reserve more products
+        if to_reserve <= 0:
+            return
+
+        stock_item = storable.get_stock_item(self.model.sale.branch,
+                                             self.model.batch)
+        if to_reserve > stock_item.quantity:
+            return ValidationError('Not enought stock to reserve.')
 
     def on_price__icon_press(self, entry, icon_pos, event):
         if icon_pos != gtk.ENTRY_ICON_PRIMARY:

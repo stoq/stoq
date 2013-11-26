@@ -268,6 +268,10 @@ class SaleQuoteItemStep(SellableItemStep):
 
             quantities.setdefault(sellable, 0)
             quantities[sellable] += i.quantity
+            # This was already removed from stock, so we need to ignore it.
+            if hasattr(i, 'quantity_decreased'):
+                quantities[sellable] -= i.quantity_decreased
+
             if quantities[sellable] > i._stock_quantity:
                 _lead_time = sellable.product.get_max_lead_time(
                     quantities[sellable], self.model.branch)
@@ -414,6 +418,16 @@ class SaleQuoteItemStep(SellableItemStep):
     #
     # Callbacks
     #
+
+    def on_slave__on_edit_item(self, slave, item):
+        product = item.sellable.product
+        if not product or not product.storable:
+            return
+        # The item was edited, and there is the chance that the quantity
+        # reserved changed. Update the object so that we can display the correcy
+        # missing message
+        stock = product.storable.get_balance_for_branch(self.model.branch)
+        item._stock_quantity = stock
 
     def _on_klist__has_rows(self, klist, has_rows):
         self.discount_btn.set_sensitive(has_rows)
