@@ -67,12 +67,6 @@ class SaleQuoteItemEditor(BaseEditor):
         if sale.status == Sale.STATUS_CONFIRMED:
             self._set_not_editable()
 
-        # not used with sale quote items
-        self.sale_quantity_lbl.hide()
-        self.return_quantity_lbl.hide()
-        self.sale_quantity.hide()
-        self.return_quantity.hide()
-
     def _setup_widgets(self):
         self._calc = CalculatorPopup(self.price,
                                      CalculatorPopup.MODE_SUB)
@@ -180,9 +174,6 @@ class SaleQuoteItemEditor(BaseEditor):
             return ValidationError(
                 _(u'Max discount for this product is %.2f%%.' %
                   valid_data['max_discount']))
-
-    def on_return_quantity__validate(self, widget, value):
-        return self._validate_quantity(value)
 
     def on_quantity__validate(self, widget, value):
         return self._validate_quantity(value)
