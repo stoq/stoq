@@ -29,11 +29,12 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.objectlist import Column
+from kiwi.ui.objectlist import Column, ObjectList
 from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import InventoryItemsView
+from stoqlib.domain.product import StorableBatchView
 from stoqlib.domain.sale import ReturnedSaleItemsView
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
@@ -59,16 +60,41 @@ class ProductStockHistoryDialog(BaseEditor):
 
     title = _("Product History")
     hide_footer = True
-    size = (700, 400)
+    size = (-1, 400)
     model_type = Sellable
     gladefile = "ProductStockHistoryDialog"
 
     def __init__(self, store, model, branch):
+        product = model.product
+        self._is_batch = product and product.storable and product.storable.is_batch
         self._branch = branch
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
+    def add_tab(self, name):
+        box = gtk.HBox()
+        box.set_border_width(6)
+        box.show()
+        olist = ObjectList()
+        box.pack_start(olist)
+        olist.show()
+        self.history_notebook.append_page(box, gtk.Label(name))
+        return olist
+
+    def _add_batches_tab(self):
+        olist = self.add_tab(_('Batches'))
+        olist.set_columns(self._get_batches_columns())
+
+        items = StorableBatchView.find_by_storable(
+            store=self.store,
+            storable=self.model.product.storable,
+            branch=self._branch)
+        olist.add_list(list(items))
+
     def _setup_widgets(self):
+        if self._is_batch:
+            self._add_batches_tab()
+
         self.receiving_list.set_columns(self._get_receiving_columns())
         self.sales_list.set_columns(self._get_sale_columns())
         self.transfer_list.set_columns(self._get_transfer_columns())
@@ -137,7 +163,7 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_receiving_columns(self):
         return [IdentifierColumn("order_identifier", sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
-                       visible=False),
+                       visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("receival_date", title=_("Date"),
@@ -155,7 +181,7 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_sale_columns(self):
         return [IdentifierColumn("sale_identifier", sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
-                       visible=False),
+                       visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("sale_date",
@@ -172,7 +198,7 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_transfer_columns(self):
         return [IdentifierColumn("transfer_order.identifier", sorted=True),
                 Column('batch.batch_number', title=_('Batch'), data_type=str,
-                       visible=False),
+                       visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("transfer_order.open_date",
@@ -191,7 +217,7 @@ class ProductStockHistoryDialog(BaseEditor):
         return [IdentifierColumn("loan_identifier", title=_("Loan #"),
                                  sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
-                       visible=False),
+                       visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("opened", title=_(u"Opened"),
@@ -209,7 +235,7 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_decrease_columns(self):
         return [IdentifierColumn("decrease_identifier", sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
-                       visible=False),
+                       visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("date", title=_("Date"), data_type=datetime.date,
@@ -222,7 +248,7 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_inventory_columns(self):
         return [IdentifierColumn("inventory_identifier", sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
-                       visible=False),
+                       visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("responsible_name", title=_("Responsible"),
@@ -241,7 +267,7 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_returned_columns(self):
         return [IdentifierColumn("returned_identifier", sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
-                       visible=False),
+                       visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("reason", title=_(u"Reason"),
@@ -254,6 +280,14 @@ class ProductStockHistoryDialog(BaseEditor):
                        format_func=get_formatted_cost),
                 Column("return_date", title=_(u"Return Date"),
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT)]
+
+    def _get_batches_columns(self):
+        return [Column('batch_number', title=_('Batch'), data_type=str,
+                       expand=True),
+                Column('create_date', title=_('Batch Date'),
+                       data_type=datetime.date),
+                Column("stock", title=_("Quantity"), data_type=int),
+                ]
 
     #
     # BaseEditor Hooks

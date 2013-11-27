@@ -28,7 +28,6 @@ import unittest
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.domain.product import Storable
 from stoqlib.database.runtime import get_current_branch, get_current_user
 
 
@@ -39,8 +38,10 @@ class TestProductStockHistoryDialog(GUITest):
         today = datetime.date.today()
         branch = get_current_branch(self.store)
         user = get_current_user(self.store)
-        product = self.create_product()
-        Storable(store=self.store, product=product)
+        storable = self.create_storable(is_batch=True)
+        product = storable.product
+        batch = self.create_storable_batch(storable)
+        batch.create_date = datetime.datetime(2013, 1, 27)
 
         # Purchase
         order = self.create_purchase_order(branch=branch)
@@ -56,13 +57,14 @@ class TestProductStockHistoryDialog(GUITest):
         receiving.receival_date = date
         r_item = self.create_receiving_order_item(receiving, product.sellable, p_item)
         r_item.quantity_received = 8
+        r_item.batch = batch
         receiving.confirm()
 
         # Sale
         sale = self.create_sale(branch=branch)
         sale.identifier = 123
         sale.open_date = today
-        sale.add_sellable(product.sellable, 3)
+        sale.add_sellable(product.sellable, 3, batch=batch)
         sale.order()
         self.add_payments(sale, date=today)
         sale.confirm()
@@ -71,7 +73,8 @@ class TestProductStockHistoryDialog(GUITest):
         transfer = self.create_transfer_order(source_branch=branch)
         transfer.open_date = date
         transfer.identifier = 55
-        self.create_transfer_order_item(transfer, 2, product.sellable)
+        self.create_transfer_order_item(transfer, 2, product.sellable,
+                                        batch=batch)
         transfer.send()
         transfer.receive(self.create_employee())
 
@@ -80,7 +83,8 @@ class TestProductStockHistoryDialog(GUITest):
                                               dest_branch=branch)
         transfer.open_date = date
         transfer.identifier = 66
-        self.create_transfer_order_item(transfer, 1, product.sellable)
+        self.create_transfer_order_item(transfer, 1, product.sellable,
+                                        batch=batch)
         transfer.send()
         transfer.receive(self.create_employee())
 
@@ -94,7 +98,7 @@ class TestProductStockHistoryDialog(GUITest):
         decrease = self.create_stock_decrease(branch, user)
         decrease.identifier = 4
         decrease.confirm_date = date
-        decrease.add_sellable(product.sellable)
+        decrease.add_sellable(product.sellable, batch=batch)
         decrease.confirm()
 
         dialog = ProductStockHistoryDialog(self.store, product.sellable, branch)
