@@ -298,7 +298,7 @@ class Coupon(object):
 
     def add_item(self, item):
         """
-        @param item: A :class:`SellableItem` subclass
+        @param item: A :class:`SaleItem` subclass
         @returns: id of the item.:
           0 >= if it was added successfully
           -1 if an error happend
@@ -324,11 +324,19 @@ class Coupon(object):
             warning(_("Could not print item"), str(e))
             return -1
 
+        base_price = item.base_price
+        discount_value = (base_price - item.price) * item.quantity
+        # If the selling value is greater than the base price
+        if discount_value < 0:
+            discount_value = 0
+            base_price = item.price
+
         try:
-            return self._driver.add_item(code, description, item.price,
+            return self._driver.add_item(code, description, base_price,
                                          tax_constant.device_value,
                                          item.quantity, unit,
-                                         unit_desc=unit_desc)
+                                         unit_desc=unit_desc,
+                                         discount=discount_value)
         except DriverError as e:
             warning(_("Could not print item"), str(e))
             return -1
