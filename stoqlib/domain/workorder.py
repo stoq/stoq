@@ -1362,10 +1362,9 @@ class WorkOrderView(Viewable):
 
     @property
     def equipment(self):
-        return '%s - %s' % (
-            self.store.get(Sellable, self.work_order.sellable_id).description,
-            self.work_order.description,
-        )
+        if self.sellable:
+            return '%s - %s' % (self.sellable, self.work_order.description)
+        return self.work_order.description
 
     @classmethod
     def post_search_callback(cls, sresults):

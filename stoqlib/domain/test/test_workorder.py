@@ -937,6 +937,20 @@ class TestWorkOrderView(_TestWorkOrderView):
     view = WorkOrderView
     default_status = [WorkOrder.STATUS_OPENED]
 
+    def test_equipment(self):
+        wo = self.create_workorder(description=u'Foo')
+
+        # Without a sellable, the equipemnt should be only the description
+        wo.sellable = None
+        wo_view = self.store.find(self.view, self.view.id == wo.id).one()
+        self.assertEquals(wo_view.equipment, 'Foo')
+
+        # With a sellable, the equipemnt should be the sellable description +
+        # the work order description
+        wo.sellable = self.create_sellable(description=u'Bar')
+        wo_view = self.store.find(self.view, self.view.id == wo.id).one()
+        self.assertEquals(wo_view.equipment, 'Bar - Foo')
+
 
 class TestWorkWithPackageView(TestWorkOrderView):
     view = WorkOrderWithPackageView
