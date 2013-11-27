@@ -214,6 +214,8 @@ class SoldItemsByBranchSearch(SearchDialog):
     def create_filters(self):
         self.set_text_field_columns(['description'])
         self.search.set_query(self.executer_query)
+        executer = self.search.get_query_executer()
+        executer.set_limit(-1)
 
         # Date
         date_filter = DateSearchFilter(_('Date:'))

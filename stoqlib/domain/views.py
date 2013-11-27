@@ -612,7 +612,7 @@ class SoldItemView(Viewable):
 
     clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
                 Sale.status == Sale.STATUS_PAID,
-                Sale.status == Sale.STATUS_ORDERED)
+                Sale.status == Sale.STATUS_RENEGOTIATED)
 
     group_by = [id, code, description, category, Sale.status]
 
@@ -710,9 +710,6 @@ class SoldItemsByBranchView(SoldItemView):
         LeftJoin(Person, Branch.person_id == Person.id),
         LeftJoin(Company, Company.person_id == Person.id),
     ])
-
-    clause = Or(SoldItemView.clause,
-                Sale.status == Sale.STATUS_RENEGOTIATED)
 
     group_by = SoldItemView.group_by[:]
     group_by.append(branch_name)
