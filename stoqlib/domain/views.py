@@ -402,7 +402,7 @@ class ProductBranchStockView(Viewable):
     id = Branch.id
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person.name)
     storable_id = ProductStockItem.storable_id
-    stock = ProductStockItem.quantity
+    stock = Sum(ProductStockItem.quantity)
 
     tables = [
         Branch,
@@ -410,6 +410,8 @@ class ProductBranchStockView(Viewable):
         Join(Company, Company.person_id == Person.id),
         Join(ProductStockItem, ProductStockItem.branch_id == Branch.id),
     ]
+
+    group_by = [Branch, branch_name, storable_id]
 
     @classmethod
     def find_by_storable(cls, store, storable):
