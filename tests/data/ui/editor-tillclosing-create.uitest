@@ -19,7 +19,6 @@ GtkDialog(main_dialog.toplevel): title='Closing Opened Till', hidden
               GtkLabel(expand=True, fill=True, padding=6): '<b>Total balance:</b>'
               GtkLabel(): '$ 0.00'
           GtkTable(table1, fill=True):
-            GtkLabel(label15): '<b>Cash Amounts:</b>'
             GtkLabel(label18): 'Float Remaining:'
             ProxyLabel(balance): '<span >$ 0.00</span>'
             ProxyLabel(label17): 'Amount Removed ($CURRENCY):'
