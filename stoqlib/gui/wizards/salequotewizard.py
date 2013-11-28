@@ -354,7 +354,10 @@ class SaleQuoteItemStep(SellableItemStep):
         return columns
 
     def sellable_selected(self, sellable, batch=None):
-        SellableItemStep.sellable_selected(self, sellable, batch=batch)
+        # We may receive a batch if the user typed a batch number instead of a
+        # product code, but we pass batch=None here since the user must select
+        # the batch when confirming a sale.
+        SellableItemStep.sellable_selected(self, sellable, batch=None)
         if sellable:
             price = sellable.get_price_for_category(
                 self.model.client_category)
