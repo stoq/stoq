@@ -208,6 +208,8 @@ class SoldItemsByBranchSearch(SearchDialog):
         self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
         self.csv_button.show()
         self.csv_button.set_sensitive(False)
+        self.search.set_summary_label('total', label=_(u'Total:'),
+                                      format='<b>%s</b>')
 
         self.results.connect('has_rows', self._on_results__has_rows)
 
