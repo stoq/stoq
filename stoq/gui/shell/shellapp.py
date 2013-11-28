@@ -201,6 +201,10 @@ class ShellApp(GladeDelegate):
         if self.search_spec is None:
             raise NotImplementedError
 
+        if api.sysparam.get_bool('SMART_LIST_LOADING'):
+            model = self.results.get_model()
+            model.load_items_from_results(0, model._count)
+
         sse = SpreadSheetExporter()
         sse.export(object_list=self.results,
                    name=self.app_name,
