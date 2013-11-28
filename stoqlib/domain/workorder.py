@@ -864,6 +864,13 @@ class WorkOrder(Domain):
             return False
         return self.status == self.STATUS_WORK_WAITING
 
+    def can_edit(self):
+        """Check if this work order can be edited
+
+        :returns: ``True`` if can edit, ``False`` otherwise
+        """
+        return not self.is_finished()
+
     def can_finish(self):
         """Checks if this work order can finish
 

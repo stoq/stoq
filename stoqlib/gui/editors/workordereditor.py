@@ -75,9 +75,6 @@ class WorkOrderEditor(BaseEditor):
     def __init__(self, store, model=None, visual_mode=False, category=None):
         self._default_category = category
         self.proxy = None
-        # Force visual_mode if the order is not in the current branch
-        if model and model.current_branch != api.get_current_branch(store):
-            visual_mode = True
 
         super(WorkOrderEditor, self).__init__(store, model=model,
                                               visual_mode=visual_mode)

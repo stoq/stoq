@@ -472,9 +472,7 @@ class ServicesApp(ShellApp):
         wo = has_selected and selection.work_order
         has_quote = has_selected and bool(wo.defect_detected)
 
-        can_edit = (has_selected and
-                    (wo.can_approve() or wo.can_work() or wo.can_finish()))
-        self.set_sensitive([self.Edit], can_edit)
+        self.set_sensitive([self.Edit], has_selected and wo.can_edit())
         self.set_sensitive([self.Details], has_selected)
         self.set_sensitive([self.Finish], has_selected and wo.can_finish())
         self.set_sensitive([self.Cancel], has_selected and wo.can_cancel())
