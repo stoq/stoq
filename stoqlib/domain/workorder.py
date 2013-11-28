@@ -814,14 +814,21 @@ class WorkOrder(Domain):
         today = localtoday().date()
         return self.estimated_finish.date() < today
 
-    def can_cancel(self):
+    def can_cancel(self, ignore_sale=False):
         """Checks if this work order can be cancelled
 
-        The order can be cancelled at any point, since it's not
+        The order can be cancelled at any point, once it's not
         finished (this is done by checking :meth:`.is_finished`)
 
+        If the work order is related to a sale, the user cannot cancel it, and
+        should cancel the sale instead.
+
+        :param ignore_sale: Dont consider the related sale. This should only be
+          used when the sale is being canceled
         :returns: ``True`` if can be cancelled, ``False`` otherwise
         """
+        if not ignore_sale and self.sale_id:
+            return False
         return not self.is_finished()
 
     def can_approve(self):
@@ -958,7 +965,7 @@ class WorkOrder(Domain):
             self.store, self, what=_(u"Rejected"),
             old_value=_(u"Yes"), new_value=_(u"No"), notes=reason)
 
-    def cancel(self, reason=None):
+    def cancel(self, reason=None, ignore_sale=False):
         """Cancels this work order
 
         Cancel the work order, probably because the |client|
@@ -970,7 +977,7 @@ class WorkOrder(Domain):
 
         :param reason: an explanation to why this order was cancelled
         """
-        assert self.can_cancel()
+        assert self.can_cancel(ignore_sale)
 
         for item in self.order_items:
             if item.quantity_decreased > 0:
@@ -1165,7 +1172,8 @@ class WorkOrder(Domain):
                 if self.is_finished():
                     self.reopen(reason=_(u"Reopening work order to "
                                          "cancel the sale"))
-                self.cancel(reason=_(u"The sale was cancelled"))
+                self.cancel(reason=_(u"The sale was cancelled"),
+                            ignore_sale=True)
 
 
 # TODO: Maybe this can be moved to a generic 'DomainHistory' (or something

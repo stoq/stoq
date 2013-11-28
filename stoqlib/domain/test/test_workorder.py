@@ -444,6 +444,12 @@ class TestWorkOrder(DomainTest):
             else:
                 self.assertTrue(workorder.can_cancel())
 
+        workorder = self.create_workorder()
+        self.assertTrue(workorder.can_cancel())
+
+        workorder.sale = self.create_sale()
+        self.assertFalse(workorder.can_cancel())
+
     def test_can_approve(self):
         workorder = self.create_workorder()
         for status in WorkOrder.statuses.keys():
@@ -781,7 +787,8 @@ class TestWorkOrder(DomainTest):
             sale.cancel()
             reopen.assert_called_once_with(
                 reason="Reopening work order to cancel the sale")
-            cancel.assert_called_with(reason="The sale was cancelled")
+            cancel.assert_called_with(reason="The sale was cancelled",
+                                      ignore_sale=True)
 
 
 class _TestWorkOrderView(DomainTest):

@@ -803,7 +803,8 @@ class TestSale(DomainTest):
         with mock.patch.object(work_order, 'cancel') as cancel:
             sale.cancel()
             cancel.assert_called_once_with(
-                reason="The sale was cancelled")
+                reason="The sale was cancelled",
+                ignore_sale=True)
 
     def test_cancel_with_payments(self):
         sale = self.create_sale()
