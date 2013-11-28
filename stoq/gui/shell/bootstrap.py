@@ -139,8 +139,8 @@ class ShellBootstrap(object):
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
 
-        self._log_filename = os.path.join(log_dir, 'stoq_%s.log' %
-                                          time.strftime('%Y-%m-%d_%H-%M-%S'))
+        filename = 'stoq_%s.%s.log' % (time.strftime('%Y-%m-%d_%H-%M-%S'), os.getpid())
+        self._log_filename = os.path.join(log_dir, filename)
 
         from kiwi.log import set_log_file
         self._stream = set_log_file(self._log_filename, 'stoq*')

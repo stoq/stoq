@@ -27,6 +27,7 @@ import logging
 import sys
 import warnings
 import weakref
+import os
 
 from kiwi.component import get_utility, provide_utility
 from storm import Undef
@@ -503,7 +504,8 @@ class StoqlibStore(Store):
         This name will appear when selecting from pg_stat_activity, for instance,
         and will allow to better debug the queries (specially when there is a deadlock)
         """
-        self.execute("SET application_name = 'stoq - %s'" % (get_hostname()))
+        self.execute("SET application_name = 'stoq - %s - %s'" %
+                     (get_hostname(), os.getpid()))
 
     def _check_obsolete(self):
         if self.obsolete:

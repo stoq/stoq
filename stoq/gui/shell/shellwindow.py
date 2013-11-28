@@ -27,6 +27,7 @@ import gzip
 import locale
 import logging
 import platform
+import os
 
 import gtk
 from kiwi.component import get_utility
@@ -272,7 +273,8 @@ class ShellWindow(GladeDelegate):
         station = api.get_current_station(self.store)
         status_str = '   |   '.join([
             _("User: %s") % (user.get_description(),),
-            _("Computer: %s") % (station.name,)
+            _("Computer: %s") % (station.name,),
+            "PID: %s" % (os.getpid(),)
         ])
         statusbar.push(0, status_str)
         return statusbar
