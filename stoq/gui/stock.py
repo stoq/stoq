@@ -339,9 +339,11 @@ class StockApp(ShellApp):
         return info_bar
 
     def _search_transfers(self):
+        branch = api.get_current_branch(self.store)
         self.run_dialog(TransferOrderSearch, self.store)
+
         if self.transfers_bar:
-            n_transfers = self._get_pending_transfers_count()
+            n_transfers = TransferOrder.get_pending_transfers(self.store, branch).count()
 
             if n_transfers > 0:
                 msg = _(u"You have %s incoming transfers" % n_transfers)
