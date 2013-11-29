@@ -30,6 +30,7 @@ import sys
 import time
 import traceback
 from twisted.internet import reactor
+import os
 
 import gobject
 from kiwi.component import get_utility
@@ -139,9 +140,19 @@ def collect_traceback(tb, output=True, submit=False):
     @submit: if it is to be submitted immediately
     """
     _tracebacks.append(tb)
-
     if output:
         traceback.print_exception(*tb)
+
+    if 'STOQ_SENTRY_URL' in os.environ:
+        try:
+            from raven import Client
+            has_raven = True
+        except ImportError:
+            has_raven = False
+
+        if has_raven:
+            client = Client(os.environ['STOQ_SENTRY_URL'])
+            client.captureException(tb)
 
     if is_developer_mode() and submit:
         report()
