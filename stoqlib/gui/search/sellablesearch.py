@@ -34,8 +34,7 @@ from stoqlib.api import api
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.search.productsearch import ProductBranchSearch
-from stoqlib.gui.search.searchcolumns import (Column, AccessorColumn,
-                                              SearchColumn)
+from stoqlib.gui.search.searchcolumns import AccessorColumn, SearchColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
@@ -152,8 +151,8 @@ class SellableSearch(SearchEditor):
                              data_type=str, visible=False),
                 SearchColumn('model', title=_('Model'),
                              data_type=str, visible=False),
-                Column('price', title=_('Price'), data_type=currency,
-                       justify=gtk.JUSTIFY_RIGHT, width=120),
+                SearchColumn('price', title=_('Price'), data_type=currency,
+                             justify=gtk.JUSTIFY_RIGHT, width=120),
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, visible=False),
                 AccessorColumn('stock', title=_(u'Stock'),

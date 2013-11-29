@@ -29,7 +29,8 @@ from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
                         Alias, Count, Cast)
 from storm.info import ClassAlias
 
-from stoqlib.database.expr import Date, Distinct, Field, NullIf
+from stoqlib.database.expr import (Case, Date, Distinct, Field, NullIf,
+                                   StatementTimestamp)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
@@ -57,8 +58,6 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableTaxConstant)
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 from stoqlib.lib.decorators import cached_property
-from stoqlib.lib.dateutils import localnow
-from stoqlib.lib.validators import is_date_in_interval
 
 
 # Use a subselect to count the number of items, because that takes a lot less
@@ -89,6 +88,11 @@ _StockBranchSummary = Alias(Select(
             LeftJoin(ProductStockItem, And(ProductStockItem.branch_id == Branch.id,
                                            ProductStockItem.storable_id == Storable.id))],
     group_by=[Storable.id, Branch.id]), '_stock_summary')
+
+_price_search = Case(condition=And(StatementTimestamp() >= Sellable.on_sale_start_date,
+                                   StatementTimestamp() <= Sellable.on_sale_end_date),
+                     result=Sellable.on_sale_price,
+                     else_=Sellable.base_price)
 
 
 class ProductFullStockView(Viewable):
@@ -123,6 +127,7 @@ class ProductFullStockView(Viewable):
     on_sale_price = Sellable.on_sale_price
     on_sale_start_date = Sellable.on_sale_start_date
     on_sale_end_date = Sellable.on_sale_end_date
+    price = _price_search
 
     # Product
     product_id = Product.id
@@ -215,17 +220,6 @@ class ProductFullStockView(Viewable):
         if unit == u"":
             return u"un"
         return unit
-
-    @property
-    def price(self):
-        # See Sellable.price property
-        if self.on_sale_price:
-            today = localnow()
-            start_date = self.on_sale_start_date
-            end_date = self.on_sale_end_date
-            if is_date_in_interval(today, start_date, end_date):
-                return self.on_sale_price
-        return self.base_price
 
     @property
     def has_image(self):
@@ -448,6 +442,7 @@ class SellableFullStockView(Viewable):
     on_sale_end_date = Sellable.on_sale_end_date
     base_price = Sellable.base_price
     max_discount = Sellable.max_discount
+    price = _price_search
 
     product_id = Product.id
     model = Product.model
@@ -476,17 +471,6 @@ class SellableFullStockView(Viewable):
         query = Or(Field('_stock_summary', 'branch_id') == branch.id,
                    Eq(Field('_stock_summary', 'branch_id'), None))
         return store.find(cls, query)
-
-    @property
-    def price(self):
-        # See Sellable.price property
-        if self.on_sale_price:
-            today = localnow()
-            start_date = self.on_sale_start_date
-            end_date = self.on_sale_end_date
-            if is_date_in_interval(today, start_date, end_date):
-                return self.on_sale_price
-        return self.base_price
 
 
 class SellableCategoryView(Viewable):

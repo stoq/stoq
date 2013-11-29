@@ -28,7 +28,7 @@ This contains a list of expressions that are unsupported by Storm.
 Most of them are specific to PostgreSQL
 """
 
-from storm.expr import (Expr, NamedFunc, PrefixExpr, SQL,
+from storm.expr import (Expr, NamedFunc, PrefixExpr, SQL, ComparableExpr,
                         compile as expr_compile,
                         is_safe_token)
 
@@ -141,7 +141,7 @@ class StoqNormalizeString(NamedFunc):
     name = "stoq_normalize_string"
 
 
-class Case(Expr):
+class Case(ComparableExpr):
     """Works like a Python's if-then-else clause.
 
     .. line-block::
