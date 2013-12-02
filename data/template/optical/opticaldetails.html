@@ -37,7 +37,9 @@
 
     % if not report.sale:
       <p>
+        % if workorder.sellable:
         ${ workorder.sellable.description }<br />
+        % endif
         ${ workorder.description }
       </p>
     % else:
