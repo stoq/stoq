@@ -33,7 +33,7 @@ from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import Field, NullIf
+from stoqlib.database.expr import Field, NullIf, Concat
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
                                          IdentifierCol, IdCol, BoolCol)
@@ -1298,6 +1298,8 @@ class WorkOrderView(Viewable):
     estimated_finish = WorkOrder.estimated_finish
     finish_date = WorkOrder.finish_date
     is_rejected = WorkOrder.is_rejected
+    equipment = Coalesce(Concat(Sellable.description, u" - ", WorkOrder.description),
+                         WorkOrder.description)
 
     # WorkOrderCategory
     category_name = WorkOrderCategory.name
@@ -1374,12 +1376,6 @@ class WorkOrderView(Viewable):
     @property
     def branch(self):
         return self.store.get(Branch, self.branch_id)
-
-    @property
-    def equipment(self):
-        if self.sellable:
-            return '%s - %s' % (self.sellable, self.work_order.description)
-        return self.work_order.description
 
     @classmethod
     def post_search_callback(cls, sresults):
