@@ -12521,7 +12521,7 @@ msgstr "Total de pagamentos: %s"
 #: ../stoqlib/gui/search/commissionsearch.py:74
 #, python-format
 msgid "Total sales: %s"
-msgstr "Total de vendas: %d"
+msgstr "Total de vendas: %s"
 
 #: ../stoqlib/gui/search/commissionsearch.py:111
 msgid "Anyone"
