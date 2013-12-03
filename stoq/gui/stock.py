@@ -193,6 +193,9 @@ class StockApp(ShellApp):
 
         if not open_inventory:
             self.transfers_bar = self._create_pending_info_message()
+        else:
+            self.transfers_bar = None
+
         self._update_widgets()
 
     def setup_focus(self):
@@ -346,7 +349,7 @@ class StockApp(ShellApp):
             n_transfers = TransferOrder.get_pending_transfers(self.store, branch).count()
 
             if n_transfers > 0:
-                msg = _(u"You have %s incoming transfers" % n_transfers)
+                msg = (_(u"You have %s incoming transfer(s)") % n_transfers)
                 self.transfers_bar.set_message(msg)
             else:
                 self.transfers_bar.hide()
