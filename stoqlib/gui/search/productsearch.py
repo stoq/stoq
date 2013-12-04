@@ -134,7 +134,7 @@ class ProductSearch(SearchEditor):
         self.branch_stock_button.set_sensitive(False)
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'barcode',
+        self.set_text_field_columns(['code', 'description', 'barcode',
                                      'category_description'])
         self.search.set_query(self.executer_query)
 
