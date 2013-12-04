@@ -237,8 +237,8 @@ class SaleQuoteItemEditor(BaseEditor):
 
         if not valid_data['is_valid']:
             return ValidationError(
-                _(u'Max discount for this product is %.2f%%.' %
-                  valid_data['max_discount']))
+                (_(u'Max discount for this product is %.2f%%.') %
+                 valid_data['max_discount']))
 
     def on_quantity__validate(self, widget, value):
         return self._validate_quantity(value)
