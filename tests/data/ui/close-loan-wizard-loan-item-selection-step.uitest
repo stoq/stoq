@@ -61,6 +61,7 @@ model: Loan<1>
   status: 0
 
 model: LoanItem<2>
+  base_price: <currency $10>
   loan_id: Loan<1>
   price: <currency $10>
   quantity: Decimal('10.000')

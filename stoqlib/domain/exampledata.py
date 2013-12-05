@@ -870,7 +870,7 @@ class ExampleCreator(object):
         storable.increase_stock(10, loan.branch,
                                 type=StockTransactionHistory.TYPE_INITIAL,
                                 object_id=None)
-        return LoanItem(loan=loan, sellable=sellable, price=10,
+        return LoanItem(loan=loan, sellable=sellable, price=10, base_price=10,
                         quantity=quantity, store=self.store)
 
     def get_payment_method(self, name=u'money'):

@@ -1486,6 +1486,7 @@ CREATE TABLE loan (
     notes text,
     removed_by text,
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE,
+    client_category_id uuid REFERENCES client_category(id) ON UPDATE CASCADE,
     responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
@@ -1502,6 +1503,8 @@ CREATE TABLE loan_item (
         CHECK (return_quantity >= 0),
     price numeric(20, 2) CONSTRAINT positive_price
         CHECK (price >= 0),
+    base_price numeric(20, 2) CONSTRAINT positive_base_price
+	CHECK (base_price >= 0),
     loan_id uuid REFERENCES loan(id) ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE

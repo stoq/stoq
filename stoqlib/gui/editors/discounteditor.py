@@ -32,6 +32,7 @@ from kiwi.ui.forms import TextField
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.event import Event
+from stoqlib.domain.loan import Loan
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -47,7 +48,7 @@ class DiscountEditor(BaseEditor):
     """
 
     title = _('Select discount to apply')
-    model_type = Sale
+    model_type = object
     confirm_widgets = ['discount']
 
     fields = dict(
@@ -55,6 +56,8 @@ class DiscountEditor(BaseEditor):
     )
 
     def __init__(self, store, model, user=None, visual_mode=False):
+        if not isinstance(model, (Sale, Loan)):
+            raise TypeError("Expected Sale or Loan, found: %r" % self.model_type)
         self._user = user
         BaseEditor.__init__(self, store, model=model, visual_mode=visual_mode)
         self.register_validate_function(self._validation_func)

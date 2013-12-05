@@ -178,6 +178,43 @@ class TestLoan(DomainTest):
             # But not related to the loan
             self.assertEquals(self.store.find(LoanItem, loan=loan).count(), 0)
 
+    def test_get_available_discount_for_items(self):
+        loan_item = self.create_loan_item()
+        loan_item.loan.client = self.create_client()
+        user = self.create_user()
+        user.profile.max_discount = decimal.Decimal('5')
+        discount = loan_item.loan.get_available_discount_for_items(user)
+        self.assertEqual(discount, decimal.Decimal('0.50'))
+
+        # Test exclude item
+        loan = self.create_loan()
+        loan_item2 = self.create_loan_item()
+        loan_item2.loan = None
+        loan.add_item(loan_item2)
+        discount = loan.get_available_discount_for_items(user, loan_item2)
+        self.assertEqual(discount, decimal.Decimal('0'))
+
+        # Test surcharge
+        loan_item2.set_discount(decimal.Decimal('-5'))
+        self.assertEqual(loan_item2.price, currency('10.50'))
+        discount = loan_item2.loan.get_available_discount_for_items(user)
+        self.assertEqual(discount, decimal.Decimal('0'))
+
+    def test_set_items_discount(self):
+        loan = self.create_loan()
+        loan_item1 = self.create_loan_item()
+        loan_item2 = self.create_loan_item()
+
+        loan_item1.loan = None
+        loan_item2.loan = None
+
+        loan.add_item(loan_item1)
+        loan.add_item(loan_item2)
+        self.assertEqual(loan.get_total_amount(), 20)
+        # 5% of discount
+        loan.set_items_discount(5)
+        self.assertEqual(loan.get_total_amount(), 19)
+
 
 class TestLoanItem(DomainTest):
 
@@ -287,3 +324,11 @@ class TestLoanItem(DomainTest):
     def test_get_total(self):
         item = self.create_loan_item()
         self.assertEquals(item.get_total(), currency(10))
+
+    def test_set_discount(self):
+        loan_item = self.create_loan_item()
+        self.assertEqual(loan_item.get_total(), currency(10))
+
+        # It requires a currency value but is 5% of discount
+        loan_item.set_discount(decimal.Decimal('4.9'))
+        self.assertEqual(loan_item.get_total(), currency('9.51'))

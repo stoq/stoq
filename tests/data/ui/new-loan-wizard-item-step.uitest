@@ -41,7 +41,7 @@ GtkDialog(PluggableWizard): title='New Loan Wizard', hidden
                   column: title='Sale Price'
                   column: title='Discount'
                   column: title='Total'
-                  row: u'', u'', u'Description', None, None, u'', Decimal('1.000'), u'', None, None, None, None, None, <currency $10>, None, <currency $10>
+                  row: u'', u'', u'Description', None, None, u'', Decimal('1.000'), u'', None, None, None, None, <currency $10>, <currency $10>, None, <currency $10>
                 GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$10.00</b>'
@@ -73,6 +73,7 @@ model: Loan<1>
   status: 0
 
 model: LoanItem<2>
+  base_price: <currency $10>
   loan_id: Loan<1>
   price: <currency $10>
   quantity: Decimal('1.000')

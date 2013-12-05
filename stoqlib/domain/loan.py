@@ -47,7 +47,7 @@ from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
-from stoqlib.lib.defaults import DECIMAL_PRECISION
+from stoqlib.lib.defaults import DECIMAL_PRECISION, quantize
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -83,6 +83,9 @@ class LoanItem(Domain):
     #: price to use for this :obj:`~.sellable` when creating
     #: a :class:`sale <stoqlib.domain.sale.Sale>`
     price = PriceCol()
+
+    #: original price of a sellable
+    base_price = PriceCol()
 
     sellable_id = IdCol(allow_none=False)
 
@@ -165,6 +168,18 @@ class LoanItem(Domain):
     def get_total(self):
         return currency(self.price * self.quantity)
 
+    def set_discount(self, discount):
+        """Apply *discount* on this item
+
+        Note that the discount will be applied based on :obj:`.base_price`
+        and then substitute :obj:`.price`, making any previous
+        discount/surcharge being lost
+
+        :param decimal.Decimal discount: the discount to be applied
+            as a percentage, e.g. 10.0, 22.5
+        """
+        self.price = quantize(self.base_price * (1 - discount / 100))
+
 
 @implementer(IContainer)
 class Loan(Domain):
@@ -235,6 +250,11 @@ class Loan(Domain):
     client_id = IdCol(default=None)
     client = Reference(client_id, 'Client.id')
 
+    client_category_id = IdCol(default=None)
+
+    #: the |clientcategory| used for price determination.
+    client_category = Reference(client_category_id, 'ClientCategory.id')
+
     #: a list of all items loaned in this loan
     loaned_items = ReferenceSet('id', 'LoanItem.loan_id')
 
@@ -280,12 +300,78 @@ class Loan(Domain):
         """
         self.validate_batch(batch, sellable=sellable)
         price = price or sellable.price
+        base_price = sellable.price
         return LoanItem(store=self.store,
                         quantity=quantity,
                         loan=self,
                         sellable=sellable,
                         batch=batch,
-                        price=price)
+                        price=price,
+                        base_price=base_price)
+
+    def get_available_discount_for_items(self, user=None, exclude_item=None):
+        """Get available discount for items in this loan
+
+        The available items discount is the total discount not used
+        by items in this sale. For instance, if we have 2 products
+        with a price of 100 and they can have 10% of discount, we have
+        20 of discount available. If one of those products price
+        is set to 98, that is, using 2 of it's discount, the available
+        discount is now 18.
+
+        :param user: passed to
+            :meth:`stoqlib.domain.sellable.Sellable.get_maximum_discount`
+            together with :obj:`.client_category` to check for the max
+            discount for sellables on this sale
+        :param exclude_item: a |saleitem| to exclude from the calculations.
+            Useful if you are trying to get some extra discount for that
+            item and you don't want it's discount to be considered here
+        :returns: the available discount
+        """
+        available_discount = currency(0)
+        used_discount = currency(0)
+
+        for item in self.get_items():
+            if item == exclude_item:
+                continue
+            # Don't put surcharges on the discount, or it can end up negative
+            if item.price > item.sellable.base_price:
+                continue
+
+            used_discount += item.sellable.base_price - item.price
+            max_discount = item.sellable.get_maximum_discount(
+                category=self.client_category, user=user) / 100
+            available_discount += item.base_price * max_discount
+
+        return available_discount - used_discount
+
+    def set_items_discount(self, discount):
+        """Apply discount on this sale's items
+
+        :param decimal.Decimal discount: the discount to be applied
+            as a percentage, e.g. 10.0, 22.5
+        """
+        new_total = currency(0)
+
+        item = None
+        candidate = None
+        for item in self.get_items():
+            item.set_discount(discount)
+            new_total += item.price * item.quantity
+            if item.quantity == 1:
+                candidate = item
+
+        # Since we apply the discount percentage above, items can generate a
+        # 3rd decimal place, that will be rounded to the 2nd, making the value
+        # differ. Find that difference and apply it to a sale item, preferable
+        # to one with a quantity of 1 since, for instance, applying +0,1 to an
+        # item with a quantity of 4 would make it's total +0,4 (+0,3 extra than
+        # we are trying to adjust here).
+        discount_value = (self.get_sale_base_subtotal() * discount) / 100
+        diff = new_total - self.get_sale_base_subtotal() + discount_value
+        if diff:
+            item = candidate or item
+            item.price -= diff
 
     #
     # Accessors
@@ -348,6 +434,18 @@ class Loan(Domain):
             if item.sale_quantity + item.return_quantity != item.quantity:
                 return False
         return True
+
+    def get_sale_base_subtotal(self):
+        """Get the base subtotal of items
+
+        Just a helper that, unlike :meth:`.get_sale_subtotal`, will
+        return the total based on item's base price.
+
+        :returns: the base subtotal
+        """
+        subtotal = self.get_items().sum(LoanItem.quantity *
+                                        LoanItem.base_price)
+        return currency(subtotal)
 
     def close(self):
         """Closes the loan. At this point, all the loan items have been
