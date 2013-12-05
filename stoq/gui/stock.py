@@ -39,7 +39,7 @@ from stoqlib.domain.views import ProductFullStockView
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
-from stoqlib.lib.translation import stoqlib_gettext as _
+from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
@@ -334,7 +334,9 @@ class StockApp(ShellApp):
         if not n_transfers:
             return None
 
-        msg = (_(u"You have %s incoming transfer(s)") % n_transfers)
+        msg = stoqlib_ngettext(_(u"You have %s incoming transfer"),
+                               _(u"You have %s incoming transfers"),
+                               n_transfers) % n_transfers
         info_bar = self.window.add_info_bar(gtk.MESSAGE_QUESTION, msg)
         button = info_bar.add_button(_(u"Receive"), gtk.RESPONSE_OK)
         button.connect('clicked', self._on_info_transfers__clicked)
@@ -349,7 +351,9 @@ class StockApp(ShellApp):
             n_transfers = TransferOrder.get_pending_transfers(self.store, branch).count()
 
             if n_transfers > 0:
-                msg = (_(u"You have %s incoming transfer(s)") % n_transfers)
+                msg = stoqlib_ngettext(_(u"You have %s incoming transfer"),
+                                       _(u"You have %s incoming transfers"),
+                                       n_transfers) % n_transfers
                 self.transfers_bar.set_message(msg)
             else:
                 self.transfers_bar.hide()
