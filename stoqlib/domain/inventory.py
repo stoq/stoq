@@ -37,7 +37,7 @@ from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.person import LoginUser, Person
+from stoqlib.domain.person import LoginUser, Person, Branch
 from stoqlib.domain.product import (StockTransactionHistory, StorableBatch, Product,
                                     Storable, ProductStockItem)
 from stoqlib.domain.sellable import Sellable
@@ -530,6 +530,8 @@ class InventoryItemsView(Viewable):
     #: The |StorableBatch|
     batch = StorableBatch
 
+    branch = Branch
+
     # InventoryItem
     id = InventoryItem.id
     product_id = InventoryItem.product_id
@@ -559,15 +561,13 @@ class InventoryItemsView(Viewable):
 
     tables = [
         InventoryItem,
-        Join(Inventory,
-             InventoryItem.inventory_id == Inventory.id),
+        Join(Inventory, InventoryItem.inventory_id == Inventory.id),
         Join(Product, Product.id == InventoryItem.product_id),
         Join(Sellable, Sellable.id == Product.sellable_id),
         LeftJoin(StorableBatch, InventoryItem.batch_id == StorableBatch.id),
-        Join(LoginUser,
-             Inventory.responsible_id == LoginUser.id),
-        Join(Person,
-             LoginUser.person_id == Person.id),
+        Join(LoginUser, Inventory.responsible_id == LoginUser.id),
+        Join(Person, LoginUser.person_id == Person.id),
+        Join(Branch, Inventory.branch_id == Branch.id),
     ]
 
     @classmethod

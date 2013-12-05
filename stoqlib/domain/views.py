@@ -654,6 +654,8 @@ class StockDecreaseView(Viewable):
 class StockDecreaseItemsView(Viewable):
     """Stores information about all stock decrease items
     """
+    branch = Branch
+
     id = StockDecreaseItem.id
     quantity = StockDecreaseItem.quantity
     sellable = StockDecreaseItem.sellable_id
@@ -668,16 +670,12 @@ class StockDecreaseItemsView(Viewable):
     tables = [
         StockDecreaseItem,
         LeftJoin(StorableBatch, StorableBatch.id == StockDecreaseItem.batch_id),
-        Join(StockDecrease,
-             StockDecreaseItem.stock_decrease_id == StockDecrease.id),
-        LeftJoin(Sellable,
-                 StockDecreaseItem.sellable_id == Sellable.id),
-        LeftJoin(SellableUnit,
-                 Sellable.unit_id == SellableUnit.id),
-        Join(Employee,
-             StockDecrease.removed_by_id == Employee.id),
-        Join(Person,
-             Employee.person_id == Person.id),
+        Join(StockDecrease, StockDecreaseItem.stock_decrease_id == StockDecrease.id),
+        LeftJoin(Sellable, StockDecreaseItem.sellable_id == Sellable.id),
+        LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
+        Join(Employee, StockDecrease.removed_by_id == Employee.id),
+        Join(Person, Employee.person_id == Person.id),
+        Join(Branch, StockDecrease.branch_id == Branch.id),
     ]
 
 
@@ -815,6 +813,8 @@ class SaleItemsView(Viewable):
     diferent sales.
     """
 
+    branch = Branch
+
     id = SaleItem.id
     sellable_id = Sellable.id
     code = Sellable.code
@@ -832,10 +832,11 @@ class SaleItemsView(Viewable):
         SaleItem,
         LeftJoin(StorableBatch, StorableBatch.id == SaleItem.batch_id),
         LeftJoin(Sellable, Sellable.id == SaleItem.sellable_id),
-        LeftJoin(Sale, SaleItem.sale_id == Sale.id),
+        Join(Sale, SaleItem.sale_id == Sale.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(Client, Sale.client_id == Client.id),
         LeftJoin(Person, Client.person_id == Person.id),
+        Join(Branch, Sale.branch_id == Branch.id),
     ]
 
     clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
@@ -862,6 +863,8 @@ class ReceivingItemView(Viewable):
     :cvar supplier_name: the product supplier name
     """
 
+    branch = Branch
+
     id = ReceivingOrderItem.id
     order_identifier = ReceivingOrder.identifier
     purchase_identifier = PurchaseOrder.identifier
@@ -879,13 +882,14 @@ class ReceivingItemView(Viewable):
     tables = [
         ReceivingOrderItem,
         LeftJoin(StorableBatch, StorableBatch.id == ReceivingOrderItem.batch_id),
-        LeftJoin(ReceivingOrder,
-                 ReceivingOrderItem.receiving_order_id == ReceivingOrder.id),
-        LeftJoin(PurchaseOrder, ReceivingOrder.purchase_id == PurchaseOrder.id),
+        Join(ReceivingOrder,
+             ReceivingOrderItem.receiving_order_id == ReceivingOrder.id),
+        Join(PurchaseOrder, ReceivingOrder.purchase_id == PurchaseOrder.id),
         LeftJoin(Sellable, ReceivingOrderItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(Supplier, ReceivingOrder.supplier_id == Supplier.id),
         LeftJoin(Person, Supplier.person_id == Person.id),
+        Join(Branch, PurchaseOrder.branch_id == Branch.id),
     ]
 
 
@@ -1031,6 +1035,8 @@ class LoanView(Viewable):
 
 
 class LoanItemView(Viewable):
+    branch = Branch
+
     id = LoanItem.id
     quantity = LoanItem.quantity
     sale_quantity = LoanItem.sale_quantity
@@ -1057,7 +1063,8 @@ class LoanItemView(Viewable):
     tables = [
         LoanItem,
         LeftJoin(StorableBatch, StorableBatch.id == LoanItem.batch_id),
-        LeftJoin(Loan, LoanItem.loan_id == Loan.id),
+        Join(Loan, LoanItem.loan_id == Loan.id),
+        Join(Branch, Loan.branch_id == Branch.id),
         LeftJoin(Sellable, LoanItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),

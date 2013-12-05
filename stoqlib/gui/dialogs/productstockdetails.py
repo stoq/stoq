@@ -34,6 +34,7 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import InventoryItemsView
+from stoqlib.domain.person import Branch
 from stoqlib.domain.product import StorableBatchView
 from stoqlib.domain.sale import ReturnedSaleItemsView
 from stoqlib.domain.sellable import Sellable
@@ -103,26 +104,39 @@ class ProductStockHistoryDialog(BaseEditor):
         self.inventory_list.set_columns(self._get_inventory_columns())
         self.returned_list.set_columns(self._get_returned_columns())
 
+        current_branch = api.get_current_branch(self.store)
         items = self.store.find(ReceivingItemView, sellable_id=self.model.id)
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            items = items.find(Branch.id == current_branch.id)
         self.receiving_list.add_list(list(items))
 
         items = self.store.find(SaleItemsView, sellable_id=self.model.id)
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            items = items.find(Branch.id == current_branch.id)
         self.sales_list.add_list(list(items))
 
         items = self.store.find(TransferOrderItem, sellable_id=self.model.id)
         self.transfer_list.add_list(list(items))
 
         items = self.store.find(LoanItemView, sellable_id=self.model.id)
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            items = items.find(Branch.id == current_branch.id)
         self.loan_list.add_list(list(items))
 
         items = self.store.find(StockDecreaseItemsView, sellable=self.model.id)
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            items = items.find(Branch.id == current_branch.id)
         self.decrease_list.add_list(list(items))
 
-        self.inventory_list.add_list(
-            InventoryItemsView.find_by_product(self.store, self.model.product))
+        items = InventoryItemsView.find_by_product(self.store, self.model.product)
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            items = items.find(Branch.id == current_branch.id)
+        self.inventory_list.add_list(items)
 
-        self.returned_list.add_list(
-            self.store.find(ReturnedSaleItemsView, sellable_id=self.model.id))
+        items = self.store.find(ReturnedSaleItemsView, sellable_id=self.model.id)
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            items = items.find(Branch.id == current_branch.id)
+        self.returned_list.add_list(items)
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
