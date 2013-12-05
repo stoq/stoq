@@ -315,3 +315,8 @@ class TransferOrderView(Viewable):
         LeftJoin(PersonDest, BranchDest.person_id == PersonDest.id),
         LeftJoin(CompanyDest, CompanyDest.person_id == PersonDest.id),
     ]
+
+    @property
+    def branch(self):
+        # We need this property for the acronym to appear in the identifier
+        return self.store.get(Branch, self.source_branch_id)

@@ -43,39 +43,66 @@ class TestTransferOrderSearch(GUITest):
 
     def _create_domain(self):
         self.clean_domain([TransferOrderItem, TransferOrder])
+        responsible = self.create_employee()
 
-        source_branch = Branch.get_active_remote_branches(self.store)[0]
-        dest_branch = api.get_current_branch(self.store)
+        other_branch = Branch.get_active_remote_branches(self.store)[0]
+        current_branch = api.get_current_branch(self.store)
 
-        # Created order, did not send it yet.
-        order = self.create_transfer_order(source_branch=source_branch,
-                                           dest_branch=dest_branch)
+        # One transfer that we did not receive yet
+        order = self.create_transfer_order(source_branch=other_branch,
+                                           dest_branch=current_branch)
         self.create_transfer_order_item(order=order)
         order.identifier = 75168
         order.open_date = localdatetime(2012, 1, 1)
+        order.send()
 
-        # Created and sent the order.
-        order = self.create_transfer_order(source_branch=source_branch,
-                                           dest_branch=dest_branch)
+        # One that we have already received
+        order = self.create_transfer_order(source_branch=other_branch,
+                                           dest_branch=current_branch)
         self.create_transfer_order_item(order=order)
         order.identifier = 56832
         order.open_date = localdatetime(2012, 2, 2)
         order.send()
+        order.receive(responsible)
+        order.receival_date = localdatetime(2012, 2, 2)
 
-        # Order arrived at the destination.
-        order = self.create_transfer_order(source_branch=source_branch,
-                                           dest_branch=dest_branch)
+        # One that we have sent but is not received yet
+        order = self.create_transfer_order(source_branch=current_branch,
+                                           dest_branch=other_branch)
         self.create_transfer_order_item(order=order)
         order.identifier = 20486
         order.open_date = localdatetime(2012, 3, 3)
         order.send()
-        order.receive(self.create_employee())
-        order.receival_date = localdatetime(2012, 3, 4)
+
+        # And another one that we have sent and is recived
+        order = self.create_transfer_order(source_branch=current_branch,
+                                           dest_branch=other_branch)
+        self.create_transfer_order_item(order=order)
+        order.identifier = 20489
+        order.open_date = localdatetime(2012, 3, 4)
+        order.send()
+
+        order.receive(responsible)
+        order.receival_date = localdatetime(2012, 3, 5)
 
     def test_search(self):
         self._create_domain()
         search = self._show_search()
 
+        # Pending searches
+        search.status_filter.select('pending')
+        self.check_search(search, 'transfer-pending')
+
+        # Sent transfers
+        search.status_filter.select('sent')
+        self.check_search(search, 'transfer-sent')
+
+        # Received transfers
+        search.status_filter.select('received')
+        self.check_search(search, 'transfer-received')
+
+        # Show all transfers
+        search.status_filter.select(None)
         self.check_search(search, 'transfer-no-filter')
 
         search.set_searchbar_search_string('mar')
@@ -92,6 +119,7 @@ class TestTransferOrderSearch(GUITest):
         search.date_filter.start_date.update(localdate(2012, 1, 10).date())
         search.date_filter.end_date.update(localdate(2012, 2, 20).date())
         search.search.refresh()
+        search.status_filter.select(None)
         self.check_search(search, 'transfer-date-interval-filter')
 
     @mock.patch('stoqlib.gui.search.transfersearch.print_report')

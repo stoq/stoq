@@ -29,7 +29,9 @@ from decimal import Decimal
 
 import gtk
 from kiwi.ui.objectlist import Column
+from storm.expr import And, Or
 
+from stoqlib.api import api
 from stoqlib.domain.transfer import TransferOrder, TransferOrderView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
@@ -83,9 +85,6 @@ class TransferOrderSearch(SearchDialog):
         self.set_details_button_sensitive(has_one_selected)
         self.set_print_button_sensitive(has_one_selected)
 
-    def _has_rows(self, results, obj):
-        pass
-
     def create_filters(self):
         self.set_text_field_columns(['source_branch_name',
                                      'destination_branch_name',
@@ -96,17 +95,36 @@ class TransferOrderSearch(SearchDialog):
         self.add_filter(self.date_filter, columns=['open_date',
                                                    'receival_date'])
 
-        # Branch
-        self.branch_filter = self.create_branch_filter(_('To branch:'))
-        self.add_filter(self.branch_filter,
-                        columns=['destination_branch_id'])
-
         # Status
-        statuses = self._get_status_values()
-        self.status_filter = ComboSearchFilter(_('With status:'), statuses)
-        self.status_filter.select(None)
-        self.add_filter(self.status_filter, columns=['status'],
-                        position=SearchFilterPosition.TOP)
+        self.status_filter = ComboSearchFilter(_('With status:'),
+                                               self._get_status_options())
+        self.status_filter.select('pending')
+        executer = self.search.get_query_executer()
+        executer.add_filter_query_callback(self.status_filter,
+                                           self._get_status_query)
+        self.add_filter(self.status_filter, position=SearchFilterPosition.TOP)
+
+    def _get_status_options(self):
+        return [
+            (_('All transfers'), None),
+            (_('Pending receive'), 'pending'),
+            (_('Received'), 'received'),
+            (_('Sent'), 'sent'),
+        ]
+
+    def _get_status_query(self, state):
+        current_branch = api.get_current_branch(self.store)
+        if state.value == 'pending':
+            return And(TransferOrder.status == TransferOrder.STATUS_SENT,
+                       TransferOrder.destination_branch_id == current_branch.id)
+        elif state.value == 'received':
+            return And(TransferOrder.status == TransferOrder.STATUS_RECEIVED,
+                       TransferOrder.destination_branch_id == current_branch.id)
+        elif state.value == 'sent':
+            return And(TransferOrder.source_branch_id == current_branch.id)
+        else:
+            return Or(TransferOrder.source_branch_id == current_branch.id,
+                      TransferOrder.destination_branch_id == current_branch.id)
 
     def get_columns(self):
         return [IdentifierColumn('identifier'),
