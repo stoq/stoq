@@ -448,7 +448,7 @@ class WorkOrderHistorySlave(BaseEditorSlave):
             Column('user_name', _(u"Who"), data_type=str, expand=True,
                    ellipsize=pango.ELLIPSIZE_END),
             Column('what', _(u"What"), data_type=str, expand=True),
-            Column('old_value', _(u"Old value"), data_type=str),
+            Column('old_value', _(u"Old value"), data_type=str, visible=False),
             Column('new_value', _(u"New value"), data_type=str),
             Column('notes', _(u"Notes"), data_type=str,
                    format_func=self._format_notes,
