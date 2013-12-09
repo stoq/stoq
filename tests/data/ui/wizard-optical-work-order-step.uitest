@@ -19,7 +19,7 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                   ProxyComboBox(lens_type):
                     item: 'Contact'
                     item: 'Ophtalmic', selected
-                  GtkLabel(label1): 'Owner:'
+                  GtkLabel(label1): 'Description:'
                   ProxyEntry(patient): 'Patient'
                   GtkLabel(label4): 'Prescription date:'
                   ProxyDateEntry(prescription_date): None

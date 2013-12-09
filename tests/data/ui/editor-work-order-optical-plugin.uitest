@@ -141,7 +141,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                   ProxyComboBox(lens_type):
                     item: 'Contact'
                     item: 'Ophtalmic', selected
-                  GtkLabel(label1): 'Owner:'
+                  GtkLabel(label1): 'Description:'
                   ProxyEntry(patient): '', mandatory
                   GtkLabel(label4): 'Prescription date:'
                   ProxyDateEntry(prescription_date): None
