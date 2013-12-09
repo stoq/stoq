@@ -59,7 +59,7 @@ _ = stoqlib_gettext
 class WorkOrderEditor(BaseEditor):
     """An editor for working with |workorder| objects"""
 
-    size = (800, 500)
+    size = (800, -1)
     gladefile = 'WorkOrderEditor'
     model_type = WorkOrder
     model_name = _(u'Work order')
