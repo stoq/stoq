@@ -40,7 +40,7 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   item: '', selected
           GtkHSeparator(step.hseparator1, fill=True):
           GtkHButtonBox(step.hbuttonbox1):
-            GtkButton(step.notes_button, pack-end): 'Notes...'
+            GtkButton(step.notes_button, pack-end): 'Observations...'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
