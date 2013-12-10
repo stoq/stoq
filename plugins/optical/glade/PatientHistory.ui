@@ -1362,7 +1362,7 @@ in the eyes recently?</property>
             <child type="tab">
               <object class="GtkLabel" id="label36">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes" comments="pt_BR: Adaptation Test">Adaptation Test</property>
+                <property name="label" translatable="yes" comments="pt_BR: Teste de Adaptação">Adaptation Test</property>
               </object>
               <packing>
                 <property name="position">1</property>

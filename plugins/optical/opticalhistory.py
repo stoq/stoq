@@ -243,6 +243,10 @@ class OpticalPatientDetails(BaseEditor):
         ('visual_acuity_holder', OpticalPatientVisualAcuityListSlave),
     ]
 
+    def __init__(self, store, model, visual_mode=False):
+        BaseEditor.__init__(self, store, model, visual_mode=False)
+        self.set_description(self.model.person.name)
+
     def setup_slaves(self):
         self._slaves = {}
         for holder, klass in self.list_slaves:

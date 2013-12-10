@@ -5043,7 +5043,7 @@ msgstr "Tem algum poblema de saúde?"
 #. pt_BR: Adaptation Test
 #: ../plugins/optical/glade/PatientHistory.ui.h:61
 msgid "Adaptation Test"
-msgstr "Adaptation Test"
+msgstr "Teste de adaptação"
 
 #. pt_BR: Qual sua profissão?
 #: ../plugins/optical/glade/PatientHistory.ui.h:63
