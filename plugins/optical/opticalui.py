@@ -29,7 +29,8 @@ from storm.expr import LeftJoin
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
-from stoqlib.domain.product import Product
+from stoqlib.domain.product import Product, ProductManufacturer
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -37,7 +38,8 @@ from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 EditorCreateEvent, RunDialogEvent,
-                                PrintReportEvent, SearchDialogSetupSearchEvent)
+                                PrintReportEvent, SearchDialogSetupSearchEvent,
+                                ApplicationSetupSearchEvent)
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchextension import SearchExtension
@@ -47,6 +49,7 @@ from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SaleOrderReport
+from stoq.gui.services import ServicesApp
 
 from .medicssearch import OpticalMedicSearch
 from .opticalhistory import OpticalPatientDetails
@@ -74,6 +77,23 @@ class ProductSearchExtention(SearchExtension):
         ]
 
 
+class ServicesSearchExtention(SearchExtension):
+    spec_attributes = dict(
+        manufacturer_name=ProductManufacturer.name
+    )
+    spec_joins = [
+        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(ProductManufacturer,
+                 Product.manufacturer_id == ProductManufacturer.id)
+    ]
+
+    def get_columns(self):
+        return [
+            SearchColumn('manufacturer_name', title=_('Manufacturer'), data_type=str,
+                         visible=False)
+        ]
+
+
 class OpticalUI(object):
     def __init__(self):
         self._ui = None
@@ -84,6 +104,7 @@ class OpticalUI(object):
         RunDialogEvent.connect(self._on_RunDialogEvent)
         PrintReportEvent.connect(self._on_PrintReportEvent)
         SearchDialogSetupSearchEvent.connect(self._on_SearchDialogSetupSearchEvent)
+        ApplicationSetupSearchEvent.connect(self._on_ApplicationSetupSearchEvent)
 
         add_bindings([
             ('plugin.optical.pre_sale', ''),
@@ -199,6 +220,11 @@ class OpticalUI(object):
     def _on_SearchDialogSetupSearchEvent(self, dialog):
         if isinstance(dialog, ProductSearch):
             dialog.add_extension(ProductSearchExtention())
+
+    def _on_ApplicationSetupSearchEvent(self, app):
+        if isinstance(app, ServicesApp):
+            extention = ServicesSearchExtention()
+            extention.attach(app)
 
     #
     # Callbacks

@@ -40,6 +40,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.sale import SaleOrderReport
 from stoq.gui.test.baseguitest import BaseGUITest
 from stoq.gui.sales import SalesApp
+from stoq.gui.services import ServicesApp
 
 from ..medicssearch import OpticalMedicSearch
 from ..opticalhistory import OpticalPatientDetails
@@ -167,6 +168,18 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         search = ProductSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'search-optical-product-search')
+
+    def test_sales_app(self):
+        product = self.create_product()
+        product.manufacturer = self.create_product_manufacturer(u'Empresa Tal')
+        workorder = self.create_workorder()
+        workorder.identifier = 99412
+        workorder.open_date = localdate(2013, 12, 7)
+        workorder.sellable = product.sellable
+
+        app = self.create_app(ServicesApp, u'services')
+        app.search.refresh()
+        self.check_app(app, u'services-optical-plugin')
 
     @mock.patch('plugins.optical.opticalui.print_report')
     def test_print_report_event(self, print_report):

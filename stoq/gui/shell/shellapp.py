@@ -32,6 +32,7 @@ from stoqlib.domain.inventory import Inventory
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
+from stoqlib.gui.events import ApplicationSetupSearchEvent
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.decorators import cached_function
@@ -98,7 +99,9 @@ class ShellApp(GladeDelegate):
     def _create_search(self):
         if self.search_spec is None:
             return
-        self.search = SearchSlave(self.get_columns(),
+        self.columns = self.get_columns()
+        ApplicationSetupSearchEvent.emit(self)
+        self.search = SearchSlave(self.columns,
                                   store=self.store,
                                   restore_name=self.__class__.__name__,
                                   search_spec=self.search_spec)
@@ -236,6 +239,15 @@ class ShellApp(GladeDelegate):
 
     def add_tool_menu_actions(self, actions):
         return self.window.add_tool_menu_actions(actions=actions)
+
+    def add_columns(self, columns):
+        """Add some columns to the default ones.
+
+        Note that this method must be called during the setup of this search,
+        which right now is only possible for those who capture the
+        `<stoqlib.gui.events.ApplicationSetupSearchEvent>`
+        """
+        self.columns.extend(columns)
 
     def set_help_section(self, label, section):
         self.window.set_help_section(label=label,

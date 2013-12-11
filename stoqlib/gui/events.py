@@ -51,6 +51,13 @@ class StopApplicationEvent(Event):
     """
 
 
+class ApplicationSetupSearchEvent(Event):
+    """Emitted when a search slave is created.
+
+    :param dialog: The application that is being prepared for search.
+    """
+
+
 #
 # Dialog events
 #
