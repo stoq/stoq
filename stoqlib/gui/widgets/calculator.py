@@ -184,7 +184,7 @@ class CalculatorPopup(gtk.Window):
     def _update_ui(self):
         self._new_value = self._data_type(self._popped_entry.get_text())
         self._entry.set_text('')
-        self._entry.set_tooltip_text(self._get_examples())
+        self._entry.set_tooltip_text(_("Use absolute or percentage (%) value"))
         self._preview_new_value()
         self._main_label.set_text(self._get_main_label())
 
@@ -197,24 +197,6 @@ class CalculatorPopup(gtk.Window):
                     _("Subtraction"))
         else:
             raise AssertionError
-
-    def _get_examples(self):
-        examples = [_("Examples of supported operations:")]
-
-        if self._mode == self.MODE_ADD:
-            examples.extend([
-                _("%s - Will increment value by %s") % ('75.4', '75.4'),
-                _("%s - Will increment value by %s") % ('2.5%', '2.5%'),
-                _("%s - Will increment value by %s") % ('.25%', '0.25%'),
-            ])
-        elif self._mode == self.MODE_SUB:
-            examples.extend([
-                _("%s - Will decrement value by %s") % ('75.4', '75.4'),
-                _("%s - Will decrement value by %s") % ('2.5%', '2.5%'),
-                _("%s - Will decrement value by %s") % ('.25%', '0.25%'),
-            ])
-
-        return '  \n'.join(examples)
 
     def _set_warning(self, warning):
         if warning is None:
@@ -357,7 +339,8 @@ class CalculatorPopup(gtk.Window):
         try:
             value = self._get_new_value()
         except ValueError as err:
-            return ValidationError('%s\n%s' % (err, self._get_examples()))
+            return ValidationError('%s\n%s' % (err,
+                                   _("Use absolute or percentage (%) value")))
 
         if value:
             warning = self._popped_entry.emit('validate', value)

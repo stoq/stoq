@@ -63,10 +63,7 @@ class DiscountEditor(BaseEditor):
     #
 
     def setup_proxies(self):
-        self.discount.set_tooltip_text(
-            _("Apply a discount on the sale. E.g. '10%' will apply 10% of "
-              "discount on every item, while '10' will apply the percentage "
-              "it represents on the sale to all products."))
+        self.discount.set_tooltip_text(_("Use absolute or percentage (%) value"))
 
         # We need to put discount on a proxy or else it won't be validated
         # on it's validate callback
