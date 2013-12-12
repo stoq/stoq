@@ -837,6 +837,9 @@ class Sale(Domain):
         if self.client:
             method_values = {}
             for p in self.payments:
+                # We should ignore already paid payments
+                if p.is_paid():
+                    continue
                 method_values.setdefault(p.method, 0)
                 method_values[p.method] += p.value
             for method, value in method_values.items():

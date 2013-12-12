@@ -37,7 +37,7 @@ from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.product import Storable
 from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
@@ -310,6 +310,40 @@ class TestSale(DomainTest):
             self.assertEquals(payment.status, Payment.STATUS_PENDING)
             entry = self.store.find(TillEntry, payment=payment).one()
             self.assertEquals(entry.value, payment.value)
+
+    def test_confirm_paid_payments(self):
+        client = self.create_client()
+        sale = self.create_sale()
+        sale.client = client
+        self.add_product(sale)
+        sale.order()
+        payment = self.add_payments(sale, method_type=u'credit')[0]
+
+        # The client does not have enought credit
+        with self.assertRaises(SellError):
+            sale.can_confirm()
+
+        # But if we confirm the payment (ie, mark as paid), then it should be
+        # possible to confirm the sale now
+        payment.set_pending()
+        payment.pay()
+        self.assertTrue(sale.can_confirm())
+
+        # If we change it back to not paid, than it should fail again
+        entry = PaymentChangeHistory(self.store)
+        payment.set_not_paid(entry)
+        with self.assertRaises(SellError):
+            sale.can_confirm()
+
+        # Now lets create some credit for the client. And he should be able to
+        # confirm again
+        method = PaymentMethod.get_by_name(self.store, u'credit')
+        group = self.create_payment_group(payer=client.person)
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=10,
+                                      method=method, group=group)
+        payment.set_pending()
+        payment.pay()
+        self.assertTrue(sale.can_confirm())
 
     def test_confirm_client(self):
         sale = self.create_sale()
