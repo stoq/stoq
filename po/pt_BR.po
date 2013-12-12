@@ -9252,7 +9252,7 @@ msgstr "Insolvente"
 #: ../stoqlib/domain/person.py:1033
 #, python-format
 msgid "The available credit for this client (%s) is not enough."
-msgstr "O crédito dispoível para este cliente (%s) não é suficiente."
+msgstr "O crédito disponível para este cliente (%s) não é suficiente."
 
 #: ../stoqlib/domain/person.py:1046
 msgid "It is not possible to sell for clients with late payments."
