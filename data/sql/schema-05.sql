@@ -1519,6 +1519,7 @@ CREATE TABLE stock_decrease (
     responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
     removed_by_id uuid REFERENCES employee(id) ON UPDATE CASCADE,
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
+    person_id uuid REFERENCES person(id) ON UPDATE CASCADE,
     cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE,
     group_id uuid REFERENCES payment_group(id) ON UPDATE CASCADE,
     cost_center_id uuid REFERENCES cost_center(id) ON UPDATE CASCADE,

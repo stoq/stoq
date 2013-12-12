@@ -460,6 +460,20 @@ class Person(Domain):
             return format_phone_number(self.mobile_number)
         return u""
 
+    @classmethod
+    def get_items(cls, store, query):
+        """
+        Return a list of items (name, id)
+
+        :param store: a store
+        :returns: the items
+        """
+        join = LeftJoin(Company, And(Company.person_id == Person.id, query))
+        items = store.using(Person, join).find((Coalesce(Concat(Company.fancy_name, u" (",
+                                               Person.name, u")"), Person.name), cls.id))
+
+        return locale_sorted(items, key=operator.itemgetter(0))
+
     #
     # Public API
     #

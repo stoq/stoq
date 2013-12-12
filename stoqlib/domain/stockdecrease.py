@@ -166,6 +166,11 @@ class StockDecrease(Domain):
     #: branch where the sale was done
     branch = Reference(branch_id, 'Branch.id')
 
+    #: person who is receiving
+    person_id = IdCol()
+
+    person = Reference(person_id, 'Person.id')
+
     cfop_id = IdCol()
 
     cfop = Reference(cfop_id, 'CfopData.id')

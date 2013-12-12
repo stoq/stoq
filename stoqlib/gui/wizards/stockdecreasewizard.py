@@ -36,7 +36,7 @@ from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.person import Branch, Employee
+from stoqlib.domain.person import Branch, Employee, Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
@@ -75,8 +75,8 @@ class StartStockDecreaseStep(WizardEditorStep):
                      'reason',
                      'removed_by',
                      'cfop',
-                     'cost_center'
-                     )
+                     'cost_center',
+                     'person')
 
     def _fill_employee_combo(self):
         employess = self.store.find(Employee)
@@ -105,12 +105,18 @@ class StartStockDecreaseStep(WizardEditorStep):
         self.cost_center.set_visible(cost_centers_exists)
         self.cost_center_lbl.set_visible(cost_centers_exists)
 
+    def _fill_person_combo(self):
+        items = Person.get_items(self.store,
+                                 Person.branch != api.get_current_branch(self.store))
+        self.person.prefill(items)
+
     def _setup_widgets(self):
         self.confirm_date.set_sensitive(False)
         self._fill_employee_combo()
         self._fill_branch_combo()
         self._fill_cfop_combo()
         self._fill_cost_center_combo()
+        self._fill_person_combo()
 
         if not sysparam.get_bool('CREATE_PAYMENTS_ON_STOCK_DECREASE'):
             self.create_payments.hide()
@@ -122,7 +128,8 @@ class StartStockDecreaseStep(WizardEditorStep):
     def post_init(self):
         self.confirm_date.grab_focus()
         self.table1.set_focus_chain([self.confirm_date, self.branch,
-                                     self.removed_by, self.reason, self.cfop])
+                                     self.removed_by, self.reason, self.cfop,
+                                     self.person])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 

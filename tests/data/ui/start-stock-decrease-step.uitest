@@ -17,8 +17,22 @@ GtkDialog(PluggableWizard): title='Manual Stock Decrease', hidden
           ProxyComboEntry(step.branch):
             item: 'Moda Stoq', selected
             item: 'Stoq Elite Fashion'
-          GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
-          ProxyComboBox(step.cost_center): hidden
+          GtkLabel(step.label6): 'Send To:'
+          ProxyComboEntry(step.person):
+            item: 'Administrator'
+            item: 'Alessandra Almeida Itaber\xc3\xa1'
+            item: 'Cia de Roupas S\xc3\xa3o Carlos (Cia de Roupas S\xc3\xa3o Carlos)'
+            item: 'Cleusa Blanc Ferreira Norbiato'
+            item: 'Deivis Alexandre Junior'
+            item: 'Franciso Elisio de Lima Junior'
+            item: 'Jos\xc3\xa9 Carlos de Carvalho (Jos\xc3\xa9 Carlos de Carvalho)'
+            item: 'Luis Sergio da Silva Marin'
+            item: 'Maria Aparecida Ardana'
+            item: 'Osvaldo Denadai Marin'
+            item: 'Stoq Elite Fashion (Stoq Com\xc3\xa9rcio Ltda ME)'
+            item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+            item: 'Vitalina Claudino'
+            item: 'john'
           GtkLabel(step.label3): 'Removed By:'
           ProxyComboEntry(step.removed_by):
             item: 'Administrator', selected
@@ -26,6 +40,8 @@ GtkDialog(PluggableWizard): title='Manual Stock Decrease', hidden
             item: 'Deivis Alexandre Junior'
             item: 'Maria Aparecida Ardana'
             item: 'Osvaldo Denadai Marin'
+          GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
+          ProxyComboBox(step.cost_center): hidden
           ProxyCheckButton(step.create_payments): 'Create payments', hidden
           GtkLabel(step.label2): 'Reason:'
           GtkScrolledWindow(step.scrolledwindow1):
