@@ -41,7 +41,7 @@ from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.formatters import get_price_format_str
-from stoqlib.lib.message import yesno, info
+from stoqlib.lib.message import yesno, info, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SalesReport
@@ -288,6 +288,13 @@ def return_sale(parent, sale, store):
     if ECFIsLastSaleEvent.emit(sale):
         info(_("That is last sale in ECF. Return using the menu "
                "ECF - Cancel Last Document"))
+        return
+
+    need_document = not sysparam.get_bool('ACCEPT_SALE_RETURN_WITHOUT_DOCUMENT')
+    if need_document and not sale.get_client_document():
+        warning(_('It is not possible to accept a returned sale from clients '
+                  'without document. Please edit the client document or change '
+                  'the sale client'))
         return
 
     if sale.can_return():

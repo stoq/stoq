@@ -57,6 +57,14 @@ class TestSale(DomainTest):
         sale = Sale(store=self.store, branch=self.create_branch())
         self.assertTrue(sysparam.compare_object('DEFAULT_SALES_CFOP', sale.cfop))
 
+    def test_get_client_document(self):
+        sale = self.create_sale()
+        self.assertEquals(sale.get_client_document(), None)
+
+        sale.client = self.create_client()
+        sale.client.person.individual.cpf = u'444'
+        self.assertEquals(sale.get_client_document(), u'444')
+
     def test_sale_payments_ordered(self):
         sale = self.create_sale()
         self.add_payments(sale, method_type=u'check', installments=10)

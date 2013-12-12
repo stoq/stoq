@@ -358,6 +358,14 @@ _details = [
         }),
 
     ParameterDetails(
+        u'ACCEPT_SALE_RETURN_WITHOUT_DOCUMENT',
+        _(u'Sales'),
+        _(u'Allow sale return from clients without document'),
+        _(u'If this parameter is set it will not be possible to accept '
+          u'returned sales from clients without document.'),
+        bool, initial=True),
+
+    ParameterDetails(
         u'MAX_SALE_DISCOUNT',
         _(u'Sales'),
         _(u'Max discount for sales'),

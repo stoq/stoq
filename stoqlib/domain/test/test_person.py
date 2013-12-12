@@ -196,6 +196,14 @@ class TestPerson(DomainTest):
             self.create_address(person=person)
         self.assertEquals(person.get_total_addresses(), 3)
 
+    def test_get_cnpj_or_cpf(self):
+        person = self.create_person()
+        Individual(store=self.store, person=person, cpf=u'123')
+        self.assertEquals(person.get_cnpj_or_cpf(), u'123')
+
+        Company(store=self.store, person=person, cnpj=u'456')
+        self.assertEquals(person.get_cnpj_or_cpf(), u'456')
+
     def test_get_by_document(self):
         person = self.create_person()
         self.assertIsNone(person.get_by_document(self.store,

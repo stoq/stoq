@@ -1304,6 +1304,16 @@ class Sale(Domain):
             return _(u'Not Specified')
         return self.client.get_name()
 
+    def get_client_document(self):
+        """Returns the client document for this sale
+
+        This could be either its cnpj or cpf.
+        """
+        if not self.client_id:
+            return None
+
+        return self.client.person.get_cnpj_or_cpf()
+
     # FIXME: move over to client or person
     def get_client_role(self):
         """Fetches the client role

@@ -478,6 +478,17 @@ class Person(Domain):
     # Public API
     #
 
+    def get_cnpj_or_cpf(self):
+        """Returns this person cnpf or cpf
+
+        If the person is a company, return its cnpj, otherwise, return its
+        cpf.
+        """
+        if self.company:
+            return self.company.cnpj
+        elif self.individual:
+            return self.individual.cpf
+
     def has_individual_or_company_facets(self):
         return self.individual or self.company
 
