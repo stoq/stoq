@@ -49,7 +49,8 @@ from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
-                                           SalesByPaymentMethodSearch)
+                                           SalesByPaymentMethodSearch,
+                                           ReservedProductSearch)
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -175,6 +176,9 @@ class SalesApp(ShellApp):
              group.get("search_loan_items")),
             ("ReturnedSaleSearch", None, _("Returned sales..."),
              group.get("returned_sales")),
+            ("SearchReservedProduct", None, _("Reserved products..."),
+             group.get("search_reserved_product"),
+             _("Search for Reserved Products")),
 
             # Sale
             ("SaleMenu", None, _("Sale")),
@@ -514,6 +518,9 @@ class SalesApp(ShellApp):
 
     def on_ReturnedSaleSearch__activate(self, action):
         self.run_dialog(ReturnedSaleSearch, self.store)
+
+    def on_SearchReservedProduct__activate(self, action):
+        self.run_dialog(ReservedProductSearch, self.store)
 
     # Search
 

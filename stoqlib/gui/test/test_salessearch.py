@@ -27,11 +27,13 @@ from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.salesearch import (SaleSearch,
                                            SaleWithToolbarSearch,
                                            SalesByPaymentMethodSearch,
-                                           SoldItemsByBranchSearch)
+                                           SoldItemsByBranchSearch,
+                                           ReservedProductSearch)
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 
@@ -111,3 +113,51 @@ class TestSoldItemsByBranchSearch(GUITest):
         search.date_filter.start_date.update(localdate(2012, 2, 2).date())
         search.search.refresh()
         self.check_search(search, 'product-sold-date-filter')
+
+
+class TestReservedProductsSearch(GUITest):
+    def _create_domain(self):
+        branch = get_current_branch(self.store)
+        sale = self.create_sale(branch=branch)
+        sale_item = self.create_sale_item(sale=sale)
+        sale_item.quantity = 66
+        sale_item.quantity_decreased = 23
+        sale_item.sellable.description = u'Schrubbery'
+        sale_item.sale.identifier = 42
+        sale.status = sale.STATUS_ORDERED
+        sale.open_date = localdate(2013, 12, 11)
+
+        sale2 = self.create_sale(branch=branch)
+        sale_item2 = self.create_sale_item(sale=sale2)
+        sale_item2.quantity = 29
+        sale_item2.quantity_decreased = 29
+        sale_item2.sellable.description = u'Holy Grail'
+        sale_item2.sale.identifier = 73
+        sale2.open_date = localdate(2013, 12, 11)
+        sale2.status = sale2.STATUS_QUOTE
+
+        self.branch2 = self.create_branch(u'The Meaning of Life')
+        sale3 = self.create_sale(branch=self.branch2)
+        sale_item3 = self.create_sale_item(sale=sale3)
+        sale_item3.quantity = 41
+        sale_item3.quantity_decreased = 1
+        sale_item3.sellable.description = u'The Funniest Joke in this Code'
+        sale_item3.sale.identifier = 99
+        sale3.open_date = localdate(2013, 12, 11)
+        sale3.status = sale3.STATUS_QUOTE
+
+    def _show_search(self):
+        search = ReservedProductSearch(self.store)
+        search.search.refresh()
+        search.results.select(search.results[0])
+        return search
+
+    def test_show(self):
+        self._create_domain()
+        search = self._show_search()
+
+        self.check_search(search, 'search-reserved-product-no-filter')
+
+        search.branch_filter.set_state(self.branch2.id)
+        search.search.refresh()
+        self.check_search(search, 'search-reserved-product-branch-filter')

@@ -38,7 +38,8 @@ from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, Supplier, Company, LoginUser,
-                                   Branch, Client, Employee, Transporter)
+                                   Branch, Client, Employee, Transporter,
+                                   SalesPerson)
 from stoqlib.domain.product import (Product,
                                     ProductStockItem,
                                     ProductHistory,
@@ -952,6 +953,56 @@ class ProductBrandStockView(Viewable):
             return store.find(cls, And(*queries))
 
         return store.find(cls)
+
+
+class ReservedProductView(Viewable):
+    """Stores information about reserved products
+    This view is used to query products that was reserved
+    and temporarily removed from stock until the sale is completed.
+
+    :cvar id: the id of the reserved sale item
+    :cvar price: the price when it was reserved
+    :cvar quantity_decreased: quantity reserved
+    :cvar open_date: when the sale was open
+    :cvar status: status of a sale can be STATUS_ORDERED or STATUS_QUOTE
+    :cvar description: the description of a product
+    :cvar client_name: stores who reserved the product
+    :cvar salesperson_name: stores the sales person
+    """
+    PersonClient = ClassAlias(Person, 'person_client')
+    PersonSales = ClassAlias(Person, 'person_sales')
+
+    branch = Branch
+
+    id = SaleItem.id
+    price = SaleItem.price
+    quantity_decreased = SaleItem.quantity_decreased
+    branch_id = Sale.branch_id
+    identifier = Sale.identifier
+    open_date = Sale.open_date
+    status = Sale.status
+    description = Sellable.description
+    client_name = PersonClient.name
+    salesperson_name = PersonSales.name
+
+    tables = [
+        SaleItem,
+        Join(Sale, Sale.id == SaleItem.sale_id),
+        Join(Sellable, Sellable.id == SaleItem.sellable_id),
+        Join(Branch, Branch.id == Sale.branch_id),
+        Join(SalesPerson, SalesPerson.id == Sale.salesperson_id),
+        Join(PersonSales, PersonSales.id == SalesPerson.person_id),
+        LeftJoin(Client, Client.id == Sale.client_id),
+        LeftJoin(PersonClient, PersonClient.id == Client.person_id),
+    ]
+
+    clause = And(SaleItem.quantity_decreased > 0,
+                 Or(Sale.status == Sale.STATUS_ORDERED,
+                    Sale.status == Sale.STATUS_QUOTE))
+
+    @property
+    def status_str(self):
+        return Sale.statuses[self.status]
 
 
 class ReturnedSalesView(Viewable):

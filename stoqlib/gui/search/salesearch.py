@@ -37,7 +37,7 @@ from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
-from stoqlib.domain.views import SoldItemsByBranchView
+from stoqlib.domain.views import SoldItemsByBranchView, ReservedProductView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -277,3 +277,37 @@ class SoldItemsByBranchSearch(SearchDialog):
 
     def _on_results__has_rows(self, widget, has_rows):
         self.csv_button.set_sensitive(has_rows)
+
+
+class ReservedProductSearch(SearchDialog):
+    title = _(u'ReservedProductSearch')
+    search_spec = ReservedProductView
+    size = (800, 450)
+
+    def setup_widgets(self):
+        self.search.set_summary_label('quantity_decreased', label=_(u'Total:'),
+                                      format='<b>%s</b>')
+
+    def create_filters(self):
+        self.set_text_field_columns(['identifier', 'description',
+                                     'salesperson_name', 'client_name'])
+        # Branch
+        self.branch_filter = self.create_branch_filter(_('In Branch:'))
+        self.add_filter(self.branch_filter, columns=['branch_id'])
+
+    def get_columns(self):
+        return [IdentifierColumn('identifier', title=_('Sale #'),
+                                 sorted=True, order=gtk.SORT_DESCENDING),
+                Column('status_str', title=_('Status'), data_type=str),
+                SearchColumn('description', title=_('Product'), data_type=str,
+                             expand=True),
+                SearchColumn('salesperson_name', title=_('Sales Person'),
+                             data_type=str, visible=False),
+                SearchColumn('client_name', title=_('Client'), data_type=str,
+                             visible=False),
+                SearchColumn('open_date', title=_('Open Date'),
+                             data_type=datetime.date),
+                SearchColumn('price', title=_('Price'), data_type=currency,
+                             width=100),
+                SearchColumn('quantity_decreased', title=_('Reserved'), data_type=Decimal,
+                             format_func=format_quantity, width=100)]
