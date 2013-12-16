@@ -6083,7 +6083,7 @@ msgstr "Semana"
 
 #: ../stoq/gui/calendar.py:357 ../stoqlib/domain/product.py:173
 msgid "Day"
-msgstr "Dias"
+msgstr "Dia"
 
 #: ../stoq/gui/calendar.py:389
 msgid "Print this calendar"
