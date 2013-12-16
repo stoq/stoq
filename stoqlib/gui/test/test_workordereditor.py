@@ -63,6 +63,8 @@ class TestWorkOrderEditor(GUITest):
         execution_slave = editor.execution_slave
         item_slave = execution_slave.sellable_item_slave
         quote_slave = editor.quote_slave
+        self.assertSensitive(editor, ['client', 'client_create'])
+        self.assertNotSensitive(editor, ['client_info', 'category_edit'])
         # Check creation state
         self.assertEqual(editor.model.status, WorkOrder.STATUS_OPENED)
         self.check_editor(editor, 'editor-workorder-create')
@@ -146,6 +148,8 @@ class TestWorkOrderEditor(GUITest):
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-initial')
 
+        self.assertSensitive(editor, ['client', 'client_create', 'client_info'])
+        self.assertSensitive(editor, ['category', 'category_create'])
         workorder.defect_detected = u"Defect detected"
         workorder.estimated_hours = 10
         workorder.estimated_hours = 100
@@ -180,6 +184,24 @@ class TestWorkOrderEditor(GUITest):
         # Create another editor to check closed state
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-closed')
+
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def test_show_with_sale(self, localnow):
+        sysparam.set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', True)
+
+        localnow.return_value = localdatetime(2013, 12, 1)
+
+        # Create a work order with sale
+        workorder = self.create_workorder(description=u'Test equipment')
+        workorder.identifier = 1234
+        workorder.sale = self.create_sale()
+        workorder.client = self.create_client()
+        # Create the editor
+        editor = WorkOrderEditor(self.store, model=workorder)
+        self.assertSensitive(editor, ['client_info'])
+        self.assertNotSensitive(editor, ['client', 'client_create'])
+        self.assertNotSensitive(editor, ['category', 'category_create'])
+        self.check_editor(editor, 'editor-workorder-with-sale-show')
 
 
 class TestWorkOrderPackageSendEditor(GUITest):

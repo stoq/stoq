@@ -153,9 +153,6 @@ class WorkOrderEditor(BaseEditor):
     #
 
     def _setup_widgets(self):
-        for widget in [self.client_info, self.category_edit]:
-            widget.set_sensitive(False)
-
         # When editing an existing opened order, go to the quote tab.
         # But if the work is approved or in progress, go to execution tab.
         if self.model.status == WorkOrder.STATUS_OPENED and self.edit_mode:
@@ -165,6 +162,11 @@ class WorkOrderEditor(BaseEditor):
                                    WorkOrder.STATUS_WORK_WAITING,
                                    WorkOrder.STATUS_DELIVERED]:
             self._set_current_tab('execution_holder')
+
+        if self.edit_mode and self.model.sale:
+            for widget in [self.client, self.client_create, self.category,
+                           self.category_create]:
+                widget.set_sensitive(False)
 
         if self.model.sellable:
             self.sellable_desc.set_text(self.model.sellable.get_description())

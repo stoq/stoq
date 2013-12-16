@@ -434,6 +434,7 @@ class WorkOrderQuoteWizard(SaleQuoteWizard):
 
     def finish(self):
         for wo in self.workorders:
+            wo.client = self.model.client
             wo.category = self.wo_category
 
         super(WorkOrderQuoteWizard, self).finish()
