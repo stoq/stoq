@@ -486,11 +486,12 @@ class ServicesApp(ShellApp):
                 (self.Pause, has_selected and wo.can_pause()),
                 (self.Work, has_selected and wo.can_work()),
                 (self.Reopen, has_selected and wo.can_reopen()),
-                # DeliverOrder is grouped here since it's a special case. Only
-                # finished orders without items can be delivered here, so avoid
-                # showing the option if it's not sensitive to avoid confusions
+                # DeliverOrder is grouped here since it's a special case
+                # Only finished orders without items and without sale can be
+                # delivered here, so avoid showing the option if it's not
+                #sensitive to avoid confusions
                 (self.DeliverOrder, (has_selected and wo.can_close() and
-                                     not wo.order_items.count()))]:
+                                     not wo.order_items.count() and not wo.sale))]:
             self.set_sensitive([widget], value)
             # Some of those options are mutually exclusive (except Approve,
             # but it can only be called once) so avoid confusions and
