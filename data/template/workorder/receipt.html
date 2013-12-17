@@ -20,10 +20,12 @@
         <td>${ _("Order Number") }:</td>
         <td>${ report.workorder.identifier }</td>
       </tr>
+      % if report.workorder.sellable:
       <tr>
         <td>${ _("Equipment") }:</td>
         <td>${ report.workorder.sellable.description }</td>
       </tr>
+      % endif
       <tr>
         <td>${ _("Description") }:</td>
         <td>${ report.workorder.description }</td>
