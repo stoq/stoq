@@ -26,6 +26,7 @@
 
 import datetime
 from kiwi.ui.objectlist import Column
+from storm.expr import Desc
 
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.domain.event import Event
@@ -43,6 +44,10 @@ class EventSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
+        self.search.set_query(self.executer_query)
+
+    def executer_query(self, store):
+        return store.find(self.search_spec).order_by(Desc(Event.date))
 
     def get_columns(self):
         """Hook called by SearchEditor"""
