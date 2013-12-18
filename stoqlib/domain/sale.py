@@ -1380,7 +1380,7 @@ class Sale(Domain):
         """
         # Quote can add items without batches, but they will be validated
         # after on self.confirm
-        if self.status != self.STATUS_QUOTE:
+        if self.status not in (self.STATUS_QUOTE, self.STATUS_ORDERED):
             self.validate_batch(batch, sellable=sellable)
         price = price or sellable.price
         return SaleItem(store=self.store,
