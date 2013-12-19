@@ -1085,7 +1085,8 @@ class PosApp(ShellApp):
         else:
             store = api.new_store()
 
-        rv = self.run_dialog(WorkOrderFinishedSearch, store)
+        rv = self.run_dialog(WorkOrderFinishedSearch, store,
+                             double_click_confirm=True)
         if rv:
             work_order = rv.work_order
             for item in work_order.order_items:
