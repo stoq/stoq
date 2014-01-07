@@ -29,12 +29,16 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.api import api
+from stoqlib.domain.person import Client
 from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
 from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.lib.defaults import MAX_INT, quantize
@@ -298,3 +302,48 @@ class SaleQuoteItemEditor(BaseEditor):
         # bigger discount.
         self.manager = run_dialog(CredentialsDialog, self, self.store)
         self.price.validate(force=True)
+
+
+class SaleClientEditor(BaseEditor):
+    gladefile = 'SaleClientEditor'
+    model_type = Sale
+    model_name = _('Sale')
+    proxy_widgets = ['client', 'identifier', 'salesperson', 'status', 'open_date']
+
+    def setup_proxies(self):
+        self._fill_clients_combo()
+        self.add_proxy(self.model, self.proxy_widgets)
+
+    def toogle_client_details(self):
+        client = self._get_client()
+        if client is not None:
+            if client.status == Client.STATUS_SOLVENT:
+                self.info_image.set_from_stock(gtk.STOCK_INFO,
+                                               gtk.ICON_SIZE_MENU)
+            else:
+                self.info_image.set_from_stock(gtk.STOCK_DIALOG_WARNING,
+                                               gtk.ICON_SIZE_MENU)
+        self.client_details.set_sensitive(bool(client))
+
+    def _get_client(self):
+        return self.store.get(Client, self.client.read())
+
+    def _fill_clients_combo(self):
+        items = Client.get_active_items(self.store)
+        self.client.prefill(items)
+        self.client.set_sensitive(len(self.client.get_model()))
+
+    def on_client__changed(self, widget):
+        self.toogle_client_details()
+
+    def on_create_client__clicked(self, button):
+        with api.new_store() as store:
+            client = run_person_role_dialog(ClientEditor, self, store, None)
+
+        if store.committed:
+            self._fill_clients_combo()
+            self.client.select(client.id)
+
+    def on_client_details__clicked(self, button):
+        client = self.model.client
+        run_dialog(ClientDetailsDialog, self, self.store, client)

@@ -53,6 +53,11 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestSale(DomainTest):
+    def test_status_str(self):
+        sale = Sale(store=self.store, branch=self.create_branch(),
+                    status=Sale.STATUS_CONFIRMED)
+        self.assertEquals(sale.status_str, 'Confirmed')
+
     def test_constructor_without_cfop(self):
         sale = Sale(store=self.store, branch=self.create_branch())
         self.assertTrue(sysparam.compare_object('DEFAULT_SALES_CFOP', sale.cfop))

@@ -41,6 +41,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
                                            SalesByPaymentMethodSearch)
+#from stoqlib.gui.editors.saleeditor import SaleClientEditor
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
@@ -223,6 +224,26 @@ class TestSales(BaseGUITest):
                 run_dialog.assert_called_once_with(SaleQuoteWizard,
                                                    app, self.store,
                                                    results[0].sale)
+
+    #@mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
+    #@mock.patch('stoq.gui.sales.api.new_store')
+    #def test_change_client(self, new_store, run_dialog):
+    #    new_store.return_value = self.store
+
+    #    app = self.create_app(SalesApp, u'sales')
+    #    results = app.results
+    #    results.select(results[0])
+
+    #    results[0].status = Sale.STATUS_CONFIRMED
+    #    results[0].sale.status = Sale.STATUS_CONFIRMED
+    #    app._update_toolbar()
+
+    #    with mock.patch.object(self.store, 'commit'):
+    #        with mock.patch.object(self.store, 'close'):
+    #            self.activate(app.ChangeClient)
+    #            run_dialog.assert_called_once_with(SaleClientEditor,
+    #                                               app, self.store,
+    #                                               results[0].sale)
 
     @mock.patch('stoq.gui.sales.yesno')
     @mock.patch('stoq.gui.sales.api.new_store')

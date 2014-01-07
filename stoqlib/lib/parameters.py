@@ -475,6 +475,13 @@ _details = [
                  int(LatePaymentPolicy.DISALLOW_SALES): _(u'Disallow sales')}),
 
     ParameterDetails(
+        u'CHANGE_CLIENT_AFTER_CONFIRMED',
+        _(u'Sales'),
+        _(u'Allow client change after sale\'s confirmation'),
+        _(u'This parameter allows to change the client after a sale\'s confirmation.'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'DEFAULT_RECEIVING_CFOP',
         _(u'Purchase'),
         _(u'Default Receiving C.F.O.P.'),

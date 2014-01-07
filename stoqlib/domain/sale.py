@@ -1456,6 +1456,10 @@ class Sale(Domain):
     #
 
     @property
+    def status_str(self):
+        return self.get_status_name(self.status)
+
+    @property
     def products(self):
         """All |saleitems| of this sale containing a |product|.
 

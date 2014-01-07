@@ -30,7 +30,7 @@ from kiwi.currency import currency
 
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.event import Event
-from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
+from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor, SaleClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -144,3 +144,22 @@ class TestSaleQuoteItemEditor(GUITest):
         events_after = self.store.find(Event).count()
         # The number of events doesn't changed
         self.assertEquals(events_after, events_before)
+
+
+class TestSaleClientEditor(GUITest):
+    def test_change_client(self):
+        zoidberg = self.create_client(u"Zoidberg")
+        bender = self.create_client(u"Bender")
+        sale = self.create_sale(client=zoidberg)
+        sale.identifier = 12345
+        sale.status = sale.STATUS_CONFIRMED
+        editor = SaleClientEditor(self.store, model=sale)
+        self.assertEquals(editor.status.get_text(),
+                          (u"Confirmed" or u"Ordered"))
+        self.assertEquals(zoidberg, editor.model.client)
+
+        editor.client.select_item_by_data(bender.id)
+        self.click(editor.main_dialog.ok_button)
+        self.assertEquals(bender, sale.client)
+
+        self.check_editor(editor, 'editor-sale-client-edit')

@@ -46,13 +46,14 @@ GtkVBox(toplevel):
     row: u'Sales', u'Default Sales C.F.O.P.', uuid.uuid()
     row: u'Sales', u'Default Return Sales C.F.O.P.', uuid.uuid()
     row: u'Sales', u'Allow product sale with a higher price', u'1'
-    row: u'Sales', u'Bill instructions ', u''
     row: u'Sales', u'Ask for Sale Order C.F.O.P.', u'0'
     row: u'Sales', u'Default Substitution tax', u'18'
     row: u'Sales', u'Max discount for sales', u'5'
     row: u'Sales', u'Change salesperson', u'0'
     row: u'Sales', u'Default operation nature', u'Sale'
+    row: u'Sales', u'Bill instructions ', u''
     row: u'Sales', u'Enable paulista invoice', u'0'
+    row: u'Sales', u"Allow client change after sale's confirmation", u'0'
     row: u'Sales', u'Show POS application in Fullscreen', u'0'
     row: u'Sales', u'Allow sale return from clients without document', u'1'
     row: u'Sales', u'Policy for customers with late payments.', u'0'
