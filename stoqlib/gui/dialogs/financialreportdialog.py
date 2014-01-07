@@ -10,6 +10,7 @@ from stoqlib.domain.account import AccountTransaction
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.financial import FinancialIntervalReport
@@ -67,7 +68,7 @@ class FinancialReportDialog(BasicDialog):
             return
 
         for i in range(transaction.date.year,
-                       datetime.date.today().year + 1):
+                       localtoday().year + 1):
             year = datetime.datetime(i, 1, 1)
             date_filter.add_option_fixed_interval(
                 _('Year %d') % (i, ),
