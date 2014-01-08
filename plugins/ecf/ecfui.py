@@ -32,6 +32,8 @@ from serial import SerialException
 
 from kiwi.python import Settable
 from stoqdrivers.exceptions import CouponOpenError, DriverError
+
+from stoqlib.api import api
 from stoqlib.database.runtime import (get_current_station,
                                       get_default_store,
                                       new_store)
@@ -439,9 +441,13 @@ class ECFUI(object):
         return coupon
 
     def _get_last_document(self, store):
-        printer = self._printer.get_printer()
-        return ECFPrinter.get_last_document(station=printer.station,
-                                            store=store)
+        station = api.get_current_station(store)
+        return ECFPrinter.get_last_document(station=station, store=store)
+
+    def _is_ecf_last_sale(self, sale):
+        store = sale.store
+        is_last_sale = store.find(ECFPrinter, last_sale=sale).count() > 0
+        return is_last_sale
 
     def _confirm_last_document_cancel(self, last_doc):
         if last_doc.last_sale is None and last_doc.last_till_entry is None:
@@ -607,8 +613,7 @@ class ECFUI(object):
             self._set_last_sale(sale, sale.store)
 
     def _on_ECFIsLastSale(self, sale):
-        last_doc = self._get_last_document(sale.store)
-        return last_doc.last_sale == sale
+        return self._is_ecf_last_sale(sale)
 
     def _on_TillOpen(self, till):
         return self._open_till(till)
