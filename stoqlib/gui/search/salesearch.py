@@ -280,7 +280,7 @@ class SoldItemsByBranchSearch(SearchDialog):
 
 
 class ReservedProductSearch(SearchDialog):
-    title = _(u'ReservedProductSearch')
+    title = _(u'Reserved Product Search')
     search_spec = ReservedProductView
     size = (800, 450)
 

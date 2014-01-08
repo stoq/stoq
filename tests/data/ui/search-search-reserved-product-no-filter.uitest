@@ -1,5 +1,5 @@
 search: ReservedProductSearch
-GtkDialog(toplevel): title='ReservedProductSearch', hidden
+GtkDialog(toplevel): title='Reserved Product Search', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
