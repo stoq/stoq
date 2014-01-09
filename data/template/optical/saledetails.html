@@ -35,7 +35,7 @@
           <tbody class="list">
             <% items_discount = 0 %>
             % for item in report.sale.get_items():
-              <% items_discount += item.base_price - item.price %>
+              <% items_discount += (item.base_price - item.price) * item.quantity %>
               <tr>
                 <td>${ format_quantity(item.quantity) } x
                     ${ item.sellable.get_description() }</td>
