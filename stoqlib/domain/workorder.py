@@ -131,7 +131,7 @@ class WorkOrderPackageItem(Domain):
         #FIXME: For unknown reason some of W.O is not setted as None, so we
         #are disabling this check for now
         #assert self.order.current_branch is None
-        if not self.order.current_branch:
+        if self.order.current_branch is not None:  # pragma nocoverage
             log.warning('Work order with wrong current branch %r' % self.order)
 
         # The order is in destination branch now
