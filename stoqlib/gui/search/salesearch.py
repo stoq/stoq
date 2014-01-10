@@ -289,8 +289,8 @@ class ReservedProductSearch(SearchDialog):
                                       format='<b>%s</b>')
 
     def create_filters(self):
-        self.set_text_field_columns(['identifier', 'description',
-                                     'salesperson_name', 'client_name'])
+        self.set_text_field_columns(['description', 'salesperson_name',
+                                     'client_name'])
         # Branch
         self.branch_filter = self.create_branch_filter(_('In Branch:'))
         self.add_filter(self.branch_filter, columns=['branch_id'])
