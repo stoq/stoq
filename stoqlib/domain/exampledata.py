@@ -582,9 +582,9 @@ class ExampleCreator(object):
                                  order=self.create_production_order(),
                                  store=self.store)
 
-    def create_cfop_data(self):
+    def create_cfop_data(self, code=u'123'):
         from stoqlib.domain.fiscal import CfopData
-        return CfopData(store=self.store, code=u'123',
+        return CfopData(store=self.store, code=code,
                         description=u'test')
 
     def create_receiving_order(self, purchase_order=None, branch=None, user=None):
