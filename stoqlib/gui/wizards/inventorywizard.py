@@ -376,8 +376,11 @@ class InventoryCountWizard(BaseWizard):
                         # yet, so add a new InventoryItem for it
                         log.info('storable batch not in inventory: %r, %r' %
                                  (sellable.product.storable, batch_number))
+                        # We add the new inventory item with the
+                        # recored_quantity=0 (ie, there was no stock item for
+                        # this batch)
                         item = self.model.add_storable(
-                            sellable.product.storable, quantity, batch_number=batch_number)
+                            sellable.product.storable, quantity=0, batch_number=batch_number)
 
                     item.counted_quantity = quantity
             else:
