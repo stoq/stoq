@@ -55,8 +55,12 @@ class NumberQueryState(QueryState):
     Create a new NumberQueryState object.
     :cvar value: number
     """
-    def __init__(self, filter, value):
+    (EQUALS,
+     DIFFERENT) = range(2)
+
+    def __init__(self, filter, value, mode=EQUALS):
         QueryState.__init__(self, filter)
+        self.mode = mode
         self.value = value
 
     def __repr__(self):
@@ -507,8 +511,15 @@ class QueryExecuter(object):
             return Or(*queries)
 
     def _parse_number_state(self, state, table_field):
-        if state.value is not None:
+        if state.value is None:
+            return
+
+        if state.mode == NumberQueryState.EQUALS:
             return table_field == state.value
+        elif state.mode == NumberQueryState.DIFFERENT:
+            return table_field != state.value
+        else:
+            raise AssertionError
 
     def _parse_number_interval_state(self, state, table_field):
         queries = []

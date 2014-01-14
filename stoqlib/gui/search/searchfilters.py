@@ -46,6 +46,8 @@ from stoqlib.gui.search.searchoptions import (Any,
                                               ContainsExactly,
                                               ContainsAll,
                                               DoesNotContain,
+                                              ComboEquals,
+                                              ComboDifferent,
                                               EqualsTo,
                                               FixedDateSearchOption,
                                               FixedIntervalSearchOption,
@@ -465,6 +467,14 @@ class ComboSearchFilter(SearchFilter):
         label.show()
         self.title_label = label
 
+        # We create the mode, but it will only be added to this box when
+        # enable_advanced is called
+        self.mode = ProxyComboBox()
+        self.mode.connect('content-changed', self._on_mode__content_changed)
+        for option in (ComboEquals, ComboDifferent):
+            self.add_option(option)
+        self.mode.select_item_by_position(0)
+
         self.combo = ProxyComboBox()
         if values:
             self.update_values(values)
@@ -478,13 +488,15 @@ class ComboSearchFilter(SearchFilter):
 
     def get_state(self):
         value = self.combo.get_selected_data()
-        state = NumberQueryState(filter=self,
-                                 value=value)
+        mode = self.mode.get_selected_data()
+        state = NumberQueryState(filter=self, value=value, mode=mode.mode)
         if hasattr(value, 'id'):
             state.value_id = value.id
         return state
 
-    def set_state(self, value, value_id=None):
+    def set_state(self, value, value_id=None, mode=None):
+        if mode is None:
+            mode = NumberQueryState.EQUALS
         if value_id is not None:
             for item in self.combo.get_model_items().values():
                 if item is None:
@@ -516,6 +528,16 @@ class ComboSearchFilter(SearchFilter):
     # Public API
     #
 
+    def add_option(self, option_type, position=0):
+        """
+        Adds an option
+        :param option_type: option to add
+        :type option_type: a :class:`ComboSearchOption` subclass
+        """
+        option = option_type()
+        num = len(self.mode) + position
+        self.mode.insert_item(num, option.name, option_type)
+
     def select(self, data):
         """
         selects an item in the combo
@@ -523,9 +545,18 @@ class ComboSearchFilter(SearchFilter):
         """
         self.combo.select(data)
 
+    def enable_advanced(self):
+        self.pack_start(self.mode, False, False, 6)
+        self.reorder_child(self.mode, 1)
+        self.mode.show()
+
     #
     # Callbacks
     #
+
+    def _on_mode__content_changed(self, combo):
+        if not self._block_updates:
+            self.emit('changed')
 
     def _on_combo__content_changed(self, mode):
         if not self._block_updates:

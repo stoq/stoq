@@ -402,7 +402,7 @@ class SearchSlave(SlaveDelegate):
                 filter = ComboSearchFilter(title, column.valid_values)
             else:
                 filter = StringSearchFilter(title)
-                filter.enable_advanced()
+            filter.enable_advanced()
         elif column.data_type == bool:
             filter = BoolSearchFilter(title)
         else:
@@ -438,6 +438,7 @@ class SearchSlave(SlaveDelegate):
                 data['end'] = state.end
             elif isinstance(state, NumberQueryState):
                 data['value'] = state.value
+                data['mode'] = state.mode
                 if hasattr(state, 'value_id'):
                     data['value_id'] = state.value_id
                     data['value'] = None

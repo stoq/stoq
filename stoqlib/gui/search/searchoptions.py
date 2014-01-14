@@ -28,7 +28,7 @@ import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from stoqlib.database.queryexecuter import StringQueryState
+from stoqlib.database.queryexecuter import StringQueryState, NumberQueryState
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -235,3 +235,21 @@ class ContainsAll(StringSearchOption):
 class DoesNotContain(StringSearchOption):
     name = _('Does Not Contain')
     mode = StringQueryState.NOT_CONTAINS
+
+
+#
+#   Combo Search Options
+#
+
+class ComboSearchOption(object):
+    pass
+
+
+class ComboEquals(ComboSearchOption):
+    name = _('Equals to')
+    mode = NumberQueryState.EQUALS
+
+
+class ComboDifferent(ComboSearchOption):
+    name = _('Different from')
+    mode = NumberQueryState.DIFFERENT
