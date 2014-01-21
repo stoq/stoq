@@ -10,7 +10,7 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
               ComboSearchFilter(_salesperson_filter):
                 GtkLabel(): 'Sold by:'
                 ProxyComboBox(padding=6):
-                  item: 'Anyone', selected
+                  item: 'Any', selected
                   item: 'Administrator'
                   item: 'Cleusa Blanc Ferreira Norbiato'
                   item: 'Deivis Alexandre Junior'
@@ -43,12 +43,13 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Sale #'
             column: title='Salesperson', expand
+            column: title='Method'
             column: title='Commission (%)'
             column: title='Commission'
             column: title='Date'
             column: title='Payment value'
             column: title='Sale total'
-            row: 74521, u'Deivis Alexandre Junior', Decimal('0E-20'), <currency $ 0>, datetime.datetime(2012, 1, 15, 0, 0), Decimal('-10.00'), Decimal('0')
+            row: 74521, u'Deivis Alexandre Junior', u'Money', Decimal('0E-20'), <currency $ 0>, datetime.datetime(2012, 1, 15, 0, 0), Decimal('-10.00'), Decimal('0')
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True):
         GtkLabel(payments_label): 'Total payments: $ -10.00'
@@ -67,3 +68,4 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

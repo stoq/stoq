@@ -34,12 +34,13 @@ from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.commission import CommissionView
-from stoqlib.domain.person import SalesPerson, Branch
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.person import Branch
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import get_formatted_price
@@ -50,7 +51,7 @@ _ = stoqlib_gettext
 
 class CommissionSearch(SearchDialog):
     title = _("Search for Commissions")
-    size = (-1, 450)
+    size = (800, 450)
     search_spec = CommissionView
     searching_by_date = True
 
@@ -72,6 +73,12 @@ class CommissionSearch(SearchDialog):
 
         self.payments_label.set_label(_(u'Total payments: %s') % get_formatted_price(payments))
         self.sales_label.set_label(_(u'Total sales: %s') % get_formatted_price(sales))
+
+    def _get_method_values(self):
+        methods = PaymentMethod.get_active_methods(self.store)
+        values = [(i.get_description(), i.method_name) for i in methods
+                  if i.method_name != 'multiple']
+        return values
 
     #
     # SearchDialog Hooks
@@ -104,12 +111,12 @@ class CommissionSearch(SearchDialog):
 
         set_bold(self.payments_label)
         set_bold(self.sales_label)
+        self.add_csv_button(_('Commissions'), _('commissions'))
 
     def create_filters(self):
         self.set_text_field_columns(['salesperson_name', 'identifier_str'])
 
-        items = api.for_combo(self.store.find(SalesPerson), empty=_("Anyone"))
-        self._salesperson_filter = ComboSearchFilter(_("Sold by:"), items)
+        self._salesperson_filter = self.create_salesperson_filter(_("Sold by:"))
         self.add_filter(self._salesperson_filter, SearchFilterPosition.TOP,
                         callback=self._get_salesperson_query)
 
@@ -132,6 +139,9 @@ class CommissionSearch(SearchDialog):
             IdentifierColumn('identifier', title=_('Sale #'), sorted=True),
             SearchColumn('salesperson_name', title=_('Salesperson'),
                          data_type=str, expand=True),
+            SearchColumn('method_description', title=_('Method'), data_type=str,
+                         search_attribute='method_name',
+                         valid_values=self._get_method_values()),
             # This column evals to an integer, and due to a bug
             # in kiwi, its not searchable
             Column('commission_percentage', title=_('Commission (%)'),
@@ -181,7 +191,7 @@ class CommissionSearch(SearchDialog):
 
         salesperson = state.value
         if salesperson:
-            queries.append(CommissionView.salesperson_id == salesperson.id)
+            queries.append(CommissionView.salesperson_id == salesperson)
 
         if queries:
             return And(*queries)

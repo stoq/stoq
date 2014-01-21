@@ -36,6 +36,7 @@ from stoqlib.database.properties import PercentCol, PriceCol
 from stoqlib.database.properties import IntCol, IdCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, SalesPerson, Branch
 from stoqlib.domain.sale import Sale
@@ -221,6 +222,7 @@ class CommissionView(Viewable):
     # Payment
     payment_id = Payment.id
     payment_value = Payment.value
+    method_name = PaymentMethod.method_name
     paid_date = Payment.paid_date
 
     # Salesperson
@@ -234,7 +236,13 @@ class CommissionView(Viewable):
         Join(SalesPerson, SalesPerson.id == Sale.salesperson_id),
         Join(Person, Person.id == SalesPerson.person_id),
         Join(Payment, Payment.id == Commission.payment_id),
+        Join(PaymentMethod, Payment.method_id == PaymentMethod.id),
     ]
+
+    @property
+    def method_description(self):
+        from stoqlib.domain.payment.operation import get_payment_operation
+        return get_payment_operation(self.method_name).description
 
     # pylint: disable=E1120
     @property

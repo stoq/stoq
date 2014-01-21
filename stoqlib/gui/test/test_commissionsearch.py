@@ -78,7 +78,7 @@ class TestCommissionSearch(GUITest):
         self.check_search(search, 'commission-confirmed-string-filter')
 
         search.set_searchbar_search_string('')
-        search._salesperson_filter.set_state(salesperson)
+        search._salesperson_filter.set_state(salesperson.id)
         search.search.refresh()
         self.check_search(search, 'commission-confirmed-salesperson-filter')
 
@@ -100,6 +100,6 @@ class TestCommissionSearch(GUITest):
         self.check_search(search, 'commission-paid-string-filter')
 
         search.set_searchbar_search_string('')
-        search._salesperson_filter.set_state(salesperson)
+        search._salesperson_filter.set_state(salesperson.id)
         search.search.refresh()
         self.check_search(search, 'commission-paid-salesperson-filter')
