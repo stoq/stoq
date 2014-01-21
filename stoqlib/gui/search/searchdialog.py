@@ -33,6 +33,7 @@ from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.events import SearchDialogSetupSearchEvent
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.searchslave import SearchSlave
@@ -130,6 +131,7 @@ class SearchDialog(BasicDialog):
         self.selection_mode = self._setup_selection_mode(selection_mode)
         self.summary_label = None
         self.double_click_confirm = double_click_confirm
+        self.csv_button = None
 
         BasicDialog.__init__(self, hide_footer=hide_footer,
                              main_label_text=self.main_label_text,
@@ -184,6 +186,7 @@ class SearchDialog(BasicDialog):
         # FIXME: Gross hack
         has_details_btn = hasattr(self, 'on_details_button_clicked')
         has_print_btn = hasattr(self, 'on_print_button_clicked')
+        self.results.connect('has-rows', self._has_rows)
         if not (has_details_btn or has_print_btn):
             self._details_slave = None
             return
@@ -197,7 +200,6 @@ class SearchDialog(BasicDialog):
         if has_print_btn:
             self._details_slave.connect("print", self.on_print_button_clicked)
             self.set_print_button_sensitive(False)
-            self.results.connect('has-rows', self._has_rows)
         else:
             self._details_slave.print_button.hide()
 
@@ -224,6 +226,14 @@ class SearchDialog(BasicDialog):
         self.action_area.set_layout(gtk.BUTTONBOX_START)
         self.action_area.pack_start(button, False, False, 6)
         return button
+
+    def add_csv_button(self, name, prefix):
+        self._csv_name = name
+        self._csv_prefix = prefix
+        self.csv_button = self.add_button(label=_("Export to spreadsheet..."))
+        self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
+        self.csv_button.show()
+        self.csv_button.set_sensitive(False)
 
     def set_details_button_sensitive(self, value):
         self._details_slave.details_button.set_sensitive(value)
@@ -401,7 +411,17 @@ class SearchDialog(BasicDialog):
         self.row_activate(obj)
 
     def _has_rows(self, results, obj):
-        self.set_print_button_sensitive(obj)
+        if self._details_slave:
+            self.set_print_button_sensitive(obj)
+
+        if self.csv_button:
+            self.csv_button.set_sensitive(bool(obj))
+
+    def _on_export_csv_button__clicked(self, widget):
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.results,
+                   name=self._csv_name,
+                   filename_prefix=self._csv_prefix)
 
     #
     # Hooks

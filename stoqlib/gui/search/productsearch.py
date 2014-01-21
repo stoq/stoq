@@ -42,7 +42,6 @@ from stoqlib.domain.views import (ProductQuantityView,
                                   ProductBranchStockView, ProductBrandStockView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.gtkadds import change_button_appearance
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
 from stoqlib.gui.search.searchcolumns import SearchColumn
@@ -125,9 +124,7 @@ class ProductSearch(SearchEditor):
     #
 
     def setup_widgets(self):
-        self.csv_button = self.add_button(label=_('Export to spreadsheet...'))
-        self.csv_button.show()
-        self.csv_button.set_sensitive(False)
+        self.add_csv_button(_('Product'), _('product'))
 
         self.branch_stock_button = self.add_button(label=_('Stocks details'))
         self.branch_stock_button.show()
@@ -200,18 +197,9 @@ class ProductSearch(SearchEditor):
     # Callbacks
     #
 
-    def on_results__has_rows(self, widget, has_rows):
-        self.csv_button.set_sensitive(has_rows)
-
     def on_results__selection_changed(self, widget, selection):
         enable_details = selection and selection.product.storable
         self.branch_stock_button.set_sensitive(bool(enable_details))
-
-    def on_csv_button__clicked(self, widget):
-        sse = SpreadSheetExporter()
-        sse.export(object_list=self.results,
-                   name=_('Product'),
-                   filename_prefix=_('product'))
 
     def on_branch_stock_button__clicked(self, widget):
         product_viewable = self.get_selection()
@@ -498,9 +486,8 @@ class ProductBrandSearch(SearchEditor):
     #
 
     def setup_widgets(self):
-        self.csv_button = self.add_button(label=_('Export to spreadsheet...'))
-        self.csv_button.show()
-        self.csv_button.set_sensitive(False)
+        self.add_csv_button(_('Brands'), _('brands'))
+
         self.search.set_summary_label('quantity', label=_(u'Total:'),
                                       format='<b>%s</b>')
 
@@ -549,15 +536,6 @@ class ProductBrandSearch(SearchEditor):
     #
     # Callbacks
     #
-
-    def on_results__has_rows(self, widget, has_rows):
-        self.csv_button.set_sensitive(has_rows)
-
-    def on_csv_button__clicked(self, widget):
-        sse = SpreadSheetExporter()
-        sse.export(object_list=self.results,
-                   name=_('Brands'),
-                   filename_prefix=_('brands'))
 
     def on_print_button_clicked(self, button):
         print_report(ProductBrandReport, self.results, list(self.results),

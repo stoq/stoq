@@ -135,18 +135,6 @@ class TestProductSearch(GUITest):
             filters=search.search.get_search_filters(),
             branch_name=search.branch_filter.combo.get_active_text())
 
-    @mock.patch('stoqlib.gui.search.productsearch.SpreadSheetExporter.export')
-    def test_print_export_c_s_v_button(self, export):
-        search = self._show_search()
-
-        self.assertSensitive(search, ['csv_button'])
-
-        self.click(search.csv_button)
-        args, kwargs = export.call_args
-        export.assert_called_once_with(object_list=search.results,
-                                       name=_('Product'),
-                                       filename_prefix=_('product'))
-
     def test_search(self):
         self.clean_domain([StockTransactionHistory, ProductSupplierInfo,
                            ProductStockItem, Storable, Product])

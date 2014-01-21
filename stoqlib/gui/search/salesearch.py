@@ -41,7 +41,6 @@ from stoqlib.domain.views import SoldItemsByBranchView, ReservedProductView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.searchdialog import SearchDialog
@@ -204,14 +203,10 @@ class SoldItemsByBranchSearch(SearchDialog):
     size = (800, 450)
 
     def setup_widgets(self):
-        self.csv_button = self.add_button(label=_('Export to spreadsheet...'))
-        self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
-        self.csv_button.show()
-        self.csv_button.set_sensitive(False)
+        self.add_csv_button(_('Sales'), _('sales'))
+
         self.search.set_summary_label('total', label=_(u'Total:'),
                                       format='<b>%s</b>')
-
-        self.results.connect('has_rows', self._on_results__has_rows)
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
@@ -268,15 +263,6 @@ class SoldItemsByBranchSearch(SearchDialog):
 
     def on_print_button_clicked(self, widget):
         self._print_report()
-
-    def _on_export_csv_button__clicked(self, widget):
-        sse = SpreadSheetExporter()
-        sse.export(object_list=self.results,
-                   name=_('Sales'),
-                   filename_prefix=_('sales'))
-
-    def _on_results__has_rows(self, widget, has_rows):
-        self.csv_button.set_sensitive(has_rows)
 
 
 class ReservedProductSearch(SearchDialog):

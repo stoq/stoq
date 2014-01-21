@@ -30,7 +30,6 @@ from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import CallsView, Client, ClientCallsView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.search.searchcolumns import SearchColumn, Column
 from stoqlib.gui.search.searcheditor import SearchEditor
@@ -83,10 +82,7 @@ class CallsSearch(SearchEditor):
         return calls.call
 
     def setup_widgets(self):
-        self.csv_button = self.add_button(label=_("Export to spreadsheet..."))
-        self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
-        self.csv_button.show()
-        self.csv_button.set_sensitive(False)
+        self.add_csv_button(_('Calls'), _('calls'))
 
         self.print_button = self.add_button(label=_("Print"))
         self.print_button.connect('clicked', self._on_print_button__clicked)
@@ -164,15 +160,8 @@ class CallsSearch(SearchEditor):
     # Callbacks
     #
 
-    def _on_export_csv_button__clicked(self, widget):
-        sse = SpreadSheetExporter()
-        sse.export(object_list=self.results,
-                   name=_('Calls'),
-                   filename_prefix=_('calls'))
-
     def _on_results__has_rows(self, widget, has_rows):
         self.print_button.set_sensitive(has_rows)
-        self.csv_button.set_sensitive(has_rows)
 
     def _on_print_button__clicked(self, widget):
         print_report(CallsReport, self.results, list(self.results),

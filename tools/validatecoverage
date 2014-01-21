@@ -163,7 +163,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/fields.py', 71),
     ('stoqlib/gui/fiscalprinter.py', 52.75),
     ('stoqlib/gui/interfaces.py', 88.89),
-    ('stoqlib/gui/search/callsearch.py', 92.47),
+    ('stoqlib/gui/search/callsearch.py', 90.59),
     ('stoqlib/gui/search/categorysearch.py', 70),
     ('stoqlib/gui/search/commissionsearch.py', 66.67),
     ('stoqlib/gui/search/costcentersearch.py', 92.59),

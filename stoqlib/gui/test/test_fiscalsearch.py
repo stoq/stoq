@@ -64,20 +64,13 @@ class TestFiscalBookSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'fiscal-book-branch-filter')
 
-    @mock.patch('stoqlib.gui.search.fiscalsearch.SpreadSheetExporter.export')
     @mock.patch('stoqlib.gui.search.fiscalsearch.run_dialog')
-    def test_buttons(self, run_dialog, export):
+    def test_buttons(self, run_dialog):
         search = self._show_search()
 
         self.assertSensitive(search, ['edit_button'])
         self.click(search.edit_button)
         self.assertEquals(run_dialog.call_count, 1)
-
-        self.assertSensitive(search, ['csv_button'])
-        self.click(search.csv_button)
-        export.assert_called_once_with(object_list=search.results,
-                                       name=_('Fiscal book'),
-                                       filename_prefix=_('fiscal-book'))
 
 
 class TestCfopSearch(GUITest):
