@@ -26,8 +26,9 @@ from stoqlib.api import api
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.person import Person
 from stoqlib.gui.search.commissionsearch import CommissionSearch
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.lib.dateutils import localdatetime
+from stoqlib.lib.dateutils import localdatetime, localdate
 
 
 class TestCommissionSearch(GUITest):
@@ -65,6 +66,9 @@ class TestCommissionSearch(GUITest):
                               'SALE_PAY_COMMISSION_WHEN_CONFIRMED',
                               True)
         search = CommissionSearch(self.store)
+        search._date_filter.select(data=DateSearchFilter.Type.USER_INTERVAL)
+        search._date_filter.start_date.update(localdate(2010, 1, 1))
+        search._date_filter.end_date.update(localdate(2012, 2, 15))
 
         search.search.refresh()
         self.check_search(search, 'commission-confirmed-no-filter')
@@ -83,6 +87,10 @@ class TestCommissionSearch(GUITest):
                               'SALE_PAY_COMMISSION_WHEN_CONFIRMED',
                               False)
         search = CommissionSearch(self.store)
+
+        search._date_filter.select(data=DateSearchFilter.Type.USER_INTERVAL)
+        search._date_filter.start_date.update(localdate(2010, 1, 1))
+        search._date_filter.end_date.update(localdate(2012, 2, 15))
 
         search.search.refresh()
         self.check_search(search, 'commission-paid-no-filter')

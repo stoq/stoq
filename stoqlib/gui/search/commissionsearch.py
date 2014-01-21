@@ -39,7 +39,7 @@ from stoqlib.enums import SearchFilterPosition
 from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import get_formatted_price
@@ -112,6 +112,16 @@ class CommissionSearch(SearchDialog):
         self._salesperson_filter = ComboSearchFilter(_("Sold by:"), items)
         self.add_filter(self._salesperson_filter, SearchFilterPosition.TOP,
                         callback=self._get_salesperson_query)
+
+        # Adding a filter by date with custom interval
+        self._date_filter = DateSearchFilter(_("Date:"))
+        self._date_filter.select(data=DateSearchFilter.Type.USER_INTERVAL)
+        if sysparam.get_bool('SALE_PAY_COMMISSION_WHEN_CONFIRMED'):
+            self.add_filter(self._date_filter, SearchFilterPosition.BOTTOM,
+                            columns=[self.search_spec.confirm_date])
+        else:
+            self.add_filter(self._date_filter, SearchFilterPosition.BOTTOM,
+                            columns=[self.search_spec.paid_date])
 
         # Dont set a limit here, otherwise it might break the summary
         executer = self.search.get_query_executer()
