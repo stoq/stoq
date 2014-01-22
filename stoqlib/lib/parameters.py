@@ -947,7 +947,14 @@ class ParameterAccess(object):
         """
         # This is called when creating a new database or
         # updating an existing one
+
+        # Clear cached values to ensure the parameters updates
+        # will be used correctly. If there any change in name, these values
+        # will differ from database.
+        if update:
+            self._values_cache = None
         self._remove_unused_parameters(store)
+
         for detail in self._details.values():
             if update and detail.key in self._values:
                 continue

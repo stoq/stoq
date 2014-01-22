@@ -4,5 +4,5 @@ ALTER TABLE product ADD COLUMN brand text;
 
 ALTER TABLE product ADD COLUMN family text;
 
--- leftover from patch 03-18
-ALTER TABLE product DROP COLUMN manufacturer;
+-- Manufacturer column was removed in patch 03-18, but the schema 04 was creating that column.
+ALTER TABLE product DROP COLUMN IF EXISTS manufacturer;

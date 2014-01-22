@@ -459,7 +459,6 @@ CREATE TABLE product (
     consignment boolean NOT NULL DEFAULT FALSE,
     location text,
     part_number text,
-    manufacturer text,
     model text,
     ncm text,
     ex_tipi text,
