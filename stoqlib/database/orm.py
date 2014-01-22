@@ -81,7 +81,7 @@ class ORMObject(SQLObjectBase):
 
         cls = type(self)
         for attr, value in kwargs.items():
-            if not attr in cls.__dict__:
+            if not hasattr(cls, attr):
                 raise TypeError("class %s does not have an attribute %s" % (
                     cls.__name__, attr))
 
