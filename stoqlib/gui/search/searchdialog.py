@@ -388,6 +388,15 @@ class SearchDialog(BasicDialog):
 
         return provider_filter
 
+    def create_salesperson_filter(self, label=None):
+        from stoqlib.domain.person import SalesPerson
+        items = SalesPerson.get_active_items(self.store)
+        items.insert(0, (_("Any"), None))
+
+        if not label:
+            label = _('Salesperson:')
+        return ComboSearchFilter(label, items)
+
     #
     # Callbacks
     #
