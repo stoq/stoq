@@ -290,14 +290,14 @@ def return_sale(parent, sale, store):
                "ECF - Cancel Last Document"))
         return
 
-    need_document = not sysparam.get_bool('ACCEPT_SALE_RETURN_WITHOUT_DOCUMENT')
-    if need_document and not sale.get_client_document():
-        warning(_('It is not possible to accept a returned sale from clients '
-                  'without document. Please edit the client document or change '
-                  'the sale client'))
-        return
-
     if sale.can_return():
+        need_document = not sysparam.get_bool('ACCEPT_SALE_RETURN_WITHOUT_DOCUMENT')
+        if need_document and not sale.get_client_document():
+            warning(_('It is not possible to accept a returned sale from clients '
+                      'without document. Please edit the client document or change '
+                      'the sale client'))
+            return
+
         returned_sale = sale.create_sale_return_adapter()
         retval = run_dialog(SaleReturnWizard, parent, store, returned_sale)
     elif sale.can_cancel():
