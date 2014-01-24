@@ -923,6 +923,29 @@ class ProductionItemView(Viewable):
     ]
 
 
+class ProductBatchView(Viewable):
+
+    product = Product
+
+    id = ProductStockItem.id
+    description = Sellable.description
+    quantity = ProductStockItem.quantity
+    batch_number = StorableBatch.batch_number
+    batch_date = StorableBatch.create_date
+    category = SellableCategory.description
+
+    tables = [
+        ProductStockItem,
+        Join(StorableBatch, ProductStockItem.batch_id == StorableBatch.id),
+        Join(Storable, ProductStockItem.storable_id == Storable.id),
+        Join(Product, Storable.product_id == Product.id),
+        Join(Sellable, Product.sellable_id == Sellable.id),
+        LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id)
+    ]
+
+    clause = ProductStockItem.quantity > 0
+
+
 class ProductBrandStockView(Viewable):
     # Alias of Branch to Person table
 

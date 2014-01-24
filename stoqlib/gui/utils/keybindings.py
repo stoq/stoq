@@ -396,6 +396,8 @@ _bindings = [
      _("Search for stock items")),
     ('app.stock.search_brand_items', "",
      _("Search for Brand items")),
+    ('app.stock.search_batch_items', "",
+     _("Search for Batch items")),
     ('app.stock.search_transfers', "<Primary><Alt>t",
      _("Search for transfers")),
     ('app.stock.search_closed_stock_items', "<Primary><Alt>c",

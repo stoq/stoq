@@ -23,6 +23,7 @@
 ##
 """ Search dialogs for product objects """
 
+import datetime
 from decimal import Decimal
 
 import gtk
@@ -33,13 +34,16 @@ from storm.expr import Eq
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
-from stoqlib.domain.product import Product, ProductHistory
+from stoqlib.domain.product import (Product, ProductHistory,
+                                    StorableBatch,
+                                    ProductStockItem)
 from stoqlib.domain.sellable import SellableCategory
 from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView,
-                                  ProductBranchStockView, ProductBrandStockView)
+                                  ProductBranchStockView,
+                                  ProductBatchView, ProductBrandStockView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.editors.producteditor import (ProductEditor,
@@ -468,6 +472,70 @@ class ProductClosedStockSearch(ProductSearch):
     def on_print_button_clicked(self, widget):
         print_report(ProductClosedStockReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
+
+
+class ProductBatchSearch(SearchEditor):
+    title = _('Batch Search')
+    table = StorableBatch
+    size = (800, 450)
+    search_spec = ProductBatchView
+
+    def __init__(self, store):
+        SearchEditor.__init__(self, store, hide_footer=True,
+                              hide_toolbar=True)
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def setup_widgets(self):
+        self.add_csv_button(_('Batch'), _('batch'))
+        self.search.set_summary_label('quantity', label=(u'Total:'),
+                                      format='<b>%s</b>')
+
+        self.branch_stock_button = self.add_button(label=_('Stocks details'))
+        self.branch_stock_button.show()
+        self.branch_stock_button.set_sensitive(False)
+
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'batch_number'])
+
+        # Branch
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        self.add_filter(branch_filter, columns=[ProductStockItem.branch_id])
+        self.branch_filter = branch_filter
+
+        # Dont set a limit here, otherwise it might break the summary
+        executer = self.search.get_query_executer()
+        executer.set_limit(-1)
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        cols = [SearchColumn('category', title=_('Category'), data_type=str),
+                SearchColumn('description', title=_('Description'), data_type=str,
+                             sorted=True, expand=True),
+                SearchColumn('batch_number', title=_('Batch'), data_type=str),
+                SearchColumn('batch_date', title=_('Date'),
+                             data_type=datetime.date),
+                SearchColumn('quantity', title=_('Qty'), data_type=Decimal)]
+        return cols
+
+    #
+    # Callbacks
+    #
+
+    def on_results__selection_changed(self, widget, selection):
+        enable_details = selection and selection.product.storable
+        self.branch_stock_button.set_sensitive(bool(enable_details))
+
+    def on_branch_stock_button__clicked(self, widget):
+        product_viewable = self.get_selection()
+        if product_viewable:
+            self.run_dialog(ProductBranchSearch, self, self.store,
+                            product_viewable.product.storable)
 
 
 class ProductBrandSearch(SearchEditor):
