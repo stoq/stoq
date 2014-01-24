@@ -5114,12 +5114,14 @@ BEGIN
 
   ALTER TABLE ecf_printer ADD COLUMN temp_station_id bigint;
   UPDATE ecf_printer SET temp_station_id = station_id;
+  ALTER TABLE ecf_printer ALTER COLUMN station_id DROP NOT NULL;
   ALTER TABLE ecf_printer ALTER COLUMN station_id TYPE uuid USING NULL;
   ALTER TABLE ecf_printer ADD CONSTRAINT ecf_printer_station_id_fkey FOREIGN KEY (station_id) REFERENCES branch_station (id) ON UPDATE CASCADE;
   UPDATE ecf_printer SET station_id = branch_station.id
     FROM branch_station
     WHERE ecf_printer.temp_station_id = branch_station.temp_id;
   ALTER TABLE ecf_printer DROP COLUMN temp_station_id;
+  ALTER TABLE ecf_printer ALTER COLUMN station_id SET NOT NULL;
 
   ALTER TABLE ecf_printer ADD COLUMN temp_last_sale_id bigint;
   UPDATE ecf_printer SET temp_last_sale_id = last_sale_id;
@@ -5141,12 +5143,14 @@ BEGIN
 
   ALTER TABLE ecf_document_history ADD COLUMN temp_printer_id bigint;
   UPDATE ecf_document_history SET temp_printer_id = printer_id;
+  ALTER TABLE ecf_document_history ALTER COLUMN printer_id DROP NOT NULL;
   ALTER TABLE ecf_document_history ALTER COLUMN printer_id TYPE uuid USING NULL;
   ALTER TABLE ecf_document_history ADD CONSTRAINT ecf_document_history_printer_id_fkey FOREIGN KEY (printer_id) REFERENCES ecf_printer (id) ON UPDATE CASCADE;
   UPDATE ecf_document_history SET printer_id = ecf_printer.id
     FROM ecf_printer
     WHERE ecf_document_history.temp_printer_id = ecf_printer.temp_id;
   ALTER TABLE ecf_document_history DROP COLUMN temp_printer_id;
+  ALTER TABLE ecf_document_history ALTER COLUMN printer_id SET NOT NULL;
 
   ALTER TABLE device_constant ADD COLUMN temp_printer_id bigint;
   UPDATE device_constant SET temp_printer_id = printer_id;
