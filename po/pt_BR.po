@@ -4744,7 +4744,7 @@ msgstr "Não existe nenhuma venda nem entrada para cancelar"
 #: ../plugins/ecf/ecfui.py:458
 #, python-format
 msgid "Do you really want to cancel the sale number %s and value %.2f ?"
-msgstr "Você realmente quer cancelar a venda de número %s e de value %.2f?"
+msgstr "Você realmente quer cancelar a venda de número %s e de valor %.2f?"
 
 #: ../plugins/ecf/ecfui.py:462
 #, python-format
@@ -4785,7 +4785,7 @@ msgstr "Cancelamento falhou, não há documentos abertos"
 
 #: ../plugins/ecf/ecfui.py:501
 msgid "Cancelling last document on ECF"
-msgstr "Cancelando o último documento na ECF"
+msgstr "Cancelando o último documento no ECF"
 
 #. TRANSLATORS: cash out = sangria
 #: ../plugins/ecf/ecfui.py:505

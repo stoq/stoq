@@ -46,7 +46,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    HasPendingReduceZ, ECFIsLastSaleEvent,
                                    HasOpenCouponEvent)
 from stoqlib.domain.person import Individual, Company
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
 from stoqlib.gui.base.dialogs import run_dialog
@@ -497,9 +497,10 @@ class ECFUI(object):
             return
         sale = store.fetch(last_doc.last_sale)
         value = sale.total_amount
-        returned_sale = sale.create_sale_return_adapter()
-        returned_sale.reason = _(u"Cancelling last document on ECF")
-        returned_sale.return_()
+        sale.cancel()
+        comment = _(u"Cancelling last document on ECF")
+        SaleComment(store=store, sale=sale, comment=comment,
+                    author=api.get_current_user(store))
         till = Till.get_current(store)
         # TRANSLATORS: cash out = sangria
         till.add_debit_entry(value, _(u"Cash out: last sale cancelled"))
