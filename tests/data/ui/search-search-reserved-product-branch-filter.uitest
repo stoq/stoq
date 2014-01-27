@@ -25,13 +25,15 @@ GtkDialog(toplevel): title='Reserved Product Search', hidden
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Sale #'
             column: title='Status'
+            column: title='Code'
+            column: title='Category'
             column: title='Product', expand
             column: title='Sales Person', hidden
             column: title='Client', hidden
             column: title='Open Date'
             column: title='Price'
             column: title='Reserved'
-            row: 99, u'Quoting', u'The Funniest Joke in this Code', u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('1.000')
+            row: 99, u'Quoting', u'', None, u'The Funniest Joke in this Code', u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('1.000')
           GtkHBox(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>1</b>'

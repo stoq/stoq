@@ -268,7 +268,7 @@ class SoldItemsByBranchSearch(SearchDialog):
 class ReservedProductSearch(SearchDialog):
     title = _(u'Reserved Product Search')
     search_spec = ReservedProductView
-    size = (800, 450)
+    size = (850, 450)
 
     def setup_widgets(self):
         self.search.set_summary_label('quantity_decreased', label=_(u'Total:'),
@@ -285,6 +285,8 @@ class ReservedProductSearch(SearchDialog):
         return [IdentifierColumn('identifier', title=_('Sale #'),
                                  sorted=True, order=gtk.SORT_DESCENDING),
                 Column('status_str', title=_('Status'), data_type=str),
+                SearchColumn('product_code', title=_('Code'), data_type=str),
+                SearchColumn('product_category', title=_('Category'), data_type=str),
                 SearchColumn('description', title=_('Product'), data_type=str,
                              expand=True),
                 SearchColumn('salesperson_name', title=_('Sales Person'),

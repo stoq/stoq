@@ -1005,6 +1005,8 @@ class ReservedProductView(Viewable):
     open_date = Sale.open_date
     status = Sale.status
     description = Sellable.description
+    product_category = SellableCategory.description
+    product_code = Sellable.code
     client_name = PersonClient.name
     salesperson_name = PersonSales.name
 
@@ -1017,6 +1019,7 @@ class ReservedProductView(Viewable):
         Join(PersonSales, PersonSales.id == SalesPerson.person_id),
         LeftJoin(Client, Client.id == Sale.client_id),
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
+        LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id)
     ]
 
     clause = And(SaleItem.quantity_decreased > 0,
