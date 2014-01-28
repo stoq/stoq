@@ -80,6 +80,7 @@ class WorkOrderQuoteStartStep(StartSaleQuoteStep):
 
     def next_step(self):
         #self.wizard.wo_category = self.wo_categories.get_selected()
+        self.wizard.workorders = []
         return WorkOrderQuoteWorkOrderStep(
             self.store, self.wizard, self, self.model)
 

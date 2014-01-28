@@ -53,6 +53,7 @@ class OpticalStartSaleQuoteStep(WorkOrderQuoteStartStep):
     #
 
     def next_step(self):
+        self.wizard.workorders = []
         return OpticalWorkOrderStep(
             self.store, self.wizard, self, self.model)
 
