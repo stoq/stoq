@@ -315,7 +315,8 @@ class PurchaseApp(ShellApp):
 
         if one_selected:
             can_edit = (selection[0].status == PurchaseOrder.ORDER_PENDING or
-                        selection[0].status == PurchaseOrder.ORDER_QUOTING)
+                        selection[0].status == PurchaseOrder.ORDER_QUOTING or
+                        selection[0].status == PurchaseOrder.ORDER_CONFIRMED)
             can_finish = (selection[0].status == PurchaseOrder.ORDER_CONFIRMED and
                           selection[0].received_quantity > 0)
 
@@ -342,10 +343,10 @@ class PurchaseApp(ShellApp):
             raise ValueError('You should have only one order selected, '
                              'got %d instead' % qty)
         purchase = selected[0].purchase
-        if purchase.status == PurchaseOrder.ORDER_PENDING:
-            self._new_order(purchase, edit_mode=False)
-        else:
+        if purchase.status == PurchaseOrder.ORDER_QUOTING:
             self._quote_order(purchase)
+        else:
+            self._new_order(purchase, edit_mode=False)
 
     def _run_details_dialog(self):
         order_views = self.results.get_selected_rows()

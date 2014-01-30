@@ -234,9 +234,10 @@ class PurchaseItemStep(SellableItemStep):
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
-
         self.cost.set_editable(True)
         self.quantity.connect('validate', self._on_quantity__validate)
+        self.slave.klist.connect('selection-changed',
+                                 self._on_klist_selection_changed)
 
     #
     # SellableItemStep virtual methods
@@ -335,9 +336,12 @@ class PurchaseItemStep(SellableItemStep):
         if supplier_info and value < supplier_info.minimum_purchase:
             return ValidationError(_(u'Quantity below the minimum required '
                                      'by the supplier'))
-
         return super(PurchaseItemStep,
                      self).on_quantity__validate(widget, value)
+
+    def _on_klist_selection_changed(self, klist, data):
+        can_delete = all(product.quantity_received == 0 for product in data)
+        self.slave.delete_button.set_sensitive(can_delete)
 
 
 class PurchasePaymentStep(WizardEditorStep):
@@ -586,9 +590,12 @@ class PurchaseWizard(BaseWizard):
 
         # If we receive the order right after the purchase.
         self.receiving_model = None
-        if model.status != PurchaseOrder.ORDER_PENDING:
+        purchase_edit = [PurchaseOrder.ORDER_CONFIRMED,
+                         PurchaseOrder.ORDER_PENDING]
+
+        if not model.status in purchase_edit:
             raise ValueError('Invalid order status. It should '
-                             'be ORDER_PENDING')
+                             'be ORDER_PENDING or ORDER_CONFIRMED')
         first_step = StartPurchaseStep(self, store, model)
         BaseWizard.__init__(self, store, first_step, model, title=title,
                             edit_mode=edit_mode)
