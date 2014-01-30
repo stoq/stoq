@@ -933,6 +933,8 @@ class ProductBatchView(Viewable):
     batch_number = StorableBatch.batch_number
     batch_date = StorableBatch.create_date
     category = SellableCategory.description
+    manufacturer = ProductManufacturer.name
+    model = Product.model
 
     tables = [
         ProductStockItem,
@@ -940,6 +942,8 @@ class ProductBatchView(Viewable):
         Join(Storable, ProductStockItem.storable_id == Storable.id),
         Join(Product, Storable.product_id == Product.id),
         Join(Sellable, Product.sellable_id == Sellable.id),
+        Join(ProductManufacturer,
+             Product.manufacturer_id == ProductManufacturer.id),
         LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id)
     ]
 
