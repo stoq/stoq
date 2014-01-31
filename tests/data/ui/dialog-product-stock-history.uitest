@@ -57,7 +57,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 GtkLabel(): '<b>3.0</b>'
             GtkVBox(loan_vbox):
               ObjectList(loan_list, expand=True, fill=True):
-                column: title='Loan #'
+                column: title='#'
                 column: title='Batch'
                 column: title='Batch Date', hidden
                 column: title='Opened'

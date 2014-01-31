@@ -228,8 +228,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=Decimal)]
 
     def _get_loan_columns(self):
-        return [IdentifierColumn("loan_identifier", title=_("Loan #"),
-                                 sorted=True),
+        return [IdentifierColumn("loan_identifier", sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
