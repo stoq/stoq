@@ -325,6 +325,9 @@ class SaleClientEditor(BaseEditor):
                                                gtk.ICON_SIZE_MENU)
         self.client_details.set_sensitive(bool(client))
 
+    def on_confirm(self):
+        self.model.group.payer = self.model.client and self.model.client.person
+
     def _get_client(self):
         return self.store.get(Client, self.client.read())
 
