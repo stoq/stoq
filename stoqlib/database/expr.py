@@ -186,6 +186,25 @@ def compile_concat(compile, expr, state):
     return " || ".join(expr_compile(input_, state) for input_ in expr.inputs)
 
 
+class Between(Expr):
+    """Check if value is between start and end"""
+    # http://www.postgresql.org/docs/9.1/static/functions-comparison.html
+    __slots__ = ('value', 'start', 'end')
+
+    def __init__(self, value, start, end):
+        self.value = value
+        self.start = start
+        self.end = end
+
+
+@expr_compile.when(Between)
+def compile_between(compile, expr, state):
+    return ' %s BETWEEN %s AND %s ' % (
+        expr_compile(expr.value, state),
+        expr_compile(expr.start, state),
+        expr_compile(expr.end, state))
+
+
 def is_sql_identifier(identifier):
     return (not expr_compile.is_reserved_word(identifier) and
             is_safe_token(identifier))
