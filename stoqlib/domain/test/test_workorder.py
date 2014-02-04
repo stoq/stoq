@@ -577,7 +577,8 @@ class TestWorkOrder(DomainTest):
         for status in WorkOrder.statuses.keys():
             workorder.status = status
 
-            if status == WorkOrder.STATUS_WORK_FINISHED:
+            if status in [WorkOrder.STATUS_WORK_FINISHED,
+                          WorkOrder.STATUS_DELIVERED]:
                 self.assertTrue(workorder.can_reopen())
             else:
                 self.assertFalse(workorder.can_reopen())

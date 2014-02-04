@@ -921,11 +921,11 @@ class WorkOrder(Domain):
     def can_reopen(self):
         """Checks if this work order can be re-opened
 
-        A finished order can be reopened, but not after it's been delivered.
+        A finished or delivered order can be reopened.
 
         :returns: ``True`` if it can, ``False`` otherwise
         """
-        return self.status == self.STATUS_WORK_FINISHED
+        return self.is_finished()
 
     def can_reject(self):
         """Checks if the :obj:`.is_rejected` flag can be set
