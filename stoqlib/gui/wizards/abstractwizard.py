@@ -36,6 +36,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
+from kiwi.utils import gsignal
 from kiwi.python import Settable
 from storm.expr import And, Lower
 
@@ -247,6 +248,8 @@ class SellableItemSlave(BaseEditorSlave):
     and should also provide an acessor that returns the sellable object.
 
     """
+    gsignal('sellable-selected', object)
+
     gladefile = 'SellableItemSlave'
     proxy_widgets = ('quantity',
                      'unit_label',
@@ -560,6 +563,7 @@ class SellableItemSlave(BaseEditorSlave):
         self.quantity.set_sensitive(has_sellable)
         self.cost.set_sensitive(has_sellable and self.cost_editable)
         self._update_product_labels_visibility(has_storable)
+        self.emit('sellable-selected', sellable)
 
     def get_batch_items(self):
         """Get batch items for sellables inside this slave
