@@ -161,6 +161,9 @@ class TillDailyMovementReport(HTMLReport):
                                                      self.end_date)
         return _('Till movement on %s') % self.start_date
 
+    def get_namespace(self):
+        return dict(notes=[self.branch.get_description()])
+
     def has_in_payments(self):
         return bool(self.sales or self.lonely_in_payments)
 
