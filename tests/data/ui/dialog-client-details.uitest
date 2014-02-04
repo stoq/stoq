@@ -29,6 +29,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 GtkLabel(): '<b>$200.00</b>'
               GtkHButtonBox(pack-end):
                 GtkButton(expand=True, fill=True): 'Sale details', insensitive
+                GtkButton(expand=True, fill=True): 'Return sale', insensitive
             GtkVBox():
               ObjectList(expand=True, fill=True):
                 column: title='#'

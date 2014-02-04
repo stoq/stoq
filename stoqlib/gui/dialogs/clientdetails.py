@@ -33,6 +33,7 @@ from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Client
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -87,6 +88,11 @@ class DetailsTab(gtk.VBox):
                                self._on_klist__selection_changed)
 
         self.setup_widgets()
+
+    def refresh(self):
+        """Refreshes the list of respective tab."""
+        self.klist.clear()
+        self.klist.add_list(self.populate())
 
     def get_columns(self):
         """Returns a list of columns this tab should show."""
@@ -148,6 +154,36 @@ class SalesTab(DetailsTab):
         sales_summary_label.show()
         self.pack_start(sales_summary_label, False)
 
+        self.has_open_inventory = self._has_open_inventory()
+
+        if len(self.klist):
+            return_button = gtk.Button(_('Return sale'))
+            self.button_box.pack_start(return_button)
+            return_button.set_sensitive(bool(self.klist.get_selected()))
+            return_button.show()
+
+            self.button_box.return_button = return_button
+            return_button.connect('clicked', self._on_return_button__clicked)
+
+    def _has_open_inventory(self):
+        store = self._parent.store
+        has_open = Inventory.has_open(store, api.get_current_branch(store))
+        return bool(has_open)
+
+    def _return_sale(self):
+        from stoqlib.gui.slaves.saleslave import return_sale
+        sale_view = self.klist.get_selected()
+        with api.new_store() as store:
+            retval = return_sale(self.get_toplevel(),
+                                 store.fetch(sale_view.sale), store)
+        if retval:
+            self.refresh()
+
+    def _can_return_sale(self, sale_view):
+        if sale_view:
+            return sale_view.can_return() and not self.has_open_inventory
+        return False
+
     def get_columns(self):
         return [IdentifierColumn('identifier', sorted=True),
                 Column("invoice_number", title=_("Invoice #"),
@@ -167,6 +203,14 @@ class SalesTab(DetailsTab):
     def get_details_dialog_class(self):
         from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
         return SaleDetailsDialog
+
+    def _on_return_button__clicked(self, button):
+        self._return_sale()
+
+    def _on_klist__selection_changed(self, klist, data):
+        can_return = self._can_return_sale(data)
+        self.button_box.details_button.set_sensitive(bool(data))
+        self.button_box.return_button.set_sensitive(bool(can_return))
 
 
 class ReturnedSalesTab(DetailsTab):

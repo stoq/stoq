@@ -2028,6 +2028,8 @@ class ReturnedSaleView(Viewable):
     #: the |client|
     client = Client
 
+    branch = Branch
+
     #: the |returnedsale|
     returned_sale = ReturnedSale
 
@@ -2086,7 +2088,7 @@ class ReturnedSaleView(Viewable):
         LeftJoin(ReturnedSaleItem,
                  ReturnedSaleItem.returned_sale_id == ReturnedSale.id),
         LeftJoin(Sellable, Sellable.id == ReturnedSaleItem.sellable_id),
-        LeftJoin(Branch, Sale.branch_id == Branch.id),
+        LeftJoin(Branch, ReturnedSale.branch_id == Branch.id),
         LeftJoin(Client, Sale.client_id == Client.id),
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(LoginUser, LoginUser.id == ReturnedSale.responsible_id),
@@ -2099,7 +2101,8 @@ class ReturnedSaleView(Viewable):
     ]
 
     group_by = [id, sale_id, Sellable.id, client_id, branch_id, branch_name,
-                salesperson_name, client_name, LoginUser.id, Person_LoginUser.name]
+                salesperson_name, client_name, LoginUser.id,
+                Person_LoginUser.name, branch]
     #: Name of Sellable product
     product_name = Sellable.description
 

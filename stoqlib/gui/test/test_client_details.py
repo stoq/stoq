@@ -86,11 +86,20 @@ class TestClientDetails(GUITest):
         self.assertEquals(kwargs, {})
 
     @mock.patch('stoqlib.gui.dialogs.clientdetails.run_dialog')
-    def test_tab_details(self, run_dialog):
+    @mock.patch('stoqlib.gui.dialogs.clientdetails.api.new_store')
+    @mock.patch('stoqlib.gui.slaves.saleslave.return_sale')
+    def test_tab_details(self, return_sale, new_store, run_dialog):
+        new_store.return_value = self.store
         client = self.create_client()
         sale = self.create_sale(client=client)
-        self.create_returned_sale(sale)
+        self.create_sale_item(sale, product=True)
         self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
+        sale.order()
+        sale.confirm()
+
+        sale2 = self.create_sale(client=client)
+        self.create_returned_sale(sale2)
+
         self.create_workorder(client=client)
         dialog = ClientDetailsDialog(self.store, client)
 
@@ -101,6 +110,16 @@ class TestClientDetails(GUITest):
         args, kwargs = run_dialog.call_args
         self.assertEquals(args[0], SaleDetailsDialog)
         self.assertTrue(isinstance(kwargs['model'], SaleView))
+
+        # Test Sales tab return button
+        sales_tab = dialog.details_notebook.get_nth_page(0)
+        sales_tab.klist.select(sales_tab.klist[0])
+        sale_view = sales_tab.klist[0]
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.click(sales_tab.button_box.return_button)
+                return_sale.assert_called_once_with(sales_tab.get_toplevel(),
+                                                    sale_view.sale, self.store)
 
         # Test Returned Sales tab details button
         returned_sales_tab = dialog.details_notebook.get_nth_page(1)
