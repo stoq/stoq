@@ -116,7 +116,13 @@ class AdvancedSellableSearch(SearchEditor):
         self.search.set_query(self.executer_query)
 
     def executer_query(self, store):
-        results = store.find(self._table)
+        # If the viewable has a find_by_branch method, then lets use it instead
+        # of the generic find, to show only the stock for the current branch.
+        if hasattr(self._table, 'find_by_branch'):
+            branch = api.get_current_branch(store)
+            results = self._table.find_by_branch(store, branch)
+        else:
+            results = store.find(self._table)
         if self._query:
             return results.find(self._query)
         return results
