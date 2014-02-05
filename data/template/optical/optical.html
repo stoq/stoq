@@ -18,6 +18,19 @@
     <%include file="saledetails.html" />
   % endif
 
+  <div class="notes">
+    <b>${ _("Notes") }</b>
+  </div>
+
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                       if there is not enough space -->
+    <div>
+      <span class="signature">
+        <b>${ _("Client signature") }</b>
+      </span>
+    </div>
+  </section>
 
   <hr />
 
@@ -35,5 +48,5 @@
   </div>
   <hr/>
 % endfor
-
 </div>
+
