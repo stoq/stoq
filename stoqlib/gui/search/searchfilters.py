@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2013 Async Open Source
+## Copyright (C) 2005-2014 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -30,7 +30,9 @@ from decimal import Decimal
 import gobject
 import gtk
 from kiwi import ValueUnset
+from kiwi.environ import environ
 from kiwi.python import enum
+from kiwi.ui.pixbufutils import pixbuf_from_string
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyDateEntry
@@ -660,8 +662,13 @@ class StringSearchFilter(SearchFilter):
         self.entry.set_hint(_("Search"))
         self.entry.show_hint()
         self.entry.props.secondary_icon_sensitive = False
-        self.entry.set_icon_from_stock(gtk.ENTRY_ICON_PRIMARY,
-                                       gtk.STOCK_FIND)
+        data = environ.get_resource_string('stoq', 'pixmaps',
+                                           'stoq-funnel-16x16.png')
+        image = pixbuf_from_string(data)
+        self.entry.set_icon_from_pixbuf(gtk.ENTRY_ICON_PRIMARY,
+                                        image)
+        self.entry.set_icon_tooltip_text(gtk.ENTRY_ICON_PRIMARY,
+                                         _("Add a filter"))
         self.entry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY,
                                        gtk.STOCK_CLEAR)
         self.entry.set_icon_tooltip_text(gtk.ENTRY_ICON_SECONDARY,
@@ -751,6 +758,8 @@ class StringSearchFilter(SearchFilter):
     #
 
     def enable_advanced(self):
+        # Do not show the funnel icon if its an advanced filter
+        self.entry.set_icon_from_pixbuf(gtk.ENTRY_ICON_PRIMARY, None)
         self.mode.show()
 
     def set_label(self, label):
