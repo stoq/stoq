@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,9 @@
 
 import datetime
 
-from stoqlib.database.expr import Between
+from storm.expr import Cast
+
+from stoqlib.database.expr import Between, GenerateSeries, Field
 from stoqlib.domain.event import Event
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -56,3 +58,25 @@ class ViewableTest(DomainTest):
         Event(store=self.store, date=datetime.datetime(2012, 1, 11),
               event_type=0, description=u'')
         self.assertEquals(self.store.find(Event, query).count(), 2)
+
+    def test_generate_series_date(self):
+        a = datetime.datetime(2012, 1, 1)
+        b = datetime.datetime(2012, 4, 1)
+        series = GenerateSeries(Cast(a, 'timestamp'),
+                                Cast(b, 'timestamp'),
+                                Cast(u'1 month', 'interval')),
+
+        data = list(self.store.using(series).find(Field('generate_series', 'generate_series')))
+        self.assertEquals(len(data), 4)
+
+        self.assertEquals(data[0], a)
+        self.assertEquals(data[1], datetime.datetime(2012, 2, 1))
+        self.assertEquals(data[2], datetime.datetime(2012, 3, 1))
+        self.assertEquals(data[3], b)
+
+    def test_generate_series_integer(self):
+        series = GenerateSeries(5, 10),
+        data = list(self.store.using(series).find(Field('generate_series', 'generate_series')))
+        self.assertEquals(len(data), 6)
+
+        self.assertEquals(data, [5, 6, 7, 8, 9, 10])

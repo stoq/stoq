@@ -29,7 +29,7 @@ Most of them are specific to PostgreSQL
 """
 
 from storm.expr import (Expr, NamedFunc, PrefixExpr, SQL, ComparableExpr,
-                        compile as expr_compile,
+                        compile as expr_compile, FromExpr, Undef, EXPR,
                         is_safe_token)
 
 
@@ -203,6 +203,29 @@ def compile_between(compile, expr, state):
         expr_compile(expr.value, state),
         expr_compile(expr.start, state),
         expr_compile(expr.end, state))
+
+
+class GenerateSeries(FromExpr):
+    __slots__ = ('start', 'end', 'step')
+
+    def __init__(self, start, end, step=Undef):
+        self.start = start
+        self.end = end
+        self.step = step
+
+
+@expr_compile.when(GenerateSeries)
+def compile_generate_series(compile, expr, state):
+    state.push("context", EXPR)
+    if expr.step is Undef:
+        expr = 'generate_series(%s, %s)' % (expr_compile(expr.start, state),
+                                            expr_compile(expr.end, state))
+    else:
+        expr = 'generate_series(%s, %s, %s)' % (expr_compile(expr.start, state),
+                                                expr_compile(expr.end, state),
+                                                expr_compile(expr.step, state))
+    state.pop()
+    return expr
 
 
 def is_sql_identifier(identifier):
