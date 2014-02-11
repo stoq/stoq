@@ -159,7 +159,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     }
 
     frame_widgets = {
-        'frame_mva': (10, 40, 1, Decimal('0.1'), 1),
+        'frame_mva': (10, 60, 1, Decimal('0.1'), 1),
         'frame_mha': (40, 70, 1, Decimal('0.1'), 1),
         'frame_bridge': (5, 25, 1, Decimal('0.1'), 1),
     }
@@ -434,6 +434,11 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             # update distance
             distance = addition and (near - addition)
             getattr(self, eye + '_distance_spherical').update(distance)
+        elif last == ['addition']:
+            # The user didnt set neither near or distance. Just the addition.
+            # But we still need to update the near field.
+            near = addition and (distance + addition)
+            getattr(self, eye + '_near_spherical').update(near)
 
         if field == 'addition' and addition == 0:
             if near:

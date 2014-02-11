@@ -163,7 +163,7 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         slave = WorkOrderOpticalSlave(self.store, workorder)
 
         for widget_name, minv, maxv, prec, step_inc, page_inc in [
-            ('frame_mva', 10, 40, 1, Decimal('0.1'), 1),
+            ('frame_mva', 10, 60, 1, Decimal('0.1'), 1),
             ('frame_mha', 40, 70, 1, Decimal('0.1'), 1),
             ('frame_bridge', 5, 25, 1, Decimal('0.1'), 1),
         ]:
@@ -280,6 +280,8 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         workorder = self.create_workorder()
         slave = WorkOrderOpticalSlave(self.store, workorder)
 
+        slave.re_addition.update(Decimal("1"))
+        self.assertEquals(slave.re_near_spherical.get_value(), Decimal("1.0"))
         slave.le_distance_spherical.update(Decimal("5.0"))
         slave.le_addition.update(Decimal("1.0"))
         self.assertEquals(slave.le_near_spherical.get_value(), Decimal("6.0"))
