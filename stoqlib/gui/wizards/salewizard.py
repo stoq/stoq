@@ -824,7 +824,9 @@ class ConfirmSaleWizard(BaseWizard):
         # than one checkout may try to use the same invoice number.
         self.invoice_model = Settable(invoice_number=None,
                                       original_invoice=None)
-        if model.need_adjust_batches():
+
+        adjusted_batches = model.check_and_adjust_batches()
+        if not adjusted_batches:
             first_step = ConfirmSaleBatchStep(store, self, model, None)
         else:
             marker('running SalesPersonStep')

@@ -236,6 +236,47 @@ class TestSale(DomainTest):
         sale.add_sellable(product_with_batch.sellable)
         self.assertTrue(sale.need_adjust_batches())
 
+    def test_check_and_adjust_batches(self):
+        branch = get_current_branch(self.store)
+        sale = self.create_sale()
+
+        # Product without batch
+        product = self.create_product()
+        self.create_storable(product=product, branch=branch, stock=1)
+        sale.add_sellable(product.sellable)
+        self.assertEquals(sale.need_adjust_batches(), False)
+        adjusted_batches = sale.check_and_adjust_batches()
+        self.assertEquals(adjusted_batches, True)
+
+        # Product with 1 batch
+        product = self.create_product()
+        self.create_storable(product=product, is_batch=True, branch=branch,
+                             stock=1)
+        sale.status = Sale.STATUS_QUOTE
+        sale.add_sellable(product.sellable)
+        self.assertEquals(sale.need_adjust_batches(), True)
+        # Try adjust batches
+        adjusted_batches = sale.check_and_adjust_batches()
+        # Verify if the batches were adjusted
+        self.assertEquals(adjusted_batches, True)
+        self.assertEquals(sale.need_adjust_batches(), False)
+
+        # Product with 2 batches
+        product2 = self.create_product()
+        storable = self.create_storable(product=product2, branch=branch)
+        storable.is_batch = True
+        batch1 = self.create_storable_batch(storable=storable, batch_number=u'2')
+        batch2 = self.create_storable_batch(storable=storable, batch_number=u'3')
+        storable.increase_stock(1, branch, 0, None, batch=batch1)
+        storable.increase_stock(1, branch, 0, None, batch=batch2)
+        sale.add_sellable(product2.sellable)
+        self.assertEquals(sale.need_adjust_batches(), True)
+        # Try adjust batches
+        adjusted_batches = sale.check_and_adjust_batches()
+        # Verify if the batches not were adjusted
+        self.assertEquals(adjusted_batches, False)
+        self.assertEquals(sale.need_adjust_batches(), True)
+
     def test_order(self):
         sale = self.create_sale()
         sellable = self.create_sellable()

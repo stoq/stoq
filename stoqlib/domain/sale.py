@@ -1362,6 +1362,30 @@ class Sale(Domain):
         """
         return not self.get_items_missing_batch().is_empty()
 
+    def check_and_adjust_batches(self):
+        """ Check batches and perform a first adjustment when a sale item has
+        only one batch.
+
+        :returns: ``True`` if all items that need a batch were adjusted, or
+            ``False`` if there are items that were not possible to be adjusted.
+        """
+        # No batchs or batches already adjusted
+        if not self.need_adjust_batches():
+            return True
+
+        all_adjusted = True
+        sale_items = self.get_items_missing_batch()
+        # Set unique batch.
+        for item in sale_items:
+            storable = item.sellable.product_storable
+            available_batches = list(storable.get_available_batches(self.branch))
+            if len(available_batches) == 1:
+                item.batch = available_batches[0]
+            else:
+                all_adjusted = False
+
+        return all_adjusted
+
     def only_paid_with_money(self):
         """Find out if the sale is paid using money
 
