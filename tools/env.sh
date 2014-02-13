@@ -62,7 +62,7 @@ export PATH=$EXTRA_PATH\$PATH
 export PYTHONPATH=$EXTRA_PYTHONPATH\$PYTHONPATH
 
 # cd to the working tree, so we are ready to work!
-cd \$CHECKOUT
+cd $CHECKOUT
 EOF
 
 bash --rcfile $SCRIPT
