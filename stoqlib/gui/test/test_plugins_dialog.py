@@ -40,11 +40,12 @@ class TestPluginManagerDialog(GUITest):
         # Only list the oficial plugins (the ones on this repository), since
         # plugins on the same checkout dir will be identified too
         # and listed here, making the test fail with a false positive
-        for item in dialog.klist:
+        for item in dialog.klist[:]:
             if item.name not in oficial_plugins:
                 dialog.klist.remove(item)
+
         # Make sure all oficial plugins and only them are on the list
-        #self.assertEqual(set(klist), oficial_plugins)
+        self.assertEqual(set(i.name for i in dialog.klist), oficial_plugins)
         dialog.klist.select(dialog.klist[0])
         self.check_dialog(dialog, 'dialog-plugin-manager-confirm')
 
