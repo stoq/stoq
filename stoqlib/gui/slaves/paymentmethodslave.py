@@ -40,8 +40,14 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
-    def __init__(self, store=None, payment_type=None, default_method=None):
+    def __init__(self, store=None, payment_type=None, default_method=None,
+                 no_payments=False):
+        """
+        :param no_payments: if ``True``, add the option "No payments" that
+        doesn't create any payments.
+        """
         self._default_method = default_method
+        self._no_payments = no_payments
         self._widgets = {}
         self._methods = {}
         self._selected_method = None
@@ -53,23 +59,35 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         self.store = store
         self._setup_payment_methods(payment_type)
 
+    def _add_method(self, method, group):
+        if method:
+            method_name = method.method_name
+            description = method.description
+        else:
+            method_name = None
+            description = _("No payments")
+        widget = gtk.RadioButton(group, N_(description))
+        widget.connect('toggled', self._on_method__toggled)
+        widget.set_data('method', method)
+        self.methods_box.pack_start(widget, False, False, 6)
+        widget.show()
+
+        self._methods[method_name] = method
+        self._widgets[method_name] = widget
+        self.method_set_visible(method_name, True)
+        return widget
+
     def _setup_payment_methods(self, payment_type):
         methods = PaymentMethod.get_creatable_methods(
             self.store, payment_type, separate=False)
         group = None
         for method in methods:
-            method_name = method.method_name
-            widget = gtk.RadioButton(group, N_(method.description))
-            widget.connect('toggled', self._on_method__toggled)
-            widget.set_data('method', method)
+            widget = self._add_method(method, group)
             if group is None:
                 group = widget
-            self.methods_box.pack_start(widget, False, False, 6)
-            widget.show()
 
-            self._methods[method_name] = method
-            self._widgets[method_name] = widget
-            self.method_set_visible(method_name, True)
+        if self._no_payments:
+            self._add_method(None, group)
 
         if len(methods) == 1:
             self._default_method = methods[0].method_name

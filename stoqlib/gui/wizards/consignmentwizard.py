@@ -184,6 +184,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
                 total_charged = final.cost * to_sold
 
         if total_charged == 0:
+            #FIXME Gramatical error
             info(_(u'No payments was generated.'),
                  _(u'The changes performed does not require payment creation, '
                    'so this wizard will be finished.'))

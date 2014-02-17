@@ -13,6 +13,7 @@ GtkDialog(PluggableWizard): title='Purchase Finish', hidden
                   GtkRadioButton(padding=6): 'Bill'
                   GtkRadioButton(padding=6): 'Check'
                   GtkRadioButton(padding=6): 'Deposit'
+                  GtkRadioButton(padding=6): 'No payments'
                 GtkLabel(): 'Payment method:'
           GtkEventBox(step.method_slave_holder, expand=True, fill=True): slave MoneyMethodSlave is attached
             GtkFrame(frame1):

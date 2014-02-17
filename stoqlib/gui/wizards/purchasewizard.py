@@ -377,7 +377,8 @@ class PurchasePaymentStep(WizardEditorStep):
 
         self._ms = SelectPaymentMethodSlave(store=self.store,
                                             payment_type=Payment.TYPE_OUT,
-                                            default_method=self._method)
+                                            default_method=self._method,
+                                            no_payments=True)
         self._ms.connect_after('method-changed',
                                self._after_method_select__method_changed)
 
@@ -418,7 +419,9 @@ class PurchasePaymentStep(WizardEditorStep):
     #
 
     def validate_step(self):
-        return self.slave.finish()
+        if self.slave:
+            return self.slave.finish()
+        return True
 
     def next_step(self):
         return FinishPurchaseStep(self.store, self.wizard, self.order, self)
