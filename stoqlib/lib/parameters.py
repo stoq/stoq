@@ -672,6 +672,13 @@ _details = [
           u'stock decreases.'),
         bool, initial=False),
 
+    ParameterDetails(
+        u'SHOW_TOTAL_PAYMENTS_ON_TILL',
+        _(u'Till'),
+        _(u'Show total received payments of the day on till'),
+        _(u'When this paramater is True, show total of received payments.'),
+        bool, initial=False),
+
     # This parameter is tricky, we want to ask the user to fill it in when
     # upgrading from a previous version, but not if the user installed Stoq
     # from scratch. Some of the hacks involved with having 3 boolean values

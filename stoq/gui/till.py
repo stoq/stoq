@@ -40,9 +40,12 @@ from stoqlib.exceptions import (StoqlibError, TillError, SellError,
 from stoqlib.database.expr import Date
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.workorder import WorkOrder
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import yesno, warning
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.daterangedialog import DateRangeDialog
@@ -336,6 +339,17 @@ class TillApp(ShellApp):
         text = _(u"Total: %s") % converter.as_string(currency, balance)
         self.total_label.set_text(text)
 
+    def _update_payment_total(self):
+        balance = currency(self._get_total_paid_payment())
+        text = _(u"Total payments: %s") % converter.as_string(currency, balance)
+        self.total_payment_label.set_text(text)
+
+    def _get_total_paid_payment(self):
+        """Returns the total of payments of the day"""
+        payments = self.store.find(Payment,
+                                   Date(Payment.paid_date) == localtoday())
+        return payments.sum(Payment.paid_value) or 0
+
     def _get_till_balance(self):
         """Returns the balance of till operations"""
         try:
@@ -357,6 +371,12 @@ class TillApp(ShellApp):
 
         self.total_label.set_size('xx-large')
         self.total_label.set_bold(True)
+        if not sysparam.get_bool('SHOW_TOTAL_PAYMENTS_ON_TILL'):
+            self.total_payment_label.hide()
+        else:
+            self.total_payment_label.set_size('large')
+            self.total_payment_label.set_bold(True)
+            self.total_label.set_size('large')
 
         self.till_status_label.set_size('xx-large')
         self.till_status_label.set_bold(True)
@@ -459,6 +479,8 @@ class TillApp(ShellApp):
 
         self._update_toolbar_buttons()
         self._update_total()
+        if sysparam.get_bool('SHOW_TOTAL_PAYMENTS_ON_TILL'):
+            self._update_payment_total()
 
     #
     # Callbacks

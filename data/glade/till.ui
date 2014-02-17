@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="till">
     <property name="width_request">800</property>
@@ -54,11 +54,34 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="ProxyLabel" id="total_label">
+                          <object class="GtkVBox" id="vbox1">
                             <property name="visible">True</property>
-                            <property name="xalign">1</property>
-                            <property name="yalign">1</property>
-                            <property name="use_markup">True</property>
+                            <child>
+                              <object class="ProxyLabel" id="total_label">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="yalign">1</property>
+                                <property name="use_markup">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="ProxyLabel" id="total_payment_label">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="yalign">1</property>
+                                <property name="use_markup">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">True</property>
