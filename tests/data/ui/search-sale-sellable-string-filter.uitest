@@ -1,4 +1,4 @@
-search: SellableSearch
+search: SaleSellableSearch
 GtkDialog(toplevel): title='Item search', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
@@ -13,31 +13,30 @@ GtkDialog(toplevel): title='Item search', hidden
                   item: 'Contains All Words', selected
                   item: 'Contains Exactly'
                   item: 'Does Not Contain'
-                HintedEntry(search_entry, padding=6): ''
+                HintedEntry(search_entry, padding=6): 'cal'
               GtkButton(search_button): 'gtk-find'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Code'
-            column: title='Barcode'
-            column: title='Category'
+            column: title='Barcode', hidden
             column: title='Description', expand
             column: title='Manufacturer', hidden
             column: title='Model', hidden
             column: title='Price'
-            row: u'1598587594264', u'1598587594264', None, u'Ajuste Roupa', None, None, <currency $50>
-            row: u'1568749622849', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', None, None, <currency $150>
-            row: u'3569587451214', u'3569587451214', None, u'Lavagem Roupa', None, None, <currency $35>
-            row: u'1569854136511', u'1569854136511', None, u'Lavagem a Seco', None, None, <currency $55>
+            column: title='Category', hidden
+            column: title='Stock'
+            row: u'05', u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', Decimal('189.00'), u'Cal\xe7as Jeans', Decimal('3.000')
+            row: u'06', u'8596458216412', u'Cal\xe7a Brigilda', None, u'', Decimal('438.00'), u'Cal\xe7as Poliester', Decimal('3.000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden
             GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(new_button):
-              GtkButton(edit_button): insensitive
+              GtkButton(edit_button):
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
-      GtkButton(branch_stock_button, padding=6): 'Stock details', insensitive
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+      GtkButton(branch_stock_button, padding=6): 'Stock details'

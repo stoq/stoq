@@ -31,8 +31,11 @@ from kiwi.currency import currency
 from storm.expr import And, Ne
 
 from stoqlib.api import api
+from stoqlib.database.orm import ORMObject
+from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
+from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.productsearch import ProductBranchSearch
 from stoqlib.gui.search.searchcolumns import AccessorColumn, SearchColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
@@ -45,62 +48,38 @@ _ = stoqlib_gettext
 
 
 class SellableSearch(SearchEditor):
-    title = _('Search for sale items')
-    size = (750, 500)
+    title = _('Item search')
+    size = (800, 500)
+    model_list_lookup_attr = 'product_id'
+    footer_ok_label = _('_Select item')
     search_spec = SellableFullStockView
     editor_class = None
-    model_list_lookup_attr = 'product_id'
-    footer_ok_label = _('_Add sale items')
-    search_label = _('Show items matching:')
 
     def __init__(self, store, hide_footer=False, hide_toolbar=True,
-                 selection_mode=None, search_str=None,
-                 sale_items=None, quantity=None, double_click_confirm=False,
-                 info_message=None):
+                 selection_mode=None, search_str=None, search_spec=None,
+                 search_query=None, double_click_confirm=True, info_message=None):
         """
-        Create a new SellableSearch object.
         :param store: a store
         :param hide_footer: do I have to hide the dialog footer?
         :param hide_toolbar: do I have to hide the dialog toolbar?
         :param selection_mode: the kiwi list selection mode
-        :param search_str: FIXME
-        :param sale_items: optionally, a list of sellables which will be
-            used to deduct stock values
-        :param quantity: the quantity of stock to add to the order,
-            is necessary to supply if you supply an order.
+        :param search_str: If this search should already filter for some string
         :param double_click_confirm: If double click a item in the list should
             automatically confirm
         """
         if selection_mode is None:
             selection_mode = gtk.SELECTION_BROWSE
-        self._first_search = True
-        self._first_search_string = search_str
-        self.quantity = quantity
-        self._delivery_sellable = sysparam.get_object(store, 'DELIVERY_SERVICE').sellable
 
-        # FIXME: This dictionary should be used to deduct from the
-        #        current stock (in the current branch) and not others
-        self.current_sale_stock = {}
-        if sale_items:
-            if selection_mode == gtk.SELECTION_MULTIPLE:
-                raise TypeError("gtk.SELECTION_MULTIPLE is not supported "
-                                "when supplying an order")
-            if self.quantity is None:
-                raise TypeError("You need to specify a quantity "
-                                "when supplying an order")
-            for item in sale_items:
-                if item.sellable.product_storable:
-                    quantity = self.current_sale_stock.get(item.sellable.id, 0)
-                    quantity += item.quantity
-                    self.current_sale_stock[item.sellable.id] = quantity
+        self._search_query = search_query
+        self._delivery_sellable = sysparam.get_object(
+            store, 'DELIVERY_SERVICE').sellable
 
-        SearchEditor.__init__(self, store, search_spec=self.search_spec,
+        SearchEditor.__init__(self, store, search_spec=search_spec,
                               editor_class=self.editor_class,
                               hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode,
                               double_click_confirm=double_click_confirm)
-        self.set_ok_label(self.footer_ok_label)
 
         if info_message:
             self.set_message(info_message)
@@ -108,6 +87,10 @@ class SellableSearch(SearchEditor):
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
+
+    #
+    #  SearchEditor
+    #
 
     def key_shift_Return(self):
         self.confirm()
@@ -121,13 +104,12 @@ class SellableSearch(SearchEditor):
     def key_control_KP_Enter(self):
         self.confirm()
 
-    def confirm(self):
+    def confirm(self, retval=None):
         # FIXME: This is a hack, we need to do proper validation in the parent
-        if not self.ok_button.props.sensitive:
+        if retval is None and not self.ok_button.get_sensitive():
             return
-        super(SellableSearch, self).confirm()
+        super(SellableSearch, self).confirm(retval=retval)
 
-    #FIXME: maybe is better put this on base class or an interface
     def setup_widgets(self):
         self.branch_stock_button = self.add_button(label=_('Stock details'))
         self.branch_stock_button.show()
@@ -139,7 +121,150 @@ class SellableSearch(SearchEditor):
         self.search.set_query(self.executer_query)
 
     def get_columns(self):
-        """Hook called by SearchEditor"""
+        columns = [SearchColumn('code', title=_(u'Code'), data_type=str),
+                   SearchColumn('barcode', title=_('Barcode'), data_type=str,
+                                sort_func=sort_sellable_code, width=80),
+                   SearchColumn('category_description', title=_('Category'),
+                                data_type=str, width=120),
+                   SearchColumn('description', title=_('Description'),
+                                data_type=str, expand=True, sorted=True),
+                   SearchColumn('manufacturer', title=_('Manufacturer'),
+                                data_type=str, visible=False),
+                   SearchColumn('model', title=_('Model'),
+                                data_type=str, visible=False)]
+
+        if hasattr(self.search_spec, 'price'):
+            columns.append(SearchColumn('price',
+                                        title=_(u'Price'),
+                                        data_type=currency, visible=True))
+
+        if hasattr(self.search_spec, 'minimum_quantity'):
+            columns.append(SearchColumn('minimum_quantity',
+                                        title=_(u'Minimum Qty'),
+                                        data_type=Decimal, visible=False))
+
+        if hasattr(self.search_spec, 'stock'):
+            columns.append(SearchColumn('stock', title=_(u'In Stock'),
+                                        data_type=Decimal))
+
+        return columns
+
+    def update_widgets(self):
+        sellable_view = self.results.get_selected()
+        self.set_edit_button_sensitive(bool(sellable_view))
+        self.ok_button.set_sensitive(bool(sellable_view))
+
+        # Some viewables may not have the product (for viewables with only
+        # services). Also use hasattr for product since it may be None
+        storable = (getattr(sellable_view, 'product', None) and
+                    getattr(sellable_view.product, 'storable'))
+        self.branch_stock_button.set_sensitive(bool(storable))
+
+    def executer_query(self, store):
+        # If the viewable has a find_by_branch method, then lets use it instead
+        # of the generic find, to show only the stock for the current branch.
+        if hasattr(self.search_spec, 'find_by_branch'):
+            branch = api.get_current_branch(store)
+            results = self.search_spec.find_by_branch(store, branch)
+        else:
+            results = store.find(self.search_spec)
+
+        if self._search_query:
+            results = results.find(self._search_query)
+
+        if self._delivery_sellable:
+            results = results.find(And(
+                self.search_spec.status == Sellable.STATUS_AVAILABLE,
+                self.search_spec.id != self._delivery_sellable.id))
+
+        return results
+
+    #
+    # Callbacks
+    #
+
+    def on_branch_stock_button__clicked(self, widget):
+        viewable = self.results.get_selected()
+        product = viewable.product
+        if product and product.storable:
+            self.run_dialog(ProductBranchSearch, self, self.store,
+                            product.storable)
+
+
+class SaleSellableSearch(SellableSearch):
+    footer_ok_label = _('_Add sale items')
+    has_new_button = False
+
+    def __init__(self, store, hide_footer=False, hide_toolbar=True,
+                 search_str=None, search_query=None, info_message=None,
+                 sale_items=None, quantity=None):
+        """
+        :param sale_items: optionally, a list of sellables which will be
+            used to deduct stock values
+        :param quantity: the quantity of stock to add to the order,
+            is necessary to supply if you supply an order.
+        """
+        self._quantity = quantity
+        self._first_search = True
+        self._first_search_string = search_str
+        self._current_sale_stock = {}
+
+        if sale_items:
+            if self._quantity is None:
+                raise TypeError("You need to specify a quantity "
+                                "when supplying an order")
+            for item in sale_items:
+                if item.sellable.product_storable:
+                    quantity = self._current_sale_stock.get(item.sellable.id, 0)
+                    quantity += item.quantity
+                    self._current_sale_stock[item.sellable.id] = quantity
+
+        SellableSearch.__init__(self, store, hide_footer=hide_footer,
+                                hide_toolbar=hide_toolbar,
+                                search_str=search_str,
+                                search_query=search_query,
+                                info_message=info_message)
+
+    #
+    #  SellableSearch
+    #
+
+    def search_completed(self, results, states):
+        if not self._first_search:
+            if self._first_search_string != self.get_searchbar_search_string():
+                self.set_message(None)
+
+        if len(results) >= 1:
+            results.select(results[0])
+
+        self.search.focus_search_entry()
+        self._first_search = False
+
+    def executer_query(self, store):
+        results = super(SaleSellableSearch, self).executer_query(store)
+
+        # if we select a quantity which is not an integer, filter out
+        # sellables without a unit set
+        if self._quantity is not None and (self._quantity % 1) != 0:
+            results = results.find(Ne(Sellable.unit_id, None))
+
+        return results
+
+    def update_widgets(self):
+        super(SaleSellableSearch, self).update_widgets()
+
+        sellable_view = self.results.get_selected()
+        if not sellable_view:
+            return
+
+        sellable = sellable_view.sellable
+        if (sellable.product_storable and
+            self._quantity > self._get_available_stock(sellable_view)):
+            self.ok_button.set_sensitive(False)
+        else:
+            self.ok_button.set_sensitive(True)
+
+    def get_columns(self):
         return [SearchColumn('code', title=_('Code'), data_type=str,
                              sort_func=sort_sellable_code,
                              sorted=True),
@@ -160,66 +285,58 @@ class SellableSearch(SearchEditor):
                                format_func=format_quantity, width=90,
                                data_type=Decimal)]
 
-    def update_widgets(self):
-        sellable_view = self.results.get_selected()
-        self.set_edit_button_sensitive(bool(sellable_view))
-
-        sensitive = (sellable_view and sellable_view.product and
-                     sellable_view.product.storable)
-        self.branch_stock_button.set_sensitive(bool(sensitive))
-
-        if not sellable_view:
-            return
-        sellable = sellable_view.sellable
-        if (sellable.product_storable and
-            self.quantity > self._get_available_stock(sellable_view)):
-            self.ok_button.set_sensitive(False)
-        else:
-            self.ok_button.set_sensitive(True)
-
-    def search_completed(self, results, states):
-        if not self._first_search:
-            if self._first_search_string != self.get_searchbar_search_string():
-                self.set_message(None)
-
-        if len(results) >= 1:
-            results.select(results[0])
-
-        self.search.focus_search_entry()
-        self._first_search = False
-
     #
-    # Private
+    #  Private
     #
-
-    def executer_query(self, store):
-        queries = []
-
-        if self._delivery_sellable:
-            queries.append(And(
-                SellableFullStockView.status == Sellable.STATUS_AVAILABLE,
-                SellableFullStockView.id != self._delivery_sellable.id))
-        # If we select a quantity which is not an integer, filter out
-        # sellables without a unit set
-        if self.quantity is not None and (self.quantity % 1) != 0:
-            queries.append(Ne(Sellable.unit_id, None))
-
-        branch = api.get_current_branch(store)
-        results = SellableFullStockView.find_by_branch(store, branch)
-        if queries:
-            return results.find(And(*queries))
-        return results
 
     def _get_available_stock(self, sellable_view):
-        return sellable_view.stock - self.current_sale_stock.get(
+        return sellable_view.stock - self._current_sale_stock.get(
             sellable_view.id, 0)
 
-    #
-    # Callbacks
-    #
-    def on_branch_stock_button__clicked(self, widget):
-        viewable = self.results.get_selected()
-        product = viewable.product
-        if product and product.storable:
-            self.run_dialog(ProductBranchSearch, self, self.store,
-                            product.storable)
+
+class PurchaseSellableSearch(SellableSearch):
+    editor_class = ProductEditor
+
+    def __init__(self, store, hide_footer=False, hide_toolbar=False,
+                 search_str=None, search_spec=None, search_query=None,
+                 info_message=None, supplier=None):
+        self._supplier = supplier
+
+        SellableSearch.__init__(self, store, hide_footer=hide_footer,
+                                hide_toolbar=hide_toolbar,
+                                search_str=search_str, search_spec=search_spec,
+                                search_query=search_query,
+                                info_message=info_message)
+
+    def get_editor_model(self, model):
+        return model.product
+
+    def run_editor(self, obj=None):
+        store = api.new_store()
+        product = self.run_dialog(self.editor_class, self, store,
+                                  store.fetch(obj), visual_mode=self._read_only)
+
+        # This means we are creating a new product. After that, add the
+        # current supplier as the supplier for this product
+        if (obj is None and product and
+            not product.is_supplied_by(self._supplier)):
+            ProductSupplierInfo(store=store,
+                                supplier=store.fetch(self._supplier),
+                                product=product,
+                                base_cost=product.sellable.cost,
+                                is_main_supplier=True)
+
+        if store.confirm(product):
+            # If the return value is an ORMObject, fetch it from
+            # the right connection
+            if isinstance(product, ORMObject):
+                product = self.store.get(type(product), product.id)
+
+            # If we created a new object, confirm the dialog automatically
+            if obj is None:
+                self.confirm(product)
+                store.close()
+                return
+        store.close()
+
+        return product

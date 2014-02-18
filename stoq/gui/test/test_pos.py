@@ -45,7 +45,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
-from stoqlib.gui.search.sellablesearch import SellableSearch
+from stoqlib.gui.search.sellablesearch import SaleSellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 
 from stoq.gui.pos import PosApp, TemporarySaleItem
@@ -240,12 +240,10 @@ class TestPos(BaseGUITest):
             run_dialog.return_value = None
             self.activate(pos.barcode)
             run_dialog.assert_called_once_with(
-                SellableSearch, pos.store,
-                selection_mode=gtk.SELECTION_BROWSE,
+                SaleSellableSearch, pos.store,
                 search_str=u'item',
                 sale_items=pos.sale_items,
                 quantity=Decimal('1'),
-                double_click_confirm=True,
                 info_message=(u"The barcode 'item' does not exist. "
                               u"Searching for a product instead..."))
 

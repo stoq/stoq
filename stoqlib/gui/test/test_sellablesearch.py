@@ -28,15 +28,20 @@ import mock
 
 from stoq.gui.pos import TemporarySaleItem
 
-from stoqlib.gui.search.sellablesearch import SellableSearch
+from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.views import ProductFullStockView
+from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.search.sellablesearch import (SellableSearch,
+                                               PurchaseSellableSearch,
+                                               SaleSellableSearch)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
-class TestCallsSearch(GUITest):
+class TestSellableSearch(GUITest):
     def _show_search(self):
         search = SellableSearch(self.store)
         search.search.refresh()
-        search.results.select(search.results[0])
+        #search.results.select(search.results[0])
         return search
 
     def test_search(self):
@@ -48,22 +53,51 @@ class TestCallsSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'sellable-string-filter')
 
+
+class TestSaleSellableSearch(GUITest):
     @mock.patch('stoqlib.gui.search.sellablesearch.SellableSearch.set_message')
     def test_create(self, set_message):
         sellable = self.create_sellable()
         self.create_storable(product=sellable.product)
         sale_item = TemporarySaleItem(sellable=sellable, quantity=1)
 
-        search = SellableSearch(self.store, sale_items=[sale_item], quantity=1)
+        search = SaleSellableSearch(self.store,
+                                    sale_items=[sale_item], quantity=1)
 
-        self.assertRaises(TypeError, SellableSearch, self.store,
+        self.assertRaises(TypeError, SaleSellableSearch, self.store,
                           sale_items=[sale_item],
                           selection_mode=gtk.SELECTION_MULTIPLE)
-        self.assertRaises(TypeError, SellableSearch, self.store,
+        self.assertRaises(TypeError, SaleSellableSearch, self.store,
                           sale_items=[sale_item], quantity=None)
 
-        search = SellableSearch(self.store, info_message='test')
+        search = SaleSellableSearch(self.store)
+        search.search.refresh()
+        self.check_search(search, 'sale-sellable-no-filter')
+
+        search = SaleSellableSearch(self.store, info_message='test')
         set_message.assert_called_once_with('test')
 
-        search = SellableSearch(self.store, search_str='cal')
-        self.check_search(search, 'sellable-string-filter')
+        search = SaleSellableSearch(self.store, search_str='cal')
+        self.check_search(search, 'sale-sellable-string-filter')
+
+
+class TestPurchaseSellableSearch(GUITest):
+    @mock.patch('stoqlib.gui.search.searcheditor.api.new_store')
+    @mock.patch('stoqlib.gui.search.searcheditor.run_dialog')
+    def test_run_editor(self, run_dialog, new_store):
+        run_dialog.return_value = None
+        new_store.return_value = self.store
+        query = Sellable.get_unblocked_sellables_query(self.store)
+        dialog = PurchaseSellableSearch(store=self.store,
+                                        search_spec=ProductFullStockView,
+                                        search_query=query)
+        dialog.search.refresh()
+        dialog.results.select(dialog.results[0])
+        product = dialog.results[0].product
+
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.click(dialog._toolbar.edit_button)
+                run_dialog.assert_called_once_with(ProductEditor, dialog,
+                                                   self.store, product,
+                                                   visual_mode=False)

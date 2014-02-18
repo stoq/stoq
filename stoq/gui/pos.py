@@ -66,7 +66,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
-from stoqlib.gui.search.sellablesearch import SellableSearch
+from stoqlib.gui.search.sellablesearch import SaleSellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
 from stoqlib.gui.search.workordersearch import WorkOrderFinishedSearch
@@ -688,13 +688,11 @@ class PosApp(ShellApp):
 
     def _run_advanced_search(self, search_str=None, message=None):
         sellable_view_item = self.run_dialog(
-            SellableSearch,
+            SaleSellableSearch,
             self.store,
-            selection_mode=gtk.SELECTION_BROWSE,
             search_str=search_str,
             sale_items=self.sale_items,
             quantity=self.sellableitem_proxy.model.quantity,
-            double_click_confirm=True,
             info_message=message)
         if not sellable_view_item:
             self.barcode.grab_focus()

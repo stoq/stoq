@@ -26,7 +26,8 @@ import mock
 
 from stoqlib.database.viewable import Viewable
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.gui.wizards.abstractwizard import AdvancedSellableSearch
+from stoqlib.gui.search.sellablesearch import (SellableSearch,
+                                               PurchaseSellableSearch)
 from stoqlib.gui.wizards.loanwizard import (NewLoanWizard, LoanItemStep)
 from stoqlib.gui.wizards.productionwizard import (ProductionWizard, ProductionItemStep,
                                                   ProductionServiceStep)
@@ -46,6 +47,7 @@ class BaseTest(object):
     wizard_class = None
     step_class = None
     search_name = None
+    search_class = SellableSearch
 
     def setUp(self):
         super(BaseTest, self).setUp()
@@ -62,8 +64,8 @@ class BaseTest(object):
     def test_sellable_search(self):
         viewable, query = self.step.get_sellable_view_query()
         hide_toolbar = not self.step.sellable_editable
-        search = AdvancedSellableSearch(self.store, viewable, query=query,
-                                        hide_toolbar=hide_toolbar)
+        search = self.search_class(self.store, search_spec=viewable,
+                                   search_query=query, hide_toolbar=hide_toolbar)
         search.search.refresh()
         self.check_search(search, self.search_name)
 
@@ -95,12 +97,14 @@ class TestProductionItemStep(BaseTest, GUITest):
 class TestQuoteItemStep(BaseTest, GUITest):
     wizard_class = QuotePurchaseWizard
     step_class = QuoteItemStep
+    search_class = PurchaseSellableSearch
     search_name = 'item-step-quote-wizard'
 
 
 class TestPurchaseItemStep(BaseTest, GUITest):
     wizard_class = PurchaseWizard
     step_class = PurchaseItemStep
+    search_class = PurchaseSellableSearch
     search_name = 'item-step-purchase-wizard'
 
 

@@ -225,7 +225,6 @@ class TestSearchGeneric(DomainTest):
 
     # Those are base classes for other searches, and should not be instanciated
     ignored_classes = [
-        'AdvancedSellableSearch',
         '_BaseBillCheckSearch',
         'SearchEditor',
         'BasePersonSearch',

@@ -66,6 +66,7 @@ from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
 _ = stoqlib_gettext
 
 
+# TODO: Make this inherit from SellableSearch
 class ProductSearch(SearchEditor):
     title = _('Product Search')
     table = Product

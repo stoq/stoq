@@ -51,6 +51,7 @@ from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
+from stoqlib.gui.search.sellablesearch import PurchaseSellableSearch
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.utils.printing import print_report
@@ -200,6 +201,7 @@ class PurchaseItemStep(SellableItemStep):
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     sellable_editable = True
     item_editor = PurchaseItemEditor
+    sellable_search = PurchaseSellableSearch
 
     def _set_expected_receival_date(self, item):
         supplier = self.model.supplier
@@ -280,6 +282,9 @@ class PurchaseItemStep(SellableItemStep):
                                                     step_incr=1))
         self.quantity.set_value(minimum)
         self.cost.set_value(supplier_info.base_cost)
+
+    def get_sellable_search_extra_kwargs(self):
+        return dict(supplier=self.model.supplier)
 
     def get_columns(self):
         return [

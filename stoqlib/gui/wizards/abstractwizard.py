@@ -41,185 +41,27 @@ from kiwi.python import Settable
 from storm.expr import And, Lower
 
 from stoqlib.api import api
-from stoqlib.database.orm import ORMObject
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.product import Product, ProductSupplierInfo, StorableBatch
+from stoqlib.domain.product import Product, StorableBatch
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.views import (ProductFullStockItemView,
                                   ProductComponentView, SellableFullStockView,
                                   ProductWithStockView)
-from stoqlib.gui.search.searcheditor import SearchEditor
-from stoqlib.gui.search.productsearch import ProductBranchSearch
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import WizardSellableItemStepEvent
-from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.widgets.calculator import CalculatorPopup
-from stoqlib.lib.defaults import sort_sellable_code, MAX_INT
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
-
-
-# FIXME: Move this to stoqlib.gui.search.sellablesearch
-class AdvancedSellableSearch(SearchEditor):
-
-    title = _('Item search')
-    size = (800, 450)
-    has_new_button = True
-    editor_class = ProductEditor
-
-    def __init__(self, store, table, query=None, search_str=None,
-                 supplier=None, hide_toolbar=False):
-        """
-        :param item_step: The item step this search is for.
-        :param search_str: If this search should already filter for some string
-        :param supplier: If provided and a new product is created from this
-          search, then the created product will be associated with this
-          supplier.
-        :param hide_toolbar: if the search's toolbar, not allowing you
-          to create/edit sellables
-        """
-        self._table = table
-        self._query = query
-        self._supplier = supplier
-
-        SearchEditor.__init__(self, store, selection_mode=gtk.SELECTION_BROWSE,
-                              hide_footer=False, search_spec=self._table,
-                              double_click_confirm=True,
-                              hide_toolbar=hide_toolbar)
-        if search_str:
-            self.set_searchbar_search_string(search_str)
-            self.search.refresh()
-
-        self.set_ok_label(_('_Select item'))
-
-    #
-    # SearchDialog Hooks
-    #
-
-    def setup_widgets(self):
-        self.branch_stock_button = self.add_button(label=_('Stock details'))
-        self.branch_stock_button.show()
-        self.branch_stock_button.set_sensitive(False)
-
-    def create_filters(self):
-        self.set_text_field_columns(['description', 'barcode',
-                                     'category_description', 'code'])
-        self.search.set_query(self.executer_query)
-
-    def executer_query(self, store):
-        # If the viewable has a find_by_branch method, then lets use it instead
-        # of the generic find, to show only the stock for the current branch.
-        if hasattr(self._table, 'find_by_branch'):
-            branch = api.get_current_branch(store)
-            results = self._table.find_by_branch(store, branch)
-        else:
-            results = store.find(self._table)
-        if self._query:
-            return results.find(self._query)
-        return results
-
-    def update_widgets(self):
-        sellable_view = self.results.get_selected()
-        self.ok_button.set_sensitive(bool(sellable_view))
-
-        # Some viewables may not have the product (for viewables with only
-        # services). Also use hasattr for product since it may be None
-        sensitive = (hasattr(sellable_view, 'product') and
-                     hasattr(sellable_view.product, 'storable'))
-
-        if sensitive:
-            self.branch_stock_button.set_sensitive(bool(sellable_view.product.storable))
-        else:
-            self.branch_stock_button.set_sensitive(False)
-
-    def get_columns(self):
-        columns = [SearchColumn('code', title=_(u'Code'), data_type=str),
-                   SearchColumn('barcode', title=_('Barcode'), data_type=str,
-                                sort_func=sort_sellable_code, width=80),
-                   SearchColumn('category_description', title=_('Category'),
-                                data_type=str, width=120),
-                   SearchColumn('description', title=_('Description'),
-                                data_type=str, expand=True, sorted=True),
-                   SearchColumn('manufacturer', title=_('Manufacturer'),
-                                data_type=str, visible=False),
-                   SearchColumn('model', title=_('Model'),
-                                data_type=str, visible=False)]
-
-        if hasattr(self._table, 'price'):
-            columns.append(SearchColumn('price',
-                                        title=_(u'Price'),
-                                        data_type=currency, visible=True))
-
-        if hasattr(self._table, 'minimum_quantity'):
-            columns.append(SearchColumn('minimum_quantity',
-                                        title=_(u'Minimum Qty'),
-                                        data_type=Decimal, visible=False))
-
-        if hasattr(self._table, 'stock'):
-            columns.append(SearchColumn('stock', title=_(u'In Stock'),
-                                        data_type=Decimal))
-
-        return columns
-
-    #
-    # SearchEditor Hooks
-    #
-
-    def get_editor_model(self, model):
-        return model.product
-
-    def run_editor(self, obj=None):
-        store = api.new_store()
-        product = self.run_dialog(self.editor_class, self, store,
-                                  store.fetch(obj), visual_mode=self._read_only)
-
-        # This means we are creating a new product. After that, add the
-        # current supplier as the supplier for this product
-        if (obj is None and product
-            and not product.is_supplied_by(self._supplier)):
-            ProductSupplierInfo(store=store,
-                                supplier=store.fetch(self._supplier),
-                                product=product,
-                                base_cost=product.sellable.cost,
-                                is_main_supplier=True)
-
-        if store.confirm(product):
-            # If the return value is an ORMObject, fetch it from
-            # the right connection
-            if isinstance(product, ORMObject):
-                product = self.store.get(type(product), product.id)
-
-            # If we created a new object, confirm the dialog automatically
-            if obj is None:
-                self.confirm(product)
-                store.close()
-                return
-        store.close()
-
-        return product
-
-    #
-    # Callbacks
-    #
-
-    def on_branch_stock_button__clicked(self, widget):
-        viewable = self.results.get_selected()
-        storable = viewable.product.storable
-        if storable:
-            self.run_dialog(ProductBranchSearch, self, self.store, storable)
-
-#
-# Abstract Wizards for items
-#
 
 
 # FIXME: move this to stoqlib.gui.slaves.sellableslave
@@ -278,6 +120,9 @@ class SellableItemSlave(BaseEditorSlave):
     cost_editable = True
     item_editor = None
     batch_selection_dialog = None
+
+    #: the sellable search class used to select a sellable to add on the list
+    sellable_search = SellableSearch
 
     #: if we should allow to add an item without available batches (no stock).
     #: Can happen when selecting a product that control batches for decrease,
@@ -651,6 +496,16 @@ class SellableItemSlave(BaseEditorSlave):
         """
         return None
 
+    def get_sellable_search_extra_kwargs(self):
+        """Called to get extra args for :attr:`.sellable_search`
+
+        A subclass can override this and return a dict with extra keywords
+        to pass to the sellable search defined on the class.
+
+        :returns: a ``dict`` of extra keywords
+        """
+        return {}
+
     #
     #  Private
     #
@@ -691,19 +546,14 @@ class SellableItemSlave(BaseEditorSlave):
         self.slave.list_vbox.pack_start(self.summary, expand=False)
 
     def _run_advanced_search(self, search_str=None):
-        supplier = None
-        has_supplier = hasattr(self.model, 'supplier')
-        if has_supplier:
-            supplier = self.model.supplier
-
         table, query = self.get_sellable_view_query()
-        ret = run_dialog(AdvancedSellableSearch, self.get_parent(),
+        ret = run_dialog(self.sellable_search, self.get_parent(),
                          self.store,
-                         table=table,
-                         query=query,
+                         search_spec=table,
+                         search_query=query,
                          search_str=search_str,
-                         supplier=supplier,
-                         hide_toolbar=not self.sellable_editable)
+                         hide_toolbar=not self.sellable_editable,
+                         **self.get_sellable_search_extra_kwargs())
         if not ret:
             return
 
