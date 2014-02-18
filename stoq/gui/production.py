@@ -46,6 +46,7 @@ from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.production import ProductionReport
+from stoqlib.lib.message import yesno
 
 from stoq.gui.shell.shellapp import ShellApp
 
@@ -84,6 +85,12 @@ class ProductionApp(ShellApp):
             ('EditProduction', gtk.STOCK_EDIT, _('Edit production...'),
              group.get('production_edit'),
              _('Edit the selected production')),
+            ('FinalizeProduction', gtk.STOCK_APPLY, _('Finalize production...'),
+             None,
+             _('Finalize the selected production')),
+            ('CancelProduction', gtk.STOCK_CANCEL, _('Cancel production...'),
+             None,
+             _('Cancel the selected production')),
             ('ProductionDetails', gtk.STOCK_INFO, _('Production details...'),
              group.get('production_details'),
              _('Show production details and register produced items')),
@@ -112,8 +119,12 @@ class ProductionApp(ShellApp):
         self.SearchProductionItem.set_short_label(_("Search items"))
         self.StartProduction.set_short_label(_('Start'))
         self.EditProduction.set_short_label(_('Edit'))
+        self.FinalizeProduction.set_short_label(_('Finalize'))
+        self.CancelProduction.set_short_label(_('Cancel'))
         self.ProductionDetails.set_short_label(_('Details'))
+
         self.StartProduction.props.is_important = True
+        self.FinalizeProduction.props.is_important = True
 
     def create_ui(self):
         self.popup = self.uimanager.get_widget('/ProductionSelection')
@@ -164,6 +175,8 @@ class ProductionApp(ShellApp):
                 SearchColumn('open_date', title=_(u'Opened'),
                              data_type=datetime.date, width=80),
                 SearchColumn('close_date', title=_(u'Closed'),
+                             data_type=datetime.date, width=80),
+                SearchColumn('cancel_date', title=_(u'Cancelled'),
                              data_type=datetime.date, width=80)]
 
     def print_report(self, *args, **kwargs):
@@ -182,12 +195,18 @@ class ProductionApp(ShellApp):
         selected = self.results.get_selected()
         can_edit = False
         can_start = False
+        can_finalize = False
+        can_cancel = False
         if selected:
             can_edit = (selected.status == ProductionOrder.ORDER_OPENED or
                         selected.status == ProductionOrder.ORDER_WAITING)
             can_start = can_edit
+            can_finalize = (selected.status == ProductionOrder.ORDER_PRODUCING)
+            can_cancel = can_edit
         self.set_sensitive([self.EditProduction], can_edit)
         self.set_sensitive([self.StartProduction], can_start)
+        self.set_sensitive([self.FinalizeProduction], can_finalize)
+        self.set_sensitive([self.CancelProduction], can_cancel)
         self.set_sensitive([self.ProductionDetails], bool(selected))
 
     def _get_status_values(self):
@@ -208,7 +227,6 @@ class ProductionApp(ShellApp):
         store = api.new_store()
         order = store.fetch(self.results.get_selected())
         assert order is not None
-
         retval = self.run_dialog(StartProductionDialog, store, order)
         store.confirm(retval)
         store.close()
@@ -223,6 +241,29 @@ class ProductionApp(ShellApp):
         store.confirm(True)
         store.close()
 
+    def _finalize_production(self):
+        if not yesno(_("The selected order will be finalized."),
+                     gtk.RESPONSE_YES, _("Finalize order"), _("Don't finalize")):
+            return
+
+        with api.new_store() as store:
+            model = store.fetch(self.results.get_selected())
+            model.try_finalize_production(ignore_completion=True)
+
+        self.refresh()
+
+    def _cancel_production(self):
+        if not yesno(_("The selected order will be cancelled."),
+                     gtk.RESPONSE_YES, _("Cancel order"), _("Don't cancel")):
+            return
+
+        with api.new_store() as store:
+            order = self.results.get_selected()
+            model = store.fetch(order)
+            model.cancel()
+
+        self.refresh()
+
     #
     # Kiwi Callbacks
     #
@@ -234,6 +275,12 @@ class ProductionApp(ShellApp):
 
     def on_ProductionDetails__activate(self, widget):
         self._production_details()
+
+    def on_FinalizeProduction__activate(self, widget):
+        self._finalize_production()
+
+    def on_CancelProduction__activate(self, widget):
+        self._cancel_production()
 
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()

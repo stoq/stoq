@@ -31,6 +31,7 @@ GtkDialog(PluggableWizard): title='New Production', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: ProductionOrder<1>
+  cancel_date: None
   close_date: None
   description: u'Testing production wizard.'
   expected_start_date: None

@@ -69,11 +69,15 @@ class ProductionOrder(Domain):
     #: The production is in quality assurance phase.
     ORDER_QA = 4
 
+    #: Production cancelled
+    ORDER_CANCELLED = 5
+
     statuses = {ORDER_OPENED: _(u'Opened'),
                 ORDER_WAITING: _(u'Waiting'),
                 ORDER_PRODUCING: _(u'Producing'),
                 ORDER_CLOSED: _(u'Closed'),
                 ORDER_QA: _(u'Quality Assurance'),
+                ORDER_CANCELLED: _(u'Cancelled')
                 }
 
     #: A numeric identifier for this object. This value should be used instead of
@@ -89,6 +93,9 @@ class ProductionOrder(Domain):
 
     #: the date when the production order have been closed
     close_date = DateTimeCol(default=None)
+
+    #: the date when the production order have been cancelled
+    cancel_date = DateTimeCol(default=None)
 
     #: the production order description
     description = UnicodeCol(default=u'')
@@ -134,6 +141,24 @@ class ProductionOrder(Domain):
     # Public API
     #
 
+    def can_cancel(self):
+        """Checks if this order can be cancelled
+
+        Only orders that didn't start yet can be canceled, this means
+        only opened and waiting productions.
+        """
+        return self.status in [self.ORDER_OPENED,
+                               self.ORDER_WAITING]
+
+    def can_finalize(self):
+        """Checks if this order can be finalized
+
+        Only orders that didn't start yet can be canceled, this means
+        only producing and waiting qa productions.
+        """
+        return self.status in [self.ORDER_PRODUCING,
+                               self.ORDER_QA]
+
     def get_service_items(self):
         """Returns all the services needed by this production.
 
@@ -170,6 +195,13 @@ class ProductionOrder(Domain):
         self.start_date = localtoday()
         self.status = ProductionOrder.ORDER_PRODUCING
 
+    def cancel(self):
+        """Cancel the production when this is Open or Waiting.
+        """
+        assert self.can_cancel()
+        self.status = self.ORDER_CANCELLED
+        self.cancel_date = localtoday()
+
     def is_completely_produced(self):
         return all(i.is_completely_produced() for i in self.get_items())
 
@@ -182,14 +214,16 @@ class ProductionOrder(Domain):
 
         return all([item.test_passed for item in produced_items])
 
-    def try_finalize_production(self):
+    def try_finalize_production(self, ignore_completion=False):
         """When all items are completely produced, change the status of the
         production to CLOSED.
         """
-        assert (self.status == ProductionOrder.ORDER_PRODUCING or
-                self.status == ProductionOrder.ORDER_QA), self.status
+        assert self.can_finalize(), self.status
 
-        is_produced = self.is_completely_produced()
+        if ignore_completion:
+            is_produced = True
+        else:
+            is_produced = self.is_completely_produced()
         is_tested = self.is_completely_tested()
 
         if is_produced and not is_tested:

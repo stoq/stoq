@@ -188,6 +188,58 @@ class TestProductionOrder(DomainTest):
         order.description = u'Description'
         self.assertEquals(order.get_description(), u'Description')
 
+    def test_can_cancel(self):
+        order = self.create_production_order()
+        # We can cancel orders that have not yet started
+        order.status = ProductionOrder.ORDER_OPENED
+        self.assertTrue(order.can_cancel())
+        order.status = ProductionOrder.ORDER_WAITING
+        self.assertTrue(order.can_cancel())
+
+        # After a production starts, it is not possible to cancel
+        order.start_production()
+        self.assertFalse(order.can_cancel())
+
+    def test_can_finalize(self):
+        order = self.create_production_order()
+        # We can't cancel orders that havent yet started
+        order.status = ProductionOrder.ORDER_OPENED
+        self.assertFalse(order.can_finalize())
+        # After a production starts, we can cancel the orders
+        order.start_production()
+        self.assertTrue(order.can_finalize())
+        # We can finalize QA orders
+        order = self.create_production_order()
+        order.status = ProductionOrder.ORDER_QA
+        self.assertTrue(order.can_finalize())
+
+    def test_cancel(self):
+        # The order is cancelled when can_cancel returns true
+        order = self.create_production_order()
+        self.assertNotEqual(order.status, ProductionOrder.ORDER_CANCELLED)
+        order.cancel()
+        self.assertEquals(order.status, ProductionOrder.ORDER_CANCELLED)
+        order = self.create_production_order()
+        order.status = ProductionOrder.ORDER_WAITING
+        order.cancel()
+        self.assertEquals(order.status, ProductionOrder.ORDER_CANCELLED)
+        # We can't cancel started orders
+        order = self.create_production_order()
+        order.start_production()
+        with self.assertRaises(AssertionError):
+            order.cancel()
+
+    def test_try_finalize_production(self):
+        # The order can be cancelled when the production is started
+        order = self.create_production_order()
+        order.start_production()
+        order.try_finalize_production(ignore_completion=True)
+        self.assertEquals(order.status, ProductionOrder.ORDER_CLOSED)
+        order = self.create_production_order()
+        # This order didnt start. So we cannot finalize
+        with self.assertRaises(AssertionError):
+            order.try_finalize_production(ignore_completion=False)
+
 
 class TestProductionItem(DomainTest):
 

@@ -33,6 +33,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Start production...', insensitive
           GtkImageMenuItem(): 'Edit production...', insensitive
+          GtkImageMenuItem(): 'Finalize production...', insensitive
+          GtkImageMenuItem(): 'Cancel production...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Production products...'
@@ -67,6 +69,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
       GtkSeparatorToolItem():
       GtkToolButton(): 'Start', insensitive
       GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Finalize', insensitive
+      GtkToolButton(): 'Cancel', insensitive
       GtkToolButton(): 'Details', insensitive
     GtkVBox(expand=True, fill=True):
       GtkVBox(expand=True, fill=True):
@@ -85,6 +89,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                         item: 'Producing'
                         item: 'Closed'
                         item: 'Quality Assurance'
+                        item: 'Cancelled'
                     SearchFilter():
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden
@@ -100,6 +105,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                 column: title='Responsible'
                 column: title='Opened'
                 column: title='Closed'
+                column: title='Cancelled'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
@@ -118,3 +124,5 @@ GtkMenu(): hidden
   GtkSeparatorMenuItem():
   GtkImageMenuItem(): 'Start production...', insensitive
   GtkImageMenuItem(): 'Edit production...', insensitive
+  GtkImageMenuItem(): 'Finalize production...', insensitive
+  GtkImageMenuItem(): 'Cancel production...', insensitive

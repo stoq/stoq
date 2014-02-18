@@ -37,6 +37,8 @@
       <separator/>
       <menuitem action="StartProduction"/>
       <menuitem action="EditProduction"/>
+      <menuitem action="FinalizeProduction"/>
+      <menuitem action="CancelProduction"/>
     </menu>
   </placeholder>
   <menu action="SearchMenu">
@@ -53,12 +55,17 @@
   <separator/>
   <menuitem action="StartProduction"/>
   <menuitem action="EditProduction"/>
+  <menuitem action="FinalizeProduction"/>
+  <menuitem action="CancelProduction"/>
 </popup>
 <toolbar action="toolbar">
   <placeholder name="AppToolbarPH">
     <separator/>
     <toolitem action="StartProduction"/>
     <toolitem action="EditProduction"/>
+    <toolitem action="FinalizeProduction"/>
+    <toolitem action="EditProduction"/>
+    <toolitem action="CancelProduction"/>
     <toolitem action="ProductionDetails"/>
   </placeholder>
 </toolbar>
