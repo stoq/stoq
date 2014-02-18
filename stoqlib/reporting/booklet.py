@@ -109,7 +109,8 @@ class BookletReport(HTMLReport):
             items = sale.get_items()
             has_decimal = any([item.quantity - int(item.quantity) != 0
                                for item in items])
-            for item in items:
+            for item in sorted(items,
+                               key=operator.attrgetter('sellable.description')):
                 quantity = item.quantity if has_decimal else int(item.quantity)
                 demonstrative.append('%s x %s' % (quantity,
                                                   item.get_description()))
