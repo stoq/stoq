@@ -243,18 +243,17 @@ class TestCardPaymentView(DomainTest):
 class Test_BillandCheckPaymentView(DomainTest):
     def test_status_str(self):
         method = self.store.find(PaymentMethod, method_name=u'check').one()
-        self.create_payment(payment_type=Payment.TYPE_IN,
-                            method=method)
-        view = self.store.find(InCheckPaymentView)
-        status = view[0].status_str
-        self.assertEquals(status, u'To Pay')
+        p = self.create_payment(payment_type=Payment.TYPE_IN,
+                                method=method)
+        view = self.store.find(InCheckPaymentView, id=p.id).one()
+        self.assertEquals(view.status_str, u'Preview')
 
     def test_method_description(self):
         method = self.store.find(PaymentMethod, method_name=u'check').one()
-        self.create_payment(payment_type=Payment.TYPE_IN,
-                            method=method)
-        view = self.store.find(InCheckPaymentView)
-        self.assertEquals(view[0].method_description, u'Check')
+        p = self.create_payment(payment_type=Payment.TYPE_IN,
+                                method=method)
+        view = self.store.find(InCheckPaymentView, id=p.id).one()
+        self.assertEquals(view.method_description, u'Check')
 
 
 class TestPaymentChangeHistoryView(DomainTest):
