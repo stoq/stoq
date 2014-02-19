@@ -35,13 +35,14 @@ from stoqlib.database.orm import ORMObject
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
+from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.productsearch import ProductBranchSearch
 from stoqlib.gui.search.searchcolumns import AccessorColumn, SearchColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.lib.defaults import sort_sellable_code
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -70,6 +71,9 @@ class SellableSearch(SearchEditor):
         if selection_mode is None:
             selection_mode = gtk.SELECTION_BROWSE
 
+        self._image_viewer = None
+        self._first_search = True
+        self._first_search_string = search_str
         self._search_query = search_query
         self._delivery_sellable = sysparam.get_object(
             store, 'DELIVERY_SERVICE').sellable
@@ -104,6 +108,11 @@ class SellableSearch(SearchEditor):
     def key_control_KP_Enter(self):
         self.confirm()
 
+    def close(self):
+        # Make sure image viewer gets closed when this search closes
+        self._close_image_viewer()
+        super(SellableSearch, self).close()
+
     def confirm(self, retval=None):
         # FIXME: This is a hack, we need to do proper validation in the parent
         if retval is None and not self.ok_button.get_sensitive():
@@ -111,6 +120,11 @@ class SellableSearch(SearchEditor):
         super(SellableSearch, self).confirm(retval=retval)
 
     def setup_widgets(self):
+        self.image_viewer_toggler = gtk.CheckMenuItem(_("Show image viewer"))
+        self.popup = gtk.Menu()
+        self.popup.add(self.image_viewer_toggler)
+        self.popup.show_all()
+
         self.branch_stock_button = self.add_button(label=_('Stock details'))
         self.branch_stock_button.show()
         self.branch_stock_button.set_sensitive(False)
@@ -180,8 +194,51 @@ class SellableSearch(SearchEditor):
         return results
 
     #
+    #  Private
+    #
+
+    def _open_image_viewer(self):
+        assert self._image_viewer is None
+
+        self._image_viewer = SellableImageViewer(size=(325, 325))
+        self._update_image_viewer()
+        self._image_viewer.toplevel.connect(
+            'delete-event', self._on_image_viewer__delete_event)
+        self._image_viewer.show_all()
+
+    def _close_image_viewer(self):
+        if self._image_viewer is None:
+            return
+
+        self._image_viewer.destroy()
+        self._image_viewer = None
+
+    def _update_image_viewer(self):
+        if self._image_viewer is None:
+            return
+
+        row = self.results.get_selected()
+        self._image_viewer.set_sellable(row.sellable)
+
+    #
     # Callbacks
     #
+
+    def _on_image_viewer__delete_event(self, window, event):
+        self._image_viewer = None
+        self.image_viewer_toggler.set_active(False)
+
+    def on_image_viewer_toggler__toggled(self, item):
+        if item.get_active():
+            self._open_image_viewer()
+        else:
+            self._close_image_viewer()
+
+    def on_results__right_click(self, klist, row, event):
+        self.popup.popup(None, None, None, event.button, event.time)
+
+    def on_results__selection_changed(self, klist, row):
+        self._update_image_viewer()
 
     def on_branch_stock_button__clicked(self, widget):
         viewable = self.results.get_selected()
