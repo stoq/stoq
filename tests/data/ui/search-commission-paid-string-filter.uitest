@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
-      GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
@@ -55,10 +55,10 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
         GtkLabel(payments_label): 'Total payments: $ -10.00'
         GtkLabel(sales_label): 'Total sales: $ 0.00'
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
-        GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
+        GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
           GtkVBox(toplevel):
             GtkHBox(hbox1, fill=True):
               GtkLabel(label3, expand=True, fill=True):
@@ -66,6 +66,6 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
                 GtkButton(details_button): hidden
                 GtkButton(print_button): 'gtk-print'
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
       GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

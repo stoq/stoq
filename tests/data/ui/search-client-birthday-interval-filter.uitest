@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Client Search', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
-      GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
@@ -50,15 +50,15 @@ GtkDialog(toplevel): title='Client Search', hidden
             column: title='Birth Date', hidden
             row: u'Junio C. Hamano', None, u'', u'', u'', None, u'', u'', datetime.datetime(1972, 10, 15, 0, 0)
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):
             GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(new_button):
               GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
-        GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
+        GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
           GtkVBox(toplevel):
             GtkHBox(hbox1, fill=True):
               GtkLabel(label3, expand=True, fill=True):
@@ -66,5 +66,5 @@ GtkDialog(toplevel): title='Client Search', hidden
                 GtkButton(details_button): insensitive
                 GtkButton(print_button): 'gtk-print', hidden
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

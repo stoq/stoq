@@ -223,8 +223,9 @@ class SearchDialog(BasicDialog):
             button.set_image(image_widget)
         elif stock:
             button_set_image_with_label(button, stock, label)
-        self.action_area.set_layout(gtk.BUTTONBOX_START)
+        self.action_area.set_layout(gtk.BUTTONBOX_END)
         self.action_area.pack_start(button, False, False, 6)
+        self.action_area.set_child_secondary(button, True)
         return button
 
     def add_csv_button(self, name, prefix):

@@ -135,7 +135,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.header.show()
 
         self.main = gtk.EventBox()
-        self.vbox.pack_start(self.main)
+        self.vbox.pack_start(self.main, padding=6)
         self.main.show()
 
         # FIXME
@@ -148,34 +148,34 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.main_label.show()
 
         hbox1 = gtk.HBox()
-        self.vbox.pack_start(hbox1, False)
+        self.vbox.pack_start(hbox1, False, 6)
         hbox1.show()
 
         # FIXME
         # stoqlib/gui/dialogs/paymentmethod.py
         # stoqlib/gui/search/salesearch.py
         self.extra_holder = gtk.EventBox()
-        hbox1.pack_start(self.extra_holder, True, True)
+        hbox1.pack_start(self.extra_holder, True, True, 6)
         self.extra_holder.show()
 
         # FIXME
         # stoqlib/gui/search/productsearch.py
         # stoqlib/gui/search/servicesearch.py
         self.print_holder = gtk.EventBox()
-        hbox1.pack_start(self.print_holder, True, True)
+        hbox1.pack_start(self.print_holder, True, True, 6)
         self.print_holder.show()
 
         # FIXME
         # stoqlib/gui/base/search.py
         # stoqlib/gui/slaves/productslave.py
         self.details_holder = gtk.EventBox()
-        hbox1.pack_end(self.details_holder, False, False)
+        hbox1.pack_end(self.details_holder, False, False, 6)
         self.details_holder.show()
 
         # FIXME
         # stoqlib/gui/dialogs/quotedialog.py
         self.notice = gtk.EventBox()
-        hbox1.pack_start(self.notice, False)
+        hbox1.pack_start(self.notice, False, 6)
         self.notice.show()
 
         action_area = self.toplevel.get_action_area()
@@ -183,12 +183,12 @@ class BasicDialog(GladeDelegate, RunnableView):
         action_area.set_layout(gtk.BUTTONBOX_END)
 
         self.cancel_button = gtk.Button(stock=gtk.STOCK_CANCEL)
-        action_area.pack_start(self.cancel_button, True, True)
+        action_area.pack_start(self.cancel_button, True, True, 6)
         self.cancel_button.show()
 
         self.ok_button = gtk.Button(stock=gtk.STOCK_OK)
         self.ok_button.set_use_underline(True)
-        action_area.pack_start(self.ok_button, True, True)
+        action_area.pack_start(self.ok_button, True, True, 6)
         self.ok_button.show()
 
     def _setup_keyactions(self):
@@ -212,7 +212,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.action_area.set_layout(gtk.BUTTONBOX_END)
         self.help_button = gtk.Button(stock=gtk.STOCK_HELP)
         self.help_button.connect('clicked', on_help__clicked)
-        self.action_area.pack_start(self.help_button, expand=False, fill=False)
+        self.action_area.pack_start(self.help_button, False, False, 6)
         self.action_area.set_child_secondary(self.help_button, True)
         self.help_button.show()
 

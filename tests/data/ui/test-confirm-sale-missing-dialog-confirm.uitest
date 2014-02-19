@@ -4,21 +4,21 @@ GtkDialog(toplevel): title='Missing items', hidden
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header):
         GtkLabel(): '<b>The following items don&apos;t have enough stock to confirm.</b>'
-      GtkEventBox(main, expand=True, fill=True):
+      GtkEventBox(main, expand=True, fill=True, padding=6):
         ObjectList(_klist):
           column: title='Product', expand
           column: title='Ordered'
           column: title='Stock'
           row: 'desc', Decimal('1'), Decimal('0')
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
           GtkLabel(): 'Do you want to order the sale instead?'
-        GtkEventBox(details_holder, pack-end):
+        GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
 
 model: Storable<1>
   is_batch: False

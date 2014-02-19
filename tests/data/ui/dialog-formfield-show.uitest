@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Form fields', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header):
-      GtkEventBox(main, expand=True, fill=True):
+      GtkEventBox(main, expand=True, fill=True, padding=6):
         GtkHBox():
           ObjectList(forms):
             column: title='Description', expand
@@ -20,10 +20,10 @@ GtkDialog(toplevel): title='Form fields', hidden
               column: title='Visible'
               column: title='Mandatory'
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
-        GtkEventBox(details_holder, pack-end):
+        GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

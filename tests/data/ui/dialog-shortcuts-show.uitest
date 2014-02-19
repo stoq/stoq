@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Keyboard shortcuts', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header):
-      GtkEventBox(main, expand=True, fill=True):
+      GtkEventBox(main, expand=True, fill=True, padding=6):
         GtkHBox():
           ObjectList(categories):
             column: title='Label', expand
@@ -27,11 +27,11 @@ GtkDialog(toplevel): title='Keyboard shortcuts', hidden
               column: title='Shortcut'
             GtkLabel(_label, padding=6): 'You need to restart Stoq for the changes to take effect', hidden
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
-        GtkEventBox(details_holder, pack-end):
+        GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(padding=6): 'Reset defaults'
-      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

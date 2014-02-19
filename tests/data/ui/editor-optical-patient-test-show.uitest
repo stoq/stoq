@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): title='Test', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True): slave OpticalPatientTestEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave OpticalPatientTestEditor is attached
         GtkTable(table1):
           GtkLabel(label4):
           GtkLabel(label15): 'RE'
@@ -57,10 +57,10 @@ GtkDialog(main_dialog.toplevel): title='Test', hidden
           ProxyCheckButton(le_client_purchased): 'Client purchased'
           ProxyCheckButton(re_client_purchased): 'Client purchased'
       GtkHBox(fill=True):
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.notice, fill=True):
-        GtkEventBox(main_dialog.details_holder, pack-end):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): title='Products Adjustment', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True): slave InventoryAdjustmentEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave InventoryAdjustmentEditor is attached
         GtkVBox(toplevel):
           GtkTable(table1):
             ProxyLabel(kiwilabel1): 'Branch:'
@@ -33,10 +33,10 @@ GtkDialog(main_dialog.toplevel): title='Products Adjustment', hidden
             ProxyLabel(kiwilabel6):
             ProxyLabel(kiwilabel4):
       GtkHBox(fill=True):
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.notice, fill=True):
-        GtkEventBox(main_dialog.details_holder, pack-end):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-close'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): '_Finish Inventory'
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-close'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): '_Finish Inventory'

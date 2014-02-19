@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Branch Search', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
-      GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
@@ -33,15 +33,15 @@ GtkDialog(toplevel): title='Branch Search', hidden
             row: u'Stoq Com\xe9rcio Ltda ME', u'Stoq Elite Fashion', None, u'33227766', None, u'Active'
             row: u'Stoq Roupas e Acess\xf3rios Ltda', u'Moda Stoq', None, u'48763983', None, u'Active'
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):
             GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(new_button):
               GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
-        GtkEventBox(details_holder, pack-end):
+        GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

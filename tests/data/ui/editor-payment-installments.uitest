@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SalePaymentsEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SalePaymentsEditor is attached
         GtkVBox(toplevel):
           GtkEventBox(place_holder, expand=True, fill=True): slave MultipleMethodSlave is attached
             GtkVBox(toplevel):
@@ -41,10 +41,10 @@ GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
                     GtkLabel(change): 'Change:'
                     ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
       GtkHBox(fill=True):
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.notice, fill=True):
-        GtkEventBox(main_dialog.details_holder, pack-end):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

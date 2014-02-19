@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Search for sale items', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
-      GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
           GtkVBox(filters_box, fill=True):
             GtkHBox(hbox):
@@ -39,16 +39,16 @@ GtkDialog(toplevel): title='Search for sale items', hidden
             row: u'1598587594264', u'1598587594264', u'Ajuste Roupa', None, None, Decimal('50.00'), None, Decimal('0')
             row: u'3569587451214', u'3569587451214', u'Lavagem Roupa', None, None, Decimal('35.00'), None, Decimal('0')
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden
             GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(new_button):
               GtkButton(edit_button):
             GtkEventBox(toolbar_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
-        GtkEventBox(details_holder, pack-end):
+        GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
       GtkButton(branch_stock_button, padding=6): 'Stock details'

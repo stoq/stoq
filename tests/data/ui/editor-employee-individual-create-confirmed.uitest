@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True): slave EmployeeEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave EmployeeEditor is attached
         GtkHBox(toplevel):
           GtkEventBox(main_holder, expand=True, fill=True): slave IndividualEditorTemplate is attached
             GtkHBox(hbox1):
@@ -192,13 +192,13 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                         column: title='Role'
                         column: title='Salary'
       GtkHBox(fill=True):
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.notice, fill=True):
-        GtkEventBox(main_dialog.details_holder, pack-end):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
 
 model: Employee<1>
   admission_date: None

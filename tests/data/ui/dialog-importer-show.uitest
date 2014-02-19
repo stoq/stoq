@@ -6,15 +6,15 @@ GtkDialog(toplevel): title='Importer Dialog', hidden
       GtkEventBox(main):
         GtkLabel(main_label): 'Importing filename...'
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
         GtkEventBox(notice, fill=True):
-        GtkEventBox(details_holder, pack-end):
+        GtkEventBox(details_holder, padding=6, pack-end):
       GtkProgressBar(progressbar):
       GtkExpander(expander, expand=True, fill=True):
         stoqlib+gui+widgets+processview+ProcessView(process_view):
           GtkTextView():
         GtkLabel(): 'Details...'
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
