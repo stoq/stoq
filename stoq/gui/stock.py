@@ -210,6 +210,7 @@ class StockApp(ShellApp):
             self.transfers_bar.hide()
 
         self.uimanager.remove_ui(self.stock_ui)
+        self._close_image_viewer()
 
     def new_activate(self):
         if not self.NewReceiving.get_sensitive():
@@ -261,6 +262,23 @@ class StockApp(ShellApp):
     #
     # Private API
     #
+
+    def _open_image_viewer(self):
+        assert self.image_viewer is None
+
+        self.image_viewer = SellableImageViewer(size=(325, 325))
+        self.image_viewer.toplevel.connect(
+            'delete-event', self.on_image_viewer_closed)
+        self.image_viewer.show_all()
+
+        self._update_widgets()
+
+    def _close_image_viewer(self):
+        if self.image_viewer is None:
+            return
+
+        self.image_viewer.destroy()
+        self.image_viewer = None
 
     def _query(self, store):
         branch = self.branch_filter.get_state().value
@@ -368,8 +386,8 @@ class StockApp(ShellApp):
     #
 
     def on_image_viewer_closed(self, window, event):
-        self.StockPictureViewer.props.active = False
         self.image_viewer = None
+        self.StockPictureViewer.set_active(False)
 
     def on_results__has_rows(self, results, product):
         self._update_widgets()
@@ -427,20 +445,11 @@ class StockApp(ShellApp):
         if store.committed:
             self.refresh()
 
-    def on_StockPictureViewer__activate(self, button):
-        if self.image_viewer:
-            self.StockPictureViewer.props.active = False
-            self.image_viewer.destroy()
-            self.image_viewer = None
+    def on_StockPictureViewer__toggled(self, button):
+        if button.get_active():
+            self._open_image_viewer()
         else:
-            self.StockPictureViewer.props.active = True
-            self.image_viewer = SellableImageViewer(size=(325, 325))
-            selected = self.results.get_selected()
-            if selected:
-                self.image_viewer.set_sellable(selected.product.sellable)
-            self.image_viewer.toplevel.connect(
-                "delete-event", self.on_image_viewer_closed)
-            self.image_viewer.toplevel.set_property("visible", True)
+            self._close_image_viewer()
 
     # Loan
 
