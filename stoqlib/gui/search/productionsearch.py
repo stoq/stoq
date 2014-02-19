@@ -49,6 +49,13 @@ class ProductionProductSearch(ProductSearch):
     search_spec = ProductComponentWithClosedView
     editor_class = ProductionProductEditor
 
+    #
+    #  ProductSearch
+    #
+
+    def get_editor_class_for_object(self, obj):
+        return self.editor_class
+
     def executer_query(self, store):
         branch_id = self.branch_filter.get_state().value
         if branch_id is None:
@@ -56,10 +63,6 @@ class ProductionProductSearch(ProductSearch):
         else:
             branch = store.get(Branch, branch_id)
         return self.search_spec.find_by_branch(store, branch)
-
-    #
-    # SearchEditor Hooks
-    #
 
     def get_editor_model(self, product_component):
         return product_component.product

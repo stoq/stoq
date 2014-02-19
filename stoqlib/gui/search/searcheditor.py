@@ -228,10 +228,14 @@ class SearchEditor(SearchDialog):
     def run_dialog(self, editor_class, parent, *args, **kwargs):
         return run_dialog(editor_class, parent, *args, **kwargs)
 
+    def get_editor_class_for_object(self, obj):
+        return self.editor_class
+
     def run_editor(self, obj):
         store = api.new_store()
-        retval = self.run_dialog(self.editor_class, self, store,
-                                 store.fetch(obj), visual_mode=self._read_only)
+        retval = self.run_dialog(self.get_editor_class_for_object(obj), self,
+                                 store, store.fetch(obj),
+                                 visual_mode=self._read_only)
         if store.confirm(retval):
             # If the return value is an ORMObject, fetch it from
             # the right connection

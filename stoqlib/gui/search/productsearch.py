@@ -155,13 +155,11 @@ class ProductSearch(SearchEditor):
     # SearchEditor Hooks
     #
 
-    def run_editor(self, obj):
+    def get_editor_class_for_object(self, obj):
         if obj is None:
-            with api.new_store() as store:
-                rv = self.run_dialog(ProductCreateWizard, self, store)
-            return rv
+            return ProductCreateWizard
 
-        return super(ProductSearch, self).run_editor(obj)
+        return self.editor_class
 
     def get_editor_model(self, product_full_stock_view):
         return product_full_stock_view.product
