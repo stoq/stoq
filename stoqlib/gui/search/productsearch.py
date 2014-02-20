@@ -53,6 +53,7 @@ from stoqlib.gui.search.searchdialog import SearchDialog, SearchDialogPrintSlave
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchfilters import (DateSearchFilter, ComboSearchFilter,
                                               Today)
+from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 from stoqlib.lib.defaults import sort_sellable_code
@@ -66,43 +67,39 @@ from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
 _ = stoqlib_gettext
 
 
-# TODO: Make this inherit from SellableSearch
-class ProductSearch(SearchEditor):
+class ProductSearch(SellableSearch):
     title = _('Product Search')
     table = Product
-    size = (775, 450)
     search_spec = ProductFullWithClosedStockView
     editor_class = ProductEditor
     report_class = ProductReport
+    has_branch_filter = True
+    has_status_filter = True
+    has_print_price_button = True
+    csv_data = (_("Product"), _("product"))
     footer_ok_label = _('Add products')
 
     def __init__(self, store, hide_footer=True, hide_toolbar=False,
-                 selection_mode=None,
-                 hide_cost_column=False, use_product_statuses=None,
-                 hide_price_column=False):
+                 hide_cost_column=False, hide_price_column=False,
+                 double_click_confirm=False):
         """
-        Create a new ProductSearch object.
         :param store: a store
         :param hide_footer: do I have to hide the dialog footer?
         :param hide_toolbar: do I have to hide the dialog toolbar?
-        :param selection_mode: the kiwi list selection mode
         :param hide_cost_column: if it's True, no need to show the
                                  column 'cost'
-        :param use_product_statuses: a list instance that, if provided, will
-                                     overwrite the statuses list defined in
-                                     get_filter_slave method
         :param hide_price_column: if it's True no need to show the
                                   column 'price'
         """
-        if selection_mode is None:
-            selection_mode = gtk.SELECTION_BROWSE
-        self.use_product_statuses = use_product_statuses
         self.hide_cost_column = hide_cost_column
         self.hide_price_column = hide_price_column
-        SearchEditor.__init__(self, store, hide_footer=hide_footer,
-                              hide_toolbar=hide_toolbar,
-                              selection_mode=selection_mode)
-        self._setup_print_slave()
+        SellableSearch.__init__(self, store, hide_footer=hide_footer,
+                                hide_toolbar=hide_toolbar,
+                                double_click_confirm=double_click_confirm)
+        if self.has_print_price_button:
+            self._setup_print_slave()
+        else:
+            self._print_slave = None
 
     def _setup_print_slave(self):
         self._print_slave = SearchDialogPrintSlave()
@@ -111,47 +108,39 @@ class ProductSearch(SearchEditor):
         self.attach_slave('print_holder', self._print_slave)
         self._print_slave.connect('print', self.on_print_price_button_clicked)
         self._print_slave.print_price_button.set_sensitive(False)
-        self.results.connect('has-rows', self._has_rows)
 
     def on_print_price_button_clicked(self, button):
         print_report(ProductPriceReport, list(self.results),
                      filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
 
-    def _has_rows(self, results, obj):
-        SearchEditor._has_rows(self, results, obj)
-        self._print_slave.print_price_button.set_sensitive(obj)
-
     #
-    # SearchDialog Hooks
+    #  ProductSearch
     #
 
     def setup_widgets(self):
-        self.add_csv_button(_('Product'), _('product'))
+        super(ProductSearch, self).setup_widgets()
 
-        self.branch_stock_button = self.add_button(label=_('Stocks details'))
-        self.branch_stock_button.show()
-        self.branch_stock_button.set_sensitive(False)
+        if self.csv_data is not None:
+            self.add_csv_button(*self.csv_data)
 
     def create_filters(self):
-        self.set_text_field_columns(['code', 'description', 'barcode',
-                                     'category_description'])
-        self.search.set_query(self.executer_query)
+        super(ProductSearch, self).create_filters()
 
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=[])
-        self.branch_filter = branch_filter
+        if self.has_branch_filter:
+            branch_filter = self.create_branch_filter(_('In branch:'))
+            self.add_filter(branch_filter, columns=[])
+            self.branch_filter = branch_filter
+        else:
+            self.branch_filter = None
 
-        # Status
-        status_filter = self.create_sellable_filter()
-        self.add_filter(status_filter, columns=['status'],
-                        position=SearchFilterPosition.TOP)
-        self.status_filter = status_filter
-
-    #
-    # SearchEditor Hooks
-    #
+        if self.has_status_filter:
+            status_filter = self.create_sellable_filter()
+            self.add_filter(status_filter, columns=['status'],
+                            position=SearchFilterPosition.TOP)
+            self.status_filter = status_filter
+        else:
+            self.status_filter = None
 
     def get_editor_class_for_object(self, obj):
         if obj is None:
@@ -206,15 +195,9 @@ class ProductSearch(SearchEditor):
     # Callbacks
     #
 
-    def on_results__selection_changed(self, widget, selection):
-        enable_details = selection and selection.product.storable
-        self.branch_stock_button.set_sensitive(bool(enable_details))
-
-    def on_branch_stock_button__clicked(self, widget):
-        product_viewable = self.get_selection()
-        if product_viewable:
-            self.run_dialog(ProductBranchSearch, self, self.store,
-                            product_viewable.product.storable)
+    def on_results__has_rows(self, results, obj):
+        if self._print_slave is not None:
+            self._print_slave.print_price_button.set_sensitive(obj)
 
 
 def format_data(data):
@@ -224,16 +207,21 @@ def format_data(data):
     return format_quantity(data)
 
 
-class ProductSearchQuantity(SearchDialog):
+class ProductSearchQuantity(ProductSearch):
     title = _('Product History Search')
-    size = (775, 450)
     table = search_spec = ProductQuantityView
     report_class = ProductQuantityReport
+    csv_data = None
     advanced_search = False
+    has_print_price_button = False
     show_production_columns = False
 
+    def __init__(self, store, hide_footer=True, hide_toolbar=True):
+        ProductSearch.__init__(self, store, hide_footer=hide_footer,
+                               hide_toolbar=hide_toolbar)
+
     #
-    # SearchDialog Hooks
+    #  ProductSearch
     #
 
     def create_filters(self):
@@ -256,10 +244,6 @@ class ProductSearchQuantity(SearchDialog):
         if not api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             # remove 'Any' option from branch_filter
             self.branch_filter.combo.remove_text(0)
-
-    #
-    # SearchEditor Hooks
-    #
 
     def get_columns(self):
         return [Column('code', title=_('Code'), data_type=str,
@@ -290,15 +274,20 @@ class ProductSearchQuantity(SearchDialog):
                        visible=self.show_production_columns, )]
 
 
-class ProductsSoldSearch(SearchDialog):
+class ProductsSoldSearch(ProductSearch):
     title = _('Products Sold Search')
-    size = (775, 450)
     table = search_spec = SoldItemView
     report_class = ProductsSoldReport
+    csv_data = None
+    has_print_price_button = False
     advanced_search = False
 
+    def __init__(self, store, hide_footer=True, hide_toolbar=True):
+        ProductSearch.__init__(self, store, hide_footer=hide_footer,
+                               hide_toolbar=hide_toolbar)
+
     #
-    # SearchDialog Hooks
+    #  ProductSearch
     #
 
     def create_filters(self):
@@ -334,15 +323,12 @@ class ProductsSoldSearch(SearchDialog):
             date = (date.start, date.end)
 
         return self.table.find_by_branch_date(store, branch, date)
-    #
-    # SearchEditor Hooks
-    #
 
     def get_columns(self):
         return [Column('code', title=_('Code'), data_type=str,
-                       sorted=True, width=130),
-                Column('description', title=_('Description'), data_type=str,
-                       width=300),
+                       sorted=True),
+                Column('description', title=_('Description'),
+                       data_type=str, expand=True),
                 Column('quantity', title=_('Sold'),
                        format_func=format_data,
                        data_type=Decimal),
@@ -350,23 +336,27 @@ class ProductsSoldSearch(SearchDialog):
                        data_type=currency), ]
 
 
-class ProductStockSearch(SearchEditor):
+class ProductStockSearch(ProductSearch):
     title = _('Product Stock Search')
-    size = (800, 450)
     # FIXME: This search needs another viewable, since ProductFullStockView
     # cannot filter the branch of the purchase, when counting the number of
     # purchased orders by branch
     table = search_spec = ProductFullStockItemView
-    report_class = ProductStockReport
     editor_class = ProductStockEditor
+    report_class = ProductStockReport
+    csv_data = None
+    has_print_price_button = False
     has_new_button = False
+    has_status_filter = False
     advanced_search = True
 
     #
-    # SearchDialog Hooks
+    #  ProductSearch
     #
 
     def setup_widgets(self):
+        super(ProductStockSearch, self).setup_widgets()
+
         difference_label = gtk.Label()
         difference_label.set_markup(
             "<small><b>%s</b></small>"
@@ -374,21 +364,6 @@ class ProductStockSearch(SearchEditor):
                            "IN STOCK minus MINIMUM columns")))
         difference_label.show()
         self.search.vbox.pack_end(difference_label, False, False, 6)
-
-    def create_filters(self):
-        self.set_text_field_columns(['description', 'category_description'])
-        self.search.set_query(self.executer_query)
-
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=[])
-        self.branch_filter = branch_filter
-
-    #
-    # SearchEditor Hooks
-    #
-
-    def get_editor_model(self, model):
-        return model.product
 
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), data_type=str,
@@ -434,57 +409,36 @@ class ProductClosedStockSearch(ProductSearch):
     title = _('Closed Product Stock Search')
     table = search_spec = ProductClosedStockView
     report_class = ProductClosedStockReport
+    has_status_filter = False
+    has_print_price_button = False
     has_new_button = False
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True,
-                 selection_mode=None,
-                 hide_cost_column=True, use_product_statuses=None,
-                 hide_price_column=True):
-        if selection_mode is None:
-            selection_mode = gtk.SELECTION_BROWSE
+                 hide_cost_column=True, hide_price_column=True):
         ProductSearch.__init__(self, store, hide_footer, hide_toolbar,
-                               selection_mode, hide_cost_column,
-                               use_product_statuses, hide_price_column)
-
-    def create_filters(self):
-        self.set_text_field_columns(['description', 'barcode',
-                                     'category_description'])
-        self.search.set_query(self.executer_query)
-
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=[])
-        self.branch_filter = branch_filter
-
-    def _setup_print_slave(self):
-        pass
-
-    def _has_rows(self, results, obj):
-        SearchEditor._has_rows(self, results, obj)
+                               hide_cost_column=hide_cost_column,
+                               hide_price_column=hide_price_column)
 
 
-class ProductBatchSearch(SearchEditor):
+class ProductBatchSearch(ProductSearch):
     title = _('Batch Search')
     table = StorableBatch
-    size = (800, 450)
     search_spec = ProductBatchView
+    has_print_price_button = False
+    csv_data = (_('Batch'), _('batch'))
 
-    def __init__(self, store):
-        SearchEditor.__init__(self, store, hide_footer=True,
-                              hide_toolbar=True)
+    def __init__(self, store, hide_footer=True, hide_toolbar=True):
+        ProductSearch.__init__(self, store, hide_footer=hide_footer,
+                               hide_toolbar=hide_toolbar)
 
     #
-    # SearchDialog Hooks
+    #  ProductSearch
     #
 
     def setup_widgets(self):
-        self.add_csv_button(_('Batch'), _('batch'))
+        super(ProductBatchSearch, self).setup_widgets()
         self.search.set_summary_label('quantity', label=(u'Total:'),
                                       format='<b>%s</b>')
-
-        self.branch_stock_button = self.add_button(label=_('Stocks details'))
-        self.branch_stock_button.show()
-        self.branch_stock_button.set_sensitive(False)
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'batch_number'])
@@ -497,10 +451,6 @@ class ProductBatchSearch(SearchEditor):
         # Dont set a limit here, otherwise it might break the summary
         executer = self.search.get_query_executer()
         executer.set_limit(-1)
-
-    #
-    # SearchEditor Hooks
-    #
 
     def get_columns(self):
         cols = [SearchColumn('category', title=_('Category'), data_type=str),
@@ -515,20 +465,6 @@ class ProductBatchSearch(SearchEditor):
                              data_type=datetime.date),
                 SearchColumn('quantity', title=_('Qty'), data_type=Decimal)]
         return cols
-
-    #
-    # Callbacks
-    #
-
-    def on_results__selection_changed(self, widget, selection):
-        enable_details = selection and selection.product.storable
-        self.branch_stock_button.set_sensitive(bool(enable_details))
-
-    def on_branch_stock_button__clicked(self, widget):
-        product_viewable = self.get_selection()
-        if product_viewable:
-            self.run_dialog(ProductBranchSearch, self, self.store,
-                            product_viewable.product.storable)
 
 
 class ProductBrandSearch(SearchEditor):

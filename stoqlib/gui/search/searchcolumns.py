@@ -76,6 +76,7 @@ class SearchColumn(Column):
         """
         """
         self.long_title = long_title
+        # FIXME: This is not being used at the moment
         self.valid_values = valid_values
         self.search_attribute = search_attribute
         self.sensitive = True

@@ -29,8 +29,8 @@ from decimal import Decimal
 from stoqlib.domain.views import PurchasedItemAndStockView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
+from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import SearchColumn, Column
-from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchoptions import (Any, Today, ThisWeek, NextWeek,
                                               ThisMonth, NextMonth)
 from stoqlib.lib.translation import stoqlib_gettext
@@ -39,22 +39,20 @@ from stoqlib.reporting.purchase import PurchasedItemsReport
 _ = stoqlib_gettext
 
 
-class PurchasedItemsSearch(SearchEditor):
+class PurchasedItemsSearch(ProductSearch):
     title = _('Purchased Items Search')
-    size = (780, 450)
     search_spec = PurchasedItemAndStockView
     editor_class = PurchaseItemEditor
     report_class = PurchasedItemsReport
-
-    def __init__(self, store):
-        SearchEditor.__init__(self, store=store)
-        self.hide_new_button()
+    csv_data = None
+    has_print_price_button = False
+    has_new_button = False
 
     def _get_date_options(self):
         return [Any, Today, ThisWeek, NextWeek, ThisMonth, NextMonth]
 
     #
-    # SearchDialog Hooks
+    #  ProductSearch
     #
 
     def create_filters(self):
@@ -64,14 +62,6 @@ class PurchasedItemsSearch(SearchEditor):
         self.branch_filter = self.create_branch_filter(_('In branch:'))
         self.add_filter(self.branch_filter, columns=['branch_id'],
                         position=SearchFilterPosition.TOP)
-
-    #
-    # SearchEditor Hooks
-    #
-
-    def update_widgets(self):
-        selected = self.results.get_selected() is not None
-        self.set_edit_button_sensitive(selected)
 
     def get_columns(self):
         return [SearchColumn('description', title=_('Description'), data_type=str,

@@ -55,3 +55,4 @@ GtkDialog(toplevel): title='Product Stock Search', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+      GtkButton(branch_stock_button, padding=6): 'Stock details', insensitive

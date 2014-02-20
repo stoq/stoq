@@ -355,16 +355,23 @@ class ProductQuantityView(Viewable):
     :cvar date_received: the date of product's received
      """
 
-    id = ProductHistory.sellable_id
-    branch = ProductHistory.branch_id
+    sellable = Sellable
+    product = Product
 
+    # Sellable
+    id = Sellable.id
+    code = Sellable.code
+    description = Sellable.description
+
+    # Product
+    product_id = Product.id
+
+    # ProductHistory
+    branch = ProductHistory.branch_id
     sold_date = ProductHistory.sold_date
     received_date = ProductHistory.received_date
     production_date = ProductHistory.production_date
     decreased_date = ProductHistory.decreased_date
-
-    code = Sellable.code
-    description = Sellable.description
 
     # Aggregates
     quantity_sold = Sum(ProductHistory.quantity_sold)
@@ -378,6 +385,7 @@ class ProductQuantityView(Viewable):
     tables = [
         ProductHistory,
         Join(Sellable, ProductHistory.sellable_id == Sellable.id),
+        Join(Product, Product.sellable_id == Sellable.id),
     ]
 
     # This are columns that are not supposed to be queried, but should still be
@@ -385,7 +393,7 @@ class ProductQuantityView(Viewable):
     hidden_columns = ['sold_date', 'received_date', 'production_date',
                       'decreased_date']
 
-    group_by = [id, branch, code, description]
+    group_by = [id, product_id, code, description, branch]
 
 
 class ProductBranchStockView(Viewable):
@@ -581,10 +589,15 @@ class SoldItemView(Viewable):
     of the sold items.
     """
 
+    sellable = Sellable
+    product = Product
+
     id = Sellable.id
     code = Sellable.code
     description = Sellable.description
     category = SellableCategory.description
+
+    product_id = Product.id
 
     # Aggregate
     quantity = Sum(SaleItem.quantity)
@@ -592,6 +605,7 @@ class SoldItemView(Viewable):
 
     tables = [
         Sellable,
+        LeftJoin(Product, Product.sellable_id == Sellable.id),
         LeftJoin(SaleItem, Sellable.id == SaleItem.sellable_id),
         LeftJoin(Sale, SaleItem.sale_id == Sale.id),
         LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id),
@@ -601,7 +615,7 @@ class SoldItemView(Viewable):
                 Sale.status == Sale.STATUS_PAID,
                 Sale.status == Sale.STATUS_RENEGOTIATED)
 
-    group_by = [id, code, description, category, Sale.status]
+    group_by = [id, product_id, code, description, category, Sale.status]
 
     @classmethod
     def find_by_branch_date(cls, store, branch, date):
@@ -716,6 +730,9 @@ class PurchasedItemAndStockView(Viewable):
     :cvar branch: the branch where the purchase was done
     """
 
+    sellable = Sellable
+    product = Product
+
     purchase_item = PurchaseItem
     branch = Branch
 
@@ -729,6 +746,7 @@ class PurchasedItemAndStockView(Viewable):
     purchased_date = PurchaseOrder.open_date
     branch_id = PurchaseOrder.branch_id
 
+    sellable_id = Sellable.id
     code = Sellable.code
     description = Sellable.description
 
@@ -751,8 +769,8 @@ class PurchasedItemAndStockView(Viewable):
                  PurchaseOrder.branch_id == ProductStockItem.branch_id,
                  PurchaseItem.quantity > PurchaseItem.quantity_received, )
 
-    group_by = [PurchaseItem, Branch, order_identifier, purchased_date, branch_id, code,
-                description, product_id]
+    group_by = [PurchaseItem, Branch, order_identifier, purchased_date,
+                branch_id, code, description, sellable_id, product_id]
 
 
 class ConsignedItemAndStockView(PurchasedItemAndStockView):
@@ -896,6 +914,8 @@ class ReceivingItemView(Viewable):
 
 class ProductionItemView(Viewable):
     production_item = ProductionItem
+    sellable = Sellable
+    product = Product
 
     id = ProductionItem.id
     order_identifier = ProductionOrder.identifier
@@ -925,6 +945,7 @@ class ProductionItemView(Viewable):
 
 class ProductBatchView(Viewable):
 
+    sellable = Sellable
     product = Product
 
     id = ProductStockItem.id
@@ -1116,6 +1137,8 @@ class LoanView(Viewable):
 
 
 class LoanItemView(Viewable):
+    sellable = Sellable
+    product = Product
     branch = Branch
 
     id = LoanItem.id
@@ -1133,6 +1156,8 @@ class LoanItemView(Viewable):
     sellable_id = Sellable.id
     code = Sellable.code
     description = Sellable.description
+
+    product_id = Product.id
     batch_number = Coalesce(StorableBatch.batch_number, u'')
     batch_date = StorableBatch.create_date
 
@@ -1147,6 +1172,7 @@ class LoanItemView(Viewable):
         Join(Loan, LoanItem.loan_id == Loan.id),
         Join(Branch, Loan.branch_id == Branch.id),
         LeftJoin(Sellable, LoanItem.sellable_id == Sellable.id),
+        LeftJoin(Product, Product.sellable_id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
     ]

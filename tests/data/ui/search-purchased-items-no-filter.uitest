@@ -19,7 +19,7 @@ GtkDialog(toplevel): title='Purchased Items Search', hidden
                   item: 'Contains All Words', selected
                   item: 'Contains Exactly'
                   item: 'Does Not Contain'
-                HintedEntry(search_entry, padding=6): 'bor'
+                HintedEntry(search_entry, padding=6): ''
               GtkButton(search_button): 'gtk-find'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Description', expand
@@ -29,6 +29,7 @@ GtkDialog(toplevel): title='Purchased Items Search', hidden
             column: title='Purchased date'
             column: title='Expected receival'
             row: u'Camisa bordada', Decimal('4.000'), Decimal('2.000'), Decimal('4.000'), datetime.datetime(2012, 2, 2, 0, 0), None
+            row: u'Camisa listrada', Decimal('5.000'), Decimal('3.000'), Decimal('5.000'), datetime.datetime(2012, 1, 1, 0, 0), None
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):
@@ -48,3 +49,4 @@ GtkDialog(toplevel): title='Purchased Items Search', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+      GtkButton(branch_stock_button, padding=6): 'Stock details', insensitive

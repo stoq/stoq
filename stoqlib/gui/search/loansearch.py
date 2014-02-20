@@ -34,9 +34,10 @@ from stoqlib.domain.loan import Loan
 from stoqlib.domain.views import LoanView, LoanItemView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
+from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
@@ -45,13 +46,17 @@ from stoqlib.reporting.loanreceipt import LoanReceipt
 _ = stoqlib_gettext
 
 
-class LoanItemSearch(SearchDialog):
+class LoanItemSearch(ProductSearch):
     title = _(u'Loan Items Search')
-    size = (780, 450)
     search_spec = LoanItemView
+    has_print_price_button = False
+
+    def __init__(self, store, hide_footer=True, hide_toolbar=True):
+        ProductSearch.__init__(self, store, hide_footer=hide_footer,
+                               hide_toolbar=hide_toolbar)
 
     #
-    # SearchDialog Hooks
+    #  ProductSearch
     #
 
     def create_filters(self):

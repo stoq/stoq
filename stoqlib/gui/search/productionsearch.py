@@ -32,7 +32,6 @@ from stoqlib.domain.views import (ProductComponentWithClosedView,
                                   ProductionItemView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity)
@@ -67,11 +66,16 @@ class ProductionProductSearch(ProductSearch):
         return product_component.product
 
 
-class ProductionItemsSearch(SearchDialog):
+class ProductionItemsSearch(ProductSearch):
     title = _(u'Production Items')
     search_spec = ProductionItemView
     report_class = ProductionItemReport
-    size = (750, 450)
+    csv_data = None
+    has_print_price_button = False
+
+    def __init__(self, store, hide_footer=True, hide_toolbar=True):
+        ProductSearch.__init__(self, store, hide_footer=hide_footer,
+                               hide_toolbar=hide_toolbar)
 
     #
     # SearchDialog
@@ -106,5 +110,6 @@ class ProductionItemsSearch(SearchDialog):
 
 class ProductionHistorySearch(ProductSearchQuantity):
     title = _(u'Production History Search')
-    show_production_columns = True
     report_class = ProductionItemReport
+    csv_data = None
+    show_production_columns = True

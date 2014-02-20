@@ -37,7 +37,6 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.search.productsearch import ProductBranchSearch
 from stoqlib.gui.search.searchcolumns import AccessorColumn, SearchColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.lib.defaults import sort_sellable_code
@@ -241,6 +240,7 @@ class SellableSearch(SearchEditor):
         self._update_image_viewer()
 
     def on_branch_stock_button__clicked(self, widget):
+        from stoqlib.gui.search.productsearch import ProductBranchSearch
         viewable = self.results.get_selected()
         product = viewable.product
         if product and product.storable:

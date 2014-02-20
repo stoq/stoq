@@ -32,8 +32,8 @@ from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.test.uitestutils import GUITest
 
 
-class TestPurchaseSearch(GUITest):
-    def test_purchased_items_search(self):
+class TestPurchasedItemsSearch(GUITest):
+    def test_search(self):
         branch = api.get_current_branch(self.store)
         order = self.create_purchase_order(branch=branch)
         item = self.create_purchase_order_item(order=order)
@@ -66,13 +66,13 @@ class TestPurchaseSearch(GUITest):
 
         search.search.refresh()
         search.branch_filter.set_state(None)
-        self.check_search(search, 'purchase-no-filter')
+        self.check_search(search, 'purchased-items-no-filter')
 
         search.set_searchbar_search_string('bor')
         search.search.refresh()
-        self.check_search(search, 'purchase-string-filter')
+        self.check_search(search, 'purchased-items-string-filter')
 
         search.set_searchbar_search_string('')
         search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.search.refresh()
-        self.check_search(search, 'purchase-branch-filter')
+        self.check_search(search, 'purchased-items-branch-filter')
