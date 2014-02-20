@@ -367,7 +367,7 @@ class ServicesApp(ShellApp):
         return [
             IdentifierColumn('identifier', sorted=True),
             IdentifierColumn('sale_identifier', title=_("Sale #"), visible=False),
-            SearchColumn('work_order.status_str', title=_(u'Status'),
+            SearchColumn('status_str', title=_(u'Status'),
                          search_attribute='status', data_type=str,
                          valid_values=self._get_status_values(), visible=False),
             SearchColumn('category_name', title=_(u'Category'),

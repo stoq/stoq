@@ -58,7 +58,7 @@ class WorkOrderSearch(SearchDialog):
     def get_columns(self):
         return [
             IdentifierColumn('identifier', title=_(u'#'), sorted=True),
-            SearchColumn('work_order.status_str', title=_('Status'),
+            SearchColumn('status_str', title=_('Status'),
                          search_attribute='status', visible=False,
                          valid_values=self._get_status_values(), data_type=str),
             Column('equipment', title=_('Equipment (Description)'),

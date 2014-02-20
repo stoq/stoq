@@ -130,7 +130,7 @@ class CalendarEvents(Resource):
             wo_view.identifier, wo_view.equipment, wo_view.client_name)
         tooltip = '<br />'.join(['%s: %s'] * 6) % (
             _("#"), wo_view.identifier,
-            _("Status"), wo_view.work_order.status_str,
+            _("Status"), wo_view.status_str,
             _("Equipment"), wo_view.equipment,
             _("Category"), wo_view.category_name,
             _("Client"), wo_view.client_name,

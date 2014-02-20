@@ -185,13 +185,28 @@ class SaleItem(Domain):
             self.icms_info.set_from_template(self.sellable.product.icms_template)
 
     #
-    #  Public API
+    #  Properties
     #
 
     @property
     def returned_quantity(self):
         return self.store.find(ReturnedSaleItem,
                                sale_item=self).sum(ReturnedSaleItem.quantity) or Decimal('0')
+
+    @property
+    def sale_discount(self):
+        """The discount percentage (relative to the original price
+           when the item was sold)
+
+        :returns: the discount amount
+        """
+        if self.price > 0 and self.price < self.base_price:
+            return (1 - (self.price / self.base_price)) * 100
+        return 0
+
+    #
+    #  Public API
+    #
 
     def sell(self, branch):
         store = self.store
@@ -416,16 +431,6 @@ class SaleItem(Domain):
 
         # FIXME: remove sale cfop?
         return self.sale.cfop.code.replace(u'.', u'')
-
-    def get_sale_discount(self):
-        """The discount percentage (relative to the original price
-           when the item was sold)
-
-        :returns: the discount amount
-        """
-        if self.price > 0 and self.price < self.base_price:
-            return (1 - (self.price / self.base_price)) * 100
-        return 0
 
     def get_sale_surcharge(self):
         """The surcharge percentage (relative to the original price
@@ -1881,10 +1886,10 @@ class SaleView(Viewable):
     client_id = Client.id
 
     #: the salesperson name
-    salesperson_name = Person_SalesPerson.name
+    salesperson_name = Coalesce(Person_SalesPerson.name, u'')
 
     #: the |sale| client name
-    client_name = Person_Client.name
+    client_name = Coalesce(Person_Client.name, u'')
 
     #: name of the |branch| this |sale| was sold
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
@@ -1976,12 +1981,6 @@ class SaleView(Viewable):
 
     def get_total(self):
         return currency(self.total + self.v_ipi)
-
-    def get_client_name(self):
-        return unicode(self.client_name or u"")
-
-    def get_salesperson_name(self):
-        return unicode(self.salesperson_name or u"")
 
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")

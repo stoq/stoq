@@ -1983,18 +1983,18 @@ class TestSaleItem(DomainTest):
         item.cfop = None
         self.assertEquals(item.get_nfe_cfop_code(), cfop_code)
 
-    def test_get_sale_discount(self):
+    def test_sale_discount(self):
         sale = self.create_sale()
 
         # valid discount
         product = self.create_product(price=100)
         sale_item = sale.add_sellable(product.sellable, price=80)
-        self.assertEqual(sale_item.get_sale_discount(), 20)
+        self.assertEqual(sale_item.sale_discount, 20)
 
         # no discount
         product = self.create_product(price=100)
         sale_item = sale.add_sellable(product.sellable, price=100)
-        self.assertEqual(sale_item.get_sale_discount(), 0)
+        self.assertEqual(sale_item.sale_discount, 0)
 
     def test_get_sale_surcharge(self):
         sale = self.create_sale()
@@ -2247,7 +2247,7 @@ class TestSaleView(DomainTest):
     def test_get_salesperson_name(self):
         sale = self.create_sale()
         view = self.store.find(SaleView, id=sale.id).one()
-        self.assertEquals(view.get_salesperson_name(), u'SalesPerson')
+        self.assertEquals(view.salesperson_name, u'SalesPerson')
 
     def test_get_open_date_as_string(self):
         sale = self.create_sale()

@@ -1386,6 +1386,10 @@ class WorkOrderView(Viewable):
     def branch(self):
         return self.store.get(Branch, self.branch_id)
 
+    @property
+    def status_str(self):
+        return self.work_order.status_str
+
     @classmethod
     def post_search_callback(cls, sresults):
         select = sresults.get_select_expr(Count(1), Sum(cls.total))

@@ -369,7 +369,7 @@ class WorkOrderPackageSendEditor(BaseEditor):
             Column('will_send', _(u"Send"), data_type=bool, editable=True),
             IdentifierColumn('identifier', sorted=True),
             IdentifierColumn('sale_identifier', title=_("Sale #"), visible=False),
-            Column('work_order.status_str', _(u"Status"), data_type=str),
+            Column('status_str', _(u"Status"), data_type=str),
             Column('equipment', _(u"Equipment (Description)"), data_type=str,
                    expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment'),
