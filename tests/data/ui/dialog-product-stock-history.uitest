@@ -114,7 +114,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 row: u'1', datetime.datetime(2013, 1, 27, 0, 0), Decimal('1.000')
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

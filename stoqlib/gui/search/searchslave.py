@@ -139,12 +139,18 @@ class SearchSlave(SlaveDelegate):
         self.set_result_view(self.result_view_class, refresh=False)
 
     def _create_basic_search(self):
-        filters_box = gtk.VBox()
+        # This hbox is here so we can have a padding on the filters
+        # from the left window edge
+        filters_container = gtk.HBox()
+        filters_container.show()
+
+        filters_box = gtk.VBox(spacing=6)
+        filters_container.pack_start(filters_box, False, False, 6)
         filters_box.show()
-        self.vbox.pack_start(filters_box, expand=False)
+
+        self.vbox.pack_start(filters_container, False, True, 6)
 
         hbox = gtk.HBox()
-        hbox.set_border_width(3)
         filters_box.pack_start(hbox, False, False)
         hbox.show()
         self.hbox = hbox

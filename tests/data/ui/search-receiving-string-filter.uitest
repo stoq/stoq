@@ -5,24 +5,25 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
-          GtkVBox(filters_box, fill=True):
-            GtkHBox(hbox):
-              ComboSearchFilter():
-                GtkLabel(): 'In branch:'
-                ProxyComboBox(padding=6):
-                  item: 'Any'
-                  item: 'Moda Stoq', selected
-                  item: 'Stoq Elite Fashion'
-                  item: 'Dummy shop'
-                  item: 'Dummy shop (1)'
-              SearchFilter(_primary_filter):
-                GtkLabel(): 'Search:'
-                ProxyComboBox(padding=6): hidden
-                  item: 'Contains All Words', selected
-                  item: 'Contains Exactly'
-                  item: 'Does Not Contain'
-                HintedEntry(search_entry, padding=6): 'dom'
-              GtkButton(search_button): 'gtk-find'
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                ComboSearchFilter():
+                  GtkLabel(): 'In branch:'
+                  ProxyComboBox(padding=6):
+                    item: 'Any'
+                    item: 'Moda Stoq', selected
+                    item: 'Stoq Elite Fashion'
+                    item: 'Dummy shop'
+                    item: 'Dummy shop (1)'
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): 'dom'
+                GtkButton(search_button): 'gtk-find'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Purchase #'
             column: title='Receival date'
@@ -34,7 +35,7 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
             row: 78526, datetime.datetime(2012, 2, 2, 0, 0), u'Dominique', u'Administrator', u'Administrator', 222, None
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
           GtkVBox(toplevel):

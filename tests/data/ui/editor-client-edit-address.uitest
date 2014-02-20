@@ -147,7 +147,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Franciso Elisio de Lima
                           GtkLabel(label6): '<b>Credit</b>'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
@@ -172,7 +172,7 @@ GtkDialog(toplevel): title='Additional Addresses', hidden
               GtkButton(fill=True): 'gtk-edit', insensitive
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

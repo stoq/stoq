@@ -22,7 +22,7 @@ GtkDialog(toplevel): title='Payment Method Settings', hidden
               GtkButton(new_button): hidden
               GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

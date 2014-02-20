@@ -90,30 +90,31 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
         GtkVBox(list_vbox, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
             GtkVBox(vbox):
-              GtkVBox(filters_box, fill=True):
-                GtkHBox(hbox):
-                  ComboSearchFilter(main_filter):
-                    GtkLabel(): 'Show'
-                    ProxyComboBox(padding=6):
-                      item: 'Not delivered', selected
-                      item: 'Pending'
-                      item: 'In progress'
-                      item: 'Finished'
-                      item: 'Delivered'
-                      item: 'Cancelled'
-                      item: 'All work orders'
-                      item: 'sep'
-                      item: 'Approved'
-                      item: 'In transport'
-                      item: 'Rejected'
-                  SearchFilter(_primary_filter):
-                    GtkLabel(): 'matching:'
-                    ProxyComboBox(padding=6): hidden
-                      item: 'Contains All Words', selected
-                      item: 'Contains Exactly'
-                      item: 'Does Not Contain'
-                    HintedEntry(search_entry, padding=6): ''
-                  GtkButton(search_button): 'gtk-find'
+              GtkHBox(fill=True, padding=6):
+                GtkVBox(filters_box, padding=6):
+                  GtkHBox(hbox):
+                    ComboSearchFilter(main_filter):
+                      GtkLabel(): 'Show'
+                      ProxyComboBox(padding=6):
+                        item: 'Not delivered', selected
+                        item: 'Pending'
+                        item: 'In progress'
+                        item: 'Finished'
+                        item: 'Delivered'
+                        item: 'Cancelled'
+                        item: 'All work orders'
+                        item: 'sep'
+                        item: 'Approved'
+                        item: 'In transport'
+                        item: 'Rejected'
+                    SearchFilter(_primary_filter):
+                      GtkLabel(): 'matching:'
+                      ProxyComboBox(padding=6): hidden
+                        item: 'Contains All Words', selected
+                        item: 'Contains Exactly'
+                        item: 'Does Not Contain'
+                      HintedEntry(search_entry, padding=6): ''
+                    GtkButton(search_button): 'gtk-find'
               SearchResultListView(result_view, expand=True, fill=True):
                 column: title='#'
                 column: title='Sale #', hidden

@@ -8,7 +8,7 @@ GtkDialog(toplevel): title='Payment Flow History Dialog', hidden
         GtkLabel(main_label):
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
       DateSearchFilter(date_filter):

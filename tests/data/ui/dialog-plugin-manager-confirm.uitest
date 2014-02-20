@@ -15,7 +15,7 @@ GtkDialog(toplevel): title='Plugin Manager', hidden
           row: True, 'stoq-plugin', u'<b>Optical Plugin</b>\nUse Stoq in optical stores'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

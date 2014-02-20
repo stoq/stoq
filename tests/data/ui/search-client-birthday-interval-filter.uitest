@@ -5,39 +5,40 @@ GtkDialog(toplevel): title='Client Search', hidden
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
-          GtkVBox(filters_box, fill=True):
-            GtkHBox(hbox):
-              ComboSearchFilter():
-                GtkLabel(): 'Show clients with status'
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                ComboSearchFilter():
+                  GtkLabel(): 'Show clients with status'
+                  ProxyComboBox(padding=6):
+                    item: 'Any', selected
+                    item: 'Solvent'
+                    item: 'Indebted'
+                    item: 'Insolvent'
+                    item: 'Inactive'
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'matching:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+              DateSearchFilter():
+                GtkLabel(): 'Birthday:'
                 ProxyComboBox(padding=6):
-                  item: 'Any', selected
-                  item: 'Solvent'
-                  item: 'Indebted'
-                  item: 'Insolvent'
-                  item: 'Inactive'
-              SearchFilter(_primary_filter):
-                GtkLabel(): 'matching:'
-                ProxyComboBox(padding=6): hidden
-                  item: 'Contains All Words', selected
-                  item: 'Contains Exactly'
-                  item: 'Does Not Contain'
-                HintedEntry(search_entry, padding=6): ''
-              GtkButton(search_button): 'gtk-find'
-            DateSearchFilter():
-              GtkLabel(): 'Birthday:'
-              ProxyComboBox(padding=6):
-                item: 'Any'
-                item: 'Today'
-                item: 'Yesterday'
-                item: 'Last week'
-                item: 'Last month'
-                item: 'Custom day'
-                item: 'Custom interval', selected
-              GtkLabel(): 'From:'
-              ProxyDateEntry(padding=6): datetime.date(1987, 10, 1), invalid
-              GtkLabel(): 'To:'
-              ProxyDateEntry(padding=6): datetime.date(1987, 10, 31), invalid
-              GtkButton(): 'gtk-remove'
+                  item: 'Any'
+                  item: 'Today'
+                  item: 'Yesterday'
+                  item: 'Last week'
+                  item: 'Last month'
+                  item: 'Custom day'
+                  item: 'Custom interval', selected
+                GtkLabel(): 'From:'
+                ProxyDateEntry(padding=6): datetime.date(1987, 10, 1), invalid
+                GtkLabel(): 'To:'
+                ProxyDateEntry(padding=6): datetime.date(1987, 10, 31), invalid
+                GtkButton(): 'gtk-remove'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Name', expand
             column: title='Category', hidden
@@ -56,7 +57,7 @@ GtkDialog(toplevel): title='Client Search', hidden
               GtkButton(new_button):
               GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
           GtkVBox(toplevel):

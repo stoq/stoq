@@ -162,7 +162,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         # stoqlib/gui/search/productsearch.py
         # stoqlib/gui/search/servicesearch.py
         self.print_holder = gtk.EventBox()
-        hbox1.pack_start(self.print_holder, True, True, 6)
+        hbox1.pack_start(self.print_holder, True, True)
         self.print_holder.show()
 
         # FIXME

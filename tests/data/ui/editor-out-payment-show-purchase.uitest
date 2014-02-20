@@ -56,7 +56,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
               ProxyCheckButton(bill_received): 'The bill has arrived.'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

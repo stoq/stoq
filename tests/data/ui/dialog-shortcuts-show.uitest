@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Keyboard shortcuts', hidden
             GtkLabel(_label, padding=6): 'You need to restart Stoq for the changes to take effect', hidden
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

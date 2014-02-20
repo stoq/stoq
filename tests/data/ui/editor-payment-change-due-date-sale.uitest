@@ -24,7 +24,7 @@ GtkDialog(main_dialog.toplevel): title='Change payment due date', hidden
               ProxyTextView(change_reason):
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

@@ -60,7 +60,7 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                       GtkLabel(_label, padding=6): 'You need to restart Stoq for the changes to take effect', hidden
                 GtkHBox(fill=True):
                   GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-                  GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+                  GtkEventBox(print_holder, expand=True, fill=True):
                   GtkEventBox(notice, fill=True):
                   GtkEventBox(details_holder, padding=6, pack-end):
               GtkHButtonBox(fill=True, pack-end):
@@ -69,7 +69,7 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                 GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

@@ -78,23 +78,24 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
         GtkVBox(expand=True, fill=True):
           GtkEventBox(expand=True, fill=True):
             GtkVBox():
-              GtkVBox(fill=True):
-                GtkHBox():
-                  ComboSearchFilter():
-                    GtkLabel(): 'Show'
-                    ProxyComboBox(padding=6):
-                      item: 'All payments', selected
-                      item: 'Received payments'
-                      item: 'To receive'
-                      item: 'Late payments'
-                  SearchFilter():
-                    GtkLabel(): 'matching:'
-                    ProxyComboBox(padding=6): hidden
-                      item: 'Contains All Words', selected
-                      item: 'Contains Exactly'
-                      item: 'Does Not Contain'
-                    HintedEntry(padding=6): ''
-                  GtkButton(): 'gtk-find'
+              GtkHBox(fill=True, padding=6):
+                GtkVBox(padding=6):
+                  GtkHBox():
+                    ComboSearchFilter():
+                      GtkLabel(): 'Show'
+                      ProxyComboBox(padding=6):
+                        item: 'All payments', selected
+                        item: 'Received payments'
+                        item: 'To receive'
+                        item: 'Late payments'
+                    SearchFilter():
+                      GtkLabel(): 'matching:'
+                      ProxyComboBox(padding=6): hidden
+                        item: 'Contains All Words', selected
+                        item: 'Contains Exactly'
+                        item: 'Does Not Contain'
+                      HintedEntry(padding=6): ''
+                    GtkButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
                 column: title='#'
                 column: title='Description', expand

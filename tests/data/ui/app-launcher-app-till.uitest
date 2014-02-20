@@ -82,28 +82,29 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
         GtkVBox(expand=True, fill=True): insensitive
           GtkEventBox(expand=True, fill=True):
             GtkVBox():
-              GtkVBox(fill=True):
-                GtkHBox():
-                  ComboSearchFilter():
-                    GtkLabel(): 'Show orders'
-                    ProxyComboBox(padding=6):
-                      item: 'Any', selected
-                      item: 'Opened'
-                      item: 'Confirmed'
-                      item: 'Paid'
-                      item: 'Cancelled'
-                      item: 'Ordered'
-                      item: 'Returned'
-                      item: 'Quoting'
-                      item: 'Renegotiated'
-                  SearchFilter():
-                    GtkLabel(): 'Search:'
-                    ProxyComboBox(padding=6): hidden
-                      item: 'Contains All Words', selected
-                      item: 'Contains Exactly'
-                      item: 'Does Not Contain'
-                    HintedEntry(padding=6): ''
-                  GtkButton(): 'gtk-find'
+              GtkHBox(fill=True, padding=6):
+                GtkVBox(padding=6):
+                  GtkHBox():
+                    ComboSearchFilter():
+                      GtkLabel(): 'Show orders'
+                      ProxyComboBox(padding=6):
+                        item: 'Any', selected
+                        item: 'Opened'
+                        item: 'Confirmed'
+                        item: 'Paid'
+                        item: 'Cancelled'
+                        item: 'Ordered'
+                        item: 'Returned'
+                        item: 'Quoting'
+                        item: 'Renegotiated'
+                    SearchFilter():
+                      GtkLabel(): 'Search:'
+                      ProxyComboBox(padding=6): hidden
+                        item: 'Contains All Words', selected
+                        item: 'Contains Exactly'
+                        item: 'Does Not Contain'
+                      HintedEntry(padding=6): ''
+                    GtkButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
                 column: title='#'
                 column: title='Status'

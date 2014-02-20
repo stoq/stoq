@@ -5,30 +5,31 @@ GtkDialog(toplevel): title='Loan Search', hidden
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
-          GtkVBox(filters_box, fill=True):
-            GtkHBox(hbox):
-              SearchFilter(_primary_filter):
-                GtkLabel(): 'Search:'
-                ProxyComboBox(padding=6): hidden
-                  item: 'Contains All Words', selected
-                  item: 'Contains Exactly'
-                  item: 'Does Not Contain'
-                HintedEntry(search_entry, padding=6): ''
-              GtkButton(search_button): 'gtk-find'
-            DateSearchFilter(date_filter):
-              GtkLabel(): 'Date:'
-              ProxyComboBox(padding=6):
-                item: 'Any', selected
-                item: 'Today'
-                item: 'Yesterday'
-                item: 'Last week'
-                item: 'Last month'
-                item: 'Custom day'
-                item: 'Custom interval'
-              GtkLabel(): 'From:', insensitive
-              ProxyDateEntry(padding=6): None, insensitive
-              GtkLabel(): 'To:', insensitive
-              ProxyDateEntry(padding=6): None, insensitive
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+              DateSearchFilter(date_filter):
+                GtkLabel(): 'Date:'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'Today'
+                  item: 'Yesterday'
+                  item: 'Last week'
+                  item: 'Last month'
+                  item: 'Custom day'
+                  item: 'Custom interval'
+                GtkLabel(): 'From:', insensitive
+                ProxyDateEntry(padding=6): None, insensitive
+                GtkLabel(): 'To:', insensitive
+                ProxyDateEntry(padding=6): None, insensitive
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Loan #'
             column: title='Open date'
@@ -40,7 +41,7 @@ GtkDialog(toplevel): title='Loan Search', hidden
             row: 45978, datetime.datetime(2012, 2, 2, 0, 0), None, u'Moda Stoq', u'Carmen Sandiego', u''
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
           GtkVBox(toplevel):

@@ -5,30 +5,31 @@ GtkDialog(toplevel): title='Till history', hidden
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
-          GtkVBox(filters_box, fill=True):
-            GtkHBox(hbox):
-              SearchFilter(_primary_filter):
-                GtkLabel(): 'Search:'
-                ProxyComboBox(padding=6): hidden
-                  item: 'Contains All Words', selected
-                  item: 'Contains Exactly'
-                  item: 'Does Not Contain'
-                HintedEntry(search_entry, padding=6): ''
-              GtkButton(search_button): 'gtk-find'
-            DateSearchFilter(date_filter):
-              GtkLabel(): 'Date:'
-              ProxyComboBox(padding=6):
-                item: 'Any'
-                item: 'Today'
-                item: 'Yesterday'
-                item: 'Last week'
-                item: 'Last month'
-                item: 'Custom day', selected
-                item: 'Custom interval'
-              GtkLabel(): 'From:'
-              ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), invalid
-              GtkLabel(): 'To:', insensitive
-              ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), insensitive
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+              DateSearchFilter(date_filter):
+                GtkLabel(): 'Date:'
+                ProxyComboBox(padding=6):
+                  item: 'Any'
+                  item: 'Today'
+                  item: 'Yesterday'
+                  item: 'Last week'
+                  item: 'Last month'
+                  item: 'Custom day', selected
+                  item: 'Custom interval'
+                GtkLabel(): 'From:'
+                ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), invalid
+                GtkLabel(): 'To:', insensitive
+                ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), insensitive
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='#'
             column: title='Date'
@@ -41,7 +42,7 @@ GtkDialog(toplevel): title='Till history', hidden
             GtkLabel(): '<b>$123.00</b>'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):

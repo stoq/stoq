@@ -68,22 +68,23 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
         GtkVBox(expand=True, fill=True):
           GtkEventBox(expand=True, fill=True):
             GtkVBox():
-              GtkVBox(fill=True):
-                GtkHBox():
-                  ComboSearchFilter():
-                    GtkLabel(): 'Show inventories at:'
-                    ProxyComboBox(padding=6):
-                      item: 'All branches'
-                      item: 'Moda Stoq', selected
-                      item: 'Stoq Elite Fashion'
-                  SearchFilter(): hidden
-                    GtkLabel(): 'Search:'
-                    ProxyComboBox(padding=6): hidden
-                      item: 'Contains All Words', selected
-                      item: 'Contains Exactly'
-                      item: 'Does Not Contain'
-                    HintedEntry(padding=6): '', hidden
-                  GtkButton(): 'gtk-find'
+              GtkHBox(fill=True, padding=6):
+                GtkVBox(padding=6):
+                  GtkHBox():
+                    ComboSearchFilter():
+                      GtkLabel(): 'Show inventories at:'
+                      ProxyComboBox(padding=6):
+                        item: 'All branches'
+                        item: 'Moda Stoq', selected
+                        item: 'Stoq Elite Fashion'
+                    SearchFilter(): hidden
+                      GtkLabel(): 'Search:'
+                      ProxyComboBox(padding=6): hidden
+                        item: 'Contains All Words', selected
+                        item: 'Contains Exactly'
+                        item: 'Does Not Contain'
+                      HintedEntry(padding=6): '', hidden
+                    GtkButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
                 column: title='Code'
                 column: title='Status'

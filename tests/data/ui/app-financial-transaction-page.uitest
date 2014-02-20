@@ -95,38 +95,39 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                 row: u'Saldos Iniciais', None, 0
                 row: u'Tills', None, 0
           GtkVBox():
-            GtkVBox(fill=True):
-              GtkHBox():
-                SearchFilter():
-                  GtkLabel(): 'Search:'
-                  ProxyComboBox(padding=6): hidden
-                    item: 'Contains All Words', selected
-                    item: 'Contains Exactly'
-                    item: 'Does Not Contain'
-                  HintedEntry(padding=6): ''
-                GtkButton(): 'gtk-find'
-              DateSearchFilter():
-                GtkLabel(): 'Date:'
-                ProxyComboBox(padding=6):
-                  item: 'Any', selected
-                  item: 'January'
-                  item: 'February'
-                  item: 'March'
-                  item: 'April'
-                  item: 'May'
-                  item: 'June'
-                  item: 'July'
-                  item: 'August'
-                  item: 'September'
-                  item: 'October'
-                  item: 'November'
-                  item: 'December'
-                  item: 'Custom day'
-                  item: 'Custom interval'
-                GtkLabel(): 'From:', insensitive
-                ProxyDateEntry(padding=6): None, insensitive
-                GtkLabel(): 'To:', insensitive
-                ProxyDateEntry(padding=6): None, insensitive
+            GtkHBox(fill=True, padding=6):
+              GtkVBox(padding=6):
+                GtkHBox():
+                  SearchFilter():
+                    GtkLabel(): 'Search:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains All Words', selected
+                      item: 'Contains Exactly'
+                      item: 'Does Not Contain'
+                    HintedEntry(padding=6): ''
+                  GtkButton(): 'gtk-find'
+                DateSearchFilter():
+                  GtkLabel(): 'Date:'
+                  ProxyComboBox(padding=6):
+                    item: 'Any', selected
+                    item: 'January'
+                    item: 'February'
+                    item: 'March'
+                    item: 'April'
+                    item: 'May'
+                    item: 'June'
+                    item: 'July'
+                    item: 'August'
+                    item: 'September'
+                    item: 'October'
+                    item: 'November'
+                    item: 'December'
+                    item: 'Custom day'
+                    item: 'Custom interval'
+                  GtkLabel(): 'From:', insensitive
+                  ProxyDateEntry(padding=6): None, insensitive
+                  GtkLabel(): 'To:', insensitive
+                  ProxyDateEntry(padding=6): None, insensitive
             stoq+gui+financial+FinancialSearchResults(expand=True, fill=True):
               column: title='Date'
               column: title='Code'

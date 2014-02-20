@@ -5,41 +5,42 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
         GtkVBox(vbox):
-          GtkVBox(filters_box, fill=True):
-            GtkHBox(hbox):
-              ComboSearchFilter(_salesperson_filter):
-                GtkLabel(): 'Sold by:'
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                ComboSearchFilter(_salesperson_filter):
+                  GtkLabel(): 'Sold by:'
+                  ProxyComboBox(padding=6):
+                    item: 'Any', selected
+                    item: 'Administrator'
+                    item: 'Cleusa Blanc Ferreira Norbiato'
+                    item: 'Deivis Alexandre Junior'
+                    item: 'Maria Aparecida Ardana'
+                    item: 'Osvaldo Denadai Marin'
+                    item: 'SalesPerson'
+                    item: 'SalesPerson (1)'
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+              DateSearchFilter(_date_filter):
+                GtkLabel(): 'Date:'
                 ProxyComboBox(padding=6):
-                  item: 'Any', selected
-                  item: 'Administrator'
-                  item: 'Cleusa Blanc Ferreira Norbiato'
-                  item: 'Deivis Alexandre Junior'
-                  item: 'Maria Aparecida Ardana'
-                  item: 'Osvaldo Denadai Marin'
-                  item: 'SalesPerson'
-                  item: 'SalesPerson (1)'
-              SearchFilter(_primary_filter):
-                GtkLabel(): 'Search:'
-                ProxyComboBox(padding=6): hidden
-                  item: 'Contains All Words', selected
-                  item: 'Contains Exactly'
-                  item: 'Does Not Contain'
-                HintedEntry(search_entry, padding=6): ''
-              GtkButton(search_button): 'gtk-find'
-            DateSearchFilter(_date_filter):
-              GtkLabel(): 'Date:'
-              ProxyComboBox(padding=6):
-                item: 'Any'
-                item: 'Today'
-                item: 'Yesterday'
-                item: 'Last week'
-                item: 'Last month'
-                item: 'Custom day'
-                item: 'Custom interval', selected
-              GtkLabel(): 'From:'
-              ProxyDateEntry(padding=6): datetime.date(2010, 1, 1), invalid
-              GtkLabel(): 'To:'
-              ProxyDateEntry(padding=6): datetime.date(2012, 2, 15), invalid
+                  item: 'Any'
+                  item: 'Today'
+                  item: 'Yesterday'
+                  item: 'Last week'
+                  item: 'Last month'
+                  item: 'Custom day'
+                  item: 'Custom interval', selected
+                GtkLabel(): 'From:'
+                ProxyDateEntry(padding=6): datetime.date(2010, 1, 1), invalid
+                GtkLabel(): 'To:'
+                ProxyDateEntry(padding=6): datetime.date(2012, 2, 15), invalid
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Sale #'
             column: title='Salesperson', expand
@@ -57,7 +58,7 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
         GtkLabel(sales_label): 'Total sales: $ 0.00'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
-        GtkEventBox(print_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
           GtkVBox(toplevel):
