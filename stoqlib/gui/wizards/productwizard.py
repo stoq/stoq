@@ -90,7 +90,9 @@ class ProductCreateWizard(BaseWizard):
     title = _('Product creation wizard')
     help_section = 'product-create'
 
-    def __init__(self, store):
+    # args and kwargs are here to get extra parameters sent by SearchEditor's
+    # run_dialog. We will just ignore them since they are not useful here
+    def __init__(self, store, *args, **kwargs):
         self.product_type = ProductEditor.TYPE_COMMON
         first_step = ProductTypeStep(store, self)
         BaseWizard.__init__(self, store, first_step)
