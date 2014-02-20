@@ -25,16 +25,29 @@
 from stoqlib.domain.service import Service, ServiceView
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.parameters import sysparam
 
 
 class TestServiceSearch(GUITest):
+    def tearDown(self):
+        super(TestServiceSearch, self).tearDown()
+
+        # FIXME: The clean_domain + sysparam override bellow makes the cache
+        # keep DELIVERY_SERVICE as None, breaking other tests.
+        sysparam.clear_cache()
+
     def test_search(self):
         self.clean_domain([Service])
 
         self.create_service(u'Delivery', 25).sellable.code = u'1'
         self.create_service(u'Painting', 12).sellable.code = u'2'
 
-        search = ServiceSearch(self.store)
+        # clean_domain will remove the delivery service, but SellableSearch
+        # needs it to do the "exclude delivery service" logic. In this case,
+        # we are working around that and also making sure that this service
+        # will appear on the list (this is the only search that should show it)
+        with self.sysparam(DELIVERY_SERVICE=self.create_service(u"My Delivery")):
+            search = ServiceSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'service-no-filter')

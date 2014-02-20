@@ -37,33 +37,29 @@ from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialogPrintSlave
-from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.utils.printing import print_report
 
 _ = stoqlib_gettext
 
 
-class ServiceSearch(SearchEditor):
+class ServiceSearch(SellableSearch):
     title = _('Service Search')
     search_spec = ServiceView
-    size = (-1, 450)
     editor_class = ServiceEditor
     report_class = ServiceReport
     model_list_lookup_attr = 'service_id'
     footer_ok_label = _('Add services')
+    exclude_delivery_service = False
 
     def __init__(self, store, hide_footer=True, hide_toolbar=False,
-                 selection_mode=None,
-                 hide_cost_column=False, use_product_statuses=None,
-                 hide_price_column=False):
-        if selection_mode is None:
-            selection_mode = gtk.SELECTION_BROWSE
+                 double_click_confirm=False,
+                 hide_cost_column=False, hide_price_column=False):
         self.hide_cost_column = hide_cost_column
         self.hide_price_column = hide_price_column
-        self.use_product_statuses = use_product_statuses
-        SearchEditor.__init__(self, store, hide_footer=hide_footer,
-                              hide_toolbar=hide_toolbar,
-                              selection_mode=selection_mode)
+        SellableSearch.__init__(self, store, hide_footer=hide_footer,
+                                hide_toolbar=hide_toolbar,
+                                double_click_confirm=double_click_confirm)
         self._setup_print_slave()
 
     def _setup_print_slave(self):
@@ -73,26 +69,18 @@ class ServiceSearch(SearchEditor):
         self.attach_slave('print_holder', self._print_slave)
         self._print_slave.connect('print', self.on_print_price_button_clicked)
         self._print_slave.print_price_button.set_sensitive(False)
-        self.results.connect('has-rows', self._has_rows)
-
-    def _has_rows(self, results, obj):
-        SearchEditor._has_rows(self, results, obj)
-        self._print_slave.print_price_button.set_sensitive(obj)
 
     #
-    # SearchDialog Hooks
+    #  SellableSearch
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'barcode'])
+        super(ServiceSearch, self).create_filters()
+
         executer = self.search.get_query_executer()
         executer.add_query_callback(self._get_query)
         service_filter = self.create_sellable_filter()
         self.add_filter(service_filter, SearchFilterPosition.TOP, ['status'])
-
-    #
-    # SearchEditor Hooks
-    #
 
     def get_editor_model(self, model):
         return self.store.get(Service, model.service_id)
@@ -118,6 +106,13 @@ class ServiceSearch(SearchEditor):
     def _get_query(self, states):
         return Ne(ServiceView.service_id, None)
 
+    #
+    #  Callbacks
+    #
+
     def on_print_price_button_clicked(self, button):
         print_report(ServicePriceReport, list(self.results),
                      filters=self.search.get_search_filters())
+
+    def on_results__has_rows(self, results, obj):
+        self._print_slave.print_price_button.set_sensitive(obj)

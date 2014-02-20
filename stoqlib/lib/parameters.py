@@ -950,6 +950,10 @@ class ParameterAccess(object):
     # Public API
     #
 
+    def clear_cache(self):
+        """Clears the internal cache so it can be rebuilt on next access"""
+        self._values_cache = None
+
     def check_parameter_presence(self):
         """
         Check so the number of installed parameters are equal to
@@ -971,7 +975,7 @@ class ParameterAccess(object):
         # will be used correctly. If there any change in name, these values
         # will differ from database.
         if update:
-            self._values_cache = None
+            self.clear_cache()
         self._remove_unused_parameters(store)
 
         for detail in self._details.values():

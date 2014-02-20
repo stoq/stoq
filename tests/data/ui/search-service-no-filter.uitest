@@ -27,6 +27,7 @@ GtkDialog(toplevel): title='Service Search', hidden
             column: title='Description', expand
             column: title='Cost'
             column: title='Price'
+            row: u'', u'', u'My Delivery', <currency $ 0>, <currency $10>
             row: u'1', u'', u'Delivery', <currency $ 0>, <currency $25>
             row: u'2', u'', u'Painting', <currency $ 0>, <currency $12>
       GtkHBox(fill=True):

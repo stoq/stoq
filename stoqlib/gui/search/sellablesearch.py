@@ -54,6 +54,7 @@ class SellableSearch(SearchEditor):
     footer_ok_label = _('_Select item')
     search_spec = SellableFullStockView
     editor_class = None
+    exclude_delivery_service = True
 
     def __init__(self, store, hide_footer=False, hide_toolbar=True,
                  selection_mode=None, search_str=None, search_spec=None,
@@ -124,9 +125,12 @@ class SellableSearch(SearchEditor):
         self.popup.add(self.image_viewer_toggler)
         self.popup.show_all()
 
-        self.branch_stock_button = self.add_button(label=_('Stock details'))
-        self.branch_stock_button.show()
-        self.branch_stock_button.set_sensitive(False)
+        if hasattr(self.search_spec, 'product'):
+            self.branch_stock_button = self.add_button(label=_('Stock details'))
+            self.branch_stock_button.show()
+            self.branch_stock_button.set_sensitive(False)
+        else:
+            self.branch_stock_button = None
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'category_description',
@@ -169,9 +173,10 @@ class SellableSearch(SearchEditor):
 
         # Some viewables may not have the product (for viewables with only
         # services). Also use hasattr for product since it may be None
-        storable = (getattr(sellable_view, 'product', None) and
-                    getattr(sellable_view.product, 'storable'))
-        self.branch_stock_button.set_sensitive(bool(storable))
+        if self.branch_stock_button is not None:
+            storable = (getattr(sellable_view, 'product', None) and
+                        getattr(sellable_view.product, 'storable'))
+            self.branch_stock_button.set_sensitive(bool(storable))
 
     def executer_query(self, store):
         # If the viewable has a find_by_branch method, then lets use it instead
@@ -185,7 +190,7 @@ class SellableSearch(SearchEditor):
         if self._search_query:
             results = results.find(self._search_query)
 
-        if self._delivery_sellable:
+        if self.exclude_delivery_service:
             results = results.find(And(
                 self.search_spec.status == Sellable.STATUS_AVAILABLE,
                 self.search_spec.id != self._delivery_sellable.id))
