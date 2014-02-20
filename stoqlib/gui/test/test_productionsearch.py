@@ -119,7 +119,7 @@ class TestProductionItemsSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'production-items-status-filter')
 
-    @mock.patch('stoqlib.gui.search.productionsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
@@ -196,7 +196,7 @@ class TestProductionHistorySearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'production-history-date-day-filter')
 
-    @mock.patch('stoqlib.gui.search.productionsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()

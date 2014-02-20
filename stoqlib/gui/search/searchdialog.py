@@ -37,6 +37,7 @@ from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.events import SearchDialogSetupSearchEvent
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.searchslave import SearchSlave
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.decorators import public
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -107,6 +108,10 @@ class SearchDialog(BasicDialog):
     #: that are subclasses of :class:`stoqlib.gui.search.searchcolumns.SearchColumn`
     #: to add as options for the user to filter the results.
     advanced_search = True
+
+    #: the report class used to print a report for the results.
+    #: If ``None``, the print button will not even be created
+    report_class = None
 
     tree = False
 
@@ -185,7 +190,7 @@ class SearchDialog(BasicDialog):
     def _setup_details_slave(self):
         # FIXME: Gross hack
         has_details_btn = hasattr(self, 'on_details_button_clicked')
-        has_print_btn = hasattr(self, 'on_print_button_clicked')
+        has_print_btn = self.report_class is not None
         self.results.connect('has-rows', self._has_rows)
         if not (has_details_btn or has_print_btn):
             self._details_slave = None
@@ -198,7 +203,7 @@ class SearchDialog(BasicDialog):
         else:
             self._details_slave.details_button.hide()
         if has_print_btn:
-            self._details_slave.connect("print", self.on_print_button_clicked)
+            self._details_slave.connect("print", self._on_print_button__clicked)
             self.set_print_button_sensitive(False)
         else:
             self._details_slave.print_button.hide()
@@ -265,6 +270,10 @@ class SearchDialog(BasicDialog):
         self.search.save_columns()
         # FIXME: This should chain up so the "cancel" signal gets emitted
         self.close()
+
+    def print_report(self):
+        print_report(self.report_class, self.results, list(self.results),
+                     filters=self.search.get_search_filters())
 
     # FIXME: -> remove/use
 
@@ -432,6 +441,9 @@ class SearchDialog(BasicDialog):
         sse.export(object_list=self.results,
                    name=self._csv_name,
                    filename_prefix=self._csv_prefix)
+
+    def _on_print_button__clicked(self, button):
+        self.print_report()
 
     #
     # Hooks

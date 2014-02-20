@@ -36,7 +36,6 @@ from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.utils.printing import print_report
 from stoqlib.reporting.purchasereceival import PurchaseReceivalReport
 
 _ = stoqlib_gettext
@@ -46,6 +45,7 @@ class PurchaseReceivingSearch(SearchDialog):
     title = _('Purchase Receiving Search')
     size = (750, 500)
     search_spec = PurchaseReceivingView
+    report_class = PurchaseReceivalReport
     selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, store):
@@ -99,10 +99,6 @@ class PurchaseReceivingSearch(SearchDialog):
 
     def on_row_activated(self, klist, receiving_order):
         self._show_receiving_order(receiving_order)
-
-    def on_print_button_clicked(self, button):
-        print_report(PurchaseReceivalReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
     def on_details_button_clicked(self, button):
         items = self.results.get_selected_rows()

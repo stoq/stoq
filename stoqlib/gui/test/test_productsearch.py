@@ -110,7 +110,7 @@ class TestProductSearch(GUITest):
         # Retore the default permission so it doens't effect other tests
         pm.set('Product', default_persmission)
 
-    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_print_button(self, print_report):
         search = self._show_search()
 
@@ -252,7 +252,7 @@ class TestProductSearchQuantity(GUITest):
         search.search.refresh()
         self.check_search(search, 'product-quantity-date-day-filter')
 
-    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
@@ -331,7 +331,7 @@ class TestProductsSoldSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'product-sold-date-day-filter')
 
-    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
@@ -407,7 +407,7 @@ class TestProductStockSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'product-stock-branch-filter')
 
-    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
@@ -464,7 +464,7 @@ class TestProductBrandSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'brand-branch-filter')
 
-    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()
@@ -523,7 +523,7 @@ class TestProductClosedStockSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'product-closed-stock-branch-filter')
 
-    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_print_button(self, print_report):
         self._create_domain()
         search = self._show_search()

@@ -53,6 +53,7 @@ class CommissionSearch(SearchDialog):
     title = _("Search for Commissions")
     size = (800, 450)
     search_spec = CommissionView
+    report_class = SalesPersonReport
     searching_by_date = True
 
     #
@@ -169,9 +170,9 @@ class CommissionSearch(SearchDialog):
 
         return columns
 
-    def on_print_button_clicked(self, button):
+    def print_report(self):
         salesperson = self._salesperson_filter.combo.get_selected()
-        print_report(SalesPersonReport, list(self.results),
+        print_report(self.report_class, list(self.results),
                      salesperson=salesperson,
                      filters=self.search.get_search_filters())
 

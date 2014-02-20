@@ -67,7 +67,7 @@ class TestReceivingOrderSearch(GUITest):
         self.check_search(search, 'receiving-string-filter')
 
     @mock.patch('stoqlib.gui.search.receivingsearch.run_dialog')
-    @mock.patch('stoqlib.gui.search.receivingsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_buttons(self, print_report, run_dialog):
         self._create_domain()
         search = self._show_search()

@@ -47,6 +47,7 @@ class StockDecreaseSearch(SearchDialog):
     title = _(u"Manual Stock Decrease Search")
     size = (750, 500)
     search_spec = StockDecrease
+    report_class = StockDecreaseReceipt
     selection_mode = gtk.SELECTION_MULTIPLE
     search_by_date = True
     advanced_search = False
@@ -102,17 +103,17 @@ class StockDecreaseSearch(SearchDialog):
                        expand=True)
                 ]
 
+    def print_report(self):
+        orders = self.results.get_selected_rows()
+        if len(orders) == 1:
+            print_report(self.report_class, orders[0])
+
     #
     # Callbacks
     #
 
     def on_row_activated(self, klist, item):
         self._show_details(item)
-
-    def on_print_button_clicked(self, button):
-        orders = self.results.get_selected_rows()
-        if len(orders) == 1:
-            print_report(StockDecreaseReceipt, orders[0])
 
     def on_details_button_clicked(self, button):
         orders = self.results.get_selected_rows()

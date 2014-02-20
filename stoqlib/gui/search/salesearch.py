@@ -44,7 +44,6 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
@@ -197,6 +196,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
 class SoldItemsByBranchSearch(SearchDialog):
     title = _(u'Sold Items by Branch')
+    report_class = SoldItemsByBranchReport
     search_spec = SoldItemsByBranchView
     searching_by_date = True
     search_label = _('Items matching:')
@@ -252,17 +252,6 @@ class SoldItemsByBranchSearch(SearchDialog):
             date = (date.start, date.end)
 
         return self.search_spec.find_by_branch_date(store, branch, date)
-
-    def _print_report(self):
-        print_report(SoldItemsByBranchReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
-
-    #
-    # Callbacks
-    #
-
-    def on_print_button_clicked(self, widget):
-        self._print_report()
 
 
 class ReservedProductSearch(SearchDialog):

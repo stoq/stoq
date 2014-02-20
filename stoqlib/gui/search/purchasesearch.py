@@ -33,7 +33,6 @@ from stoqlib.gui.search.searchcolumns import SearchColumn, Column
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchoptions import (Any, Today, ThisWeek, NextWeek,
                                               ThisMonth, NextMonth)
-from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.purchase import PurchasedItemsReport
 
@@ -45,6 +44,7 @@ class PurchasedItemsSearch(SearchEditor):
     size = (780, 450)
     search_spec = PurchasedItemAndStockView
     editor_class = PurchaseItemEditor
+    report_class = PurchasedItemsReport
 
     def __init__(self, store):
         SearchEditor.__init__(self, store=store)
@@ -52,10 +52,6 @@ class PurchasedItemsSearch(SearchEditor):
 
     def _get_date_options(self):
         return [Any, Today, ThisWeek, NextWeek, ThisMonth, NextMonth]
-
-    def on_print_button_clicked(self, button):
-        print_report(PurchasedItemsReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
     #
     # SearchDialog Hooks

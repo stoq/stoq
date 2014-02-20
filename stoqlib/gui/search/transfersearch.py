@@ -52,6 +52,7 @@ class TransferOrderSearch(SearchDialog):
     title = _(u"Transfer Order Search")
     size = (750, 500)
     search_spec = TransferOrderView
+    report_class = TransferOrderReceipt
     selection_mode = gtk.SELECTION_MULTIPLE
     search_by_date = True
     advanced_search = False
@@ -143,16 +144,16 @@ class TransferOrderSearch(SearchDialog):
                 Column('total_items', _('Items'), data_type=Decimal,
                        format_func=format_quantity, width=110)]
 
+    def print_report(self):
+        view = self.results.get_selected_rows()[0]
+        print_report(self.report_class, view.transfer_order)
+
     #
     # Callbacks
     #
 
     def on_row_activated(self, klist, view):
         self._show_transfer_order_details(view)
-
-    def on_print_button_clicked(self, button):
-        view = self.results.get_selected_rows()[0]
-        print_report(TransferOrderReceipt, view.transfer_order)
 
     def on_details_button_clicked(self, button):
         self._show_transfer_order_details(self.results.get_selected_rows()[0])

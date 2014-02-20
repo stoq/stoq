@@ -37,7 +37,6 @@ from stoqlib.gui.editors.producteditor import ProductionProductEditor
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity)
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.production import ProductionItemReport
 
@@ -71,6 +70,7 @@ class ProductionProductSearch(ProductSearch):
 class ProductionItemsSearch(SearchDialog):
     title = _(u'Production Items')
     search_spec = ProductionItemView
+    report_class = ProductionItemReport
     size = (750, 450)
 
     #
@@ -103,19 +103,8 @@ class ProductionItemsSearch(SearchDialog):
                 SearchColumn('lost', title=_(u'Lost'), data_type=Decimal,
                              visible=False)]
 
-    #
-    # Callbacks
-    #
-
-    def on_print_button_clicked(self, widget):
-        print_report(ProductionItemReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters(), )
-
 
 class ProductionHistorySearch(ProductSearchQuantity):
     title = _(u'Production History Search')
     show_production_columns = True
-
-    def on_print_button_clicked(self, widget):
-        print_report(ProductionItemReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters(), )
+    report_class = ProductionItemReport

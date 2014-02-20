@@ -48,6 +48,7 @@ class ServiceSearch(SearchEditor):
     search_spec = ServiceView
     size = (-1, 450)
     editor_class = ServiceEditor
+    report_class = ServiceReport
     model_list_lookup_attr = 'service_id'
     footer_ok_label = _('Add services')
 
@@ -116,10 +117,6 @@ class ServiceSearch(SearchEditor):
 
     def _get_query(self, states):
         return Ne(ServiceView.service_id, None)
-
-    def on_print_button_clicked(self, button):
-        print_report(ServiceReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
     def on_print_price_button_clicked(self, button):
         print_report(ServicePriceReport, list(self.results),

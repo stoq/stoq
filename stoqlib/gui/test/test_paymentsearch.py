@@ -88,7 +88,7 @@ class TestPaymentSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'card-payment-provider-filter')
 
-    @mock.patch('stoqlib.gui.search.paymentsearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     @mock.patch('stoqlib.gui.search.paymentsearch.run_dialog')
     def test_buttons(self, run_dialog, print_report):
         self._create_domain()

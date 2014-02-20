@@ -73,6 +73,7 @@ class ProductSearch(SearchEditor):
     size = (775, 450)
     search_spec = ProductFullWithClosedStockView
     editor_class = ProductEditor
+    report_class = ProductReport
     footer_ok_label = _('Add products')
 
     def __init__(self, store, hide_footer=True, hide_toolbar=False,
@@ -111,10 +112,6 @@ class ProductSearch(SearchEditor):
         self._print_slave.connect('print', self.on_print_price_button_clicked)
         self._print_slave.print_price_button.set_sensitive(False)
         self.results.connect('has-rows', self._has_rows)
-
-    def on_print_button_clicked(self, button):
-        print_report(ProductReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
     def on_print_price_button_clicked(self, button):
         print_report(ProductPriceReport, list(self.results),
@@ -231,16 +228,13 @@ class ProductSearchQuantity(SearchDialog):
     title = _('Product History Search')
     size = (775, 450)
     table = search_spec = ProductQuantityView
+    report_class = ProductQuantityReport
     advanced_search = False
     show_production_columns = False
 
     #
     # SearchDialog Hooks
     #
-
-    def on_print_button_clicked(self, button):
-        print_report(ProductQuantityReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
@@ -300,11 +294,8 @@ class ProductsSoldSearch(SearchDialog):
     title = _('Products Sold Search')
     size = (775, 450)
     table = search_spec = SoldItemView
+    report_class = ProductsSoldReport
     advanced_search = False
-
-    def on_print_button_clicked(self, button):
-        print_report(ProductsSoldReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
     #
     # SearchDialog Hooks
@@ -366,6 +357,7 @@ class ProductStockSearch(SearchEditor):
     # cannot filter the branch of the purchase, when counting the number of
     # purchased orders by branch
     table = search_spec = ProductFullStockItemView
+    report_class = ProductStockReport
     editor_class = ProductStockEditor
     has_new_button = False
     advanced_search = True
@@ -390,10 +382,6 @@ class ProductStockSearch(SearchEditor):
         branch_filter = self.create_branch_filter(_('In branch:'))
         self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
-
-    def on_print_button_clicked(self, widget):
-        print_report(ProductStockReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
     #
     # SearchEditor Hooks
@@ -445,6 +433,7 @@ class ProductClosedStockSearch(ProductSearch):
 
     title = _('Closed Product Stock Search')
     table = search_spec = ProductClosedStockView
+    report_class = ProductClosedStockReport
     has_new_button = False
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True,
@@ -472,14 +461,6 @@ class ProductClosedStockSearch(ProductSearch):
 
     def _has_rows(self, results, obj):
         SearchEditor._has_rows(self, results, obj)
-
-    #
-    # SearchDialog Hooks
-    #
-
-    def on_print_button_clicked(self, widget):
-        print_report(ProductClosedStockReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
 
 class ProductBatchSearch(SearchEditor):
@@ -556,6 +537,7 @@ class ProductBrandSearch(SearchEditor):
     size = (775, 450)
     search_spec = ProductBrandStockView
     editor_class = ProductEditor
+    report_class = ProductBrandReport
 
     def __init__(self, store):
         SearchEditor.__init__(self, store, hide_footer=True,
@@ -612,14 +594,6 @@ class ProductBrandSearch(SearchEditor):
             category = None
 
         return self.search_spec.find_by_branch_category(store, branch, category)
-
-    #
-    # Callbacks
-    #
-
-    def on_print_button_clicked(self, button):
-        print_report(ProductBrandReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
 
 
 class ProductBranchSearch(SearchDialog):

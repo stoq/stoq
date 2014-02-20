@@ -92,6 +92,7 @@ class LoanSearch(SearchDialog):
     title = _(u"Loan Search")
     size = (750, 500)
     search_spec = LoanView
+    report_class = LoanReceipt
     selection_mode = gtk.SELECTION_MULTIPLE
     search_by_date = True
     advanced_search = False
@@ -143,6 +144,12 @@ class LoanSearch(SearchDialog):
                        width=120),
                 ]
 
+    def print_report(self):
+        orders = self.results.get_selected_rows()
+        if len(orders) == 1:
+            loan = self.store.get(Loan, orders[0].id)
+            print_report(self.report_class, loan)
+
     #
     # Callbacks
     #
@@ -150,12 +157,6 @@ class LoanSearch(SearchDialog):
     def on_row_activated(self, klist, item_view):
         item = item_view.loan
         self._show_details(item)
-
-    def on_print_button_clicked(self, button):
-        orders = self.results.get_selected_rows()
-        if len(orders) == 1:
-            loan = self.store.get(Loan, orders[0].id)
-            print_report(LoanReceipt, loan)
 
     def on_details_button_clicked(self, button):
         orders = self.results.get_selected_rows()

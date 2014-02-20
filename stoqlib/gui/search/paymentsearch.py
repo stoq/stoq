@@ -61,6 +61,7 @@ class _BaseBillCheckSearch(SearchDialog):
     size = (750, 500)
     searching_by_date = True
     selection_mode = gtk.SELECTION_MULTIPLE
+    report_class = BillCheckPaymentReport
     search_label = _(u'Bill or check number:')
 
     def _get_status_values(self):
@@ -102,17 +103,10 @@ class _BaseBillCheckSearch(SearchDialog):
                              search_attribute='status'),
                 SearchColumn('value', title=_('Value'), data_type=currency)]
 
-    def _print_report(self):
+    def print_report(self):
         payments = self.results.get_selected_rows() or list(self.results)
-        print_report(BillCheckPaymentReport, self.results, payments,
+        print_report(self.report_class, self.results, payments,
                      filters=self.search.get_search_filters())
-
-    #
-    # Callbacks
-    #
-
-    def on_print_button_clicked(self, widget):
-        self._print_report()
 
 
 class InPaymentBillCheckSearch(_BaseBillCheckSearch):
@@ -138,6 +132,7 @@ class CardPaymentSearch(SearchEditor):
     searching_by_date = True
     search_spec = CardPaymentView
     editor_class = CardPaymentDetailsEditor
+    report_class = CardPaymentReport
     search_label = (u'Client:')
     selection_mode = gtk.SELECTION_BROWSE
 
@@ -220,10 +215,6 @@ class CardPaymentSearch(SearchEditor):
 
         return resultset
 
-    def _print_report(self):
-        print_report(CardPaymentReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
-
     def on_results__selection_changed(self, results, selected):
         can_details = bool(selected)
         self.set_details_button_sensitive(can_details)
@@ -246,9 +237,6 @@ class CardPaymentSearch(SearchEditor):
     #
     # Callbacks
     #
-
-    def on_print_button_clicked(self, widget):
-        self._print_report()
 
     def on_details_button_clicked(self, button):
         selected = self.results.get_selected()

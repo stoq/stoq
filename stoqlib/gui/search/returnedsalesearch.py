@@ -25,19 +25,16 @@
 
 import datetime
 
-from stoqlib.domain.views import ReturnedSalesView
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
-from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.gui.utils.printing import print_report
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.sale import ReturnedSalesReport
-
 from stoqlib.api import api
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import SaleView
+from stoqlib.domain.views import ReturnedSalesView
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-#from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.sale import ReturnedSalesReport
 
 
 _ = stoqlib_gettext
@@ -47,6 +44,7 @@ class ReturnedSaleSearch(SearchDialog):
     title = _(u"Returned Sale Search")
     size = (830, 520)
     search_spec = ReturnedSalesView
+    report_class = ReturnedSalesReport
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)
@@ -112,7 +110,3 @@ class ReturnedSaleSearch(SearchDialog):
             raise ValueError("You should have only one item selected at "
                              "this point ")
         self._show_details(selected_returns[0])
-
-    def on_print_button_clicked(self, button):
-        print_report(ReturnedSalesReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
