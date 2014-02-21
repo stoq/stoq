@@ -31,7 +31,7 @@ class FinancialReportDialog(BasicDialog):
         self.date_filter.set_use_date_entries(False)
 
         BasicDialog.__init__(self, title=self.title)
-        self.justify_label(gtk.JUSTIFY_CENTER)
+        self.main_label.set_justify(gtk.JUSTIFY_CENTER)
 
         self.ok_button.set_label(_("Generate"))
         self.add(self.date_filter)

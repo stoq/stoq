@@ -44,7 +44,7 @@ class SintegraDialog(BasicDialog):
 
     def __init__(self, store):
         BasicDialog.__init__(self, title=self.title)
-        self.justify_label(gtk.JUSTIFY_CENTER)
+        self.main_label.set_justify(gtk.JUSTIFY_CENTER)
 
         self.store = store
         self.ok_button.set_label(_("Generate"))

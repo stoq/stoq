@@ -258,11 +258,6 @@ class BasicDialog(GladeDelegate, RunnableView):
             icon = gtk.STOCK_CANCEL
         change_button_appearance(self.cancel_button, icon, text)
 
-    # FIXME: Remove
-    # Callsites: stoqlib/gui/dialogs/sintegradialog.py
-    def justify_label(self, just):
-        self.main_label.set_justify(just)
-
     def set_confirm_widget(self, widget):
         """Enables widget as a confirm widget, the dialog will be closed as
         confirmed if the widget is activated.
