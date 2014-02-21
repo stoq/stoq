@@ -316,10 +316,12 @@ class ProductEditor(SellableEditor):
     #
 
     def setup_slaves(self):
-        from stoqlib.gui.slaves.productslave import ProductDetailsSlave
-        self.details_slave = ProductDetailsSlave(self.store, self.model.sellable,
-                                                 self.db_form, self.visual_mode)
-        self.add_extra_tab(_(u'Details'), self.details_slave)
+        super(ProductEditor, self).setup_slaves()
+
+        from stoqlib.gui.slaves.productslave import ProductInformationSlave
+        info_slave = ProductInformationSlave(self.store, self.model, self.db_form,
+                                             visual_mode=self.visual_mode)
+        self.add_extra_tab(_(u'Details'), info_slave)
 
     #
     #   Callbacks
@@ -412,13 +414,22 @@ class ProductionProductEditor(ProductEditor):
 class ProductStockEditor(BaseEditor):
     model_name = _('Product')
     model_type = Product
-    gladefile = 'HolderTemplate'
+    gladefile = 'ProductStockEditor'
 
     def setup_slaves(self):
-        from stoqlib.gui.slaves.productslave import ProductDetailsSlave
-        details_slave = ProductDetailsSlave(self.store, self.model.sellable)
-        details_slave.hide_stock_details()
-        self.attach_slave('place_holder', details_slave)
+        from stoqlib.gui.slaves.productslave import ProductInformationSlave
+        info_slave = ProductInformationSlave(self.store, self.model,
+                                             visual_mode=self.visual_mode)
+        info_slave.nfe_frame.hide()
+        self.attach_slave('information_holder', info_slave)
+
+        from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
+        details_slave = SellableDetailsSlave(self.store, self.model.sellable,
+                                             visual_mode=self.visual_mode)
+        self.attach_slave('details_holder', details_slave)
+
+        # Make everything aligned by pytting notes_lbl on the same size group
+        info_slave.left_labels_group.add_widget(details_slave.notes_lbl)
 
 
 class ProductManufacturerEditor(BaseEditor):

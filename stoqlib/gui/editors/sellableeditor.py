@@ -423,6 +423,15 @@ class SellableEditor(BaseEditor):
 
         self.update_requires_weighing_label()
 
+    def setup_slaves(self):
+        from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
+        details_slave = SellableDetailsSlave(self.store, self.model.sellable,
+                                             visual_mode=self.visual_mode)
+        self.attach_slave('slave_holder', details_slave)
+
+        # Make everything aligned by pytting notes_lbl on the same size group
+        self.left_labels_group.add_widget(details_slave.notes_lbl)
+
     def _run_category_editor(self, category=None):
         self.store.savepoint('before_run_editor_sellable_category')
         model = run_dialog(SellableCategoryEditor, self, self.store, category)

@@ -6,7 +6,7 @@ GtkDialog(main_dialog.toplevel): title='Add Service', hidden
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ServiceEditor is attached
         GtkNotebook(toplevel):
           GtkVBox(sellable_tab):
-            GtkTable(table, fill=True):
+            GtkTable(table, expand=True, fill=True):
               GtkLabel(code_lbl): 'Code:'
               ProxyEntry(code): '12345'
               GtkLabel(label8): 'Status:'
@@ -72,14 +72,12 @@ GtkDialog(main_dialog.toplevel): title='Add Service', hidden
               GtkEventBox(slave_holder): slave SellableDetailsSlave is attached
                 GtkVBox(toplevel):
                   GtkTable(table1, expand=True, fill=True):
-                    GtkEventBox(details_holder):
                     GtkLabel(notes_lbl): 'Details:'
                     GtkScrolledWindow(scrolledwindow1):
                       ProxyTextView(notes):
                     GtkVBox(vbox2):
                       GtkEventBox(sellable_image_holder, expand=True, fill=True): slave ImageSlave is attached
                         GtkHBox(toplevel):
-                          GtkVSeparator(separator):
                           GtkEventBox(eventbox, expand=True, fill=True):
                             GtkImage(image):
                   GtkLabel(label1, fill=True): 'Right-click image for more options'

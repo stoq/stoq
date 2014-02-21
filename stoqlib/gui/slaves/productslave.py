@@ -47,7 +47,6 @@ from stoqlib.gui.editors.producteditor import (TemporaryProductComponent,
                                                ProductComponentEditor,
                                                QualityTestEditor,
                                                ProductSupplierEditor)
-from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
 from stoqlib.lib.defaults import quantize, MAX_INT
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import info, yesno, warning
@@ -65,7 +64,7 @@ class ProductInformationSlave(BaseEditorSlave):
                      'product_model', 'brand', 'family']
     storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
-    def __init__(self, store, model, db_form, visual_mode=False):
+    def __init__(self, store, model, db_form=None, visual_mode=False):
         self.db_form = db_form
         BaseEditorSlave.__init__(self, store, model, visual_mode)
 
@@ -213,17 +212,6 @@ class ProductInformationSlave(BaseEditorSlave):
         if minimum and minimum > value:
             return ValidationError(_(u'Maximum must be greater than the '
                                      'minimum value.'))
-
-
-class ProductDetailsSlave(SellableDetailsSlave):
-
-    def setup_slaves(self):
-        self.info_slave = ProductInformationSlave(self.store, self.model.product,
-                                                  self.db_form, self.visual_mode)
-        self.attach_slave('details_holder', self.info_slave)
-
-    def hide_stock_details(self):
-        self.info_slave.hide_stock_details()
 
 
 class ProductTaxSlave(BaseEditorSlave):
