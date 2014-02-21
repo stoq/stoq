@@ -26,9 +26,13 @@
 import gtk
 from kiwi.ui.objectlist import Column
 
+from stoqlib.domain.person import Person
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.wizards.personwizard import (PersonRoleWizard,
+                                              PersonRoleTypeStep,
+                                              RoleEditorStep)
 from stoqlib.gui.wizards.workorderquotewizard import (WorkOrderQuoteWizard,
                                                       WorkOrderQuoteStartStep,
                                                       WorkOrderQuoteWorkOrderStep,
@@ -36,7 +40,7 @@ from stoqlib.gui.wizards.workorderquotewizard import (WorkOrderQuoteWizard,
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-from .opticaldomain import OpticalWorkOrder
+from .opticaldomain import OpticalWorkOrder, OpticalMedic
 from .opticalslave import WorkOrderOpticalSlave
 from .opticalreport import OpticalWorkOrderReceiptReport
 
@@ -171,3 +175,50 @@ class OpticalSaleQuoteWizard(WorkOrderQuoteWizard):
                  _("Print quote details"), _("Don't print")):
             orders = WorkOrder.find_by_sale(self.model.store, self.model)
             print_report(OpticalWorkOrderReceiptReport, list(orders))
+
+
+class MedicRoleTypeStep(PersonRoleTypeStep):
+
+    def _setup_widgets(self):
+        self.document_label.set_text('CRM')
+        label = _('What kind of %s are you adding?')
+        role_name = self.wizard.get_role_name().lower()
+        self.person_role_label.set_text(label % role_name)
+        self.person_role_label.set_size('large')
+        self.person_role_label.set_bold(True)
+
+    def next_step(self):
+        from stoqlib.domain.person import Individual, Company
+        if self.individual_check.get_active():
+            role_type = Person.ROLE_INDIVIDUAL
+        else:
+            role_type = Person.ROLE_COMPANY
+
+        if self.person_document.is_empty():
+            return RoleEditorStep(self.wizard, self.store, self, role_type)
+
+        person = OpticalMedic.get_person_by_crm(self.store, self.model.person_document)
+        if person:
+            role = person.has_individual_or_company_facets()
+            if isinstance(role, Individual):
+                role_type = Person.ROLE_INDIVIDUAL
+            elif isinstance(role, Company):
+                role_type = Person.ROLE_COMPANY
+
+        return RoleEditorStep(self.wizard, self.store, self, role_type, person,
+                              document=self.model.person_document)
+
+    def on_person_document__validate(self, entry, value):
+        # Overriding the method.
+        # CRM doesn't have a validation
+        pass
+
+    def on_individual_check__toggled(self, *args):
+        # Overriding the method.
+        # CPF/CNPJ fields are no longer used to search an existing medic.
+        pass
+
+
+class MedicRoleWizard(PersonRoleWizard):
+    def get_first_step(self, store):
+        return MedicRoleTypeStep(self, store)

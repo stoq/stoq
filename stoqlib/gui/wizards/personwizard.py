@@ -189,11 +189,14 @@ class PersonRoleWizard(BaseWizard):
         self.role_editor = role_editor
 
         BaseWizard.__init__(self, store,
-                            PersonRoleTypeStep(self, store),
+                            self.get_first_step(store),
                             title=self.get_role_title())
 
         if role_editor.help_section:
             self.set_help_section(role_editor.help_section)
+
+    def get_first_step(self, store):
+        return PersonRoleTypeStep(self, store)
 
     def get_role_name(self):
         if not self.role_editor.model_name:

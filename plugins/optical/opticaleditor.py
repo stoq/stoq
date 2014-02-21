@@ -37,10 +37,14 @@ class MedicEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     def create_model(self, store):
+        # Document used in MedicEditor is the CRM number
+        crm = self.document
+        self.document = None
+
         person = BasePersonRoleEditor.create_model(self, store)
         medic = store.find(OpticalMedic, person=person).one()
         if medic is None:
-            medic = OpticalMedic(person=person, store=store)
+            medic = OpticalMedic(person=person, store=store, crm_number=crm)
         return medic
 
     def setup_slaves(self):

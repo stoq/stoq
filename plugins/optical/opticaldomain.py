@@ -49,6 +49,14 @@ class OpticalMedic(Domain):
     # IDescribable implementation
     #
 
+    @classmethod
+    def get_person_by_crm(cls, store, document):
+        query = cls.crm_number == document
+
+        tables = [Person,
+                  Join(OpticalMedic, Person.id == OpticalMedic.person_id)]
+        return store.using(*tables).find(Person, query).one()
+
     def get_description(self):
         return _('%s (upid: %s)') % (self.person.name, self.crm_number)
 

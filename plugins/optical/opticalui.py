@@ -45,6 +45,7 @@ from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchextension import SearchExtension
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.wizards.personwizard import PersonRoleWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -52,11 +53,13 @@ from stoqlib.reporting.sale import SaleOrderReport
 from stoq.gui.services import ServicesApp
 
 from .medicssearch import OpticalMedicSearch
+from .opticaleditor import MedicEditor
 from .opticalhistory import OpticalPatientDetails
 from .opticalreport import OpticalWorkOrderReceiptReport
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
-from .opticalwizard import OpticalSaleQuoteWizard
+from .opticalwizard import OpticalSaleQuoteWizard, MedicRoleWizard
 from .opticaldomain import OpticalProduct
+
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -216,6 +219,8 @@ class OpticalUI(object):
         # of WorkOrderQuoteWizard when this plugin is enabled
         if dialog is WorkOrderQuoteWizard:
             return OpticalSaleQuoteWizard
+        elif dialog is PersonRoleWizard and MedicEditor in args:
+            return MedicRoleWizard
 
     def _on_SearchDialogSetupSearchEvent(self, dialog):
         if isinstance(dialog, ProductSearch):

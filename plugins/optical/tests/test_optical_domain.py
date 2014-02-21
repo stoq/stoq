@@ -31,8 +31,8 @@ from ..opticaldomain import (OpticalMedic, OpticalWorkOrder,
 
 
 class OpticalDomainTest(DomainTest):
-    def create_optical_medic(self, crm_number=None):
-        person = self.create_person()
+    def create_optical_medic(self, person=None, crm_number=None):
+        person = person or self.create_person()
         person.name = u'Medic'
         return OpticalMedic(store=self.store,
                             crm_number=crm_number or u'1234',
@@ -66,6 +66,13 @@ class OpticalMedicTest(OpticalDomainTest):
     def test_get_description(self):
         medic = self.create_optical_medic()
         assert medic.get_description() == u'Medic (upid: 1234)'
+
+    def test_get_person_by_crm(self):
+        new_person = self.create_person()
+        crm = u'111'
+        medic = self.create_optical_medic(person=new_person, crm_number=crm)
+        person = medic.get_person_by_crm(self.store, crm)
+        assert new_person == person
 
 
 class OpticalWorkOrderTest(OpticalDomainTest):

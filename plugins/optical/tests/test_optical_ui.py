@@ -34,6 +34,7 @@ from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.events import PrintReportEvent
+from stoqlib.gui.wizards.personwizard import PersonRoleWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
@@ -43,10 +44,11 @@ from stoq.gui.sales import SalesApp
 from stoq.gui.services import ServicesApp
 
 from ..medicssearch import OpticalMedicSearch
+from ..opticaleditor import MedicEditor
 from ..opticalhistory import OpticalPatientDetails
 from ..opticalreport import OpticalWorkOrderReceiptReport
 from ..opticalui import OpticalUI
-from ..opticalwizard import OpticalSaleQuoteWizard
+from ..opticalwizard import OpticalSaleQuoteWizard, MedicRoleWizard
 from .test_optical_domain import OpticalDomainTest
 
 
@@ -153,6 +155,13 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
             run_dialog(WorkOrderQuoteWizard, None, self.store, None)
             args, kwargs = run_dialog_internal.call_args
             self.assertTrue(isinstance(args[0], WorkOrderQuoteWizard))
+
+    def test_run_medic_role_wizard(self):
+        name = 'stoqlib.gui.base.dialogs.run_dialog_internal'
+        with mock.patch(name) as run_dialog_internal:
+            run_dialog(PersonRoleWizard, None, self.store, MedicEditor)
+            args, kwargs = run_dialog_internal.call_args
+            self.assertTrue(isinstance(args[0], MedicRoleWizard))
 
     def test_person_editor(self):
         client = self.create_client()

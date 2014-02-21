@@ -39,8 +39,10 @@ from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.translation import stoqlib_gettext
 
+from ..opticaldomain import OpticalMedic
+from ..opticaleditor import MedicEditor
 from ..opticalreport import OpticalWorkOrderReceiptReport
-from ...optical.opticalwizard import OpticalSaleQuoteWizard
+from ..opticalwizard import OpticalSaleQuoteWizard, MedicRoleWizard
 
 _ = stoqlib_gettext
 
@@ -307,3 +309,92 @@ class TestSaleQuoteWizard(GUITest):
                                       'Print quote details',
                                       "Don't print")
         print_report.assert_called_once_with(OpticalWorkOrderReceiptReport, [workorder])
+
+
+class TestMedicRoleWizard(GUITest):
+    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    def test_medic_without_crm(self, run_dialog):
+        individual = self.create_individual()
+        person = individual.person
+        person.name = u'Medic without crm'
+        OpticalMedic(store=self.store, crm_number=u'', person=person)
+
+        wizard = MedicRoleWizard(self.store, MedicEditor)
+        step = wizard.get_current_step()
+        self.check_wizard(wizard, 'wizard-medic-without-crm-role-type-step')
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        self.assertNotSensitive(wizard, ['next_button'])
+        step.person_slave.name.update('medic without crm')
+        step.person_slave.address_slave.street.update('street')
+        step.person_slave.address_slave.streetnumber.update(123)
+        step.person_slave.address_slave.district.update('district')
+        self.assertNotSensitive(wizard, ['next_button'])
+        crm_entry = step.role_editor.medic_details_slave.crm_number
+        self.assertEquals(crm_entry.read(), u'')
+        crm_entry.update('6789')
+        self.assertSensitive(wizard, ['next_button'])
+        self.click(wizard.next_button)
+
+        medic = wizard.retval
+        self.check_wizard(wizard, 'wizard-medic-without-crm-role-finish',
+                          [medic, medic.person] + list(medic.person.addresses))
+
+    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    def test_individual_medic(self, run_dialog):
+        individual = self.create_individual()
+        person = individual.person
+        person.name = u'Medic'
+        individual_medic = OpticalMedic(store=self.store, crm_number=u'4321',
+                                        person=person)
+
+        wizard = MedicRoleWizard(self.store, MedicEditor)
+        step = wizard.get_current_step()
+        step.person_document.update(individual_medic.crm_number)
+        self.check_wizard(wizard, 'wizard-individual-medic-role-type-step')
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        self.assertNotSensitive(wizard, ['next_button'])
+        step.person_slave.name.update('individual medic name')
+        step.person_slave.address_slave.street.update('street')
+        step.person_slave.address_slave.streetnumber.update(789)
+        step.person_slave.address_slave.district.update('district')
+        crm_entry = step.role_editor.medic_details_slave.crm_number
+        self.assertEquals(crm_entry.read(), individual_medic.crm_number)
+        self.assertSensitive(wizard, ['next_button'])
+        self.click(wizard.next_button)
+
+        medic = wizard.retval
+        self.check_wizard(wizard, 'wizard-individual-medic-role-finish',
+                          [medic, medic.person] + list(medic.person.addresses))
+
+    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    def test_company_medic(self, run_dialog):
+        company = self.create_company()
+        person = company.person
+        company_medic = OpticalMedic(store=self.store, crm_number=u'1234',
+                                     person=person)
+
+        wizard = MedicRoleWizard(self.store, MedicEditor)
+        step = wizard.get_current_step()
+        step.person_document.update(company_medic.crm_number)
+        step.company_check.set_active(True)
+        self.check_wizard(wizard, 'wizard-company-medic-role-type-step')
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        self.assertNotSensitive(wizard, ['next_button'])
+        step.person_slave.name.update('company medic name')
+        step.person_slave.address_slave.street.update('street')
+        step.person_slave.address_slave.streetnumber.update(456)
+        step.person_slave.address_slave.district.update('district')
+        crm_entry = step.role_editor.medic_details_slave.crm_number
+        self.assertEquals(crm_entry.read(), company_medic.crm_number)
+        self.assertSensitive(wizard, ['next_button'])
+        self.click(wizard.next_button)
+
+        medic = wizard.retval
+        self.check_wizard(wizard, 'wizard-company-medic-role-finish',
+                          [medic, medic.person] + list(medic.person.addresses))
