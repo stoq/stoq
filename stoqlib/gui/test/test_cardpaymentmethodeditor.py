@@ -92,9 +92,11 @@ class TestCardOperationCostEditor(GUITest):
         device = self.create_card_device()
         provider = self.create_credit_provider()
         # Create another cost to test validation
-        self.create_operation_cost(device=device, provider=provider, start=4, end=6)
+        self.create_operation_cost(device=device, provider=provider, start=4, end=6,
+                                   card_type=CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE)
 
-        cost = self.create_operation_cost(device=device, provider=provider)
+        cost = self.create_operation_cost(device=device, provider=provider,
+                                          card_type=CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE)
         editor = CardOperationCostEditor(self.store, cost, cost.device)
 
         self.assertValid(editor, ['installment_start', 'installment_end'])
