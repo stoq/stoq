@@ -138,7 +138,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
             GtkVBox(toplevel):
               GtkHBox(hbox1, fill=True):
                 GtkLabel(model_name_label, fill=True): 'Category:'
-                ProxyComboEntry(target_combo, expand=True, fill=True): mandatory
+                ProxyComboEntry(target_combo, expand=True, fill=True): invalid
                 GtkButton(add_button, fill=True): 'gtk-add', insensitive
               GtkVBox(model_vbox, expand=True, fill=True):
                 kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):

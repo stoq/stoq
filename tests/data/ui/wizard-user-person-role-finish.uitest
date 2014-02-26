@@ -144,7 +144,7 @@ GtkDialog(PluggableWizard): title='New User', hidden
                   GtkVBox():
                     GtkHBox(fill=True):
                       GtkLabel(fill=True): 'Branch:'
-                      ProxyComboEntry(expand=True, fill=True): mandatory
+                      ProxyComboEntry(expand=True, fill=True): invalid
                         item: 'Moda Stoq'
                         item: 'Stoq Elite Fashion'
                         item: 'branch', selected

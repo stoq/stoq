@@ -192,7 +192,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
             GtkVBox(toplevel):
               GtkHBox(hbox1, fill=True):
                 GtkLabel(model_name_label, fill=True): 'Category:'
-                ProxyComboEntry(target_combo, expand=True, fill=True): mandatory
+                ProxyComboEntry(target_combo, expand=True, fill=True): invalid
                 GtkButton(add_button, fill=True): 'gtk-add', insensitive
               GtkVBox(model_vbox, expand=True, fill=True):
                 kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):
@@ -209,7 +209,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
             GtkVBox(toplevel):
               GtkHBox(hbox1, fill=True):
                 GtkLabel(model_name_label, fill=True): 'Supplier:'
-                ProxyComboEntry(target_combo, expand=True, fill=True): mandatory
+                ProxyComboEntry(target_combo, expand=True, fill=True): invalid
                   item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
                   item: 'Supplier'
                 GtkButton(add_button, fill=True): 'gtk-add'

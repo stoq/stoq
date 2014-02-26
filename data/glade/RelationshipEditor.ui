@@ -36,7 +36,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="data_type">object</property>
-                <property name="mandatory">True</property>
                 <property name="model_attribute">target_combo</property>
               </object>
               <packing>

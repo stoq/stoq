@@ -114,7 +114,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                       GtkVBox(toplevel):
                         GtkHBox(hbox1, fill=True):
                           GtkLabel(model_name_label, fill=True): 'Branch:'
-                          ProxyComboEntry(target_combo, expand=True, fill=True): mandatory
+                          ProxyComboEntry(target_combo, expand=True, fill=True): invalid
                             item: 'Moda Stoq'
                             item: 'Stoq Elite Fashion'
                           GtkButton(add_button, fill=True): 'gtk-add', insensitive
