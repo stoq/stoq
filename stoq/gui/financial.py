@@ -209,8 +209,11 @@ class TransactionPage(object):
         if not isinstance(renderer, gtk.CellRendererText):
             return text
 
+        if self.model.kind != 'account':
+            return text
+
         trans = account_view.transaction
-        is_imbalance = self.app._imbalance_account.id in [
+        is_imbalance = self.app._imbalance_account_id in [
             trans.dest_account_id,
             trans.source_account_id]
 

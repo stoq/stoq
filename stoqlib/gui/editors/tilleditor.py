@@ -56,7 +56,7 @@ def _create_transaction(store, till_entry):
                        source_account_id=sysparam.get_object_id('IMBALANCE_ACCOUNT'),
                        account_id=sysparam.get_object_id('TILLS_ACCOUNT'),
                        value=till_entry.value,
-                       code=unicode(till_entry.id),
+                       code=unicode(till_entry.identifier),
                        date=TransactionTimestamp(),
                        store=store,
                        payment=till_entry.payment)
