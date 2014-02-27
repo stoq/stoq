@@ -96,6 +96,7 @@ class TemporarySaleItem(object):
 
         if not price:
             price = sellable.price
+        self.base_price = sellable.base_price
         self.price = price
         self.deliver = False
         self.estimated_fix_date = None

@@ -28,6 +28,7 @@ from nose.exc import SkipTest
 from stoqdrivers.enum import PaymentMethodType
 from stoqdrivers.exceptions import DriverError
 
+from stoq.gui.pos import TemporarySaleItem
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import PaymentMethod
 
@@ -72,6 +73,10 @@ class TestFiscalCoupon(ECFTest):
 
         self.coupon.open()
         self.coupon.add_item(item)
+
+        # Item added by the POS app.
+        pos_item = TemporarySaleItem(sellable=sellable, quantity=1)
+        self.coupon.add_item(pos_item)
 
     def test_add_item_service(self):
         service = self.create_service()
