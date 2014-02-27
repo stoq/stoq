@@ -82,6 +82,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                     GtkButton(add_button): insensitive
                     GtkButton(advanced_search):
                 GtkImage(stoq_logo, fill=True, pack-end):
+          GtkAlignment(sellable_align, fill=True):
+            GtkHBox(hbox1):
+              ProxyLabel(sellable_description, expand=True, fill=True): '<span ></span>', hidden
           GtkVBox(list_vbox, expand=True, fill=True):
             GtkVBox(till_status_box, expand=True, fill=True):
               GtkHSeparator(hseparator1, fill=True):

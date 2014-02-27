@@ -334,6 +334,14 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'CONFIRM_QTY_ON_BARCODE_ACTIVATE',
+        _(u'Sales'),
+        _(u'Requires confirmation of quantity after barcode activation'),
+        _(u'The system will always require the quantity of products '
+          u'before adding a sale item on Point of Sale'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'ACCEPT_CHANGE_SALESPERSON',
         _(u'Sales'),
         _(u'Change salesperson'),

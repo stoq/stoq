@@ -232,6 +232,48 @@ class TestPos(BaseGUITest):
             u'you can close the POS application.', gtk.RESPONSE_NO,
             u'Cancel sale', u'Finish sale')
 
+    def test_set_additional_info(self):
+        from stoqlib.domain.product import Product
+
+        # The test that requires qty confirmation before adding a product
+        with self.sysparam(CONFIRM_QTY_ON_BARCODE_ACTIVATE=True):
+            pos = self._get_pos_with_open_till()
+
+            # Set a barcode number on the barcode field and activate it
+            sellable = self.store.find(Product)[0].sellable
+            pos.barcode.set_text(sellable.code)
+            self.activate(pos.barcode)
+
+            self.assertEquals(pos.sellable_description.get_text(), sellable.description)
+            self.assertTrue(pos.quantity.is_focus())
+
+        # The product is directly added
+        with self.sysparam(CONFIRM_QTY_ON_BARCODE_ACTIVATE=False):
+            pos = self._get_pos_with_open_till()
+
+            # Set a barcode number on the barcode field and activate it
+            sellable = self.store.find(Product)[0].sellable
+            pos.barcode.set_text(sellable.code)
+            self.activate(pos.barcode)
+
+            self.assertFalse(pos.sellable_description.get_visible())
+            self.assertFalse(pos.quantity.is_focus())
+
+        # A non existing product is added, focus shall remain in barcode entry
+        with self.sysparam(CONFIRM_QTY_ON_BARCODE_ACTIVATE=True):
+            pos = self._get_pos_with_open_till()
+
+            # Set a barcode number on the barcode field and activate it
+            sellable = self.store.find(Product)[0].sellable
+            pos.barcode.set_text('01xzp')
+            with mock.patch.object(pos, 'run_dialog') as run_dialog:
+                run_dialog.return_value = None
+                self.assertEquals(run_dialog.call_count, 0)
+                self.activate(pos.barcode)
+                self.assertEquals(run_dialog.call_count, 1)
+
+            self.assertTrue(pos.barcode.is_focus())
+
     def test_advanced_search(self):
         pos = self._get_pos_with_open_till()
 

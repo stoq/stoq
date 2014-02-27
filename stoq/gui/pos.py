@@ -236,6 +236,10 @@ class PosApp(ShellApp):
         for widget in (self.window.Print, self.window.ExportSpreadSheet):
             widget.set_visible(False)
 
+        # Hides or shows sellable description
+        self._confirm_quantity = sysparam.get_bool('CONFIRM_QTY_ON_BARCODE_ACTIVATE')
+        self.sellable_description.set_visible(self._confirm_quantity)
+
         # Hide toolbar specially for pos
         self.uimanager.get_widget('/toolbar').hide()
         self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()
@@ -764,6 +768,7 @@ class PosApp(ShellApp):
                 return
 
         self._update_list(sellable, batch=batch)
+        self.sellable_description.set_text('')
         self.barcode.grab_focus()
 
     def _check_available_stock(self, storable, sellable):
@@ -918,6 +923,22 @@ class PosApp(ShellApp):
 
         return sale
 
+    def _set_additional_info(self, search_str=None):
+        """Show additional information about a product.
+
+        If parameter 'CONFIRM_QTY_ON_BARCODE_ACTIVATE' if set to true it shall
+        set the product's name into a bold label below the barcode search label.
+        """
+        sellable, batch = self._get_sellable_and_batch()
+        if sellable:
+            self.sellable_description.set_text(sellable.description)
+        else:
+            self.barcode.grab_focus()
+            message = (_("The barcode '%s' does not exist. "
+                         "Searching for a product instead...")
+                       % self.barcode.get_text())
+            self._run_advanced_search(search_str, message)
+
     @public(since="1.5.0")
     def checkout(self, cancel_clear=False):
         """Initiates the sale wizard to confirm sale.
@@ -990,13 +1011,17 @@ class PosApp(ShellApp):
         self._update_widgets()
         self.barcode.grab_focus()
 
-    def _checkout_or_add_item(self):
+    def _checkout_or_add_item(self, must_add=False):
         search_str = self.barcode.get_text()
         if search_str == '':
             if len(self.sale_items) >= 1:
                 self.checkout()
         else:
-            self._add_sale_item(search_str)
+            if not self._confirm_quantity or must_add:
+                self._add_sale_item(search_str)
+            else:
+                self.quantity.grab_focus()
+                self._set_additional_info(search_str)
 
     def _remove_trade_infobar(self):
         if not self._trade_infobar:
@@ -1241,7 +1266,7 @@ class PosApp(ShellApp):
         self._update_buttons()
 
     def on_quantity__activate(self, entry):
-        self._checkout_or_add_item()
+        self._checkout_or_add_item(must_add=True)
 
     def on_quantity__validate(self, entry, value):
         self._update_buttons()
