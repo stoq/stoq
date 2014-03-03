@@ -250,13 +250,14 @@ class OpticalWorkOrder(Domain):
     #: The type of the frame. One of OpticalWorkOrder.FRAME_TYPE_*
     frame_type = IntCol()
 
-    # TODO: I still need to find out the real meaning of this property (waiting
-    # for the clients anweser
+    #: The vertical frame measure
     frame_mva = DecimalCol()
 
-    # TODO: I still need to find out the real meaning of this property (waiting
-    # for the clients anweser
+    #: The horizontal frame measure
     frame_mha = DecimalCol()
+
+    #: The diagonal frame measure
+    frame_mda = DecimalCol()
 
     #: The brige is the part of the frame between the two lenses, above the nose.
     frame_bridge = DecimalCol()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.24"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="WorkOrderOpticalSlave">
     <child>
@@ -1093,7 +1093,7 @@
                       <object class="GtkTable" id="frame_table">
                         <property name="visible">True</property>
                         <property name="n_rows">4</property>
-                        <property name="n_columns">3</property>
+                        <property name="n_columns">4</property>
                         <property name="column_spacing">6</property>
                         <property name="row_spacing">6</property>
                         <child>
@@ -1127,8 +1127,8 @@
                             <property name="label" translatable="yes">Bridge</property>
                           </object>
                           <packing>
-                            <property name="left_attach">2</property>
-                            <property name="right_attach">3</property>
+                            <property name="left_attach">3</property>
+                            <property name="right_attach">4</property>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
                           </packing>
@@ -1188,8 +1188,8 @@
                             <property name="model_attribute">frame_bridge</property>
                           </object>
                           <packing>
-                            <property name="left_attach">2</property>
-                            <property name="right_attach">3</property>
+                            <property name="left_attach">3</property>
+                            <property name="right_attach">4</property>
                             <property name="top_attach">2</property>
                             <property name="bottom_attach">3</property>
                           </packing>
@@ -1238,6 +1238,46 @@
                           <packing>
                             <property name="top_attach">3</property>
                             <property name="bottom_attach">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxySpinButton" id="frame_mda">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">•</property>
+                            <property name="xalign">1</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <property name="data_type">Decimal</property>
+                            <property name="model_attribute">frame_mda</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="right_attach">3</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="gtklabel41">
+                            <property name="visible">True</property>
+                            <property name="yalign">0.50</property>
+                            <property name="label" translatable="yes">F.D.M</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="right_attach">3</property>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
                           </packing>
                         </child>
                       </object>

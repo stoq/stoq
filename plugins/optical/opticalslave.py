@@ -161,6 +161,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     frame_widgets = {
         'frame_mva': (10, 60, 1, Decimal('0.1'), 1),
         'frame_mha': (40, 70, 1, Decimal('0.1'), 1),
+        'frame_mda': (10, 60, 1, Decimal('0.1'), 1),
         'frame_bridge': (5, 25, 1, Decimal('0.1'), 1),
     }
 
