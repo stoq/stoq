@@ -49,7 +49,7 @@ if building_egg:
     python_dir = ''
     plugin_dir = 'stoq/data'
 else:
-    python_dir = 'share/stoq/'
+    python_dir = '$prefix/share/stoq/'
     plugin_dir = python_dir
 
 
@@ -60,7 +60,7 @@ def listplugins(plugins, exts):
         dirs.append(package.replace('.', '/'))
     files = []
     for directory in dirs:
-        install_dir = 'share/stoq/%s' % directory
+        install_dir = '$prefix/share/stoq/%s' % directory
         files.append((install_dir, listfiles(directory, '*.py')))
         files.append((install_dir, listfiles(directory, '*.plugin')))
 
@@ -99,8 +99,6 @@ scripts = [
     'bin/stoqcreatedbuser',
     'bin/stoq-daemon',
 ]
-templates = []
-install_requires = []
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
     ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
@@ -126,21 +124,23 @@ if building_egg:
         ('stoq/data/docs',
          ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
           'COPYING.stoqlib', 'README', 'docs/copyright']))
-    install_requires.append('stoqdrivers')
 else:
     data_files.extend([
-        ('share/applications', ['stoq.desktop']),
-        ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
-                            'COPYING.stoqlib', 'README', 'docs/copyright']),
-        ('share/gnome/help/stoq/C', listfiles('docs/manual/pt_BR', '*.page')),
-        ('share/gnome/help/stoq/C', listfiles('docs/manual/pt_BR', '*.xml')),
-        ('share/gnome/help/stoq/C/figures',
+        ('$prefix/share/applications', ['stoq.desktop']),
+        ('$prefix/share/doc/stoq',
+         ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
+          'COPYING.stoqlib', 'README', 'docs/copyright']),
+        ('$prefix/share/gnome/help/stoq/C',
+         listfiles('docs/manual/pt_BR', '*.page')),
+        ('$prefix/share/gnome/help/stoq/C',
+         listfiles('docs/manual/pt_BR', '*.xml')),
+        ('$prefix/share/gnome/help/stoq/C/figures',
          listfiles('docs/manual/pt_BR/figures', '*.png')),
-        ('share/gnome/help/stoq/C/figures',
+        ('$prefix/share/gnome/help/stoq/C/figures',
          listfiles('docs/manual/pt_BR/figures', '*.svg')),
-        ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
-        ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
-        ('$sysconfdir/stoq', '')])
+        ('$prefix/share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
+        ('$prefix/share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
+    ])
 
 resources = dict(
     locale='$prefix/share/locale',
@@ -159,13 +159,33 @@ global_resources = dict(
     template='$datadir/template',
 )
 
-PLUGINS = ['ecf', 'nfe', 'books', 'magento']
+PLUGINS = ['ecf', 'nfe', 'books']
 PLUGIN_EXTS = [('csv', '*csv'),
                ('glade', '*.ui'),
                ('sql', '*.sql'),
                ('sql', '*.py')]
 
 data_files += listplugins(PLUGINS, PLUGIN_EXTS)
+
+# TODO: Put additional requirements that are not on pypi here. See:
+# https://pythonhosted.org/setuptools/setuptools.html#dependencies-that-aren-t-in-pypi
+# Try to make a way to integrate it with debian packaging, just like the
+# dependencies bellow.
+install_requires = [
+    "Mako >= 0.2.5",
+    "PIL >= 1.1.5",
+    "PyGTK >= 2.20",
+    "Twisted >= 0.2.5",
+    "aptdaemon >= 3.0",
+    "dateutil >= 1.4.1",
+    "kiwi-gtk >= 1.9.29",
+    "pypoppler >= 0.12.1",
+    "reportlab >= 2.4",
+    "stoqdrivers >= 0.9.21",
+    "storm >= 0.19",
+    "weasyprint >= 0.15",
+    "zope.interface >= 3.0",
+]
 
 setup(name='stoq',
       version=version,
@@ -184,5 +204,4 @@ setup(name='stoq',
       resources=resources,
       install_requires=install_requires,
       global_resources=global_resources,
-      templates=templates,
-      zip_safe=True)
+      zip_safe=building_egg)

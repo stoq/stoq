@@ -1,0 +1,7 @@
+aptdaemon python-aptdaemon.gtkwidgets
+dateutil python-dateutil
+kiwi_gtk python-kiwi
+pygtk python-gtk2
+pypoppler python-poppler
+stoqdrivers stoqdrivers
+twisted python-twisted

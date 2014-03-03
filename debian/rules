@@ -1,13 +1,10 @@
 #!/usr/bin/make -f
 
-# Based upon instructions found at
-# http://developer.ubuntu.com/packaging/html/python-packaging.html
-
-#export DH_VERBOSE=1
+# For reference, see:
+#   https://wiki.debian.org/Python/Packaging
+#   https://wiki.debian.org/Python/LibraryStyleGuide
 
 %:
-	dh $@ --buildsystem=python_distutils
+	dh $@ --with python2 --buildsystem=python_distutils
 
-# Do not compress .txt files
-override_dh_compress:
-	dh_compress -X.txt
+

@@ -12,8 +12,8 @@ recursive-include po *.po *.pot POTFILES.list
 recursive-include plugins *.py *.ui *.sql *.plugin
 recursive-include stoqlib *.txt
 recursive-include tests *.html *.py *.txt *.uitest
-include debian/changelog debian/compat debian/copyright debian/control debian/rules
-include debian/pyversions
+include debian/changelog debian/clean debian/compat debian/control
+include debian/copyright debian/pydist-overrides debian/rules debian/watch
 include AUTHORS
 include COPYING
 include COPYING.stoqlib

@@ -1,0 +1,2 @@
+version=3
+https://pypi.python.org/packages/source/s/stoq/stoq-(.*)\.(?:tar\.gz|zip|tar\.bz2)
