@@ -525,7 +525,7 @@ class PosApp(ShellApp):
         # If the barcode has the price information, we need to calculate the
         # corresponding weight.
         if barinfo and sellable and barinfo.mode == BarcodeInfo.MODE_PRICE:
-            weight = info.price / sellable.price
+            weight = barinfo.price / sellable.price
 
         if barinfo and sellable:
             self.quantity.set_value(weight)

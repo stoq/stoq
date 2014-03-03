@@ -229,6 +229,9 @@ class DomainTest(unittest.TestCase, ExampleCreator):
             if type(value) is bool:
                 old_values[param] = sysparam.get_bool(param)
                 sysparam.set_bool(self.store, param, value)
+            elif type(value) is int:
+                old_values[param] = sysparam.get_int(param)
+                sysparam.set_int(self.store, param, value)
             elif isinstance(value, Domain) or value is None:
                 old_values[param] = sysparam.get_object(self.store, param)
                 sysparam.set_object(self.store, param, value)
@@ -243,6 +246,8 @@ class DomainTest(unittest.TestCase, ExampleCreator):
             for param, value in old_values.items():
                 if type(value) is bool:
                     sysparam.set_bool(self.store, param, value)
+                elif type(value) is int:
+                    sysparam.set_int(self.store, param, value)
                 elif isinstance(value, Domain) or value is None:
                     sysparam.set_object(self.store, param, value)
                 elif isinstance(value, basestring):

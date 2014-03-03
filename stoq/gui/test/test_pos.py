@@ -232,6 +232,21 @@ class TestPos(BaseGUITest):
             u'you can close the POS application.', gtk.RESPONSE_NO,
             u'Cancel sale', u'Finish sale')
 
+    def test_get_sellable_and_batch(self):
+        # Testing BarcodeInfo inserted with scale and price mode
+        with self.sysparam(SCALE_BARCODE_FORMAT=0, CONFIRM_QTY_ON_BARCODE_ACTIVATE=True):
+            pos = self._get_pos_with_open_till()
+
+            sellable = self.create_sellable()
+            sellable.price = 100
+            sellable.barcode = u'4628'
+
+            # Set a barcode number on the barcode field and activate it
+            pos.barcode.set_text('2' + sellable.barcode + '00200000')
+            self.activate(pos.barcode)
+
+            self.assertEqual(2, float(pos.quantity.get_text()))
+
     def test_set_additional_info(self):
         from stoqlib.domain.product import Product
 
