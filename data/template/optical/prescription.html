@@ -88,13 +88,14 @@
 
     </table>
 
-    % if optical_data.frame_mva or optical_data.frame_mha or optical_data.frame_bridge:
+    % if optical_data.frame_mva or optical_data.frame_mha or optical_data.frame_bridge or optical_data.frame_mda:
     <table class="optical_data">
       <thead>
       <tr>
         <td>Armação</td>
         <td>M.V.A.</td>
         <td>M.H.A.</td>
+        <td>M.D.A.</td>
         <td>Ponte</td>
       </tr>
       </thead>
@@ -104,6 +105,7 @@
             <td>${ optical_data.frame_type_str }</td>
             <td>${ optical_data.frame_mva }</td>
             <td>${ optical_data.frame_mha }</td>
+            <td>${ optical_data.frame_mda }</td>
             <td>${ optical_data.frame_bridge }</td>
         </tr>
       </tbody>
