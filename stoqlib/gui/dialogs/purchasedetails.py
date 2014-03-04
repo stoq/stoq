@@ -159,7 +159,7 @@ class PurchaseDetailsDialog(BaseEditor):
                                                          self.model.group)
         self.payments_info_list.add_list(changes)
 
-        if not self._receiving_orders:
+        if self._receiving_orders.is_empty():
             for widget in (self.received_freight_type_label,
                            self.received_freight_type,
                            self.received_freight_label,

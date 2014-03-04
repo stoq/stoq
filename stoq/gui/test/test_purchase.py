@@ -31,7 +31,8 @@ from stoqlib.api import api
 from stoq.gui.purchase import PurchaseApp
 from stoq.gui.test.baseguitest import BaseGUITest
 from stoqlib.domain.purchase import PurchaseItem, PurchaseOrder, PurchaseOrderView
-from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
+from stoqlib.domain.receiving import (ReceivingOrderItem, ReceivingOrder,
+                                      PurchaseReceivingMap)
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.wizards.consignmentwizard import ConsignmentWizard
@@ -98,8 +99,8 @@ class TestPurchase(BaseGUITest):
     def test_new_quote_order(self, new_store, run_dialog, select_result):
         new_store.return_value = self.store
 
-        self.clean_domain([ReceivingOrderItem, ReceivingOrder,
-                           PurchaseItem, PurchaseOrder])
+        self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
+                           ReceivingOrder, PurchaseItem, PurchaseOrder])
 
         quotation = self.create_quotation()
         quotation.purchase.add_item(self.create_sellable(), 2)
@@ -122,8 +123,8 @@ class TestPurchase(BaseGUITest):
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
     def test_details_dialog(self, run_dialog):
-        self.clean_domain([ReceivingOrderItem, ReceivingOrder,
-                           PurchaseItem, PurchaseOrder])
+        self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
+                           ReceivingOrder, PurchaseItem, PurchaseOrder])
 
         purchase = self.create_purchase_order()
         purchase.add_item(self.create_sellable(), 2)
@@ -149,8 +150,8 @@ class TestPurchase(BaseGUITest):
         new_store.return_value = self.store
         yesno.return_value = True
 
-        self.clean_domain([ReceivingOrderItem, ReceivingOrder,
-                           PurchaseItem, PurchaseOrder])
+        self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
+                           ReceivingOrder, PurchaseItem, PurchaseOrder])
 
         purchase = self.create_purchase_order()
         purchase.add_item(self.create_sellable(), 2)
@@ -175,8 +176,8 @@ class TestPurchase(BaseGUITest):
     @mock.patch('stoq.gui.purchase.api.new_store')
     def test_finish_order(self, new_store, run_dialog):
         new_store.return_value = self.store
-        self.clean_domain([ReceivingOrderItem, ReceivingOrder,
-                           PurchaseItem, PurchaseOrder])
+        self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
+                           ReceivingOrder, PurchaseItem, PurchaseOrder])
 
         purchase = self.create_purchase_order()
         purchase.add_item(self.create_sellable(), 2)
@@ -202,8 +203,8 @@ class TestPurchase(BaseGUITest):
         new_store.return_value = self.store
         yesno.return_value = True
 
-        self.clean_domain([ReceivingOrderItem, ReceivingOrder,
-                           PurchaseItem, PurchaseOrder])
+        self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
+                           ReceivingOrder, PurchaseItem, PurchaseOrder])
 
         purchase = self.create_purchase_order()
         purchase.add_item(self.create_sellable(), 2)
@@ -228,8 +229,8 @@ class TestPurchase(BaseGUITest):
     def test_new_product(self, new_store, run_dialog):
         new_store.return_value = self.store
 
-        self.clean_domain([ReceivingOrderItem, ReceivingOrder,
-                           PurchaseItem, PurchaseOrder])
+        self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
+                           ReceivingOrder, PurchaseItem, PurchaseOrder])
 
         purchase = self.create_purchase_order()
         purchase.add_item(self.create_sellable(), 2)

@@ -17,7 +17,7 @@ GtkDialog(PluggableWizard): title='New Order', hidden
                 ProxyLabel(kiwilabel54): 'Freight ($CURRENCY):'
                 ProxyEntry(freight): '0.00'
                 GtkLabel(purchase_number_label): 'Order Number:'
-                ProxyLabel(identifier): '<span >12345</span>'
+                GtkLabel(identifier): '12345'
                 ProxyLabel(kiwilabel6): 'IPI ($CURRENCY):'
                 ProxyEntry(ipi): '0.00'
                 GtkLabel(label8): 'Invoice Number:'
@@ -121,7 +121,6 @@ model: ReceivingOrder<5>
   invoice_total: <currency $125>
   ipi_total: <currency $ 0>
   notes: u''
-  purchase_id: PurchaseOrder<1>
   receival_date: datetime.today()
   secure_value: <currency $ 0>
   status: 0

@@ -52,7 +52,6 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'cfop',
                      'branch',
                      'supplier_label',
-                     'identifier',
                      'total',
                      'invoice_number',
                      'icms_total',
@@ -61,6 +60,10 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'expense_value')
 
     gsignal('activate')
+
+    def __init__(self, store, model, visual_mode=False):
+        self.purchases = list(model.purchase_orders)
+        BaseEditorSlave.__init__(self, store, model, visual_mode)
 
     #
     # BaseEditorSlave hooks
@@ -74,8 +77,10 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         freight_items = [(value, key) for (key, value) in
                          ReceivingOrder.freight_types.items()]
 
-        # If the purchase's installments are paid, we cannot modify them.
-        if (self.model.purchase.is_paid() and not self.visual_mode):
+        # If there is at least one purchase with pending payments, than we can
+        # change those.
+        can_change_installments = any(not p.is_paid() for p in self.model.payments)
+        if not can_change_installments and not self.visual_mode:
             ro = ReceivingOrder
             freight_items.remove((ro.freight_types[ro.FREIGHT_FOB_INSTALLMENTS],
                                   ro.FREIGHT_FOB_INSTALLMENTS))
@@ -91,14 +96,13 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         self.total.set_bold(True)
+        idents = sorted(p.identifier for p in self.purchases)
+        identifier = ', '.join(str(i) for i in idents)
+        self.identifier.set_text(identifier)
 
-        purchase = self.model.purchase
-        if not purchase:
-            for widget in (self.purchase_number_label,
-                           self.purchase_supplier_label,
-                           self.identifier, self.supplier_label):
-                widget.hide()
-        elif purchase and purchase.is_paid():
+        # TODO: Testar isso quando compras > 1
+        if len(self.purchases) == 1 and self.purchases[0].is_paid():
+            # This widgets would make the value of the installments change.
             for widget in (self.ipi, self.discount_value, self.icms_total,
                            self.secure_value, self.expense_value):
                 widget.set_sensitive(False)
@@ -127,9 +131,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         will be created for freight. If not, it'll be included on installments.
         """
         freight_type = self.freight_combo.read()
-        if freight_type == self.model.FREIGHT_FOB_PAYMENT:
-            return True
-        return False
+        return freight_type == self.model.FREIGHT_FOB_PAYMENT
 
     #
     # BaseEditorSlave hooks
@@ -146,8 +148,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         self.model.invoice_total = self.model.products_total
 
-        purchase = self.model.purchase
-        if purchase:
+        if len(self.purchases) == 1:
+            purchase = self.purchases[0]
             if not self.visual_mode:
                 # These values are duplicates from the purchase. If we are
                 # visualising the order, the value should be it's own, not the
@@ -196,6 +198,9 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                    title=_('Additional Information'))
 
     def on_invoice_number__validate(self, widget, value):
+        if self.visual_mode:
+            return
+
         if not 0 < value <= 999999999:
             return ValidationError(
                 _("Invoice number must be between 1 and 999999999"))
@@ -225,7 +230,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                 if (not self.model.freight_total and
                     value in ReceivingOrder.FOB_FREIGHTS):
                     # Restore the freight value to the purchase expected one.
-                    self.freight.update(self.model.purchase.expected_freight)
+                    self.freight.update(self.purchases[0].expected_freight)
 
         self.proxy.update('total')
 

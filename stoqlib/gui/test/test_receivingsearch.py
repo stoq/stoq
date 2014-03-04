@@ -24,7 +24,8 @@
 
 import mock
 
-from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
+from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
+                                      PurchaseReceivingMap)
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
@@ -34,7 +35,7 @@ from stoqlib.lib.dateutils import localdatetime
 
 class TestReceivingOrderSearch(GUITest):
     def _create_domain(self):
-        self.clean_domain([ReceivingOrderItem, ReceivingOrder])
+        self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap, ReceivingOrder])
 
         supplier_a = self.create_supplier(u'Mark')
         purchase_order_a = self.create_purchase_order(supplier=supplier_a)
@@ -44,10 +45,10 @@ class TestReceivingOrderSearch(GUITest):
         purchase_order_b = self.create_purchase_order(supplier=supplier_b)
         order_b = self.create_receiving_order(purchase_order=purchase_order_b)
 
-        order_a.purchase.identifier = 81954
+        purchase_order_a.identifier = 81954
         order_a.receival_date = localdatetime(2012, 1, 1)
 
-        order_b.purchase.identifier = 78526
+        purchase_order_b.identifier = 78526
         order_b.receival_date = localdatetime(2012, 2, 2)
 
     def _show_search(self):

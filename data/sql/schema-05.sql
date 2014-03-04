@@ -1196,7 +1196,6 @@ CREATE TABLE receiving_order (
     responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
     supplier_id uuid REFERENCES supplier(id) ON UPDATE CASCADE,
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
-    purchase_id uuid NOT NULL REFERENCES purchase_order(id) ON UPDATE CASCADE,
     transporter_id uuid REFERENCES transporter(id) ON UPDATE CASCADE,
     secure_value numeric(20, 2) CONSTRAINT positive_secure_value
         CHECK (secure_value >= 0),
@@ -1216,6 +1215,13 @@ CREATE TABLE receiving_order_item (
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     receiving_order_id uuid REFERENCES receiving_order(id) ON UPDATE CASCADE,
     purchase_item_id uuid REFERENCES purchase_item(id) ON UPDATE CASCADE
+);
+
+CREATE TABLE purchase_receiving_map (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    purchase_id uuid REFERENCES purchase_order(id) ON UPDATE CASCADE,
+    receiving_id uuid REFERENCES receiving_order(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE till_entry (

@@ -28,7 +28,8 @@
 from decimal import Decimal
 
 from kiwi.currency import currency
-from storm.references import Reference
+from storm.expr import And
+from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import (PriceCol, QuantityCol, IntCol,
                                          DateTimeCol, UnicodeCol, IdentifierCol,
@@ -210,26 +211,32 @@ class ReceivingOrder(Domain):
     #: The number of the order that has been received.
     invoice_number = IntCol()
     invoice_total = PriceCol(default=None)
+
     cfop_id = IdCol()
     cfop = Reference(cfop_id, 'CfopData.id')
 
     responsible_id = IdCol()
     responsible = Reference(responsible_id, 'LoginUser.id')
+
     supplier_id = IdCol()
     supplier = Reference(supplier_id, 'Supplier.id')
+
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
-    purchase_id = IdCol()
-    purchase = Reference(purchase_id, 'PurchaseOrder.id')
+
     transporter_id = IdCol(default=None)
     transporter = Reference(transporter_id, 'Transporter.id')
+
+    purchase_orders = ReferenceSet('ReceivingOrder.id',
+                                   'PurchaseReceivingMap.receiving_id',
+                                   'PurchaseReceivingMap.purchase_id',
+                                   'PurchaseOrder.id')
 
     def __init__(self, store=None, **kw):
         Domain.__init__(self, store=store, **kw)
         # These miss default parameters and needs to be set before
         # cfop, which triggers an implicit flush.
         self.branch = kw.pop('branch', None)
-        self.purchase = kw.pop('purchase', None)
         self.supplier = kw.pop('supplier', None)
         if not 'cfop' in kw:
             self.cfop = sysparam.get_object(store, 'DEFAULT_RECEIVING_CFOP')
@@ -242,14 +249,25 @@ class ReceivingOrder(Domain):
         for item in self.get_items():
             item.add_stock_items()
 
+        purchases = list(self.purchase_orders)
+        # XXX: Maybe FiscalBookEntry should not reference the payment group, but
+        # lets keep this way for now until we refactor the fiscal book related
+        # code, since it will pretty soon need a lot of changes.
+        group = purchases[0].group
         FiscalBookEntry.create_product_entry(
             self.store,
-            self.purchase.group, self.cfop, self.invoice_number,
+            group, self.cfop, self.invoice_number,
             self.icms_total, self.ipi_total)
 
         self.invoice_total = self.total
-        if self.purchase.can_close():
-            self.purchase.close()
+
+        for purchase in purchases:
+            if purchase.can_close():
+                purchase.close()
+
+    def add_purchase(self, order):
+        return PurchaseReceivingMap(store=self.store, purchase=order,
+                                    receiving=self)
 
     def add_purchase_item(self, item, quantity=None, batch_number=None):
         """Add a |purchaseitem| on this receiving order
@@ -268,9 +286,6 @@ class ReceivingOrder(Domain):
         if quantity is None:
             quantity = pending_quantity
 
-        if item.order != self.purchase:
-            raise ValueError("The purchase item must be on the same purchase "
-                             "of this receiving")
         if not (0 < quantity <= item.quantity):
             raise ValueError("The quantity must be higher than 0 and lower "
                              "than the purchase item's quantity")
@@ -306,13 +321,14 @@ class ReceivingOrder(Domain):
         :param create_freight_payment: True if we should create a new payment
                                        with the freight value, False otherwise.
         """
-        group = self.purchase.group
         difference = self.total - self.products_total
         if create_freight_payment:
             difference -= self.freight_total
 
         if difference != 0:
-            payments = group.get_pending_payments()
+            # Get app pending payments for the purchases associated with this
+            # receiving, and update them.
+            payments = self.payments.find(status=Payment.STATUS_PENDING)
             payments_number = payments.count()
             if payments_number > 0:
                 # XXX: There is a potential rounding error here.
@@ -329,13 +345,17 @@ class ReceivingOrder(Domain):
         money_method = PaymentMethod.get_by_name(store, u'money')
         # If we have a transporter, the freight payment will be for him
         # (and in another payment group).
-        if self.transporter is not None:
-            group = PaymentGroup(store=store,
-                                 recipient=self.transporter.person)
+        purchases = list(self.purchase_orders)
+        if len(purchases) == 1 and self.transporter is None:
+            group = purchases[0].group
         else:
-            group = self.group
+            if self.transporter:
+                recipient = self.transporter.person
+            else:
+                recipient = self.supplier.person
+            group = PaymentGroup(store=store, recipient=recipient)
 
-        description = _(u'Freight for purchase %s') % (self.purchase.identifier, )
+        description = _(u'Freight for receiving %s') % (self.identifier, )
         payment = money_method.create_payment(
             Payment.TYPE_OUT,
             group, self.branch, self.freight_total,
@@ -361,12 +381,12 @@ class ReceivingOrder(Domain):
     #
 
     @property
-    def group(self):
-        return self.purchase.group
-
-    @property
     def payments(self):
-        return self.group.payments
+        tables = [PurchaseReceivingMap, PurchaseOrder, Payment]
+        query = And(PurchaseReceivingMap.receiving_id == self.id,
+                    PurchaseReceivingMap.purchase_id == PurchaseOrder.id,
+                    Payment.group_id == PurchaseOrder.group_id)
+        return self.store.using(tables).find(Payment, query)
 
     @property
     def supplier_name(self):
@@ -417,8 +437,8 @@ class ReceivingOrder(Domain):
         if self.expense_value:
             total_surcharge += self.expense_value
 
-        if self.purchase.surcharge_value:
-            total_surcharge += self.purchase.surcharge_value
+        for purchase in self.purchase_orders:
+            total_surcharge += purchase.surcharge_value
 
         if self.ipi_total:
             total_surcharge += self.ipi_total
@@ -438,8 +458,8 @@ class ReceivingOrder(Domain):
         if self.discount_value:
             total_discount += self.discount_value
 
-        if self.purchase.discount_value:
-            total_discount += self.purchase.discount_value
+        for purchase in self.purchase_orders:
+            total_discount += purchase.discount_value
 
         return currency(total_discount)
 
@@ -456,13 +476,17 @@ class ReceivingOrder(Domain):
 
     def guess_freight_type(self):
         """Returns a freight_type based on the purchase's freight_type"""
-        if self.purchase.freight_type == PurchaseOrder.FREIGHT_FOB:
-            if self.purchase.is_paid():
+        purchases = list(self.purchase_orders)
+        assert len(purchases) == 1
+
+        purchase = purchases[0]
+        if purchase.freight_type == PurchaseOrder.FREIGHT_FOB:
+            if purchase.is_paid():
                 freight_type = ReceivingOrder.FREIGHT_FOB_PAYMENT
             else:
                 freight_type = ReceivingOrder.FREIGHT_FOB_INSTALLMENTS
-        elif self.purchase.freight_type == PurchaseOrder.FREIGHT_CIF:
-            if self.purchase.expected_freight:
+        elif purchase.freight_type == PurchaseOrder.FREIGHT_CIF:
+            if purchase.expected_freight:
                 freight_type = ReceivingOrder.FREIGHT_CIF_INVOICE
             else:
                 freight_type = ReceivingOrder.FREIGHT_CIF_UNKNOWN
@@ -517,3 +541,26 @@ class ReceivingOrder(Domain):
     @surcharge_percentage.setter
     def surcharge_percentage(self, value):
         self.surcharge_value = self._get_percentage_value(value)
+
+
+class PurchaseReceivingMap(Domain):
+    """This class stores a map for purchase and receivings.
+
+    One purchase may be received more than once, for instance, if it was
+    shippped in more than one package.
+
+    Also, a receiving may be for different purchase orders, if more than one
+    purchase order was shipped in the same package.
+    """
+
+    __storm_table__ = 'purchase_receiving_map'
+
+    purchase_id = IdCol()
+
+    #: The purchase that was recieved
+    purchase = Reference(purchase_id, 'PurchaseOrder.id')
+
+    receiving_id = IdCol()
+
+    #: In which receiving the purchase was received.
+    receiving = Reference(receiving_id, 'ReceivingOrder.id')

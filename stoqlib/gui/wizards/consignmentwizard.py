@@ -70,12 +70,12 @@ class ConsignmentItemStep(PurchaseItemStep):
 
         receiving_model = ReceivingOrder(
             responsible=api.get_current_user(self.store),
-            purchase=self.model,
             supplier=self.model.supplier,
             branch=self.model.branch,
             transporter=self.model.transporter,
             invoice_number=None,
             store=self.store)
+        receiving_model.add_purchase(self.model)
 
         # Creates ReceivingOrderItem's
         for item in self.model.get_pending_items():
@@ -99,7 +99,8 @@ class ConsignmentSelectionStep(PurchaseSelectionStep):
 
     def next_step(self):
         self.search.save_columns()
-        selected = self.search.result_view.get_selected()
+        # FIXME: Precisa desabilitar se tem mais de um selecionado.
+        selected = self.search.result_view.get_selected_rows()[0]
         consignment = selected.purchase
         self.wizard.purchase_model = consignment
 

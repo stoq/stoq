@@ -97,10 +97,6 @@ class PurchaseSelectionStep(BaseWizardStep):
         BaseWizardStep.__init__(self, store, wizard)
         self.setup_slaves()
 
-    def _refresh_next(self, validation_value):
-        has_selection = self.search.results.get_selected() is not None
-        self.wizard.refresh_next(has_selection)
-
     def _create_search(self):
         self.search = SearchSlave(self._get_columns(),
                                   restore_name=self.__class__.__name__,
@@ -111,10 +107,11 @@ class PurchaseSelectionStep(BaseWizardStep):
         executer = self.search.get_query_executer()
         executer.add_query_callback(self.get_extra_query)
         self._create_filters()
-        self.search.results.connect('selection-changed',
-                                    self._on_results__selection_changed)
-        self.search.results.connect('row-activated',
-                                    self._on_results__row_activated)
+        self.search.result_view.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.search.result_view.connect('selection-changed',
+                                        self._on_results__selection_changed)
+        self.search.result_view.connect('row-activated',
+                                        self._on_results__row_activated)
         self.search.focus_search_entry()
 
     def _create_filters(self):
@@ -150,8 +147,10 @@ class PurchaseSelectionStep(BaseWizardStep):
                              data_type=currency, width=120)]
 
     def _update_view(self):
-        has_selection = self.search.results.get_selected() is not None
-        self.details_button.set_sensitive(has_selection)
+        selected_rows = self.search.result_view.get_selected_rows()
+        can_continue = len(set((v.supplier_id, v.branch_id) for v in selected_rows)) == 1
+        self.wizard.refresh_next(can_continue)
+        self.details_button.set_sensitive(len(selected_rows) == 1)
 
     #
     # WizardStep hooks
@@ -159,48 +158,14 @@ class PurchaseSelectionStep(BaseWizardStep):
 
     def post_init(self):
         self._update_view()
-        self.register_validate_function(self._refresh_next)
         self.force_validation()
 
     def next_step(self):
         self.search.save_columns()
-        selected = self.search.results.get_selected()
-        purchase = selected.purchase
+        selected_rows = self.search.result_view.get_selected_rows()
 
-        # We cannot create the model in the wizard since we haven't
-        # selected a PurchaseOrder yet which ReceivingOrder depends on
-        # Create the order here since this is the first place where we
-        # actually have a purchase selected
-        if not self.wizard.model:
-            self.wizard.model = self.model = ReceivingOrder(
-                responsible=api.get_current_user(self.store),
-                supplier=purchase.supplier, invoice_number=None,
-                branch=purchase.branch, purchase=purchase,
-                store=self.store)
-
-        # Remove all the items added previously, used if we hit back
-        # at any point in the wizard.
-        if self.model.purchase != purchase:
-            self.model.remove_items()
-            # This forces ReceivingOrderProductStep to create a new model
-            self._next_step = None
-
-        if selected:
-            self.model.purchase = purchase
-            self.model.branch = purchase.branch
-            self.model.supplier = purchase.supplier
-            self.model.transporter = purchase.transporter
-        else:
-            self.model.purchase = None
-
-        # FIXME: Improve the infrastructure to avoid this local caching of
-        #        Wizard steps.
-        if not self._next_step:
-            # Remove all the items added previously, used if we hit back
-            # at any point in the wizard.
-            self._next_step = ReceivingOrderItemStep(self.store, self.wizard,
-                                                     self.model, self)
-        return self._next_step
+        return ReceivingOrderItemStep(self.store, self.wizard, self,
+                                      selected_rows)
 
     def has_previous_step(self):
         return False
@@ -211,12 +176,6 @@ class PurchaseSelectionStep(BaseWizardStep):
     #
     # Kiwi callbacks
     #
-
-#     def on_searchbar_activate(self, slave, objs):
-#         """Use this callback with SearchBar search-activate signal"""
-#         self.results.add_list(objs, clear=True)
-#         has_selection = self.results.get_selected() is not None
-#         self.wizard.refresh_next(has_selection)
 
     def _on_results__selection_changed(self, results, purchase_order_view):
         self.force_validation()
@@ -235,17 +194,21 @@ class PurchaseSelectionStep(BaseWizardStep):
                    model=selected.purchase)
 
 
-class ReceivingOrderItemStep(WizardEditorStep):
+class ReceivingOrderItemStep(BaseWizardStep):
     gladefile = 'ReceivingOrderItemStep'
     model_type = ReceivingOrder
+
+    def __init__(self, store, wizard, previous_step, purchases):
+        self.purchases = purchases
+        BaseWizardStep.__init__(self, store, wizard, previous_step)
 
     #
     #  WizardEditorStep
     #
 
     def post_init(self):
-        # If the user goes back from the previous step, make sure
-        # things don't get messed
+        # If the user is comming back from the next, make sure things don't get
+        # messed
         if self.store.savepoint_exists('before_receivinginvoice_step'):
             self.store.rollback_to_savepoint('before_receivinginvoice_step')
 
@@ -254,12 +217,12 @@ class ReceivingOrderItemStep(WizardEditorStep):
         self.register_validate_function(self._validation_func)
         self.force_validation()
 
-    def setup_proxies(self):
         self._setup_widgets()
         self._update_view()
 
     def next_step(self):
         self.store.savepoint('before_receivinginvoice_step')
+        self._create_receiving_order()
         self._create_receiving_items()
         return ReceivingInvoiceStep(self.store, self.wizard, self.model, self)
 
@@ -296,17 +259,36 @@ class ReceivingOrderItemStep(WizardEditorStep):
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100)])
-        self.purchase_items.extend(self._get_pending_items())
+        self.purchase_items.add_list(self._get_pending_items())
 
         self.purchase_items.set_cell_data_func(
             self._on_purchase_items__cell_data_func)
 
     def _get_pending_items(self):
-        for item in self.model.purchase.get_pending_items():
-            yield _TemporaryReceivingItem(item)
+        for purchase_view in self.purchases:
+            for item in purchase_view.purchase.get_pending_items():
+                yield _TemporaryReceivingItem(item)
 
     def _get_total_received(self):
         return sum([item.total for item in self.purchase_items])
+
+    def _create_receiving_order(self):
+        # We only let the user get this far if the purchases select are for the
+        # same branch and supplier
+        supplier_id = self.purchases[0].supplier_id
+        branch_id = self.purchases[0].branch_id
+
+        # We cannot create the model in the wizard since we haven't
+        # selected a PurchaseOrder yet which ReceivingOrder depends on
+        # Create the order here since this is the first place where we
+        # actually have a purchase selected
+        self.wizard.model = self.model = ReceivingOrder(
+            responsible=api.get_current_user(self.store),
+            supplier=supplier_id, invoice_number=None,
+            branch=branch_id, store=self.store)
+
+        for row in self.purchases:
+            self.model.add_purchase(row.purchase)
 
     def _create_receiving_items(self):
         for item in self.purchase_items:
@@ -463,7 +445,7 @@ class ReceivingOrderWizard(BaseWizard):
             return
         label_data = run_dialog(SkipLabelsEditor, self, self.store)
         if label_data:
-            print_labels(label_data, self.store, self.model.purchase)
+            print_labels(label_data, self.store, receiving=self.model)
 
     #
     # WizardStep hooks

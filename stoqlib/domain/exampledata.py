@@ -290,9 +290,11 @@ class ExampleCreator(object):
         )
 
     def create_product(self, price=None, with_supplier=True,
-                       branch=None, stock=None, storable=False, code=u''):
+                       branch=None, stock=None, storable=False, code=u'',
+                       description=u'Description'):
         from stoqlib.domain.product import Storable, StockTransactionHistory
-        sellable = self.create_sellable(price=price, code=code)
+        sellable = self.create_sellable(price=price, code=code,
+                                        description=description)
         if with_supplier:
             self.create_product_supplier_info(product=sellable.product)
         product = sellable.product
@@ -593,13 +595,14 @@ class ExampleCreator(object):
             purchase_order = self.create_purchase_order()
         cfop = self.create_cfop_data()
         cfop.code = u'1.102'
-        return ReceivingOrder(store=self.store,
-                              invoice_number=222,
-                              supplier=purchase_order.supplier,
-                              responsible=user or get_current_user(self.store),
-                              purchase=purchase_order,
-                              branch=branch or get_current_branch(self.store),
-                              cfop=cfop)
+        receiving = ReceivingOrder(store=self.store,
+                                   invoice_number=222,
+                                   supplier=purchase_order.supplier,
+                                   responsible=user or get_current_user(self.store),
+                                   branch=branch or get_current_branch(self.store),
+                                   cfop=cfop)
+        receiving.add_purchase(purchase_order)
+        return receiving
 
     def create_receiving_order_item(self, receiving_order=None, sellable=None,
                                     purchase_item=None, quantity=8):
@@ -612,7 +615,7 @@ class ExampleCreator(object):
             product = sellable.product
             Storable(product=product, store=self.store)
         if purchase_item is None:
-            purchase_item = receiving_order.purchase.add_item(
+            purchase_item = receiving_order.purchase_orders.find()[0].add_item(
                 sellable, quantity)
         return ReceivingOrderItem(store=self.store,
                                   quantity=quantity, cost=125,

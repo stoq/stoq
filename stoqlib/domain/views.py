@@ -51,7 +51,8 @@ from stoqlib.domain.product import (Product,
 from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
-from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
+from stoqlib.domain.receiving import (ReceivingOrderItem, ReceivingOrder,
+                                      PurchaseReceivingMap)
 from stoqlib.domain.sale import SaleItem, Sale, Delivery
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
@@ -814,7 +815,9 @@ class PurchaseReceivingView(Viewable):
 
     tables = [
         ReceivingOrder,
-        LeftJoin(PurchaseOrder, ReceivingOrder.purchase_id == PurchaseOrder.id),
+        LeftJoin(PurchaseReceivingMap,
+                 ReceivingOrder.id == PurchaseReceivingMap.receiving_id),
+        LeftJoin(PurchaseOrder, PurchaseReceivingMap.purchase_id == PurchaseOrder.id),
         LeftJoin(_PurchaseUser,
                  PurchaseOrder.responsible_id == _PurchaseUser.id),
         LeftJoin(_PurchaseResponsible,
@@ -903,7 +906,9 @@ class ReceivingItemView(Viewable):
         LeftJoin(StorableBatch, StorableBatch.id == ReceivingOrderItem.batch_id),
         Join(ReceivingOrder,
              ReceivingOrderItem.receiving_order_id == ReceivingOrder.id),
-        Join(PurchaseOrder, ReceivingOrder.purchase_id == PurchaseOrder.id),
+        Join(PurchaseReceivingMap,
+             ReceivingOrder.id == PurchaseReceivingMap.receiving_id),
+        Join(PurchaseOrder, PurchaseReceivingMap.purchase_id == PurchaseOrder.id),
         LeftJoin(Sellable, ReceivingOrderItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(Supplier, ReceivingOrder.supplier_id == Supplier.id),

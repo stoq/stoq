@@ -47,29 +47,28 @@ class TestReceivingOrder(DomainTest):
         cfop = self.create_cfop_data()
         branch = self.create_branch()
         supplier = self.create_supplier()
-        purchase = self.create_purchase_order()
 
         # When we don't provide a CFOP, the constructor should use the default
         # one
-        order = ReceivingOrder(self.store, branch=branch, supplier=supplier,
-                               purchase=purchase)
+        order = ReceivingOrder(self.store, branch=branch, supplier=supplier)
         self.assertNotEqual(order.cfop, None)
         self.assertNotEqual(order.cfop, cfop)
 
         order = ReceivingOrder(self.store, cfop=cfop, branch=branch,
-                               supplier=supplier, purchase=purchase)
+                               supplier=supplier)
         self.assertEqual(order.cfop, cfop)
 
     def test_get_total(self):
         order = self.create_receiving_order()
+        purchase = order.purchase_orders.find()[0]
         self.create_receiving_order_item(order)
         self.assertEqual(order.total, currency(1000))
 
         order.discount_value = 10
         self.assertEqual(order.total, currency(990))
-        order.purchase.discount_value = 5
+        purchase.discount_value = 5
         self.assertEqual(order.total, currency(985))
-        order.purchase.surcharge_value = 8
+        purchase.surcharge_value = 8
         order.surcharge_value = 15
         self.assertEqual(order.total, currency(1008))
         order.ipi_total = 10
@@ -81,8 +80,8 @@ class TestReceivingOrder(DomainTest):
         order.expense_value = 12
         self.assertEqual(order.total, currency(1042))
 
-        order.purchase.status = order.purchase.ORDER_PENDING
-        order.purchase.confirm()
+        purchase.status = purchase.ORDER_PENDING
+        purchase.confirm()
         order.confirm()
         self.assertEqual(order.invoice_total, order.total)
 
@@ -98,11 +97,12 @@ class TestReceivingOrder(DomainTest):
 
         storable = order_item.sellable.product_storable
         stock_item = storable.get_stock_item(branch=order.branch, batch=None)
-        for item in order.purchase.get_items():
+        purchase = order.purchase_orders.find()[0]
+        for item in purchase.get_items():
             item.quantity_received = 0
-        order.purchase.status = order.purchase.ORDER_PENDING
+        purchase.status = purchase.ORDER_PENDING
         self.assertEquals(stock_item.quantity, 8)
-        order.purchase.confirm()
+        purchase.confirm()
         order.confirm()
         installment_count = order.payments.count()
         for pay in order.payments:
@@ -150,13 +150,14 @@ class TestReceivingOrder(DomainTest):
 
     def test_update_payment_values(self):
         order = self.create_receiving_order()
+        purchase = order.purchase_orders.find()[0]
         self.create_receiving_order_item(order)
         self.assertEqual(order.total, currency(1000))
 
-        for item in order.purchase.get_items():
+        for item in purchase.get_items():
             item.quantity_received = 0
-        order.purchase.status = order.purchase.ORDER_PENDING
-        order.purchase.confirm()
+        purchase.status = purchase.ORDER_PENDING
+        purchase.confirm()
 
         installment_count = order.payments.count()
         payment_dict = {}
@@ -178,13 +179,14 @@ class TestReceivingOrder(DomainTest):
 
     def test_update_payment_values_with_freight_payment(self):
         order = self.create_receiving_order()
+        purchase = order.purchase_orders.find()[0]
         self.create_receiving_order_item(order)
         self.assertEqual(order.total, currency(1000))
 
-        for item in order.purchase.get_items():
+        for item in purchase.get_items():
             item.quantity_received = 0
-        order.purchase.status = order.purchase.ORDER_PENDING
-        order.purchase.confirm()
+        purchase.status = purchase.ORDER_PENDING
+        purchase.confirm()
 
         installment_count = order.payments.count()
         payment_dict = {}
@@ -317,14 +319,11 @@ class TestReceivingOrder(DomainTest):
 
     def test_add_purchase_item(self):
         receiving_order = self.create_receiving_order()
+        purchase = receiving_order.purchase_orders.find()[0]
         item = self.create_purchase_order_item()
 
-        with self.assertRaisesRegexp(ValueError, "The purchase item must be on "
-                                     "the same purchase of this receiving"):
-            receiving_order.add_purchase_item(item)
-
         receiving_order = self.create_receiving_order()
-        item = self.create_purchase_order_item(receiving_order.purchase)
+        item = self.create_purchase_order_item(purchase)
 
         with self.assertRaisesRegexp(ValueError, "The quantity must be higher "
                                                  "than 0 and lower than the "
@@ -332,7 +331,8 @@ class TestReceivingOrder(DomainTest):
             receiving_order.add_purchase_item(item, quantity=0)
 
         receiving_order = self.create_receiving_order()
-        item = self.create_purchase_order_item(receiving_order.purchase)
+        purchase = receiving_order.purchase_orders.find()[0]
+        item = self.create_purchase_order_item(purchase)
         item.quantity_received = 2
         with self.assertRaisesRegexp(ValueError, "The quantity must be lower "
                                                  "than the item's pending "
@@ -346,7 +346,8 @@ class TestReceivingOrder(DomainTest):
 
     def test_update_payments(self):
         receiving_order = self.create_receiving_order()
-        group = receiving_order.purchase.group
+        purchase = receiving_order.purchase_orders.find()[0]
+        group = purchase.group
 
         receiving_order.freight_total = 50
         receiving_order.update_payments(create_freight_payment=True)
@@ -367,10 +368,10 @@ class TestReceivingOrder(DomainTest):
         transporter = self.create_transporter(u'teste')
         receiving_order.transporter = transporter
 
-        receiving_order.purchase.identifier = 123
+        receiving_order.identifier = 125
         p = receiving_order._create_freight_payment()
         self.assertEqual(p.group.recipient, receiving_order.transporter.person)
-        self.assertEqual(p.description, u'Freight for purchase 00123')
+        self.assertEqual(p.description, u'Freight for receiving 00125')
         self.assertEqual(receiving_order.freight_total, 0)
 
         receiving_order = self.create_receiving_order()
@@ -379,7 +380,8 @@ class TestReceivingOrder(DomainTest):
 
     def test_remove_items(self):
         receiving_order = self.create_receiving_order()
-        item = self.create_purchase_order_item(receiving_order.purchase)
+        purchase = receiving_order.purchase_orders.find()[0]
+        item = self.create_purchase_order_item(purchase)
         receiving_order.add_purchase_item(item, quantity=2)
 
         receiving_order.remove_items()
@@ -387,7 +389,8 @@ class TestReceivingOrder(DomainTest):
 
     def test_remove_item(self):
         receiving_order = self.create_receiving_order()
-        item = self.create_purchase_order_item(receiving_order.purchase)
+        purchase = receiving_order.purchase_orders.find()[0]
+        item = self.create_purchase_order_item(purchase)
         removed = receiving_order.add_purchase_item(item, quantity=2)
 
         receiving_order.remove_item(removed)
@@ -417,7 +420,7 @@ class TestReceivingOrder(DomainTest):
 
     def test_guess_freight_type(self):
         order = self.create_receiving_order()
-        purchase = order.purchase
+        purchase = order.purchase_orders.find()[0]
         purchase.freight_type = PurchaseOrder.FREIGHT_FOB
         self.assertEquals(order.guess_freight_type(),
                           ReceivingOrder.FREIGHT_FOB_PAYMENT)

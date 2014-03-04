@@ -1,0 +1,40 @@
+wizard: ReceivingOrderWizard
+GtkDialog(PluggableWizard): title='Receive Purchase Order', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave PurchaseSelectionStep is attached
+        GtkVBox(step.toplevel):
+          GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave SearchSlave is attached
+            GtkVBox(vbox):
+              GtkHBox(fill=True, padding=6):
+                GtkVBox(filters_box, padding=6):
+                  GtkHBox(hbox):
+                    SearchFilter(_primary_filter):
+                      GtkLabel(): 'Search:'
+                      ProxyComboBox(padding=6): hidden
+                        item: 'Contains All Words', selected
+                        item: 'Contains Exactly'
+                        item: 'Does Not Contain'
+                      HintedEntry(search_entry, padding=6): ''
+                    GtkButton(search_button): 'gtk-find'
+              SearchResultListView(result_view, expand=True, fill=True):
+                column: title='#'
+                column: title='Date Started'
+                column: title='Expected Receival', hidden
+                column: title='Supplier', expand
+                column: title='Qty Ordered'
+                column: title='Qty Received'
+                column: title='Order Total'
+                row: 10023, datetime.datetime(2012, 10, 9, 0, 0), datetime.datetime(2012, 9, 25, 0, 0), u'Supplier', Decimal('7.000'), Decimal('0.000'), Decimal('875.00000000000')
+                row: 10024, datetime.datetime(2012, 10, 9, 0, 0), datetime.datetime(2012, 9, 25, 0, 0), u'Supplier', Decimal('5.000'), Decimal('0.000'), Decimal('625.00000000000')
+          GtkHBox(step.hbox1, fill=True):
+            GtkButton(step.details_button, fill=True): '_Details', insensitive
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

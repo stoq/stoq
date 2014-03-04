@@ -111,7 +111,7 @@ class TestPurchaseWizard(GUITest):
         self.click(self.wizard.next_button)
 
         receiving_step = self.wizard.get_current_step()
-        receiving_step.invoice_slave.identifier.update("12345")
+        receiving_step.invoice_slave.identifier.set_text("12345")
         receiving_step.invoice_slave.invoice_number.update(67890)
 
         self.check_wizard(self.wizard, 'wizard-purchase-invoice-step')

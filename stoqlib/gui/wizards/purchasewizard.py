@@ -482,12 +482,12 @@ class FinishPurchaseStep(WizardEditorStep):
 
         receiving_model = ReceivingOrder(
             responsible=api.get_current_user(self.store),
-            purchase=self.model,
             supplier=self.model.supplier,
             branch=self.model.branch,
             transporter=self.model.transporter,
             invoice_number=None,
             store=self.store)
+        receiving_model.add_purchase(self.model)
 
         # Creates ReceivingOrderItem's
         for item in self.model.get_pending_items():

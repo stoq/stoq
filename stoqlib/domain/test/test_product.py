@@ -382,8 +382,9 @@ class TestProductHistory(DomainTest):
 
     def test_add_received_quantity(self):
         order_item = self.create_receiving_order_item()
-        order_item.receiving_order.purchase.status = PurchaseOrder.ORDER_PENDING
-        order_item.receiving_order.purchase.confirm()
+        purchase = order_item.receiving_order.purchase_orders.find()[0]
+        purchase.status = PurchaseOrder.ORDER_PENDING
+        purchase.confirm()
         self.failIf(
             self.store.find(ProductHistory,
                             sellable=order_item.sellable).one())

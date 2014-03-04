@@ -34,7 +34,8 @@ class TestSintegraGenerator(DomainTest):
         branch = get_current_branch(self.store)
         branch.manager = employee
 
-        order.purchase.status = order.purchase.ORDER_PENDING
+        purchase = order.purchase_orders.find()[0]
+        purchase.status = purchase.ORDER_PENDING
 
         sellable = self.create_sellable()
         sellable.tax_constant = SellableTaxConstant(
@@ -52,7 +53,7 @@ class TestSintegraGenerator(DomainTest):
             store=self.store)
         self.create_receiving_order_item(order, sellable=sellable2)
 
-        order.purchase.confirm()
+        purchase.confirm()
         order.confirm()
 
         sellable.code = u'9999'

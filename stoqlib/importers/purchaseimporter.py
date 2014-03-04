@@ -94,13 +94,13 @@ class PurchaseImporter(CSVImporter):
                               self.parse_date(data.due_date))
         purchase.confirm()
 
-        receiving_order = ReceivingOrder(purchase=purchase,
-                                         responsible=login_user,
+        receiving_order = ReceivingOrder(responsible=login_user,
                                          supplier=supplier,
                                          invoice_number=int(data.invoice),
                                          transporter=transporter,
                                          branch=branch,
                                          store=store)
+        receiving_order.add_purchase(purchase)
 
         for purchase_item in purchase.get_items():
             ReceivingOrderItem(

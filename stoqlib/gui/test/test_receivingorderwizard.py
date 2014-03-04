@@ -112,3 +112,58 @@ class TestReceivingOrderWizard(GUITest):
             warning.assert_called_once_with(
                 "It was not possible to print the labels. The template "
                 "file was not found.")
+
+    def test_complete_receiving_multiple_purchases(self):
+        branch = api.get_current_branch(self.store)
+
+        # Create purchase order 1
+        product1 = self.create_product(description=u'Product 1', storable=True)
+        order1 = self.create_purchase_order(branch=branch)
+        order1.identifier = 10023
+        order1.open_date = localdatetime(2012, 10, 9)
+        order1.expected_receival_date = localdatetime(2012, 9, 25)
+        order1.add_item(product1.sellable, 7)
+        order1.status = PurchaseOrder.ORDER_PENDING
+        order1.confirm()
+
+        # And purchase order 2
+        product2 = self.create_product(description=u'Product 2', storable=True)
+        order2 = self.create_purchase_order(branch=branch,
+                                            supplier=order1.supplier)
+        order2.identifier = 10024
+        order2.open_date = localdatetime(2012, 10, 9)
+        order2.expected_receival_date = localdatetime(2012, 9, 25)
+        order2.add_item(product2.sellable, 5)
+        order2.status = PurchaseOrder.ORDER_PENDING
+        order2.confirm()
+
+        # Now to the wizard
+        wizard = ReceivingOrderWizard(self.store)
+
+        step = wizard.get_current_step()
+        self.assertNotSensitive(wizard, ['next_button'])
+        self.click(step.search.search_button)
+        # Select both purchase orders. There is one bug in kiwi that we cannot
+        # select all at once, so thats why we are using this private api.
+        step.search.results._treeview.get_selection().select_all()
+        self.assertSensitive(wizard, ['next_button'])
+        self.check_wizard(wizard, 'receiving-order-multiple-purchase-selection-step')
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        self.assertSensitive(wizard, ['next_button'])
+        self.check_wizard(wizard, 'receiving-order-multiple-product-step')
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.invoice_slave.invoice_number.update(10094)
+        step.invoice_slave.freight.update(159)
+        self.check_wizard(wizard, 'receiving-order-multiple-invoice-step')
+
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit')):
+            # Confirm
+            self.click(wizard.next_button)
+
+        self.assertEquals(product1.storable.get_balance_for_branch(branch), 7)
+        self.assertEquals(product2.storable.get_balance_for_branch(branch), 5)

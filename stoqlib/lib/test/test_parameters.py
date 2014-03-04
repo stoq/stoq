@@ -171,20 +171,17 @@ class TestParameter(DomainTest):
         responsible = LoginUser(person=person, store=self.store,
                                 password=u'asdfgh', profile=profile,
                                 username=u'craudio')
-        purchase = self.create_purchase_order()
         receiving_order = ReceivingOrder(responsible=responsible,
                                          branch=branch,
                                          store=self.store,
                                          invoice_number=876,
-                                         supplier=None,
-                                         purchase=purchase)
+                                         supplier=None)
         param2 = self.sparam.get_object(self.store, 'DEFAULT_SALES_CFOP')
         receiving_order2 = ReceivingOrder(responsible=responsible,
                                           cfop=param2, branch=branch,
                                           store=self.store,
                                           invoice_number=1231,
-                                          supplier=None,
-                                          purchase=purchase)
+                                          supplier=None)
         self.assertEqual(param, receiving_order.cfop)
         self.failIfEqual(param, receiving_order2.cfop)
 

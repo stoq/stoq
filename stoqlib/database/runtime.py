@@ -377,6 +377,8 @@ class StoqlibStore(Store):
         else:
             super(StoqlibStore, self).rollback()
             self._reset_pending_objs()
+            # If we rollback completely, we need to clear all savepoints
+            self._savepoints = []
 
         # Rolling back resets the application name.
         self._setup_application_name()

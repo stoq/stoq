@@ -388,12 +388,17 @@ def print_report(report_class, *args, **kwargs):
     return rv
 
 
-def print_labels(label_data, store, purchase=None):
+def print_labels(label_data, store, purchase=None, receiving=None):
     path = sysparam.get_string('LABEL_TEMPLATE_PATH')
     if path and os.path.exists(path):
         if purchase:
             print_report(LabelReport, purchase.get_data_for_labels(),
                          label_data.skip, store=store)
+        elif receiving:
+            data = []
+            for purchase in receiving.purchase_orders:
+                data.extend(purchase.get_data_for_labels())
+            print_report(LabelReport, data, label_data.skip, store=store)
         else:
             print_report(LabelReport, [label_data], label_data.skip, store=store)
     else:

@@ -205,8 +205,10 @@ class PurchaseOrder(Domain):
     salesperson_name = UnicodeCol(default=u'')
     freight_type = IntCol(default=FREIGHT_FOB)
     expected_freight = PriceCol(default=0)
+
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
+
     consigned = BoolCol(default=False)
     supplier_id = IdCol()
     supplier = Reference(supplier_id, 'Supplier.id')
@@ -533,8 +535,11 @@ class PurchaseOrder(Domain):
     def get_receiving_orders(self):
         """Returns all ReceivingOrder related to this purchase order
         """
-        from stoqlib.domain.receiving import ReceivingOrder
-        return self.store.find(ReceivingOrder, purchase=self)
+        from stoqlib.domain.receiving import PurchaseReceivingMap, ReceivingOrder
+        tables = [PurchaseReceivingMap, ReceivingOrder]
+        query = And(PurchaseReceivingMap.purchase_id == self.id,
+                    PurchaseReceivingMap.receiving_id == ReceivingOrder.id)
+        return self.store.using(*tables).find(ReceivingOrder, query)
 
     def get_data_for_labels(self):
         """ This function returns some necessary data to print the purchase's

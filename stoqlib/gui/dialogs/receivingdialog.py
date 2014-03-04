@@ -118,4 +118,4 @@ class ReceivingOrderDetailsDialog(BaseEditor):
     def on_print_labels__clicked(self, button):
         label_data = run_dialog(SkipLabelsEditor, self, self.store)
         if label_data:
-            print_labels(label_data, self.store, self.model.purchase)
+            print_labels(label_data, self.store, receiving=self.model)
