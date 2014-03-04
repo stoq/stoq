@@ -358,7 +358,7 @@ class ProductEditor(SellableEditor):
         elif self._product_type == self.TYPE_WITHOUT_STOCK:
             model.manage_stock = False
         elif self._product_type == self.TYPE_CONSIGNED:
-            model.consigned = True
+            model.consignment = True
 
         return model
 
