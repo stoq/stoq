@@ -34,14 +34,14 @@
           <tr class="highlight">
             <td>${ purchase.identifier }</td>
             <td>${ purchase.status_str }</td>
-            <td>${ purchase.get_responsible_name() }</td>
-            <td>${ purchase.get_branch_name() }</td>
+            <td>${ purchase.responsible_name }</td>
+            <td>${ purchase.branch_name }</td>
             <td>${ purchase.notes }</td>
             <td>${ purchase.supplier_name }</td>
             <td>-</td>
             <td>-</td>
             <td>-</td>
-            <td class="align-right">${ format_price(purchase.get_purchase_total()) }</td>
+            <td class="align-right">${ format_price(purchase.purchase_total) }</td>
           </tr>
 
               % for purchase_payment in report.purchases[purchase]:

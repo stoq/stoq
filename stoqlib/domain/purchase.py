@@ -251,7 +251,7 @@ class PurchaseOrder(Domain):
         discount_value = self.discount_value
         if not discount_value:
             return currency(0)
-        subtotal = self.get_purchase_subtotal()
+        subtotal = self.purchase_subtotal
         assert subtotal > 0, (u'the subtotal should not be zero '
                               u'at this point')
         total = subtotal - discount_value
@@ -271,7 +271,7 @@ class PurchaseOrder(Domain):
         surcharge_value = self.surcharge_value
         if not surcharge_value:
             return currency(0)
-        subtotal = self.get_purchase_subtotal()
+        subtotal = self.purchase_subtotal
         assert subtotal > 0, (u'the subtotal should not be zero '
                               u'at this point')
         total = subtotal + surcharge_value
@@ -301,7 +301,7 @@ class PurchaseOrder(Domain):
     def _get_percentage_value(self, percentage):
         if not percentage:
             return currency(0)
-        subtotal = self.get_purchase_subtotal()
+        subtotal = self.purchase_subtotal
         percentage = Decimal(percentage)
         return subtotal * (percentage / 100)
 
@@ -387,7 +387,7 @@ class PurchaseOrder(Domain):
         Event.log(self.store, Event.TYPE_ORDER,
                   _(u"Order %s, total value %2.2f, supplier '%s' "
                     u"is now confirmed") % (self.identifier,
-                                            self.get_purchase_total(),
+                                            self.purchase_total,
                                             self.supplier.person.name))
 
     def set_consigned(self):
@@ -410,7 +410,7 @@ class PurchaseOrder(Domain):
         Event.log(self.store, Event.TYPE_ORDER,
                   _(u"Order %s, total value %2.2f, supplier '%s' "
                     u"is now closed") % (self.identifier,
-                                         self.get_purchase_total(),
+                                         self.purchase_total,
                                          self.supplier.person.name))
 
     def cancel(self):
@@ -450,36 +450,42 @@ class PurchaseOrder(Domain):
     def status_str(self):
         return PurchaseOrder.translate_status(self.status)
 
-    def get_freight_type_name(self):
+    @property
+    def freight_type_name(self):
         if not self.freight_type in self.freight_types.keys():
             raise DatabaseInconsistency(_(u'Invalid freight_type, got %d')
                                         % self.freight_type)
         return self.freight_types[self.freight_type]
 
-    def get_branch_name(self):
+    @property
+    def branch_name(self):
         return self.branch.get_description()
 
     @property
     def supplier_name(self):
         return self.supplier.get_description()
 
-    def get_transporter_name(self):
+    @property
+    def transporter_name(self):
         if not self.transporter:
             return u""
         return self.transporter.get_description()
 
-    def get_responsible_name(self):
+    @property
+    def responsible_name(self):
         return self.responsible.get_description()
 
-    def get_purchase_subtotal(self):
+    @property
+    def purchase_subtotal(self):
         """Get the subtotal of the purchase.
         The sum of all the items cost * items quantity
         """
         return currency(self.get_items().sum(
             PurchaseItem.cost * PurchaseItem.quantity) or 0)
 
-    def get_purchase_total(self):
-        subtotal = self.get_purchase_subtotal()
+    @property
+    def purchase_total(self):
+        subtotal = self.purchase_subtotal
         total = subtotal - self.discount_value + self.surcharge_value
         if total < 0:
             raise ValueError(_(u'Purchase total can not be lesser than zero'))
@@ -490,8 +496,9 @@ class PurchaseOrder(Domain):
         # parameters.
         return currency(get_formatted_price(total))
 
-    def get_received_total(self):
-        """Like {get_purchase_subtotal} but only takes into account the
+    @property
+    def received_total(self):
+        """Like {purchase_subtotal} but only takes into account the
         received items
         """
         return currency(self.get_items().sum(
@@ -501,7 +508,7 @@ class PurchaseOrder(Domain):
     def get_remaining_total(self):
         """The total value to be paid for the items not received yet
         """
-        return self.get_purchase_total() - self.get_received_total()
+        return self.purchase_total - self.received_total
 
     def get_pending_items(self):
         """
@@ -709,11 +716,13 @@ class PurchaseItemView(Viewable):
         LeftJoin(SellableUnit, SellableUnit.id == Sellable.unit_id),
     ]
 
-    def get_quantity_as_string(self):
+    @property
+    def quantity_as_string(self):
         return u"%s %s" % (format_quantity(self.quantity),
                            self.unit or u"")
 
-    def get_quantity_received_as_string(self):
+    @property
+    def quantity_received_as_string(self):
         return u"%s %s" % (format_quantity(self.quantity_received),
                            self.unit or u"")
 
@@ -791,7 +800,7 @@ class PurchaseOrderView(Viewable):
     branch_id = Branch.id
     supplier_id = Supplier.id
     supplier_name = Person_Supplier.name
-    transporter_name = Person_Transporter.name
+    transporter_name = Coalesce(Person_Transporter.name, u'')
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
     responsible_name = Person_Responsible.name
 
@@ -826,18 +835,6 @@ class PurchaseOrderView(Viewable):
     #
     # Public API
     #
-
-    def get_total(self):
-        return currency(self.total)
-
-    def get_subtotal(self):
-        return currency(self.subtotal)
-
-    def get_branch_name(self):
-        return unicode(self.branch_name or u"")
-
-    def get_transporter_name(self):
-        return unicode(self.transporter_name or u"")
 
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")

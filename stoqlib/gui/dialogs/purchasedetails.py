@@ -81,11 +81,11 @@ class _TemporaryReceivingDetails:
         if orders.count():
             discount = surcharge = freight = subtotal = total = 0
             for order in orders:
-                discount += order._get_total_discounts()
-                surcharge += order._get_total_surcharges()
+                discount += order.total_discounts
+                surcharge += order.total_surcharges
                 freight += order.freight_total
-                subtotal += order.get_products_total()
-                total += order.get_total()
+                subtotal += order.products_total
+                total += order.total
 
                 # If first time used, append to the list of used types
                 if freight_type_map[order.freight_type] not in freight_types:
@@ -176,69 +176,52 @@ class PurchaseDetailsDialog(BaseEditor):
         label.set_label(_(u'Print labels'))
 
     def _get_ordered_columns(self):
-        return [Column('description',
-                       title=_('Description'),
-                       data_type=str, expand=True, searchable=True,
+        return [Column('description', title=_('Description'), data_type=str,
+                       expand=True, searchable=True,
                        ellipsize=pango.ELLIPSIZE_END),
-                Column('quantity_as_string', title=_('Quantity'),
-                       data_type=str, width=90, editable=True,
+                Column('quantity_as_string', title=_('Qty'), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
-                       format_func=get_formatted_cost, width=90),
-                Column('total', title=_('Total'), data_type=currency,
-                       width=100)]
+                       format_func=get_formatted_cost),
+                Column('total', title=_('Total'), data_type=currency)]
 
     def _get_received_columns(self):
-        return [Column('description',
-                       title=_('Description'),
-                       data_type=str, expand=True, searchable=True,
+        return [Column('description', title=_('Description'), data_type=str,
+                       expand=True, searchable=True,
                        ellipsize=pango.ELLIPSIZE_END),
-                Column('quantity_received_as_string',
-                       title=_('Quantity Received'),
-                       data_type=str, width=150, editable=True,
-                       justify=gtk.JUSTIFY_RIGHT),
+                Column('quantity_received_as_string', title=_('Qty Received'),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
-                       format_func=get_formatted_cost, editable=True,
-                       width=90),
-                Column('total_received', title=_('Total'),
-                       data_type=currency, width=100)]
+                       format_func=get_formatted_cost),
+                Column('total_received', title=_('Total'), data_type=currency)]
 
     def _get_payments_columns(self):
         return [IdentifierColumn('identifier'),
                 Column('description', _("Description"), data_type=str,
-                       width=150, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       expand=True, ellipsize=pango.ELLIPSIZE_END),
                 Column('due_date', _("Due date"), sorted=True,
-                       data_type=datetime.date, width=90,
-                       justify=gtk.JUSTIFY_RIGHT),
-                Column('paid_date', _("Paid date"),
-                       data_type=datetime.date, width=90),
-                Column('status_str', _("Status"), data_type=str, width=80),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                Column('paid_date', _("Paid date"), data_type=datetime.date),
+                Column('status_str', _("Status"), data_type=str),
                 ColoredColumn('value', _("Value"), data_type=currency,
-                              width=90,
-                              justify=gtk.JUSTIFY_RIGHT,
-                              use_data_model=True,
+                              justify=gtk.JUSTIFY_RIGHT, use_data_model=True,
                               data_func=payment_value_colorize),
                 ColoredColumn('paid_value', _("Paid value"), data_type=currency,
-                              width=92,
-                              justify=gtk.JUSTIFY_RIGHT,
-                              use_data_model=True,
+                              justify=gtk.JUSTIFY_RIGHT, use_data_model=True,
                               data_func=payment_value_colorize)]
 
     def _get_payments_info_columns(self):
-        return [Column('change_date', _(u"When"),
-                       data_type=datetime.date, sorted=True, ),
-                Column('description', _(u"Payment"),
-                       data_type=str, expand=True,
+        return [Column('change_date', _(u"When"), data_type=datetime.date,
+                       sorted=True),
+                Column('description', _(u"Payment"), data_type=str, expand=True,
                        ellipsize=pango.ELLIPSIZE_END),
-                Column('changed_field', _(u"Changed"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('from_value', _(u"From"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('to_value', _(u"To"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('reason', _(u"Reason"),
-                       data_type=str, expand=True,
+                Column('changed_field', _(u"Changed"), data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('from_value', _(u"From"), data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('to_value', _(u"To"), data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('reason', _(u"Reason"), data_type=str,
                        ellipsize=pango.ELLIPSIZE_END)]
 
     def _export_csv(self):

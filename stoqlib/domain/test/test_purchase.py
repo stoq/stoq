@@ -226,34 +226,34 @@ class TestPurchaseOrder(DomainTest):
     def test_get_branch_name(self):
         branch = self.create_branch(name=u'Test')
         order = self.create_purchase_order(branch=branch)
-        name = order.get_branch_name()
+        name = order.branch_name
         self.assertEquals(name, u'Test shop')
 
     def test_get_responsible_name(self):
         current_user = get_current_user(self.store)
         name = current_user.person.name
         order = self.create_purchase_order()
-        value = order.get_responsible_name()
+        value = order.responsible_name
         self.assertEquals(name, value)
 
     def test_get_freight_type_name(self):
         order = self.create_purchase_order()
         order.freight_type = 9
         with self.assertRaises(DatabaseInconsistency):
-            order.get_freight_type_name()
+            order.freight_type_name  # pylint: disable=W0104
 
     def test_get_transporter_name_with_transporter(self):
         order = self.create_purchase_order()
         transporter = self.create_transporter(name=u'Transporter')
         order.transporter = transporter
-        transporter_name = order.get_transporter_name()
+        transporter_name = order.transporter_name
         self.assertEquals(transporter_name, u'Transporter')
 
     def test_get_purchase_total_with_negative_total(self):
         item = self.create_purchase_order_item()
         item.order.discount_percentage = 101
         with self.assertRaises(ValueError):
-            item.order.get_purchase_total()
+            item.order.purchase_total  # pylint: disable=W0104
 
     def test_get_remaining_total(self):
         item = self.create_purchase_order_item()
@@ -371,7 +371,7 @@ class TestPurchaseOrder(DomainTest):
         self.assertEquals(val, currency(0))
         percent = Decimal(15)
         val = item.order._get_percentage_value(percent)
-        result = (item.order.get_purchase_subtotal() * (percent / 100))
+        result = (item.order.purchase_subtotal * (percent / 100))
         self.assertEquals(val, result)
         percent = u'test'
         with self.assertRaises(InvalidOperation):
@@ -622,14 +622,14 @@ class TestPurchaseOrderView(DomainTest):
         order = self.create_purchase_order()
         self.create_purchase_order_item(order=order)
         results = self.store.find(PurchaseOrderView, id=order.id).one()
-        self.assertEquals(results.get_subtotal(), Decimal(1000))
+        self.assertEquals(results.subtotal, Decimal(1000))
 
     def test_get_branch_name(self):
         branch = self.create_branch(name=u'Test')
         order = self.create_purchase_order(branch=branch)
         self.create_purchase_order_item(order=order)
         result = self.store.find(PurchaseOrderView, id=order.id).one()
-        self.assertEquals(result.get_branch_name(), u'Test shop')
+        self.assertEquals(result.branch_name, u'Test shop')
 
     def test_get_transporter_name(self):
         order = self.create_purchase_order()
@@ -637,7 +637,7 @@ class TestPurchaseOrderView(DomainTest):
         transporter = self.create_transporter(name=u'Transporter')
         order.transporter = transporter
         result = self.store.find(PurchaseOrderView, id=order.id).one()
-        self.assertEquals(result.get_transporter_name(), u'Transporter')
+        self.assertEquals(result.transporter_name, u'Transporter')
 
     def test_get_open_date_as_string(self):
         item = self.create_purchase_order_item()

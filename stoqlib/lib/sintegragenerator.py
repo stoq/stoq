@@ -196,7 +196,7 @@ class StoqlibSintegraGenerator(object):
         # There's no way to specify a global discount for the whole order,
         # instead we have to put the discount proportionally over all
         # tax constants in the order, calculate the percentage here
-        items_total = receiving_order.get_products_total()
+        items_total = receiving_order.products_total
         extra_percental = 1 + ((receiving_order.freight_total +
                                 receiving_order.secure_value +
                                 receiving_order.expense_value -
@@ -224,7 +224,7 @@ class StoqlibSintegraGenerator(object):
                 1,
                 '1  ',
                 receiving_order.invoice_number,
-                receiving_order.get_cfop_code(),
+                receiving_order.cfop_code,
                 'T',
                 item_total + (total_ipi / no_items),
                 base_total,
@@ -270,7 +270,7 @@ class StoqlibSintegraGenerator(object):
         cnpj = self._get_cnpj_or_cpf(receiving_order)
         items = receiving_order.get_items()
         no_items = items.count()
-        items_total = receiving_order.get_products_total()
+        items_total = receiving_order.products_total
         extra_percental = 1 + ((receiving_order.freight_total +
                                 receiving_order.secure_value +
                                 receiving_order.expense_value -
@@ -287,7 +287,7 @@ class StoqlibSintegraGenerator(object):
             self.sintegra.add_receiving_order_item(
                 cnpj, 1, '1  ',
                 receiving_order.invoice_number,
-                receiving_order.get_cfop_code(),
+                receiving_order.cfop_code,
                 '000',
                 i + 1,
                 item.sellable.code,
@@ -306,7 +306,7 @@ class StoqlibSintegraGenerator(object):
         cnpj = self._get_cnpj_or_cpf(receiving_order)
         self.sintegra.add_receiving_order_item(cnpj, 1, '1  ',
                                                receiving_order.invoice_number,
-                                               receiving_order.get_cfop_code(),
+                                               receiving_order.cfop_code,
                                                None,
                                                code,
                                                None,

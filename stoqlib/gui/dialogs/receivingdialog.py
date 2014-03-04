@@ -102,8 +102,8 @@ class ReceivingOrderDetailsDialog(BaseEditor):
     #
 
     def setup_proxies(self):
-        receiving_date = self.model.get_receival_date_str()
-        branch_name = self.model.get_branch_name()
+        receiving_date = self.model.receival_date_str
+        branch_name = self.model.branch_name
         text = _('Received in <b>%s</b> for branch <b>%s</b>')
         header_text = text % (api.escape(receiving_date),
                               api.escape(branch_name))

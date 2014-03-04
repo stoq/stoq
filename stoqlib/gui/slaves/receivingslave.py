@@ -144,7 +144,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     ReceivingInvoiceSlave.proxy_widgets)
 
-        self.model.invoice_total = self.model.get_products_total()
+        self.model.invoice_total = self.model.products_total
 
         purchase = self.model.purchase
         if purchase:
@@ -264,7 +264,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     def after_discount_value__validate(self, widget, value):
         if value < 0:
             return ValidationError(_("Discount must be greater than zero"))
-        if value > self.model.get_total():
+        if value > self.model.total:
             return ValidationError(_("Discount must be less "
                                      "than %s") % (self.model.get_total(),))
 

@@ -90,7 +90,7 @@ class PurchaseImporter(CSVImporter):
 
         method = PaymentMethod.get_by_name(store, data.payment_method)
         method.create_payment(Payment.TYPE_OUT, purchase.group, branch,
-                              purchase.get_purchase_total(),
+                              purchase.purchase_total,
                               self.parse_date(data.due_date))
         purchase.confirm()
 

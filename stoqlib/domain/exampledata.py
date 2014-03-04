@@ -915,7 +915,7 @@ class ExampleCreator(object):
                 value = obj.get_total_cost()
             payment_type = Payment.TYPE_IN
         elif isinstance(obj, PurchaseOrder):
-            value = obj.get_purchase_total()
+            value = obj.purchase_total
             payment_type = Payment.TYPE_OUT
         else:  # pragma: nocover
             raise ValueError(obj)

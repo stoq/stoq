@@ -246,7 +246,8 @@ class ReceivingOrder(Domain):
             self.store,
             self.purchase.group, self.cfop, self.invoice_number,
             self.icms_total, self.ipi_total)
-        self.invoice_total = self.get_total()
+
+        self.invoice_total = self.total
         if self.purchase.can_close():
             self.purchase.close()
 
@@ -306,7 +307,7 @@ class ReceivingOrder(Domain):
                                        with the freight value, False otherwise.
         """
         group = self.purchase.group
-        difference = self.get_total() - self.get_products_total()
+        difference = self.total - self.products_total
         if create_freight_payment:
             difference -= self.freight_total
 
@@ -314,6 +315,7 @@ class ReceivingOrder(Domain):
             payments = group.get_pending_payments()
             payments_number = payments.count()
             if payments_number > 0:
+                # XXX: There is a potential rounding error here.
                 per_installments_value = difference / payments_number
                 for payment in payments:
                     new_value = payment.value + per_installments_value
@@ -333,8 +335,7 @@ class ReceivingOrder(Domain):
         else:
             group = self.group
 
-        description = _(u'Freight for purchase %s') % (
-            self.purchase.identifier, )
+        description = _(u'Freight for purchase %s') % (self.purchase.identifier, )
         payment = money_method.create_payment(
             Payment.TYPE_OUT,
             group, self.branch, self.freight_total,
@@ -377,29 +378,36 @@ class ReceivingOrder(Domain):
     # Accessors
     #
 
-    def get_cfop_code(self):
+    @property
+    def cfop_code(self):
         return self.cfop.code.encode()
 
-    def get_transporter_name(self):
+    @property
+    def transporter_name(self):
         if not self.transporter:
             return u""
         return self.transporter.get_description()
 
-    def get_branch_name(self):
+    @property
+    def branch_name(self):
         return self.branch.get_description()
 
-    def get_responsible_name(self):
+    @property
+    def responsible_name(self):
         return self.responsible.get_description()
 
-    def get_products_total(self):
+    @property
+    def products_total(self):
         total = sum([item.get_total() for item in self.get_items()],
                     currency(0))
         return currency(total)
 
-    def get_receival_date_str(self):
+    @property
+    def receival_date_str(self):
         return self.receival_date.strftime("%x")
 
-    def _get_total_surcharges(self):
+    @property
+    def total_surcharges(self):
         """Returns the sum of all surcharges (purchase & receiving)"""
         total_surcharge = 0
         if self.surcharge_value:
@@ -423,7 +431,8 @@ class ReceivingOrder(Domain):
 
         return currency(total_surcharge)
 
-    def _get_total_discounts(self):
+    @property
+    def total_discounts(self):
         """Returns the sum of all discounts (purchase & receiving)"""
         total_discount = 0
         if self.discount_value:
@@ -434,14 +443,14 @@ class ReceivingOrder(Domain):
 
         return currency(total_discount)
 
-    def get_total(self):
+    @property
+    def total(self):
         """Fetch the total, including discount and surcharge for both the
         purchase order and the receiving order.
         """
-
-        total = self.get_products_total()
-        total -= self._get_total_discounts()
-        total += self._get_total_surcharges()
+        total = self.products_total
+        total -= self.total_discounts
+        total += self.total_surcharges
 
         return currency(total)
 
@@ -463,7 +472,7 @@ class ReceivingOrder(Domain):
     def _get_percentage_value(self, percentage):
         if not percentage:
             return currency(0)
-        subtotal = self.get_products_total()
+        subtotal = self.products_total
         percentage = Decimal(percentage)
         return subtotal * (percentage / 100)
 
@@ -472,7 +481,7 @@ class ReceivingOrder(Domain):
         discount_value = self.discount_value
         if not discount_value:
             return currency(0)
-        subtotal = self.get_products_total()
+        subtotal = self.products_total
         assert subtotal > 0, (u'the subtotal should not be zero '
                               u'at this point')
         total = subtotal - discount_value
@@ -498,7 +507,7 @@ class ReceivingOrder(Domain):
         surcharge_value = self.surcharge_value
         if not surcharge_value:
             return currency(0)
-        subtotal = self.get_products_total()
+        subtotal = self.products_total
         assert subtotal > 0, (u'the subtotal should not be zero '
                               u'at this point')
         total = subtotal + surcharge_value

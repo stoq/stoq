@@ -558,7 +558,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         elif isinstance(self.order, ReturnedSale):
             return self.model.sale_total
         elif isinstance(self.order, PurchaseOrder):
-            return self.order.get_purchase_total()
+            return self.order.purchase_total
         elif isinstance(self.order, PaymentRenegotiation):
             return self.order.total
         else:

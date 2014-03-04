@@ -63,28 +63,28 @@ class TestReceivingOrder(DomainTest):
     def test_get_total(self):
         order = self.create_receiving_order()
         self.create_receiving_order_item(order)
-        self.assertEqual(order.get_total(), currency(1000))
+        self.assertEqual(order.total, currency(1000))
 
         order.discount_value = 10
-        self.assertEqual(order.get_total(), currency(990))
+        self.assertEqual(order.total, currency(990))
         order.purchase.discount_value = 5
-        self.assertEqual(order.get_total(), currency(985))
+        self.assertEqual(order.total, currency(985))
         order.purchase.surcharge_value = 8
         order.surcharge_value = 15
-        self.assertEqual(order.get_total(), currency(1008))
+        self.assertEqual(order.total, currency(1008))
         order.ipi_total = 10
-        self.assertEqual(order.get_total(), currency(1018))
+        self.assertEqual(order.total, currency(1018))
         order.freight_total = 6
-        self.assertEqual(order.get_total(), currency(1024))
+        self.assertEqual(order.total, currency(1024))
         order.secure_value = 6
-        self.assertEqual(order.get_total(), currency(1030))
+        self.assertEqual(order.total, currency(1030))
         order.expense_value = 12
-        self.assertEqual(order.get_total(), currency(1042))
+        self.assertEqual(order.total, currency(1042))
 
         order.purchase.status = order.purchase.ORDER_PENDING
         order.purchase.confirm()
         order.confirm()
-        self.assertEqual(order.invoice_total, order.get_total())
+        self.assertEqual(order.invoice_total, order.total)
 
     def test_confirm(self):
         order = self.create_receiving_order()
@@ -107,10 +107,10 @@ class TestReceivingOrder(DomainTest):
         installment_count = order.payments.count()
         for pay in order.payments:
             self.assertEqual(pay.value,
-                             order.get_total() / installment_count)
+                             order.total / installment_count)
             self.assertEqual(pay.value,
-                             order.get_total() / installment_count)
-        self.assertEqual(order.invoice_total, order.get_total())
+                             order.total / installment_count)
+        self.assertEqual(order.invoice_total, order.total)
         self.assertEquals(stock_item.quantity, 16)
 
     def test_order_receive_sell(self):
@@ -123,7 +123,7 @@ class TestReceivingOrder(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         method.create_payment(Payment.TYPE_OUT,
                               purchase_order.group, purchase_order.branch,
-                              purchase_order.get_purchase_total())
+                              purchase_order.purchase_total)
         purchase_order.confirm()
 
         receiving_order = self.create_receiving_order(purchase_order)
@@ -151,7 +151,7 @@ class TestReceivingOrder(DomainTest):
     def test_update_payment_values(self):
         order = self.create_receiving_order()
         self.create_receiving_order_item(order)
-        self.assertEqual(order.get_total(), currency(1000))
+        self.assertEqual(order.total, currency(1000))
 
         for item in order.purchase.get_items():
             item.quantity_received = 0
@@ -162,7 +162,7 @@ class TestReceivingOrder(DomainTest):
         payment_dict = {}
         for pay in order.payments:
             self.assertEqual(pay.value,
-                             order.get_total() / installment_count)
+                             order.total / installment_count)
             payment_dict[pay] = pay.value
 
         order.discount_value = 20
@@ -173,13 +173,13 @@ class TestReceivingOrder(DomainTest):
         order.update_payments()
 
         for pay in order.payments:
-            self.assertEqual(pay.value, order.get_total() / installment_count)
+            self.assertEqual(pay.value, order.total / installment_count)
             self.failIf(pay.value <= payment_dict[pay])
 
     def test_update_payment_values_with_freight_payment(self):
         order = self.create_receiving_order()
         self.create_receiving_order_item(order)
-        self.assertEqual(order.get_total(), currency(1000))
+        self.assertEqual(order.total, currency(1000))
 
         for item in order.purchase.get_items():
             item.quantity_received = 0
@@ -190,7 +190,7 @@ class TestReceivingOrder(DomainTest):
         payment_dict = {}
         for pay in order.payments:
             self.assertEqual(pay.value,
-                             order.get_total() / installment_count)
+                             order.total / installment_count)
             payment_dict[pay] = pay.value
 
         order.discount_value = 20
@@ -224,13 +224,13 @@ class TestReceivingOrder(DomainTest):
 
         # Without transporter, the transporter name should be empty
         receiving_order.transporter = None
-        name = receiving_order.get_transporter_name()
+        name = receiving_order.transporter_name
         self.assertEqual(name, '')
 
         # Now there is a transporter...
         transporter = self.create_transporter(u'Juca')
         receiving_order.transporter = transporter
-        name = receiving_order.get_transporter_name()
+        name = receiving_order.transporter_name
         self.assertEqual(name, u'Juca')
 
     def test_supplier_name(self):
@@ -350,8 +350,8 @@ class TestReceivingOrder(DomainTest):
 
         receiving_order.freight_total = 50
         receiving_order.update_payments(create_freight_payment=True)
-        difference = (receiving_order.get_total() -
-                      receiving_order.get_products_total())
+        difference = (receiving_order.total -
+                      receiving_order.products_total)
         difference -= receiving_order.freight_total
         self.assertEqual(difference, Decimal('0'))
         self.assertEqual(group.get_pending_payments().count(), 1)
@@ -396,24 +396,24 @@ class TestReceivingOrder(DomainTest):
     def test_get_cfop_code(self):
         order = self.create_receiving_order()
         order.cfop.code = u'1.234'
-        self.assertEquals(order.get_cfop_code(), '1.234')
+        self.assertEquals(order.cfop_code, '1.234')
 
     def test_get_branch_name(self):
         branch = self.create_branch()
         branch.person.company.fancy_name = u'foo'
         order = self.create_receiving_order(branch=branch)
-        self.assertEquals(order.get_branch_name(), u'foo')
+        self.assertEquals(order.branch_name, u'foo')
 
     def test_get_responsible_name(self):
         order = self.create_receiving_order()
         order.responsible = self.create_user()
         order.responsible.person.name = u'user'
-        self.assertEquals(order.get_responsible_name(), u'user')
+        self.assertEquals(order.responsible_name, u'user')
 
     def test_get_receival_date_str(self):
         order = self.create_receiving_order()
         order.receival_date = localdate(2010, 1, 1)
-        self.assertEquals(order.get_receival_date_str(), u'01/01/10')
+        self.assertEquals(order.receival_date_str, u'01/01/10')
 
     def test_guess_freight_type(self):
         order = self.create_receiving_order()

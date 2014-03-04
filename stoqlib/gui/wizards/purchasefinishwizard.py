@@ -204,7 +204,7 @@ class PurchaseFinishWizard(BaseWizard):
 
     def _create_model(self, purchase):
         paid_value = currency(purchase.payments.sum(Payment.paid_value) or 0)
-        received_value = purchase.get_received_total()
+        received_value = purchase.received_total
         return Settable(received_value=received_value,
                         paid_value=paid_value,
                         missing_value=currency(received_value - paid_value),
