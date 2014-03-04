@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 from decimal import Decimal
 
 import gtk
@@ -30,7 +31,6 @@ import mock
 
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
@@ -75,34 +75,40 @@ class TestReceivingOrderWizard(GUITest):
         step.invoice_slave.invoice_number.update(1)
         self.assertSensitive(wizard, ['next_button'])
         self.check_wizard(wizard, 'receiving-invoice-step')
+
         module = 'stoqlib.gui.events.ReceivingOrderWizardFinishEvent.emit'
-        with mock.patch(module) as emit:
-            with mock.patch.object(wizard.model, 'confirm') as confirm:
-                api.sysparam.set_string(self.store, 'LABEL_TEMPLATE_PATH', u'')
-                self.assertEqual(confirm.call_count, 0)
-                with mock.patch.object(self.store, 'commit'):
-                    self.click(wizard.next_button)
-                self.assertEqual(confirm.call_count, 1)
-                self.assertEquals(emit.call_count, 1)
-                args, kwargs = emit.call_args
-                self.assertTrue(isinstance(args[0], ReceivingOrder))
-                self.assertEqual(yesno.call_count, 0)
-                api.sysparam.set_string(self.store, 'LABEL_TEMPLATE_PATH',
-                                        ur'C:\nppdf32Log\debuglog.txt')
-                emit.reset_mock()
-                confirm.reset_mock()
-                with mock.patch.object(self.store, 'commit'):
-                    self.click(wizard.next_button)
-                self.assertEqual(emit.call_count, 1)
-                self.assertEqual(confirm.call_count, 1)
-                args, kwargs = emit.call_args
-                self.assertTrue(isinstance(args[0], ReceivingOrder))
-                yesno.assert_called_once_with('Do you want to print the labels for '
-                                              'the received products?',
-                                              gtk.RESPONSE_YES, 'Print labels',
-                                              "Don't print")
-                run_dialog.assert_called_once_with(SkipLabelsEditor, wizard,
-                                                   self.store)
-                warning.assert_called_once_with('It was not possible to print the '
-                                                'labels. The template file was '
-                                                'not found.')
+        with contextlib.nested(
+                mock.patch(module),
+                mock.patch.object(wizard.model, 'confirm'),
+                mock.patch.object(self.store, 'commit')) as (emit, confirm, _):
+            # When this parameter is empty, the user should not be asked
+            # to print labels
+            with self.sysparam(LABEL_TEMPLATE_PATH=u''):
+                self.click(wizard.next_button)
+
+            self.assertEqual(confirm.call_count, 1)
+            self.assertEqual(yesno.call_count, 0)
+            emit.assert_called_once_with(wizard.model)
+
+            emit.reset_mock()
+            confirm.reset_mock()
+
+            # When the file exists, it should ask to print labels, although it
+            # will fail as the file is not valid
+            with self.sysparam(LABEL_TEMPLATE_PATH=u'non-existing-file'):
+                self.click(wizard.next_button)
+
+            self.assertEqual(emit.call_count, 1)
+            self.assertEqual(confirm.call_count, 1)
+            emit.assert_called_once_with(wizard.model)
+
+            yesno.assert_called_once_with(
+                "Do you want to print the labels for the received products?",
+                gtk.RESPONSE_YES, "Print labels", "Don't print")
+
+            run_dialog.assert_called_once_with(
+                SkipLabelsEditor, wizard, self.store)
+
+            warning.assert_called_once_with(
+                "It was not possible to print the labels. The template "
+                "file was not found.")
