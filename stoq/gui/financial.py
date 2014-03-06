@@ -325,17 +325,18 @@ class TransactionPage(object):
 
         transaction = run_dialog(AccountTransactionEditor, self.app,
                                  store, None, model)
+        store.confirm(transaction)
         if transaction:
-            transaction.sync()
+            query = AccountTransactionView.id == transaction.id
+            transaction_view = store.find(AccountTransactionView, query).one()
             value = transaction.value
             other = transaction.get_other_account(model)
             if other == model:
                 value = -value
-            item = self._add_transaction(transaction, other.description, value)
+            item = self._add_transaction(transaction_view, other.description, value)
             self.update_totals()
             self.search.result_view.update(item)
             self.app.accounts.refresh_accounts(self.app.store)
-        store.confirm(transaction)
         store.close()
 
     def _on_search__item_activated(self, objectlist, item):
