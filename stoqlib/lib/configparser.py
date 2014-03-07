@@ -55,13 +55,6 @@ class StoqConfig:
         self._config.read(filename)
         return True
 
-    def _get_password(self, filename):
-        if not os.path.exists(filename):
-            return
-
-        data = open(filename).read()
-        return binascii.a2b_base64(data)
-
     #
     # Public API
     #
@@ -153,14 +146,6 @@ class StoqConfig:
         fd.write(binascii.b2a_base64(password))
         fd.close()
 
-    def get_password(self):
-        """
-        :returns: password or None if it is not set
-        """
-        configdir = self.get_config_directory()
-        data_file = os.path.join(configdir, 'data')
-        return self._get_password(data_file)
-
     def get_settings(self):
         if self._settings:
             return self._settings
@@ -172,7 +157,6 @@ class StoqConfig:
         port = self.get('Database', 'port')
         if port:
             port = int(port)
-        password = self.get_password()
 
         database_section = self.get('General', 'database_section')
         if database_section is not None:
@@ -190,7 +174,7 @@ class StoqConfig:
         db_settings.port = port or db_settings.port
         db_settings.dbname = dbname or db_settings.dbname
         db_settings.username = username or db_settings.username
-        db_settings.password = password or db_settings.password
+        db_settings.password = db_settings.password
         return db_settings
 
     def set_from_options(self, options):

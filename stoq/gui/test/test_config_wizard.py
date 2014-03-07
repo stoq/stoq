@@ -63,7 +63,6 @@ class TestFirstTimeConfigWizard(GUITest):
 
     @mock.patch('stoq.gui.config.test_local_database')
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
-    @mock.patch('stoq.gui.config.ensure_admin_user')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
     @mock.patch('stoq.gui.config.yesno')
     @mock.patch('stoq.gui.config.warning')
@@ -75,7 +74,6 @@ class TestFirstTimeConfigWizard(GUITest):
                    warning,
                    yesno,
                    create_default_profile_settings,
-                   ensure_admin_user,
                    execute_command,
                    test_local_database):
 
@@ -161,7 +159,6 @@ class TestFirstTimeConfigWizard(GUITest):
 
         step.process_view.emit(u'finished', 0)
         create_default_profile_settings.assert_called_once_with()
-        ensure_admin_user.assert_called_once_with(u'password')
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, u'wizard-config-done')
@@ -171,7 +168,6 @@ class TestFirstTimeConfigWizard(GUITest):
         provide_utility.assert_called_once()
 
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
-    @mock.patch('stoq.gui.config.ensure_admin_user')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
     @mock.patch('stoq.gui.config.yesno')
     @mock.patch('stoq.gui.config.warning')
@@ -183,7 +179,6 @@ class TestFirstTimeConfigWizard(GUITest):
                     warning,
                     yesno,
                     create_default_profile_settings,
-                    ensure_admin_user,
                     execute_command):
         DatabaseSettingsStep.model_type = self.fake.DatabaseSettings
         self.settings = self.fake.DatabaseSettings(self.store)
@@ -246,7 +241,6 @@ class TestFirstTimeConfigWizard(GUITest):
             u"Create database", u"Don't create")
 
         create_default_profile_settings.assert_called_once_with()
-        ensure_admin_user.assert_called_once_with(u'password')
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, u'wizard-config-done')

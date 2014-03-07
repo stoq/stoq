@@ -59,7 +59,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME, ensure_admin_user,
+from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME,
                                     create_default_profile_settings)
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
@@ -749,7 +749,6 @@ class CreateDatabaseStep(BaseWizardStep):
         self.label.set_text("")
         self.wizard.load_config_and_call_setup()
         create_default_profile_settings()
-        ensure_admin_user(self.wizard.config.get_password())
         self.progressbar.set_text(_("Done."))
         self.progressbar.set_fraction(1.0)
         self.wizard.enable_next()

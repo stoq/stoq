@@ -156,8 +156,7 @@ class StoqCommandHandler:
         if options.password:
             db_settings.password = options.password
 
-        initialize_system(password=options.password or config.get_password(),
-                          force=options.force)
+        initialize_system(password=unicode(options.password), force=options.force)
 
         if options.create_examples or options.demo:
             from stoqlib.importers.stoqlibexamples import create

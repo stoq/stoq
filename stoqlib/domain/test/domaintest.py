@@ -58,9 +58,6 @@ class FakeStoqConfig:
     def set_from_options(self, options):
         self.options = options
 
-    def get_password(self):
-        return u'password'
-
     def load_settings(self, settings):
         pass
 
