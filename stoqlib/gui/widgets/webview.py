@@ -117,6 +117,7 @@ class WebView(gtk.ScrolledWindow):
     def _show_search_by_date(self, date, app_name):
         y, m, d = map(int, date.split('-'))
         date = localdate(y, m, d).date()
+        self.app.window.hide_app(empty=True)
         shell_app = self.app.window.run_application(
             app_name, refresh=False)
         shell_app.search_for_date(date)
