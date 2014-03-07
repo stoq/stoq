@@ -276,7 +276,7 @@ class InstallationModeStep(BaseWizardStep):
         self.empty_database_radio.grab_focus()
 
     def next_step(self):
-        self.wizard.enable_production = not self.empty_database_radio.get_active()
+        self.wizard.create_examples = not self.empty_database_radio.get_active()
         return PluginStep(self.wizard, self)
 
     def on_empty_database_radio__activate(self, radio):
@@ -621,12 +621,12 @@ class CreateDatabaseStep(BaseWizardStep):
         return FinishInstallationStep(self.wizard)
 
     def _maybe_create_database(self):
-        logger.info('_maybe_create_database (db_is_local=%s, remove_demo=%s)'
-                    % (self.wizard.db_is_local, self.wizard.remove_demo))
+        logger.info('_maybe_create_database (db_is_local=%s, enable_production=%s)'
+                    % (self.wizard.db_is_local, self.wizard.enable_production))
         if self.wizard.db_is_local:
             self._launch_stoqdbadmin()
             return
-        elif self.wizard.remove_demo:
+        elif self.wizard.enable_production:
             self._launch_stoqdbadmin()
             return
 
@@ -669,8 +669,11 @@ class CreateDatabaseStep(BaseWizardStep):
                 '--no-load-config',
                 '--no-register-station',
                 '-v']
-        if self.wizard.enable_production and not self.wizard.remove_demo:
+        if self.wizard.create_examples:
             args.append('--demo')
+        elif self.wizard.enable_production:
+            args.append('--force')
+
         if self.wizard.plugins:
             args.append('--enable-plugins')
             args.append(','.join(self.wizard.plugins))
@@ -711,7 +714,7 @@ class CreateDatabaseStep(BaseWizardStep):
         elif line == 'INIT START':
             text = _("Creating additional database objects ...")
             value = 0.8
-        elif line == 'INIT DONE' and self.wizard.enable_production:
+        elif line == 'INIT DONE' and self.wizard.create_examples:
             text = _("Creating examples ...")
             value = 0.85
         elif line.startswith('PLUGIN'):
@@ -823,9 +826,9 @@ class FirstTimeConfigWizard(BaseWizard):
             config = StoqConfig()
         self.settings = config.get_settings()
 
-        self.enable_production = False
+        self.create_examples = False
         self.config = config
-        self.remove_demo = False
+        self.enable_production = False
         self.has_installed_db = False
         self.options = options
         self.plugins = []
@@ -834,9 +837,9 @@ class FirstTimeConfigWizard(BaseWizard):
         self.auth_type = TRUST_AUTHENTICATION
 
         if config.get('Database', 'enable_production') == 'True':
-            self.remove_demo = True
+            self.enable_production = True
 
-        if self.remove_demo:
+        if self.enable_production:
             first_step = PluginStep(self)
         else:
             first_step = WelcomeStep(self)
@@ -852,7 +855,7 @@ class FirstTimeConfigWizard(BaseWizard):
         #        The whole BranchStation/Branch creation is weird, it should
         #        be done at the same place.
         logger.info('_create_station')
-        if self.enable_production:
+        if self.create_examples:
             branch = api.sysparam.get_object(store, 'MAIN_COMPANY')
             assert branch
             provide_utility(ICurrentBranch, branch)
@@ -1067,7 +1070,7 @@ class FirstTimeConfigWizard(BaseWizard):
             store.commit()
 
         # Write configuration to disk
-        if self.remove_demo:
+        if self.enable_production:
             self.config.remove('Database', 'enable_production')
         self.config.flush()
 

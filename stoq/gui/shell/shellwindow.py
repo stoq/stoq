@@ -920,7 +920,7 @@ class ShellWindow(GladeDelegate):
         self.statusbar.pop(0xff)
 
     def _on_enable_production__clicked(self, button):
-        if not self.can_close_application():
+        if not self.current_app.can_close_application():
             return
         if not yesno(_(u"This will enable production mode and finish the "
                        u"demonstration. Are you sure?"),
