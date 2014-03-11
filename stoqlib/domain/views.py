@@ -43,7 +43,6 @@ from stoqlib.domain.person import (Person, Supplier, Company, LoginUser,
 from stoqlib.domain.product import (Product,
                                     ProductStockItem,
                                     ProductHistory,
-                                    ProductComponent,
                                     ProductManufacturer,
                                     ProductSupplierInfo,
                                     StockTransactionHistory,
@@ -245,16 +244,13 @@ class ProductClosedStockView(ProductFullWithClosedStockView):
 class ProductComponentView(ProductFullStockView):
     """Stores information about production products"""
 
-    tables = ProductFullStockView.tables[:]
-    tables.extend([
-        Join(ProductComponent, ProductComponent.product_id == Product.id),
-    ])
+    clause = And(ProductFullStockView.clause, Eq(Product.is_composed, True))
 
 
 class ProductComponentWithClosedView(ProductComponentView):
     """Stores information about production products, including closed ones"""
 
-    clause = None
+    clause = Eq(Product.is_composed, True)
 
 
 class ProductWithStockView(ProductFullStockView):

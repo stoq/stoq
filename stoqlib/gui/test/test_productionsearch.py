@@ -52,6 +52,7 @@ class TestProductionProductSearch(GUITest):
                          store=self.store)
         product.sellable.code = u'65432'
         product.sellable.description = u'Camiseta'
+        product.is_composed = True
         self.create_product_component(product=product)
 
         product = self.create_product()

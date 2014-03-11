@@ -488,6 +488,7 @@ class TestProductFullStockView(DomainTest):
 class TestProductComponentView(DomainTest):
     def test_sellable(self):
         pc1 = self.create_product_component()
+        pc1.product.is_composed = True
         results = self.store.find(ProductComponentView)
         self.failUnless(list(results))
         pcv = results[0]
