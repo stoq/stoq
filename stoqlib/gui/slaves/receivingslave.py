@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -271,7 +271,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             return ValidationError(_("Discount must be greater than zero"))
         if value > self.model.total:
             return ValidationError(_("Discount must be less "
-                                     "than %s") % (self.model.get_total(),))
+                                     "than %s") % (self.model.total,))
 
     def after_secure_value__content_changed(self, widget):
         try:
