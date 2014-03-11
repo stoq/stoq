@@ -186,7 +186,7 @@ class PurchaseSelectionStep(BaseWizardStep):
                    model=purchase_order_view.purchase)
 
     def on_details_button__clicked(self, *args):
-        selected = self.search.results.get_selected()
+        selected = self.search.results.get_selected_rows()[0]
         if not selected:
             raise ValueError('You should have one order selected '
                              'at this point, got nothing')
