@@ -157,6 +157,7 @@ class KanbanView(gtk.Frame):
         """
         Clears the view and all it's columns.
         """
+        self.clear_message()
         for column in self._columns.values():
             column.clear()
 
@@ -247,7 +248,6 @@ class KanbanView(gtk.Frame):
         """Adds a message on top of the treeview rows
         :param markup: PangoMarkup with the text to add
         """
-
         if self._message_label is None:
             self._viewport = gtk.Viewport()
             self._viewport.set_shadow_type(gtk.SHADOW_NONE)
@@ -275,8 +275,13 @@ class KanbanView(gtk.Frame):
     def clear_message(self):
         if self._message_label is None:
             return
-        self.remove(self._viewport)
-        self.add(self._hbox)
+
+        children = self.get_children()
+        if self._viewport in children:
+            self.remove(self._viewport)
+        if self.hbox not in children:
+            self.add(self.hbox)
+
         self._message_label.set_label("")
 
     #
