@@ -423,7 +423,7 @@ class CalendarApp(ShellApp):
             self._update_events()
 
     def _new_work_order(self):
-        with api.trans() as store:
+        with api.new_store() as store:
             self.run_dialog(WorkOrderEditor, store)
 
         if store.committed:
