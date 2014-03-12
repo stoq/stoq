@@ -23,7 +23,7 @@
 ##
 """ NF-e XML document generation """
 
-import decimal
+from decimal import Decimal
 import datetime
 import math
 import os.path
@@ -422,7 +422,8 @@ class BaseNFeXMLGroup(object):
         return date.strftime('%Y-%m-%d')
 
     def format_value(self, value, precision=2):
-        return '%.*f' % (precision, value or 0)
+        _format = Decimal('10e-%d' % precision)
+        return value.quantize(_format)
 
     def escape(self, string):
         # Pg. 71
@@ -1005,7 +1006,7 @@ class BaseNFeICMS(BaseNFeXMLGroup):
 
             value = getattr(sale_icms_info, info_name, '')
             # Only format if the value is a number
-            if precision is not None and isinstance(value, decimal.Decimal):
+            if precision is not None and isinstance(value, Decimal):
                 value = self.format_value(value, precision)
             if value is None:
                 value = ''
