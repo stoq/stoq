@@ -88,7 +88,7 @@ class ProductEditorStep(BaseWizardStep):
 class ProductCreateWizard(BaseWizard):
     size = (800, 450)
     title = _('Product creation wizard')
-    help_section = 'product-create'
+    help_section = 'product-new'
 
     # args and kwargs are here to get extra parameters sent by SearchEditor's
     # run_dialog. We will just ignore them since they are not useful here
