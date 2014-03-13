@@ -103,6 +103,12 @@ class _TemporarySaleItem(object):
         return self.original_quantity != self.quantity
 
 
+class _SaleBatchDecreaseSelectionDialog(BatchDecreaseSelectionDialog):
+    # We are finishing the sale here and this dialog will be used to select
+    # batches to decrease. We cannot decrease more than we sold
+    validate_max_quantity = True
+
+
 #
 # Wizard Steps
 #
@@ -401,11 +407,7 @@ class ConfirmSaleBatchStep(WizardEditorStep):
             yield _TemporarySaleItem(item)
 
     def _edit_item(self, item):
-        # FIXME: The BatchDecreaseSelectionDialog wont validate the quantity.
-        # That's not a big problem since we won't let the user go forward
-        # unless the original_quantity and the batch quantities matches. But
-        # it would be nice to have to have a validation inside it.
-        retval = run_dialog(BatchDecreaseSelectionDialog, self.wizard,
+        retval = run_dialog(_SaleBatchDecreaseSelectionDialog, self.wizard,
                             store=self.store, model=item.storable,
                             quantity=item.original_quantity,
                             original_batches=item.batches)
