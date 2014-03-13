@@ -222,6 +222,7 @@ class SaleDetailsDialog(BaseEditor):
                                     for p in self.payments_list]))
 
         self._refresh_comments()
+        self.comment_info.set_sensitive(False)
 
     def _get_payments_columns(self):
         return [IdentifierColumn('identifier'),

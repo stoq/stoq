@@ -99,7 +99,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   row: datetime.datetime(2010, 12, 10, 0, 0), u'Administrator', u'Foo bar'
                 GtkHButtonBox(hbuttonbox2, fill=True):
                   GtkButton(comment_add): 'Add Comment'
-                  GtkButton(comment_info): 'gtk-info'
+                  GtkButton(comment_info): 'gtk-info', insensitive
             GtkVBox(vbox6):
               GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
                 ProxyTextView(notes): invalid

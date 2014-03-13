@@ -80,7 +80,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   column: title='Notes', expand
                 GtkHButtonBox(hbuttonbox2, fill=True):
                   GtkButton(comment_add): 'Add Comment'
-                  GtkButton(comment_info): 'gtk-info'
+                  GtkButton(comment_info): 'gtk-info', insensitive
             GtkVBox(vbox6):
               GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
                 ProxyTextView(notes): invalid
