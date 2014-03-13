@@ -132,7 +132,7 @@ class ImageSlave(BaseEditorSlave):
 
     def _save_image(self, filename=None):
         if not filename:
-            name = '%s-%d.png' % ('stoq-image', self._image_model.id)
+            name = '%s-%s.png' % ('stoq-image', self._image_model.id)
             with tempfile.NamedTemporaryFile(suffix=name, delete=False) as f:
                 filename = f.name
 
