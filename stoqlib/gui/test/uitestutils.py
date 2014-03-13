@@ -487,6 +487,9 @@ class GUIDumper(object):
         self.output += '\n'
 
 
+# FIXME: To be able to create ui tests outside stoq, we need to be able
+# to get tests data dir from there. Maybe we should use
+# provide_utility/get_utility?
 stoq_dir = get_tests_datadir('ui')
 
 
