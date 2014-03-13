@@ -120,6 +120,15 @@ class ProductOpticSlave(BaseEditorSlave):
         ])
         self._toggle_details_type(self.model.optical_type)
 
+        self.cl_axis.set_adjustment(gtk.Adjustment(0, 0, 180, 1, 10))
+        self.cl_cylindrical.set_adjustment(gtk.Adjustment(0, -10, 10,
+                                                          Decimal('0.25'), 1))
+        self.cl_degree.set_adjustment(gtk.Adjustment(0, -30, 30,
+                                                     Decimal('0.25'), 1))
+        self.gl_refraction_index.set_adjustment(gtk.Adjustment(0, 0, 2,
+                                                               Decimal('0.1'),
+                                                               Decimal('0.5')))
+
     def on_optical_type__changed(self, widget):
         self._toggle_details_type(widget.get_selected_data())
 
