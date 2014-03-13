@@ -196,6 +196,18 @@ class Product(Domain):
 
     __storm_table__ = 'product'
 
+    TYPE_COMMON = 0
+    TYPE_BATCH = 1
+    TYPE_WITHOUT_STOCK = 2
+    TYPE_CONSIGNED = 3
+
+    product_types = {
+        TYPE_COMMON: _("Regular product"),
+        TYPE_BATCH: _("Product with batch control"),
+        TYPE_WITHOUT_STOCK: _("Produc without stock control"),
+        TYPE_CONSIGNED: _("Consigned product"),
+    }
+
     sellable_id = IdCol()
 
     #: |sellable| for this product
@@ -284,6 +296,24 @@ class Product(Domain):
     @property
     def storable(self):
         return self.store.find(Storable, product=self).one()
+
+    @property
+    def product_type(self):
+        storable = self.storable
+
+        if not self.manage_stock:
+            assert storable is None
+            return self.TYPE_WITHOUT_STOCK
+        elif storable.is_batch:
+            return self.TYPE_BATCH
+        elif self.consignment:
+            return self.TYPE_CONSIGNED
+        else:
+            return self.TYPE_COMMON
+
+    @property
+    def product_type_str(self):
+        return self.product_types[self.product_type]
 
     #
     #  Public API

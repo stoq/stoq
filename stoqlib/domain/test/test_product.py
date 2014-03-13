@@ -350,6 +350,24 @@ class TestProduct(DomainTest):
 
         self.assertEquals(self.product.get_main_supplier_name(), u"Supplier")
 
+    def test_product_type(self):
+        commom_product = self.create_product(storable=True)
+        product_without_stock = self.create_product(storable=False)
+        product_without_stock.manage_stock = False
+        consigned_product = self.create_product(storable=True)
+        consigned_product.consignment = True
+        batch_product = self.create_product(storable=True)
+        batch_product.storable.is_batch = True
+
+        self.assertEqual(commom_product.product_type,
+                         Product.TYPE_COMMON)
+        self.assertEqual(product_without_stock.product_type,
+                         Product.TYPE_WITHOUT_STOCK)
+        self.assertEqual(consigned_product.product_type,
+                         Product.TYPE_CONSIGNED)
+        self.assertEqual(batch_product.product_type,
+                         Product.TYPE_BATCH)
+
 
 class TestProductSellableItem(DomainTest):
 

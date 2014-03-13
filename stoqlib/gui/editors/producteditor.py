@@ -274,19 +274,15 @@ class ProductComponentEditor(BaseEditor):
 
 
 class ProductEditor(SellableEditor):
-
-    TYPE_COMMON = 0
-    TYPE_BATCH = 1
-    TYPE_WITHOUT_STOCK = 2
-    TYPE_CONSIGNED = 3
-
     model_name = _('Product')
     model_type = Product
     help_section = 'product'
     ui_form_name = u'product'
+    product_widgets = ['product_type_str']
+    proxy_widgets = SellableEditor.proxy_widgets + product_widgets
 
     def __init__(self, store, model=None, visual_mode=False,
-                 product_type=TYPE_COMMON):
+                 product_type=Product.TYPE_COMMON):
         self._product_type = product_type
         SellableEditor.__init__(self, store, model, visual_mode=visual_mode)
         # This can't be done in setup_slaves() as we need to access
@@ -311,10 +307,6 @@ class ProductEditor(SellableEditor):
             SellableTaxConstant, query).order_by(SellableTaxConstant.description)
         return [(c.description, c) for c in constants]
 
-    #
-    # BaseEditor
-    #
-
     def setup_slaves(self):
         super(ProductEditor, self).setup_slaves()
 
@@ -323,9 +315,10 @@ class ProductEditor(SellableEditor):
                                              visual_mode=self.visual_mode)
         self.add_extra_tab(_(u'Details'), info_slave)
 
-    #
-    #   Callbacks
-    #
+    def setup_proxies(self):
+        super(ProductEditor, self).setup_proxies()
+
+        self.add_proxy(self.model, self.product_widgets)
 
     def get_extra_tabs(self):
         from stoqlib.gui.slaves.productslave import (ProductTaxSlave,
@@ -350,14 +343,14 @@ class ProductEditor(SellableEditor):
         sellable.tax_constant_id = sysparam.get_object_id('DEFAULT_PRODUCT_TAX_CONSTANT')
         sellable.unit_id = sysparam.get_object_id('SUGGESTED_UNIT')
         model = Product(store=store, sellable=sellable)
-        if self._product_type != self.TYPE_WITHOUT_STOCK:
+        if self._product_type != Product.TYPE_WITHOUT_STOCK:
             storable = Storable(product=model, store=store)
 
-        if self._product_type == self.TYPE_BATCH:
+        if self._product_type == Product.TYPE_BATCH:
             storable.is_batch = True
-        elif self._product_type == self.TYPE_WITHOUT_STOCK:
+        elif self._product_type == Product.TYPE_WITHOUT_STOCK:
             model.manage_stock = False
-        elif self._product_type == self.TYPE_CONSIGNED:
+        elif self._product_type == Product.TYPE_CONSIGNED:
             model.consignment = True
 
         return model

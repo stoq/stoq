@@ -509,6 +509,11 @@ class Sellable(Domain):
     #
 
     @property
+    def status_str(self):
+        """The sellable status as a string"""
+        return self.statuses[self.status]
+
+    @property
     def product_storable(self):
         """If this is a |product| and has stock, fetch the |storable| for this.
         This is a shortcut to avoid having to do multiple queries and

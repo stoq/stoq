@@ -191,16 +191,16 @@ class SellableEditor(BaseEditor):
     gladefile = 'SellableEditor'
     confirm_widgets = ['description', 'cost', 'price']
     ui_form_name = None
-    sellable_tax_widgets = ('tax_constant', 'tax_value', )
-    sellable_widgets = ('code',
+    sellable_tax_widgets = ['tax_constant', 'tax_value']
+    sellable_widgets = ['code',
                         'barcode',
                         'description',
                         'category_combo',
                         'cost',
                         'price',
-                        'statuses_combo',
+                        'status_str',
                         'default_sale_cfop',
-                        'unit_combo')
+                        'unit_combo']
     proxy_widgets = (sellable_tax_widgets + sellable_widgets)
 
     def __init__(self, store, model=None, visual_mode=False):
@@ -233,7 +233,6 @@ class SellableEditor(BaseEditor):
                                     self.description,
                                     self.cost_hbox,
                                     self.price_hbox,
-                                    self.statuses_combo,
                                     self.category_combo,
                                     self.tax_hbox,
                                     self.unit_combo,
@@ -388,11 +387,6 @@ class SellableEditor(BaseEditor):
     def setup_sellable_combos(self):
         self._fill_categories()
         self.edit_category.set_sensitive(False)
-
-        # FIXME: Make the combo a label
-        self.statuses_combo.prefill(
-            [(v, k) for k, v in Sellable.statuses.items()])
-        self.statuses_combo.set_sensitive(False)
 
         cfops = self.store.find(CfopData)
         self.default_sale_cfop.prefill(api.for_combo(cfops, empty=''))

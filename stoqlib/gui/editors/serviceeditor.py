@@ -80,18 +80,20 @@ class ServiceEditor(SellableEditor):
     model_type = Service
     help_section = 'service'
 
+    #
+    #  SellableEditor
+    #
+
     def get_taxes(self):
         service_tax = SellableTaxConstant.get_by_type(TaxType.SERVICE,
                                                       self.store)
         return [(_(u'No tax'), None), (service_tax.description, service_tax)]
 
     def setup_widgets(self):
+        for widget in [self.product_type_lbl, self.product_type_str]:
+            widget.hide()
         self.sellable_notebook.set_tab_label_text(self.sellable_tab,
                                                   _(u'Service'))
-
-    #
-    # BaseEditor hooks
-    #
 
     def create_model(self, store):
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.store)

@@ -23,6 +23,7 @@
 ##
 ##
 
+from stoqlib.domain.product import Product
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -44,19 +45,19 @@ class ProductTypeStep(BaseWizardStep):
 
     def on_common__toggled(self, radio):
         if radio.get_active():
-            self.wizard.product_type = ProductEditor.TYPE_COMMON
+            self.wizard.product_type = Product.TYPE_COMMON
 
     def on_batch__toggled(self, radio):
         if radio.get_active():
-            self.wizard.product_type = ProductEditor.TYPE_BATCH
+            self.wizard.product_type = Product.TYPE_BATCH
 
     def on_without_stock__toggled(self, radio):
         if radio.get_active():
-            self.wizard.product_type = ProductEditor.TYPE_WITHOUT_STOCK
+            self.wizard.product_type = Product.TYPE_WITHOUT_STOCK
 
     def on_consigned__toggled(self, radio):
         if radio.get_active():
-            self.wizard.product_type = ProductEditor.TYPE_CONSIGNED
+            self.wizard.product_type = Product.TYPE_CONSIGNED
 
 
 class ProductEditorStep(BaseWizardStep):
@@ -93,7 +94,7 @@ class ProductCreateWizard(BaseWizard):
     # args and kwargs are here to get extra parameters sent by SearchEditor's
     # run_dialog. We will just ignore them since they are not useful here
     def __init__(self, store, *args, **kwargs):
-        self.product_type = ProductEditor.TYPE_COMMON
+        self.product_type = Product.TYPE_COMMON
         first_step = ProductTypeStep(store, self)
         BaseWizard.__init__(self, store, first_step)
 
