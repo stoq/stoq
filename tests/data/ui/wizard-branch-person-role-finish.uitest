@@ -25,35 +25,34 @@ GtkDialog(PluggableWizard): title='New Branch', hidden
                     GtkButton(fill=True): 'Co_ntacts...'
                     GtkButton(fill=True): 'Credit Check History...', hidden
                     GtkButton(fill=True): 'Calls...'
-                  GtkFrame(fill=True):
-                    GtkVBox():
-                      GtkEventBox(expand=True, fill=True):
-                        GtkTable():
-                          GtkLabel(): 'Street:'
-                          ProxyEntry(): 'street'
-                          GtkHBox():
-                            GtkLabel(expand=True, fill=True):
-                            ProxyCheckButton(expand=True, fill=True): 'Number:', active
-                          GtkHBox():
-                            ProxyEntry(fill=True): '123'
-                            GtkLabel(expand=True, fill=True): 'Postal Code:'
-                            ProxyEntry(fill=True): '     -   '
-                          GtkLabel(): 'District:'
-                          ProxyEntry(): 'district'
-                          GtkLabel(): 'Complement:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'City:'
-                          ProxyEntry(): 'S\xc3\xa3o Carlos'
-                          GtkLabel(): 'State:'
-                          ProxyEntry(): 'SP'
-                          GtkLabel(): 'Country:'
-                          ProxyComboEntry():
-                            item: 'Brazil', selected
-                            item: '... 252 more countries ...'
+                  GtkHSeparator(fill=True):
+                  GtkEventBox(fill=True):
+                    GtkTable():
+                      GtkLabel(): 'Street:'
+                      ProxyEntry(): 'street'
+                      GtkHBox():
+                        GtkLabel(expand=True, fill=True):
+                        ProxyCheckButton(fill=True): 'Number:', active
+                      GtkHBox():
+                        ProxyEntry(expand=True, fill=True): '123'
+                        GtkLabel(fill=True): 'Postal Code:'
+                        ProxyEntry(fill=True): '     -   '
+                      GtkLabel(): 'District:'
+                      ProxyEntry(): 'district'
+                      GtkLabel(): 'Complement:'
+                      ProxyEntry(): ''
+                      GtkLabel(): 'City:'
+                      ProxyEntry(): 'S\xc3\xa3o Carlos'
+                      GtkLabel(): 'State:'
+                      ProxyEntry(): 'SP'
+                      GtkLabel(): 'Country:'
+                      ProxyComboEntry():
+                        item: 'Brazil', selected
+                        item: '... 252 more countries ...'
                   GtkHBox(fill=True):
                     ProxyLabel(expand=True, fill=True):
                     GtkButton(fill=True): 'More _Addresses...'
-                  GtkEventBox(expand=True, fill=True):
+                  GtkEventBox(fill=True):
                 GtkVBox():
                   GtkFrame(fill=True): hidden
                     GtkEventBox():
@@ -68,7 +67,6 @@ GtkDialog(PluggableWizard): title='New Branch', hidden
                         ProxyEntry(): ''
                         GtkLabel(): 'City Registry:'
                         ProxyEntry(): ''
-                    GtkLabel():
                 GtkVBox():
                   GtkEventBox(fill=True):
                     GtkTable():

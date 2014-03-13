@@ -27,35 +27,34 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                         GtkButton(contact_info_button, fill=True): 'Co_ntacts...'
                         GtkButton(credit_check_history_button, fill=True): 'Credit Check History...'
                         GtkButton(calls_button, fill=True): 'Calls...'
-                      GtkFrame(address_frame, fill=True):
-                        GtkVBox(vbox3):
-                          GtkEventBox(address_holder, expand=True, fill=True): slave AddressSlave is attached
-                            GtkTable(table2):
-                              GtkLabel(address_lbl): 'Street:'
-                              ProxyEntry(street): '', mandatory
-                              GtkHBox(hbox2):
-                                GtkLabel(label8, expand=True, fill=True):
-                                ProxyCheckButton(streetnumber_check, expand=True, fill=True): 'Number:', active
-                              GtkHBox(hbox1):
-                                ProxyEntry(streetnumber, fill=True): '', mandatory
-                                GtkLabel(postal_code_lbl, expand=True, fill=True): 'Postal Code:'
-                                ProxyEntry(postal_code, fill=True): '     -   '
-                              GtkLabel(district_lbl): 'District:'
-                              ProxyEntry(district): '', mandatory
-                              GtkLabel(complement_lbl): 'Complement:'
-                              ProxyEntry(complement): ''
-                              GtkLabel(city_lbl): 'City:'
-                              ProxyEntry(city): 'S\xc3\xa3o Carlos'
-                              GtkLabel(state_lbl): 'State:'
-                              ProxyEntry(state): 'SP'
-                              GtkLabel(country_lbl): 'Country:'
-                              ProxyComboEntry(country):
-                                item: 'Brazil', selected
-                                item: '... 252 more countries ...'
+                      GtkHSeparator(hseparator1, fill=True):
+                      GtkEventBox(address_holder, fill=True): slave AddressSlave is attached
+                        GtkTable(table2):
+                          GtkLabel(address_lbl): 'Street:'
+                          ProxyEntry(street): '', mandatory
+                          GtkHBox(hbox2):
+                            GtkLabel(label8, expand=True, fill=True):
+                            ProxyCheckButton(streetnumber_check, fill=True): 'Number:', active
+                          GtkHBox(hbox1):
+                            ProxyEntry(streetnumber, expand=True, fill=True): '', mandatory
+                            GtkLabel(postal_code_lbl, fill=True): 'Postal Code:'
+                            ProxyEntry(postal_code, fill=True): '     -   '
+                          GtkLabel(district_lbl): 'District:'
+                          ProxyEntry(district): '', mandatory
+                          GtkLabel(complement_lbl): 'Complement:'
+                          ProxyEntry(complement): ''
+                          GtkLabel(city_lbl): 'City:'
+                          ProxyEntry(city): 'S\xc3\xa3o Carlos'
+                          GtkLabel(state_lbl): 'State:'
+                          ProxyEntry(state): 'SP'
+                          GtkLabel(country_lbl): 'Country:'
+                          ProxyComboEntry(country):
+                            item: 'Brazil', selected
+                            item: '... 252 more countries ...'
                       GtkHBox(hbox1, fill=True):
                         ProxyLabel(kiwilabel2, expand=True, fill=True):
                         GtkButton(address_button, fill=True): 'More _Addresses...'
-                      GtkEventBox(role_holder, expand=True, fill=True):
+                      GtkEventBox(role_holder, fill=True):
                     GtkVBox(person_data_tab):
                       GtkFrame(individual_frame, fill=True):
                         GtkEventBox(individual_holder): slave _IndividualDocuments is attached
@@ -68,7 +67,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                             ProxyEntry(rg_expedition_local): ''
                             GtkLabel(rg_expedition_date_lbl): 'RG Expedition\nDate:'
                             ProxyDateEntry(rg_expedition_date): None
-                        GtkLabel():
                       GtkFrame(company_frame, fill=True): hidden
                         GtkEventBox(company_holder):
                     GtkVBox(details_tab):
@@ -90,8 +88,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                           GtkTable(table2, fill=True):
                             GtkLabel(gender_lbl): 'Gender:'
                             GtkHBox(hbox1):
-                              GtkRadioButton(male_check, expand=True, fill=True): 'Male', active
-                              GtkRadioButton(female_check, expand=True, fill=True): 'Female'
+                              GtkRadioButton(male_check, fill=True): 'Male', active
+                              GtkRadioButton(female_check, fill=True): 'Female'
                             GtkLabel(label1): 'Birth Date:'
                             ProxyDateEntry(birth_date): None
                             GtkLabel(occupation_lbl): 'Occupation:'

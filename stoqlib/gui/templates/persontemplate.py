@@ -187,12 +187,16 @@ class _PersonEditorTemplate(BaseEditorSlave):
         elif individual:
             tab_text = _('Individual Data')
             self.company_frame.hide()
-            self.individual_frame.set_label('')
+            label_widget = self.individual_frame.get_label_widget()
+            if label_widget is not None:
+                label_widget.hide()
             self.individual_frame.show()
         else:
             tab_text = _('Company Data')
             self.individual_frame.hide()
-            self.company_frame.set_label('')
+            label_widget = self.company_frame.get_label_widget()
+            if label_widget is not None:
+                label_widget.hide()
             self.company_frame.show()
         self.person_notebook.set_tab_label_text(tab_child, tab_text)
         addresses = self.model.get_total_addresses()

@@ -4,6 +4,7 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="SalesPersonQuoteWizardStep">
+    <property name="can_focus">False</property>
     <property name="border_width">6</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
@@ -11,24 +12,29 @@
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkTable" id="table3">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="n_rows">4</property>
                     <property name="n_columns">4</property>
                     <property name="column_spacing">6</property>
                     <child>
                       <object class="ProxyLabel" id="salesperson_lbl">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Salesperson:</property>
                         <property name="data_type">unicode</property>
@@ -56,6 +62,7 @@
                     <child>
                       <object class="GtkLabel" id="label1">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Client:</property>
                       </object>
@@ -68,12 +75,14 @@
                     <child>
                       <object class="GtkLabel" id="nature_lbl">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Operation Nature:</property>
                       </object>
                       <packing>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
+                        <property name="x_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
@@ -124,6 +133,7 @@
                         <child>
                           <object class="GtkImage" id="image1">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="tooltip_text" translatable="yes">Add a new client</property>
                             <property name="stock">gtk-add</property>
                             <property name="icon-size">1</property>
@@ -149,6 +159,7 @@
                         <child>
                           <object class="GtkImage" id="info_image">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="tooltip_text" translatable="yes">Client details.</property>
                             <property name="stock">gtk-info</property>
                             <property name="icon-size">1</property>
@@ -205,15 +216,18 @@
             <child>
               <object class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkTable" id="table4">
                     <property name="visible">True</property>
-                    <property name="n_rows">5</property>
+                    <property name="can_focus">False</property>
+                    <property name="n_rows">4</property>
                     <property name="n_columns">3</property>
                     <property name="column_spacing">6</property>
                     <child>
                       <object class="GtkLabel" id="expire_label">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Expire:</property>
                       </object>
@@ -224,12 +238,14 @@
                     <child>
                       <object class="GtkLabel" id="cfop_lbl">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">C.F.O.P.:</property>
                       </object>
                       <packing>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
+                        <property name="x_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
@@ -242,7 +258,6 @@
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="x_options">GTK_FILL</property>
                         <property name="x_padding">3</property>
                         <property name="y_padding">3</property>
                       </packing>
@@ -274,6 +289,7 @@
                         <child>
                           <object class="GtkImage" id="image3">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="tooltip_text" translatable="yes">Add a new C.F.O.P.</property>
                             <property name="stock">gtk-add</property>
                             <property name="icon-size">1</property>
@@ -292,12 +308,14 @@
                     <child>
                       <object class="GtkLabel" id="client_category_lbl">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Client Category:</property>
                       </object>
                       <packing>
                         <property name="top_attach">3</property>
                         <property name="bottom_attach">4</property>
+                        <property name="x_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
@@ -319,6 +337,7 @@
                     <child>
                       <object class="GtkLabel" id="client_credit_lbl">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="ypad">7</property>
                         <property name="label" translatable="yes">Client Credit:</property>
@@ -326,11 +345,13 @@
                       <packing>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
+                        <property name="x_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkLabel" id="client_credit">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="ypad">7</property>
                       </object>
@@ -342,15 +363,6 @@
                         <property name="x_padding">3</property>
                         <property name="y_padding">3</property>
                       </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
@@ -385,6 +397,7 @@
         <child>
           <object class="GtkHSeparator" id="hseparator1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -393,21 +406,35 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox1">
+          <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
-            <property name="spacing">6</property>
-            <property name="layout_style">end</property>
+            <property name="can_focus">False</property>
             <child>
-              <object class="GtkButton" id="notes_button">
-                <property name="label" translatable="yes">Observations...</property>
+              <object class="GtkHButtonBox" id="hbuttonbox1">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">6</property>
+                <property name="layout_style">end</property>
+                <child>
+                  <object class="GtkButton" id="notes_button">
+                    <property name="label" translatable="yes">Observations...</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="padding">6</property>
                 <property name="pack_type">end</property>
                 <property name="position">0</property>
               </packing>
@@ -415,7 +442,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">False</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>

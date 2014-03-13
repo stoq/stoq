@@ -146,12 +146,6 @@ class StartPurchaseStep(WizardEditorStep):
 
     def post_init(self):
         self.open_date.grab_focus()
-        self.table.set_focus_chain([
-            self.open_date,
-            self.branch,
-            self.supplier, self.supplier_buttons,
-            self.radio_hbox, self.expected_freight])
-        self.radio_hbox.set_focus_chain([self.cif_radio, self.fob_radio])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
@@ -539,6 +533,7 @@ class FinishPurchaseStep(WizardEditorStep):
                                                 api.get_current_branch(self.store))
         self.receive_now.set_sensitive(not bool(has_open_inventory))
 
+        self._setup_focus()
         self._setup_transporter_entry()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 

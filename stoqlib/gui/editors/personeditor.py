@@ -113,8 +113,6 @@ class UserEditor(BasePersonRoleEditor):
 
         tab_text = _('Branch Access')
         self.user_branches = UserBranchAccessSlave(self.store, self.model)
-        # XXX: workaround border being to large
-        self.user_branches.vbox1.set_border_width(0)
         self.main_slave._person_slave.add_extra_tab(tab_text, self.user_branches)
 
     def validate_confirm(self):

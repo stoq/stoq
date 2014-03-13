@@ -11,10 +11,10 @@ GtkDialog(main_dialog.toplevel): title='Add Address', hidden
               ProxyEntry(street): '', mandatory
               GtkHBox(hbox2):
                 GtkLabel(label8, expand=True, fill=True):
-                ProxyCheckButton(streetnumber_check, expand=True, fill=True): 'Number:'
+                ProxyCheckButton(streetnumber_check, fill=True): 'Number:'
               GtkHBox(hbox1):
-                ProxyEntry(streetnumber, fill=True): '', insensitive
-                GtkLabel(postal_code_lbl, expand=True, fill=True): 'Postal Code:'
+                ProxyEntry(streetnumber, expand=True, fill=True): '', insensitive
+                GtkLabel(postal_code_lbl, fill=True): 'Postal Code:'
                 ProxyEntry(postal_code, fill=True): '     -   '
               GtkLabel(district_lbl): 'District:'
               ProxyEntry(district): '', mandatory

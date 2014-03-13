@@ -21,9 +21,9 @@ GtkDialog(PluggableWizard): title='New Order', hidden
             GtkLabel(step.label4): 'Observations'
             GtkScrolledWindow(step.scrolled_notes_window):
               ProxyTextView(step.notes):
+            GtkCheckButton(step.receive_now): 'Receive all products now.'
             GtkAlignment(step.alignment1):
               GtkButton(step.print_button): 'gtk-print'
-            GtkCheckButton(step.receive_now): 'Receive all products now.'
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

@@ -1,12 +1,25 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="EmployeeRoleHistorySlave">
     <property name="can_focus">True</property>
     <child>
-      <object class="ObjectList" id="history_list">
-        <property name="selection_mode">single</property>
+      <object class="GtkAlignment" id="alignment1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="top_padding">6</property>
+        <property name="bottom_padding">6</property>
+        <property name="left_padding">6</property>
+        <property name="right_padding">6</property>
+        <child>
+          <object class="ObjectList" id="history_list">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="selection_mode">single</property>
+          </object>
+        </child>
       </object>
     </child>
   </object>

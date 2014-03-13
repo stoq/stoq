@@ -17,7 +17,6 @@
             <child>
               <object class="GtkAlignment" id="alignment2">
                 <property name="visible">True</property>
-                <property name="left_padding">12</property>
                 <child>
                   <object class="GtkTable" id="table3">
                     <property name="visible">True</property>
@@ -32,13 +31,13 @@
                         <property name="label" translatable="yes">Salary:</property>
                       </object>
                       <packing>
-                        <property name="y_options"></property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
                       <object class="ProxyEntry" id="salary">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="invisible_char">â</property>
                         <property name="xalign">1</property>
                         <property name="invisible_char_set">True</property>
@@ -52,14 +51,13 @@
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
+                        <property name="x_options"/>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="salary_history_button">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_action_appearance">False</property>
                         <property name="image">salary_history_image</property>
@@ -68,8 +66,8 @@
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
+                        <property name="x_options"/>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -82,13 +80,13 @@
                       <packing>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="y_options"></property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
                       <object class="ProxyEntry" id="credit_limit">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="invisible_char">â</property>
                         <property name="xalign">1</property>
                         <property name="invisible_char_set">True</property>
@@ -104,8 +102,8 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
+                        <property name="x_options"/>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -118,7 +116,7 @@
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
                         <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -136,7 +134,7 @@
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
                         <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -172,7 +170,6 @@
             <child>
               <object class="GtkAlignment" id="alignment1">
                 <property name="visible">True</property>
-                <property name="left_padding">12</property>
                 <child>
                   <object class="GtkTable" id="table1">
                     <property name="visible">True</property>
@@ -183,7 +180,6 @@
                     <child>
                       <object class="GtkButton" id="credit_transactions_button">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_action_appearance">False</property>
                         <property name="image">credit_transactions_image</property>
@@ -192,8 +188,8 @@
                       <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
+                        <property name="x_options"/>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -207,8 +203,8 @@
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
+                        <property name="x_options"/>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -218,25 +214,30 @@
                         <property name="label" translatable="yes">Available:</property>
                       </object>
                       <packing>
-                        <property name="y_options"></property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="print_credit_letter">
                         <property name="label">gtk-print</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
                       </object>
                       <packing>
-                        <property name="right_attach">3</property>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"/>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>

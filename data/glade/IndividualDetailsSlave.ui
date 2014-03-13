@@ -4,15 +4,12 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="IndividualDetailsSlave">
-    <property name="can_focus">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <child>
           <object class="GtkTable" id="table2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="border_width">5</property>
             <property name="n_rows">5</property>
             <property name="n_columns">4</property>
@@ -21,15 +18,16 @@
             <child>
               <object class="GtkLabel" id="gender_lbl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Gender:</property>
               </object>
+              <packing>
+                <property name="x_options">GTK_FILL</property>
+              </packing>
             </child>
             <child>
               <object class="GtkLabel" id="occupation_lbl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Occupation:</property>
@@ -37,12 +35,12 @@
               <packing>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label6">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Mother's name:</property>
@@ -50,12 +48,12 @@
               <packing>
                 <property name="top_attach">2</property>
                 <property name="bottom_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Father's Name:</property>
@@ -63,12 +61,12 @@
               <packing>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="marital_status_lbl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Marital Status:</property>
@@ -76,24 +74,23 @@
               <packing>
                 <property name="top_attach">4</property>
                 <property name="bottom_attach">5</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkRadioButton" id="male_check">
                     <property name="label" translatable="yes">Male</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_action_appearance">False</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
+                    <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
@@ -102,7 +99,6 @@
                   <object class="GtkRadioButton" id="female_check">
                     <property name="label" translatable="yes">Female</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_action_appearance">False</property>
                     <property name="active">True</property>
@@ -110,7 +106,7 @@
                     <property name="group">male_check</property>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
+                    <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
@@ -124,7 +120,6 @@
             <child>
               <object class="ProxyEntry" id="occupation">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
@@ -142,7 +137,6 @@
             <child>
               <object class="ProxyEntry" id="mother_name">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
@@ -160,7 +154,6 @@
             <child>
               <object class="ProxyEntry" id="father_name">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
@@ -178,7 +171,6 @@
             <child>
               <object class="ProxyComboBox" id="marital_status">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="data_type">int</property>
                 <property name="model_attribute">marital_status</property>
               </object>
@@ -192,7 +184,6 @@
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Birth Date:</property>
@@ -200,12 +191,12 @@
               <packing>
                 <property name="left_attach">2</property>
                 <property name="right_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="spouse_lbl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Spouse:</property>
@@ -215,12 +206,12 @@
                 <property name="right_attach">3</property>
                 <property name="top_attach">4</property>
                 <property name="bottom_attach">5</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyDateEntry" id="birth_date">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="data_type">date</property>
                 <property name="model_attribute">birth_date</property>
               </object>
@@ -232,7 +223,6 @@
             <child>
               <object class="ProxyEntry" id="spouse_name">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
@@ -250,7 +240,6 @@
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Birth City:</property>
@@ -260,12 +249,12 @@
                 <property name="right_attach">3</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyEntry" id="city">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="invisible_char">●</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
@@ -284,7 +273,6 @@
             <child>
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Birth State:</property>
@@ -294,12 +282,12 @@
                 <property name="right_attach">3</property>
                 <property name="top_attach">2</property>
                 <property name="bottom_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyEntry" id="state">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="invisible_char">●</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
@@ -318,7 +306,6 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="xpad">2</property>
                 <property name="label" translatable="yes">Birth Country:</property>
@@ -328,12 +315,12 @@
                 <property name="right_attach">3</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyComboEntry" id="country">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="data_type">object</property>
                 <property name="model_attribute">country</property>
               </object>

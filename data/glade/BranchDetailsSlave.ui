@@ -4,14 +4,12 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="BranchDetailsSlave">
-    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
     <child>
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="n_rows">3</property>
         <property name="n_columns">5</property>
         <property name="column_spacing">12</property>
@@ -19,18 +17,17 @@
         <child>
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Manager:</property>
           </object>
           <packing>
+            <property name="x_options">GTK_FILL</property>
             <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Tax Policy:</property>
           </object>
@@ -38,12 +35,12 @@
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
             <property name="y_options">GTK_FILL</property>
+            <property name="x_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxyComboEntry" id="manager">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="data_type">object</property>
             <property name="model_attribute">manager</property>
           </object>
@@ -58,7 +55,6 @@
           <object class="ProxyComboBox" id="crt">
             <property name="width_request">50</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="data_type">int</property>
             <property name="model_attribute">crt</property>
           </object>
@@ -72,7 +68,6 @@
         <child>
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Branch status:</property>
           </object>
@@ -89,7 +84,6 @@
           <object class="ProxyRadioButton" id="active_check">
             <property name="label" translatable="yes">Active</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="receives_default">False</property>
             <property name="use_action_appearance">False</property>
             <property name="draw_indicator">True</property>
@@ -110,7 +104,6 @@
           <object class="ProxyRadioButton" id="inactive_check">
             <property name="label" translatable="yes">Inactive</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="receives_default">False</property>
             <property name="use_action_appearance">False</property>
             <property name="draw_indicator">True</property>
@@ -130,19 +123,19 @@
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Acronym:</property>
           </object>
           <packing>
             <property name="left_attach">2</property>
             <property name="right_attach">3</property>
+            <property name="y_options">GTK_FILL</property>
+            <property name="x_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxyEntry" id="acronym">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>

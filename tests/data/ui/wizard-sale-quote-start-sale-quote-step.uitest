@@ -39,8 +39,9 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                 ProxyComboBox(step.client_category): hidden
                   item: '', selected
           GtkHSeparator(step.hseparator1, fill=True):
-          GtkHButtonBox(step.hbuttonbox1):
-            GtkButton(step.notes_button, pack-end): 'Observations...'
+          GtkHBox(step.hbox2, fill=True):
+            GtkHButtonBox(step.hbuttonbox1, padding=6, pack-end):
+              GtkButton(step.notes_button, pack-end): 'Observations...'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
