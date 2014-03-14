@@ -253,7 +253,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
 
     def _run_medic_editor(self, medic=None, visual_mode=False):
         with api.new_store() as store:
-            medic = run_person_role_dialog(MedicEditor, self, store, medic,
+            parent = self.get_toplevel().get_toplevel()
+            medic = run_person_role_dialog(MedicEditor, parent, store, medic,
                                            visual_mode=True)
         if medic:
             self._medic_combo_prefill()
@@ -368,7 +369,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
 
     def on_medic_details__clicked(self, button):
         medic = self.model.medic
-        run_dialog(MedicEditor, self, self.store, medic, visual_mode=True)
+        parent = self.get_toplevel().get_toplevel()
+        run_dialog(MedicEditor, parent, self.store, medic, visual_mode=True)
 
     # Distance axis == Near axis WHEN addition != 0
 

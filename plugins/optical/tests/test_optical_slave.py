@@ -77,8 +77,9 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
             run_person_role_dialog.return_value = medic
             self.click(slave.medic_create)
             args, kwargs = run_person_role_dialog.call_args
+            parent = slave.get_toplevel().get_toplevel()
             assert args[0] == MedicEditor
-            assert args[1] == slave
+            assert args[1] == parent
             assert kwargs['visual_mode'] is True
 
         self.check_slave(slave, 'work-order-optical-slave-create-medic')
@@ -221,8 +222,9 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         name = 'plugins.optical.opticalslave.run_dialog'
         with mock.patch(name) as run_dialog:
             self.click(slave.medic_details)
-            run_dialog.assert_called_once(MedicEditor, slave, slave.store,
-                                          slave.model.medic, visual_mode=True)
+            parent = slave.get_toplevel().get_toplevel()
+            run_dialog.assert_called_once_with(MedicEditor, parent, slave.store,
+                                               slave.model.medic, visual_mode=True)
 
     def test_axis_value_changed(self):
         workorder = self.create_workorder()
