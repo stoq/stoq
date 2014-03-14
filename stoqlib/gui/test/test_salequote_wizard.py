@@ -219,5 +219,5 @@ class TestSaleQuoteWizard(GUITest):
         step = wizard.get_current_step()
 
         self.assertEquals(
-            str(step.expire_date.emit('validate', datetime.date(2013, 1, 1))),
-            "The expire date must be set to today or a future date.")
+            str(step.expire_date.emit('validate', datetime.datetime(2013, 1, 1))),
+            "The expire date must be after the sale open date")

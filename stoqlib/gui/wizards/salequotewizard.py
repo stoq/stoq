@@ -156,7 +156,8 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.add_proxy(self.model, StartSaleQuoteStep.cfop_widgets)
 
         expire_delta = sysparam.get_int('EXPIRATION_SALE_QUOTE_DATE')
-        if expire_delta > 0:
+        if expire_delta > 0 and not self.model.expire_date:
+            # Only set the expire date if id doesn't already have one.
             self.expire_date.update(localtoday() +
                                     relativedelta(days=expire_delta))
 
@@ -197,8 +198,10 @@ class StartSaleQuoteStep(WizardEditorStep):
         run_dialog(ClientDetailsDialog, self.wizard, self.store, client)
 
     def on_expire_date__validate(self, widget, value):
-        if value < localtoday().date():
-            msg = _(u"The expire date must be set to today or a future date.")
+        # open_date has a seconds precision, so that why we are rounding it to
+        # date here.
+        if value.date() < self.model.open_date.date():
+            msg = _(u"The expire date must be after the sale open date")
             return ValidationError(msg)
 
     def on_notes_button__clicked(self, *args):

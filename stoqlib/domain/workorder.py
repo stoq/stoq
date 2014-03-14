@@ -621,10 +621,10 @@ class WorkOrder(Domain):
     description = UnicodeCol()
 
     #: defect reported by the |client|
-    defect_reported = UnicodeCol()
+    defect_reported = UnicodeCol(default=u'')
 
     #: defect detected by the :obj:`.quote_responsible`
-    defect_detected = UnicodeCol()
+    defect_detected = UnicodeCol(default=u'')
 
     #: estimated hours needed to complete the work
     estimated_hours = DecimalCol(default=None)

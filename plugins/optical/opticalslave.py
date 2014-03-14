@@ -346,7 +346,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         if not date:
             return
 
-        age = localtoday().date() - date
+        age = localtoday() - date
         if age.days > LATE_PRESCRIPTION_DAYS:
             # This is not a validation error, just a warning for the user.
             icon = widget.render_icon(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
@@ -357,7 +357,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             widget.set_pixbuf(None)
 
     def on_estimated_finish__validate(self, widget, date):
-        if date < localtoday().date():
+        if date < localtoday():
             return ValidationError(_(u'Estimated finish date cannot be in the '
                                      'past.'))
 

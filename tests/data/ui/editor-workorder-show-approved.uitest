@@ -40,7 +40,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkVBox(toplevel):
                 GtkHBox(hbox7, fill=True):
                   GtkLabel(label6, fill=True): 'Opening date:'
-                  ProxyDateEntry(open_date, expand=True, fill=True): date.today()
+                  ProxyDateEntry(open_date, expand=True, fill=True): datetime.today()
                 GtkLabel(label9, fill=True): 'Defect reported by client:'
                 GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                   ProxyTextView(defect_reported):
@@ -61,9 +61,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                   GtkLabel(label11): 'Estimated cost:'
                   ProxyEntry(estimated_cost): ''
                   GtkLabel(label5): 'Estimated start:'
-                  ProxyDateEntry(estimated_start): datetime.date(2013, 1, 1)
+                  ProxyDateEntry(estimated_start): datetime.datetime(2013, 1, 1, 0, 0)
                   GtkLabel(label18): 'Estimated finish:'
-                  ProxyDateEntry(estimated_finish): datetime.date(2013, 1, 2)
+                  ProxyDateEntry(estimated_finish): datetime.datetime(2013, 1, 2, 0, 0)
                 GtkLabel(label12, fill=True): 'Defect detected by responsible:'
                 GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
                   ProxyTextView(defect_detected):

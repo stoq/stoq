@@ -210,7 +210,7 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         workorder = self.create_workorder()
         slave = WorkOrderOpticalSlave(self.store, workorder)
         localtoday_.return_value = localdate(2014, 1, 1)
-        res = slave.estimated_finish.emit("validate", localdate(2013, 1, 1).date())
+        res = slave.estimated_finish.emit("validate", localdate(2013, 1, 1))
         self.assertEquals(unicode(res),
                           u'Estimated finish date cannot be in the past.')
 
