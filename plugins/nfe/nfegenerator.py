@@ -243,17 +243,19 @@ class NFeGenerator(object):
         person = recipient.person
         name = person.name
         individual = person.individual
+        company = person.company
         email = person.email
-        if individual is not None:
+        if individual and individual.cpf:
             cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
             self._nfe_recipient = NFeRecipient(name, cpf=cpf, email=email)
-        else:
-            company = person.company
+        elif company and company.cnpj:
             cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
             state_registry = company.state_registry
             self._nfe_recipient = NFeRecipient(name, cnpj=cnpj,
                                                state_registry=state_registry,
                                                email=email)
+        else:
+            self._nfe_recipient = NFeRecipient(name, cpf='', email=email)
 
         self._nfe_recipient.set_address(person.get_main_address(),
                                         person.get_phone_number_number())

@@ -33,6 +33,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import Client, Individual
 from stoqlib.domain.product import Storable
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import ModelDataError
@@ -43,10 +44,12 @@ from nfe.nfegenerator import NFeGenerator, NFeIdentification
 
 
 class TestNfeGenerator(DomainTest):
-    def test_generated_files(self):
+    def _test_generated_files(self, new_client=None):
         due_date = datetime.datetime(2011, 10, 24)
         sale = self._create_sale(1666, due_date=due_date)
         sale.identifier = 1234
+        if new_client:
+            sale.client = new_client
         for p in sale.payments:
             p.identifier = 4321
         generator = NFeGenerator(sale, self.store)
@@ -63,7 +66,14 @@ class TestNfeGenerator(DomainTest):
         NFeGenerator._get_today_date = _get_today_date
 
         basedir = get_tests_datadir('plugins')
-        expected = os.path.join(basedir, "nfe-expected.txt")
+
+        if new_client is None:
+            expected = os.path.join(basedir, "nfe-expected.txt")
+        elif isinstance(sale.get_client_role(), Individual):
+            expected = os.path.join(basedir, "individual-nfe-expected.txt")
+        else:
+            expected = os.path.join(basedir, "company-nfe-expected.txt")
+
         output = os.path.join(basedir, "nfe-output.txt")
         if not os.path.isfile(expected):
             with open(expected, 'wb') as fp:
@@ -77,6 +87,32 @@ class TestNfeGenerator(DomainTest):
         os.unlink(output)
 
         self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
+
+    # Individual recipient(with CPF)
+    def test_generated_file_with_individual(self):
+        individual = self.create_individual()
+        individual.cpf = u'123.123.123-23'
+        client = Client(person=individual.person, store=self.store)
+        self._create_address(individual.person,
+                             street=u"Rua dos Tomates",
+                             streetnumber=2666,
+                             postal_code=u'87654-321')
+        self._test_generated_files(client)
+
+    # Company recipient(with CNPJ)
+    def test_generated_file_with_company(self):
+        company = self.create_company()
+        company.cnpj = u'123.456.789/1234-00'
+        client = Client(person=company.person, store=self.store)
+        self._create_address(company.person,
+                             street=u"Rua dos Tomates",
+                             streetnumber=2666,
+                             postal_code=u'87654-321')
+
+        self._test_generated_files(client)
+
+    def test_generated_files_without_document(self):
+        self._test_generated_files()
 
     def test_invalid_cnpj(self):
         sale = self._create_sale(2666)
