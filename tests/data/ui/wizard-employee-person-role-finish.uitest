@@ -137,45 +137,55 @@ GtkDialog(PluggableWizard): title='New Employee', hidden
                   GtkAlignment():
                     GtkTable():
                       GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Date:'
-                          ProxyDateEntry(): None
-                          GtkLabel(): 'Registry:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Vacation:'
-                          ProxyDateEntry(): None
-                          ProxyLabel(): 'Branch:'
-                          ProxyComboEntry():
-                            item: 'Moda Stoq'
-                            item: 'Stoq Elite Fashion'
+                        GtkAlignment():
+                          GtkTable():
+                            GtkLabel(): 'Date:'
+                            ProxyDateEntry(): None
+                            GtkLabel(): 'Registry:'
+                            ProxyEntry(): ''
+                            GtkLabel(): 'Vacation:'
+                            ProxyDateEntry(): None
+                            ProxyLabel(): 'Branch:'
+                            ProxyComboEntry():
+                              item: 'Moda Stoq'
+                              item: 'Stoq Elite Fashion'
+                        GtkLabel(): 'Admission Data'
                       GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Number:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Date:'
-                          ProxyDateEntry(): None
-                          GtkLabel(): 'Bank:'
-                          ProxyEntry(): ''
+                        GtkAlignment():
+                          GtkTable():
+                            GtkLabel(): 'Number:'
+                            ProxyEntry(): ''
+                            GtkLabel(): 'Date:'
+                            ProxyDateEntry(): None
+                            GtkLabel(): 'Bank:'
+                            ProxyEntry(): ''
+                        GtkLabel(): 'PIS'
                       GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Number:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Serie:'
-                          ProxyEntry(): ''
+                        GtkAlignment():
+                          GtkTable():
+                            GtkLabel(): 'Number:'
+                            ProxyEntry(): ''
+                            GtkLabel(): 'Serie:'
+                            ProxyEntry(): ''
+                        GtkLabel(): 'Work Permit'
                       GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Education \nLevel:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Dependent \nNumber:'
-                          ProxyEntry(): ''
+                        GtkAlignment():
+                          GtkTable():
+                            GtkLabel(): 'Education \nLevel:'
+                            ProxyEntry(): ''
+                            GtkLabel(): 'Dependent \nNumber:'
+                            ProxyEntry(): ''
+                        GtkLabel(): 'Personal Details'
                       GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Bank ID:'
-                          ProxyEntry(): '0'
-                          GtkLabel(): 'Branch Number:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Account:'
-                          ProxyEntry(): ''
+                        GtkAlignment():
+                          GtkTable():
+                            GtkLabel(): 'Bank ID:'
+                            ProxyEntry(): '0'
+                            GtkLabel(): 'Branch Number:'
+                            ProxyEntry(): ''
+                            GtkLabel(): 'Account:'
+                            ProxyEntry(): ''
+                        GtkLabel(): 'Bank Information'
                 GtkEventBox():
                   GtkAlignment():
                     ObjectList():
