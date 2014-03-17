@@ -303,42 +303,17 @@ class ReceivingOrderItemStep(BaseWizardStep):
                                              item.quantity)
 
     def _edit_item(self, item):
-        if item.is_batch:
-            retval = run_dialog(BatchIncreaseSelectionDialog, self.wizard,
-                                store=self.store, model=item.storable,
-                                quantity=item.remaining_quantity,
-                                original_batches=item.batches)
-            item.batches = retval or item.batches
-            # Once we edited the batch item once, it's not obrigatory
-            # to edit it again.
-            item.need_adjust_batch = False
-            self.purchase_items.update(item)
-        else:
-            self._edit_item_quantity_cell(item)
+        retval = run_dialog(BatchIncreaseSelectionDialog, self.wizard,
+                            store=self.store, model=item.storable,
+                            quantity=item.remaining_quantity,
+                            original_batches=item.batches)
+        item.batches = retval or item.batches
+        # Once we edited the batch item once, it's not obrigatory
+        # to edit it again.
+        item.need_adjust_batch = False
+        self.purchase_items.update(item)
 
         self._update_view()
-
-    def _edit_item_quantity_cell(self, item):
-        for column in self.purchase_items.get_columns():
-            if column.attribute != 'quantity':
-                continue
-
-            tc = column.treeview_column
-            cr = tc.get_cell_renderers()[0]
-            event = gtk.gdk.Event(gtk.gdk.BUTTON_PRESS)
-            treeview = tc.get_tree_view()
-            path, tv_column = treeview.get_cursor()
-            cr.set_property('editable-set', True)
-            cr.set_property('editable', True)
-            # FIXME: Why is this now working? Maybe we should remove the
-            # edit button and let the user just double-click, but we should
-            # make it easier for the user to see that he can edit the cell
-            ce = cr.start_editing(event, treeview, str(path[0]),
-                                  treeview.get_background_area(path, tc),
-                                  treeview.get_cell_area(path, tc),
-                                  gtk.CELL_RENDERER_FOCUSED)
-            ce.start_editing(event)
-            break
 
     def _validation_func(self, value):
         has_receivings = self._get_total_received() > 0
@@ -372,7 +347,7 @@ class ReceivingOrderItemStep(BaseWizardStep):
             adjustment.set_upper(obj.remaining_quantity)
 
     def on_purchase_items__selection_changed(self, purchase_items, item):
-        self.edit_btn.set_sensitive(bool(item))
+        self.edit_btn.set_sensitive(bool(item.is_batch))
 
     def on_purchase_items__row_activated(self, purchase_items, item):
         self._edit_item(item)
