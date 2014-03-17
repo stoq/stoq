@@ -211,7 +211,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                         GtkLabel(label10):
                         GtkLabel(label27): 'F.V.M.'
                         GtkLabel(label28): 'F.H.M.'
-                        GtkLabel(gtklabel41): 'F.D.M'
+                        GtkLabel(gtklabel41): 'F.D.M.'
                         GtkLabel(label29): 'Bridge'
                         ProxySpinButton(frame_mva): '0.0'
                         ProxySpinButton(frame_mha): '0.0'

@@ -1271,7 +1271,7 @@
                           <object class="GtkLabel" id="gtklabel41">
                             <property name="visible">True</property>
                             <property name="yalign">0.50</property>
-                            <property name="label" translatable="yes">F.D.M</property>
+                            <property name="label" translatable="yes">F.D.M.</property>
                           </object>
                           <packing>
                             <property name="left_attach">2</property>

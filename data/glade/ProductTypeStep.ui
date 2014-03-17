@@ -111,7 +111,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">The product is not really yours. Someone lends an amount of it with you and after some time period, you return him the not sold products and the money the sold ones generated.</property>
+                    <property name="tooltip_text" translatable="yes">The product is not really yours. The supplier lends you some quantity and after some time you return the not sold products and pay for the ones that sold.</property>
                     <property name="use_action_appearance">False</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">True</property>

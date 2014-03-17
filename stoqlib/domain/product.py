@@ -204,7 +204,7 @@ class Product(Domain):
     product_types = {
         TYPE_COMMON: _("Regular product"),
         TYPE_BATCH: _("Product with batch control"),
-        TYPE_WITHOUT_STOCK: _("Produc without stock control"),
+        TYPE_WITHOUT_STOCK: _("Product without stock control"),
         TYPE_CONSIGNED: _("Consigned product"),
     }
 
