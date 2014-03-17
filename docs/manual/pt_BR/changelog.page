@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 1.7
+      Novidades da versão 1.8
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -27,34 +27,110 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 1.7</title>
+    <title>Novidades da versão 1.8</title>
     <p>
-      Data do lançamento: 2013-03-15
+      Data do lançamento: 2013-03-17
     </p>
 
-    <list>
-      <item><p>Novo aplicativo para controle de Ordens de Serviço.</p></item>
-      <item><p>Novo relatório anual para aplicativo financeiro.</p></item>
-      <item><p>Suporte para ECF Elgin K Fiscal.</p></item>
-      <item><p>Melhor controle para quando duas vendas concorrentes tentam
-          vender as últimas unidades do mesmo produto</p></item>
-      <item><p>Nova infraestrutura de relatórios em HTML, com a
-          possibilidade de alterar a orientação da página e a fonte
-          utilizada antes da impressão (experimental)</p></item>
-    </list>
+    <section>
+        <title>Óticas</title>
+        <list>
+            <item><p>Novo plugin especializado para uso em óticas.</p></item>
+            <item><p>Dados de produtos como Lente de Contato, Lente Oftálmica e Armações.</p></item>
+            <item><p>Cadastro de médicos, incluindo CRM.</p></item>
+            <item><p>Cadastro da receita do cliente ao realizar uma nova venda, atrelando esta a uma ordem de serviço.</p></item>
+            <item><p>Cadastro de anamnese para um melhor acompanhamento dos clientes.</p></item>
+        </list>
+    </section>
 
+    <section>
+        <title> Vendas</title>
+        <list>
+            <item><p>Novo parâmetro para não aceitar devoluções de clientes sem CPF.</p></item>
+            <item><p>Para orçamentos de vendas, é possível exigir a senha de um superior ao aplicar um desconto acima do permitido.</p></item>
+            <item><p>Agora é possível inserir comentários em vendas a qualquer momento.</p></item>
+            <item><p>Nova opção para criar vendas que exijam ordens de serviços.</p></item>
+            <item><p>Nova opção para reservar produtos do estoque em uma venda ainda não confirmada.</p></item>
+            <item><p>Novo widget para facilitar o calculo de descontos no wizard de vendas.</p></item>
+            <item><p>Possibilidade de verificar o estoque de outras filiais durante uma venda.</p></item>
+            <item><p>Agora é permitido fazer uma devolução de venda em outras filiais.</p></item>
+            <item><p>Melhoras significativas no wizard de vendas para bancos de dados com muitos clientes.</p></item>
+            <item><p>Todos os descontos autorizados são registrados e podem ser visualizado no aplicativo administrativo.</p></item>
+        </list>
+    </section>
+
+    <section>
+        <title>Produtos</title>
+        <list>
+            <item><p>Suporte para produtos com lotes.</p></item>
+            <item><p>Nova opção de criar produtos sem controle de estoque.</p></item>
+            <item><p>Melhoras na pesquisa de produtos durante a venda, incluindo busca de palavras com acentuação e fora de ordem.</p></item>
+            <item><p>Novos campos Marca e Família no cadastro de produtos.</p></item>
+            <item><p>Mostrando a quantidade de produtos vendidos de um empréstimo no histórico de produtos.</p></item>
+        </list>
+    </section>
+
+    <section>
+        <title>Pagamentos</title>
+        <list>
+            <item><p>Nova opção de pagamento: Crédito, que pode ser gerado quando um cliente faz uma devolução.</p></item>
+            <item><p>Após uma devolução e geração de crédito, o cliente pode levar uma “carta de crédito”, caso não queira fazer uma nova compra na hora.</p></item>
+            <item><p>Opção de configurar um dispositivo padrão para cada operadora de cartão.</p></item>
+            <item><p>Agora também é possível configurar o número de parcelas máximas para cada operadora individualmente.</p></item>
+            <item><p>Novo relatório de movimento diário de caixa, listando todos os pagamentos recebidos no dia.</p></item>
+            <item><p>Novo campo para número de autorização do cartão, com a possibilidade de tornar o campo obrigatório.</p></item>
+        </list>
+    </section>
+
+    <section>
+        <title>Serviços</title>
+        <list>
+            <item><p>O aplicativo ‘Manutenção’ foi renomeado para ‘Serviços’.</p></item>
+            <item><p>Nova funcionalidade para envio e recebimento de ordem de serviço, útil para empresas onde a ordem de serviço é executada em outra filial.</p></item>
+            <item><p>Visão KanBan (experimental), permitindo uma fácil troca de estado das ordens de serviço.</p></item>
+        </list>
+    </section>
+
+    <section>
+        <title>Transferências</title>
+        <list>
+            <item><p>Transferências agora são feitas em dois passos: Primeiro o envio é feito pela filial de origem, e depois o recebimento é acusado na filial de destino.</p></item>
+            <item><p>Aviso de transferências pendentes no aplicativo estoque, além de uma nova busca de transferencias.</p></item>
+        </list>
+    </section>
+
+    <section>
+        <title>Inventário</title>
+        <list>
+            <item><p>Novo processo de contagem para inventário, usando leitor de código de barras. Além de diversas melhorias para aumentar a performance dos diálogos.</p></item>
+            <item><p>Possibilidade de abrir inventário de produtos, baseado em outros critérios.</p></item>
+            <item><p>Agora é possível fechar um inventário sem ter que ajustar todos os itens.</p></item>
+        </list>
+    </section>
+
+    <section>
+        <title>Diversos</title>
+        <list>
+            <item><p>Correções de alguns problemas na geração de txt da NF-e.</p></item>
+            <item><p>Suporte para ICMS CSSOSN 900.</p></item>
+            <item><p>Cadastro de pessoas agora pede pelo documento (CPF/CNPJ), e não o telefone.</p></item>
+            <item><p>Novo parâmetro para logout automático após período de inatividade.</p></item>
+            <item><p>É possível editar pedidos de compras já confirmados para corrigir alguns detalhes.</p></item>
+            <item><p>Diversas melhoras no diálogo de detalhes de clientes.</p></item>
+            <item><p>Empréstimos: Agora é possível fechar mais de um empréstimo ao mesmo tempo.</p></item>
+        </list>
+    </section>
+
+  </section>
     <section>
       <title>Agradecimentos</title>
       <p>
         Agradecemos a todos que contribuíram para este lançamento acontecer:
       </p>
       <p>
-        Christian Robottom Reis, Gabriel Gerga, João Paulo Melo de Sampaio,
-        Johan Dahlin, Ronaldo Maia e Thiago Bellini.
+		Christian Robottom Reis, Gabriel Gerga, Jean Lucas Monteiro Lima, Luiz
+		Oishi, Matheus Steck, Nihey Takizawa, Ronaldo Maia e Thiago Bellini.
       </p>
-
-      <p>Também agradecemos a Elgin, pela doação de uma ECF K Fiscal para
-      testes e desenvolvimento</p>
 
       <p>
         Agradecemos também a todos que contribuíram com traduções ao longo do
@@ -131,6 +207,5 @@
         <em>Turco (tr)</em>: Ebubekir KARUL, Irmak Bıçakçıgil, ahmetturan.
       </p>
     </section>
-  </section>
 
 </page>
