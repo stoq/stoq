@@ -57,16 +57,13 @@ class SplashScreen(gtk.Window):
         # disable it as it doesn't make sense for splash screens
         if hasattr(self.props, 'has_resize_grip'):
             self.props.has_resize_grip = False
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.add(frame)
 
         darea = gtk.DrawingArea()
         try:
             darea.connect("expose-event", self.expose)
         except TypeError:
             darea.connect("draw", self.draw)
-        frame.add(darea)
+        self.add(darea)
 
         self.show_all()
         pixbuf_data = environ.get_resource_string("stoq", "pixmaps", "splash.png")
@@ -89,21 +86,22 @@ class SplashScreen(gtk.Window):
         version = info.get("version")
         if ' ' in version:
             ver, rev = version.split(' ')
-            version = '%s <span font="8">%s</span>' % (ver, glib.markup_escape_text(rev))
-        return _("Version: %s") % (version, )
+            version = '%s\n<span font="8">%s</span>' % (ver, glib.markup_escape_text(rev))
+        return _("Version %s") % (version, )
 
     def _draw_gi(self, cr):
         gtk.gdk.cairo_set_source_pixbuf(cr, self._pixbuf, 0, 0)
         cr.paint()
 
-        cr.set_source_rgb(.1, .1, .1)
+        cr.set_source_rgb(.8, .8, .8)
         layout = pangocairo.create_layout(cr)
-        desc = pango.FontDescription('Sans 14')
+        desc = pango.FontDescription('Sans 12')
         layout.set_font_description(desc)
+        layout.set_alignment(pango.ALIGN_CENTER)
         layout.set_markup(self._get_label(), -1)
         pangocairo.update_layout(cr, layout)
         w, h = layout.get_pixel_size()
-        cr.move_to(WIDTH - w - BORDER, HEIGHT - h - BORDER)
+        cr.move_to((WIDTH - w) / 2, (HEIGHT / 2) + h)
         pangocairo.show_layout(cr, layout)
 
     def draw(self, widget, cr):
@@ -119,14 +117,15 @@ class SplashScreen(gtk.Window):
         cr.paint()
 
         # Draw version
-        cr.set_source_rgb(.1, .1, .1)
+        cr.set_source_rgb(.8, .8, .8)
         pcr = pangocairo.CairoContext(cr)
         layout = pcr.create_layout()
-        layout.set_font_description(pango.FontDescription("Sans 14"))
+        layout.set_alignment(pango.ALIGN_CENTER)
+        layout.set_font_description(pango.FontDescription("Sans 12"))
         layout.set_markup(self._get_label())
         pcr.update_layout(layout)
         w, h = layout.get_pixel_size()
-        cr.move_to(WIDTH - w - BORDER, HEIGHT - h - BORDER)
+        cr.move_to((WIDTH - w) / 2, (HEIGHT / 2) + h)
         pcr.show_layout(layout)
 
     def show(self):
