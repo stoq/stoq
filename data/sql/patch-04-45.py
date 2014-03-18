@@ -19,7 +19,6 @@ class PurchaseReceivingMap(Domain):
 
 
 def apply_patch(store):
-    # TODO: Atualizar schema-05.sql
     store.execute("""
         CREATE TABLE purchase_receiving_map (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
