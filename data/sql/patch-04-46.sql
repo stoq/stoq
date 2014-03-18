@@ -13,6 +13,6 @@ UPDATE sale_item
 
 -- sale.status 3 == CANCELLED
 UPDATE sale_item
-    SET quantity_decreased 0
+    SET quantity_decreased = 0
     FROM sale
     WHERE sale_item.sale_id = sale.id AND sale.status = 3;
