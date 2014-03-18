@@ -214,28 +214,34 @@ class Domain(ORMObject):
 
     def check_unique_value_exists(self, attribute, value,
                                   case_sensitive=True):
-        """Returns ``True`` if we already have the given attribute
-        and value in the database, but ignoring myself.
+        """Check database for attribute/value precense
+
+        Check if we already the given attribute/value pair in the database,
+        but ignoring this object's ones.
 
         :param attribute: the attribute that should be unique
         :param value: value that we will check if exists in the database
         :param case_sensitive: If the checking should be case sensitive or
           not.
+        :returns: the existing object or ``None``
         """
         return self.check_unique_tuple_exists({attribute: value},
                                               case_sensitive)
 
     def check_unique_tuple_exists(self, values, case_sensitive=True):
-        """Returns ``True`` if we already have the given attributes and values
-        in the database, but ignoring myself.
+        """Check database for values presence
+
+        Check if we already the given attributes and values in the database,
+        but ignoring this object's ones.
 
         :param values: dictionary of attributes:values that we will check if
           exists in the database.
         :param case_sensitive: If the checking should be case sensitive or
           not.
+        :returns: the existing object or ``None``
         """
         if all([value in ['', None] for value in values.values()]):
-            return False
+            return None
 
         clauses = []
         for attr, value, in values.items():
@@ -252,7 +258,7 @@ class Domain(ORMObject):
             clauses.append(cls.id != self.id)
         query = And(*clauses)
 
-        return not self.store.find(cls, query).is_empty()
+        return self.store.find(cls, query).one()
 
     #
     #  Classmethods

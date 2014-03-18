@@ -225,9 +225,13 @@ class ProductSupplierEditor(BaseEditor):
             return
         d = {self.model_type.supplier_id: self.model.supplier.id,
              self.model_type.supplier_code: value}
-        if self.model.check_unique_tuple_exists(d):
-            return ValidationError(_("Product code already exists for this "
-                                     "supplier"))
+
+        supplier_info = self.model.check_unique_tuple_exists(d)
+        if supplier_info is not None:
+            desc = supplier_info.product.sellable.description
+            return ValidationError(
+                _("This code already exists for this supplier "
+                  "on product '%s'") % (desc, ))
 
 
 #
