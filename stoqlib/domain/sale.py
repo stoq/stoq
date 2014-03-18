@@ -1450,6 +1450,12 @@ class Sale(Domain):
                 quantity = sale_item.quantity_decreased
             else:
                 quantity = sale_item.quantity
+                # When this is not a storable, we need to subtract the already
+                # returned quantity, if the client has already made a partial
+                # return for this sale_item. For items that are a storeable, we
+                # can trust the quantity_decreased
+                quantity -= sale_item.returned_quantity
+
             ReturnedSaleItem(
                 store=store,
                 sale_item=sale_item,
