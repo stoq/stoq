@@ -140,6 +140,7 @@ class ECFUI(object):
             self._printer_verified = True
 
     def _add_ui_menus(self, appname, app, uimanager):
+        self._current_app = app
         if appname == 'pos':
             self._create_printer()
             self._add_pos_menus(uimanager)
@@ -590,7 +591,8 @@ class ECFUI(object):
         if model:
             initial_client_document = model.document
 
-        model = run_dialog(PaulistaInvoiceDialog, self, self.default_store, model)
+        model = run_dialog(PaulistaInvoiceDialog, self._current_app,
+                           self.default_store, model)
 
         # User cancelled the dialog or the document didn't change.
         if not model or model.document == initial_client_document:

@@ -377,6 +377,10 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
             dialog, ))
 
     # FIXME: Move this into RunnableView
+
+    #XXX: When create a new Stoq window, even using the parent correctly:
+    # The called dialog will be a modal of the latest created window
+    # (not necessarily the window that called).
     parent = getattr(parent, 'main_dialog', parent)
     parent = parent or get_current_toplevel()
     if inspect.isclass(dialog):
