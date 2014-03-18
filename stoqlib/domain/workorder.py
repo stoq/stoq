@@ -479,8 +479,6 @@ class WorkOrderItem(Domain):
         self = cls.get_from_sale_item(sale_item.store, sale_item)
         if self is None:
             return
-        if self.sellable.product_storable is None:
-            return
 
         assert sale_item.quantity == self.quantity
         # When a sale item has an corresponding work order item, they need to
@@ -498,8 +496,6 @@ class WorkOrderItem(Domain):
     def _on_sale_item_before_decrease_stock(cls, sale_item):
         self = cls.get_from_sale_item(sale_item.store, sale_item)
         if self is None:
-            return
-        if self.sellable.product_storable is None:
             return
 
         assert sale_item.quantity == self.quantity

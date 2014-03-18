@@ -238,7 +238,7 @@ class SaleItem(Domain):
                 raise SellError(str(err))
 
             self.average_cost = item.stock_cost
-            self.quantity_decreased += quantity_to_decrease
+        self.quantity_decreased += quantity_to_decrease
 
     def cancel(self, branch):
         # This is emitted here instead of inside the if bellow because one can
@@ -253,7 +253,7 @@ class SaleItem(Domain):
                                     StockTransactionHistory.TYPE_CANCELED_SALE,
                                     self.id,
                                     batch=self.batch)
-            self.quantity_decreased = Decimal(0)
+        self.quantity_decreased = Decimal(0)
 
     def reserve(self, quantity):
         """Reserve some quantity of this this item from stock
@@ -1443,24 +1443,12 @@ class Sale(Domain):
             if sale_item.is_totally_returned():
                 # Exclude quantities already returned from this one
                 continue
-            # If sale_item is a product, use the quantity that was decreased
-            # to return. If a service, use quantity directly since services
-            # doesn't change stock.
-            if sale_item.sellable.product_storable:
-                quantity = sale_item.quantity_decreased
-            else:
-                quantity = sale_item.quantity
-                # When this is not a storable, we need to subtract the already
-                # returned quantity, if the client has already made a partial
-                # return for this sale_item. For items that are a storeable, we
-                # can trust the quantity_decreased
-                quantity -= sale_item.returned_quantity
 
             ReturnedSaleItem(
                 store=store,
                 sale_item=sale_item,
                 returned_sale=returned_sale,
-                quantity=quantity,
+                quantity=sale_item.quantity_decreased,
                 batch=sale_item.batch,
             )
         return returned_sale

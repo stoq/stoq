@@ -132,8 +132,8 @@ class ReturnedSaleItem(Domain):
             storable.increase_stock(self.quantity, branch,
                                     StockTransactionHistory.TYPE_RETURNED_SALE,
                                     self.id, batch=self.batch)
-            if self.sale_item:
-                self.sale_item.quantity_decreased -= self.quantity
+        if self.sale_item:
+            self.sale_item.quantity_decreased -= self.quantity
 
 
 @implementer(IContainer)
