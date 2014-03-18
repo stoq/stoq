@@ -220,6 +220,8 @@ class PrintOperationPoppler(PrintOperation):
         page.render_for_printing(cr)
 
     def done(self):
+        if not os.path.isfile(self._report.filename):
+            return
         os.unlink(self._report.filename)
 
 
