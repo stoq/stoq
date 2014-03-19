@@ -147,7 +147,6 @@ resources = dict(
     plugin='$prefix/share/stoq/plugins',
 )
 global_resources = dict(
-    config='$sysconfdir/stoq',
     csv='$datadir/csv',
     docs='$prefix/share/doc/stoq',
     glade='$datadir/glade',
@@ -179,11 +178,13 @@ install_requires = [
     "aptdaemon >= 3.0",
     "dateutil >= 1.4.1",
     "kiwi-gtk >= 1.9.29",
+    "psycopg2 >= 2.0.5",
     "pypoppler >= 0.12.1",
     "reportlab >= 2.4",
     "stoqdrivers >= 0.9.21",
     "storm >= 0.19",
     "weasyprint >= 0.15",
+    "xlwt >= 0.7.2",
     "zope.interface >= 3.0",
 ]
 

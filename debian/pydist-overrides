@@ -1,6 +1,7 @@
 aptdaemon python-aptdaemon.gtkwidgets
 dateutil python-dateutil
 kiwi_gtk python-kiwi
+pil python-imaging
 pygtk python-gtk2
 pypoppler python-poppler
 stoqdrivers stoqdrivers

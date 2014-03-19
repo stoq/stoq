@@ -48,7 +48,6 @@ def _get_external_plugins_paths():
 
 library = Library('stoq', root='..' + os.sep + '..')
 if library.uninstalled:
-    library.add_global_resource('config', 'data/config')
     library.add_global_resource('csv', 'data/csv')
     library.add_global_resource('docs', '.')
     library.add_global_resource('glade', 'data/glade')

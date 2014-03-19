@@ -1,4 +1,3 @@
-recursive-include data/config *.cfg
 recursive-include data/csv *.csv
 recursive-include data/glade *.ui
 recursive-include data/misc *.gtkrc
