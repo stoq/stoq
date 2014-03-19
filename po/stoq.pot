@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 14:06-0300\n"
+"POT-Creation-Date: 2014-03-19 09:36-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3759,7 +3759,7 @@ msgstr ""
 #: ../stoq/gui/purchase.py:257 ../stoq/gui/receivable.py:186
 #: ../stoq/gui/sales.py:273 ../stoq/gui/services.py:370
 #: ../stoq/gui/till.py:210 ../stoqlib/domain/payment/views.py:421
-#: ../stoqlib/domain/workorder.py:1158
+#: ../stoqlib/domain/workorder.py:1154
 #: ../stoqlib/gui/dialogs/clientdetails.py:195
 #: ../stoqlib/gui/dialogs/clientdetails.py:345
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:79
@@ -6251,12 +6251,10 @@ msgid "Check the server configuration and try again."
 msgstr ""
 
 #: ../stoq/gui/config.py:961
-#, python-brace-format
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
 #: ../stoq/gui/config.py:967
-#, python-brace-format
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
@@ -6493,7 +6491,7 @@ msgstr ""
 #: ../stoqlib/domain/loan.py:212 ../stoqlib/domain/production.py:72
 #: ../stoqlib/domain/sale.py:664 ../stoqlib/domain/stockdecrease.py:136
 #: ../stoqlib/domain/till.py:83 ../stoqlib/domain/workorder.py:174
-#: ../stoqlib/domain/workorder.py:599
+#: ../stoqlib/domain/workorder.py:595
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:142
 #: ../stoqlib/gui/dialogs/productstockdetails.py:236
 #: ../stoqlib/gui/wizards/loanwizard.py:254
@@ -7580,12 +7578,12 @@ msgstr ""
 #: ../stoq/gui/services.py:97 ../stoq/gui/services.py:510
 #: ../stoqlib/domain/inventory.py:248 ../stoqlib/domain/payment/payment.py:142
 #: ../stoqlib/domain/purchase.py:179 ../stoqlib/domain/sale.py:667
-#: ../stoqlib/domain/workorder.py:600
+#: ../stoqlib/domain/workorder.py:596
 msgid "Cancelled"
 msgstr ""
 
 #: ../stoq/gui/services.py:98 ../stoq/gui/services.py:509
-#: ../stoqlib/domain/workorder.py:604
+#: ../stoqlib/domain/workorder.py:600
 msgid "Delivered"
 msgstr ""
 
@@ -7736,11 +7734,11 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: ../stoq/gui/services.py:507 ../stoqlib/domain/workorder.py:602
+#: ../stoq/gui/services.py:507 ../stoqlib/domain/workorder.py:598
 msgid "In progress"
 msgstr ""
 
-#: ../stoq/gui/services.py:508 ../stoqlib/domain/workorder.py:603
+#: ../stoq/gui/services.py:508 ../stoqlib/domain/workorder.py:599
 msgid "Finished"
 msgstr ""
 
@@ -7748,7 +7746,7 @@ msgstr ""
 msgid "All work orders"
 msgstr ""
 
-#: ../stoq/gui/services.py:513 ../stoqlib/domain/workorder.py:1013
+#: ../stoq/gui/services.py:513 ../stoqlib/domain/workorder.py:1009
 #: ../stoqlib/gui/utils/workorderutils.py:49
 msgid "Approved"
 msgstr ""
@@ -7757,8 +7755,8 @@ msgstr ""
 msgid "In transport"
 msgstr ""
 
-#: ../stoq/gui/services.py:515 ../stoqlib/domain/workorder.py:963
-#: ../stoqlib/domain/workorder.py:981
+#: ../stoq/gui/services.py:515 ../stoqlib/domain/workorder.py:959
+#: ../stoqlib/domain/workorder.py:977
 #: ../stoqlib/gui/utils/workorderutils.py:47
 msgid "Rejected"
 msgstr ""
@@ -7879,7 +7877,7 @@ msgstr ""
 msgid "[%s] - %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:87 ../stoqlib/gui/utils/printing.py:252
+#: ../stoq/gui/shell/shellwindow.py:87 ../stoqlib/gui/utils/printing.py:254
 msgid "Stoq"
 msgstr ""
 
@@ -8848,7 +8846,6 @@ msgid "User"
 msgstr ""
 
 #: ../stoqlib/domain/event.py:124
-#, python-brace-format
 msgid ""
 "Sale {sale_number}: User {user_name} authorized {discount_value} of discount "
 "changing\n"
@@ -8856,7 +8853,6 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/domain/event.py:156
-#, python-brace-format
 msgid ""
 "sale {sale_number}: User {user_name} authorized {discount_value} of discount "
 "changing the value from {original_price} to {new_price}."
@@ -8964,7 +8960,6 @@ msgstr ""
 
 #. TRANSLATORS: This will generate something like: 1/1 Money for sale 00001
 #: ../stoqlib/domain/payment/method.py:293
-#, python-brace-format
 msgid "{installment} {method_name} for {order_description}"
 msgstr ""
 
@@ -9030,12 +9025,10 @@ msgid "This payment is already paid."
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:425
-#, python-brace-format
 msgid "{method} payment with value {value:.2f} was paid"
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:429
-#, python-brace-format
 msgid ""
 "{method} payment with value original value {original_value:.2f} was paid "
 "with value {value:.2f}"
@@ -9047,7 +9040,6 @@ msgid "Invalid status for cancel operation, got %s"
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:456
-#, python-brace-format
 msgid "{method} payment with value {value:.2f} was cancelled"
 msgstr ""
 
@@ -9333,7 +9325,7 @@ msgid "Decimal"
 msgstr ""
 
 #: ../stoqlib/domain/production.py:73 ../stoqlib/domain/sale.py:470
-#: ../stoqlib/domain/workorder.py:601
+#: ../stoqlib/domain/workorder.py:597
 msgid "Waiting"
 msgstr ""
 
@@ -9523,69 +9515,59 @@ msgid "Unable to make sales for clients with status %s"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:975
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:981
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1007
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid and confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1013
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid and confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1019
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1025
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid with value {total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1091
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1095
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was partially returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1104
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1108
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was partially returned with value "
 "{total_value:.2f}. Reason: {reason}"
@@ -9611,15 +9593,15 @@ msgstr ""
 msgid "The sale %r have a client but no client_role defined."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1620
+#: ../stoqlib/domain/sale.py:1614
 msgid "You must have at least one payment for each payment group"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1688
+#: ../stoqlib/domain/sale.py:1682
 msgid "Sale orders must have items, which means products or services"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1693
+#: ../stoqlib/domain/sale.py:1687
 msgid "Sale total quantity should never be zero"
 msgstr ""
 
@@ -9820,49 +9802,49 @@ msgid ""
 "to receive a package outside the destination branch"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:964 ../stoqlib/domain/workorder.py:982
-#: ../stoqlib/domain/workorder.py:1014 ../stoqlib/gui/base/dialogs.py:463
+#: ../stoqlib/domain/workorder.py:960 ../stoqlib/domain/workorder.py:978
+#: ../stoqlib/domain/workorder.py:1010 ../stoqlib/gui/base/dialogs.py:463
 #: ../stoqlib/gui/editors/parameterseditor.py:207
 #: ../stoqlib/gui/search/parametersearch.py:106
 msgid "No"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:964 ../stoqlib/domain/workorder.py:982
-#: ../stoqlib/domain/workorder.py:1014 ../stoqlib/gui/base/dialogs.py:463
+#: ../stoqlib/domain/workorder.py:960 ../stoqlib/domain/workorder.py:978
+#: ../stoqlib/domain/workorder.py:1010 ../stoqlib/gui/base/dialogs.py:463
 #: ../stoqlib/gui/editors/parameterseditor.py:201
 #: ../stoqlib/gui/search/parametersearch.py:106
 msgid "Yes"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1117
+#: ../stoqlib/domain/workorder.py:1113
 msgid "A reason is needed to reopen the work order"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1123
+#: ../stoqlib/domain/workorder.py:1119
 msgid "This work order cannot be worked on"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1128
+#: ../stoqlib/domain/workorder.py:1124
 msgid "This work order cannot be finished"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1138
+#: ../stoqlib/domain/workorder.py:1134
 msgid "A reason is needed to pause the work order"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1142
+#: ../stoqlib/domain/workorder.py:1138
 msgid "This work order cannot wait for material"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1145
+#: ../stoqlib/domain/workorder.py:1141
 msgid "This work order cannot be re-opened"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1189
+#: ../stoqlib/domain/workorder.py:1185
 msgid "Reopening work order to cancel the sale"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1191 ../stoqlib/gui/fiscalprinter.py:519
+#: ../stoqlib/domain/workorder.py:1187 ../stoqlib/gui/fiscalprinter.py:519
 msgid "The sale was cancelled"
 msgstr ""
 
@@ -10848,7 +10830,6 @@ msgstr ""
 #. change it's positions. In the way it is,
 #. it will product for example 'December 2012'
 #: ../stoqlib/gui/dialogs/sintegradialog.py:109
-#, python-brace-format
 msgid "{month} {year}"
 msgstr ""
 
@@ -13106,8 +13087,8 @@ msgstr ""
 #. TRANSLATORS: 'cash addition' is 'suprimento' in pt_BR
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:483
 msgid ""
-"Note that this operation will not generate a till entry for the money "
-"payment(s). \n"
+"Note that this operation will not generate a till entry for the money payment"
+"(s). \n"
 "If you are adding money on the till, do a cash addition in the Till "
 "applications too."
 msgstr ""
@@ -13119,8 +13100,8 @@ msgstr ""
 #. TRANSLATORS: 'cash removal' is 'sangria' in pt_BR
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:522
 msgid ""
-"Note that this operation will not generate a till entry for the money "
-"payment(s). \n"
+"Note that this operation will not generate a till entry for the money payment"
+"(s). \n"
 "If you are removing money from the till, do a cash removal in the Till "
 "application too."
 msgstr ""
@@ -14001,11 +13982,11 @@ msgstr ""
 msgid "Depleted attempts of authentication"
 msgstr ""
 
-#: ../stoqlib/gui/utils/printing.py:330
+#: ../stoqlib/gui/utils/printing.py:332
 msgid "Font:"
 msgstr ""
 
-#: ../stoqlib/gui/utils/printing.py:405
+#: ../stoqlib/gui/utils/printing.py:407
 msgid ""
 "It was not possible to print the labels. The template file was not found."
 msgstr ""
@@ -14035,9 +14016,9 @@ msgstr ""
 msgid "'%s' is not a valid operation..."
 msgstr ""
 
-#: ../stoqlib/gui/widgets/splash.py:93
+#: ../stoqlib/gui/widgets/splash.py:90
 #, python-format
-msgid "Version: %s"
+msgid "Version %s"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/abstractwizard.py:722
@@ -16230,7 +16211,6 @@ msgstr ""
 
 #. :
 #: ../stoqlib/reporting/report.py:121
-#, python-brace-format
 msgid "Listing {rows} of a total of {total_rows} {item}"
 msgstr ""
 
@@ -16265,12 +16245,10 @@ msgid "Sold Items by Branch Report"
 msgstr ""
 
 #: ../stoqlib/reporting/sale.py:129
-#, python-brace-format
 msgid "payment for {salesperson} on branch {branch}"
 msgstr ""
 
 #: ../stoqlib/reporting/sale.py:131
-#, python-brace-format
 msgid "payments for {salesperson} on branch {branch}"
 msgstr ""
 

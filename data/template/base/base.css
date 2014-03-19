@@ -48,9 +48,15 @@ header .logo {
     background-position: top right;
     background-size: auto 2cm;
     height: 2cm;
-    width: 5cm;;
+    width: 5cm;
     position: absolute;
-    top:0; right: 0;
+    text-align: right;
+    top: 0; right: 0;
+}
+
+header .logo img {
+  max-height:2cm;
+  max-width:5cm;
 }
 
 header #company {
@@ -241,5 +247,4 @@ table.details td:nth-child(2n+1) {
     font-weight: bold;
     text-align: right;
 }
-
 

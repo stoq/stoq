@@ -1,68 +1,58 @@
 <%!
-  from stoqlib.reporting.utils import get_header_data
-  h_data = get_header_data()
+    from stoqlib.reporting.utils import get_header_data
+    h_data = get_header_data()
 %>
-
 <html>
-
   <head>
     <%block name="title_head" >
-    <title>${ title }</title>
+      <title>${ title }</title>
     </%block>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="base/base.css" type="text/css" />
     <%block name="extra_meta" />
-    <style>
-      #title .logo {
-        background-image: url('${ report.logo_data }')
-      }
-    </style>
   </head>
-
   <body>
     ${ next.body() }
   </body>
-
 </html>
-
 <%def name="header(complete_header, title, subtitle, notes)">
-    <header>
-      <div id="title">
-  % if complete_header:
-        <h3>${ h_data['title'] }</h3>
-        <div class="notes">
-          % for line in h_data['lines']:
-            <span>${ line }</span>
-          % endfor
-        </div>
-  % else:
-        <h1>${ title }</h1>
-        <span class="subtitle">${ subtitle }</span>
-        % if notes:
-          <div class="notes">
-            % for n in notes:
-              <span>${ n }</span>
-            % endfor
-          </div>
-        % endif
-  % endif
-        <div class="logo"></div>
+  <header>
+    <div id="title">
+      % if complete_header:
+      <h3>${ h_data['title'] }</h3>
+      <div class="notes">
+        % for line in h_data['lines']:
+        <span>${ line }</span>
+        % endfor
       </div>
-    </header>
+      % else:
+      <h1>${ title }</h1>
+      <span class="subtitle">${ subtitle }</span>
+      % if notes:
+      <div class="notes">
+        % for n in notes:
+        <span>${ n }</span>
+        % endfor
+      </div>
+      % endif
+      % endif
+      <div class="logo">
+        <img src="${ report.logo_data }"/>
+      </div>
+    </div>
+  </header>
 </%def>
-
 <%def name="setup_margin_labels(title)">
   <style>
     @page {
       @bottom-left {
-              content: "${ _("Stoq Retail Management") }"
+        content: "${ _("Stoq Retail Management") }"
       }
       @bottom-right {
-              content: "${ _("Page") } " counter(page) " ${ _("of") } " counter(pages)
+        content: "${ _("Page") } " counter(page) " ${ _("of") } " counter(pages)
       }
-
       @top-left {
-              content: "${ title }"
+        content: "${ title }"
       }
     }
     @page:first {
