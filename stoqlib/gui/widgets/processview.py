@@ -97,8 +97,9 @@ class ProcessView(gtk.ScrolledWindow):
         return not finished
 
     def _finished(self):
-        for source_id in self._source_ids:
+        for source_id in self._source_ids[:]:
             glib.source_remove(source_id)
+            self._source_ids.remove(source_id)
         self.emit('finished', self.retval)
 
     def execute_command(self, args):
