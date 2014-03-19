@@ -263,7 +263,7 @@ class PrintOperationWEasyPrint(PrintOperation):
         self.set_print_settings(settings)
 
         default_page_setup = gtk.PageSetup()
-        default_page_setup.set_orientation(gtk.PAGE_ORIENTATION_LANDSCAPE)
+        default_page_setup.set_orientation(gtk.PAGE_ORIENTATION_PORTRAIT)
         filename = os.path.join(self.config_dir, self.page_setup_name)
         if os.path.exists(filename):
             default_page_setup.load_file(filename)
