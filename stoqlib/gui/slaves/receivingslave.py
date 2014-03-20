@@ -142,6 +142,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self.freight_combo.set_sensitive(False)
 
     def setup_proxies(self):
+        self.proxy = None
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     ReceivingInvoiceSlave.proxy_widgets)
@@ -232,7 +233,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                     # Restore the freight value to the purchase expected one.
                     self.freight.update(self.purchases[0].expected_freight)
 
-        self.proxy.update('total')
+        if self.proxy is not None:
+            self.proxy.update('total')
 
     def after_freight__content_changed(self, widget):
         try:
@@ -242,7 +244,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         if value is ValueUnset:
             self.model.freight_total = 0
-        if hasattr(self, 'proxy'):
+
+        if self.proxy is not None:
             self.proxy.update('total')
 
     def after_ipi__content_changed(self, widget):
@@ -253,7 +256,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         if value is ValueUnset:
             self.model.ipi_total = 0
-        if hasattr(self, 'proxy'):
+
+        if self.proxy is not None:
             self.proxy.update('total')
 
     def after_discount_value__content_changed(self, widget):
@@ -264,7 +268,9 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         if value is ValueUnset:
             self.model.discount_value = 0
-        self.proxy.update('total')
+
+        if self.proxy is not None:
+            self.proxy.update('total')
 
     def after_discount_value__validate(self, widget, value):
         if value < 0:
@@ -281,7 +287,9 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         if value is ValueUnset:
             self.model.secure_value = 0
-        self.proxy.update('total')
+
+        if self.proxy is not None:
+            self.proxy.update('total')
 
     def after_expense_value__content_changed(self, widget):
         try:
@@ -291,4 +299,6 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         if value is ValueUnset:
             self.model.expense_value = 0
-        self.proxy.update('total')
+
+        if self.proxy is not None:
+            self.proxy.update('total')
