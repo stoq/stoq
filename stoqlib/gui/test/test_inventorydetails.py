@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2013-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,10 +26,15 @@ __tests__ = 'stoqlib/gui/dialogs/inventorydetails.py'
 
 import unittest
 
+import mock
+
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.inventory import InventoryItemsView
 from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
+from stoqlib.reporting.inventory import InventoryReport
 
 
 class TestInventoryDetails(GUITest):
@@ -46,10 +51,76 @@ class TestInventoryDetails(GUITest):
         return inventory
 
     def test_show(self):
-        model = self._create_inventory()
-        dialog = InventoryDetailsDialog(self.store, model)
+        inventory = self._create_inventory()
+        dialog = InventoryDetailsDialog(self.store, inventory)
         self.check_editor(dialog, 'dialog-inventory-details')
+        self.assertNotSensitive(dialog, ['info_button'])
 
+    @mock.patch('stoqlib.gui.dialogs.inventorydetails.print_report')
+    def test_print_button_without_adjusted_item(self, print_report):
+        inventory = self._create_inventory()
+        dialog = InventoryDetailsDialog(self.store, inventory)
+
+        self.assertNotSensitive(dialog, ['print_button'])
+
+    @mock.patch('stoqlib.gui.dialogs.inventorydetails.print_report')
+    def test_on_print_button__clicked_with_adjusted_item(self, print_report):
+        inventory = self._create_inventory()
+        item = self.create_inventory_item(inventory)
+        item.is_adjusted = True
+        dialog = InventoryDetailsDialog(self.store, inventory)
+
+        self.assertSensitive(dialog, ['print_button'])
+        items = [i for i in dialog.items_list if i.is_adjusted]
+        self.click(dialog.print_button)
+        print_report.assert_called_once_with(InventoryReport,
+                                             dialog.items_list, items)
+
+    @mock.patch('stoqlib.gui.dialogs.inventorydetails.run_dialog')
+    def test_on_items_list__double_click_without_reason(self, run_dialog):
+        inventory = self._create_inventory()
+        item = self.create_inventory_item(inventory)
+
+        dialog = InventoryDetailsDialog(self.store, inventory)
+        dialog.items_list.emit('double-click', item)
+        self.assertEquals(run_dialog.call_count, 0)
+
+    @mock.patch('stoqlib.gui.dialogs.inventorydetails.run_dialog')
+    def test_on_items_list__double_click_with_reason(self, run_dialog):
+        inventory = self._create_inventory()
+        item = self.create_inventory_item(inventory)
+        item.reason = u'Reason test'
+
+        dialog = InventoryDetailsDialog(self.store, inventory)
+        dialog.items_list.emit('double-click', item)
+        run_dialog.assert_called_once_with(NoteEditor, dialog, self.store,
+                                           item, 'reason', title='Reason',
+                                           label_text='Adjust reason',
+                                           visual_mode=True)
+
+    @mock.patch('stoqlib.gui.dialogs.inventorydetails.run_dialog')
+    def test_on_info_button__clicked_without_reason(self, run_dialog):
+        inventory = self._create_inventory()
+        dialog = InventoryDetailsDialog(self.store, inventory)
+
+        dialog.items_list.select(dialog.items_list[0])
+        self.assertNotSensitive(dialog, ['info_button'])
+
+    @mock.patch('stoqlib.gui.dialogs.inventorydetails.run_dialog')
+    def test_on_info_button__clicked_with_reason(self, run_dialog):
+        inventory = self._create_inventory()
+        item = self.create_inventory_item(inventory)
+        item.reason = u'Reason test'
+        item_view = self.store.find(InventoryItemsView, id=item.id).one()
+        dialog = InventoryDetailsDialog(self.store, inventory)
+
+        dialog.items_list.select(item_view)
+        self.assertSensitive(dialog, ['info_button'])
+        self.click(dialog.info_button)
+        run_dialog.assert_called_once_with(NoteEditor, dialog, self.store,
+                                           item_view, 'reason', title='Reason',
+                                           label_text='Adjust reason',
+                                           visual_mode=True)
 
 if __name__ == '__main__':
     from stoqlib.api import api

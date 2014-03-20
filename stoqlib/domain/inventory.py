@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008-2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -200,7 +200,7 @@ class InventoryItem(Domain):
         by the product cost in the moment it was adjusted. If the item was not
         adjusted yet, the total cost will be zero.
         """
-        if not self.is_adjusted:
+        if not self.is_adjusted and self.actual_quantity is None:
             return Decimal(0)
 
         return self.product_cost * self.actual_quantity
@@ -277,6 +277,10 @@ class Inventory(Domain):
     #: the |inventoryitems| of this inventory
     inventory_items = ReferenceSet('id', 'InventoryItem.inventory_id')
 
+    #
+    # Properties
+    #
+
     @property
     def status_str(self):
         return self.statuses[self.status]
@@ -285,6 +289,11 @@ class Inventory(Domain):
     def branch_name(self):
         """The |branch| name for this inventory"""
         return self.branch.get_description()
+
+    @property
+    def responsible_name(self):
+        """The responsible for this inventory"""
+        return self.responsible.get_description()
 
     #
     # Public API
@@ -339,7 +348,8 @@ class Inventory(Domain):
                                  "already closed!")
 
         for item in self.inventory_items:
-            if item.counted_quantity != item.recorded_quantity:
+            if (item.actual_quantity is None or
+                item.recorded_quantity == item.actual_quantity):
                 continue
 
             # FIXME: We are setting this here because, when generating a
@@ -540,6 +550,7 @@ class InventoryItemsView(Viewable):
     actual_quantity = InventoryItem.actual_quantity
     product_cost = InventoryItem.product_cost
     is_adjusted = InventoryItem.is_adjusted
+    reason = InventoryItem.reason
 
     # Inventory
     inventory_identifier = Inventory.identifier

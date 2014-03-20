@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -220,13 +220,18 @@ class TestInventory(DomainTest):
         for i in range(5):
             if i % 5 == 0:
                 item = self.create_inventory_item(inventory=inventory)
-                item.counted_quantity = item.recorded_quantity
+                item.counted_quantity = item.recorded_quantity = 1
+                item.actual_quantity = 2
             else:
-                self.create_inventory_item(inventory=inventory)
+                not_adjusted_item = self.create_inventory_item(inventory=inventory)
+
         self.assertEqual(inventory.status, inventory.STATUS_OPEN)
 
         inventory.close()
         self.assertEqual(inventory.status, inventory.STATUS_CLOSED)
+
+        self.assertEqual(item.is_adjusted, True)
+        self.assertEqual(not_adjusted_item.is_adjusted, False)
 
         self.assertRaises(AssertionError, inventory.close)
 
