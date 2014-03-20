@@ -171,6 +171,8 @@ class Stoq(Plugin):
     and it's plugins can be tested right.
     """
 
+    name = "stoq"
+
     def begin(self):
         # The tests require that the environment is currently set to C, to avoid
         # translated strings and use the default date/number/currency formatting
@@ -184,8 +186,22 @@ class Stoq(Plugin):
 
         # If we import tests.base before Cover.setup() in the coverage plugin
         # is called the statistics will skip the modules imported by tests.base
-        import tests.base
-        tests.base  # pylint: disable=W0104
+        from stoqlib.database.testsuite import bootstrap_suite
+
+        hostname = os.environ.get('STOQLIB_TEST_HOSTNAME')
+        dbname = os.environ.get('STOQLIB_TEST_DBNAME')
+        username = os.environ.get('STOQLIB_TEST_USERNAME')
+        password = os.environ.get('STOQLIB_TEST_PASSWORD')
+        port = int(os.environ.get('STOQLIB_TEST_PORT') or 0)
+        quick = os.environ.get('STOQLIB_TEST_QUICK', None) is not None
+
+        config = os.path.join(
+            os.path.dirname(stoqlib.__file__), 'tests', 'config.py')
+        if os.path.exists(config):
+            execfile(config, globals(), locals())
+
+        bootstrap_suite(address=hostname, dbname=dbname, port=port,
+                        username=username, password=password, quick=quick)
 
 
 # The doctests plugin in nosetests 1.1.2 doesn't have --doctest-options,
@@ -270,17 +286,16 @@ def main(args, extra_plugins=None):
         # Enable doctests
         '--with-doctest',
         # Our doctests ends with .txt, eg sellable.txt
-        '--doctest-extension=txt',
-        # Enable color output
-        '--with-yanc',
-        # Stoq integration plugin, must be the last
-        # provided option, specifically, after the --with-coverage module
-        # when coverage is enabled
-        '--with-stoq']:
+        '--doctest-extension=txt']:
         if not extra_option in args:
             args.append(extra_option)
 
     plugins = [Stoq(), YANC()]
     if extra_plugins is not None:
         plugins.extend(extra_plugins)
+
+    # --with-plugin must be the last args
+    for p in plugins:
+        args.append('--with-%s' % p.name)
+
     return nose.main(argv=args, addplugins=plugins)
