@@ -214,14 +214,6 @@ class TestSellable(DomainTest):
         sellable.category = self._category
         self.assertEquals(sellable.get_category_description(), 'Hollywood')
 
-    def test_has_image(self):
-        sellable = self.create_sellable()
-        self.assertEquals(sellable.has_image, False)
-        sellable.image = self.create_image()
-        self.assertEquals(sellable.has_image, False)
-        sellable.image.image = '0xf00bar'
-        self.assertEquals(sellable.has_image, True)
-
     def test_price_based_on_category_markup(self):
         # When the price isn't defined, but the category and the cost. In this
         # case the sellable must have the price calculated applying the category's

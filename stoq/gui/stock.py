@@ -30,7 +30,6 @@ import pango
 import gtk
 
 from kiwi.datatypes import converter
-from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
@@ -255,8 +254,8 @@ class StockApp(ShellApp):
                              data_type=decimal.Decimal, width=100),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
                              width=40, visible=False),
-                Column('has_image', title=_('Picture'),
-                       data_type=bool, width=80),
+                SearchColumn('has_image', title=_('Picture'),
+                             data_type=bool, width=80),
                 ]
 
     #
@@ -292,7 +291,7 @@ class StockApp(ShellApp):
 
         sellable = item and item.product.sellable
         if sellable:
-            if sellable.has_image:
+            if item.has_image:
                 thumbnail = sellable.image.thumbnail
                 pixbuf = self.pixbuf_converter.from_string(thumbnail)
             else:

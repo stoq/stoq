@@ -26,7 +26,7 @@
 
 from kiwi.currency import currency
 from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
-                        Alias, Count, Cast)
+                        Alias, Count, Cast, Ne)
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import (Case, Date, Distinct, Field, NullIf,
@@ -129,6 +129,7 @@ class ProductFullStockView(Viewable):
     on_sale_start_date = Sellable.on_sale_start_date
     on_sale_end_date = Sellable.on_sale_end_date
     price = _price_search
+    has_image = Ne(Sellable.image_id, None)
 
     # Product
     product_id = Product.id
@@ -221,10 +222,6 @@ class ProductFullStockView(Viewable):
         if unit == u"":
             return u"un"
         return unit
-
-    @property
-    def has_image(self):
-        return self.image_id is not None
 
 
 class ProductFullWithClosedStockView(ProductFullStockView):

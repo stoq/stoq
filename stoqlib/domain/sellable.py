@@ -536,13 +536,6 @@ class Sellable(Domain):
         return self.unit and self.unit.description or u""
 
     @property
-    def has_image(self):
-        """
-        :returns: ``True`` if this sellable has an image, ``False`` otherwise
-        """
-        return bool(self.image and self.image.image)
-
-    @property
     def markup(self):
         """Markup, the opposite of discount, a value added
         on top of the sale. It's calculated as::
