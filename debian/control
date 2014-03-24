@@ -15,7 +15,7 @@ Architecture: all
 Provides: stoqlib, stoq-docs, stoqdoc
 Replaces: stoqlib (<< 1.0), stoq-docs (<< 1.0), stoqdoc (<< 1.0)
 Breaks: stoqlib (<< 1.0)
-Depends: ${misc:Depends}, ${python:Depends}, postgresql-client, iso-codes (>= 3.12.1-1),
+Depends: ${misc:Depends}, ${python:Depends}, postgresql-client, libxss1, iso-codes (>= 3.12.1-1),
  python-gudev, python-webkit (>= 1.1.7)
 Homepage: http://www.stoq.com.br/
 Description: A powerful retail system
