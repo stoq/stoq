@@ -35,6 +35,7 @@ from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.events import ApplicationSetupSearchEvent
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.widgets.lazyobjectlist import LazyObjectModel
 from stoqlib.lib.decorators import cached_function
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -204,8 +205,8 @@ class ShellApp(GladeDelegate):
         if self.search_spec is None:
             raise NotImplementedError
 
-        if api.sysparam.get_bool('SMART_LIST_LOADING'):
-            model = self.results.get_model()
+        model = self.results.get_model()
+        if isinstance(model, LazyObjectModel):
             model.load_items_from_results(0, model._count)
 
         sse = SpreadSheetExporter()
