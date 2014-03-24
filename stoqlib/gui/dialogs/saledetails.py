@@ -218,8 +218,9 @@ class SaleDetailsDialog(BaseEditor):
 
         for widget, method_name in [(self.print_bills, u'bill'),
                                     (self.print_booklets, u'store_credit')]:
-            widget.set_visible(any([p.method.method_name == method_name
-                                    for p in self.payments_list]))
+            widget.set_visible(any(
+                [p.method.method_name == method_name and not p.is_cancelled()
+                 for p in self.payments_list]))
 
         self._refresh_comments()
         self.comment_info.set_sensitive(False)
