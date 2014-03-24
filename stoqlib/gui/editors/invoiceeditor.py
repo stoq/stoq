@@ -191,7 +191,7 @@ class InvoiceLayoutEditor(BaseEditor):
 
     def _field_removed(self, grid_field):
         invoice_field = grid_field.model
-        self.model.remove(invoice_field)
+        self.store.remove(invoice_field)
 
     def _print_preview(self):
         # Get the last opened date
