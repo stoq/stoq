@@ -55,7 +55,7 @@ def write_app_hyperlink(sheet, row):
 def write_app_logo(sheet):
     filename = environ.find_resource("pixmaps", "stoq_logo.bmp")
     sheet.insert_bitmap(filename, 0, 0,
-                        x=2, y=2, scale_x=1.0, scale_y=0.35)
+                        x=2, y=2, scale_x=0.75, scale_y=0.25)
 
 
 def get_number_format():
