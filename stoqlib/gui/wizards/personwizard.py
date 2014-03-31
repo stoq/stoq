@@ -105,6 +105,8 @@ class PersonRoleTypeStep(WizardEditorStep):
         self.person_role_label.set_size('large')
         self.person_role_label.set_bold(True)
 
+        self.register_validate_function(self.wizard.refresh_next)
+
     #
     # WizardStep hooks
     #
