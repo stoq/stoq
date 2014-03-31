@@ -510,6 +510,19 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def _set_bank_widgets_visible(self, visible=True):
         self.bank_info_box.set_visible(visible)
 
+    def _clear_if_unset(self, widget, attr):
+        # FIXME: When the widget goes from not empty and valid to empty, its
+        # .read() method returns ValueUnset (int datatype behaviour), which
+        # makes the proxy not update the model, leaving the old value behind
+        try:
+            is_unset = widget.read() == ValueUnset
+        except ValidationError:
+            is_unset = True
+
+        if is_unset:
+            setattr(self.model, attr, None)
+            self.setup_payments()
+
     def _refresh_next(self, validation_ok=True):
         if not self.payment_list:
             validation_ok = False
@@ -658,27 +671,16 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.setup_payments()
 
     def after_bank_id__changed(self, widget):
-        # FIXME: When the last character of the entry is removed, kiwi does not
-        # update the model anymore, leaving the last valid content as the value
-        # of the model.
-        if widget.read() == ValueUnset:
-            self.model.bank_id = None
-        self.setup_payments()
+        self._clear_if_unset(widget, 'bank_id')
 
     def after_bank_branch__changed(self, widget):
-        if widget.read() == ValueUnset:
-            self.model.bank_branch = None
-        self.setup_payments()
+        self._clear_if_unset(widget, 'bank_branch')
 
     def after_bank_account__changed(self, widget):
-        if widget.read() == ValueUnset:
-            self.model.bank_account = None
-        self.setup_payments()
+        self._clear_if_unset(widget, 'bank_account')
 
     def after_bank_first_check_number__changed(self, widget):
-        if widget.read() == ValueUnset:
-            self.model.bank_first_check_number = None
-        self.setup_payments()
+        self._clear_if_unset(widget, 'bank_first_check_number')
 
     def on_installments_number__validate(self, widget, value):
         if not value:
