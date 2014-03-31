@@ -347,7 +347,7 @@ class ReceivingOrderItemStep(BaseWizardStep):
             adjustment.set_upper(obj.remaining_quantity)
 
     def on_purchase_items__selection_changed(self, purchase_items, item):
-        self.edit_btn.set_sensitive(bool(item.is_batch))
+        self.edit_btn.set_sensitive(bool(item and item.is_batch))
 
     def on_purchase_items__row_activated(self, purchase_items, item):
         self._edit_item(item)
