@@ -387,12 +387,11 @@ class ShellBootstrap(object):
         import pdb
         pdb.pm()
 
-    def _glade_loader_func(self, view, filename, domain):
-        from kiwi.environ import environ
+    def _glade_loader_func(self, view, filename, domain, resource_str_func):
         from kiwi.ui.builderloader import BuilderWidgetTree
         if not filename.endswith('ui'):
             filename += '.ui'
-        ui_string = environ.get_resource_string('stoq', 'glade', filename)
+        ui_string = resource_str_func('stoq', 'glade', filename)
 
         return BuilderWidgetTree(view, None, domain, ui_string)
 

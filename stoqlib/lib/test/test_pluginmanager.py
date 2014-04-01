@@ -25,6 +25,9 @@
 
 """Test for stoqlib.lib.pluginmanager module"""
 
+import io
+
+import mock
 from zope.interface import implementer
 
 from stoqlib.database.runtime import new_store
@@ -32,7 +35,19 @@ from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
 from stoqlib.lib.pluginmanager import (PluginError, register_plugin,
-                                       PluginManager, get_plugin_manager)
+                                       PluginManager, get_plugin_manager,
+                                       PluginDescription)
+
+plugin_desc = """
+[Plugin]
+Module=testplugin
+Version=1
+Name=Test plugin
+Description=Test plugin description
+Authors=Stoq Team <stoq-devel@async.com.br>
+Copyright=Copyright © 2007 Async Open Source
+Website=http://www.stoq.com.br/
+"""
 
 
 @implementer(IPlugin)
@@ -57,6 +72,24 @@ class _TestPlugin(object):
     def get_migration(self):
         self.had_migration_gotten = True
         return None
+
+
+class TestPluginDescription(DomainTest):
+
+    @mock.patch('stoqlib.lib.pluginmanager.ZipFile')
+    @mock.patch('stoqlib.lib.pluginmanager.is_zipfile')
+    def test_constructor_is_egg(self, is_zipfile, ZipFile):
+        ZipFile.return_value = mock.MagicMock()
+        egg = ZipFile.return_value.__enter__.return_value
+        egg.namelist.return_value = ['test.plugin']
+        egg.open.return_value = io.BytesIO(plugin_desc)
+
+        desc = PluginDescription('tmpfile', is_egg=True)
+
+        is_zipfile.assert_called_once_with('tmpfile')
+        self.assertEquals(desc.filename, 'test.plugin')
+        self.assertEquals(desc.plugin_path, 'tmpfile')
+        self.assertEquals(desc.long_name, 'Test plugin')
 
 
 class TestPluginManager(DomainTest):

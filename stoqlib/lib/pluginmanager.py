@@ -26,6 +26,7 @@ import glob
 import logging
 import os
 import sys
+from zipfile import ZipFile, is_zipfile
 
 from kiwi.desktopparser import DesktopParser
 from kiwi.component import get_utility, provide_utility
@@ -48,7 +49,22 @@ class PluginError(Exception):
 
 
 class PluginDescription(object):
-    def __init__(self, config, filename):
+    def __init__(self, filename, is_egg=False):
+        config = DesktopParser()
+        if is_egg:
+            self.plugin_path = filename
+            msg = "%s is not a valid egg file" % filename
+            assert is_zipfile(filename), msg
+            with ZipFile(filename, "r") as egg:
+                filename = [f for f in egg.namelist()
+                            if f.endswith('plugin')][0]
+                plugin_file = egg.open(filename)
+                config.readfp(plugin_file)
+        else:
+            plugin_path = os.path.dirname(os.path.dirname(filename))
+            self.plugin_path = plugin_path
+            config.read(filename)
+
         self.name = unicode(os.path.basename(filename).split('.')[0])
         self.entry = config.get('Plugin', 'Module')
         self.filename = filename
@@ -110,16 +126,16 @@ class PluginManager(object):
         for path in library.get_resource_paths('plugin'):
             for filename in glob.iglob(os.path.join(path, '*', '*.plugin')):
                 self._register_plugin_description(filename)
+            for filename in glob.iglob(os.path.join(path, '*.egg')):
+                self._register_plugin_description(filename, is_egg=True)
 
-    def _register_plugin_description(self, filename):
-        dp = DesktopParser()
-        dp.read(filename)
-        desc = PluginDescription(dp, filename)
+    def _register_plugin_description(self, filename, is_egg=False):
+        desc = PluginDescription(filename, is_egg)
         self._plugin_descriptions[desc.name] = desc
 
     def _import_plugin(self, plugin_desc):
         log.info("Loading plugin %s" % (plugin_desc.name, ))
-        plugin_path = os.path.dirname(plugin_desc.dirname)
+        plugin_path = plugin_desc.plugin_path
         if plugin_path not in sys.path:
             sys.path.append(plugin_path)
 
