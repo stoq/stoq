@@ -1,0 +1,4 @@
+[submodule "utils"]
+	path = utils
+	url = ../stoq-utils
+	branch = master

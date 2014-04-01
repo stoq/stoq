@@ -39,17 +39,6 @@ schemadocs:
 	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/*html
 	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/tables/*html
 
-check-source:
-	@tools/source-tests.sh --modified
-
-check-source-all:
-	@tools/source-tests.sh
-
-pylint:
-	pylint --load-plugins tools/pylint_stoq -E \
-	    stoqlib/domain/*.py \
-	    stoqlib/domain/payment/*.py
-
 clean:
 	@find . -iname '*pyc' -delete
 
@@ -61,7 +50,7 @@ check: clean check-source
 check-failed: clean
 	python runtests.py --failed $(TEST_MODULES)
 
-coverage: clean
+coverage: clean check-source-all
 	python runtests.py \
 	    --with-xcoverage \
 	    --with-xunit \
@@ -102,6 +91,7 @@ deb:
 	rename -f 's/$(PACKAGE)-(.*)\.tar\.gz/$(PACKAGE)_$$1\.orig\.tar\.gz/' ../*
 	dpkg-buildpackage -i -I -rfakeroot
 
-include async.mk
 
-.PHONY: external TAGS
+include utils/utils.mk
+.PHONY: howto apidocs manual upload-apidocs upload-manual schemadocs
+.PHONY: clean check check-failed coverage jenkins external deb
