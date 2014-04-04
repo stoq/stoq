@@ -2260,6 +2260,24 @@ class TestSaleView(DomainTest):
         view = self.store.find(SaleView, id=sale.id).one()
         self.assertEquals(view.get_status_name(), u'Opened')
 
+    def test_get_first_sale_comment(self):
+        sale = self.create_sale()
+        self.create_sale_comment(sale=sale, comment=u'Foo bar')
+
+        self.assertEquals(sale.get_first_sale_comment(), u'Foo bar')
+
+    def test_get_first_sale_comment_without_comment(self):
+        sale = self.create_sale()
+
+        self.assertEquals(sale.get_first_sale_comment(), u'')
+
+    def test_get_first_sale_comment_with_multiple_comments(self):
+        sale = self.create_sale()
+        self.create_sale_comment(sale=sale, comment=u'Foo bar')
+        self.create_sale_comment(sale=sale, comment=u'Bar foo')
+
+        self.assertEquals(sale.get_first_sale_comment(), u'Foo bar')
+
 
 class TestSalesPersonSalesView(DomainTest):
     def test_find_by_date(self):

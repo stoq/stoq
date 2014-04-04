@@ -38,7 +38,13 @@
               <% items_discount += (item.base_price - item.price) * item.quantity %>
               <tr>
                 <td>${ format_quantity(item.quantity) } x
-                    ${ item.sellable.get_description() }</td>
+                    ${ item.sellable.get_description() }
+                    <% remaining = (item.quantity - item.quantity_decreased) %>
+                    % if remaining > 0:
+                      <span class="small">(${ _("Missing:")}
+                                           ${ format_quantity(remaining)})</span>
+                    % endif
+                </td>
                 <td>${ format_price(item.price) }</td>
                 <td>${ format_price(item.get_total()) }</td>
               </tr>

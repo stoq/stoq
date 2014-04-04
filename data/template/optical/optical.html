@@ -18,19 +18,12 @@
     <%include file="saledetails.html" />
   % endif
 
-  <div class="notes">
-    <b>${ _("Notes") }</b>
-  </div>
-
-  <section class="signatures">
-    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
-                       if there is not enough space -->
-    <div>
-      <span class="signature">
-        <b>${ _("Client signature") }</b>
-      </span>
+  % if report.sale:
+    <div class="notes">
+      <b>${ _("Notes") }</b>
+      <p> ${ report.sale.get_first_sale_comment()}</p>
     </div>
-  </section>
+  %endif
 
   <hr />
 
@@ -45,8 +38,17 @@
       <div class="optical_prescription">
         <%include file="prescription.html" args="workorder=workorder, optical_data=optical_data"/>
       </div>
+
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                       if there is not enough space -->
+    <div>
+      <span class="signature">
+        <b>${ _("Client signature") }</b>
+      </span>
+    </div>
+  </section>
   </div>
   <hr/>
 % endfor
 </div>
-

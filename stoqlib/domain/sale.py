@@ -1474,6 +1474,12 @@ class Sale(Domain):
 
         return commission
 
+    def get_first_sale_comment(self):
+        first_comment = self.comments.order_by(SaleComment.date).first()
+        if first_comment:
+            return first_comment.comment
+        return u''
+
     #
     # Properties
     #
