@@ -49,7 +49,7 @@ class LabelReport(object):
             for i in range(model.quantity):
                 # XXX: glabels is not working with unicode caracters
                 desc = strip_accents(model.description)
-                self.rows.append([model.code, model.barcode[:-1], desc,
+                self.rows.append([model.code, model.barcode, desc,
                                   model.price])
 
     def save(self):
