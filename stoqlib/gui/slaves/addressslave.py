@@ -252,6 +252,9 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
     def setup_proxies(self):
         CityLocationMixin.setup_proxies(self)
 
+        # FIXME: Implement l10n here
+        self.postal_code.set_mask('00000-000')
+
         if self.db_form:
             self._update_forms()
         self.proxy = self.add_proxy(self.model,
@@ -265,9 +268,6 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
                 ('city', self.city_lbl)]:
             l10n_field = api.get_l10n_field(field)
             label.set_text(l10n_field.label + ':')
-
-        # FIXME: Implement l10n here
-        self.postal_code.set_mask('00000-000')
 
         # Enable if we already have a number or if we are adding a new address.
         self.streetnumber_check.set_active(bool(self.model.streetnumber)
