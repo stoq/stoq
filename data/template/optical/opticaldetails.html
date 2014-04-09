@@ -7,20 +7,28 @@
             <td>${ _("Sales Person") }:</td>
             <td colspan="3">${ report.sale.salesperson.person.name }</td>
           </tr>
+        % else:
+          <tr>
+            <td>${ _("Responsible") }:</td>
+            <td colspan="3">
+              ${ workorder.quote_responsible or '' }</td>
+            </td>
+          </tr>
         % endif
 
         <tr>
           <td>${ _("Client") }:</td>
-          <td colspan="3">${ workorder.client.person.name }
-          <br/> Endereço: ${ workorder.client.person.get_address_string() }
-          % if workorder.client.person.phone_number:
+          <td colspan="3"> ${ workorder.client.person.name }
+            <br/> ${ _("Address") }:
+            ${ workorder.client.person.get_address_string() }
+            % if workorder.client.person.phone_number:
               <br/> ${ _("Phone") }:
-                ${ workorder.client.person.get_formatted_phone_number() }
-          % endif
-          % if workorder.client.person.mobile_number:
+              ${ workorder.client.person.get_formatted_phone_number() }
+            % endif
+            % if workorder.client.person.mobile_number:
               <br/> ${ _("Mobile") }:
               ${ workorder.client.person.get_formatted_mobile_number() }
-          % endif
+            % endif
           </td>
         </tr>
 
@@ -70,6 +78,9 @@
         ${ workorder.defect_reported }
       </p>
     % endif
-    <p>&nbsp;</p>
-    <p>&nbsp;</p><!--a little trick to realocate saledetails to create
-                  some blank space under it-->
+    <!--If there is a sale, realocate the opticaldetails a little bit to create
+     some blank space under it-->
+    % if report.sale:
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+    % endif

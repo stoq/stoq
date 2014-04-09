@@ -3020,7 +3020,7 @@ msgstr "Custo estimado:"
 
 #: ../data/glade/WorkOrderQuoteSlave.ui.h:4
 msgid "Estimated start:"
-msgstr "Data estimada para inciar:"
+msgstr "Data estimada para iniciar:"
 
 #: ../data/glade/WorkOrderQuoteSlave.ui.h:5
 msgid "Estimated finish:"
@@ -4284,7 +4284,7 @@ msgstr "Custo estimado"
 
 #: ../data/template/workorder/quote.html:47 ../stoq/gui/services.py:395
 msgid "Estimated start"
-msgstr "Data estimada para inciar"
+msgstr "Data estimada para iniciar"
 
 #: ../data/template/workorder/quote.html:70
 msgid "Responsible signature"
@@ -14811,7 +14811,7 @@ msgstr "Você gostaria de imprimir a carta de crédito?"
 
 #: ../stoqlib/gui/wizards/salereturnwizard.py:516
 msgid "Print Letter"
-msgstr "Imrpimir carta de crédito"
+msgstr "Imprimir carta de crédito"
 
 #: ../stoqlib/gui/wizards/salereturnwizard.py:523
 msgid "Trade Sale Order"

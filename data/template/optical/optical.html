@@ -16,15 +16,13 @@
 
   % if report.sale:
     <%include file="saledetails.html" />
-  % endif
-
-  % if report.sale:
     <div class="notes">
       <b>${ _("Notes") }</b>
-      <p> ${ report.sale.get_first_sale_comment()}</p>
+      <p> ${ report.sale.get_first_sale_comment() }</p>
     </div>
-  %endif
-
+  % else:
+    <%include file="workorderdetails.html" />
+  % endif
   <hr />
 
 % for workorder in report.workorders:

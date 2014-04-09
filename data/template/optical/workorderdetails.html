@@ -1,0 +1,42 @@
+<section id="client_receipt">
+  <table class="details" id="sale_items">
+    <tbody>
+      % for workorder in report.workorders:
+        <tr>
+          <td>${ _("Client") }:</td>
+          <td>${ workorder.client.person.name }</td>
+          <td>${ _("Work order") }:</td>
+          <td>${ workorder.identifier }</td>
+        </tr>
+        <tr>
+          <td>${ _("Responsible") }:</td>
+          <td>${ workorder.quote_responsible or '' }</td>
+          <td>${ _("Open Date") }:</td>
+          <td>${ format_date(workorder.open_date) }</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>${ _("Estimated finish") }:</td>
+          <td>${ format_date(workorder.estimated_finish) }</td>
+        </tr>
+      % endfor
+      <tr>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  % if workorder.sellable:
+    <p>
+      <b>${ _("Equipment:") }</b>
+      <span>${ workorder.sellable.description }</span>
+    </p>
+  % endif
+  % if workorder.defect_reported:
+    <p>
+      <b>${ _("Defect reported by client:") }</b>
+      <span>${ workorder.defect_reported }</span><br /><br />
+    </p>
+  % endif
+</section>
