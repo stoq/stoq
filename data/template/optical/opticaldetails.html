@@ -75,7 +75,9 @@
     % if workorder.defect_reported:
       <p>
         <b>${ _("Observations") }:</b><br/>
-        ${ workorder.defect_reported }
+         % for line in workorder.defect_reported.split("\n"):
+           ${ line | h }<br />
+         % endfor
       </p>
     % endif
     <!--If there is a sale, realocate the opticaldetails a little bit to create

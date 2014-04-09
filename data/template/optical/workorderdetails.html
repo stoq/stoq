@@ -36,7 +36,11 @@
   % if workorder.defect_reported:
     <p>
       <b>${ _("Defect reported by client:") }</b>
-      <span>${ workorder.defect_reported }</span><br /><br />
+      <span>
+        % for line in workorder.defect_reported.split("\n"):
+          ${ line | h }<br />
+        % endfor
+      </span><br /><br />
     </p>
   % endif
 </section>
