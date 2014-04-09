@@ -5,4 +5,4 @@ pil python-imaging
 pygtk python-gtk2
 pypoppler python-poppler
 stoqdrivers stoqdrivers
-twisted python-twisted
+twisted python-twisted-web
