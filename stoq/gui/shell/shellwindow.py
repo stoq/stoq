@@ -536,7 +536,7 @@ class ShellWindow(GladeDelegate):
 
         # We can currently only close a window if the currently active
         # application is the launcher application
-        if current_app.app_name != 'launcher':
+        if current_app and current_app.app_name != 'launcher':
             return True
 
         # Here we save app specific state such as object list
