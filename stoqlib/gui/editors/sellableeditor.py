@@ -453,7 +453,15 @@ class SellableEditor(BaseEditor):
                     % sellable_description, str(details))
             return
 
-        self.confirm()
+        # We are doing this by hand instead of calling confirm/cancel because,
+        # if we call self.cancel(), the transaction will not be committed. If
+        # we call self.confirm(), it will, but some on_confirm hooks (like
+        # ProductComponentSlave's one) will try to create other objects and
+        # relate them with this product that doesn't exist anymore (we removed
+        # them above), resulting in an IntegrityError.
+        self.retval = self.model
+        self.store.retval = self.retval
+        self.main_dialog.close()
 
     def _on_close_sellable_button__clicked(self, button,
                                            parent_button_label=None):
