@@ -191,6 +191,8 @@ class ProductFullStockView(Viewable):
                                  Field('_stock_summary',
                                        'storable_id') == Storable.id)
 
+        HighjackedViewable.__name__ = "Highjacked%s" % cls.__name__
+
         # Also show products that were never purchased.
         query = Or(Field('_stock_summary', 'branch_id') == branch.id,
                    Eq(Field('_stock_summary', 'branch_id'), None))
