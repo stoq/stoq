@@ -1,3 +1,9 @@
+stoq (1.7.2+1.8~rc2) precise; urgency=low
+
+  * 1.8 Release candidate 2
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Thu, 10 Apr 2014 17:58:06 -0300
+
 stoq (1.7.2+1.8~rc1) precise; urgency=low
 
   * 1.8 Release Candidate 1
