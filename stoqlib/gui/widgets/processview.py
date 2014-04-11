@@ -82,7 +82,7 @@ class ProcessView(gtk.ScrolledWindow):
                 else:
                     raise
             if data == '':
-                return False
+                break
             for line in data.split('\n'):
                 if line:
                     self.emit('read-line', line)
