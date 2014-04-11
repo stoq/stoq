@@ -67,6 +67,11 @@ class PluginDescription(object):
 
         self.name = unicode(os.path.basename(filename).split('.')[0])
         self.entry = config.get('Plugin', 'Module')
+        self.dependencies = []
+        if config.has_option('Plugin', 'Dependencies'):
+            dependencies = config.get('Plugin', 'Dependencies').split(',')
+            for dependency in dependencies:
+                self.dependencies.append(unicode(dependency.strip()))
         self.filename = filename
 
         settings = get_settings()
@@ -207,6 +212,11 @@ class PluginManager(object):
         if self.is_active(plugin_name):
             raise PluginError("Plugin %s is already active" % (plugin_name, ))
 
+        dependencies = self._plugin_descriptions[plugin_name].dependencies
+        for dependency in dependencies:
+            if not self.is_active(dependency):
+                self.activate_plugin(dependency)
+
         plugin = self.get_plugin(plugin_name)
         log.info("Activating plugin %s" % (plugin_name, ))
         plugin.activate()
@@ -227,6 +237,11 @@ class PluginManager(object):
         if plugin_name in self.installed_plugins_names:
             raise PluginError("Plugin %s is already enabled."
                               % (plugin_name, ))
+
+        dependencies = self._plugin_descriptions[plugin_name].dependencies
+        for dependency in dependencies:
+            if not self.is_installed(dependency):
+                self.install_plugin(dependency)
 
         store = new_store()
         InstalledPlugin(store=store,
@@ -256,7 +271,8 @@ class PluginManager(object):
         #        isn't available. We should do something to remove such ones.
         for plugin_name in (set(self.installed_plugins_names) &
                             set(self.available_plugins_names)):
-            self.activate_plugin(plugin_name)
+            if not self.is_active(plugin_name):
+                self.activate_plugin(plugin_name)
 
     def is_active(self, plugin_name):
         """Returns if a plugin with a certain name is active or not.

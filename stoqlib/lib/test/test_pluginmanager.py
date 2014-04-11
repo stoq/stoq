@@ -28,6 +28,7 @@
 import io
 
 import mock
+from kiwi.python import Settable
 from zope.interface import implementer
 
 from stoqlib.database.runtime import new_store
@@ -44,6 +45,7 @@ Module=testplugin
 Version=1
 Name=Test plugin
 Description=Test plugin description
+Dependencies=test1, test2, test3
 Authors=Stoq Team <stoq-devel@async.com.br>
 Copyright=Copyright © 2007 Async Open Source
 Website=http://www.stoq.com.br/
@@ -74,6 +76,10 @@ class _TestPlugin(object):
         return None
 
 
+class _TestDependentPlugin(_TestPlugin):
+    name = u'test_dependent_plugin'
+
+
 class TestPluginDescription(DomainTest):
 
     @mock.patch('stoqlib.lib.pluginmanager.ZipFile')
@@ -97,16 +103,27 @@ class TestPluginManager(DomainTest):
     def setUp(self):
         super(TestPluginManager, self).setUp()
 
+        # Generate 2 instances of plugins that will be used for testing later.
+        # '_dependent_plugin' will require 'independent_plugin' activation prior
+        # to it's own.
+        self._independent_plugin = _TestPlugin()
+        self._dependent_plugin = _TestDependentPlugin()
+
         # Since the plugins are commited inside pluginmanager, try to remove
         # it first, or we will have problems if STOQLIB_TEST_QUICK is set.
         store = new_store()
         plugins = set(InstalledPlugin.get_plugin_names(store=self.store))
         expected = set([u'ecf', u'nfe', u'optical'])
         self.assertTrue(expected.issubset(plugins))
-        test_plugin = store.find(InstalledPlugin,
-                                 plugin_name=_TestPlugin.name).one()
-        if test_plugin:
-            store.remove(test_plugin)
+
+        ind_name = self._independent_plugin.name
+        dep_name = self._dependent_plugin.name
+        plugin_names = [ind_name, dep_name]
+
+        test_plugins = store.find(InstalledPlugin,
+                                  InstalledPlugin.plugin_name.is_in(plugin_names))
+        for plugin in test_plugins:
+            store.remove(plugin)
             store.commit()
         store.close()
 
@@ -169,44 +186,79 @@ class TestPluginManager(DomainTest):
         self.assertRaises(TypeError, register_plugin, object)
 
     def test_install_plugin(self):
-        p_name = _TestPlugin.name
-        plugin = self._manager.get_plugin(p_name)
+        ind_name = self._independent_plugin.name
+        dep_name = self._dependent_plugin.name
 
-        # Plugin should not be installed yet
-        self.assertFalse(p_name in self._manager.installed_plugins_names)
-        self.assertFalse(plugin.had_migration_gotten)
-        self.assertFalse(self._manager.is_installed(p_name))
+        ind_plugin = self._manager.get_plugin(ind_name)
+        dep_plugin = self._manager.get_plugin(dep_name)
 
-        self._manager.install_plugin(p_name)
-        self.assertTrue(plugin.had_migration_gotten)
-        self.assertFalse(plugin.was_activated)
-        self.assertTrue(self._manager.is_installed(p_name))
-        plugin.reset()
+        # First it is needed to verify if both plugins are uninstalled
+        self._check_plugin_installed(ind_plugin, False)
+        self._check_plugin_installed(dep_plugin, False)
 
-        # Test if _TestPlugin is installed
-        self.assertTrue(p_name in self._manager.installed_plugins_names)
+        # Both the dependend and independent plugins should not be
+        # installed yet.
+        self.assertFalse(ind_name in self._manager.installed_plugins_names)
+        self.assertFalse(dep_name in self._manager.installed_plugins_names)
+
+        self.assertFalse(ind_plugin.had_migration_gotten)
+        self.assertFalse(dep_plugin.had_migration_gotten)
+
+        self.assertFalse(self._manager.is_installed(ind_name))
+        self.assertFalse(self._manager.is_installed(dep_name))
+
+        # Install the dependent plugin, this should install both plugins
+        self._manager.install_plugin(dep_name)
+
+        # So it is checked if both plugins were installed
+        self._check_plugin_installed(ind_plugin, True)
+        self._check_plugin_installed(dep_plugin, True)
+
+        # Plugins were installed, but its's activate method was not called yet
+        self.assertFalse(ind_plugin.was_activated)
+        self.assertFalse(dep_plugin.was_activated)
+
+        # Test if both plugins are installed
+        self.assertTrue(ind_name in self._manager.installed_plugins_names)
+        self.assertTrue(dep_name in self._manager.installed_plugins_names)
+
+        ind_plugin.reset()
+        dep_plugin.reset()
 
     def test_activate_plugin(self):
-        p_name = _TestPlugin.name
-        plugin = self._manager.get_plugin(p_name)
+        # Register first plugin description
+        ind_name = self._independent_plugin.name
+        dep_name = self._dependent_plugin.name
 
-        # Plugin should not be active
-        self.assertFalse(self._manager.is_active(p_name))
-        self.assertFalse(plugin.was_activated)
-        self.assertFalse(self._manager.is_active(p_name))
+        ind_plugin = self._manager.get_plugin(ind_name)
+        dep_plugin = self._manager.get_plugin(dep_name)
 
-        self._manager.activate_plugin(p_name)
-        self.assertTrue(plugin.was_activated)
-        self.assertFalse(plugin.had_migration_gotten)
-        self.assertTrue(self._manager.is_active(p_name))
-        plugin.reset()
+        # Both the dependend and independent plugins should not be
+        # active yet.
+        self._check_plugin_active(ind_plugin, False)
+        self._check_plugin_active(dep_plugin, False)
 
-        # Test if plugin got activated on manager
-        self.assertTrue(self._manager.is_active(p_name))
+        # This should activate both the dependent and the independent plugin
+        self._manager.activate_plugin(dep_name)
+
+        # Checking if in fact both plugins were activated
+        self._check_plugin_active(ind_plugin, True)
+        self._check_plugin_active(dep_plugin, True)
+
+        # As the plugins were not installed, migration method was not executed
+        self.assertFalse(ind_plugin.had_migration_gotten)
+        self.assertFalse(dep_plugin.had_migration_gotten)
 
         # Test trying to activate again
-        self.assertRaises(PluginError, self._manager.activate_plugin, p_name)
-        self.assertTrue(self._manager.is_active(p_name))
+        self.assertRaises(PluginError, self._manager.activate_plugin, ind_name)
+        self.assertRaises(PluginError, self._manager.activate_plugin, dep_name)
+
+        # Both plugins should remain active
+        self._check_plugin_active(ind_plugin, True)
+        self._check_plugin_active(dep_plugin, True)
+
+        ind_plugin.reset()
+        dep_plugin.reset()
 
     def test_activate_installed_plugins(self):
         available_plugins_names = set(['a_', 'b_', 'c_', 'd_'])
@@ -239,7 +291,32 @@ class TestPluginManager(DomainTest):
     #  Private
     #
 
+    def _check_plugin_active(self, plugin, status):
+        self.assertEquals(plugin.was_activated, status)
+        self.assertEquals(self._manager.is_active(plugin.name), status)
+
+    def _check_plugin_installed(self, plugin, status):
+        contained = plugin.name in self._manager.installed_plugins_names
+        self.assertEquals(contained, status)
+
+        self.assertEquals(plugin.had_migration_gotten, status)
+        self.assertEquals(self._manager.is_installed(plugin.name), status)
+
     def _register_test_plugin(self):
-        # Workaround to register _TestPlugin since is not really a plugin
-        self._manager._plugin_descriptions[_TestPlugin.name] = None
+        # Workaround to register _TestPlugin since it is not really a plugin.
+        # Two plugins are instanced and setup to be used on this class' tests.
+        # _dependend_plugin depends on _independent_plugin.
+        ind_name = self._independent_plugin.name
+        dep_name = self._dependent_plugin.name
+
+        # Creating independent plugin description
+        ind_desc = Settable(dependencies=[])
+
+        # Description that sets the dependency to the independent plugin.
+        dep_desc = Settable(dependencies=[ind_name])
+
+        self._manager._plugin_descriptions[ind_name] = ind_desc
+        self._manager._plugin_descriptions[dep_name] = dep_desc
+
         register_plugin(_TestPlugin)
+        register_plugin(_TestDependentPlugin)
