@@ -380,7 +380,9 @@ class SintegraRegister(object):
                 arg = arg[:length]
         else:
             raise AssertionError
-        assert len(arg) <= length
+
+        assert len(arg) <= length, (repr(arg), length)
+
         return arg
 
 
