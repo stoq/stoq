@@ -49,7 +49,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    SaleItemAfterSetBatchesEvent)
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import (Branch, Client, Person, SalesPerson,
-                                   Company, LoginUser)
+                                   Company, LoginUser, Employee)
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import Sellable
@@ -1278,6 +1278,7 @@ class WorkOrderView(Viewable):
     _CompanyExecutionBranch = ClassAlias(Company, "company_execution_branch")
     _PersonClient = ClassAlias(Person, "person_client")
     _PersonSalesPerson = ClassAlias(Person, "person_salesperson")
+    _PersonEmployee = ClassAlias(Person, "person_employee")
 
     #: the |workorder| object
     work_order = WorkOrder
@@ -1316,6 +1317,9 @@ class WorkOrderView(Viewable):
     # SalesPerson
     salesperson_name = _PersonSalesPerson.name
 
+    # Employee
+    employee_name = _PersonEmployee.name
+
     # Branch
     branch_id = WorkOrder.branch_id
     branch_name = Coalesce(NullIf(_CompanyOriginalBranch.fancy_name, u''),
@@ -1347,6 +1351,10 @@ class WorkOrderView(Viewable):
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(_PersonSalesPerson,
                  SalesPerson.person_id == _PersonSalesPerson.id),
+
+        LeftJoin(Employee, WorkOrder.quote_responsible_id == Employee.id),
+        LeftJoin(_PersonEmployee,
+                 Employee.person_id == _PersonEmployee.id),
 
         LeftJoin(Sellable, WorkOrder.sellable_id == Sellable.id),
 

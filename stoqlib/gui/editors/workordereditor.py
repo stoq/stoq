@@ -107,19 +107,23 @@ class WorkOrderEditor(BaseEditor):
 
     def setup_slaves(self):
         self.opening_slave = WorkOrderOpeningSlave(
-            self.store, self.model, visual_mode=self.visual_mode)
+            self.store, self.model, visual_mode=self.visual_mode,
+            edit_mode=self.edit_mode)
         self.attach_slave('opening_holder', self.opening_slave)
 
         self.quote_slave = WorkOrderQuoteSlave(
-            self.store, self.model, visual_mode=self.visual_mode)
+            self.store, self.model, visual_mode=self.visual_mode,
+            edit_mode=self.edit_mode)
         self.attach_slave('quote_holder', self.quote_slave)
 
         self.execution_slave = WorkOrderExecutionSlave(
-            self, self.store, self.model, visual_mode=self.visual_mode)
+            self, self.store, self.model, visual_mode=self.visual_mode,
+            edit_mode=self.edit_mode)
         self.attach_slave('execution_holder', self.execution_slave)
 
         self.history_slave = WorkOrderHistorySlave(
-            self.store, self.model, visual_mode=self.visual_mode)
+            self.store, self.model, visual_mode=self.visual_mode,
+            edit_mode=self.edit_mode)
         self.attach_slave('history_holder', self.history_slave)
 
         self._update_view()

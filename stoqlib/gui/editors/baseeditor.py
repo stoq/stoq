@@ -67,16 +67,26 @@ class BaseEditorSlave(GladeSlaveDelegate):
     fields = None
     proxy_widgets = ()
 
-    def __init__(self, store, model=None, visual_mode=False):
+    def __init__(self, store, model=None, visual_mode=False, edit_mode=None):
         """ A base class for editor slaves inheritance
 
         :param store: a store
         :param model: the object model tied with the proxy widgets
         :param visual_mode: does this slave must be opened in visual mode?
                             if so, all the proxy widgets will be disable
+        :param edit_mode: indicate if the slave are being edited or its a new one
+                          The editor that creates the slave should pass his
+                          property edit_mode to the slaves.
+                          If None self.edit_mode will be defined accordingly to
+                          the model
         """
         self.store = store
-        self.edit_mode = model is not None
+        # FIXME: Need to check if we need to add edit_mode parameter for all classes
+        # that inherit from BaseEditor
+        if edit_mode is not None:
+            self.edit_mode = edit_mode
+        else:
+            self.edit_mode = model is not None
         self.visual_mode = visual_mode
 
         if model:
