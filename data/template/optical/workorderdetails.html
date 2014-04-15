@@ -10,7 +10,11 @@
         </tr>
         <tr>
           <td>${ _("Responsible") }:</td>
-          <td>${ workorder.quote_responsible or '' }</td>
+          % if workorder.quote_responsible:
+            <td>${ workorder.quote_responsible.get_description() }</td>
+          % else:
+            <td></td>
+          % endif
           <td>${ _("Open Date") }:</td>
           <td>${ format_date(workorder.open_date) }</td>
         </tr>

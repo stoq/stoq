@@ -9,10 +9,12 @@
           </tr>
         % else:
           <tr>
-            <td>${ _("Responsible") }:</td>
-            <td colspan="3">
-              ${ workorder.quote_responsible or '' }</td>
-            </td>
+          <td>${ _("Responsible") }:</td>
+          % if workorder.quote_responsible:
+            <td colspan="3">${ workorder.quote_responsible.get_description() }</td>
+          % else:
+            <td colspan="3"></td>
+          % endif
           </tr>
         % endif
 
