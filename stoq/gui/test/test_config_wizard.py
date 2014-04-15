@@ -173,7 +173,11 @@ class TestFirstTimeConfigWizard(GUITest):
     @mock.patch('stoq.gui.config.warning')
     @mock.patch('stoq.gui.config.provide_utility')
     @mock.patch('stoq.gui.config.get_hostname')
+    @mock.patch('stoq.gui.config.get_database_version')
+    @mock.patch('stoq.gui.config.check_extensions')
     def test_remote(self,
+                    check_extensions,
+                    get_database_version,
                     get_hostname,
                     provide_utility,
                     warning,
@@ -183,6 +187,7 @@ class TestFirstTimeConfigWizard(GUITest):
         DatabaseSettingsStep.model_type = self.fake.DatabaseSettings
         self.settings = self.fake.DatabaseSettings(self.store)
         get_hostname.return_value = u'foo_hostname'
+        get_database_version.return_value = (9, 1)
         wizard = self.create_wizard()
 
         # Welcome

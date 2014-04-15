@@ -64,7 +64,8 @@ from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME,
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
 from stoqlib.database.settings import (DatabaseSettings, test_local_database,
-                                       validate_database_name)
+                                       validate_database_name,
+                                       check_extensions, get_database_version)
 from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import SystemTable
@@ -634,13 +635,22 @@ class CreateDatabaseStep(BaseWizardStep):
         settings = self.wizard.settings
         self.wizard.config.load_settings(settings)
 
-        # store = settings.get_super_store()
-        # version = store.dbVersion()
-        # if version < (8, 1):
-        #     info(_("Stoq requires PostgresSQL 8.1 or later, but %s found") %
-        #          ".".join(map(str, version)))
-        #     store.close()
-        #     return False
+        store = settings.create_super_store()
+        version = get_database_version(store)
+
+        if version < (9, 1):
+            store.close()
+            error(_("Stoq requires PostgresSQL 9.1 or later, but %s found") % (
+                ".".join(map(str, version))))
+
+        try:
+            check_extensions(store=store)
+        except ValueError:
+            store.close()
+            error(_("Missing PostgreSQL extension on the server, "
+                    "please install postgresql-contrib on it"))
+
+        store.close()
 
         # Secondly, ask the user if he really wants to create the database,
         dbname = settings.dbname

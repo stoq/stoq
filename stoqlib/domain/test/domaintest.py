@@ -69,6 +69,11 @@ class FakeStoqConfig:
         self.flushed = True
 
 
+class FakeStore(object):
+    def close(self):
+        pass
+
+
 class FakeDatabaseSettings:
     def __init__(self, store):
         self.store = store
@@ -86,10 +91,10 @@ class FakeDatabaseSettings:
         return []
 
     def get_default_connection(self):
-        class FakeConn:
-            def dbVersion(self):
-                return (8, 4)
-        return FakeConn()
+        return FakeStore()
+
+    def create_super_store(self):
+        return FakeStore()
 
 
 class ReadOnlyStore(StoqlibStore):
