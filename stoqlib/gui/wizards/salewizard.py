@@ -47,7 +47,7 @@ from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import SellError, StoqlibError
 from stoqlib.lib.formatters import get_formatted_cost
-from stoqlib.lib.message import warning, yesno, marker
+from stoqlib.lib.message import warning, marker
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -67,10 +67,7 @@ from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
-from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.reporting.boleto import BillReport
-from stoqlib.reporting.booklet import BookletReport
 
 N_ = _ = stoqlib_gettext
 
@@ -936,22 +933,7 @@ class ConfirmSaleWizard(BaseWizard):
         #        have a payer, we won't be able to print bills/booklets.
         group.payer = self.model.client and self.model.client.person
 
-        # Commit before printing to avoid losing data if something breaks
-        self.store.confirm(self.retval)
         ConfirmSaleWizardFinishEvent.emit(self.model)
-
-        booklets = list(group.get_payments_by_method_name(u'store_credit'))
-        bills = list(group.get_payments_by_method_name(u'bill'))
-
-        if (booklets and
-            yesno(_("Do you want to print the booklets for this sale?"),
-                  gtk.RESPONSE_YES, _("Print booklets"), _("Don't print"))):
-            print_report(BookletReport, booklets)
-
-        if (bills and BillReport.check_printable(bills) and
-            yesno(_("Do you want to print the bills for this sale?"),
-                  gtk.RESPONSE_YES, _("Print bills"), _("Don't print"))):
-            print_report(BillReport, bills)
 
 
 def test():  # pragma nocover

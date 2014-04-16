@@ -57,7 +57,10 @@ from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
+from stoqlib.reporting.boleto import BillReport
+from stoqlib.reporting.booklet import BookletReport
 
 
 _ = stoqlib_gettext
@@ -523,6 +526,29 @@ class FiscalCoupon(gobject.GObject):
 
         # Only finish the transaction after everything passed above.
         store.confirm(model)
+
+        # Try to print only after the transaction is commited, to prevent
+        # losing data if something fails while printing
+        group = sale.group
+        booklets = list(group.get_payments_by_method_name(u'store_credit'))
+        bills = list(group.get_payments_by_method_name(u'bill'))
+
+        try:
+            if (booklets and
+                yesno(_("Do you want to print the booklets for this sale?"),
+                      gtk.RESPONSE_YES, _("Print booklets"), _("Don't print"))):
+                print_report(BookletReport, booklets)
+
+            if (bills and BillReport.check_printable(bills) and
+                yesno(_("Do you want to print the bills for this sale?"),
+                      gtk.RESPONSE_YES, _("Print bills"), _("Don't print"))):
+                print_report(BillReport, bills)
+        except:
+            if booklets:
+                warning(_("Could not print Booklets"))
+            elif bills:
+                warning(_("Could not print Bill Report"))
+            return True
 
         return True
 

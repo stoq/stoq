@@ -23,7 +23,6 @@
 ##
 
 from dateutil.relativedelta import relativedelta
-import gtk
 from kiwi.currency import currency
 import mock
 
@@ -36,7 +35,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.lib.dateutils import localdatetime, localtoday
 from stoqlib.lib.parameters import sysparam
-from stoqlib.reporting.booklet import BookletReport
 
 
 class TestConfirmSaleWizard(GUITest):
@@ -169,8 +167,7 @@ class TestConfirmSaleWizard(GUITest):
         # Make sure no payments were created
         self.assertEqual(set(sale.payments), set([p1, p2]))
 
-    @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
-    def test_sale_with_cost_center(self, yesno):
+    def test_sale_with_cost_center(self):
         cost_center = self.create_cost_center()
 
         self._create_wizard()
@@ -209,8 +206,7 @@ class TestConfirmSaleWizard(GUITest):
         self._check_wizard('wizard-sale-step-payment-method-check')
 
     # FIXME: add a test with a configured bank account
-    @mock.patch('stoqlib.reporting.boleto.warning')
-    def test_step_payment_method_bill(self, warning):
+    def test_step_payment_method_bill(self):
         client = self.create_client()
         self._create_wizard()
         self.step.client.select(client.id)
@@ -223,12 +219,6 @@ class TestConfirmSaleWizard(GUITest):
 
         self.assertEquals(self.sale.payments[0].method.method_name, 'bill')
         self._check_wizard('wizard-sale-step-payment-method-bill')
-
-        warning.assert_called_once_with(
-            'Could not print Bill Report',
-            description=("Account 'Imbalance' must be a bank account.\n"
-                         "You need to configure the bill payment method in "
-                         "the admin application and try again"))
 
     def test_step_payment_method_card(self):
         self._create_wizard()
@@ -261,10 +251,7 @@ class TestConfirmSaleWizard(GUITest):
         self._check_wizard('wizard-sale-step-payment-method-deposit')
         self.assertEquals(self.sale.payments[0].method.method_name, 'deposit')
 
-    @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
-    def test_step_payment_method_store_credit(self, yesno):
-        yesno.return_value = False
-
+    def test_step_payment_method_store_credit(self):
         client = self.create_client()
         client.credit_limit = 1000
 
@@ -327,9 +314,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertEquals(
             self.step.pm_slave.get_selected_method().method_name, u'money')
 
-    @mock.patch('stoqlib.gui.wizards.salewizard.print_report')
-    @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
-    def test_sale_to_client_with_late_payments(self, yesno, print_report):
+    def test_sale_to_client_with_late_payments(self):
         #: this parameter allows a client to buy even if he has late payments
         sysparam.set_int(self.store, 'LATE_PAYMENTS_POLICY',
                          int(LatePaymentPolicy.ALLOW_SALES))
@@ -430,14 +415,6 @@ class TestConfirmSaleWizard(GUITest):
             self.click(wizard.next_button)
 
         self.assertEquals(sale.payments[0].method.method_name, u'store_credit')
-
-        yesno.assert_called_once_with(
-            'Do you want to print the booklets for this sale?',
-            gtk.RESPONSE_YES, 'Print booklets', "Don't print")
-
-        print_report.assert_called_once_with(
-            BookletReport,
-            list(sale.group.get_payments_by_method_name(u'store_credit')))
 
 
 class TestSalesPersonStep(GUITest):

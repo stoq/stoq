@@ -22,7 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 from decimal import Decimal
+from kiwi.currency import currency
 import mock
 import gtk
 
@@ -47,6 +49,7 @@ from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
 from stoqlib.gui.search.sellablesearch import SaleSellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.reporting.booklet import BookletReport
 
 from stoq.gui.pos import PosApp, TemporarySaleItem
 from stoq.gui.test.baseguitest import BaseGUITest
@@ -89,18 +92,54 @@ class TestPos(BaseGUITest):
         self._add_product(pos, sellable)
         return service
 
-    def _auto_confirm_sale_wizard(self, wizard, app, store, sale,
-                                  subtotal, total_paid):
+    def _auto_confirm_sale(self, wizard, app, store, sale,
+                           subtotal, total_paid, payment_method):
         # This is in another store and as we want to avoid committing
         # we need to open the till again
         self._open_till(store)
 
         sale.order()
-        money_method = PaymentMethod.get_by_name(store, u'money')
         total = sale.get_total_sale_amount()
-        money_method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, total)
+        payment_method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, total)
         self.sale = sale
         return sale
+
+    def _auto_confirm_sale_wizard(self, wizard, app, store, sale,
+                                  subtotal, total_paid):
+        payment_method = PaymentMethod.get_by_name(store, u'money')
+        return self._auto_confirm_sale(wizard, app, store, sale, subtotal,
+                                       total_paid, payment_method)
+
+    def _auto_confirm_sale_wizard_with_bill(self, wizard, app, store, sale,
+                                            subtotal, total_paid):
+        sale.client = self._create_client(store)
+        payment_method = PaymentMethod.get_by_name(store, u'bill')
+        return self._auto_confirm_sale(wizard, app, store, sale, subtotal,
+                                       total_paid, payment_method)
+
+    def _auto_confirm_sale_wizard_with_store_credit(self, wizard, app, store, sale,
+                                                    subtotal, total_paid):
+        sale.client = self._create_client(store)
+        payment_method = PaymentMethod.get_by_name(store, u'store_credit')
+        return self._auto_confirm_sale(wizard, app, store, sale, subtotal,
+                                       total_paid, payment_method)
+
+    def _create_client(self, store):
+        from stoqlib.domain.address import Address, CityLocation
+        from stoqlib.domain.person import Client, Person
+
+        person = Person(name=u'Person', store=store)
+        city = CityLocation.get_default(store)
+        Address(store=store,
+                street=u'Rua Principal',
+                streetnumber=123,
+                postal_code=u'12345-678',
+                is_main_address=True,
+                person=person,
+                city_location=city)
+        client = Client(person=person, store=store)
+        client.credit_limit = currency("1000")
+        return client
 
     def _called_once_with_store(self, func, *expected_args):
         args = func.call_args[0]
@@ -141,6 +180,74 @@ class TestPos(BaseGUITest):
                 models = self.collect_sale_models(self.sale)
                 self.check_app(app, u'pos-checkout-post',
                                models=models)
+        finally:
+            for store in close_calls:
+                store.close()
+
+    @mock.patch('stoqlib.reporting.boleto.warning')
+    def test_checkout_with_bill(self, warning):
+        app = self.create_app(PosApp, u'pos')
+        pos = app
+        self._pos_open_till(pos)
+        pos.barcode.set_text(u'1598756984265')
+        self.activate(pos.barcode)
+        self.check_app(app, u'pos-bill-checkout-pre')
+        close_calls = []
+
+        def close(store):
+            if not store in close_calls:
+                close_calls.insert(0, store)
+
+        try:
+            with contextlib.nested(
+                mock.patch.object(StoqlibStore, 'confirm'),
+                mock.patch.object(StoqlibStore, 'close', new=close),
+                mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                           self._auto_confirm_sale_wizard_with_bill)):
+
+                self.activate(pos.ConfirmOrder)
+                description = ("Account 'Imbalance' must be a bank account.\n"
+                               "You need to configure the bill payment method in "
+                               "the admin application and try again")
+                warning.assert_called_once_with('Could not print Bill Report',
+                                                description=description)
+                models = self.collect_sale_models(self.sale)
+                self.check_app(app, u'pos-bill-checkout-post', models=models)
+        finally:
+            for store in close_calls:
+                store.close()
+
+    @mock.patch('stoqlib.gui.fiscalprinter.yesno')
+    @mock.patch('stoqlib.gui.fiscalprinter.print_report')
+    def test_checkout_with_store_credit(self, print_report, yesno):
+        app = self.create_app(PosApp, u'pos')
+        pos = app
+        self._pos_open_till(pos)
+        pos.barcode.set_text(u'1598756984265')
+        self.activate(pos.barcode)
+        self.check_app(app, u'pos-booklets-checkout-pre')
+        close_calls = []
+
+        def close(store):
+            if not store in close_calls:
+                close_calls.insert(0, store)
+
+        try:
+            with contextlib.nested(
+                mock.patch.object(StoqlibStore, 'confirm'),
+                mock.patch.object(StoqlibStore, 'close', new=close),
+                mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                           self._auto_confirm_sale_wizard_with_store_credit)):
+                self.activate(pos.ConfirmOrder)
+
+                yesno.assert_called_once_with(
+                    'Do you want to print the booklets for this sale?',
+                    gtk.RESPONSE_YES, 'Print booklets', "Don't print")
+                payments = list(self.sale.group.get_payments_by_method_name(u'store_credit'))
+                print_report.assert_called_once_with(BookletReport, payments)
+
+                models = self.collect_sale_models(self.sale)
+                self.check_app(app, u'pos-booklets-checkout-post', models=models)
         finally:
             for store in close_calls:
                 store.close()
