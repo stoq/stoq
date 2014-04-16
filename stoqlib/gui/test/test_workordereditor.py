@@ -233,7 +233,7 @@ class TestWorkOrderPackageSendEditor(GUITest):
 
         editor = WorkOrderPackageSendEditor(self.store)
         self.assertEqual(workorders_ids,
-                         set([wo.id for wo in editor.workorders]))
+                         set([wo_.id for wo_ in editor.workorders]))
 
         self.assertEqual(editor.model.package_items.count(), 0)
         # Only these 2 will be sent

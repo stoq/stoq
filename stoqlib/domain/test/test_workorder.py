@@ -835,7 +835,7 @@ class _TestWorkOrderView(DomainTest):
 
         self.assertEqual(
             workorders_ids,
-            set([wo.id for wo in self.store.find(self.view)]))
+            set([wo_.id for wo_ in self.store.find(self.view)]))
 
     def test_find_by_current_branch(self):
         branch = self.create_branch()
@@ -852,7 +852,7 @@ class _TestWorkOrderView(DomainTest):
                 workorders_ids.add(wo.id)
 
         workorders = self.view.find_by_current_branch(self.store, branch)
-        self.assertEqual(workorders_ids, set([wo.id for wo in workorders]))
+        self.assertEqual(workorders_ids, set([wo_.id for wo_ in workorders]))
 
     def test_find_pending(self):
         wo1 = self.create_workorder()
@@ -993,7 +993,7 @@ class TestWorkWithPackageView(TestWorkOrderView):
                 workorders_ids.add(wo.id)
 
         workorders = self.view.find_by_package(self.store, package1)
-        self.assertEqual(workorders_ids, set([wo.id for wo in workorders]))
+        self.assertEqual(workorders_ids, set([wo_.id for wo_ in workorders]))
 
         workorders = self.view.find_by_package(self.store, package2)
         self.assertEqual(workorders.count(), 0)
@@ -1042,7 +1042,7 @@ class _TestWorkOrderPackageView(DomainTest):
 
         self.assertEqual(
             packages_ids,
-            set([package.id for package in self.store.find(self.view)]))
+            set([p.id for p in self.store.find(self.view)]))
 
     def test_find_by_destination_branch(self):
         branch = self.create_branch()
@@ -1060,7 +1060,7 @@ class _TestWorkOrderPackageView(DomainTest):
 
         packages = self.view.find_by_destination_branch(self.store, branch)
         self.assertEqual(packages_ids,
-                         set([package.id for package in packages]))
+                         set([p.id for p in packages]))
 
     def test_values(self):
         package1 = self.create_workorder_package()
