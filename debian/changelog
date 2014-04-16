@@ -1,3 +1,9 @@
+stoq (1.7.3) precise; urgency=low
+
+  * Bugfix Release 1.7.3
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Wed, 16 Apr 2014 14:10:50 -0300
+
 stoq (1.7.2) precise; urgency=low
 
   * Bugfix Release 1.7.2
