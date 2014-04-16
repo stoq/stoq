@@ -73,7 +73,11 @@ jenkins: check-source-all
 	tar xfz stoq-$$VERSION.tar.gz; \
 	cd stoq-$$VERSION; \
 	python runtests.py \
+	    --with-xcoverage \
 	    --with-xunit \
+	    --cover-package=stoq,stoqlib \
+	    --cover-erase \
+	    --cover-inclusive \
 	    $(TEST_MODULES)
 
 external:

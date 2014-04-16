@@ -32,10 +32,6 @@ from storm.variables import (DateVariable, DateTimeVariable,
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 
 
-class BLOBCol(RawStr):
-    pass
-
-
 class PriceVariable(DecimalVariable):
     def parse_set(self, value, from_db):
         # XXX: We cannot reduce the precision when converting to currency, since

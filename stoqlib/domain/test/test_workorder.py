@@ -359,7 +359,7 @@ class TestWorkOrderView(DomainTest):
 
         self.assertEqual(
             workorders_ids,
-            set([wo.id for wo in self.store.find(WorkOrderView)]))
+            set([wo_.id for wo_ in self.store.find(WorkOrderView)]))
 
     def testValues(self):
         workorder1 = self.create_workorder()
@@ -394,7 +394,7 @@ class TestWorkOrderFinishedView(DomainTest):
 
         self.assertEqual(
             finished_workorders_ids,
-            set([wo.id for wo in self.store.find(WorkOrderFinishedView)]))
+            set([wo_.id for wo_ in self.store.find(WorkOrderFinishedView)]))
 
     def testPostSearchCallback(self):
         sellable = self.create_sellable()
