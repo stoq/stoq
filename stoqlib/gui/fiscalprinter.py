@@ -46,7 +46,7 @@ from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
-from stoqlib.exceptions import DeviceError, TillError, SellError
+from stoqlib.exceptions import DeviceError, TillError, SellError, ReportError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import (TillOpeningEditor,
                                             TillClosingEditor,
@@ -533,22 +533,22 @@ class FiscalCoupon(gobject.GObject):
         booklets = list(group.get_payments_by_method_name(u'store_credit'))
         bills = list(group.get_payments_by_method_name(u'bill'))
 
-        try:
-            if (booklets and
-                yesno(_("Do you want to print the booklets for this sale?"),
-                      gtk.RESPONSE_YES, _("Print booklets"), _("Don't print"))):
+        if (booklets and
+            yesno(_("Do you want to print the booklets for this sale?"),
+                  gtk.RESPONSE_YES, _("Print booklets"), _("Don't print"))):
+            try:
                 print_report(BookletReport, booklets)
+            except ReportError:
+                warning(_("Could not print booklets"))
 
-            if (bills and BillReport.check_printable(bills) and
-                yesno(_("Do you want to print the bills for this sale?"),
-                      gtk.RESPONSE_YES, _("Print bills"), _("Don't print"))):
+        if (bills and BillReport.check_printable(bills) and
+            yesno(_("Do you want to print the bills for this sale?"),
+                  gtk.RESPONSE_YES, _("Print bills"), _("Don't print"))):
+            try:
                 print_report(BillReport, bills)
-        except:
-            if booklets:
-                warning(_("Could not print Booklets"))
-            elif bills:
-                warning(_("Could not print Bill Report"))
-            return True
+            except ReportError:
+                # TRANSLATORS: bills here refers to "boletos" in pt_BR
+                warning(_("Could not print bills"))
 
         return True
 
