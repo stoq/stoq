@@ -294,4 +294,5 @@ class UserDetailsSlave(BaseEditorSlave):
             return ValidationError('Username already exist')
 
     def on_change_password_button__clicked(self, button):
-        run_dialog(PasswordEditor, self, self.store, self.model)
+        parent = self.get_toplevel().get_toplevel()
+        run_dialog(PasswordEditor, parent, self.store, self.model)
