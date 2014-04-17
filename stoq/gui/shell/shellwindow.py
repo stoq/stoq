@@ -1025,7 +1025,7 @@ class ShellWindow(GladeDelegate):
         show_contents()
 
     def on_HelpTranslate__activate(self, action):
-        self._show_uri("https://translations.launchpad.net/stoq")
+        self._show_uri("https://www.transifex.com/projects/p/stoq")
 
     def on_HelpChat__activate(self, action):
         self._show_uri("http://chat.stoq.com.br/")
