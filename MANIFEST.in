@@ -27,5 +27,3 @@ include stoq.desktop
 include stoq.spec
 include data/br.com.stoq.createdatabase.policy
 include __main__.py runtests.py
-include tools/pep8.py tools/git-hooks/pre-commit tools/pylint.rcfile
-include tools/pylint_stoq.py tools/source-tests.sh
