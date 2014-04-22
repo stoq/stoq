@@ -78,7 +78,6 @@ class ShellBootstrap(object):
         self._load_key_bindings()
         self._setup_debug_options()
         self._check_locale()
-        self._check_postgres()
 
     def _setup_gobject(self):
         if not self._initial:
@@ -155,36 +154,6 @@ class ShellBootstrap(object):
     def _check_dependencies(self):
         from stoq.lib.dependencies import check_dependencies
         check_dependencies()
-
-    def _check_postgres(self):
-        from stoqlib.database.settings import (check_extensions,
-                                               test_local_database,
-                                               db_settings)
-        try:
-            check_extensions(store=db_settings.create_super_store())
-        except ValueError:
-            need_contrib = True
-        else:
-            need_contrib = False
-
-        if not need_contrib:
-            return
-
-        import gtk
-        from kiwi.ui.dialogs import messagedialog
-
-        msgs = [_("Missing PostgreSQL extension on the server. "
-                  "Future versions of Stoq will require it to work.")]
-        if test_local_database():
-            msgs.append(
-                _("You can install it by clicking "
-                  "<a href='apt:postgresql-contrib'>here</a>"))
-        else:
-            msgs.append(
-                _("Please ask your system administrator to install the "
-                  "package postgresql-contrib on it."))
-
-        messagedialog(gtk.MESSAGE_WARNING, '\n\n'.join(msgs), bold=False)
 
     def _setup_exception_hook(self):
         if self._options.debug:

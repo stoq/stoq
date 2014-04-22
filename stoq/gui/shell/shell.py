@@ -114,9 +114,40 @@ class ShellDatabaseConnection(object):
                   'error=%s uri=%s' % (str(e), store_dsn))
 
     def _post_connect(self):
+        self._check_postgres()
         self._check_schema_migration()
         self._check_branch()
         self._activate_plugins()
+
+    def _check_postgres(self):
+        from stoqlib.database.settings import (check_extensions,
+                                               test_local_database,
+                                               db_settings)
+        try:
+            check_extensions(store=db_settings.create_super_store())
+        except ValueError:
+            need_contrib = True
+        else:
+            need_contrib = False
+
+        if not need_contrib:
+            return
+
+        import gtk
+        from kiwi.ui.dialogs import messagedialog
+
+        msgs = [_("Missing PostgreSQL extension on the server. "
+                  "Future versions of Stoq will require it to work.")]
+        if test_local_database():
+            msgs.append(
+                _("You can install it by clicking "
+                  "<a href='apt:postgresql-contrib'>here</a>"))
+        else:
+            msgs.append(
+                _("Please ask your system administrator to install the "
+                  "package postgresql-contrib on it."))
+
+        messagedialog(gtk.MESSAGE_WARNING, '\n\n'.join(msgs), bold=False)
 
     def _check_schema_migration(self):
         from stoqlib.lib.message import error
