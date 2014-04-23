@@ -841,6 +841,7 @@ class SaleItemsView(Viewable):
     sale_date = Sale.open_date
     client_name = Person.name
     quantity = SaleItem.quantity
+    price = SaleItem.price
     unit_description = SellableUnit.description
     batch_number = Coalesce(StorableBatch.batch_number, u'')
     batch_date = StorableBatch.create_date
