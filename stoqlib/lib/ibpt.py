@@ -62,19 +62,20 @@ def calculate_tax_for_item(item):
     product = sellable.product
     if not product:
         return Decimal("0")
-    ncm = product.ncm
-    options = taxes_data.get(ncm, {})
+    ncm = product.ncm or ''
+    options = taxes_data.get(ncm.lstrip('0'), {})
     n_options = len(options)
     if n_options == 0:
         tax_value = Decimal("0"), Decimal("0")
     elif n_options == 1:
         tax_value = options['']
     else:
-        tax_value = options.get(product.ex_tipi) or options['']
+        ex_tipi = product.ex_tipi or ''
+        tax_value = options.get(ex_tipi.lstrip('0')) or options['']
 
     if product.icms_template:
-        # Values (0, 3, 4, 5) represent the taxes codes of brazilian origin.
-        if product.icms_template.orig in (0, 3, 4, 5):
+        # Values (0, 3, 4, 5, 8) represent the taxes codes of brazilian origin.
+        if product.icms_template.orig in (0, 3, 4, 5, 8):
             tax_origin_value = Decimal(tax_value[0]) / 100
         # Different codes, represent taxes of international origin.
         else:
