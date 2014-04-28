@@ -31,6 +31,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ObjectList
 from kiwi.ui.widgets.list import SummaryLabel
+from storm.expr import And, Ne
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import InventoryItemsView
@@ -115,7 +116,10 @@ class ProductStockHistoryDialog(BaseEditor):
             items = items.find(Branch.id == current_branch.id)
         self.sales_list.add_list(list(items))
 
-        items = self.store.find(TransferOrderItem, sellable_id=self.model.id)
+        items = self.store.find(
+            TransferOrderItem,
+            And(Ne(TransferOrderItem.transfer_order_id, None),
+                TransferOrderItem.sellable_id == self.model.id))
         self.transfer_list.add_list(list(items))
 
         items = self.store.find(LoanItemView, sellable_id=self.model.id)
