@@ -176,7 +176,7 @@ _bindings = [
      _("Print a receipt of the selected order")),
 
     # Payable application
-    ('app.payable.add_payable', '<Primary>p',
+    ('app.payable.add_payable', '',
      _("Create a new account payable")),
     ('app.payable.payment_flow_history', '<Primary>f',
      _('Show a report of payment expected to receive grouped by day')),
@@ -308,7 +308,7 @@ _bindings = [
     # books search publishers: <Primary><Alt>P
 
     # Receivable application
-    ('app.receivable.add_receiving', '<Primary>p',
+    ('app.receivable.add_receiving', '',
      _("Create a new account receivable")),
     ('app.receivable.payment_flow_history', '<Primary>f',
      _('Show a report of payment expected to receive grouped by day')),
