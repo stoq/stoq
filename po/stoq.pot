@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-16 12:28-0300\n"
+"POT-Creation-Date: 2014-04-29 16:42-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -889,7 +889,7 @@ msgid ""
 "hesitate to <a href=\"http://www.stoq.com.br/contato\">contact us</a>."
 msgstr ""
 
-#: ../data/glade/FinishInstallationStep.ui.h:7 ../stoq/gui/shell/shell.py:238
+#: ../data/glade/FinishInstallationStep.ui.h:7 ../stoq/gui/shell/shell.py:284
 msgid "Enable online services"
 msgstr ""
 
@@ -5077,7 +5077,7 @@ msgid ""
 "corrupted, please select another one."
 msgstr ""
 
-#: ../stoq/gui/config.py:986 ../stoq/gui/shell/shell.py:133
+#: ../stoq/gui/config.py:986 ../stoq/gui/shell/shell.py:179
 msgid "The database version differs from your installed version."
 msgstr ""
 
@@ -6469,28 +6469,11 @@ msgstr ""
 msgid "Cancel quote"
 msgstr ""
 
-#: ../stoq/gui/shell/bootstrap.py:113
+#: ../stoq/gui/shell/bootstrap.py:112
 #, python-format
 msgid ""
 "Could not set locale to %s. Make sure that you have the packages for this "
 "locale installed."
-msgstr ""
-
-#: ../stoq/gui/shell/bootstrap.py:176
-msgid ""
-"Missing PostgreSQL extension on the server. Future versions of Stoq will "
-"require it to work."
-msgstr ""
-
-#: ../stoq/gui/shell/bootstrap.py:180
-msgid ""
-"You can install it by clicking <a href='apt:postgresql-contrib'>here</a>"
-msgstr ""
-
-#: ../stoq/gui/shell/bootstrap.py:184
-msgid ""
-"Please ask your system administrator to install the package postgresql-"
-"contrib on it."
 msgstr ""
 
 #: ../stoq/gui/shell/shell.py:40
@@ -6505,24 +6488,49 @@ msgid ""
 "keeping your privacy intact.</b>"
 msgstr ""
 
+#: ../stoq/gui/shell/shell.py:136
+msgid ""
+"It looks like your database server is a little old. Future versions of Stoq "
+"will require PostgreSQL > 9.0 to work.\n"
+"\n"
+"Ask your system administrator to migrate it for you."
+msgstr ""
+
+#: ../stoq/gui/shell/shell.py:154
+msgid ""
+"Missing PostgreSQL extension on the server. Future versions of Stoq will "
+"require it to work."
+msgstr ""
+
 #: ../stoq/gui/shell/shell.py:158
+msgid ""
+"You can install it by clicking <a href='apt:postgresql-contrib'>here</a>"
+msgstr ""
+
+#: ../stoq/gui/shell/shell.py:162
+msgid ""
+"Please ask your system administrator to install the package postgresql-"
+"contrib on it."
+msgstr ""
+
+#: ../stoq/gui/shell/shell.py:204
 msgid "You need to register a company before start using Stoq"
 msgstr ""
 
-#: ../stoq/gui/shell/shell.py:160
+#: ../stoq/gui/shell/shell.py:206
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 
-#: ../stoq/gui/shell/shell.py:237
+#: ../stoq/gui/shell/shell.py:283
 msgid "Not right now"
 msgstr ""
 
-#: ../stoq/gui/shell/shell.py:240
+#: ../stoq/gui/shell/shell.py:286
 msgid "Do you want to enable Stoq online services?"
 msgstr ""
 
-#: ../stoq/gui/shell/shell.py:399
+#: ../stoq/gui/shell/shell.py:445
 #, python-format
 msgid ""
 "This user lacks credentials \n"

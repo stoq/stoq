@@ -120,15 +120,28 @@ class ShellDatabaseConnection(object):
         self._activate_plugins()
 
     def _check_postgres(self):
+        from stoqlib.database.exceptions import ProgrammingError
+        from stoqlib.database.runtime import new_store
         from stoqlib.database.settings import (check_extensions,
-                                               test_local_database,
-                                               db_settings)
+                                               test_local_database)
+
+        store = new_store()
         try:
-            check_extensions(store=db_settings.create_super_store())
+            check_extensions(store=store)
+        except ProgrammingError:
+            # This will happen if the user is running postgres <= 8.4
+            from stoqlib.lib.message import warning
+            warning(_("It looks like your database server is a little "
+                      "old. Future versions of Stoq will require "
+                      "PostgreSQL > 9.0 to work.\n\nAsk your system "
+                      "administrator to migrate it for you."))
+            return
         except ValueError:
             need_contrib = True
         else:
             need_contrib = False
+        finally:
+            store.close()
 
         if not need_contrib:
             return

@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-16 12:28-0300\n"
+"POT-Creation-Date: 2014-04-29 16:42-0300\n"
 "PO-Revision-Date: 2013-02-20 00:39+0000\n"
 "Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -924,7 +924,7 @@ msgstr ""
 "banco de dados de outra aplicação ou gostaria de customizar o Stoq, não "
 "hesite <a href=\"http://www.stoq.com.br/contato\">entrar em contato</a>."
 
-#: ../data/glade/FinishInstallationStep.ui.h:7 ../stoq/gui/shell/shell.py:238
+#: ../data/glade/FinishInstallationStep.ui.h:7 ../stoq/gui/shell/shell.py:284
 msgid "Enable online services"
 msgstr "Habilitar serviços online"
 
@@ -3876,6 +3876,7 @@ msgstr ""
 "impressora fiscal."
 
 #: ../plugins/ecf/couponprinter.py:422
+#, python-format
 msgid "Salesperson: %s"
 msgstr "Vendedor: %s"
 
@@ -5240,7 +5241,7 @@ msgstr ""
 "com sucesso, porém, este está corrompido ou não é um banco de dados do Stoq. "
 "Por favor, selecione outro."
 
-#: ../stoq/gui/config.py:986 ../stoq/gui/shell/shell.py:133
+#: ../stoq/gui/config.py:986 ../stoq/gui/shell/shell.py:179
 msgid "The database version differs from your installed version."
 msgstr "A versão do banco de dados difere da sua versão instalada."
 
@@ -6654,7 +6655,7 @@ msgstr "Isto irá cancelar a cotação selecionada. Você tem certeza?"
 msgid "Cancel quote"
 msgstr "Cancelar cotação"
 
-#: ../stoq/gui/shell/bootstrap.py:113
+#: ../stoq/gui/shell/bootstrap.py:112
 #, python-format
 msgid ""
 "Could not set locale to %s. Make sure that you have the packages for this "
@@ -6662,28 +6663,6 @@ msgid ""
 msgstr ""
 "Não foi possível setar a localização para %s. Tenha certeza de ter instalado "
 "os pacotes para esta localização."
-
-#: ../stoq/gui/shell/bootstrap.py:176
-msgid ""
-"Missing PostgreSQL extension on the server. Future versions of Stoq will "
-"require it to work."
-msgstr ""
-"Extensão do PostgreSQL não foi encontrada no servidor. Versões futuras "
-"do Stoq vão precisar dela para funcionar."
-
-#: ../stoq/gui/shell/bootstrap.py:180
-msgid ""
-"You can install it by clicking <a href='apt:postgresql-contrib'>here</a>"
-msgstr ""
-"Você pode instalá-la clicando <a href='apt:postgresql-contrib'>aqui</a>"
-
-#: ../stoq/gui/shell/bootstrap.py:184
-msgid ""
-"Please ask your system administrator to install the package postgresql-"
-"contrib on it."
-msgstr ""
-"Por favor, peça ao seu administrador de sistemas para que instale "
-"o pacote postgresql-contrib nele"
 
 #: ../stoq/gui/shell/shell.py:40
 msgid ""
@@ -6705,26 +6684,59 @@ msgstr ""
 "<b>Nós não iremos divulgar as informações coletadas e estamos comprometidos "
 "em manter a sua privacidade intacta.</b>"
 
+#: ../stoq/gui/shell/shell.py:136
+msgid ""
+"It looks like your database server is a little old. Future versions of Stoq "
+"will require PostgreSQL > 9.0 to work.\n"
+"\n"
+"Ask your system administrator to migrate it for you."
+msgstr ""
+"Parece que a versão do seu banco de dados está um pouco velha. Versões "
+"futuras do Stoq irão precisar de um PostgreSQL > 9.0 para funcionar\n\n"
+"Peça ao seu administrador de sistemas para que faça a migração para você"
+
+#: ../stoq/gui/shell/shell.py:154
+msgid ""
+"Missing PostgreSQL extension on the server. Future versions of Stoq will "
+"require it to work."
+msgstr ""
+"Extensão do PostgreSQL não foi encontrada no servidor. Versões futuras do "
+"Stoq vão precisar dela para funcionar."
+
 #: ../stoq/gui/shell/shell.py:158
+msgid ""
+"You can install it by clicking <a href='apt:postgresql-contrib'>here</a>"
+msgstr ""
+"Você pode instalá-la clicando <a href='apt:postgresql-contrib'>aqui</a>"
+
+#: ../stoq/gui/shell/shell.py:162
+msgid ""
+"Please ask your system administrator to install the package postgresql-"
+"contrib on it."
+msgstr ""
+"Por favor, peça ao seu administrador de sistemas para que instale o pacote "
+"postgresql-contrib nele"
+
+#: ../stoq/gui/shell/shell.py:204
 msgid "You need to register a company before start using Stoq"
 msgstr "Você precisa registrar uma empresa antes de começar a utilizar o Stoq"
 
-#: ../stoq/gui/shell/shell.py:160
+#: ../stoq/gui/shell/shell.py:206
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 "Não foi possível encontrar uma empresa. Você precisa registrar uma antes de "
 "começar a utilizar o Stoq"
 
-#: ../stoq/gui/shell/shell.py:237
+#: ../stoq/gui/shell/shell.py:283
 msgid "Not right now"
 msgstr "Não agora"
 
-#: ../stoq/gui/shell/shell.py:240
+#: ../stoq/gui/shell/shell.py:286
 msgid "Do you want to enable Stoq online services?"
 msgstr "Você gostaria de habilitar os serviços online do Stoq?"
 
-#: ../stoq/gui/shell/shell.py:399
+#: ../stoq/gui/shell/shell.py:445
 #, python-format
 msgid ""
 "This user lacks credentials \n"
@@ -12121,8 +12133,8 @@ msgid ""
 msgstr ""
 "Note que esta operação não vai gerar entradas de caixa para o(s) "
 "pagamento(s) em dinheiro. \n"
-"Se você está adicionando dinheiro no caixa, faça também um suprimento "
-"no aplicativo Caixa"
+"Se você está adicionando dinheiro no caixa, faça também um suprimento no "
+"aplicativo Caixa"
 
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:519
 msgid "Supplier: "
@@ -12138,8 +12150,8 @@ msgid ""
 msgstr ""
 "Note que esta operação não vai gerar entradas de caixa para o(s) "
 "pagamento(s) em dinheiro. \n"
-"Se você está removendo dinheiro no caixa, faça também uma sangria "
-"no aplicativo Caixa"
+"Se você está removendo dinheiro no caixa, faça também uma sangria no "
+"aplicativo Caixa"
 
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:553
 #: ../stoqlib/gui/wizards/salewizard.py:352
