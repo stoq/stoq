@@ -349,6 +349,7 @@ class SaleItem(Domain):
         :param decimal.Decimal discount: the discount to be applied
             as a percentage, e.g. 10.0, 22.5
         """
+        assert 0 < discount <= 100
         self.price = quantize(self.base_price * (1 - discount / 100))
 
     def get_total(self):
@@ -1121,10 +1122,11 @@ class Sale(Domain):
             as a percentage, e.g. 10.0, 22.5
         """
         new_total = currency(0)
-
+        items = self.get_items()
         item = None
         candidate = None
-        for item in self.get_items():
+
+        for item in items:
             item.set_discount(discount)
             new_total += item.price * item.quantity
             if item.quantity == 1:
@@ -1141,6 +1143,12 @@ class Sale(Domain):
         if diff:
             item = candidate or item
             item.price -= diff
+
+        if any(item.price < 0 for item in items):  # pragma nocover
+            raise AssertionError(
+                "An item's value became negative after applying %s%% of "
+                "discount. The items'(base_price, new_price) are: %s" % (
+                    discount, [(i.base_price, i.price) for i in items]))
 
     #
     # Accessors
