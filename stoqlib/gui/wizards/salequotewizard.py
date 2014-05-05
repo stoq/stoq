@@ -396,7 +396,7 @@ class SaleQuoteItemStep(SellableItemStep):
             sellable.check_taxes_validity()
         except TaxError as strerr:
             # If the sellable icms taxes are not valid, we cannot sell it.
-            warning(strerr)
+            warning(str(strerr))
             return False
 
         return True

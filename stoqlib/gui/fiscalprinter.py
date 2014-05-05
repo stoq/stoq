@@ -115,8 +115,8 @@ class FiscalPrinterHelper(gobject.GObject):
         """Opens the till
         """
         if Till.get_current(self.store) is not None:
-            warning("You already have a till operation opened. "
-                    "Close the current Till and open another one.")
+            warning(_("You already have a till operation opened. "
+                      "Close the current Till and open another one."))
             return False
 
         store = api.new_store()
