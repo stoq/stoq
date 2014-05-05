@@ -93,7 +93,7 @@ class SaleQuoteItemEditor(BaseEditor):
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 
-        if self.nfe_is_active:
+        if not self.nfe_is_active:
             self.cfop_label.hide()
             self.cfop.hide()
 
