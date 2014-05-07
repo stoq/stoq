@@ -121,7 +121,9 @@ class StoqlibDebugTracer(BaseStatementTracer):
 
     def __init__(self, stream=None):
         # This colors will be used to highlight the transaction
-        self._available_colors = ['blue', 'green', 'magenta', 'yellow', 'cyan']
+        self._available_colors = ['blue', 'green', 'magenta', 'yellow', 'cyan',
+                                  'red']
+        self._current_color = 0
         # Mapping pid > color
         self._transactions = {}
         # Mapping pid > query count
@@ -188,7 +190,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
         self._transactions_count[pid] += 1
         count = self._transactions_count[pid]
         header_size = 9 + len(str(pid))
-        color = self._transactions.get(pid, 'red')
+        color = self._get_transaction_color(pid)
         pid = self._colored(pid, color)
 
         self._start_time = datetime.datetime.now()
@@ -222,28 +224,34 @@ class StoqlibDebugTracer(BaseStatementTracer):
                 text = ''
         self.write(text + '\n')
 
+    def _get_transaction_color(self, pid):
+        if pid not in self._transactions:
+            self._transactions[pid] = self._available_colors[self._current_color]
+            self._current_color += 1
+            if self._current_color == len(self._available_colors):
+                self._current_color = 0
+        return self._transactions[pid]
+
     def transaction_create(self, store):
         pid = store._connection._raw_connection.get_backend_pid()
-        self._transactions[pid] = color = self._available_colors.pop()
+        color = self._get_transaction_color(pid)
 
         self.header(pid, color, 'BEGIN')
 
     def transaction_commit(self, store):
         pid = store._connection._raw_connection.get_backend_pid()
-        color = self._transactions.get(pid, 'red')
+        color = self._get_transaction_color(pid)
         self.header(pid, color, 'COMIT')
 
     def transaction_rollback(self, store, xid=None):
         pid = store._connection._raw_connection.get_backend_pid()
-        color = self._transactions.get(pid, 'red')
+        color = self._get_transaction_color(pid)
         self.header(pid, color, 'ROLLB')
 
     def transaction_close(self, store):
         pid = store._connection._raw_connection.get_backend_pid()
-        color = self._transactions.get(pid, 'red')
-        if color != 'red':
-            self._available_colors.insert(0, color)
-            del self._transactions[pid]
+        color = self._get_transaction_color(pid)
+        del self._transactions[pid]
 
         self.header(pid, color, 'CLOSE')
 
