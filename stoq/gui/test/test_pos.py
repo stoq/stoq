@@ -24,7 +24,9 @@
 
 import contextlib
 from decimal import Decimal
+
 from kiwi.currency import currency
+from kiwi.datatypes import converter
 import mock
 import gtk
 
@@ -123,6 +125,16 @@ class TestPos(BaseGUITest):
         payment_method = PaymentMethod.get_by_name(store, u'store_credit')
         return self._auto_confirm_sale(wizard, app, store, sale, subtotal,
                                        total_paid, payment_method)
+
+    def _auto_confirm_sale_wizard_with_trade(self, wizard, app, store, sale,
+                                             subtotal, total_paid):
+        sale.order()
+        total_paid = sale.group.get_total_confirmed_value()
+        total = sale.get_total_sale_amount() - total_paid
+        payment_method = PaymentMethod.get_by_name(store, u'money')
+        payment_method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, total)
+        self.sale = sale
+        return sale
 
     def _create_client(self, store):
         from stoqlib.domain.address import Address, CityLocation
@@ -251,6 +263,81 @@ class TestPos(BaseGUITest):
         finally:
             for store in close_calls:
                 store.close()
+
+    @mock.patch('stoq.gui.pos.PosApp.run_dialog')
+    @mock.patch('stoq.gui.pos.info')
+    def test_checkout_with_trade(self, info, run_dialog):
+        pos = self._get_pos_with_open_till()
+        trade = self.create_trade(trade_value=287)
+        run_dialog.return_value = trade
+        self.activate(pos.NewTrade)
+        self.assertEquals(run_dialog.call_count, 1)
+        self.check_app(pos, u'pos-new-trade')
+
+        # Product value = 198
+        pos.barcode.set_text(u'6234564656756')
+        self.activate(pos.barcode)
+        with contextlib.nested(
+                mock.patch.object(StoqlibStore, 'confirm'),
+                mock.patch.object(StoqlibStore, 'rollback'),
+                mock.patch.object(StoqlibStore, 'close'),
+                mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                           self._auto_confirm_sale_wizard_with_trade)):
+            self.activate(pos.ConfirmOrder)
+            msg = ("Traded value is greater than the new sale's value. "
+                   "Please add more items or return it in Sales app, "
+                   "then make a new sale")
+            info.assert_called_once_with(msg)
+
+            pos.barcode.set_text(u'6234564656756')
+            self.activate(pos.barcode)
+            pos._current_store = trade.store
+            self.activate(pos.ConfirmOrder)
+
+            payments = self.sale.payments
+            total = self.sale.get_total_sale_amount() - trade.returned_total
+            self.assertEquals(len(list(payments)), 2)
+            self.assertEquals(payments[0].value, trade.returned_total)
+            self.assertEquals(payments[1].value, total)
+
+    @mock.patch('stoq.gui.pos.PosApp.run_dialog')
+    @mock.patch('stoq.gui.pos.info')
+    def test_checkout_with_trade_as_discount(self, info, run_dialog):
+        pos = self._get_pos_with_open_till()
+        trade = self.create_trade(trade_value=198)
+        run_dialog.return_value = trade
+        self.activate(pos.NewTrade)
+        self.assertEquals(run_dialog.call_count, 1)
+        self.check_app(pos, u'pos-new-trade-as-discount')
+
+        # Product value = 198
+        pos.barcode.set_text(u'6234564656756')
+        self.activate(pos.barcode)
+        with contextlib.nested(
+                self.sysparam(USE_TRADE_AS_DISCOUNT=True),
+                mock.patch.object(StoqlibStore, 'confirm'),
+                mock.patch.object(StoqlibStore, 'rollback'),
+                mock.patch.object(StoqlibStore, 'close'),
+                mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                           self._auto_confirm_sale_wizard_with_trade)):
+            self.activate(pos.ConfirmOrder)
+            info.assert_called_once_with(
+                "Traded value is equal to the new sale's value. "
+                "Please add more items or return it in Sales app, "
+                "then make a new sale")
+            # Product value = 89
+            pos.barcode.set_text(u'6985413595971')
+            self.activate(pos.barcode)
+            # Product value = 503
+            pos.barcode.set_text(u'9586249534513')
+            self.activate(pos.barcode)
+            pos._current_store = trade.store
+            self.activate(pos.ConfirmOrder)
+
+            payments = self.sale.payments
+            self.assertEquals(self.sale.discount_value, trade.returned_total)
+            self.assertEquals(len(list(payments)), 1)
+            self.assertEquals(payments[0].value, self.sale.get_total_sale_amount())
 
     def test_add_sale_item(self):
         app = self.create_app(PosApp, u'pos')
@@ -437,6 +524,43 @@ class TestPos(BaseGUITest):
         self.assertTrue(store is not None)
         self.assertEquals(item.sellable, sellable)
         self.assertEquals(item.service, service)
+
+    @mock.patch('stoq.gui.pos.PosApp.run_dialog')
+    def test_new_trade(self, run_dialog):
+        pos = self._get_pos_with_open_till()
+        trade = self.create_trade()
+        run_dialog.return_value = trade
+
+        self.activate(pos.NewTrade)
+        self.assertEquals(run_dialog.call_count, 1)
+
+        with mock.patch('stoq.gui.pos.yesno') as yesno:
+            self.activate(pos.NewTrade)
+            message = (u"There is already a trade in progress... Do you "
+                       u"want to cancel it and start a new one?")
+            yesno.assert_called_once_with(message, gtk.RESPONSE_NO,
+                                          u"Cancel trade", u"Finish trade")
+
+    @mock.patch('stoq.gui.pos.PosApp.run_dialog')
+    def test_cancel_trade(self, run_dialog):
+        pos = self._get_pos_with_open_till()
+        trade = self.create_trade()
+        run_dialog.return_value = trade
+        self.activate(pos.NewTrade)
+
+        self.assertIsNotNone(pos._trade_infobar)
+
+        value = converter.as_string(currency, trade.returned_total)
+        msg = (("There is a trade with value %s in progress...\n"
+                "When checking out, it will be used as part of "
+                "the payment.") % value)
+        self.assertEquals(pos._trade_infobar.label.get_label(), msg)
+
+        remove_button = pos._trade_infobar.get_action_area().get_children()[0]
+        with mock.patch('stoq.gui.pos.yesno') as yesno:
+            self.click(remove_button)
+            yesno.assertEquals("Do you really want to cancel the trade in progress?",
+                               gtk.RESPONSE_NO, "Cancel trade", "Don't cancel")
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_cancel_order(self, yesno):

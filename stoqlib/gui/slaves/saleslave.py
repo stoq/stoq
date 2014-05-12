@@ -40,6 +40,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.message import yesno, info, warning
 from stoqlib.lib.parameters import sysparam
@@ -63,6 +64,12 @@ class SaleDiscountSlave(BaseEditorSlave):
         self.model_type = model_type
         self.default_max_discount = sysparam.get_decimal('MAX_SALE_DISCOUNT')
         self.max_discount = self.default_max_discount
+        # If there is an original discount, this means the sale was from a trade,
+        # and the parameter USE_TRADE_AS_DISCOUNT must be set.
+        self.original_discount = self.model.discount_value * 100 / self.model.get_sale_subtotal()
+        if self.original_discount:
+            assert sysparam.get_bool('USE_TRADE_AS_DISCOUNT')
+        self.original_sale_amount = self.model.get_total_sale_amount()
         BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     def setup_widgets(self):
@@ -101,20 +108,31 @@ class SaleDiscountSlave(BaseEditorSlave):
         self.emit('discount-changed')
 
     def _validate_percentage(self, value, type_text):
-        old_discount = self.model.discount_value
         if value >= 100:
             self.model.discount_percentage = 0
             return ValidationError(_(u'%s can not be greater or equal '
                                      'to 100%%.') % type_text)
-        if value > self.max_discount:
-            self.model.discount_percentage = 0
-            return ValidationError(_("%s can not be greater then %d%%")
-                                   % (type_text, self.max_discount))
         if value < 0:
             self.model.discount_percentage = 0
-            return ValidationError(_("%s can not be less then 0")
+            return ValidationError(_("%s can not be less than 0")
                                    % type_text)
 
+        if (not sysparam.get_bool('USE_TRADE_AS_DISCOUNT') and
+            value > self.max_discount):
+            self.model.discount_percentage = 0
+            return ValidationError(_("%s can not be greater than %d%%")
+                                   % (type_text, self.max_discount))
+
+        discount = self.max_discount / 100 * self.original_sale_amount
+        perc = discount * 100 / self.model.get_sale_subtotal()
+        new_discount = quantize(self.original_discount + perc)
+        #XXX: If the discount is less than the trade value. What to do?
+        if (sysparam.get_bool('USE_TRADE_AS_DISCOUNT') and value > new_discount):
+            self.model.discount_percentage = 0
+            return ValidationError(_(u'%s can not be greater than (%.2f%%).')
+                                   % (type_text, new_discount))
+
+        old_discount = self.model.discount_value
         # Avoid unecessary updates if the discount didnt change
         if self.model.discount_value != old_discount:
             self.update_sale_discount()
@@ -140,10 +158,14 @@ class SaleDiscountSlave(BaseEditorSlave):
     #
 
     def on_discount_perc__validate(self, entry, value):
+        if not self.discount_perc.is_sensitive() or self._proxy is None:
+            return
         return self._validate_percentage(value, _('Discount'))
 
     def on_discount_value__validate(self, entry, value):
-        percentage = value * 100 / self.model.get_total_sale_amount()
+        if not self.discount_value.is_sensitive() or self._proxy is None:
+            return
+        percentage = quantize(value * 100 / self.model.get_sale_subtotal())
         return self._validate_percentage(percentage, _(u'Discount'))
 
     @signal_block('discount_value.changed')

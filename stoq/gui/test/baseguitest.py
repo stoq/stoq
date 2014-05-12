@@ -27,6 +27,7 @@ import mock
 
 from stoqlib.api import api
 from stoqlib.domain.profile import ProfileSettings
+from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.test.uitestutils import GUITest
 
 import stoq
@@ -40,7 +41,18 @@ class MockShellWindow(ShellWindow):
     in_ui_test = True
 
     def add_info_bar(self, message_type, label, action_widget=None):
-        pass
+        infobar = MessageBar(label, message_type)
+        assert infobar is not None
+
+        if action_widget:
+            infobar.add_action_widget(action_widget, 0)
+            action_widget.show()
+        infobar.show()
+
+        self.main_vbox.pack_start(infobar, False, False, 0)
+        self.main_vbox.reorder_child(infobar, 2)
+
+        return infobar
 
 
 class BaseGUITest(GUITest):

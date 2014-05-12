@@ -582,8 +582,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         # Here we need avoid to reset sale data defined when creating the
         # Sale in the POS application, i.e, we should not reset the
         # discount and surcharge if they are already set (this is the
-        # case when CONFIRM_SALES_ON_TILL parameter is enabled).
-        if not sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
+        # case when one of the parameters, CONFIRM_SALES_ON_TILL or
+        # USE_TRADE_AS_DISCOUNT is enabled).
+        if (not sysparam.get_bool('CONFIRM_SALES_ON_TILL') and
+            not sysparam.get_bool('USE_TRADE_AS_DISCOUNT')):
             self.model.discount_value = currency(0)
             self.model.surcharge_value = currency(0)
 
@@ -675,6 +677,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         marker('Setting discount')
         self.discount_slave = SaleDiscountSlave(self.store, self.model,
                                                 self.model_type)
+
+        if sysparam.get_bool('USE_TRADE_AS_DISCOUNT'):
+            self.subtotal_expander.set_expanded(True)
+            self.discount_slave.discount_value_ck.set_active(True)
+            self.discount_slave.update_sale_discount()
         marker('Finshed setting up discount')
 
         self.discount_slave.connect('discount-changed',

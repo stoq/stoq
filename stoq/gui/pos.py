@@ -965,8 +965,17 @@ class PosApp(ShellApp):
             savepoint = None
 
         if self._trade:
-            if self._get_subtotal() < self._trade.returned_total:
+            subtotal = self._get_subtotal()
+            returned_total = self._trade.returned_total
+            if subtotal < returned_total:
                 info(_("Traded value is greater than the new sale's value. "
+                       "Please add more items or return it in Sales app, "
+                       "then make a new sale"))
+                return
+
+            if (sysparam.get_bool('USE_TRADE_AS_DISCOUNT') and
+                subtotal == returned_total):
+                info(_("Traded value is equal to the new sale's value. "
                        "Please add more items or return it in Sales app, "
                        "then make a new sale"))
                 return

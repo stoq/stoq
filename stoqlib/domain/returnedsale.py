@@ -41,6 +41,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.lib.dateutils import localnow
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -341,7 +342,11 @@ class ReturnedSale(Domain):
             if method_name == u'credit':
                 payment.pay()
 
-        self._return_sale(payment)
+        self._return_items()
+        # FIXME: For now, we are not reverting the comission as there is a
+        # lot of things to consider. See bug 5215 for information about it.
+        self._revert_fiscal_entry()
+        self.sale.return_(self)
 
     def trade(self):
         """Do a trade for this return
@@ -362,12 +367,21 @@ class ReturnedSale(Domain):
         description = _(u'Traded items for sale %s') % (
             self.new_sale.identifier, )
         value = self.returned_total
-        payment = method.create_payment(Payment.TYPE_IN, group, self.branch, value,
-                                        description=description)
-        payment.set_pending()
-        payment.pay()
 
-        self._return_sale(payment)
+        self._return_items()
+
+        value_as_discount = sysparam.get_bool('USE_TRADE_AS_DISCOUNT')
+        if value_as_discount:
+            self.new_sale.discount_value = self.returned_total
+        else:
+            payment = method.create_payment(Payment.TYPE_IN, group, self.branch, value,
+                                            description=description)
+            payment.set_pending()
+            payment.pay()
+            self._revert_fiscal_entry()
+
+        if self.sale:
+            self.sale.return_(self)
 
     def remove(self):
         """Remove this return and it's items from the database"""
@@ -380,6 +394,14 @@ class ReturnedSale(Domain):
     #  Private
     #
 
+    def _return_items(self):
+        # We must have at least one item to return
+        assert self.returned_items.count()
+
+        branch = get_current_branch(self.store)
+        for item in self.returned_items:
+            item.return_(branch)
+
     def _get_returned_percentage(self):
         return decimal.Decimal(self.returned_total / self.sale.total_amount)
 
@@ -389,20 +411,6 @@ class ReturnedSale(Domain):
             if not item.quantity:
                 # Removed items not marked for return
                 item.delete(item.id, store=store)
-
-    def _return_sale(self, payment):
-        # We must have at least one item to return
-        assert self.returned_items.count()
-
-        branch = get_current_branch(self.store)
-        for item in self.returned_items:
-            item.return_(branch)
-
-        if self.sale:
-            # FIXME: For now, we are not reverting the comission as there is a
-            # lot of things to consider. See bug 5215 for information about it.
-            self._revert_fiscal_entry()
-            self.sale.return_(self)
 
     def _revert_fiscal_entry(self):
         entry = self.store.find(FiscalBookEntry,

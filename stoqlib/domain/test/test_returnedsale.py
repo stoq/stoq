@@ -27,7 +27,7 @@ import decimal
 from kiwi.currency import currency
 import mock
 
-from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
@@ -206,8 +206,79 @@ class TestReturnedSale(DomainTest):
                          quantity=0)
         rsale.return_(u'credit')
 
-    def test_trade(self):
-        pass
+    def test_trade_as_discount(self):
+        sale = self.create_sale(branch=get_current_branch(self.store))
+        self.assertEqual(sale.discount_value, currency(0))
+
+        sellable = self.add_product(sale, price=50)
+        storable = sellable.product_storable
+        balance_before_confirm = storable.get_balance_for_branch(sale.branch)
+        sale.order()
+
+        self.add_payments(sale)
+        sale.confirm()
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_confirm - 1)
+        balance_before_trade = storable.get_balance_for_branch(sale.branch)
+
+        returned_sale = sale.create_sale_return_adapter()
+        new_sale = self.create_sale()
+        returned_sale.new_sale = new_sale
+        with self.sysparam(USE_TRADE_AS_DISCOUNT=True):
+            returned_sale.trade()
+            self.assertEqual(new_sale.discount_value, currency(50))
+
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_trade + 1)
+
+    def test_trade_without_sale(self):
+        # With discount
+        branch = get_current_branch(self.store)
+        returned_sale = ReturnedSale(store=self.store,
+                                     responsible=get_current_user(self.store),
+                                     branch=branch)
+        storable = self.create_storable(branch=branch,
+                                        stock=10)
+        ReturnedSaleItem(store=self.store,
+                         quantity=1,
+                         price=10,
+                         sellable=storable.product.sellable,
+                         returned_sale=returned_sale)
+        new_sale = self.create_sale()
+        returned_sale.new_sale = new_sale
+        balance_before_trade = storable.get_balance_for_branch(branch)
+
+        with self.sysparam(USE_TRADE_AS_DISCOUNT=True):
+            returned_sale.trade()
+            self.assertEqual(new_sale.discount_value, currency(10))
+
+        self.assertEqual(storable.get_balance_for_branch(branch),
+                         balance_before_trade + 1)
+
+        # Without discount
+        returned_sale2 = ReturnedSale(store=self.store,
+                                      responsible=get_current_user(self.store),
+                                      branch=branch)
+        storable = self.create_storable(branch=branch,
+                                        stock=10)
+        ReturnedSaleItem(store=self.store,
+                         quantity=1,
+                         price=10,
+                         sellable=storable.product.sellable,
+                         returned_sale=returned_sale2)
+        new_sale = self.create_sale()
+        returned_sale2.new_sale = new_sale
+        balance_before_trade = storable.get_balance_for_branch(branch)
+
+        returned_sale2.trade()
+        self.assertEqual(new_sale.discount_value, currency(0))
+
+        group = new_sale.group
+        payment = group.payments[0]
+        self.assertEqual(group.payments.count(), 1)
+        self.assertEqual(payment.value, returned_sale2.returned_total)
+        self.assertEqual(storable.get_balance_for_branch(branch),
+                         balance_before_trade + 1)
 
 
 class TestReturnedSaleItem(DomainTest):

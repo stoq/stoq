@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 from dateutil.relativedelta import relativedelta
 from kiwi.currency import currency
 import mock
@@ -88,11 +89,11 @@ class TestConfirmSaleWizard(GUITest):
         # 1: select cost cebnter
         # 2: select invoice number
         # 1: select payment method
-        # 3: select sale_item
+        # 4: select sale_item
         #  - one is need_adjust_batches
         # 1: select payment status
         # 1: select the branch acronym for sale repr()
-        self.assertEquals(tracer.count, 15)
+        self.assertEquals(tracer.count, 16)
 
     def test_create(self):
         self._create_wizard()
@@ -136,6 +137,23 @@ class TestConfirmSaleWizard(GUITest):
 
         # No payment created, since the client already paid the whole value
         self.assertEquals(self.sale.payments.count(), 0)
+
+    def test_sale_with_trade_as_discount(self):
+        with contextlib.nested(self.sysparam(USE_TRADE_AS_DISCOUNT=True),
+                               mock.patch.object(self.store, 'commit')):
+            trade = self.create_trade(trade_value=100)
+            sale = trade.new_sale
+            self._create_wizard(sale=sale)
+
+            discount_slave = self.step.discount_slave
+            self.assertSensitive(discount_slave, ['discount_value'])
+            self.assertEquals(discount_slave.discount_value.get_text(), '100.00')
+            self.assertSensitive(self.wizard, ['next_button'])
+
+            # Discount, greater then max discount + trade discount
+            discount_slave.discount_value.set_text('190')
+            self.assertNotSensitive(self.wizard, ['next_button'])
+            discount_slave.discount_value.validate(force=True)
 
     def test_sale_payment_reserved(self):
         sale = self.create_sale()

@@ -26,7 +26,6 @@
 import decimal
 
 from kiwi.ui.objectlist import Column
-from storm.expr import And
 from zope.interface import providedBy
 
 from stoqlib.api import api
@@ -56,11 +55,7 @@ class ParameterSearch(BaseEditor):
 
     def _setup_widgets(self):
         self.results.set_columns(self._get_columns())
-        clause = And(
-            # Do not allow this parameter to be used by general users for now
-            ParameterData.field_name != u"ALLOW_TRADE_NOT_REGISTERED_SALES",
-        )
-        self._parameters = self.store.find(ParameterData, clause)
+        self._parameters = self.store.find(ParameterData)
         self._reset_results()
         self.edit_button.set_sensitive(False)
 
