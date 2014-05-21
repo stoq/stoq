@@ -266,6 +266,14 @@ _details = [
         u'payment.method.PaymentMethod'),
 
     ParameterDetails(
+        u'ALLOW_CANCEL_CONFIRMED_SALES',
+        _(u'Sales'),
+        _(u'Allow to cancel confirmed sales'),
+        _(u'When this parameter is True, allow the user to cancel confirmed and'
+          u' paid sales'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'CITY_SUGGESTED',
         _(u'General'),
         _(u'Default city'),

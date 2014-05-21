@@ -268,4 +268,56 @@ class TestSales(BaseGUITest):
                 yesno.assert_called_once_with(u'This will cancel the selected '
                                               u'quote. Are you sure?',
                                               gtk.RESPONSE_NO,
-                                              u"Cancel quote", u"Don't cancel")
+                                              u"Cancel sale", u"Don't cancel")
+
+    @mock.patch('stoq.gui.sales.yesno')
+    @mock.patch('stoq.gui.sales.api.new_store')
+    def test_confirmed_sales_cancel(self, new_store, yesno):
+        api.sysparam.set_bool(self.store, 'ALLOW_CANCEL_CONFIRMED_SALES', True)
+        new_store.return_value = self.store
+        yesno.return_value = True
+
+        app = self.create_app(SalesApp, u'sales')
+        results = app.results
+        results.select(results[0])
+
+        results[0].status = Sale.STATUS_CONFIRMED
+        app._update_toolbar()
+
+        for item in results[0].sale.get_items():
+            item.quantity = 2
+
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.activate(app.SalesCancel)
+                self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
+                yesno.assert_called_once_with(u'This will cancel the selected '
+                                              u'quote. Are you sure?',
+                                              gtk.RESPONSE_NO,
+                                              u"Cancel sale", u"Don't cancel")
+
+    @mock.patch('stoq.gui.sales.yesno')
+    @mock.patch('stoq.gui.sales.api.new_store')
+    def test_paid_sales_cancel(self, new_store, yesno):
+        api.sysparam.set_bool(self.store, 'ALLOW_CANCEL_CONFIRMED_SALES', True)
+        new_store.return_value = self.store
+        yesno.return_value = True
+
+        app = self.create_app(SalesApp, u'sales')
+        results = app.results
+        results.select(results[0])
+
+        results[0].status = Sale.STATUS_PAID
+        app._update_toolbar()
+
+        for item in results[0].sale.get_items():
+            item.quantity = 2
+
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.activate(app.SalesCancel)
+                self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
+                yesno.assert_called_once_with(u'This will cancel the selected '
+                                              u'quote. Are you sure?',
+                                              gtk.RESPONSE_NO,
+                                              u"Cancel sale", u"Don't cancel")

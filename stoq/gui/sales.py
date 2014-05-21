@@ -184,7 +184,7 @@ class SalesApp(ShellApp):
             # Sale
             ("SaleMenu", None, _("Sale")),
 
-            ("SalesCancel", None, _("Cancel quote...")),
+            ("SalesCancel", None, _("Cancel")),
             ("ChangeClient", gtk.STOCK_EDIT, _("Change client...")),
             ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
             ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
@@ -332,8 +332,11 @@ class SalesApp(ShellApp):
                                             parent=self)
 
     def _can_cancel(self, view):
-        # Here we want to cancel only quoting sales. This is why we don't use
-        # Sale.can_cancel here.
+        # If ALLOW_CANCEL_CONFIRMED_SALES is set, we can use Sale.can_cancel to
+        # check if we can cancel that sale. Otherwise we can only cancel quoting
+        # sales
+        if api.sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES") and view:
+            return view.sale.can_cancel()
         return bool(view and view.status == Sale.STATUS_QUOTE)
 
     def _update_toolbar(self, *args):
@@ -495,7 +498,7 @@ class SalesApp(ShellApp):
 
     def on_SalesCancel__activate(self, action):
         if not yesno(_('This will cancel the selected quote. Are you sure?'),
-                     gtk.RESPONSE_NO, _("Cancel quote"), _("Don't cancel")):
+                     gtk.RESPONSE_NO, _("Cancel sale"), _("Don't cancel")):
             return
         store = api.new_store()
         sale_view = self.results.get_selected()
