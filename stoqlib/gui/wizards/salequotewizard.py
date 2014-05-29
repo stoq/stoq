@@ -388,8 +388,7 @@ class SaleQuoteItemStep(SellableItemStep):
         if sellable:
             price = sellable.get_price_for_category(
                 self.model.client_category)
-            self.cost.set_text("%s" % price)
-            self.proxy.update('cost')
+            self.cost.update(price)
 
     def can_add_sellable(self, sellable):
         try:
