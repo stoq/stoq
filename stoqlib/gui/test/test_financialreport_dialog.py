@@ -35,21 +35,21 @@ _ = stoqlib_gettext
 
 
 class TestFinancialReportDialog(GUITest):
-    @mock.patch('stoqlib.gui.dialogs.financialreportdialog.SpreadSheetExporter')
+    @mock.patch('stoqlib.gui.dialogs.financialreportdialog.SpreadSheetExporter.export_temporary')
     @mock.patch('stoqlib.gui.dialogs.financialreportdialog.localtoday')
-    def test_confirm_empty(self, today, exporter):
+    def test_confirm_empty(self, today, export_temporary):
         today.return_value = datetime.date(2013, 1, 1)
         dialog = FinancialReportDialog(self.store)
         try:
             self.click(dialog.ok_button)
             self.check_dialog(dialog, 'financial-report-dialog-empty')
-            exporter.export_temporary.assert_called_once()
+            self.assertEqual(export_temporary.call_count, 1)
         finally:
             os.unlink(dialog.temporary.name)
 
-    @mock.patch('stoqlib.gui.dialogs.financialreportdialog.SpreadSheetExporter')
+    @mock.patch('stoqlib.gui.dialogs.financialreportdialog.SpreadSheetExporter.export_temporary')
     @mock.patch('stoqlib.gui.dialogs.financialreportdialog.localtoday')
-    def test_confirm_created(self, today, exporter):
+    def test_confirm_created(self, today, export_temporary):
         today.return_value = datetime.date(2013, 1, 1)
         account = self.create_account()
         transaction = self.create_account_transaction(account)
@@ -60,6 +60,6 @@ class TestFinancialReportDialog(GUITest):
             self.click(dialog.ok_button)
             self.check_dialog(dialog, 'financial-report-dialog-create')
 
-            exporter.export_temporary.assert_called_once()
+            self.assertEqual(export_temporary.call_count, 1)
         finally:
             os.unlink(dialog.temporary.name)

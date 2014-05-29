@@ -54,7 +54,7 @@ class TestPayable(BaseGUITest):
             self.activate(action)
 
             run_dialog = ctx[0]
-            run_dialog.assert_called_once()
+            self.assertEqual(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
             self.assertEquals(args[0], dialog)
             self.assertEquals(args[1], app)

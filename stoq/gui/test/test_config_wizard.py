@@ -165,13 +165,12 @@ class TestFirstTimeConfigWizard(GUITest):
         self.click(wizard.next_button)
         self.assertTrue(self.config.flushed)
 
-        provide_utility.assert_called_once()
+        self.assertEqual(provide_utility.call_count, 1)
 
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
     @mock.patch('stoq.gui.config.yesno')
     @mock.patch('stoq.gui.config.warning')
-    @mock.patch('stoq.gui.config.provide_utility')
     @mock.patch('stoq.gui.config.get_hostname')
     @mock.patch('stoq.gui.config.get_database_version')
     @mock.patch('stoq.gui.config.check_extensions')
@@ -179,7 +178,6 @@ class TestFirstTimeConfigWizard(GUITest):
                     check_extensions,
                     get_database_version,
                     get_hostname,
-                    provide_utility,
                     warning,
                     yesno,
                     create_default_profile_settings,
@@ -251,7 +249,6 @@ class TestFirstTimeConfigWizard(GUITest):
         self.check_wizard(wizard, u'wizard-config-done')
         self.click(wizard.next_button)
         self.assertTrue(self.config.flushed)
-        provide_utility.assert_called_once()
 
     @mock.patch('stoq.gui.config.warning')
     def test_database_name(self, warning):

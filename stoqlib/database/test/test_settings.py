@@ -62,12 +62,12 @@ class DatabaseSettingsTest(DomainTest):
                                     password='password',
                                     port='12345')
         store = settings.create_store()
-        create_database.assert_called_once()
+        self.assertEqual(create_database.call_count, 1)
         uri = create_database.call_args[0][0]
         self.assertEquals(
             str(uri),
             'postgres://username:password@address:12345/stoq?isolation=read-committed')
-        StoqlibStore.assert_called_once()
+        self.assertEqual(StoqlibStore.call_count, 1)
         self.failUnless(store)
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore')
@@ -82,7 +82,7 @@ class DatabaseSettingsTest(DomainTest):
         settings = DatabaseSettings(address='',
                                     username='username')
         store = settings.create_store()
-        create_database.assert_called_once()
+        self.assertEqual(create_database.call_count, 1)
         test_local_database.called_once_with()
         uri = create_database.call_args[0][0]
         self.assertEquals(uri.host, '/var/run/postgresql')
@@ -90,7 +90,7 @@ class DatabaseSettingsTest(DomainTest):
         self.assertEquals(
             str(uri),
             'postgres://username@%2Fvar%2Frun%2Fpostgresql:5432/stoq?isolation=read-committed')
-        StoqlibStore.assert_called_once()
+        self.assertEqual(StoqlibStore.call_count, 1)
         self.failUnless(store)
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore')
@@ -99,12 +99,12 @@ class DatabaseSettingsTest(DomainTest):
         settings = DatabaseSettings(address='localhost',
                                     username='username')
         store = settings.create_super_store()
-        create_database.assert_called_once()
+        self.assertEqual(create_database.call_count, 1)
         uri = create_database.call_args[0][0]
         self.assertEquals(
             str(uri),
             'postgres://username@localhost:5432/postgres?isolation=read-committed')
-        StoqlibStore.assert_called_once()
+        self.assertEqual(StoqlibStore.call_count, 1)
         self.failUnless(store)
 
     def test_get_command_line_arguments(self):

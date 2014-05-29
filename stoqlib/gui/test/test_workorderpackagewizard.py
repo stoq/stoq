@@ -75,4 +75,4 @@ class TestSaleReturnWizard(GUITest):
         self.click(wizard.next_button)
         with mock.patch.object(wizard.model, 'receive') as receive:
             self.click(wizard.next_button)
-            receive.assert_called_once()
+            self.assertEqual(receive.call_count, 1)

@@ -253,7 +253,7 @@ class TestWorkOrderPackageSendEditor(GUITest):
 
         with mock.patch.object(editor.model, 'send') as send:
             self.click(editor.main_dialog.ok_button)
-            send.assert_called_once()
+            self.assertEqual(send.call_count, 1)
             self.assertEqual(editor.model.package_items.count(), 2)
 
     @mock.patch('stoqlib.gui.editors.workordereditor.warning')

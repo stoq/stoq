@@ -90,7 +90,7 @@ class TestCalculatorPopup(GUITest):
             entry.emit('icon-press', gtk.ENTRY_ICON_PRIMARY, event)
             self.assertEqual(popup.call_count, 0)
             entry.emit('icon-press', gtk.ENTRY_ICON_SECONDARY, event)
-            popup.assert_called_once()
+            self.assertEqual(popup.call_count, 1)
 
     def test_popdown(self):
         entry = ProxyEntry()
@@ -108,8 +108,9 @@ class TestCalculatorPopup(GUITest):
                 event = gtk.gdk.Event(gtk.gdk.KEY_PRESS)
                 event.keyval = keyval
                 event.window = gtk.gdk.get_default_root_window()
+                calc.emit('key-press-event', event)
 
-                manv.assert_called_once()
+                self.assertEqual(manv.call_count, 1)
                 self.assertEqual(popdown.call_count, 0)
 
                 manv.reset_mock()
@@ -119,8 +120,9 @@ class TestCalculatorPopup(GUITest):
             # Escape should popdown the popup
             event.keyval = gtk.keysyms.Escape
             event.window = gtk.gdk.get_default_root_window()
+            calc.emit('key-press-event', event)
 
-            popdown.assert_called_once()
+            self.assertEqual(popdown.call_count, 1)
             self.assertEqual(manv.call_count, 0)
             manv.reset_mock()
             popdown.reset_mock()
@@ -129,6 +131,7 @@ class TestCalculatorPopup(GUITest):
             # Any other should not do anything
             event.keyval = gtk.keysyms.A
             event.window = gtk.gdk.get_default_root_window()
+            calc.emit('key-press-event', event)
 
             self.assertEqual(manv.call_count, 0)
             self.assertEqual(popdown.call_count, 0)
