@@ -777,7 +777,10 @@ class PosApp(ShellApp):
         # Items that were already decreased should not be considered here
         added = sum([sale_item.quantity - sale_item.quantity_decreased
                      for sale_item in self.sale_items
-                     if sale_item.sellable == sellable])
+                     # FIXME: We are using .id to workaround a problem when
+                     # those sellables are not on the same store.
+                     # See the fixme on self.checkout and fix this together
+                     if sale_item.sellable.id == sellable.id])
         added += self.sellableitem_proxy.model.quantity
         return available - added >= 0
 
@@ -949,6 +952,12 @@ class PosApp(ShellApp):
         """
         assert len(self.sale_items) >= 1
 
+        # FIXME: We should create self._current_store when adding the first
+        # item, so we can simplify a lot of code on this module by using it
+        # directly. The way it is now, most of the items will come from
+        # self.store (so we need to fetch them to the store we define bellow)
+        # and some from self._current_store (closed loan items, closed work
+        # order items, etc)
         if self._current_store:
             store = self._current_store
             savepoint = 'before_run_fiscalprinter_confirm'
