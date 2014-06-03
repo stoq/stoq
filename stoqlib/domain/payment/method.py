@@ -39,7 +39,8 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
-from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
+from stoqlib.exceptions import (DatabaseInconsistency, PaymentMethodError,
+                                TillError)
 from stoqlib.lib.payment import generate_payments_values
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
@@ -208,7 +209,10 @@ class PaymentMethod(Domain):
         if till is ValueUnset:
             # We only need a till for inpayments
             if payment_type == Payment.TYPE_IN:
-                till = Till.get_current(store)
+                try:
+                    till = Till.get_current(store)
+                except TillError as err:
+                    raise PaymentMethodError(str(err))
             elif payment_type == Payment.TYPE_OUT:
                 till = None
             else:

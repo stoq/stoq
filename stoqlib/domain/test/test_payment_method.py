@@ -28,6 +28,7 @@ import datetime
 from decimal import Decimal
 
 from kiwi import ValueUnset
+import mock
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.payment.method import PaymentMethod, _
@@ -239,11 +240,16 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.create_payment(payment_type=Payment.TYPE_IN, date=None,
                             value=100, method=method, branch=branch,
                             group=group)
-        with self.assertRaises(PaymentMethodError):
+        with self.assertRaisesRegexp(
+                PaymentMethodError,
+                ('You can not create more inpayments for this payment '
+                 'group since the maximum allowed for this payment '
+                 'method is 1')):
             method.create_payment(payment_type=Payment.TYPE_IN, payment_group=group,
                                   branch=branch, value=100, due_date=None,
                                   description=None, base_value=None,
                                   till=ValueUnset, payment_number=None)
+
         self.create_payment(payment_type=Payment.TYPE_IN, date=None,
                             value=100, method=method, branch=branch,
                             group=group)
@@ -257,6 +263,16 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
                                   branch=branch, value=100, due_date=None,
                                   description=None, base_value=None,
                                   till=ValueUnset, payment_number=None)
+
+        with mock.patch('stoqlib.domain.till.Till.get_current') as get_current:
+            get_current.side_effect = TillError('foobar')
+
+            with self.assertRaisesRegexp(PaymentMethodError, 'foobar'):
+                method.create_payment(payment_type=Payment.TYPE_IN,
+                                      payment_group=self.create_payment_group(),
+                                      branch=branch, value=100, due_date=None,
+                                      description=None, base_value=None,
+                                      till=ValueUnset)
 
     def test_create_payments_without_installments(self):
         acc = self.create_account()

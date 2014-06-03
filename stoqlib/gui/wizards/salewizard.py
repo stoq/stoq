@@ -45,7 +45,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Client, SalesPerson, Transporter
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.enums import CreatePaymentStatus
-from stoqlib.exceptions import SellError, StoqlibError
+from stoqlib.exceptions import SellError, StoqlibError, PaymentMethodError
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import warning, marker
 from stoqlib.lib.parameters import sysparam
@@ -216,8 +216,11 @@ class BaseMethodSelectionStep(object):
     def setup_cash_payment(self, total=None):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         total = total or self.wizard.get_total_to_pay()
-        return money_method.create_payment(Payment.TYPE_IN, self.model.group,
-                                           self.model.branch, total)
+        try:
+            return money_method.create_payment(Payment.TYPE_IN, self.model.group,
+                                               self.model.branch, total)
+        except PaymentMethodError as err:
+            warning(str(err))
 
     #
     # WizardStep hooks
@@ -261,6 +264,9 @@ class BaseMethodSelectionStep(object):
             # We have to modify the payment, so the fiscal printer can
             # calculate and print the payback, if necessary.
             payment = self.setup_cash_payment()
+            if payment is None:
+                return
+
             total = self.cash_change_slave.get_received_value()
             payment.base_value = total
 
@@ -273,10 +279,12 @@ class BaseMethodSelectionStep(object):
 
             assert client.can_purchase(selected_method, total)
 
-            payment = selected_method.create_payment(Payment.TYPE_IN,
-                                                     self.model.group,
-                                                     self.model.branch,
-                                                     total)
+            try:
+                payment = selected_method.create_payment(
+                    Payment.TYPE_IN, self.model.group, self.model.branch, total)
+            except PaymentMethodError as err:
+                warning(str(err))
+                return self
 
             # Return None here means call wizard.finish, which is exactly
             # what we need

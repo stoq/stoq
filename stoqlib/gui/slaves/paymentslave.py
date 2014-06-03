@@ -55,7 +55,7 @@ from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.enums import CreatePaymentStatus
-from stoqlib.exceptions import SellError
+from stoqlib.exceptions import SellError, PaymentMethodError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
@@ -384,13 +384,15 @@ class PaymentListSlave(GladeSlaveDelegate):
             due_date = localdatetime(p.due_date.year,
                                      p.due_date.month,
                                      p.due_date.day)
-            payment = self.method.create_payment(payment_type=self.payment_type,
-                                                 payment_group=self.group,
-                                                 branch=self.branch,
-                                                 value=p.value,
-                                                 due_date=due_date,
-                                                 description=p.description,
-                                                 payment_number=p.payment_number)
+            try:
+                payment = self.method.create_payment(
+                    payment_type=self.payment_type, payment_group=self.group,
+                    branch=self.branch, value=p.value, due_date=due_date,
+                    description=p.description, payment_number=p.payment_number)
+            except PaymentMethodError as err:
+                warning(str(err))
+                return
+
             if p.bank_account:
                 # Add the bank_account into the payment, if any.
                 bank_account = payment.check_data.bank_account
@@ -1416,10 +1418,11 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         assert isinstance(self.model, Sale)
 
-        payment = self._method.create_payment(Payment.TYPE_IN,
-                                              self.model.group,
-                                              self.model.branch,
-                                              payment_value)
+        try:
+            payment = self._method.create_payment(
+                Payment.TYPE_IN, self.model.group, self.model.branch, payment_value)
+        except PaymentMethodError as err:
+            warning(str(err))
 
         payment.base_value = self._holder.value
 
@@ -1433,13 +1436,16 @@ class MultipleMethodSlave(BaseEditorSlave):
             payment_value = self._holder.value
 
         if isinstance(self.model, PurchaseOrder):
-            payment = self._method.create_payment(
-                Payment.TYPE_OUT, self.model.group,
-                self.model.branch, payment_value)
+            p_type = Payment.TYPE_OUT
         else:
+            p_type = Payment.TYPE_IN
+
+        try:
             payment = self._method.create_payment(
-                Payment.TYPE_IN, self.model.group,
-                self.model.branch, payment_value)
+                p_type, self.model.group, self.model.branch, payment_value)
+        except PaymentMethodError as err:
+            warning(str(err))
+
         # We have to modify the payment, so the fiscal printer can calculate
         # and print the change.
         payment.base_value = self._holder.value
