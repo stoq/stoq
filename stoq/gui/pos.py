@@ -362,7 +362,7 @@ class PosApp(ShellApp):
                                     gtk.STOCK_APPLY, confirm_label)
 
     def _setup_widgets(self):
-        self._inventory_widgets = [self.Sales, self.barcode, self.quantity,
+        self._inventory_widgets = [self.barcode, self.quantity,
                                    self.sale_items, self.advanced_search,
                                    self.checkout_button, self.NewTrade,
                                    self.LoanClose, self.WorkOrderClose]
@@ -551,9 +551,7 @@ class PosApp(ShellApp):
     def _disable_printer_ui(self):
         self._set_sale_sensitive(False)
 
-        # It's possible to do a Sangria from the Sale search,
-        # disable it for now
-        widgets = [self.TillOpen, self.TillClose, self.TillVerify, self.Sales]
+        widgets = [self.TillOpen, self.TillClose, self.TillVerify]
         self.set_sensitive(widgets, False)
 
         text = _(u"POS operations requires a connected fiscal printer.")
@@ -578,10 +576,10 @@ class PosApp(ShellApp):
         self.till_status_label.set_markup(text)
 
         self.set_sensitive([self.TillOpen], closed)
-        self.set_sensitive([self.TillVerify],
-                           not closed and not blocked)
-        self.set_sensitive([self.TillClose, self.NewTrade,
+        self.set_sensitive([self.TillVerify, self.NewTrade,
                             self.LoanClose, self.WorkOrderClose],
+                           not closed and not blocked)
+        self.set_sensitive([self.TillClose],
                            not closed or blocked)
 
         self._set_sale_sensitive(not closed and not blocked)

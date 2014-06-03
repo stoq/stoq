@@ -37,8 +37,10 @@ from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
+from stoqlib.domain.till import Till
 from stoqlib.domain.views import SoldItemsByBranchView, ReservedProductView
 from stoqlib.enums import SearchFilterPosition
+from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
@@ -118,12 +120,19 @@ class SaleWithToolbarSearch(_BaseSaleSearch):
     #
 
     def _update_widgets(self, sale_view):
-        if sale_view is None:
-            return
+        sale = sale_view and sale_view.sale
+        try:
+            till = Till.get_current(self.store)
+        except TillError:
+            till = None
 
-        sale = sale_view.sale
-        can_edit = sale.can_edit()
-        can_return = sale.can_return() or sale.can_cancel()
+        can_edit = bool(sale and sale.can_edit())
+        # We need an open till to return sales
+        if sale and till:
+            can_return = sale.can_return() or sale.can_cancel()
+        else:
+            can_return = False
+
         self._sale_toolbar.return_sale_button.set_sensitive(can_return)
         self._sale_toolbar.edit_button.set_sensitive(can_edit)
 
