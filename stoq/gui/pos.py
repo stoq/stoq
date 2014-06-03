@@ -774,7 +774,8 @@ class PosApp(ShellApp):
     def _check_available_stock(self, storable, sellable):
         branch = api.get_current_branch(self.store)
         available = storable.get_balance_for_branch(branch)
-        added = sum([sale_item.quantity
+        # Items that were already decreased should not be considered here
+        added = sum([sale_item.quantity - sale_item.quantity_decreased
                      for sale_item in self.sale_items
                      if sale_item.sellable == sellable])
         added += self.sellableitem_proxy.model.quantity
