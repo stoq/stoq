@@ -504,7 +504,7 @@ class ShellWindow(GladeDelegate):
         for child in area.get_children()[1:]:
             child.destroy()
 
-    def _shutdown_application(self, restart=False):
+    def _shutdown_application(self, restart=False, force=False):
         """Shutdown the application:
         There are 3 possible outcomes of calling this function, depending
         on how many windows and applications are open::
@@ -535,8 +535,9 @@ class ShellWindow(GladeDelegate):
             return False
 
         # We can currently only close a window if the currently active
-        # application is the launcher application
-        if current_app and current_app.app_name != 'launcher':
+        # application is the launcher application, unless we force it
+        # (e.g. when enabling production mode)
+        if current_app and current_app.app_name != 'launcher' and not force:
             return True
 
         # Here we save app specific state such as object list
@@ -930,7 +931,7 @@ class ShellWindow(GladeDelegate):
 
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
-        self._shutdown_application(restart=True)
+        self._shutdown_application(restart=True, force=True)
 
     # File
 
