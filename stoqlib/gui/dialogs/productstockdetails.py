@@ -194,6 +194,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("quantity", title=_("Quantity"), data_type=Decimal,
                        justify=gtk.JUSTIFY_RIGHT),
+                Column("cost", title=_("Cost"), data_type=currency),
                 Column("unit_description", title=_("Unit"), data_type=str)]
 
     def _get_sale_columns(self):

@@ -23,8 +23,9 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 column: title='Supplier', expand
                 column: title='Invoice'
                 column: title='Quantity'
+                column: title='Cost'
                 column: title='Unit'
-                row: 222, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), 111, u'Supplier', 222, Decimal('8.000'), None
+                row: 222, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), 111, u'Supplier', 222, Decimal('8.000'), <currency $125>, None
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>8.0</b>'
