@@ -4,6 +4,8 @@ GtkVBox(details_vbox):
     GtkLabel(label1): 'Status:'
     GtkLabel(status): 'Pending'
     GtkButton(receive_button): 'Receive', hidden
+    ProxyLabel(kiwilabel7): 'Invoice number:'
+    ProxyLabel(invoice_number): '<span ></span>'
     ProxyLabel(kiwilabel1): 'Open date:'
     ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
     ProxyLabel(kiwilabel2): 'Receival date:'
@@ -16,14 +18,20 @@ GtkVBox(details_vbox):
     ProxyLabel(source_responsible_name): '<span >Ipswich</span>'
     ProxyLabel(kiwilabel6): 'Responsible:'
     ProxyLabel(destination_responsible_name): '<span >Bolton</span>'
-  GtkVBox(products_vbox, expand=True, fill=True, padding=3):
-    ObjectList(product_list, expand=True, fill=True):
-      column: title='Code'
-      column: title='Description', expand
-      column: title='Quantity'
-      column: title='Cost'
-      column: title='Total Cost'
-      row: u'', u'Description', Decimal('5.000'), <currency $125>, Decimal('625.000')
-    GtkHBox(fill=True):
-      GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-      GtkLabel(): '<b>$625.00</b>'
+  GtkNotebook(notebook1, expand=True, fill=True):
+    GtkVBox(products_vbox):
+      ObjectList(product_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Quantity'
+        column: title='Cost'
+        column: title='Total Cost'
+        row: u'', u'Description', Decimal('5.000'), <currency $125>, Decimal('625.000')
+      GtkHBox(fill=True):
+        GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+        GtkLabel(): '<b>$625.00</b>'
+    GtkHBox(hbox1):
+      GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+        ProxyTextView(comments):
+  GtkHButtonBox(hbuttonbox1, expand=True, fill=True):
+    GtkButton(print_button): 'gtk-print'

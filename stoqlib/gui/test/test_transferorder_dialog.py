@@ -41,7 +41,8 @@ class TestTransferOrderDetailsDialog(GUITest):
         self.check_dialog(dialog, 'dialog-transfer-order-details-show')
 
     @mock.patch('stoqlib.gui.dialogs.transferorderdialog.yesno')
-    def test_receive_order(self, yesno):
+    @mock.patch('stoqlib.gui.dialogs.transferorderdialog.print_report')
+    def test_receive_order(self, print_report, yesno):
         yesno.retval = True
 
         source_branch = Branch.get_active_remote_branches(self.store)[0]
@@ -56,6 +57,8 @@ class TestTransferOrderDetailsDialog(GUITest):
         order.send()
 
         dialog = TransferOrderDetailsDialog(self.store, order)
+        self.click(dialog.print_button)
+        print_report.assert_called_once_with(dialog.report_class, dialog.model)
         self.assertSensitive(dialog, ['receive_button'])
         with mock.patch.object(self.store, 'commit'):
             self.click(dialog.receive_button)

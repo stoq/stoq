@@ -32,7 +32,7 @@ from zope.interface import implementer
 
 from stoqlib.database.expr import NullIf
 from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
-                                         IntCol, PriceCol, QuantityCol)
+                                         IntCol, PriceCol, QuantityCol, UnicodeCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -135,6 +135,12 @@ class TransferOrder(Domain):
 
     #: The date the order was received
     receival_date = DateTimeCol()
+
+    #: The invoice number of the transfer
+    invoice_number = IntCol()
+
+    #: Comments of a transfer
+    comments = UnicodeCol()
 
     source_branch_id = IdCol()
 

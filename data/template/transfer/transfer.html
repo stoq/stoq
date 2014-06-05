@@ -19,6 +19,18 @@
     <table class="details">
       <tbody>
         <tr>
+          <td>${_("Invoice number")}:</td>
+          <td>${ order.invoice_number}</td>
+        </tr>
+        <tr>
+          <td>${_("Open date")}:</td>
+          <td>${ order.open_date.strftime('%x')}</td>
+          % if order.receival_date:
+            <td>${_("Receival")}:</td>
+            <td>${ order.receival_date.strftime('%x')}</td>
+          % endif
+        </tr>
+        <tr>
           <td>${ _("Source") }:</td>
           <td>${ order.source_branch.get_description() }</td>
           <td>${ _("Destination") }:</td>
@@ -71,12 +83,12 @@
     </table>
   </section>
 
-  <section>
-    Open: ${ order.open_date.strftime('%x') }<br />
-    % if order.receival_date:
-      Receival: ${ order.receival_date.strftime('%x') }
-    % endif
-  </section>
+  % if order.comments:
+    <section>
+      <p>${ _("Comments") }:</p>
+      ${ order.comments }
+    </section>
+  % endif
 
   <section class="signatures">
     <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page

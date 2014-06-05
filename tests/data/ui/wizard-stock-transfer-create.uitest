@@ -5,11 +5,13 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave StockTransferInitialStep is attached
         GtkVBox(step.toplevel):
-          GtkTable(step.table1, fill=True):
-            ProxyLabel(step.kiwilabel3): 'Sending branch:'
-            ProxyLabel(step.source_branch): '<span >Moda Stoq</span>'
+          GtkTable(step.table1, expand=True, fill=True):
             ProxyLabel(step.kiwilabel1): 'Open date:'
             ProxyLabel(step.open_date): '<span >YYYY-MM-DD</span>'
+            ProxyLabel(step.kiwilabel2): 'Invoice number:'
+            ProxyEntry(step.invoice_number): ''
+            ProxyLabel(step.kiwilabel3): 'Sending branch:'
+            ProxyLabel(step.source_branch): '<span >Moda Stoq</span>'
             ProxyLabel(step.kiwilabel4): 'Receiving branch:'
             ProxyComboBox(step.destination_branch):
               item: 'Stoq Elite Fashion', selected
@@ -20,6 +22,9 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
               item: 'Deivis Alexandre Junior'
               item: 'Maria Aparecida Ardana'
               item: 'Osvaldo Denadai Marin'
+            ProxyLabel(step.kiwilabel6): 'Comment:'
+            GtkScrolledWindow(step.scrolledwindow1):
+              ProxyTextView(step.comments):
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

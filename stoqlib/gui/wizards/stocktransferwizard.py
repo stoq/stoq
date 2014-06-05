@@ -60,7 +60,9 @@ class StockTransferInitialStep(WizardEditorStep):
     model_type = TransferOrder
     proxy_widgets = ['open_date',
                      'destination_branch',
-                     'source_responsible']
+                     'source_responsible',
+                     'invoice_number',
+                     'comments']
 
     def __init__(self, wizard, store, model):
         self.branch = api.get_current_branch(store)

@@ -32,8 +32,10 @@ from kiwi.ui.widgets.list import SummaryLabel
 from stoqlib.api import api
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
 _ = stoqlib_gettext
 
@@ -51,13 +53,16 @@ class TransferOrderDetailsDialog(BaseEditor):
     hide_footer = True
     size = (700, 400)
     model_type = TransferOrder
+    report_class = TransferOrderReceipt
     gladefile = "TransferOrderDetails"
     proxy_widgets = ('open_date',
                      'receival_date',
                      'source_branch_name',
                      'destination_branch_name',
                      'source_responsible_name',
-                     'destination_responsible_name')
+                     'destination_responsible_name',
+                     'invoice_number',
+                     'comments')
 
     def __init__(self, store, model):
         BaseEditor.__init__(self, store, model)
@@ -121,3 +126,10 @@ class TransferOrderDetailsDialog(BaseEditor):
                                 'destination_responsible_name'])
 
         self._setup_status()
+
+    #
+    # Callbacks
+    #
+
+    def on_print_button__clicked(self, button):
+        print_report(self.report_class, self.model)
