@@ -42,7 +42,7 @@ class CfopEditor(BaseEditor):
     model_type = CfopData
 
     fields = dict(
-        code=TextField(_('C.F.O.P.'), input_mask=_("0.000"), mandatory=True,
+        code=TextField(_('C.F.O.P.'), input_mask="0.000", mandatory=True,
                        proxy=True),
         description=TextField(_('Description'), mandatory=True, proxy=True),
     )
@@ -50,6 +50,8 @@ class CfopEditor(BaseEditor):
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode)
         self.set_description(self.model.code)
+        # FIXME: Removew this when kiwi is fixed
+        self.code.set_mask("0.000")
 
     #
     # BaseEditor Hooks

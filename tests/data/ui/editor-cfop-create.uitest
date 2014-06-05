@@ -8,7 +8,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
           GtkAlignment(toplevel):
             GtkTable():
               ProxyLabel(code_lbl): 'C.F.O.P.:'
-              ProxyEntry(code): '', mandatory
+              ProxyEntry(code): ' .   ', mandatory
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): ' '
       GtkHBox(fill=True):
