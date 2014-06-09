@@ -74,14 +74,19 @@ def calculate_tax_for_item(item):
         tax_value = options.get(ex_tipi.lstrip('0')) or options['']
 
     if product.icms_template:
-        # Values (0, 3, 4, 5, 8) represent the taxes codes of brazilian origin.
-        if product.icms_template.orig in (0, 3, 4, 5, 8):
-            tax_origin_value = Decimal(tax_value[0]) / 100
-        # Different codes, represent taxes of international origin.
-        else:
-            tax_origin_value = Decimal(tax_value[1]) / 100
+        origin = product.icms_template.orig
     else:
-        tax_origin_value = Decimal("0")
+        # If the product does not have any fiscal information, defaults to
+        # national origin
+        origin = 0
+
+    # Values (0, 3, 4, 5, 8) represent the taxes codes of brazilian origin.
+    if origin in [0, 3, 4, 5, 8]:
+        tax_origin_value = Decimal(tax_value[0]) / 100
+    # Different codes, represent taxes of international origin.
+    else:
+        tax_origin_value = Decimal(tax_value[1]) / 100
+
     total_item = item.price * item.quantity
     item_tax = total_item * tax_origin_value
     return item_tax
