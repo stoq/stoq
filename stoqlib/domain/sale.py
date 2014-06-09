@@ -349,8 +349,9 @@ class SaleItem(Domain):
         :param decimal.Decimal discount: the discount to be applied
             as a percentage, e.g. 10.0, 22.5
         """
-        assert 0 < discount <= 100
-        self.price = quantize(self.base_price * (1 - discount / 100))
+        discount_value = quantize(self.base_price * discount / 100)
+        # The value cannot be <= 0
+        self.price = max(self.base_price - discount_value, Decimal('0.01'))
 
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price
@@ -1138,17 +1139,14 @@ class Sale(Domain):
         # to one with a quantity of 1 since, for instance, applying +0,1 to an
         # item with a quantity of 4 would make it's total +0,4 (+0,3 extra than
         # we are trying to adjust here).
-        discount_value = (self.get_sale_base_subtotal() * discount) / 100
+        discount_value = quantize((self.get_sale_base_subtotal() * discount) / 100)
         diff = new_total - self.get_sale_base_subtotal() + discount_value
         if diff:
             item = candidate or item
-            item.price -= diff
-
-        if any(item.price < 0 for item in items):  # pragma nocover
-            raise AssertionError(
-                "An item's value became negative after applying %s%% of "
-                "discount. The items'(base_price, new_price) are: %s" % (
-                    discount, [(i.base_price, i.price) for i in items]))
+            # The value cannot be <= 0
+            # Note that we should use price instead of base_price, since the
+            # for above may have changed the price already
+            item.price = max(item.price - diff, Decimal('0.01'))
 
     #
     # Accessors
