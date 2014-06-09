@@ -1476,6 +1476,42 @@ class TestSale(DomainTest):
         item.base_price = Decimal(999)
         sale.set_items_discount(20)
 
+    def test_set_items_discount_with_negative_diff(self):
+        sale = self.create_sale()
+        sellable1 = self.create_sellable(price=currency('10'))
+        sale_item1 = sale.add_sellable(sellable1, quantity=10)
+
+        sellable2 = self.create_sellable(price=currency('0.99'))
+        sale_item2 = sale.add_sellable(sellable2)
+
+        self.assertEqual(sale.get_sale_subtotal(), Decimal('100.99'))
+        # $0,99 of discount (represented as it's percentage)
+        sale.set_items_discount(Decimal('0.980295079'))
+
+        self.assertEqual(sale.get_sale_subtotal(), Decimal('100'))
+        # The percentage discount would make sale_item2/price = 0.98, but
+        # that would make the discount be 1.01 instead of 0.99.
+        # The diff should have been applied to it, making it 1.00
+        self.assertEqual(sale_item2.price, Decimal('1'))
+        self.assertEqual(sale_item1.price, Decimal('9.9'))
+
+    def test_set_items_discount_with_positive_diff(self):
+        sale = self.create_sale()
+        sellable1 = self.create_sellable(price=currency('10'))
+        sale_item1 = sale.add_sellable(sellable1, quantity=10)
+
+        sellable2 = self.create_sellable(price=currency('0.02'))
+        sale_item2 = sale.add_sellable(sellable2)
+
+        self.assertEqual(sale.get_sale_subtotal(), Decimal('100.02'))
+        # $0.02 of discount (represented as it's percentage)
+        sale.set_items_discount(Decimal('0.019996001'))
+
+        # Only 0.01 can be applied because sale_item needs to be >= 0.01.
+        self.assertEqual(sale.get_sale_subtotal(), Decimal('100.01'))
+        self.assertEqual(sale_item2.price, Decimal('0.01'))
+        self.assertEqual(sale_item1.price, Decimal('10'))
+
     def test_get_available_discount_for_items(self):
         item = self.create_sale_item()
         item2 = self.create_sale_item(sale=item.sale)
