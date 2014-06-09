@@ -42,7 +42,9 @@ class TestCalculateTaxForItem(DomainTest):
         product = sale_item.sellable.product
         product.ncm = u'01012100'
         tax_value = calculate_tax_for_item(sale_item)
-        self.assertEqual(tax_value, Decimal("0"))
+        # When there is no icms information, the value defaults to the nacional
+        # tax.
+        self.assertEqual(tax_value, Decimal("26.75"))
 
     def test_calculate_item(self):
         # Product with NCM, EX TIPI and ICMS
