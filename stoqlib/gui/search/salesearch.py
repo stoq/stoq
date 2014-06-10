@@ -39,6 +39,7 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import SoldItemsByBranchView, ReservedProductView
+from stoqlib.domain.workorder import WorkOrder
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
@@ -282,11 +283,15 @@ class ReservedProductSearch(SearchDialog):
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Sale #'),
                                  sorted=True, order=gtk.SORT_DESCENDING),
-                Column('status_str', title=_('Status'), data_type=str),
+                SearchColumn('status_str', title=_('Status'),
+                             search_attribute='status',
+                             valid_values=self._get_status_values(), data_type=str),
                 SearchColumn('product_code', title=_('Code'), data_type=str),
                 SearchColumn('product_category', title=_('Category'), data_type=str),
                 SearchColumn('description', title=_('Product'), data_type=str,
                              expand=True),
+                SearchColumn('manufacturer_name', title=_('Manufacturer'),
+                             data_type=str, expand=True, visible=False),
                 SearchColumn('salesperson_name', title=_('Sales Person'),
                              data_type=str, visible=False),
                 SearchColumn('client_name', title=_('Client'), data_type=str,
@@ -296,4 +301,24 @@ class ReservedProductSearch(SearchDialog):
                 SearchColumn('price', title=_('Price'), data_type=currency,
                              width=100),
                 SearchColumn('quantity_decreased', title=_('Reserved'), data_type=Decimal,
-                             format_func=format_quantity, width=100)]
+                             format_func=format_quantity, width=100),
+                IdentifierColumn('wo_identifier', title=_('Work Order'),
+                                 visible=False, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('wo_status_str', title=_('WO Status'), data_type=str,
+                             search_attribute='wo_status', visible=False,
+                             valid_values=self._get_wo_status_values()),
+                SearchColumn('wo_estimated_finish', title=_('Estimated finish'),
+                             data_type=datetime.date, visible=False),
+                SearchColumn('wo_finish', title=_('WO Finish'),
+                             data_type=datetime.date, visible=False)]
+
+    def _get_status_values(self):
+        items = [(value, key) for key, value in Sale.statuses.items()
+                 if key in [Sale.STATUS_ORDERED, Sale.STATUS_QUOTE]]
+        items.insert(0, (_('Any'), None))
+        return items
+
+    def _get_wo_status_values(self):
+        items = [(value, key) for key, value in WorkOrder.statuses.items()]
+        items.insert(0, (_('Any'), None))
+        return items

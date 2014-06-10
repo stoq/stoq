@@ -58,6 +58,7 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableCategory,
                                      SellableTaxConstant)
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
+from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
 from stoqlib.lib.decorators import cached_property
 
 
@@ -1035,6 +1036,13 @@ class ReservedProductView(Viewable):
     product_code = Sellable.code
     client_name = PersonClient.name
     salesperson_name = PersonSales.name
+    manufacturer_name = ProductManufacturer.name
+
+    wo_identifier = WorkOrder.identifier
+    wo_identifier_str = Cast(WorkOrder.identifier, 'text')
+    wo_status = WorkOrder.status
+    wo_estimated_finish = WorkOrder.estimated_finish
+    wo_finish = WorkOrder.finish_date
 
     tables = [
         SaleItem,
@@ -1043,9 +1051,13 @@ class ReservedProductView(Viewable):
         Join(Branch, Branch.id == Sale.branch_id),
         Join(SalesPerson, SalesPerson.id == Sale.salesperson_id),
         Join(PersonSales, PersonSales.id == SalesPerson.person_id),
+        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(ProductManufacturer, ProductManufacturer.id == Product.manufacturer_id),
         LeftJoin(Client, Client.id == Sale.client_id),
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
-        LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id)
+        LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id),
+        LeftJoin(WorkOrderItem, WorkOrderItem.sale_item == SaleItem.id),
+        LeftJoin(WorkOrder, WorkOrder.id == WorkOrderItem.order_id)
     ]
 
     clause = And(SaleItem.quantity_decreased > 0,
@@ -1055,6 +1067,12 @@ class ReservedProductView(Viewable):
     @property
     def status_str(self):
         return Sale.statuses[self.status]
+
+    @property
+    def wo_status_str(self):
+        if not self.wo_identifier:
+            return ''
+        return WorkOrder.statuses[self.wo_status]
 
 
 class ReturnedSalesView(Viewable):
