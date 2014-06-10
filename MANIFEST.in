@@ -23,6 +23,7 @@ include README
 include INSTALL
 include NEWS
 include CONTRIBUTORS
+include requirements.txt
 include stoq.desktop
 include stoq.spec
 include data/br.com.stoq.createdatabase.policy

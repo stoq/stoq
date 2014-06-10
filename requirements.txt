@@ -1,7 +1,20 @@
 #
 # This file contains a list of external dependencies
-# needed to run python, they are processed by easy_install
+# needed to run stoq, they are processed by pip/easy_install
 #
 
-# Report generation, HTML->PDF
-weasyprint==0.15
+Mako >= 0.2.5
+PIL >= 1.1.5
+PyGTK >= 2.20
+Twisted >= 0.2.5
+aptdaemon >= 3.0
+dateutil >= 1.4.1
+kiwi-gtk >= 1.9.29
+psycopg2 >= 2.0.5
+pypoppler >= 0.12.1
+reportlab >= 2.4
+stoqdrivers >= 0.9.21
+storm >= 0.19
+weasyprint >= 0.15
+xlwt >= 0.7.2
+zope.interface >= 3.0

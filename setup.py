@@ -170,23 +170,9 @@ data_files += listplugins(PLUGINS, PLUGIN_EXTS)
 # https://pythonhosted.org/setuptools/setuptools.html#dependencies-that-aren-t-in-pypi
 # Try to make a way to integrate it with debian packaging, just like the
 # dependencies bellow.
-install_requires = [
-    "Mako >= 0.2.5",
-    "PIL >= 1.1.5",
-    "PyGTK >= 2.20",
-    "Twisted >= 0.2.5",
-    "aptdaemon >= 3.0",
-    "dateutil >= 1.4.1",
-    "kiwi-gtk >= 1.9.29",
-    "psycopg2 >= 2.0.5",
-    "pypoppler >= 0.12.1",
-    "reportlab >= 2.4",
-    "stoqdrivers >= 0.9.21",
-    "storm >= 0.19",
-    "weasyprint >= 0.15",
-    "xlwt >= 0.7.2",
-    "zope.interface >= 3.0",
-]
+with open('requirements.txt') as f:
+    install_requires = [l.strip() for l in f.readlines() if
+                        l.strip() and not l.startswith('#')]
 
 setup(name='stoq',
       version=version,
