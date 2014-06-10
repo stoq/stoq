@@ -8,7 +8,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
           GtkVBox(sellable_tab):
             GtkTable(table, expand=True, fill=True):
               GtkLabel(code_lbl): 'Code:'
-              ProxyEntry(code): '3569587451215'
+              ProxyEntry(code): '15'
               GtkLabel(label8): 'Status:'
               ProxyLabel(status_str): '<span >Available</span>'
               GtkLabel(barcode_lbl): 'Barcode:'
