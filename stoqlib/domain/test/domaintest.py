@@ -78,8 +78,11 @@ class FakeDatabaseSettings:
     def __init__(self, store):
         self.store = store
         self.address = u'invalid'
+        self.dbname = u'stoq'
         self.check = False
-        self.password = u''
+        self.password = u'password'
+        self.username = u'username'
+        self.port = 12345
 
     def check_database_address(self):
         return self.check
@@ -88,7 +91,10 @@ class FakeDatabaseSettings:
         return False
 
     def get_command_line_arguments(self):
-        return []
+        return ['-d', self.dbname,
+                '-p', unicode(self.port),
+                '-u', self.username,
+                '-w', self.password]
 
     def get_default_connection(self):
         return FakeStore()

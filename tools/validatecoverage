@@ -38,7 +38,7 @@ EXCEPTIONS = OrderedDict((
     ('stoq/gui/accounts.py', 0.4552),
     ('stoq/gui/admin.py', 61.19),
     ('stoq/gui/calendar.py', 51),
-    ('stoq/gui/config.py', 69.52),
+    ('stoq/gui/config.py', 66.82),
     ('stoq/gui/financial.py', 55.24),
     ('stoq/gui/inventory.py', 64.97),
     ('stoq/gui/launcher.py', 86.08),
