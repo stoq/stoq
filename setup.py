@@ -46,11 +46,11 @@ from stoq import website, version
 
 building_egg = 'bdist_egg' in sys.argv
 if building_egg:
-    python_dir = ''
-    plugin_dir = 'stoq/data'
+    plugin_base_dir = os.path.join('stoq', 'data')
 else:
-    python_dir = '$prefix/share/stoq/'
-    plugin_dir = python_dir
+    plugin_base_dir = '$datadir'
+
+plugin_dir = os.path.join(plugin_base_dir, 'plugins')
 
 
 def listplugins(plugins, exts):
@@ -60,7 +60,7 @@ def listplugins(plugins, exts):
         dirs.append(package.replace('.', '/'))
     files = []
     for directory in dirs:
-        install_dir = '$prefix/share/stoq/%s' % directory
+        install_dir = os.path.join(plugin_base_dir, directory)
         files.append((install_dir, listfiles(directory, '*.py')))
         files.append((install_dir, listfiles(directory, '*.plugin')))
 
@@ -68,10 +68,10 @@ def listplugins(plugins, exts):
         for kind, suffix in exts:
             x = listfiles('plugins', plugin, kind, suffix)
             if x:
-                path = python_dir + '/plugins/%s/%s'
+                path = os.path.join(plugin_dir, '%s', '%s')
                 files.append((path % (plugin, kind), x))
 
-        files.append((python_dir + 'plugins/' + plugin,
+        files.append((os.path.join(plugin_dir, plugin),
                       listfiles('plugins', plugin, '*.py')))
 
     return files
@@ -126,29 +126,32 @@ if building_egg:
           'COPYING.stoqlib', 'README', 'docs/copyright']))
 else:
     data_files.extend([
-        ('$prefix/share/applications', ['stoq.desktop']),
-        ('$prefix/share/doc/stoq',
+        ('share/applications', ['stoq.desktop']),
+        ('share/doc/stoq',
          ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
           'COPYING.stoqlib', 'README', 'docs/copyright']),
-        ('$prefix/share/gnome/help/stoq/C',
+        ('share/gnome/help/stoq/C',
          listfiles('docs/manual/pt_BR', '*.page')),
-        ('$prefix/share/gnome/help/stoq/C',
+        ('share/gnome/help/stoq/C',
          listfiles('docs/manual/pt_BR', '*.xml')),
-        ('$prefix/share/gnome/help/stoq/C/figures',
+        ('share/gnome/help/stoq/C/figures',
          listfiles('docs/manual/pt_BR/figures', '*.png')),
-        ('$prefix/share/gnome/help/stoq/C/figures',
+        ('share/gnome/help/stoq/C/figures',
          listfiles('docs/manual/pt_BR/figures', '*.svg')),
-        ('$prefix/share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
-        ('$prefix/share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
+        ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
+        ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
     ])
 
+# FIXME: We are using $datadir/../ for locale/doc as a workaround for kiwi.
+# Without this, he would not find the proper resource when installing
+# stoq from a wheel
 resources = dict(
-    locale='$prefix/share/locale',
-    plugin='$prefix/share/stoq/plugins',
+    locale='$datadir/../locale',
+    plugin=plugin_dir,
 )
 global_resources = dict(
     csv='$datadir/csv',
-    docs='$prefix/share/doc/stoq',
+    docs='$datadir/../doc/stoq',
     glade='$datadir/glade',
     uixml='$datadir/uixml',
     html='$datadir/html',
