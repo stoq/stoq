@@ -146,6 +146,24 @@ class TestReservedProductsSearch(GUITest):
         sale3.open_date = localdate(2013, 12, 11)
         sale3.status = sale3.STATUS_QUOTE
 
+        # With work order
+        sale4 = self.create_sale(branch=branch)
+        sale4.identifier = 43
+        sale_item4 = self.create_sale_item(sale=sale4)
+        sale_item4.quantity = 33
+        sale_item4.quantity_decreased = 33
+        sale_item4.description = u'Knights who say Ni'
+        sale4.open_date = localdate(2014, 6, 13)
+        sale4.status = sale4.STATUS_QUOTE
+
+        work_order = self.create_workorder(branch=branch)
+        work_order.identifier = 44
+        work_order_item = self.create_work_order_item()
+        work_order_item.sale_item = sale_item4
+        work_order_item.sellable = sale_item4.sellable
+        work_order_item.order = work_order
+        work_order.sale = sale4
+
     def _show_search(self):
         search = ReservedProductSearch(self.store)
         search.search.refresh()
