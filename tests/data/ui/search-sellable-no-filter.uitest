@@ -25,7 +25,7 @@ GtkDialog(toplevel): title='Item search', hidden
             column: title='Model', hidden
             column: title='Price'
             column: title='In Stock'
-            row: u'1598587594264', u'1598587594264', None, u'Ajuste Roupa', None, None, Decimal('50.00'), Decimal('0')
+            row: u'11', u'1598587594264', None, u'Ajuste Roupa', None, None, Decimal('50.00'), Decimal('0')
             row: u'01', u'2368694135945', u'Bermudas Sarja', u'Bermuda Sarja', None, u'', Decimal('149.00'), Decimal('3.000')
             row: u'09', u'5892458629421', u'Blusas Poliester', u'Blusa Balon\xea com Bordado nas Costas', None, u'', Decimal('150.00'), Decimal('3.000')
             row: u'08', u'7826592136954', u'Blusas Algod\xe3o', u'Blusa Frente-\xdanica com Pregas', None, u'', Decimal('220.00'), Decimal('3.000')
@@ -34,9 +34,9 @@ GtkDialog(toplevel): title='Item search', hidden
             row: u'03', u'6985413595971', u'Tinturada', u'Camiseta Tinturada Xcuba Comp', None, u'', Decimal('89.00'), Decimal('3.000')
             row: u'07', u'9586249534513', u'Algod\xe3o', u'Casaco Vilan', None, u'', Decimal('503.00'), Decimal('3.000')
             row: u'04', u'2692149835416', u'Chinelos', u'Chinelo de Dedo', None, u'', Decimal('79.00'), Decimal('3.000')
-            row: u'1568749622849', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', None, None, Decimal('150.00'), Decimal('0')
-            row: u'3569587451214', u'3569587451214', None, u'Lavagem Roupa', None, None, Decimal('35.00'), Decimal('0')
-            row: u'1569854136511', u'1569854136511', None, u'Lavagem a Seco', None, None, Decimal('55.00'), Decimal('0')
+            row: u'13', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', None, None, Decimal('150.00'), Decimal('0')
+            row: u'12', u'3569587451214', None, u'Lavagem Roupa', None, None, Decimal('35.00'), Decimal('0')
+            row: u'14', u'1569854136511', None, u'Lavagem a Seco', None, None, Decimal('55.00'), Decimal('0')
             row: u'02', u'6234564656756', u'Bermudas Shorts', u'Shorts com Costuras', None, u'', Decimal('198.00'), Decimal('3.000')
             row: u'10', u'1598756984265', u'Viscose', u'Vestido Vadalena', None, u'', Decimal('383.00'), Decimal('4.000')
       GtkHBox(fill=True):
