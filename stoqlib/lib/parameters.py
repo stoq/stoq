@@ -958,8 +958,8 @@ class ParameterAccess(object):
         """
         for param_name in self._values:
             if param_name not in self._details:
-                param_id = self._values.get(param_name)
-                param = store.get(ParameterData, param_id)
+                param = store.find(ParameterData,
+                                   field_name=param_name).one()
                 store.remove(param)
 
     #
