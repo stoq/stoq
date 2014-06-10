@@ -61,6 +61,7 @@ from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME,
                                     create_default_profile_settings)
+from stoqlib.database.exceptions import ProgrammingError
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
 from stoqlib.database.settings import (DatabaseSettings, test_local_database,
@@ -505,10 +506,40 @@ class StoqAdminPasswordStep(PasswordStep):
         return good_pass
 
     def next_step(self):
-        if self.wizard.db_is_local and not test_local_database():
+        if self._need_install_db():
             return InstallPostgresStep(self.wizard, self)
         else:
             return CreateDatabaseStep(self.wizard, self)
+
+    #
+    #  Private
+    #
+
+    def _need_install_db(self):
+        if not self.wizard.db_is_local:
+            return False
+
+        if not test_local_database():
+            return True
+
+        settings = self.wizard.settings
+        self.wizard.config.load_settings(settings)
+        store = settings.create_super_store()
+        try:
+            # If it's running, check extensions. AptPackageInstaller can
+            # install postgresql-contrib for us
+            check_extensions(store=store)
+        except ProgrammingError:
+            # Postgresql < 9.1. Just pass, so the user will be alerted
+            # on the next step
+            pass
+        except ValueError:
+            # Needs to install contrib
+            return True
+        finally:
+            store.close()
+
+        return False
 
 
 class InstallPostgresStep(BaseWizardStep):
