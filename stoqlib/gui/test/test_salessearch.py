@@ -153,7 +153,7 @@ class TestReservedProductsSearch(GUITest):
         sale_item4.quantity = 33
         sale_item4.quantity_decreased = 33
         sale_item4.description = u'Knights who say Ni'
-        sale4.open_date = localdate(2014, 6, 13)
+        sale4.open_date = localdate(2014, 6, 12)
         sale4.status = sale4.STATUS_QUOTE
 
         work_order = self.create_workorder(branch=branch)

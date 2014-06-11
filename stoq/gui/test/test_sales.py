@@ -25,13 +25,13 @@
 import contextlib
 import datetime
 
-import gtk
 import mock
 from stoqlib.api import api
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
@@ -39,9 +39,10 @@ from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.returnedsalesearch import ReturnedSaleSearch
 from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
-                                           SalesByPaymentMethodSearch)
-#from stoqlib.gui.editors.saleeditor import SaleClientEditor
+                                           SalesByPaymentMethodSearch,
+                                           ReservedProductSearch)
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
@@ -144,6 +145,10 @@ class TestSales(BaseGUITest):
                                CloseLoanWizard, [], {})
         self._check_run_dialog(app.LoanSearch,
                                LoanSearch, [], {})
+        self._check_run_dialog(app.SearchReservedProduct,
+                               ReservedProductSearch, [], {})
+        self._check_run_dialog(app.ReturnedSaleSearch,
+                               ReturnedSaleSearch, [], {})
         self._check_run_dialog(app.LoanSearchItems,
                                LoanItemSearch, [], {})
         self._check_run_dialog(app.SearchClient,
@@ -225,99 +230,173 @@ class TestSales(BaseGUITest):
                                                    app, self.store,
                                                    results[0].sale)
 
-    #@mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
-    #@mock.patch('stoq.gui.sales.api.new_store')
-    #def test_change_client(self, new_store, run_dialog):
-    #    new_store.return_value = self.store
-
-    #    app = self.create_app(SalesApp, u'sales')
-    #    results = app.results
-    #    results.select(results[0])
-
-    #    results[0].status = Sale.STATUS_CONFIRMED
-    #    results[0].sale.status = Sale.STATUS_CONFIRMED
-    #    app._update_toolbar()
-
-    #    with mock.patch.object(self.store, 'commit'):
-    #        with mock.patch.object(self.store, 'close'):
-    #            self.activate(app.ChangeClient)
-    #            run_dialog.assert_called_once_with(SaleClientEditor,
-    #                                               app, self.store,
-    #                                               results[0].sale)
-
-    @mock.patch('stoq.gui.sales.yesno')
     @mock.patch('stoq.gui.sales.api.new_store')
-    def test_sales_cancel(self, new_store, yesno):
+    def test_change_client(self, new_store):
+        with self.sysparam(CHANGE_CLIENT_AFTER_CONFIRMED=True):
+            new_store.return_value = self.store
+
+            app = self.create_app(SalesApp, u'sales')
+            results = app.results
+            results.select(results[0])
+
+            results[0].status = Sale.STATUS_CONFIRMED
+            results[0].sale.status = Sale.STATUS_CONFIRMED
+            app._update_toolbar()
+
+            with contextlib.nested(
+                    mock.patch.object(app, 'run_dialog'),
+                    mock.patch.object(self.store, 'commit'),
+                    mock.patch.object(self.store, 'close')) as context:
+                run_dialog = context[0]
+                self.activate(app.ChangeClient)
+                args, kwargs = run_dialog.call_args
+                self.assertEquals(kwargs['model'], results[0].sale)
+                self.assertEquals(kwargs['store'], self.store)
+                self.assertEquals(run_dialog.call_count, 1)
+
+    @mock.patch('stoq.gui.sales.api.new_store')
+    def test_not_sale_cancel(self, new_store):
         new_store.return_value = self.store
-        yesno.return_value = True
 
         app = self.create_app(SalesApp, u'sales')
-        results = app.results
-        results.select(results[0])
+        sale_view = app.results[0]
+        app.results.select(sale_view)
 
-        results[0].status = Sale.STATUS_QUOTE
+        sale_view.status = Sale.STATUS_PAID
+        sale_view.sale.status = Sale.STATUS_PAID
         app._update_toolbar()
 
-        for item in results[0].sale.get_items():
+        for item in sale_view.sale.get_items():
             item.quantity = 2
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(app.SalesCancel)
-                self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
-                yesno.assert_called_once_with(u'This will cancel the selected '
-                                              u'quote. Are you sure?',
-                                              gtk.RESPONSE_NO,
-                                              u"Cancel sale", u"Don't cancel")
+        with contextlib.nested(
+                mock.patch.object(app, 'run_dialog'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as context:
+            run_dialog = context[0]
+            run_dialog.return_value = None
+            self.activate(app.SalesCancel)
 
-    @mock.patch('stoq.gui.sales.yesno')
+            msg_text = u"This will cancel the sale, Are you sure?"
+            args, kwargs = run_dialog.call_args
+            self.assertEquals(args, (NoteEditor, self.store))
+            self.assertTrue(isinstance(kwargs['model'], SaleComment))
+            self.assertEquals(kwargs['attr_name'], 'comment')
+            self.assertEquals(kwargs['message_text'], msg_text)
+            self.assertEquals(kwargs['label_text'], u"Reason")
+            self.assertEquals(kwargs['mandatory'], True)
+            self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
+            self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
+            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEquals(sale_view.sale.status, Sale.STATUS_PAID)
+
     @mock.patch('stoq.gui.sales.api.new_store')
-    def test_confirmed_sales_cancel(self, new_store, yesno):
+    def test_sales_cancel(self, new_store):
+        new_store.return_value = self.store
+
+        app = self.create_app(SalesApp, u'sales')
+        sale_view = app.results[0]
+        app.results.select(sale_view)
+
+        sale_view.status = Sale.STATUS_QUOTE
+        sale_view.sale.status = Sale.STATUS_QUOTE
+        app._update_toolbar()
+
+        for item in sale_view.sale.get_items():
+            item.quantity = 2
+
+        with contextlib.nested(
+                mock.patch.object(app, 'run_dialog'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as context:
+            run_dialog = context[0]
+            run_dialog.return_value = True
+            self.activate(app.SalesCancel)
+
+            msg_text = u"This will cancel the sale, Are you sure?"
+            args, kwargs = run_dialog.call_args
+            self.assertEquals(args, (NoteEditor, self.store))
+            self.assertTrue(isinstance(kwargs['model'], SaleComment))
+            self.assertEquals(kwargs['attr_name'], 'comment')
+            self.assertEquals(kwargs['message_text'], msg_text)
+            self.assertEquals(kwargs['label_text'], u"Reason")
+            self.assertEquals(kwargs['mandatory'], True)
+            self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
+            self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
+
+            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)
+
+    @mock.patch('stoq.gui.sales.api.new_store')
+    def test_confirmed_sales_cancel(self, new_store):
         api.sysparam.set_bool(self.store, 'ALLOW_CANCEL_CONFIRMED_SALES', True)
         new_store.return_value = self.store
-        yesno.return_value = True
 
         app = self.create_app(SalesApp, u'sales')
-        results = app.results
-        results.select(results[0])
+        sale_view = app.results[0]
+        app.results.select(sale_view)
 
-        results[0].status = Sale.STATUS_CONFIRMED
+        sale_view.status = Sale.STATUS_CONFIRMED
+        sale_view.sale.status = Sale.STATUS_CONFIRMED
         app._update_toolbar()
 
-        for item in results[0].sale.get_items():
+        for item in sale_view.sale.get_items():
             item.quantity = 2
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(app.SalesCancel)
-                self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
-                yesno.assert_called_once_with(u'This will cancel the selected '
-                                              u'quote. Are you sure?',
-                                              gtk.RESPONSE_NO,
-                                              u"Cancel sale", u"Don't cancel")
+        with contextlib.nested(
+                mock.patch.object(app, 'run_dialog'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as context:
+            run_dialog = context[0]
+            run_dialog.return_value = True
+            self.activate(app.SalesCancel)
 
-    @mock.patch('stoq.gui.sales.yesno')
+            msg_text = u"This will cancel the sale, Are you sure?"
+            args, kwargs = run_dialog.call_args
+            self.assertEquals(args, (NoteEditor, self.store))
+            self.assertTrue(isinstance(kwargs['model'], SaleComment))
+            self.assertEquals(kwargs['attr_name'], 'comment')
+            self.assertEquals(kwargs['message_text'], msg_text)
+            self.assertEquals(kwargs['label_text'], u"Reason")
+            self.assertEquals(kwargs['mandatory'], True)
+            self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
+            self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
+            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)
+
     @mock.patch('stoq.gui.sales.api.new_store')
-    def test_paid_sales_cancel(self, new_store, yesno):
+    def test_paid_sales_cancel(self, new_store):
         api.sysparam.set_bool(self.store, 'ALLOW_CANCEL_CONFIRMED_SALES', True)
         new_store.return_value = self.store
-        yesno.return_value = True
 
         app = self.create_app(SalesApp, u'sales')
-        results = app.results
-        results.select(results[0])
+        sale_view = app.results[0]
+        app.results.select(sale_view)
 
-        results[0].status = Sale.STATUS_PAID
+        sale_view.status = Sale.STATUS_PAID
+        sale_view.sale.status = Sale.STATUS_PAID
         app._update_toolbar()
 
-        for item in results[0].sale.get_items():
+        for item in sale_view.sale.get_items():
             item.quantity = 2
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(app.SalesCancel)
-                self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
-                yesno.assert_called_once_with(u'This will cancel the selected '
-                                              u'quote. Are you sure?',
-                                              gtk.RESPONSE_NO,
-                                              u"Cancel sale", u"Don't cancel")
+        with contextlib.nested(
+                mock.patch.object(app, 'run_dialog'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as context:
+            run_dialog = context[0]
+            run_dialog.return_value = True
+            self.activate(app.SalesCancel)
+
+            msg_text = u"This will cancel the sale, Are you sure?"
+            args, kwargs = run_dialog.call_args
+            self.assertEquals(args, (NoteEditor, self.store))
+            self.assertTrue(isinstance(kwargs['model'], SaleComment))
+            self.assertEquals(kwargs['attr_name'], 'comment')
+            self.assertEquals(kwargs['message_text'], msg_text)
+            self.assertEquals(kwargs['label_text'], u"Reason")
+            self.assertEquals(kwargs['mandatory'], True)
+            self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
+            self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
+            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)

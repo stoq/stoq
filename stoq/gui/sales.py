@@ -35,10 +35,11 @@ from storm.expr import And, Or
 from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.domain.invoice import InvoicePrinter
-from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.domain.sale import Sale, SaleView, SaleComment
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.editors.saleeditor import SaleClientEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.deliverysearch import DeliverySearch
@@ -63,7 +64,7 @@ from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
-from stoqlib.lib.message import info, yesno, warning
+from stoqlib.lib.message import info, warning
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.sale import SalesReport
@@ -184,7 +185,7 @@ class SalesApp(ShellApp):
             # Sale
             ("SaleMenu", None, _("Sale")),
 
-            ("SalesCancel", None, _("Cancel")),
+            ("SalesCancel", None, _("Cancel...")),
             ("ChangeClient", gtk.STOCK_EDIT, _("Change client...")),
             ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
             ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
@@ -497,15 +498,25 @@ class SalesApp(ShellApp):
         self._new_sale_quote(wizard=WorkOrderQuoteWizard)
 
     def on_SalesCancel__activate(self, action):
-        if not yesno(_('This will cancel the selected quote. Are you sure?'),
-                     gtk.RESPONSE_NO, _("Cancel sale"), _("Don't cancel")):
-            return
-        store = api.new_store()
         sale_view = self.results.get_selected()
+
+        store = api.new_store()
         sale = store.fetch(sale_view.sale)
+        msg_text = _(u"This will cancel the sale, Are you sure?")
+        model = SaleComment(store=store, sale=sale,
+                            author=api.get_current_user(store))
+
+        retval = self.run_dialog(
+            NoteEditor, store, model=model, attr_name='comment',
+            message_text=msg_text, label_text=_(u"Reason"),
+            mandatory=True, ok_button_label=_(u"Cancel sale"),
+            cancel_button_label=_(u"Don't cancel"))
+
+        if not retval:
+            store.rollback()
+            return
+
         sale.cancel()
-        store.confirm(True)
-        store.close()
         self.refresh()
 
     def on_ChangeClient__activate(self, action):
