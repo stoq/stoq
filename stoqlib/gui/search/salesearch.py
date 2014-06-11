@@ -272,6 +272,9 @@ class ReservedProductSearch(SearchDialog):
     def setup_widgets(self):
         self.search.set_summary_label('quantity_decreased', label=_(u'Total:'),
                                       format='<b>%s</b>')
+        self.sale_details_button = self.add_button(label=_('Sale Details'))
+        self.sale_details_button.show()
+        self.sale_details_button.set_sensitive(False)
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'salesperson_name',
@@ -279,6 +282,10 @@ class ReservedProductSearch(SearchDialog):
         # Branch
         self.branch_filter = self.create_branch_filter(_('In Branch:'))
         self.add_filter(self.branch_filter, columns=['branch_id'])
+
+    def update_widgets(self):
+        reserved_product_view = self.results.get_selected()
+        self.sale_details_button.set_sensitive(bool(reserved_product_view))
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Sale #'),
@@ -322,3 +329,8 @@ class ReservedProductSearch(SearchDialog):
         items = [(value, key) for key, value in WorkOrder.statuses.items()]
         items.insert(0, (_('Any'), None))
         return items
+
+    def on_sale_details_button__clicked(self, widget):
+        reserved_product_view = self.results.get_selected()
+        sale_view = self.store.find(SaleView, id=reserved_product_view.sale_id).one()
+        run_dialog(SaleDetailsDialog, self, self.store, sale_view)

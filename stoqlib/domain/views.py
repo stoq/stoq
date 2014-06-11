@@ -1028,6 +1028,7 @@ class ReservedProductView(Viewable):
     price = SaleItem.price
     quantity_decreased = SaleItem.quantity_decreased
     branch_id = Sale.branch_id
+    sale_id = Sale.id
     identifier = Sale.identifier
     open_date = Sale.open_date
     status = Sale.status

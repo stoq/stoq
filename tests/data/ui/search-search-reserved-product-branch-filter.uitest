@@ -51,3 +51,4 @@ GtkDialog(toplevel): title='Reserved Product Search', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+      GtkButton(sale_details_button, padding=6): 'Sale Details', insensitive

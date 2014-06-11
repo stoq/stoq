@@ -22,12 +22,15 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
 from stoqlib.api import api
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch
-from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.domain.sale import Sale, SaleItem, SaleView
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.salesearch import (SaleSearch,
                                            SaleWithToolbarSearch,
@@ -179,3 +182,18 @@ class TestReservedProductsSearch(GUITest):
         search.branch_filter.set_state(self.branch2.id)
         search.search.refresh()
         self.check_search(search, 'search-reserved-product-branch-filter')
+
+    def test_actions(self):
+        self._create_domain()
+        search = self._show_search()
+        search.search.refresh()
+
+        self.assertNotSensitive(search, ['sale_details_button'])
+        search.results.select(search.results[0])
+        self.assertSensitive(search, ['sale_details_button'])
+
+        with mock.patch('stoqlib.gui.search.salesearch.run_dialog') as run_dialog:
+            self.click(search.sale_details_button)
+            sale_view = self.store.find(SaleView, id=search.results[0].sale_id).one()
+            run_dialog.assert_called_once_with(SaleDetailsDialog, search,
+                                               self.store, sale_view)
