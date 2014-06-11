@@ -53,3 +53,15 @@ class TestNoteEditor(GUITest):
         # object edited is not a domain object)
         self.click(editor.main_dialog.cancel_button)
         self.assertEquals(obj.obs, u'bin')
+
+    def test_button_label(self):
+        sale = self.create_sale()
+        sale_comment = self.create_sale_comment(sale, u'teste')
+        sale.status = sale.STATUS_QUOTE
+        editor = NoteEditor(self.store, sale_comment, attr_name='comment',
+                            ok_button_label=u"Cancel sale",
+                            cancel_button_label=u"Don't cancel")
+        cancel_sale_button = editor.main_dialog.ok_button.get_label()
+        not_cancel_button = editor.main_dialog.cancel_button.get_label()
+        self.assertEquals(cancel_sale_button, u"Cancel sale")
+        self.assertEquals(not_cancel_button, u"Don't cancel")
