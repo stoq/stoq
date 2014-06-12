@@ -156,7 +156,15 @@ class StoqCommandHandler:
         if options.password:
             db_settings.password = options.password
 
-        initialize_system(password=unicode(options.password), force=options.force)
+        try:
+            initialize_system(password=unicode(options.password),
+                              force=options.force)
+        except ValueError as e:
+            # Database server is missing pg_trgm
+            if 'pg_trgm' in str(e):
+                return 31
+            else:
+                raise
 
         if options.create_examples or options.demo:
             from stoqlib.importers.stoqlibexamples import create
