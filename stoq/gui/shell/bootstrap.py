@@ -200,7 +200,6 @@ class ShellBootstrap(object):
         import gtk
         from kiwi.environ import environ
 
-        gtk.gdk.threads_init()
         # Total madness to make sure we can draw treeview lines,
         # this affects the GtkTreeView::grid-line-pattern style property
         #
