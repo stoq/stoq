@@ -80,18 +80,6 @@ jenkins: check-source-all
 	tools/validatecoverage jenkins-test/stoq-$$VERSION/coverage.xml && \
 	git show|tools/diff-coverage jenkins-test/stoq-$$VERSION/coverage.xml
 
-external:
-	@cat requirements.txt | \
-	    grep -v -e '^#' | \
-	    PYTHONPATH=external/ xargs -n 1 \
-	    easy_install -x -d external
-
-deb:
-	python setup.py sdist $(COMPILE) --dist-dir=../
-	rename -f 's/$(PACKAGE)-(.*)\.tar\.gz/$(PACKAGE)_$$1\.orig\.tar\.gz/' ../*
-	dpkg-buildpackage -i -I -rfakeroot
-
-
 include utils/utils.mk
 .PHONY: howto apidocs manual upload-apidocs upload-manual schemadocs
 .PHONY: clean check check-failed coverage jenkins external deb
