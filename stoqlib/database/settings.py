@@ -64,6 +64,56 @@ _REQUIRED_EXTENSIONS = [
 DB_NAME_RE = re.compile('^[a-zA-Z0-9_]+$')
 
 
+def _fix_storm():  # pragma nocover
+    # FIXME: This is a workaround for this bug: https://bugs.launchpad.net/storm/+bug/1170063
+    # We are monkey-patching storm using the patch proposed there.
+    # Remove when the bug is fixed.
+    import psycopg2
+    # psycopg2 version comes as '2.5.3 (dt dec mx pq3 ext)' (both in debian and
+    # ubuntu). If that's not the case somehow, we will simply abort.
+    try:
+        psycopg2_version = psycopg2.__version__[:5]
+        psycopg2_version = tuple(psycopg2_version.split('.'))
+    except Exception:
+        return
+
+    # We only need to apply this if psycopg2 version is >= 2.5
+    if psycopg2_version < (2, 5):
+        return
+
+    from storm.exceptions import (Error, Warning, InternalError,
+                                  ProgrammingError, IntegrityError, DataError,
+                                  NotSupportedError, InterfaceError,
+                                  # Make pyflakes happy
+                                  DatabaseError as _DatabaseError,
+                                  OperationalError as _OperationalError)
+
+    def install_exceptions(module):
+        for exception in (Error, Warning, _DatabaseError, InternalError,
+                          _OperationalError, ProgrammingError, IntegrityError,
+                          DataError, NotSupportedError, InterfaceError):
+            module_exception = getattr(module, exception.__name__, None)
+            if module_exception is not None:
+                try:
+                    module_exception.__bases__ += (exception,)
+                except TypeError:
+                    # Since PsycoPG >= 2.5 psycopg2.Error is built-in
+                    tmp_exception = module_exception
+
+                    class PsycoPG25Error(tmp_exception):
+                        """We can not patch built-in types
+                        """
+
+                    setattr(module, module_exception.__name__, PsycoPG25Error)
+                    module_exception = getattr(module, exception.__name__)
+                    module_exception.__bases__ += (exception,)
+
+    import storm.exceptions
+    storm.exceptions.install_exceptions = install_exceptions
+
+_fix_storm()
+
+
 def validate_database_name(dbname):
     """Verifies that a database name does not contain any invalid characters.
 
