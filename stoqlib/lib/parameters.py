@@ -424,10 +424,10 @@ _details = [
     ParameterDetails(
         u'USE_TRADE_AS_DISCOUNT',
         _(u'Sales'),
-        _(u'Use trade value, as discount'),
-        _(u'The trade total value, will be used as discount '
+        _(u'Use trade value as a discount'),
+        _(u'The traded value will be used as discount '
           u'when confirm a new sale. Otherwise, the trade '
-          u'will be registred as a new payment in the sale.'),
+          u'will be registred as a new payment for that new sale.'),
         bool, initial=False),
 
     ParameterDetails(

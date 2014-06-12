@@ -51,7 +51,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Max discount for sales', u'5'
     row: u'Sales', u'Change salesperson', u'0'
     row: u'Sales', u'Default operation nature', u'Sale'
-    row: u'Sales', u'Use trade value, as discount', u'0'
+    row: u'Sales', u'Use trade value as a discount', u'0'
     row: u'Sales', u'Bill instructions ', u''
     row: u'Sales', u'Enable paulista invoice', u'0'
     row: u'Sales', u"Allow client change after sale's confirmation", u'0'
