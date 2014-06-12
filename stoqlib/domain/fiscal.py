@@ -66,6 +66,10 @@ class CfopData(Domain):
     description = UnicodeCol()
 
     def get_description(self):
+        # FIXME: kgetattr tries to get this instead of self.description,
+        # making it return u" " on a new model. How to fix that properly?
+        if not self.code and not self.description:
+            return u""
         return u"%s %s" % (self.code, self.description)
 
 

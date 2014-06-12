@@ -50,8 +50,6 @@ class CfopEditor(BaseEditor):
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode)
         self.set_description(self.model.code)
-        # FIXME: Removew this when kiwi is fixed
-        self.code.set_mask("0.000")
 
     #
     # BaseEditor Hooks
