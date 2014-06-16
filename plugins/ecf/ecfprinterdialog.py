@@ -29,7 +29,7 @@ from serial import SerialException
 
 import gtk
 from kiwi.enums import ListType
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 from stoqdrivers.interfaces import ICouponPrinter
 from stoqdrivers.printers.base import (get_supported_printers_by_iface,
                                        get_baudrate_values)

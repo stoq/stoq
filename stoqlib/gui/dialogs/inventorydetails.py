@@ -27,7 +27,7 @@
 import decimal
 
 from kiwi.currency import currency
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 import pango
 
 from stoqlib.domain.inventory import Inventory, InventoryItemsView

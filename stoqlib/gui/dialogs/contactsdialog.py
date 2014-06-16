@@ -23,7 +23,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.person import ContactInfo
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave

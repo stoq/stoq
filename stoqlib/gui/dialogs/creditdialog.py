@@ -27,7 +27,7 @@ import datetime
 
 from kiwi.currency import currency
 from kiwi.enums import ListType
-from kiwi.ui.widgets.list import ColoredColumn, Column
+from kiwi.ui.objectlist import ColoredColumn, Column
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave

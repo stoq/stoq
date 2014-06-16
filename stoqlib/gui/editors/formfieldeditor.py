@@ -25,8 +25,7 @@
 
 
 import gtk
-from kiwi.ui.objectlist import ObjectList
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.domain.uiform import UIForm, UIField

@@ -27,8 +27,7 @@
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.objectlist import Column
-from kiwi.ui.widgets.list import SummaryLabel
+from kiwi.ui.objectlist import Column, SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.receiving import (ReceivingOrderItem,

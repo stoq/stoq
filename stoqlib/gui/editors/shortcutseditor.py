@@ -26,8 +26,7 @@
 import warnings
 
 import gtk
-from kiwi.ui.objectlist import ObjectList
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog

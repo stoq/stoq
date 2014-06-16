@@ -26,7 +26,7 @@
 from decimal import Decimal
 
 import gtk
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 from storm.expr import And
 
 from stoqlib.api import api

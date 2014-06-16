@@ -29,7 +29,7 @@ from decimal import Decimal
 import gtk
 
 from kiwi.currency import currency
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.objectlist import Column, SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext

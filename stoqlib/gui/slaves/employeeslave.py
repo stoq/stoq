@@ -28,7 +28,7 @@ import datetime
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.account import BankAccount

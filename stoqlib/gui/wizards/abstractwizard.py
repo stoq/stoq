@@ -35,7 +35,7 @@ from decimal import Decimal
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.ui.widgets.list import SummaryLabel
+from kiwi.ui.objectlist import SummaryLabel
 from kiwi.utils import gsignal
 from kiwi.python import Settable
 from storm.expr import And, Lower

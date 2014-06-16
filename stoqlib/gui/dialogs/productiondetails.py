@@ -27,7 +27,7 @@ from decimal import Decimal
 
 import pango
 import gtk
-from kiwi.ui.widgets.list import Column, ColoredColumn
+from kiwi.ui.objectlist import Column, ColoredColumn
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
