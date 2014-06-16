@@ -310,6 +310,8 @@ class ShellWindow(GladeDelegate):
             api.user_settings.set('last-version-check', None)
             self._display_changelog_message()
 
+        self._check_version()
+
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
 
