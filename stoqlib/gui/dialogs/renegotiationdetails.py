@@ -30,7 +30,7 @@ import datetime
 import pango
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
+from kiwi.ui.objectlist import Column, SummaryLabel, ColoredColumn
 
 from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext

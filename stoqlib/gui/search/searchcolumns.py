@@ -25,7 +25,7 @@
 
 import gobject
 import gtk
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

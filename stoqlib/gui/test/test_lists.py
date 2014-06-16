@@ -26,7 +26,7 @@
 
 import gtk
 from kiwi.python import Settable
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 import mock
 from zope.interface import implementer
 

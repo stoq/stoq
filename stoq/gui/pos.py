@@ -31,7 +31,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
 from kiwi.python import Settable
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from storm.expr import And, Lower
 

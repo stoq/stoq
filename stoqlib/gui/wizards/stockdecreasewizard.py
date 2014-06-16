@@ -28,7 +28,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq
 
 from stoqlib.api import api

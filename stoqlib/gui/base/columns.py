@@ -23,7 +23,7 @@
 ##
 """ Special columns definition for kiwi lists """
 
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 
 
 class AccessorColumn(Column):

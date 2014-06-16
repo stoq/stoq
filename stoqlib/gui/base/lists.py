@@ -237,7 +237,7 @@ class AdditionListSlave(SearchSlave):
 
         :param store:         a store
         :param columns:       column definitions
-        :type columns:        sequence of :class:`kiwi.ui.widgets.list.Columns`
+        :type columns:        sequence of :class:`kiwi.ui.objectlist.Columns`
         :param editor_class:  the window that is going to be open when user
                               clicks on add_button or edit_button.
         :type: editor_class:  a :class:`stoqlib.gui.editors.BaseEditor` subclass

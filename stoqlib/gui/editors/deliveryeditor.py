@@ -26,7 +26,7 @@
 import decimal
 
 from kiwi.datatypes import ValidationError
-from kiwi.ui.widgets.list import Column, ObjectList
+from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client, Transporter

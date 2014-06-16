@@ -29,7 +29,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.objectlist import Column, SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier

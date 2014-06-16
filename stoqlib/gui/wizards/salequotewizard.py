@@ -31,7 +31,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq, Or
 
 from stoqlib.api import api

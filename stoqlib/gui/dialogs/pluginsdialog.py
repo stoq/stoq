@@ -27,8 +27,7 @@
 import platform
 
 import gtk
-from kiwi.ui.objectlist import ObjectList
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store

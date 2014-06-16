@@ -28,9 +28,8 @@ import datetime
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.objectlist import Column, ColoredColumn
+from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 from kiwi.ui.gadgets import render_pixbuf
-from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory

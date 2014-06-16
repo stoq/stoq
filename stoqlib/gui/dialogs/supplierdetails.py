@@ -29,8 +29,7 @@ import datetime
 import gtk
 from kiwi.currency import currency
 from kiwi.python import Settable
-from kiwi.ui.objectlist import Column, ColoredColumn
-from kiwi.ui.widgets.list import SummaryLabel
+from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier

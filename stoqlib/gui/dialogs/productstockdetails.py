@@ -29,8 +29,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.objectlist import Column, ObjectList
-from kiwi.ui.widgets.list import SummaryLabel
+from kiwi.ui.objectlist import Column, ObjectList, SummaryLabel
 from storm.expr import And, Ne
 
 from stoqlib.api import api

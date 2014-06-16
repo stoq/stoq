@@ -31,7 +31,7 @@ import gtk
 from kiwi.component import get_utility
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory

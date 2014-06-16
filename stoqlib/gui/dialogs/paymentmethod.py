@@ -25,8 +25,7 @@
 """ Dialogs for payment method management"""
 
 import gtk
-from kiwi.ui.objectlist import ObjectList
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod

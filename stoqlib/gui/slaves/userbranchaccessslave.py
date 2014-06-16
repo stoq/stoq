@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.person import (Branch, UserBranchAccess)

@@ -24,7 +24,7 @@
 ##
 """ Search dialogs for profile objects """
 
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.search.searcheditor import SearchEditor

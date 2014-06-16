@@ -28,7 +28,7 @@ import datetime
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.widgets.list import Column, ColoredColumn
+from kiwi.ui.objectlist import Column, ColoredColumn
 
 from stoqlib.api import api
 from stoqlib.domain.till import TillEntry
