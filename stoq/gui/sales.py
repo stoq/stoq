@@ -517,6 +517,7 @@ class SalesApp(ShellApp):
             return
 
         sale.cancel()
+        store.commit(close=True)
         self.refresh()
 
     def on_ChangeClient__activate(self, action):
