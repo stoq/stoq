@@ -133,6 +133,8 @@ class UpdateSchemaStep(BaseWizardStep):
             self.wizard.cancel_button.set_label(gtk.STOCK_QUIT)
             self.progressbar.set_fraction(0.0)
         else:
+            # Migration may have changed some parameters, so clear the cache.
+            api.sysparam.clear_cache()
             self.wizard.cancel_button.set_sensitive(True)
             self.progressbar.set_text(_("Done. Click 'Forward' to continue"))
             self.progressbar.set_fraction(1.0)
