@@ -542,7 +542,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def _fill_cfop_combo(self):
         marker('Filling CFOPs')
-        cfops = self.store.find(CfopData)
+        cfops = CfopData.get_for_sale(self.store)
         self.cfop.prefill(api.for_combo(cfops))
         marker('Filled CFOPs')
 

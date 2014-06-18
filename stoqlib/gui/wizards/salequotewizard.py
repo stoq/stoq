@@ -95,7 +95,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         # CFOP combo
         if sysparam.get_bool('ASK_SALES_CFOP'):
-            cfops = self.store.find(CfopData)
+            cfops = CfopData.get_for_sale(self.store)
             self.cfop.prefill(api.for_combo(cfops))
         else:
             self.cfop_lbl.hide()

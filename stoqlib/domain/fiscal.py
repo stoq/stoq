@@ -29,7 +29,7 @@ Note that this whole module is Brazil-specific.
 
 # pylint: enable=E1101
 
-from storm.expr import LeftJoin, Join
+from storm.expr import LeftJoin, Join, Or
 from storm.references import Reference
 from zope.interface import implementer
 
@@ -64,6 +64,18 @@ class CfopData(Domain):
 
     #: description, for example "Compra para comercialização"
     description = UnicodeCol()
+
+    @classmethod
+    def get_for_sale(cls, store):
+        return store.find(cls, Or(CfopData.code.startswith(u'5'),
+                                  CfopData.code.startswith(u'6'),
+                                  CfopData.code.startswith(u'7')))
+
+    @classmethod
+    def get_for_receival(cls, store):
+        return store.find(cls, Or(CfopData.code.startswith(u'1'),
+                                  CfopData.code.startswith(u'2'),
+                                  CfopData.code.startswith(u'3')))
 
     def get_description(self):
         # FIXME: kgetattr tries to get this instead of self.description,

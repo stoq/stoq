@@ -104,7 +104,8 @@ class SaleQuoteItemEditor(BaseEditor):
         # We populate this even if it's hidden because we need a default value
         # selected to add to the sale item
         cfop_items = [(item.get_description(), item)
-                      for item in self.store.find(CfopData)]
+                      for item in
+                      CfopData.get_for_sale(self.store)]
         self.cfop.prefill(cfop_items)
 
         self._setup_taxes()

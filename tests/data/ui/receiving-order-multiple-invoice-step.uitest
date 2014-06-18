@@ -29,9 +29,6 @@ GtkDialog(PluggableWizard): title='Receive Purchase Order', hidden
                 GtkLabel(label9): 'C.F.O.P.:'
                 ProxyComboEntry(cfop):
                   item: '1.102 Compra para Comercializacao', selected
-                  item: '5.102 Venda de Mercadoria Adquirida'
-                  item: '5.202 Devolucao'
-                  item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
                 ProxyLabel(discount_label): 'Discount ($CURRENCY):'
                 ProxyEntry(discount_value): '0.00'
                 GtkLabel(label2): 'Transporter:'
