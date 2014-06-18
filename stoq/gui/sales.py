@@ -34,6 +34,7 @@ from storm.expr import And, Or
 
 from stoqlib.api import api
 from stoqlib.database.expr import Date
+from stoqlib.domain.events import ECFIsLastSaleEvent
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView, SaleComment
 from stoqlib.enums import SearchFilterPosition
@@ -499,6 +500,11 @@ class SalesApp(ShellApp):
 
     def on_SalesCancel__activate(self, action):
         sale_view = self.results.get_selected()
+        can_cancel = api.sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON')
+        if can_cancel and ECFIsLastSaleEvent.emit(sale_view.sale):
+            info(_("That is last sale in ECF. Return using the menu "
+                   "ECF - Cancel Last Document"))
+            return
 
         store = api.new_store()
         sale = store.fetch(sale_view.sale)

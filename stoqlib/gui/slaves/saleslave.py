@@ -307,7 +307,9 @@ def cancel_sale(sale):
 
 def return_sale(parent, sale, store):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
-    if ECFIsLastSaleEvent.emit(sale):
+
+    cancel_last_coupon = sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON')
+    if cancel_last_coupon and ECFIsLastSaleEvent.emit(sale):
         info(_("That is last sale in ECF. Return using the menu "
                "ECF - Cancel Last Document"))
         return

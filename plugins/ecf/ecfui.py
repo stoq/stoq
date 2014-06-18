@@ -185,64 +185,46 @@ class ECFUI(object):
         uimanager.insert_action_group(ag, 0)
         self._ui = uimanager.add_ui_from_string(ui_string)
 
+    def _add_ecf_menu(self, uimanager):
+        ui_string = """<ui>
+          <menubar name="menubar">
+            <placeholder name="ExtraMenubarPH">
+              <menu action="ECFMenu">
+                <menuitem action="CancelLastDocument"/>
+                <menuitem action="Summary"/>
+                <menuitem action="ReadMemory"/>
+              </menu>
+            </placeholder>
+          </menubar>
+        </ui>"""
+
+        group = get_accels('plugin.ecf')
+
+        ag = gtk.ActionGroup('ECFMenuActions')
+        ag.add_actions([
+            ('ECFMenu', None, _('ECF')),
+            ('ReadMemory', None, _('Read Memory'),
+             group.get('read_memory'), None, self._on_ReadMemory__activate),
+            ('CancelLastDocument', None, _('Cancel Last Document'),
+             None, None, self._on_CancelLastDocument__activate),
+        ])
+        ag.add_action_with_accel(self._till_summarize_action,
+                                 group.get('summarize'))
+
+        can_cancel = sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON')
+        cancel_coupon_menu = ag.get_action('CancelLastDocument')
+        cancel_coupon_menu.set_visible(can_cancel)
+
+        uimanager.insert_action_group(ag, 0)
+        self._ui = uimanager.add_ui_from_string(ui_string)
+
     def _add_pos_menus(self, uimanager):
         if sysparam.get_bool('POS_SEPARATE_CASHIER'):
             return
-
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <placeholder name="ExtraMenubarPH">
-              <menu action="ECFMenu">
-                <menuitem action="CancelLastDocument"/>
-                <menuitem action="Summary"/>
-                <menuitem action="ReadMemory"/>
-              </menu>
-            </placeholder>
-          </menubar>
-        </ui>"""
-
-        group = get_accels('plugin.ecf')
-
-        ag = gtk.ActionGroup('ECFMenuActions')
-        ag.add_actions([
-            ('ECFMenu', None, _('ECF')),
-            ('ReadMemory', None, _('Read Memory'),
-             group.get('read_memory'), None, self._on_ReadMemory__activate),
-            ('CancelLastDocument', None, _('Cancel Last Document'),
-             None, None, self._on_CancelLastDocument__activate),
-        ])
-        ag.add_action_with_accel(self._till_summarize_action,
-                                 group.get('summarize'))
-
-        uimanager.insert_action_group(ag, 0)
-        self._ui = uimanager.add_ui_from_string(ui_string)
+        self._add_ecf_menu(uimanager)
 
     def _add_till_menus(self, uimanager):
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <placeholder name="ExtraMenubarPH">
-              <menu action="ECFMenu">
-                <menuitem action="CancelLastDocument"/>
-                <menuitem action="Summary"/>
-                <menuitem action="ReadMemory"/>
-              </menu>
-            </placeholder>
-          </menubar>
-        </ui>"""
-
-        group = get_accels('plugin.ecf')
-        ag = gtk.ActionGroup('ECFMenuActions')
-        ag.add_actions([
-            ('ECFMenu', None, _('ECF')),
-            ('ReadMemory', None, _('Read Memory'),
-             group.get('read_memory'), None, self._on_ReadMemory__activate),
-            ('CancelLastDocument', None, _('Cancel Last Document'),
-             None, None, self._on_CancelLastDocument__activate),
-        ])
-        ag.add_action_with_accel(self._till_summarize_action,
-                                 group.get('summarize'))
-        uimanager.insert_action_group(ag, 0)
-        self._ui = uimanager.add_ui_from_string(ui_string)
+        self._add_ecf_menu(uimanager)
 
     def _check_ecf_state(self):
         log.info('ecfui._check_printer')

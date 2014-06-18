@@ -252,7 +252,7 @@ _details = [
 
     ParameterDetails(
         u'ENABLE_PAULISTA_INVOICE',
-        _(u'Sales'),
+        _(u'ECF'),
         _(u'Enable paulista invoice'),
         _(u'Once this parameter is set, we will be able to join to the '
           u'Sao Paulo state program of fiscal commitment.'),
@@ -815,6 +815,14 @@ _details = [
           u'automatically logout. \nSet to zero to disable the funcionality. '
           u'Requires restart to take effect.'),
         int, initial=0),
+
+    ParameterDetails(
+        u'ALLOW_CANCEL_LAST_COUPON',
+        _(u'ECF'),
+        _(u'Allow to cancel the last fiscal coupon'),
+        _(u'When set to false, the user will not be able to cancel the last coupon, '
+          u'only return it.'),
+        bool, initial=True)
 ]
 
 
