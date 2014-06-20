@@ -113,7 +113,7 @@ class ProductInformationSlave(BaseEditorSlave):
         if (not self.minimum_quantity.get_visible() and
             not self.maximum_quantity.get_visible() and
             not self.location.get_visible()):
-            self.stock_lbl.hide()
+            self.storable_frame.hide()
 
         # Mercosul
         self.db_form.update_widget(self.ncm, other=self.ncm_lbl)
@@ -123,7 +123,7 @@ class ProductInformationSlave(BaseEditorSlave):
         if (not self.ncm.get_visible() and
             not self.ex_tipi.get_visible() and
             not self.genero.get_visible()):
-            self.mercosul_lbl.hide()
+            self.nfe_frame.hide()
 
     def setup_proxies(self):
         self._setup_widgets()
