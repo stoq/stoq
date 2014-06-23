@@ -241,9 +241,13 @@ def get_database_version(store):
     server_version = full_version.split(' ')[1].split('.')
 
     try:
+        # We do the replace on server_version[2] because postgresql reports
+        # its version a little different on other platforms. For example, on
+        # Windows, it reports like this:
+        # "PostgreSQL 9.3.4, compiled by Visual C++ build 1600, 64-bit"
         version_tuple = (int(server_version[0]),
                          int(server_version[1]),
-                         int(server_version[2]))
+                         int(server_version[2].replace(',', '')))
     except ValueError:
         raise DatabaseError(
             "Error getting server version: %s" % (server_version, ))
