@@ -891,7 +891,7 @@ class CardMethodSlave(BaseEditorSlave):
 
     def _update_card_device(self):
         provider = self.credit_provider.get_selected()
-        if provider.default_device:
+        if provider and provider.default_device:
             self.card_device.update(provider.default_device)
 
     def _get_payment_details(self, cost=None):
