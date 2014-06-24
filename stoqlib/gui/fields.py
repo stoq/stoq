@@ -86,6 +86,11 @@ class DomainChoiceField(ChoiceField):
     #: selected object
     can_view = gobject.property(type=bool, default=True)
 
+    #: If we are using the ids to pupulate the field instead of domain
+    #: objects. This changes what gets send as argument on :meth:`.populate`
+    #: after :attr:`._run_editor` is called
+    use_ids = False
+
     # Field
 
     def attach(self):
@@ -113,7 +118,12 @@ class DomainChoiceField(ChoiceField):
         model = self.run_dialog(store, model)
         rv = store.confirm(model)
         if rv:
-            self.populate(model.id)
+            if self.use_ids:
+                value = model.id
+            else:
+                main_store = get_store_for_field(self)
+                value = main_store.fetch(model)
+            self.populate(value)
         store.close()
 
     def _update_add_button_sensitivity(self):
@@ -242,6 +252,7 @@ class PaymentCategoryField(DomainChoiceField):
 class PersonField(DomainChoiceField):
     default_overrides = DomainChoiceField.default_overrides.copy()
     default_overrides.update(use_entry=True)
+    use_ids = True
 
     #: This is the type of person we will display in this field, it
     #: must be a class referencing a :py:class:`stoqlib.domain.person.Person`
