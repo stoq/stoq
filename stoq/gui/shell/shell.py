@@ -150,7 +150,6 @@ class ShellDatabaseConnection(object):
         from stoqlib.lib.message import info
 
         default_store = get_default_store()
-        set_current_branch_station(default_store, station_name=None)
 
         compaines = default_store.find(Company)
         if (compaines.count() == 0 or
@@ -168,9 +167,13 @@ class ShellDatabaseConnection(object):
                 raise SystemExit
             branch = person.branch
             sysparam.set_object(store, 'MAIN_COMPANY', branch)
-            get_current_station(store).branch = branch
+            current_station = get_current_station(store)
+            if current_station is not None:
+                current_station.branch = branch
             store.commit()
             store.close()
+
+        set_current_branch_station(default_store, station_name=None)
 
     def _run_update_wizard(self):
         from stoqlib.gui.base.dialogs import run_dialog
