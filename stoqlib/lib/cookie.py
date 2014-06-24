@@ -52,7 +52,7 @@ class Base64CookieFile(object):
 
         data = cookiedata.split(":", 1)
         try:
-            return data[0], binascii.a2b_base64(data[1])
+            return (unicode(data[0]), unicode(binascii.a2b_base64(data[1])))
         except binascii.Error:
             raise CookieError("invalid format")
 
