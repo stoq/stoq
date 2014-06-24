@@ -570,7 +570,7 @@ class FinancialApp(ShellApp):
     def _new_page(self, account_view):
         if account_view.id in self._pages:
             page = self._pages[account_view.id]
-            page_id = self.notebook.page_num(page.search)
+            page_id = self.notebook.page_num(page.search.vbox)
         else:
             pixbuf = self.accounts.get_pixbuf(account_view)
             page = TransactionPage(account_view,
