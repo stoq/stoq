@@ -1255,6 +1255,7 @@ ALTER TABLE work_permit_data ALTER COLUMN id SET NOT NULL;
 -- Pass 12: Temporarily disable some constraints/not null
 
 ALTER TABLE commission_source DROP CONSTRAINT check_exist_one_fkey;
+ALTER TABLE cost_center_entry DROP CONSTRAINT stock_transaction_or_payment;
 ALTER TABLE product_component DROP CONSTRAINT different_products;
 ALTER TABLE work_order_package DROP CONSTRAINT different_branches;
 
@@ -1264,6 +1265,7 @@ ALTER TABLE branch_synchronization ALTER COLUMN branch_id DROP NOT NULL;
 ALTER TABLE commission ALTER COLUMN payment_id DROP NOT NULL;
 ALTER TABLE commission ALTER COLUMN sale_id DROP NOT NULL;
 ALTER TABLE commission ALTER COLUMN salesperson_id DROP NOT NULL;
+ALTER TABLE cost_center_entry ALTER COLUMN cost_center_id DROP NOT NULL;
 ALTER TABLE fiscal_book_entry ALTER COLUMN branch_id DROP NOT NULL;
 ALTER TABLE inventory ALTER COLUMN branch_id DROP NOT NULL;
 ALTER TABLE inventory_item ALTER COLUMN inventory_id DROP NOT NULL;
@@ -4868,6 +4870,9 @@ ALTER TABLE storable_batch DROP COLUMN temp_storable_id;
 ALTER TABLE commission_source ADD CONSTRAINT check_exist_one_fkey
       CHECK (category_id IS NOT NULL AND sellable_id IS NULL OR
              category_id IS NULL AND sellable_id IS NOT NULL);
+ALTER TABLE cost_center_entry ADD CONSTRAINT stock_transaction_or_payment
+      CHECK ((payment_id IS NULL AND stock_transaction_id IS NOT NULL) OR
+             (payment_id IS NOT NULL AND stock_transaction_id IS NULL));
 ALTER TABLE product_component ADD CONSTRAINT different_products
       CHECK (product_id != component_id);
 ALTER TABLE work_order_package ADD CONSTRAINT different_branches
@@ -4879,6 +4884,7 @@ ALTER TABLE branch_synchronization ALTER COLUMN branch_id SET NOT NULL;
 ALTER TABLE commission ALTER COLUMN payment_id SET NOT NULL;
 ALTER TABLE commission ALTER COLUMN sale_id SET NOT NULL;
 ALTER TABLE commission ALTER COLUMN salesperson_id SET NOT NULL;
+ALTER TABLE cost_center_entry ALTER COLUMN cost_center_id SET NOT NULL;
 ALTER TABLE fiscal_book_entry ALTER COLUMN branch_id SET NOT NULL;
 ALTER TABLE inventory ALTER COLUMN branch_id SET NOT NULL;
 ALTER TABLE inventory_item ALTER COLUMN inventory_id SET NOT NULL;
