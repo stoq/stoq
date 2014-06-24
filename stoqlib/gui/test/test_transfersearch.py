@@ -31,7 +31,7 @@ from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.reporting.transferreceipt import TransferOrderReceipt
+from stoqlib.reporting.transfer import TransferOrderReport
 
 
 class TestTransferOrderSearch(GUITest):
@@ -122,7 +122,7 @@ class TestTransferOrderSearch(GUITest):
         search.status_filter.select(None)
         self.check_search(search, 'transfer-date-interval-filter')
 
-    @mock.patch('stoqlib.gui.search.transfersearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     @mock.patch('stoqlib.gui.search.transfersearch.run_dialog')
     def test_buttons(self, run_dialog, print_report):
         self._create_domain()
@@ -135,8 +135,9 @@ class TestTransferOrderSearch(GUITest):
 
         self.assertSensitive(search._details_slave, ['print_button'])
         self.click(search._details_slave.print_button)
-        print_report.assert_called_once_with(TransferOrderReceipt,
-                                             search.results[0].transfer_order)
+        print_report.assert_called_once_with(TransferOrderReport, search.results,
+                                             list(search.results),
+                                             filters=search.search.get_search_filters())
 
         run_dialog.reset_mock()
         self.assertSensitive(search._details_slave, ['details_button'])

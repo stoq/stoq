@@ -34,7 +34,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.transferreceipt import TransferOrderReceipt
+from stoqlib.reporting.transfer import TransferOrderReceipt
 
 _ = stoqlib_gettext
 

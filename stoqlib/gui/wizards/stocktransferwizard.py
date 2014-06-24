@@ -46,7 +46,7 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.formatters import format_sellable_description
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.transferreceipt import TransferOrderReceipt
+from stoqlib.reporting.transfer import TransferOrderReceipt
 
 _ = stoqlib_gettext
 

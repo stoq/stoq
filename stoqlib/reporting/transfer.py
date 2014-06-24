@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import datetime
 
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.report import HTMLReport
+from stoqlib.reporting.report import HTMLReport, ObjectListReport
 
 _ = stoqlib_gettext
 
@@ -61,3 +61,8 @@ class TransferOrderReceipt(HTMLReport):
         self.order.receival_date = date
         self.order.identifier = 50
         self.logo_data = 'logo.png'
+
+
+class TransferOrderReport(ObjectListReport):
+    title = _("Transfer report")
+    main_object_name = (_("transfer"), _("transfers"))

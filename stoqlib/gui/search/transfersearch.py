@@ -40,10 +40,9 @@ from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.transferreceipt import TransferOrderReceipt
+from stoqlib.reporting.transfer import TransferOrderReport
 
 _ = stoqlib_gettext
 
@@ -52,10 +51,9 @@ class TransferOrderSearch(SearchDialog):
     title = _(u"Transfer Order Search")
     size = (750, 500)
     search_spec = TransferOrderView
-    report_class = TransferOrderReceipt
+    report_class = TransferOrderReport
     selection_mode = gtk.SELECTION_MULTIPLE
     search_by_date = True
-    advanced_search = False
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)
@@ -138,15 +136,11 @@ class TransferOrderSearch(SearchDialog):
                              data_type=datetime.date, width=100,
                              visible=False),
                 SearchColumn('source_branch_name', _('Source'),
-                             data_type=unicode, expand=True),
+                             data_type=str, expand=True),
                 SearchColumn('destination_branch_name', _('Destination'),
-                             data_type=unicode, width=220),
+                             data_type=str, width=220),
                 Column('total_items', _('Items'), data_type=Decimal,
                        format_func=format_quantity, width=110)]
-
-    def print_report(self):
-        view = self.results.get_selected_rows()[0]
-        print_report(self.report_class, view.transfer_order)
 
     #
     # Callbacks
