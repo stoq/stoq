@@ -208,9 +208,9 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
         self.work_orders_nb.append_page(holder, hbox)
         self.attach_slave(label, slave, holder)
         button.connect('clicked', self._on_remove_work_order__clicked, holder,
-                       work_order, work_order_id)
+                       label, work_order, work_order_id)
 
-    def _remove_work_order(self, holder, work_order, work_order_id):
+    def _remove_work_order(self, holder, name, work_order, work_order_id):
         if not work_order.get_items().find().is_empty():
             warning(_("This workorder already has items and cannot be removed"))
             return
@@ -218,6 +218,7 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
         self._work_order_ids.remove(work_order_id)
 
         # Remove the tab
+        self.detach_slave(name)
         pagenum = self.work_orders_nb.page_num(holder)
         self.work_orders_nb.remove_page(pagenum)
 
@@ -230,6 +231,8 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
         work_order.sale = None
         work_order.cancel()
 
+        self.force_validation()
+
     #
     #   Kiwi callbacks
     #
@@ -237,15 +240,16 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
     def _on_new_work_order__clicked(self, button):
         self._add_work_order(self._create_work_order())
 
-    def _on_remove_work_order__clicked(self, button, slave_holder, work_order,
-                                       work_order_id):
+    def _on_remove_work_order__clicked(self, button, slave_holder, slave_name,
+                                       work_order, work_order_id):
         # FIXME: Hide the button from the
         # Dont let the user remove the last WO
         total_pages = self.work_orders_nb.get_n_pages()
         if total_pages == 1:
             return
 
-        self._remove_work_order(slave_holder, work_order, work_order_id)
+        self._remove_work_order(slave_holder, slave_name,
+                                work_order, work_order_id)
 
 
 class WorkOrderQuoteItemStep(SaleQuoteItemStep):
