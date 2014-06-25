@@ -306,6 +306,7 @@ class StoqCommandHandler:
     def cmd_updateschema(self, options):
         """Update the database schema"""
         from stoqlib.database.migration import StoqlibSchemaMigration
+        from stoqlib.lib.environment import is_developer_mode
 
         self._read_config(options, check_schema=False, load_plugins=False,
                           register_station=False)
@@ -313,7 +314,13 @@ class StoqCommandHandler:
         # This is a little bit tricky to be able to apply the initial
         # plugin infrastructure
         migration = StoqlibSchemaMigration()
-        if not migration.update(backup=options.disable_backup):
+
+        if is_developer_mode():
+            backup = False
+        else:
+            backup = options.disable_backup
+
+        if not migration.update(backup=backup):
             return 1
 
     def opt_clone(self, parser, group):
