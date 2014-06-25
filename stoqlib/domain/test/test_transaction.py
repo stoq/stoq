@@ -33,8 +33,6 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
-NAME = u'dummy transaction test'
-
 
 def _query_server_time(store):
     # Be careful, this opens up a new connection, queries the server
@@ -56,7 +54,7 @@ class TestTransaction(DomainTest):
 
         # Now modify the person
         first_te = person.te.te_time
-        person.name = NAME
+        person.name = u'dummy transaction test'
         self.store.commit()
 
         # te_time should have changed
@@ -146,9 +144,9 @@ class TestTransaction(DomainTest):
         inside_store.close()
 
     def tearDown(self):
-        store = new_store()
-        for person in store.find(Person, name=NAME):
-            store.remove(person)
-        store.commit()
+        # Make sure to remove all committed persons from the database
+        with new_store() as store:
+            test_names = [u'dummy transaction test', u'dummy', u'doe', u'john']
+            store.find(Person, Person.name.is_in(test_names)).remove()
+
         DomainTest.tearDown(self)
-        store.close()

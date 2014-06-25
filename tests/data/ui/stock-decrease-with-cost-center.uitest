@@ -32,7 +32,6 @@ GtkDialog(PluggableWizard): title='Manual Stock Decrease', hidden
             item: 'Stoq Elite Fashion (Stoq Com\xc3\xa9rcio Ltda ME)'
             item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
             item: 'Vitalina Claudino'
-            item: 'john'
           GtkLabel(step.label3): 'Removed By:'
           ProxyComboEntry(step.removed_by):
             item: 'Administrator', selected
