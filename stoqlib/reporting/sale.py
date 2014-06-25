@@ -99,7 +99,7 @@ class SoldItemsByBranchReport(ObjectListReport):
     """
     title = _("Sold Items by Branch Report")
     summary = ['quantity', 'total']
-    template_filename = 'sold_items_by_branch.html'
+    template_filename = 'sale/sold_items_by_branch.html'
 
     def reset(self):
         ObjectListReport.reset(self)
