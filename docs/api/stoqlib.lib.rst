@@ -257,6 +257,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`pgpass` Module
+--------------------
+
+.. automodule:: stoqlib.lib.pgpass
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`pdf` Module
 -----------------
 

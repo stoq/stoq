@@ -552,11 +552,7 @@ class DatabaseSettings(object):
                 raise SystemExit("Cannot drop a database with existing "
                                  "tables (use --force to really drop it)")
 
-        try:
-            self.drop_database(dbname)
-        except Exception as e:
-            raise e
-
+        self.drop_database(dbname)
         super_store = self.create_super_store()
         _create_empty_database(super_store, dbname)
         super_store.close()
