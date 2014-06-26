@@ -93,6 +93,16 @@ class ShellDatabaseConnection(object):
             run_dialog(FirstTimeConfigWizard, None, self._options, self._config)
             self._ran_wizard = True
 
+    def _get_password(self):
+        import binascii
+        configdir = self._config.get_config_directory()
+        filename = os.path.join(configdir, 'data')
+        if not os.path.exists(filename):
+            return
+
+        data = open(filename).read()
+        return binascii.a2b_base64(data)
+
     def _try_connect(self):
         from stoqlib.lib.message import error
         try:
@@ -104,6 +114,9 @@ class ShellDatabaseConnection(object):
                     "of type '%s'") % (value, type))
 
         from stoqlib.database.exceptions import PostgreSQLError
+        from stoqlib.database.runtime import get_default_store
+        from stoqlib.exceptions import DatabaseError
+        from stoqlib.lib.pgpass import write_pg_pass
         from stoq.lib.startup import setup
 
         # XXX: progress dialog for connecting (if it takes more than
@@ -112,9 +125,33 @@ class ShellDatabaseConnection(object):
         try:
             setup(self._config, self._options, register_station=False,
                   check_schema=False, load_plugins=False)
+            # the setup call above is not really trying to connect (since
+            # register_station, check_schema and load_plugins are all False).
+            # Try to really connect here.
+            get_default_store()
         except (StoqlibError, PostgreSQLError) as e:
+            log.debug('Connection failed.')
             error(_('Could not connect to the database'),
                   'error=%s uri=%s' % (str(e), store_dsn))
+        except DatabaseError:
+            log.debug('Connection failed. Tring to setup .pgpass')
+            # This is probably a missing password configuration. Setup the
+            # pgpass file and try again.
+            password = self._get_password()
+            if not password:
+                # There is no password stored in data file. Abort
+                raise
+
+            from stoqlib.database.settings import db_settings
+            write_pg_pass(db_settings.dbname, db_settings.address,
+                          db_settings.port, db_settings.username, password)
+            # Now that there is a pg_pass file, try to connect again
+            try:
+                get_default_store()
+            except DatabaseError as e:
+                log.debug('Connection failed again.')
+                error(_('Could not connect to the database'),
+                      'error=%s uri=%s' % (str(e), store_dsn))
 
     def _post_connect(self):
         self._check_schema_migration()

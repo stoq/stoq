@@ -47,7 +47,6 @@ Current flow of the database steps:
 """
 
 import logging
-import os
 import platform
 
 import glib
@@ -80,6 +79,7 @@ from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.osutils import get_product_key, read_registry_key
+from stoqlib.lib.pgpass import write_pg_pass
 from stoqlib.lib.validators import validate_email
 from stoqlib.lib.webservice import WebService
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -1022,49 +1022,9 @@ class FirstTimeConfigWizard(BaseWizard):
         if self.auth_type != PASSWORD_AUTHENTICATION:
             return
 
-        logger.info('write_pgpass')
-        # There's no way to pass in the password to psql via the command line,
-        # so we need to setup a pgpass where we store the password entered here
-        if platform.system() == 'Windows':
-            directory = os.path.join(os.environ['APPDATA'],
-                                     'postgresql')
-            passfile = os.path.join(directory, 'pgpass.conf')
-        else:
-            directory = os.environ.get('HOME', '/')
-            passfile = os.path.join(directory, '.pgpass')
-        pgpass = os.environ.get('PGPASSFILE', passfile)
-
-        # FIXME: remove duplicates when trying several different passwords
-        if os.path.exists(pgpass):
-            lines = []
-            for line in open(pgpass):
-                if line[-1] == '\n':
-                    line = line[:-1]
-                lines.append(line)
-        else:
-            lines = []
-
-        # _get_store_internal connects to the 'postgres' database,
-        # we need to allow connections without asking the password,
-        # otherwise stoqdbadmin will be stuck in the wizard when creating
-        # a new database.
-        for dbname in ['postgres', self.settings.dbname]:
-            line = '%s:%s:%s:%s:%s' % (self.settings.address,
-                                       self.settings.port,
-                                       dbname,
-                                       self.settings.username,
-                                       self.settings.password)
-            if line in lines:
-                continue
-            lines.append(line)
-
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        fd = open(pgpass, 'w')
-        fd.write('\n'.join(lines))
-        fd.write('\n')
-        fd.close()
-        os.chmod(pgpass, 0600)
+        write_pg_pass(self.settings.dbname, self.settings.address,
+                      self.settings.port, self.settings.username,
+                      self.settings.password)
 
     #
     # WizardStep hooks
