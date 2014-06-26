@@ -44,6 +44,7 @@ This module contains the following editors and slaves:
   :obj:`stoqlib.domain.payment.card.CreditProvider`
 """
 
+import collections
 from decimal import Decimal
 
 import gtk
@@ -313,7 +314,7 @@ class CardPaymentDetailsEditor(BaseEditor):
     """
     model_type = CreditCardData
 
-    fields = dict(
+    fields = collections.OrderedDict(
         device=ChoiceField(_('Device'), proxy=True, mandatory=True),
         provider=ChoiceField(_('Provider'), proxy=True, mandatory=True),
         auth=IntegerField(_('Authorization'), proxy=True, mandatory=True)

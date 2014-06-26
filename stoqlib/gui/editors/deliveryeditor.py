@@ -23,9 +23,11 @@
 ##
 """ Product delivery editor implementation """
 
+import collections
 import decimal
 
 from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import PriceField, DateField, TextField, BoolField, EmptyField
 from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqlib.api import api
@@ -87,19 +89,17 @@ class CreateDeliveryEditor(BaseEditor):
     form_holder_name = 'forms'
     gladefile = 'CreateDeliveryEditor'
     title = _('New Delivery')
+    form_columns = 2
     size = (750, 550)
 
-    proxy_widgets = [
-        'estimated_fix_date',
-        'price',
-    ]
-
-    fields = dict(
+    fields = collections.OrderedDict(
         client_id=PersonField(_("Client"), proxy=True, mandatory=True,
                               person_type=Client),
         transporter_id=PersonField(_("Transporter"), proxy=True,
                                    person_type=Transporter),
         address=AddressField(_("Address"), proxy=True, mandatory=True),
+        price=PriceField(_("Delivery cost"), proxy=True),
+        estimated_fix_date=DateField(_("Estimated delivery date"), proxy=True),
     )
 
     def __init__(self, store, model=None, sale_items=None):
@@ -196,10 +196,6 @@ class CreateDeliveryEditor(BaseEditor):
         price = sysparam.get_object(store, 'DELIVERY_SERVICE').sellable.price
         return _CreateDeliveryModel(price=price)
 
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model,
-                                    CreateDeliveryEditor.proxy_widgets)
-
     def setup_slaves(self):
         self.items = ObjectList(columns=self._get_sale_items_columns(),
                                 objects=self.sale_items)
@@ -226,22 +222,25 @@ class DeliveryEditor(BaseEditor):
 
     title = _("Delivery editor")
     gladefile = 'DeliveryEditor'
-    size = (600, 400)
+    size = (-1, 400)
     model_type = Delivery
     model_name = _('Delivery')
     form_holder_name = 'forms'
+    form_columns = 2
 
-    proxy_widgets = [
-        'client_str',
-        'deliver_date',
-        'receive_date',
-        'tracking_code',
-    ]
-
-    fields = dict(
+    fields = collections.OrderedDict(
+        client_str=TextField(_("Client"), proxy=True, editable=False,
+                             colspan=2),
         transporter_id=PersonField(_("Transporter"), proxy=True,
-                                   person_type=Transporter),
-        address=AddressField(_("Address"), proxy=True, mandatory=True)
+                                   person_type=Transporter, colspan=2),
+        address=AddressField(_("Address"), proxy=True, mandatory=True,
+                             colspan=2),
+        was_delivered_check=BoolField(_("Was sent to deliver?")),
+        deliver_date=DateField(_("Delivery date"), mandatory=True, proxy=True),
+        tracking_code=TextField(_("Tracking code"), proxy=True),
+        was_received_check=BoolField(_("Was received by client?")),
+        receive_date=DateField(_("Receive date"), mandatory=True, proxy=True),
+        empty=EmptyField(),
     )
 
     def __init__(self, store, *args, **kwargs):
@@ -256,7 +255,6 @@ class DeliveryEditor(BaseEditor):
     def setup_proxies(self):
         self._configuring_proxies = True
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, DeliveryEditor.proxy_widgets)
         self._update_status_widgets()
         self._configuring_proxies = False
 
@@ -321,7 +319,7 @@ class DeliveryEditor(BaseEditor):
             widget.set_sensitive(active)
 
         if not self.model.deliver_date:
-            self.proxy.update('deliver_date', localtoday().date())
+            self.deliver_date.update(localtoday().date())
 
         if self._configuring_proxies:
             # Do not change status above
@@ -342,7 +340,7 @@ class DeliveryEditor(BaseEditor):
             self.was_delivered_check.set_active(True)
 
         if not self.model.receive_date:
-            self.proxy.update('receive_date', localtoday().date())
+            self.receive_date.update(localtoday().date())
 
         if self._configuring_proxies:
             # Do not change status above

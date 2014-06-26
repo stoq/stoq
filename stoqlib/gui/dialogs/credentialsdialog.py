@@ -23,6 +23,8 @@
 ##
 ##
 
+import collections
+
 from kiwi.ui.forms import PasswordField, TextField
 from kiwi.python import Settable
 
@@ -43,7 +45,7 @@ class CredentialsDialog(BaseEditor):
     model_type = Settable
     title = _(u'Credentials Dialog')
 
-    fields = dict(
+    fields = collections.OrderedDict(
         username=TextField(_('Username'), mandatory=True, proxy=True),
         password=PasswordField(_('Password'), proxy=True),
     )

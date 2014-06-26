@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import collections
 import decimal
 
 import gtk
@@ -51,7 +52,7 @@ class DiscountEditor(BaseEditor):
     model_type = object
     confirm_widgets = ['discount']
 
-    fields = dict(
+    fields = collections.OrderedDict(
         discount=TextField(_('Discount to apply'), mandatory=True)
     )
 

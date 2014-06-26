@@ -9,16 +9,22 @@ GtkDialog(main_dialog.toplevel): title='Print labels', hidden
             GtkTable():
               ProxyLabel(code_lbl): 'Code:'
               ProxyEntry(code): '', insensitive
+              GtkHBox():
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): 'Description', insensitive
+              GtkHBox():
               ProxyLabel(barcode_lbl): 'Barcode:'
               ProxyEntry(barcode): '', insensitive
+              GtkHBox():
               ProxyLabel(price_lbl): 'Price:'
               ProxyEntry(price): '10.00', insensitive
+              GtkHBox():
               ProxyLabel(quantity_lbl): 'Quantity:'
               ProxySpinButton(quantity): '1'
+              GtkHBox():
               ProxyLabel(skip_lbl): 'Labels to skip:'
               ProxySpinButton(skip): '0'
+              GtkHBox():
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

@@ -11,8 +11,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
               ProxyComboEntry(branch_id): insensitive
                 item: 'Moda Stoq', selected
                 item: 'Stoq Elite Fashion'
-              GtkButton(branch_id_add_button): insensitive
-              GtkButton(branch_id_edit_button): insensitive
+              GtkHBox():
+                GtkButton(branch_id_add_button): insensitive
+                GtkButton(branch_id_edit_button): insensitive
               ProxyLabel(method_lbl): 'Method:'
               ProxyComboBox(method): insensitive
                 item: 'Bill'
@@ -22,25 +23,31 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
                 item: 'Deposit'
                 item: 'Money', selected
                 item: 'Store Credit'
+              GtkHBox():
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): '1/1 Money for sale 12345'
+              GtkHBox():
               ProxyLabel(person_id_lbl): 'Payer:'
               ProxyComboEntry(person_id): insensitive
                 item: 'Alessandra Almeida Itaber\xc3\xa1'
                 item: 'Franciso Elisio de Lima Junior'
                 item: 'Luis Sergio da Silva Marin'
                 item: 'Vitalina Claudino'
-              GtkButton(person_id_add_button): insensitive
-              GtkButton(person_id_edit_button): insensitive
+              GtkHBox():
+                GtkButton(person_id_add_button): insensitive
+                GtkButton(person_id_edit_button): insensitive
               ProxyLabel(value_lbl): 'Value:'
               ProxyEntry(value): '0.00', insensitive
+              GtkHBox():
               ProxyLabel(due_date_lbl): 'Due date:'
               ProxyDateEntry(due_date): date.today(), insensitive
+              GtkHBox():
               ProxyLabel(category_lbl): 'Category:'
               ProxyComboBox(category):
                 item: 'No category', selected
-              GtkButton(category_add_button):
-              GtkButton(category_edit_button): insensitive
+              GtkHBox():
+                GtkButton(category_add_button):
+                GtkButton(category_edit_button): insensitive
               ProxyLabel(repeat_lbl): 'Repeat:'
               ProxyComboBox(repeat): insensitive
                 item: 'Once', selected
@@ -50,13 +57,16 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
                 item: 'Monthly'
                 item: 'Quarterly'
                 item: 'Yearly'
+              GtkHBox():
               ProxyLabel(end_date_lbl): 'End date:'
               ProxyDateEntry(end_date): None, insensitive
+              GtkHBox():
               ProxyLabel(): 'Attachment:'
               GtkButton(attachment): insensitive
-              GtkButton(attachment_add_button):
-              GtkButton(attachment_edit_button): insensitive
-              GtkButton(attachment_delete_button): insensitive
+              GtkHBox():
+                GtkButton(attachment_add_button):
+                GtkButton(attachment_edit_button): insensitive
+                GtkButton(attachment_delete_button): insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

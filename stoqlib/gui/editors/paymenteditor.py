@@ -24,6 +24,7 @@
 ##
 """ Editor for payments descriptions and categories"""
 
+import collections
 
 from kiwi import ValueUnset
 from kiwi.currency import currency
@@ -66,7 +67,7 @@ class _PaymentEditor(BaseEditor):
     category_type = None
     payment_type = None
 
-    fields = dict(
+    fields = collections.OrderedDict(
         branch_id=PersonField(_('Branch'), proxy=True, person_type=Branch,
                               can_add=False, can_edit=False, mandatory=True),
         method=PaymentMethodField(_('Method'), proxy=True, mandatory=True,

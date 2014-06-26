@@ -5,35 +5,37 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave CreateDeliveryEditor is attached
         GtkVBox(toplevel):
-          GtkTable(table2, fill=True):
-            ProxyLabel(label2): 'Delivery cost ($CURRENCY):'
-            ProxySpinButton(price): '0.00'
-            GtkEventBox(forms): slave BasicForm is attached
-              GtkAlignment(toplevel):
-                GtkTable():
-                  ProxyLabel(client_id_lbl): 'Client:'
-                  ProxyComboEntry(client_id): mandatory
-                    item: 'Alessandra Almeida Itaber\xc3\xa1'
-                    item: 'Client01'
-                    item: 'Client02'
-                    item: 'Franciso Elisio de Lima Junior'
-                    item: 'Luis Sergio da Silva Marin'
-                    item: 'Vitalina Claudino'
+          GtkEventBox(forms, fill=True): slave BasicForm is attached
+            GtkAlignment(toplevel):
+              GtkTable():
+                ProxyLabel(client_id_lbl): 'Client:'
+                ProxyComboEntry(client_id): mandatory
+                  item: 'Alessandra Almeida Itaber\xc3\xa1'
+                  item: 'Client01'
+                  item: 'Client02'
+                  item: 'Franciso Elisio de Lima Junior'
+                  item: 'Luis Sergio da Silva Marin'
+                  item: 'Vitalina Claudino'
+                GtkHBox():
                   GtkButton(client_id_add_button):
                   GtkButton(client_id_edit_button): insensitive
-                  ProxyLabel(transporter_id_lbl): 'Transporter:'
-                  ProxyComboEntry(transporter_id):
-                    item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                ProxyLabel(price_lbl): 'Delivery cost:'
+                ProxyEntry(price): '0.00'
+                GtkHBox():
+                ProxyLabel(transporter_id_lbl): 'Transporter:'
+                ProxyComboEntry(transporter_id):
+                  item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                GtkHBox():
                   GtkButton(transporter_id_add_button):
                   GtkButton(transporter_id_edit_button): insensitive
-                  ProxyLabel(address_lbl): 'Address:'
-                  ProxyComboEntry(address): mandatory
+                ProxyLabel(estimated_fix_date_lbl): 'Estimated delivery date:'
+                ProxyDateEntry(estimated_fix_date): date.today()
+                GtkHBox():
+                ProxyLabel(address_lbl): 'Address:'
+                ProxyComboEntry(address): mandatory
+                GtkHBox():
                   GtkButton(address_add_button): insensitive
                   GtkButton(address_edit_button): insensitive
-            GtkLabel(label1): 'Estimated Delivery _Date:'
-            ProxyDateEntry(estimated_fix_date): date.today()
-            GtkLabel(label5):
-            GtkLabel(label6):
           GtkHSeparator(hseparator1, fill=True):
           GtkLabel(label3, fill=True): 'Products to Deliver:'
           GtkEventBox(addition_list_holder, expand=True, fill=True):

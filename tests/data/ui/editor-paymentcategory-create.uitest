@@ -9,12 +9,15 @@ GtkDialog(main_dialog.toplevel): title='Add Payment Category', hidden
             GtkTable():
               ProxyLabel(name_lbl): 'Name:'
               ProxyEntry(name): '', invalid
+              GtkHBox():
               ProxyLabel(color_lbl): 'Color:'
               ProxyColorButton(color):
+              GtkHBox():
               ProxyLabel(category_type_lbl): 'Type:'
               ProxyComboBox(category_type):
                 item: 'Payable', selected
                 item: 'Receivable'
+              GtkHBox():
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

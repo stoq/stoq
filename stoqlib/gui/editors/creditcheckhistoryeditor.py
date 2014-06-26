@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import collections
+
 from kiwi.ui.forms import ChoiceField, DateField, TextField, MultiLineField
 
 from stoqlib.api import api
@@ -39,7 +41,7 @@ class CreditCheckHistoryEditor(BaseEditor):
     model_name = _("Client Credit Check History")
     size = (400, -1)
 
-    fields = dict(
+    fields = collections.OrderedDict(
         client_id=PersonField(_('Client'), proxy=True, person_type=Client,
                               mandatory=True),
         identifier=TextField(_('Identifier'), proxy=True, mandatory=True),

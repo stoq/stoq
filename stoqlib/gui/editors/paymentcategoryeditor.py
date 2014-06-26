@@ -24,6 +24,8 @@
 ##
 """Dialog for listing payment categories"""
 
+import collections
+
 import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import ColorField, ChoiceField, TextField
@@ -44,12 +46,17 @@ class PaymentCategoryEditor(BaseEditor):
     model_name = _('Payment Category')
     model_type = PaymentCategory
     confirm_widgets = ['name']
-    proxy_widgets = ['category_type']
 
-    fields = dict(
+    _category_type_values = [
+        (_('Payable'), PaymentCategory.TYPE_PAYABLE),
+        (_('Receivable'), PaymentCategory.TYPE_RECEIVABLE)
+    ]
+
+    fields = collections.OrderedDict(
         name=TextField(_('Name'), proxy=True),
         color=ColorField(_('Color'), proxy=True),
-        category_type=ChoiceField(_('Type'), data_type=int),
+        category_type=ChoiceField(_('Type'), data_type=int,
+                                  values=_category_type_values, proxy=True),
     )
 
     def __init__(self, store, model=None,
@@ -95,10 +102,6 @@ class PaymentCategoryEditor(BaseEditor):
 
     def setup_proxies(self):
         self.name.grab_focus()
-        self.category_type.prefill([
-            (_('Payable'), PaymentCategory.TYPE_PAYABLE),
-            (_('Receivable'), PaymentCategory.TYPE_RECEIVABLE)])
-        self.add_proxy(self.model, self.proxy_widgets)
         self._original_category_type = self.model.category_type
 
     #

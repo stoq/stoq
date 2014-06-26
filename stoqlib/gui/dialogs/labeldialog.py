@@ -23,6 +23,7 @@
 ##
 ##
 
+import collections
 from decimal import Decimal
 
 from kiwi.ui.forms import NumericField, TextField, PriceField
@@ -41,7 +42,7 @@ class PrintLabelEditor(BaseEditor):
     model_type = object
     title = _(u'Print labels')
 
-    fields = dict(
+    fields = collections.OrderedDict(
         code=TextField(_('Code'), proxy=True),
         description=TextField(_('Description'), proxy=True),
         barcode=TextField(_('Barcode'), proxy=True),
@@ -81,7 +82,7 @@ class SkipLabelsEditor(BaseEditor):
     model_type = object
     title = _('Labels to skip')
 
-    fields = dict(
+    fields = collections.OrderedDict(
         skip=NumericField(_('Labels to skip'), proxy=True),
     )
 

@@ -24,6 +24,8 @@
 ##
 """Editors for fiscal objects"""
 
+import collections
+
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import TextField
 
@@ -41,7 +43,7 @@ class CfopEditor(BaseEditor):
     model_name = _('C.F.O.P.')
     model_type = CfopData
 
-    fields = dict(
+    fields = collections.OrderedDict(
         code=TextField(_('C.F.O.P.'), input_mask="0.000", mandatory=True,
                        proxy=True),
         description=TextField(_('Description'), mandatory=True, proxy=True),

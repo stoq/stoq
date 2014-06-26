@@ -23,6 +23,8 @@
 ##
 """ Person editors definition """
 
+import collections
+
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import TextField
 
@@ -189,7 +191,7 @@ class EmployeeRoleEditor(BaseEditor):
     model_name = _('Employee Role')
     confirm_widgets = ['name']
 
-    fields = dict(
+    fields = collections.OrderedDict(
         name=TextField(_('Name'), proxy=True, mandatory=True),
     )
 

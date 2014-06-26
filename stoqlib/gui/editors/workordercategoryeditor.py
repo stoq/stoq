@@ -24,6 +24,8 @@
 ##
 """Dialog for listing payment categories"""
 
+import collections
+
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import ColorField, TextField
 
@@ -42,7 +44,7 @@ class WorkOrderCategoryEditor(BaseEditor):
     model_type = WorkOrderCategory
     confirm_widgets = ['name']
 
-    fields = dict(
+    fields = collections.OrderedDict(
         name=TextField(_('Name'), proxy=True),
         color=ColorField(_('Color'), proxy=True),
     )

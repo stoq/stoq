@@ -23,6 +23,8 @@
 ##
 """ Editors definitions for sellable"""
 
+import collections
+
 import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PercentageField, TextField
@@ -67,7 +69,7 @@ class SellableTaxConstantEditor(BaseEditor):
     model_type = SellableTaxConstant
     model_name = _('Taxes and Tax rates')
 
-    fields = dict(
+    fields = collections.OrderedDict(
         description=TextField(_('Name'), proxy=True, mandatory=True),
         tax_value=PercentageField(_('Value'), proxy=True, mandatory=True),
     )

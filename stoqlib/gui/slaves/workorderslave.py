@@ -23,6 +23,7 @@
 ##
 ##
 
+import collections
 import datetime
 import decimal
 
@@ -68,7 +69,7 @@ class _WorkOrderItemEditor(BaseEditor):
     model_type = WorkOrderItem
     confirm_widgets = ['price', 'quantity', 'quantity_reserved']
 
-    fields = dict(
+    fields = collections.OrderedDict(
         price=PriceField(_(u'Price'), proxy=True, mandatory=True),
         quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
         quantity_reserved=NumericField(_(u'Reserved quantity')),

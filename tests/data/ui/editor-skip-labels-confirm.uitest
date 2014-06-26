@@ -9,6 +9,7 @@ GtkDialog(main_dialog.toplevel): title='Labels to skip', hidden
             GtkTable():
               ProxyLabel(skip_lbl): 'Labels to skip:'
               ProxySpinButton(skip): '0'
+              GtkHBox():
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

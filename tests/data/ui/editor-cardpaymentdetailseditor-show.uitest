@@ -11,6 +11,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "CreditCardData"', hidde
               ProxyComboBox(device):
                 item: 'Cielo', selected
                 item: 'Default'
+              GtkHBox():
               ProxyLabel(provider_lbl): 'Provider:'
               ProxyComboBox(provider):
                 item: 'AMEX'
@@ -22,8 +23,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "CreditCardData"', hidde
                 item: 'REDECARD'
                 item: 'VISANET'
                 item: 'VISANET (1)', selected
+              GtkHBox():
               ProxyLabel(auth_lbl): 'Authorization:'
               ProxyEntry(auth): '', mandatory
+              GtkHBox():
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

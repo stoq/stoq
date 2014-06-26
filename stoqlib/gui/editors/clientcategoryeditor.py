@@ -24,6 +24,8 @@
 ##
 """Dialog for listing client categories"""
 
+import collections
+
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PercentageField
 from kiwi.ui.forms import TextField
@@ -43,7 +45,7 @@ class ClientCategoryEditor(BaseEditor):
     confirm_widgets = ['name',
                        'max_discount']
 
-    fields = dict(
+    fields = collections.OrderedDict(
         name=TextField(_('Name'), proxy=True),
         max_discount=PercentageField(_('Max Discount'), proxy=True),
     )

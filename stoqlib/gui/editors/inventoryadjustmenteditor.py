@@ -24,10 +24,10 @@
 ##
 """ Dialogs for product adjustment """
 
+import collections
 from decimal import Decimal
 
 import gtk
-
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import TextField, NumericField, MultiLineField
 from kiwi.ui.objectlist import Column
@@ -189,10 +189,9 @@ class InventoryAdjustmentEditor(BaseEditor):
 class InventoryItemAdjustmentEditor(BaseEditor):
     title = _(u"Product Adjustment")
     hide_footer = False
-    size = (500, 300)
     model_type = InventoryItem
 
-    fields = dict(
+    fields = collections.OrderedDict(
         description=TextField(_("Product"), proxy=True, editable=False),
         recorded_quantity=TextField(_("Previous quantity"), proxy=True,
                                     editable=False),

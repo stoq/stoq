@@ -6,23 +6,39 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave DeliveryEditor is attached
         GtkAlignment(alignment1):
           GtkVBox(vbox2):
-            GtkHBox(hbox2):
-              GtkLabel(client_lbl): 'Client:'
-              ProxyLabel(client_str, expand=True, fill=True): '<span ></span>'
-            GtkHSeparator(hseparator2, fill=True):
             GtkEventBox(forms): slave BasicForm is attached
               GtkAlignment(toplevel):
                 GtkTable():
+                  ProxyLabel(client_str_lbl): 'Client:'
+                  ProxyLabel(client_str): '<span ></span>'
+                  GtkHBox():
                   ProxyLabel(transporter_id_lbl): 'Transporter:'
                   ProxyComboEntry(transporter_id):
                     item: 'John', selected
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                  GtkButton(transporter_id_add_button):
-                  GtkButton(transporter_id_edit_button):
+                  GtkHBox():
+                    GtkButton(transporter_id_add_button):
+                    GtkButton(transporter_id_edit_button):
                   ProxyLabel(address_lbl): 'Address:'
                   ProxyComboEntry(address): mandatory
-                  GtkButton(address_add_button): insensitive
-                  GtkButton(address_edit_button): insensitive
+                  GtkHBox():
+                    GtkButton(address_add_button): insensitive
+                    GtkButton(address_edit_button): insensitive
+                  ProxyCheckButton(was_delivered_check): 'Was sent to deliver?'
+                  GtkHBox():
+                  ProxyCheckButton(was_received_check): 'Was received by client?'
+                  GtkHBox():
+                  ProxyLabel(deliver_date_lbl): 'Delivery date:'
+                  ProxyDateEntry(deliver_date): None, insensitive
+                  GtkHBox():
+                  ProxyLabel(receive_date_lbl): 'Receive date:'
+                  ProxyDateEntry(receive_date): None, insensitive
+                  GtkHBox():
+                  ProxyLabel(tracking_code_lbl): 'Tracking code:'
+                  ProxyEntry(tracking_code): '', insensitive
+                  GtkHBox():
+                  GtkLabel(empty):
+                  GtkHBox():
             GtkHSeparator(hseparator1, fill=True):
             GtkEventBox(delivery_items_holder, expand=True, fill=True):
               ObjectList(delivery_items):
@@ -30,16 +46,6 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
                 column: title='Quantity'
                 row: u'Delivery item 1', Decimal('1.000')
                 row: u'Delivery item 2', Decimal('1.000')
-            GtkHSeparator(hseparator3, fill=True):
-            GtkTable(table2, expand=True, fill=True):
-              GtkCheckButton(was_delivered_check): 'Was sent to deliver?'
-              GtkCheckButton(was_received_check): 'Was received by client?'
-              GtkLabel(deliver_date_lbl): 'Delivery date:'
-              ProxyDateEntry(deliver_date): None, insensitive
-              GtkLabel(receive_date_lbl): 'Receive date:'
-              ProxyDateEntry(receive_date): None, insensitive
-              GtkLabel(tracking_code_lbl): 'Tracking code:'
-              ProxyEntry(tracking_code): '', insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

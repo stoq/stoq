@@ -27,6 +27,8 @@ Allows editing of contact information. The user can add a description to each
 contact information and the information itself. Both fields are pure text and
 there's no phone number formatting."""
 
+import collections
+
 from kiwi.ui.forms import TextField
 
 from stoqlib.api import api
@@ -44,7 +46,7 @@ class ContactInfoEditor(BaseEditor):
 
     confirm_widgets = ['description', 'contact_info']
 
-    fields = dict(
+    fields = collections.OrderedDict(
         description=TextField(_('Description'), mandatory=True, proxy=True),
         contact_info=TextField(_('Contact Info'), mandatory=True, proxy=True),
     )

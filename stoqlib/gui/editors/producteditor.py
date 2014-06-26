@@ -23,6 +23,7 @@
 ##
 """ Editors definitions for products"""
 
+import collections
 from decimal import Decimal
 
 import gtk
@@ -434,7 +435,7 @@ class ProductManufacturerEditor(BaseEditor):
     model_type = ProductManufacturer
     confirm_widgets = ['name']
 
-    fields = dict(
+    fields = collections.OrderedDict(
         name=TextField(_('Name'), proxy=True, mandatory=True),
     )
 

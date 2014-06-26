@@ -9,25 +9,32 @@ GtkDialog(main_dialog.toplevel): title='Product Adjustment', hidden
             GtkTable():
               ProxyLabel(description_lbl): 'Product:'
               ProxyLabel(description): '<span >Description</span>'
+              GtkHBox():
               ProxyLabel(recorded_quantity_lbl): 'Previous quantity:'
               ProxyLabel(recorded_quantity): '<span >10.000</span>'
+              GtkHBox():
               ProxyLabel(counted_quantity_lbl): 'Counted quantity:'
               ProxyLabel(counted_quantity): '<span >20.000</span>'
+              GtkHBox():
               ProxyLabel(difference_lbl): 'Difference:'
               ProxyLabel(difference): '<span >10.000</span>'
+              GtkHBox():
               ProxyLabel(actual_quantity_lbl): 'Actual quantity:'
               ProxySpinButton(actual_quantity): '20'
+              GtkHBox():
               ProxyLabel(cfop_data_lbl): 'C.F.O.P:'
               ProxyComboEntry(cfop_data):
                 item: '1.102 Compra para Comercializacao'
                 item: '5.102 Venda de Mercadoria Adquirida'
                 item: '5.202 Devolucao'
                 item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
-              GtkButton(cfop_data_add_button):
-              GtkButton(cfop_data_edit_button): insensitive
+              GtkHBox():
+                GtkButton(cfop_data_add_button):
+                GtkButton(cfop_data_edit_button): insensitive
               ProxyLabel(reason_lbl): 'Reason:'
               GtkScrolledWindow():
                 ProxyTextView(reason): mandatory
+              GtkHBox():
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

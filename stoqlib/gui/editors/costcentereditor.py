@@ -24,6 +24,8 @@
 ##
 """An editor for |costcenter| objects"""
 
+import collections
+
 from kiwi.ui.forms import BoolField, MultiLineField, PriceField, TextField
 
 from stoqlib.lib.translation import stoqlib_gettext
@@ -38,7 +40,7 @@ class CostCenterEditor(BaseEditor):
     size = (300, -1)
     model_type = CostCenter
 
-    fields = dict(
+    fields = collections.OrderedDict(
         name=TextField(_('Name'), mandatory=True, proxy=True),
         budget=PriceField(_('Budget'), mandatory=True, proxy=True),
         description=MultiLineField(_('Description'), mandatory=True, proxy=True),

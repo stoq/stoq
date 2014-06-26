@@ -24,6 +24,7 @@
 ##
 """ Editor for credit payments"""
 
+import collections
 
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
@@ -45,7 +46,7 @@ class CreditEditor(BaseEditor):
 
     confirm_widgets = ['description', 'value']
 
-    fields = dict(
+    fields = collections.OrderedDict(
         description=TextField(_('Description'), proxy=True, mandatory=True),
         value=PriceField(_('Value'), proxy=True, mandatory=True),
     )

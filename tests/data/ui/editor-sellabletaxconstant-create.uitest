@@ -9,8 +9,10 @@ GtkDialog(main_dialog.toplevel): title='Add Taxes and Tax rates', hidden
             GtkTable():
               ProxyLabel(description_lbl): 'Name:'
               ProxyEntry(description): '', mandatory
+              GtkHBox():
               ProxyLabel(tax_value_lbl): 'Value:'
               ProxySpinButton(tax_value): '', mandatory
+              GtkHBox():
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
