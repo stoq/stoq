@@ -45,7 +45,7 @@ from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import Identifier
 from stoqlib.database.settings import db_settings
 from stoqlib.database.viewable import Viewable
-from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
+from stoqlib.exceptions import DatabaseError, LoginError
 from stoqlib.lib.decorators import public
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -626,7 +626,7 @@ def new_store():
 #
 # User methods
 #
-def _register_branch(caller_store, station_name):
+def _register_branch_station(caller_store, station_name):
     import gtk
     from stoqlib.lib.parameters import sysparam
 
@@ -651,17 +651,9 @@ def _register_branch(caller_store, station_name):
             error(_("Must login as 'admin'"))
 
     from stoqlib.domain.station import BranchStation
-
-    store = new_store()
-    branch = sysparam.get_object(store, 'MAIN_COMPANY')
-    try:
-        station = BranchStation.create(store,
-                                       branch=branch,
-                                       name=station_name)
-    except StoqlibError as e:
-        error(_("ERROR: %s") % e)
-
-    store.commit(close=True)
+    with new_store() as store:
+        branch = sysparam.get_object(store, 'MAIN_COMPANY')
+        station = BranchStation.create(store, branch=branch, name=station_name)
     return caller_store.fetch(station)
 
 
@@ -672,6 +664,7 @@ def set_current_branch_station(store, station_name):
     :param station_name: name of the station to register
     """
     # This is called from stoq-daemon, which doesn't know about Branch yet
+    from stoqlib.lib.parameters import sysparam
     from stoqlib.domain.person import Branch
     Branch  # pylint: disable=W0104
 
@@ -682,7 +675,7 @@ def set_current_branch_station(store, station_name):
     from stoqlib.domain.station import BranchStation
     station = store.find(BranchStation, name=station_name).one()
     if station is None:
-        station = _register_branch(store, station_name)
+        station = _register_branch_station(store, station_name)
 
     if not station.is_active:
         error(_("The computer <u>%s</u> is not active in Stoq") %
@@ -691,6 +684,10 @@ def set_current_branch_station(store, station_name):
                 "and re-activate this computer."))
 
     provide_utility(ICurrentBranchStation, station, replace=True)
+
+    main_company = sysparam.get_object(store, 'MAIN_COMPANY')
+    if not station.branch and main_company:
+        station.branch = main_company
 
     # The station may still not be associated with a branch when creating an
     # empty database
