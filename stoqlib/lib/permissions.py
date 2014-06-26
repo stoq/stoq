@@ -38,9 +38,10 @@ class PermissionManager(object):
     PERM_CREATE = 2
     PERM_EDIT = 4
     PERM_DETAILS = 8
+    PERM_DELETE = 16
 
     # Aliases
-    PERM_ALL = (PERM_DETAILS | PERM_EDIT | PERM_CREATE | PERM_SEARCH)
+    PERM_ALL = (PERM_DETAILS | PERM_EDIT | PERM_CREATE | PERM_SEARCH | PERM_DELETE)
     PERM_HIDDEN = 0
     PERM_NO_DETAILS = PERM_SEARCH
     PERM_ONLY_DETAILS = PERM_SEARCH | PERM_DETAILS
@@ -66,6 +67,9 @@ class PermissionManager(object):
 
     def can_see_details(self, key):
         return self.get(key) & self.PERM_DETAILS
+
+    def can_delete(self, key):
+        return self.get(key) & self.PERM_DELETE
 
     @classmethod
     def get_permission_manager(cls):

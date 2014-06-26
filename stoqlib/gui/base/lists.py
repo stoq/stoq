@@ -24,6 +24,7 @@
 """ List management for common dialogs.  """
 
 import gtk
+from kiwi.enums import ListType
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.listdialog import ListSlave
 from kiwi.utils import gsignal
@@ -37,11 +38,11 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.lib.message import yesno
+from stoqlib.lib.permissions import PermissionManager
 
 _ = stoqlib_gettext
 
 
-# FIXME: Add persmissions verification to ModelList
 class ModelListSlave(ListSlave):
 
     model_type = None
@@ -71,6 +72,21 @@ class ModelListSlave(ListSlave):
         self._reuse_store = False
         columns = self.columns or self.get_columns()
         ListSlave.__init__(self, columns, orientation)
+        self._setup_permission()
+
+    def _setup_permission(self):
+        if not self.editor_class:
+            return
+
+        pm = PermissionManager.get_permission_manager()
+        key = self.editor_class.model_type.__name__
+
+        if not pm.can_create(key):
+            self.listcontainer.set_list_type(ListType.READONLY)
+        elif not pm.can_edit(key) or not pm.can_delete(key):
+            self.listcontainer.set_list_type(ListType.ADDONLY)
+        else:
+            self.listcontainer.set_list_type(ListType.NORMAL)
 
     def _delete_with_transaction(self, model, store):
         self.delete_model(store.fetch(model), store)
