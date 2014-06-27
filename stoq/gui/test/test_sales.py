@@ -27,7 +27,7 @@ import datetime
 
 import mock
 from stoqlib.api import api
-from stoqlib.domain.sale import Sale, SaleComment
+from stoqlib.domain.sale import Sale, SaleComment, SaleView
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -44,11 +44,13 @@ from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
                                            SalesByPaymentMethodSearch,
                                            ReservedProductSearch)
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
+from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
 from stoqlib.lib.invoice import SaleInvoice
+from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.sales import SalesApp
 from stoq.gui.test.baseguitest import BaseGUITest
@@ -127,6 +129,21 @@ class TestSales(BaseGUITest):
                 run_dialog.assert_called_once_with(SaleInvoicePrinterDialog,
                                                    self.store, results[0].sale,
                                                    printer)
+
+    @mock.patch('stoq.gui.sales.SalesApp.print_report')
+    def test_print_report(self, print_report):
+        api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
+        app = self.create_app(SalesApp, u'sales')
+
+        self.activate(app.window.Print)
+        self.assertEquals(print_report.call_count, 1)
+
+        args, kwargs = print_report.call_args
+        report, results, views = args
+        self.assertEquals(report, SalesReport)
+        self.assertTrue(isinstance(results, SearchResultListView))
+        for view in views:
+            self.assertTrue(isinstance(view, SaleView))
 
     def test_run_dialogs(self):
         app = self.create_app(SalesApp, u'sales')
