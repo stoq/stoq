@@ -67,8 +67,8 @@ class ClientCreditSlave(BaseEditorSlave):
     proxy_widgets = ('salary', 'credit_limit', 'remaining_store_credit',
                      'credit_account_balance')
 
-    def __init__(self, store, model, visual_mode=False):
-        BaseEditorSlave.__init__(self, store, model, visual_mode)
+    def __init__(self, store, model, visual_mode=False, edit_mode=False):
+        BaseEditorSlave.__init__(self, store, model, visual_mode, edit_mode)
         self._original_salary = self.model.salary
 
     #
@@ -124,8 +124,11 @@ class ClientCreditSlave(BaseEditorSlave):
                    client=self.model)
 
     def on_credit_transactions_button__clicked(self, button):
+        # If we are not in edit mode, we are creating a new object, and thus we
+        # should reuse the transaction
+        reuse_store = not self.edit_mode
         run_dialog(CreditInfoListDialog, self.get_toplevel().get_toplevel(),
-                   self.store, self.model)
+                   self.store, self.model, reuse_store=reuse_store)
         self.proxy.update('credit_account_balance')
 
     def on_print_credit_letter__clicked(self, button):

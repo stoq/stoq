@@ -52,6 +52,7 @@ class CreditEditor(BaseEditor):
 
     def __init__(self, store, client, model=None):
         self.client = store.fetch(client)
+        assert self.client
         BaseEditor.__init__(self, store, model)
 
     def create_model(self, store):

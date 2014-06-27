@@ -131,7 +131,7 @@ class TestClientSlave(GUITest):
         self.click(slave.credit_transactions_button)
         run_dialog.assert_called_once_with(CreditInfoListDialog,
                                            slave.get_toplevel().get_toplevel(),
-                                           self.store, client)
+                                           self.store, client, reuse_store=True)
 
     @mock.patch('stoqlib.gui.slaves.clientslave.print_report')
     def test_print_credit_letter(self, print_report):
