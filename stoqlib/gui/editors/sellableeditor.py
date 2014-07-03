@@ -220,11 +220,12 @@ class SellableEditor(BaseEditor):
         if self._demo_mode:
             self._add_demo_warning()
 
-        # code suggestion
-        edit_code_product = sysparam.get_bool('EDIT_CODE_PRODUCT')
-        self.code.set_sensitive(not edit_code_product and not self.visual_mode)
+        # Code suggestion. We need to do this before disabling sensitivity,
+        # otherwise, the sellable will not be updated.
         if not self.code.read():
             self._update_default_sellable_code()
+        edit_code_product = sysparam.get_bool('EDIT_CODE_PRODUCT')
+        self.code.set_sensitive(not edit_code_product and not self.visual_mode)
 
         self.description.grab_focus()
         self.table.set_focus_chain([self.code,
