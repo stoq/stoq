@@ -471,8 +471,10 @@ class FinishPurchaseStep(WizardEditorStep):
 
     def _create_receiving_order(self):
         # since we will create a new receiving order, we should confirm the
-        # purchase first.
-        self.model.confirm()
+        # purchase first. Note that the purchase may already be confirmed
+        if self.model.status in [PurchaseOrder.ORDER_PENDING,
+                                 PurchaseOrder.ORDER_CONSIGNED]:
+            self.model.confirm()
 
         receiving_model = ReceivingOrder(
             responsible=api.get_current_user(self.store),
