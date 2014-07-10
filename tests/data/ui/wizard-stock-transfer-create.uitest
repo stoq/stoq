@@ -13,7 +13,7 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
             ProxyLabel(step.kiwilabel3): 'Sending branch:'
             ProxyLabel(step.source_branch): '<span >Moda Stoq</span>'
             ProxyLabel(step.kiwilabel4): 'Receiving branch:'
-            ProxyComboBox(step.destination_branch):
+            ProxyComboEntry(step.destination_branch): mandatory
               item: 'Stoq Elite Fashion', selected
             ProxyLabel(step.kiwilabel5): 'Sender:'
             ProxyComboEntry(step.source_responsible):
@@ -30,6 +30,6 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
-          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(next_button): 'gtk-go-forward', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

@@ -44,14 +44,15 @@ class TestStockTransferWizard(GUITest):
                              stock=10)
 
         wizard = StockTransferWizard(self.store)
-        self.assertSensitive(wizard, ['next_button'])
+        self.assertNotSensitive(wizard, ['next_button'])
         self.check_wizard(wizard, 'wizard-stock-transfer-create')
+
+        step = wizard.get_current_step()
+        step.destination_branch.set_active(0)
+        self.assertSensitive(wizard, ['next_button'])
 
         self.click(wizard.next_button)
         step = wizard.get_current_step()
-
-        # No source or destination responsible selected. Finish is disabled
-        self.assertNotSensitive(wizard, ['next_button'])
 
         # adds sellable to step
         step.sellable_selected(sellable)

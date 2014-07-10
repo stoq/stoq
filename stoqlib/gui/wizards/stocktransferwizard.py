@@ -71,11 +71,13 @@ class StockTransferInitialStep(WizardEditorStep):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.wizard.model, self.proxy_widgets)
+        # Force the user to select a branch, avoiding transfering to the wrong
+        # branch by mistake
+        self.destination_branch.update(None)
 
     def _setup_widgets(self):
         branches = Branch.get_active_remote_branches(self.store)
         self.destination_branch.prefill(api.for_person_combo(branches))
-
         self.source_branch.set_text(self.branch.get_description())
 
         employees = self.store.find(Employee)
