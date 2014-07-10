@@ -389,7 +389,7 @@ class SellableEditor(BaseEditor):
         self._fill_categories()
         self.edit_category.set_sensitive(False)
 
-        cfops = self.store.find(CfopData)
+        cfops = CfopData.get_for_sale(self.store)
         self.default_sale_cfop.prefill(api.for_combo(cfops, empty=''))
 
         self.setup_unit_combo()

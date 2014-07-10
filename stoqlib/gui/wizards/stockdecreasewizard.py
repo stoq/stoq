@@ -89,7 +89,7 @@ class StartStockDecreaseStep(WizardEditorStep):
         self.branch.set_sensitive(not sync_mode)
 
     def _fill_cfop_combo(self):
-        cfops = self.store.find(CfopData)
+        cfops = CfopData.get_for_sale(self.store)
         self.cfop.prefill(api.for_combo(cfops))
 
     def _fill_cost_center_combo(self):
