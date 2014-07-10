@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2010-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,8 +26,9 @@
 
 """ A Manual stock decrease receipt implementation """
 
+from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.report import HTMLReport
+from stoqlib.reporting.report import HTMLReport, ObjectListReport
 
 _ = stoqlib_gettext
 
@@ -39,10 +40,11 @@ class StockDecreaseReceipt(HTMLReport):
 
     def __init__(self, filename, order):
         self.order = order
+        self.payments = api.sysparam.get_bool("CREATE_PAYMENTS_ON_STOCK_DECREASE")
         HTMLReport.__init__(self, filename)
 
     def get_subtitle(self):
-        return _(u'Number: %s') % self.order.identifier
+        return ""
 
 
 class _StockDecreaseReceipt():
@@ -51,3 +53,8 @@ class _StockDecreaseReceipt():
 
     def _add_signatures(self):
         self.add_signatures([_(u"Responsible"), _(u'Removed By')])
+
+
+class StockDecreaseReport(ObjectListReport):
+    title = _("Stock decrease report")
+    main_object_name = (_("stock decrease"), _("stock decreases"))

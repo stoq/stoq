@@ -33,12 +33,11 @@ from kiwi.ui.objectlist import Column
 from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
-from stoqlib.gui.search.searchcolumns import IdentifierColumn
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
+from stoqlib.reporting.stockdecrease import StockDecreaseReport
 
 _ = stoqlib_gettext
 
@@ -47,10 +46,9 @@ class StockDecreaseSearch(SearchDialog):
     title = _(u"Manual Stock Decrease Search")
     size = (750, 500)
     search_spec = StockDecrease
-    report_class = StockDecreaseReceipt
+    report_class = StockDecreaseReport
     selection_mode = gtk.SELECTION_MULTIPLE
     search_by_date = True
-    advanced_search = False
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)
@@ -72,15 +70,10 @@ class StockDecreaseSearch(SearchDialog):
         orders = self.results.get_selected_rows()
         has_one_selected = len(orders) == 1
         self.set_details_button_sensitive(has_one_selected)
-        self.set_print_button_sensitive(has_one_selected)
-
-    def _has_rows(self, results, obj):
-        pass
 
     def create_filters(self):
         self.set_text_field_columns(['reason'])
 
-        # Date
         date_filter = DateSearchFilter(_('Date:'))
         self.add_filter(date_filter, columns=['confirm_date'])
 
@@ -91,22 +84,18 @@ class StockDecreaseSearch(SearchDialog):
 
     def get_columns(self):
         return [IdentifierColumn('identifier'),
-                Column('confirm_date', _('Date'),
+                Column('confirm_date', title=_('Date'),
                        data_type=datetime.date, sorted=True, width=100),
-                Column('branch_name', _('Branch'),
-                       data_type=unicode, expand=True),
-                Column('removed_by_name', _('Removed By'),
-                       data_type=unicode, width=120),
-                Column('total_items_removed',
-                       _('Items removed'), data_type=Decimal, width=110),
-                Column('cfop_description', u'CFOP', data_type=unicode,
-                       expand=True)
+                Column('branch_name', title=_('Branch'),
+                       data_type=str, expand=True),
+                Column('removed_by_name', title=_('Removed By'),
+                       data_type=str, width=120),
+                Column('total_items_removed', title=_('Items removed'),
+                       data_type=Decimal, width=110),
+                Column('cfop_description', title=_('CFOP'), data_type=str,
+                       expand=True),
+                SearchColumn('reason', title=_("Reason"), data_type=str),
                 ]
-
-    def print_report(self):
-        orders = self.results.get_selected_rows()
-        if len(orders) == 1:
-            print_report(self.report_class, orders[0])
 
     #
     # Callbacks

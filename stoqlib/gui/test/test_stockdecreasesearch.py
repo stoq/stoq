@@ -29,7 +29,7 @@ import mock
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
+from stoqlib.reporting.stockdecrease import StockDecreaseReport
 
 
 class TestStockDecreaseSearch(GUITest):
@@ -59,18 +59,17 @@ class TestStockDecreaseSearch(GUITest):
         self.check_search(search, 'stock-decrease-string-filter')
 
     @mock.patch('stoqlib.gui.search.stockdecreasesearch.run_dialog')
-    @mock.patch('stoqlib.gui.search.stockdecreasesearch.print_report')
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     def test_buttons(self, print_report, run_dialog):
         self._create_domain()
         search = self._show_search()
 
         search.search.refresh()
-        self.assertNotSensitive(search._details_slave, ['print_button'])
-        search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['print_button'])
         self.click(search._details_slave.print_button)
-        print_report.assert_called_once_with(StockDecreaseReceipt,
-                                             search.results[0])
+        print_report.assert_called_once_with(StockDecreaseReport, search.results,
+                                             list(search.results),
+                                             filters=search.search.get_search_filters())
 
         search.search.refresh()
         self.assertNotSensitive(search._details_slave, ['details_button'])

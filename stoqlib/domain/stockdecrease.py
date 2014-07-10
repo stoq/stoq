@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -77,13 +77,21 @@ class StockDecreaseItem(Domain):
     #: the quantity decreased for this item
     quantity = QuantityCol()
 
+    #
+    # Properties
+    #
+
+    @property
+    def total_cost(self):
+        return currency(self.cost * self.quantity)
+
     def __init__(self, store=None, sellable=None, **kw):
         if sellable is None:
             raise TypeError('You must provide a sellable argument')
         Domain.__init__(self, store=store, sellable=sellable, **kw)
 
     #
-    #  Public API
+    # Public API
     #
 
     def decrease(self, branch):
@@ -171,13 +179,17 @@ class StockDecrease(Domain):
 
     person = Reference(person_id, 'Person.id')
 
+    #: the choosen CFOP
     cfop_id = IdCol()
 
     cfop = Reference(cfop_id, 'CfopData.id')
 
-    group_id = IdCol()
+    #: The invoice number of the stock decrease
+    invoice_number = IntCol()
 
     #: the payment group related to this stock decrease
+    group_id = IdCol()
+
     group = Reference(group_id, 'PaymentGroup.id')
 
     cost_center_id = IdCol()

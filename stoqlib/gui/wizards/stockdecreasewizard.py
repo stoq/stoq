@@ -57,7 +57,7 @@ from stoqlib.gui.events import StockDecreaseWizardFinishEvent
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.salewizard import PaymentMethodStep
-from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
+from stoqlib.reporting.stockdecrease import StockDecreaseReceipt
 
 _ = stoqlib_gettext
 
@@ -76,7 +76,8 @@ class StartStockDecreaseStep(WizardEditorStep):
                      'removed_by',
                      'cfop',
                      'cost_center',
-                     'person')
+                     'person',
+                     'invoice_number')
 
     def _fill_employee_combo(self):
         employess = self.store.find(Employee)

@@ -43,7 +43,8 @@ GtkDialog(toplevel): title='Manual Stock Decrease Search', hidden
             column: title='Removed By'
             column: title='Items removed'
             column: title='CFOP', expand
-            row: 54287, datetime.datetime(2012, 1, 1, 0, 0), u'Moda Stoq', u'SalesPerson', 0, u'123 test'
+            column: title='Reason'
+            row: 54287, datetime.datetime(2012, 1, 1, 0, 0), u'Moda Stoq', u'SalesPerson', 0, u'123 test', u'Defective product'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
@@ -54,7 +55,7 @@ GtkDialog(toplevel): title='Manual Stock Decrease Search', hidden
               GtkLabel(label3, expand=True, fill=True):
               GtkHButtonBox(hbuttonbox1, fill=True):
                 GtkButton(details_button): insensitive
-                GtkButton(print_button): 'gtk-print', insensitive
+                GtkButton(print_button): 'gtk-print'
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

@@ -468,6 +468,7 @@ class ExampleCreator(object):
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
                              reason=reason,
+                             invoice_number=1337,
                              group=group,
                              store=self.store)
 

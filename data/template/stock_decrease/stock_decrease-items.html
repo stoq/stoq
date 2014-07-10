@@ -4,30 +4,36 @@
         <tr>
           <td>${ _("Code") }</td>
           <td>${ _("Item") }</td>
-          <td>${ _("Quantity") }</td>
+          <td>${ _("Batch") }</td>
+          <td>${ _("Qty") }</td>
+          % if report.payments:
+            <td>${ _("Cost") }</td>
+          %endif
         </tr>
       </thead>
-
-      <tfoot>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tfoot>
 
       <tbody >
         <%
           total = 0
+          total_cost = 0
         %>
         % for item in report.order.get_items():
           <%
             total += item.quantity
+            total_cost += item.total_cost
           %>
           <tr>
             <td>${ item.sellable.code }</td>
             <td>${ item.sellable.get_description() }</td>
+            % if item.batch:
+              <td>${ item.batch.batch_number }</td>
+            % else:
+              <td></td>
+            %endif
             <td>${ item.get_quantity_unit_string() }</td>
+            % if report.payments:
+              <td>${ format_price(item.cost)}</td>
+            %endif
           </tr>
         % endfor
       </tbody>
@@ -36,9 +42,24 @@
         <tr >
           <td></td>
           <td></td>
+          <td></td>
           <td>${ format_quantity(total) }</td>
+          % if report.payments:
+            <td>${ format_price(total_cost)}</td>
+          %endif
         </tr>
       </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          % if report.payments:
+            <td></td>
+          %endif
+        </tr>
+      </tfoot>
     </table>
   </section>
 

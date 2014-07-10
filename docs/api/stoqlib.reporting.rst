@@ -153,10 +153,10 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`stockdecreasereceipt` Module
-----------------------------------
+:mod:`stockdecrease` Module
+---------------------------
 
-.. automodule:: stoqlib.reporting.stockdecreasereceipt
+.. automodule:: stoqlib.reporting.stockdecrease
     :members:
     :undoc-members:
     :show-inheritance:
