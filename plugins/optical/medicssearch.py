@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
-
 ##
-## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,11 +23,21 @@
 
 """ Search dialog/Editor for publishers """
 
-from stoqlib.lib.translation import stoqlib_gettext
+import datetime
+import decimal
+
+from kiwi.currency import currency
+
+from stoqlib.domain.sale import Sale
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.search.personsearch import BasePersonSearch
 from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.lib.translation import stoqlib_gettext
 
-from optical.opticaldomain import OpticalMedicView
+from optical.opticaldomain import OpticalMedicView, MedicSoldItemsView
 from optical.opticalslave import MedicEditor
 
 _ = stoqlib_gettext
@@ -59,3 +68,57 @@ class OpticalMedicSearch(BasePersonSearch):
 
     def get_editor_model(self, model):
         return model.medic
+
+
+class MedicSalesSearch(SearchDialog):
+    title = _(u'Sold Items by medic')
+    size = (800, 450)
+    search_spec = MedicSoldItemsView
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def setup_widgets(self):
+        self.add_csv_button(_('Sold Products'), _('sold-products'))
+
+    def create_filters(self):
+        self.set_text_field_columns(['medic_name', 'description', 'code'])
+
+        # Dont set a limit here, otherwise it might break the summary
+        executer = self.search.get_query_executer()
+        executer.set_limit(-1)
+
+        branch_filter = self.create_branch_filter(_('In Branch:'))
+        self.add_filter(branch_filter, SearchFilterPosition.TOP,
+                        columns=[Sale.branch_id])
+
+        self._date_filter = DateSearchFilter(_("Date:"))
+        self._date_filter.select(data=DateSearchFilter.Type.USER_INTERVAL)
+        self.add_filter(self._date_filter, SearchFilterPosition.BOTTOM,
+                        columns=[Sale.confirm_date])
+        self.search.set_summary_label('total', label=_(u'Total:'),
+                                      format='<b>%s</b>')
+
+    def get_columns(self):
+        columns = [
+            SearchColumn('code', title=_('Code'), data_type=str, sorted=True),
+            SearchColumn('category', title=_('Category'), data_type=str, visible=False),
+            SearchColumn('branch_name', title=_('Branch'), data_type=str,
+                         visible=False),
+            SearchColumn('description', title=_('Description'), data_type=str,
+                         expand=True),
+            SearchColumn('manufacturer', title=_('Manufacturer'), data_type=str,
+                         visible=False),
+            SearchColumn('medic_name', title=_('Medic'), data_type=str),
+            SearchColumn('crm_number', title=_('CRM'), data_type=str),
+            SearchColumn('batch_number', title=_('Batch'), data_type=str,
+                         visible=False),
+            SearchColumn('batch_date', title=_('Batch Date'),
+                         data_type=datetime.date, visible=False),
+            SearchColumn('quantity', title=_('Qty'), data_type=decimal.Decimal,
+                         format_func=format_quantity),
+            SearchColumn('total', title=_('Total'), data_type=currency),
+        ]
+
+        return columns

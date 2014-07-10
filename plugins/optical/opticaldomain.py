@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from storm.expr import Join
+from storm.expr import Join, LeftJoin, Coalesce, Sum, Ne, And
 from storm.references import Reference
 
 from stoqlib.database.expr import StatementTimestamp
@@ -30,7 +30,11 @@ from stoqlib.database.properties import (IntCol, DecimalCol, DateTimeCol,
                                          UnicodeCol, IdCol, BoolCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, Company, Branch
+from stoqlib.domain.product import Product, StorableBatch, ProductManufacturer
+from stoqlib.domain.sale import SaleItem, Sale
+from stoqlib.domain.sellable import Sellable, SellableCategory
+from stoqlib.domain.workorder import WorkOrder
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -654,3 +658,43 @@ class OpticalMedicView(Viewable):
         Person,
         Join(OpticalMedic, Person.id == OpticalMedic.person_id)
     ]
+
+
+class MedicSoldItemsView(Viewable):
+    id = Sellable.id
+    code = Sellable.code
+    description = Sellable.description
+    category = SellableCategory.description
+    manufacturer = ProductManufacturer.name
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+    batch_date = StorableBatch.create_date
+
+    branch_name = Company.fancy_name
+    medic_name = Person.name
+    crm_number = OpticalMedic.crm_number
+
+    quantity = Sum(SaleItem.quantity)
+    total = Sum(SaleItem.quantity * SaleItem.price)
+
+    tables = [
+        Sellable,
+        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id),
+        LeftJoin(ProductManufacturer,
+                 Product.manufacturer_id == ProductManufacturer.id),
+        Join(SaleItem, SaleItem.sellable_id == Sellable.id),
+        Join(Sale, SaleItem.sale_id == Sale.id),
+        Join(WorkOrder, Sale.id == WorkOrder.sale_id),
+        Join(OpticalWorkOrder, OpticalWorkOrder.work_order_id == WorkOrder.id),
+        LeftJoin(StorableBatch, StorableBatch.id == SaleItem.batch_id),
+        Join(Branch, Sale.branch_id == Branch.id),
+        Join(Company, Branch.person_id == Company.person_id),
+
+        Join(OpticalMedic, OpticalMedic.id == OpticalWorkOrder.medic_id),
+        Join(Person, Person.id == OpticalMedic.person_id),
+    ]
+
+    clause = And(Ne(Sale.confirm_date, None),
+                 Sale.status != Sale.STATUS_CANCELLED)
+    group_by = [id, branch_name, code, description, category, manufacturer, batch_number,
+                batch_date, medic_name, crm_number]

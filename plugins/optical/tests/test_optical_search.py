@@ -25,7 +25,7 @@
 
 from stoqlib.gui.test.uitestutils import GUITest
 
-from ..medicssearch import OpticalMedicSearch
+from ..medicssearch import OpticalMedicSearch, MedicSalesSearch
 from .test_optical_domain import OpticalDomainTest
 
 
@@ -43,3 +43,24 @@ class TestMedicSearch(GUITest, OpticalDomainTest):
         view = search.search.result_view[0]
         assert search.get_editor_model(view)
         assert search.get_editor_model(view).id == medic.id
+
+
+class TestMedicSalesSearch(GUITest, OpticalDomainTest):
+    def test_show(self):
+        optical = self.create_optical_work_order()
+        optical.medic = self.create_optical_medic()
+        workorder = optical.work_order
+        workorder.sale = self.create_sale()
+
+        sellable = self.create_sellable()
+        sale_item = workorder.sale.add_sellable(sellable)
+        wo_item = self.create_work_order_item()
+        wo_item.order = workorder
+        wo_item.sale_item = sale_item
+        self.add_payments(workorder.sale)
+        workorder.sale.order()
+        workorder.sale.confirm()
+
+        search = MedicSalesSearch(self.store)
+        search.search.refresh()
+        self.check_search(search, 'optical-medic-sales-search')

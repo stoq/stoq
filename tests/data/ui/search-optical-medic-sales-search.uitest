@@ -1,0 +1,63 @@
+search: MedicSalesSearch
+GtkDialog(toplevel): title='Sold Items by medic', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
+        GtkVBox(vbox):
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                ComboSearchFilter():
+                  GtkLabel(): 'In Branch:'
+                  ProxyComboBox(padding=6):
+                    item: 'Any'
+                    item: 'Moda Stoq', selected
+                    item: 'Stoq Elite Fashion'
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+              DateSearchFilter(_date_filter):
+                GtkLabel(): 'Date:'
+                ProxyComboBox(padding=6):
+                  item: 'Any'
+                  item: 'Today'
+                  item: 'Yesterday'
+                  item: 'Last week'
+                  item: 'Last month'
+                  item: 'Custom day'
+                  item: 'Custom interval', selected
+                GtkLabel(): 'From:'
+                ProxyDateEntry(padding=6): date.today(), invalid
+                GtkLabel(): 'To:'
+                ProxyDateEntry(padding=6): datetime.date(2014, 7, 15), invalid
+          SearchResultListView(result_view, expand=True, fill=True):
+            column: title='Code'
+            column: title='Category', hidden
+            column: title='Branch', hidden
+            column: title='Description', expand
+            column: title='Manufacturer', hidden
+            column: title='Medic'
+            column: title='CRM'
+            column: title='Batch', hidden
+            column: title='Batch Date', hidden
+            column: title='Qty'
+            column: title='Total'
+            row: u'', None, u'Moda Stoq', u'Description', None, u'Medic', u'1234', u'', None, Decimal('1.000'), Decimal('10.00000')
+          GtkHBox(_summary_label):
+            GtkLabel(expand=True, fill=True, padding=6): 'Total:'
+            GtkLabel(): '<b>$10.00</b>'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

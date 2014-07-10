@@ -52,7 +52,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SaleOrderReport
 from stoq.gui.services import ServicesApp
 
-from .medicssearch import OpticalMedicSearch
+from .medicssearch import OpticalMedicSearch, MedicSalesSearch
 from .opticaleditor import MedicEditor
 from .opticalhistory import OpticalPatientDetails
 from .opticalreport import OpticalWorkOrderReceiptReport
@@ -132,6 +132,7 @@ class OpticalUI(object):
     def _add_sale_menus(self, sale_app):
         uimanager = sale_app.uimanager
         menu_items_str = '''<menuitem action="OpticalPreSale"/>
+                            <menuitem action="OpticalMedicSaleItems"/>
                             <menuitem action="OpticalMedicSearch"/>'''
         ui_string = self._get_menu_ui_string() % menu_items_str
 
@@ -145,6 +146,9 @@ class OpticalUI(object):
             ('OpticalMedicSearch', None, _(u'Medics...'),
              group.get('search_medics'), None,
              self._on_MedicsSearch__activate),
+            ('OpticalMedicSaleItems', None, _(u'Medics sold items...'),
+             None, None,
+             self._on_MedicSaleItems__activate),
         ])
 
         uimanager.insert_action_group(ag, 0)
@@ -255,3 +259,8 @@ class OpticalUI(object):
     def _on_MedicsSearch__activate(self, action):
         with api.new_store() as store:
             run_dialog(OpticalMedicSearch, None, store, hide_footer=True)
+
+    def _on_MedicSaleItems__activate(self, action):
+        store = api.new_store()
+        run_dialog(MedicSalesSearch, None, store, hide_footer=True)
+        store.rollback()

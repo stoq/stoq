@@ -60,6 +60,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
       GtkImageMenuItem(): 'Optical'
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Sale with work order...'
+          GtkImageMenuItem(): 'Medics sold items...'
           GtkImageMenuItem(): 'Medics...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden

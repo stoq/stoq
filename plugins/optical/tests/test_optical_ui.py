@@ -43,7 +43,7 @@ from stoq.gui.test.baseguitest import BaseGUITest
 from stoq.gui.sales import SalesApp
 from stoq.gui.services import ServicesApp
 
-from ..medicssearch import OpticalMedicSearch
+from ..medicssearch import OpticalMedicSearch, MedicSalesSearch
 from ..opticaleditor import MedicEditor
 from ..opticalhistory import OpticalPatientDetails
 from ..opticalreport import OpticalWorkOrderReceiptReport
@@ -101,6 +101,19 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
             self.activate(action)
             args, kwargs = run_dialog_.call_args
             self.assertEquals(args[0], OpticalMedicSearch)
+            self.assertEquals(args[1], None)
+            self.assertTrue(isinstance(args[2], StoqlibStore))
+            self.assertEquals(kwargs['hide_footer'], True)
+
+    def test_optical_sales_medic_sales_search(self):
+        app = self.create_app(SalesApp, u'sales')
+        action = app.uimanager.get_action(
+            '/ui/menubar/ExtraMenubarPH/OpticalMenu/OpticalMedicSaleItems')
+        assert action, action
+        with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
+            self.activate(action)
+            args, kwargs = run_dialog_.call_args
+            self.assertEquals(args[0], MedicSalesSearch)
             self.assertEquals(args[1], None)
             self.assertTrue(isinstance(args[2], StoqlibStore))
             self.assertEquals(kwargs['hide_footer'], True)
