@@ -1,0 +1,135 @@
+
+<html>
+  <head>
+    
+      <title>Inventory Listing</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <style>
+        table td:nth-child(1) {
+                text-align: left;
+        }
+        table td:nth-child(2) {
+                text-align: left;
+        }
+        table td:nth-child(3) {
+                text-align: left;
+        }
+        table td:nth-child(4) {
+                text-align: right;
+        }
+        table td:nth-child(5) {
+                text-align: right;
+        }
+        table td:nth-child(6) {
+                text-align: right;
+        }
+        table td:nth-child(7) {
+                text-align: center;
+        }
+
+    table .summary td {
+      text-align: right;
+    }
+  </style>
+  
+  <style>
+    @page {
+      @bottom-left {
+        content: "Stoq Retail Management"
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages)
+      }
+      @top-left {
+        content: "Inventory Listing"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+
+  </head>
+  <body>
+    
+
+
+
+
+  
+  <header>
+    <div id="title">
+      <h1>Inventory Listing</h1>
+      <span class="subtitle">Listing 2 of a total of 2 inventory entries</span>
+      <div class="logo">
+        <img src="logo.png"/>
+      </div>
+    </div>
+  </header>
+
+
+
+<section>
+  <table class="list">
+    <thead>
+      <tr>
+          <td>Code</td>
+          <td>Description</td>
+          <td>Reason</td>
+          <td>Recorded</td>
+          <td>Counted</td>
+          <td>Actual</td>
+          <td>Adjusted</td>
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+    </tfoot>
+
+    <tbody>
+      <tr>
+          <td></td>
+          <td>Description</td>
+          <td>test adjust</td>
+          <td>5.0</td>
+          <td>4.0</td>
+          <td>4.0</td>
+          <td>Yes</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td>Description</td>
+          <td>test adjust2</td>
+          <td>5.0</td>
+          <td>4.0</td>
+          <td>4.0</td>
+          <td>Yes</td>
+      </tr>
+
+      
+
+    </tbody>
+  </table>
+</section>
+
+
+  </body>
+</html>
+
+

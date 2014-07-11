@@ -25,6 +25,8 @@
 
 """Inventory report implementation"""
 
+from kiwi.accessor import kgetattr
+
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.report import ObjectListReport
 
@@ -35,3 +37,9 @@ class InventoryReport(ObjectListReport):
     """Simple report for Inventory objs"""
     title = _("Inventory Listing")
     main_object_name = (_("inventory entry"), _("inventory entries"))
+
+    def get_cell(self, obj, column):
+        value = kgetattr(obj, column.attribute, None)
+        if column.attribute == 'is_adjusted':
+            return _(u"Yes") if value else _(u"No")
+        return column.as_string(value)

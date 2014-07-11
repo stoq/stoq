@@ -260,11 +260,14 @@ class ObjectListReport(TableReport):
 
         return columns
 
+    def get_cell(self, obj, column):
+        #XXX Maybe the default value should be ''
+        return column.as_string(kgetattr(obj, column.attribute, None))
+
     def get_row(self, obj):
         row = []
         for c in self._columns:
-            data_source = c.as_string(kgetattr(obj, c.attribute, None))
-            row.append(data_source)
+            row.append(self.get_cell(obj, c))
         return row
 
     def accumulate(self, row):

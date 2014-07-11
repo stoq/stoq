@@ -32,6 +32,7 @@ from nose.exc import SkipTest
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
+from stoqlib.domain.inventory import InventoryItemsView
 from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -51,6 +52,7 @@ from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
 from stoqlib.reporting.callsreport import CallsReport
 from stoqlib.reporting.clientcredit import ClientCreditReport
+from stoqlib.reporting.inventory import InventoryReport
 from stoqlib.reporting.payment import (BillCheckPaymentReport,
                                        PaymentFlowHistoryReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
@@ -65,6 +67,31 @@ from stoqlib.reporting.workorder import WorkOrdersReport
 
 
 class TestReport(ReportTest):
+
+    def test_inventory_report(self):
+        inventory = self.create_inventory()
+
+        item = self.create_inventory_item(inventory=inventory)
+        self.assertFalse(item.is_adjusted)
+        item.counted_quantity = item.recorded_quantity - 1
+        item.actual_quantity = item.recorded_quantity - 1
+        item.cfop_data = self.create_cfop_data()
+        item.reason = u"test adjust"
+        item.adjust(13)
+
+        item2 = self.create_inventory_item(inventory=inventory)
+        self.assertFalse(item2.is_adjusted)
+        item2.counted_quantity = item.recorded_quantity - 1
+        item2.actual_quantity = item.recorded_quantity - 1
+        item2.cfop_data = self.create_cfop_data()
+        item2.reason = u"test adjust2"
+        item2.adjust(13)
+        inventory.close()
+
+        from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
+        dialog = InventoryDetailsDialog(self.store, model=inventory)
+        items = list(InventoryItemsView.find_by_inventory(self.store, inventory))
+        self._diff_expected(InventoryReport, 'inventory-report', dialog.items_list, items)
 
     def test_payable_payment_report(self):
         if True:
