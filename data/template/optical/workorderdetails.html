@@ -28,23 +28,27 @@
       <tr>
         <td></td>
       </tr>
+      % if workorder.sellable:
+      <tr>
+        <td>${ _("Equipment") }:</td>
+        <td colspan="3">${ workorder.sellable.description }</td>
+      </tr>
+      % endif
+      <tr>
+        <td>${ _("Description") }:</td>
+        <td colspan="3">${ workorder.description }</td>
+      </tr>
     </tbody>
   </table>
 
-  % if workorder.sellable:
-    <p>
-      <b>${ _("Equipment:") }</b>
-      <span>${ workorder.sellable.description }</span>
-    </p>
-  % endif
   % if workorder.defect_reported:
-    <p>
-      <b>${ _("Defect reported by client:") }</b>
-      <span>
-        % for line in workorder.defect_reported.split("\n"):
-          ${ line | h }<br />
-        % endfor
-      </span><br /><br />
-    </p>
+  <p>
+    <b>${ _("Defect reported by client:") }</b>
+    <span>
+      % for line in workorder.defect_reported.split("\n"):
+        ${ line | h }<br />
+      % endfor
+    </span>
+  </p>
   % endif
 </section>
