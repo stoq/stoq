@@ -38,7 +38,7 @@ from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryStat
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
 from stoqlib.domain.till import Till
-from stoqlib.domain.views import SoldItemsByBranchView, ReservedProductView
+from stoqlib.domain.views import SoldItemsByBranchView, UnconfirmedSaleItemsView
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import TillError
@@ -264,13 +264,13 @@ class SoldItemsByBranchSearch(SearchDialog):
         return self.search_spec.find_by_branch_date(store, branch, date)
 
 
-class ReservedProductSearch(SearchDialog):
-    title = _(u'Reserved Product Search')
-    search_spec = ReservedProductView
+class UnconfirmedSaleItemsSearch(SearchDialog):
+    title = _(u'Unconfirmed Sale Items Search')
+    search_spec = UnconfirmedSaleItemsView
     size = (850, 450)
 
     def setup_widgets(self):
-        self.search.set_summary_label('quantity_decreased', label=_(u'Total:'),
+        self.search.set_summary_label('quantity', label=_(u'Total Quantity:'),
                                       format='<b>%s</b>')
         self.sale_details_button = self.add_button(label=_('Sale Details'))
         self.sale_details_button.show()
@@ -307,6 +307,8 @@ class ReservedProductSearch(SearchDialog):
                              data_type=datetime.date),
                 SearchColumn('price', title=_('Price'), data_type=currency,
                              width=100),
+                SearchColumn('quantity', title=_('Quantity'), data_type=Decimal,
+                             format_func=format_quantity, width=100),
                 SearchColumn('quantity_decreased', title=_('Reserved'), data_type=Decimal,
                              format_func=format_quantity, width=100),
                 IdentifierColumn('wo_identifier', title=_('Work Order'),
@@ -316,7 +318,7 @@ class ReservedProductSearch(SearchDialog):
                              valid_values=self._get_wo_status_values()),
                 SearchColumn('wo_estimated_finish', title=_('Estimated finish'),
                              data_type=datetime.date, visible=False),
-                SearchColumn('wo_finish', title=_('WO Finish'),
+                SearchColumn('wo_finish', title=_('WO Finish date'),
                              data_type=datetime.date, visible=False)]
 
     def _get_status_values(self):

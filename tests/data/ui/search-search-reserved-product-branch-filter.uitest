@@ -1,5 +1,5 @@
-search: ReservedProductSearch
-GtkDialog(toplevel): title='Reserved Product Search', hidden
+search: UnconfirmedSaleItemsSearch
+GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
@@ -34,15 +34,16 @@ GtkDialog(toplevel): title='Reserved Product Search', hidden
             column: title='Client', hidden
             column: title='Open Date'
             column: title='Price'
+            column: title='Quantity'
             column: title='Reserved'
             column: title='Work Order', hidden
             column: title='WO Status', hidden
             column: title='Estimated finish', hidden
-            column: title='WO Finish', hidden
-            row: 99, u'Quoting', u'', None, u'The Funniest Joke in this Code', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('1.000'), None, '', None, None
+            column: title='WO Finish date', hidden
+            row: 99, u'Quoting', u'', None, u'The Funniest Joke in this Code', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('41.000'), Decimal('1.000'), None, '', None, None
           GtkHBox(_summary_label):
-            GtkLabel(expand=True, fill=True, padding=6): 'Total:'
-            GtkLabel(): '<b>1</b>'
+            GtkLabel(expand=True, fill=True, padding=6): 'Total Quantity:'
+            GtkLabel(): '<b>41</b>'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

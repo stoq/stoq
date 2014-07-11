@@ -1005,7 +1005,7 @@ class ProductBrandStockView(Viewable):
         return store.find(cls)
 
 
-class ReservedProductView(Viewable):
+class UnconfirmedSaleItemsView(Viewable):
     """Stores information about reserved products
     This view is used to query products that was reserved
     and temporarily removed from stock until the sale is completed.
@@ -1026,6 +1026,7 @@ class ReservedProductView(Viewable):
 
     id = SaleItem.id
     price = SaleItem.price
+    quantity = SaleItem.quantity
     quantity_decreased = SaleItem.quantity_decreased
     branch_id = Sale.branch_id
     sale_id = Sale.id
@@ -1061,9 +1062,8 @@ class ReservedProductView(Viewable):
         LeftJoin(WorkOrder, WorkOrder.id == WorkOrderItem.order_id)
     ]
 
-    clause = And(SaleItem.quantity_decreased > 0,
-                 Or(Sale.status == Sale.STATUS_ORDERED,
-                    Sale.status == Sale.STATUS_QUOTE))
+    clause = Or(Sale.status == Sale.STATUS_ORDERED,
+                Sale.status == Sale.STATUS_QUOTE)
 
     @property
     def status_str(self):

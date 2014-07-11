@@ -36,7 +36,7 @@ from stoqlib.gui.search.salesearch import (SaleSearch,
                                            SaleWithToolbarSearch,
                                            SalesByPaymentMethodSearch,
                                            SoldItemsByBranchSearch,
-                                           ReservedProductSearch)
+                                           UnconfirmedSaleItemsSearch)
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 
@@ -118,7 +118,7 @@ class TestSoldItemsByBranchSearch(GUITest):
         self.check_search(search, 'product-sold-date-filter')
 
 
-class TestReservedProductsSearch(GUITest):
+class TestUnconfirmedSaleItemsSearch(GUITest):
     def _create_domain(self):
         branch = get_current_branch(self.store)
         sale = self.create_sale(branch=branch)
@@ -168,7 +168,7 @@ class TestReservedProductsSearch(GUITest):
         work_order.sale = sale4
 
     def _show_search(self):
-        search = ReservedProductSearch(self.store)
+        search = UnconfirmedSaleItemsSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search

@@ -42,7 +42,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.returnedsalesearch import ReturnedSaleSearch
 from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
                                            SalesByPaymentMethodSearch,
-                                           ReservedProductSearch)
+                                           UnconfirmedSaleItemsSearch)
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -162,8 +162,8 @@ class TestSales(BaseGUITest):
                                CloseLoanWizard, [], {})
         self._check_run_dialog(app.LoanSearch,
                                LoanSearch, [], {})
-        self._check_run_dialog(app.SearchReservedProduct,
-                               ReservedProductSearch, [], {})
+        self._check_run_dialog(app.SearchUnconfirmedSaleItems,
+                               UnconfirmedSaleItemsSearch, [], {})
         self._check_run_dialog(app.ReturnedSaleSearch,
                                ReturnedSaleSearch, [], {})
         self._check_run_dialog(app.LoanSearchItems,

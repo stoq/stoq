@@ -53,7 +53,7 @@ from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
                                            SalesByPaymentMethodSearch,
-                                           ReservedProductSearch)
+                                           UnconfirmedSaleItemsSearch)
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -179,9 +179,9 @@ class SalesApp(ShellApp):
              group.get("search_loan_items")),
             ("ReturnedSaleSearch", None, _("Returned sales..."),
              group.get("returned_sales")),
-            ("SearchReservedProduct", None, _("Reserved products..."),
+            ("SearchUnconfirmedSaleItems", None, _("Unconfirmed sale items..."),
              group.get("search_reserved_product"),
-             _("Search for Reserved Products")),
+             _("Search for unconfirmed sale items")),
 
             # Sale
             ("SaleMenu", None, _("Sale")),
@@ -559,8 +559,8 @@ class SalesApp(ShellApp):
     def on_ReturnedSaleSearch__activate(self, action):
         self.run_dialog(ReturnedSaleSearch, self.store)
 
-    def on_SearchReservedProduct__activate(self, action):
-        self.run_dialog(ReservedProductSearch, self.store)
+    def on_SearchUnconfirmedSaleItems__activate(self, action):
+        self.run_dialog(UnconfirmedSaleItemsSearch, self.store)
 
     # Search
 
