@@ -328,6 +328,12 @@ class WorkOrderPackageSendEditor(BaseEditor):
         'identifier',
     ]
 
+    #: The spec that will be used to populate the |workorders| to put in the
+    #: |workorderpackage|. It must be a subclass of
+    #: :class:`stoqlib.domain.workorder.WorkOrderView`
+    #: or provide the same api it does.
+    search_spec = WorkOrderApprovedAndFinishedView
+
     #
     #  BaseEditor
     #
@@ -400,12 +406,10 @@ class WorkOrderPackageSendEditor(BaseEditor):
             return self.identifier.render_icon(stock_id, gtk.ICON_SIZE_MENU)
 
     def _find_workorders(self):
-        workorders = WorkOrderApprovedAndFinishedView.find_by_current_branch(
+        workorders = self.search_spec.find_by_current_branch(
             self.store, branch=api.get_current_branch(self.store))
-        workorder = workorders.order_by(
-            WorkOrderApprovedAndFinishedView.identifier)
 
-        for workorder in workorders:
+        for workorder in workorders.order_by(self.search_spec.identifier):
             workorder.notes = u''
             workorder.will_send = False
             yield workorder
