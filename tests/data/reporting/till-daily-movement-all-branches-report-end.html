@@ -1,0 +1,401 @@
+
+<html>
+  <head>
+    
+      <title>Daily Movement</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <link rel="stylesheet" href="base/base.css" type="text/css" />
+  <link rel="stylesheet" href="till/till.css" type="text/css" />
+  
+  <style>
+    @page {
+      @bottom-left {
+        content: "Stoq Retail Management"
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages)
+      }
+      @top-left {
+        content: "Daily Movement"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+  <style>
+    #items .list td:nth-child(3),
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5) {
+      text-align: right;
+    }
+  </style>
+
+
+  </head>
+  <body>
+    
+
+
+
+
+
+  <header>
+    <div id="title">
+      <h1>Daily Movement</h1>
+      <span class="subtitle">Till movement on 2013-01-01 to 2013-06-01</span>
+      <div class="notes">
+        <span>All Branches</span>
+      </div>
+      <div class="logo">
+        <img src="logo.png"/>
+      </div>
+    </div>
+  </header>
+
+
+
+<h3>Input Payments:</h3>
+<h4>Sales</h4>
+    <table>
+      <thead>
+        <tr class="align-left">
+          <td>Code</td>
+          <td>Sales Person</td>
+          <td>Client</td>
+          <td class="align-right">Value</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+          <tr class="highlight">
+            <td>01000</td>
+            <td>SalesPerson</td>
+            <td>Not Specified</td>
+            <td class="align-right">$100.00</td>
+          </tr>
+              <tr class="align-left">
+                <td></td>
+                <td>Card Credit</td>
+                <td>1234 - PRO1 - MAQ1</td>
+                <td class="align-right">$100.00
+                      (1x)</td>
+              </tr>
+              <tr class="align-left">
+                <td></td>
+                <td>Card Debit</td>
+                <td>1234 - PRO1 - MAQ1</td>
+                <td class="align-right">$100.00
+                      (1x)</td>
+              </tr>
+      </tbody>
+    </table>
+
+
+
+<h4>Lonely Payments</h4>
+
+    <table>
+      <thead>
+        <tr>
+          <tr class="align-left">
+            <td>Code</td>
+            <td>Method</td>
+            <td>Description</td>
+            <td class="align-right">Payment Value</td>
+          </tr>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody class="list">
+          <tr class="align-left">
+           <td>01001</td>
+           <td>Money</td>
+           <td>Test receivable account</td>
+           <td class="align-right">$100.00</td>
+          </tr>
+          <tr class="align-left">
+           <td>01005</td>
+           <td>Money</td>
+           <td>Other branch lonely payment</td>
+           <td class="align-right">$100.00</td>
+          </tr>
+      </tbody>
+    </table>
+
+
+  <h3>Output Payments:</h3>
+  <h4>Purchases</h4>
+    <table>
+      <thead>
+        <tr class="align-left">
+          <td>Code</td>
+          <td>Status</td>
+          <td>Responsible</td>
+          <td>Branch</td>
+          <td>Notes</td>
+          <td>Supplier</td>
+          <td>Purchase</td>
+          <td>Method</td>
+          <td>Details</td>
+          <td class="align-right">Value</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+          <tr class="highlight">
+            <td>12345</td>
+            <td>Quoting</td>
+            <td>Administrator</td>
+            <td>Moda Stoq</td>
+            <td></td>
+            <td>Supplier</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td class="align-right">$ 0.00</td>
+          </tr>
+
+              <tr class="align-left">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>01002</td>
+                <td>Money</td>
+                <td>
+                </td>
+                <td class="align-right">$100.00</td>
+              </tr>
+      </tbody>
+    </table>
+
+
+  
+<h4>Lonely Payments</h4>
+
+    <table>
+      <thead>
+        <tr>
+          <tr class="align-left">
+            <td>Code</td>
+            <td>Method</td>
+            <td>Description</td>
+            <td class="align-right">Payment Value</td>
+          </tr>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody class="list">
+          <tr class="align-left">
+           <td>01004</td>
+           <td>Money</td>
+           <td>1/1 Money for </td>
+           <td class="align-right">$100.00</td>
+          </tr>
+      </tbody>
+    </table>
+
+  <h4>Return Sales</h4>
+    <table>
+      <thead>
+        <tr class="align-left">
+          <td>Code</td>
+          <td>Sales Person</td>
+          <td>Client</td>
+          <td>Return Date</td>
+          <td class="align-right">Sale Value</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+          <tr class="highlight">
+            <td>23456</td>
+            <td>SalesPerson</td>
+            <td>Not Specified</td>
+            <td>01/01/13</td>
+            <td class="align-right">$20.00</td>
+          </tr>
+          <tr>
+            <td colspan="6">
+            <table class="subtable">
+              <thead>
+                <tr class="align-left">
+                  <td>Code</td>
+                  <td>Method</td>
+                  <td>Description</td>
+                  <td class="align-right">Payment Value</td>
+                </tr>
+              </thead>
+              <tbody>
+
+              <tr class="align-left">
+                <td>01003</td>
+                <td>Money</td>
+                <td>Money returned for sale 23456</td>
+                <td class="align-right">$20.00</td>
+              </tr>
+
+              </tbody>
+            </table>
+          </tr>
+
+      </tbody>
+    </table>
+
+
+
+
+<h3>Summary:</h3>
+<div id="summary">
+  <div>
+  <h4>Per Payment Method</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>Payment Method</td>
+          <td class="align-right">Income Total</td>
+          <td class="align-right">Outgoing Total</td>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        
+            <tr>
+                <td>Card</td>
+                <td class="align-right">$200.00</td>
+                <td class="align-right">$ 0.00</td>
+            </tr>
+            
+            <tr>
+                <td>Money</td>
+                <td class="align-right">$200.00</td>
+                <td class="align-right">$220.00</td>
+            </tr>
+            
+
+            <tr class="summary">
+                <td><b>Total:</b></td>
+                <td  class="align-right"><b>$400.00</b></td>
+                <td  class="align-right"><b>$220.00</b></td>
+            </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+  <div>
+  <h4>Per Card Provider</h4>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>Provider Name</td>
+          <td class="align-right">Income Total</td>
+        </tr>
+      </tdead>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody>
+        
+            <tr>
+                <td>PRO1
+                    Credit</td>
+                <td class="align-right">$100.00</td>
+            </tr>
+            
+            <tr>
+                <td>PRO1
+                    Debit</td>
+                <td class="align-right">$100.00</td>
+            </tr>
+            
+
+            <tr class="summary">
+                <td><b>Total:</b></td>
+                <td class="align-right"><b>$200.00</b></td>
+            </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<br/><br/><br/>
+<h3>Observations:</h3>
+<br/><br/><br/><br/><br/><br/><br/>
+
+<section class="signatures">
+  <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                     if there is not enough space -->
+  <span class="signature">Signature</span>
+  <span class="signature">Verified by</span>
+</section>
+
+</div> <!-- end div.page -->
+
+  </body>
+</html>
+
+

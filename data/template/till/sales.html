@@ -21,9 +21,9 @@
         % for sale in report.sales:
           <tr class="highlight">
             <td>${ sale.identifier }</td>
-            <td>${ sale.get_salesperson_name() }</td>
-            <td>${ sale.get_client_name() }</td>
-            <td class="align-right">${ format_price(sale.get_total_sale_amount()) }</td>
+            <td>${ sale.salesperson }</td>
+            <td>${ sale.client }</td>
+            <td class="align-right">${ format_price(sale.value) }</td>
           </tr>
               % for details, values in report.sales[sale].items():
               <tr class="align-left">

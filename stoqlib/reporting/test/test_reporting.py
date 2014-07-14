@@ -40,13 +40,14 @@ from stoqlib.domain.payment.views import (InPaymentView,
                                           OutPaymentView,
                                           InCheckPaymentView,
                                           OutCheckPaymentView)
-from stoqlib.domain.person import CallsView
+from stoqlib.domain.person import Branch, CallsView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView, ReturnedSaleItemsView
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.domain.workorder import WorkOrderView
+from stoqlib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
@@ -308,6 +309,7 @@ class TestReport(ReportTest):
 
     def test_till_daily_movement(self):
         branch = get_current_branch(self.store)
+        branch2 = self.store.find(Branch, Branch.id != branch.id).any()
 
         # Data used to create the examples
         till = Till.get_last_opened(self.store)
@@ -420,13 +422,47 @@ class TestReport(ReportTest):
         payment.paid_date = date
         payment.status = Payment.STATUS_PAID
 
+        # create lonely input payment on a second branch
+        payer = self.create_client()
+        address = self.create_address()
+        address.person = payer.person
+
+        method = PaymentMethod.get_by_name(self.store, u'money')
+        group = self.create_payment_group()
+        payment_lonely_input = method.create_payment(Payment.TYPE_IN, group,
+                                                     branch2, Decimal(100))
+        payment_lonely_input.description = u"Other branch lonely payment"
+        payment_lonely_input.group.payer = payer.person
+        payment_lonely_input.set_pending()
+        payment_lonely_input.pay()
+        payment_lonely_input.identifier = 1005
+        payment_lonely_input.paid_date = date
+
+        # Run the dialog the precedes the report
+        data = TillDailyMovementDialog(self.store)
+        data.model.branch = branch
+        data.set_daterange(date, date)
+        data.search_button.clicked()
+
+        daterange = (date, None)
         self._diff_expected(TillDailyMovementReport,
-                            'till-daily-movement-report', self.store, date)
+                            'till-daily-movement-report', branch, daterange,
+                            data)
 
         end_date = datetime.date(2013, 6, 1)
+        data.set_daterange(date, end_date)
+        data.search_button.clicked()
+        daterange = (date, end_date)
         self._diff_expected(TillDailyMovementReport,
-                            'till-daily-movement-report-end', self.store, date,
-                            end_date)
+                            'till-daily-movement-report-end', branch,
+                            daterange, data)
+
+        # Generate report for all branches
+        data.model.branch = None
+        data.search_button.clicked()
+        self._diff_expected(TillDailyMovementReport,
+                            'till-daily-movement-all-branches-report-end',
+                            None, daterange, data)
 
     def test_sales_person_report(self):
         sysparam.set_bool(self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', True)

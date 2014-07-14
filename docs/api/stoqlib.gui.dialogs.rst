@@ -394,6 +394,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`tilldailymovement` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.tilldailymovement
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`tillhistory` Module
 -------------------------
 

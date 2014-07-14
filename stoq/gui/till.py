@@ -48,10 +48,10 @@ from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.daterangedialog import DateRangeDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (MissingItemsDialog,
                                                     get_missing_items)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
@@ -66,9 +66,7 @@ from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
 from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.utils.printing import print_report
 from stoqlib.reporting.sale import SalesReport
-from stoqlib.reporting.till import TillDailyMovementReport
 
 from stoq.gui.shell.shellapp import ShellApp
 
@@ -549,12 +547,7 @@ class TillApp(ShellApp):
             self._update_total()
 
     def on_TillDailyMovement__activate(self, button):
-        date_range = self.run_dialog(DateRangeDialog)
-        if not date_range:
-            return
-
-        print_report(TillDailyMovementReport, self.store,
-                     start_date=date_range.start, end_date=date_range.end)
+        self.run_dialog(TillDailyMovementDialog, self.store)
 
     # Search
 

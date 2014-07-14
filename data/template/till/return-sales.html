@@ -23,10 +23,10 @@
         % for sale in report.return_sales:
           <tr class="highlight">
             <td>${ sale.identifier }</td>
-            <td>${ sale.get_salesperson_name() }</td>
-            <td>${ sale.get_client_name() }</td>
+            <td>${ sale.salesperson }</td>
+            <td>${ sale.client }</td>
             <td>${ format_date(sale.return_date) }</td>
-            <td class="align-right">${ format_price(sale.get_total_sale_amount()) }</td>
+            <td class="align-right">${ format_price(sale.value) }</td>
           </tr>
           <tr>
             <td colspan="6">

@@ -1,0 +1,96 @@
+dialog: TillDailyMovementDialog
+GtkVBox(toplevel):
+  GtkVBox(vbox2, fill=True):
+    GtkHBox(hbox2, fill=True):
+      GtkLabel(label9, fill=True): 'Branch:'
+      ProxyComboBox(branch, fill=True):
+        item: 'All Branches', selected
+        item: 'Moda Stoq'
+        item: 'Stoq Elite Fashion'
+      GtkButton(search_button, fill=True): 'gtk-find'
+    GtkHBox(daterange_hbox, fill=True):
+      DateSearchFilter(date_filter):
+        GtkLabel(): 'Date:'
+        ProxyComboBox(padding=6):
+          item: 'Today', selected
+          item: 'Yesterday'
+          item: 'Last week'
+          item: 'Last month'
+          item: 'Custom day'
+          item: 'Custom interval'
+        GtkLabel(): 'From:', insensitive
+        ProxyDateEntry(padding=6): date.today(), insensitive
+        GtkLabel(): 'To:', insensitive
+        ProxyDateEntry(padding=6): date.today(), insensitive
+  GtkNotebook(history_notebook, expand=True, fill=True):
+    GtkVBox(sales_vbox):
+      ObjectTree(sales_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Sales Person'
+        column: title='Client', expand
+        column: title='Value'
+    GtkVBox(vbox4):
+      ObjectList(inpayments_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Method'
+        column: title='Description', expand
+        column: title='Payment Value'
+    GtkVBox(purchases_vbox):
+      ObjectTree(purchases_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Status'
+        column: title='Responsible', expand
+        column: title='Branch'
+        column: title='Notes'
+        column: title='Supplier'
+        column: title='Value'
+    GtkVBox(vbox3):
+      ObjectList(outpayments_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Method'
+        column: title='Description', expand
+        column: title='Payment Value'
+    GtkVBox(return_sales_vbox):
+      ObjectTree(return_sales_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Sales Person'
+        column: title='Client', expand
+        column: title='Return Date'
+        column: title='Sale Value'
+    GtkVBox(supplies_vbox):
+      ObjectList(supplies_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Value'
+      GtkHBox(supplies_label):
+        GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+        GtkLabel(): '<b>$ 0.00</b>'
+    GtkVBox(removals_vbox):
+      ObjectList(removals_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Value'
+      GtkHBox(removals_label):
+        GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+        GtkLabel(): '<b>$ 0.00</b>'
+    GtkHBox(hbox1):
+      GtkVBox(permethod_vbox, expand=True, fill=True):
+        ObjectList(permethod_list, expand=True, fill=True):
+          column: title='Payment Method', expand
+          column: title='Income Total'
+          column: title='Outgoing Total'
+        GtkHBox(income_label):
+          GtkLabel(expand=True, fill=True, padding=6): '<b>In Total:</b>'
+          GtkLabel(): '<b>$ 0.00</b>'
+        GtkHBox(outcome_label):
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Out Total:</b>'
+          GtkLabel(): '<b>$ 0.00</b>'
+      GtkVBox(percard_vbox, expand=True, fill=True):
+        ObjectList(percard_list, expand=True, fill=True):
+          column: title='Provider Name', expand
+          column: title='Income Total'
+        GtkHBox(percard_label):
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+          GtkLabel(): '<b>$ 0.00</b>'
+  GtkHButtonBox(hbuttonbox1, fill=True):
+    GtkButton(print_button): 'gtk-print', insensitive

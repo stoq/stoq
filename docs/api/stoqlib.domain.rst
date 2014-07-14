@@ -150,6 +150,13 @@ domain Package
     :members:
     :show-inheritance:
 
+:mod:`payment.dailymovement`
+----------------------------
+
+.. automodule:: stoqlib.domain.payment.dailymovement
+    :members:
+    :show-inheritance:
+
 :mod:`payment.group`
 --------------------
 
