@@ -24,6 +24,7 @@
 
 import mock
 
+from stoqlib.api import api
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderHistory)
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
@@ -208,9 +209,10 @@ class TestWorkOrderEditor(GUITest):
 
 class TestWorkOrderPackageSendEditor(GUITest):
     @mock.patch('stoqlib.domain.workorder.localnow')
-    def test_create(self, localnow):
+    def test_create_send_to_execution(self, localnow):
         localnow.return_value = localdatetime(2013, 1, 1)
         destination_branch = self.create_branch()
+        destination_branch.can_execute_foreign_work_orders = True
         workorders_ids = set()
 
         for i in xrange(10):
@@ -219,19 +221,23 @@ class TestWorkOrderPackageSendEditor(GUITest):
             wo.identifier = 666 + i
             wo.open_date = localdatetime(2013, 1, 1)
 
-            # Only the first 6 will appear on the list. Half of them as
-            # approved and half of them as finished.
+            # Only the first 3 will appear on the list as they are waiting
             if i < 3:
                 wo.approve()
                 workorders_ids.add(wo.id)
-            elif i < 6:
+            elif 3 <= i < 6:
                 wo.approve()
                 wo.work()
                 wo.add_sellable(self.create_sellable())
                 wo.finish()
-                workorders_ids.add(wo.id)
 
         editor = WorkOrderPackageSendEditor(self.store)
+
+        self.assertInvalid(editor, ['destination_branch'])
+        self.assertEqual(len(editor.workorders), 0)
+        editor.destination_branch.update(destination_branch)
+        self.assertValid(editor, ['destination_branch'])
+
         self.assertEqual(workorders_ids,
                          set([wo_.id for wo_ in editor.workorders]))
 
@@ -243,13 +249,75 @@ class TestWorkOrderPackageSendEditor(GUITest):
             editor.workorders.emit('cell_edited', wo, 'will_send')
 
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
-        self.assertInvalid(editor, ['identifier', 'destination_branch'])
+        self.assertInvalid(editor, ['identifier'])
         editor.identifier.update(u'123321')
-        editor.destination_branch.update(destination_branch)
-        self.assertValid(editor, ['identifier', 'destination_branch'])
+        self.assertValid(editor, ['identifier'])
         self.assertSensitive(editor.main_dialog, ['ok_button'])
 
-        self.check_editor(editor, 'editor-workorderpackagesend-create')
+        self.check_editor(
+            editor, 'editor-workorderpackagesend-sent-to-execution-create')
+
+        with mock.patch.object(editor.model, 'send') as send:
+            self.click(editor.main_dialog.ok_button)
+            self.assertEqual(send.call_count, 1)
+            self.assertEqual(editor.model.package_items.count(), 2)
+
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def test_create_return_from_execution(self, localnow):
+        current_branch = api.get_current_branch(self.store)
+        current_branch.can_execute_foreign_work_orders = True
+        localnow.return_value = localdatetime(2013, 1, 1)
+        destination_branch = self.create_branch()
+        workorders_ids = set()
+
+        for i in xrange(10):
+            wo = self.create_workorder(description=u"Equipment %d" % i)
+            wo.client = self.create_client()
+            wo.identifier = 666 + i
+            wo.open_date = localdatetime(2013, 1, 1)
+
+            # Only the 3 finished and with their original branches set to the
+            # destination_branch will appear on the list
+            if i < 3:
+                wo.approve()
+            elif 3 <= i < 6:
+                wo.approve()
+                wo.work()
+                wo.add_sellable(self.create_sellable())
+                wo.finish()
+            elif 6 <= i < 9:
+                wo.approve()
+                wo.work()
+                wo.add_sellable(self.create_sellable())
+                wo.finish()
+                wo.branch = destination_branch
+                workorders_ids.add(wo.id)
+
+        editor = WorkOrderPackageSendEditor(self.store)
+
+        self.assertInvalid(editor, ['destination_branch'])
+        self.assertEqual(len(editor.workorders), 0)
+        editor.destination_branch.update(destination_branch)
+        self.assertValid(editor, ['destination_branch'])
+
+        self.assertEqual(workorders_ids,
+                         set([wo_.id for wo_ in editor.workorders]))
+
+        self.assertEqual(editor.model.package_items.count(), 0)
+        # Only these 2 will be sent
+        for wo in [editor.workorders[0], editor.workorders[1]]:
+            wo.will_send = True
+            # Mimic 'cell-edited' emission
+            editor.workorders.emit('cell_edited', wo, 'will_send')
+
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+        self.assertInvalid(editor, ['identifier'])
+        editor.identifier.update(u'123321')
+        self.assertValid(editor, ['identifier'])
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+
+        self.check_editor(
+            editor, 'editor-workorderpackagesend-return-from-execution-create')
 
         with mock.patch.object(editor.model, 'send') as send:
             self.click(editor.main_dialog.ok_button)

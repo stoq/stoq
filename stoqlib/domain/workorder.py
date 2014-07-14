@@ -30,7 +30,7 @@ import logging
 
 from kiwi.currency import currency
 from storm.expr import (Count, Join, LeftJoin, Alias, Select, Sum, Coalesce,
-                        In, And, Eq, Not, Cast)
+                        In, And, Or, Eq, Not, Cast)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
@@ -1402,6 +1402,26 @@ class WorkOrderView(Viewable):
     @classmethod
     def find_by_current_branch(cls, store, branch):
         return store.find(cls, WorkOrder.current_branch_id == branch.id)
+
+    @classmethod
+    def find_by_can_send_to_branch(cls, store, current_branch,
+                                   destination_branch):
+        if destination_branch.can_execute_foreign_work_orders:
+            # When the destination can execute foreign work orders, we can send
+            # orders that are originally from it, waiting and any rejected
+            query = Or(cls.branch_id == destination_branch.id,
+                       cls.status == WorkOrder.STATUS_WORK_WAITING,
+                       Eq(cls.is_rejected, True))
+        else:
+            # When the destination branch can't execute foreign work orders,
+            # it just can receive it's own orders back, and those orders needs
+            # to be finished or rejected
+            query = And(cls.branch_id == destination_branch.id,
+                        Or(cls.status == WorkOrder.STATUS_WORK_FINISHED,
+                           Eq(cls.is_rejected, True)))
+
+        results = cls.find_by_current_branch(store, current_branch)
+        return results.find(query)
 
     @classmethod
     def find_pending(cls, store, start_date=None, end_date=None):

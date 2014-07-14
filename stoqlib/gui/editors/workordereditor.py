@@ -396,7 +396,11 @@ class WorkOrderPackageSendEditor(BaseEditor):
                    data_type=datetime.date, visible=False),
             Column('approve_date', _(u"Approval date"),
                    data_type=datetime.date)])
-        self.workorders.extend(self._find_workorders())
+
+        self._refresh_workorders()
+
+    def _refresh_workorders(self):
+        self.workorders.add_list(list(self._find_workorders()), clear=True)
 
     def _format_state_icon(self, item, data):
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
@@ -406,8 +410,14 @@ class WorkOrderPackageSendEditor(BaseEditor):
             return self.identifier.render_icon(stock_id, gtk.ICON_SIZE_MENU)
 
     def _find_workorders(self):
-        workorders = self.search_spec.find_by_current_branch(
-            self.store, branch=api.get_current_branch(self.store))
+        current_branch = api.get_current_branch(self.store)
+        destination_branch = self.destination_branch.get_selected()
+        if destination_branch is None:
+            return
+
+        workorders = self.search_spec.find_by_can_send_to_branch(
+            self.store, current_branch=current_branch,
+            destination_branch=destination_branch)
 
         for workorder in workorders.order_by(self.search_spec.identifier):
             workorder.notes = u''
@@ -416,6 +426,13 @@ class WorkOrderPackageSendEditor(BaseEditor):
 
     def _prefill_branches(self):
         branches = Branch.get_active_remote_branches(self.store)
+        current_branch = api.get_current_branch(self.store)
+
+        # Branches not allowed to execute foreign work orders can only send
+        # orders for those who can
+        if not current_branch.can_execute_foreign_work_orders:
+            branches = branches.find(can_execute_foreign_work_orders=True)
+
         self.destination_branch.prefill(api.for_person_combo(branches))
 
     def _edit_order(self, order_view):
@@ -425,6 +442,9 @@ class WorkOrderPackageSendEditor(BaseEditor):
     #
     #  Callbacks
     #
+
+    def on_destination_branch__content_changed(self, branches):
+        self._refresh_workorders()
 
     def on_workorders__cell_edited(self, klist, obj, attr):
         self.force_validation()

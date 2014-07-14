@@ -1492,6 +1492,9 @@ class Branch(Domain):
     #: An acronym that uniquely describes a branch
     acronym = UnicodeCol(default=None)
 
+    #: if this branch can execute |workorders| that belongs to other branches
+    can_execute_foreign_work_orders = BoolCol(default=False)
+
     #
     # IActive
     #

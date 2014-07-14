@@ -853,6 +853,68 @@ class _TestWorkOrderView(DomainTest):
         workorders = self.view.find_by_current_branch(self.store, branch)
         self.assertEqual(workorders_ids, set([wo_.id for wo_ in workorders]))
 
+    def test_find_by_can_send_to_branch(self):
+        current_branch = self.create_branch()
+        destination_branch = self.create_branch()
+
+        workorders = set()
+        visibles = set()
+
+        for status, is_rejected in _combine(WorkOrder.statuses.keys(),
+                                            [True, False]):
+            wo = self.create_workorder()
+            wo.status = status
+            wo.is_rejected = is_rejected
+
+            workorders.add(wo)
+            # This is the minimum filter for workorders to appear in the results
+            if status in self.default_status:
+                visibles.add(wo)
+
+        # The view should be empty here because we didn't set current_branch
+        # for any of the work orders
+        for can_execute in [True, False]:
+            destination_branch.can_execute_foreign_work_orders = can_execute
+            results = self.view.find_by_can_send_to_branch(
+                self.store, current_branch=current_branch,
+                destination_branch=destination_branch)
+            self.assertEqual(results.count(), 0)
+
+        for wo in workorders:
+            wo.current_branch = current_branch
+
+        # When the destination_branch can execute foreign work orders
+
+        destination_branch.can_execute_foreign_work_orders = True
+        results = self.view.find_by_can_send_to_branch(
+            self.store, current_branch=current_branch,
+            destination_branch=destination_branch)
+        self.assertEqual(
+            set(wo.id for wo in results),
+            set(wo.id for wo in visibles if
+                wo.status == WorkOrder.STATUS_WORK_WAITING or wo.is_rejected))
+
+        # When the destination_branch can't execute foreign work orders
+
+        destination_branch.can_execute_foreign_work_orders = False
+        results = self.view.find_by_can_send_to_branch(
+            self.store, current_branch=current_branch,
+            destination_branch=destination_branch)
+        # In here no orders should appear since the destination_branch and
+        # their creation branches doesn't match
+        self.assertEqual(results.count(), 0)
+
+        for wo in workorders:
+            wo.branch = destination_branch
+
+        results = self.view.find_by_can_send_to_branch(
+            self.store, current_branch=current_branch,
+            destination_branch=destination_branch)
+        self.assertEqual(
+            set(wo.id for wo in results),
+            set(wo.id for wo in visibles if
+                wo.status == WorkOrder.STATUS_WORK_FINISHED or wo.is_rejected))
+
     def test_find_pending(self):
         wo1 = self.create_workorder()
         wo1.status = WorkOrder.STATUS_OPENED

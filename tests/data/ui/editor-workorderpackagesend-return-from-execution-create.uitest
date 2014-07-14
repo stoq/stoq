@@ -1,0 +1,41 @@
+editor: WorkOrderPackageSendEditor
+GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave WorkOrderPackageSendEditor is attached
+        GtkVBox(toplevel):
+          GtkTable(table1, expand=True, fill=True):
+            GtkLabel(label1): 'Identifier:'
+            ProxyEntry(identifier): '123321'
+            GtkLabel(label2): 'Destination:'
+            ProxyComboEntry(destination_branch):
+              item: 'Dummy shop', selected
+              item: 'Stoq Elite Fashion'
+            ObjectList(workorders):
+              column: title='Send'
+              column: title='#'
+              column: title='Sale #', hidden
+              column: title='Status'
+              column: title='Equipment (Description)', expand
+              column: title='Equipment'
+              column: title='Equipment'
+              column: title='Branch', hidden
+              column: title='Client'
+              column: title='Salesperson', hidden
+              column: title='Open date', hidden
+              column: title='Approval date'
+              row: True, 672, None, u'Finished', u'Description - Equipment 6', None, None, u'Dummy shop', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: True, 673, None, u'Finished', u'Description - Equipment 7', None, None, u'Dummy shop', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: False, 674, None, u'Finished', u'Description - Equipment 8', None, None, u'Dummy shop', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+          GtkHBox(hbox1):
+            GtkButton(edit_btn, fill=True): 'Observations', insensitive
+            GtkButton(details_btn, fill=True): 'gtk-info', insensitive
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

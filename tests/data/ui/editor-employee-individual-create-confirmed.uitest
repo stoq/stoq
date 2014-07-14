@@ -218,6 +218,7 @@ model: Employee<1>
 
 model: Branch<2>
   acronym: None
+  can_execute_foreign_work_orders: False
   crt: 1
   is_active: True
 

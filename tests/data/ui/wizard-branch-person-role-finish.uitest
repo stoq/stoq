@@ -106,6 +106,7 @@ GtkDialog(PluggableWizard): title='New Branch', hidden
 
 model: Branch<1>
   acronym: None
+  can_execute_foreign_work_orders: False
   crt: 1
   is_active: True
   person_id: Person<2>

@@ -11,7 +11,6 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
             GtkLabel(label2): 'Destination:'
             ProxyComboEntry(destination_branch):
               item: 'Dummy shop', selected
-              item: 'Stoq Elite Fashion'
             ObjectList(workorders):
               column: title='Send'
               column: title='#'
@@ -28,9 +27,6 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
               row: True, 666, None, u'Waiting', u'Description - Equipment 0', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
               row: True, 667, None, u'Waiting', u'Description - Equipment 1', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
               row: False, 668, None, u'Waiting', u'Description - Equipment 2', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: False, 669, None, u'Finished', u'Description - Equipment 3', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: False, 670, None, u'Finished', u'Description - Equipment 4', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: False, 671, None, u'Finished', u'Description - Equipment 5', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
           GtkHBox(hbox1):
             GtkButton(edit_btn, fill=True): 'Observations', insensitive
             GtkButton(details_btn, fill=True): 'gtk-info', insensitive
