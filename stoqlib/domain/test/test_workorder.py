@@ -816,16 +816,14 @@ class _TestWorkOrderView(DomainTest):
     # some of them define a clause based on status
     default_status = []
 
-    # Status that should not appear on the view. If empty, all status are
-    # assumed to be able to appear
-    excluded_status = []
-
-    # Just a facility for all default/excluded status
-    all_status = default_status + excluded_status
+    @property
+    def excluded_status(self):
+        return [k for k in WorkOrder.statuses.keys() if
+                k not in self.default_status]
 
     def test_find(self):
         workorders_ids = set()
-        for status in self.all_status:
+        for status in WorkOrder.statuses.keys():
             wo = self.create_workorder()
             wo.status = status
 
@@ -841,7 +839,8 @@ class _TestWorkOrderView(DomainTest):
         branch = self.create_branch()
         workorders_ids = set()
 
-        for status, set_branch in _combine(self.all_status, [True, False]):
+        for status, set_branch in _combine(WorkOrder.statuses.keys(),
+                                           [True, False]):
             wo = self.create_workorder()
             wo.status = status
             # Half of default/excluded will set current branch
@@ -959,7 +958,7 @@ class _TestWorkOrderView(DomainTest):
 
 class TestWorkOrderView(_TestWorkOrderView):
     view = WorkOrderView
-    default_status = [WorkOrder.STATUS_OPENED]
+    default_status = WorkOrder.statuses.keys()
 
     def test_equipment(self):
         wo = self.create_workorder(description=u'Foo')
@@ -1003,15 +1002,11 @@ class TestWorkOrderApprovedAndFinishedView(_TestWorkOrderView):
     view = WorkOrderApprovedAndFinishedView
     default_status = [WorkOrder.STATUS_WORK_WAITING,
                       WorkOrder.STATUS_WORK_FINISHED]
-    excluded_status = [k for k in WorkOrder.statuses.keys() if
-                       k not in default_status]
 
 
 class TestWorkOrderFinishedView(_TestWorkOrderView):
     view = WorkOrderFinishedView
     default_status = [WorkOrder.STATUS_WORK_FINISHED]
-    excluded_status = [k for k in WorkOrder.statuses.keys() if
-                       k not in default_status]
 
 
 class _TestWorkOrderPackageView(DomainTest):
@@ -1022,17 +1017,10 @@ class _TestWorkOrderPackageView(DomainTest):
     # some of them define a clause based on status
     default_status = []
 
-    # Status that should not appear on the view. If empty, all status are
-    # assumed to be able to appear
-    excluded_status = []
-
-    # Just a facility for all default/excluded status
-    all_status = default_status + excluded_status
-
     def test_find(self):
         packages_ids = set()
 
-        for status in self.all_status:
+        for status in self.default_status:
             package = self.create_workorder_package()
             package.status = status
 
@@ -1048,7 +1036,7 @@ class _TestWorkOrderPackageView(DomainTest):
         branch = self.create_branch()
         packages_ids = set()
 
-        for status, set_branch in _combine(self.all_status, [True, False]):
+        for status, set_branch in _combine(self.default_status, [True, False]):
             package = self.create_workorder_package()
             package.status = status
             # Half of default/excluded will set destination branch
@@ -1086,8 +1074,6 @@ class TestWorkOrderPackageView(_TestWorkOrderPackageView):
 class TestWorkOrderPackageSentView(_TestWorkOrderPackageView):
     view = WorkOrderPackageSentView
     default_status = [WorkOrderPackage.STATUS_SENT]
-    excluded_status = [k for k in WorkOrderPackage.statuses.keys() if
-                       k not in default_status]
 
 
 class TestWorkOrderHistoryView(DomainTest):
