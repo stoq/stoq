@@ -53,6 +53,7 @@ from stoqlib.gui.editors.tilleditor import (TillOpeningEditor,
                                             TillVerifyEditor)
 from stoqlib.gui.events import CouponCreatedEvent
 from stoqlib.lib.dateutils import localnow
+from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -486,10 +487,20 @@ class FiscalCoupon(gobject.GObject):
         # Actually, we are confirming the sale here, so the sale
         # confirmation process will be available to others applications
         # like Till and not only to the POS.
-        total_paid = sale.group.get_total_confirmed_value()
+        payments_total = sale.group.get_total_confirmed_value()
+        sale_total = sale.get_total_sale_amount()
+
+        payment = get_formatted_price(payments_total)
+        amount = get_formatted_price(sale_total)
+        msg = _(u"Payment value (%s) is greater than sale's total (%s). "
+                "Do you want to confirm it anyway?") % (payment, amount)
+        if (sale_total < payments_total and not
+            yesno(msg, gtk.RESPONSE_NO, _(u"Confirm Sale"), _(u"Don't Confirm"))):
+            return False
+
         model = run_dialog(ConfirmSaleWizard, self._parent, store, sale,
                            subtotal=subtotal,
-                           total_paid=total_paid)
+                           total_paid=payments_total)
 
         if not model:
             CancelPendingPaymentsEvent.emit()
