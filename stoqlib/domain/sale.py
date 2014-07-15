@@ -50,6 +50,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
+                                   SaleCanCancelEvent,
                                    SaleItemBeforeDecreaseStockEvent,
                                    SaleItemBeforeIncreaseStockEvent,
                                    SaleItemAfterSetBatchesEvent,
@@ -893,6 +894,10 @@ class Sale(Domain):
 
         :returns: ``True`` if the sale can be cancelled
         """
+        # None is acceptable as it means no one catch the event
+        if SaleCanCancelEvent.emit(self) is False:
+            return False
+
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
                                Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
 
@@ -1051,12 +1056,18 @@ class Sale(Domain):
         self.close_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_RENEGOTIATED)
 
-    def cancel(self):
+    def cancel(self, force=False):
         """Cancel the sale
-        You can only cancel an ordered sale.
-        This will cancel the payments.
+
+        You can only cancel an ordered sale. This will also cancel
+        all the payments related to it.
+
+        :param force: if ``True``, :meth:`.can_cancel` will not be asserted.
+            Only use this if you really need to (for example, when canceling
+            the last sale on the ecf)
         """
-        assert self.can_cancel()
+        if not force:
+            assert self.can_cancel()
 
         branch = get_current_branch(self.store)
         for item in self.get_items():
@@ -1961,20 +1972,16 @@ class SaleView(Viewable):
     #
 
     def can_return(self):
-        return (self.status == Sale.STATUS_CONFIRMED or
-                self.status == Sale.STATUS_PAID)
+        return self.sale.can_return()
 
     def can_confirm(self):
-        return (self.status == Sale.STATUS_ORDERED or
-                self.status == Sale.STATUS_QUOTE)
+        return self.sale.can_confirm()
 
     def can_cancel(self):
-        return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
-                               Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
+        return self.sale.can_cancel()
 
     def can_edit(self):
-        return (self.status == Sale.STATUS_QUOTE or
-                self.status == Sale.STATUS_ORDERED)
+        return self.sale.can_edit()
 
     def get_surcharge_value(self):
         return currency(self.surcharge_value or 0)

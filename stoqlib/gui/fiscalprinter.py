@@ -531,7 +531,7 @@ class FiscalCoupon(gobject.GObject):
 
         if not self.print_receipts(sale):
             warning(_("The sale was cancelled"))
-            sale.cancel()
+            sale.cancel(force=True)
 
         print_cheques_for_payment_group(store, sale.group)
 

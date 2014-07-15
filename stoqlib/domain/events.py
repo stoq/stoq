@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -168,6 +168,18 @@ class SaleStatusChangedEvent(Event):
 
     :param sale: the |sale| which had it's status changed
     :param old_status: the old sale status
+    """
+
+
+@public(since="1.8.0")
+class SaleCanCancelEvent(Event):
+    """
+    This event is emitted to check if a |sale| can be cancelled
+
+    The expected return should be ``True`` if the |sale| can be
+    canceled, or ``False`` if it can't.
+
+    :param sale: the |sale| that is going to be cancelled
     """
 
 

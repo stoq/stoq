@@ -128,6 +128,9 @@ class TillApp(ShellApp):
              group.get('confirm_sale'),
              _("Confirm the selected sale, decreasing stock and making it "
                "possible to receive it's payments")),
+            # FIXME: This button should change the label to "Cancel" when the
+            # selected sale can be cancelled and not returned, since that's
+            # what is going to happen when the user click in it
             ("Return", gtk.STOCK_CANCEL, _("Return..."),
              group.get('return_sale'),
              _("Return the selected sale, returning stock and the client's "

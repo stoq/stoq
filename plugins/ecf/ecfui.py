@@ -480,7 +480,7 @@ class ECFUI(object):
             return
         sale = store.fetch(last_doc.last_sale)
         value = sale.total_amount
-        sale.cancel()
+        sale.cancel(force=True)
         comment = _(u"Cancelling last document on ECF")
         SaleComment(store=store, sale=sale, comment=comment,
                     author=api.get_current_user(store))

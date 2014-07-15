@@ -860,34 +860,70 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.failIf(sale.can_edit())
 
-    def test_can_cancel(self):
+    @mock.patch('stoqlib.domain.sale.SaleCanCancelEvent.emit')
+    def test_can_cancel(self, can_cancel_emit):
         sale = self.create_sale()
-        self.failIf(sale.can_cancel())
+        for can_cancel in [True, False, None]:
+            can_cancel_emit.return_value = can_cancel
+            self.assertFalse(sale.can_cancel())
 
         self.add_product(sale)
         sale.order()
-        self.failUnless(sale.can_cancel())
+        can_cancel_emit.return_value = False
+        self.assertFalse(sale.can_cancel())
+        for can_cancel in [True, None]:
+            can_cancel_emit.return_value = can_cancel
+            self.assertTrue(sale.can_cancel())
 
         sale.status = Sale.STATUS_QUOTE
-        self.failUnless(sale.can_cancel())
+        can_cancel_emit.return_value = False
+        self.assertFalse(sale.can_cancel())
+        for can_cancel in [True, None]:
+            can_cancel_emit.return_value = can_cancel
+            self.assertTrue(sale.can_cancel())
 
         self.add_payments(sale)
         sale.confirm()
-        self.failUnless(sale.can_cancel())
+        can_cancel_emit.return_value = False
+        self.assertFalse(sale.can_cancel())
+        for can_cancel in [True, None]:
+            can_cancel_emit.return_value = can_cancel
+            self.assertTrue(sale.can_cancel())
 
         sale.group.pay()
-        self.failUnless(sale.can_cancel())
+        can_cancel_emit.return_value = False
+        self.assertFalse(sale.can_cancel())
+        for can_cancel in [True, None]:
+            can_cancel_emit.return_value = can_cancel
+            self.assertTrue(sale.can_cancel())
 
         sale.return_(sale.create_sale_return_adapter())
-        self.failIf(sale.can_cancel())
+        for can_cancel in [True, False, None]:
+            can_cancel_emit.return_value = can_cancel
+            self.assertFalse(sale.can_cancel())
 
-    def test_cancel(self):
+    @mock.patch('stoqlib.domain.sale.SaleCanCancelEvent.emit')
+    def test_cancel(self, can_cancel_emit):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         storable = sellable.product_storable
         inital_quantity = storable.get_balance_for_branch(sale.branch)
         sale.order()
         sale.cancel()
+        can_cancel_emit.assert_called_once_with(sale)
+        self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+        final_quantity = storable.get_balance_for_branch(sale.branch)
+        self.assertEquals(inital_quantity, final_quantity)
+
+    def test_cancel_force(self):
+        sale = self.create_sale()
+        sellable = self.add_product(sale)
+        storable = sellable.product_storable
+        inital_quantity = storable.get_balance_for_branch(sale.branch)
+        sale.order()
+        with mock.patch.object(sale, 'can_cancel') as can_cancel:
+            sale.cancel(force=True)
+            self.assertEqual(can_cancel.call_count, 0)
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
         final_quantity = storable.get_balance_for_branch(sale.branch)
         self.assertEquals(inital_quantity, final_quantity)
