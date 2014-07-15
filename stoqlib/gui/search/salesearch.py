@@ -43,12 +43,13 @@ from stoqlib.domain.workorder import WorkOrder
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.gtkadds import set_bold
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.formatters import format_quantity, get_formatted_price
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.reporting.sale import SoldItemsByBranchReport
 
@@ -270,11 +271,11 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
     size = (850, 450)
 
     def setup_widgets(self):
-        self.search.set_summary_label('quantity', label=_(u'Total Quantity:'),
-                                      format='<b>%s</b>')
         self.sale_details_button = self.add_button(label=_('Sale Details'))
         self.sale_details_button.show()
         self.sale_details_button.set_sensitive(False)
+        self.add_csv_button(_('Sale items'), _('sale-items'))
+        self._setup_summary()
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'salesperson_name',
@@ -305,12 +306,13 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
                              visible=False),
                 SearchColumn('open_date', title=_('Open Date'),
                              data_type=datetime.date),
-                SearchColumn('price', title=_('Price'), data_type=currency,
-                             width=100),
+                SearchColumn('price', title=_('Price'), data_type=currency,),
                 SearchColumn('quantity', title=_('Quantity'), data_type=Decimal,
-                             format_func=format_quantity, width=100),
-                SearchColumn('quantity_decreased', title=_('Reserved'), data_type=Decimal,
-                             format_func=format_quantity, width=100),
+                             format_func=format_quantity),
+                SearchColumn('quantity_decreased', title=_('Delivered'),
+                             data_type=Decimal, format_func=format_quantity,
+                             visible=False),
+                SearchColumn('total', title=_('Total'), data_type=currency,),
                 IdentifierColumn('wo_identifier', title=_('Work Order'),
                                  visible=False, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('wo_status_str', title=_('WO Status'), data_type=str,
@@ -320,6 +322,42 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
                              data_type=datetime.date, visible=False),
                 SearchColumn('wo_finish', title=_('WO Finish date'),
                              data_type=datetime.date, visible=False)]
+
+    def _setup_summary(self):
+        hbox = gtk.HBox()
+        hbox.set_spacing(6)
+
+        self.vbox.pack_start(hbox, False, True)
+        self.vbox.reorder_child(hbox, 2)
+        self.vbox.set_spacing(6)
+
+        hbox.pack_start(gtk.Label(), True, True)
+
+        # Create some labels to show a summary for the search (kiwi's
+        # SummaryLabel supports only one column)
+        self.quantity_label = gtk.Label()
+        self.reserved_label = gtk.Label()
+        self.total_label = gtk.Label()
+        for widget in [self.quantity_label, self.reserved_label,
+                       self.total_label]:
+            hbox.pack_start(widget, False, False)
+            set_bold(widget)
+
+        hbox.show_all()
+
+    def _update_summary(self, results):
+        total_quantity = reserved_quantity = total_price = 0
+        for obj in results:
+            total_quantity += obj.quantity
+            reserved_quantity += obj.quantity_decreased
+            total_price += obj.total
+
+        self.quantity_label.set_label(_(u'Quantity: %s') %
+                                      format_quantity(total_quantity))
+        self.reserved_label.set_label(_(u'Delivered: %s') %
+                                      format_quantity(reserved_quantity))
+        self.total_label.set_label(_(u'Total: %s') %
+                                   get_formatted_price(total_price))
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Sale.statuses.items()
@@ -336,3 +374,6 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
         reserved_product_view = self.results.get_selected()
         sale_view = self.store.find(SaleView, id=reserved_product_view.sale_id).one()
         run_dialog(SaleDetailsDialog, self, self.store, sale_view)
+
+    def on_search__search_completed(self, search, result_view, states):
+        self._update_summary(result_view)

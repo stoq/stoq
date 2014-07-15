@@ -35,15 +35,18 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
             column: title='Open Date'
             column: title='Price'
             column: title='Quantity'
-            column: title='Reserved'
+            column: title='Delivered', hidden
+            column: title='Total'
             column: title='Work Order', hidden
             column: title='WO Status', hidden
             column: title='Estimated finish', hidden
             column: title='WO Finish date', hidden
-            row: 99, u'Quoting', u'', None, u'The Funniest Joke in this Code', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('41.000'), Decimal('1.000'), None, '', None, None
-          GtkHBox(_summary_label):
-            GtkLabel(expand=True, fill=True, padding=6): 'Total Quantity:'
-            GtkLabel(): '<b>41</b>'
+            row: 99, u'Quoting', u'', None, u'The Funniest Joke in this Code', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('41.000'), Decimal('1.000'), Decimal('4100.00000'), None, '', None, None
+      GtkHBox(fill=True):
+        GtkLabel(expand=True, fill=True):
+        GtkLabel(quantity_label): 'Quantity: 41'
+        GtkLabel(reserved_label): 'Delivered: 1'
+        GtkLabel(total_label): 'Total: $4100.00'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
@@ -53,3 +56,4 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
       GtkButton(sale_details_button, padding=6): 'Sale Details', insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

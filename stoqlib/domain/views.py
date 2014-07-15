@@ -1028,11 +1028,14 @@ class UnconfirmedSaleItemsView(Viewable):
     price = SaleItem.price
     quantity = SaleItem.quantity
     quantity_decreased = SaleItem.quantity_decreased
+    total = SaleItem.price * SaleItem.quantity
+
     branch_id = Sale.branch_id
     sale_id = Sale.id
     identifier = Sale.identifier
     open_date = Sale.open_date
     status = Sale.status
+
     description = Sellable.description
     product_category = SellableCategory.description
     product_code = Sellable.code

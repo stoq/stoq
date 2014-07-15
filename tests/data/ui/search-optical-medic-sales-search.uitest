@@ -25,17 +25,17 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
               DateSearchFilter(_date_filter):
                 GtkLabel(): 'Date:'
                 ProxyComboBox(padding=6):
-                  item: 'Any'
+                  item: 'Any', selected
                   item: 'Today'
                   item: 'Yesterday'
                   item: 'Last week'
                   item: 'Last month'
                   item: 'Custom day'
-                  item: 'Custom interval', selected
-                GtkLabel(): 'From:'
-                ProxyDateEntry(padding=6): date.today(), invalid
-                GtkLabel(): 'To:'
-                ProxyDateEntry(padding=6): datetime.date(2014, 7, 15), invalid
+                  item: 'Custom interval'
+                GtkLabel(): 'From:', insensitive
+                ProxyDateEntry(padding=6): None, insensitive
+                GtkLabel(): 'To:', insensitive
+                ProxyDateEntry(padding=6): None, insensitive
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Code'
             column: title='Category', hidden

@@ -23,6 +23,7 @@
 ##
 
 
+from stoqlib.gui.search.searchoptions import Any
 from stoqlib.gui.test.uitestutils import GUITest
 
 from ..medicssearch import OpticalMedicSearch, MedicSalesSearch
@@ -62,5 +63,6 @@ class TestMedicSalesSearch(GUITest, OpticalDomainTest):
         workorder.sale.confirm()
 
         search = MedicSalesSearch(self.store)
+        search._date_filter.select(data=Any)
         search.search.refresh()
         self.check_search(search, 'optical-medic-sales-search')

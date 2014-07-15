@@ -29,7 +29,6 @@ import datetime
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import ColoredColumn, Column
-import pango
 from storm.expr import And
 
 from stoqlib.api import api
@@ -38,6 +37,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Branch
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.reporting.sale import SalesPersonReport
+from stoqlib.gui.base.gtkadds import set_bold
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
@@ -86,12 +86,6 @@ class CommissionSearch(SearchDialog):
     #
 
     def setup_widgets(self):
-        def set_bold(widget):
-            bold = pango.AttrWeight(pango.WEIGHT_HEAVY, 0, -1)
-            attrs = pango.AttrList()
-            attrs.insert(bold)
-            widget.set_property('attributes', attrs)
-
         hbox = gtk.HBox()
         hbox.set_spacing(6)
 

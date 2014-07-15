@@ -24,6 +24,7 @@
 """ Some extra methods to deal with gtk/kiwi widgets """
 
 import gtk
+import pango
 
 
 def change_button_appearance(button, icon=None, text=None):
@@ -34,6 +35,13 @@ def change_button_appearance(button, icon=None, text=None):
         image.set_from_stock(icon, gtk.ICON_SIZE_BUTTON)
     if text is not None:
         label.set_text_with_mnemonic(text)
+
+
+def set_bold(widget):
+    bold = pango.AttrWeight(pango.WEIGHT_HEAVY, 0, -1)
+    attrs = pango.AttrList()
+    attrs.insert(bold)
+    widget.set_property('attributes', attrs)
 
 
 def button_set_image_with_label(button, stock_id, text):
