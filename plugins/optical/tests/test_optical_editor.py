@@ -27,7 +27,8 @@ from stoqlib.domain.person import Person
 from stoqlib.gui.test.uitestutils import GUITest
 
 from ..opticaldomain import OpticalMedic
-from ..opticaleditor import MedicEditor
+from ..opticaleditor import MedicEditor, OpticalWorkOrderEditor
+from .test_optical_domain import OpticalDomainTest
 
 
 class TestMedicEditor(GUITest):
@@ -43,3 +44,12 @@ class TestMedicEditor(GUITest):
     def test_create(self):
         editor = MedicEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-medic-create')
+
+
+class TestOpticalWorkOrderEditor(GUITest, OpticalDomainTest):
+
+    def test_show(self):
+        optical_wo = self.create_optical_work_order()
+
+        editor = OpticalWorkOrderEditor(self.store, optical_wo.work_order)
+        self.check_editor(editor, 'editor-optical-work-order-show')

@@ -70,22 +70,24 @@
   </placeholder>
 </menubar>
 <popup name="ServicesSelection">
-  <menuitem action="Details"/>
-  <separator/>
-  <menuitem action="Edit"/>
-  <menuitem action="Finish"/>
-  <menuitem action="Cancel"/>
-  <menuitem action="DeliverOrder"/>
-  <separator/>
-  <menuitem action="Approve"/>
-  <menuitem action="Pause"/>
-  <menuitem action="Work"/>
-  <menuitem action="Reject"/>
-  <menuitem action="UndoRejection"/>
-  <menuitem action="Reopen"/>
-  <separator/>
-  <menuitem action="PrintQuote"/>
-  <menuitem action="PrintReceipt"/>
+  <placeholder name="ServicesSelectionPH">
+    <menuitem action="Details"/>
+    <separator/>
+    <menuitem action="Edit"/>
+    <menuitem action="Finish"/>
+    <menuitem action="Cancel"/>
+    <menuitem action="DeliverOrder"/>
+    <separator/>
+    <menuitem action="Approve"/>
+    <menuitem action="Pause"/>
+    <menuitem action="Work"/>
+    <menuitem action="Reject"/>
+    <menuitem action="UndoRejection"/>
+    <menuitem action="Reopen"/>
+    <separator/>
+    <menuitem action="PrintQuote"/>
+    <menuitem action="PrintReceipt"/>
+  </placeholder>
 </popup>
 <toolbar action="toolbar">
   <placeholder name="AppToolbarPH">

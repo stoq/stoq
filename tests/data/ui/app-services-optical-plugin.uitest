@@ -49,6 +49,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
           GtkImageMenuItem(): 'Reopen order...', hidden, insensitive
           GtkImageMenuItem(): 'Print quote...', insensitive
           GtkImageMenuItem(): 'Print receipt...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Edit optical details...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Products...'
@@ -167,3 +169,5 @@ GtkMenu(popup): hidden
   GtkImageMenuItem(): 'Reopen order...', hidden, insensitive
   GtkImageMenuItem(): 'Print quote...', insensitive
   GtkImageMenuItem(): 'Print receipt...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Edit optical details...', insensitive

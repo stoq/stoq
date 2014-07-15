@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 import gtk
 import mock
 
@@ -44,7 +45,7 @@ from stoq.gui.sales import SalesApp
 from stoq.gui.services import ServicesApp
 
 from ..medicssearch import OpticalMedicSearch, MedicSalesSearch
-from ..opticaleditor import MedicEditor
+from ..opticaleditor import MedicEditor, OpticalWorkOrderEditor
 from ..opticalhistory import OpticalPatientDetails
 from ..opticalreport import OpticalWorkOrderReceiptReport
 from ..opticalui import OpticalUI
@@ -191,7 +192,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         search.search.refresh()
         self.check_search(search, 'search-optical-product-search')
 
-    def test_sales_app(self):
+    def test_services_app(self):
         product = self.create_product()
         product.manufacturer = self.create_product_manufacturer(u'Empresa Tal')
         workorder = self.create_workorder()
@@ -202,6 +203,37 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         app = self.create_app(ServicesApp, u'services')
         app.search.refresh()
         self.check_app(app, u'services-optical-plugin')
+
+    @mock.patch('plugins.optical.opticalui.api.new_store')
+    @mock.patch('plugins.optical.opticalui.run_dialog')
+    def test_edit_optical_details(self, run_dialog, new_store):
+        new_store.return_value = self.store
+
+        product = self.create_product()
+        work_order = self.create_workorder()
+        work_order.identifier = 666
+        work_order.open_date = localdate(2014, 01, 31)
+        work_order.sellable = product.sellable
+
+        app = self.create_app(ServicesApp, u'services')
+        app.search.refresh()
+
+        for wo_view in app.search.results:
+            if wo_view.work_order == work_order:
+                break
+
+        self.assertIsNotNone(wo_view)
+        app.search.results.select(wo_view)
+
+        action = app.uimanager.get_action(
+            '/menubar/AppMenubarPH/OrderMenu/OpticalDetails')
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')):
+            self.activate(action)
+
+        run_dialog.assert_called_once_with(OpticalWorkOrderEditor, None,
+                                           self.store, work_order)
 
     @mock.patch('plugins.optical.opticalui.print_report')
     def test_print_report_event(self, print_report):

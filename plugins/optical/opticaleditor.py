@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from stoqlib.domain.workorder import WorkOrder
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -56,3 +58,22 @@ class MedicEditor(BasePersonRoleEditor):
                                                      visual_mode=self.visual_mode)
         self.main_slave._person_slave.add_extra_tab(tab_text,
                                                     self.medic_details_slave)
+
+
+class OpticalWorkOrderEditor(BaseEditor):
+    """A simple editor to use :class:`.WorkOrderOpticalSlave` alone"""
+
+    title = _(u'Optical Details')
+    model_type = WorkOrder
+    gladefile = 'HolderTemplate'
+
+    #
+    #  BaseEditor
+    #
+
+    def setup_slaves(self):
+        from .opticalslave import WorkOrderOpticalSlave
+        self.slave = WorkOrderOpticalSlave(self.store, self.model,
+                                           show_finish_date=False,
+                                           visual_mode=self.visual_mode)
+        self.attach_slave('place_holder', self.slave)

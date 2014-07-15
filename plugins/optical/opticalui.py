@@ -53,7 +53,7 @@ from stoqlib.reporting.sale import SaleOrderReport
 from stoq.gui.services import ServicesApp
 
 from .medicssearch import OpticalMedicSearch, MedicSalesSearch
-from .opticaleditor import MedicEditor
+from .opticaleditor import MedicEditor, OpticalWorkOrderEditor
 from .opticalhistory import OpticalPatientDetails
 from .opticalreport import OpticalWorkOrderReceiptReport
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
@@ -99,7 +99,11 @@ class ServicesSearchExtention(SearchExtension):
 
 class OpticalUI(object):
     def __init__(self):
-        self._ui = None
+        # This will contain a mapping of (appname, uimanager) -> extra_ui
+        # We need to store that like this because each windows has it's unique
+        # uimanager, and we have an extra_ui for different apps
+        self._app_ui = dict()
+
         self.default_store = get_default_store()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
@@ -118,26 +122,24 @@ class OpticalUI(object):
     # Private
     #
 
-    def _get_menu_ui_string(self):
-        return """<ui>
+    def _add_sale_menus(self, sale_app):
+        uimanager = sale_app.uimanager
+        ui_string = """
+        <ui>
             <menubar name="menubar">
                 <placeholder name="ExtraMenubarPH">
                     <menu action="OpticalMenu">
-                    %s
+                    <menuitem action="OpticalPreSale"/>
+                    <menuitem action="OpticalMedicSaleItems"/>
+                    <menuitem action="OpticalMedicSearch"/>
                     </menu>
                 </placeholder>
             </menubar>
-        </ui>"""
-
-    def _add_sale_menus(self, sale_app):
-        uimanager = sale_app.uimanager
-        menu_items_str = '''<menuitem action="OpticalPreSale"/>
-                            <menuitem action="OpticalMedicSaleItems"/>
-                            <menuitem action="OpticalMedicSearch"/>'''
-        ui_string = self._get_menu_ui_string() % menu_items_str
+        </ui>
+        """
 
         group = get_accels('plugin.optical')
-        ag = gtk.ActionGroup('OpticalMenuActions')
+        ag = gtk.ActionGroup('OpticalSalesActions')
         ag.add_actions([
             ('OpticalMenu', None, _(u'Optical')),
             ('OpticalPreSale', None, _(u'Sale with work order...'),
@@ -152,13 +154,47 @@ class OpticalUI(object):
         ])
 
         uimanager.insert_action_group(ag, 0)
-        self._ui = uimanager.add_ui_from_string(ui_string)
+        self._app_ui[('sales', uimanager)] = uimanager.add_ui_from_string(ui_string)
 
-    def _remove_app_ui(self, uimanager):
-        if not self._ui:  # pragma nocover
-            return
-        uimanager.remove_ui(self._ui)
-        self._ui = None
+    def _add_services_menus(self, services_app):
+        uimanager = services_app.uimanager
+        ui_string = """
+        <ui>
+            <menubar name="menubar">
+                <placeholder name="AppMenubarPH">
+                    <menu action="OrderMenu">
+                        <separator/>
+                        <menuitem action="OpticalDetails"/>
+                    </menu>
+                </placeholder>
+            </menubar>
+            <popup name="ServicesSelection">
+                <placeholder name="ServicesSelectionPH">
+                    <separator/>
+                    <menuitem action="OpticalDetails"/>
+                </placeholder>
+            </popup>
+        </ui>
+        """
+
+        ag = gtk.ActionGroup('OpticalServicesActions')
+        ag.add_actions([
+            ('OpticalDetails', None, _(u'Edit optical details...'),
+             None, None,
+             self._on_OpticalDetails__activate),
+        ])
+
+        uimanager.insert_action_group(ag, 0)
+        self._app_ui[('services', uimanager)] = uimanager.add_ui_from_string(ui_string)
+
+        services_app.search.connect(
+            'result-selection-changed',
+            self._on_ServicesApp__result_selection_changed, uimanager)
+
+    def _remove_app_ui(self, appname, uimanager):
+        ui = self._app_ui.pop((appname, uimanager), None)
+        if ui is not None:
+            uimanager.remove_ui(ui)
 
     def _fix_work_order_editor(self, editor, model, store):
         slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
@@ -203,9 +239,11 @@ class OpticalUI(object):
         self._current_app = app
         if appname == 'sales':
             self._add_sale_menus(app)
+        elif appname == 'services':
+            self._add_services_menus(app)
 
     def _on_StopApplicationEvent(self, appname, app):
-        self._remove_app_ui(app.uimanager)
+        self._remove_app_ui(appname, app.uimanager)
 
     def _on_EditorCreateEvent(self, editor, model, store, *args):
         # Use type() instead of isinstance so tab does not appear on subclasses
@@ -264,3 +302,15 @@ class OpticalUI(object):
         store = api.new_store()
         run_dialog(MedicSalesSearch, None, store, hide_footer=True)
         store.rollback()
+
+    def _on_OpticalDetails__activate(self, action):
+        wo_view = self._current_app.search.get_selected_item()
+
+        with api.new_store() as store:
+            work_order = store.fetch(wo_view.work_order)
+            run_dialog(OpticalWorkOrderEditor, None, store, work_order)
+
+    def _on_ServicesApp__result_selection_changed(self, search, uimanager):
+        optical_details = uimanager.get_action(
+            '/menubar/AppMenubarPH/OrderMenu/OpticalDetails')
+        optical_details.set_sensitive(bool(search.get_selected_item()))
