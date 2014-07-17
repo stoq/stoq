@@ -22,7 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import decimal
 
+import mock
 from stoqlib.domain.person import Person
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -53,3 +55,24 @@ class TestOpticalWorkOrderEditor(GUITest, OpticalDomainTest):
 
         editor = OpticalWorkOrderEditor(self.store, optical_wo.work_order)
         self.check_editor(editor, 'editor-optical-work-order-show')
+
+    @mock.patch('plugins.optical.opticaleditor.WorkOrderHistory.add_entry')
+    def test_on_confirm(self, add_entry):
+        optical_wo = self.create_optical_work_order()
+        optical_wo.patient = u"Some patient"
+        optical_wo.medic = self.create_optical_medic()
+        editor = OpticalWorkOrderEditor(self.store, optical_wo.work_order)
+
+        # No changes made, WorkOrderHistory should not be created
+        self.click(editor.main_dialog.ok_button)
+        self.assertEqual(add_entry.call_count, 0)
+        add_entry.reset_mock()
+
+        editor = OpticalWorkOrderEditor(self.store, optical_wo.work_order)
+        editor.slave.re_distance_cylindrical.update(decimal.Decimal('0.25'))
+
+        # Since we did a change, WorkOrderHistory should be created
+        self.click(editor.main_dialog.ok_button)
+        add_entry.assert_called_once_with(
+            self.store, optical_wo.work_order, what=u"Optical details",
+            notes=u"Optical details updated...")

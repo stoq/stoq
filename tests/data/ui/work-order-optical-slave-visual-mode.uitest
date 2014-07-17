@@ -32,23 +32,23 @@ GtkVBox(toplevel):
       GtkLabel(label7): 'Addition'
       GtkVSeparator(vseparator1):
       GtkLabel(label12): 'RE:'
-      ProxySpinButton(re_distance_spherical): '0.00'
-      ProxySpinButton(re_distance_cylindrical): '0.00'
-      ProxySpinButton(re_distance_axis): '0'
-      ProxySpinButton(re_distance_pd): '0.0'
-      ProxySpinButton(re_distance_height): '0.00'
-      ProxySpinButton(re_distance_prism): '0.00'
-      ProxySpinButton(re_distance_base): '0.00'
-      ProxySpinButton(re_addition): '0.00'
+      ProxySpinButton(re_distance_spherical): '0.00', ineditable
+      ProxySpinButton(re_distance_cylindrical): '0.00', ineditable
+      ProxySpinButton(re_distance_axis): '0', ineditable
+      ProxySpinButton(re_distance_pd): '0.0', ineditable
+      ProxySpinButton(re_distance_height): '0.00', ineditable
+      ProxySpinButton(re_distance_prism): '0.00', ineditable
+      ProxySpinButton(re_distance_base): '0.00', ineditable
+      ProxySpinButton(re_addition): '0.00', ineditable
       GtkLabel(label13): 'LE:'
-      ProxySpinButton(le_distance_spherical): '0.00'
-      ProxySpinButton(le_distance_cylindrical): '0.00'
-      ProxySpinButton(le_distance_axis): '0'
-      ProxySpinButton(le_distance_pd): '0.0'
-      ProxySpinButton(le_distance_height): '0.00'
-      ProxySpinButton(le_distance_prism): '0.00'
-      ProxySpinButton(le_distance_base): '0.00'
-      ProxySpinButton(le_addition): '0.00'
+      ProxySpinButton(le_distance_spherical): '0.00', ineditable
+      ProxySpinButton(le_distance_cylindrical): '0.00', ineditable
+      ProxySpinButton(le_distance_axis): '0', ineditable
+      ProxySpinButton(le_distance_pd): '0.0', ineditable
+      ProxySpinButton(le_distance_height): '0.00', ineditable
+      ProxySpinButton(le_distance_prism): '0.00', ineditable
+      ProxySpinButton(le_distance_base): '0.00', ineditable
+      ProxySpinButton(le_addition): '0.00', ineditable
   GtkHBox(hbox3, expand=True, fill=True):
     GtkVBox(vbox2, fill=True):
       GtkHBox(near_box, fill=True): insensitive
@@ -61,15 +61,15 @@ GtkVBox(toplevel):
           GtkLabel(label26): 'PD'
           GtkVSeparator(vseparator2):
           GtkLabel(label20): 'RE:'
-          ProxySpinButton(re_near_spherical): '0.00'
-          ProxySpinButton(re_near_cylindrical): '0.00'
-          ProxySpinButton(re_near_axis): '0'
-          ProxySpinButton(re_near_pd): '0.0'
+          ProxySpinButton(re_near_spherical): '0.00', ineditable
+          ProxySpinButton(re_near_cylindrical): '0.00', ineditable
+          ProxySpinButton(re_near_axis): '0', ineditable
+          ProxySpinButton(re_near_pd): '0.0', ineditable
           GtkLabel(label21): 'LE:'
-          ProxySpinButton(le_near_spherical): '0.00'
-          ProxySpinButton(le_near_cylindrical): '0.00'
-          ProxySpinButton(le_near_axis): '0'
-          ProxySpinButton(le_near_pd): '0.0'
+          ProxySpinButton(le_near_spherical): '0.00', ineditable
+          ProxySpinButton(le_near_cylindrical): '0.00', ineditable
+          ProxySpinButton(le_near_axis): '0', ineditable
+          ProxySpinButton(le_near_pd): '0.0', ineditable
       GtkLabel(label2, expand=True, fill=True):
     GtkAlignment(alignment1, fill=True):
       GtkHBox(frame_box): insensitive
@@ -81,10 +81,10 @@ GtkVBox(toplevel):
           GtkLabel(label28): 'F.H.M.'
           GtkLabel(gtklabel41): 'F.D.M.'
           GtkLabel(label29): 'Bridge'
-          ProxySpinButton(frame_mva): '0.0'
-          ProxySpinButton(frame_mha): '0.0'
-          ProxySpinButton(frame_mda): '0.0'
-          ProxySpinButton(frame_bridge): '0.0'
+          ProxySpinButton(frame_mva): '0.0', ineditable
+          ProxySpinButton(frame_mha): '0.0', ineditable
+          ProxySpinButton(frame_mda): '0.0', ineditable
+          ProxySpinButton(frame_bridge): '0.0', ineditable
           GtkLabel(label8): 'Type:'
           ProxyComboBox(frame_type): insensitive
             item: '3 pieces', selected

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.workorder import WorkOrder
+from stoqlib.domain.workorder import WorkOrder, WorkOrderHistory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -77,3 +77,18 @@ class OpticalWorkOrderEditor(BaseEditor):
                                            show_finish_date=False,
                                            visual_mode=self.visual_mode)
         self.attach_slave('place_holder', self.slave)
+
+        self._proxy_widgets = [(name, getattr(self.slave, name)) for
+                               name in self.slave.proxy_widgets]
+        self._old_values = {name: widget.read() for
+                            name, widget in self._proxy_widgets}
+
+    def on_confirm(self):
+        new_values = {name: widget.read() for
+                      name, widget in self._proxy_widgets}
+        if self._old_values == new_values:
+            return
+
+        WorkOrderHistory.add_entry(
+            self.store, self.model, what=_(u"Optical details"),
+            notes=_(u"Optical details updated..."))

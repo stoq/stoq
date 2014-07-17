@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import decimal
+
 from storm.expr import Join, LeftJoin, Coalesce, Sum
 from storm.references import Reference
 
@@ -267,13 +269,13 @@ class OpticalWorkOrder(Domain):
     frame_type = IntCol()
 
     #: The vertical frame measure
-    frame_mva = DecimalCol()
+    frame_mva = DecimalCol(default=decimal.Decimal(0))
 
     #: The horizontal frame measure
-    frame_mha = DecimalCol()
+    frame_mha = DecimalCol(default=decimal.Decimal(0))
 
     #: The diagonal frame measure
-    frame_mda = DecimalCol()
+    frame_mda = DecimalCol(default=decimal.Decimal(0))
 
     #: The brige is the part of the frame between the two lenses, above the nose.
     frame_bridge = DecimalCol()

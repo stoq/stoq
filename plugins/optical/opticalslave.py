@@ -139,9 +139,10 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     gladefile = 'WorkOrderOpticalSlave'
     title = _(u'Optical Details')
     model_type = object
-    proxy_widgets = ['prescription_date', 'patient', 'lens_type', 'frame_type',
-                     'medic_combo']
+    optical_wo_widgets = ['prescription_date', 'patient', 'lens_type',
+                          'frame_type', 'medic_combo']
     workorder_widgets = ['estimated_finish']
+    proxy_widgets = optical_wo_widgets + workorder_widgets
 
     # This is a dictionary of specifications for each widget in the slave. each item
     # in this dict should be a touple that defines the following:
@@ -270,7 +271,11 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     def setup_proxies(self):
         self._setup_widgets()
         adjustment_widgets = self._setup_adjustments()
-        self.add_proxy(self.model, self.proxy_widgets + adjustment_widgets)
+        self.add_proxy(self.model, self.optical_wo_widgets + adjustment_widgets)
+
+        # Update this instance proxy_widgets for OpticalWorkOrderEditor.
+        # It will use this to track the changes to the model
+        self.proxy_widgets += adjustment_widgets
 
         # Finish date should only be visible if we are creating a new workorder
         # from the sale wizard
@@ -284,9 +289,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     def update_visual_mode(self):
         for widget in [self.prescription_date, self.patient, self.lens_type,
                        self.frame_type, self.medic_combo, self.medic_create,
-                       self.estimated_finish, self.distance_box,
-                       self.near_box, self.frame_box]:
-
+                       self.distance_box, self.near_box, self.frame_box]:
             widget.set_sensitive(False)
 
     #
