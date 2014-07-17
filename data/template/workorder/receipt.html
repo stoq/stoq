@@ -46,35 +46,7 @@
     </tbody>
   </table>
 
-  <section>
-    <table>
-      <thead>
-        <tr>
-          <td>${ _("Code") }</td>
-          <td>${ _("Item") }</td>
-          <td>${ _("Quantity") }</td>
-          <td>${ _("Price") }</td>
-          <td>${ _("Total") }</td>
-        </tr>
-      </thead>
-
-      <tbody class="list">
-        % for item in report.workorder.order_items:
-        <tr>
-          <td>${ item.sellable.code }</td>
-          <td>${ item.sellable.get_description() }</td>
-          <td>${ format_quantity(item.quantity) }</td>
-          <td>${ format_price(item.price) }</td>
-          <td>${ format_price(item.total) }</td>
-        </tr>
-        % endfor
-        <tr class="summary">
-          <td colspan="4">${ _("Total") }:</td>
-          <td>${ format_price(report.workorder.get_total_amount()) }</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+  <%include file="workorder-items.html" />
 
   <section class="signatures">
     <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page

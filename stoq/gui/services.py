@@ -470,7 +470,11 @@ class ServicesApp(ShellApp):
         selection = self.search.get_selected_item()
         has_selected = bool(selection)
         wo = has_selected and selection.work_order
-        has_quote = has_selected and bool(wo.defect_detected)
+
+        if wo and wo.sale is not None:
+            has_quote = wo.order_items.count() > 0
+        else:
+            has_quote = wo and bool(wo.defect_reported or wo.defect_detected)
 
         self.set_sensitive([self.Edit], has_selected and wo.can_edit())
         self.set_sensitive([self.Details], has_selected)

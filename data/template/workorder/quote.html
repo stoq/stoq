@@ -52,9 +52,15 @@
     </tbody>
   </table>
 
+  % if report.workorder.sale and report.workorder.order_items.count() > 0:
+    <%include file="workorder-items.html" />
+  % endif
+
   <section id="notice">
     <span>${ _("Quote") }:</span>
-    <pre>${ report.workorder.defect_detected }</pre>
+    <!-- The defect detected has higher priority, but if we don't have it
+         yet, use the defect reported by the client for the quote-->
+    <pre>${ report.workorder.defect_detected or report.workorder.defect_reported }</pre>
   </section>
 
     <section class="signatures">

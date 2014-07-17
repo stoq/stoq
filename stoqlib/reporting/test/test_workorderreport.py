@@ -40,7 +40,7 @@ class TestWorkOrderQuoteReport(ReportTest):
         workorder.estimated_finish = datetime.datetime(2013, 1, 5)
         workorder.estimated_cost = currency(299)
         workorder.quote_responsible = self.create_employee(u'Quote responsible')
-        workorder.defect_detected = (
+        workorder.defect_reported = (
             u"Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
             u"sed do eiusmod tempor incididunt ut labore et dolore magna "
             u"aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
@@ -49,8 +49,37 @@ class TestWorkOrderQuoteReport(ReportTest):
             u"esse cillum dolore eu fugiat nulla pariatur. Excepteur sint "
             u"occaecat cupidatat non proident, sunt in culpa qui officia "
             u"deserunt mollit anim id est laborum")
-
         self._diff_expected(WorkOrderQuoteReport, 'workorder-quote', workorder)
+
+        workorder.defect_detected = u"This is the defect detected"
+        self._diff_expected(WorkOrderQuoteReport,
+                            'workorder-detected-quote', workorder)
+
+    def test_report_with_sale(self):
+        workorder = self.create_workorder(description=u'Test equipment')
+        workorder.client = self.create_client()
+        workorder.identifier = 666
+        workorder.estimated_start = datetime.datetime(2013, 1, 1)
+        workorder.estimated_finish = datetime.datetime(2013, 1, 5)
+        workorder.estimated_cost = currency(299)
+        workorder.quote_responsible = self.create_employee(u'Quote responsible')
+        self.create_work_order_item(order=workorder)
+        workorder.sale = self.create_sale()
+        workorder.defect_reported = (
+            u"Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
+            u"sed do eiusmod tempor incididunt ut labore et dolore magna "
+            u"aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
+            u"ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+            u"Duis aute irure dolor in reprehenderit in voluptate velit "
+            u"esse cillum dolore eu fugiat nulla pariatur. Excepteur sint "
+            u"occaecat cupidatat non proident, sunt in culpa qui officia "
+            u"deserunt mollit anim id est laborum")
+        self._diff_expected(WorkOrderQuoteReport,
+                            'workorder-with-sale-quote', workorder)
+
+        workorder.defect_detected = u"This is the defect detected"
+        self._diff_expected(WorkOrderQuoteReport,
+                            'workorder-reported-with-sale-quote', workorder)
 
 
 class TestWorkOrderReceiptReport(ReportTest):
