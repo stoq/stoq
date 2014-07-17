@@ -31,6 +31,7 @@ from kiwi.currency import currency
 from storm.expr import Join, Cast
 
 from stoqlib.api import api
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Branch
@@ -38,17 +39,18 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.till import Till
-from stoqlib.enums import SearchFilterPosition
+from stoqlib.domain.till import Till, TillClosedView
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.search.searchfilters import DateSearchFilter, ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
 
 
+# FIXME Change it to stoqlib.domain.till
 class TillFiscalOperationsView(Viewable):
     """Stores informations about till payment tables
 
@@ -125,3 +127,37 @@ class TillFiscalOperationsSearch(SearchDialog):
     def _get_query(self, state):
         branch = api.get_current_branch(self.store)
         return self.search_spec.branch_id == branch.id
+
+
+class TillClosedSearch(SearchDialog):
+    title = _(u"Till Search")
+    search_spec = TillClosedView
+    size = (750, 500)
+    searching_by_date = True
+
+    def create_filters(self):
+        self.set_text_field_columns(['responsible_open_name',
+                                     'responsible_close_name'])
+        self.date_filter = DateSearchFilter(_('Date:'))
+        self.add_filter(self.date_filter, columns=['opening_date', 'closing_date'])
+
+    def get_columns(self, *args):
+        return [SearchColumn('opening_date', sorted=True, width=110,
+                             title=_(u'Opening Date'), data_type=datetime.date,
+                             justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('closing_date', width=110, title=_(u'Closing Date'),
+                             data_type=datetime.date),
+                SearchColumn('initial_cash_amount', title=_('Initial Cash'),
+                             data_type=currency),
+                SearchColumn('final_cash_amount', title=_('Final Cash'),
+                             data_type=currency),
+                SearchColumn('responsible_open_name', title=_('Responsible Open'),
+                             data_type=str, expand=True),
+                SearchColumn('responsible_close_name', title=_('Responsible Close'),
+                             data_type=str, expand=True)]
+
+    # Callbacks
+
+    def on_results__row_activated(self, klist, view):
+        from stoqlib.gui.dialogs.tilldetails import TillDetailsDialog
+        run_dialog(TillDetailsDialog, self, self.store, view)

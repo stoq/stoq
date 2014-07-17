@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -30,14 +30,18 @@ import logging
 
 from kiwi.currency import currency
 from storm.expr import And, Eq, LeftJoin, Or
+from storm.info import ClassAlias
 from storm.references import Reference
 
+from stoqlib.database.runtime import get_current_user
 from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, DateTimeCol, IntCol,
                                          UnicodeCol, IdentifierCol, IdCol)
 from stoqlib.database.runtime import get_current_station
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import Person, LoginUser
 from stoqlib.exceptions import TillError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
@@ -102,6 +106,18 @@ class Till(Domain):
     #: the |branchstation| associated with the till, eg the computer
     #: which opened it.
     station = Reference(station_id, 'BranchStation.id')
+
+    observations = UnicodeCol(default=u"")
+
+    responsible_open_id = IdCol()
+
+    #: The responsible for opening the till
+    responsible_open = Reference(responsible_open_id, "LoginUser.id")
+
+    responsible_close_id = IdCol()
+
+    #: The responsible for closing the till
+    responsible_close = Reference(responsible_close_id, "LoginUser.id")
 
     #
     # Classmethods
@@ -188,8 +204,9 @@ class Till(Domain):
 
         self.opening_date = TransactionTimestamp()
         self.status = Till.STATUS_OPEN
+        self.responsible_open = get_current_user(self.store)
 
-    def close_till(self):
+    def close_till(self, observations=u""):
         """This method close the current till operation with the confirmed
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and
@@ -207,6 +224,8 @@ class Till(Domain):
         self.final_cash_amount = self.get_balance()
         self.closing_date = TransactionTimestamp()
         self.status = Till.STATUS_CLOSED
+        self.observations = observations
+        self.responsible_close = get_current_user(self.store)
 
     def add_entry(self, payment):
         """
@@ -381,3 +400,31 @@ class TillEntry(Domain):
         """
         time = self.date.time()
         return time.replace(microsecond=0)
+
+
+class TillClosedView(Viewable):
+
+    id = Till.id
+    observations = Till.observations
+    opening_date = Till.opening_date
+    closing_date = Till.closing_date
+    initial_cash_amount = Till.initial_cash_amount
+    final_cash_amount = Till.final_cash_amount
+
+    _ResponsibleOpen = ClassAlias(Person, "responsible_open")
+    _ResponsibleClose = ClassAlias(Person, "responsible_close")
+    _LoginUserOpen = ClassAlias(LoginUser, "login_responsible_open")
+    _LoginUserClose = ClassAlias(LoginUser, "login_responsible_close")
+
+    responsible_open_name = _ResponsibleOpen.name
+    responsible_close_name = _ResponsibleClose.name
+
+    tables = [
+        Till,
+        LeftJoin(_LoginUserOpen, Till.responsible_open_id == _LoginUserOpen.id),
+        LeftJoin(_LoginUserClose, Till.responsible_close_id == _LoginUserClose.id),
+        LeftJoin(_ResponsibleOpen, _LoginUserOpen.person_id == _ResponsibleOpen.id),
+        LeftJoin(_ResponsibleClose, _LoginUserClose.person_id == _ResponsibleClose.id),
+    ]
+
+    clause = Till.status == Till.STATUS_CLOSED

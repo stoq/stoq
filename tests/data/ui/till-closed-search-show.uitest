@@ -1,0 +1,47 @@
+dialog: TillClosedSearch
+GtkDialog(toplevel): title='Till Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
+        GtkVBox(vbox):
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+              DateSearchFilter(date_filter):
+                GtkLabel(): 'Date:'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'Today'
+                  item: 'Yesterday'
+                  item: 'Last week'
+                  item: 'Last month'
+                  item: 'Custom day'
+                  item: 'Custom interval'
+                GtkLabel(): 'From:', insensitive
+                ProxyDateEntry(padding=6): None, insensitive
+                GtkLabel(): 'To:', insensitive
+                ProxyDateEntry(padding=6): None, insensitive
+          SearchResultListView(result_view, expand=True, fill=True):
+            column: title='Opening Date'
+            column: title='Closing Date'
+            column: title='Initial Cash'
+            column: title='Final Cash'
+            column: title='Responsible Open', expand
+            column: title='Responsible Close', expand
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

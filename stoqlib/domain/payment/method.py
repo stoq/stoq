@@ -38,7 +38,6 @@ from stoqlib.database.properties import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.till import Till
 from stoqlib.exceptions import (DatabaseInconsistency, PaymentMethodError,
                                 TillError)
 from stoqlib.lib.payment import generate_payments_values
@@ -181,6 +180,7 @@ class PaymentMethod(Domain):
         :param payment_number: optional
         :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
+        from stoqlib.domain.till import Till
         store = self.store
 
         if due_date is None:

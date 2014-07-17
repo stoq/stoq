@@ -53,6 +53,7 @@
       <menuitem action="SearchSoldItemsByBranch"/>
       <menuitem action="SearchCardPayment"/>
       <separator/>
+      <menuitem action="SearchClosedTill"/>
       <menuitem action="SearchTillHistory"/>
       <menuitem action="SearchFiscalTillOperations"/>
     </placeholder>

@@ -410,6 +410,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`tilldetails` Module
+-------------------------
+
+.. automodule:: stoqlib.gui.dialogs.tilldetails
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`transferorderdialog` Module
 ---------------------------------
 

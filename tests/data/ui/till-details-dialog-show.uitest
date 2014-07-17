@@ -1,0 +1,19 @@
+dialog: TillDetailsDialog
+GtkVBox(toplevel):
+  GtkTable(table1, fill=True):
+    GtkLabel(label1): 'Open Date:'
+    ProxyLabel(opening_date): '<span >05/06/14</span>'
+    GtkLabel(label2): 'Close Date:'
+    ProxyLabel(closing_date): '<span >05/06/14</span>'
+    GtkLabel(label4): 'Initial Cash:'
+    ProxyLabel(initial_cash_amount): '<span >$5656.64</span>'
+    GtkLabel(label5): 'Final Cash:'
+    ProxyLabel(final_cash_amount): '<span >$246823.22</span>'
+    GtkLabel(label7): 'Opened by:'
+    ProxyLabel(responsible_open_name): '<span >individual</span>'
+    GtkLabel(label3): 'Closed by:'
+    ProxyLabel(responsible_close_name): '<span >Administrator</span>'
+    GtkLabel(label6): 'Observations:'
+  GtkViewport(viewport1, expand=True, fill=True):
+    GtkScrolledWindow(scrolledwindow1):
+      ProxyTextView(observations): insensitive

@@ -23,6 +23,10 @@ GtkDialog(main_dialog.toplevel): title='Closing Opened Till', hidden
             ProxyLabel(balance): '<span >$ 0.00</span>'
             ProxyLabel(label17): 'Amount Removed ($CURRENCY):'
             ProxyEntry(value): '0.00'
+            GtkLabel(label1): 'Observations:'
+            GtkViewport(viewport1):
+              GtkScrolledWindow(scrolledwindow1):
+                ProxyTextView(observations):
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

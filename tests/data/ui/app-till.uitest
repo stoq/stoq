@@ -46,7 +46,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
           GtkImageMenuItem(): 'Sold items by branch...'
           GtkImageMenuItem(): 'Card payments...'
           GtkSeparatorMenuItem():
-          GtkImageMenuItem(): 'Till history...', insensitive
+          GtkImageMenuItem(): 'Closed till search...'
+          GtkImageMenuItem(): 'Till entry history...', insensitive
           GtkImageMenuItem(): 'Fiscal till operations...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden

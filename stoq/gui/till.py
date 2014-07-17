@@ -63,7 +63,7 @@ from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
+from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch, TillClosedSearch
 from stoqlib.gui.slaves.saleslave import return_sale
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.reporting.sale import SalesReport
@@ -116,12 +116,15 @@ class TillApp(ShellApp):
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              group.get('search_sold_items_by_branch'),
              _("Search for items sold by branch")),
-            ("SearchTillHistory", None, _("Till history..."),
+            ("SearchTillHistory", None, _("Till entry history..."),
              group.get('search_till_history'),
              _("Search for till history")),
             ("SearchFiscalTillOperations", None, _("Fiscal till operations..."),
              group.get('search_fiscal_till_operations'),
              _("Search for fiscal till operations")),
+            ("SearchClosedTill", None, _("Closed till search..."),
+             group.get('search_closed_till'),
+             _("Search for all closed tills")),
             ("Confirm", gtk.STOCK_APPLY, _("Confirm..."),
              group.get('confirm_sale'),
              _("Confirm the selected sale, decreasing stock and making it "
@@ -572,3 +575,6 @@ class TillApp(ShellApp):
 
     def on_SearchFiscalTillOperations__activate(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)
+
+    def on_SearchClosedTill__activate(self, button):
+        self._run_search_dialog(TillClosedSearch)

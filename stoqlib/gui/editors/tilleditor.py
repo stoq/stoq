@@ -174,7 +174,8 @@ class TillClosingEditor(BaseEditor):
     confirm_widgets = ['value']
     proxy_widgets = ('value',
                      'balance',
-                     'opening_date')
+                     'opening_date',
+                     'observations')
 
     help_section = 'till-close'
 
@@ -302,7 +303,7 @@ class TillClosingEditor(BaseEditor):
 
         if self._close_db:
             try:
-                till.close_till()
+                till.close_till(observations=self.model.observations)
             except ValueError as err:
                 warning(str(err))
                 return
