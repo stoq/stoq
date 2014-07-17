@@ -40,7 +40,7 @@ class OpticalReportTest(ReportTest, OpticalDomainTest):
         sale.identifier = 23456
         sale.open_date = localdate(2012, 1, 1)
         sale.salesperson = self.create_sales_person()
-        sale.add_sellable(sellable)
+        sale_item = sale.add_sellable(sellable)
 
         payment = self.add_payments(sale)[0]
         payment.set_pending()
@@ -48,6 +48,10 @@ class OpticalReportTest(ReportTest, OpticalDomainTest):
 
         workorders = []
         opt_wo = self.create_optical_work_order()
+        opt_wo.patient = u'A'
+        wo_item = self.create_work_order_item(order=opt_wo.work_order)
+        wo_item.sale_item = sale_item
+
         wo = opt_wo.work_order
         wo.equipament = u'Equipamento 1'
         wo.identifier = 12345
@@ -59,6 +63,7 @@ class OpticalReportTest(ReportTest, OpticalDomainTest):
         workorders.append(wo)
 
         opt_wo = self.create_optical_work_order()
+        opt_wo.patient = u'B'
         wo = opt_wo.work_order
         wo.equipament = u'Equipamento 2'
         wo.identifier = 113

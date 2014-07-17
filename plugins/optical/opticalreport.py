@@ -36,6 +36,8 @@ class OpticalWorkOrderReceiptReport(HTMLReport):
 
     def __init__(self, filename, workorders):
         self.workorders = workorders
+        self.workorder_items = []
+
         # The workorders are always from the same sale.
         self.sale = workorders[0].sale
         if self.sale:
@@ -50,11 +52,8 @@ class OpticalWorkOrderReceiptReport(HTMLReport):
             for payment in payments.find(Payment.status == Payment.STATUS_PAID):
                 self.method_summary.setdefault(payment.method, 0)
                 self.method_summary[payment.method] += payment.value
-
-        self.max_estimated_finish = None
-        dates = [wo.estimated_finish for wo in workorders if wo.estimated_finish]
-        if dates:
-            self.max_estimated_finish = max(dates)
+            for order in workorders:
+                self.workorder_items.extend(order.get_items())
 
         super(OpticalWorkOrderReceiptReport, self).__init__(filename)
 

@@ -831,8 +831,9 @@ class ExampleCreator(object):
             branch=branch or get_current_branch(self.store),
             current_branch=current_branch)
 
-    def create_work_order_item(self, quantity=1, price=10):
-        order = self.create_workorder()
+    def create_work_order_item(self, quantity=1, price=10, order=None):
+        if not order:
+            order = self.create_workorder()
         from stoqlib.domain.workorder import WorkOrderItem
         sellable = self.create_sellable()
         return WorkOrderItem(

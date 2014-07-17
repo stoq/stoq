@@ -175,7 +175,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     }
 
     def __init__(self, store, workorder, show_finish_date=False,
-                 visual_mode=False):
+                 visual_mode=False, description=u""):
         """
         :param workorder: The |workorder| this slave is editing. We will
           actually edit another object, but the |workorder| will be used to
@@ -187,6 +187,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         self._focus_change = False
         self._show_finish_date = show_finish_date
         self._workorder = workorder
+        self._description = description
         model = self._create_model(store)
 
         # This is used to correctly triangulate the values of the spherical
@@ -198,7 +199,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         model = store.find(OpticalWorkOrder,
                            work_order=self._workorder).one()
         if model is None:
-            model = OpticalWorkOrder(work_order=self._workorder, store=store)
+            model = OpticalWorkOrder(work_order=self._workorder, store=store,
+                                     patient=self._description)
         return model
 
     def _setup_widgets(self):

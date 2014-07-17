@@ -20,7 +20,7 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                     item: 'Contact'
                     item: 'Ophtalmic', selected
                   GtkLabel(label1): 'Description:'
-                  ProxyEntry(patient): '', mandatory
+                  ProxyEntry(patient): 'A'
                   GtkLabel(label4): 'Prescription date:'
                   ProxyDateEntry(prescription_date): None
                   GtkButton(notes_button): 'Observations'
@@ -112,7 +112,7 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                     item: 'Contact'
                     item: 'Ophtalmic', selected
                   GtkLabel(label1): 'Description:'
-                  ProxyEntry(patient): '', mandatory
+                  ProxyEntry(patient): 'B'
                   GtkLabel(label4): 'Prescription date:'
                   ProxyDateEntry(prescription_date): None
                   GtkButton(notes_button): 'Observations'
@@ -204,7 +204,7 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                     item: 'Contact'
                     item: 'Ophtalmic', selected
                   GtkLabel(label1): 'Description:'
-                  ProxyEntry(patient): '', mandatory
+                  ProxyEntry(patient): 'C'
                   GtkLabel(label4): 'Prescription date:'
                   ProxyDateEntry(prescription_date): None
                   GtkButton(notes_button): 'Observations'

@@ -24,6 +24,7 @@
 """ Wizard for optical pre-sale"""
 
 import gtk
+import string
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.person import Person
@@ -73,12 +74,19 @@ class OpticalWorkOrderStep(WorkOrderQuoteWorkOrderStep):
     #  WorkOrderQuoteWorkOrderStep
     #
 
+    def __init__(self, store, wizard, previous, model):
+        self._current_work_order = 0
+        WorkOrderQuoteWorkOrderStep.__init__(self, store, wizard, previous, model)
+
     def next_step(self):
         return OpticalItemStep(self.wizard, self, self.store, self.model)
 
     def get_work_order_slave(self, work_order):
+        desc = unicode(string.ascii_uppercase[self._current_work_order])
+        self._current_work_order += 1
         return WorkOrderOpticalSlave(self.store, work_order,
-                                     show_finish_date=True)
+                                     show_finish_date=True,
+                                     description=desc)
 
 
 class OpticalItemStep(WorkOrderQuoteItemStep):

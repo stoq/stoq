@@ -13,12 +13,6 @@
           <td>${ _("Open Date") }:</td>
           <td>${ format_date(report.sale.open_date) }</td>
         </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td>${ _("Estimated finish") }:</td>
-          <td>${ format_date(report.max_estimated_finish) }</td>
-        </tr>
       </tbody>
     </table>
 
@@ -27,6 +21,7 @@
           <thead>
             <tr>
               <td>${ _("Item") }</td>
+              <td>${ _("WO") }</td>
               <td>${ _("Price") }</td>
               <td>${ _("Total") }</td>
             </tr>
@@ -34,19 +29,20 @@
 
           <tbody class="list">
             <% items_discount = 0 %>
-            % for item in report.sale.get_items():
-              <% items_discount += (item.base_price - item.price) * item.quantity %>
+            % for item in report.workorder_items:
+              <% items_discount += (item.sale_item.base_price - item.sale_item.price) * item.sale_item.quantity %>
               <tr>
                 <td>${ format_quantity(item.quantity) } x
-                    ${ item.sellable.get_description() }
+                    ${ item.sellable.description }
                     <% remaining = (item.quantity - item.quantity_decreased) %>
                     % if remaining > 0:
                       <span class="small">(${ _("Missing:")}
                                            ${ format_quantity(remaining)})</span>
                     % endif
                 </td>
-                <td>${ format_price(item.price) }</td>
-                <td>${ format_price(item.get_total()) }</td>
+                <td>${ report.get_optical_data(item.order).patient }</td>
+                <td>${ format_price(item.sale_item.price) }</td>
+                <td>${ format_price(item.sale_item.get_total()) }</td>
               </tr>
             % endfor
           </tbody>
@@ -55,17 +51,38 @@
             % if items_discount:
                 <tr>
                   <td></td>
+                  <td></td>
                   <td>${ _("Items Discount:") }</td>
                   <td>${ format_price(items_discount) }</td>
                 </tr>
             % endif
             <tr class="bold">
               <td></td>
+              <td></td>
               <td>${ _("Total:") }</td>
               <td>${ format_price(report.sale.get_total_sale_amount()) }</td>
             </tr>
           </tbody>
         </table>
+    </div>
+
+    <div id="estimated_finish" >
+      <table>
+        <thead>
+          <tr>
+            <td>${ _("WO") }</td>
+            <td>${ _("Estimated finish") }</td>
+          </tr>
+        </thead>
+        <tbody class="list">
+        % for workorder in report.workorders:
+          <tr>
+            <td>${ report.get_optical_data(workorder).patient}</td>
+            <td>${ format_date(workorder.estimated_finish) }</td>
+          </tr>
+        % endfor
+        </tbody>
+      </table>
     </div>
 
     <div id="sale_payments">
