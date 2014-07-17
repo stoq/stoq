@@ -60,11 +60,13 @@ class OpticalMedicSearch(BasePersonSearch):
 
     def get_columns(self):
         return [SearchColumn('name', title=_('Medic Name'), sorted=True,
-                             data_type=str, searchable=True, expand=True),
+                             data_type=str, expand=True),
                 SearchColumn('phone_number', title=_('Phone Number'),
-                             width=150, data_type=str),
-                SearchColumn('crm_number', title=_('UPID'), width=150,
-                             data_type=str)]
+                             data_type=str),
+                SearchColumn('crm_number', title=_('UPID'),
+                             data_type=str),
+                SearchColumn('partner', title=_('Partner'), data_type=bool,
+                             visible=False)]
 
     def get_editor_model(self, model):
         return model.medic
@@ -112,6 +114,8 @@ class MedicSalesSearch(SearchDialog):
                          visible=False),
             SearchColumn('medic_name', title=_('Medic'), data_type=str),
             SearchColumn('crm_number', title=_('CRM'), data_type=str),
+            SearchColumn('partner', title=_('Partner'), data_type=bool,
+                         visible=False, width=40),
             SearchColumn('batch_number', title=_('Batch'), data_type=str,
                          visible=False),
             SearchColumn('batch_date', title=_('Batch Date'),

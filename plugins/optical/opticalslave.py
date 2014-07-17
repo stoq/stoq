@@ -50,7 +50,7 @@ class MedicDetailsSlave(BaseEditorSlave):
     gladefile = 'MedicDetailsSlave'
     title = _(u'Medic Details')
     model_type = object
-    proxy_widgets = ['crm_number']
+    proxy_widgets = ['crm_number', 'partner']
 
     def __init__(self, store, medic, model=None, visual_mode=False):
         self._medic = medic

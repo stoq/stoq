@@ -110,17 +110,19 @@ GtkDialog(PluggableWizard): title='New Medic', hidden
                         ProxyTextView():
                 GtkEventBox():
                   GtkVBox():
-                    GtkHBox(expand=True, fill=True):
+                    GtkHBox(fill=True):
                       GtkLabel():
                       GtkFrame(expand=True, fill=True):
                         GtkAlignment():
                           GtkTable():
                             GtkLabel(): 'UPID:'
                             ProxyEntry(): '6789'
+                            GtkLabel():
+                            GtkLabel(): '\n'
+                            ProxyCheckButton(): 'Partner'
                             GtkLabel(): '\n'
                         GtkLabel():
                       GtkLabel():
-                    GtkLabel(expand=True, fill=True):
                     GtkLabel(expand=True, fill=True):
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
@@ -133,6 +135,7 @@ GtkDialog(PluggableWizard): title='New Medic', hidden
 
 model: OpticalMedic<1>
   crm_number: u'6789'
+  partner: False
   person_id: Person<2>
 
 model: Person<2>

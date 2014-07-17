@@ -49,6 +49,10 @@ class OpticalMedic(Domain):
     # TODO: Find out a better name for crm
     crm_number = UnicodeCol()
 
+    #: If this medic is a partner of the store, ie, if they recomend clients to
+    #: this store
+    partner = BoolCol()
+
     #
     # IDescribable implementation
     #
@@ -652,6 +656,7 @@ class OpticalMedicView(Viewable):
     id = Person.id
     name = Person.name
     crm_number = OpticalMedic.crm_number
+    partner = OpticalMedic.partner
     phone_number = Person.phone_number
 
     tables = [
@@ -672,6 +677,7 @@ class MedicSoldItemsView(Viewable):
     branch_name = Company.fancy_name
     medic_name = Person.name
     crm_number = OpticalMedic.crm_number
+    partner = OpticalMedic.partner
 
     quantity = Sum(SaleItem.quantity)
     total = Sum(SaleItem.quantity * SaleItem.price)
@@ -697,4 +703,4 @@ class MedicSoldItemsView(Viewable):
     clause = And(Ne(Sale.confirm_date, None),
                  Sale.status != Sale.STATUS_CANCELLED)
     group_by = [id, branch_name, code, description, category, manufacturer, batch_number,
-                batch_date, medic_name, crm_number]
+                batch_date, medic_name, OpticalMedic.id]

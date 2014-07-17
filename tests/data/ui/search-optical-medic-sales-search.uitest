@@ -44,11 +44,12 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
             column: title='Manufacturer', hidden
             column: title='Medic'
             column: title='CRM'
+            column: title='Partner', hidden
             column: title='Batch', hidden
             column: title='Batch Date', hidden
             column: title='Qty'
             column: title='Total'
-            row: u'', None, u'Moda Stoq', u'Description', None, u'Medic', u'1234', u'', None, Decimal('1.000'), Decimal('10.00000')
+            row: u'', None, u'Moda Stoq', u'Description', None, u'Medic', u'1234', False, u'', None, Decimal('1.000'), Decimal('10.00000')
           GtkHBox(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$10.00</b>'
