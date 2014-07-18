@@ -43,6 +43,7 @@ class ProductBrandReport(ObjectListReport):
     """
     title = _("Brand Listing")
     filter_format_string = _("on branch <u>%s</u>")
+    summary = ['quantity']
 
 
 class SimpleProductReport(ObjectListReport):
