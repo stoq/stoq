@@ -85,7 +85,7 @@ class SellableTaxConstantEditor(BaseEditor):
 
 class BasePriceEditor(BaseEditor):
     gladefile = 'SellablePriceEditor'
-    proxy_widgets = ('cost', 'max_discount', 'price')
+    proxy_widgets = ['markup', 'cost', 'max_discount', 'price']
 
     def set_widget_formats(self):
         widgets = (self.markup, self.max_discount)
@@ -140,7 +140,6 @@ class BasePriceEditor(BaseEditor):
             return
 
         self._editing_markup = True
-        self.model.markup = spin_button.read()
         self.main_proxy.update("price")
         self._editing_markup = False
 
@@ -342,7 +341,9 @@ class SellableEditor(BaseEditor):
     def edit_sale_price(self):
         sellable = self.model.sellable
         self.store.savepoint('before_run_editor_sellable_price')
-        result = run_dialog(SellablePriceEditor, self, self.store, sellable)
+        result = run_dialog(SellablePriceEditor,
+                            self.get_toplevel().get_toplevel(),
+                            self.store, sellable)
         if result:
             self.sellable_proxy.update('price')
         else:
