@@ -26,8 +26,10 @@ The base :class:`Domain` class for Stoq.
 
 """
 
+import logging
 import warnings
 
+from storm.exceptions import NotOneError
 from storm.expr import And, Alias, Like, Max, Select
 from storm.info import get_cls_info, get_obj_info
 from storm.properties import Property
@@ -39,6 +41,8 @@ from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import IntCol, IdCol, UnicodeCol
 from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
+
+log = logging.getLogger(__name__)
 
 
 class Domain(ORMObject):
@@ -258,7 +262,19 @@ class Domain(ORMObject):
             clauses.append(cls.id != self.id)
         query = And(*clauses)
 
-        return self.store.find(cls, query).one()
+        try:
+            return self.store.find(cls, query).one()
+        except NotOneError:
+            # FIXME: Instead of breaking stoq if more than one tuple exists,
+            # simply return the first object, but log a warning about the
+            # database issue. We should have UNIQUE constraints in more places
+            # to be sure that this would never happen
+            values_str = ["%s => %s" % (k.name, v) for k, v in values.items()]
+            log.warning(
+                "more than one result found when trying to "
+                "check_unique_tuple_exists on table '%s' for values: %r" % (
+                    self.__class__.__name__, ', '.join(sorted(values_str))))
+            return self.store.find(cls, query).any()
 
     #
     #  Classmethods

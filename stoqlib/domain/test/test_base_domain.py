@@ -24,6 +24,7 @@
 
 __tests__ = 'stoqlib/domain/base.py'
 
+import mock
 from storm.exceptions import NotOneError
 
 from stoqlib.database.properties import IntCol, UnicodeCol, BoolCol
@@ -175,6 +176,17 @@ class TestSelect(DomainTest):
         self.assertEqual(ding_1.check_unique_value_exists(
             Ding.str_field, u'ding_2', case_sensitive=False), ding_2)
 
+        with mock.patch('stoqlib.domain.base.log.warning') as warning:
+            ding_1.str_field = u'XXX'
+            ding_2.str_field = u'XXX'
+            ding_3 = Ding(store=self.store, str_field=u'XXX')
+
+            ding_3.check_unique_value_exists(Ding.str_field, u"XXX")
+            warning.assert_called_once_with(
+                "more than one result found when trying to "
+                "check_unique_tuple_exists on table 'Ding' for values: "
+                "u'str_field => XXX'")
+
     def test_check_unique_tuple_exists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1', int_field=1)
         ding_2 = Ding(store=self.store, str_field=u'Ding_2', int_field=2)
@@ -200,3 +212,17 @@ class TestSelect(DomainTest):
             {Ding.str_field: u'', Ding.int_field: 0}))
         self.assertIsNone(ding_1.check_unique_tuple_exists(
             {Ding.str_field: None, Ding.int_field: None}))
+
+        with mock.patch('stoqlib.domain.base.log.warning') as warning:
+            ding_1.str_field = u'XXX'
+            ding_1.int_field = 1
+            ding_2.str_field = u'XXX'
+            ding_2.int_field = 1
+            ding_3 = Ding(store=self.store, str_field=u'XXX', int_field=1)
+
+            ding_3.check_unique_tuple_exists({Ding.str_field: u"XXX",
+                                              Ding.int_field: 1})
+            warning.assert_called_once_with(
+                "more than one result found when trying to "
+                "check_unique_tuple_exists on table 'Ding' for values: "
+                "u'int_field => 1, str_field => XXX'")
