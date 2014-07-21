@@ -898,6 +898,11 @@ class Sale(Domain):
         if SaleCanCancelEvent.emit(self) is False:
             return False
 
+        # If ALLOW_CANCEL_CONFIRMED_SALES is not set, we can only cancel
+        # quoting sales
+        if not sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES"):
+            return self.status == self.STATUS_QUOTE
+
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
                                Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
 

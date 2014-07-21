@@ -333,14 +333,6 @@ class SalesApp(ShellApp):
         self.sale_toolbar = SaleListToolbar(self.store, self.results,
                                             parent=self)
 
-    def _can_cancel(self, view):
-        # If ALLOW_CANCEL_CONFIRMED_SALES is set, we can use Sale.can_cancel to
-        # check if we can cancel that sale. Otherwise we can only cancel quoting
-        # sales
-        if api.sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES") and view:
-            return view.sale.can_cancel()
-        return bool(view and view.status == Sale.STATUS_QUOTE)
-
     def _update_toolbar(self, *args):
         sale_view = self.results.get_selected()
         # FIXME: Disable invoice printing if the sale was returned. Remove this
@@ -349,7 +341,8 @@ class SalesApp(ShellApp):
                                  sale_view.client_name is not None and
                                  sale_view.status != Sale.STATUS_RETURNED)
         self.set_sensitive([self.SalesPrintInvoice], can_print_invoice)
-        self.set_sensitive([self.SalesCancel], self._can_cancel(sale_view))
+        self.set_sensitive([self.SalesCancel],
+                           bool(sale_view and sale_view.can_cancel()))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Return],
                            bool(sale_view and sale_view.can_return()))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Details],
