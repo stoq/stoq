@@ -48,6 +48,7 @@ from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch,
                                               ProductBrandSearch,
+                                              ProductBrandByBranchSearch,
                                               ProductBatchSearch,
                                               ProductClosedStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
@@ -106,6 +107,9 @@ class StockApp(ShellApp):
             ("SearchBrandItems", None, _("Brand items..."),
              group.get('search_brand_items'),
              _("Search for brand items on stock")),
+            ("SearchBrandItemsByBranch", None, _("Brand item by branch..."),
+             group.get('search_brand_by_branch'),
+             _("Search for brand items by branch on stock")),
             ("SearchBatchItems", None, _("Batch items..."),
              group.get('search_batch_items'),
              _("Search for batch items on stock")),
@@ -492,6 +496,9 @@ class StockApp(ShellApp):
 
     def on_SearchBrandItems__activate(self, action):
         self.run_dialog(ProductBrandSearch, self.store)
+
+    def on_SearchBrandItemsByBranch__activate(self, action):
+        self.run_dialog(ProductBrandByBranchSearch, self.store)
 
     def on_SearchBatchItems__activate(self, action):
         self.run_dialog(ProductBatchSearch, self.store)

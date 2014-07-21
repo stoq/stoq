@@ -43,7 +43,8 @@ from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView,
                                   ProductBranchStockView,
-                                  ProductBatchView, ProductBrandStockView)
+                                  ProductBatchView, ProductBrandStockView,
+                                  ProductBrandByBranchView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.editors.producteditor import (ProductEditor,
@@ -532,7 +533,62 @@ class ProductBrandSearch(SearchEditor):
         return self.search_spec.find_by_branch_category(store, branch, category)
 
 
+class ProductBrandByBranchSearch(SearchDialog):
+    title = _('Brand by Branch Search')
+    size = (775, 450)
+    search_spec = ProductBrandByBranchView
+    report_class = ProductBrandReport
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def setup_widgets(self):
+        self.add_csv_button(_('Brands'), _('brands'))
+
+        self.search.set_summary_label('quantity', label=_(u'Total:'),
+                                      format='<b>%s</b>')
+
+    def create_filters(self):
+        self.set_text_field_columns(['brand', 'company'])
+        self.search.set_query(self.executer_query)
+
+        # Category
+        categories = self.store.find(SellableCategory)
+        items = api.for_combo(categories, attr='full_description')
+        items.insert(0, (_('Any'), None))
+        category_filter = ComboSearchFilter(_('Category'), items)
+        self.add_filter(category_filter, position=SearchFilterPosition.TOP)
+        self.category_filter = category_filter
+
+        # Dont set a limit here, otherwise it might break the summary
+        executer = self.search.get_query_executer()
+        executer.set_limit(-1)
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        return [SearchColumn('brand', title=_('Brand'), data_type=str,
+                             sorted=True, expand=True),
+                SearchColumn('manufacturer', title=_('Manufacturer'), data_type=str,
+                             visible=False),
+                SearchColumn('company', title=_('Branch'), data_type=str),
+                Column('quantity', title=_('Quantity'), data_type=Decimal)]
+
+    def executer_query(self, store):
+        category_description = self.category_filter.get_state().value
+        if category_description:
+            category = category_description
+        else:
+            category = None
+
+        return self.search_spec.find_by_category(store, category)
+
+
 class ProductBranchSearch(SearchDialog):
+
     """Show products in stock on all branchs
     """
     title = _('Product Branch Search')

@@ -51,6 +51,7 @@
       <menuitem action="SearchPurchasedStockItems"/>
       <menuitem action="SearchStockItems"/>
       <menuitem action="SearchBrandItems"/>
+      <menuitem action="SearchBrandItemsByBranch"/>
       <menuitem action="SearchBatchItems"/>
       <menuitem action="SearchClosedStockItems"/>
       <separator/>

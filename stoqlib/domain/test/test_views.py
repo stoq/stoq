@@ -46,6 +46,7 @@ from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
 from stoqlib.domain.views import ProductBrandStockView
+from stoqlib.domain.views import ProductBrandByBranchView
 from stoqlib.domain.views import ProductComponentView
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.domain.views import ProductFullStockItemView
@@ -79,7 +80,8 @@ class TestViewsGeneric(DomainTest):
             # This viewable must be queried with a branch
             branch = self.store.find(Branch).any()
             results_list = self.store.find(view, branch_id=branch.id)
-        elif view.__name__ == 'SellableFullStockView':
+        elif view.__name__ in ['SellableFullStockView',
+                               'ProductBrandByBranchView']:
             # This viewable must be queried with a branch
             branch = self.store.find(Branch).any()
             results_list = view.find_by_branch(self.store, branch)
@@ -93,7 +95,7 @@ class TestViewsGeneric(DomainTest):
         # See if there are no duplicates
         ids_set = set()
         for result in results_list:
-            self.assertFalse(result.id in ids_set)
+            self.assertNotIn(result.id, ids_set)
             ids_set.add(result.id)
 
 
@@ -768,6 +770,43 @@ class TestProductFullStockItemView(DomainTest):
         results = self.store.find(ProductFullStockItemView)
         ids = [r.id for r in results]
         self.assertEquals(ids.count(product.sellable.id), 1)
+
+
+class TestProductBrandByBranchView(DomainTest):
+    def test_find_by_category(self):
+        # Creating product 1
+        branch = self.create_branch(name=u"branch1")
+        p1 = self.create_product(branch=branch, stock=5)
+        p1.sellable.category = self.create_sellable_category(description=u"Category")
+        p1.brand = u"Black Mesa"
+        # Creating product 2
+        branch2 = self.create_branch(name=u"branch2")
+        p2 = self.create_product(branch=branch2, stock=1)
+        p2.sellable.category = p1.sellable.category
+        category = p1.sellable.category
+        p2.brand = u"Black Mesa"
+
+        # Search with a specific category
+        results = ProductBrandByBranchView.find_by_category(self.store,
+                                                            category).find()
+
+        # Checking the quantity for each product
+        self.assertEqual(results[0].quantity, 5)
+        self.assertEqual(results[1].quantity, 1)
+
+        # Checking total products
+        total_products = 0
+        for i in results:
+            total_products += i.quantity
+        self.assertEqual(total_products, 6)
+
+        # Without category, total item shouldnt be 0
+        results2 = ProductBrandByBranchView.find_by_category(self.store,
+                                                             None).find()
+        total_products = 0
+        for i in results2:
+            total_products += i.quantity
+        self.assertNotEqual(total_products, 0)
 
 
 class TestProductBrandStockView(DomainTest):

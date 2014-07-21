@@ -30,7 +30,7 @@ from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import (Case, Date, Distinct, Field, NullIf,
-                                   StatementTimestamp)
+                                   StatementTimestamp, Concat)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
@@ -971,6 +971,52 @@ class ProductBatchView(Viewable):
     ]
 
     clause = ProductStockItem.quantity > 0
+
+
+class ProductBrandByBranchView(Viewable):
+    branch = Branch
+
+    # The tuple Product.brand + Branch.id is unique, so we can use as id
+    id = Concat(Product.brand, Cast(Branch.id, "text"))
+    brand = Coalesce(Product.brand, u'')
+
+    branch_id = Branch.id
+
+    company = Company.fancy_name
+
+    quantity = Sum(ProductStockItem.quantity)
+
+    manufacturer = ProductManufacturer.name
+
+    tables = [
+        ProductStockItem,
+        Join(Storable, Storable.id == ProductStockItem.storable_id),
+        Join(Product, Product.id == Storable.product_id),
+        LeftJoin(ProductManufacturer,
+                 ProductManufacturer.id == Product.manufacturer_id),
+        Join(Branch, Branch.id == ProductStockItem.branch_id),
+        Join(Person, Person.id == Branch.person_id),
+        Join(Company, Company.person_id == Person.id),
+        Join(Sellable, Product.sellable_id == Sellable.id)
+    ]
+
+    clause = ProductStockItem.quantity > 0
+
+    group_by = [id, brand, branch, manufacturer, company]
+
+    @classmethod
+    def find_by_category(cls, store, category):
+        queries = []
+        if category:
+            queries.append(Sellable.category == category)
+        if queries:
+            return store.find(cls, And(*queries))
+
+        return store.find(cls)
+
+    @classmethod
+    def find_by_branch(cls, store, branch):
+        return store.find(cls, branch_id=branch.id)
 
 
 class ProductBrandStockView(Viewable):
