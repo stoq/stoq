@@ -4,8 +4,8 @@ GtkVBox(toplevel):
     GtkHBox(hbox2, fill=True):
       GtkLabel(label9, fill=True): 'Branch:'
       ProxyComboBox(branch, fill=True):
-        item: 'All Branches', selected
-        item: 'Moda Stoq'
+        item: 'All Branches'
+        item: 'Moda Stoq', selected
         item: 'Stoq Elite Fashion'
       GtkButton(search_button, fill=True): 'gtk-find'
     GtkHBox(daterange_hbox, fill=True):
@@ -50,6 +50,7 @@ GtkVBox(toplevel):
         column: title='Method'
         column: title='Description', expand
         column: title='Payment Value'
+        row: 9941, u'Credit', u'Test payment', <currency $100>
     GtkVBox(return_sales_vbox):
       ObjectTree(return_sales_list, expand=True, fill=True):
         column: title='Code'
@@ -70,21 +71,30 @@ GtkVBox(toplevel):
         column: title='Code'
         column: title='Description', expand
         column: title='Value'
+        row: 4, u'Amount removed from Till', <currency $ -2015>
       GtkHBox(removals_label):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-        GtkLabel(): '<b>$ 0.00</b>'
+        GtkLabel(): '<b>$ -2015.00</b>'
     GtkHBox(hbox1):
       GtkVBox(permethod_vbox, expand=True, fill=True):
         ObjectList(permethod_list, expand=True, fill=True):
           column: title='Payment Method', expand
           column: title='Income Total'
           column: title='Outgoing Total'
-        GtkHBox(income_label):
-          GtkLabel(expand=True, fill=True, padding=6): '<b>In Total:</b>'
-          GtkLabel(): '<b>$ 0.00</b>'
-        GtkHBox(outcome_label):
-          GtkLabel(expand=True, fill=True, padding=6): '<b>Out Total:</b>'
-          GtkLabel(): '<b>$ 0.00</b>'
+          row: u'Credit', 0, Decimal('100.00')
+        GtkTable(table1, fill=True):
+          GtkLabel(label10): 'Subtotal:'
+          ProxyLabel(in_subtotal): '<span >$ 0.00</span>'
+          GtkLabel(label13): 'Subtotal:'
+          ProxyLabel(out_subtotal): '<span >$100.00</span>'
+          GtkLabel(label11): 'Credit:'
+          ProxyLabel(in_credit): '<span >$ 0.00</span>'
+          GtkLabel(label14): 'Credit:'
+          ProxyLabel(out_credit): '<span >$100.00</span>'
+          GtkLabel(label12): 'Total Income:'
+          ProxyLabel(in_total): '<span >$ 0.00</span>'
+          GtkLabel(label15): 'Total Outgoing:'
+          ProxyLabel(out_total): '<span >$ 0.00</span>'
       GtkVBox(percard_vbox, expand=True, fill=True):
         ObjectList(percard_list, expand=True, fill=True):
           column: title='Provider Name', expand
@@ -93,4 +103,4 @@ GtkVBox(toplevel):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
           GtkLabel(): '<b>$ 0.00</b>'
   GtkHButtonBox(hbuttonbox1, fill=True):
-    GtkButton(print_button): 'gtk-print', insensitive
+    GtkButton(print_button): 'gtk-print'

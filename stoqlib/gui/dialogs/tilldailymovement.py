@@ -57,10 +57,6 @@ class DailyMovementSale(Settable):
         return hash(self.identifier)
 
 
-class DailyMovementModel(object):
-    branch = None
-
-
 class TillDailyMovementDialog(BaseEditor):
     """Shows informations related to till operations over a daterange.
     It can also be filtered by branch.
@@ -69,14 +65,10 @@ class TillDailyMovementDialog(BaseEditor):
     title = _("Daily Movement")
     hide_footer = True
     size = (950, 450)
-    model_type = DailyMovementModel
+    model_type = Settable
     gladefile = "TillDailyMovementDialog"
-    proxy_widgets = ["branch"]
-
-    def __init__(self, store):
-        BaseEditor.__init__(self, store, DailyMovementModel())
-        self._setup_widgets()
-        self.setup_proxies()
+    proxy_widgets = ['branch', 'in_subtotal', 'in_credit', 'in_total',
+                     'out_subtotal', 'out_credit', 'out_total']
 
     #
     #  Private
@@ -121,72 +113,57 @@ class TillDailyMovementDialog(BaseEditor):
 
     def _get_sales_columns(self):
         return [Column('identifier', title=_('Code'), data_type=str),
-                Column('salesperson', title=_('Sales Person'),
-                       data_type=str),
-                Column('client', title=_('Client'), data_type=str,
-                       expand=True),
+                Column('salesperson', title=_('Sales Person'), data_type=str),
+                Column('client', title=_('Client'), data_type=str, expand=True),
                 Column('value', title=_('Value'), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT)]
 
     def _get_lonely_payments_columns(self):
         return [Column('identifier', title=_('Code'), data_type=str),
-                Column('method', title=_('Method'),
+                Column('method', title=_('Method'), data_type=str),
+                Column('description', title=_('Description'), expand=True,
                        data_type=str),
-                Column('description', title=_('Description'),
-                       expand=True, data_type=str),
-                Column('value', title=_('Payment Value'),
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                Column('value', title=_('Payment Value'), data_type=currency)]
 
     def _get_purchases_columns(self):
         return [Column('identifier', title=_('Code'), data_type=str),
-                Column('status_str', title=_('Status'),
+                Column('status_str', title=_('Status'), data_type=str),
+                Column('responsible_name', title=_('Responsible'), expand=True,
                        data_type=str),
-                Column('responsible_name', title=_('Responsible'),
-                       expand=True, data_type=str),
-                Column('branch_name', title=_('Branch'),
-                       data_type=str),
-                Column('notes', title=_('Notes'),
-                       data_type=str),
-                Column('supplier_name', title=_('Supplier'),
-                       data_type=str),
-                Column('purchase_total', title=_('Value'),
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                Column('branch_name', title=_('Branch'), data_type=str),
+                Column('notes', title=_('Notes'), data_type=str),
+                Column('supplier_name', title=_('Supplier'), data_type=str),
+                Column('purchase_total', title=_('Value'), data_type=currency)]
 
     def _get_return_sales_columns(self):
         # Datetime type columns automatically aligns to the right,
         # so, it is forced to be justified to the left.
         return [Column('identifier', title=_('Code'), data_type=str),
-                Column('salesperson', title=_('Sales Person'),
-                       data_type=str),
-                Column('client', title=_('Client'),
-                       expand=True, data_type=str),
+                Column('salesperson', title=_('Sales Person'), data_type=str),
+                Column('client', title=_('Client'), expand=True, data_type=str),
                 Column('return_date', title=_('Return Date'),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_LEFT),
-                Column('value', title=_('Sale Value'),
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=datetime.date),
+                Column('value', title=_('Sale Value'), data_type=currency)]
 
     def _get_till_columns(self):
         return [Column('identifier', title=_('Code'), data_type=str),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
-                Column('value', title=_('Value'),
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                Column('value', title=_('Value'), data_type=currency)]
 
     def _get_permethod_columns(self):
         # Currency type columns is automatically justified to the right,
         # so it is needed to force in_value justification
         return [Column('method', title=_('Payment Method'), data_type=str,
                        expand=True),
-                Column('in_value', title=_('Income Total'),
-                       data_type=currency, justify=gtk.JUSTIFY_LEFT),
+                Column('in_value', title=_('Income Total'), data_type=currency),
                 Column('out_value', title=_('Outgoing Total'),
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=currency)]
 
     def _get_percard_columns(self):
         return [Column('provider', title=_('Provider Name'), data_type=str,
                        expand=True),
-                Column('income', title=_('Income Total'),
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                Column('income', title=_('Income Total'), data_type=currency)]
 
     def _create_summary_label(self, report, column='value', label=None):
         # Setting tha data
@@ -214,21 +191,13 @@ class TillDailyMovementDialog(BaseEditor):
         # Percard
         self.percard_label = self._create_summary_label('percard',
                                                         column='income')
-        # Permethod Income
-        self.income_label = self._create_summary_label('permethod',
-                                                       column='in_value',
-                                                       label=_('In Total:'))
-        # Permethod Outcome
-        self.outcome_label = self._create_summary_label('permethod',
-                                                        column='out_value',
-                                                        label=_('Out Total:'))
 
     def _update_summary_labels(self):
         self.supplies_label.update_total()
         self.removals_label.update_total()
         self.percard_label.update_total()
-        self.income_label.update_total()
-        self.outcome_label.update_total()
+        self.proxy.update_many(('in_subtotal', 'in_credit', 'in_total',
+                                'out_subtotal', 'out_credit', 'out_total'))
 
     def _generate_dailymovement_data(self, store):
         query = And(Payment.status == Payment.STATUS_PAID,
@@ -316,10 +285,10 @@ class TillDailyMovementDialog(BaseEditor):
 
         self.method_summary = []
         for method, (in_value, out_value) in method_summary.items():
-            self.method_summary.append((_(method.description),
+            self.method_summary.append((method,
                                         in_value,
                                         out_value))
-        self.method_summary.sort()
+        self.method_summary.sort(key=lambda m: _(m[0].description))
 
         # Till removals
         query = And(Eq(TillEntry.payment_id, None),
@@ -395,11 +364,25 @@ class TillDailyMovementDialog(BaseEditor):
 
         # Summary's per payment method data
         self.permethod_list.clear()
+        self.model.in_subtotal = self.model.out_subtotal = 0
+        self.model.in_credit = self.model.out_credit = currency(0)
         for method in self.method_summary:
-            method_data = Settable(method=method[0],
+            method_data = Settable(method=_(method[0].description),
                                    in_value=method[1],
                                    out_value=method[2])
             self.permethod_list.append(method_data)
+            self.model.in_subtotal += method[1]
+            self.model.out_subtotal += method[2]
+            if method[0].method_name == 'credit':
+                self.model.in_credit = currency(method[1])
+                self.model.out_credit = currency(method[2])
+
+        self.model.in_subtotal = currency(self.model.in_subtotal)
+        self.model.out_subtotal = currency(self.model.out_subtotal)
+        self.model.in_total = currency(self.model.in_subtotal -
+                                       self.model.in_credit)
+        self.model.out_total = currency(self.model.out_subtotal -
+                                        self.model.out_credit)
 
         # Summary's per card provider data
         self.percard_list.clear()
@@ -437,8 +420,15 @@ class TillDailyMovementDialog(BaseEditor):
     # BaseEditor Hooks
     #
 
+    def create_model(self, store):
+        return Settable(branch=api.get_current_branch(store),
+                        in_total=currency(0), in_credit=currency(0),
+                        in_subtotal=currency(0), out_total=currency(0),
+                        out_credit=currency(0), out_subtotal=currency(0))
+
     def setup_proxies(self):
-        self.add_proxy(self.model, TillDailyMovementDialog.proxy_widgets)
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, TillDailyMovementDialog.proxy_widgets)
 
     #
     # Callbacks

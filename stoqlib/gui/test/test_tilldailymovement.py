@@ -22,8 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 import mock
 
+from stoqlib.api import api
 from stoqlib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.reporting.till import TillDailyMovementReport
@@ -32,6 +34,13 @@ from stoqlib.reporting.till import TillDailyMovementReport
 class TestTillHistory(GUITest):
     def test_show(self):
         dialog = TillDailyMovementDialog(self.store)
+        method = self.get_payment_method(u'credit')
+        payment = self.create_payment(value=100, method=method,
+                                      date=datetime.datetime.now())
+        payment.identifier = 9941
+        payment.set_pending()
+        payment.pay()
+        self.click(dialog.search_button)
         self.check_dialog(dialog, 'till-dailymovement-dialog-show')
 
     def test_show_synchronized(self):
@@ -47,11 +56,12 @@ class TestTillHistory(GUITest):
         self.assertFalse(dialog.print_button.get_sensitive())
 
         # After clicking the button, the print dialog should be sensitive
-        dialog.search_button.clicked()
+        self.click(dialog.search_button)
         self.assertTrue(dialog.print_button.get_sensitive())
 
-        dialog.print_button.clicked()
+        self.click(dialog.print_button)
 
         date = dialog.get_daterange()
-        print_report.assert_called_once_with(TillDailyMovementReport, None,
+        print_report.assert_called_once_with(TillDailyMovementReport,
+                                             api.get_current_branch(self.store),
                                              date, dialog)

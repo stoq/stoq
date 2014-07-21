@@ -77,12 +77,19 @@ GtkVBox(toplevel):
           column: title='Payment Method', expand
           column: title='Income Total'
           column: title='Outgoing Total'
-        GtkHBox(income_label):
-          GtkLabel(expand=True, fill=True, padding=6): '<b>In Total:</b>'
-          GtkLabel(): '<b>$ 0.00</b>'
-        GtkHBox(outcome_label):
-          GtkLabel(expand=True, fill=True, padding=6): '<b>Out Total:</b>'
-          GtkLabel(): '<b>$ 0.00</b>'
+        GtkTable(table1, fill=True):
+          GtkLabel(label10): 'Subtotal:'
+          ProxyLabel(in_subtotal): '<span >$ 0.00</span>'
+          GtkLabel(label13): 'Subtotal:'
+          ProxyLabel(out_subtotal): '<span >$ 0.00</span>'
+          GtkLabel(label11): 'Credit:'
+          ProxyLabel(in_credit): '<span >$ 0.00</span>'
+          GtkLabel(label14): 'Credit:'
+          ProxyLabel(out_credit): '<span >$ 0.00</span>'
+          GtkLabel(label12): 'Total Income:'
+          ProxyLabel(in_total): '<span >$ 0.00</span>'
+          GtkLabel(label15): 'Total Outgoing:'
+          ProxyLabel(out_total): '<span >$ 0.00</span>'
       GtkVBox(percard_vbox, expand=True, fill=True):
         ObjectList(percard_list, expand=True, fill=True):
           column: title='Provider Name', expand

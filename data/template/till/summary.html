@@ -19,25 +19,45 @@
         <%
             in_sum = 0
             out_sum = 0
+            credit_out = 0
+            credit_in = 0
         %>
-        % for (method_name, in_value, out_value) in report.method_summary:
+        % for (method, in_value, out_value) in report.method_summary:
             <tr>
-                <td>${ method_name }</td>
+                <td>${ _(method.description) }</td>
                 <td class="align-right">${ format_price(in_value) }</td>
                 <td class="align-right">${ format_price(out_value) }</td>
             </tr>
             <%
                 in_sum += in_value
                 out_sum += out_value
+                if method.method_name == 'credit':
+                    credit_out = out_value
+                    credit_in = in_value
+                endif
             %>
         % endfor
-
-            <tr class="summary">
-                <td><b>Total:</b></td>
-                <td  class="align-right"><b>${ format_price(in_sum) }</b></td>
-                <td  class="align-right"><b>${ format_price(out_sum) }</b></td>
-            </tr>
-
       </tbody>
+
+      <tbody class="summary">
+        % if credit_in or credit_out:
+        <tr>
+          <td><b>${ _("Subtotal") }:</b></td>
+          <td class="align-right"><b>${ format_price(in_sum) }</b></td>
+          <td class="align-right"><b>${ format_price(out_sum) }</b></td>
+        </tr>
+        <tr>
+          <td><b>${ _("Credit") }:</b></td>
+          <td class="align-right"><b>-${ format_price(credit_in) }</b></td>
+          <td class="align-right"><b>-${ format_price(credit_out) }</b></td>
+        </tr>
+        % endif
+        <tr>
+          <td><b>${ _("Total") }:</b></td>
+          <td class="align-right"><b>${ format_price(in_sum - credit_in) }</b></td>
+          <td class="align-right"><b>${ format_price(out_sum - credit_out) }</b></td>
+        </tr>
+      </tbody>
+
     </table>
 % endif

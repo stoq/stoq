@@ -4,29 +4,24 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="TillDailyMovementDialog">
-    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkVBox" id="vbox2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="spacing">4</property>
             <child>
               <object class="GtkHBox" id="hbox2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="spacing">4</property>
                 <child>
                   <object class="GtkLabel" id="label9">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Branch:</property>
                   </object>
                   <packing>
@@ -38,7 +33,6 @@
                 <child>
                   <object class="ProxyComboBox" id="branch">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="data_type">object</property>
                   </object>
                   <packing>
@@ -72,7 +66,6 @@
             <child>
               <object class="GtkHBox" id="daterange_hbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <child>
                   <placeholder/>
                 </child>
@@ -97,13 +90,11 @@
             <child>
               <object class="GtkVBox" id="sales_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="ObjectTree" id="sales_list">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -116,7 +107,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Sales</property>
               </object>
               <packing>
@@ -126,12 +116,10 @@
             <child>
               <object class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <child>
                   <object class="ObjectList" id="inpayments_list">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -147,7 +135,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Lonely In Payments</property>
               </object>
               <packing>
@@ -158,13 +145,11 @@
             <child>
               <object class="GtkVBox" id="purchases_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="ObjectTree" id="purchases_list">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -180,7 +165,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xpad">1</property>
                 <property name="label" translatable="yes">Purchases</property>
               </object>
@@ -192,12 +176,10 @@
             <child>
               <object class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <child>
                   <object class="ObjectList" id="outpayments_list">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -213,7 +195,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Lonely Out Payments</property>
               </object>
               <packing>
@@ -224,12 +205,10 @@
             <child>
               <object class="GtkVBox" id="return_sales_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <child>
                   <object class="ObjectTree" id="return_sales_list">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -248,7 +227,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Return Sales</property>
               </object>
               <packing>
@@ -259,7 +237,6 @@
             <child>
               <object class="GtkVBox" id="supplies_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
@@ -284,7 +261,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label6">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Till Supplies</property>
               </object>
               <packing>
@@ -295,12 +271,10 @@
             <child>
               <object class="GtkVBox" id="removals_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <child>
                   <object class="ObjectList" id="removals_list">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -319,7 +293,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label8">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Till Removals</property>
               </object>
               <packing>
@@ -330,13 +303,12 @@
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkVBox" id="permethod_vbox">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="ObjectList" id="permethod_list">
                         <property name="visible">True</property>
@@ -349,7 +321,158 @@
                       </packing>
                     </child>
                     <child>
-                      <placeholder/>
+                      <object class="GtkTable" id="table1">
+                        <property name="visible">True</property>
+                        <property name="n_rows">3</property>
+                        <property name="n_columns">4</property>
+                        <property name="column_spacing">6</property>
+                        <property name="row_spacing">6</property>
+                        <child>
+                          <object class="GtkLabel" id="label10">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Subtotal:</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label11">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Credit:</property>
+                          </object>
+                          <packing>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label12">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Total Income:</property>
+                          </object>
+                          <packing>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label13">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Subtotal:</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="right_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label14">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Credit:</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="right_attach">3</property>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label15">
+                            <property name="visible">True</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Total Outgoing:</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="right_attach">3</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyLabel" id="in_subtotal">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="data_type">currency</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyLabel" id="in_credit">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="data_type">currency</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyLabel" id="in_total">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="data_type">currency</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyLabel" id="out_credit">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="data_type">currency</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">3</property>
+                            <property name="right_attach">4</property>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyLabel" id="out_subtotal">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="data_type">currency</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">3</property>
+                            <property name="right_attach">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="ProxyLabel" id="out_total">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="data_type">currency</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">3</property>
+                            <property name="right_attach">4</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
@@ -361,7 +484,6 @@
                 <child>
                   <object class="GtkVBox" id="percard_vbox">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <child>
                       <object class="ObjectList" id="percard_list">
                         <property name="visible">True</property>
@@ -391,7 +513,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label7">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Payment Summary</property>
               </object>
               <packing>
@@ -409,7 +530,6 @@
         <child>
           <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="print_button">
