@@ -87,6 +87,7 @@ GtkDialog(PluggableWizard): title='New Branch', hidden
                       GtkLabel(): 'Branch status:'
                       ProxyRadioButton(): 'Active', active
                       ProxyRadioButton(): 'Inactive'
+                      ProxyCheckButton(): 'Can execute work orders from other branches'
                   GtkEventBox(fill=True):
                   GtkEventBox(expand=True, fill=True):
                     GtkVBox():

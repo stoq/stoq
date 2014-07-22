@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="BranchDetailsSlave">
     <property name="default_width">440</property>
@@ -34,8 +34,8 @@
           <packing>
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
-            <property name="y_options">GTK_FILL</property>
             <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
@@ -129,8 +129,8 @@
           <packing>
             <property name="left_attach">2</property>
             <property name="right_attach">3</property>
-            <property name="y_options">GTK_FILL</property>
             <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
@@ -149,19 +149,22 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
+          <object class="ProxyCheckButton" id="can_execute_foreign_work_orders">
+            <property name="label" translatable="yes">Can execute work orders from other branches</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="use_action_appearance">False</property>
+            <property name="draw_indicator">True</property>
+            <property name="data_type">bool</property>
+            <property name="model_attribute">can_execute_foreign_work_orders</property>
+          </object>
+          <packing>
+            <property name="right_attach">5</property>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+            <property name="y_options">GTK_FILL</property>
+          </packing>
         </child>
       </object>
     </child>

@@ -40,6 +40,7 @@ class BranchDetailsSlave(BaseEditorSlave):
     proxy_widgets = ('active_check',
                      'manager',
                      'crt',
+                     'can_execute_foreign_work_orders',
                      'acronym')
 
     crt_options = (

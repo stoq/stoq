@@ -89,6 +89,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(label1): 'Branch status:'
                           ProxyRadioButton(active_check): 'Active', active
                           ProxyRadioButton(inactive_check): 'Inactive'
+                          ProxyCheckButton(can_execute_foreign_work_orders): 'Can execute work orders from other branches'
                       GtkEventBox(details_holder, fill=True):
                       GtkEventBox(note_holder, expand=True, fill=True): slave NoteSlave is attached
                         GtkVBox(toplevel):
