@@ -134,7 +134,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkVBox(toplevel):
                 GtkTable(table1, fill=True):
                   GtkLabel(label3): 'Medic:'
-                  ProxyComboEntry(medic_combo):
+                  ProxyComboEntry(medic_combo): mandatory
                     item: ''
                   GtkHBox(hbox1):
                     GtkButton(medic_create, expand=True, fill=True):

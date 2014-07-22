@@ -43,11 +43,13 @@ from ..opticaldomain import OpticalMedic
 from ..opticaleditor import MedicEditor
 from ..opticalreport import OpticalWorkOrderReceiptReport
 from ..opticalwizard import OpticalSaleQuoteWizard, MedicRoleWizard
+from .test_optical_domain import OpticalDomainTest
+
 
 _ = stoqlib_gettext
 
 
-class TestSaleQuoteWizard(GUITest):
+class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
     @mock.patch('plugins.optical.opticalwizard.yesno')
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_person_role_dialog')
@@ -56,6 +58,7 @@ class TestSaleQuoteWizard(GUITest):
                           name=u'Category',
                           color=u'#ff0000')
         client = self.create_client()
+        medic = self.create_optical_medic()
         self.create_address(person=client.person)
 
         run_person_role_dialog.return_value = client
@@ -123,6 +126,7 @@ class TestSaleQuoteWizard(GUITest):
         step = wizard.get_current_step()
         slave = step.slaves['WO 1']
         slave.patient.update('Patient')
+        slave.medic_combo.update(medic)
         slave.estimated_finish.update(localdate(2020, 1, 5))
 
         sale = wizard.model
@@ -231,6 +235,7 @@ class TestSaleQuoteWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_person_role_dialog')
     def test_item_step(self, run_person_role_dialog):
         client = self.create_client()
+        medic = self.create_optical_medic()
         run_person_role_dialog.return_value = client
         wizard = OpticalSaleQuoteWizard(self.store)
         step = wizard.get_current_step()
@@ -244,6 +249,7 @@ class TestSaleQuoteWizard(GUITest):
         step = wizard.get_current_step()
         for slave in step.slaves.values():
             slave.patient.update('Patient')
+            slave.medic_combo.update(medic)
             slave.estimated_finish.update(localdate(2020, 1, 5))
 
         self.click(wizard.next_button)
@@ -271,6 +277,7 @@ class TestSaleQuoteWizard(GUITest):
 
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_person_role_dialog')
     def test_item_step_too_many(self, run_person_role_dialog):
+        medic = self.create_optical_medic()
         client = self.create_client()
         client.status = client.STATUS_INDEBTED
         run_person_role_dialog.return_value = client
@@ -286,6 +293,7 @@ class TestSaleQuoteWizard(GUITest):
         step = wizard.get_current_step()
         for slave in step.slaves.values():
             slave.patient.update('Patient')
+            slave.medic_combo.update(medic)
             slave.estimated_finish.update(localdate(2020, 1, 5))
 
         self.click(wizard.next_button)

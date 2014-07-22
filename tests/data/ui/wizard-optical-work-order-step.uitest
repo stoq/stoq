@@ -11,10 +11,10 @@ GtkDialog(PluggableWizard): title='Sale with work order', hidden
                 GtkTable(table1, fill=True):
                   GtkLabel(label3): 'Medic:'
                   ProxyComboEntry(medic_combo):
-                    item: ''
+                    item: 'Medic (upid: 1234)', selected
                   GtkHBox(hbox1):
                     GtkButton(medic_create, expand=True, fill=True):
-                    GtkButton(medic_details, expand=True, fill=True): insensitive
+                    GtkButton(medic_details, expand=True, fill=True):
                   GtkLabel(label11): 'Lens type:'
                   ProxyComboBox(lens_type):
                     item: 'Contact'

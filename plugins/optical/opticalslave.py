@@ -339,6 +339,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             return
         has_frame = self.model.lens_type == OpticalWorkOrder.LENS_TYPE_OPHTALMIC
         self.frame_box.set_sensitive(has_frame)
+        # XXX: Maybe this should be a configuration the user could toggle.
+        self.medic_combo.mandatory = has_frame
         for name in ['distance_pd', 'near_pd', 'distance_height']:
             getattr(self, 'le_' + name).set_sensitive(has_frame)
             getattr(self, 're_' + name).set_sensitive(has_frame)
