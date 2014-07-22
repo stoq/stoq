@@ -30,6 +30,7 @@ import gio
 import gobject
 import gtk
 from kiwi.ui.dialogs import selectfile
+from kiwi.ui.entry import ENTRY_MODE_DATA
 from kiwi.ui.forms import ChoiceField, Field
 import pango
 
@@ -92,6 +93,19 @@ class DomainChoiceField(ChoiceField):
     use_ids = False
 
     # Field
+
+    def prefill(self, items, value=None):
+        self.widget.prefill(items)
+        if value is not None:
+            self.widget.select(value)
+
+        if self.use_entry:
+            # FIXME: Make sure the entry is set to data mode or else ir will
+            # allow any string to be typed when items is empty. This is because
+            # kiwi will only set data mode on the entry when it gets prefilled
+            # with a list of tuples. We should improve that code to avoid this
+            # kind of workarounds
+            self.widget.entry.set_mode(ENTRY_MODE_DATA)
 
     def attach(self):
         self.connect('notify::can-add', self._on_can_add__notify)
@@ -169,9 +183,7 @@ class AddressField(DomainChoiceField):
         addresses = store.find(Address,
                                person=self.person).order_by(Address.street)
 
-        self.widget.prefill(api.for_combo(addresses))
-        if address:
-            self.widget.select(address)
+        self.prefill(api.for_combo(addresses), address)
 
         self.add_button.set_tooltip_text(_("Add a new address"))
         self.edit_button.set_tooltip_text(_("Edit the selected address"))
@@ -236,8 +248,7 @@ class PaymentCategoryField(DomainChoiceField):
         categories = PaymentCategory.get_by_type(store, self.category_type)
         values = api.for_combo(
             categories, empty=_('No category'), attr='name')
-        self.widget.prefill(values)
-        self.widget.select(value)
+        self.prefill(values, value)
         # FIXME: Move to noun
         self.add_button.set_tooltip_text(_("Add a new payment category"))
         self.edit_button.set_tooltip_text(_("Edit the selected payment category"))
@@ -284,10 +295,7 @@ class PersonField(DomainChoiceField):
             raise AssertionError(self.person_type)
 
         items = person_type.get_active_items(store)
-        self.widget.prefill(items)
-
-        if person_id:
-            self.widget.select(person_id)
+        self.prefill(items, person_id)
 
     def run_dialog(self, store, person):
         from stoqlib.domain.person import Branch, Client, Supplier, Transporter
@@ -331,9 +339,7 @@ class CfopField(DomainChoiceField):
         from stoqlib.domain.fiscal import CfopData
         store = get_store_for_field(self)
         cfops = store.find(CfopData)
-        self.widget.prefill(api.for_combo(cfops))
-        if cfop is not None:
-            self.widget.select(cfop)
+        self.prefill(api.for_combo(cfops), cfop)
 
         self.add_button.set_tooltip_text(_("Add a new C.F.O.P"))
         self.edit_button.set_tooltip_text(_("View C.F.O.P details"))

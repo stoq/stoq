@@ -117,7 +117,7 @@ class TestCreateDeliveryEditor(GUITest):
         no_client = editor.client_id.get_selected_data()
         self.assertEqual(no_client, None)
         no_address = editor.address.get_selected_data()
-        self.assertEqual(no_address, None or "")
+        self.assertEqual(no_address, None)
         self.check_editor(editor, 'editor-createdelivery-noclient')
 
         # Select a client
