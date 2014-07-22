@@ -340,21 +340,12 @@ class SearchDialog(BasicDialog):
     #
 
     def create_branch_filter(self, label=None):
-        from stoqlib.domain.person import Branch
-        current = api.get_current_branch(self.store)
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            items = [(current.get_description(), current.id)]
-        else:
-            branches = Branch.get_active_branches(self.store)
-            items = [(b.get_description(), b.id) for b in branches]
-            items.insert(0, (_("Any"), None))
-
+        items = api.get_branches_for_filter(self.store, use_id=True)
         if not label:
             label = _('Branch:')
         branch_filter = ComboSearchFilter(label, items)
-        if current:
-            branch_filter.select(current.id)
-
+        current = api.get_current_branch(self.store)
+        branch_filter.select(current.id)
         return branch_filter
 
     def create_sellable_filter(self, label=None):

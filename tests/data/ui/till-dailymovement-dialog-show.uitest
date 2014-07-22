@@ -4,7 +4,7 @@ GtkVBox(toplevel):
     GtkHBox(hbox2, fill=True):
       GtkLabel(label9, fill=True): 'Branch:'
       ProxyComboBox(branch, fill=True):
-        item: 'All Branches'
+        item: 'Any'
         item: 'Moda Stoq', selected
         item: 'Stoq Elite Fashion'
       GtkButton(search_button, fill=True): 'gtk-find'

@@ -37,7 +37,6 @@ from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.dailymovement import (DailyInPaymentView,
                                                   DailyOutPaymentView)
-from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import TillEntry
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -76,13 +75,7 @@ class TillDailyMovementDialog(BaseEditor):
 
     def _setup_widgets(self):
         # Branches combo
-        current = api.get_current_branch(self.store)
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            items = [(current.get_description(), current)]
-        else:
-            branches = Branch.get_active_branches(self.store)
-            items = [(b.get_description(), b) for b in branches]
-            items.insert(0, (_("All Branches"), None))
+        items = api.get_branches_for_filter(self.store)
         self.branch.prefill(items)
 
         # Daterange filter

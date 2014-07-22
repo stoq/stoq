@@ -40,11 +40,13 @@ from stoqlib.database.runtime import (new_store,
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
 from stoqlib.database.settings import db_settings
+from stoqlib.domain.person import Branch
+from stoqlib.gui.events import CanSeeAllBranches
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.settings import get_settings
-from stoqlib.lib.translation import locale_sorted
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext as _
 from stoqlib.l10n.l10n import get_l10n_field
 
 
@@ -176,6 +178,34 @@ class StoqAPI(object):
             return [('', None)]
 
         return locale_sorted(items, key=operator.itemgetter(0))
+
+    def can_see_all_branches(self):
+        can_see = CanSeeAllBranches.emit()
+        if can_see is not None:
+            return can_see
+        return not api.sysparam.get_bool('SYNCHRONIZED_MODE')
+
+    def get_branches_for_filter(self, store, use_id=False):
+        """Returns a list of branches to be used in a combo.
+
+        :param use_id: If True, we will return the options using the object id
+          instead of the real object.
+        """
+        if not api.can_see_all_branches():
+            current = self.get_current_branch(store)
+            if use_id:
+                value = current.id
+            else:
+                value = current
+            items = [(current.get_description(), value)]
+        else:
+            branches = Branch.get_active_branches(store)
+            if use_id:
+                items = [(b.get_description(), b.id) for b in branches]
+            else:
+                items = [(b.get_description(), b) for b in branches]
+            items.insert(0, (_("Any"), None))
+        return items
 
     def escape(self, string):
         """Escapes the text and makes it suitable for use with a

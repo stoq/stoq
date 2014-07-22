@@ -173,6 +173,17 @@ class PrintReportEvent(Event):
 
 
 #
+#   Searching Events
+#
+
+@public(since='1.9.0')
+class CanSeeAllBranches(Event):
+    """This is emmited when a branch filter is being created and we should
+    decide if all branches should be selectable or only the current one.
+    """
+
+
+#
 # CouponCreatedEvent
 #
 

@@ -170,16 +170,6 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     search_label = _('Items matching:')
     size = (800, 450)
 
-    def _get_branch_values(self):
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            current = api.get_current_branch(self.store)
-            items = [(current.get_description(), current.id)]
-        else:
-            items = [(b.get_description(), b.id) for b
-                     in Branch.get_active_branches(self.store)]
-            items.insert(0, (_('Any'), None))
-        return items
-
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
         self.search.set_query(self.executer_query)
@@ -191,16 +181,17 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     def executer_query(self, store):
         method = self.payment_filter.get_state().value
         resultset = self.search_spec.find_by_payment_method(store, method)
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+        if not api.can_see_all_branches():
             current = api.get_current_branch(self.store)
             resultset = resultset.find(Branch.id == current.id)
         return resultset
 
     def get_columns(self):
         columns = SaleWithToolbarSearch.get_columns(self)
+        branches = api.get_branches_for_filter(self.store, use_id=True)
         branch_column = SearchColumn('branch_name', title=_('Branch'), width=110,
                                      data_type=str, search_attribute='branch_id',
-                                     valid_values=self._get_branch_values())
+                                     valid_values=branches)
         columns.insert(3, branch_column)
         return columns
 
