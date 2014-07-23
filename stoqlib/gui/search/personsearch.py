@@ -27,6 +27,7 @@ import datetime
 from decimal import Decimal
 
 from kiwi.ui.objectlist import Column
+from kiwi.currency import currency
 import pango
 from storm.expr import Eq
 
@@ -38,6 +39,7 @@ from stoqlib.domain.person import (Individual, EmployeeRole,
                                    Employee, EmployeeView,
                                    TransporterView,
                                    SupplierView, UserView)
+from stoqlib.domain.sale import ClientsWithSaleView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_phone_number
@@ -47,12 +49,15 @@ from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                               EmployeeRoleEditor, BranchEditor,
                                               UserEditor)
 from stoqlib.gui.search.searcheditor import SearchEditor
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.search.searchfilters import (ComboSearchFilter,
+                                              DateSearchFilter, Today)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
+from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.reporting.person import ClientsWithSaleReport
 
 _ = stoqlib_gettext
 
@@ -360,3 +365,78 @@ class UserSearch(BasePersonSearch):
 
     def get_editor_model(self, user_view):
         return user_view.user
+
+
+class ClientsWithSaleSearch(SearchDialog):
+    title = _(u"Clients with Sale")
+    search_spec = ClientsWithSaleView
+    report_class = ClientsWithSaleReport
+    size = (800, 450)
+    search_by_date = True
+
+    def setup_widgets(self):
+        self.add_csv_button(_('Clients With Sales'), _('clients'))
+
+    def create_filters(self):
+        self.set_text_field_columns(['cnpj', 'cpf', 'person_name', 'email', 'phone',
+                                     'category'])
+
+        # Date
+        date_filter = DateSearchFilter(_('Date:'))
+        date_filter.select(Today)
+        self.add_filter(date_filter)
+        self.date_filter = date_filter
+
+        # Branch
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        self.add_filter(branch_filter, columns=[],
+                        position=SearchFilterPosition.TOP)
+        self.branch_filter = branch_filter
+
+        self.search.set_query(self.executer_query)
+        executer = self.search.get_query_executer()
+        executer.set_limit(-1)
+
+    def get_columns(self, *args):
+        return [Column('cnpj_or_cpf', title=_(u"Document"), data_type=str,
+                       visible=False),
+                SearchColumn('person_name', title=_(u"Client"), data_type=str,
+                             expand=True, sorted=True),
+                SearchColumn('email', title=_(u"Email"), data_type=str,
+                             visible=False),
+                SearchColumn('phone', title=_(u"Phone"), data_type=str,
+                             visible=False),
+                SearchColumn('category', title=_(u"Category"), data_type=str,
+                             visible=False),
+                SearchColumn('cpf', title=_(u"CPF"), data_type=str,
+                             visible=False),
+                SearchColumn('cnpj', title=_(u"CNPJ"), data_type=str,
+                             visible=False),
+                Column('birth_date', title=_(u"Birth Date"),
+                       data_type=datetime.date, visible=False),
+                Column('n_sales', title=_(u"# Sales"), data_type=int),
+                Column('total_amount', title=_(u"Total Amount"), data_type=currency)]
+
+    def executer_query(self, store):
+        # We have to do this manual filter since adding this columns to the
+        # view would also group the results by those fields, leading to
+        # duplicate values in the results.
+        branch_id = self.branch_filter.get_state().value
+        if branch_id is None:
+            branch = None
+        else:
+            branch = store.get(Branch, branch_id)
+
+        date = self.date_filter.get_state()
+        if isinstance(date, DateQueryState):
+            date = date.date
+        elif isinstance(date, DateIntervalQueryState):
+            date = (date.start, date.end)
+
+        return self.search_spec.find_by_branch_date(store, branch, date)
+
+    # Callbacks
+    def on_details_button_clicked(self, *args):
+        selected = self.results.get_selected()
+        client = self.store.find(Client, Client.person_id == selected.id).one()
+        run_dialog(ClientDetailsDialog, self, self.store, client)

@@ -23,6 +23,7 @@
 ##
 
 import datetime
+from decimal import Decimal
 
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.person import (Client, Employee, EmployeeRoleHistory,
@@ -36,8 +37,9 @@ from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.search.personsearch import (ClientSearch, EmployeeSearch,
                                              SupplierSearch, TransporterSearch,
                                              EmployeeRoleSearch, BranchSearch,
-                                             UserSearch)
+                                             UserSearch, ClientsWithSaleSearch)
 from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -169,3 +171,17 @@ class TestPersonSearch(GUITest):
         search.set_searchbar_search_string('hom')
         search.search.refresh()
         self.check_search(search, 'user-string-filter')
+
+
+class TestClientsWithSaleSearch(GUITest):
+    def test_show(self):
+        sale = self.create_sale()
+        sale.client = self.create_client()
+        sale.total_amount = Decimal(555.23)
+        sale.open_date = localdate(2014, 1, 1)
+        sale.confirm_date = localdate(2014, 1, 1)
+
+        search = ClientsWithSaleSearch(self.store)
+        search.search.refresh()
+
+        self.check_search(search, 'search-clients-with-sale')

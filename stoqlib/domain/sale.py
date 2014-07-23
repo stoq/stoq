@@ -59,7 +59,8 @@ from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
-                                   SalesPerson, Company)
+                                   SalesPerson, Company, Individual,
+                                   ClientCategory)
 from stoqlib.domain.product import (Product, ProductHistory, Storable,
                                     StockTransactionHistory, StorableBatch)
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
@@ -2272,3 +2273,60 @@ class SalesPersonSalesView(Viewable):
 
         results.config(distinct=True)
         return results
+
+
+class ClientsWithSaleView(Viewable):
+    id = Person.id
+
+    person_name = Person.name
+    phone = Person.phone_number
+    email = Person.email
+
+    cpf = Individual.cpf
+    birth_date = Individual.birth_date
+
+    cnpj = Company.cnpj
+
+    category = ClientCategory.name
+
+    n_sales = Count(Sale.id)
+    total_amount = Sum(Sale.total_amount)
+
+    tables = [
+        Person,
+        Join(Client, Person.id == Client.person_id),
+        LeftJoin(ClientCategory, ClientCategory.id == Client.category_id),
+        Join(Sale, Client.id == Sale.client_id),
+        Join(Individual, Individual.person_id == Person.id),
+        LeftJoin(Company, Company.person_id == Person.id),
+    ]
+
+    group_by = [id, Individual.id, Company.id, ClientCategory.id]
+
+    @classmethod
+    def find_by_branch_date(cls, store, branch, date):
+        from stoqlib.domain.sale import Sale
+        queries = []
+        if branch:
+            queries.append(Sale.branch == branch)
+
+        if date:
+            if isinstance(date, tuple):
+                date_query = And(Date(Sale.confirm_date) >= date[0],
+                                 Date(Sale.confirm_date) <= date[1])
+            else:
+                date_query = Date(Sale.confirm_date) == date
+
+            queries.append(date_query)
+
+        if queries:
+            return store.find(cls, And(*queries))
+        return store.find(cls)
+
+    #
+    # Public API
+    #
+
+    @property
+    def cnpj_or_cpf(self):
+        return self.cnpj or self.cpf

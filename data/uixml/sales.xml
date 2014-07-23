@@ -49,6 +49,7 @@
       <menuitem action="SearchCreditCheckHistory"/>
       <menuitem action="ReturnedSaleSearch"/>
       <menuitem action="SearchUnconfirmedSaleItems"/>
+      <menuitem action="SearchClientsWithSale"/>
       <separator/>
       <menuitem action="LoanSearch"/>
       <menuitem action="LoanSearchItems"/>

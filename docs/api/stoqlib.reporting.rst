@@ -192,3 +192,11 @@ reporting Package
     :members:
     :undoc-members:
     :show-inheritance:
+
+:mod:`person` Module
+--------------------
+
+.. automodule:: stoqlib.reporting.person
+    :members:
+    :undoc-members:
+    :show-inheritance:

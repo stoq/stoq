@@ -35,8 +35,8 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
-from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
+from stoqlib.domain.person import Branch
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import SoldItemsByBranchView, UnconfirmedSaleItemsView
 from stoqlib.domain.workorder import WorkOrder
@@ -46,7 +46,8 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import set_bold
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
+from stoqlib.gui.search.searchfilters import (ComboSearchFilter,
+                                              DateSearchFilter)
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity, get_formatted_price

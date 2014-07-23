@@ -42,13 +42,14 @@ from stoqlib.domain.product import Storable
 from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
                                  ReturnedSaleItemsView, SaleItem,
-                                 SaleView, SalesPersonSalesView)
+                                 SaleView, SalesPersonSalesView,
+                                 ClientsWithSaleView)
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.exceptions import SellError, DatabaseInconsistency
-from stoqlib.lib.dateutils import localdatetime, localdate
+from stoqlib.lib.dateutils import localdate, localdatetime, localtoday
 from stoqlib.lib.parameters import sysparam
 
 
@@ -2376,3 +2377,51 @@ class TestSalesPersonSalesView(DomainTest):
 
         views = SalesPersonSalesView.find_by_date(store=self.store, date=None)
         self.assertIn(sale.salesperson.id, [row.id for row in views])
+
+
+class TestClientsWithSale(DomainTest):
+    def test_find_by_branch_date(self):
+        sale = self.create_sale()
+        sale.branch = self.create_branch()
+        sale.client = self.create_client()
+        sale.open_date = sale.confirm_date = localtoday()
+
+        sale2 = self.create_sale()
+        sale2.branch = self.create_branch()
+        sale2.client = sale.client
+        sale2.open_date = sale2.confirm_date = localtoday()
+
+        results = ClientsWithSaleView.find_by_branch_date(self.store, None, None)
+        self.assertFalse(results.is_empty())
+
+        results = ClientsWithSaleView.find_by_branch_date(self.store, sale2.branch, None)
+        self.assertEquals(len(list(results)), 1)
+
+        today = localtoday()
+        results = ClientsWithSaleView.find_by_branch_date(self.store, sale2.branch, today)
+        self.assertEquals(len(list(results)), 1)
+
+        yesterday = today - datetime.timedelta(days=1)
+        results = ClientsWithSaleView.find_by_branch_date(self.store, None, yesterday)
+        self.assertTrue(results.is_empty())
+
+        date = yesterday, today
+        results = ClientsWithSaleView.find_by_branch_date(self.store,
+                                                          sale2.branch, date)
+        self.assertEquals(len(list(results)), 1)
+
+    def test_total_amount(self):
+        sale = self.create_sale()
+        sale.branch = get_current_branch(self.store)
+        sale.client = self.create_client()
+        sale.total_amount = Decimal(224.50)
+        sale.open_date = sale.confirm_date = localtoday()
+
+        sale2 = self.create_sale()
+        sale2.branch = self.create_branch()
+        sale2.client = sale.client
+        sale2.total_amount = Decimal(225.50)
+        sale2.open_date = sale2.confirm_date = localtoday()
+
+        view = self.store.find(ClientsWithSaleView, id=sale.client.person.id).one()
+        self.assertEquals(view.total_amount, 450)
