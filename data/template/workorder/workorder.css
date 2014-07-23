@@ -1,21 +1,52 @@
 #notice {
-    padding: 0 0.75cm;
-    margin-top: 0.5cm;
-    margin-bottom: 1.5cm;
+    padding: 0 0.75em;
+    margin: 0.5em 0 1.5em;
 }
 
-#notice span {
-    font-weight: bold;
-}
+#notice span { font-weight: bold; }
 
 #notice pre {
-    margin-left: 0.2cm;
+    margin-left: 0.2em;
+    font-size: 0.8em;
 }
 
-section.signatures {
-    position: absolute;
-    top: 90%;
-    bottom: 0;
-    left: 0;
-    right: 0;
+.signatures {
+    padding: 10mm 0 10mm 0;
+    width: 100%;
+}
+
+.signature {
+    font-size: 0.5em;
+}
+
+table {
+    font-size: 0.65em;
+    margin: 1em 0 1em;
+}
+
+thead { font-size: 0.9em; }
+
+.items {
+    margin: auto; /* Aligns table content to center */
+    width: 100%;
+}
+
+.qtd { text-align: center; }
+
+.price { text-align: right; }
+
+.details {
+    width: 100%;
+    font-size: 0.65em;
+    padding: 0 0 1em;
+}
+
+.details .column-8 {
+    width: 60%;
+    float: left;
+}
+
+.details .column-4 {
+    width: 39%;
+    float: right;
 }

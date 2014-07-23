@@ -6,12 +6,11 @@
 </%block>
 
 <%block name="extra_meta">
-  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
   ${ setup_margin_labels(title) }
+  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
 </%block>
 
 <div class="page">
-
   ${ header(complete_header, title, report.subtitle, notes) }
 
   <table class="details">
@@ -48,11 +47,9 @@
 
   <%include file="workorder-items.html" />
 
-  <section class="signatures">
-    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
-                       if there is not enough space -->
+  <div class="signatures">
     <span class="signature">
-      ${ report.workorder.client.get_description() }<br />
+      ${ report.workorder.client.get_description() }
     </span>
-  </section>
+  </div>
 </div>

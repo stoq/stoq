@@ -17604,7 +17604,7 @@ msgstr "Número da ordem: %s"
 #~ msgstr "# "
 
 #~ msgid "Order number"
-#~ msgstr "Númer do pedido"
+#~ msgstr "Número do pedido"
 
 #~ msgid "Stoq - Till for Branch %03d"
 #~ msgstr "Stoq - Caixa para filial %03d"

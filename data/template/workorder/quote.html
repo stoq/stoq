@@ -6,78 +6,67 @@
 </%block>
 
 <%block name="extra_meta">
-  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
   ${ setup_margin_labels(title) }
+  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
 </%block>
 
 <div class="page">
-
   ${ header(complete_header, title, report.subtitle, notes) }
+  <h3>${ _("Quote") }</h3>
+  <div class="details">
+    <div class="column-8">
+      <h3>${ _("Details for quote number %s") % report.workorder.identifier }</h3>
+      <p><b>${ _("Description") }:</b> ${ report.workorder.description }</p>
 
-  <table class="details">
-    <tbody>
-      <tr>
-        <td>${ _("Order Number:") }:</td>
-        <td>${ report.workorder.identifier }</td>
-      </tr>
       % if report.workorder.sellable:
-      <tr>
-        <td>${ _("Equipment") }:</td>
-        <td colspan=3>${ report.workorder.sellable.description }</td>
-      </tr>
+      <p><b>${ _("Equipment") }:</b> ${ report.workorder.sellable.description }</p>
       % endif
-      <tr>
-        <td>${ _("Description") }:</td>
-        <td colspan=3>${ report.workorder.description }</td>
-      </tr>
-      <tr>
-        <td>${ _("Client") }:</td>
-        <td colspan=5>${ report.workorder.client.person.name }</td>
-      </tr>
-      <tr>
-        <td>${ _("Phone") }:</td>
-        <td>${ report.workorder.client.person.get_formatted_phone_number()}</td>
-        <td>${ _("Cell Phone") }:</td>
-        <td colspan=3>${ report.workorder.client.person.get_formatted_mobile_number()}</td>
-      </tr>
-      <tr>
-        <td>${ _("Estimated cost") }:</td>
-        <td>${ format_price(report.workorder.estimated_cost) if \
-               report.workorder.estimated_cost else '' }</td>
-        <td>${ _("Estimated start") }:</td>
-        <td>${ format_date(report.workorder.estimated_start) }</td>
-        <td>${ _("Estimated finish") }:</td>
-        <td>${ format_date(report.workorder.estimated_finish) }</td>
-      </tr>
-    </tbody>
-  </table>
+
+      <p><b>${ _("Estimated start") }:</b> ${ format_date(report.workorder.estimated_start) }</p>
+      <p><b>${ _("Estimated finish") }:</b> ${ format_date(report.workorder.estimated_finish) }</p>
+
+      <p>
+        <b>${ _("Estimated cost") }:</b> ${ format_price(report.workorder.estimated_cost) if \
+        report.workorder.estimated_cost else '' }
+      </p>
+    </div>
+    <div class="column-4">
+      <h3>${ _("Client details") }</h3>
+      <p><b>${ _("Name") }:</b> ${ report.workorder.client.person.name }</p>
+      % if report.workorder.client.person.get_formatted_phone_number():
+      <p><b>${ _("Phone") }:</b> ${ report.workorder.client.person.get_formatted_phone_number() }</p>
+      % endif
+      % if report.workorder.client.person.get_formatted_mobile_number():
+      <p><b>${ _("Cell Phone") }:</b> ${ report.workorder.client.person.get_formatted_mobile_number() }</p>
+      % endif
+      % if report.workorder.client.person.get_address_string():
+      <p><b>${ _("Address") }:</b> ${ report.workorder.client.person.get_address_string() }</p>
+      % endif
+    </div>
+  </div>
 
   % if report.workorder.sale and report.workorder.order_items.count() > 0:
-    <%include file="workorder-items.html" />
+  <%include file="workorder-items.html" />
   % endif
 
   <section id="notice">
-    <span>${ _("Quote") }:</span>
+    <span>${ _("Details") }:</span>
     <!-- The defect detected has higher priority, but if we don't have it
-         yet, use the defect reported by the client for the quote-->
+yet, use the defect reported by the client for the quote-->
     <pre>${ report.workorder.defect_detected or report.workorder.defect_reported }</pre>
   </section>
 
-    <section class="signatures">
-      <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
-                         if there is not enough space -->
-      <div>
-      <span class="signature">
-        <b>${ _("Client signature") }</b><br />
-        ${ report.workorder.client.get_description() }<br />
-      </div>
-      <div>
-      <span class="signature">
-        <b>${ _("Responsible signature") }</b><br />
-        % if report.workorder.quote_responsible:
-            ${ report.workorder.quote_responsible.get_description() }<br />
-        % endif
-     </span>
-      <div>
-    </section>
+
+  <div class="signatures">
+    <div class="signature">
+      <b>${ _("Client signature") }</b><br />
+      ${ report.workorder.client.get_description() }<br />
+    </div>
+    <div class="signature">
+      <b>${ _("Responsible signature") }</b><br />
+      % if report.workorder.quote_responsible:
+      ${ report.workorder.quote_responsible.get_description() }<br />
+      % endif
+    </div>
+  </div>
 </div>

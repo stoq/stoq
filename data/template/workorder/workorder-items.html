@@ -1,4 +1,4 @@
-<section>
+<section class="items">
   <table>
     <thead>
       <tr>
@@ -13,15 +13,15 @@
     <tbody class="list">
       % for item in report.workorder.order_items:
       <tr>
-        <td>${ item.sellable.code }</td>
+        <td class="code">${ item.sellable.code }</td>
         <td>${ item.sellable.get_description() }</td>
-        <td>${ format_quantity(item.quantity) }</td>
-        <td>${ format_price(item.price) }</td>
-        <td>${ format_price(item.total) }</td>
+        <td class="qtd">${ format_quantity(item.quantity) }</td>
+        <td class="price">${ format_price(item.price) }</td>
+        <td class="price">${ format_price(item.total) }</td>
       </tr>
       % endfor
       <tr class="summary">
-        <td colspan="4">${ _("Total") }:</td>
+        <td colspan="4">${ _("Total:") }</td>
         <td>${ format_price(report.workorder.get_total_amount()) }</td>
       </tr>
     </tbody>

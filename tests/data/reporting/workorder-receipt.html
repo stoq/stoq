@@ -7,7 +7,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="base/base.css" type="text/css" />
     
-  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
   
   <style>
     @page {
@@ -28,6 +27,7 @@
     }
   </style>
 
+  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
 
   </head>
   <body>
@@ -39,7 +39,6 @@
 
 
 <div class="page">
-
   
   <header>
     <div id="title">
@@ -85,7 +84,7 @@
     </tbody>
   </table>
 
-  <section>
+  <section class="items">
   <table>
     <thead>
       <tr>
@@ -99,25 +98,25 @@
 
     <tbody class="list">
       <tr>
-        <td></td>
+        <td class="code"></td>
         <td>Product A</td>
-        <td>2</td>
-        <td>$20.00</td>
-        <td>$40.00</td>
+        <td class="qtd">2</td>
+        <td class="price">$20.00</td>
+        <td class="price">$40.00</td>
       </tr>
       <tr>
-        <td></td>
+        <td class="code"></td>
         <td>Product B</td>
-        <td>1</td>
-        <td>$500.00</td>
-        <td>$500.00</td>
+        <td class="qtd">1</td>
+        <td class="price">$500.00</td>
+        <td class="price">$500.00</td>
       </tr>
       <tr>
-        <td></td>
+        <td class="code"></td>
         <td>Product C</td>
-        <td>5</td>
-        <td>$10.00</td>
-        <td>$50.00</td>
+        <td class="qtd">5</td>
+        <td class="price">$10.00</td>
+        <td class="price">$50.00</td>
       </tr>
       <tr class="summary">
         <td colspan="4">Total:</td>
@@ -128,13 +127,11 @@
 </section>
 
 
-  <section class="signatures">
-    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
-                       if there is not enough space -->
+  <div class="signatures">
     <span class="signature">
-      Client<br />
+      Client
     </span>
-  </section>
+  </div>
 </div>
 
   </body>
