@@ -687,7 +687,9 @@ def set_current_branch_station(store, station_name):
 
     main_company = sysparam.get_object(store, 'MAIN_COMPANY')
     if not station.branch and main_company:
-        station.branch = main_company
+        with new_store() as commit_store:
+            commit_station = commit_store.fetch(station)
+            commit_station.branch = commit_store.fetch(main_company)
 
     # The station may still not be associated with a branch when creating an
     # empty database
