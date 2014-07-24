@@ -789,6 +789,7 @@ class TestProductBrandByBranchView(DomainTest):
         # Search with a specific category
         results = ProductBrandByBranchView.find_by_category(self.store,
                                                             category).find()
+        results.order_by(ProductBrandByBranchView.id)
 
         # Checking the quantity for each product
         self.assertEqual(results[0].quantity, 5)
