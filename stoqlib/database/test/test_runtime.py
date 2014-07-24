@@ -28,6 +28,7 @@ from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.properties import UnicodeCol
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.base import Domain
+from stoqlib.domain.person import Person, Client, ClientView
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -256,3 +257,43 @@ class StoqlibTransactionTest(DomainTest):
         self.assertFalse(obj.was_deleted)
         self.assertFalse(obj.was_created)
         self.assertEqual(obj.on_update_called_count, 0)
+
+
+class TestStoqlibResultSet(DomainTest):
+
+    def test_fast_iter_single_table(self):
+        results = self.store.find(Person).order_by(Person.te_id)
+        # Make sure there are results so the test makes sense
+        assert results.count()
+        for obj, tpl in zip(results, results.fast_iter()):
+            for prop in ['name', 'id', 'te_id']:
+                self.assertEqual(getattr(obj, prop), getattr(tpl, prop))
+
+    def test_fast_iter_multiple_table(self):
+        results = self.store.find((Person, Client),
+                                  Person.id == Client.person_id)
+
+        # Make sure there are results so the test makes sense
+        assert results.count()
+        for objs, tpls in zip(results, results.fast_iter()):
+            self.assertEquals(objs[0].id, tpls[0].id)
+            self.assertEquals(objs[1].id, tpls[1].id)
+
+    def test_fast_iter_mixed(self):
+        results = self.store.find((Person, Client.id),
+                                  Person.id == Client.person_id)
+
+        # Make sure there are results so the test makes sense
+        assert results.count()
+        for objs, tpls in zip(results, results.fast_iter()):
+            self.assertEquals(objs[0].id, tpls[0].id)
+            self.assertEquals(objs[1], tpls[1])
+
+    def test_fast_iter_viewable(self):
+        results = self.store.find(ClientView).order_by(Client.te_id)
+        # Make sure there are results so the test makes sense
+        assert results.count()
+
+        for obj, tpl in zip(results, results.fast_iter()):
+            for prop in ['name', 'status', 'cpf']:
+                self.assertEqual(getattr(obj, prop), getattr(tpl, prop))

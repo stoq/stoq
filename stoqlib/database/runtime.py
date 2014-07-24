@@ -23,6 +23,7 @@
 ##
 """ Runtime routines for applications"""
 
+from collections import namedtuple
 import logging
 import sys
 import warnings
@@ -148,6 +149,42 @@ class StoqlibResultSet(ResultSet):
             return resultset
 
         return super(StoqlibResultSet, self).find(*args, **kwargs)
+
+    def _load_fast_object(self, named_tuples, values):
+        objects = []
+        values_start = values_end = 0
+        for nt in named_tuples:
+            if nt is None:
+                # This means its an single expression
+                values_end += 1
+                objects.append(values[values_start])
+            else:
+                values_end += len(nt._fields)
+                objects.append(nt(*values[values_start:values_end]))
+            values_start = values_end
+
+        if self._find_spec.is_tuple:
+            return tuple(objects)
+        else:
+            return objects[0]
+
+    def fast_iter(self):
+        # First build all named tuples
+        named_tuples = []
+        for is_expr, info in self._find_spec._cls_spec_info:
+            if is_expr:
+                named_tuples.append(None)
+            else:
+                named_tuples.append(namedtuple(info.cls.__name__,
+                                               [i.name for i in info.columns]))
+
+        is_viewable = hasattr(self, '_viewable')
+        # Then interate over the results bypassing storm object creation
+        for values in self._store._connection.execute(self._get_select()):
+            value = self._load_fast_object(named_tuples, values)
+            if is_viewable:
+                value = self._load_viewable(value)
+            yield value
 
 
 class StoqlibStore(Store):
