@@ -666,7 +666,10 @@ class OpticalMedicView(Viewable):
 
 
 class MedicSoldItemsView(Viewable):
+    branch = Branch
+
     id = Sellable.id
+    identifier = WorkOrder.identifier
     code = Sellable.code
     description = Sellable.description
     category = SellableCategory.description
@@ -702,5 +705,6 @@ class MedicSoldItemsView(Viewable):
 
     clause = And(Ne(Sale.confirm_date, None),
                  Sale.status != Sale.STATUS_CANCELLED)
-    group_by = [id, branch_name, code, description, category, manufacturer, batch_number,
-                batch_date, medic_name, OpticalMedic.id]
+    group_by = [id, branch_name, code, description, category, manufacturer,
+                batch_number, batch_date, medic_name, OpticalMedic.id,
+                WorkOrder.id, Branch.id]

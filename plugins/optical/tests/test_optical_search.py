@@ -52,6 +52,7 @@ class TestMedicSalesSearch(GUITest, OpticalDomainTest):
         optical.medic = self.create_optical_medic()
         workorder = optical.work_order
         workorder.sale = self.create_sale()
+        workorder.identifier = 99413
 
         sellable = self.create_sellable()
         sale_item = workorder.sale.add_sellable(sellable)

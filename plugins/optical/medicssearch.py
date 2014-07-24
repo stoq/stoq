@@ -32,7 +32,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.search.personsearch import BasePersonSearch
-from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
@@ -104,6 +104,7 @@ class MedicSalesSearch(SearchDialog):
 
     def get_columns(self):
         columns = [
+            IdentifierColumn('identifier', title=_('WO'), data_type=str),
             SearchColumn('code', title=_('Code'), data_type=str, sorted=True),
             SearchColumn('category', title=_('Category'), data_type=str, visible=False),
             SearchColumn('branch_name', title=_('Branch'), data_type=str,

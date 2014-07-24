@@ -37,6 +37,7 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
                 GtkLabel(): 'To:', insensitive
                 ProxyDateEntry(padding=6): None, insensitive
           SearchResultListView(result_view, expand=True, fill=True):
+            column: title='WO'
             column: title='Code'
             column: title='Category', hidden
             column: title='Branch', hidden
@@ -49,7 +50,7 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
             column: title='Batch Date', hidden
             column: title='Qty'
             column: title='Total'
-            row: u'', None, u'Moda Stoq', u'Description', None, u'Medic', u'1234', False, u'', None, Decimal('1.000'), Decimal('10.00000')
+            row: 99413, u'', None, u'Moda Stoq', u'Description', None, u'Medic', u'1234', False, u'', None, Decimal('1.000'), Decimal('10.00000')
           GtkHBox(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$10.00</b>'
