@@ -40,9 +40,10 @@ from stoqlib.domain.person import (Individual, EmployeeRole,
                                    TransporterView,
                                    SupplierView, UserView)
 from stoqlib.domain.sale import ClientsWithSaleView
+from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_phone_number
+from stoqlib.lib.formatters import format_phone_number, format_quantity
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                               EmployeeEditor,
                                               TransporterEditor,
@@ -373,13 +374,23 @@ class ClientsWithSaleSearch(SearchDialog):
     report_class = ClientsWithSaleReport
     size = (800, 450)
     search_by_date = True
+    fast_iter = True
 
     def setup_widgets(self):
         self.add_csv_button(_('Clients With Sales'), _('clients'))
 
     def create_filters(self):
-        self.set_text_field_columns(['cnpj', 'cpf', 'person_name', 'email', 'phone',
-                                     'category'])
+        # Extra filters (that are not columns)
+        self.search.add_filter_option(SellableCategory.description,
+                                      title=_(u"Category"),
+                                      data_type=str)
+        self.search.add_filter_option(Sellable.description,
+                                      title=_(u"Product"),
+                                      data_type=str)
+
+        # Text field
+        self.set_text_field_columns(['cnpj', 'cpf', 'person_name',
+                                     'email', 'phone', 'category'])
 
         # Date
         date_filter = DateSearchFilter(_('Date:'))
@@ -398,9 +409,7 @@ class ClientsWithSaleSearch(SearchDialog):
         executer.set_limit(-1)
 
     def get_columns(self, *args):
-        return [Column('cnpj_or_cpf', title=_(u"Document"), data_type=str,
-                       visible=False),
-                SearchColumn('person_name', title=_(u"Client"), data_type=str,
+        return [SearchColumn('person_name', title=_(u"Client"), data_type=str,
                              expand=True, sorted=True),
                 SearchColumn('email', title=_(u"Email"), data_type=str,
                              visible=False),
@@ -408,13 +417,19 @@ class ClientsWithSaleSearch(SearchDialog):
                              visible=False),
                 SearchColumn('category', title=_(u"Category"), data_type=str,
                              visible=False),
+                Column('cnpj_or_cpf', title=_(u"Document"), data_type=str,
+                       visible=False),
                 SearchColumn('cpf', title=_(u"CPF"), data_type=str,
                              visible=False),
                 SearchColumn('cnpj', title=_(u"CNPJ"), data_type=str,
                              visible=False),
                 Column('birth_date', title=_(u"Birth Date"),
                        data_type=datetime.date, visible=False),
-                Column('n_sales', title=_(u"# Sales"), data_type=int),
+                Column('last_purchase', title=_(u"Last purchase"),
+                       data_type=datetime.date),
+                Column('sales', title=_(u"# Sales"), data_type=int),
+                Column('sale_items', title=_(u"# Items"), data_type=Decimal,
+                       format_func=format_quantity,),
                 Column('total_amount', title=_(u"Total Amount"), data_type=currency)]
 
     def executer_query(self, store):

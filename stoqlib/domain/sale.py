@@ -39,7 +39,7 @@ from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import Date, Field, TransactionTimestamp, NullIf
+from stoqlib.database.expr import Date, Field, TransactionTimestamp, NullIf, Distinct
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol)
@@ -64,7 +64,7 @@ from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
 from stoqlib.domain.product import (Product, ProductHistory, Storable,
                                     StockTransactionHistory, StorableBatch)
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
-from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
 from stoqlib.domain.till import Till
@@ -2277,7 +2277,6 @@ class SalesPersonSalesView(Viewable):
 
 class ClientsWithSaleView(Viewable):
     id = Person.id
-
     person_name = Person.name
     phone = Person.phone_number
     email = Person.email
@@ -2289,23 +2288,30 @@ class ClientsWithSaleView(Viewable):
 
     category = ClientCategory.name
 
-    n_sales = Count(Sale.id)
-    total_amount = Sum(Sale.total_amount)
+    sales = Count(Distinct(Sale.id))
+    sale_items = Sum(SaleItem.quantity)
+    total_amount = Sum(SaleItem.price * SaleItem.quantity)
+    last_purchase = Max(Sale.confirm_date)
 
     tables = [
         Person,
         Join(Client, Person.id == Client.person_id),
         LeftJoin(ClientCategory, ClientCategory.id == Client.category_id),
-        Join(Sale, Client.id == Sale.client_id),
-        Join(Individual, Individual.person_id == Person.id),
+        LeftJoin(Individual, Individual.person_id == Person.id),
         LeftJoin(Company, Company.person_id == Person.id),
+        Join(Sale, Client.id == Sale.client_id),
+        Join(SaleItem, SaleItem.sale_id == Sale.id),
+        Join(Sellable, Sellable.id == SaleItem.sellable_id),
+        LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
     ]
 
     group_by = [id, Individual.id, Company.id, ClientCategory.id]
 
+    clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
+                Sale.status == Sale.STATUS_PAID)
+
     @classmethod
     def find_by_branch_date(cls, store, branch, date):
-        from stoqlib.domain.sale import Sale
         queries = []
         if branch:
             queries.append(Sale.branch == branch)

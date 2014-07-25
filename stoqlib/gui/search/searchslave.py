@@ -288,13 +288,28 @@ class SearchSlave(SlaveDelegate):
                                         str, bool):
                 continue
 
-            title = column.get_search_label()
+            attr = column.search_attribute or column.attribute
+            self.add_filter_option(attr, column.get_search_label(),
+                                   column.data_type, column.valid_values,
+                                   column.search_func, column.use_having)
 
-            menu_item = gtk.MenuItem(title)
-            menu_item.set_data('column', column)
-            menu_item.show()
-            menu_item.connect('activate', self._on_menu_item__activate)
-            self.menu.append(menu_item)
+    def add_filter_option(self, attr, title, data_type, valid_values=None,
+                          callback=None, use_having=False):
+        """Adds a new advanced filter option
+
+        Use this if you need a filter option in the advanced filters when you
+        don't have a equivalente SearchColumn in the object list. If its
+        possible to add the column, you should probably do that.
+
+        See add_filter_by_attribute for more information
+        """
+        assert data_type in (datetime.date, decimal.Decimal, int, currency, str,
+                             bool)
+        menu_item = gtk.MenuItem(title)
+        menu_item.show()
+        menu_item.connect('activate', self._on_menu_item__activate, attr, title,
+                          data_type, valid_values, callback, use_having)
+        self.menu.append(menu_item)
 
     def set_message(self, message):
         self.result_view.set_message(message)
@@ -383,48 +398,53 @@ class SearchSlave(SlaveDelegate):
         if self._auto_search:
             self.search()
 
-    def add_filter_by_column(self, column):
-        """Add a filter accordingly to the column specification
+    def add_filter_by_attribute(self, attr, title, data_type, valid_values=None,
+                                callback=None, use_having=False):
+        """Add a filter accordingly to the attributes specified
 
-        :param column: a SearchColumn instance
+        :param attr: attribute that will be filtered. This can be either the
+          name of the attribute or the attribute itself.
+        :param title: the title of the filter that will be visible in the
+                      interface
+        :param data_type: the attribute type (str, bool, decimal, etc)
+        :param callback: the callback function that will be triggered
+        :param use_having: use having expression in the query
         """
-        title = column.get_search_label()
-        if column.data_type is not bool:
+        if data_type is not bool:
             title += ':'
 
-        if column.data_type == datetime.date:
+        if data_type == datetime.date:
             filter = DateSearchFilter(title)
-            if column.valid_values:
+            if valid_values:
                 filter.clear_options()
                 filter.add_custom_options()
-                for opt in column.valid_values:
+                for opt in valid_values:
                     filter.add_option(opt)
-                filter.select(column.valid_values[0])
+                filter.select(valid_values[0])
 
-        elif (column.data_type == decimal.Decimal or
-              column.data_type == int or
-              column.data_type == currency):
+        elif (data_type == decimal.Decimal or
+              data_type == int or
+              data_type == currency):
             filter = NumberSearchFilter(title)
-            if column.data_type != int:
+            if data_type != int:
                 filter.set_digits(2)
-        elif column.data_type == str:
-            if column.valid_values:
-                filter = ComboSearchFilter(title, column.valid_values)
+        elif data_type == str:
+            if valid_values:
+                filter = ComboSearchFilter(title, valid_values)
             else:
                 filter = StringSearchFilter(title)
             filter.enable_advanced()
-        elif column.data_type == bool:
+        elif data_type == bool:
             filter = BoolSearchFilter(title)
         else:
-            raise NotImplementedError(title, column.data_type)
+            raise NotImplementedError(title, data_type)
 
         filter.set_removable()
-        attr = column.search_attribute or column.attribute
         self.add_filter(filter, columns=[attr],
-                        callback=column.search_func,
-                        use_having=column.use_having)
+                        callback=callback,
+                        use_having=use_having)
 
-        if column.data_type is not bool:
+        if data_type is not bool:
             label = filter.get_title_label()
             label.set_alignment(1.0, 0.5)
             self.label_group.add_widget(label)
@@ -694,12 +714,10 @@ class SearchSlave(SlaveDelegate):
     def on_search_entry__activate(self, button):
         self.search()
 
-    def _on_menu_item__activate(self, item):
-        column = item.get_data('column')
-        if column is None:
-            return
-
-        self.add_filter_by_column(column)
+    def _on_menu_item__activate(self, item, attr, title, data_type,
+                                valid_values, callback, use_having):
+        self.add_filter_by_attribute(attr, title, data_type, valid_values,
+                                     callback, use_having)
 
     def _on_search_filter__remove(self, filter):
         self.remove_filter(filter)

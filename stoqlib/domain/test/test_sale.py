@@ -2381,14 +2381,23 @@ class TestSalesPersonSalesView(DomainTest):
 
 class TestClientsWithSale(DomainTest):
     def test_find_by_branch_date(self):
-        sale = self.create_sale()
+        sellable = self.create_sellable()
+        client = self.create_client()
+
+        sale = self.create_sale(client=client)
+        sale.add_sellable(sellable)
         sale.branch = self.create_branch()
-        sale.client = self.create_client()
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
         sale.open_date = sale.confirm_date = localtoday()
 
-        sale2 = self.create_sale()
+        sale2 = self.create_sale(client=client)
+        sale2.add_sellable(sellable)
         sale2.branch = self.create_branch()
-        sale2.client = sale.client
+        self.add_payments(sale2)
+        sale2.order()
+        sale2.confirm()
         sale2.open_date = sale2.confirm_date = localtoday()
 
         results = ClientsWithSaleView.find_by_branch_date(self.store, None, None)
@@ -2411,17 +2420,23 @@ class TestClientsWithSale(DomainTest):
         self.assertEquals(len(list(results)), 1)
 
     def test_total_amount(self):
-        sale = self.create_sale()
-        sale.branch = get_current_branch(self.store)
-        sale.client = self.create_client()
-        sale.total_amount = Decimal(224.50)
+        branch = get_current_branch(self.store)
+        client = self.create_client()
+        sellable = self.create_sellable()
+
+        sale = self.create_sale(branch=branch, client=client)
+        sale.add_sellable(sellable, quantity=2, price=Decimal('112.25'))
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
         sale.open_date = sale.confirm_date = localtoday()
 
-        sale2 = self.create_sale()
-        sale2.branch = self.create_branch()
-        sale2.client = sale.client
-        sale2.total_amount = Decimal(225.50)
+        sale2 = self.create_sale(branch=branch, client=client)
+        sale2.add_sellable(sellable, quantity=1, price=Decimal('225.50'))
+        self.add_payments(sale2)
+        sale2.order()
+        sale2.confirm()
         sale2.open_date = sale2.confirm_date = localtoday()
 
-        view = self.store.find(ClientsWithSaleView, id=sale.client.person.id).one()
+        view = self.store.find(ClientsWithSaleView, id=sale.client.person_id).one()
         self.assertEquals(view.total_amount, 450)

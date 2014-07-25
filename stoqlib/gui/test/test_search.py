@@ -270,7 +270,9 @@ class TestSearchGeneric(DomainTest):
             if not isinstance(i, SearchColumn):
                 continue
 
-            filter = dialog.search.add_filter_by_column(i)
+            filter = dialog.search.add_filter_by_attribute(
+                i.search_attribute, i.get_search_label(),
+                i.data_type, i.valid_values, i.search_func, i.use_having)
 
             # Set some value in the filter, so that it acctually is included in
             # the query

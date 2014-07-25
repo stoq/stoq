@@ -23,8 +23,8 @@
 ##
 
 import datetime
-from decimal import Decimal
 
+from stoqlib.api import api
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.person import (Client, Employee, EmployeeRoleHistory,
                                    Supplier, Transporter, EmployeeRole)
@@ -39,7 +39,6 @@ from stoqlib.gui.search.personsearch import (ClientSearch, EmployeeSearch,
                                              EmployeeRoleSearch, BranchSearch,
                                              UserSearch, ClientsWithSaleSearch)
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -97,7 +96,9 @@ class TestPersonSearch(GUITest):
         column = search.search.get_column_by_attribute('birth_date')
         search_title = column.get_search_label() + ':'
 
-        search.search.add_filter_by_column(column)
+        search.search.add_filter_by_attribute(
+            column.attribute, column.get_search_label(), column.data_type, column.valid_values,
+            column.search_func, column.use_having)
         birthday_filter = search.search.get_search_filter_by_label(
             search_title)
 
@@ -175,11 +176,17 @@ class TestPersonSearch(GUITest):
 
 class TestClientsWithSaleSearch(GUITest):
     def test_show(self):
-        sale = self.create_sale()
-        sale.client = self.create_client()
-        sale.total_amount = Decimal(555.23)
-        sale.open_date = localdate(2014, 1, 1)
-        sale.confirm_date = localdate(2014, 1, 1)
+        self.clean_domain([SaleItem, Commission, Sale])
+        current_branch = api.get_current_branch(self.store)
+        sellable = self.create_sellable()
+        client = self.create_client(name=u'Zeca')
+
+        sale = self.create_sale(client=client, branch=current_branch)
+        sale.add_sellable(sellable, quantity=3)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+        sale.confirm_date = datetime.date.today()
 
         search = ClientsWithSaleSearch(self.store)
         search.search.refresh()
