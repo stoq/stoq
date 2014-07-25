@@ -113,7 +113,13 @@ class SearchDialog(BasicDialog):
     #: If ``None``, the print button will not even be created
     report_class = None
 
+    #: If the results should use an objecttree instead of objectlist. The result
+    #: objects should have a get_parent method if this is set.
     tree = False
+
+    #: If we should use the (experimental) fast iter feature of the result set.
+    #: See stoqlib.database.runtime for more information
+    fast_iter = False
 
     def __init__(self, store, search_spec=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False,
@@ -183,6 +189,7 @@ class SearchDialog(BasicDialog):
             restore_name=self.__class__.__name__,
             store=self.store,
             search_spec=self.search_spec,
+            fast_iter=self.fast_iter,
         )
         if self.advanced_search:
             self.search.enable_advanced_search()

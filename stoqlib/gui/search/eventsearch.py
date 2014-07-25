@@ -40,7 +40,7 @@ class EventSearch(SearchDialog):
     title = _('Search for events')
     size = (750, 500)
     search_spec = Event
-    # model_list_lookup_attr = 'product_id'
+    fast_iter = True
 
     def create_filters(self):
         self.set_text_field_columns(['description'])

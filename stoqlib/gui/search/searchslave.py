@@ -87,7 +87,8 @@ class SearchSlave(SlaveDelegate):
                  restore_name=None,
                  chars=25,
                  store=None,
-                 search_spec=None):
+                 search_spec=None,
+                 fast_iter=False):
         """
         Create a new SearchContainer object.
         :param columns: a list of :class:`kiwi.ui.objectlist.Column`
@@ -110,6 +111,7 @@ class SearchSlave(SlaveDelegate):
         self._selected_item = None
         self._summary_label = None
         self._search_spec = search_spec
+        self._fast_iter = fast_iter
         self.store = store
         self.menu = None
         self.result_view = None
@@ -236,6 +238,8 @@ class SearchSlave(SlaveDelegate):
         results = executer.search(states)
         if clear:
             self.result_view.clear()
+        if self._fast_iter:
+            results = results.fast_iter()
         self.result_view.search_completed(results)
 
         if self.result_view.get_n_items() == 0:

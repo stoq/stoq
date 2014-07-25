@@ -427,6 +427,7 @@ class ProductBatchSearch(ProductSearch):
     search_spec = ProductBatchView
     has_print_price_button = False
     csv_data = (_('Batch'), _('batch'))
+    fast_iter = True
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True):
         ProductSearch.__init__(self, store, hide_footer=hide_footer,
