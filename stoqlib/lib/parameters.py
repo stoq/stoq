@@ -879,6 +879,8 @@ class ParameterAccess(object):
 
     def _set_default_method_default(self, store):
         from stoqlib.domain.payment.method import PaymentMethod
+        if self.has_object("DEFAULT_PAYMENT_METHOD"):
+            return
         method = PaymentMethod.get_by_name(store, u'money')
         self.set_object(store, u"DEFAULT_PAYMENT_METHOD", method)
 
