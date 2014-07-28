@@ -137,10 +137,14 @@ class SearchResultTreeView(ObjectTree):
         self.connect('row-activated', self._on__row_activated)
         self.connect('right-click', self._on__right_click)
 
-    def _add_result(self, result):
+    #
+    # Public API
+    #
+
+    def add_result(self, result):
         parent = result.get_parent()
         if parent:
-            self._add_result(parent)
+            self.add_result(parent)
         if not result in self:
             self.append(parent, result)
             if parent:
@@ -162,7 +166,11 @@ class SearchResultTreeView(ObjectTree):
 
     def search_completed(self, results):
         for result in results:
-            self._add_result(result)
+            self.add_result(result)
+
+        summary_label = self._search.get_summary_label()
+        if summary_label is not None:
+            summary_label.update_total()
 
     def get_settings(self):
         d = {}

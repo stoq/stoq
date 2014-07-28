@@ -88,7 +88,8 @@ class SearchSlave(SlaveDelegate):
                  chars=25,
                  store=None,
                  search_spec=None,
-                 fast_iter=False):
+                 fast_iter=False,
+                 result_view_class=None):
         """
         Create a new SearchContainer object.
         :param columns: a list of :class:`kiwi.ui.objectlist.Column`
@@ -100,6 +101,9 @@ class SearchSlave(SlaveDelegate):
         """
         if tree:
             self.result_view_class = SearchResultTreeView
+
+        if result_view_class:
+            self.result_view_class = result_view_class
 
         self._auto_search = True
         self._lazy_search = False

@@ -117,6 +117,11 @@ class SearchDialog(BasicDialog):
     #: objects should have a get_parent method if this is set.
     tree = False
 
+    #: Provide your own result_view_class for the search results.
+    #: See stoqlib.gui.search.searchresultview.SearchResultTreeView for more
+    #: information on what should be implemented
+    result_view_class = None
+
     #: If we should use the (experimental) fast iter feature of the result set.
     #: See stoqlib.database.runtime for more information
     fast_iter = False
@@ -204,6 +209,7 @@ class SearchDialog(BasicDialog):
             store=self.store,
             search_spec=self.search_spec,
             fast_iter=self.fast_iter,
+            result_view_class=self.result_view_class
         )
         if self.advanced_search:
             self.search.enable_advanced_search()

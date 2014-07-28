@@ -250,6 +250,8 @@ class StockApp(ShellApp):
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('manufacturer', title=_("Manufacturer"),
                              data_type=str, visible=False),
+                SearchColumn('brand', title=_("Brand"),
+                             data_type=str, visible=False),
                 SearchColumn('model', title=_("Model"),
                              data_type=str, visible=False),
                 SearchColumn('location', title=_("Location"), data_type=str,

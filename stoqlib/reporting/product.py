@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,9 @@
 ##
 """ Products report implementation """
 
-from stoqlib.reporting.report import ObjectListReport, TableReport
+from stoqlib.reporting.report import (ObjectListReport,
+                                      ObjectTreeReport,
+                                      TableReport)
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -46,9 +48,26 @@ class ProductBrandReport(ObjectListReport):
     summary = ['quantity']
 
 
+class ProductBrandByBranchReport(ObjectTreeReport):
+    """ This report show a list of all products brand by branch returned by
+     a SearchBar, listing both its brand and its product quantity in the stock
+     selected.
+    """
+    title = _("Brand by branch Listing")
+    filter_format_string = _("on branch <u>%s</u>")
+    summary = ['quantity']
+
+    def has_parent(self, obj):
+        return obj.company
+
+    # Overriding the method to summarize correctly
+    def accumulate(self, obj):
+        if not obj.company:
+            self._summary['quantity'] += obj.quantity
+
+
 class SimpleProductReport(ObjectListReport):
     title = _("Product Listing")
-    filter_format_string = _("on branch <u>%s</u>")
     summary = ['stock']
 
 

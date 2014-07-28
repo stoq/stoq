@@ -28,7 +28,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.objectlist import Column, ColoredColumn
+from kiwi.ui.objectlist import Column, ColoredColumn, COL_MODEL
 from storm.expr import Eq
 
 from stoqlib.api import api
@@ -53,6 +53,7 @@ from stoqlib.gui.search.searchdialog import SearchDialog, SearchDialogPrintSlave
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchfilters import (DateSearchFilter, ComboSearchFilter,
                                               Today)
+from stoqlib.gui.search.searchresultview import SearchResultTreeView
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.productwizard import ProductCreateWizard
@@ -62,9 +63,46 @@ from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
                                        ProductClosedStockReport,
                                        ProductPriceReport, ProductStockReport,
-                                       ProductsSoldReport, ProductBrandReport)
+                                       ProductsSoldReport, ProductBrandReport,
+                                       ProductBrandByBranchReport)
 
 _ = stoqlib_gettext
+
+
+class _ProductBrandResultTreeView(SearchResultTreeView):
+
+    def __iter__(self):
+        for item in self.iter_items():
+            yield item
+
+    # Overriding the method _add_results to avoid multiple consults to sql
+    def add_result(self, result):
+        if not isinstance(result, ProductBrandStockView):
+            parent = self._cache.get(result.brand)
+        else:
+            parent = None
+        if parent:
+            self.add_result(parent)
+        if not result in self:
+            self.append(parent, result)
+            if parent:
+                self.expand(parent)
+
+    def search_completed(self, results):
+        if not results.is_empty():
+            self._cache = {}
+            for item in results[0].store.find(ProductBrandStockView):
+                self._cache[item.brand] = item
+
+        super(_ProductBrandResultTreeView, self).search_completed(results)
+
+    def iter_items(self, include_parents=False):
+        """ Set include_parents=True if the parents are needed """
+        for obj in self.get_model():
+            if include_parents:
+                yield obj[COL_MODEL]
+            for child in obj.iterchildren():
+                yield child[COL_MODEL]
 
 
 class ProductSearch(SellableSearch):
@@ -473,7 +511,8 @@ class ProductBrandByBranchSearch(SearchDialog):
     title = _('Brand by Branch Search')
     size = (775, 450)
     search_spec = ProductBrandByBranchView
-    report_class = ProductBrandReport
+    report_class = ProductBrandByBranchReport
+    result_view_class = _ProductBrandResultTreeView
     unlimited_results = True
     text_field_columns = [ProductBrandByBranchView.brand,
                           ProductBrandByBranchView.company]
@@ -506,8 +545,6 @@ class ProductBrandByBranchSearch(SearchDialog):
     def get_columns(self):
         return [SearchColumn('brand', title=_('Brand'), data_type=str,
                              sorted=True, expand=True),
-                SearchColumn('manufacturer', title=_('Manufacturer'), data_type=str,
-                             visible=False),
                 SearchColumn('company', title=_('Branch'), data_type=str),
                 Column('quantity', title=_('Quantity'), data_type=Decimal)]
 
@@ -519,6 +556,11 @@ class ProductBrandByBranchSearch(SearchDialog):
             category = None
 
         return self.search_spec.find_by_category(store, category)
+
+    def print_report(self):
+        print_report(self.report_class, self.results,
+                     list(self.results.iter_items(include_parents=True)),
+                     filters=self.search.get_search_filters())
 
 
 class ProductBranchSearch(SearchDialog):

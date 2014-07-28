@@ -299,3 +299,24 @@ class ObjectListReport(TableReport):
                 value = column.as_string(value)
             row.append(value)
         return row
+
+
+class ObjectTreeReport(ObjectListReport):
+    """Creates an pdf report from an objecttree and its current state
+
+    This report will only show the columns that are visible, in the order they
+    are visible. It will also show the filters that were enabled when the report
+    was generated. And finnally display parent row in bold and children row
+    shifted a little bit to the right
+    """
+
+    template_filename = "objecttree.html"
+
+    def get_row(self, obj):
+        row = []
+        for c in self._columns:
+            row.append(self.get_cell(obj, c))
+        return self.has_parent(obj), row
+
+    def has_parent(self, obj):
+        raise NotImplementedError

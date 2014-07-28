@@ -136,6 +136,7 @@ class ProductFullStockView(Viewable):
     product_id = Product.id
     location = Product.location
     model = Product.model
+    brand = Product.brand
 
     manufacturer = ProductManufacturer.name
     tax_description = SellableTaxConstant.description
@@ -967,8 +968,6 @@ class ProductBrandByBranchView(Viewable):
 
     quantity = Sum(ProductStockItem.quantity)
 
-    manufacturer = ProductManufacturer.name
-
     tables = [
         ProductStockItem,
         Join(Storable, Storable.id == ProductStockItem.storable_id),
@@ -983,7 +982,7 @@ class ProductBrandByBranchView(Viewable):
 
     clause = ProductStockItem.quantity > 0
 
-    group_by = [id, brand, branch, manufacturer, company]
+    group_by = [id, brand, branch, company]
 
     @classmethod
     def find_by_category(cls, store, category):
@@ -1007,6 +1006,7 @@ class ProductBrandStockView(Viewable):
     brand = Coalesce(Product.brand, u'')
 
     quantity = Sum(ProductStockItem.quantity)
+    company = u''
 
     tables = [
         Product,
