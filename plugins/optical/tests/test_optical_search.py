@@ -22,7 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
 
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.searchoptions import Any
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -47,23 +49,36 @@ class TestMedicSearch(GUITest, OpticalDomainTest):
 
 
 class TestMedicSalesSearch(GUITest, OpticalDomainTest):
-    def test_show(self):
+
+    @mock.patch('plugins.optical.medicssearch.run_dialog')
+    def test_show(self, run_dialog):
         optical = self.create_optical_work_order()
         optical.medic = self.create_optical_medic()
+
+        sale = self.create_sale()
+        sale.identifier = 99413
+
         workorder = optical.work_order
-        workorder.sale = self.create_sale()
-        workorder.identifier = 99413
+        workorder.sale = sale
 
         sellable = self.create_sellable()
-        sale_item = workorder.sale.add_sellable(sellable)
-        wo_item = self.create_work_order_item()
-        wo_item.order = workorder
+        sale_item = sale.add_sellable(sellable)
+        wo_item = self.create_work_order_item(order=workorder)
         wo_item.sale_item = sale_item
-        self.add_payments(workorder.sale)
-        workorder.sale.order()
-        workorder.sale.confirm()
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
 
         search = MedicSalesSearch(self.store)
         search._date_filter.select(data=Any)
         search.search.refresh()
         self.check_search(search, 'optical-medic-sales-search')
+
+        search.results.select(search.results[0])
+        self.click(search.sale_details_button)
+
+        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEquals(run_dialog.call_args[0][0], SaleDetailsDialog)
+        self.assertEquals(run_dialog.call_args[0][1], search)
+        self.assertEquals(run_dialog.call_args[0][2], self.store)
+        self.assertEquals(run_dialog.call_args[0][3].id, sale.id)

@@ -31,6 +31,9 @@ from kiwi.currency import currency
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.domain.sale import SaleView
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.personsearch import BasePersonSearch
 from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
 from stoqlib.gui.search.searchfilters import DateSearchFilter
@@ -76,6 +79,7 @@ class MedicSalesSearch(SearchDialog):
     title = _(u'Sold Items by medic')
     size = (800, 450)
     search_spec = MedicSoldItemsView
+    fast_iter = True
 
     #
     # SearchDialog Hooks
@@ -83,6 +87,13 @@ class MedicSalesSearch(SearchDialog):
 
     def setup_widgets(self):
         self.add_csv_button(_('Sold Products'), _('sold-products'))
+        self.sale_details_button = self.add_button(label=_('Sale Details'))
+        self.sale_details_button.show()
+        self.sale_details_button.set_sensitive(False)
+
+    def update_widgets(self):
+        item = self.results.get_selected()
+        self.sale_details_button.set_sensitive(bool(item))
 
     def create_filters(self):
         self.set_text_field_columns(['medic_name', 'description', 'code'])
@@ -104,7 +115,7 @@ class MedicSalesSearch(SearchDialog):
 
     def get_columns(self):
         columns = [
-            IdentifierColumn('identifier', title=_('WO'), data_type=str),
+            IdentifierColumn('identifier', title=_('WO')),
             SearchColumn('code', title=_('Code'), data_type=str, sorted=True),
             SearchColumn('category', title=_('Category'), data_type=str, visible=False),
             SearchColumn('branch_name', title=_('Branch'), data_type=str,
@@ -127,3 +138,8 @@ class MedicSalesSearch(SearchDialog):
         ]
 
         return columns
+
+    def on_sale_details_button__clicked(self, widget):
+        item = self.results.get_selected()
+        sale_view = self.store.find(SaleView, id=item.sale_id).one()
+        run_dialog(SaleDetailsDialog, self, self.store, sale_view)
