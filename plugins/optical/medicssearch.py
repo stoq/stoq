@@ -115,7 +115,11 @@ class MedicSalesSearch(SearchDialog):
 
     def get_columns(self):
         columns = [
-            IdentifierColumn('identifier', title=_('WO')),
+            IdentifierColumn('identifier', title=_('Sale #')),
+            SearchColumn('open_date', title=_('Open date'),
+                         data_type=datetime.date, visible=False),
+            SearchColumn('confirm_date', title=_('Confirm date'),
+                         data_type=datetime.date, visible=False),
             SearchColumn('code', title=_('Code'), data_type=str, sorted=True),
             SearchColumn('category', title=_('Category'), data_type=str, visible=False),
             SearchColumn('branch_name', title=_('Branch'), data_type=str,

@@ -27,6 +27,7 @@ import mock
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.searchoptions import Any
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.dateutils import localtoday
 
 from ..medicssearch import OpticalMedicSearch, MedicSalesSearch
 from .test_optical_domain import OpticalDomainTest
@@ -68,6 +69,8 @@ class TestMedicSalesSearch(GUITest, OpticalDomainTest):
         self.add_payments(sale)
         sale.order()
         sale.confirm()
+        sale.open_date = localtoday()
+        sale.confirm_date = localtoday()
 
         search = MedicSalesSearch(self.store)
         search._date_filter.select(data=Any)

@@ -677,6 +677,8 @@ class MedicSoldItemsView(Viewable):
     batch_number = Coalesce(StorableBatch.batch_number, u'')
     batch_date = StorableBatch.create_date
     sale_id = Sale.id
+    open_date = Sale.open_date
+    confirm_date = Sale.confirm_date
 
     branch_name = Company.fancy_name
     medic_name = Person.name
