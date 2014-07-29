@@ -85,7 +85,6 @@ class TillFiscalOperationsSearch(SearchDialog):
     title = _(u"Till Fiscal Operations")
     search_spec = TillFiscalOperationsView
     size = (750, 500)
-    searching_by_date = True
 
     #
     # SearchDialog Hooks

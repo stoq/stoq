@@ -33,7 +33,6 @@ from kiwi.datatypes import converter
 from stoqlib.database.expr import Date
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
-from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.views import (BasePaymentView, InPaymentView,
@@ -45,7 +44,6 @@ from stoqlib.domain.product import (ProductSupplierInfo, ProductStockItem,
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
-from stoqlib.domain.views import ProductBrandStockView
 from stoqlib.domain.views import ProductBrandByBranchView
 from stoqlib.domain.views import ProductComponentView
 from stoqlib.domain.views import ProductFullStockView
@@ -225,21 +223,6 @@ class TestCardPaymentView(DomainTest):
         self.create_payment_renegotiation(group=payment.group)
         result = self.store.find(CardPaymentView, id=payment.id).one()
         self.assertEquals(result.renegotiation.client.person.name, u'Client')
-
-    def test_find_by_provider(self):
-
-        self.create_card_payment(payment_type=Payment.TYPE_IN,
-                                 provider_id=u'VISANET')
-        payment = self.create_card_payment(payment_type=Payment.TYPE_IN)
-        provider = self.store.find(CreditProvider, provider_id=u'AMEX').one()
-
-        payments = CardPaymentView.find_by_provider(store=self.store,
-                                                    provider=None).count()
-        self.assertEquals(payments, 2)
-
-        card_payment = CardPaymentView.find_by_provider(store=self.store,
-                                                        provider=provider).one()
-        self.assertIs(card_payment.payment, payment)
 
 
 class Test_BillandCheckPaymentView(DomainTest):
@@ -637,43 +620,6 @@ class TestQuotationView(DomainTest):
 
 
 class TestSoldItemView(DomainTest):
-    def test_select_by_branch_data(self):
-        branch = get_current_branch(self.store)
-        sale = self.create_sale()
-        sale.branch = branch
-        sellable = self.add_product(sale)
-        sale.order()
-        self.add_payments(sale, method_type=u'money')
-        sale.confirm()
-
-        results = SoldItemView.find_by_branch_date(self.store, None, None)
-        self.assertFalse(results.is_empty())
-
-        results = SoldItemView.find_by_branch_date(self.store, branch, None)
-        self.assertFalse(results.is_empty())
-
-        results = SoldItemView.find_by_branch_date(self.store, branch, None).find(
-            SoldItemView.id == sellable.id)
-        # FIXME: Storm does not support count() with group_by
-        # self.assertEquals(results.count(), 1)
-        self.assertEquals(len(list(results)), 1)
-
-        today = localtoday()
-        results = SoldItemView.find_by_branch_date(self.store, None, today).find(
-            SoldItemView.id == sellable.id)
-        self.assertEquals(len(list(results)), 1)
-
-        yesterday = today - datetime.timedelta(days=1)
-        results = SoldItemView.find_by_branch_date(self.store, None,
-                                                   (yesterday, today))
-        results = results.find(SoldItemView.id == sellable.id)
-        self.assertEquals(len(list(results)), 1)
-
-        yesterday = today - datetime.timedelta(days=1)
-        results = SoldItemView.find_by_branch_date(self.store, None,
-                                                  (yesterday, today))
-
-        self.assertFalse(results.is_empty())
 
     def test_average_cost(self):
         sale = self.create_sale()
@@ -808,53 +754,3 @@ class TestProductBrandByBranchView(DomainTest):
         for i in results2:
             total_products += i.quantity
         self.assertNotEqual(total_products, 0)
-
-
-class TestProductBrandStockView(DomainTest):
-    def test_find_by_branch_category(self):
-        branch = self.create_branch()
-        p1 = self.create_product(branch=branch, stock=5)
-        p1.sellable.category = self.create_sellable_category()
-        p1.sellable.category.description = u"category"
-        p1.brand = u"Black Mesa"
-
-        # Creates another product with same brand but without category
-        p2 = self.create_product(branch=branch, stock=1)
-        p2.brand = u"Black Mesa"
-
-        # Search without a specific category
-        results = ProductBrandStockView.find_by_branch_category(self.store, branch,
-                                                                None).find()
-        brand = results[0].brand
-        total_products = results[0].quantity
-
-        # P1 + P2 = 6
-        self.assertEqual(total_products, 6)
-        self.assertEqual(brand, u"Black Mesa")
-
-        results = ProductBrandStockView.find_by_branch_category(self.store, branch,
-                                                                p1.sellable.category).find()
-        brand = results[0].brand
-        total_products = results[0].quantity
-
-        # Igoring P2
-        self.assertEqual(total_products, 5)
-        self.assertEqual(brand, u"Black Mesa")
-
-        # Checking a different branch
-        branch2 = self.create_branch()
-        p3 = self.create_product(branch=branch2, stock=666)
-        p3.brand = u"Aperture Science"
-        results = ProductBrandStockView.find_by_branch_category(self.store,
-                                                                branch2,
-                                                                p1.sellable.category).find().one()
-
-        self.assertIsNone(results)
-
-        results = ProductBrandStockView.find_by_branch_category(self.store, branch2,
-                                                                None).find()
-        brand = results[0].brand
-        total_products = results[0].quantity
-
-        self.assertEqual(brand, u"Aperture Science")
-        self.assertEqual(total_products, 666)

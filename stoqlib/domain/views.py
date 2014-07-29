@@ -29,7 +29,7 @@ from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
                         Alias, Count, Cast, Ne)
 from storm.info import ClassAlias
 
-from stoqlib.database.expr import (Case, Date, Distinct, Field, NullIf,
+from stoqlib.database.expr import (Case, Distinct, Field, NullIf,
                                    StatementTimestamp, Concat)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import Account, AccountTransaction
@@ -614,25 +614,6 @@ class SoldItemView(Viewable):
 
     group_by = [id, product_id, code, description, category, Sale.status]
 
-    @classmethod
-    def find_by_branch_date(cls, store, branch, date):
-        queries = []
-        if branch:
-            queries.append(Sale.branch == branch)
-
-        if date:
-            if isinstance(date, tuple):
-                date_query = And(Date(Sale.confirm_date) >= date[0],
-                                 Date(Sale.confirm_date) <= date[1])
-            else:
-                date_query = Date(Sale.confirm_date) == date
-
-            queries.append(date_query)
-
-        if queries:
-            return store.find(cls, And(*queries))
-        return store.find(cls)
-
     @property
     def average_cost(self):
         if not self.quantity:  # pragma: nocoverage
@@ -1037,18 +1018,6 @@ class ProductBrandStockView(Viewable):
         LeftJoin(Branch, Branch.id == ProductStockItem.branch_id)
     ]
     group_by = [id, brand]
-
-    @classmethod
-    def find_by_branch_category(cls, store, branch, category):
-        queries = []
-        if branch:
-            queries.append(ProductStockItem.branch_id == branch.id)
-        if category:
-            queries.append(Sellable.category_id == category.id)
-        if queries:
-            return store.find(cls, And(*queries))
-
-        return store.find(cls)
 
 
 class UnconfirmedSaleItemsView(Viewable):

@@ -72,6 +72,8 @@ class ProductionItemsSearch(ProductSearch):
     report_class = ProductionItemReport
     csv_data = None
     has_print_price_button = False
+    text_field_columns = [ProductionItemView.description,
+                          ProductionItemView.order_identifier_str]
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True):
         ProductSearch.__init__(self, store, hide_footer=hide_footer,
@@ -82,8 +84,6 @@ class ProductionItemsSearch(ProductSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'order_identifier_str'])
-
         statuses = [(desc, i) for i, desc in ProductionOrder.statuses.items()]
         statuses.insert(0, (_(u'Any'), None))
         self.status_filter = ComboSearchFilter(_('order status:'), statuses)

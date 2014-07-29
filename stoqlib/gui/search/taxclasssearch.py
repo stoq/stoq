@@ -49,11 +49,7 @@ class TaxTemplatesSearch(SearchEditor):
     search_label = _('Class Matching:')
     search_spec = ProductTaxTemplate
     editor_class = ProductTaxTemplateEditor
-
-    def create_filters(self):
-        self.set_text_field_columns(['name'])
-        executer = self.search.get_query_executer()
-        executer.add_query_callback(self._get_query)
+    text_field_columns = [ProductTaxTemplate.name]
 
     def get_columns(self):
         return [
@@ -61,14 +57,3 @@ class TaxTemplatesSearch(SearchEditor):
                          sorted=True, expand=True),
             Column("tax_type_str", _("Type"), data_type=str, width=80),
         ]
-
-    def get_editor_model(self, view_item):
-        return view_item
-
-    #
-    # Private
-    #
-
-    def _get_query(self, states):
-        # return Ne(SellableCategory.category_id, None)
-        return None

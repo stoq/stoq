@@ -28,7 +28,6 @@ from decimal import Decimal
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.views import ConsignedItemAndStockView
-from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
@@ -40,17 +39,13 @@ class ConsignmentItemSearch(SearchDialog):
     title = _(u'Consignment Items Search')
     size = (-1, 450)
     search_spec = ConsignedItemAndStockView
+    branch_filter_column = ConsignedItemAndStockView.branch
+    text_field_columns = [ConsignedItemAndStockView.description,
+                          ConsignedItemAndStockView.order_identifier_str]
 
     #
     # SearchDialog Hooks
     #
-
-    def create_filters(self):
-        self.set_text_field_columns(['description', 'order_identifier_str'])
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=['branch'],
-                        position=SearchFilterPosition.TOP)
 
     def get_columns(self):
         return [IdentifierColumn('order_identifier', title=_(u"Order #")),

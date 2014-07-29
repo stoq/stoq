@@ -2380,44 +2380,6 @@ class TestSalesPersonSalesView(DomainTest):
 
 
 class TestClientsWithSale(DomainTest):
-    def test_find_by_branch_date(self):
-        sellable = self.create_sellable()
-        client = self.create_client()
-
-        sale = self.create_sale(client=client)
-        sale.add_sellable(sellable)
-        sale.branch = self.create_branch()
-        self.add_payments(sale)
-        sale.order()
-        sale.confirm()
-        sale.open_date = sale.confirm_date = localtoday()
-
-        sale2 = self.create_sale(client=client)
-        sale2.add_sellable(sellable)
-        sale2.branch = self.create_branch()
-        self.add_payments(sale2)
-        sale2.order()
-        sale2.confirm()
-        sale2.open_date = sale2.confirm_date = localtoday()
-
-        results = ClientsWithSaleView.find_by_branch_date(self.store, None, None)
-        self.assertFalse(results.is_empty())
-
-        results = ClientsWithSaleView.find_by_branch_date(self.store, sale2.branch, None)
-        self.assertEquals(len(list(results)), 1)
-
-        today = localtoday()
-        results = ClientsWithSaleView.find_by_branch_date(self.store, sale2.branch, today)
-        self.assertEquals(len(list(results)), 1)
-
-        yesterday = today - datetime.timedelta(days=1)
-        results = ClientsWithSaleView.find_by_branch_date(self.store, None, yesterday)
-        self.assertTrue(results.is_empty())
-
-        date = yesterday, today
-        results = ClientsWithSaleView.find_by_branch_date(self.store,
-                                                          sale2.branch, date)
-        self.assertEquals(len(list(results)), 1)
 
     def test_total_amount(self):
         branch = get_current_branch(self.store)

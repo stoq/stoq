@@ -26,7 +26,6 @@
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.station import BranchStation
-from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.editors.stationeditor import StationEditor
@@ -41,16 +40,12 @@ class StationSearch(SearchEditor):
     editor_class = StationEditor
     size = (-1, 450)
     advanced_search = False
+    text_field_columns = [BranchStation.name]
+    branch_filter_column = BranchStation.branch_id
 
     #
     # SearchDialog Hooks
     #
-
-    def create_filters(self):
-        self.set_text_field_columns(['name'])
-        branch_filter = self.create_branch_filter()
-        self.add_filter(branch_filter,
-                        SearchFilterPosition.TOP, ['branch_id'])
 
     def get_columns(self):
         return [Column('name', _('Name'), data_type=str, sorted=True,

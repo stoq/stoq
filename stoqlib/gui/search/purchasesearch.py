@@ -27,7 +27,6 @@ import datetime
 from decimal import Decimal
 
 from stoqlib.domain.views import PurchasedItemAndStockView
-from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import SearchColumn, Column
@@ -47,21 +46,19 @@ class PurchasedItemsSearch(ProductSearch):
     csv_data = None
     has_print_price_button = False
     has_new_button = False
+    text_field_columns = [PurchasedItemAndStockView.description]
+    branch_filter_column = PurchasedItemAndStockView.branch_id
 
     def _get_date_options(self):
         return [Any, Today, ThisWeek, NextWeek, ThisMonth, NextMonth]
 
+    def create_filters(self):
+        # To prevent calling the superclass method
+        pass
+
     #
     #  ProductSearch
     #
-
-    def create_filters(self):
-        self.set_text_field_columns(['description'])
-
-        # Branch
-        self.branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(self.branch_filter, columns=['branch_id'],
-                        position=SearchFilterPosition.TOP)
 
     def get_columns(self):
         return [SearchColumn('description', title=_('Description'), data_type=str,

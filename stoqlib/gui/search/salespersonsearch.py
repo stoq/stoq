@@ -27,7 +27,6 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 
-from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.sale import SalesPersonSalesView, Sale
 from stoqlib.gui.search.searchcolumns import SearchColumn, Column
@@ -41,16 +40,16 @@ _ = stoqlib_gettext
 class SalesPersonSalesSearch(SearchDialog):
     title = _("Salesperson Total Sales")
     search_spec = SalesPersonSalesView
-    size = (600, 450)
+    size = (-1, 450)
+    text_field_columns = [SalesPersonSalesView.name]
+    branch_filter_column = Sale.branch_id
 
     #
     # SearchDialog Hooks
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['name'])
         self.search.set_query(self.executer_query)
-
         date_filter = DateSearchFilter(_('Date:'))
         self.search.add_filter(date_filter)
         self.date_filter = date_filter
@@ -72,6 +71,7 @@ class SalesPersonSalesSearch(SearchDialog):
         self.search.set_summary_label('total_amount', label=_(u'Total:'),
                                       format='<b>%s</b>')
 
+    # TODO: Maybe this can be removed
     def executer_query(self, store):
         date = self.date_filter.get_state()
         if isinstance(date, DateQueryState):
@@ -80,7 +80,4 @@ class SalesPersonSalesSearch(SearchDialog):
             date = (date.start, date.end)
 
         resultset = self.search_spec.find_by_date(store, date)
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            branch = api.get_current_branch(store)
-            resultset = resultset.find(Sale.branch_id == branch.id)
         return resultset

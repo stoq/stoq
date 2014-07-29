@@ -78,7 +78,8 @@ class FiscalBookEntrySearch(SearchDialog):
     title = _("Search for fiscal entries")
     size = (-1, 450)
     search_spec = IcmsIpiView
-    searching_by_date = True
+    text_field_columns = []
+    branch_filter_column = IcmsIpiView.branch_id
 
     def _setup_columns(self, column, table, col_name, summary_label_text):
         columns = self.get_columns() + [column]
@@ -152,11 +153,6 @@ class FiscalBookEntrySearch(SearchDialog):
         self.edit_button.set_sensitive(can_edit)
 
     def create_filters(self):
-        self.set_text_field_columns([])
-
-        self.branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(self.branch_filter, columns=['branch_id'])
-
         items = [(v, k)
                  for k, v in fiscal_book_entries.items()]
         self.entry_type = ComboSearchFilter(_('Show entries of type'), items)

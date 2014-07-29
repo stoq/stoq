@@ -8,18 +8,12 @@ GtkDialog(toplevel): title='Search for Sales', hidden
           GtkHBox(fill=True, padding=6):
             GtkVBox(filters_box, padding=6):
               GtkHBox(hbox):
-                ComboSearchFilter():
-                  GtkLabel(): 'Show sales with status'
+                ComboSearchFilter(branch_filter):
+                  GtkLabel(): 'Branch:'
                   ProxyComboBox(padding=6):
-                    item: 'Any', selected
-                    item: 'Opened'
-                    item: 'Confirmed'
-                    item: 'Paid'
-                    item: 'Cancelled'
-                    item: 'Ordered'
-                    item: 'Returned'
-                    item: 'Quoting'
-                    item: 'Renegotiated'
+                    item: 'Any'
+                    item: 'Moda Stoq', selected
+                    item: 'Stoq Elite Fashion'
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
@@ -28,6 +22,18 @@ GtkDialog(toplevel): title='Search for Sales', hidden
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): ''
                 GtkButton(search_button): 'gtk-find'
+              ComboSearchFilter():
+                GtkLabel(): 'Show sales with status'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'Opened'
+                  item: 'Confirmed'
+                  item: 'Paid'
+                  item: 'Cancelled'
+                  item: 'Ordered'
+                  item: 'Returned'
+                  item: 'Quoting'
+                  item: 'Renegotiated'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='#'
             column: title='Date Started'

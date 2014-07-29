@@ -326,12 +326,6 @@ class CardPaymentView(Viewable):
         if self.renegotiation_id:
             return self.store.get(PaymentRenegotiation, self.renegotiation_id)
 
-    @classmethod
-    def find_by_provider(cls, store, provider):
-        if provider:
-            return store.find(cls, CreditCardData.provider == provider)
-        return store.find(cls)
-
 
 class _BillandCheckPaymentView(Viewable):
     """A base view for check and bill payments."""

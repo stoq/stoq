@@ -30,7 +30,6 @@ import gtk
 from kiwi.currency import currency
 
 from stoqlib.domain.views import PurchaseReceivingView
-from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
@@ -47,6 +46,11 @@ class PurchaseReceivingSearch(SearchDialog):
     search_spec = PurchaseReceivingView
     report_class = PurchaseReceivalReport
     selection_mode = gtk.SELECTION_MULTIPLE
+    branch_filter_column = PurchaseReceivingView.branch_id
+    text_field_columns = [PurchaseReceivingView.supplier_name,
+                          PurchaseReceivingView.responsible_name,
+                          PurchaseReceivingView.purchase_responsible_name,
+                          PurchaseReceivingView.purchase_identifier_str]
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)
@@ -59,16 +63,6 @@ class PurchaseReceivingSearch(SearchDialog):
     #
     # SearchDialog Hooks
     #
-
-    def create_filters(self):
-        self.set_text_field_columns(['supplier_name', 'responsible_name',
-                                     'purchase_responsible_name',
-                                     'purchase_identifier_str'])
-
-        # Branch
-        branch_filter = self.create_branch_filter(_("In branch:"))
-        self.add_filter(branch_filter, columns=['branch_id'],
-                        position=SearchFilterPosition.TOP)
 
     def get_columns(self):
         return [IdentifierColumn('purchase_identifier', _('Purchase #')),

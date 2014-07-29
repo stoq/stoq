@@ -32,12 +32,11 @@ from kiwi.ui.objectlist import Column, ColoredColumn
 from storm.expr import Eq
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import (Product, ProductHistory,
-                                    StorableBatch,
                                     ProductStockItem)
-from stoqlib.domain.sellable import SellableCategory
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.sellable import SellableCategory, Sellable
 from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
@@ -70,7 +69,6 @@ _ = stoqlib_gettext
 
 class ProductSearch(SellableSearch):
     title = _('Product Search')
-    table = Product
     search_spec = ProductFullWithClosedStockView
     editor_class = ProductEditor
     report_class = ProductReport
@@ -210,12 +208,14 @@ def format_data(data):
 
 class ProductSearchQuantity(ProductSearch):
     title = _('Product History Search')
-    table = search_spec = ProductQuantityView
+    search_spec = ProductQuantityView
     report_class = ProductQuantityReport
     csv_data = None
     advanced_search = False
     has_print_price_button = False
     show_production_columns = False
+    text_field_columns = [ProductQuantityView.description]
+    branch_filter_column = ProductQuantityView.branch
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True):
         ProductSearch.__init__(self, store, hide_footer=hide_footer,
@@ -226,8 +226,6 @@ class ProductSearchQuantity(ProductSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
-
         # Date
         date_filter = DateSearchFilter(_('Date:'))
         date_filter.select(Today)
@@ -237,14 +235,6 @@ class ProductSearchQuantity(ProductSearch):
                    ProductHistory.decreased_date]
         self.add_filter(date_filter, columns=columns)
         self.date_filter = date_filter
-
-        # Branch
-        self.branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(self.branch_filter, columns=['branch'],
-                        position=SearchFilterPosition.TOP)
-        if not api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            # remove 'Any' option from branch_filter
-            self.branch_filter.combo.remove_text(0)
 
     def get_columns(self):
         return [Column('code', title=_('Code'), data_type=str,
@@ -277,11 +267,13 @@ class ProductSearchQuantity(ProductSearch):
 
 class ProductsSoldSearch(ProductSearch):
     title = _('Products Sold Search')
-    table = search_spec = SoldItemView
+    search_spec = SoldItemView
     report_class = ProductsSoldReport
     csv_data = None
     has_print_price_button = False
     advanced_search = False
+    text_field_columns = [SoldItemView.description]
+    branch_filter_column = Sale.branch_id
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True):
         ProductSearch.__init__(self, store, hide_footer=hide_footer,
@@ -292,38 +284,9 @@ class ProductsSoldSearch(ProductSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
-        self.search.set_query(self.executer_query)
-
-        # Date
-        date_filter = DateSearchFilter(_('Date:'))
-        date_filter.select(Today)
-        self.add_filter(date_filter)
-        self.date_filter = date_filter
-
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=[],
-                        position=SearchFilterPosition.TOP)
-        self.branch_filter = branch_filter
-
-    def executer_query(self, store):
-        # We have to do this manual filter since adding this columns to the
-        # view would also group the results by those fields, leading to
-        # duplicate values in the results.
-        branch_id = self.branch_filter.get_state().value
-        if branch_id is None:
-            branch = None
-        else:
-            branch = store.get(Branch, branch_id)
-
-        date = self.date_filter.get_state()
-        if isinstance(date, DateQueryState):
-            date = date.date
-        elif isinstance(date, DateIntervalQueryState):
-            date = (date.start, date.end)
-
-        return self.table.find_by_branch_date(store, branch, date)
+        self.date_filter = DateSearchFilter(_('Date:'))
+        self.date_filter.select(Today)
+        self.add_filter(self.date_filter, columns=[Sale.confirm_date])
 
     def get_columns(self):
         return [Column('code', title=_('Code'), data_type=str,
@@ -342,7 +305,7 @@ class ProductStockSearch(ProductSearch):
     # FIXME: This search needs another viewable, since ProductFullStockView
     # cannot filter the branch of the purchase, when counting the number of
     # purchased orders by branch
-    table = search_spec = ProductFullStockItemView
+    search_spec = ProductFullStockItemView
     editor_class = ProductStockEditor
     report_class = ProductStockReport
     csv_data = None
@@ -401,14 +364,14 @@ class ProductStockSearch(ProductSearch):
             branch = None
         else:
             branch = store.get(Branch, branch_id)
-        return self.table.find_by_branch(store, branch)
+        return self.search_spec.find_by_branch(store, branch)
 
 
 class ProductClosedStockSearch(ProductSearch):
     """A SearchEditor for Closed Products"""
 
     title = _('Closed Product Stock Search')
-    table = search_spec = ProductClosedStockView
+    search_spec = ProductClosedStockView
     report_class = ProductClosedStockReport
     has_status_filter = False
     has_print_price_button = False
@@ -423,11 +386,14 @@ class ProductClosedStockSearch(ProductSearch):
 
 class ProductBatchSearch(ProductSearch):
     title = _('Batch Search')
-    table = StorableBatch
     search_spec = ProductBatchView
     has_print_price_button = False
     csv_data = (_('Batch'), _('batch'))
     fast_iter = True
+    text_field_columns = [ProductBatchView.description,
+                          ProductBatchView.batch_number]
+    branch_filter_column = ProductStockItem.branch_id
+    unlimited_results = True
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True):
         ProductSearch.__init__(self, store, hide_footer=hide_footer,
@@ -437,22 +403,15 @@ class ProductBatchSearch(ProductSearch):
     #  ProductSearch
     #
 
+    def create_filters(self):
+        # We need to overide to prevent the ProductSearch.setup_filters being
+        # called
+        pass
+
     def setup_widgets(self):
         super(ProductBatchSearch, self).setup_widgets()
         self.search.set_summary_label('quantity', label=(u'Total:'),
                                       format='<b>%s</b>')
-
-    def create_filters(self):
-        self.set_text_field_columns(['description', 'batch_number'])
-
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=[ProductStockItem.branch_id])
-        self.branch_filter = branch_filter
-
-        # Dont set a limit here, otherwise it might break the summary
-        executer = self.search.get_query_executer()
-        executer.set_limit(-1)
 
     def get_columns(self):
         cols = [SearchColumn('category', title=_('Category'), data_type=str),
@@ -471,11 +430,12 @@ class ProductBatchSearch(ProductSearch):
 
 class ProductBrandSearch(SearchEditor):
     title = _('Brand Search')
-    table = Product
     size = (775, 450)
     search_spec = ProductBrandStockView
     editor_class = ProductEditor
     report_class = ProductBrandReport
+    text_field_columns = [ProductBrandStockView.brand]
+    branch_filter_column = ProductStockItem.branch_id
 
     def __init__(self, store):
         SearchEditor.__init__(self, store, hide_footer=True,
@@ -487,26 +447,16 @@ class ProductBrandSearch(SearchEditor):
 
     def setup_widgets(self):
         self.add_csv_button(_('Brands'), _('brands'))
-
         self.search.set_summary_label('quantity', label=_(u'Total:'),
                                       format='<b>%s</b>')
 
     def create_filters(self):
-        self.set_text_field_columns(['brand'])
-        self.search.set_query(self.executer_query)
-
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=[])
-        self.branch_filter = branch_filter
-
         # Category
         categories = self.store.find(SellableCategory)
         items = api.for_combo(categories, attr='full_description')
         items.insert(0, (_('Any'), None))
         category_filter = ComboSearchFilter(_('Category'), items)
-        self.add_filter(category_filter, position=SearchFilterPosition.TOP)
-        self.category_filter = category_filter
+        self.add_filter(category_filter, columns=[Sellable.category])
 
     #
     # SearchEditor Hooks
@@ -518,27 +468,15 @@ class ProductBrandSearch(SearchEditor):
                 Column('quantity', title=_('Quantity'), data_type=Decimal)]
         return cols
 
-    def executer_query(self, store):
-        branch_id = self.branch_filter.get_state().value
-        if branch_id is None:
-            branch = None
-        else:
-            branch = store.get(Branch, branch_id)
-
-        category_description = self.category_filter.get_state().value
-        if category_description:
-            category = category_description
-        else:
-            category = None
-
-        return self.search_spec.find_by_branch_category(store, branch, category)
-
 
 class ProductBrandByBranchSearch(SearchDialog):
     title = _('Brand by Branch Search')
     size = (775, 450)
     search_spec = ProductBrandByBranchView
     report_class = ProductBrandReport
+    unlimited_results = True
+    text_field_columns = [ProductBrandByBranchView.brand,
+                          ProductBrandByBranchView.company]
 
     #
     # SearchDialog Hooks
@@ -551,7 +489,6 @@ class ProductBrandByBranchSearch(SearchDialog):
                                       format='<b>%s</b>')
 
     def create_filters(self):
-        self.set_text_field_columns(['brand', 'company'])
         self.search.set_query(self.executer_query)
 
         # Category
@@ -561,10 +498,6 @@ class ProductBrandByBranchSearch(SearchDialog):
         category_filter = ComboSearchFilter(_('Category'), items)
         self.add_filter(category_filter, position=SearchFilterPosition.TOP)
         self.category_filter = category_filter
-
-        # Dont set a limit here, otherwise it might break the summary
-        executer = self.search.get_query_executer()
-        executer.set_limit(-1)
 
     #
     # SearchEditor Hooks
@@ -589,13 +522,13 @@ class ProductBrandByBranchSearch(SearchDialog):
 
 
 class ProductBranchSearch(SearchDialog):
-
     """Show products in stock on all branchs
     """
     title = _('Product Branch Search')
     size = (600, 500)
     search_spec = ProductBranchStockView
     advanced_search = False
+    text_field_columns = [ProductBranchStockView.branch_name]
 
     def __init__(self, store, storable):
         self._storable = storable
@@ -608,7 +541,6 @@ class ProductBranchSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['branch_name'])
         self.search.set_query(self.executer_query)
 
     #

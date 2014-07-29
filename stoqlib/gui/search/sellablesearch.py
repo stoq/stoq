@@ -55,6 +55,10 @@ class SellableSearch(SearchEditor):
     search_spec = SellableFullStockView
     editor_class = None
     exclude_delivery_service = True
+    text_field_columns = [SellableFullStockView.description,
+                          SellableFullStockView.category_description,
+                          SellableFullStockView.barcode,
+                          SellableFullStockView.code]
 
     def __init__(self, store, hide_footer=False, hide_toolbar=True,
                  selection_mode=None, search_str=None, search_spec=None,
@@ -133,8 +137,6 @@ class SellableSearch(SearchEditor):
             self.branch_stock_button = None
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'category_description',
-                                     'barcode', 'code'])
         self.search.set_query(self.executer_query)
 
     def get_columns(self):

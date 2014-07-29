@@ -53,7 +53,6 @@ class TransferOrderSearch(SearchDialog):
     search_spec = TransferOrderView
     report_class = TransferOrderReport
     selection_mode = gtk.SELECTION_MULTIPLE
-    search_by_date = True
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)

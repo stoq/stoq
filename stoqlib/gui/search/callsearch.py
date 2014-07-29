@@ -52,7 +52,6 @@ class CallsSearch(SearchEditor):
     title = _("Calls Search")
     search_spec = CallsView
     editor_class = CallsEditor
-    searching_by_date = True
     person_type = None
     person_name = _('Person')
     size = (700, 450)

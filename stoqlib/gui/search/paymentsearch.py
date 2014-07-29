@@ -32,10 +32,9 @@ import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 
-from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
-from stoqlib.domain.payment.card import CardPaymentDevice
+from stoqlib.domain.payment.card import CardPaymentDevice, CreditCardData
 from stoqlib.domain.payment.views import (InCheckPaymentView,
                                           OutCheckPaymentView,
                                           CardPaymentView)
@@ -58,11 +57,11 @@ _ = stoqlib_gettext
 class _BaseBillCheckSearch(SearchDialog):
 
     title = _(u"Bill & Check Payments Search")
-    size = (750, 500)
-    searching_by_date = True
+    size = (-1, 500)
     selection_mode = gtk.SELECTION_MULTIPLE
     report_class = BillCheckPaymentReport
     search_label = _(u'Bill or check number:')
+    branch_filter_column = Payment.branch_id
 
     def _get_status_values(self):
         items = [(value, key) for key, value in
@@ -74,22 +73,10 @@ class _BaseBillCheckSearch(SearchDialog):
     # SearchDialog Hooks
     #
 
-    def create_filters(self):
-        self.set_text_field_columns(['payment_number', 'bank_account'])
-        self.search.set_query(self.query_executer)
-
-    def query_executer(self, store):
-        resultset = store.find(self.search_spec)
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            current = api.get_current_branch(self.store)
-            resultset = resultset.find(Payment.branch_id == current.id)
-
-        return resultset
-
     def get_columns(self):
         return [IdentifierColumn('identifier', sorted=True),
                 Column('method_description', title=_(u'Method'),
-                       data_type=str, width=90),
+                       data_type=str, expand=True),
                 SearchColumn('payment_number', title=_(u'Number'),
                              data_type=str, width=100),
                 SearchColumn('due_date', title=_('Due date'),
@@ -111,10 +98,14 @@ class _BaseBillCheckSearch(SearchDialog):
 
 class InPaymentBillCheckSearch(_BaseBillCheckSearch):
     search_spec = InCheckPaymentView
+    text_field_columns = [InCheckPaymentView.payment_number,
+                          InCheckPaymentView.bank_account]
 
 
 class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
     search_spec = OutCheckPaymentView
+    text_field_columns = [OutCheckPaymentView.payment_number,
+                          OutCheckPaymentView.bank_account]
 
     def get_columns(self):
         columns = _BaseBillCheckSearch.get_columns(self)
@@ -126,15 +117,16 @@ class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
 
 
 class CardPaymentSearch(SearchEditor):
-
     title = _(u"Card Payment Search")
     size = (850, 500)
-    searching_by_date = True
     search_spec = CardPaymentView
     editor_class = CardPaymentDetailsEditor
     report_class = CardPaymentReport
     search_label = (u'Client:')
     selection_mode = gtk.SELECTION_BROWSE
+    text_field_columns = [CardPaymentView.drawee_name,
+                          CardPaymentView.identifier_str]
+    branch_filter_column = Payment.branch_id
 
     def __init__(self, store):
         SearchEditor.__init__(self, store)
@@ -158,12 +150,8 @@ class CardPaymentSearch(SearchEditor):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['drawee_name', 'identifier_str'])
-        self.search.set_query(self.executer_query)
-
-        # Provider
         provider_filter = self.create_provider_filter(_('Provider:'))
-        self.add_filter(provider_filter, columns=[])
+        self.add_filter(provider_filter, columns=[CreditCardData.provider])
         self.provider_filter = provider_filter
 
     #
@@ -204,16 +192,6 @@ class CardPaymentSearch(SearchEditor):
     def row_activate(self, obj):
         selected = self.results.get_selected()
         self._show_details(selected)
-
-    def executer_query(self, store):
-        provider = self.provider_filter.get_state().value
-        resultset = self.search_spec.find_by_provider(store, provider)
-
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            current = api.get_current_branch(self.store)
-            resultset = resultset.find(Payment.branch_id == current.id)
-
-        return resultset
 
     def on_results__selection_changed(self, results, selected):
         can_details = bool(selected)

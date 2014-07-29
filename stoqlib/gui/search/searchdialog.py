@@ -121,6 +121,19 @@ class SearchDialog(BasicDialog):
     #: See stoqlib.database.runtime for more information
     fast_iter = False
 
+    #: If defined, should be a list of properties that will be filtred by the
+    #: default entry
+    text_field_columns = None
+
+    #: If defined, this should be a column from some table that refrences a
+    #: branch, and a filter will be added for this column
+    branch_filter_column = None
+
+    #: If False, the number of results will respect the parameter
+    #: MAX_SEARCH_RESULTS. When True, there will be no limit and everything will
+    #: be displayed
+    unlimited_results = False
+
     def __init__(self, store, search_spec=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False,
                  initial_string=''):
@@ -158,6 +171,7 @@ class SearchDialog(BasicDialog):
         self._setup_search()
         self._setup_details_slave()
 
+        self._create_default_filters()
         self.create_filters()
         self.setup_widgets()
         if self.search_label:
@@ -223,6 +237,21 @@ class SearchDialog(BasicDialog):
             self.set_print_button_sensitive(False)
         else:
             self._details_slave.print_button.hide()
+
+    def _create_default_filters(self):
+        """Creates default filters
+
+        This will create filters based on attributes defined on the class.
+        """
+        if self.text_field_columns is not None:
+            self.set_text_field_columns(self.text_field_columns)
+
+        if self.branch_filter_column is not None:
+            self.branch_filter = self.create_branch_filter(
+                column=self.branch_filter_column)
+
+        if self.unlimited_results:
+            self.search.get_query_executer().set_limit(-1)
 
     #
     # Public API
@@ -355,13 +384,23 @@ class SearchDialog(BasicDialog):
     # Filters
     #
 
-    def create_branch_filter(self, label=None):
+    def create_branch_filter(self, label=None, column=None):
+        """Returns a new branch filter.
+
+        :param label: The label to be used for the filter
+        :param column: When provided, besides creating the filter, we will also
+          add it to the interface, filtering by the informed column.
+        """
         items = api.get_branches_for_filter(self.store, use_id=True)
         if not label:
             label = _('Branch:')
         branch_filter = ComboSearchFilter(label, items)
         current = api.get_current_branch(self.store)
         branch_filter.select(current.id)
+        if column:
+            self.add_filter(branch_filter, columns=[column],
+                            position=SearchFilterPosition.TOP)
+
         return branch_filter
 
     def create_sellable_filter(self, label=None):
@@ -457,8 +496,7 @@ class SearchDialog(BasicDialog):
     #
 
     def create_filters(self):
-        raise NotImplementedError(
-            "create_filters() must be implemented in %r" % self)
+        pass
 
     def setup_widgets(self):
         pass

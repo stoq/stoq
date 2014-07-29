@@ -25,7 +25,6 @@
 
 import datetime
 
-from stoqlib.api import api
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import SaleView
 from stoqlib.domain.views import ReturnedSalesView
@@ -45,6 +44,11 @@ class ReturnedSaleSearch(SearchDialog):
     size = (830, 520)
     search_spec = ReturnedSalesView
     report_class = ReturnedSalesReport
+    branch_filter_column = Branch.id
+    text_field_columns = [ReturnedSalesView.identifier_str,
+                          ReturnedSalesView.sale_identifier_str,
+                          ReturnedSalesView.client_name,
+                          ReturnedSalesView.responsible_name]
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)
@@ -84,18 +88,6 @@ class ReturnedSaleSearch(SearchDialog):
                 SearchColumn('invoice_number', _('Invoice number'),
                              data_type=int, visible=False),
                 ]
-
-    def create_filters(self):
-        self.set_text_field_columns(['identifier_str', 'sale_identifier_str',
-                                     'client_name', 'responsible_name'])
-        self.search.set_query(self.query_executer)
-
-    def query_executer(self, store):
-        resultset = self.store.find(self.search_spec)
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            current = api.get_current_branch(self.store)
-            return resultset.find(Branch.id == current.id)
-        return resultset
 
     #
     # Callbacks

@@ -54,7 +54,7 @@ class CommissionSearch(SearchDialog):
     size = (800, 450)
     search_spec = CommissionView
     report_class = SalesPersonReport
-    searching_by_date = True
+    unlimited_results = True
 
     #
     # Private
@@ -124,10 +124,6 @@ class CommissionSearch(SearchDialog):
         else:
             self.add_filter(self._date_filter, SearchFilterPosition.BOTTOM,
                             columns=[self.search_spec.paid_date])
-
-        # Dont set a limit here, otherwise it might break the summary
-        executer = self.search.get_query_executer()
-        executer.set_limit(-1)
 
     def get_columns(self):
         columns = [

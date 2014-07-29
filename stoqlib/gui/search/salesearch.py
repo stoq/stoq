@@ -34,13 +34,11 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
 from stoqlib.domain.person import Branch
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import SoldItemsByBranchView, UnconfirmedSaleItemsView
 from stoqlib.domain.workorder import WorkOrder
-from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import set_bold
@@ -61,28 +59,20 @@ class _BaseSaleSearch(SearchDialog):
     title = _("Search for Sales")
     size = (-1, 450)
     search_spec = SaleView
-    searching_by_date = True
+    text_field_columns = [SaleView.client_name, SaleView.salesperson_name,
+                          SaleView.identifier_str]
+    branch_filter_column = SaleView.branch_id
 
     #
     # SearchDialog Hooks
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['client_name', 'salesperson_name',
-                                     'identifier_str'])
         items = [(value, key) for key, value in Sale.statuses.items()]
         items.insert(0, (_('Any'), None))
 
         status_filter = ComboSearchFilter(_('Show sales with status'), items)
-        self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
-
-        self.search.set_query(self.executer_query)
-
-    def executer_query(self, store):
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
-            current = api.get_current_branch(self.store)
-            return self.store.find(self.search_spec, Branch.id == current.id)
-        return self.store.find(self.search_spec)
+        self.add_filter(status_filter, columns=[SaleView.status])
 
     def get_columns(self):
         return [IdentifierColumn('identifier', sorted=True,
@@ -170,21 +160,21 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     search_spec = SalePaymentMethodView
     search_label = _('Items matching:')
     size = (800, 450)
+    branch_filter_column = Branch.id
+    text_field_columns = [SalePaymentMethodView.client_name,
+                          SalePaymentMethodView.salesperson_name]
 
     def create_filters(self):
-        self.set_text_field_columns(['client_name', 'salesperson_name'])
         self.search.set_query(self.executer_query)
 
         payment_filter = self.create_payment_filter(_('Payment Method:'))
         self.add_filter(payment_filter, columns=[])
         self.payment_filter = payment_filter
 
+    # TODO: Maybe this can be removed
     def executer_query(self, store):
         method = self.payment_filter.get_state().value
         resultset = self.search_spec.find_by_payment_method(store, method)
-        if not api.can_see_all_branches():
-            current = api.get_current_branch(self.store)
-            resultset = resultset.find(Branch.id == current.id)
         return resultset
 
     def get_columns(self):
@@ -201,9 +191,11 @@ class SoldItemsByBranchSearch(SearchDialog):
     title = _(u'Sold Items by Branch')
     report_class = SoldItemsByBranchReport
     search_spec = SoldItemsByBranchView
-    searching_by_date = True
     search_label = _('Items matching:')
     size = (800, 450)
+    unlimited_results = True
+    text_field_columns = [SoldItemsByBranchView.description]
+    branch_filter_column = Sale.branch_id
 
     def setup_widgets(self):
         self.add_csv_button(_('Sales'), _('sales'))
@@ -212,20 +204,9 @@ class SoldItemsByBranchSearch(SearchDialog):
                                       format='<b>%s</b>')
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
-        self.search.set_query(self.executer_query)
-        executer = self.search.get_query_executer()
-        executer.set_limit(-1)
-
-        # Date
         date_filter = DateSearchFilter(_('Date:'))
-        self.search.add_filter(date_filter)
+        self.search.add_filter(date_filter, columns=[Sale.confirm_date])
         self.date_filter = date_filter
-
-        # Branch
-        branch_filter = self.create_branch_filter(_('In Branch:'))
-        self.add_filter(branch_filter, columns=[])
-        self.branch_filter = branch_filter
 
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), data_type=str,
@@ -241,26 +222,15 @@ class SoldItemsByBranchSearch(SearchDialog):
                 Column('total', title=_('Total'), data_type=currency, width=80)
                 ]
 
-    def executer_query(self, store):
-        branch_id = self.branch_filter.get_state().value
-        if branch_id is None:
-            branch = None
-        else:
-            branch = store.get(Branch, branch_id)
-
-        date = self.date_filter.get_state()
-        if isinstance(date, DateQueryState):
-            date = date.date
-        elif isinstance(date, DateIntervalQueryState):
-            date = (date.start, date.end)
-
-        return self.search_spec.find_by_branch_date(store, branch, date)
-
 
 class UnconfirmedSaleItemsSearch(SearchDialog):
     title = _(u'Unconfirmed Sale Items Search')
     search_spec = UnconfirmedSaleItemsView
     size = (850, 450)
+    branch_filter_column = Sale.branch_id
+    text_field_columns = [UnconfirmedSaleItemsView.description,
+                          UnconfirmedSaleItemsView.salesperson_name,
+                          UnconfirmedSaleItemsView.client_name]
 
     def setup_widgets(self):
         self.sale_details_button = self.add_button(label=_('Sale Details'))
@@ -268,13 +238,6 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
         self.sale_details_button.set_sensitive(False)
         self.add_csv_button(_('Sale items'), _('sale-items'))
         self._setup_summary()
-
-    def create_filters(self):
-        self.set_text_field_columns(['description', 'salesperson_name',
-                                     'client_name'])
-        # Branch
-        self.branch_filter = self.create_branch_filter(_('In Branch:'))
-        self.add_filter(self.branch_filter, columns=['branch_id'])
 
     def update_widgets(self):
         reserved_product_view = self.results.get_selected()

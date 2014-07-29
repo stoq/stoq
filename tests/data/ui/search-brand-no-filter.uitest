@@ -8,27 +8,12 @@ GtkDialog(toplevel): title='Brand Search', hidden
           GtkHBox(fill=True, padding=6):
             GtkVBox(filters_box, padding=6):
               GtkHBox(hbox):
-                ComboSearchFilter(category_filter):
-                  GtkLabel(): 'Category'
+                ComboSearchFilter(branch_filter):
+                  GtkLabel(): 'Branch:'
                   ProxyComboBox(padding=6):
                     item: 'Any', selected
-                    item: 'Bermudas'
-                    item: 'Bermudas:Bermudas Sarja'
-                    item: 'Bermudas:Bermudas Shorts'
-                    item: 'Blusas'
-                    item: 'Blusas:Blusas Algod\xc3\xa3o'
-                    item: 'Blusas:Blusas Poliester'
-                    item: 'Cal\xc3\xa7ados'
-                    item: 'Cal\xc3\xa7ados:Chinelos'
-                    item: 'Cal\xc3\xa7as'
-                    item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Jeans'
-                    item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Poliester'
-                    item: 'Camisetas'
-                    item: 'Camisetas:Tinturada'
-                    item: 'Casacos'
-                    item: 'Casacos:Algod\xc3\xa3o'
-                    item: 'Vestido'
-                    item: 'Vestido:Viscose'
+                    item: 'Moda Stoq'
+                    item: 'Stoq Elite Fashion'
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
@@ -37,12 +22,27 @@ GtkDialog(toplevel): title='Brand Search', hidden
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): ''
                 GtkButton(search_button): 'gtk-find'
-              ComboSearchFilter(branch_filter):
-                GtkLabel(): 'In branch:'
+              ComboSearchFilter():
+                GtkLabel(): 'Category'
                 ProxyComboBox(padding=6):
                   item: 'Any', selected
-                  item: 'Moda Stoq'
-                  item: 'Stoq Elite Fashion'
+                  item: 'Bermudas'
+                  item: 'Bermudas:Bermudas Sarja'
+                  item: 'Bermudas:Bermudas Shorts'
+                  item: 'Blusas'
+                  item: 'Blusas:Blusas Algod\xc3\xa3o'
+                  item: 'Blusas:Blusas Poliester'
+                  item: 'Cal\xc3\xa7ados'
+                  item: 'Cal\xc3\xa7ados:Chinelos'
+                  item: 'Cal\xc3\xa7as'
+                  item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Jeans'
+                  item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Poliester'
+                  item: 'Camisetas'
+                  item: 'Camisetas:Tinturada'
+                  item: 'Casacos'
+                  item: 'Casacos:Algod\xc3\xa3o'
+                  item: 'Vestido'
+                  item: 'Vestido:Viscose'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Brand', expand
             column: title='Quantity'

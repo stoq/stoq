@@ -9,7 +9,7 @@ GtkDialog(toplevel): title='Products Sold Search', hidden
             GtkVBox(filters_box, padding=6):
               GtkHBox(hbox):
                 ComboSearchFilter(branch_filter):
-                  GtkLabel(): 'In branch:'
+                  GtkLabel(): 'Branch:'
                   ProxyComboBox(padding=6):
                     item: 'Any'
                     item: 'Moda Stoq', selected

@@ -50,6 +50,7 @@ class LoanItemSearch(ProductSearch):
     title = _(u'Loan Items Search')
     search_spec = LoanItemView
     has_print_price_button = False
+    text_field_columns = [LoanItemView.description, LoanItemView.identifier_str]
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True):
         ProductSearch.__init__(self, store, hide_footer=hide_footer,
@@ -60,7 +61,6 @@ class LoanItemSearch(ProductSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'identifier_str'])
         # status filter
         statuses = [(desc, i) for i, desc in Loan.statuses.items()]
         statuses.insert(0, (_(u'Any'), None))
@@ -99,7 +99,6 @@ class LoanSearch(SearchDialog):
     search_spec = LoanView
     report_class = LoanReceipt
     selection_mode = gtk.SELECTION_MULTIPLE
-    search_by_date = True
     advanced_search = False
 
     def __init__(self, store):

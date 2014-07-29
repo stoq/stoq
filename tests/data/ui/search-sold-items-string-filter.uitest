@@ -8,6 +8,12 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
           GtkHBox(fill=True, padding=6):
             GtkVBox(filters_box, padding=6):
               GtkHBox(hbox):
+                ComboSearchFilter(branch_filter):
+                  GtkLabel(): 'Branch:'
+                  ProxyComboBox(padding=6):
+                    item: 'Any'
+                    item: 'Moda Stoq', selected
+                    item: 'Stoq Elite Fashion'
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Items matching:'
                   ProxyComboBox(padding=6): hidden
@@ -30,12 +36,6 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
                 ProxyDateEntry(padding=6): None, insensitive
                 GtkLabel(): 'To:', insensitive
                 ProxyDateEntry(padding=6): None, insensitive
-              ComboSearchFilter(branch_filter):
-                GtkLabel(): 'In Branch:'
-                ProxyComboBox(padding=6):
-                  item: 'Any'
-                  item: 'Moda Stoq', selected
-                  item: 'Stoq Elite Fashion'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Code'
             column: title='Product', expand

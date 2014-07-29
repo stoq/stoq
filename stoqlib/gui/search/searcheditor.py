@@ -55,7 +55,7 @@ class SearchEditor(SearchDialog):
 
     >>> class ClientSearch(SearchEditor):
     ...     title = _("Client Search")
-    ...     table = ClientView
+    ...     search_spec = ClientView
     ...     editor_class = ClientEditor
     ...     size = (465, 390)
     ...
@@ -95,7 +95,7 @@ class SearchEditor(SearchDialog):
         """
         Create a new SearchEditor object.
         :param store:
-        :param table:
+        :param search_spec:
         :param editor_class:
         :param interface: The interface which we need to apply to the objects in
           kiwi list to get adapter for the editor.

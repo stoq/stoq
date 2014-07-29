@@ -2310,25 +2310,6 @@ class ClientsWithSaleView(Viewable):
     clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
                 Sale.status == Sale.STATUS_PAID)
 
-    @classmethod
-    def find_by_branch_date(cls, store, branch, date):
-        queries = []
-        if branch:
-            queries.append(Sale.branch == branch)
-
-        if date:
-            if isinstance(date, tuple):
-                date_query = And(Date(Sale.confirm_date) >= date[0],
-                                 Date(Sale.confirm_date) <= date[1])
-            else:
-                date_query = Date(Sale.confirm_date) == date
-
-            queries.append(date_query)
-
-        if queries:
-            return store.find(cls, And(*queries))
-        return store.find(cls)
-
     #
     # Public API
     #

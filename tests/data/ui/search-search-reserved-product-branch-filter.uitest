@@ -8,6 +8,13 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
           GtkHBox(fill=True, padding=6):
             GtkVBox(filters_box, padding=6):
               GtkHBox(hbox):
+                ComboSearchFilter(branch_filter):
+                  GtkLabel(): 'Branch:'
+                  ProxyComboBox(padding=6):
+                    item: 'Any'
+                    item: 'Moda Stoq'
+                    item: 'Stoq Elite Fashion'
+                    item: 'The Meaning of Life shop', selected
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
@@ -16,13 +23,6 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): ''
                 GtkButton(search_button): 'gtk-find'
-              ComboSearchFilter(branch_filter):
-                GtkLabel(): 'In Branch:'
-                ProxyComboBox(padding=6):
-                  item: 'Any'
-                  item: 'Moda Stoq'
-                  item: 'Stoq Elite Fashion'
-                  item: 'The Meaning of Life shop', selected
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Sale #'
             column: title='Status'

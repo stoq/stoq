@@ -39,7 +39,7 @@ from stoqlib.domain.person import (Individual, EmployeeRole,
                                    Employee, EmployeeView,
                                    TransporterView,
                                    SupplierView, UserView)
-from stoqlib.domain.sale import ClientsWithSaleView
+from stoqlib.domain.sale import ClientsWithSaleView, Sale
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
@@ -85,6 +85,8 @@ class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
     editor_class = EmployeeEditor
     search_spec = EmployeeView
+    text_field_columns = [EmployeeView.name, EmployeeView.role,
+                          EmployeeView.registry_number]
 
     def _get_status_values(self):
         items = [(value, key) for key, value in
@@ -103,7 +105,6 @@ class EmployeeSearch(BasePersonSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['name', 'role', 'registry_number'])
         status_filter = ComboSearchFilter(_('Show employees with status'),
                                           self._get_status_values())
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
@@ -127,6 +128,8 @@ class SupplierSearch(BasePersonSearch):
     size = (800, 450)
     search_spec = SupplierView
     search_label = _('Suppliers Matching:')
+    text_field_columns = [SupplierView.name, SupplierView.phone_number,
+                          SupplierView.cnpj]
 
     def __init__(self, store, **kwargs):
         self.company_doc_l10n = api.get_l10n_field('company_document')
@@ -135,9 +138,6 @@ class SupplierSearch(BasePersonSearch):
     #
     # SearchDialog hooks
     #
-
-    def create_filters(self):
-        self.set_text_field_columns(['name', 'phone_number', 'cnpj'])
 
     def get_columns(self):
         return [SearchColumn('name', _('Name'), str,
@@ -168,6 +168,8 @@ class ClientSearch(BasePersonSearch):
     editor_class = ClientEditor
     search_spec = ClientView
     search_label = _('matching:')
+    text_field_columns = [ClientView.name, ClientView.cpf, ClientView.rg_number,
+                          ClientView.phone_number, ClientView.mobile_number]
 
     def __init__(self, store, **kwargs):
         self.company_doc_l10n = api.get_l10n_field('company_document')
@@ -179,8 +181,6 @@ class ClientSearch(BasePersonSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['name', 'cpf', 'rg_number',
-                                     'phone_number', 'mobile_number'])
         statuses = [(v, k) for k, v in Client.statuses.items()]
         statuses.insert(0, (_('Any'), None))
         status_filter = ComboSearchFilter(_('Show clients with status'),
@@ -234,9 +234,9 @@ class TransporterSearch(BasePersonSearch):
     editor_class = TransporterEditor
     search_spec = TransporterView
     search_label = _('matching:')
+    text_field_columns = [TransporterView.name, TransporterView.phone_number]
 
     def create_filters(self):
-        self.set_text_field_columns(['name', 'phone_number'])
         items = [(_('Active'), True),
                  (_('Inactive'), False)]
         items.insert(0, (_('Any'), None))
@@ -265,13 +265,11 @@ class EmployeeRoleSearch(SearchEditor):
     search_label = _('Role Matching')
     size = (-1, 390)
     advanced_search = False
+    text_field_columns = [EmployeeRole.name]
 
     #
     # SearchEditor Hooks
     #
-
-    def create_filters(self):
-        self.set_text_field_columns(['name'])
 
     def get_columns(self):
         return [Column('name', _('Role'), str, sorted=True, expand=True)]
@@ -282,13 +280,14 @@ class BranchSearch(BasePersonSearch):
     editor_class = BranchEditor
     search_spec = BranchView
     search_label = _('matching')
+    text_field_columns = [BranchView.name, BranchView.acronym,
+                          BranchView.phone_number]
 
     #
     # SearchEditor Hooks
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['name', 'acronym', 'phone_number'])
         statuses = [(value, key)
                     for key, value in Branch.statuses.items()]
         statuses.insert(0, (_('Any'), None))
@@ -332,13 +331,12 @@ class UserSearch(BasePersonSearch):
     size = (750, 450)
     search_spec = UserView
     search_label = _('Users Matching:')
+    text_field_columns = [UserView.name, UserView.profile_name,
+                          UserView.username]
 
     #
     # SearchDialog hooks
     #
-
-    def create_filters(self):
-        self.set_text_field_columns(['name', 'profile_name', 'username'])
 
     def get_columns(self):
         return [SearchColumn('username', title=_('Login Name'), sorted=True,
@@ -373,8 +371,12 @@ class ClientsWithSaleSearch(SearchDialog):
     search_spec = ClientsWithSaleView
     report_class = ClientsWithSaleReport
     size = (800, 450)
-    search_by_date = True
     fast_iter = True
+    unlimited_results = True
+    branch_filter_column = Sale.branch_id
+    text_field_columns = [ClientsWithSaleView.person_name,
+                          ClientsWithSaleView.phone,
+                          ClientsWithSaleView.category]
 
     def setup_widgets(self):
         self.add_csv_button(_('Clients With Sales'), _('clients'))
@@ -388,25 +390,10 @@ class ClientsWithSaleSearch(SearchDialog):
                                       title=_(u"Product"),
                                       data_type=str)
 
-        # Text field
-        self.set_text_field_columns(['cnpj', 'cpf', 'person_name',
-                                     'email', 'phone', 'category'])
-
         # Date
         date_filter = DateSearchFilter(_('Date:'))
         date_filter.select(Today)
-        self.add_filter(date_filter)
-        self.date_filter = date_filter
-
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=[],
-                        position=SearchFilterPosition.TOP)
-        self.branch_filter = branch_filter
-
-        self.search.set_query(self.executer_query)
-        executer = self.search.get_query_executer()
-        executer.set_limit(-1)
+        self.add_filter(date_filter, columns=[Sale.confirm_date])
 
     def get_columns(self, *args):
         return [SearchColumn('person_name', title=_(u"Client"), data_type=str,
@@ -431,24 +418,6 @@ class ClientsWithSaleSearch(SearchDialog):
                 Column('sale_items', title=_(u"# Items"), data_type=Decimal,
                        format_func=format_quantity,),
                 Column('total_amount', title=_(u"Total Amount"), data_type=currency)]
-
-    def executer_query(self, store):
-        # We have to do this manual filter since adding this columns to the
-        # view would also group the results by those fields, leading to
-        # duplicate values in the results.
-        branch_id = self.branch_filter.get_state().value
-        if branch_id is None:
-            branch = None
-        else:
-            branch = store.get(Branch, branch_id)
-
-        date = self.date_filter.get_state()
-        if isinstance(date, DateQueryState):
-            date = date.date
-        elif isinstance(date, DateIntervalQueryState):
-            date = (date.start, date.end)
-
-        return self.search_spec.find_by_branch_date(store, branch, date)
 
     # Callbacks
     def on_details_button_clicked(self, *args):

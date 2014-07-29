@@ -48,7 +48,8 @@ class StockDecreaseSearch(SearchDialog):
     search_spec = StockDecrease
     report_class = StockDecreaseReport
     selection_mode = gtk.SELECTION_MULTIPLE
-    search_by_date = True
+    text_field_columns = [StockDecrease.reason]
+    branch_filter_column = StockDecrease.branch_id
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)
@@ -72,15 +73,8 @@ class StockDecreaseSearch(SearchDialog):
         self.set_details_button_sensitive(has_one_selected)
 
     def create_filters(self):
-        self.set_text_field_columns(['reason'])
-
         date_filter = DateSearchFilter(_('Date:'))
         self.add_filter(date_filter, columns=['confirm_date'])
-
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=['branch_id'])
-        self.branch_filter = branch_filter
 
     def get_columns(self):
         return [IdentifierColumn('identifier'),
