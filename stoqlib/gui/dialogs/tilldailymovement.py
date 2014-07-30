@@ -26,7 +26,7 @@ import collections
 import datetime
 
 import gtk
-from kiwi.currency import currency, format_price
+from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, SummaryLabel
 from storm.expr import And, Eq
@@ -40,11 +40,13 @@ from stoqlib.domain.payment.dailymovement import (DailyInPaymentView,
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import TillEntry
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchoptions import (Today, Yesterday, LastWeek,
                                               LastMonth)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext as _
+from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.reporting.till import TillDailyMovementReport
 
 
@@ -105,21 +107,21 @@ class TillDailyMovementDialog(BaseEditor):
         self._setup_summary_labels()
 
     def _get_sales_columns(self):
-        return [Column('identifier', title=_('Code'), data_type=str),
+        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
                 Column('salesperson', title=_('Sales Person'), data_type=str),
                 Column('client', title=_('Client'), data_type=str, expand=True),
                 Column('value', title=_('Value'), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT)]
 
     def _get_lonely_payments_columns(self):
-        return [Column('identifier', title=_('Code'), data_type=str),
+        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
                 Column('method', title=_('Method'), data_type=str),
                 Column('description', title=_('Description'), expand=True,
                        data_type=str),
                 Column('value', title=_('Payment Value'), data_type=currency)]
 
     def _get_purchases_columns(self):
-        return [Column('identifier', title=_('Code'), data_type=str),
+        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
                 Column('status_str', title=_('Status'), data_type=str),
                 Column('responsible_name', title=_('Responsible'), expand=True,
                        data_type=str),
@@ -129,9 +131,7 @@ class TillDailyMovementDialog(BaseEditor):
                 Column('purchase_total', title=_('Value'), data_type=currency)]
 
     def _get_return_sales_columns(self):
-        # Datetime type columns automatically aligns to the right,
-        # so, it is forced to be justified to the left.
-        return [Column('identifier', title=_('Code'), data_type=str),
+        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
                 Column('salesperson', title=_('Sales Person'), data_type=str),
                 Column('client', title=_('Client'), expand=True, data_type=str),
                 Column('return_date', title=_('Return Date'),
@@ -139,15 +139,13 @@ class TillDailyMovementDialog(BaseEditor):
                 Column('value', title=_('Sale Value'), data_type=currency)]
 
     def _get_till_columns(self):
-        return [Column('identifier', title=_('Code'), data_type=str),
+        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('value', title=_('Value'), data_type=currency)]
 
     def _get_permethod_columns(self):
-        # Currency type columns is automatically justified to the right,
-        # so it is needed to force in_value justification
-        return [Column('method', title=_('Payment Method'), data_type=str,
+        return [Column('method', title=_('Payment Method'), sorted=True,
                        expand=True),
                 Column('in_value', title=_('Income Total'), data_type=currency),
                 Column('out_value', title=_('Outgoing Total'),
@@ -215,8 +213,6 @@ class TillDailyMovementDialog(BaseEditor):
         result = store.find(DailyInPaymentView, query)
         for p in result.order_by(Sale.identifier, Payment.identifier):
             if p.sale:
-                if p.sale.status == Sale.STATUS_RETURNED:
-                    continue
                 subtotal = p.sale_subtotal
                 total = p.sale.get_total_sale_amount(subtotal)
                 salesperson = p.salesperson_name or _('Not Specified')
@@ -224,7 +220,7 @@ class TillDailyMovementDialog(BaseEditor):
                 sale = DailyMovementSale(identifier=p.sale.identifier,
                                          salesperson=salesperson,
                                          client=client,
-                                         value=format_price(total))
+                                         value=get_formatted_price(total))
                 sale_payments = self.sales.setdefault(sale, {})
                 details = ''
                 method_desc = p.method.get_description()
@@ -312,8 +308,9 @@ class TillDailyMovementDialog(BaseEditor):
         for sale, payments in self.sales.items():
             self.sales_list.append(None, sale)
             for details, values in payments.items():
-                value = '%s (%sx)' % (format_price(values[0]), values[1])
-                payment_data = Settable(salesperson=details[0],
+                value = '%s (%sx)' % (get_formatted_price(values[0]), values[1])
+                payment_data = Settable(identifier=None,
+                                        salesperson=details[0],
                                         client=details[1],
                                         value=value)
                 self.sales_list.append(sale, payment_data)
@@ -344,7 +341,7 @@ class TillDailyMovementDialog(BaseEditor):
                 payment_data = Settable(identifier=payment.identifier,
                                         salesperson=payment.method.get_description(),
                                         client=payment.description,
-                                        value=format_price(payment.value))
+                                        value=get_formatted_price(payment.value))
                 self.return_sales_list.append(sale, payment_data)
 
         # Supplies
