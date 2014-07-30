@@ -50,6 +50,7 @@
       <menuitem action="ReturnedSaleSearch"/>
       <menuitem action="SearchUnconfirmedSaleItems"/>
       <menuitem action="SearchClientsWithSale"/>
+      <menuitem action="SearchClientsWithCredit"/>
       <separator/>
       <menuitem action="LoanSearch"/>
       <menuitem action="LoanSearchItems"/>

@@ -38,7 +38,7 @@ from stoqlib.domain.person import (Individual, EmployeeRole,
                                    Client, ClientView,
                                    Employee, EmployeeView,
                                    TransporterView,
-                                   SupplierView, UserView)
+                                   SupplierView, UserView, ClientsWithCreditView)
 from stoqlib.domain.sale import ClientsWithSaleView, Sale
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.enums import SearchFilterPosition
@@ -423,4 +423,44 @@ class ClientsWithSaleSearch(SearchDialog):
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()
         client = self.store.find(Client, Client.person_id == selected.id).one()
+        run_dialog(ClientDetailsDialog, self, self.store, client)
+
+
+class ClientsWithCreditSearch(SearchDialog):
+    title = _(u"Clients with Credit")
+    search_spec = ClientsWithCreditView
+    size = (800, 450)
+    fast_iter = True
+    unlimited_results = True
+    text_field_columns = [ClientsWithCreditView.name]
+
+    def setup_widgets(self):
+        self.add_csv_button(self.title, _('clients'))
+
+    def get_columns(self, *args):
+        return [SearchColumn('name', title=_(u"Client"), data_type=str,
+                             expand=True, sorted=True),
+                SearchColumn('email', title=_(u"Email"), data_type=str,
+                             visible=False),
+                SearchColumn('phone', title=_(u"Phone"), data_type=str,
+                             visible=False),
+                SearchColumn('category', title=_(u"Category"), data_type=str,
+                             visible=False),
+                Column('cnpj_or_cpf', title=_(u"Document"), data_type=str,
+                       visible=False),
+                SearchColumn('cpf', title=_(u"CPF"), data_type=str,
+                             visible=False),
+                SearchColumn('cnpj', title=_(u"CNPJ"), data_type=str,
+                             visible=False),
+                SearchColumn('credit_received', title=_(u"Received"),
+                             data_type=currency),
+                SearchColumn('credit_spent', title=_(u"Spent"),
+                             data_type=currency),
+                SearchColumn('remaining_credit', title=_(u"Available"),
+                             data_type=currency)]
+
+    # Callbacks
+    def on_details_button_clicked(self, *args):
+        selected = self.results.get_selected()
+        client = self.store.get(Client, selected.id)
         run_dialog(ClientDetailsDialog, self, self.store, client)

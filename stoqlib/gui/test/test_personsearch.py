@@ -26,6 +26,7 @@ import datetime
 
 from stoqlib.api import api
 from stoqlib.domain.commission import Commission
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Client, Employee, EmployeeRoleHistory,
                                    Supplier, Transporter, EmployeeRole)
 from stoqlib.domain.product import ProductSupplierInfo
@@ -37,7 +38,8 @@ from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.search.personsearch import (ClientSearch, EmployeeSearch,
                                              SupplierSearch, TransporterSearch,
                                              EmployeeRoleSearch, BranchSearch,
-                                             UserSearch, ClientsWithSaleSearch)
+                                             UserSearch, ClientsWithSaleSearch,
+                                             ClientsWithCreditSearch)
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -192,3 +194,27 @@ class TestClientsWithSaleSearch(GUITest):
         search.search.refresh()
 
         self.check_search(search, 'search-clients-with-sale')
+
+
+class TestClientsWithCreditSearch(GUITest):
+    def test_show(self):
+        credit_payment = self.get_payment_method(u'credit')
+
+        self.create_client(name=u'Without Credit')
+        client = self.create_client(name=u'With Credit')
+        payment = self.create_payment(method=credit_payment, value=100,
+                                      payment_type=Payment.TYPE_OUT)
+        payment.group.payer = client.person
+        payment.set_pending()
+        payment.pay()
+
+        payment = self.create_payment(method=credit_payment, value=25,
+                                      payment_type=Payment.TYPE_IN)
+        payment.group.payer = client.person
+        payment.set_pending()
+        payment.pay()
+
+        search = ClientsWithCreditSearch(self.store)
+        search.search.refresh()
+
+        self.check_search(search, 'search-clients-with-credit')

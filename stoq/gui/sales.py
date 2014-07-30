@@ -46,7 +46,9 @@ from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.returnedsalesearch import ReturnedSaleSearch
-from stoqlib.gui.search.personsearch import ClientSearch, ClientsWithSaleSearch
+from stoqlib.gui.search.personsearch import (ClientSearch,
+                                             ClientsWithSaleSearch,
+                                             ClientsWithCreditSearch)
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
@@ -183,8 +185,11 @@ class SalesApp(ShellApp):
              group.get("search_reserved_product"),
              _("Search for unconfirmed sale items")),
             ("SearchClientsWithSale", None, _("Clients with sales..."),
-             group.get("search_clients"),
+             None,
              _("Search for regular clients")),
+            ("SearchClientsWithCredit", None, _("Clients with credit..."),
+             None,
+             _("Search for clients that have credit")),
 
 
             # Sale
@@ -593,6 +598,9 @@ class SalesApp(ShellApp):
 
     def on_SearchClientsWithSale__activate(self, action):
         self.run_dialog(ClientsWithSaleSearch, self.store)
+
+    def on_SearchClientsWithCredit__activate(self, action):
+        self.run_dialog(ClientsWithCreditSearch, self.store)
 
     # Toolbar
 

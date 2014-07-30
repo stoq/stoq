@@ -59,12 +59,14 @@ import operator
 
 from kiwi.currency import currency
 from kiwi.datatypes import converter
-from storm.expr import And, Coalesce, Eq, Join, LeftJoin, Or, Update
+from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Update, Select,
+                        Alias, Sum)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import Age, Case, Concat, Date, DateTrunc, Interval
+from stoqlib.database.expr import (Age, Case, Concat, Date, DateTrunc, Interval,
+                                   Field)
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          IntCol, PercentCol,
                                          PriceCol,
@@ -2239,3 +2241,53 @@ class ClientSalaryHistoryView(Viewable):
         if client is not None:
             resultset = resultset.find(ClientSalaryHistory.client == client)
         return resultset
+
+
+_InPaymentSummary = Select(
+    columns=[PaymentGroup.payer_id,
+             Alias(Sum(Payment.paid_value), 'paid_value')],
+    tables=[Payment,
+            Join(PaymentGroup, PaymentGroup.id == Payment.group_id),
+            Join(PaymentMethod, PaymentMethod.id == Payment.method_id)],
+    where=And(Payment.payment_type == Payment.TYPE_IN,
+              PaymentMethod.method_name == u'credit',
+              Payment.status == Payment.STATUS_PAID),
+    group_by=[PaymentGroup.payer_id])
+
+_OutPaymentSummary = Select(
+    columns=_InPaymentSummary.columns,
+    tables=_InPaymentSummary.tables,
+    group_by=_InPaymentSummary.group_by,
+    where=And(Payment.payment_type == Payment.TYPE_OUT,
+              PaymentMethod.method_name == u'credit',
+              Payment.status == Payment.STATUS_PAID))
+
+
+class ClientsWithCreditView(Viewable):
+    """A view that displays client with credit
+    """
+    id = Client.id
+    name = Person.name
+    phone = Person.phone_number
+    email = Person.email
+    cpf = Individual.cpf
+    birth_date = Individual.birth_date
+
+    cnpj = Company.cnpj
+
+    credit_received = Field('_out_summary', 'paid_value')
+    credit_spent = Coalesce(Field('_in_summary', 'paid_value'), 0)
+    remaining_credit = credit_received - credit_spent
+
+    tables = [
+        Client,
+        Join(Person, Person.id == Client.person_id),
+        LeftJoin(Individual, Individual.person_id == Person.id),
+        LeftJoin(Company, Company.person_id == Person.id),
+        LeftJoin(Alias(_InPaymentSummary, '_in_summary'),
+                 Field('_in_summary', 'payer_id') == Person.id),
+        LeftJoin(Alias(_OutPaymentSummary, '_out_summary'),
+                 Field('_out_summary', 'payer_id') == Person.id),
+    ]
+
+    clause = Or(credit_spent > 0, credit_received > 0)
