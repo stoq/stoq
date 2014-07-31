@@ -401,6 +401,10 @@ class TillEntry(Domain):
         time = self.date.time()
         return time.replace(microsecond=0)
 
+    @property
+    def branch_name(self):
+        return self.branch.get_description()
+
 
 class TillClosedView(Viewable):
 

@@ -300,3 +300,18 @@ class TestTillEntry(DomainTest):
         entry = TillEntry(store=self.store,
                           date=datetime.datetime(2000, 1, 1, 12, 34, 59, 789))
         self.assertEquals(entry.time, datetime.time(12, 34, 59))
+
+    def test_branch_name(self):
+        till = self.create_till()
+        till.open_till()
+        branch = self.create_branch(name=u'Test')
+        person = branch.person
+        person.company.fancy_name = u'Test Shop'
+        entry = TillEntry(store=self.store,
+                          till=till,
+                          branch=branch,
+                          date=datetime.datetime(2014, 1, 1))
+        self.assertEquals(entry.branch_name, u'Test Shop')
+        person.company.fancy_name = None
+        self.assertNotEquals(entry.branch_name, u'Test Shop')
+        self.assertEquals(entry.branch_name, u'Test')

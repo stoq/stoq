@@ -28,12 +28,14 @@ GtkVBox(toplevel):
         column: title='Code'
         column: title='Sales Person'
         column: title='Client', expand
+        column: title='Branch', hidden
         column: title='Value'
     GtkVBox(vbox4):
       ObjectList(inpayments_list, expand=True, fill=True):
         column: title='Code'
         column: title='Method'
         column: title='Description', expand
+        column: title='Branch', hidden
         column: title='Payment Value'
     GtkVBox(purchases_vbox):
       ObjectTree(purchases_list, expand=True, fill=True):
@@ -49,19 +51,22 @@ GtkVBox(toplevel):
         column: title='Code'
         column: title='Method'
         column: title='Description', expand
+        column: title='Branch', hidden
         column: title='Payment Value'
-        row: 9941, u'Credit', u'Test payment', <currency $100>
+        row: 9941, u'Credit', u'Test payment', u'Moda Stoq', <currency $100>
     GtkVBox(return_sales_vbox):
       ObjectTree(return_sales_list, expand=True, fill=True):
         column: title='Code'
         column: title='Sales Person'
         column: title='Client', expand
         column: title='Return Date'
+        column: title='Branch', hidden
         column: title='Sale Value'
     GtkVBox(supplies_vbox):
       ObjectList(supplies_list, expand=True, fill=True):
         column: title='Code'
         column: title='Description', expand
+        column: title='Branch', hidden
         column: title='Value'
       GtkHBox(supplies_label):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
@@ -70,8 +75,9 @@ GtkVBox(toplevel):
       ObjectList(removals_list, expand=True, fill=True):
         column: title='Code'
         column: title='Description', expand
+        column: title='Branch', hidden
         column: title='Value'
-        row: 4, u'Amount removed from Till', <currency $ -2015>
+        row: 4, u'Amount removed from Till', u'Moda Stoq', <currency $ -2015>
       GtkHBox(removals_label):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$ -2015.00</b>'

@@ -110,6 +110,7 @@ class TillDailyMovementDialog(BaseEditor):
         return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
                 Column('salesperson', title=_('Sales Person'), data_type=str),
                 Column('client', title=_('Client'), data_type=str, expand=True),
+                Column('branch', title=_('Branch'), data_type=str, visible=False),
                 Column('value', title=_('Value'), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT)]
 
@@ -118,6 +119,7 @@ class TillDailyMovementDialog(BaseEditor):
                 Column('method', title=_('Method'), data_type=str),
                 Column('description', title=_('Description'), expand=True,
                        data_type=str),
+                Column('branch', title=_('Branch'), data_type=str, visible=False),
                 Column('value', title=_('Payment Value'), data_type=currency)]
 
     def _get_purchases_columns(self):
@@ -136,12 +138,14 @@ class TillDailyMovementDialog(BaseEditor):
                 Column('client', title=_('Client'), expand=True, data_type=str),
                 Column('return_date', title=_('Return Date'),
                        data_type=datetime.date),
+                Column('branch', title=_('Branch'), data_type=str, visible=False),
                 Column('value', title=_('Sale Value'), data_type=currency)]
 
     def _get_till_columns(self):
         return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
+                Column('branch_name', title=_('Branch'), data_type=str, visible=False),
                 Column('value', title=_('Value'), data_type=currency)]
 
     def _get_permethod_columns(self):
@@ -220,6 +224,7 @@ class TillDailyMovementDialog(BaseEditor):
                 sale = DailyMovementSale(identifier=p.sale.identifier,
                                          salesperson=salesperson,
                                          client=client,
+                                         branch=p.branch_name,
                                          value=get_formatted_price(total))
                 sale_payments = self.sales.setdefault(sale, {})
                 details = ''
@@ -263,6 +268,7 @@ class TillDailyMovementDialog(BaseEditor):
                                          salesperson=salesperson,
                                          client=client,
                                          return_date=p.sale.return_date,
+                                         branch=p.branch_name,
                                          value=value)
                 return_sales_payment = self.return_sales.setdefault(sale, [])
                 return_sales_payment.append(p)
@@ -297,6 +303,7 @@ class TillDailyMovementDialog(BaseEditor):
             payment_data = Settable(identifier=payment.identifier,
                                     method=payment.method.get_description(),
                                     description=payment.description,
+                                    branch=payment.branch_name,
                                     value=payment.value)
             widget.append(payment_data)
 
