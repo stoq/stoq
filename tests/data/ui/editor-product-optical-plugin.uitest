@@ -142,6 +142,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                   item: 'Glasses'
                   item: 'Glass Lenses'
                   item: 'Contact Lenses'
+              ProxyCheckButton(auto_reserve, fill=True): 'Auto decrease stock when added to the sale with work order', active
               GtkTable(gf_details, fill=True): hidden
                 GtkLabel(label2): 'Glasses Type:'
                 ProxyEntry(gf_glass_type): ''

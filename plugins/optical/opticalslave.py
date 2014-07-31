@@ -86,8 +86,8 @@ class ProductOpticSlave(BaseEditorSlave):
     contact_lens_widgets = ['cl_degree', 'cl_classification', 'cl_lens_type',
                             'cl_discard', 'cl_addition', 'cl_cylindrical',
                             'cl_axis', 'cl_color', 'cl_curvature']
-    proxy_widgets = (['optical_type'] + glass_widgets + glass_lens_widgets +
-                     contact_lens_widgets)
+    proxy_widgets = (['optical_type', 'auto_reserve'] + glass_widgets +
+                     glass_lens_widgets + contact_lens_widgets)
 
     def __init__(self, store, product, model=None):
         self._product = product

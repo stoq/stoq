@@ -41,7 +41,7 @@ from stoqlib.gui.wizards.workorderquotewizard import (WorkOrderQuoteWizard,
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-from .opticaldomain import OpticalWorkOrder, OpticalMedic
+from .opticaldomain import OpticalWorkOrder, OpticalMedic, OpticalProduct
 from .opticalslave import WorkOrderOpticalSlave
 from .opticalreport import OpticalWorkOrderReceiptReport
 
@@ -118,6 +118,12 @@ class OpticalItemStep(WorkOrderQuoteItemStep):
         # stock and we can associate the category selected to the workorders
         storable = sale_item.sellable.product_storable
         if storable:
+            optical_product = OpticalProduct.get_from_product(storable.product)
+            if optical_product:
+                auto_reserve = optical_product.auto_reserve
+            else:
+                auto_reserve = True
+
             if sale_item.batch is not None:
                 balance = sale_item.batch.get_balance_for_branch(
                     sale_item.sale.branch)
@@ -127,10 +133,12 @@ class OpticalItemStep(WorkOrderQuoteItemStep):
         else:
             # No storable, consume it all
             balance = sale_item.quantity
+            auto_reserve = True
 
-        quantity_to_reserve = min(balance, sale_item.quantity)
-        if quantity_to_reserve:
-            sale_item.reserve(quantity_to_reserve)
+        if auto_reserve:
+            quantity_to_reserve = min(balance, sale_item.quantity)
+            if quantity_to_reserve:
+                sale_item.reserve(quantity_to_reserve)
 
         wo_item.quantity_decreased = sale_item.quantity_decreased
         return sale_item

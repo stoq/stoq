@@ -97,6 +97,10 @@ class OpticalProduct(Domain):
     # The type indicates what of the following fields should be edited.
     optical_type = IntCol()
 
+    #: If this product should be reserved automatically when added to the sale
+    #: with work order
+    auto_reserve = BoolCol(default=True)
+
     #
     # Glass frame details
     #
@@ -196,6 +200,10 @@ class OpticalProduct(Domain):
     #: Free text description of the curvature. normaly a decimal, but may have
     #: textual descriptions
     cl_curvature = UnicodeCol()
+
+    @classmethod
+    def get_from_product(cls, product):
+        return product.store.find(cls, product=product).one()
 
 
 class OpticalWorkOrder(Domain):

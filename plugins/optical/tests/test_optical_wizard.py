@@ -37,7 +37,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.translation import stoqlib_gettext
 
-from ..opticaldomain import OpticalMedic
+from ..opticaldomain import OpticalMedic, OpticalProduct
 from ..opticaleditor import MedicEditor
 from ..opticalreport import OpticalWorkOrderReceiptReport
 from ..opticalwizard import OpticalSaleQuoteWizard, MedicRoleWizard
@@ -289,6 +289,62 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
                                       'Print quote details',
                                       "Don't print")
         print_report.assert_called_once_with(OpticalWorkOrderReceiptReport, [workorder])
+
+    @mock.patch('plugins.optical.opticalwizard.yesno')
+    def test_auto_reserve(self, yesno):
+        # Data setup
+        client = self.create_client()
+        medic = self.create_optical_medic(crm_number=u'999')
+
+        auto = self.create_storable(
+            branch=api.get_current_branch(self.store),
+            stock=10)
+        auto.product.sellable.barcode = u'auto_reserve'
+        OpticalProduct(store=self.store, product=auto.product,
+                       auto_reserve=True)
+
+        not_auto = self.create_storable(
+            branch=api.get_current_branch(self.store),
+            stock=10)
+        not_auto.product.sellable.barcode = u'not_auto_reserve'
+        OpticalProduct(store=self.store, product=not_auto.product,
+                       auto_reserve=False)
+
+        wizard = OpticalSaleQuoteWizard(self.store)
+        # First step: Client
+        step = wizard.get_current_step()
+        step.client_gadget.set_value(client)
+        self.click(wizard.next_button)
+
+        # Second Step: optical data
+        step = wizard.get_current_step()
+        slave = step.slaves['WO 1']
+        slave.patient.update('Patient')
+        slave.medic_combo.update(medic)
+        slave.estimated_finish.update(localdate(2020, 1, 5))
+
+        # Third Step: Products
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+
+        # Add two items: One auto reserved and another not. Both with initially
+        # 10 items on stock
+        for barcode in ['auto_reserve', 'not_auto_reserve']:
+            step.barcode.set_text(barcode)
+            self.activate(step.barcode)
+            step.quantity.update(5)
+            self.click(step.add_sellable_button)
+
+        # Finish the wizard
+        yesno.return_value = False
+        with mock.patch.object(self.store, 'commit'):
+            self.click(wizard.next_button)
+
+        # Now check the stock for the two items. The auto reverd should have the
+        # stock decreased to 5. The one that not auto reserves should still be
+        # at 10
+        self.assertEquals(auto.get_total_balance(), 5)
+        self.assertEquals(not_auto.get_total_balance(), 10)
 
 
 class TestMedicRoleWizard(GUITest):
