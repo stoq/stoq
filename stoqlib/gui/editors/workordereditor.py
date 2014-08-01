@@ -68,6 +68,7 @@ class WorkOrderEditor(BaseEditor):
         'description',
         'identifier',
         'status_str',
+        'quantity',
     ]
 
     def __init__(self, store, model=None, visual_mode=False, category=None):
@@ -128,12 +129,14 @@ class WorkOrderEditor(BaseEditor):
     def setup_proxies(self):
         self._fill_categories_combo()
         self._setup_client_widget()
+        if not self.model.sellable:
+            self.quantity.set_sensitive(False)
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def update_visual_mode(self):
         for widget in [self.toggle_status_btn,
                        self.category_create, self.sellable_desc,
-                       self.equip_search_button]:
+                       self.equip_search_button, self.quantity]:
             widget.set_sensitive(False)
 
     #
@@ -284,13 +287,13 @@ class WorkOrderEditor(BaseEditor):
     def on_equip_search_button__clicked(self, button):
         ret = run_dialog(SellableSearch, self, self.store, hide_footer=True,
                          hide_toolbar=True, double_click_confirm=True)
-
         if not ret:
             return
 
         sellable = ret.sellable
         self.sellable_desc.set_text(sellable.description)
         self.model.sellable = sellable
+        self.quantity.set_sensitive(True)
 
 
 class WorkOrderPackageSendEditor(BaseEditor):

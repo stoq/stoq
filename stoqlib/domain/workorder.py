@@ -611,6 +611,10 @@ class WorkOrder(Domain):
     #: something that this shop does not sell
     sellable = Reference(sellable_id, 'Sellable.id')
 
+    #: If a sellable is specified, the number of items of this sellable this
+    #: workorder is for
+    quantity = IntCol()
+
     #: description of the specific item brought by the client. This can be used
     #: to describe the equipament, if it is not one of the sellables available,
     #: or even to describe the serial number of the object.

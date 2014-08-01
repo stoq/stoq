@@ -11,23 +11,27 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               ProxyLabel(identifier): '<span >00666</span>'
               GtkLabel(label20): 'Status:'
               GtkHBox(hbox2):
-                ProxyLabel(status_str, fill=True): '<span >Opened</span>'
+                ProxyLabel(status_str, expand=True, fill=True): '<span >Opened</span>'
                 GtkImage(state_icon): hidden
-              GtkButton(toggle_status_btn): 'Approve'
+                GtkButton(toggle_status_btn, fill=True): 'Approve'
               GtkLabel(label8): 'Client:'
               GtkHBox():
                 ProxyEntry(client, expand=True, fill=True): 'Client'
                 GtkButton():
                 GtkButton():
               GtkLabel(label5): 'Category:'
-              ProxyComboBox(category):
-                item: 'No category'
-                item: 'Categoty XXX', selected
-              GtkButton(category_create):
-              GtkButton(category_edit): insensitive
+              GtkHBox(hbox1):
+                ProxyComboBox(category, expand=True, fill=True):
+                  item: 'No category'
+                  item: 'Categoty XXX', selected
+                GtkButton(category_create, expand=True, fill=True):
+                GtkButton(category_edit, expand=True, fill=True): insensitive
               GtkLabel(label19): 'Equipment:'
-              GtkLabel(sellable_desc): 'Description'
-              GtkButton(equip_search_button):
+              GtkHBox(hbox3):
+                GtkLabel(sellable_desc, expand=True, fill=True): 'Description'
+                GtkButton(equip_search_button, fill=True):
+                GtkLabel(label7, fill=True): 'Qty:'
+                ProxySpinButton(quantity, fill=True): '1'
               GtkLabel(equip_des): 'Description:'
               ProxyEntry(description): 'Test equipment'
           GtkNotebook(slaves_notebook, expand=True, fill=True):
