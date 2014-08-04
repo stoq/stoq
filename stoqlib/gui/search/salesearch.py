@@ -228,6 +228,7 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
     search_spec = UnconfirmedSaleItemsView
     size = (850, 450)
     branch_filter_column = Sale.branch_id
+    unlimited_results = True
     text_field_columns = [UnconfirmedSaleItemsView.description,
                           UnconfirmedSaleItemsView.salesperson_name,
                           UnconfirmedSaleItemsView.client_name]
