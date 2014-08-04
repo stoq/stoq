@@ -147,13 +147,13 @@ class TillClosedSearch(SearchDialog):
                              justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('closing_date', width=110, title=_(u'Closing Date'),
                              data_type=datetime.date),
-                SearchColumn('initial_cash_amount', title=_('Initial Cash'),
+                SearchColumn('initial_cash_amount', title=_('Initial'),
                              data_type=currency),
-                SearchColumn('final_cash_amount', title=_('Final Cash'),
+                SearchColumn('final_cash_amount', title=_('Final'),
                              data_type=currency),
-                SearchColumn('responsible_open_name', title=_('Responsible Open'),
+                SearchColumn('responsible_open_name', title=_('Opened by'),
                              data_type=str, expand=True),
-                SearchColumn('responsible_close_name', title=_('Responsible Close'),
+                SearchColumn('responsible_close_name', title=_('Closed by'),
                              data_type=str, expand=True)]
 
     # Callbacks

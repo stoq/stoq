@@ -33,10 +33,10 @@ GtkDialog(toplevel): title='Till Search', hidden
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Opening Date'
             column: title='Closing Date'
-            column: title='Initial Cash'
-            column: title='Final Cash'
-            column: title='Responsible Open', expand
-            column: title='Responsible Close', expand
+            column: title='Initial'
+            column: title='Final'
+            column: title='Opened by', expand
+            column: title='Closed by', expand
             row: datetime.datetime(2014, 1, 1, 0, 0), datetime.datetime(2014, 1, 1, 0, 0), <currency $66.43>, <currency $12366.43>, u'individual', u'Administrator'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
