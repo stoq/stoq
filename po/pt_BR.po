@@ -5810,7 +5810,7 @@ msgstr "Ordem de serviço: %s"
 
 #: ../plugins/optical/opticalslave.py:79
 msgid "Optic Details"
-msgstr "Detalhes Óticos:"
+msgstr "Detalhes Óticos"
 
 #: ../plugins/optical/opticalslave.py:114
 msgid "None"
