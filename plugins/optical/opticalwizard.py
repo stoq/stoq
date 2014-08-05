@@ -26,6 +26,7 @@
 import gtk
 import string
 from kiwi.ui.objectlist import Column
+from kiwi.datatypes import ValidationError
 
 from stoqlib.domain.person import Person
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
@@ -202,6 +203,7 @@ class MedicRoleTypeStep(PersonRoleTypeStep):
         self.person_role_label.set_text(label % role_name)
         self.person_role_label.set_size('large')
         self.person_role_label.set_bold(True)
+        self.register_validate_function(self.wizard.refresh_next)
 
     def next_step(self):
         from stoqlib.domain.person import Individual, Company
@@ -225,9 +227,8 @@ class MedicRoleTypeStep(PersonRoleTypeStep):
                               document=self.model.person_document)
 
     def on_person_document__validate(self, entry, value):
-        # Overriding the method.
-        # CRM doesn't have a validation
-        pass
+        if value.startswith('0'):
+            return ValidationError(_("CRM can't start with zeros"))
 
     def on_individual_check__toggled(self, *args):
         # Overriding the method.

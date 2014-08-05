@@ -349,6 +349,21 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
 
 class TestMedicRoleWizard(GUITest):
     @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    def test_medic_with_crm(self, run_dialog):
+        individual = self.create_individual()
+        person = individual.person
+        person.name = u'Medic without crm'
+        OpticalMedic(store=self.store, crm_number=u'', person=person)
+
+        wizard = MedicRoleWizard(self.store, MedicEditor)
+        step = wizard.get_current_step()
+        step.person_document.update('0123')
+        self.assertNotSensitive(wizard, ['next_button'])
+
+        step.person_document.update('123')
+        self.assertSensitive(wizard, ['next_button'])
+
+    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
     def test_medic_without_crm(self, run_dialog):
         individual = self.create_individual()
         person = individual.person
