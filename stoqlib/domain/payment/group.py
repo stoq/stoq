@@ -105,7 +105,7 @@ class PaymentGroup(Domain):
     def get_items(self):
         store = self.store
         return store.find(Payment, group=self).order_by(
-            Payment.identifier)
+            Payment.due_date, Payment.identifier)
 
     #
     # Properties

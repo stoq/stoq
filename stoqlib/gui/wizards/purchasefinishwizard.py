@@ -33,6 +33,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 from kiwi.python import Settable
 
+from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
@@ -192,6 +193,11 @@ class PurchaseFinishWizard(BaseWizard):
     title = _('Purchase Finish')
 
     def __init__(self, store, purchase):
+        sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
+        # When in sync mode, only the branch owner can finish a purchase order.
+        if sync_mode:
+            assert purchase.branch == api.get_current_branch(store)
+
         self.purchase = purchase
         model = self._create_model(purchase)
 
@@ -239,6 +245,9 @@ class PurchaseFinishWizard(BaseWizard):
                           payment_type=Payment.TYPE_IN)
         payment.set_pending()
         return payment
+
+    def is_for_another_branch(self):
+        return False
 
     def finish(self):
         """  When finishing this wizard is necessary to check if the paid
