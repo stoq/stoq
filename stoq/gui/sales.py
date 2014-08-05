@@ -266,7 +266,6 @@ class SalesApp(ShellApp):
         self.set_sensitive(self._inventory_widgets, False)
 
     def create_filters(self):
-        self.search.set_query(self._query)
         self.set_text_field_columns(['client_name', 'salesperson_name',
                                      'identifier_str'])
 
@@ -279,6 +278,8 @@ class SalesApp(ShellApp):
         executer.add_filter_query_callback(
             status_filter, self._get_status_query)
         self.add_filter(status_filter, position=SearchFilterPosition.TOP)
+
+        self.create_branch_filter(column=Sale.branch_id)
 
     def get_columns(self):
         self._status_col = SearchColumn('status_name', title=_('Status'),
@@ -441,10 +442,6 @@ class SalesApp(ShellApp):
             return SaleView.status == state.value.value
 
         raise AssertionError(state.value.name, state.value.value)
-
-    def _query(self, store):
-        branch = api.get_current_branch(self.store)
-        return self.search_spec.find_by_branch(store, branch)
 
     def _new_sale_quote(self, wizard):
         if self.check_open_inventory():

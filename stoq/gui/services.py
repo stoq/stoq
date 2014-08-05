@@ -355,12 +355,11 @@ class ServicesApp(ShellApp):
         combo.color_attribute = 'color'
         combo.set_row_separator_func(self._on_main_filter__row_separator_func)
 
-        executer = self.search.get_query_executer()
-        executer.add_filter_query_callback(
-            self.main_filter,
-            self._on_main_filter__query_callback)
-        self.add_filter(self.main_filter, SearchFilterPosition.TOP)
+        self.add_filter(self.main_filter, SearchFilterPosition.TOP,
+                        callback=self._get_main_query)
 
+        self.create_branch_filter(column=[WorkOrder.branch_id,
+                                          WorkOrder.current_branch_id])
         self._update_filters()
 
     def get_columns(self):
@@ -435,23 +434,14 @@ class ServicesApp(ShellApp):
             return self.results.render_icon(stock_id, gtk.ICON_SIZE_MENU)
 
     def _get_main_query(self, state):
-        # Only show branchs created or in current branch
-        current_branch = api.get_current_branch(self.store)
-        query = Or(WorkOrder.branch_id == current_branch.id,
-                   WorkOrder.current_branch_id == current_branch.id)
-
         item = state.value
         kind, value = item.value.split(':')
         if kind == 'category':
-            return And(query, WorkOrder.category_id == item.id)
+            return WorkOrder.category_id == item.id
         if kind == 'status':
-            new_query = self._status_query_mapper[value]
-            if new_query is not None:
-                return And(query, new_query)
-            else:
-                return query
+            return self._status_query_mapper[value]
         if kind == 'flag':
-            return And(query, self._flags_query_mapper[value])
+            return self._flags_query_mapper[value]
         else:
             raise AssertionError(kind, value)
 
@@ -716,9 +706,6 @@ class ServicesApp(ShellApp):
         if obj and obj.value == 'sep':
             return True
         return False
-
-    def _on_main_filter__query_callback(self, state):
-        return self._get_main_query(state)
 
     def _on_results__cell_data_func(self, column, renderer, wov, text):
         if not isinstance(renderer, gtk.CellRendererText):

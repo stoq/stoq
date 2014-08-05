@@ -94,6 +94,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
                 GtkVBox(padding=6):
                   GtkHBox():
                     ComboSearchFilter():
+                      GtkLabel(): 'Branch:'
+                      ProxyComboBox(padding=6):
+                        item: 'Any'
+                        item: 'Moda Stoq', selected
+                        item: 'Stoq Elite Fashion'
+                    ComboSearchFilter():
                       GtkLabel(): 'Show'
                       ProxyComboBox(padding=6):
                         item: 'Not delivered', selected

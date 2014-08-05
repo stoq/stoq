@@ -358,6 +358,13 @@ class ShellApp(GladeDelegate):
         """
         self.search.set_text_field_columns(columns)
 
+    def create_branch_filter(self, label=None, column=None):
+        branch_filter = self.search.create_branch_filter(label, column)
+        # If there is only one item in the combo, lets hide it.
+        if len(branch_filter.combo) == 1:
+            branch_filter.hide()
+        return branch_filter
+
     def refresh(self, rollback=True):
         """
         See :class:`stoqlib.gui.search.searchslave.SearchSlave.refresh`

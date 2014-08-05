@@ -699,6 +699,29 @@ class SearchSlave(SlaveDelegate):
             self.set_auto_search(True)
         self._loading_filters = False
 
+    def create_branch_filter(self, label=None, column=None):
+        """Returns a new branch filter.
+
+        :param label: The label to be used for the filter
+        :param column: When provided, besides creating the filter, we will also
+          add it to the interface, filtering by the informed column.
+        """
+        items = api.get_branches_for_filter(self.store, use_id=True)
+        if not label:
+            label = _('Branch:')
+
+        if column and not isinstance(column, list):
+            column = [column]
+
+        branch_filter = ComboSearchFilter(label, items)
+        current = api.get_current_branch(self.store)
+        branch_filter.select(current.id)
+        if column:
+            self.add_filter(branch_filter, columns=column,
+                            position=SearchFilterPosition.TOP)
+
+        return branch_filter
+
     #
     #  Callbacks
     #

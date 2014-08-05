@@ -29,7 +29,6 @@ from kiwi.environ import environ
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
-from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
@@ -391,23 +390,7 @@ class SearchDialog(BasicDialog):
     #
 
     def create_branch_filter(self, label=None, column=None):
-        """Returns a new branch filter.
-
-        :param label: The label to be used for the filter
-        :param column: When provided, besides creating the filter, we will also
-          add it to the interface, filtering by the informed column.
-        """
-        items = api.get_branches_for_filter(self.store, use_id=True)
-        if not label:
-            label = _('Branch:')
-        branch_filter = ComboSearchFilter(label, items)
-        current = api.get_current_branch(self.store)
-        branch_filter.select(current.id)
-        if column:
-            self.add_filter(branch_filter, columns=[column],
-                            position=SearchFilterPosition.TOP)
-
-        return branch_filter
+        return self.search.create_branch_filter(label, column)
 
     def create_sellable_filter(self, label=None):
         from stoqlib.domain.sellable import Sellable
