@@ -1,3 +1,9 @@
+stoq (1.8) precise; urgency=low
+
+  * Release 1.8
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Tue, 05 Aug 2014 15:54:22 -0300
+
 stoq (1.7.3+1.8rc8) precise; urgency=low
 
   * 1.8 Release candidate 8
