@@ -56,6 +56,7 @@ from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.permissions import PermissionManager
@@ -96,8 +97,7 @@ class StartPurchaseStep(WizardEditorStep):
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
-        sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
-        self.branch.set_sensitive(not sync_mode)
+        self.branch.set_sensitive(api.can_see_all_branches())
 
     def _setup_widgets(self):
         allow_outdated = sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS')
@@ -153,6 +153,10 @@ class StartPurchaseStep(WizardEditorStep):
 
     def next_step(self):
         self.wizard.all_products = self.all_products.get_active()
+        if self.wizard.is_for_another_branch():
+            info(_('The identifier for this purchase will be defined when it '
+                   'is synchronized to the detination branch'))
+            self.model.identifier = PurchaseOrder.get_temporary_identifier(self.store)
         return PurchaseItemStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
@@ -402,7 +406,8 @@ class PurchasePaymentStep(WizardEditorStep):
                                      self.store, self.order, method,
                                      outstanding_value=self.outstanding_value,
                                      first_duedate=self._first_duedate,
-                                     installments_number=self._installments_number)
+                                     installments_number=self._installments_number,
+                                     temporary_identifiers=self.wizard.is_for_another_branch())
             self.attach_slave('method_slave_holder', self.slave)
 
     def _update_payment_method_slave(self):
@@ -527,7 +532,8 @@ class FinishPurchaseStep(WizardEditorStep):
         self.salesperson_name.grab_focus()
         self._set_receival_date_suggestion()
 
-        if self.model.has_batch_item():
+        # If the purchase is for another branch, we should not allow receiving
+        if self.model.has_batch_item() or self.wizard.is_for_another_branch():
             self.receive_now.hide()
 
         self.register_validate_function(self.wizard.refresh_next)
@@ -598,6 +604,7 @@ class PurchaseWizard(BaseWizard):
         # Should we show all products or only the ones associated with the
         # selected supplier?
         self.all_products = False
+        self.sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
 
         # If we receive the order right after the purchase.
         self.receiving_model = None
@@ -627,6 +634,17 @@ class PurchaseWizard(BaseWizard):
                              status=status,
                              group=group,
                              store=store)
+
+    def is_for_another_branch(self):
+        # If sync mode is on and the purchase order is for another branch, we
+        # must restrict a few options like creating payments and receiving all
+        # items now.
+        if not self.sync_mode:
+            return False
+        if self.model.branch == api.get_current_branch(self.store):
+            return False
+
+        return True
 
     #
     # WizardStep hooks

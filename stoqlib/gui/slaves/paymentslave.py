@@ -223,7 +223,7 @@ class PaymentListSlave(GladeSlaveDelegate):
     gsignal('payment-edited')
 
     def __init__(self, payment_type, group, branch, method, total_value,
-                 editor_class, parent):
+                 editor_class, parent, temporary_identifiers=False):
         self.parent = parent
         self.branch = branch
         self.payment_type = payment_type
@@ -231,6 +231,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         self.total_value = total_value
         self.editor_class = editor_class
         self.method = method
+        self.temporary_identifiers = temporary_identifiers
 
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._setup_widgets()
@@ -386,10 +387,22 @@ class PaymentListSlave(GladeSlaveDelegate):
                                      p.due_date.month,
                                      p.due_date.day)
             try:
+                # When creating temporary identifiers, we should use negative
+                # values, but we need to get the next negative value before
+                # creating the payment, otherwise there may be a conflict in the
+                # database, since the payment identifier for the other branch
+                # may already exist
+                if self.temporary_identifiers:
+                    tmp_identifier = Payment.get_temporary_identifier(self.method.store)
+                else:
+                    tmp_identifier = None
+
                 payment = self.method.create_payment(
                     payment_type=self.payment_type, payment_group=self.group,
                     branch=self.branch, value=p.value, due_date=due_date,
                     description=p.description, payment_number=p.payment_number)
+                if tmp_identifier:
+                    payment.identifier = tmp_identifier
             except PaymentMethodError as err:
                 warning(str(err))
                 return
@@ -480,7 +493,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     def __init__(self, wizard, parent, store, order_obj, payment_method,
                  outstanding_value=currency(0), first_duedate=None,
-                 installments_number=None):
+                 installments_number=None, temporary_identifiers=False):
         self.wizard = wizard
         self.parent = parent
         # Note that 'order' may be a Sale or a PurchaseOrder object
@@ -490,6 +503,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.total_value = outstanding_value or self._get_total_amount()
         self.payment_group = self.order.group
         self.payment_list = None
+        self.temporary_identifiers = temporary_identifiers
 
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
@@ -541,7 +555,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                              self.method,
                                              self.total_value,
                                              self.data_editor_class,
-                                             self.wizard)
+                                             self.wizard,
+                                             self.temporary_identifiers)
         if self.get_slave(BasePaymentMethodSlave.slave_holder):
             self.detach_slave(BasePaymentMethodSlave.slave_holder)
         self.attach_slave(BasePaymentMethodSlave.slave_holder,
@@ -724,12 +739,14 @@ class CheckMethodSlave(BasePaymentMethodSlave):
 
     def __init__(self, wizard, parent, store, total_amount,
                  payment_method, outstanding_value=currency(0),
-                 first_duedate=None, installments_number=None):
+                 first_duedate=None, installments_number=None,
+                 temporary_identifiers=False):
         BasePaymentMethodSlave.__init__(self, wizard, parent, store,
                                         total_amount, payment_method,
                                         outstanding_value=outstanding_value,
                                         installments_number=installments_number,
-                                        first_duedate=first_duedate)
+                                        first_duedate=first_duedate,
+                                        temporary_identifiers=temporary_identifiers)
         self._set_bank_widgets_visible(True)
 
 
