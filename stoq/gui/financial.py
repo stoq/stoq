@@ -553,13 +553,13 @@ class FinancialApp(ShellApp):
         # The first tab is not closable
         return not self._is_accounts_tab()
 
-    def _create_tab_label(self, title, pixbuf, page=None):
+    def _create_tab_label(self, title, pixbuf, account_view_id=None, page=None):
         hbox = gtk.HBox()
         image = gtk.image_new_from_pixbuf(pixbuf)
         hbox.pack_start(image, False, False)
         label = gtk.Label(title)
         hbox.pack_start(label, True, False)
-        if title != _("Accounts"):
+        if account_view_id:
             button = NotebookCloseButton()
             if page:
                 button.connect('clicked', lambda button: self._close_page(page))
@@ -579,7 +579,8 @@ class FinancialApp(ShellApp):
                                 self._on_search__result_selection_changed)
             page.search.connect('result-item-popup-menu',
                                 self._on_search__result_item_popup_menu)
-            hbox = self._create_tab_label(account_view.description, pixbuf, page)
+            hbox = self._create_tab_label(account_view.description, pixbuf,
+                                          account_view.id, page)
             widget = page.search.vbox
             widget.page = page
             page_id = self.notebook.append_page(widget, hbox)
