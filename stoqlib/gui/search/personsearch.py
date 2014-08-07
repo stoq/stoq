@@ -384,7 +384,7 @@ class ClientsWithSaleSearch(SearchDialog):
     def create_filters(self):
         # Extra filters (that are not columns)
         self.search.add_filter_option(SellableCategory.description,
-                                      title=_(u"Category"),
+                                      title=_(u"Product category"),
                                       data_type=str)
         self.search.add_filter_option(Sellable.description,
                                       title=_(u"Product"),
@@ -402,7 +402,7 @@ class ClientsWithSaleSearch(SearchDialog):
                              visible=False),
                 SearchColumn('phone', title=_(u"Phone"), data_type=str,
                              visible=False),
-                SearchColumn('category', title=_(u"Category"), data_type=str,
+                SearchColumn('category', title=_(u"Client category"), data_type=str,
                              visible=False),
                 Column('cnpj_or_cpf', title=_(u"Document"), data_type=str,
                        visible=False),
