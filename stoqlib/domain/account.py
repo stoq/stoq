@@ -154,7 +154,7 @@ class Account(Domain):
         TYPE_ASSET: (_(u"Increase"), _(u"Decrease")),
         TYPE_CREDIT: (_(u"Payment"), _(u"Charge")),
         TYPE_INCOME: (_(u"Charge"), _(u"Income")),
-        TYPE_EXPENSE: (_(u"Expense"), _(u"Rebate")),
+        TYPE_EXPENSE: (_(u"Rebate"), _(u"Expense")),
         TYPE_EQUITY: (_(u"Increase"), _(u"Decrease")),
     }
 
