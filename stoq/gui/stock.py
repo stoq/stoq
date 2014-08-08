@@ -23,7 +23,6 @@
 ##
 """ Main gui definition for stock application.  """
 
-import decimal
 import logging
 
 import pango
@@ -53,7 +52,7 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductClosedStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
-from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoqlib.gui.search.searchcolumns import SearchColumn, QuantityColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.utils.keybindings import get_accels
@@ -256,10 +255,7 @@ class StockApp(ShellApp):
                              data_type=str, visible=False),
                 SearchColumn('location', title=_("Location"), data_type=str,
                              width=100, visible=False),
-                SearchColumn('stock', title=_('Quantity'),
-                             data_type=decimal.Decimal, width=100),
-                SearchColumn('unit', title=_("Unit"), data_type=str,
-                             width=40, visible=False),
+                QuantityColumn('stock', title=_('Quantity'), width=100),
                 SearchColumn('has_image', title=_('Picture'),
                              data_type=bool, width=80),
                 ]

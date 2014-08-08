@@ -38,7 +38,7 @@ from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import SearchDialogSetupSearchEvent
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchextension import SearchExtension
-from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoqlib.gui.search.searchcolumns import SearchColumn, QuantityColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import (StringSearchFilter, DateSearchFilter,
                                               ComboSearchFilter, NumberSearchFilter)
@@ -218,6 +218,40 @@ class TestSearchEvent(GUITest):
         dialog = ProductSearch(self.store)
         dialog.search.refresh()
         self.check_search(dialog, 'product-search-extended')
+
+
+class TestQuantityColumn(GUITest):
+    def test_format_func(self):
+        class Fake(object):
+            quantity = 0
+
+        column = QuantityColumn('quantity')
+        obj = Fake()
+
+        obj.quantity = None
+        self.assertEquals(column._format_func(obj, True), '0')
+
+        obj.quantity = 0
+        self.assertEquals(column._format_func(obj, True), '0')
+
+        obj.quantity = 1
+        self.assertEquals(column._format_func(obj, True), '1')
+
+        obj.product = self.create_product()
+        obj.sellable = obj.product.sellable
+
+        # Without a unit, it should still return just the number
+        obj.quantity = 1
+        self.assertEquals(column._format_func(obj, True), '1')
+
+        obj.sellable.unit = self.create_sellable_unit(u'Pc')
+        self.assertEquals(column._format_func(obj, True), '1 Pc')
+
+        obj.product.manage_stock = False
+        self.assertEquals(column._format_func(obj, True), '1 Pc')
+
+        obj.quantity = 0
+        self.assertEquals(column._format_func(obj, True), u"\u221E")
 
 
 class TestSearchGeneric(DomainTest):

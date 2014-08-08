@@ -23,9 +23,13 @@
 ##
 """ Special columns definition for kiwi lists """
 
+import decimal
+
 import gobject
 import gtk
 from kiwi.ui.objectlist import Column
+
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -118,3 +122,42 @@ class IdentifierColumn(SearchColumn):
         super(IdentifierColumn, self).__init__(
             attribute=attribute, title=title, data_type=data_type,
             format_func=format_func, width=width, justify=justify, **kwargs)
+
+
+class QuantityColumn(SearchColumn):
+    """A column for product quantities
+
+    This is :class:`stoqlib.gui.search.searchcolumns.SearchColumn`, but will
+    also display the unit of the product if available in the object
+    """
+
+    def __init__(self, attribute, title=None, width=60, **kwargs):
+        super(QuantityColumn, self).__init__(attribute=attribute, title=title,
+                                             data_type=decimal.Decimal,
+                                             format_func=self._format_func, format_func_data=True,
+                                             width=width, justify=gtk.JUSTIFY_RIGHT, **kwargs)
+
+    def _format_func(self, obj, data):
+        quantity = getattr(obj, self.attribute) or 0
+        quantity_str = format_quantity(quantity)
+
+        # The object must have a sellable and a product for this to work
+        # properly. If not, just return the quantity. Dont use
+        # sellable.product here to avoid to many queries
+        sellable = getattr(obj, 'sellable', None)
+        product = getattr(obj, 'product', None)
+        if not sellable or not product:
+            return quantity_str
+
+        # If the product does not manage stock and the quantity is 0, show an
+        # infinite symbol istead
+        if not product.manage_stock and not quantity:
+            return u"\u221E"
+
+        if sellable.unit:
+            unit_desc = obj.sellable.unit.description
+        else:
+            unit_desc = ''
+
+        data = '%s %s' % (quantity_str, unit_desc)
+        return data.strip()

@@ -48,7 +48,7 @@ from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
-from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoqlib.gui.search.searchcolumns import SearchColumn, QuantityColumn
 from stoqlib.gui.search.searchdialog import SearchDialog, SearchDialogPrintSlave
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchfilters import (DateSearchFilter, ComboSearchFilter,
@@ -214,9 +214,7 @@ class ProductSearch(SellableSearch):
             cols.append(SearchColumn('price', title=_('Price'),
                                      data_type=currency, width=90))
 
-        cols.append(SearchColumn('stock', title=_('Stock'),
-                                 format_func=format_quantity,
-                                 data_type=Decimal, width=80))
+        cols.append(QuantityColumn('stock', title=_('Stock')))
         return cols
 
     def executer_query(self, store):
@@ -235,13 +233,6 @@ class ProductSearch(SellableSearch):
     def on_results__has_rows(self, results, obj):
         if self._print_slave is not None:
             self._print_slave.print_price_button.set_sensitive(obj)
-
-
-def format_data(data):
-    # must return zero or report printed show None instead of 0
-    if data is None:
-        return 0
-    return format_quantity(data)
 
 
 class ProductSearchQuantity(ProductSearch):
@@ -280,27 +271,21 @@ class ProductSearchQuantity(ProductSearch):
                        sorted=True, width=130),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
-                Column('quantity_sold', title=_('Sold'),
-                       format_func=format_data, data_type=Decimal,
-                       visible=not self.show_production_columns),
-                Column('quantity_transfered', title=_('Transfered'),
-                       format_func=format_data, data_type=Decimal,
-                       visible=not self.show_production_columns),
-                Column('quantity_received', title=_('Received'),
-                       format_func=format_data, data_type=Decimal,
-                       visible=not self.show_production_columns),
-                Column('quantity_produced', title=_('Produced'),
-                       format_func=format_data, data_type=Decimal,
-                       visible=self.show_production_columns),
-                Column('quantity_consumed', title=_('Consumed'),
-                       format_func=format_data, data_type=Decimal,
-                       visible=self.show_production_columns),
-                Column('quantity_decreased', title=_('Manualy Decreased'),
-                       format_func=format_data, data_type=Decimal,
-                       visible=self.show_production_columns),
-                Column('quantity_lost', title=_('Lost'),
-                       format_func=format_data, data_type=Decimal,
-                       visible=self.show_production_columns, )]
+                QuantityColumn('quantity_sold', title=_('Sold'), visible=not
+                               self.show_production_columns),
+                QuantityColumn('quantity_transfered', title=_('Transfered'),
+                               visible=not self.show_production_columns),
+                QuantityColumn('quantity_received', title=_('Received'),
+                               visible=not self.show_production_columns),
+                QuantityColumn('quantity_produced', title=_('Produced'),
+                               visible=self.show_production_columns),
+                QuantityColumn('quantity_consumed', title=_('Consumed'),
+                               visible=self.show_production_columns),
+                QuantityColumn('quantity_decreased',
+                               title=_('Manualy Decreased'),
+                               visible=self.show_production_columns),
+                QuantityColumn('quantity_lost', title=_('Lost'),
+                               visible=self.show_production_columns, )]
 
 
 class ProductsSoldSearch(ProductSearch):
@@ -331,9 +316,7 @@ class ProductsSoldSearch(ProductSearch):
                        sorted=True),
                 Column('description', title=_('Description'),
                        data_type=str, expand=True),
-                Column('quantity', title=_('Sold'),
-                       format_func=format_data,
-                       data_type=Decimal),
+                QuantityColumn('quantity', title=_('Sold')),
                 Column('average_cost', title=_('Avg. Cost'),
                        data_type=currency), ]
 
@@ -382,18 +365,13 @@ class ProductStockSearch(ProductSearch):
                              visible=False),
                 SearchColumn('location', title=_('Location'), data_type=str,
                              visible=False),
-                SearchColumn('maximum_quantity', title=_('Maximum'),
-                             visible=False, format_func=format_data,
-                             data_type=Decimal),
-                SearchColumn('minimum_quantity', title=_('Minimum'),
-                             format_func=format_data, data_type=Decimal),
-                SearchColumn('stock', title=_('In Stock'),
-                             format_func=format_data, data_type=Decimal),
-                SearchColumn('to_receive_quantity', title=_('To Receive'),
-                             format_func=format_data,
-                             data_type=Decimal),
+                QuantityColumn('maximum_quantity', title=_('Maximum'),
+                               visible=False),
+                QuantityColumn('minimum_quantity', title=_('Minimum')),
+                QuantityColumn('stock', title=_('In Stock')),
+                QuantityColumn('to_receive_quantity', title=_('To Receive')),
                 ColoredColumn('difference', title=_('Difference'), color='red',
-                              format_func=format_data, data_type=Decimal,
+                              format_func=format_quantity, data_type=Decimal,
                               data_func=lambda x: x <= Decimal(0))]
 
     def executer_query(self, store):
@@ -592,8 +570,7 @@ class ProductBranchSearch(SearchDialog):
     def get_columns(self):
         return [Column('branch_name', title=_('Branch'), data_type=str,
                        expand=True),
-                Column('stock', title=_('In Stock'), data_type=Decimal,
-                       format_func=format_data)]
+                QuantityColumn('stock', title=_('In Stock'))]
 
     def executer_query(self, store):
         return self.search_spec.find_by_storable(store, self._storable)

@@ -39,7 +39,7 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductsSoldSearch,
                                               ProductStockSearch,
                                               ProductClosedStockSearch,
-                                              format_data, ProductBrandSearch)
+                                              ProductBrandSearch)
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchoptions import Any
 from stoqlib.gui.test.uitestutils import GUITest
@@ -536,13 +536,3 @@ class TestProductClosedStockSearch(GUITest):
             ProductClosedStockReport,
             search.results, list(search.results),
             filters=search.search.get_search_filters())
-
-
-class TestFormatData(GUITest):
-    def test_format_no_data(self):
-        retval = format_data(None)
-        self.assertTrue(retval == 0)
-
-    def test_format_data(self):
-        retval = format_data(10.043867)
-        self.assertTrue(retval == '10.044')

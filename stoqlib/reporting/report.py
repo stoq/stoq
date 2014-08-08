@@ -262,7 +262,7 @@ class ObjectListReport(TableReport):
 
     def get_cell(self, obj, column):
         #XXX Maybe the default value should be ''
-        return column.as_string(kgetattr(obj, column.attribute, None))
+        return column.as_string(kgetattr(obj, column.attribute, None), obj)
 
     def get_row(self, obj):
         row = []

@@ -37,7 +37,8 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.search.searchcolumns import AccessorColumn, SearchColumn
+from stoqlib.gui.search.searchcolumns import (AccessorColumn, SearchColumn,
+                                              QuantityColumn)
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.formatters import format_quantity
@@ -163,8 +164,7 @@ class SellableSearch(SearchEditor):
                                         data_type=Decimal, visible=False))
 
         if hasattr(self.search_spec, 'stock'):
-            columns.append(SearchColumn('stock', title=_(u'In Stock'),
-                                        data_type=Decimal))
+            columns.append(QuantityColumn('stock', title=_(u'In Stock')))
 
         return columns
 
