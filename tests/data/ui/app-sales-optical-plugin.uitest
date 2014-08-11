@@ -56,6 +56,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkImageMenuItem(): 'Unconfirmed sale items...'
           GtkImageMenuItem(): 'Clients with sales...'
           GtkImageMenuItem(): 'Clients with credit...'
+          GtkImageMenuItem(): 'Sold items by client...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Loans...'
           GtkImageMenuItem(): 'Loan items...'

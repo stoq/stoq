@@ -39,7 +39,8 @@ from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import Date, Field, TransactionTimestamp, NullIf, Distinct
+from stoqlib.database.expr import (Concat, Date, Distinct, Field, NullIf,
+                                   TransactionTimestamp)
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol)
@@ -2317,3 +2318,41 @@ class ClientsWithSaleView(Viewable):
     @property
     def cnpj_or_cpf(self):
         return self.cnpj or self.cpf
+
+
+class SoldItemsByClient(Viewable):
+    product = Product
+    sellable = Sellable
+
+    id = Concat(Sellable.id, Person.name)
+
+    # Sellable
+    code = Sellable.code
+    description = Sellable.description
+    sellable_category = SellableCategory.description
+
+    # Client
+    client_name = Person.name
+    email = Person.email
+    phone_number = Person.phone_number
+
+    # Aggregates
+    base_price = Avg(SaleItem.base_price)
+    quantity = Sum(SaleItem.quantity)
+    price = Avg(SaleItem.price)
+    total = Sum(SaleItem.quantity * SaleItem.price)
+
+    tables = [
+        Sellable,
+        Join(SellableCategory, SellableCategory.id == Sellable.category_id),
+        Join(Product, Product.sellable_id == Sellable.id),
+        Join(SaleItem, SaleItem.sellable_id == Sellable.id),
+        Join(Sale, SaleItem.sale_id == Sale.id),
+        LeftJoin(Client, Client.id == Sale.client_id),
+        LeftJoin(Person, Person.id == Client.person_id),
+    ]
+
+    clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
+                Sale.status == Sale.STATUS_ORDERED)
+
+    group_by = [id, Person.id, Product, sellable_category, Sellable.id]

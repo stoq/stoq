@@ -53,8 +53,9 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
-from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
-                                           SalesByPaymentMethodSearch,
+from stoqlib.gui.search.salesearch import (SalesByPaymentMethodSearch,
+                                           SoldItemsByBranchSearch,
+                                           SoldItemsByClientSearch,
                                            UnconfirmedSaleItemsSearch)
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
@@ -190,6 +191,9 @@ class SalesApp(ShellApp):
             ("SearchClientsWithCredit", None, _("Clients with credit..."),
              None,
              _("Search for clients that have credit")),
+            ("SearchSoldItemsByClient", None, _("Sold items by client..."),
+             None,
+             _("Search for products sold by client")),
 
 
             # Sale
@@ -598,6 +602,9 @@ class SalesApp(ShellApp):
 
     def on_SearchClientsWithCredit__activate(self, action):
         self.run_dialog(ClientsWithCreditSearch, self.store)
+
+    def on_SearchSoldItemsByClient__activate(self, action):
+        self.run_dialog(SoldItemsByClientSearch, self.store)
 
     # Toolbar
 

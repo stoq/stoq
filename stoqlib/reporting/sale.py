@@ -92,6 +92,10 @@ class ReturnedSalesReport(ObjectListReport):
     title = _("Returned Sales Report")
 
 
+class SoldItemsByClientReport(ObjectListReport):
+    title = _("Sales By Client Report")
+
+
 class SoldItemsByBranchReport(ObjectListReport):
     """This report show a list of sold items by branch. For each item
     it show: product code, product description, branch name,

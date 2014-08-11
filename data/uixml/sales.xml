@@ -51,6 +51,7 @@
       <menuitem action="SearchUnconfirmedSaleItems"/>
       <menuitem action="SearchClientsWithSale"/>
       <menuitem action="SearchClientsWithCredit"/>
+      <menuitem action="SearchSoldItemsByClient"/>
       <separator/>
       <menuitem action="LoanSearch"/>
       <menuitem action="LoanSearchItems"/>

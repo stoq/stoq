@@ -34,7 +34,10 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
+from stoqlib.domain.sale import (Sale,
+                                 SaleView,
+                                 SalePaymentMethodView,
+                                 SoldItemsByClient)
 from stoqlib.domain.person import Branch
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import SoldItemsByBranchView, UnconfirmedSaleItemsView
@@ -43,14 +46,17 @@ from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import set_bold
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoqlib.gui.search.searchcolumns import (IdentifierColumn, SearchColumn,
+                                              QuantityColumn)
 from stoqlib.gui.search.searchfilters import (ComboSearchFilter,
                                               DateSearchFilter)
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_quantity, get_formatted_price
+from stoqlib.lib.formatters import (format_quantity, get_formatted_price,
+                                    format_phone_number)
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
-from stoqlib.reporting.sale import SoldItemsByBranchReport
+from stoqlib.reporting.sale import (SoldItemsByBranchReport,
+                                    SoldItemsByClientReport)
 
 _ = stoqlib_gettext
 
@@ -221,6 +227,47 @@ class SoldItemsByBranchSearch(SearchDialog):
                        format_func=format_quantity, width=100),
                 Column('total', title=_('Total'), data_type=currency, width=80)
                 ]
+
+
+class SoldItemsByClientSearch(SearchDialog):
+    title = _(u'Sold Items by Client')
+    report_class = SoldItemsByClientReport
+    search_spec = SoldItemsByClient
+    size = (800, 450)
+    unlimited_results = True
+    text_field_columns = [SoldItemsByClient.client_name,
+                          SoldItemsByClient.description,
+                          SoldItemsByClient.code]
+    branch_filter_column = Sale.branch_id
+
+    def setup_widgets(self):
+        self.add_csv_button(_('Sale items'), _('sale items'))
+
+    def create_filters(self):
+        self._date_filter = DateSearchFilter(_("Date:"))
+        self._date_filter.select(data=DateSearchFilter.Type.USER_INTERVAL)
+        self.add_filter(self._date_filter, columns=[Sale.confirm_date])
+        self.search.set_summary_label('quantity', label=_(u'Total:'),
+                                      format='<b>%s</b>')
+
+    def get_columns(self):
+        columns = [
+            SearchColumn('code', title=_('Code'), data_type=str, sorted=True,
+                         order=gtk.SORT_DESCENDING),
+            SearchColumn('description', title=_('Description'),
+                         data_type=str, expand=True),
+            SearchColumn('client_name', title=_('Client'), data_type=str),
+            SearchColumn('phone_number', title=_('Phone'), data_type=str,
+                         visible=False, format_func=format_phone_number),
+            SearchColumn('email', title=_('Email'), data_type=str,
+                         visible=False),
+            SearchColumn('sellable_category', title=_('Category'), data_type=str,
+                         visible=False),
+            QuantityColumn('quantity', title=_('Qty')),
+            SearchColumn('price', title=_('Avg price'), data_type=currency),
+            SearchColumn('total', title=_('Total'), data_type=currency,)
+        ]
+        return columns
 
 
 class UnconfirmedSaleItemsSearch(SearchDialog):

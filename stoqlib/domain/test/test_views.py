@@ -88,6 +88,7 @@ class TestViewsGeneric(DomainTest):
             storable = self.store.find(Storable).any()
             results_list = self.store.find(view, storable_id=storable.id)
         else:
+            # This viewable must show everything
             results_list = self.store.find(view)
 
         # See if there are no duplicates
