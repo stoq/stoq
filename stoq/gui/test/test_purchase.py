@@ -44,6 +44,12 @@ from stoqlib.reporting.purchase import PurchaseReport
 
 
 class TestPurchase(BaseGUITest):
+
+    def create_app(self, *args, **kwargs):
+        app = BaseGUITest.create_app(self, *args, **kwargs)
+        app.branch_filter.combo.select_item_by_data(None)
+        return app
+
     def test_initial(self):
         app = self.create_app(PurchaseApp, u'purchase')
         for purchase in app.results:

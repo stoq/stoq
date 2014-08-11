@@ -82,6 +82,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                 GtkVBox(padding=6):
                   GtkHBox():
                     ComboSearchFilter():
+                      GtkLabel(): 'Branch:'
+                      ProxyComboBox(padding=6):
+                        item: 'Any'
+                        item: 'Moda Stoq', selected
+                        item: 'Stoq Elite Fashion'
+                    ComboSearchFilter():
                       GtkLabel(): 'Show'
                       ProxyComboBox(padding=6):
                         item: 'All payments', selected

@@ -89,6 +89,8 @@ class BasePaymentView(Viewable):
     payment_number = Payment.payment_number
     group_id = Payment.group_id
 
+    branch_id = Payment.branch_id
+
     # PaymentGroup
     renegotiated_id = PaymentGroup.renegotiation_id
 

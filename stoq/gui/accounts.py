@@ -208,8 +208,10 @@ class BaseAccountWindow(ShellApp):
         executer = self.search.get_query_executer()
         executer.add_filter_query_callback(
             self.main_filter,
-            self._on_main_filter__query_callback)
+            self._create_main_query)
         self.add_filter(self.main_filter, SearchFilterPosition.TOP)
+
+        self.create_branch_filter(column=self.search_spec.branch_id)
 
     def add_filter_items(self, category_type, options):
         categories = PaymentCategory.get_by_type(self.store, category_type)
@@ -267,13 +269,6 @@ class BaseAccountWindow(ShellApp):
         if model[titer][0] == 'sep':
             return True
         return False
-
-    def _on_main_filter__query_callback(self, state):
-        query = self._create_main_query(state)
-        current = api.get_current_branch(self.store)
-        if query:
-            return And(query, Payment.branch_id == current.id)
-        return Payment.branch_id == current.id
 
     def _on_results__cell_data_func(self, column, renderer, pv, text):
         if not isinstance(renderer, gtk.CellRendererText):

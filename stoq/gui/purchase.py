@@ -251,6 +251,7 @@ class PurchaseApp(ShellApp):
         self.status_filter = ComboSearchFilter(_('Show orders'),
                                                self._get_status_values())
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
+        self.branch_filter = self.create_branch_filter(column=PurchaseOrderView.branch_id)
 
     def get_columns(self):
         return [IdentifierColumn('identifier', long_title=_('Order #')),
