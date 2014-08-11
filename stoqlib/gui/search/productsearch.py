@@ -524,6 +524,8 @@ class ProductBrandByBranchSearch(SearchDialog):
         return [SearchColumn('brand', title=_('Brand'), data_type=str,
                              sorted=True, expand=True),
                 SearchColumn('company', title=_('Branch'), data_type=str),
+                SearchColumn('manufacturer', title=_('Manufacturer'), data_type=str),
+                SearchColumn('product_category', title=_('Category'), data_type=str),
                 Column('quantity', title=_('Quantity'), data_type=Decimal)]
 
     def executer_query(self, store):

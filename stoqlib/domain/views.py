@@ -958,9 +958,14 @@ class ProductBatchView(Viewable):
 class ProductBrandByBranchView(Viewable):
     branch = Branch
 
-    # The tuple Product.brand + Branch.id is unique, so we can use as id
-    id = Concat(Product.brand, Cast(Branch.id, "text"))
+    # The tuple (brand, branch, manufacturer, category) is unique, so we can use as id
+    id = Concat(Product.brand,
+                Cast(Branch.id, "text"),
+                Coalesce(ProductManufacturer.name, u''),
+                Coalesce(SellableCategory.description, u''))
     brand = Coalesce(Product.brand, u'')
+    manufacturer = ProductManufacturer.name
+    product_category = SellableCategory.description
 
     branch_id = Branch.id
 
@@ -977,12 +982,14 @@ class ProductBrandByBranchView(Viewable):
         Join(Branch, Branch.id == ProductStockItem.branch_id),
         Join(Person, Person.id == Branch.person_id),
         Join(Company, Company.person_id == Person.id),
-        Join(Sellable, Product.sellable_id == Sellable.id)
+        Join(Sellable, Product.sellable_id == Sellable.id),
+        LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id),
     ]
 
     clause = ProductStockItem.quantity > 0
 
-    group_by = [id, brand, branch, company]
+    group_by = [id, brand, Branch.id, Company.id, ProductManufacturer.id,
+                SellableCategory.id]
 
     @classmethod
     def find_by_category(cls, store, category):
