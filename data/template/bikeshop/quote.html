@@ -1,0 +1,75 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="title_head">
+  <title>${ title }</title>
+</%block>
+
+<%block name="extra_meta">
+  ${ setup_margin_labels(title) }
+  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
+  <link rel="stylesheet" href="bikeshop/bikeshop.css" type="text/css" />
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.subtitle, notes) }
+  <h3>${ _("Quote") }</h3>
+  <div class="details">
+    <div class="column-8">
+      <h3>${ _("Details for quote number %s") % report.workorder.identifier }</h3>
+      <p><b>${ _("Description") }:</b> ${ report.workorder.description }</p>
+
+      % if report.workorder.sellable:
+      <p><b>${ _("Equipment") }:</b> ${ report.workorder.sellable.description }</p>
+      % endif
+
+      <p><b>${ _("Estimated start") }:</b> ${ format_date(report.workorder.estimated_start) }</p>
+      <p><b>${ _("Estimated finish") }:</b> ${ format_date(report.workorder.estimated_finish) }</p>
+
+      <p>
+        <b>${ _("Estimated cost") }:</b> ${ format_price(report.workorder.estimated_cost) if \
+        report.workorder.estimated_cost else '' }
+      </p>
+    </div>
+    <div class="column-4">
+      <h3>${ _("Client details") }</h3>
+      <p><b>${ _("Name") }:</b> ${ report.workorder.client.person.name }</p>
+      % if report.workorder.client.person.get_formatted_phone_number():
+      <p><b>${ _("Phone") }:</b> ${ report.workorder.client.person.get_formatted_phone_number() }</p>
+      % endif
+      % if report.workorder.client.person.get_formatted_mobile_number():
+      <p><b>${ _("Cell Phone") }:</b> ${ report.workorder.client.person.get_formatted_mobile_number() }</p>
+      % endif
+      % if report.workorder.client.person.get_address_string():
+      <p><b>${ _("Address") }:</b> ${ report.workorder.client.person.get_address_string() }</p>
+      % endif
+    </div>
+  </div>
+
+  % if report.workorder.sale and report.workorder.order_items.count() > 0:
+  <%include file="../workorder/workorder-items.html" />
+  % endif
+
+  <%include file="bike-measures.html" />
+
+  <section id="notice">
+    <span>${ _("Details") }:</span>
+    <!-- The defect detected has higher priority, but if we don't have it
+yet, use the defect reported by the client for the quote-->
+    <pre>${ report.workorder.defect_detected or report.workorder.defect_reported }</pre>
+  </section>
+
+
+  <div class="signatures">
+    <div class="signature">
+      <b>${ _("Client signature") }</b><br />
+      ${ report.workorder.client.get_description() }<br />
+    </div>
+    <div class="signature">
+      <b>${ _("Responsible signature") }</b><br />
+      % if report.workorder.quote_responsible:
+      ${ report.workorder.quote_responsible.get_description() }<br />
+      % endif
+    </div>
+  </div>
+</div>

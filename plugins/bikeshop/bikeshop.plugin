@@ -1,0 +1,10 @@
+[Plugin]
+Module=bikeshopplugin
+Version=1
+Name=Bike Shop
+Name[pt_BR]=Bicicletaria
+Description=Use Stoq in a bike shop
+Description[pt_BR]=Use o Stoq em uma bicicletaria
+Authors=Stoq Team <stoq-devel@async.com.br>
+Copyright=Copyright © 2014 Async Open Source
+Website=http://www.stoq.com.br/

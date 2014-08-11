@@ -1,0 +1,19 @@
+
+
+.measures .legend {
+    font-weight: normal;
+    font-size: 0.9em;
+}
+
+.measures .separator {
+    border-left: 2px solid black;
+}
+
+.measures td {
+    width: 20%;
+}
+
+.details p, h3 {
+    margin: 0.1cm;
+}
+
