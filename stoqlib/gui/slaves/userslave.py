@@ -158,7 +158,7 @@ class PasswordEditor(BaseEditor):
 
     def _needs_password_confirmation(self):
         current_user = api.get_current_user(self.store)
-        return current_user.profile.id != 1
+        return not current_user.profile.name in ['Administrador']
 
     #
     # BaseEditorSlave Hooks
