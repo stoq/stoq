@@ -319,19 +319,27 @@ class TestProduct(DomainTest):
         product.production_time = 5
         Storable(product=product, store=self.store)
 
-        component = self.create_product(with_supplier=False)
-        Storable(product=component, store=self.store)
-        ProductSupplierInfo(store=self.store, product=component,
+        component1 = self.create_product(with_supplier=False)
+        component2 = self.create_product(with_supplier=False, storable=False)
+        component2.manage_stock = False
+        Storable(product=component1, store=self.store)
+
+        # Add a component that doesnt manage stock, should not affect
+        # the production_time even there is 0 in stock
+        ProductComponent(product=product, component=component2, quantity=1,
+                         store=self.store)
+        self.assertEqual(product.get_max_lead_time(1, branch), 5)
+
+        ProductSupplierInfo(store=self.store, product=component1,
                             supplier=supplier1, lead_time=7)
-        self.assertEqual(component.get_max_lead_time(1, branch), 7)
-
-        pc = ProductComponent(product=product, component=component, quantity=1,
+        self.assertEqual(component1.get_max_lead_time(1, branch), 7)
+        # Now adding the component1 that manage stock
+        pc = ProductComponent(product=product, component=component1, quantity=1,
                               store=self.store)
-
         self.assertEqual(product.get_max_lead_time(1, branch), 12)
 
-        # Increase the component stock
-        component.storable.increase_stock(1, branch, 0, None)
+        # Increase the component1 stock
+        component1.storable.increase_stock(1, branch, 0, None)
 
         self.assertEqual(product.get_max_lead_time(1, branch), 5)
 

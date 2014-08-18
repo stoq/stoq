@@ -383,10 +383,13 @@ class Product(Domain):
         # Components maximum lead time
         comp_max_time = 0
         for i in self.get_components():
+            # Products without manage stock control doesnt have storable
+            if not i.component.manage_stock:
+                continue
             storable = i.component.storable
             needed = quantity * i.quantity
             stock = storable.get_balance_for_branch(branch)
-            # We have enought of this component items to produce.
+            # We have enough of this component items to produce.
             if stock >= needed:
                 continue
             comp_max_time = max(comp_max_time,
