@@ -75,7 +75,6 @@ class TestTillSearch(GUITest):
             "nois paga. Sapien in monti palavris qui num "
             "significa nadis i pareci latim. Interessantiss "
             "quisso pudia ce receita de bolis, mais bolis eu num gostis.")
-        dialog = TillClosedSearch(self.store)
         till = self.create_till()
         till.open_till()
         till.close_till(observations)
@@ -88,7 +87,10 @@ class TestTillSearch(GUITest):
                           model.responsible_close_name)
         self.assertEquals(observations, model.observations)
 
+        dialog = TillClosedSearch(self.store)
+        dialog.search.refresh()
         with mock.patch("stoqlib.gui.search.tillsearch.run_dialog") as r_dialog:
-            dialog.results.emit('row-activated', model)
+            dialog.results.select(model)
+            self.click(dialog._details_slave.details_button)
             r_dialog.assert_called_once_with(TillDetailsDialog, dialog,
                                              dialog.store, model)

@@ -41,6 +41,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till, TillClosedView
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.tilldetails import TillDetailsDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter, ComboSearchFilter
@@ -134,6 +135,7 @@ class TillClosedSearch(SearchDialog):
     search_spec = TillClosedView
     size = (750, 500)
     searching_by_date = True
+    branch_filter_column = TillClosedView.branch_id
 
     def create_filters(self):
         self.set_text_field_columns(['responsible_open_name',
@@ -158,6 +160,6 @@ class TillClosedSearch(SearchDialog):
 
     # Callbacks
 
-    def on_results__row_activated(self, klist, view):
-        from stoqlib.gui.dialogs.tilldetails import TillDetailsDialog
+    def on_details_button_clicked(self, button):
+        view = self.results.get_selected()
         run_dialog(TillDetailsDialog, self, self.store, view)

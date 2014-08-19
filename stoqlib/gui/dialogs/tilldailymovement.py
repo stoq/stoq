@@ -438,4 +438,4 @@ class TillDailyMovementDialog(BaseEditor):
     def on_print_button__clicked(self, widget):
         branch = self.model.branch
         daterange = self.get_daterange()
-        print_report(TillDailyMovementReport, branch, daterange, self)
+        print_report(TillDailyMovementReport, self.store, branch, daterange, self)

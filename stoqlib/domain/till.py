@@ -29,7 +29,7 @@
 import logging
 
 from kiwi.currency import currency
-from storm.expr import And, Eq, LeftJoin, Or
+from storm.expr import And, Eq, Join, LeftJoin, Or
 from storm.info import ClassAlias
 from storm.references import Reference
 
@@ -42,6 +42,7 @@ from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, LoginUser
+from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import TillError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
@@ -415,6 +416,8 @@ class TillClosedView(Viewable):
     initial_cash_amount = Till.initial_cash_amount
     final_cash_amount = Till.final_cash_amount
 
+    branch_id = BranchStation.branch_id
+
     _ResponsibleOpen = ClassAlias(Person, "responsible_open")
     _ResponsibleClose = ClassAlias(Person, "responsible_close")
     _LoginUserOpen = ClassAlias(LoginUser, "login_responsible_open")
@@ -425,6 +428,9 @@ class TillClosedView(Viewable):
 
     tables = [
         Till,
+        Join(BranchStation, BranchStation.id == Till.station_id),
+        # These two need to be left joins, since historical till dont have a
+        # responsible
         LeftJoin(_LoginUserOpen, Till.responsible_open_id == _LoginUserOpen.id),
         LeftJoin(_LoginUserClose, Till.responsible_close_id == _LoginUserClose.id),
         LeftJoin(_ResponsibleOpen, _LoginUserOpen.person_id == _ResponsibleOpen.id),

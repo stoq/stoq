@@ -63,5 +63,6 @@ class TestTillHistory(GUITest):
 
         date = dialog.get_daterange()
         print_report.assert_called_once_with(TillDailyMovementReport,
+                                             self.store,
                                              api.get_current_branch(self.store),
                                              date, dialog)

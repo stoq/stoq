@@ -25,6 +25,9 @@
 """ Till report implementation """
 
 
+from storm.expr import And
+
+from stoqlib.domain.till import TillClosedView
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.report import ObjectListReport, HTMLReport
 
@@ -47,7 +50,7 @@ class TillDailyMovementReport(HTMLReport):
     title = _('Daily Movement')
     complete_header = False
 
-    def __init__(self, filename, branch, daterange, data_object):
+    def __init__(self, filename, store, branch, daterange, data_object):
         self.branch = branch
         self.start_date = daterange[0]
         self.end_date = daterange[1]
@@ -60,6 +63,12 @@ class TillDailyMovementReport(HTMLReport):
         self.till_removals = data_object.till_removals
         self.method_summary = data_object.method_summary
         self.card_summary = data_object.card_summary
+
+        queries = [TillClosedView.opening_date >= self.start_date,
+                   TillClosedView.opening_date <= self.end_date]
+        if branch:
+            queries.append(TillClosedView.branch_id == branch.id)
+        self.tills = store.find(TillClosedView, And(queries))
 
         HTMLReport.__init__(self, filename)
 

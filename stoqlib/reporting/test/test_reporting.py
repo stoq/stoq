@@ -446,23 +446,23 @@ class TestReport(ReportTest):
 
         daterange = (date, None)
         self._diff_expected(TillDailyMovementReport,
-                            'till-daily-movement-report', branch, daterange,
-                            data)
+                            'till-daily-movement-report', self.store, branch,
+                            daterange, data)
 
         end_date = datetime.date(2013, 6, 1)
         data.set_daterange(date, end_date)
         data.search_button.clicked()
         daterange = (date, end_date)
         self._diff_expected(TillDailyMovementReport,
-                            'till-daily-movement-report-end', branch,
-                            daterange, data)
+                            'till-daily-movement-report-end', self.store,
+                            branch, daterange, data)
 
         # Generate report for all branches
         data.model.branch = None
         data.search_button.clicked()
         self._diff_expected(TillDailyMovementReport,
                             'till-daily-movement-all-branches-report-end',
-                            None, daterange, data)
+                            self.store, None, daterange, data)
 
     def test_sales_person_report(self):
         sysparam.set_bool(self.store, 'SALE_PAY_COMMISSION_WHEN_CONFIRMED', True)

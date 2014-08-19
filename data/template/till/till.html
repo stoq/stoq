@@ -50,7 +50,17 @@ ${ header(complete_header, title, report.get_subtitle(), notes) }
 
 <br/><br/><br/>
 <h3>${ _("Observations:") }</h3>
+% if report.tills:
+  <ul>
+  % for till in report.tills:
+    % if till.observations:
+    <li><b>${ format_date(till.opening_date) }</b> ${ till.observations }</li>
+    % endif
+  % endfor
+  </ul>
+% else:
 <br/><br/><br/><br/><br/><br/><br/>
+% endif
 
 <section class="signatures">
   <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
