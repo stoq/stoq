@@ -368,6 +368,10 @@ class AccountTransaction(Domain):
 
     __storm_table__ = 'account_transaction'
 
+    # operation_type values
+    (TYPE_IN,
+     TYPE_OUT) = range(2)
+
     # FIXME: It's way to tricky to calculate the direction and it's
     #        values for an AccountTransaction due to the fact that
     #        we're only store one value. We should store two values,
@@ -393,7 +397,7 @@ class AccountTransaction(Domain):
     #: identifier of this transaction within a account
     code = UnicodeCol()
 
-    #: value transfered, positive for credit, negative for debit
+    #: value transfered
     value = PriceCol(default=0)
 
     #: date the transaction was done
@@ -404,8 +408,22 @@ class AccountTransaction(Domain):
     #: |payment| this transaction relates to, can also be ``None``
     payment = Reference(payment_id, 'Payment.id')
 
+    #: operation_type represents the type of transaction (debit/credit)
+    operation_type = IntCol()
+
     class sqlmeta:
         lazyUpdate = True
+
+    @classmethod
+    def get_inverted_operation_type(cls, operation_type):
+        """ Get the inverted operation_type (IN->OUT / OUT->IN)
+
+        :param operation_type: the type of transaction
+        :returns: the inverted transaction type
+        """
+        if operation_type == cls.TYPE_IN:
+            return cls.TYPE_OUT
+        return cls.TYPE_IN
 
     @classmethod
     def create_from_payment(cls, payment, account=None):
@@ -424,7 +442,9 @@ class AccountTransaction(Domain):
         store = payment.store
         value = payment.paid_value
         if payment.is_outpayment():
-            value = -value
+            operation_type = cls.TYPE_OUT
+        else:
+            operation_type = cls.TYPE_IN
         return cls(source_account_id=sysparam.get_object_id('IMBALANCE_ACCOUNT'),
                    account=account or payment.method.destination_account,
                    value=value,
@@ -432,7 +452,8 @@ class AccountTransaction(Domain):
                    code=unicode(payment.identifier),
                    date=payment.paid_date,
                    store=store,
-                   payment=payment)
+                   payment=payment,
+                   operation_type=operation_type)
 
     def create_reverse(self):
         """Reverse this transaction, this happens when a payment
@@ -450,15 +471,31 @@ class AccountTransaction(Domain):
         # but it makes it harder to create the reversal.
 
         self.payment = None
+        new_type = self.get_inverted_operation_type(self.operation_type)
         return AccountTransaction(
-            source_account=self.source_account,
-            account=self.account,
-            value=-self.value,
+            source_account=self.account,
+            account=self.source_account,
+            value=self.value,
             description=_(u"Reverted: %s") % (self.description),
             code=self.code,
             date=TransactionTimestamp(),
             store=self.store,
-            payment=None)
+            payment=None,
+            operation_type=new_type)
+
+    def invert_transaction_type(self):
+        """ Invert source/destination accounts and operation_type
+
+        When change a incoming transaction to outgoing or vice-versa. The source and
+        destination accounts must be inverted. Thus, the outgoing value always
+        will belong to the source account.
+        """
+        temp_account = self.account
+        operation_type = self.operation_type
+
+        self.account = self.source_account
+        self.source_account = temp_account
+        self.operation_type = self.get_inverted_operation_type(operation_type)
 
     def get_other_account(self, account):
         """Get the other end of a transaction
@@ -504,6 +541,7 @@ class AccountTransactionView(Viewable):
     description = AccountTransaction.description
     value = AccountTransaction.value
     date = AccountTransaction.date
+    operation_type = AccountTransaction.operation_type
 
     dest_account_id = Account_Dest.id
     dest_account_description = Account_Dest.description
@@ -537,10 +575,24 @@ class AccountTransactionView(Viewable):
             raise AssertionError
 
     def get_value(self, account):
-        """Gets the value for this |account|.
-        For a destination |account| this will be negative
+        """ Gets the transaction value according to an |account|.
+
+        If this |account| is the source, the value returned will be negative.
+        Representing a outgoing transaction.
         """
-        if self.dest_account_id == account.id:
+        # A transaction that was not adjusted, will have the source equals
+        # to destination account. So get the value based on operation type.
+        if self.source_account_id == self.dest_account_id:
+            return self.get_value_by_type()
+        elif self.source_account_id == account.id:
+            return -self.value
+        else:
+            return self.value
+
+    def get_value_by_type(self):
+        """ Returns the transaction value, based on operation type.
+        """
+        if self.operation_type == AccountTransaction.TYPE_IN:
             return self.value
         else:
             return -self.value

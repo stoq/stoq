@@ -29,6 +29,7 @@ from decimal import Decimal
 import mock
 
 from kiwi.currency import currency
+from storm.expr import Or
 
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.commission import Commission, CommissionView
@@ -362,29 +363,39 @@ class TestPayment(DomainTest):
 
         payment.pay()
 
-        self.assertEquals(
-            self.store.find(AccountTransaction, payment=payment).count(), 1)
-        self.assertEquals(account.transactions.count(), 1)
-        self.assertEquals(account.transactions.sum(AccountTransaction.value),
-                          payment.value)
+        # Verify if payment is referenced on account transaction.
+        transactions = self.store.find(AccountTransaction, account=account, payment=payment)
+        self.assertEquals(transactions.count(), 1)
+        original_transaction = list(transactions)[0]
+        self.assertEquals(original_transaction.operation_type, AccountTransaction.TYPE_IN)
+        self.assertEquals(original_transaction.value, payment.value)
 
         entry = PaymentChangeHistory(payment=payment,
                                      change_reason=u'foo',
                                      store=self.store)
         payment.set_not_paid(entry)
 
-        self.assertEquals(account.transactions.count(), 2)
-        self.assertEquals(account.transactions.sum(AccountTransaction.value), 0)
-        self.assertEquals(
-            self.store.find(AccountTransaction, payment=payment).count(), 0)
+        # Now that the payment was reverted, there should also be a reverted operation,
+        # and the payment will not be referenced in transactions anymore.
+        transactions = self.store.find(AccountTransaction, account=account, payment=payment)
+        self.assertEquals(transactions.count(), 0)
 
+        new_transactions = self.store.find(AccountTransaction, source_account=account)
+        self.assertEquals(new_transactions.count(), 1)
+        reversed_transaction = list(new_transactions)[0]
+        self.assertEquals(reversed_transaction.operation_type, AccountTransaction.TYPE_OUT)
+        self.assertEquals(self.store.find(AccountTransaction, payment=payment).count(), 0)
+
+        # Verify all transactions - The created account, will be referenced as source
+        # and destination account.
+        query = Or(AccountTransaction.source_account == account,
+                   AccountTransaction.account == account)
+        total_transactions = self.store.find(AccountTransaction, query).count()
+        self.assertEquals(total_transactions, 2)
         payment.pay()
-
-        self.assertEquals(
-            self.store.find(AccountTransaction, payment=payment).count(), 1)
-        self.assertEquals(account.transactions.count(), 3)
-        self.assertEquals(account.transactions.sum(AccountTransaction.value),
-                          payment.value)
+        self.assertEquals(self.store.find(AccountTransaction, payment=payment).count(), 1)
+        total_transactions = self.store.find(AccountTransaction, query).count()
+        self.assertEquals(total_transactions, 3)
 
 
 class TestPaymentComment(DomainTest):

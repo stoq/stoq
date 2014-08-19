@@ -180,12 +180,22 @@ class OFXImporter(Importer):
             return False
 
         value = self._parse_number(t['trnamt'])
+
         if value == 0:
             self.skipped += 1
             # We can't import transactions without a value = 0, skip it.
             return False
-        source_account = store.get(Account, self.source_account_id)
-        account = store.get(Account, self.account_id)
+        elif value > 0:
+            operation_type = AccountTransaction.TYPE_IN
+            source_account = store.get(Account, self.source_account_id)
+            account = store.get(Account, self.account_id)
+        elif value < 0:
+            # Only register absolute values - Indicating positive/negative values,
+            # using the operation type.
+            value = abs(value)
+            operation_type = AccountTransaction.TYPE_OUT
+            source_account = store.get(Account, self.account_id)
+            account = store.get(Account, self.source_account_id)
 
         code = self._parse_string(t['checknum'])
         if not store.find(AccountTransaction,
@@ -200,6 +210,7 @@ class OFXImporter(Importer):
                                code=code,
                                value=value,
                                date=date,
+                               operation_type=operation_type,
                                store=store)
         store.flush()
         return True

@@ -27,7 +27,6 @@ import datetime
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
@@ -42,62 +41,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-# The reason for this is that SQLObject, even with lazyUpdates
-# does create queries before sync() is called.
-class _AccountTransactionTemporary(Settable):
-
-    def get_other_account(self, unused):
-        return self.source_account
-
-    @classmethod
-    def from_domain(cls, store, transaction):
-        value = currency(transaction.value)
-        is_incoming = value > 0
-
-        if not is_incoming:
-            # FIXME: For some reason, (value * -1) and (value * currency(-1),
-            #        both returns Decimal, but we need currency here.
-            value *= -1
-            value = currency(value)
-
-        return cls(code=transaction.code,
-                   description=transaction.description,
-                   date=transaction.date,
-                   value=value,
-                   is_incoming=is_incoming,
-                   store=store,
-                   payment=transaction.payment,
-                   account=transaction.account,
-                   source_account=transaction.source_account,
-                   transaction=transaction)
-
-    def to_domain(self):
-        if not self.is_incoming:
-            self.value *= currency(-1)
-
-        fields = dict(code=self.code,
-                      description=self.description,
-                      date=self.date,
-                      value=self.value,
-                      account=self.account,
-                      payment=self.payment,
-                      source_account=self.source_account)
-        if self.transaction:
-            t = self.transaction
-            for k, v in fields.items():
-                setattr(t, k, v)
-        else:
-            t = AccountTransaction(store=self.store,
-                                   **fields)
-
-        return t
-
-
 class AccountTransactionEditor(BaseEditor):
     """ Account Transaction Editor """
     gladefile = "AccountTransactionEditor"
     proxy_widgets = ['description', 'code', 'date', 'value', 'is_incoming']
-    model_type = _AccountTransactionTemporary
+    model_type = AccountTransaction
     model_name = _('transaction')
     confirm_widgets = ['description', 'code', 'value']
 
@@ -106,9 +54,6 @@ class AccountTransactionEditor(BaseEditor):
     def __init__(self, store, model, account):
         self.parent_account = store.fetch(account)
         self.new = False
-        if model is not None:
-            model = _AccountTransactionTemporary.from_domain(store, model)
-            self.new = True
         BaseEditor.__init__(self, store, model)
 
         payment_button = gtk.Button(_("Show Payment"))
@@ -123,21 +68,21 @@ class AccountTransactionEditor(BaseEditor):
         self.is_incoming.set_label(account_labels[0])
         self.is_outgoing.set_label(account_labels[1])
 
+        self.is_outgoing.set_active(self.model.source_account.id == account.id)
+
         payment_button.set_sensitive(self.model.payment is not None)
         payment_button.show()
 
     def create_model(self, store):
-        return _AccountTransactionTemporary(
-            transaction=None,
-            store=store,
-            code=u"",
-            description=u"",
-            is_incoming=True,
-            value=currency(0),
-            payment=None,
-            date=datetime.datetime.today(),
-            account=self.parent_account,
-            source_account=sysparam.get_object(store, 'IMBALANCE_ACCOUNT'))
+        return AccountTransaction(code=u"",
+                                  description=u"",
+                                  value=currency(0),
+                                  payment=None,
+                                  date=datetime.datetime.today(),
+                                  account=sysparam.get_object(store, 'IMBALANCE_ACCOUNT'),
+                                  source_account=self.parent_account,
+                                  operation_type=AccountTransaction.TYPE_OUT,
+                                  store=store)
 
     def _populate_accounts(self):
         accounts = self.store.find(Account)
@@ -160,11 +105,20 @@ class AccountTransactionEditor(BaseEditor):
         return self.model.value != 0
 
     def on_confirm(self):
-        new_account = self.account.get_selected()
-        at = self.model.to_domain()
-        at.edited_account = new_account
-        at.set_other_account(self.parent_account, new_account)
-        self.retval = at
+        account_transaction = self.model
+        is_incoming = self.is_incoming.get_active()
+
+        selected_account = self.account.get_selected()
+        parent_account = self.parent_account
+        if selected_account != account_transaction.get_other_account(parent_account):
+            account_transaction.set_other_account(parent_account, selected_account)
+
+        # Invert source and destination accounts. This is used to the source account
+        # represent the outgoing value.
+        if is_incoming and account_transaction.account != self.parent_account:
+            account_transaction.invert_transaction_type()
+        elif not is_incoming and account_transaction.source_account != self.parent_account:
+            account_transaction.invert_transaction_type()
 
     def on_description__validate(self, entry, value):
         if value is None:
@@ -173,6 +127,12 @@ class AccountTransactionEditor(BaseEditor):
     def on_value__validate(self, entry, value):
         if value <= 0:
             return ValidationError(_("Value must be greater than zero"))
+
+    def on_is_outgoing__toggled(self, *args):
+        if self.is_outgoing.get_active():
+            self.account_label.set_text(_(u"Destination:"))
+        else:
+            self.account_label.set_text(_(u"Source:"))
 
     def _on_payment_button__clicked(self, button):
         self._show_payment()

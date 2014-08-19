@@ -5,7 +5,11 @@ GtkDialog(main_dialog.toplevel): title='Add transaction', hidden
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave AccountTransactionEditor is attached
         GtkTable(toplevel):
-          GtkLabel(label3): 'Account:'
+          GtkLabel(label6): 'Operation Type:'
+          GtkHBox(hbox1):
+            ProxyRadioButton(is_incoming, fill=True): 'Receive'
+            ProxyRadioButton(is_outgoing, fill=True): 'Spend', active
+          GtkLabel(account_label): 'Destination:'
           ProxyComboBox(account):
             item: 'Assets'
             item: 'Banks'
@@ -32,9 +36,6 @@ GtkDialog(main_dialog.toplevel): title='Add transaction', hidden
           ProxyEntry(code): '15'
           GtkLabel(label5): 'Value:'
           ProxyEntry(value): '150.00'
-          GtkHBox(hbox1):
-            ProxyRadioButton(is_incoming, fill=True): 'Receive', active
-            ProxyRadioButton(is_outgoing, fill=True): 'Spend'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
@@ -46,10 +47,11 @@ GtkDialog(main_dialog.toplevel): title='Add transaction', hidden
       GtkButton(): 'Show Payment', insensitive
 
 model: AccountTransaction<1>
-  account_id: Account<2>
   code: u'15'
   date: datetime.today()
   description: u'description'
+  operation_type: 1
+  source_account_id: Account<2>
   value: <currency $150>
 
 model: Account<2>

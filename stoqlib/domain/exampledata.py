@@ -962,23 +962,36 @@ class ExampleCreator(object):
             due_dates.append(date + datetime.timedelta(days=i))
         return due_dates
 
-    def create_account(self):
+    def create_account(self, description=None):
         from stoqlib.domain.account import Account
-        return Account(description=u"Test Account",
+        return Account(description=description or u"Test Account",
                        account_type=Account.TYPE_CASH,
                        store=self.store)
 
-    def create_account_transaction(self, account=None, value=1):
+    def create_account_transaction(self, account=None, value=1,
+                                   source=None, incoming=False):
         from stoqlib.domain.account import AccountTransaction
         if account is None:
             account = self.create_account()
+
+        if source:
+            source_id = source.id
+        else:
+            source_id = sysparam.get_object_id('IMBALANCE_ACCOUNT')
+
+        if incoming:
+            operation_type = AccountTransaction.TYPE_IN
+        else:
+            operation_type = AccountTransaction.TYPE_OUT
+
         return AccountTransaction(
             description=u"Test Account Transaction",
             code=u"Code",
             date=localnow(),
             value=value,
             account=account,
-            source_account_id=sysparam.get_object_id('IMBALANCE_ACCOUNT'),
+            source_account_id=source_id,
+            operation_type=operation_type,
             store=self.store)
 
     def create_transfer(self):

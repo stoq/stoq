@@ -24,7 +24,7 @@ from cStringIO import StringIO
 from decimal import Decimal
 import operator
 
-from stoqlib.domain.account import Account
+from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.importers.ofximporter import OFXImporter
 
@@ -233,9 +233,11 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(account.transactions.count(), 2)
         self.assertEquals(account.account_type, Account.TYPE_BANK)
         t1, t2 = sorted(account.transactions, key=operator.attrgetter('value'))
-        self.assertEquals(t1.value, -5)
+        self.assertEquals(t1.value, 5)
+        self.assertEquals(t1.operation_type, AccountTransaction.TYPE_OUT)
         self.assertEquals(t1.code, '90068259')
         self.assertEquals(t2.value, 50)
+        self.assertEquals(t2.operation_type, AccountTransaction.TYPE_IN)
         self.assertEquals(t2.code, '90068258')
 
     def test_import_bb_fisica(self):
@@ -250,7 +252,8 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(account.transactions.count(), 1)
         self.assertEquals(account.account_type, Account.TYPE_BANK)
         t = account.transactions[0]
-        self.assertEquals(t.value, Decimal("-35.65"))
+        self.assertEquals(t.value, Decimal("35.65"))
+        self.assertEquals(t.operation_type, AccountTransaction.TYPE_OUT)
         self.assertEquals(t.code, '000000104485')
         self.assertEquals(t.description,
                           'Compra com Cartão - 01/01 01:23 BURRITOS')
@@ -267,7 +270,8 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(account.transactions.count(), 1)
         self.assertEquals(account.account_type, Account.TYPE_BANK)
         t = account.transactions[0]
-        self.assertEquals(t.value, Decimal("-123.67"))
+        self.assertEquals(t.value, Decimal("123.67"))
+        self.assertEquals(t.operation_type, AccountTransaction.TYPE_OUT)
         self.assertEquals(t.code, u'00801000')
         self.assertEquals(t.description,
                           u'PGTO TITULO OUTRO')

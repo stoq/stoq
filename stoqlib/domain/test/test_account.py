@@ -30,6 +30,7 @@ from storm.exceptions import OrderLoopError
 from stoqlib.domain.account import (Account, AccountTransaction,
                                     AccountTransactionView,
                                     BillOption)
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import PaymentError
@@ -259,26 +260,47 @@ class TestAccount(DomainTest):
 class TestAccountTransaction(DomainTest):
 
     def test_create_reverse(self):
-        at = self.create_account_transaction()
-        reversed = self.store.find(AccountTransaction,
-                                   account=at.account).count()
-        self.assertEquals(reversed, 1)
+        source_account = self.create_account()
+        at = self.create_account_transaction(account=source_account, value=10)
+        transactions = list(self.store.find(AccountTransaction, account=source_account))
+        self.assertEquals(len(transactions), 1)
+        original_transaction = transactions[0]
+        self.assertEquals(original_transaction.operation_type, AccountTransaction.TYPE_OUT)
+
         at.create_reverse()
-        reversed = self.store.find(AccountTransaction,
-                                   account=at.account).count()
-        self.assertEquals(reversed, 2)
+        reversed_transactions = list(self.store.find(AccountTransaction,
+                                                     source_account=source_account))
+        self.assertEquals(len(reversed_transactions), 1)
+        reversed_transaction = reversed_transactions[0]
+        self.assertEquals(reversed_transaction.operation_type, AccountTransaction.TYPE_IN)
+
+    def test_get_inverted_operation(self):
+        # IN -> OUT
+        operation_type = AccountTransaction.TYPE_IN
+        inverted_type = AccountTransaction.get_inverted_operation_type(operation_type)
+        self.assertEquals(inverted_type, AccountTransaction.TYPE_OUT)
+        # OUT -> IN
+        operation_type = AccountTransaction.TYPE_OUT
+        inverted_type = AccountTransaction.get_inverted_operation_type(operation_type)
+        self.assertEquals(inverted_type, AccountTransaction.TYPE_IN)
+
+    def test_invert_transaction_type(self):
+        account1 = self.create_account()
+        account2 = self.create_account()
+        transaction = self.create_account_transaction(account=account2, source=account1,
+                                                      incoming=True)
+
+        transaction.invert_transaction_type()
+        self.assertEquals(transaction.source_account, account2)
+        self.assertEquals(transaction.account, account1)
+        self.assertEquals(transaction.operation_type, AccountTransaction.TYPE_OUT)
 
     def test_get_other_account(self):
         a1 = self.create_account()
         a2 = self.create_account()
 
-        t1 = self.create_account_transaction(a1)
-        t2 = self.create_account_transaction(a2)
-
-        t1.source_account = a2
-        t2.source_account = a1
-
-        self.store.flush()
+        t1 = self.create_account_transaction(account=a1, source=a2)
+        t2 = self.create_account_transaction(account=a2, source=a1)
 
         self.assertEquals(t1.get_other_account(a1), a2)
         self.assertEquals(t1.get_other_account(a2), a1)
@@ -294,13 +316,9 @@ class TestAccountTransaction(DomainTest):
         a1 = self.create_account()
         a2 = self.create_account()
 
-        t1 = self.create_account_transaction(a1)
-        t1.source_account = a2
-        self.store.flush()
+        t1 = self.create_account_transaction(account=a1, source=a2)
 
-        t2 = self.create_account_transaction(a2)
-        t2.source_account = a1
-        self.store.flush()
+        t2 = self.create_account_transaction(account=a2, source=a1)
 
         t1.set_other_account(a1, a2)
         self.store.flush()
@@ -333,8 +351,8 @@ class TestAccountTransaction(DomainTest):
         sale.confirm()
         account = self.create_account()
         payment.method.destination_account = account
-        self.assertRaises(PaymentError,
-                          AccountTransaction.create_from_payment, payment)
+        with self.assertRaisesRegexp(PaymentError, "Payment needs to be paid"):
+            AccountTransaction.create_from_payment(payment)
         payment.pay()
         transaction = AccountTransaction.create_from_payment(payment)
 
@@ -342,6 +360,26 @@ class TestAccountTransaction(DomainTest):
         self.assertEquals(transaction.source_account, imbalance_account)
         self.assertEquals(transaction.account, account)
         self.assertEquals(transaction.payment, payment)
+        self.assertEquals(transaction.operation_type, AccountTransaction.TYPE_IN)
+
+        # Payment from purchase.
+        purchase = self.create_purchase_order()
+        purchase.status = PurchaseOrder.ORDER_PENDING
+        purchase.add_item(self.create_sellable(), 1)
+        payment = self.add_payments(purchase, method_type=u'money')[0]
+        purchase.confirm()
+        account = self.create_account()
+        payment.method.destination_account = account
+        with self.assertRaisesRegexp(PaymentError, "Payment needs to be paid"):
+            AccountTransaction.create_from_payment(payment)
+
+        payment.pay()
+        transaction = AccountTransaction.create_from_payment(payment)
+        imbalance_account = sysparam.get_object(self.store, 'IMBALANCE_ACCOUNT')
+        self.assertEquals(transaction.source_account, imbalance_account)
+        self.assertEquals(transaction.account, account)
+        self.assertEquals(transaction.payment, payment)
+        self.assertEquals(transaction.operation_type, AccountTransaction.TYPE_OUT)
 
 
 class TestAccountTransactionView(DomainTest):
@@ -383,15 +421,23 @@ class TestAccountTransactionView(DomainTest):
         a2 = self.create_account()
         a2.description = u"Account"
 
-        t = self.create_account_transaction(a1)
-        t.value = 100
-        t.source_account = a1
-        t.account = a2
+        transaction = self.create_account_transaction(a1, incoming=True)
+        transaction.value = 100
+        transaction.source_account = a1
+        transaction.account = a2
         self.store.flush()
 
         views = AccountTransactionView.get_for_account(a1, self.store)
         self.assertEquals(views[0].get_value(a1), -100)
         self.assertEquals(views[0].get_value(a2), 100)
+
+        # Source account equal to destination account
+        transaction.account = a1
+        views = AccountTransactionView.get_for_account(a1, self.store)
+        self.assertEquals(views[0].get_value(a1), 100)
+        transaction.operation_type = AccountTransaction.TYPE_OUT
+        views = AccountTransactionView.get_for_account(a1, self.store)
+        self.assertEquals(views[0].get_value(a1), -100)
 
     def test_transaction(self):
         a = self.create_account()

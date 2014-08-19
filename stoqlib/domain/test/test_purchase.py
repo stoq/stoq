@@ -30,6 +30,7 @@ from decimal import Decimal, InvalidOperation
 from kiwi.currency import currency
 
 from stoqlib.database.runtime import get_current_user
+from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup, PurchaseItem, \
     PurchaseOrderView, _
@@ -474,9 +475,11 @@ class TestPurchaseOrder(DomainTest):
         self.assertFalse(account.transactions.is_empty())
         self.assertEquals(account.transactions.count(), order.payments.count())
 
-        t = account.transactions[0]
-        self.assertEquals(t.payment, payment)
-        self.assertEquals(t.value, -payment.value)
+        transaction = account.transactions[0]
+        self.assertEquals(transaction.payment, payment)
+        self.assertEquals(transaction.value, payment.value)
+        operation_type = AccountTransaction.TYPE_OUT
+        self.assertEquals(transaction.operation_type, operation_type)
 
     def test_account_transaction_money(self):
         order = self.create_purchase_order()

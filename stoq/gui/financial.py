@@ -303,12 +303,9 @@ class TransactionPage(object):
 
         store.confirm(transaction)
         if transaction:
-            item.transaction.sync()
-            self._update_transaction(item, transaction,
-                                     transaction.edited_account.description,
-                                     transaction.value)
+            for page in self.app._pages.values():
+                page.refresh()
             self.update_totals()
-            self.search.result_view.update(item)
             self.app.accounts.refresh_accounts(self.app.store)
         store.close()
 
@@ -327,15 +324,9 @@ class TransactionPage(object):
                                  store, None, model)
         store.confirm(transaction)
         if transaction:
-            query = AccountTransactionView.id == transaction.id
-            transaction_view = store.find(AccountTransactionView, query).one()
-            value = transaction.value
-            other = transaction.get_other_account(model)
-            if other == model:
-                value = -value
-            item = self._add_transaction(transaction_view, other.description, value)
+            for page in self.app._pages.values():
+                page.refresh()
             self.update_totals()
-            self.search.result_view.update(item)
             self.app.accounts.refresh_accounts(self.app.store)
         store.close()
 
