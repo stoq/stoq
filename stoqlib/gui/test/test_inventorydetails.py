@@ -57,21 +57,15 @@ class TestInventoryDetails(GUITest):
         self.assertNotSensitive(dialog, ['info_button'])
 
     @mock.patch('stoqlib.gui.dialogs.inventorydetails.print_report')
-    def test_print_button_without_adjusted_item(self, print_report):
-        inventory = self._create_inventory()
-        dialog = InventoryDetailsDialog(self.store, inventory)
-
-        self.assertNotSensitive(dialog, ['print_button'])
-
-    @mock.patch('stoqlib.gui.dialogs.inventorydetails.print_report')
     def test_on_print_button__clicked_with_adjusted_item(self, print_report):
         inventory = self._create_inventory()
         item = self.create_inventory_item(inventory)
-        item.is_adjusted = True
+        item.recorded_quantity = 10
+        item.actual_quantity = 5
         dialog = InventoryDetailsDialog(self.store, inventory)
 
         self.assertSensitive(dialog, ['print_button'])
-        items = [i for i in dialog.items_list if i.is_adjusted]
+        items = list(dialog._get_report_items())
         self.click(dialog.print_button)
         print_report.assert_called_once_with(InventoryReport,
                                              dialog.items_list, items)

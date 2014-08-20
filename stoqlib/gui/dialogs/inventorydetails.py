@@ -76,7 +76,14 @@ class InventoryDetailsDialog(BaseEditor):
         # does a if objects somewhere)
         items = list(InventoryItemsView.find_by_inventory(self.store, self.model))
         self.items_list.add_list(items)
-        self.print_button.set_sensitive(any(i.is_adjusted for i in items))
+        self.print_button.set_sensitive(any(self._get_report_items()))
+
+    def _get_report_items(self):
+        for i in self.items_list:
+            item = i.inventory_item
+            if (item.recorded_quantity != item.counted_quantity or
+                item.actual_quantity is not None):
+                yield item
 
     def _get_items_columns(self):
         return [Column('code', _("Code"), sorted=True, data_type=str),
@@ -107,7 +114,7 @@ class InventoryDetailsDialog(BaseEditor):
     #
 
     def on_print_button__clicked(self, button):
-        items = [i for i in self.items_list if i.is_adjusted]
+        items = list(self._get_report_items())
         assert items
         print_report(InventoryReport, self.items_list, items)
 

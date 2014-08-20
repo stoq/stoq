@@ -35,7 +35,7 @@ GtkDialog(main_dialog.toplevel): title='Inventory Details', hidden
                   row: u'', u'Description', u'', Decimal('5.000'), None, None, False, <currency $125>
           GtkHButtonBox(hbuttonbox1, fill=True):
             GtkButton(info_button): 'gtk-info', insensitive
-            GtkButton(print_button): 'gtk-print', insensitive
+            GtkButton(print_button): 'gtk-print'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
