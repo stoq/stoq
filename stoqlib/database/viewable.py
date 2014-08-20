@@ -174,7 +174,9 @@ class Viewable(ClassInittableObject):
         self.__dict__.update(new_obj.__dict__)
 
     def __hash__(self):
-        return hash(self.id)
+        if hasattr(self, 'id'):
+            return hash(self.id)
+        return super(Viewable, self).__hash__()
 
     def __eq__(self, other):
         if self.__class__ == other.__class__:

@@ -140,3 +140,15 @@ class ViewableTest(DomainTest):
 
         item = self.store.find(ClientView, Client.id == client.id).one()
         self.assertFalse(hasattr(item, 'cpf'))
+
+    def test_viewable_without_id(self):
+
+        class SimpleViewable(Viewable):
+            name = Person.name
+            tables = [Person]
+
+        # It should still be possible to find viewables that dont have an id
+        items = self.store.find(SimpleViewable)
+
+        # And we still can hash the object
+        assert hash(items[0])
