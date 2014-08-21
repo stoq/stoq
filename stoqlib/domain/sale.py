@@ -1922,14 +1922,14 @@ class SaleView(Viewable):
     v_ipi = Coalesce(Field('_sale_item', 'v_ipi'), 0)
 
     #: the sum of all items in the sale
-    subtotal = Coalesce(Field('_sale_item', 'subtotal'), 0)
+    _subtotal = Coalesce(Field('_sale_item', 'subtotal'), 0) + v_ipi
 
     #: the items total quantity for the sale
     total_quantity = Coalesce(Field('_sale_item', 'total_quantity'), 0)
 
     #: the subtotal - discount + charge
-    total = Coalesce(Field('_sale_item', 'subtotal'), 0) - \
-        Sale.discount_value + Sale.surcharge_value
+    _total = Coalesce(Field('_sale_item', 'subtotal'), 0) - \
+        Sale.discount_value + Sale.surcharge_value + v_ipi
 
     tables = [
         Sale,
@@ -1946,7 +1946,7 @@ class SaleView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(Count(1), Sum(cls.total))
+        select = sresults.get_select_expr(Count(1), Sum(cls._total))
         return ('count', 'sum'), select
 
     #
@@ -1990,22 +1990,22 @@ class SaleView(Viewable):
     def can_edit(self):
         return self.sale.can_edit()
 
-    def get_surcharge_value(self):
-        return currency(self.surcharge_value or 0)
+    @property
+    def subtotal(self):
+        # The editor requires the model to be a currency, but _subtotal is a
+        # decimal. So we need to convert it
+        return currency(self._subtotal)
 
-    def get_discount_value(self):
-        return currency(self.discount_value or 0)
+    @property
+    def total(self):
+        return currency(self._total)
 
-    def get_subtotal(self):
-        return currency(self.subtotal + self.v_ipi)
-
-    def get_total(self):
-        return currency(self.total + self.v_ipi)
-
-    def get_open_date_as_string(self):
+    @property
+    def open_date_as_string(self):
         return self.open_date.strftime("%x")
 
-    def get_status_name(self):
+    @property
+    def status_name(self):
         return Sale.get_status_name(self.status)
 
 

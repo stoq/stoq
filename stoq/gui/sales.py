@@ -322,7 +322,7 @@ class SalesApp(ShellApp):
                              data_type=decimal.Decimal, width=60,
                              format_func=format_quantity),
                 SearchColumn('total', title=_('Total'), data_type=currency,
-                             width=120)]
+                             width=120, search_attribute='_total')]
         return cols
 
     #

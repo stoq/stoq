@@ -2300,38 +2300,38 @@ class TestSaleView(DomainTest):
         view = self.store.find(SaleView, id=returned.sale.id).one()
         self.assertTrue(view.returned_sales.count())
 
-    def test_get_subtotal(self):
+    def test_subtotal(self):
         item = self.create_sale_item()
 
         view = self.store.find(SaleView, id=item.sale.id).one()
-        self.assertEquals(view.get_subtotal(), 100)
+        self.assertEquals(view.subtotal, 100)
 
-    def test_get_total(self):
+    def test_total(self):
         item = self.create_sale_item()
         item.ipi_info.v_ipi = 30
 
         view = self.store.find(SaleView, id=item.sale.id).one()
-        self.assertEquals(view.get_total(), Decimal(130))
+        self.assertEquals(view.total, Decimal(130))
 
         item.ipi_info = None
         view = self.store.find(SaleView, id=item.sale.id).one()
-        self.assertEquals(view.get_total(), Decimal(100))
+        self.assertEquals(view.total, Decimal(100))
 
     def test_get_salesperson_name(self):
         sale = self.create_sale()
         view = self.store.find(SaleView, id=sale.id).one()
         self.assertEquals(view.salesperson_name, u'SalesPerson')
 
-    def test_get_open_date_as_string(self):
+    def test_open_date_as_string(self):
         sale = self.create_sale()
         view = self.store.find(SaleView, id=sale.id).one()
-        self.assertEquals(view.get_open_date_as_string(),
+        self.assertEquals(view.open_date_as_string,
                           sale.open_date.strftime("%x"))
 
-    def test_get_status_name(self):
+    def test_status_name(self):
         sale = self.create_sale()
         view = self.store.find(SaleView, id=sale.id).one()
-        self.assertEquals(view.get_status_name(), u'Opened')
+        self.assertEquals(view.status_name, u'Opened')
 
     def test_get_first_sale_comment(self):
         sale = self.create_sale()
