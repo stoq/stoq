@@ -37,24 +37,37 @@
   </menu>
   <menu action="SearchMenu">
     <placeholder name="SearchMenuPH">
-      <menuitem action="SearchSoldItemsByBranch"/>
-      <menuitem action="SearchSalesByPaymentMethod"/>
-      <menuitem action="SearchSalesPersonSales"/>
-      <menuitem action="SearchProduct"/>
-      <menuitem action="SearchService"/>
-      <menuitem action="SearchDelivery"/>
-      <menuitem action="SearchClient"/>
-      <menuitem action="SearchCommission"/>
-      <menuitem action="SearchClientCalls"/>
-      <menuitem action="SearchCreditCheckHistory"/>
-      <menuitem action="ReturnedSaleSearch"/>
-      <menuitem action="SearchUnconfirmedSaleItems"/>
-      <menuitem action="SearchClientsWithSale"/>
-      <menuitem action="SearchClientsWithCredit"/>
-      <menuitem action="SearchSoldItemsByClient"/>
+      <placeholder name="SearchGenericItemsPH">
+        <menuitem action="SearchProduct"/>
+        <menuitem action="SearchService"/>
+        <menuitem action="SearchDelivery"/>
+      </placeholder>
       <separator/>
-      <menuitem action="LoanSearch"/>
-      <menuitem action="LoanSearchItems"/>
+      <placeholder name="SearchClientPH">
+        <menuitem action="SearchClient"/>
+        <menuitem action="SearchClientCalls"/>
+        <menuitem action="SearchCreditCheckHistory"/>
+        <menuitem action="SearchClientsWithSale"/>
+        <menuitem action="SearchClientsWithCredit"/>
+      </placeholder>
+      <separator/>
+      <placeholder name="SearchSalesPH">
+        <menuitem action="SearchSalesByPaymentMethod"/>
+        <menuitem action="ReturnedSaleSearch"/>
+        <menuitem action="SearchCommission"/>
+        <menuitem action="SearchSalesPersonSales"/>
+      </placeholder>
+      <separator/>
+      <placeholder name="SearchSaleItemsPH">
+        <menuitem action="SearchUnconfirmedSaleItems"/>
+        <menuitem action="SearchSoldItemsByBranch"/>
+        <menuitem action="SearchSoldItemsByClient"/>
+      </placeholder>
+      <separator/>
+      <placeholder name="SearchLoansPH">
+        <menuitem action="LoanSearch"/>
+        <menuitem action="LoanSearchItems"/>
+      </placeholder>
     </placeholder>
   </menu>
   <placeholder name="AppMenubarPH">

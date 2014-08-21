@@ -42,20 +42,23 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkImageMenuItem(): '_Print invoice...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
-          GtkImageMenuItem(): 'Sold items by branch...'
-          GtkImageMenuItem(): 'Sales by payment method...'
-          GtkImageMenuItem(): 'Total sales made by salesperson...'
           GtkImageMenuItem(): 'Products...'
           GtkImageMenuItem(): 'Services...'
           GtkImageMenuItem(): 'Deliveries...'
+          GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Clients...'
-          GtkImageMenuItem(): 'Commissions...'
           GtkImageMenuItem(): 'Client Calls...'
           GtkImageMenuItem(): 'Client credit check history...'
-          GtkImageMenuItem(): 'Returned sales...'
-          GtkImageMenuItem(): 'Unconfirmed sale items...'
           GtkImageMenuItem(): 'Clients with sales...'
           GtkImageMenuItem(): 'Clients with credit...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Sales by payment method...'
+          GtkImageMenuItem(): 'Returned sales...'
+          GtkImageMenuItem(): 'Commissions...'
+          GtkImageMenuItem(): 'Total sales made by salesperson...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Unconfirmed sale items...'
+          GtkImageMenuItem(): 'Sold items by branch...'
           GtkImageMenuItem(): 'Sold items by client...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Loans...'
