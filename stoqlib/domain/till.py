@@ -411,8 +411,8 @@ class TillClosedView(Viewable):
 
     id = Till.id
     observations = Till.observations
-    opening_date = Till.opening_date
-    closing_date = Till.closing_date
+    opening_date = Date(Till.opening_date)
+    closing_date = Date(Till.closing_date)
     initial_cash_amount = Till.initial_cash_amount
     final_cash_amount = Till.final_cash_amount
 
