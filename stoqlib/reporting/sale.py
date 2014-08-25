@@ -53,7 +53,6 @@ class SaleOrderReport(HTMLReport):
         status_date = {Sale.STATUS_INITIAL: 'open_date',
                        Sale.STATUS_ORDERED: 'open_date',
                        Sale.STATUS_CONFIRMED: 'confirm_date',
-                       Sale.STATUS_PAID: 'close_date',
                        Sale.STATUS_CANCELLED: 'cancel_date',
                        Sale.STATUS_QUOTE: 'open_date',
                        Sale.STATUS_RETURNED: 'return_date',

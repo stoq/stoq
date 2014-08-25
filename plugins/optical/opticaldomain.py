@@ -716,7 +716,7 @@ class MedicSoldItemsView(Viewable):
         Join(Person, Person.id == OpticalMedic.person_id),
     ]
 
-    clause = Sale.status.is_in([Sale.STATUS_PAID, Sale.STATUS_CONFIRMED])
+    clause = Sale.status == Sale.STATUS_CONFIRMED
 
     group_by = [id, branch_name, code, description, category, manufacturer,
                 StorableBatch.id, OpticalMedic.id, Person.id, Sale.id, Branch.id]

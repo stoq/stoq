@@ -387,6 +387,10 @@ class Payment(Domain):
         change_entry.last_status = self.STATUS_PAID
         change_entry.new_status = self.STATUS_PENDING
 
+        sale = self.group and self.group.sale
+
+        if sale and sale.can_set_not_paid():
+            sale.set_not_paid()
         self.status = self.STATUS_PENDING
         self.paid_date = None
         self.paid_value = None

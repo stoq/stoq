@@ -96,9 +96,10 @@ model: Sale<4>
   invoice_number: None
   open_date: datetime.today()
   operation_nature: u''
+  paid: False
   return_date: None
   service_invoice_number: None
-  status: 7
+  status: u'renegotiated'
   surcharge_value: <currency $ 0>
   total_amount: <currency $ 0>
 

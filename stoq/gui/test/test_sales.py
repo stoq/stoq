@@ -275,37 +275,39 @@ class TestSales(BaseGUITest):
     def test_not_sale_cancel(self, new_store):
         new_store.return_value = self.store
 
-        app = self.create_app(SalesApp, u'sales')
-        sale_view = app.results[0]
-        app.results.select(sale_view)
+        with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
+            app = self.create_app(SalesApp, u'sales')
+            sale_view = app.results[0]
+            app.results.select(sale_view)
 
-        sale_view.status = Sale.STATUS_PAID
-        sale_view.sale.status = Sale.STATUS_PAID
-        app._update_toolbar()
+            sale_view.status = Sale.STATUS_CONFIRMED
+            sale_view.sale.status = Sale.STATUS_CONFIRMED
+            app._update_toolbar()
 
-        for item in sale_view.sale.get_items():
-            item.quantity = 2
+            for item in sale_view.sale.get_items():
+                item.quantity = 2
 
-        with contextlib.nested(
-                mock.patch.object(app, 'run_dialog'),
-                mock.patch.object(self.store, 'commit'),
-                mock.patch.object(self.store, 'close')) as context:
-            run_dialog = context[0]
-            run_dialog.return_value = None
-            self.activate(app.SalesCancel)
+            with contextlib.nested(
+                    mock.patch.object(app, 'run_dialog'),
+                    mock.patch.object(self.store, 'commit'),
+                    mock.patch.object(self.store, 'close')) as context:
+                run_dialog = context[0]
+                run_dialog.return_value = None
+                self.activate(app.SalesCancel)
 
-            msg_text = u"This will cancel the sale, Are you sure?"
-            args, kwargs = run_dialog.call_args
-            self.assertEquals(args, (NoteEditor, self.store))
-            self.assertTrue(isinstance(kwargs['model'], SaleComment))
-            self.assertEquals(kwargs['attr_name'], 'comment')
-            self.assertEquals(kwargs['message_text'], msg_text)
-            self.assertEquals(kwargs['label_text'], u"Reason")
-            self.assertEquals(kwargs['mandatory'], True)
-            self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
-            self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
-            self.assertEquals(run_dialog.call_count, 1)
-            self.assertEquals(sale_view.sale.status, Sale.STATUS_PAID)
+                msg_text = u"This will cancel the sale, Are you sure?"
+                args, kwargs = run_dialog.call_args
+                self.assertEquals(args, (NoteEditor, self.store))
+                self.assertTrue(isinstance(kwargs['model'], SaleComment))
+                self.assertEquals(kwargs['attr_name'], 'comment')
+                self.assertEquals(kwargs['message_text'], msg_text)
+                self.assertEquals(kwargs['label_text'], u"Reason")
+                self.assertEquals(kwargs['mandatory'], True)
+                self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
+                self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
+                self.assertEquals(NoteEditor.retval, None)
+                self.assertEquals(run_dialog.call_count, 1)
+                self.assertEquals(sale_view.sale.status, Sale.STATUS_CONFIRMED)
 
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_sales_cancel(self, new_store):
@@ -346,74 +348,74 @@ class TestSales(BaseGUITest):
 
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_confirmed_sales_cancel(self, new_store):
-        api.sysparam.set_bool(self.store, 'ALLOW_CANCEL_CONFIRMED_SALES', True)
-        new_store.return_value = self.store
+        with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
+            new_store.return_value = self.store
 
-        app = self.create_app(SalesApp, u'sales')
-        sale_view = app.results[0]
-        app.results.select(sale_view)
+            app = self.create_app(SalesApp, u'sales')
+            sale_view = app.results[0]
+            app.results.select(sale_view)
 
-        sale_view.status = Sale.STATUS_CONFIRMED
-        sale_view.sale.status = Sale.STATUS_CONFIRMED
-        app._update_toolbar()
+            sale_view.status = Sale.STATUS_CONFIRMED
+            sale_view.sale.status = Sale.STATUS_CONFIRMED
+            app._update_toolbar()
 
-        for item in sale_view.sale.get_items():
-            item.quantity = 2
+            for item in sale_view.sale.get_items():
+                item.quantity = 2
 
-        with contextlib.nested(
-                mock.patch.object(app, 'run_dialog'),
-                mock.patch.object(self.store, 'commit'),
-                mock.patch.object(self.store, 'close')) as context:
-            run_dialog = context[0]
-            run_dialog.return_value = True
-            self.activate(app.SalesCancel)
+            with contextlib.nested(
+                    mock.patch.object(app, 'run_dialog'),
+                    mock.patch.object(self.store, 'commit'),
+                    mock.patch.object(self.store, 'close')) as context:
+                run_dialog = context[0]
+                run_dialog.return_value = True
+                self.activate(app.SalesCancel)
 
-            msg_text = u"This will cancel the sale, Are you sure?"
-            args, kwargs = run_dialog.call_args
-            self.assertEquals(args, (NoteEditor, self.store))
-            self.assertTrue(isinstance(kwargs['model'], SaleComment))
-            self.assertEquals(kwargs['attr_name'], 'comment')
-            self.assertEquals(kwargs['message_text'], msg_text)
-            self.assertEquals(kwargs['label_text'], u"Reason")
-            self.assertEquals(kwargs['mandatory'], True)
-            self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
-            self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
-            self.assertEquals(run_dialog.call_count, 1)
-            self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)
+                msg_text = u"This will cancel the sale, Are you sure?"
+                args, kwargs = run_dialog.call_args
+                self.assertEquals(args, (NoteEditor, self.store))
+                self.assertTrue(isinstance(kwargs['model'], SaleComment))
+                self.assertEquals(kwargs['attr_name'], 'comment')
+                self.assertEquals(kwargs['message_text'], msg_text)
+                self.assertEquals(kwargs['label_text'], u"Reason")
+                self.assertEquals(kwargs['mandatory'], True)
+                self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
+                self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
+                self.assertEquals(run_dialog.call_count, 1)
+                self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)
 
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_paid_sales_cancel(self, new_store):
-        api.sysparam.set_bool(self.store, 'ALLOW_CANCEL_CONFIRMED_SALES', True)
-        new_store.return_value = self.store
+        with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
+            new_store.return_value = self.store
 
-        app = self.create_app(SalesApp, u'sales')
-        sale_view = app.results[0]
-        app.results.select(sale_view)
+            app = self.create_app(SalesApp, u'sales')
+            sale_view = app.results[0]
+            app.results.select(sale_view)
 
-        sale_view.status = Sale.STATUS_PAID
-        sale_view.sale.status = Sale.STATUS_PAID
-        app._update_toolbar()
+            sale_view.status = Sale.STATUS_CONFIRMED
+            sale_view.sale.status = Sale.STATUS_CONFIRMED
+            app._update_toolbar()
 
-        for item in sale_view.sale.get_items():
-            item.quantity = 2
+            for item in sale_view.sale.get_items():
+                item.quantity = 2
 
-        with contextlib.nested(
-                mock.patch.object(app, 'run_dialog'),
-                mock.patch.object(self.store, 'commit'),
-                mock.patch.object(self.store, 'close')) as context:
-            run_dialog = context[0]
-            run_dialog.return_value = True
-            self.activate(app.SalesCancel)
+            with contextlib.nested(
+                    mock.patch.object(app, 'run_dialog'),
+                    mock.patch.object(self.store, 'commit'),
+                    mock.patch.object(self.store, 'close')) as context:
+                run_dialog = context[0]
+                run_dialog.return_value = True
+                self.activate(app.SalesCancel)
 
-            msg_text = u"This will cancel the sale, Are you sure?"
-            args, kwargs = run_dialog.call_args
-            self.assertEquals(args, (NoteEditor, self.store))
-            self.assertTrue(isinstance(kwargs['model'], SaleComment))
-            self.assertEquals(kwargs['attr_name'], 'comment')
-            self.assertEquals(kwargs['message_text'], msg_text)
-            self.assertEquals(kwargs['label_text'], u"Reason")
-            self.assertEquals(kwargs['mandatory'], True)
-            self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
-            self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
-            self.assertEquals(run_dialog.call_count, 1)
-            self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)
+                msg_text = u"This will cancel the sale, Are you sure?"
+                args, kwargs = run_dialog.call_args
+                self.assertEquals(args, (NoteEditor, self.store))
+                self.assertTrue(isinstance(kwargs['model'], SaleComment))
+                self.assertEquals(kwargs['attr_name'], 'comment')
+                self.assertEquals(kwargs['message_text'], msg_text)
+                self.assertEquals(kwargs['label_text'], u"Reason")
+                self.assertEquals(kwargs['mandatory'], True)
+                self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
+                self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
+                self.assertEquals(run_dialog.call_count, 1)
+                self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)

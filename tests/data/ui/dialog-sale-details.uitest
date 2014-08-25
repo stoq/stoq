@@ -18,7 +18,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
               GtkButton(details_button, fill=True):
             GtkLabel(label6): 'Status:'
             GtkHBox(hbox2):
-              ProxyLabel(status_lbl, expand=True, fill=True): '<span >Paid</span>'
+              ProxyLabel(status_lbl, expand=True, fill=True): '<span >Confirmed</span>'
               GtkButton(status_details_button, fill=True): hidden
             GtkLabel(label2): 'Salesperson:'
             ProxyLabel(salesperson_lbl): '<span >SalesPerson</span>'

@@ -796,16 +796,17 @@ class TestWorkOrder(DomainTest):
         work_order = self.create_workorder()
         work_order.sale = sale
 
-        with contextlib.nested(
-                mock.patch.object(work_order, 'reopen'),
-                mock.patch.object(work_order, 'cancel')) as (reopen, cancel):
-            work_order.approve()
-            work_order.finish()
-            sale.cancel()
-            reopen.assert_called_once_with(
-                reason="Reopening work order to cancel the sale")
-            cancel.assert_called_with(reason="The sale was cancelled",
-                                      ignore_sale=True)
+        with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
+            with contextlib.nested(
+                    mock.patch.object(work_order, 'reopen'),
+                    mock.patch.object(work_order, 'cancel')) as (reopen, cancel):
+                work_order.approve()
+                work_order.finish()
+                sale.cancel()
+                reopen.assert_called_once_with(
+                    reason="Reopening work order to cancel the sale")
+                cancel.assert_called_with(reason="The sale was cancelled",
+                                          ignore_sale=True)
 
 
 class _TestWorkOrderView(DomainTest):

@@ -138,9 +138,10 @@ model: Sale<1>
   invoice_number: None
   open_date: datetime.today()
   operation_nature: u'Sale'
+  paid: False
   return_date: None
   service_invoice_number: None
-  status: 1
+  status: u'confirmed'
   surcharge_value: <currency $ 0>
   total_amount: <currency $383>
 

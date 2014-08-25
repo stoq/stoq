@@ -122,6 +122,17 @@ class PercentCol(Decimal):
     pass
 
 
+class EnumVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(set, value, from_db):
+        return value
+
+
+class EnumCol(SimpleProperty):
+    variable_class = EnumVariable
+
+
 class MyDateTimeVariable(DateTimeVariable, DateVariable):
     def parse_set(self, value, from_db):
         if type(value) is datetime.date:

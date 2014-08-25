@@ -43,7 +43,7 @@ from stoqlib.database.expr import (Concat, Date, Distinct, Field, NullIf,
                                    TransactionTimestamp)
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
-                                         IdCol)
+                                         IdCol, BoolCol, EnumCol)
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.database.viewable import Viewable
@@ -593,16 +593,12 @@ class Sale(Domain):
     +----------------------------+----------------------------+
     | :obj:`STATUS_INITIAL`      | :obj:`STATUS_ORDERED`,     |
     +----------------------------+----------------------------+
-    | :obj:`STATUS_ORDERED`      | :obj:`STATUS_PAID`,        |
-    |                            | :obj:`STATUS_CONFIRMED`    |
+    | :obj:`STATUS_ORDERED`      | :obj:`STATUS_CONFIRMED`    |
     |                            | :obj:`STATUS_CANCELLED`    |
     +----------------------------+----------------------------+
-    | :obj:`STATUS_CONFIRMED`    | :obj:`STATUS_PAID`         |
-    |                            | :obj:`STATUS_RENEGOTIATED` |
+    | :obj:`STATUS_CONFIRMED`    | :obj:`STATUS_RENEGOTIATED` |
     +----------------------------+----------------------------+
     | :obj:`STATUS_CANCELLED`    | None                       |
-    +----------------------------+----------------------------+
-    | :obj:`STATUS_PAID`         | None                       |
     +----------------------------+----------------------------+
     | :obj:`STATUS_RENEGOTIATED` | None                       |
     +----------------------------+----------------------------+
@@ -614,12 +610,9 @@ class Sale(Domain):
        digraph sale_status {
          STATUS_QUOTE -> STATUS_INITIAL;
          STATUS_INITIAL -> STATUS_ORDERED;
-         STATUS_ORDERED -> STATUS_PAID;
          STATUS_ORDERED -> STATUS_CONFIRMED;
          STATUS_ORDERED -> STATUS_CANCELLED;
-         STATUS_CONFIRMED -> STATUS_PAID;
          STATUS_CONFIRMED -> STATUS_CANCELLED;
-         STATUS_PAID -> STATUS_RETURNED;
          STATUS_CONFIRMED -> STATUS_RENEGOTIATED;
        }
 
@@ -633,42 +626,38 @@ class Sale(Domain):
 
     #: The sale is opened, products or other |sellable| items might have
     #: been added.
-    STATUS_INITIAL = 0
-
-    #: The sale has been confirmed and all payments have been registered,
-    #: but not necessarily paid.
-    STATUS_CONFIRMED = 1
-
-    #: All the payments of the sale has been confirmed and the |client| does
-    #: not owe anything to us. The product stock has been decreased and the
-    #: items delivered.
-    STATUS_PAID = 2
-
-    #: The sale has been canceled, this can only happen
-    #: to an sale which has not yet reached the SALE_CONFIRMED status.
-    STATUS_CANCELLED = 3
-
-    #: The sale is orded, it has sellable items but not any payments yet.
-    #: This state is mainly used when the parameter CONFIRM_SALES_AT_TILL
-    #: is enabled.
-    STATUS_ORDERED = 4
-
-    #: The sale has been returned, all the payments made have been canceled
-    #: and the |client| has been compensated for everything already paid.
-    STATUS_RETURNED = 5
+    STATUS_INITIAL = u'initial'
 
     #: When asking for sale quote this is the initial state that is set before
     #: reaching the initial state
-    STATUS_QUOTE = 6
+    STATUS_QUOTE = u'quote'
+
+    #: This state means the order was left the quoting state, but cant just yet
+    #: go to the confirmed state. This may happen for various reasons,
+    #: like when there is not enough stock to confirm the sale; when the sale
+    #: has pending work orders; or when the confirmation should happen on
+    #: the till app (because of the CONFIRM_SALES_AT_TILL parameter)
+    STATUS_ORDERED = u'ordered'
+
+    #: The sale has been confirmed and all payments have been registered,
+    #: but not necessarily paid.
+    STATUS_CONFIRMED = u'confirmed'
+
+    #: The sale has been canceled, this can only happen
+    #: to an sale which has not yet reached the SALE_CONFIRMED status.
+    STATUS_CANCELLED = u'cancelled'
+
+    #: The sale has been returned, all the payments made have been canceled
+    #: and the |client| has been compensated for everything already paid.
+    STATUS_RETURNED = u'returned'
 
     #: A sale that is closed as renegotiated, all payments for this sale
     #: should be canceled at list point. Another new sale is created with
     #: the new, renegotiated payments.
-    STATUS_RENEGOTIATED = 7
+    STATUS_RENEGOTIATED = u'renegotiated'
 
     statuses = {STATUS_INITIAL: _(u'Opened'),
                 STATUS_CONFIRMED: _(u'Confirmed'),
-                STATUS_PAID: _(u'Paid'),
                 STATUS_CANCELLED: _(u'Cancelled'),
                 STATUS_ORDERED: _(u'Ordered'),
                 STATUS_RETURNED: _(u'Returned'),
@@ -681,7 +670,7 @@ class Sale(Domain):
     identifier = IdentifierCol()
 
     #: status of the sale
-    status = IntCol(default=STATUS_INITIAL)
+    status = EnumCol(default=STATUS_INITIAL)
 
     # FIXME: this doesn't really belong to the sale
     # FIXME: it should also be renamed and avoid *_id
@@ -709,6 +698,9 @@ class Sale(Domain):
 
     #: date when this sale expires, used by quotes
     expire_date = DateTimeCol(default=None)
+
+    #: This flag indicates if the sale its completely paid and received
+    paid = BoolCol(default=False)
 
     #: discount of the sale, in absolute value, for instance::
     #:
@@ -859,12 +851,12 @@ class Sale(Domain):
                 self.status == Sale.STATUS_QUOTE)
 
     def can_set_paid(self):
-        """Only confirmed sales can be paid. Also, the sale must have at least
+        """Only confirmed sales can raise the flag paid. Also, the sale must have at least
         one payment and all the payments must be already paid.
 
         :returns: ``True`` if the sale can be set as paid
         """
-        if self.status != Sale.STATUS_CONFIRMED:
+        if self.paid:
             return False
 
         payments = list(self.payments)
@@ -878,7 +870,7 @@ class Sale(Domain):
 
         :returns: ``True`` if the sale can be set as paid
         """
-        return self.status == Sale.STATUS_PAID
+        return self.paid
 
     def can_set_renegotiated(self):
         """Only sales with status confirmed can be renegotiated.
@@ -905,16 +897,15 @@ class Sale(Domain):
         if not sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES"):
             return self.status == self.STATUS_QUOTE
 
-        return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
-                               Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
+        return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_ORDERED,
+                               Sale.STATUS_QUOTE)
 
     def can_return(self):
-        """Only confirmed or paid sales can be returned
+        """Only confirmed (with or without payment) sales can be returned
 
         :returns: ``True`` if the sale can be returned
         """
-        return (self.status == Sale.STATUS_CONFIRMED or
-                self.status == Sale.STATUS_PAID)
+        return self.status == Sale.STATUS_CONFIRMED
 
     def can_edit(self):
         """Only quoting sales can be edited.
@@ -1013,7 +1004,8 @@ class Sale(Domain):
             self.create_commission(payment)
 
         self.close_date = TransactionTimestamp()
-        self._set_sale_status(Sale.STATUS_PAID)
+
+        self.paid = True
 
         if self.only_paid_with_money():
             # Money payments are confirmed and paid, so lof them that way
@@ -1045,14 +1037,11 @@ class Sale(Domain):
     def set_not_paid(self):
         """Mark a sale as not paid. This happens when the user sets a
         previously paid payment as not paid.
-
-        In this case, if the sale status is :obj:`.STATUS_PAID`,
-        it should be set back to :obj:`.STATUS_CONFIRMED`.
         """
         assert self.can_set_not_paid()
 
         self.close_date = None
-        self._set_sale_status(Sale.STATUS_CONFIRMED)
+        self.paid = False
 
     def set_renegotiated(self):
         """Set the sale as renegotiated. The sale payments have been
@@ -1082,6 +1071,7 @@ class Sale(Domain):
 
         self.cancel_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_CANCELLED)
+        self.paid = False
 
         # Cancel payments
         for payment in self.payments:
@@ -1105,6 +1095,7 @@ class Sale(Domain):
         if totally_returned:
             self.return_date = TransactionTimestamp()
             self._set_sale_status(Sale.STATUS_RETURNED)
+            self.paid = False
 
         if self.client:
             if totally_returned:
@@ -1897,6 +1888,9 @@ class SaleView(Viewable):
     #: the sale status
     status = Sale.status
 
+    #: the flag that indicates if the sale is completely paid
+    paid = Sale.paid
+
     #: the sale surcharge value
     surcharge_value = Sale.surcharge_value
 
@@ -2256,8 +2250,7 @@ class SalesPersonSalesView(Viewable):
         #LeftJoin(PaidSale, Field('_paid_sale', 'salesperson_id') == SalesPerson.id),
     ]
 
-    clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
-                Sale.status == Sale.STATUS_PAID)
+    clause = Sale.status == Sale.STATUS_CONFIRMED
 
     @classmethod
     def find_by_date(cls, store, date):
@@ -2308,8 +2301,7 @@ class ClientsWithSaleView(Viewable):
 
     group_by = [id, Individual.id, Company.id, ClientCategory.id]
 
-    clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
-                Sale.status == Sale.STATUS_PAID)
+    clause = Sale.status == Sale.STATUS_CONFIRMED
 
     #
     # Public API

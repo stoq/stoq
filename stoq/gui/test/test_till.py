@@ -164,18 +164,19 @@ class TestTill(BaseGUITest):
     def test_return_sale(self, new_store, return_sale):
         new_store.return_value = self.store
 
-        sale = self.create_sale(branch=get_current_branch(self.store))
-        self.add_product(sale)
-        sale.status = Sale.STATUS_ORDERED
+        with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
+            sale = self.create_sale(branch=get_current_branch(self.store))
+            self.add_product(sale)
+            sale.status = Sale.STATUS_ORDERED
 
-        app = self.create_app(TillApp, u'till')
-        app.status_filter.select(Sale.STATUS_ORDERED)
+            app = self.create_app(TillApp, u'till')
+            app.status_filter.select(Sale.STATUS_ORDERED)
 
-        results = app.results
-        results.select(results[0])
+            results = app.results
+            results.select(results[0])
 
-        with mock.patch.object(self.store, 'commit'):
-            with mock.patch.object(self.store, 'close'):
-                self.activate(app.Return)
-                return_sale.assert_called_once_with(app.get_toplevel(),
-                                                    results[0].sale, self.store)
+            with mock.patch.object(self.store, 'commit'):
+                with mock.patch.object(self.store, 'close'):
+                    self.activate(app.Return)
+                    return_sale.assert_called_once_with(app.get_toplevel(),
+                                                        results[0].sale, self.store)

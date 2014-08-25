@@ -32,13 +32,12 @@ GtkDialog(PluggableWizard): title='Trade Sale Order', hidden
                           GtkLabel(): 'Show sales with status'
                           ProxyComboBox(padding=6):
                             item: 'Any', selected
-                            item: 'Opened'
                             item: 'Confirmed'
-                            item: 'Paid'
-                            item: 'Cancelled'
                             item: 'Ordered'
                             item: 'Returned'
                             item: 'Quoting'
+                            item: 'Opened'
+                            item: 'Cancelled'
                             item: 'Renegotiated'
                     SearchResultListView(result_view, expand=True, fill=True):
                       column: title='#'

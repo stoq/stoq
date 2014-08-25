@@ -71,10 +71,12 @@ class TestPaymentChangeDialog(GUITest):
         sale = self.create_sale()
         self.add_product(sale, price=10)
         sale.identifier = 9124
-        sale.status = Sale.STATUS_PAID
+        sale.status = Sale.STATUS_CONFIRMED
         payment = self.add_payments(sale)[0]
         payment.set_pending()
         payment.pay()
+
+        self.assertTrue(sale.paid)
         editor = PaymentStatusChangeDialog(self.store, payment,
                                            Payment.STATUS_PENDING, sale)
         self.check_editor(editor, 'editor-payment-change-status-sale')
@@ -91,6 +93,15 @@ class TestPaymentChangeDialog(GUITest):
         self.assertEquals(warning.call_count, 0)
 
         self.assertEquals(payment.status, Payment.STATUS_PENDING)
+        self.assertFalse(sale.paid)
+
+        editor = PaymentStatusChangeDialog(self.store, payment,
+                                           Payment.STATUS_PAID, sale)
+        editor.change_reason.update('Just because')
+
+        with self.assertRaisesRegexp(
+                AssertionError, "status change not implemented"):
+            editor.on_confirm()
 
     @mock.patch('stoqlib.gui.dialogs.paymentchangedialog.warning')
     def test_change_status_cancel_purchase(self, warning):

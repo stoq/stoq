@@ -202,13 +202,6 @@ class PaymentStatusChangeDialog(_BasePaymentChangeDialog):
         self.status_combo.prefill(items)
         self.target_status_combo.prefill(items)
 
-    def _get_change_status_method(self):
-        payment = self.get_payment()
-        if self._target_status == Payment.STATUS_CANCELLED:
-            return payment.cancel
-        elif self._target_status == Payment.STATUS_PENDING:
-            return payment.set_not_paid
-
     #
     # BaseEditor Hooks
     #
@@ -216,14 +209,14 @@ class PaymentStatusChangeDialog(_BasePaymentChangeDialog):
         return _BasePaymentChangeDialog.create_model(self, store)
 
     def on_confirm(self):
-        change_status_method = self._get_change_status_method()
-        assert change_status_method
+        payment = self.get_payment()
 
-        change_status_method(self.model)
-
-        if (isinstance(self._order, Sale) and
-            self._order.status == Sale.STATUS_PAID):
-            self._order.set_not_paid()
+        if self._target_status == Payment.STATUS_CANCELLED:
+            payment.cancel(self.model)
+        elif self._target_status == Payment.STATUS_PENDING:
+            payment.set_not_paid(self.model)
+        else:
+            raise AssertionError("status change not implemented")
 
     #
     # _BasePaymentChangeDialog

@@ -30,7 +30,7 @@ from dateutil.relativedelta import relativedelta
 import pango
 import gtk
 from kiwi.currency import currency
-from storm.expr import And, Or
+from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.database.expr import Date
@@ -84,19 +84,15 @@ class FilterItem(object):
 
 
 SALES_FILTERS = {
-    'sold': Or(Sale.status == Sale.STATUS_CONFIRMED,
-               Sale.status == Sale.STATUS_PAID),
+    'sold': Sale.status == Sale.STATUS_CONFIRMED,
     'sold-today': And(Date(Sale.open_date) == date.today(),
-                      Or(Sale.status == Sale.STATUS_CONFIRMED,
-                         Sale.status == Sale.STATUS_PAID)),
+                      Sale.status == Sale.STATUS_CONFIRMED),
     'sold-7days': And(Date(Sale.open_date) <= date.today(),
                       Date(Sale.open_date) >= date.today() - relativedelta(days=7),
-                      Or(Sale.status == Sale.STATUS_CONFIRMED,
-                          Sale.status == Sale.STATUS_PAID)),
+                      Sale.status == Sale.STATUS_CONFIRMED),
     'sold-28days': And(Date(Sale.open_date) <= date.today(),
                        Date(Sale.open_date) >= date.today() - relativedelta(days=28),
-                       Or(Sale.status == Sale.STATUS_CONFIRMED,
-                          Sale.status == Sale.STATUS_PAID)),
+                       Sale.status == Sale.STATUS_CONFIRMED),
     'expired-quotes': And(Date(Sale.expire_date) < date.today(),
                           Sale.status == Sale.STATUS_QUOTE),
 }
@@ -112,7 +108,6 @@ class SalesApp(ShellApp):
 
     cols_info = {Sale.STATUS_INITIAL: 'open_date',
                  Sale.STATUS_CONFIRMED: 'confirm_date',
-                 Sale.STATUS_PAID: 'close_date',
                  Sale.STATUS_ORDERED: 'open_date',
                  Sale.STATUS_CANCELLED: 'cancel_date',
                  Sale.STATUS_QUOTE: 'open_date',
@@ -293,6 +288,8 @@ class SalesApp(ShellApp):
 
         cols = [IdentifierColumn('identifier', long_title=_('Order #'),
                                  sorted=True),
+                SearchColumn('paid', title=_('Paid'), width=120,
+                             data_type=bool, visible=False),
                 SearchColumn('open_date', title=_('Open date'), width=120,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT,
                              visible=False),
@@ -419,10 +416,9 @@ class SalesApp(ShellApp):
     def _get_filter_options(self):
         options = [
             (_('All Sales'), None),
-            (_('Sold'), FilterItem('custom', 'sold')),
-            (_('Sold today'), FilterItem('custom', 'sold-today')),
-            (_('Sold in the last 7 days'), FilterItem('custom', 'sold-7days')),
-            (_('Sold in the last 28 days'), FilterItem('custom', 'sold-28days')),
+            (_('Confirmed today'), FilterItem('custom', 'sold-today')),
+            (_('Confirmed in the last 7 days'), FilterItem('custom', 'sold-7days')),
+            (_('Confirmed in the last 28 days'), FilterItem('custom', 'sold-28days')),
             (_('Expired quotes'), FilterItem('custom', 'expired-quotes')),
             ('sep', None),
         ]

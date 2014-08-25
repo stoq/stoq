@@ -69,6 +69,14 @@ DROP FUNCTION stoq_create_language_plpgsql();
     END;
   $$ LANGUAGE plpgsql IMMUTABLE;
 
+  CREATE TYPE sale_status AS ENUM ('initial',
+                                   'quote',
+                                   'ordered',
+                                   'confirmed',
+                                   'cancelled',
+                                   'returned',
+                                   'renegotiated');
+
 % else:
   -- Postgres 8.4
 

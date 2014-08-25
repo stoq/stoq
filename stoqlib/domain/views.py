@@ -610,7 +610,6 @@ class SoldItemView(Viewable):
     ]
 
     clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
-                Sale.status == Sale.STATUS_PAID,
                 Sale.status == Sale.STATUS_RENEGOTIATED)
 
     group_by = [id, product_id, code, description, category, Sale.status]
@@ -841,7 +840,6 @@ class SaleItemsView(Viewable):
     ]
 
     clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
-                Sale.status == Sale.STATUS_PAID,
                 Sale.status == Sale.STATUS_RENEGOTIATED,
                 Sale.status == Sale.STATUS_ORDERED)
 
