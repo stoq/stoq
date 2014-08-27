@@ -264,6 +264,10 @@ class TransactionPage(object):
         for transaction in transactions:
             description = transaction.get_account_description(self.model)
             value = transaction.get_value(self.model)
+            # If a transaction has the source equals to the destination account.
+            # Show the same transaction, but with reversed value.
+            if transaction.source_account_id == transaction.dest_account_id:
+                self._add_transaction(transaction, description, -value)
             self._add_transaction(transaction, description, value)
         self.update_totals()
 
@@ -303,8 +307,7 @@ class TransactionPage(object):
 
         store.confirm(transaction)
         if transaction:
-            for page in self.app._pages.values():
-                page.refresh()
+            self.app.refresh_pages()
             self.update_totals()
             self.app.accounts.refresh_accounts(self.app.store)
         store.close()
@@ -324,8 +327,7 @@ class TransactionPage(object):
                                  store, None, model)
         store.confirm(transaction)
         if transaction:
-            for page in self.app._pages.values():
-                page.refresh()
+            self.app.refresh_pages()
             self.update_totals()
             self.app.accounts.refresh_accounts(self.app.store)
         store.close()
@@ -404,8 +406,7 @@ class FinancialApp(ShellApp):
 
     def activate(self, refresh=True):
         if refresh:
-            for page in self._pages.values():
-                page.refresh()
+            self.refresh_pages()
         self._update_actions()
         self._update_tooltips()
         self.window.SearchToolItem.set_sensitive(False)
@@ -582,6 +583,10 @@ class FinancialApp(ShellApp):
         self.notebook.set_current_page(page_id)
         self._update_actions()
 
+    def refresh_pages(self):
+        for page in self._pages.values():
+            page.refresh()
+
     def _import(self):
         ffilters = []
 
@@ -626,8 +631,7 @@ class FinancialApp(ShellApp):
 
         # Refresh everthing after an import
         self.accounts.refresh_accounts(self.store)
-        for page in self._pages.values():
-            page.refresh()
+        self.refresh_pages()
 
     def _export_spreadsheet(self):
         """Runs a dialog to export the current search results to a CSV file.
@@ -836,6 +840,7 @@ class FinancialApp(ShellApp):
         transactions = self.get_current_page()
         transaction = transactions.result_view.get_selected()
         self._delete_transaction(transaction)
+        self.refresh_pages()
         self._refresh_accounts()
 
     # Financial

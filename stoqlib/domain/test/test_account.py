@@ -376,8 +376,8 @@ class TestAccountTransaction(DomainTest):
         payment.pay()
         transaction = AccountTransaction.create_from_payment(payment)
         imbalance_account = sysparam.get_object(self.store, 'IMBALANCE_ACCOUNT')
-        self.assertEquals(transaction.source_account, imbalance_account)
-        self.assertEquals(transaction.account, account)
+        self.assertEquals(transaction.source_account, account)
+        self.assertEquals(transaction.account, imbalance_account)
         self.assertEquals(transaction.payment, payment)
         self.assertEquals(transaction.operation_type, AccountTransaction.TYPE_OUT)
 

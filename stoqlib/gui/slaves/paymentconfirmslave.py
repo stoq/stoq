@@ -229,7 +229,7 @@ class _PaymentConfirmSlave(BaseEditor):
     """
     gladefile = 'PaymentConfirmSlave'
     model_type = _ConfirmationModel
-    size = (690, 450)
+    size = (-1, 450)
     title = _("Confirm payment")
     proxy_widgets = ('identifier',
                      'installment_value',
@@ -478,6 +478,10 @@ class SalePaymentConfirmSlave(_PaymentConfirmSlave):
     model_type = _ConfirmationModel
     help_section = "account-receivable-receive"
 
+    def _setup_widgets(self):
+        _PaymentConfirmSlave._setup_widgets(self)
+        self.account_label.set_text(_("Destination account:"))
+
     def get_till_info_msg(self):
         # TRANSLATORS: 'cash addition' is 'suprimento' in pt_BR
         return _("Note that this operation will not generate a till entry for "
@@ -512,6 +516,7 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
         self.discount_label.show()
         self.discount.show()
         self.person_label.set_text(_("Supplier: "))
+        self.account_label.set_text(_("Source account:"))
         self.expander.hide()
         self.pay_penalty.set_active(True)
         self.pay_interest.set_active(True)

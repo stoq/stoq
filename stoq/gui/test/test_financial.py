@@ -27,6 +27,7 @@ import mock
 
 from stoq.gui.financial import FinancialApp
 from stoq.gui.test.baseguitest import BaseGUITest
+from stoqlib.domain.account import AccountTransaction
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.reporting.payment import AccountTransactionReport
@@ -128,6 +129,51 @@ class TestFinancial(BaseGUITest):
                 self.assertEquals(store, self.store)
                 self.assertEquals(account_transaction, None)
                 self.assertEquals(model, at.account)
+
+    @mock.patch('stoq.gui.financial.yesno')
+    @mock.patch('stoq.gui.financial.api.new_store')
+    def test_transaction_with_same_accounts(self, new_store, yesno):
+        # When we have an account transaction with source account equal to destination,
+        # the Financial app must show a new transaction, with the same data of
+        # original transaction, but with inverted value.
+
+        # Create a new account transaction
+        new_store.return_value = self.store
+        account = self.create_account(u"Account")
+        original_transaction = self.create_account_transaction(account, value=100)
+        original_transaction.description = u"Test transaction"
+
+        app = self.create_app(FinancialApp, u"financial")
+        page = self._open_page(app, u"Account")
+        accounts = page.result_view
+        original = self.store.find(AccountTransaction, account=account).count()
+        self.assertEquals(original, 1)
+        self.assertEquals(len(accounts), 1)
+
+        # Check the new transaction is shown.
+        original_transaction.source_account = account
+        page.refresh()
+        self.assertEquals(len(accounts), 2)
+        reversed_transaction = accounts[1]
+        self.assertEquals(reversed_transaction.description, original_transaction.description)
+        self.assertEquals(reversed_transaction.value, -100)
+
+        # Delete the inverted transaction.
+        accounts.select(reversed_transaction)
+
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.activate(app.DeleteTransaction)
+                yesno.assert_called_once_with(u'Are you sure you want to remove '
+                                              u'transaction "Test transaction" ?',
+                                              gtk.RESPONSE_YES,
+                                              u'Remove transaction',
+                                              u'Keep transaction')
+        # The original transaction, also must have been deleted.
+        original = self.store.find(AccountTransaction, account=account).count()
+        self.assertEquals(original, 0)
+        page.refresh()
+        self.assertEquals(len(accounts), 0)
 
     @mock.patch('stoq.gui.financial.print_report')
     def test_print(self, print_report):

@@ -29,7 +29,7 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
                 ProxyLabel(identifier): '<span >47384</span>'
                 GtkLabel(person_label): 'Client:'
                 ProxyLabel(person_name): '<span ></span>'
-                GtkLabel(label6): 'Account:'
+                GtkLabel(account_label): 'Destination account:'
                 ProxyComboBox(account):
                   item: 'Assets'
                   item: 'Banks'

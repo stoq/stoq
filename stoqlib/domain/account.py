@@ -433,8 +433,8 @@ class AccountTransaction(Domain):
         a |client| which will enter a |bankaccount|.
 
         :param payment: the |payment| to create the transaction for.
-        :param account: |account| where this transaction will arrive,
-          or ``None``
+        :param account: if an outgoing payment, the |account| will be the source of
+          transaction. Otherwise will be the destination account.
         :returns: the transaction
         """
         if not payment.is_paid():
@@ -443,10 +443,14 @@ class AccountTransaction(Domain):
         value = payment.paid_value
         if payment.is_outpayment():
             operation_type = cls.TYPE_OUT
+            source = account or payment.method.destination_account
+            destination = sysparam.get_object(store, 'IMBALANCE_ACCOUNT')
         else:
             operation_type = cls.TYPE_IN
-        return cls(source_account_id=sysparam.get_object_id('IMBALANCE_ACCOUNT'),
-                   account=account or payment.method.destination_account,
+            source = sysparam.get_object(store, 'IMBALANCE_ACCOUNT')
+            destination = account or payment.method.destination_account
+        return cls(source_account=source,
+                   account=destination,
                    value=value,
                    description=payment.description,
                    code=unicode(payment.identifier),
