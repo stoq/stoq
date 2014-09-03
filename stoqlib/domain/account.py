@@ -44,7 +44,7 @@ from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implementer
 
-from stoqlib.database.expr import TransactionTimestamp
+from stoqlib.database.expr import TransactionTimestamp, Date
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.database.properties import DateTimeCol, IdCol
@@ -153,7 +153,7 @@ class Account(Domain):
         TYPE_CASH: (_(u"Receive"), _(u"Spend")),
         TYPE_ASSET: (_(u"Increase"), _(u"Decrease")),
         TYPE_CREDIT: (_(u"Payment"), _(u"Charge")),
-        TYPE_INCOME: (_(u"Charge"), _(u"Income")),
+        TYPE_INCOME: (_(u"Income"), _(u"Charge"),),
         TYPE_EXPENSE: (_(u"Rebate"), _(u"Expense")),
         TYPE_EQUITY: (_(u"Increase"), _(u"Decrease")),
     }
@@ -265,9 +265,18 @@ class Account(Domain):
             raise TypeError("end must be a datetime.datetime, not %s" % (
                 type(end), ))
 
-        return currency(self.transactions.find(And(
-            AccountTransaction.date >= start,
-            AccountTransaction.date <= end)).sum(AccountTransaction.value) or 0)
+        query = And(Date(AccountTransaction.date) >= start,
+                    Date(AccountTransaction.date) <= end,
+                    AccountTransaction.source_account_id != AccountTransaction.account_id)
+
+        transactions = self.store.find(AccountTransaction, query)
+        incoming = transactions.find(AccountTransaction.account_id == self.id)
+        outgoing = transactions.find(AccountTransaction.source_account_id == self.id)
+
+        positive_values = incoming.sum(AccountTransaction.value) or 0
+        negative_values = outgoing.sum(AccountTransaction.value) or 0
+
+        return currency(positive_values - negative_values)
 
     def can_remove(self):
         """If the account can be removed.
