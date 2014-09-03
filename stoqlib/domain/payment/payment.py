@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -40,9 +40,9 @@ from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.properties import (DateTimeCol, IntCol, BoolCol,
+from stoqlib.database.properties import (DateTimeCol, BoolCol,
                                          PriceCol, UnicodeCol, IdentifierCol,
-                                         IdCol)
+                                         IdCol, EnumCol)
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
@@ -107,32 +107,32 @@ class Payment(Domain):
 
     #: incoming to the company, accounts receivable, payment from
     #: a |client| to a |branch|
-    TYPE_IN = 0
+    TYPE_IN = u'in'
 
     #: outgoing from the company, accounts payable, a payment from
     #: |branch| to a |supplier|
-    TYPE_OUT = 1
+    TYPE_OUT = u'out'
 
     #: payment group this payment belongs to hasn't been confirmed,
     # should normally be filtered when showing a payment list
-    STATUS_PREVIEW = 0
+    STATUS_PREVIEW = u'preview'
 
     #: payment group has been confirmed and the payment has not been received
-    STATUS_PENDING = 1
+    STATUS_PENDING = u'pending'
 
     #: the payment has been received
-    STATUS_PAID = 2
+    STATUS_PAID = u'paid'
 
     # FIXME: Remove these two
     #: Unused.
-    STATUS_REVIEWING = 3
+    STATUS_REVIEWING = u'reviewing'
 
     #: Unused.
-    STATUS_CONFIRMED = 4
+    STATUS_CONFIRMED = u'confirmed'
 
     #: payment was cancelled, for instance the payments of the group was changed, or
     #: the group was cancelled.
-    STATUS_CANCELLED = 5
+    STATUS_CANCELLED = u'cancelled'
 
     statuses = {STATUS_PREVIEW: _(u'Preview'),
                 STATUS_PENDING: _(u'To Pay'),
@@ -142,7 +142,7 @@ class Payment(Domain):
                 STATUS_CANCELLED: _(u'Cancelled')}
 
     #: type of payment :obj:`.TYPE_IN` or :obj:`.TYPE_OUT`
-    payment_type = IntCol()
+    payment_type = EnumCol(allow_none=False, default=TYPE_IN)
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to
@@ -150,7 +150,7 @@ class Payment(Domain):
     identifier = IdentifierCol()
 
     #: status, see |payment| for more information.
-    status = IntCol(default=STATUS_PREVIEW)
+    status = EnumCol(allow_none=False, default=STATUS_PREVIEW)
 
     #: description payment, usually something like "1/3 Money for Sale 1234"
     description = UnicodeCol(default=None)
@@ -671,7 +671,7 @@ class PaymentChangeHistory(Domain):
     new_due_date = DateTimeCol(default=None)
 
     #: status before the change
-    last_status = IntCol(default=None)
+    last_status = EnumCol(allow_none=False, default=Payment.STATUS_PREVIEW)
 
     #: status after change
-    new_status = IntCol(default=None)
+    new_status = EnumCol(allow_none=False, default=Payment.STATUS_PREVIEW)

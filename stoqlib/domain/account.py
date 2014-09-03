@@ -45,9 +45,8 @@ from storm.references import Reference
 from zope.interface import implementer
 
 from stoqlib.database.expr import TransactionTimestamp, Date
-from stoqlib.database.properties import PriceCol
-from stoqlib.database.properties import IntCol, UnicodeCol
-from stoqlib.database.properties import DateTimeCol, IdCol
+from stoqlib.database.properties import (DateTimeCol, EnumCol, IdCol,
+                                         IntCol, PriceCol, UnicodeCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -128,25 +127,25 @@ class Account(Domain):
     __storm_table__ = 'account'
 
     #: Bank
-    TYPE_BANK = 0
+    TYPE_BANK = u'bank'
 
     #: Cash/Till
-    TYPE_CASH = 1
+    TYPE_CASH = u'cash'
 
     #: Assets, like investement account
-    TYPE_ASSET = 2
+    TYPE_ASSET = u'asset'
 
     #: Credit
-    TYPE_CREDIT = 3
+    TYPE_CREDIT = u'credit'
 
     #: Income/Salary
-    TYPE_INCOME = 4
+    TYPE_INCOME = u'income'
 
     #: Expenses
-    TYPE_EXPENSE = 5
+    TYPE_EXPENSE = u'expense'
 
     #: Equity, like unbalanced
-    TYPE_EQUITY = 6
+    TYPE_EQUITY = u'equity'
 
     account_labels = {
         TYPE_BANK: (_(u"Deposit"), _(u"Withdrawal")),
@@ -187,7 +186,7 @@ class Account(Domain):
     station = Reference(station_id, 'BranchStation.id')
 
     #: kind of account, one of the TYPE_* defines in this class
-    account_type = IntCol(default=None)
+    account_type = EnumCol(allow_none=False, default=TYPE_BANK)
 
     #: |bankaccount| for this account, used by TYPE_BANK accounts
     bank = Reference('id', 'BankAccount.account_id', on_remote=True)

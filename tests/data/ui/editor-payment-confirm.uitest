@@ -89,9 +89,9 @@ model: Payment<2>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: 1
+  payment_type: u'out'
   penalty: <currency $ 0>
-  status: 1
+  status: u'pending'
   value: <currency $100>
 
 model: Payment<3>
@@ -107,8 +107,8 @@ model: Payment<3>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: 1
+  payment_type: u'out'
   penalty: <currency $ 0>
-  status: 1
+  status: u'pending'
   value: <currency $100>
 

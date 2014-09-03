@@ -404,7 +404,8 @@ class TestProductSellableItem(DomainTest):
         assert stock_item is not None
         current_stock = stock_item.quantity
         if current_stock:
-            storable.decrease_stock(current_stock, branch, 0, None)
+            storable.decrease_stock(current_stock, branch,
+                                    StockTransactionHistory.TYPE_INITIAL, None)
         assert not storable.get_stock_item(branch, None).quantity
         sold_qty = 2
         storable.increase_stock(sold_qty, branch,

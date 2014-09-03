@@ -26,6 +26,7 @@
 # pylint: enable=E1101
 
 from decimal import Decimal
+import collections
 
 from kiwi.currency import currency
 from storm.expr import And
@@ -33,7 +34,7 @@ from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import (PriceCol, QuantityCol, IntCol,
                                          DateTimeCol, UnicodeCol, IdentifierCol,
-                                         IdCol)
+                                         IdCol, EnumCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
@@ -147,23 +148,22 @@ class ReceivingOrder(Domain):
     __storm_table__ = 'receiving_order'
 
     #: Products in the order was not received or received partially.
-    STATUS_PENDING = 0
+    STATUS_PENDING = u'pending'
 
     #: All products in the order has been received then the order is closed.
-    STATUS_CLOSED = 1
+    STATUS_CLOSED = u'closed'
 
-    (FREIGHT_FOB_PAYMENT,
-     FREIGHT_FOB_INSTALLMENTS,
-     FREIGHT_CIF_UNKNOWN,
-     FREIGHT_CIF_INVOICE) = range(4)
+    FREIGHT_FOB_PAYMENT = u'fob-payment'
+    FREIGHT_FOB_INSTALLMENTS = u'fob-installments'
+    FREIGHT_CIF_UNKNOWN = u'cif-unknown'
+    FREIGHT_CIF_INVOICE = u'cif-invoice'
 
-    freight_types = {FREIGHT_FOB_PAYMENT: _(u"FOB - Freight value "
-                                            u"on a new payment"),
-                     FREIGHT_FOB_INSTALLMENTS: _(u"FOB - Freight value "
-                                                 u"on installments"),
-                     FREIGHT_CIF_UNKNOWN: _(u"CIF - Freight value is unknown"),
-                     FREIGHT_CIF_INVOICE: _(u"CIF - Freight value highlighted "
-                                            u"on invoice")}
+    freight_types = collections.OrderedDict([
+        (FREIGHT_FOB_PAYMENT, _(u"FOB - Freight value on a new payment")),
+        (FREIGHT_FOB_INSTALLMENTS, _(u"FOB - Freight value on installments")),
+        (FREIGHT_CIF_UNKNOWN, _(u"CIF - Freight value is unknown")),
+        (FREIGHT_CIF_INVOICE, _(u"CIF - Freight value highlighted on invoice")),
+    ])
 
     FOB_FREIGHTS = (FREIGHT_FOB_PAYMENT,
                     FREIGHT_FOB_INSTALLMENTS, )
@@ -176,7 +176,7 @@ class ReceivingOrder(Domain):
     identifier = IdentifierCol()
 
     #: status of the order
-    status = IntCol(default=STATUS_PENDING)
+    status = EnumCol(allow_none=False, default=STATUS_PENDING)
 
     #: Date that order has been closed.
     receival_date = DateTimeCol(default_factory=localnow)
@@ -188,7 +188,7 @@ class ReceivingOrder(Domain):
     notes = UnicodeCol(default=u'')
 
     #: Type of freight
-    freight_type = IntCol(default=FREIGHT_FOB_PAYMENT)
+    freight_type = EnumCol(allow_none=False, default=FREIGHT_FOB_PAYMENT)
 
     #: Total of freight paid in receiving order.
     freight_total = PriceCol(default=0)

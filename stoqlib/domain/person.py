@@ -54,6 +54,7 @@ Then to add a client, you can will do:
 
 # pylint: enable=E1101
 
+import collections
 import hashlib
 import operator
 
@@ -69,7 +70,7 @@ from stoqlib.database.expr import (Age, Case, Concat, Date, DateTrunc, Interval,
                                    Field)
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          IntCol, PercentCol,
-                                         PriceCol,
+                                         PriceCol, EnumCol,
                                          UnicodeCol, IdCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.database.runtime import get_current_station, get_current_branch
@@ -217,10 +218,10 @@ class CreditCheckHistory(Domain):
     __storm_table__ = 'credit_check_history'
 
     #: if a client has debt
-    STATUS_INCLUDED = 0
+    STATUS_INCLUDED = u'included'
 
     #: if a client does not have debt
-    STATUS_NOT_INCLUDED = 1
+    STATUS_NOT_INCLUDED = u'not-included'
 
     statuses = {STATUS_INCLUDED: _(u'Included'),
                 STATUS_NOT_INCLUDED: _(u'Not included')}
@@ -237,7 +238,7 @@ class CreditCheckHistory(Domain):
     identifier = UnicodeCol()
 
     #: the client status given the options above
-    status = IntCol()
+    status = EnumCol(allow_none=False, default=STATUS_INCLUDED)
 
     #: notes about the credit check history created by the user
     notes = UnicodeCol()
@@ -505,22 +506,24 @@ class Individual(Domain):
 
     __storm_table__ = 'individual'
 
-    (STATUS_SINGLE,
-     STATUS_MARRIED,
-     STATUS_DIVORCED,
-     STATUS_WIDOWED,
-     STATUS_SEPARATED,
-     STATUS_COHABITATION) = range(6)
+    STATUS_SINGLE = u'single'
+    STATUS_MARRIED = u'married'
+    STATUS_DIVORCED = u'divorced'
+    STATUS_WIDOWED = u'widowed'
+    STATUS_SEPARATED = u'separated'
+    STATUS_COHABITATION = u'cohabitation'
 
-    marital_statuses = {STATUS_SINGLE: _(u"Single"),
-                        STATUS_MARRIED: _(u"Married"),
-                        STATUS_DIVORCED: _(u"Divorced"),
-                        STATUS_WIDOWED: _(u"Widowed"),
-                        STATUS_SEPARATED: _(u'Separated'),
-                        STATUS_COHABITATION: _(u'Cohabitation')}
+    marital_statuses = collections.OrderedDict([
+        (STATUS_SINGLE, _(u"Single")),
+        (STATUS_MARRIED, _(u"Married")),
+        (STATUS_DIVORCED, _(u"Divorced")),
+        (STATUS_WIDOWED, _(u"Widowed")),
+        (STATUS_SEPARATED, _(u'Separated')),
+        (STATUS_COHABITATION, _(u'Cohabitation')),
+    ])
 
-    (GENDER_MALE,
-     GENDER_FEMALE) = range(2)
+    GENDER_MALE = u'male'
+    GENDER_FEMALE = u'female'
 
     genders = {GENDER_MALE: _(u'Male'),
                GENDER_FEMALE: _(u'Female')}
@@ -544,7 +547,7 @@ class Individual(Domain):
     occupation = UnicodeCol(default=u'')
 
     #: martial status, single, married, widow etc
-    marital_status = IntCol(default=STATUS_SINGLE)
+    marital_status = EnumCol(allow_none=False, default=STATUS_SINGLE)
 
     #: Name of this individuals father
     father_name = UnicodeCol(default=u'')
@@ -559,7 +562,7 @@ class Individual(Domain):
     rg_expedition_local = UnicodeCol(default=u'')
 
     #: male or female
-    gender = IntCol(default=None)
+    gender = EnumCol(allow_none=False, default=GENDER_MALE)
 
     #: the name of the spouse individual's partner in marriage
     spouse_name = UnicodeCol(default=u'')
@@ -778,15 +781,17 @@ class Client(Domain):
 
     __storm_table__ = 'client'
 
-    (STATUS_SOLVENT,
-     STATUS_INDEBTED,
-     STATUS_INSOLVENT,
-     STATUS_INACTIVE) = range(4)
+    STATUS_SOLVENT = u'solvent'
+    STATUS_INDEBTED = u'indebt'
+    STATUS_INSOLVENT = u'insolvent'
+    STATUS_INACTIVE = u'inactive'
 
-    statuses = {STATUS_SOLVENT: _(u'Solvent'),
-                STATUS_INDEBTED: _(u'Indebted'),
-                STATUS_INSOLVENT: _(u'Insolvent'),
-                STATUS_INACTIVE: _(u'Inactive')}
+    statuses = collections.OrderedDict([
+        (STATUS_SOLVENT, _(u'Solvent')),
+        (STATUS_INDEBTED, _(u'Indebted')),
+        (STATUS_INSOLVENT, _(u'Insolvent')),
+        (STATUS_INACTIVE, _(u'Inactive')),
+    ])
 
     person_id = IdCol()
 
@@ -794,7 +799,7 @@ class Client(Domain):
     person = Reference(person_id, 'Person.id')
 
     #: ok, indebted, insolvent, inactive
-    status = IntCol(default=STATUS_SOLVENT)
+    status = EnumCol(allow_none=False, default=STATUS_SOLVENT)
 
     #: How many days is this client indebted
     days_late = IntCol(default=0)
@@ -1090,9 +1095,9 @@ class Supplier(Domain):
 
     __storm_table__ = 'supplier'
 
-    (STATUS_ACTIVE,
-     STATUS_INACTIVE,
-     STATUS_BLOCKED) = range(3)
+    STATUS_ACTIVE = u'active'
+    STATUS_INACTIVE = u'inactive'
+    STATUS_BLOCKED = u'blocked'
 
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive'),
@@ -1104,7 +1109,7 @@ class Supplier(Domain):
     person = Reference(person_id, 'Person.id')
 
     #: active/inactive/blocked
-    status = IntCol(default=STATUS_ACTIVE)
+    status = EnumCol(allow_none=False, default=STATUS_ACTIVE)
 
     #: A short description telling which products this supplier produces
     product_desc = UnicodeCol(default=u'')
@@ -1204,10 +1209,10 @@ class Employee(Domain):
 
     __storm_table__ = 'employee'
 
-    (STATUS_NORMAL,
-     STATUS_AWAY,
-     STATUS_VACATION,
-     STATUS_OFF) = range(4)
+    STATUS_NORMAL = u'normal'
+    STATUS_AWAY = u'away'
+    STATUS_VACATION = u'vacation'
+    STATUS_OFF = u'off'
 
     statuses = {STATUS_NORMAL: _(u'Normal'),
                 STATUS_AWAY: _(u'Away'),
@@ -1215,7 +1220,7 @@ class Employee(Domain):
                 STATUS_OFF: _(u'Off')}
 
     #: normal/away/vacation/off
-    status = IntCol(default=STATUS_NORMAL)
+    status = EnumCol(allow_none=False, default=STATUS_NORMAL)
 
     person_id = IdCol()
 

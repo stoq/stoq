@@ -35,8 +35,8 @@ from storm.references import Reference
 
 from stoqlib.database.runtime import get_current_user
 from stoqlib.database.expr import Date, TransactionTimestamp
-from stoqlib.database.properties import (PriceCol, DateTimeCol, IntCol,
-                                         UnicodeCol, IdentifierCol, IdCol)
+from stoqlib.database.properties import (PriceCol, DateTimeCol, UnicodeCol,
+                                         IdentifierCol, IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -75,20 +75,20 @@ class Till(Domain):
     __storm_table__ = 'till'
 
     #: this till is created, but not yet opened
-    STATUS_PENDING = 0
+    STATUS_PENDING = u'pending'
 
     #: this till is opened and we can make sales for it.
-    STATUS_OPEN = 1
+    STATUS_OPEN = u'open'
 
     #: end of the day, the till is closed and no more
     #: financial operations can be done in this store.
-    STATUS_CLOSED = 2
+    STATUS_CLOSED = u'closed'
 
     statuses = {STATUS_PENDING: _(u'Pending'),
                 STATUS_OPEN: _(u'Opened'),
                 STATUS_CLOSED: _(u'Closed')}
 
-    status = IntCol(default=STATUS_PENDING)
+    status = EnumCol(default=STATUS_PENDING)
 
     #: The total amount we had the moment the till was opened.
     initial_cash_amount = PriceCol(default=0, allow_none=False)

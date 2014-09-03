@@ -9,8 +9,8 @@ GtkDialog(main_dialog.toplevel): title='Add Quality Test', hidden
           ProxyEntry(description): '', mandatory
           GtkLabel(label5): 'Test Type:'
           ProxyComboBox(test_type):
-            item: 'Boolean', selected
             item: 'Decimal'
+            item: 'Boolean', selected
           GtkLabel(label3): 'Success Value:'
           GtkVBox(vbox1):
             ProxyComboBox(boolean_value, fill=True):

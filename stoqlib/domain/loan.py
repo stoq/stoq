@@ -39,9 +39,9 @@ from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
 from stoqlib.database.expr import Round
-from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         PriceCol, QuantityCol, IdentifierCol,
-                                         IdCol)
+from stoqlib.database.properties import (UnicodeCol, DateTimeCol, PriceCol,
+                                         QuantityCol, IdentifierCol,
+                                         IdCol, EnumCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import StockTransactionHistory
@@ -201,11 +201,11 @@ class Loan(Domain):
     #: we know which of the items the client wishes to loan,
     #: it's not defined if the client has actually picked up
     #: the items.
-    STATUS_OPEN = 0
+    STATUS_OPEN = u'open'
 
     #: All the products or other sellable items have been
     #: returned and are available in stock.
-    STATUS_CLOSED = 1
+    STATUS_CLOSED = u'closed'
 
     # FIXME: This is missing a few states,
     #        STATUS_LOANED: stock is completely synchronized
@@ -218,7 +218,7 @@ class Loan(Domain):
     identifier = IdentifierCol()
 
     #: status of the loan
-    status = IntCol(default=STATUS_OPEN)
+    status = EnumCol(allow_none=False, default=STATUS_OPEN)
 
     #: notes related to this loan.
     notes = UnicodeCol(default=u'')

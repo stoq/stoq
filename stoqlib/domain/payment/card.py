@@ -34,12 +34,14 @@ This includes:
 
 # pylint: enable=E1101
 
+import collections
+
 from zope.interface import implementer
 from storm.expr import And, Delete, Or, Update
 from storm.references import Reference
 
-from stoqlib.database.properties import PercentCol, PriceCol, DateTimeCol
-from stoqlib.database.properties import IntCol, UnicodeCol, IdCol
+from stoqlib.database.properties import (PercentCol, PriceCol, DateTimeCol,
+                                         IntCol, UnicodeCol, IdCol, EnumCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.translation import stoqlib_gettext
@@ -187,7 +189,7 @@ class CardOperationCost(Domain):
     provider = Reference(provider_id, 'CreditProvider.id')
 
     # One of CreditCardData.TYPE_*
-    card_type = IntCol(default=0)
+    card_type = EnumCol(allow_none=False, default=u'credit')
 
     #: When paid in installments, this fee and fare will only apply if the
     #: installments number is in the range defined by installment_start and
@@ -290,33 +292,33 @@ class CreditCardData(Domain):
     __storm_table__ = 'credit_card_data'
 
     #: Credit card payment, single installment
-    TYPE_CREDIT = 0
+    TYPE_CREDIT = u'credit'
 
     #: Debit card payment
-    TYPE_DEBIT = 1
+    TYPE_DEBIT = u'debit'
 
     #: Credit card payment with two or more installments.
     #: In this case, the shop is responsible for the installments, and will
     #: receive one payment each month
-    TYPE_CREDIT_INSTALLMENTS_STORE = 2
+    TYPE_CREDIT_INSTALLMENTS_STORE = u'credit-inst-store'
 
     #: Credit card payment with two or more installments.
     #: In this case, the credit provider is responsible for the installments and
     #: the shop will receive the value in only one payment
-    TYPE_CREDIT_INSTALLMENTS_PROVIDER = 3
+    TYPE_CREDIT_INSTALLMENTS_PROVIDER = u'credit-inst-provider'
 
     #: This is a debit card payment, but will be charged on a pre-defined future
     #: date. Not completely supported in Stoq yet
-    TYPE_DEBIT_PRE_DATED = 4
+    TYPE_DEBIT_PRE_DATED = u'debit-pre-dated'
 
-    types = {
-        TYPE_CREDIT: _(u'Credit Card'),
-        TYPE_DEBIT: _(u'Debit Card'),
-        TYPE_CREDIT_INSTALLMENTS_STORE: _(u'Credit Card Installments Store'),
-        TYPE_CREDIT_INSTALLMENTS_PROVIDER: _(u'Credit Card Installments '
-                                             u'Provider'),
-        TYPE_DEBIT_PRE_DATED: _(u'Debit Card Pre-dated'),
-    }
+    types = collections.OrderedDict([
+        (TYPE_CREDIT, _(u'Credit Card')),
+        (TYPE_DEBIT, _(u'Debit Card')),
+        (TYPE_CREDIT_INSTALLMENTS_STORE, _(u'Credit Card Installments Store')),
+        (TYPE_CREDIT_INSTALLMENTS_PROVIDER, _(u'Credit Card Installments '
+                                              u'Provider')),
+        (TYPE_DEBIT_PRE_DATED, _(u'Debit Card Pre-dated')),
+    ])
 
     short_desc = {
         TYPE_CREDIT: _(u'Credit'),
@@ -335,8 +337,7 @@ class CreditCardData(Domain):
     #: the |payment| this information is about
     payment = Reference(payment_id, 'Payment.id')
 
-    #: int, > 0, < 5
-    card_type = IntCol(default=TYPE_CREDIT)
+    card_type = EnumCol(default=TYPE_CREDIT)
 
     provider_id = IdCol(default=None)
 

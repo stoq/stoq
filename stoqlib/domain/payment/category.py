@@ -28,7 +28,7 @@
 
 from zope.interface import implementer
 
-from stoqlib.database.properties import IntCol, UnicodeCol
+from stoqlib.database.properties import EnumCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
@@ -42,10 +42,10 @@ class PaymentCategory(Domain):
     __storm_table__ = 'payment_category'
 
     #: for outgoing payments (payable application)
-    TYPE_PAYABLE = 0
+    TYPE_PAYABLE = u'payable'
 
     #: for incoming payments (receivable application)
-    TYPE_RECEIVABLE = 1
+    TYPE_RECEIVABLE = u'receivable'
 
     #: category name
     name = UnicodeCol()
@@ -54,7 +54,7 @@ class PaymentCategory(Domain):
     color = UnicodeCol()
 
     #: category type, payable or receivable
-    category_type = IntCol(default=TYPE_PAYABLE)
+    category_type = EnumCol(allow_none=False, default=TYPE_PAYABLE)
 
     #
     # IDescribable implementation

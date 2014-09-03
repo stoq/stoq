@@ -97,7 +97,7 @@ class PaymentCategoryEditor(BaseEditor):
         color = get_random_color(ignore=used_colors)
         return PaymentCategory(name=u'',
                                color=color,
-                               category_type=int(self._category_type),
+                               category_type=self._category_type,
                                store=store)
 
     def setup_proxies(self):

@@ -132,7 +132,7 @@ model: Supplier<1>
   is_active: True
   person_id: Person<2>
   product_desc: u''
-  status: 0
+  status: u'active'
 
 model: Person<2>
   email: u''

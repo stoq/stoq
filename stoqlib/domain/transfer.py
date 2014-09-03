@@ -32,7 +32,8 @@ from zope.interface import implementer
 
 from stoqlib.database.expr import NullIf
 from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
-                                         IntCol, PriceCol, QuantityCol, UnicodeCol)
+                                         IntCol, PriceCol, QuantityCol,
+                                         UnicodeCol, EnumCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -115,15 +116,15 @@ class TransferOrder(Domain):
     """
     __storm_table__ = 'transfer_order'
 
-    (STATUS_PENDING,
-     STATUS_SENT,
-     STATUS_RECEIVED) = range(3)
+    STATUS_PENDING = u'pending'
+    STATUS_SENT = u'sent'
+    STATUS_RECEIVED = u'received'
 
     statuses = {STATUS_PENDING: _(u'Pending'),
                 STATUS_SENT: _(u'Sent'),
                 STATUS_RECEIVED: _(u'Received')}
 
-    status = IntCol(default=STATUS_PENDING)
+    status = EnumCol(default=STATUS_PENDING)
 
     #: A numeric identifier for this object. This value should be used instead
     #: of :obj:`Domain.id` when displaying a numerical representation of this

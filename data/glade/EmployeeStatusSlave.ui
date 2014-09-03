@@ -1,47 +1,61 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="EmployeeStatusSlave">
     <property name="can_focus">True</property>
-    <property name="role"/>
-    <property name="title" translatable="yes"/>
     <child>
       <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
         <property name="border_width">5</property>
         <property name="spacing">5</property>
-        <property name="visible">True</property>
         <child>
           <object class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
             <property name="border_width">5</property>
             <property name="spacing">5</property>
-            <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label1">
-                <property name="label" translatable="yes">Employee Status:</property>
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Employee Status:</property>
               </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="ProxyComboBox" id="statuses_combo">
-                <property name="data_type">int</property>
-                <property name="model_attribute">status</property>
                 <property name="visible">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">status</property>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
-                <property name="data_type">unicode</property>
                 <property name="visible">True</property>
+                <property name="data_type">unicode</property>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">2</property>
               </packing>
             </child>
           </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
         </child>
         <child>
           <object class="GtkHSeparator" id="hseparator1">
@@ -49,6 +63,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>

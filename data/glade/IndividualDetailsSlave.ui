@@ -171,7 +171,7 @@
             <child>
               <object class="ProxyComboBox" id="marital_status">
                 <property name="visible">True</property>
-                <property name="data_type">int</property>
+                <property name="data_type">unicode</property>
                 <property name="model_attribute">marital_status</property>
               </object>
               <packing>

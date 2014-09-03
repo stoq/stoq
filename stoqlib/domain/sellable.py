@@ -43,8 +43,9 @@ from storm.expr import And, Or, In, Eq
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.properties import BoolCol, PriceCol, PercentCol
-from stoqlib.database.properties import DateTimeCol, UnicodeCol, IntCol, IdCol
+from stoqlib.database.properties import (BoolCol, DateTimeCol, EnumCol,
+                                         IdCol, IntCol, PercentCol,
+                                         PriceCol, UnicodeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
 from stoqlib.domain.interfaces import IDescribable
@@ -382,11 +383,11 @@ class Sellable(Domain):
     __storm_table__ = 'sellable'
 
     #: the sellable is available and can be used on a |purchase|/|sale|
-    STATUS_AVAILABLE = 0
+    STATUS_AVAILABLE = u'available'
 
     #: the sellable is closed, that is, it still exists for references,
     #: but it should not be possible to create a |purchase|/|sale| with it
-    STATUS_CLOSED = 1
+    STATUS_CLOSED = u'closed'
 
     statuses = {STATUS_AVAILABLE: _(u'Available'),
                 STATUS_CLOSED: _(u'Closed')}
@@ -401,7 +402,7 @@ class Sellable(Domain):
     barcode = UnicodeCol(default=u'', validator=_validate_barcode)
 
     #: status the sellable is in
-    status = IntCol(default=STATUS_AVAILABLE)
+    status = EnumCol(allow_none=False, default=STATUS_AVAILABLE)
 
     # FIXME: This is only used for purchase orders without suppliers,
     #        Perhaps we should update this as we purchase the product

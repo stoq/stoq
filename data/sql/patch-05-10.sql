@@ -5,6 +5,8 @@ UPDATE sale SET status = 1 WHERE status = 2;
 
 ALTER TABLE sale DROP CONSTRAINT valid_status;
 
+CREATE TYPE sale_status AS ENUM ('initial', 'quote', 'ordered', 'confirmed',
+                                 'cancelled', 'returned', 'renegotiated');
 -- Copying the column status, reset its value and change the type of column
 ALTER TABLE sale ADD COLUMN temp_status integer;
 UPDATE sale SET temp_status = status;

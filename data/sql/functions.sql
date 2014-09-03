@@ -55,56 +55,12 @@ SELECT
 
 DROP FUNCTION stoq_create_language_plpgsql();
 
+-- Enable unaccent extension
+CREATE EXTENSION IF NOT EXISTS unaccent;
 
-% if db_version[0] >= 9:
-  -- Postgres 9.0+
-
-  -- Enable unaccent extension
-  CREATE EXTENSION IF NOT EXISTS unaccent;
-
-  CREATE OR REPLACE FUNCTION stoq_normalize_string(input_string text) RETURNS text AS $$
-    BEGIN
-      input_string := LOWER(input_string);
-      return unaccent(input_string);
-    END;
-  $$ LANGUAGE plpgsql IMMUTABLE;
-
-  CREATE TYPE sale_status AS ENUM ('initial',
-                                   'quote',
-                                   'ordered',
-                                   'confirmed',
-                                   'cancelled',
-                                   'returned',
-                                   'renegotiated');
-
-% else:
-  -- Postgres 8.4
-
-  --
-  -- This is used to remove accents from a string
-  --
-  -- Source: http://wiki.postgresql.org/wiki/Strip_accents_from_strings,_and_output_in_lowercase
-  -- Author: Thom Brown
-  --
-  -- Source: http://lehelk.com/2011/05/06/script-to-remove-diacritics/
-  --
-
-  CREATE OR REPLACE FUNCTION stoq_normalize_string(input_string text) RETURNS text AS $$
-    BEGIN
-      input_string := LOWER(input_string);
-
-      -- These are the must common cases for latin based character sets,
-      -- and based on code suggested by django:
-      -- https://django-orm.readthedocs.org/en/latest/orm-pg-fulltext.html
-      input_string := translate(input_string, 'àáâäãåāăą', 'aaaaaaaaa');
-      input_string := translate(input_string, 'èéêëēĕėęě', 'eeeeeeeee');
-      input_string := translate(input_string, 'ìíîïĩīĭ', 'iiiiiii');
-      input_string := translate(input_string, 'òóôöõōŏő', 'oooooooo');
-      input_string := translate(input_string, 'ùúûüũūŭů', 'uuuuuuuu');
-      input_string := translate(input_string, 'ñç', 'nc');
-
-      return input_string;
-    END;
-  $$ LANGUAGE plpgsql IMMUTABLE;
-
-% endif
+CREATE OR REPLACE FUNCTION stoq_normalize_string(input_string text) RETURNS text AS $$
+BEGIN
+  input_string := LOWER(input_string);
+  return unaccent(input_string);
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;

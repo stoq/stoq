@@ -380,12 +380,8 @@ class TestPurchaseOrder(DomainTest):
 
     def test_translate_status(self):
         order = self.create_purchase_order()
-        statuses = []
-        for i in range(5):
-            statuses.append(order.translate_status(i))
-            self.assertEquals(order.statuses[i], statuses[i])
         with self.assertRaises(DatabaseInconsistency):
-            order.translate_status(99)
+            order.translate_status(u'test inconsistency')
 
     def test_cancel_paid(self):
         order = self.create_purchase_order()

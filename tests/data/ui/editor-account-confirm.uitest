@@ -51,7 +51,7 @@ GtkDialog(main_dialog.toplevel): title='Add Account', hidden
       GtkButton(_test_button): 'Print a test bill', insensitive
 
 model: Account<1>
-  account_type: 1
+  account_type: u'cash'
   code: None
   description: u'Account name'
 

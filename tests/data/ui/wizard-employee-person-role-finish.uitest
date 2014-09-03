@@ -88,10 +88,10 @@ GtkDialog(PluggableWizard): title='New Employee', hidden
                       GtkHBox(expand=True, fill=True):
                         GtkLabel(expand=True, fill=True): 'Employee Status:'
                         ProxyComboBox(expand=True, fill=True):
-                          item: 'Normal', selected
                           item: 'Away'
-                          item: 'Vacation'
                           item: 'Off'
+                          item: 'Vacation'
+                          item: 'Normal', selected
                         ProxyLabel(expand=True, fill=True):
                       GtkHSeparator(fill=True):
                   GtkEventBox(fill=True):
@@ -211,7 +211,7 @@ model: Employee<1>
   person_id: Person<2>
   registry_number: u''
   salary: <currency $555>
-  status: 0
+  status: u'normal'
 
 model: Person<2>
   email: u''

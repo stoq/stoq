@@ -81,9 +81,9 @@ model: Payment<3>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: 1
+  payment_type: u'out'
   penalty: <currency $ 0>
-  status: 5
+  status: u'cancelled'
   value: <currency $10>
 
 model: Sale<4>

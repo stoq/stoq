@@ -31,7 +31,7 @@ from zope.interface import implementer
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
-                                         IdCol)
+                                         IdCol, EnumCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -136,10 +136,10 @@ class StockDecrease(Domain):
     __storm_table__ = 'stock_decrease'
 
     #: Stock Decrease is still being edited
-    STATUS_INITIAL = 0
+    STATUS_INITIAL = u'initial'
 
     #: Stock Decrease is confirmed and stock items have been decreased.
-    STATUS_CONFIRMED = 1
+    STATUS_CONFIRMED = u'confirmed'
 
     statuses = {STATUS_INITIAL: _(u'Opened'),
                 STATUS_CONFIRMED: _(u'Confirmed')}
@@ -150,7 +150,7 @@ class StockDecrease(Domain):
     identifier = IdentifierCol()
 
     #: status of the sale
-    status = IntCol(default=STATUS_INITIAL)
+    status = EnumCol(allow_none=False, default=STATUS_INITIAL)
 
     reason = UnicodeCol(default=u'')
 

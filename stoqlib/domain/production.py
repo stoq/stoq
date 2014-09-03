@@ -25,6 +25,7 @@
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from storm.expr import And, Join
@@ -33,7 +34,7 @@ from zope.interface import implementer
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          QuantityCol, BoolCol, IdentifierCol,
-                                         IdCol)
+                                         IdCol, EnumCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -54,31 +55,32 @@ class ProductionOrder(Domain):
     __storm_table__ = 'production_order'
 
     #: The production order is opened, production items might have been added.
-    ORDER_OPENED = 0
+    ORDER_OPENED = u'opened'
 
     #: The production order is waiting some conditions to start the
     #: manufacturing process.
-    ORDER_WAITING = 1
+    ORDER_WAITING = u'waiting'
 
     #: The production order have already started.
-    ORDER_PRODUCING = 2
-
-    #: The production have finished.
-    ORDER_CLOSED = 3
+    ORDER_PRODUCING = u'producing'
 
     #: The production is in quality assurance phase.
-    ORDER_QA = 4
+    ORDER_QA = u'quality-assurance'
+
+    #: The production have finished.
+    ORDER_CLOSED = u'closed'
 
     #: Production cancelled
-    ORDER_CANCELLED = 5
+    ORDER_CANCELLED = u'cancelled'
 
-    statuses = {ORDER_OPENED: _(u'Opened'),
-                ORDER_WAITING: _(u'Waiting'),
-                ORDER_PRODUCING: _(u'Producing'),
-                ORDER_CLOSED: _(u'Closed'),
-                ORDER_QA: _(u'Quality Assurance'),
-                ORDER_CANCELLED: _(u'Cancelled')
-                }
+    statuses = collections.OrderedDict([
+        (ORDER_OPENED, _(u'Opened')),
+        (ORDER_WAITING, _(u'Waiting')),
+        (ORDER_PRODUCING, _(u'Producing')),
+        (ORDER_QA, _(u'Quality Assurance')),
+        (ORDER_CLOSED, _(u'Closed')),
+        (ORDER_CANCELLED, _(u'Cancelled')),
+    ])
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to
@@ -86,7 +88,7 @@ class ProductionOrder(Domain):
     identifier = IdentifierCol()
 
     #: the production order status
-    status = IntCol(default=ORDER_OPENED)
+    status = EnumCol(allow_none=False, default=ORDER_OPENED)
 
     #: the date when the production order was created
     open_date = DateTimeCol(default_factory=localnow)

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2013-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -108,7 +108,7 @@ class TestCardPaymentDevice(DomainTest):
         device = self.create_card_device()
 
         # Create an operaton cost and a card payment for this device
-        self.create_operation_cost(device)
+        self.create_operation_cost(device, card_type=CreditCardData.TYPE_CREDIT)
         self.create_card_payment(device=device)
 
         # As we created above, there should be one cost and one credit card data
@@ -159,7 +159,8 @@ class TestOperationCost(DomainTest):
         self.assertTrue(
             CardOperationCost.validate_installment_range(
                 device, provider,
-                CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, 1, 12, self.store))
+                CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE,
+                1, 12, self.store))
 
         # Create one cost
         cost = self.create_operation_cost(start=3, end=5,

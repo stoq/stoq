@@ -32,7 +32,7 @@
 
 from storm.store import AutoReload
 
-from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
+from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol, EnumCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
@@ -57,19 +57,19 @@ class Event(ORMObject):
     __storm_table__ = 'event'
 
     #: System related messages
-    TYPE_SYSTEM = 0
+    TYPE_SYSTEM = u'system'
 
     #: |loginuser| events, logging in and logging out
-    TYPE_USER = 1
+    TYPE_USER = u'user'
 
     #: |purchase| events
-    TYPE_ORDER = 2
+    TYPE_ORDER = u'order'
 
     #: |sale| events
-    TYPE_SALE = 3
+    TYPE_SALE = u'sale'
 
     #: |payment| events
-    TYPE_PAYMENT = 4
+    TYPE_PAYMENT = u'payment'
 
     types = {
         TYPE_SYSTEM: _(u'System'),
@@ -85,7 +85,7 @@ class Event(ORMObject):
     date = DateTimeCol(default_factory=localnow)
 
     #: type of this event, one of TYPE_* variables of this class
-    event_type = IntCol()
+    event_type = EnumCol(allow_none=False, default=TYPE_SYSTEM)
 
     #: description of the event
     description = UnicodeCol()

@@ -12,10 +12,10 @@ GtkDialog(toplevel): title='Employee Search', hidden
                   GtkLabel(): 'Show employees with status'
                   ProxyComboBox(padding=6):
                     item: 'Any', selected
-                    item: 'Normal'
                     item: 'Away'
-                    item: 'Vacation'
                     item: 'Off'
+                    item: 'Vacation'
+                    item: 'Normal'
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden

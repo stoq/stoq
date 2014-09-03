@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2014 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -28,6 +28,7 @@ Sale object and related objects implementation """
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -464,20 +465,20 @@ class Delivery(Domain):
     __storm_table__ = 'delivery'
 
     #: The delivery was created
-    STATUS_INITIAL = 0
+    STATUS_INITIAL = u'initial'
 
     #: sent to deliver
-    STATUS_SENT = 1
+    STATUS_SENT = u'sent'
 
     #: received by the |client|
-    STATUS_RECEIVED = 2
+    STATUS_RECEIVED = u'received'
 
     statuses = {STATUS_INITIAL: _(u"Waiting"),
                 STATUS_SENT: _(u"Sent"),
                 STATUS_RECEIVED: _(u"Received")}
 
     #: the delivery status
-    status = IntCol(default=STATUS_INITIAL)
+    status = EnumCol(allow_none=False, default=STATUS_INITIAL)
 
     #: the date which the delivery was created
     open_date = DateTimeCol(default=None)
@@ -656,13 +657,15 @@ class Sale(Domain):
     #: the new, renegotiated payments.
     STATUS_RENEGOTIATED = u'renegotiated'
 
-    statuses = {STATUS_INITIAL: _(u'Opened'),
-                STATUS_CONFIRMED: _(u'Confirmed'),
-                STATUS_CANCELLED: _(u'Cancelled'),
-                STATUS_ORDERED: _(u'Ordered'),
-                STATUS_RETURNED: _(u'Returned'),
-                STATUS_RENEGOTIATED: _(u'Renegotiated'),
-                STATUS_QUOTE: _(u'Quoting')}
+    statuses = collections.OrderedDict([
+        (STATUS_INITIAL, _(u'Opened')),
+        (STATUS_QUOTE, _(u'Quoting')),
+        (STATUS_ORDERED, _(u'Ordered')),
+        (STATUS_CONFIRMED, _(u'Confirmed')),
+        (STATUS_CANCELLED, _(u'Cancelled')),
+        (STATUS_RETURNED, _(u'Returned')),
+        (STATUS_RENEGOTIATED, _(u'Renegotiated')),
+    ])
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to
@@ -670,7 +673,7 @@ class Sale(Domain):
     identifier = IdentifierCol()
 
     #: status of the sale
-    status = EnumCol(default=STATUS_INITIAL)
+    status = EnumCol(allow_none=False, default=STATUS_INITIAL)
 
     # FIXME: this doesn't really belong to the sale
     # FIXME: it should also be renamed and avoid *_id

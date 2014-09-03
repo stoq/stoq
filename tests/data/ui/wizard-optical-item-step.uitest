@@ -84,7 +84,7 @@ model: Client<2>
   salary: <currency $ 0>
   credit_limit: <currency $ 0>
   days_late: 0
-  status: 0
+  status: u'solvent'
 
 model: SaleItem<3>
   average_cost: <currency $ 0>

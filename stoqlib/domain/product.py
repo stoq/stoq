@@ -90,10 +90,9 @@ from storm.expr import And, Eq, LeftJoin, Alias, Sum, Coalesce, Select
 from zope.interface import implementer
 
 from stoqlib.database.expr import Field, TransactionTimestamp
-from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
-from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
-                                         BoolCol, IntCol, PercentCol,
-                                         IdCol)
+from stoqlib.database.properties import (BoolCol, DateTimeCol, DecimalCol,
+                                         EnumCol, IdCol, IntCol, PercentCol,
+                                         PriceCol, QuantityCol, UnicodeCol)
 from stoqlib.database.runtime import get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -793,8 +792,6 @@ class Storable(Domain):
         :param batch: The batch of the storable. Should be not ``None`` if
             self.is_batch is ``True``
         """
-        assert isinstance(type, int)
-
         if quantity <= 0:
             raise ValueError(_(u"quantity must be a positive number"))
         if branch is None:
@@ -1066,69 +1063,69 @@ class StockTransactionHistory(Domain):
 
     #: the transaction is an initial stock adustment. Note that with this
     #: transaction, there is no related object.
-    TYPE_INITIAL = 0
+    TYPE_INITIAL = u'initial'
 
     #: the transaction is a sale
-    TYPE_SELL = 1
+    TYPE_SELL = u'sell'
 
     #: the transaction is a return of a sale
-    TYPE_RETURNED_SALE = 2
+    TYPE_RETURNED_SALE = u'returned-sale'
 
     #: the transaction is the cancellation of a sale
-    TYPE_CANCELED_SALE = 3
+    TYPE_CANCELED_SALE = u'cancelled-sale'
 
     #: the transaction is the receival of a purchase
-    TYPE_RECEIVED_PURCHASE = 4
+    TYPE_RECEIVED_PURCHASE = u'received-purchase'
 
     #: the transaction is the return of a loan
-    TYPE_RETURNED_LOAN = 5
+    TYPE_RETURNED_LOAN = u'returned-loan'
 
     #: the transaction is a loan
-    TYPE_LOANED = 6
+    TYPE_LOANED = u'loan'
 
     #: the transaction is the allocation of a product to a production
-    TYPE_PRODUCTION_ALLOCATED = 7
+    TYPE_PRODUCTION_ALLOCATED = u'production-allocated'
 
     #: the transaction is the production of a product
-    TYPE_PRODUCTION_PRODUCED = 8
+    TYPE_PRODUCTION_PRODUCED = u'production-produced'
 
     #: the transaction is the return of an item from a production
-    TYPE_PRODUCTION_RETURNED = 9
+    TYPE_PRODUCTION_RETURNED = u'production-returned'
 
     #: the transaction is a stock decrease
-    TYPE_STOCK_DECREASE = 10
+    TYPE_STOCK_DECREASE = u'stock-decrease'
 
     #: the transaction is a transfer from a branch
-    TYPE_TRANSFER_FROM = 11
+    TYPE_TRANSFER_FROM = u'transfer-from'
 
     #: the transaction is a transfer to a branch
-    TYPE_TRANSFER_TO = 12
+    TYPE_TRANSFER_TO = u'transfer-to'
 
     #: the transaction is the adjustment of an inventory
-    TYPE_INVENTORY_ADJUST = 13
+    TYPE_INVENTORY_ADJUST = u'inventory-adjust'
 
     #: the transaction is the production of a product that didn't enter
     #: stock right after its creation
-    TYPE_PRODUCTION_SENT = 14
+    TYPE_PRODUCTION_SENT = u'production-sent'
 
     #: this transaction was created automatically by an upgrade from a previous
     #: version of Stoq, when this history didn't exist.
-    TYPE_IMPORTED = 15
+    TYPE_IMPORTED = u'imported'
 
     #: the transaction is the return of a product to another company (ie, this
     #: shop is giving the product back to the other company).
-    TYPE_CONSIGNMENT_RETURNED = 16
+    TYPE_CONSIGNMENT_RETURNED = u'consignment-returned'
 
     #: the transaction is the utilization of a
     #: |product| on a |workorderitem|
-    TYPE_WORK_ORDER_USED = 17
+    TYPE_WORK_ORDER_USED = u'wo-used'
 
     #: the transaction is the return of a |product| on a
     #: |workorderitem| to the stock
-    TYPE_WORK_ORDER_RETURN_TO_STOCK = 18
+    TYPE_WORK_ORDER_RETURN_TO_STOCK = u'wo-returned-to-stock'
 
     #: the transaction is a reserved product from a sale
-    TYPE_SALE_RESERVED = 19
+    TYPE_SALE_RESERVED = u'sale-reserved'
 
     types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
@@ -1179,7 +1176,7 @@ class StockTransactionHistory(Domain):
     object_id = IdCol()
 
     #: the type of the transaction
-    type = IntCol()
+    type = EnumCol(allow_none=False, default=TYPE_INITIAL)
 
     @property
     def total(self):
@@ -1315,8 +1312,8 @@ class ProductQualityTest(Domain):
 
     __storm_table__ = 'product_quality_test'
 
-    (TYPE_BOOLEAN,
-     TYPE_DECIMAL) = range(2)
+    TYPE_BOOLEAN = u'boolean'
+    TYPE_DECIMAL = u'decimal'
 
     types = {
         TYPE_BOOLEAN: _(u'Boolean'),
@@ -1325,7 +1322,7 @@ class ProductQualityTest(Domain):
 
     product_id = IdCol()
     product = Reference(product_id, 'Product.id')
-    test_type = IntCol(default=TYPE_BOOLEAN)
+    test_type = EnumCol(allow_none=False, default=TYPE_BOOLEAN)
     description = UnicodeCol(default=u'')
     notes = UnicodeCol(default=u'')
     success_value = UnicodeCol(default=u'True')

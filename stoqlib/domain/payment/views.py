@@ -110,7 +110,6 @@ class BasePaymentView(Viewable):
 
     # Purchase
     purchase_id = PurchaseOrder.id
-    purchase_status = PurchaseOrder.status
 
     _count_tables = [
         Payment,

@@ -58,7 +58,7 @@ model: Loan<1>
   notes: u''
   open_date: datetime.datetime(2012, 1, 1, 0, 0)
   removed_by: u''
-  status: 0
+  status: u'open'
 
 model: LoanItem<2>
   base_price: <currency $10>

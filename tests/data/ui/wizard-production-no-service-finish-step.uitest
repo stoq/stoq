@@ -37,7 +37,7 @@ model: ProductionOrder<1>
   expected_start_date: None
   open_date: datetime.today()
   start_date: None
-  status: 0
+  status: u'opened'
 
 model: ProductComponent<2>
   component_id: Product<4>

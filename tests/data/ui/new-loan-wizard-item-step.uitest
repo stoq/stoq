@@ -70,7 +70,7 @@ model: Loan<1>
   notes: u''
   open_date: datetime.today()
   removed_by: u''
-  status: 0
+  status: u'open'
 
 model: LoanItem<2>
   base_price: <currency $10>

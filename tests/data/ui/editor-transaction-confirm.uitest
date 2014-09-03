@@ -55,7 +55,7 @@ model: AccountTransaction<1>
   value: <currency $150>
 
 model: Account<2>
-  account_type: 1
+  account_type: u'cash'
   code: None
   description: u'Test Account'
 

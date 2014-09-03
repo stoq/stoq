@@ -156,7 +156,7 @@ model: Client<1>
   credit_limit: <currency $ 0>
   days_late: 0
   person_id: Person<2>
-  status: 0
+  status: u'solvent'
 
 model: Person<2>
   email: u''

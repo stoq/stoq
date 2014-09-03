@@ -25,6 +25,7 @@
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -36,9 +37,9 @@ from storm.references import Reference
 from zope.interface import implementer
 
 from stoqlib.database.expr import Date, Field, NullIf, TransactionTimestamp
-from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
+from stoqlib.database.properties import (DateTimeCol, UnicodeCol,
                                          PriceCol, BoolCol, QuantityCol,
-                                         IdentifierCol, IdCol)
+                                         IdentifierCol, IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -169,22 +170,24 @@ class PurchaseOrder(Domain):
 
     __storm_table__ = 'purchase_order'
 
-    (ORDER_CANCELLED,
-     ORDER_QUOTING,
-     ORDER_PENDING,
-     ORDER_CONFIRMED,
-     ORDER_CLOSED,
-     ORDER_CONSIGNED) = range(6)
+    ORDER_QUOTING = u'quoting'
+    ORDER_PENDING = u'pending'
+    ORDER_CONFIRMED = u'confirmed'
+    ORDER_CONSIGNED = u'consigned'
+    ORDER_CANCELLED = u'cancelled'
+    ORDER_CLOSED = u'closed'
 
-    statuses = {ORDER_CANCELLED: _(u'Cancelled'),
-                ORDER_QUOTING: _(u'Quoting'),
-                ORDER_PENDING: _(u'Pending'),
-                ORDER_CONFIRMED: _(u'Confirmed'),
-                ORDER_CLOSED: _(u'Closed'),
-                ORDER_CONSIGNED: _(u'Consigned')}
+    statuses = collections.OrderedDict([
+        (ORDER_QUOTING, _(u'Quoting')),
+        (ORDER_PENDING, _(u'Pending')),
+        (ORDER_CONFIRMED, _(u'Confirmed')),
+        (ORDER_CONSIGNED, _(u'Consigned')),
+        (ORDER_CANCELLED, _(u'Cancelled')),
+        (ORDER_CLOSED, _(u'Closed')),
+    ])
 
-    (FREIGHT_FOB,
-     FREIGHT_CIF) = range(2)
+    FREIGHT_FOB = u'fob'
+    FREIGHT_CIF = u'cif'
 
     freight_types = {FREIGHT_FOB: _(u'FOB'),
                      FREIGHT_CIF: _(u'CIF')}
@@ -194,7 +197,7 @@ class PurchaseOrder(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
-    status = IntCol(default=ORDER_QUOTING)
+    status = EnumCol(allow_none=False, default=ORDER_QUOTING)
     open_date = DateTimeCol(default_factory=localnow)
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default_factory=localnow)
@@ -203,7 +206,7 @@ class PurchaseOrder(Domain):
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default=u'')
     salesperson_name = UnicodeCol(default=u'')
-    freight_type = IntCol(default=FREIGHT_FOB)
+    freight_type = EnumCol(allow_none=False, default=FREIGHT_FOB)
     expected_freight = PriceCol(default=0)
 
     surcharge_value = PriceCol(default=0)

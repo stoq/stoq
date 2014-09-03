@@ -61,25 +61,28 @@ FROM (SELECT date(due_date) as date FROM payment
 
 -- To pay (out payments)
 LEFT JOIN (SELECT DATE(due_date) as date, count(1) as count, sum(value) as to_pay
-           FROM payment WHERE payment_type = 1 AND status not in (0, 5)
+           FROM payment WHERE payment_type = 'out' AND status not in ('preview', 'cancelled')
            GROUP BY DATE(due_date))
      AS payments_to_pay ON (all_payment_dates.date = payments_to_pay.date)
 
 -- Paid (out payments)
 LEFT JOIN (SELECT DATE(paid_date) as date, count(1) as count, sum(value) as paid
-           FROM payment WHERE payment_type = 1 AND payment.status not in (0, 5)
+           FROM payment WHERE payment_type = 'out'
+           AND payment.status not in ('preview', 'cancelled')
            GROUP BY DATE(paid_date))
      AS payments_paid ON (all_payment_dates.date = payments_paid.date)
 
 -- To receive (in payments)
 LEFT JOIN (SELECT DATE(due_date) as date, count(1) as count, sum(value) as to_receive
-           FROM payment WHERE payment_type = 0 AND payment.status not in (0, 5)
+           FROM payment WHERE payment_type = 'in'
+           AND payment.status not in ('preview', 'cancelled')
            GROUP BY DATE(due_date))
      AS payments_to_receive ON (all_payment_dates.date = payments_to_receive.date)
 
 -- Received (in payments)
 LEFT JOIN (SELECT DATE(paid_date) as date, count(1) as count, sum(value) as received
-           FROM payment WHERE payment_type = 0 AND payment.status not in (0, 5)
+           FROM payment WHERE payment_type = 'in'
+           AND payment.status not in ('preview', 'cancelled')
            GROUP BY DATE(paid_date))
      AS payments_received ON (all_payment_dates.date = payments_received.date)
 ORDER BY all_payment_dates.date;

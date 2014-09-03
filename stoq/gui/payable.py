@@ -228,7 +228,9 @@ class PayableApp(BaseAccountWindow):
         if not self._same_purchase(payable_views):
             return False
 
-        status = payable_views[0].purchase_status
+        purchase = payable_views[0].purchase
+        status = purchase and purchase.status
+
         if (status == PurchaseOrder.ORDER_CANCELLED or
             status == PurchaseOrder.ORDER_PENDING):
             return False

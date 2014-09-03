@@ -264,7 +264,7 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.failUnless(len(statuses) > 0)
         self.assertEqual(type(statuses[0]), tuple)
         self.assertEqual(type(statuses[0][0]), unicode)
-        self.assertEqual(type(statuses[0][1]), int)
+        self.assertEqual(type(statuses[0][1]), unicode)
 
     def test_check_cpf_exist(self):
         individual = self.create_individual()

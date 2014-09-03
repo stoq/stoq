@@ -45,9 +45,9 @@ model: Payment<2>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: 0
+  payment_type: u'in'
   penalty: <currency $ 0>
-  status: 1
+  status: u'pending'
   value: <currency $ 0>
 
 model: PurchaseOrder<3>
@@ -57,14 +57,14 @@ model: PurchaseOrder<3>
   expected_freight: <currency $ 0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
-  freight_type: 0
+  freight_type: u'fob'
   group_id: PaymentGroup<1>
   notes: u''
   open_date: datetime.today()
   quote_deadline: None
   receival_date: None
   salesperson_name: u''
-  status: 4
+  status: u'closed'
   surcharge_value: <currency $ 0>
 
 model: PurchaseItem<4>

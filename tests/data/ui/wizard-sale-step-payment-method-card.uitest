@@ -85,9 +85,9 @@ model: Payment<3>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: 0
+  payment_type: u'in'
   penalty: <currency $ 0>
-  status: 0
+  status: u'preview'
   value: <currency $10>
 
 model: Sellable<4>
@@ -102,7 +102,7 @@ model: Sellable<4>
   on_sale_end_date: None
   on_sale_price: <currency $ 0>
   on_sale_start_date: None
-  status: 0
+  status: u'available'
 
 model: ProductStockItem<5>
   quantity: Decimal('100.000')
@@ -122,7 +122,7 @@ model: SaleItem<6>
 
 model: CreditCardData<7>
   auth: 1234
-  card_type: 0
+  card_type: u'credit'
   entrance_value: <currency $ 0>
   fare: <currency $ 0>
   fee: Decimal('0')

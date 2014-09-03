@@ -47,7 +47,7 @@ class AccountImporter(CSVImporter):
                           parent=parent,
                           code=None,
                           station=api.get_current_station(store),
-                          account_type=int(data.account_type),
+                          account_type=data.account_type,
                           store=store)
 
         if data.bank_number:

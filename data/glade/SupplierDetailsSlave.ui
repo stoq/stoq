@@ -70,7 +70,7 @@
             <child>
               <object class="ProxyComboBox" id="statuses_combo">
                 <property name="visible">True</property>
-                <property name="data_type">int</property>
+                <property name="data_type">unicode</property>
                 <property name="model_attribute">status</property>
               </object>
               <packing>

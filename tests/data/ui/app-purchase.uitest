@@ -109,12 +109,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
                       GtkLabel(): 'Show orders'
                       ProxyComboBox(padding=6):
                         item: 'Any', selected
-                        item: 'Cancelled'
                         item: 'Quoting'
                         item: 'Pending'
                         item: 'Confirmed'
-                        item: 'Closed'
                         item: 'Consigned'
+                        item: 'Cancelled'
+                        item: 'Closed'
                     SearchFilter(_primary_filter):
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden

@@ -248,7 +248,7 @@ class TestPaymentChangeHistoryView(DomainTest):
         history = PaymentChangeHistory(payment=payment,
                                        change_reason=u'Teste test test')
         view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
-        self.assertIsNone(view.changed_field)
+        self.assertIsNotNone(view.changed_field)
 
         history.last_due_date = Date(localtoday())
         history.last_status = Payment.STATUS_PENDING
@@ -264,7 +264,7 @@ class TestPaymentChangeHistoryView(DomainTest):
         history = PaymentChangeHistory(payment=payment,
                                        change_reason=u'Teste test test')
         view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
-        self.assertIsNone(view.from_value)
+        self.assertIsNotNone(view.from_value)
 
         history.last_due_date = Date(localtoday())
         due_date = converter.as_string(datetime.date, history.last_due_date)
@@ -282,7 +282,7 @@ class TestPaymentChangeHistoryView(DomainTest):
         history = PaymentChangeHistory(payment=payment,
                                        change_reason=u'Teste test test')
         view = self.store.find(PaymentChangeHistoryView, id=history.id).one()
-        self.assertIsNone(view.to_value)
+        self.assertIsNotNone(view.to_value)
 
         history.new_due_date = Date(localtoday())
         due_date = converter.as_string(datetime.date, history.new_due_date)

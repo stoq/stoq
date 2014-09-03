@@ -32,7 +32,7 @@ from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
                                          IntCol, UnicodeCol, IdentifierCol,
-                                         IdCol, BoolCol)
+                                         IdCol, BoolCol, EnumCol)
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -235,13 +235,13 @@ class Inventory(Domain):
     __storm_table__ = 'inventory'
 
     #: The inventory process is open
-    STATUS_OPEN = 0
+    STATUS_OPEN = u'open'
 
     #: The inventory process is closed
-    STATUS_CLOSED = 1
+    STATUS_CLOSED = u'closed'
 
     #: The inventory process was cancelled, eg never finished
-    STATUS_CANCELLED = 2
+    STATUS_CANCELLED = u'cancelled'
 
     statuses = {STATUS_OPEN: _(u'Opened'),
                 STATUS_CLOSED: _(u'Closed'),
@@ -254,7 +254,7 @@ class Inventory(Domain):
 
     #: status of the inventory, either STATUS_OPEN, STATUS_CLOSED or
     #: STATUS_CANCELLED
-    status = IntCol(default=STATUS_OPEN)
+    status = EnumCol(allow_none=False, default=STATUS_OPEN)
 
     #: number of the invoice if this inventory generated an adjustment
     invoice_number = IntCol(default=None)

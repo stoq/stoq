@@ -87,8 +87,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                         item: 'Opened'
                         item: 'Waiting'
                         item: 'Producing'
-                        item: 'Closed'
                         item: 'Quality Assurance'
+                        item: 'Closed'
                         item: 'Cancelled'
                     SearchFilter(_primary_filter):
                       GtkLabel(): 'matching:'

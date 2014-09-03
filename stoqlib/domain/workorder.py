@@ -38,7 +38,7 @@ from zope.interface import implementer
 from stoqlib.database.expr import Field, NullIf, Concat
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
-                                         IdentifierCol, IdCol, BoolCol)
+                                         IdentifierCol, IdCol, BoolCol, EnumCol)
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import InvalidStatus, NeedReason
@@ -162,20 +162,20 @@ class WorkOrderPackage(Domain):
     __storm_table__ = 'work_order_package'
 
     #: package is opened, waiting to be sent
-    STATUS_OPENED = 0
+    STATUS_OPENED = u'opened'
 
     #: package was sent to the :attr:`.destination_branch`
-    STATUS_SENT = 1
+    STATUS_SENT = u'sent'
 
     #: package was received by the :attr:`.destination_branch`
-    STATUS_RECEIVED = 2
+    STATUS_RECEIVED = u'received'
 
     statuses = {
         STATUS_OPENED: _(u'Opened'),
         STATUS_SENT: _(u'Sent'),
         STATUS_RECEIVED: _(u'Received')}
 
-    status = IntCol(allow_none=False, default=STATUS_OPENED)
+    status = EnumCol(allow_none=False, default=STATUS_OPENED)
 
     # FIXME: Change identifier to another name, to avoid
     # confusions with IdentifierCol used elsewhere
@@ -563,33 +563,33 @@ class WorkOrder(Domain):
 
     #: a request for an order has been created, the order has not yet
     #: been approved the |client|
-    STATUS_OPENED = 0
+    STATUS_OPENED = u'opened'
 
     #: for some reason it was cancelled
-    STATUS_CANCELLED = 1
+    STATUS_CANCELLED = u'cancelled'
 
     #: this is the initial status after the order gets approved by the
     #: |client| and also a helper state for :attr:`.STATUS_WORK_IN_PROGRESS`
     #: since when there, the order can come back here to be explicit that
     #: it's waiting (for material, for labor, etc) to continue the work
-    STATUS_WORK_WAITING = 2
+    STATUS_WORK_WAITING = u'waiting'
 
     #: work is currently in progress. Note that if at any time we need
     #: to wait for more material to continue the work, the status can
     #: go back to :attr:`.STATUS_WORK_WAITING` and then come back
     #: here when we have it and the work is going to be continued
-    STATUS_WORK_IN_PROGRESS = 3
+    STATUS_WORK_IN_PROGRESS = u'in-progress'
 
     #: work has been finished, but no |sale| has been created yet.
     #: Work orders with this status will be displayed in the till/pos
     #: applications and it's possible to create a |sale| from them.
-    STATUS_WORK_FINISHED = 4
+    STATUS_WORK_FINISHED = u'finished'
 
     # FIXME: This is not really delivered, it used to be closed, but
     # closed/finished are not ideal. This probably needs to be
     # renamed to something else in the future when we have a better name
     #: a |sale| has been created, delivery and payment handled there
-    STATUS_DELIVERED = 5
+    STATUS_DELIVERED = u'delivered'
 
     statuses = {
         STATUS_OPENED: _(u'Opened'),
@@ -599,7 +599,7 @@ class WorkOrder(Domain):
         STATUS_WORK_FINISHED: _(u'Finished'),
         STATUS_DELIVERED: _(u'Delivered')}
 
-    status = IntCol(default=STATUS_OPENED)
+    status = EnumCol(default=STATUS_OPENED)
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to

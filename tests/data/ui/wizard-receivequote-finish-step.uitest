@@ -40,13 +40,13 @@ model: PurchaseOrder<3>
   expected_freight: <currency $ 0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
-  freight_type: 0
+  freight_type: u'fob'
   notes: u''
   open_date: datetime.datetime(2012, 1, 1, 0, 0)
   quote_deadline: None
   receival_date: None
   salesperson_name: u''
-  status: 0
+  status: u'cancelled'
   surcharge_value: <currency $ 0>
   transporter_id: NoneType<2>
 
