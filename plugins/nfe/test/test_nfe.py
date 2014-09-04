@@ -34,7 +34,7 @@ from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Client, Individual
-from stoqlib.domain.product import Storable
+from stoqlib.domain.product import Storable, StockTransactionHistory
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.diffutils import diff_files
@@ -142,7 +142,8 @@ class TestNfeGenerator(DomainTest):
 
             storable = Storable(product=sellable.product,
                                 store=self.store)
-            storable.increase_stock(data[3], get_current_branch(self.store), 0,
+            storable.increase_stock(data[3], get_current_branch(self.store),
+                                    StockTransactionHistory.TYPE_INITIAL,
                                     sale.id)
 
             sale.add_sellable(sellable, data[3])

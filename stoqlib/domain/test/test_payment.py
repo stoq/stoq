@@ -33,6 +33,7 @@ from storm.expr import Or
 
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.commission import Commission, CommissionView
+from stoqlib.domain.event import Event
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
@@ -176,7 +177,7 @@ class TestPayment(DomainTest):
         payment.pay(paid_value=Decimal(102))
         expected = (u'Money payment with value original value 101.00 was paid'
                     u' with value 102.00')
-        log.assert_called_with(self.store, 4, expected)
+        log.assert_called_with(self.store, Event.TYPE_PAYMENT, expected)
 
     def test_is_paid(self):
         method = PaymentMethod.get_by_name(self.store, u'check')

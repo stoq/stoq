@@ -38,7 +38,7 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
-from stoqlib.domain.product import Storable
+from stoqlib.domain.product import Storable, StockTransactionHistory
 from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
                                  ReturnedSaleItemsView, SaleItem,
@@ -268,8 +268,12 @@ class TestSale(DomainTest):
         storable.is_batch = True
         batch1 = self.create_storable_batch(storable=storable, batch_number=u'2')
         batch2 = self.create_storable_batch(storable=storable, batch_number=u'3')
-        storable.increase_stock(1, branch, 0, None, batch=batch1)
-        storable.increase_stock(1, branch, 0, None, batch=batch2)
+        storable.increase_stock(1, branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=batch1)
+        storable.increase_stock(1, branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=batch2)
         sale.add_sellable(product2.sellable)
         self.assertEquals(sale.need_adjust_batches(), True)
         # Try adjust batches
@@ -427,8 +431,10 @@ class TestSale(DomainTest):
         stock3 = storable3.get_balance_for_branch(branch)
 
         # Decrease all stock from 1 and half from 2 and nothing from 3
-        storable1.decrease_stock(10, branch, 0, None)
-        storable2.decrease_stock(5, branch, 0, None)
+        storable1.decrease_stock(10, branch,
+                                 StockTransactionHistory.TYPE_INITIAL, None)
+        storable2.decrease_stock(5, branch,
+                                 StockTransactionHistory.TYPE_INITIAL, None)
         # Indicate on the items that those quantities were already decreased
         for item in sale.get_items():
             if item.sellable == sellable1:
@@ -980,8 +986,10 @@ class TestSale(DomainTest):
         stock3 = storable3.get_balance_for_branch(branch)
 
         # Decrease all stock from 1 and half from 2 and nothing from 3
-        storable1.decrease_stock(10, branch, 0, None)
-        storable2.decrease_stock(5, branch, 0, None)
+        storable1.decrease_stock(10, branch,
+                                 StockTransactionHistory.TYPE_INITIAL, None)
+        storable2.decrease_stock(5, branch,
+                                 StockTransactionHistory.TYPE_INITIAL, None)
         # Indicate on the items that those quantities were already decreased
         for item in sale.get_items():
             if item.sellable == sellable1:
@@ -1992,7 +2000,8 @@ class TestSaleItem(DomainTest):
         # This won't raise SellError since it won't decrease stock
         sale_item2.sell(sale_item2.sale.branch)
 
-        storable1.increase_stock(1, sale_item1.sale.branch, 0, None)
+        storable1.increase_stock(1, sale_item1.sale.branch,
+                                 StockTransactionHistory.TYPE_INITIAL, None)
         # Now sale_item1 will really decrease stock
         sale_item1.sell(sale_item1.sale.branch)
 
@@ -2164,16 +2173,16 @@ class TestDelivery(DomainTest):
         delivery = self.create_delivery()
         emit.return_value = None
         delivery.set_initial()
-        emit.assert_called_once_with(delivery, 0)
+        emit.assert_called_once_with(delivery, delivery.STATUS_INITIAL)
 
     @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
     def test_set_sent(self, emit):
         delivery = self.create_delivery()
         emit.return_value = None
         delivery.set_sent()
-        emit.assert_called_once_with(delivery, 0)
+        emit.assert_called_once_with(delivery, delivery.STATUS_INITIAL)
         delivery.set_sent()
-        emit.assert_called_with(delivery, 1)
+        emit.assert_called_with(delivery, delivery.STATUS_SENT)
 
     @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
     def test_set_received(self, emit):
@@ -2181,7 +2190,7 @@ class TestDelivery(DomainTest):
         emit.return_value = None
         delivery.set_sent()
         delivery.set_received()
-        emit.assert_called_with(delivery, 1)
+        emit.assert_called_with(delivery, delivery.STATUS_SENT)
 
     def test_remove_item(self):
         delivery = self.create_delivery()

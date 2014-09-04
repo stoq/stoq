@@ -202,9 +202,11 @@ class TestProduct(DomainTest):
         product.manage_stock = True
         self.assertTrue(product.can_close())
 
-        storable.increase_stock(1, get_current_branch(self.store), 0, None)
+        storable.increase_stock(1, get_current_branch(self.store),
+                                StockTransactionHistory.TYPE_INITIAL, None)
         self.assertFalse(product.can_close())
-        storable.decrease_stock(1, get_current_branch(self.store), 0, None)
+        storable.decrease_stock(1, get_current_branch(self.store),
+                                StockTransactionHistory.TYPE_INITIAL, None)
         self.assertTrue(product.can_close())
 
     def test_can_remove(self):
@@ -212,7 +214,8 @@ class TestProduct(DomainTest):
         storable = Storable(product=product, store=self.store)
         self.assertTrue(product.can_remove())
 
-        storable.increase_stock(1, get_current_branch(self.store), 0, None)
+        storable.increase_stock(1, get_current_branch(self.store),
+                                StockTransactionHistory.TYPE_INITIAL, None)
         self.assertFalse(product.can_remove())
 
         # Product was sold.
@@ -278,22 +281,29 @@ class TestProduct(DomainTest):
         stock_item = storable.get_stock_item(branch, None)
         self.failIf(stock_item is not None)
 
-        storable.increase_stock(1, branch, 0, None)
+        storable.increase_stock(1, branch,
+                                StockTransactionHistory.TYPE_INITIAL, None)
         stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 0)
 
-        storable.increase_stock(1, branch, 0, None, unit_cost=10)
+        storable.increase_stock(1, branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, unit_cost=10)
         stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 5)
 
-        stock_item = storable.decrease_stock(1, branch, 0, None)
+        stock_item = storable.decrease_stock(1, branch,
+                                             StockTransactionHistory.TYPE_INITIAL,
+                                             None)
         self.assertEquals(stock_item.stock_cost, 5)
 
-        storable.increase_stock(1, branch, 0, None)
+        storable.increase_stock(1, branch,
+                                StockTransactionHistory.TYPE_INITIAL, None)
         stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 5)
 
-        storable.increase_stock(2, branch, 0, None, unit_cost=15)
+        storable.increase_stock(2, branch, StockTransactionHistory.TYPE_INITIAL,
+                                None, unit_cost=15)
         stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 10)
 
@@ -339,7 +349,9 @@ class TestProduct(DomainTest):
         self.assertEqual(product.get_max_lead_time(1, branch), 12)
 
         # Increase the component1 stock
-        component1.storable.increase_stock(1, branch, 0, None)
+        component1.storable.increase_stock(1, branch,
+                                           StockTransactionHistory.TYPE_INITIAL,
+                                           None)
 
         self.assertEqual(product.get_max_lead_time(1, branch), 5)
 
@@ -395,7 +407,8 @@ class TestProductSellableItem(DomainTest):
             storable.decrease_stock(current_stock, branch, 0, None)
         assert not storable.get_stock_item(branch, None).quantity
         sold_qty = 2
-        storable.increase_stock(sold_qty, branch, 0, None)
+        storable.increase_stock(sold_qty, branch,
+                                StockTransactionHistory.TYPE_INITIAL, None)
         assert storable.get_stock_item(branch, None) is not None
         assert storable.get_stock_item(branch, None).quantity == sold_qty
         # now setting the proper sold quantity in the sellable item
@@ -816,15 +829,18 @@ class TestStorable(DomainTest):
         self.assertEqual(storable.get_total_balance(), 0)
 
         # Only b1 and b2 will increase stock
-        storable.increase_stock(5, b1, 0, None)
-        storable.increase_stock(10, b2, 0, None)
+        storable.increase_stock(5, b1,
+                                StockTransactionHistory.TYPE_INITIAL, None)
+        storable.increase_stock(10, b2,
+                                StockTransactionHistory.TYPE_INITIAL, None)
         self.assertEqual(storable.get_balance_for_branch(b1), 5)
         self.assertEqual(storable.get_balance_for_branch(b2), 10)
         self.assertEqual(storable.get_balance_for_branch(b3), 0)
         self.assertEqual(storable.get_total_balance(), 15)
 
         # b1 will decrease *all* it's stock
-        storable.decrease_stock(5, b1, 0, None)
+        storable.decrease_stock(5, b1,
+                                StockTransactionHistory.TYPE_INITIAL, None)
         self.assertEqual(storable.get_balance_for_branch(b1), 0)
         self.assertEqual(storable.get_balance_for_branch(b2), 10)
         self.assertEqual(storable.get_balance_for_branch(b3), 0)
@@ -835,11 +851,13 @@ class TestStorable(DomainTest):
         branch = get_current_branch(self.store)
 
         with self.assertRaises(ValueError) as exc:
-            storable.increase_stock(0, branch, 0, None)
+            storable.increase_stock(0, branch,
+                                    StockTransactionHistory.TYPE_INITIAL, None)
             self.assertEquals(str(exc), "quantity must be a positive number")
 
         with self.assertRaises(ValueError) as exc:
-            storable.increase_stock(1, None, 0, None)
+            storable.increase_stock(1, None,
+                                    StockTransactionHistory.TYPE_INITIAL, None)
             self.assertEquals(str(exc), "quantity must be a positive number")
 
     def test_decrease_stock_error(self):
@@ -847,15 +865,18 @@ class TestStorable(DomainTest):
         branch = get_current_branch(self.store)
 
         with self.assertRaises(ValueError) as exc:
-            storable.decrease_stock(0, branch, 0, None)
+            storable.decrease_stock(0, branch,
+                                    StockTransactionHistory.TYPE_INITIAL, None)
             self.assertEquals(str(exc), "quantity must be a positive number")
 
         with self.assertRaises(ValueError) as exc:
-            storable.decrease_stock(1, None, 0, None)
+            storable.decrease_stock(1, None,
+                                    StockTransactionHistory.TYPE_INITIAL, None)
             self.assertEquals(str(exc), "quantity must be a positive number")
 
         with self.assertRaises(StockError) as exc:
-            storable.decrease_stock(100, branch, 0, None)
+            storable.decrease_stock(100, branch,
+                                    StockTransactionHistory.TYPE_INITIAL, None)
             self.assertEquals(str(exc),
                               'Quantity to sell is greater than the available stock.')
 
@@ -866,8 +887,10 @@ class TestStorable(DomainTest):
 
         self.assertTrue(cost_center.get_stock_transaction_entries().is_empty())
 
-        storable.increase_stock(1, branch, 0, None)
-        storable.decrease_stock(1, branch, 0, None,
+        storable.increase_stock(1, branch,
+                                StockTransactionHistory.TYPE_INITIAL, None)
+        storable.decrease_stock(1, branch,
+                                StockTransactionHistory.TYPE_INITIAL, None,
                                 cost_center=cost_center)
 
         self.assertFalse(cost_center.get_stock_transaction_entries().is_empty())
@@ -914,8 +937,12 @@ class TestStorableBatch(DomainTest):
         self.assertEquals(batch2.get_balance_for_branch(branch), 0)
 
         # Increase stock for both batches.
-        storable.increase_stock(7, branch, 0, None, batch=batch1)
-        storable.increase_stock(3, branch, 0, None, batch=batch2)
+        storable.increase_stock(7, branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=batch1)
+        storable.increase_stock(3, branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=batch2)
 
         # First batch should have 7 itens, second 3 and third 0
         self.assertEquals(batch1.get_balance_for_branch(branch), 7)
@@ -948,7 +975,9 @@ class TestStorableBatch(DomainTest):
         # This batch does not have any stock, so it is still unavailable
         self.assertEquals(storable.get_available_batches(branch).count(), 0)
 
-        storable.increase_stock(10, branch, 0, None, batch=batch)
+        storable.increase_stock(10, branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=batch)
 
         # Now there are some batches with stock.
         self.assertEquals(storable.get_available_batches(branch).count(), 1)
@@ -961,8 +990,12 @@ class TestStorableBatch(DomainTest):
         storable = self.create_storable(is_batch=True)
 
         # Increase or decrease stock requires the batch information
-        self.assertRaises(ValueError, storable.increase_stock, 10, branch, 0, None)
-        self.assertRaises(ValueError, storable.decrease_stock, 10, branch, 0, None)
+        self.assertRaises(ValueError, storable.increase_stock,
+                          StockTransactionHistory.TYPE_STOCK_DECREASE, branch,
+                          0, None)
+        self.assertRaises(ValueError, storable.decrease_stock,
+                          StockTransactionHistory.TYPE_STOCK_DECREASE, branch,
+                          0, None)
 
     def test_sale_add_sellable(self):
         storable = self.create_storable(is_batch=True)
@@ -995,7 +1028,9 @@ class TestStockTransactionHistory(DomainTest):
     def test_total_negative(self):
         sale_item = self.create_sale_item()
         storable = self.create_storable(sale_item.sellable.product)
-        storable.increase_stock(1, self.branch, 0, None, unit_cost=10)
+        storable.increase_stock(1, self.branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, unit_cost=10)
         sale_item.sell(self.branch)
 
         history = self.store.find(StockTransactionHistory, object_id=sale_item.id).one()
@@ -1006,7 +1041,8 @@ class TestStockTransactionHistory(DomainTest):
     def _check_stock(self, product):
         storable = product.storable or self.create_storable(product)
         if not storable.get_stock_item(self.branch, None):
-            storable.increase_stock(100, self.branch, 0, None)
+            storable.increase_stock(100, self.branch,
+                                    StockTransactionHistory.TYPE_INITIAL, None)
 
     def test_initial_stock(self):
         storable = self.create_storable()
@@ -1312,9 +1348,15 @@ class TestStorableBatchView(DomainTest):
 
         b1 = self.create_storable_batch(storable=storable, batch_number=u'123')
         b2 = self.create_storable_batch(storable=storable, batch_number=u'456')
-        storable.increase_stock(10, branch1, 0, None, batch=b1)
-        storable.increase_stock(20, branch2, 0, None, batch=b1)
-        storable.increase_stock(40, branch1, 0, None, batch=b2)
+        storable.increase_stock(10, branch1,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=b1)
+        storable.increase_stock(20, branch2,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=b1)
+        storable.increase_stock(40, branch1,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=b2)
 
         self.assertEqual(
             set([(i.batch_number, i.stock) for i in
@@ -1342,9 +1384,15 @@ class TestStorableBatchView(DomainTest):
 
         b1 = self.create_storable_batch(storable=storable, batch_number=u'123')
         b2 = self.create_storable_batch(storable=storable, batch_number=u'456')
-        storable.increase_stock(10, branch1, 0, None, batch=b1)
-        storable.increase_stock(20, branch2, 0, None, batch=b1)
-        storable.increase_stock(40, branch1, 0, None, batch=b2)
+        storable.increase_stock(10, branch1,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=b1)
+        storable.increase_stock(20, branch2,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=b1)
+        storable.increase_stock(40, branch1,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=b2)
 
         self.assertEqual(
             set([(i.batch_number, i.stock) for i in
@@ -1366,7 +1414,9 @@ class TestStorableBatchView(DomainTest):
 
         # Decreasing the stock here to 0 should make this item vanish
         # from the results
-        storable.decrease_stock(40, branch1, 0, None, batch=b2)
+        storable.decrease_stock(40, branch1,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=b2)
 
         self.assertEqual(
             set([(i.batch_number, i.stock) for i in

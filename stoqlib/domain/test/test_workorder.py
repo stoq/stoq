@@ -29,6 +29,7 @@ import mock
 
 from stoqlib.exceptions import InvalidStatus, NeedReason
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderPackage, WorkOrderPackageItem,
                                       WorkOrderCategory, WorkOrderView,
@@ -217,7 +218,8 @@ class TestWorkOrderItem(DomainTest):
         storable = self.create_storable(product=item.sellable.product,
                                         branch=item.order.branch)
 
-        storable.increase_stock(10, item.order.branch, 0, None)
+        storable.increase_stock(10, item.order.branch,
+                                StockTransactionHistory.TYPE_INITIAL, None)
         self.assertEqual(item.quantity_decreased, 0)
         item.reserve(6)
         self.assertEqual(item.quantity_decreased, 6)

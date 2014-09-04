@@ -30,6 +30,7 @@ from kiwi.currency import currency
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.inventory import (Inventory, InventoryView,
                                       InventoryItemsView, InventoryItem)
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -57,7 +58,8 @@ class TestInventory(DomainTest):
         storable3.product.sellable.category = cat
         batch1 = self.create_storable_batch(storable3, u'123')
         storable3.increase_stock(3, branch, batch=batch1,
-                                 type=0, object_id=None, unit_cost=10)
+                                 type=StockTransactionHistory.TYPE_INITIAL,
+                                 object_id=None, unit_cost=10)
 
         # One storable with one batch and a stock item (but without stock).
         # it should be on the inventory
@@ -66,9 +68,11 @@ class TestInventory(DomainTest):
         storable4.product.sellable.category = cat
         batch2 = self.create_storable_batch(storable4, u'124')
         storable4.increase_stock(1, branch, batch=batch2,
-                                 type=0, object_id=None, unit_cost=10)
+                                 type=StockTransactionHistory.TYPE_INITIAL,
+                                 object_id=None, unit_cost=10)
         storable4.decrease_stock(1, branch, batch=batch2,
-                                 type=0, object_id=None)
+                                 type=StockTransactionHistory.TYPE_INITIAL,
+                                 object_id=None)
 
         # Then, lets open the inventory
         responsible = self.create_user()

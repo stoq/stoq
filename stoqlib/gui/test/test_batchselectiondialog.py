@@ -25,7 +25,7 @@
 import datetime
 
 from stoqlib.api import api
-from stoqlib.domain.product import StorableBatchView
+from stoqlib.domain.product import StorableBatchView, StockTransactionHistory
 from stoqlib.gui.dialogs.batchselectiondialog import (BatchSelectionDialog,
                                                       BatchIncreaseSelectionDialog)
 from stoqlib.gui.test.uitestutils import GUITest
@@ -90,8 +90,12 @@ class TestBatchSelectionDialog(GUITest):
                                             batch_number=u'2')
         self.create_storable_batch(storable=storable, batch_number=u'3')
 
-        storable.increase_stock(10, branch, 0, None, batch=batch1)
-        storable.increase_stock(10, branch, 0, None, batch=batch2)
+        storable.increase_stock(10, branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=batch1)
+        storable.increase_stock(10, branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=batch2)
 
         dialog = BatchSelectionDialog(self.store, storable, 5)
         # The last batch should not appear since it doesn't have a storable

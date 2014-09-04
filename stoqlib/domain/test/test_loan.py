@@ -30,6 +30,7 @@ from kiwi.currency import currency
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan, LoanItem, _
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -280,7 +281,9 @@ class TestLoanItem(DomainTest):
         product = self.create_product()
         storable = self.create_storable(product, loan.branch, is_batch=True)
         batch = self.create_storable_batch(storable=storable)
-        storable.increase_stock(10, loan.branch, 0, None, batch=batch)
+        storable.increase_stock(10, loan.branch,
+                                StockTransactionHistory.TYPE_INITIAL,
+                                None, batch=batch)
 
         loan_item = loan.add_sellable(product.sellable, quantity=4, price=10,
                                       batch=batch)

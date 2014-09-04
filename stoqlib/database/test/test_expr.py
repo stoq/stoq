@@ -44,19 +44,19 @@ class ViewableTest(DomainTest):
         self.assertEquals(self.store.find(Event, query).count(), 0)
 
         Event(store=self.store, date=datetime.datetime(2012, 1, 4),
-              event_type=0, description=u'')
+              event_type=Event.TYPE_SYSTEM, description=u'')
         self.assertEquals(self.store.find(Event, query).count(), 0)
 
         Event(store=self.store, date=datetime.datetime(2012, 1, 5),
-              event_type=0, description=u'')
+              event_type=Event.TYPE_SYSTEM, description=u'')
         self.assertEquals(self.store.find(Event, query).count(), 1)
 
         Event(store=self.store, date=datetime.datetime(2012, 1, 10),
-              event_type=0, description=u'')
+              event_type=Event.TYPE_SYSTEM, description=u'')
         self.assertEquals(self.store.find(Event, query).count(), 2)
 
         Event(store=self.store, date=datetime.datetime(2012, 1, 11),
-              event_type=0, description=u'')
+              event_type=Event.TYPE_SYSTEM, description=u'')
         self.assertEquals(self.store.find(Event, query).count(), 2)
 
     def test_generate_series_date(self):

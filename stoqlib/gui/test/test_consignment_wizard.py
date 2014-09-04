@@ -25,7 +25,9 @@
 import mock
 
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.product import ProductStockItem, Storable
+from stoqlib.domain.product import (ProductStockItem,
+                                    StockTransactionHistory,
+                                    Storable)
 from stoqlib.gui.editors.purchaseeditor import InConsignmentItemEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.consignmentwizard import (CloseInConsignmentWizard,
@@ -71,7 +73,8 @@ class TestConsignmentWizard(GUITest):
         Storable(store=self.store, product=product)
         storable = product.storable
         branch = purchase_item.order.branch
-        storable.increase_stock(10, branch, 0, None)
+        storable.increase_stock(10, branch,
+                                StockTransactionHistory.TYPE_INITIAL, None)
         stock_quantity = storable.get_stock_item(branch, None).quantity
         self.assertEquals(stock_quantity, 10)
 
@@ -137,7 +140,8 @@ class TestConsignmentWizard(GUITest):
         Storable(store=self.store, product=product)
         storable = product.storable
         branch = purchase_item.order.branch
-        storable.increase_stock(5, branch, 0, None)
+        storable.increase_stock(5, branch,
+                                StockTransactionHistory.TYPE_INITIAL, None)
         stock_quantity = storable.get_stock_item(branch, None).quantity
         self.assertEquals(stock_quantity, 5)
 

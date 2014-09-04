@@ -24,6 +24,7 @@
 
 
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.gui.editors.productioneditor import ProductionMaterialAllocateEditor
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -38,7 +39,9 @@ class TestProductionMaterialAllocateEditor(GUITest):
     def test_allocate(self):
         branch = get_current_branch(self.store)
         material = self.create_production_material()
-        material.product.storable.increase_stock(5, branch, 0, None)
+        storable = material.product.storable
+        storable.increase_stock(5, branch, StockTransactionHistory.TYPE_INITIAL,
+                                None)
         editor = ProductionMaterialAllocateEditor(self.store, material)
 
         allocated = material.allocated

@@ -712,11 +712,13 @@ class ExampleCreator(object):
 
     def create_operation_cost(self, device=None, provider=None, card_type=None,
                               start=1, end=1):
-        from stoqlib.domain.payment.card import CardOperationCost
+        from stoqlib.domain.payment.card import CardOperationCost, CreditCardData
+        if card_type is None:
+            card_type = CreditCardData.TYPE_CREDIT
         return CardOperationCost(store=self.store,
                                  device=device or self.create_card_device(),
                                  provider=provider or self.create_credit_provider(),
-                                 card_type=card_type or 0,
+                                 card_type=card_type,
                                  installment_start=start,
                                  installment_end=end)
 
