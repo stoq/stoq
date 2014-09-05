@@ -73,3 +73,32 @@ class TestPaymentEditor(GUITest):
         self.click(editor.slave.remove_button)
         self.assertEquals(len(editor.slave.payments), 1)
         self.assertEquals(payment.status, Payment.STATUS_CANCELLED)
+
+    def test_sale_editor_confirmed_sale(self):
+        sale = self._create_sale()
+        sale.order()
+        sale.confirm()
+        editor = SalePaymentsEditor(self.store, sale)
+        payments = editor.slave.payments
+        payments.select(payments[0])
+
+        # Before removing the payment, the dialog should be confirmable
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+        self.click(editor.slave.remove_button)
+
+        # But we cannot confirm after removing it.
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+
+        # Lets add another payment
+        self.click(editor.slave.add_button)
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+
+        # There should be one preview payment
+        for payment in payments:
+            if payment.status == payment.STATUS_PREVIEW:
+                break
+        assert payment.status == payment.STATUS_PREVIEW
+
+        # Confirming the dialog should change the new payment to pending
+        editor.confirm()
+        assert payment.status == payment.STATUS_PENDING
