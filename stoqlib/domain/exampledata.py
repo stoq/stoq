@@ -157,23 +157,33 @@ class ExampleCreator(object):
         return Person(name=name, store=self.store)
 
     def create_branch(self, name=u'Dummy', phone_number=u'12345678',
-                      fax_number=u'87564321'):
+                      fax_number=u'87564321', person=None):
         from stoqlib.domain.person import Branch, Company, Person
-        person = Person(name=name, phone_number=phone_number,
-                        fax_number=fax_number, store=self.store)
-        self.create_address(person=person)
-        fancy_name = name + u' shop'
-        Company(person=person, fancy_name=fancy_name,
-                store=self.store)
+        if person is None:
+            person = Person(name=name, phone_number=phone_number,
+                            fax_number=fax_number, store=self.store)
+            self.create_address(person=person)
+            fancy_name = name + u' shop'
+            Company(person=person, fancy_name=fancy_name,
+                    store=self.store)
         return Branch(person=person, store=self.store)
 
-    def create_supplier(self, name=u'Supplier', fancy_name=u'Company Name'):
+    def create_supplier(self, name=u'Supplier', fancy_name=u'Company Name',
+                        person=None):
         from stoqlib.domain.person import Company, Person, Supplier
-        person = Person(name=name, store=self.store)
-        Company(person=person, fancy_name=fancy_name,
-                cnpj=u'90.117.749/7654-80',
-                store=self.store)
+        if person is None:
+            person = Person(name=name, store=self.store)
+            Company(person=person, fancy_name=fancy_name,
+                    cnpj=u'90.117.749/7654-80',
+                    store=self.store)
         return Supplier(person=person, store=self.store)
+
+    def create_transporter(self, name=u'John', person=None):
+        from stoqlib.domain.person import Company, Transporter
+        if person is None:
+            person = self.create_person(name)
+            Company(person=person, store=self.store)
+        return Transporter(person=person, store=self.store)
 
     def create_employee_role(self, name=u'Role'):
         from stoqlib.domain.person import EmployeeRole
@@ -184,42 +194,57 @@ class ExampleCreator(object):
             self._role = role
         return role
 
-    def create_employee(self, name=u"SalesPerson"):
+    def create_employee(self, name=u"SalesPerson", person=None):
         from stoqlib.domain.person import Employee, Individual, Person
-        person = Person(name=name, store=self.store)
-        Individual(person=person, store=self.store)
+        if person is None:
+            person = Person(name=name, store=self.store)
+            Individual(person=person, store=self.store)
         return Employee(person=person,
                         role=self.create_employee_role(),
                         store=self.store)
 
-    def create_sales_person(self):
+    def create_sales_person(self, person=None):
         from stoqlib.domain.person import SalesPerson
-        employee = self.create_employee()
-        return SalesPerson(person=employee.person, store=self.store)
+        if person is None:
+            employee = self.create_employee()
+            person = employee.person
+        return SalesPerson(person=person, store=self.store)
 
-    def create_client(self, name=u'Client'):
+    def create_client(self, name=u'Client', person=None):
         from stoqlib.domain.person import Client, Individual, Person
-        person = Person(name=name, store=self.store)
-        Individual(person=person, store=self.store)
+        if person is None:
+            person = Person(name=name, store=self.store)
+            Individual(person=person, store=self.store)
         return Client(person=person, store=self.store)
 
-    def create_individual(self):
+    def create_individual(self, person=None):
         from stoqlib.domain.person import Individual, Person
-        person = Person(name=u'individual', store=self.store)
+        if person is None:
+            person = Person(name=u'individual', store=self.store)
         return Individual(person=person,
                           birth_date=localdatetime(1970, 1, 1),
                           store=self.store)
 
-    def create_user(self, username=u'username'):
+    def create_company(self, person=None):
+        from stoqlib.domain.person import Company, Person
+        if person is None:
+            person = Person(name=u'Dummy', store=self.store)
+        return Company(person=person, fancy_name=u'Dummy shop',
+                       store=self.store)
+
+    def create_user(self, username=u'username', person=None):
         from stoqlib.domain.person import LoginUser
-        individual = self.create_individual()
+        if person is None:
+            individual = self.create_individual()
+            person = individual.person
+
         profile = self.create_user_profile()
         # FIXME: Some tests are calling this twice without passing different
         # usernames. Remove this line and fix them directly
         while not self.store.find(LoginUser, username=username).is_empty():
             username += u'1'
 
-        return LoginUser(person=individual.person,
+        return LoginUser(person=person,
                          username=username,
                          password=u'password',
                          profile=profile,
@@ -498,12 +523,6 @@ class ExampleCreator(object):
         from stoqlib.domain.parameter import ParameterData
         return self.store.find(ParameterData)[0]
 
-    def create_company(self):
-        from stoqlib.domain.person import Company, Person
-        person = Person(name=u'Dummy', store=self.store)
-        return Company(person=person, fancy_name=u'Dummy shop',
-                       store=self.store)
-
     def create_till(self):
         from stoqlib.domain.till import Till
         station = get_current_station(self.store)
@@ -683,13 +702,6 @@ class ExampleCreator(object):
         sellable.tax_constant = tax_constant
         service = Service(sellable=sellable, store=self.store)
         return service
-
-    def create_transporter(self, name=u'John'):
-        from stoqlib.domain.person import Company, Transporter
-        person = self.create_person(name)
-        Company(person=person, store=self.store)
-        return Transporter(person=person,
-                           store=self.store)
 
     def create_bank_account(self, account=None):
         from stoqlib.domain.account import BankAccount
