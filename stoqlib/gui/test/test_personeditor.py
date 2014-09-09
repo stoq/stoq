@@ -78,7 +78,7 @@ class TestClientEditor(_BasePersonEditorTest):
                          role_type=Person.ROLE_INDIVIDUAL)
 
         # NOTE: Document increases/decreases
-        # 3: select user/branch/station (normally cached)
+        # 1: select user/branch/station (normally cached)
         # 4: transaction_entry
         # 4: insert person/individual/client/address
         # 1: select individual
@@ -94,7 +94,7 @@ class TestClientEditor(_BasePersonEditorTest):
         # 2: select payment
         # 1: select current user
         # 1: select app permissions for the user
-        self.assertEquals(tracer.count, 24)
+        self.assertEquals(tracer.count, 22)
 
     def test_create_individual(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)

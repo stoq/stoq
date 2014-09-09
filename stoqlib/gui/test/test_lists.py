@@ -64,7 +64,7 @@ class TestModelListSlave(GUITest):
             DROP TABLE IF EXISTS _test_model;
             CREATE TABLE _test_model (
                 id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-                te_id bigint UNIQUE REFERENCES transaction_entry(id),
+                te_id bigint UNIQUE REFERENCES transaction_entry(id) default new_te(),
 
                 unicode_var text
             );""")

@@ -64,3 +64,11 @@ BEGIN
   return unaccent(input_string);
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION new_te() RETURNS integer AS $$
+    DECLARE te_id integer;
+BEGIN
+    INSERT INTO transaction_entry (te_time, dirty) VALUES (STATEMENT_TIMESTAMP(), true) RETURNING id INTO te_id;
+    RETURN te_id;
+END;
+$$ LANGUAGE plpgsql;

@@ -38,7 +38,7 @@ class WillBeCommitted(Domain):
     SQL_CREATE = """CREATE TABLE will_be_committed (
         id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
         test_var text,
-        te_id bigint UNIQUE REFERENCES transaction_entry(id)
+        te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te()
         );"""
 
     test_var = UnicodeCol()

@@ -36,10 +36,9 @@ from storm.properties import Property
 from storm.references import Reference
 from storm.store import AutoReload
 
-from stoqlib.database.expr import CharLength, Field, LPad, StatementTimestamp
+from stoqlib.database.expr import CharLength, Field, LPad
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import IntCol, IdCol, UnicodeCol
-from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
 
 log = logging.getLogger(__name__)
@@ -77,11 +76,11 @@ class Domain(ORMObject):
     #: due to aborted transactions
     id = IdCol(primary=True, default=AutoReload)
 
-    te_id = IntCol(default=None)
+    te_id = IntCol(default=AutoReload)
 
     #: a |transactionentry| for when the domain object was created and last
     #: modified
-    te = Reference(te_id, 'TransactionEntry.id')
+    te = Reference(te_id, TransactionEntry.id)
 
     def __init__(self, *args, **kwargs):
         self._listen_to_events()
@@ -124,16 +123,6 @@ class Domain(ORMObject):
 
     def _on_object_added(self, obj_info):
         store = obj_info.get("store")
-        store.block_implicit_flushes()
-        user = get_current_user(store)
-        station = get_current_station(store)
-        store.unblock_implicit_flushes()
-
-        self.te = TransactionEntry(store=store,
-                                   te_time=StatementTimestamp(),
-                                   user_id=user and user.id,
-                                   station_id=station and station.id)
-
         store.add_created_object(self)
 
     def _on_object_before_removed(self, obj_info):

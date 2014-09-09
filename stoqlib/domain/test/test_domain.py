@@ -160,9 +160,6 @@ def _create_domain_test():
         except Exception as e:
             self.fail(e)
 
-        if hasattr(klass, 'te_id') and not obj.te:
-            self.fail('Object should have a transaction entry')
-
         for name, col in args:
             try:
                 value = orm_get_random(col)

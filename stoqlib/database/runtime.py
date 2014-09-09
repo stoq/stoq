@@ -552,12 +552,7 @@ class StoqlibStore(Store):
 
     def _process_pending_objs(self):
         # Fields to update the transaction entry for modified objs
-        user = get_current_user(self)
-        station = get_current_station(self)
-
-        station_id = station and station.id
         te_time = StatementTimestamp()
-        user_id = user and user.id
 
         created_objs = set()
         modified_objs = set()
@@ -588,17 +583,14 @@ class StoqlibStore(Store):
                 processed_objs.add(created_obj)
 
             for modified_obj in modified_objs:
+                # XXX: Check if we can kill this.
                 # This is to support migration from domainv1
                 if hasattr(modified_obj, 'te_modified'):
                     modified_obj.te_modified.te_time = te_time
-                    modified_obj.te_modified.station_id = station_id
-                    modified_obj.te_modified.user_id = user_id
                 # And also from domainv2
                 else:
                     modified_obj.te.dirty = True
                     modified_obj.te.te_time = te_time
-                    modified_obj.te.station_id = station_id
-                    modified_obj.te.user_id = user_id
 
                 modified_obj.on_update()
                 processed_objs.add(modified_obj)
