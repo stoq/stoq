@@ -30,7 +30,7 @@ import logging
 import warnings
 
 from storm.exceptions import NotOneError
-from storm.expr import And, Alias, Like, Max, Select
+from storm.expr import And, Alias, Like, Max, Select, Update
 from storm.info import get_cls_info, get_obj_info
 from storm.properties import Property
 from storm.references import Reference
@@ -39,6 +39,7 @@ from storm.store import AutoReload
 from stoqlib.database.expr import CharLength, Field, LPad
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import IntCol, IdCol, UnicodeCol
+from stoqlib.domain.events import DomainMergeEvent
 from stoqlib.domain.system import TransactionEntry
 
 log = logging.getLogger(__name__)
@@ -264,6 +265,32 @@ class Domain(ORMObject):
                 "check_unique_tuple_exists on table '%s' for values: %r" % (
                     self.__class__.__name__, ', '.join(sorted(values_str))))
             return self.store.find(cls, query).any()
+
+    def merge_with(self, other, skip=None):
+        """Does automatic references updating when merging two objects.
+
+        This will update all tables that reference the `other` object and make
+        them reference `self` instead.
+
+        After this it should be safe to remove the `other` object. Since there
+        is no one referencing it anymore.
+
+        :param skip: A set of (table, column) that should be skiped by the
+          automatic update. This are normally tables that require a special
+          treatment, like when there are constraints.
+        """
+        skip = skip or set()
+        event_skip = DomainMergeEvent.emit(self, other)
+        if event_skip:
+            skip = skip.union(event_skip)
+
+        refs = self.store.list_references(type(self).id)
+        for (table, column, other_table, other_column, u, d) in refs:
+            if (table, column) in skip:
+                continue
+
+            clause = Field(table, column) == other.id
+            self.store.execute(Update({column: self.id}, clause, table))
 
     #
     #  Classmethods

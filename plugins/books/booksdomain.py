@@ -22,12 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from storm.expr import LeftJoin, Join
+from storm.expr import LeftJoin, Join, Eq
 from storm.references import Reference
 
 from stoqlib.database.properties import EnumCol, IdCol, IntCol, UnicodeCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import DomainMergeEvent
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.views import ProductFullStockView
@@ -73,6 +74,18 @@ class BookPublisher(Domain):
     def get_description(self):
         return self.person.name
 
+    @DomainMergeEvent.connect
+    @classmethod
+    def on_domain_merge(cls, obj, other):
+        if type(obj) != Person:
+            return
+        this_facet = obj.store.find(cls, person=obj).one()
+        other_facet = obj.store.find(cls, person=other).one()
+        if not this_facet and not other_facet:
+            return
+        obj.merge_facet(this_facet, other_facet)
+        return set([('book_publisher', 'person_id')])
+
 
 class PublisherView(Viewable):
     publiser = BookPublisher
@@ -86,6 +99,8 @@ class PublisherView(Viewable):
         Person,
         Join(BookPublisher, Person.id == BookPublisher.person_id),
     ]
+
+    clause = Eq(Person.merged_with_id, None)
 
 
 class Book(Domain):

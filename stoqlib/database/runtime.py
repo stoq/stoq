@@ -336,6 +336,52 @@ class StoqlibStore(Store):
                 (unicode(table_name), )))
         return res.get_one()[0]
 
+    def list_references(self, column):
+        """Returns a list of columns that reference the givem column
+
+        This will return a list of tuples (source table, source column,
+        dest table, dest column, update, delete)
+
+        where:
+
+        - source table and column: The column that reference the given column
+        - dest table and column: The referenced column (the same as the given
+          column argument)
+        - update : The ON UPDATE action for the reference. 'a' for 'NO ACTION', 'c'
+          for CASCADE
+        - delete: The same as update.
+        """
+        table_name = unicode(column.cls.__storm_table__)
+        column_name = unicode(column.name)
+        query = """
+            SELECT DISTINCT
+                src_pg_class.relname AS srctable,
+                src_pg_attribute.attname AS srccol,
+                ref_pg_class.relname AS reftable,
+                ref_pg_attribute.attname AS refcol,
+                pg_constraint.confupdtype,
+                pg_constraint.confdeltype
+            FROM pg_constraint
+            JOIN pg_class AS src_pg_class
+                ON src_pg_class.oid = pg_constraint.conrelid
+            JOIN pg_class AS ref_pg_class
+                ON ref_pg_class.oid = pg_constraint.confrelid
+            JOIN pg_attribute AS src_pg_attribute
+                ON src_pg_class.oid = src_pg_attribute.attrelid
+            JOIN pg_attribute AS ref_pg_attribute
+                ON ref_pg_class.oid = ref_pg_attribute.attrelid, generate_series(0,10) pos(n)
+            WHERE
+                contype = 'f'
+                AND ref_pg_class.relname = ?
+                AND ref_pg_attribute.attname = ?
+                AND src_pg_attribute.attnum = pg_constraint.conkey[n]
+                AND ref_pg_attribute.attnum = pg_constraint.confkey[n]
+                AND NOT src_pg_attribute.attisdropped
+                AND NOT ref_pg_attribute.attisdropped
+            ORDER BY src_pg_class.relname, src_pg_attribute.attname
+            """
+        return self.execute(query, (table_name, column_name)).get_all()
+
     def quote_query(self, query, args=()):
         """Prepare a query for executing it.
         This is suitable for serializing a query to disk so we can pass

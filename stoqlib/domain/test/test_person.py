@@ -26,6 +26,7 @@
 __tests__ = 'stoqlib/domain/person.py'
 
 from decimal import Decimal
+import re
 
 from dateutil.relativedelta import relativedelta
 from kiwi.currency import currency
@@ -33,6 +34,7 @@ import mock
 from storm.exceptions import NotOneError, IntegrityError
 from storm.expr import And
 from storm.store import AutoReload
+from storm.tracer import BaseStatementTracer, install_tracer, remove_tracer_type
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
 from stoqlib.domain.event import Event
@@ -51,7 +53,7 @@ from stoqlib.domain.person import (Branch, Client, ClientCategory,
                                    EmployeeRoleHistory, Individual,
                                    LoginUser, Person, SalesPerson, Supplier,
                                    Transporter)
-from stoqlib.domain.product import Product
+from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import ClientCategoryPrice
@@ -1309,3 +1311,244 @@ class TestClientSalaryHistoryView(DomainTest):
         result = ClientSalaryHistoryView.find_by_client(store=self.store,
                                                         client=client).count()
         self.assertTrue(result)
+
+
+class StoqlibUpdateTracer(BaseStatementTracer):
+
+    def __init__(self, expected_updates):
+        self.expected_updates = expected_updates
+        self.statements = []
+
+    def reset(self):
+        self.statements = []
+
+    def connection_raw_execute(self, connection, cursor, statement, params):
+        self.statements.append((statement, params))
+
+    def __enter__(self):
+        install_tracer(self)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        remove_tracer_type(type(self))
+        # something wrong happend, let it propagate
+        if traceback:
+            return
+        statements = [i[0] for i in self.statements
+                      if i[0].startswith('UPDATE')]
+
+        # Now check the executed queries
+        for (real, expected) in zip(statements, self.expected_updates):
+            assert re.match(expected, real), (expected, real)
+        assert len(statements) == len(self.expected_updates)
+
+
+class TestPersonMerging(DomainTest):
+    person_updates = [
+        'UPDATE address SET (is_main_address=%s, person_id=%s|person_id=%s, is_main_address=%s) WHERE address.person_id = %s',  # nopep8
+        'UPDATE calls SET person_id=%s WHERE calls.person_id = %s',
+        'UPDATE contact_info SET person_id=%s WHERE contact_info.person_id = %s',
+        'UPDATE fiscal_book_entry SET drawee_id=%s WHERE fiscal_book_entry.drawee_id = %s',
+        'UPDATE optical_medic SET person_id=%s WHERE optical_medic.person_id = %s',
+        'UPDATE payment_group SET payer_id=%s WHERE payment_group.payer_id = %s',
+        'UPDATE payment_group SET recipient_id=%s WHERE payment_group.recipient_id = %s',
+        'UPDATE stock_decrease SET person_id=%s WHERE stock_decrease.person_id = %s',
+    ]
+
+    employee_updates = [
+        'UPDATE branch SET manager_id=%s WHERE branch.manager_id = %s',  # nopep8
+        'UPDATE employee_role_history SET employee_id=%s WHERE employee_role_history.employee_id = %s',  # nopep8
+        'UPDATE production_order SET responsible_id=%s WHERE production_order.responsible_id = %s',  # nopep8
+        'UPDATE stock_decrease SET removed_by_id=%s WHERE stock_decrease.removed_by_id = %s',  # nopep8
+        'UPDATE transfer_order SET destination_responsible_id=%s WHERE transfer_order.destination_responsible_id = %s',  # nopep8
+        'UPDATE transfer_order SET source_responsible_id=%s WHERE transfer_order.source_responsible_id = %s',  # nopep8
+        'UPDATE work_order SET execution_responsible_id=%s WHERE work_order.execution_responsible_id = %s',  # nopep8
+        'UPDATE work_order SET quote_responsible_id=%s WHERE work_order.quote_responsible_id = %s',  # nopep8
+    ]
+
+    def test_merge_client(self):
+        person = self.create_person()
+        client = self.create_client(person=person)
+        sale = self.create_sale(client=client)
+        self.assertEquals(list(client.sales), [sale])
+
+        person2 = self.create_person()
+        client2 = self.create_client(person=person2)
+        self.store.flush()
+
+        expected_updates = [
+            'UPDATE client_salary_history SET client_id=%s WHERE client_salary_history.client_id = %s',  # nopep8
+            'UPDATE credit_check_history SET client_id=%s WHERE credit_check_history.client_id = %s',  # nopep8
+            'UPDATE loan SET client_id=%s WHERE loan.client_id = %s',  # nopep8
+            'UPDATE payment_renegotiation SET client_id=%s WHERE payment_renegotiation.client_id = %s',  # nopep8
+            'UPDATE sale SET client_id=%s WHERE sale.client_id = %s',  # nopep8
+            'UPDATE work_order SET client_id=%s WHERE work_order.client_id = %s',  # nopep8
+
+            # Optical plugin
+            'UPDATE optical_patient_history SET client_id=%s WHERE optical_patient_history.client_id = %s',  # nopep8
+            'UPDATE optical_patient_measures SET client_id=%s WHERE optical_patient_measures.client_id = %s',  # nopep8
+            'UPDATE optical_patient_test SET client_id=%s WHERE optical_patient_test.client_id = %s',  # nopep8
+            'UPDATE optical_patient_visual_acuity SET client_id=%s WHERE optical_patient_visual_acuity.client_id = %s',  # nopep8
+        ]
+        tracer = StoqlibUpdateTracer(sorted(expected_updates) + sorted(self.person_updates))
+        with tracer:
+            person2.merge_with(person)
+
+        self.store.invalidate()
+        self.assertEquals(sale.client, client2)
+
+    def test_merge_supplier(self):
+        supplier = self.create_supplier()
+        supplier2 = self.create_supplier()
+
+        info_query = (
+            'UPDATE product_supplier_info SET supplier_id=%s'
+            ' WHERE product_supplier_info.supplier_id = %s AND product_supplier_info.product_id'
+            '  NOT IN  \(SELECT product_supplier_info.product_id FROM product_supplier_info'
+            ' WHERE product_supplier_info.supplier_id = %s\)')
+        expected_updates = [
+            # Supplier
+            'UPDATE purchase_order SET supplier_id=%s WHERE purchase_order.supplier_id = %s',
+            'UPDATE receiving_order SET supplier_id=%s WHERE receiving_order.supplier_id = %s',
+        ]
+        tracer = StoqlibUpdateTracer([info_query] + expected_updates + self.person_updates)
+        with tracer:
+            supplier.person.merge_with(supplier2.person)
+
+    def test_merge_employee(self):
+        emp = self.create_employee()
+        emp2 = self.create_employee()
+
+        tracer = StoqlibUpdateTracer(self.employee_updates + self.person_updates)
+        with tracer:
+            emp.person.merge_with(emp2.person)
+
+    def test_merge_login_user(self):
+        facet = self.create_user()
+        facet2 = self.create_user()
+
+        # this is a regexp, so the () should be escaped.
+        access_query = (
+            'UPDATE user_branch_access SET user_id=%s WHERE user_branch_access.user_id = %s'
+            ' AND user_branch_access.branch_id  NOT IN '
+            ' \(SELECT user_branch_access.branch_id FROM user_branch_access'
+            ' WHERE user_branch_access.user_id = %s\)')
+
+        expected_updates = [
+            'UPDATE calls SET attendant_id=%s WHERE calls.attendant_id = %s',
+            'UPDATE client_salary_history SET user_id=%s WHERE client_salary_history.user_id = %s',
+            'UPDATE credit_check_history SET user_id=%s WHERE credit_check_history.user_id = %s',  # nopep8
+            'UPDATE inventory SET responsible_id=%s WHERE inventory.responsible_id = %s',  # nopep8
+            'UPDATE loan SET responsible_id=%s WHERE loan.responsible_id = %s',  # nopep8
+            'UPDATE payment_comment SET author_id=%s WHERE payment_comment.author_id = %s',  # nopep8
+            'UPDATE payment_renegotiation SET responsible_id=%s WHERE payment_renegotiation.responsible_id = %s',  # nopep8
+            'UPDATE production_item_quality_result SET tested_by_id=%s WHERE production_item_quality_result.tested_by_id = %s',  # nopep8
+            'UPDATE production_produced_item SET produced_by_id=%s WHERE production_produced_item.produced_by_id = %s',  # nopep8
+            'UPDATE purchase_order SET responsible_id=%s WHERE purchase_order.responsible_id = %s',  # nopep8
+            'UPDATE receiving_order SET responsible_id=%s WHERE receiving_order.responsible_id = %s',  # nopep8
+            'UPDATE returned_sale SET responsible_id=%s WHERE returned_sale.responsible_id = %s',  # nopep8
+            'UPDATE sale_comment SET author_id=%s WHERE sale_comment.author_id = %s',  # nopep8
+            'UPDATE stock_decrease SET responsible_id=%s WHERE stock_decrease.responsible_id = %s',  # nopep8
+            'UPDATE stock_transaction_history SET responsible_id=%s WHERE stock_transaction_history.responsible_id = %s',  # nopep8
+            'UPDATE till SET responsible_close_id=%s WHERE till.responsible_close_id = %s',  # nopep8
+            'UPDATE till SET responsible_open_id=%s WHERE till.responsible_open_id = %s',  # nopep8
+            'UPDATE work_order_history SET user_id=%s WHERE work_order_history.user_id = %s',  # nopep8
+            'UPDATE work_order_package SET receive_responsible_id=%s WHERE work_order_package.receive_responsible_id = %s',  # nopep8
+            'UPDATE work_order_package SET send_responsible_id=%s WHERE work_order_package.send_responsible_id = %s',  # nopep8
+
+            # optical plugin
+            'UPDATE optical_patient_history SET responsible_id=%s WHERE optical_patient_history.responsible_id = %s',  # nopep8
+            'UPDATE optical_patient_measures SET responsible_id=%s WHERE optical_patient_measures.responsible_id = %s',  # nopep8
+            'UPDATE optical_patient_test SET responsible_id=%s WHERE optical_patient_test.responsible_id = %s',  # nopep8
+            'UPDATE optical_patient_visual_acuity SET responsible_id=%s WHERE optical_patient_visual_acuity.responsible_id = %s',  # nopep8
+        ]
+        tracer = StoqlibUpdateTracer([access_query] + sorted(expected_updates)
+                                     + self.person_updates)
+        with tracer:
+            facet.person.merge_with(facet2.person)
+
+    def test_merge_branch(self):
+        facet = self.create_branch()
+        facet2 = self.create_branch()
+
+        with self.assertRaises(AssertionError):
+            facet.person.merge_with(facet2.person)
+
+    def test_merge_sales_person(self):
+        facet = self.create_sales_person()
+        facet2 = self.create_sales_person()
+
+        expected_updates = [
+            'UPDATE sale SET salesperson_id=%s WHERE sale.salesperson_id = %s',
+        ]
+        tracer = StoqlibUpdateTracer(expected_updates + self.employee_updates + self.person_updates)
+        with tracer:
+            facet.person.merge_with(facet2.person)
+
+    def test_merge_transporter(self):
+        facet = self.create_transporter()
+        facet2 = self.create_transporter()
+
+        expected_updates = [
+            'UPDATE delivery SET transporter_id=%s WHERE delivery.transporter_id = %s',
+            'UPDATE purchase_order SET transporter_id=%s WHERE purchase_order.transporter_id = %s',
+            'UPDATE receiving_order SET transporter_id=%s WHERE receiving_order.transporter_id = %s',  # nopep8
+            'UPDATE sale SET transporter_id=%s WHERE sale.transporter_id = %s',
+        ]
+        tracer = StoqlibUpdateTracer(expected_updates + self.person_updates)
+        with tracer:
+            facet.person.merge_with(facet2.person)
+
+    def test_merge_with_different_facets(self):
+        transporter = self.create_transporter()
+        old_person = transporter.person
+        client = self.create_client()
+
+        client.person.merge_with(transporter.person)
+        self.assertEquals(transporter.person, client.person)
+
+        # The old person should still exist, and point to this new person:
+        self.assertEquals(old_person.merged_with_id, client.person.id)
+        self.assertEquals(old_person.transporter, None)
+
+    def test_merge_login_user_branch_access(self):
+        branch1 = self.create_branch()
+        branch2 = self.create_branch()
+        branch3 = self.create_branch()
+
+        user1 = self.create_user()
+        user2 = self.create_user()
+
+        # First user will access branches 1 and 2
+        user1.add_access_to(branch1)
+        user1.add_access_to(branch2)
+
+        # Second user will access branches 2 and 3
+        user2.add_access_to(branch2)
+        user2.add_access_to(branch3)
+
+        # Now merging user 2 into 1, he should have access to all branches
+        user1.merge_with(user2)
+
+        assert user1.has_access_to(branch1)
+        assert user1.has_access_to(branch2)
+        assert user1.has_access_to(branch3)
+
+    def test_merge_supplier_product_info(self):
+        sup1 = self.create_supplier()
+        sup2 = self.create_supplier()
+
+        product1 = self.create_product()
+        product2 = self.create_product()
+
+        # product 1 is supplied by supplier 1 and vice-versa
+        self.create_product_supplier_info(supplier=sup1, product=product1)
+        self.create_product_supplier_info(supplier=sup2, product=product2)
+
+        #Now, merging supplier2 into supplier 1 will also merge the infos
+        sup1.merge_with(sup2)
+
+        infos = list(self.store.find(ProductSupplierInfo, supplier=sup1))
+        self.assertEquals(len(infos), 2)
+
+        products = set(i.product for i in infos)
+        self.assertEquals(products, set([product1, product2]))

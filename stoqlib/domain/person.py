@@ -67,7 +67,7 @@ from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
 from stoqlib.database.expr import (Age, Case, Concat, Date, DateTrunc, Interval,
-                                   Field)
+                                   Field, NotIn)
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          IntCol, PercentCol,
                                          PriceCol, EnumCol,
@@ -362,6 +362,11 @@ class Person(Domain):
     #: the |transporter| facet for this person
     transporter = Reference('id', 'Transporter.person_id', on_remote=True)
 
+    #: The id of the person this person has been merged into. When a person is
+    #: merged into another one. All references to that person (and its facets)
+    #: are updated to the other person.
+    merged_with_id = IdCol()
+
     @property
     def address(self):
         """The |address| for this person
@@ -494,6 +499,47 @@ class Person(Domain):
 
     def has_individual_or_company_facets(self):
         return self.individual or self.company
+
+    def merge_facet(self, this_facet, other_facet):
+        if not other_facet:
+            return
+
+        if this_facet is not None:
+            # if the other person has the facet and so do we, se should: Fix all
+            # objects that reference that facet and make them reference this
+            # facet; and remove that facet.
+            this_facet.merge_with(other_facet)
+        else:
+            # If the other person has the facet but we dont, we just need
+            # to fix the reference of that facet.
+            other_facet.person = self
+
+    def merge_with(self, other):
+        """Merges this person with other objects
+
+        This will fix all references that point to the other person, and make
+        them point to this person.
+        """
+        skip = set([('person', 'merged_with_id')])
+        facets = ['branch', 'individual', 'company', 'client', 'transporter',
+                  'supplier', 'sales_person', 'login_user', 'employee']
+        for facet in facets:
+            skip.add((facet, 'person_id'))
+            this_facet = getattr(self, facet)
+            other_facet = getattr(other, facet)
+            self.merge_facet(this_facet, other_facet)
+
+        store = self.store
+        # Addresses require an special tratment, since the person can have only
+        # one main address.
+        store.execute(
+            Update({Address.is_main_address: False, Address.person_id: self.id},
+                   Address.person_id == other.id,
+                   Address))
+
+        skip.add(('address', 'person_id'))
+        super(Person, self).merge_with(other, skip)
+        other.merged_with_id = self.id
 
 
 @implementer(IActive)
@@ -816,6 +862,9 @@ class Client(Domain):
 
     #: client salary
     _salary = PriceCol(u'salary', default=0)
+
+    #: all the sales to this client
+    sales = ReferenceSet('id', 'Sale.client_id')
 
     #
     # IActive
@@ -1144,6 +1193,21 @@ class Supplier(Domain):
     # Public API
     #
 
+    def merge_with(self, other):
+        from stoqlib.domain.product import ProductSupplierInfo
+        # product_supplier_info needs special treatment, since there is a unique
+        # with the supplier_id
+        skip = set([('product_supplier_info', 'supplier_id')])
+        subselect = Select(columns=[ProductSupplierInfo.product_id],
+                           tables=[ProductSupplierInfo],
+                           where=(ProductSupplierInfo.supplier_id == self.id))
+        clause = And(ProductSupplierInfo.supplier_id == other.id,
+                     NotIn(ProductSupplierInfo.product_id, subselect))
+        self.store.execute(Update({ProductSupplierInfo.supplier_id: self.id},
+                                  clause, ProductSupplierInfo))
+
+        super(Supplier, self).merge_with(other, skip)
+
     def get_name(self):
         """
         :returns: the supplier's name
@@ -1373,6 +1437,21 @@ class LoginUser(Domain):
     # Public API
     #
 
+    def merge_with(self, other):
+        # user_branch_access is unique for (user_id, branch_id), so we should
+        # only migrate what the current user does not have (and maybe delete the
+        # rest)
+        skip = set([('user_branch_access', 'user_id')])
+        subselect = Select(columns=[UserBranchAccess.branch_id],
+                           tables=[UserBranchAccess],
+                           where=(UserBranchAccess.user_id == self.id))
+        clause = And(UserBranchAccess.user_id == other.id,
+                     NotIn(UserBranchAccess.branch_id, subselect))
+        self.store.execute(Update({UserBranchAccess.user_id: self.id},
+                                  clause, UserBranchAccess))
+
+        super(LoginUser, self).merge_with(other, skip)
+
     @classmethod
     def hash(cls, password):
         """:returns: the hash of a password.
@@ -1530,6 +1609,11 @@ class Branch(Domain):
     #
     # Public API
     #
+
+    def merge_with(self, other):
+        # We cannot merge branches right now, since identifiers should be unique
+        # by branch and changing identifiers would not be nice.
+        assert False
 
     def set_acronym(self, value):
         """Sets the branch acronym.
@@ -1893,6 +1977,8 @@ class ClientView(Viewable):
                  Client.category_id == ClientCategory.id),
     ]
 
+    clause = Eq(Person.merged_with_id, None)
+
     #
     # IDescribable
     #
@@ -1938,6 +2024,8 @@ class EmployeeView(Viewable):
         Join(EmployeeRole, Employee.role_id == EmployeeRole.id),
     ]
 
+    clause = Eq(Person.merged_with_id, None)
+
     #
     # IDescribable
     #
@@ -1980,6 +2068,8 @@ class SupplierView(Viewable):
                  Person.id == Company.person_id),
     ]
 
+    clause = Eq(Person.merged_with_id, None)
+
     #
     # IDescribable
     #
@@ -2021,6 +2111,8 @@ class TransporterView(Viewable):
         Transporter,
         Join(Person, Person.id == Transporter.person_id),
     ]
+
+    clause = Eq(Person.merged_with_id, None)
 
     #
     # IDescribable
@@ -2101,6 +2193,8 @@ class UserView(Viewable):
         Join(Person, Person.id == LoginUser.person_id),
         LeftJoin(UserProfile, LoginUser.profile_id == UserProfile.id),
     ]
+
+    clause = Eq(Person.merged_with_id, None)
 
     #
     # IDescribable

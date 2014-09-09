@@ -33,6 +33,31 @@ from stoqlib.lib.event import Event
 from stoqlib.lib.decorators import public
 
 #
+# Base domain events
+#
+
+
+@public(since="1.9.0")
+class DomainMergeEvent(Event):
+    """
+    This event is emitted two domain objects are being merged
+
+    :param obj: the main object that is being merged with (the one that will be kept)
+    :param other: the object that is being merged. This is the one that will
+      have the references fixed
+    """
+
+    @classmethod
+    def handle_return_values(self, values):
+        skip = set()
+        for value in values:
+            if value is None:
+                continue
+            skip = skip.union(value)
+        return skip
+
+
+#
 # Product events
 #
 

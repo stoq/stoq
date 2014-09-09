@@ -13,7 +13,7 @@ from xml.etree.ElementTree import parse
 # - a file got remove/renamed
 
 EXCEPTIONS = OrderedDict((
-    ('plugins/books/booksdomain.py', 87.50),
+    ('plugins/books/booksdomain.py', 79.22),
     ('plugins/books/booksplugin.py', 73.08),
     ('plugins/books/bookssearch.py', 41.67),
     ('plugins/books/booksslave.py', 52.50),

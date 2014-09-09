@@ -117,6 +117,24 @@ class Event(ClassInittableObject):
     #
 
     @classmethod
+    def handle_return_values(cls, values):
+        """Selects an appropriate return value from all callsites
+
+        After an callsite has returned a value from this event, this will select
+        the first not None value and return it.
+
+        Subclassses can override this if they need to handle multiple return
+        values differently
+        """
+        for retval in values:
+            if retval is not None:
+                if (cls.returnclass and type(retval) != cls.returnclass
+                        and not isinstance(retval, cls.returnclass)):
+                    raise TypeError('Expected return value to be %s, got %s'
+                                    % (cls.returnclass, type(retval)))
+                return retval
+
+    @classmethod
     def emit(cls, *args, **kwargs):
         cls._resolve_lazy_callbacks()
 
@@ -131,16 +149,7 @@ class Event(ClassInittableObject):
             # return value which is not None
             rv_list.insert(0, rv)
 
-        # FIXME: Returning just one retval can lead to unpredictable of errors.
-        #        We should return al of them and let the one who is
-        #        emitting to decide what to do.
-        for retval in rv_list:
-            if retval is not None:
-                if (cls.returnclass and type(retval) != cls.returnclass
-                    and not isinstance(retval, cls.returnclass)):
-                    raise TypeError('Expected return value to be %s, got %s'
-                                    % (cls.returnclass, type(retval)))
-                return retval
+        return cls.handle_return_values(rv_list)
 
     @classmethod
     def connect(cls, callback):

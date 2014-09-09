@@ -212,8 +212,6 @@ class Product(Domain):
     #: |sellable| for this product
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    suppliers = ReferenceSet('id', 'ProductSupplierInfo.product_id')
-
     #: if this product is loaned from the |supplier|
     consignment = BoolCol(default=False)
 

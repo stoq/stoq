@@ -30,7 +30,7 @@ Most of them are specific to PostgreSQL
 
 from storm.expr import (Expr, NamedFunc, PrefixExpr, SQL, ComparableExpr,
                         compile as expr_compile, FromExpr, Undef, EXPR,
-                        is_safe_token)
+                        is_safe_token, BinaryOper)
 
 
 class Age(NamedFunc):
@@ -125,6 +125,18 @@ class LPad(NamedFunc):
     # http://www.postgresql.org/docs/8.4/static/functions-string.html
     __slots__ = ()
     name = "LPAD"
+
+
+class NotIn(BinaryOper):
+    __slots__ = ()
+    oper = " NOT IN "
+
+
+@expr_compile.when(NotIn)
+def compile_in(expr_compile, expr, state):
+    expr1 = expr_compile(expr.expr1, state)
+    state.precedence = 0  # We're forcing parenthesis here.
+    return "%s %s (%s)" % (expr1, expr.oper, expr_compile(expr.expr2, state))
 
 
 class StoqNormalizeString(NamedFunc):

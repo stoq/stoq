@@ -25,7 +25,7 @@
 import collections
 import decimal
 
-from storm.expr import Join, LeftJoin, Coalesce, Sum
+from storm.expr import Join, LeftJoin, Coalesce, Sum, Eq
 from storm.references import Reference
 
 from stoqlib.database.expr import StatementTimestamp
@@ -33,6 +33,7 @@ from stoqlib.database.properties import (DecimalCol, DateTimeCol, EnumCol,
                                          UnicodeCol, IdCol, BoolCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import DomainMergeEvent
 from stoqlib.domain.person import Person, Company, Branch
 from stoqlib.domain.product import Product, StorableBatch, ProductManufacturer
 from stoqlib.domain.sale import SaleItem, Sale
@@ -70,6 +71,18 @@ class OpticalMedic(Domain):
 
     def get_description(self):
         return _('%s (upid: %s)') % (self.person.name, self.crm_number)
+
+    @DomainMergeEvent.connect
+    @classmethod
+    def on_domain_merge(cls, obj, other):
+        if type(obj) != Person:
+            return
+        this_facet = obj.store.find(cls, person=obj).one()
+        other_facet = obj.store.find(cls, person=other).one()
+        if not this_facet and not other_facet:
+            return
+        obj.merge_facet(this_facet, other_facet)
+        return set([('optical_medic', 'person_id')])
 
 
 class OpticalProduct(Domain):
@@ -674,6 +687,8 @@ class OpticalMedicView(Viewable):
         Person,
         Join(OpticalMedic, Person.id == OpticalMedic.person_id)
     ]
+
+    clause = Eq(Person.merged_with_id, None)
 
 
 class MedicSoldItemsView(Viewable):
