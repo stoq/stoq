@@ -89,7 +89,7 @@ class OpticalPatientHistoryEditor(BaseEditor):
 
     def _setup_widgets(self):
         types = [(value, key) for key, value in self.model_type.user_types.items()]
-        self.user_type.prefill(sorted(types, key=operator.itemgetter(1)))
+        self.user_type.prefill(types)
 
     def on_user_type__changed(self, widget):
         user_type = self.model.user_type

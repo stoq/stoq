@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <requires lib="gtk+" version="2.24"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="WorkOrderOpticalSlave">
     <child>
@@ -129,7 +129,7 @@
             <child>
               <object class="ProxyComboBox" id="lens_type">
                 <property name="visible">True</property>
-                <property name="data_type">int</property>
+                <property name="data_type">unicode</property>
                 <property name="model_attribute">lens_type</property>
               </object>
               <packing>
@@ -1219,7 +1219,7 @@
                         <child>
                           <object class="ProxyComboBox" id="frame_type">
                             <property name="visible">True</property>
-                            <property name="data_type">int</property>
+                            <property name="data_type">unicode</property>
                             <property name="model_attribute">frame_type</property>
                           </object>
                           <packing>
@@ -1262,15 +1262,8 @@
                           </packing>
                         </child>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
                           <object class="GtkLabel" id="gtklabel41">
                             <property name="visible">True</property>
-                            <property name="yalign">0.50</property>
                             <property name="label" translatable="yes">F.D.M.</property>
                           </object>
                           <packing>
@@ -1279,6 +1272,12 @@
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
                           </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
                         </child>
                       </object>
                       <packing>

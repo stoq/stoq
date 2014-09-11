@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.24"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="PatientHistory">
     <property name="border_width">6</property>
@@ -27,7 +27,7 @@
             <child>
               <object class="ProxyComboBox" id="user_type">
                 <property name="visible">True</property>
-                <property name="data_type">int</property>
+                <property name="data_type">unicode</property>
                 <property name="model_attribute">user_type</property>
               </object>
               <packing>

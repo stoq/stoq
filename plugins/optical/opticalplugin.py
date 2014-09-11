@@ -49,7 +49,7 @@ class OpticalPlugin(object):
     def get_migration(self):
         environ.add_resource('opticalsql',
                              os.path.join(os.path.dirname(__file__), 'sql'))
-        return PluginSchemaMigration(self.name, 'opticalsql', ['*.sql'])
+        return PluginSchemaMigration(self.name, 'opticalsql', ['*.sql', '*.py'])
 
     def get_tables(self):
         return [('opticaldomain', ['OpticalMedic',

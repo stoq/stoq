@@ -22,13 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import collections
 import decimal
 
 from storm.expr import Join, LeftJoin, Coalesce, Sum
 from storm.references import Reference
 
 from stoqlib.database.expr import StatementTimestamp
-from stoqlib.database.properties import (IntCol, DecimalCol, DateTimeCol,
+from stoqlib.database.properties import (DecimalCol, DateTimeCol, EnumCol,
                                          UnicodeCol, IdCol, BoolCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -83,19 +84,19 @@ class OpticalProduct(Domain):
     __storm_table__ = 'optical_product'
 
     #: The frame of the glases (without lenses)
-    TYPE_GLASS_FRAME = 0
+    TYPE_GLASS_FRAME = u'glass-frame'
 
     #: The glasses to be used with a frame
-    TYPE_GLASS_LENSES = 1
+    TYPE_GLASS_LENSES = u'glass-lenses'
 
     #: Contact lenses
-    TYPE_CONTACT_LENSES = 2
+    TYPE_CONTACT_LENSES = u'contact-lenses'
 
     product_id = IdCol(allow_none=False)
     product = Reference(product_id, 'Product.id')
 
     # The type indicates what of the following fields should be edited.
-    optical_type = IntCol()
+    optical_type = EnumCol()
 
     #: If this product should be reserved automatically when added to the sale
     #: with work order
@@ -223,19 +224,19 @@ class OpticalWorkOrder(Domain):
     __storm_table__ = 'optical_work_order'
 
     #: Lens used in glasses
-    LENS_TYPE_OPHTALMIC = 0
+    LENS_TYPE_OPHTALMIC = u'ophtalmic'
 
     #: Contact lenses
-    LENS_TYPE_CONTACT = 1
+    LENS_TYPE_CONTACT = u'contact'
 
     #: The frame for the lens is a closed ring
-    FRAME_TYPE_CLOSED_RING = 0
+    FRAME_TYPE_CLOSED_RING = u'closed-ring'
 
     #: The frame uses a nylon string to hold the lenses.
-    FRAME_TYPE_NYLON = 1
+    FRAME_TYPE_NYLON = u'nylon'
 
     #: The frame is made 3 pieces
-    FRAME_TYPE_3_PIECES = 2
+    FRAME_TYPE_3_PIECES = u'3-pieces'
 
     lens_types = {
         LENS_TYPE_OPHTALMIC: _('Ophtalmic'),
@@ -267,14 +268,14 @@ class OpticalWorkOrder(Domain):
     patient = UnicodeCol()
 
     #: The type of the lens, Contact or Ophtalmic
-    lens_type = IntCol(default=LENS_TYPE_OPHTALMIC)
+    lens_type = EnumCol(default=LENS_TYPE_OPHTALMIC)
 
     #
     #   Frame
     #
 
     #: The type of the frame. One of OpticalWorkOrder.FRAME_TYPE_*
-    frame_type = IntCol()
+    frame_type = EnumCol(default=FRAME_TYPE_CLOSED_RING)
 
     #: The vertical frame measure
     frame_mva = DecimalCol(default=decimal.Decimal(0))
@@ -352,19 +353,19 @@ class OpticalPatientHistory(Domain):
     __storm_table__ = 'optical_patient_history'
 
     #: Never used lenses before
-    TYPE_FIRST_USER = 0
+    TYPE_FIRST_USER = u'first-user'
 
     #: Is currently a user
-    TYPE_SECOND_USER = 1
+    TYPE_SECOND_USER = u'second-user'
 
     #: Has used lenses before, but stopped
-    TYPE_EX_USER = 2
+    TYPE_EX_USER = u'ex-user'
 
-    user_types = {
-        TYPE_FIRST_USER: _('First User'),
-        TYPE_SECOND_USER: _('Second User'),
-        TYPE_EX_USER: _('Ex-User'),
-    }
+    user_types = collections.OrderedDict([
+        (TYPE_FIRST_USER, _('First User')),
+        (TYPE_SECOND_USER, _('Second User')),
+        (TYPE_EX_USER, _('Ex-User')),
+    ])
 
     create_date = DateTimeCol(default_factory=StatementTimestamp)
 
@@ -381,7 +382,7 @@ class OpticalPatientHistory(Domain):
     #
 
     #: If the patient is a first time user for contact lenses or not.
-    user_type = IntCol(default=TYPE_FIRST_USER)
+    user_type = EnumCol(allow_none=False, default=TYPE_FIRST_USER)
 
     #: What is the occupation of the patient
     occupation = UnicodeCol()
@@ -494,8 +495,8 @@ class OpticalPatientMeasures(Domain):
 
     __storm_table__ = 'optical_patient_measures'
 
-    EYE_LEFT = 0
-    EYE_RIGHT = 1
+    EYE_LEFT = u'left'
+    EYE_RIGHT = u'right'
 
     eye_options = {
         EYE_LEFT: _('Left Eye'),
@@ -512,7 +513,7 @@ class OpticalPatientMeasures(Domain):
     #: The user that registred this information
     responsible = Reference(responsible_id, 'LoginUser.id')
 
-    dominant_eye = IntCol(default=0)
+    dominant_eye = EnumCol(allow_none=False, default=EYE_LEFT)
 
     le_keratometer_horizontal = UnicodeCol()
     le_keratometer_vertical = UnicodeCol()
