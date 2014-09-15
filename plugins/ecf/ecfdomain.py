@@ -32,9 +32,9 @@ from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.properties import DecimalCol
-from stoqlib.database.properties import (BoolCol, IdCol, IntCol,
-                                         UnicodeCol, BLOBCol, DateTimeCol)
+from stoqlib.database.properties import (BLOBCol, BoolCol, DateTimeCol,
+                                         DecimalCol, EnumCol, IdCol,
+                                         IntCol, UnicodeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.exceptions import DeviceError
@@ -255,7 +255,7 @@ class DeviceConstant(Domain):
 
     __storm_table__ = 'device_constant'
 
-    constant_type = IntCol()
+    constant_type = EnumCol()
     constant_name = UnicodeCol()
     constant_value = DecimalCol(default=None)
     constant_enum = IntCol(default=None)
@@ -263,9 +263,9 @@ class DeviceConstant(Domain):
     printer_id = IdCol()
     printer = Reference(printer_id, 'ECFPrinter.id')
 
-    (TYPE_UNIT,
-     TYPE_TAX,
-     TYPE_PAYMENT) = range(3)
+    TYPE_UNIT = u'unit'
+    TYPE_TAX = u'tax'
+    TYPE_PAYMENT = u'payment'
 
     constant_types = {TYPE_UNIT: _(u'Unit'),
                       TYPE_TAX: _(u'Tax'),
@@ -328,12 +328,12 @@ class DeviceConstant(Domain):
 class FiscalSaleHistory(Domain):
     """Holds fiscal information about the sales.
     """
-    (TYPE_CPF,
-     TYPE_CNPJ) = range(2)
+    TYPE_CPF = u'cpf'
+    TYPE_CNPJ = u'cnpj'
 
     __storm_table__ = 'fiscal_sale_history'
 
-    document_type = IntCol(default=TYPE_CPF)
+    document_type = EnumCol(allow_none=False, default=TYPE_CPF)
     document = UnicodeCol(default=None)
     sale_id = IdCol()
     sale = Reference(sale_id, 'Sale.id')
@@ -346,15 +346,15 @@ class ECFDocumentHistory(Domain):
 
     This does not include fiscal coupons
     """
-    (TYPE_MEMORY_READ,
-     TYPE_Z_REDUCTION,
-     TYPE_SUMMARY) = range(3)
+    TYPE_MEMORY_READ = u'memory-read'
+    TYPE_Z_REDUCTION = u'z-reduction'
+    TYPE_SUMMARY = u'summary'
 
     __storm_table__ = 'ecf_document_history'
 
     printer_id = IdCol()
     printer = Reference(printer_id, 'ECFPrinter.id')
-    type = IntCol()
+    type = EnumCol()
     coo = IntCol(default=0)
     gnf = IntCol(default=0)
     crz = IntCol(default=None)

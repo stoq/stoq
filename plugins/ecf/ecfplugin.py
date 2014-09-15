@@ -46,7 +46,7 @@ class ECFPlugin(object):
     def get_migration(self):
         environ.add_resource('ecfsql',
                              os.path.join(os.path.dirname(__file__), 'sql'))
-        return PluginSchemaMigration(self.name, 'ecfsql', ['*.sql'])
+        return PluginSchemaMigration(self.name, 'ecfsql', ['*.sql', '*.py'])
 
     def get_tables(self):
         return [('ecfdomain', ["ECFPrinter", "DeviceConstant",

@@ -25,7 +25,7 @@
 from storm.expr import LeftJoin, Join
 from storm.references import Reference
 
-from stoqlib.database.properties import IdCol, IntCol, UnicodeCol
+from stoqlib.database.properties import EnumCol, IdCol, IntCol, UnicodeCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
@@ -37,8 +37,8 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 class BookPublisher(Domain):
     """An institution created to publish books"""
 
-    (STATUS_ACTIVE,
-     STATUS_INACTIVE) = range(2)
+    STATUS_ACTIVE = u'active'
+    STATUS_INACTIVE = u'inactive'
 
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
@@ -47,7 +47,7 @@ class BookPublisher(Domain):
 
     person_id = IdCol()
     person = Reference(person_id, 'Person.id')
-    status = IntCol(default=STATUS_ACTIVE)
+    status = EnumCol(allow_none=False, default=STATUS_ACTIVE)
 
     #
     # IActive implementation
