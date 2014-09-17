@@ -39,7 +39,9 @@ class WillBeCommitted(Domain):
         id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
         test_var text,
         te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te()
-        );"""
+        );
+        CREATE RULE update_te AS ON UPDATE TO will_be_committed DO ALSO SELECT update_te(old.te_id);
+        """
 
     test_var = UnicodeCol()
 

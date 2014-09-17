@@ -41,7 +41,7 @@ from stoqlib.database.exceptions import InterfaceError, OperationalError
 from stoqlib.database.interfaces import (
     ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
-from stoqlib.database.expr import StatementTimestamp, is_sql_identifier
+from stoqlib.database.expr import is_sql_identifier
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import Identifier
 from stoqlib.database.settings import db_settings
@@ -551,9 +551,6 @@ class StoqlibStore(Store):
             raise InterfaceError("This transaction has already been closed")
 
     def _process_pending_objs(self):
-        # Fields to update the transaction entry for modified objs
-        te_time = StatementTimestamp()
-
         created_objs = set()
         modified_objs = set()
         deleted_objs = set()
@@ -583,15 +580,6 @@ class StoqlibStore(Store):
                 processed_objs.add(created_obj)
 
             for modified_obj in modified_objs:
-                # XXX: Check if we can kill this.
-                # This is to support migration from domainv1
-                if hasattr(modified_obj, 'te_modified'):
-                    modified_obj.te_modified.te_time = te_time
-                # And also from domainv2
-                else:
-                    modified_obj.te.dirty = True
-                    modified_obj.te.te_time = te_time
-
                 modified_obj.on_update()
                 processed_objs.add(modified_obj)
                 # Invalidate the modified objects in other possible related

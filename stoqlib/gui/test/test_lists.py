@@ -67,7 +67,9 @@ class TestModelListSlave(GUITest):
                 te_id bigint UNIQUE REFERENCES transaction_entry(id) default new_te(),
 
                 unicode_var text
-            );""")
+            );
+            CREATE RULE update_te AS ON UPDATE TO _test_model DO ALSO SELECT update_te(old.te_id);
+        """)
 
         self.models = set([
             _TestModel(store=self.store, unicode_var=u'XXX'),
