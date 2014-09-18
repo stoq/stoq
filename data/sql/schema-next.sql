@@ -77,6 +77,7 @@ CREATE TYPE stock_decrease_status AS ENUM ('initial', 'confirmed');
 CREATE TYPE till_status AS ENUM ('pending', 'open', 'closed');
 CREATE TYPE transfer_order_status AS ENUM ('pending', 'sent', 'received');
 CREATE TYPE account_transaction_operation_type AS ENUM ('in', 'out');
+
 --
 -- Tables that are not syncronized
 --
@@ -107,8 +108,6 @@ CREATE TABLE event (
 CREATE TABLE transaction_entry (
     id serial NOT NULL PRIMARY KEY,
     te_time timestamp NOT NULL,
-    user_id uuid,
-    station_id uuid,
     dirty boolean DEFAULT TRUE
 );
 
@@ -119,15 +118,16 @@ CREATE TABLE transaction_entry (
 
 CREATE TABLE attachment (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text NOT NULL,
     mimetype text,
     blob bytea
 );
+CREATE RULE update_te AS ON UPDATE TO attachment DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE person (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text,
     phone_number text,
     mobile_number text,
@@ -135,18 +135,20 @@ CREATE TABLE person (
     email text,
     notes text
 );
+CREATE RULE update_te AS ON UPDATE TO person DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE client_category (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text UNIQUE,
     max_discount numeric(10,2) DEFAULT 0 CONSTRAINT valid_max_discount
         CHECK (max_discount BETWEEN 0 AND 100)
 );
+CREATE RULE update_te AS ON UPDATE TO client_category DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE client (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     status client_status NOT NULL,
     days_late integer CONSTRAINT positive_days_late
         CHECK (days_late >= 0),
@@ -158,11 +160,12 @@ CREATE TABLE client (
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE,
     category_id uuid REFERENCES client_category(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO client DO ALSO SELECT update_te(old.te_id);
 
 
 CREATE TABLE company (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     is_active boolean,
     cnpj text,
     fancy_name text,
@@ -170,11 +173,12 @@ CREATE TABLE company (
     city_registry text,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO company DO ALSO SELECT update_te(old.te_id);
 
 
 CREATE TABLE individual (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     is_active boolean,
     cpf text,
     rg_number text,
@@ -190,42 +194,47 @@ CREATE TABLE individual (
     birth_location_id bigint REFERENCES city_location(id) ON UPDATE CASCADE,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO individual DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE employee_role (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text NOT NULL UNIQUE
 );
+CREATE RULE update_te AS ON UPDATE TO employee_role DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE work_permit_data (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     number text,
     series_number text,
     pis_number text,
     pis_bank text,
     pis_registry_date timestamp
 );
+CREATE RULE update_te AS ON UPDATE TO work_permit_data DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE military_data (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     number text,
     series_number text,
     category text
 );
+CREATE RULE update_te AS ON UPDATE TO military_data DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE voter_data (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     number text,
     section text,
     "zone" text
 );
+CREATE RULE update_te AS ON UPDATE TO voter_data DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE bank_account (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     -- bank_account bigint UNIQUE REFERENCES account(id) ON UPDATE CASCADE,
     bank_number integer CONSTRAINT positive_bank_number
         CHECK (bank_number >= 0),
@@ -233,18 +242,20 @@ CREATE TABLE bank_account (
     bank_account text,
     bank_type bigint
 );
+CREATE RULE update_te AS ON UPDATE TO bank_account DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE bill_option (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     option text,
     value text,
     bank_account_id uuid REFERENCES bank_account(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO bill_option DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE employee (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     is_active boolean,
     admission_date timestamp,
     expire_vacation timestamp,
@@ -261,10 +272,11 @@ CREATE TABLE employee (
     bank_account_id uuid REFERENCES bank_account(id) ON UPDATE CASCADE,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO employee DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE branch (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     manager_id uuid REFERENCES employee(id) ON UPDATE CASCADE,
     is_active boolean,
     crt integer DEFAULT 1,
@@ -273,6 +285,7 @@ CREATE TABLE branch (
     can_execute_foreign_work_orders boolean DEFAULT false,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO branch DO ALSO SELECT update_te(old.te_id);
 
 ALTER TABLE branch_synchronization
     ADD COLUMN branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE;
@@ -283,7 +296,7 @@ ALTER TABLE employee ADD COLUMN branch_id uuid REFERENCES branch(id)
 
 CREATE TABLE sales_person (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     comission numeric(10, 2) CONSTRAINT positive_comission
         CHECK (comission >= 0),
     comission_type integer CONSTRAINT check_valid_comission_type
@@ -291,19 +304,21 @@ CREATE TABLE sales_person (
     is_active boolean,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO sales_person DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE supplier (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     is_active boolean,
     status supplier_status NOT NULL,
     product_desc text,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO supplier DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE transporter (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     is_active boolean,
     open_contract_date timestamp,
     freight_percentage numeric(10, 2) NOT NULL
@@ -311,35 +326,39 @@ CREATE TABLE transporter (
         CHECK (freight_percentage >= 0),
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO transporter DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE user_profile (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text,
     max_discount numeric(10, 2) DEFAULT 0
 );
+CREATE RULE update_te AS ON UPDATE TO user_profile DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE login_user (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     username text NOT NULL UNIQUE,
     pw_hash text,
     is_active boolean,
     profile_id uuid REFERENCES user_profile(id) ON UPDATE CASCADE,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO login_user DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE user_branch_access (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     user_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (user_id, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO user_branch_access DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE client_salary_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     date timestamp,
     new_salary decimal(20,2) DEFAULT 0 CONSTRAINT positive_new_salary
                                            CHECK(new_salary >= 0),
@@ -348,61 +367,68 @@ CREATE TABLE client_salary_history (
     user_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO client_salary_history DO ALSO SELECT update_te(old.te_id);
 
 
 CREATE TABLE product_tax_template (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text,
     tax_type integer
 );
+CREATE RULE update_te AS ON UPDATE TO product_tax_template DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE image (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     image bytea,
     thumbnail bytea,
     description text
 );
+CREATE RULE update_te AS ON UPDATE TO image DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sellable_tax_constant (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
     tax_type integer CONSTRAINT valid_tax_type
         CHECK (tax_type >= 41 AND tax_type < 46),
     tax_value numeric(10, 2)
 );
+CREATE RULE update_te AS ON UPDATE TO sellable_tax_constant DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sellable_category (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
     suggested_markup numeric(10, 2),
     salesperson_commission numeric(10, 2),
     category_id uuid REFERENCES sellable_category(id) ON UPDATE CASCADE,
     tax_constant_id uuid REFERENCES sellable_tax_constant(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO sellable_category DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sellable_unit (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
     unit_index integer CONSTRAINT positive_unit_index
         CHECK(unit_index >= 0),
     allow_fraction boolean DEFAULT TRUE
 );
+CREATE RULE update_te AS ON UPDATE TO sellable_unit DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE cfop_data (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     code text,
     description text
 );
+CREATE RULE update_te AS ON UPDATE TO cfop_data DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sellable (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     barcode text,
     code text,
     status sellable_status NOT NULL,
@@ -424,6 +450,7 @@ CREATE TABLE sellable (
     tax_constant_id uuid REFERENCES sellable_tax_constant(id) ON UPDATE CASCADE,
     default_sale_cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO sellable DO ALSO SELECT update_te(old.te_id);
 
 -- Those indexes are created to accelerate searchs with lots of sellables
 -- using like/ilike comparisons
@@ -434,7 +461,7 @@ CREATE INDEX sellable_description_normalized_idx ON sellable
 
 CREATE TABLE product_icms_template (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     product_tax_template_id uuid UNIQUE REFERENCES product_tax_template(id) ON UPDATE CASCADE,
     bc_include_ipi boolean DEFAULT TRUE,
     bc_st_include_ipi boolean DEFAULT TRUE,
@@ -451,10 +478,11 @@ CREATE TABLE product_icms_template (
     p_red_bc numeric(10, 2),
     p_red_bc_st numeric(10, 2)
 );
+CREATE RULE update_te AS ON UPDATE TO product_icms_template DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE product_ipi_template (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     product_tax_template_id uuid UNIQUE REFERENCES product_tax_template(id) ON UPDATE CASCADE,
     cl_enq text,
     cnpj_prod text,
@@ -466,16 +494,18 @@ CREATE TABLE product_ipi_template (
     p_ipi numeric(10, 2),
     q_unid numeric(16, 4)
 );
+CREATE RULE update_te AS ON UPDATE TO product_ipi_template DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE product_manufacturer (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text UNIQUE
 );
+CREATE RULE update_te AS ON UPDATE TO product_manufacturer DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE product (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     consignment boolean NOT NULL DEFAULT FALSE,
     location text,
     part_number text,
@@ -501,10 +531,11 @@ CREATE TABLE product (
     manufacturer_id uuid REFERENCES product_manufacturer(id) ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO product DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE product_component (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     product_id uuid REFERENCES product(id) ON UPDATE CASCADE,
     component_id uuid REFERENCES product(id) ON UPDATE CASCADE,
     design_reference text,
@@ -512,10 +543,11 @@ CREATE TABLE product_component (
         CONSTRAINT positive_quantity CHECK (quantity > 0),
         CONSTRAINT different_products CHECK (product_id != component_id)
 );
+CREATE RULE update_te AS ON UPDATE TO product_component DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE storable (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     product_id uuid UNIQUE REFERENCES product(id) ON UPDATE CASCADE,
     is_batch boolean DEFAULT False,
     minimum_quantity numeric(20, 3) DEFAULT 0
@@ -523,10 +555,11 @@ CREATE TABLE storable (
     maximum_quantity numeric(20, 3) DEFAULT 0
         CONSTRAINT positive_maximum_quantity CHECK (maximum_quantity >= 0)
 );
+CREATE RULE update_te AS ON UPDATE TO storable DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE storable_batch (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     batch_number text UNIQUE NOT NULL,
     create_date timestamp NOT NULL,
@@ -535,10 +568,11 @@ CREATE TABLE storable_batch (
 
     storable_id uuid NOT NULL REFERENCES storable(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO storable_batch DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE product_stock_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     stock_cost numeric(20, 8),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
@@ -547,10 +581,11 @@ CREATE TABLE product_stock_item (
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (branch_id, storable_id, batch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO product_stock_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE product_supplier_info (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     supplier_code text,
     base_cost numeric(20, 8) CONSTRAINT positive_base_cost
         CHECK (base_cost >= 0),
@@ -565,10 +600,11 @@ CREATE TABLE product_supplier_info (
     product_id uuid NOT NULL REFERENCES product(id) ON UPDATE CASCADE,
     CONSTRAINT unique_supplier_code UNIQUE (supplier_id, product_id, supplier_code)
 );
+CREATE RULE update_te AS ON UPDATE TO product_supplier_info DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE product_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     quantity_sold numeric(20, 3) CONSTRAINT positive_quantity_sold
         CHECK (quantity_sold >= 0),
     quantity_received numeric(20, 3) CONSTRAINT positive_quantity_received
@@ -590,16 +626,18 @@ CREATE TABLE product_history (
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO product_history DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE service (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO service DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE payment_renegotiation (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     open_date timestamp,
     close_date timestamp,
@@ -618,21 +656,23 @@ CREATE TABLE payment_renegotiation (
     -- group_id uuid REFERENCES payment_group(id) ON UPDATE CASCADE
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO payment_renegotiation DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE payment_group (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     payer_id uuid REFERENCES person(id) ON UPDATE CASCADE,
     renegotiation_id uuid REFERENCES payment_renegotiation(id) ON UPDATE CASCADE,
     recipient_id uuid REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO payment_group DO ALSO SELECT update_te(old.te_id);
 
 ALTER TABLE payment_renegotiation ADD COLUMN group_id uuid
     REFERENCES payment_group(id) ON UPDATE CASCADE;
 
 CREATE TABLE payment_flow_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     history_date timestamp,
     to_receive numeric(20, 2) CONSTRAINT positive_value_to_receive
         CHECK (to_receive >= 0),
@@ -647,10 +687,11 @@ CREATE TABLE payment_flow_history (
     balance_expected numeric(20, 2),
     balance_real numeric(20, 2)
 );
+CREATE RULE update_te AS ON UPDATE TO payment_flow_history DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE stock_transaction_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     date timestamp,
     stock_cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (stock_cost >= 0),
@@ -661,10 +702,11 @@ CREATE TABLE stock_transaction_history (
     product_stock_item_id uuid NOT NULL REFERENCES product_stock_item(id)
         ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO stock_transaction_history DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE purchase_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     status purchase_order_status NOT NULL,
     open_date timestamp,
@@ -690,10 +732,11 @@ CREATE TABLE purchase_order (
     group_id uuid REFERENCES payment_group(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO purchase_order DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE purchase_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
     quantity_received numeric(20, 3) CONSTRAINT positive_quantity_received
@@ -714,18 +757,20 @@ CREATE TABLE purchase_item (
                quantity_returned <= quantity_received - quantity_sold)
         DEFAULT 0
 );
+CREATE RULE update_te AS ON UPDATE TO purchase_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE quote_group (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO quote_group DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE quotation (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
 
     purchase_id uuid REFERENCES purchase_order(id) ON UPDATE CASCADE,
@@ -733,18 +778,20 @@ CREATE TABLE quotation (
     group_id uuid REFERENCES quote_group(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO quotation DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE branch_station (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text UNIQUE,
     is_active boolean,
     branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO branch_station DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE till (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     status till_status NOT NULL,
     initial_cash_amount numeric(20, 2) CONSTRAINT positive_initial_cash_amount
         CHECK (initial_cash_amount >= 0),
@@ -757,10 +804,11 @@ CREATE TABLE till (
     responsible_open_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
     responsible_close_id uuid REFERENCES login_user(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO till DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE client_category_price (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     category_id uuid REFERENCES client_category(id) ON UPDATE CASCADE,
     price numeric(10,2) CONSTRAINT positive_price CHECK (price >= 0),
@@ -768,10 +816,11 @@ CREATE TABLE client_category_price (
     commission numeric(10,2),
     UNIQUE (sellable_id, category_id)
 );
+CREATE RULE update_te AS ON UPDATE TO client_category_price DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sale (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     coupon_id integer,
     invoice_number integer CONSTRAINT valid_invoice_number
@@ -802,20 +851,22 @@ CREATE TABLE sale (
     transporter_id uuid REFERENCES transporter(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO sale DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sale_comment (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     date timestamp,
     comment text,
     sale_id uuid NOT NULL REFERENCES sale(id) ON UPDATE CASCADE,
     author_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO sale_comment DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sale_item_icms (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     bc_include_ipi boolean DEFAULT TRUE,
     bc_st_include_ipi boolean DEFAULT TRUE,
     cst integer,
@@ -837,10 +888,11 @@ CREATE TABLE sale_item_icms (
     v_icms_st numeric(20, 2),
     v_icms_st_ret numeric(20, 2)
 );
+CREATE RULE update_te AS ON UPDATE TO sale_item_icms DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sale_item_ipi (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     cl_enq text,
     cnpj_prod text,
     c_selo text,
@@ -854,10 +906,11 @@ CREATE TABLE sale_item_ipi (
     v_bc numeric(20, 2),
     v_unid numeric(20, 4)
 );
+CREATE RULE update_te AS ON UPDATE TO sale_item_ipi DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sale_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
     quantity_decreased numeric(20, 3) DEFAULT 0
@@ -877,10 +930,11 @@ CREATE TABLE sale_item (
     ipi_info_id uuid REFERENCES sale_item_ipi(id) ON UPDATE CASCADE,
     cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO sale_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE returned_sale (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     identifier serial NOT NULL,
     return_date timestamp,
@@ -894,10 +948,11 @@ CREATE TABLE returned_sale (
     new_sale_id uuid UNIQUE REFERENCES sale(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO returned_sale DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE returned_sale_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
@@ -908,10 +963,11 @@ CREATE TABLE returned_sale_item (
     sale_item_id uuid REFERENCES sale_item(id) ON UPDATE CASCADE,
     returned_sale_id uuid REFERENCES returned_sale(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO returned_sale_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE address (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     street text,
     streetnumber integer CONSTRAINT positive_streetnumber
         CHECK (streetnumber > 0),
@@ -922,10 +978,11 @@ CREATE TABLE address (
     person_id uuid REFERENCES person(id) ON UPDATE CASCADE,
     city_location_id bigint REFERENCES city_location(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO address DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE delivery (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     status delivery_status NOT NULL,
     open_date timestamp,
     deliver_date timestamp,
@@ -935,36 +992,39 @@ CREATE TABLE delivery (
     transporter_id uuid REFERENCES transporter(id) ON UPDATE CASCADE,
     service_item_id uuid REFERENCES sale_item(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO delivery DO ALSO SELECT update_te(old.te_id);
 
 ALTER TABLE sale_item ADD COLUMN delivery_id uuid
     REFERENCES delivery(id) ON UPDATE CASCADE;
 
 CREATE TABLE calls (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     date timestamp,
     message text,
     description text,
     person_id uuid REFERENCES person(id) ON UPDATE CASCADE,
     attendant_id uuid REFERENCES login_user(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO calls DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE account (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     account_type account_type NOT NULL,
     description text NOT NULL,
     code text,
     parent_id uuid REFERENCES account(id) ON UPDATE CASCADE,
     station_id uuid REFERENCES branch_station(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO account DO ALSO SELECT update_te(old.te_id);
 
 ALTER TABLE bank_account ADD COLUMN account_id uuid
     UNIQUE REFERENCES account(id) ON UPDATE CASCADE;
 
 CREATE TABLE payment_method (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     is_active boolean,
     daily_interest numeric(10, 2) CONSTRAINT valid_daily_interest
         CHECK (daily_interest >= 0 AND daily_interest <= 100),
@@ -979,18 +1039,20 @@ CREATE TABLE payment_method (
         CHECK (max_installments > 0),
     destination_account_id uuid REFERENCES account(id) ON UPDATE CASCADE NOT NULL
 );
+CREATE RULE update_te AS ON UPDATE TO payment_method DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE payment_category (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     name text UNIQUE,
     category_type payment_category_type DEFAULT 'payable' NOT NULL,
     color text
 );
+CREATE RULE update_te AS ON UPDATE TO payment_category DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE payment (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     payment_type payment_type NOT NULL,
     status payment_status NOT NULL,
@@ -1020,35 +1082,39 @@ CREATE TABLE payment (
     category_id uuid REFERENCES payment_category(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO payment DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE payment_comment (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     date timestamp,
     comment text,
     payment_id uuid REFERENCES payment(id) ON UPDATE CASCADE,
     author_id uuid REFERENCES login_user(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO payment_comment DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE check_data (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     payment_id uuid REFERENCES payment(id) ON UPDATE CASCADE,
     bank_account_id uuid REFERENCES bank_account(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO check_data DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE card_payment_device (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     monthly_cost numeric(20, 2),
     description text
 );
+CREATE RULE update_te AS ON UPDATE TO card_payment_device DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE credit_provider (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     is_active boolean,
     max_installments integer DEFAULT 12 CONSTRAINT valid_max_installments
         CHECK (max_installments > 0),
@@ -1057,10 +1123,11 @@ CREATE TABLE credit_provider (
     open_contract_date timestamp,
     default_device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO credit_provider DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE card_operation_cost (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE,
     provider_id uuid REFERENCES credit_provider(id) ON UPDATE CASCADE,
     card_type credit_card_type NOT NULL,
@@ -1073,10 +1140,11 @@ CREATE TABLE card_operation_cost (
     fare numeric(20, 2),
     CONSTRAINT valid_installment_range CHECK (installment_start <= installment_end)
 );
+CREATE RULE update_te AS ON UPDATE TO card_operation_cost DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE credit_card_data (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     auth integer DEFAULT NULL,
     nsu integer DEFAULT NULL,
     installments integer DEFAULT 1,
@@ -1089,10 +1157,11 @@ CREATE TABLE credit_card_data (
     provider_id uuid REFERENCES credit_provider(id) ON UPDATE CASCADE,
     device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO credit_card_data DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE payment_change_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     change_reason text,
     last_due_date timestamp,
     change_date timestamp,
@@ -1101,10 +1170,11 @@ CREATE TABLE payment_change_history (
     new_status payment_status NOT NULL,
     payment_id uuid REFERENCES payment(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO payment_change_history DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE fiscal_sale_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     sale_id uuid REFERENCES sale(id) ON UPDATE CASCADE,
     document_type integer CONSTRAINT valid_type
         CHECK (document_type = 0 OR document_type = 1),
@@ -1112,10 +1182,11 @@ CREATE TABLE fiscal_sale_history (
     coo integer,
     document_counter integer
 );
+CREATE RULE update_te AS ON UPDATE TO fiscal_sale_history DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE device_settings (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     "type" integer CONSTRAINT valid_type
         CHECK (type >= 0 AND type < 4),
     brand text,
@@ -1125,12 +1196,13 @@ CREATE TABLE device_settings (
     station_id uuid REFERENCES branch_station(id) ON UPDATE CASCADE,
     UNIQUE (device_name, station_id)
 );
+CREATE RULE update_te AS ON UPDATE TO device_settings DO ALSO SELECT update_te(old.te_id);
 
 
 -- FIXME: This should be in ecf plugin
 CREATE TABLE device_constant (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     constant_type integer CONSTRAINT valid_constant_type
         CHECK (constant_type >= 0 AND constant_type < 3),
     constant_name text,
@@ -1146,10 +1218,11 @@ CREATE TABLE device_constant (
     --        infrastructure to deal with schema generations
     ,is_valid_model bool
 );
+CREATE RULE update_te AS ON UPDATE TO device_constant DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE employee_role_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     began timestamp,
     ended timestamp,
     salary numeric(20, 2),
@@ -1157,47 +1230,52 @@ CREATE TABLE employee_role_history (
     employee_id uuid REFERENCES employee(id) ON UPDATE CASCADE,
     is_active boolean
 );
+CREATE RULE update_te AS ON UPDATE TO employee_role_history DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE contact_info (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
     contact_info text,
     person_id uuid REFERENCES person(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO contact_info DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE parameter_data (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     field_name text NOT NULL UNIQUE,
     field_value text,
     is_editable boolean
 );
+CREATE RULE update_te AS ON UPDATE TO parameter_data DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE profile_settings (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     app_dir_name text,
     has_permission boolean,
     user_profile_id uuid REFERENCES user_profile(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO profile_settings DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE cost_center (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     name text NOT NULL,
     description text,
     budget numeric(20, 2) CONSTRAINT positive_budget CHECK (budget >= 0),
     is_active boolean NOT NULL DEFAULT TRUE
 );
+CREATE RULE update_te AS ON UPDATE TO cost_center DO ALSO SELECT update_te(old.te_id);
 
 ALTER TABLE sale ADD COLUMN
     cost_center_id uuid REFERENCES cost_center(id) ON UPDATE CASCADE;
 
 CREATE TABLE cost_center_entry (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     cost_center_id uuid NOT NULL REFERENCES cost_center(id) ON UPDATE CASCADE,
     payment_id uuid UNIQUE REFERENCES payment(id) ON UPDATE CASCADE,
@@ -1207,10 +1285,11 @@ CREATE TABLE cost_center_entry (
         CHECK ((payment_id IS NULL AND stock_transaction_id IS NOT NULL) OR
                (payment_id IS NOT NULL AND stock_transaction_id IS NULL))
 );
+CREATE RULE update_te AS ON UPDATE TO cost_center_entry DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE receiving_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     status receiving_order_status NOT NULL,
     receival_date timestamp,
@@ -1239,10 +1318,11 @@ CREATE TABLE receiving_order (
         CHECK (expense_value >= 0),
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO receiving_order DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE receiving_order_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
     cost numeric(20, 8) CONSTRAINT positive_cost
@@ -1252,17 +1332,19 @@ CREATE TABLE receiving_order_item (
     receiving_order_id uuid REFERENCES receiving_order(id) ON UPDATE CASCADE,
     purchase_item_id uuid REFERENCES purchase_item(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO receiving_order_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE purchase_receiving_map (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     purchase_id uuid REFERENCES purchase_order(id) ON UPDATE CASCADE,
     receiving_id uuid REFERENCES receiving_order(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO purchase_receiving_map DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE till_entry (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     date timestamp,
     description text,
@@ -1272,10 +1354,11 @@ CREATE TABLE till_entry (
     payment_id uuid REFERENCES payment(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO till_entry DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE fiscal_book_entry (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     entry_type integer,
     icms_value numeric(20, 2),
     iss_value numeric(20, 2),
@@ -1289,10 +1372,11 @@ CREATE TABLE fiscal_book_entry (
     drawee_id uuid REFERENCES person(id) ON UPDATE CASCADE,
     payment_group_id uuid REFERENCES payment_group(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO fiscal_book_entry DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE fiscal_day_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     emission_date date CONSTRAINT past_emission_date
         CHECK (emission_date <= DATE(NOW())),
     station_id uuid REFERENCES branch_station(id) ON UPDATE CASCADE,
@@ -1317,10 +1401,11 @@ CREATE TABLE fiscal_day_history (
         CHECK (coupon_start <= coupon_end),
     reduction_date timestamp
 );
+CREATE RULE update_te AS ON UPDATE TO fiscal_day_history DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE fiscal_day_tax (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     code text CONSTRAINT valid_code
         CHECK (code ~ '^([0-9][0-9][0-9][0-9]|I|F|N|ISS|DESC|CANC)$'),
     value numeric(20, 2) CONSTRAINT positive_value
@@ -1328,19 +1413,21 @@ CREATE TABLE fiscal_day_tax (
     fiscal_day_history_id uuid REFERENCES fiscal_day_history(id) ON UPDATE CASCADE,
     type text
 );
+CREATE RULE update_te AS ON UPDATE TO fiscal_day_tax DO ALSO SELECT update_te(old.te_id);
 
 
 CREATE TABLE installed_plugin (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     plugin_name text UNIQUE NOT NULL,
     plugin_version integer CONSTRAINT positive_plugin_version
         CHECK (plugin_version >= 0)
 );
+CREATE RULE update_te AS ON UPDATE TO installed_plugin DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE commission_source (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     direct_value numeric(10, 2) NOT NULL CONSTRAINT positive_value
         CHECK (direct_value >= 0),
@@ -1354,19 +1441,21 @@ CREATE TABLE commission_source (
         CHECK (category_id IS NOT NULL AND sellable_id IS NULL OR
                category_id IS NULL AND sellable_id IS NOT NULL)
 );
+CREATE RULE update_te AS ON UPDATE TO commission_source DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE commission (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     value numeric(20, 2) NOT NULL,
     commission_type integer NOT NULL,
     sale_id uuid NOT NULL REFERENCES sale(id) ON UPDATE CASCADE,
     payment_id uuid NOT NULL UNIQUE REFERENCES payment(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO commission DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE transfer_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     open_date timestamp NOT NULL,
     receival_date timestamp,
@@ -1379,10 +1468,11 @@ CREATE TABLE transfer_order (
     destination_responsible_id uuid REFERENCES employee(id) ON UPDATE CASCADE,
     UNIQUE (identifier, source_branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO transfer_order DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE transfer_order_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     sellable_id uuid NOT NULL REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     transfer_order_id uuid REFERENCES transfer_order(id) ON UPDATE CASCADE,
@@ -1391,20 +1481,22 @@ CREATE TABLE transfer_order_item (
     stock_cost numeric(20, 8) NOT NULL DEFAULT 0 CONSTRAINT positive_stock_cost
         CHECK (stock_cost >= 0)
 );
+CREATE RULE update_te AS ON UPDATE TO transfer_order_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE invoice_layout (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description varchar NOT NULL,
     width bigint NOT NULL CONSTRAINT positive_width
         CHECK (width > 0),
     height bigint NOT NULL CONSTRAINT positive_height
         CHECK (height > 0)
 );
+CREATE RULE update_te AS ON UPDATE TO invoice_layout DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE invoice_field (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     field_name varchar NOT NULL,
     layout_id uuid REFERENCES invoice_layout(id) ON UPDATE CASCADE,
     x bigint NOT NULL CONSTRAINT positive_x
@@ -1416,19 +1508,21 @@ CREATE TABLE invoice_field (
     height bigint NOT NULL CONSTRAINT positive_height
         CHECK (height > 0)
 );
+CREATE RULE update_te AS ON UPDATE TO invoice_field DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE invoice_printer (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     device_name varchar NOT NULL,
     description varchar NOT NULL,
     station_id uuid REFERENCES branch_station(id) ON UPDATE CASCADE,
     layout_id uuid REFERENCES invoice_layout(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO invoice_printer DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE inventory (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     status inventory_status NOT NULL,
     open_date timestamp NOT NULL,
@@ -1439,10 +1533,11 @@ CREATE TABLE inventory (
     responsible_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO inventory DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE inventory_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     product_id uuid NOT NULL REFERENCES product(id) ON UPDATE CASCADE,
     recorded_quantity numeric(20, 3) CONSTRAINT positive_recorded_quantity
         CHECK (recorded_quantity >= 0),
@@ -1458,10 +1553,11 @@ CREATE TABLE inventory_item (
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     cfop_data_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO inventory_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE production_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     status production_order_status NOT NULL,
     open_date timestamp,
@@ -1474,10 +1570,11 @@ CREATE TABLE production_order (
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO production_order DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE production_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
        CHECK (quantity >= 0),
     produced numeric(20, 3) DEFAULT 0 CONSTRAINT positive_produced
@@ -1487,10 +1584,11 @@ CREATE TABLE production_item (
     product_id uuid REFERENCES product(id) ON UPDATE CASCADE,
     order_id uuid REFERENCES production_order(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO production_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE production_material (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     needed numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (needed > 0),
     consumed numeric(20, 3) DEFAULT 0 CONSTRAINT positive_consumed
@@ -1506,19 +1604,21 @@ CREATE TABLE production_material (
     order_id uuid REFERENCES production_order(id) ON UPDATE CASCADE,
     product_id uuid REFERENCES product(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO production_material DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE production_service (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
     service_id uuid REFERENCES service(id) ON UPDATE CASCADE,
     order_id uuid REFERENCES production_order(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO production_service DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE loan (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     open_date timestamp,
     close_date timestamp,
@@ -1532,10 +1632,11 @@ CREATE TABLE loan (
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO loan DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE loan_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
     sale_quantity numeric(20, 3) CONSTRAINT positive_sale_quantity
@@ -1550,10 +1651,11 @@ CREATE TABLE loan_item (
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO loan_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE stock_decrease (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     confirm_date timestamp,
     status stock_decrease_status NOT NULL,
@@ -1569,10 +1671,11 @@ CREATE TABLE stock_decrease (
     cost_center_id uuid REFERENCES cost_center(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO stock_decrease DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE stock_decrease_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
        CHECK (quantity >= 0),
     cost numeric(20, 8) DEFAULT 0,
@@ -1580,18 +1683,20 @@ CREATE TABLE stock_decrease_item (
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO stock_decrease_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE work_order_category (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     name text UNIQUE NOT NULL,
     color text
 );
+CREATE RULE update_te AS ON UPDATE TO work_order_category DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE work_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     identifier serial NOT NULL,
     status work_order_status NOT NULL,
@@ -1618,10 +1723,11 @@ CREATE TABLE work_order (
     execution_branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO work_order DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE work_order_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     quantity numeric(20,3),
     quantity_decreased numeric(20,3),
@@ -1631,10 +1737,11 @@ CREATE TABLE work_order_item (
     sale_item_id uuid REFERENCES sale_item(id) ON UPDATE CASCADE,
     order_id uuid REFERENCES work_order(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO work_order_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE work_order_package (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     identifier text NOT NULL,
     status work_order_package_status NOT NULL,
@@ -1646,19 +1753,21 @@ CREATE TABLE work_order_package (
     source_branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     CONSTRAINT different_branches CHECK (source_branch_id != destination_branch_id)
 );
+CREATE RULE update_te AS ON UPDATE TO work_order_package DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE work_order_package_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     order_id uuid NOT NULL REFERENCES work_order(id) ON UPDATE CASCADE,
     package_id uuid NOT NULL REFERENCES work_order_package(id) ON UPDATE CASCADE,
     UNIQUE (order_id, package_id)
 );
+CREATE RULE update_te AS ON UPDATE TO work_order_package_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE work_order_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     date timestamp NOT NULL,
     what text NOT NULL,
@@ -1668,10 +1777,11 @@ CREATE TABLE work_order_history (
     user_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
     work_order_id uuid NOT NULL REFERENCES work_order(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO work_order_history DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE account_transaction (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
     code text,
     operation_type account_transaction_operation_type NOT NULL,
@@ -1682,37 +1792,41 @@ CREATE TABLE account_transaction (
     date timestamp NOT NULL,
     payment_id uuid REFERENCES payment(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO account_transaction DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE ui_form (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
     form_name text UNIQUE
 );
+CREATE RULE update_te AS ON UPDATE TO ui_form DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE ui_field (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
     field_name text,
     mandatory boolean,
     visible boolean,
     ui_form_id uuid REFERENCES ui_form(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO ui_field DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE product_quality_test (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     product_id uuid REFERENCES product(id) ON UPDATE CASCADE,
     test_type product_quality_test_type NOT NULL,
     description text,
     notes text,
     success_value text
 );
+CREATE RULE update_te AS ON UPDATE TO product_quality_test DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE production_produced_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     order_id uuid REFERENCES production_order(id) ON UPDATE CASCADE,
     product_id uuid REFERENCES product(id) ON UPDATE CASCADE,
     produced_by_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
@@ -1722,10 +1836,11 @@ CREATE TABLE production_produced_item (
     test_passed boolean,
     UNIQUE (product_id, serial_number)
 );
+CREATE RULE update_te AS ON UPDATE TO production_produced_item DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE production_item_quality_result (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     produced_item_id uuid REFERENCES production_produced_item(id) ON UPDATE CASCADE,
     quality_test_id uuid REFERENCES product_quality_test(id) ON UPDATE CASCADE,
@@ -1735,11 +1850,12 @@ CREATE TABLE production_item_quality_result (
     result_value text,
     test_passed boolean
 );
+CREATE RULE update_te AS ON UPDATE TO production_item_quality_result DO ALSO SELECT update_te(old.te_id);
 
 -- TODO: Mudar o nome identifier
 CREATE TABLE credit_check_history (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
-    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     creation_date timestamp,
     check_date timestamp,
     identifier text,
@@ -1748,18 +1864,11 @@ CREATE TABLE credit_check_history (
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE,
     user_id uuid REFERENCES login_user(id) ON UPDATE CASCADE
 );
+CREATE RULE update_te AS ON UPDATE TO credit_check_history DO ALSO SELECT update_te(old.te_id);
 
 
 -- Add new tables above this line when creating a new schema generation,
 -- unless they are referenced by other tables above.
-
--- This is last to avoid cyclic references
-
-ALTER TABLE transaction_entry
-    ADD CONSTRAINT transaction_entry_user_id_fkey FOREIGN KEY
-        (user_id) REFERENCES login_user(id) ON UPDATE CASCADE,
-    ADD CONSTRAINT transaction_entry_station_id_fkey FOREIGN KEY
-        (station_id) REFERENCES branch_station(id) ON UPDATE CASCADE;
 
 -- Finally create the system_table which we use to verify that the schema
 -- is properly created.
