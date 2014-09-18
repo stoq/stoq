@@ -50,7 +50,7 @@ model: AccountTransaction<1>
   code: u'15'
   date: datetime.today()
   description: u'description'
-  operation_type: 1
+  operation_type: u'out'
   source_account_id: Account<2>
   value: <currency $150>
 

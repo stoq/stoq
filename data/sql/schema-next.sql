@@ -76,6 +76,7 @@ CREATE TYPE sellable_status AS ENUM ('available', 'closed');
 CREATE TYPE stock_decrease_status AS ENUM ('initial', 'confirmed');
 CREATE TYPE till_status AS ENUM ('pending', 'open', 'closed');
 CREATE TYPE transfer_order_status AS ENUM ('pending', 'sent', 'received');
+CREATE TYPE account_transaction_operation_type AS ENUM ('in', 'out');
 --
 -- Tables that are not syncronized
 --
@@ -1673,7 +1674,7 @@ CREATE TABLE account_transaction (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     description text,
     code text,
-    operation_type integer, --# XXX
+    operation_type account_transaction_operation_type NOT NULL,
     value numeric(20, 2) CONSTRAINT positive_value
         CHECK (value >= 0),
     source_account_id uuid REFERENCES account(id) ON UPDATE CASCADE NOT NULL,

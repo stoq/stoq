@@ -41,6 +41,7 @@ CREATE TYPE sellable_status AS ENUM ('available', 'closed');
 CREATE TYPE stock_decrease_status AS ENUM ('initial', 'confirmed');
 CREATE TYPE till_status AS ENUM ('pending', 'open', 'closed');
 CREATE TYPE transfer_order_status AS ENUM ('pending', 'sent', 'received');
+CREATE TYPE account_transaction_operation_type AS ENUM ('in', 'out');
 """
 
 payment_statuses = {0: 'preview', 1: 'pending', 2: 'paid', 3: 'reviewing',
@@ -150,6 +151,9 @@ tables = [
     ('receiving_order', 'freight_type', 'receiving_order_freight_type',
      False, 'fob-payment', False, True,
      {0: 'fob-payment', 1: 'fob-installments', 2: 'cif-unknown', 3: 'cif-invoice'}),
+    ('account_transaction', 'operation_type', 'account_transaction_operation_type',
+     'valid_operation_type', 'in', False, False,
+     {0: 'in', 1: 'out'})
 ]
 
 base_query = """

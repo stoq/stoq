@@ -377,8 +377,8 @@ class AccountTransaction(Domain):
     __storm_table__ = 'account_transaction'
 
     # operation_type values
-    (TYPE_IN,
-     TYPE_OUT) = range(2)
+    TYPE_IN = u'in'
+    TYPE_OUT = u'out'
 
     # FIXME: It's way to tricky to calculate the direction and it's
     #        values for an AccountTransaction due to the fact that
@@ -417,7 +417,7 @@ class AccountTransaction(Domain):
     payment = Reference(payment_id, 'Payment.id')
 
     #: operation_type represents the type of transaction (debit/credit)
-    operation_type = IntCol()
+    operation_type = EnumCol(allow_none=False, default=TYPE_IN)
 
     class sqlmeta:
         lazyUpdate = True
