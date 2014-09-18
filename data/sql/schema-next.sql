@@ -1,5 +1,5 @@
 --
--- Copyright (C) 2006-2013 Async Open Source
+-- Copyright (C) 2006-2014 Async Open Source
 --
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU Lesser General Public License
@@ -30,6 +30,53 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 --
+--  Data types
+--
+
+CREATE TYPE sale_status AS ENUM ('initial', 'quote', 'ordered', 'confirmed',
+                                 'cancelled', 'returned', 'renegotiated');
+CREATE TYPE payment_status AS ENUM ('preview', 'pending', 'paid',
+                                    'reviewing', 'confirmed', 'cancelled');
+CREATE TYPE payment_type AS ENUM ('in', 'out');
+CREATE TYPE work_order_status AS ENUM ('opened', 'cancelled', 'waiting',
+                                       'in-progress', 'finished', 'delivered');
+CREATE TYPE work_order_package_status AS ENUM ('opened', 'sent', 'received');
+CREATE TYPE credit_card_type AS ENUM ('credit', 'debit', 'credit-inst-store',
+                                      'credit-inst-provider', 'debit-pre-dated');
+CREATE TYPE payment_category_type AS ENUM ('payable', 'receivable');
+CREATE TYPE account_type AS ENUM ('bank', 'cash', 'asset', 'credit',
+                                  'income', 'expense', 'equity' );
+CREATE TYPE event_type AS ENUM ('system', 'user', 'order', 'sale', 'payment');
+CREATE TYPE inventory_status AS ENUM ('open', 'closed', 'cancelled');
+CREATE TYPE loan_status AS ENUM ('open', 'closed');
+CREATE TYPE credit_check_status AS ENUM ('included', 'not-included');
+CREATE TYPE marital_status AS ENUM ('single', 'married', 'divorced',
+                                    'widowed', 'separeted', 'cohabitation');
+CREATE TYPE individual_gender AS ENUM ('male', 'female');
+CREATE TYPE client_status AS ENUM ('solvent', 'indebt', 'insolvent', 'inactive');
+CREATE TYPE supplier_status AS ENUM ('active', 'inactive', 'blocked');
+CREATE TYPE employee_status AS ENUM ('normal', 'away', 'vacation', 'off');
+CREATE TYPE stock_transaction_history_type AS ENUM ('initial', 'sell',
+    'returned-sale', 'cancelled-sale', 'received-purchase', 'returned-loan',
+    'loan', 'production-allocated', 'production-produced',
+    'production-returned', 'stock-decrease', 'transfer-from', 'transfer-to',
+    'inventory-adjust', 'production-sent', 'imported', 'consignment-returned',
+    'wo-used', 'wo-returned-to-stock', 'sale-reserved');
+CREATE TYPE product_quality_test_type AS ENUM ('boolean', 'decimal');
+CREATE TYPE production_order_status AS ENUM ('opened', 'waiting', 'producing',
+    'closed', 'quality-assurance', 'cancelled');
+CREATE TYPE purchase_order_status AS ENUM ('quoting', 'pending', 'confirmed',
+                                           'consigned', 'cancelled','closed');
+CREATE TYPE purchase_order_freight_type AS ENUM ('fob', 'cif');
+CREATE TYPE receiving_order_status AS ENUM ('pending', 'closed');
+CREATE TYPE receiving_order_freight_type AS ENUM ('fob-payment', 'fob-installments',
+                                            'cif-unknown', 'cif-invoice');
+CREATE TYPE delivery_status AS ENUM ('initial', 'sent', 'received');
+CREATE TYPE sellable_status AS ENUM ('available', 'closed');
+CREATE TYPE stock_decrease_status AS ENUM ('initial', 'confirmed');
+CREATE TYPE till_status AS ENUM ('pending', 'open', 'closed');
+CREATE TYPE transfer_order_status AS ENUM ('pending', 'sent', 'received');
+--
 -- Tables that are not syncronized
 --
 
@@ -52,7 +99,7 @@ CREATE TABLE city_location (
 CREATE TABLE event (
     id serial NOT NULL PRIMARY KEY,
     date timestamp NOT NULL,
-    event_type integer NOT NULL,
+    event_type event_type NOT NULL,
     description varchar NOT NULL
 );
 
@@ -99,8 +146,7 @@ CREATE TABLE client_category (
 CREATE TABLE client (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 4),
+    status client_status NOT NULL,
     days_late integer CONSTRAINT positive_days_late
         CHECK (days_late >= 0),
     credit_limit numeric(20, 2) CONSTRAINT positive_credit_limit
@@ -133,14 +179,12 @@ CREATE TABLE individual (
     rg_number text,
     birth_date timestamp,
     occupation text,
-    marital_status integer CONSTRAINT valid_marital_status
-        CHECK (marital_status >= 0 AND marital_status < 6),
+    marital_status marital_status NOT NULL,
     father_name text,
     mother_name text,
     rg_expedition_date timestamp,
     rg_expedition_local text,
-    gender integer CONSTRAINT valid_gender
-        CHECK (gender >= 0 AND gender < 2),
+    gender individual_gender NOT NULL,
     spouse_name text,
     birth_location_id bigint REFERENCES city_location(id) ON UPDATE CASCADE,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
@@ -204,8 +248,7 @@ CREATE TABLE employee (
     admission_date timestamp,
     expire_vacation timestamp,
     salary numeric(20, 2),
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 4),
+    status employee_status NOT NULL,
     registry_number text,
     education_level text,
     dependent_person_number integer CONSTRAINT positive_dependent_person_number
@@ -226,6 +269,7 @@ CREATE TABLE branch (
     crt integer DEFAULT 1,
     acronym text UNIQUE CONSTRAINT acronym_not_empty
         CHECK (acronym != ''),
+    can_execute_foreign_work_orders boolean DEFAULT false,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
 
@@ -251,8 +295,7 @@ CREATE TABLE supplier (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_active boolean,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 3),
+    status supplier_status NOT NULL,
     product_desc text,
     person_id uuid UNIQUE REFERENCES person(id) ON UPDATE CASCADE
 );
@@ -361,8 +404,7 @@ CREATE TABLE sellable (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     barcode text,
     code text,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status <= 1),
+    status sellable_status NOT NULL,
     description text,
     cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (cost >= 0),
@@ -612,7 +654,7 @@ CREATE TABLE stock_transaction_history (
     stock_cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (stock_cost >= 0),
     quantity numeric(20, 3),
-    type integer CONSTRAINT type_range CHECK (type >= 0 and type <= 19),
+    type stock_transaction_history_type NOT NULL,
     object_id uuid,
     responsible_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE,
     product_stock_item_id uuid NOT NULL REFERENCES product_stock_item(id)
@@ -623,8 +665,7 @@ CREATE TABLE purchase_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier SERIAL NOT NULL,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 6),
+    status purchase_order_status NOT NULL,
     open_date timestamp,
     quote_deadline timestamp,
     expected_receival_date timestamp,
@@ -633,8 +674,7 @@ CREATE TABLE purchase_order (
     confirm_date timestamp,
     notes text,
     salesperson_name text,
-    freight_type integer CONSTRAINT valid_freight_type
-        CHECK (freight_type >= 0 AND freight_type < 2),
+    freight_type purchase_order_freight_type NOT NULL,
     expected_freight numeric(20, 2) CONSTRAINT positive_expected_freight
         CHECK (expected_freight >= 0),
     surcharge_value numeric(20, 2) CONSTRAINT positive_surcharge_value
@@ -704,15 +744,17 @@ CREATE TABLE branch_station (
 CREATE TABLE till (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 3),
+    status till_status NOT NULL,
     initial_cash_amount numeric(20, 2) CONSTRAINT positive_initial_cash_amount
         CHECK (initial_cash_amount >= 0),
     final_cash_amount numeric(20, 2) CONSTRAINT positive_final_cash_amount
         CHECK (final_cash_amount >= 0),
     opening_date timestamp,
     closing_date timestamp,
-    station_id uuid REFERENCES branch_station(id) ON UPDATE CASCADE
+    observations text,
+    station_id uuid REFERENCES branch_station(id) ON UPDATE CASCADE,
+    responsible_open_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
+    responsible_close_id uuid REFERENCES login_user(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE client_category_price (
@@ -735,8 +777,7 @@ CREATE TABLE sale (
         CHECK (invoice_number > 0 AND invoice_number <= 999999999)
         DEFAULT NULL UNIQUE,
     service_invoice_number integer,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 8),
+    status sale_status NOT NULL,
     discount_value numeric(20, 2) CONSTRAINT positive_discount_value
         CHECK (discount_value >= 0),
     surcharge_value numeric(20, 2) CONSTRAINT positive_surcharge_value
@@ -750,6 +791,7 @@ CREATE TABLE sale (
     return_date timestamp,
     expire_date timestamp,
     operation_nature text,
+    paid boolean DEFAULT false,
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE,
     client_category_id uuid REFERENCES client_category(id) ON UPDATE CASCADE,
     cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE,
@@ -883,8 +925,7 @@ CREATE TABLE address (
 CREATE TABLE delivery (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 3),
+    status delivery_status NOT NULL,
     open_date timestamp,
     deliver_date timestamp,
     receive_date timestamp,
@@ -910,7 +951,7 @@ CREATE TABLE calls (
 CREATE TABLE account (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    account_type integer,
+    account_type account_type NOT NULL,
     description text NOT NULL,
     code text,
     parent_id uuid REFERENCES account(id) ON UPDATE CASCADE,
@@ -942,8 +983,7 @@ CREATE TABLE payment_category (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text UNIQUE,
-    category_type integer DEFAULT 0 CONSTRAINT valid_category_type
-        CHECK (category_type >= 0 AND category_type <= 1),
+    category_type payment_category_type DEFAULT 'payable' NOT NULL,
     color text
 );
 
@@ -951,10 +991,8 @@ CREATE TABLE payment (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier SERIAL NOT NULL,
-    payment_type integer CONSTRAINT valid_payment_type
-        CHECK (payment_type >= 0 AND payment_type < 2),
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 6),
+    payment_type payment_type NOT NULL,
+    status payment_status NOT NULL,
     open_date timestamp,
     due_date timestamp,
     paid_date timestamp,
@@ -1024,8 +1062,7 @@ CREATE TABLE card_operation_cost (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     device_id uuid REFERENCES card_payment_device(id) ON UPDATE CASCADE,
     provider_id uuid REFERENCES credit_provider(id) ON UPDATE CASCADE,
-    card_type integer CONSTRAINT valid_status
-        CHECK (card_type >= 0 AND card_type < 5),
+    card_type credit_card_type NOT NULL,
     installment_start integer CONSTRAINT positive_installment_start
         CHECK (installment_start>=1),
     installment_end integer CONSTRAINT positive_installment_end
@@ -1042,8 +1079,7 @@ CREATE TABLE credit_card_data (
     auth integer DEFAULT NULL,
     nsu integer DEFAULT NULL,
     installments integer DEFAULT 1,
-    card_type integer CONSTRAINT valid_status
-        CHECK (card_type >= 0 AND card_type < 5),
+    card_type credit_card_type NOT NULL,
     entrance_value numeric(20, 2) DEFAULT 0,
     fee numeric(10, 2) NOT NULL DEFAULT 0,
     fee_value numeric(20, 2) DEFAULT 0,
@@ -1060,8 +1096,8 @@ CREATE TABLE payment_change_history (
     last_due_date timestamp,
     change_date timestamp,
     new_due_date timestamp,
-    last_status integer,
-    new_status integer,
+    last_status payment_status NOT NULL,
+    new_status payment_status NOT NULL,
     payment_id uuid REFERENCES payment(id) ON UPDATE CASCADE
 );
 
@@ -1175,8 +1211,7 @@ CREATE TABLE receiving_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier SERIAL NOT NULL,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 2),
+    status receiving_order_status NOT NULL,
     receival_date timestamp,
     confirm_date timestamp,
     notes text,
@@ -1188,7 +1223,7 @@ CREATE TABLE receiving_order (
         CHECK (discount_value >= 0),
     icms_total numeric(20, 2),
     ipi_total numeric(20, 2),
-    freight_type integer DEFAULT 0,
+    freight_type receiving_order_freight_type DEFAULT 'fob-payment' NOT NULL,
     invoice_number integer CONSTRAINT valid_invoice_number
         CHECK (invoice_number > 0 AND invoice_number <= 999999999),
     invoice_total numeric(20, 2),
@@ -1334,8 +1369,9 @@ CREATE TABLE transfer_order (
     identifier SERIAL NOT NULL,
     open_date timestamp NOT NULL,
     receival_date timestamp,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status <= 2),
+    invoice_number integer,
+    status transfer_order_status NOT NULL,
+    comments text,
     source_branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     destination_branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     source_responsible_id uuid NOT NULL REFERENCES employee(id) ON UPDATE CASCADE,
@@ -1393,8 +1429,7 @@ CREATE TABLE inventory (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier SERIAL NOT NULL,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 and status < 3),
+    status inventory_status NOT NULL,
     open_date timestamp NOT NULL,
     close_date timestamp,
     invoice_number integer CONSTRAINT valid_invoice_number
@@ -1427,12 +1462,12 @@ CREATE TABLE production_order (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier SERIAL NOT NULL,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 5),
+    status production_order_status NOT NULL,
     open_date timestamp,
     close_date timestamp,
     expected_start_date timestamp,
     start_date timestamp,
+    cancel_date timestamp,
     description text,
     responsible_id uuid REFERENCES employee(id) ON UPDATE CASCADE,
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
@@ -1487,8 +1522,7 @@ CREATE TABLE loan (
     open_date timestamp,
     close_date timestamp,
     expire_date timestamp,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 6),
+    status loan_status NOT NULL,
     notes text,
     removed_by text,
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE,
@@ -1510,7 +1544,7 @@ CREATE TABLE loan_item (
     price numeric(20, 2) CONSTRAINT positive_price
         CHECK (price >= 0),
     base_price numeric(20, 2) CONSTRAINT positive_base_price
-	CHECK (base_price >= 0),
+        CHECK (base_price >= 0),
     loan_id uuid REFERENCES loan(id) ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE
@@ -1521,8 +1555,8 @@ CREATE TABLE stock_decrease (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier SERIAL NOT NULL,
     confirm_date timestamp,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 8),
+    status stock_decrease_status NOT NULL,
+    invoice_number integer,
     reason text,
     notes text,
     responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
@@ -1559,8 +1593,7 @@ CREATE TABLE work_order (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     identifier serial NOT NULL,
-    status integer CONSTRAINT valid_status
-      CHECK (status >= 0 AND status <= 5),
+    status work_order_status NOT NULL,
     description text,
     estimated_hours numeric(10,2),
     estimated_cost numeric(20,2),
@@ -1572,6 +1605,7 @@ CREATE TABLE work_order (
     is_rejected boolean NOT NULL DEFAULT FALSE,
     defect_reported text,
     defect_detected text,
+    quantity integer DEFAULT 1,
     branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     quote_responsible_id uuid REFERENCES employee(id) ON UPDATE CASCADE,
@@ -1602,8 +1636,7 @@ CREATE TABLE work_order_package (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     identifier text NOT NULL,
-    status integer NOT NULL CONSTRAINT valid_status
-      CHECK (status >= 0 AND status <= 2),
+    status work_order_package_status NOT NULL,
     send_date timestamp,
     receive_date timestamp,
     send_responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
@@ -1640,8 +1673,9 @@ CREATE TABLE account_transaction (
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     description text,
     code text,
-    value numeric(20, 2) CONSTRAINT nonzero_value
-        CHECK (value != 0),
+    operation_type integer, --# XXX
+    value numeric(20, 2) CONSTRAINT positive_value
+        CHECK (value >= 0),
     source_account_id uuid REFERENCES account(id) ON UPDATE CASCADE NOT NULL,
     account_id uuid REFERENCES account(id) ON UPDATE CASCADE NOT NULL,
     date timestamp NOT NULL,
@@ -1669,7 +1703,7 @@ CREATE TABLE product_quality_test (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     product_id uuid REFERENCES product(id) ON UPDATE CASCADE,
-    test_type integer,
+    test_type product_quality_test_type NOT NULL,
     description text,
     notes text,
     success_value text
@@ -1708,8 +1742,7 @@ CREATE TABLE credit_check_history (
     creation_date timestamp,
     check_date timestamp,
     identifier text,
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 2),
+    status credit_check_status NOT NULL,
     notes text,
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE,
     user_id uuid REFERENCES login_user(id) ON UPDATE CASCADE
@@ -1740,4 +1773,4 @@ CREATE TABLE system_table (
 );
 
 INSERT INTO system_table (updated, patchlevel, generation)
-     VALUES (CURRENT_TIMESTAMP, 0, 5);
+     VALUES (CURRENT_TIMESTAMP, 0, 6);

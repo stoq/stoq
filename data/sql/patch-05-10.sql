@@ -23,3 +23,4 @@ UPDATE sale SET status = 'renegotiated' WHERE temp_status = 7;
 
 -- Removing the temporary column created.
 ALTER TABLE sale DROP COLUMN temp_status;
+ALTER TABLE sale ALTER COLUMN status SET NOT NULL;
