@@ -576,8 +576,14 @@ class ECFUI(object):
         model = run_dialog(PaulistaInvoiceDialog, self._current_app,
                            self.default_store, model)
 
-        # User cancelled the dialog or the document didn't change.
-        if not model or model.document == initial_client_document:
+        # The user has chosen the 'without cpf' option, but we still need to
+        # inform a invalid CPF, otherwise the current client's cpf will be used
+        if not model:
+            coupon.identify_customer('-', '-', u'', None)
+            return
+
+        # The document didn't change.
+        if model.document == initial_client_document:
             return
         coupon.identify_customer('-', '-', model.document,
                                  model.document_type)
