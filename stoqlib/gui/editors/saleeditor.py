@@ -198,6 +198,9 @@ class SaleQuoteItemEditor(BaseEditor):
 
     def _maybe_reserve_products(self):
         if not self._can_reserve():
+            # Not reserve products. But allow to edit sale item quantity,
+            # if the batch is not informed or sale item has no storable.
+            self.model.quantity = self.quantity_model.quantity
             return
 
         decreased = self.model.quantity_decreased

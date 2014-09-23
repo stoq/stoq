@@ -30,6 +30,7 @@ from kiwi.currency import currency
 
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.event import Event
+from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor, SaleClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -61,6 +62,37 @@ class TestSaleQuoteItemEditor(GUITest):
                 editor = SaleQuoteItemEditor(self.store, sale_item)
                 editor.sale.set_label('23456')
                 self.check_editor(editor, 'editor-salequoteitem-show-nfe')
+
+    def test_edit_product_without_storable(self):
+        sale_item = self.create_sale_item()
+        sale_item.price = 100
+        self.assertEqual(sale_item.quantity, 1)
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        editor.sale.set_label('12345')
+        self.assertNotVisible(editor, ['reserved'])
+
+        self.assertEqual(editor.total.read(), 100)
+        editor.quantity.update(3)
+        self.assertEqual(editor.total.read(), 300)
+        self.click(editor.main_dialog.ok_button)
+        self.assertEqual(sale_item.quantity, 3)
+
+    def test_edit_product_with_batch(self):
+        sale = self.create_sale()
+        product = self.create_product()
+        self.create_storable(product=product, is_batch=True)
+
+        sale.status = Sale.STATUS_QUOTE
+        sale_item = sale.add_sellable(product.sellable)
+        sale_item.price = 10
+        self.assertEqual(sale_item.quantity, 1)
+
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        self.assertNotVisible(editor, ['reserved'])
+        editor.quantity.update(2)
+        self.assertEqual(editor.total.read(), 20)
+        self.click(editor.main_dialog.ok_button)
+        self.assertEqual(sale_item.quantity, 2)
 
     def test_show_param_no_allow_higher_sale_price(self):
         sale_item = self.create_sale_item()
