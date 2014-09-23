@@ -160,7 +160,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         'distance_pd': (22, 40, 1, Decimal('0.5'), 1),
         'distance_prism': (0, 10, 2, Decimal('0.25'), 1),
         'distance_base': (0, 10, 2, Decimal('0.25'), 1),
-        'distance_height': (10, 30, 2, Decimal('0.5'), 1),
+        'distance_height': (10, 40, 2, Decimal('0.5'), 1),
         'addition': (0, 4, 2, Decimal('0.25'), 1),
         'near_spherical': (-30, 30, 2, Decimal('0.25'), 1),
         'near_cylindrical': (-10, 10, 2, Decimal('0.25'), 1),
@@ -169,10 +169,10 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     }
 
     frame_widgets = {
-        'frame_mva': (10, 60, 1, Decimal('0.1'), 1),
-        'frame_mha': (40, 70, 1, Decimal('0.1'), 1),
-        'frame_mda': (10, 60, 1, Decimal('0.1'), 1),
-        'frame_bridge': (5, 25, 1, Decimal('0.1'), 1),
+        'frame_mva': (10, 70, 1, Decimal('0.1'), 1),
+        'frame_mha': (40, 80, 1, Decimal('0.1'), 1),
+        'frame_mda': (10, 65, 1, Decimal('0.1'), 1),
+        'frame_bridge': (5, 30, 1, Decimal('0.1'), 1),
     }
 
     def __init__(self, store, workorder, show_finish_date=False,

@@ -129,8 +129,8 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
             ('re_distance_prism', 0, 10, 2, Decimal('0.25'), 1),
             ('le_distance_base', 0, 10, 2, Decimal('0.25'), 1),
             ('re_distance_base', 0, 10, 2, Decimal('0.25'), 1),
-            ('le_distance_height', 10, 30, 2, Decimal('0.5'), 1),
-            ('re_distance_height', 10, 30, 2, Decimal('0.5'), 1),
+            ('le_distance_height', 10, 40, 2, Decimal('0.5'), 1),
+            ('re_distance_height', 10, 40, 2, Decimal('0.5'), 1),
             ('le_addition', 0, 4, 2, Decimal('0.25'), 1),
             ('re_addition', 0, 4, 2, Decimal('0.25'), 1),
             ('le_near_spherical', -30, 30, 2, Decimal('0.25'), 1),
@@ -164,9 +164,10 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         slave = WorkOrderOpticalSlave(self.store, workorder)
 
         for widget_name, minv, maxv, prec, step_inc, page_inc in [
-            ('frame_mva', 10, 60, 1, Decimal('0.1'), 1),
-            ('frame_mha', 40, 70, 1, Decimal('0.1'), 1),
-            ('frame_bridge', 5, 25, 1, Decimal('0.1'), 1),
+            ('frame_mva', 10, 70, 1, Decimal('0.1'), 1),
+            ('frame_mha', 40, 80, 1, Decimal('0.1'), 1),
+            ('frame_mda', 10, 65, 1, Decimal('0.1'), 1),
+            ('frame_bridge', 5, 30, 1, Decimal('0.1'), 1),
         ]:
             widget = getattr(slave, widget_name)
             self.assertFalse(widget.emit("validate", 0))
