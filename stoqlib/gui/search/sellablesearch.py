@@ -28,7 +28,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from storm.expr import And, Ne
+from storm.expr import Ne
 
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObject
@@ -63,7 +63,8 @@ class SellableSearch(SearchEditor):
 
     def __init__(self, store, hide_footer=False, hide_toolbar=True,
                  selection_mode=None, search_str=None, search_spec=None,
-                 search_query=None, double_click_confirm=True, info_message=None):
+                 search_query=None, double_click_confirm=True, info_message=None,
+                 show_closed_items=False):
         """
         :param store: a store
         :param hide_footer: do I have to hide the dialog footer?
@@ -72,6 +73,8 @@ class SellableSearch(SearchEditor):
         :param search_str: If this search should already filter for some string
         :param double_click_confirm: If double click a item in the list should
             automatically confirm
+        :param show_closed_items: if this parameter is True, shows sellable with
+            status closed
         """
         if selection_mode is None:
             selection_mode = gtk.SELECTION_BROWSE
@@ -80,6 +83,7 @@ class SellableSearch(SearchEditor):
         self._first_search = True
         self._first_search_string = search_str
         self._search_query = search_query
+        self._show_closed_items = show_closed_items
         self._delivery_sellable = sysparam.get_object(
             store, 'DELIVERY_SERVICE').sellable
 
@@ -192,10 +196,13 @@ class SellableSearch(SearchEditor):
         if self._search_query:
             results = results.find(self._search_query)
 
+        if not self._show_closed_items:
+            results = results.find(
+                self.search_spec.status == Sellable.STATUS_AVAILABLE)
+
         if self.exclude_delivery_service:
-            results = results.find(And(
-                self.search_spec.status == Sellable.STATUS_AVAILABLE,
-                self.search_spec.id != self._delivery_sellable.id))
+            results = results.find(
+                self.search_spec.id != self._delivery_sellable.id)
 
         return results
 

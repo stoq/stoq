@@ -286,7 +286,8 @@ class WorkOrderEditor(BaseEditor):
 
     def on_equip_search_button__clicked(self, button):
         ret = run_dialog(SellableSearch, self, self.store, hide_footer=True,
-                         hide_toolbar=True, double_click_confirm=True)
+                         hide_toolbar=True, double_click_confirm=True,
+                         show_closed_items=True)
         if not ret:
             return
 
