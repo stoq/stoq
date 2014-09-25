@@ -813,25 +813,37 @@ class SaleItemsView(Viewable):
     """
 
     branch = Branch
+    sellable = Sellable
+    product = Product
 
     id = SaleItem.id
     sellable_id = Sellable.id
     code = Sellable.code
     description = Sellable.description
+    category = SellableCategory.description
     sale_id = SaleItem.sale_id
     sale_identifier = Sale.identifier
     sale_date = Sale.open_date
     client_name = Person.name
     quantity = SaleItem.quantity
     price = SaleItem.price
+    base_price = SaleItem.base_price
+    manufacturer = ProductManufacturer.name
     unit_description = SellableUnit.description
     batch_number = Coalesce(StorableBatch.batch_number, u'')
     batch_date = StorableBatch.create_date
+
+    item_discount = SaleItem.base_price - SaleItem.price
+    total = SaleItem.price * SaleItem.quantity
 
     tables = [
         SaleItem,
         LeftJoin(StorableBatch, StorableBatch.id == SaleItem.batch_id),
         LeftJoin(Sellable, Sellable.id == SaleItem.sellable_id),
+        LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
+        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(ProductManufacturer,
+                 ProductManufacturer.id == Product.manufacturer_id),
         Join(Sale, SaleItem.sale_id == Sale.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(Client, Sale.client_id == Client.id),
@@ -839,9 +851,13 @@ class SaleItemsView(Viewable):
         Join(Branch, Sale.branch_id == Branch.id),
     ]
 
-    clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
-                Sale.status == Sale.STATUS_RENEGOTIATED,
-                Sale.status == Sale.STATUS_ORDERED)
+    @classmethod
+    def find_confirmed(cls, store, sellable):
+        clause = And(Sellable.id == sellable.id,
+                     Or(Sale.status == Sale.STATUS_CONFIRMED,
+                        Sale.status == Sale.STATUS_RENEGOTIATED,
+                        Sale.status == Sale.STATUS_ORDERED))
+        return store.find(cls, clause)
 
 
 class ReceivingItemView(Viewable):

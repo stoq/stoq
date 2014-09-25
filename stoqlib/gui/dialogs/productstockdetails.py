@@ -110,7 +110,8 @@ class ProductStockHistoryDialog(BaseEditor):
             items = items.find(Branch.id == current_branch.id)
         self.receiving_list.add_list(list(items))
 
-        items = self.store.find(SaleItemsView, sellable_id=self.model.id)
+        items = SaleItemsView.find_confirmed(self.store,
+                                             sellable=self.model)
         if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             items = items.find(Branch.id == current_branch.id)
         self.sales_list.add_list(list(items))

@@ -479,7 +479,7 @@
                         <child>
                           <object class="GtkLabel" id="label21">
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">Check the "Observations" tab for more information...</property>
+                            <property name="label" translatable="yes">Check the "Details" tab for more information...</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>

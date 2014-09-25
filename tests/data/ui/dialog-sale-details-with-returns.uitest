@@ -28,11 +28,15 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                 ObjectList(items_list, expand=True, fill=True):
                   column: title='Code'
                   column: title='Description', expand
-                  column: title='Quantity'
-                  column: title='Price'
+                  column: title='Category', hidden
+                  column: title='Manufacturer', hidden
+                  column: title='Qty'
+                  column: title='Base price', hidden
+                  column: title='Sale price'
+                  column: title='Discount', hidden
                   column: title='Total'
-                  row: u'', u'Description', u'1.000 ', <currency $100>, <currency $100>
-                  row: u'', u'Description', u'1.000 ', <currency $100>, <currency $100>
+                  row: u'', u'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00000')
+                  row: u'', u'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00000')
               GtkTable(table2, fill=True):
                 GtkLabel(label4): 'Subtotal:'
                 ProxyLabel(subtotal_lbl): '<span >$200.00</span>'
@@ -56,7 +60,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $100>, Decimal('100.00000')
                 GtkHBox(hbox3, fill=True):
                   GtkButton(print_return_report): 'gtk-print'
-                  GtkLabel(label21, expand=True, fill=True): 'Check the "Observations" tab for more information...'
+                  GtkLabel(label21, expand=True, fill=True): 'Check the "Details" tab for more information...'
                   GtkLabel(label23, fill=True): 'Total:'
                   ProxyLabel(return_total_lbl, fill=True): '<span >$200.00</span>'
             GtkVBox(payments_vbox):

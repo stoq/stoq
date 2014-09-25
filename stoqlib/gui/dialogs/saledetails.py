@@ -37,13 +37,14 @@ from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import (SaleView, Sale, ReturnedSaleItemsView,
                                  SaleComment, SaleCommentsView)
+from stoqlib.domain.views import SaleItemsView
 from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.search.searchcolumns import IdentifierColumn
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, QuantityColumn
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.formatters import format_quantity, get_full_date
@@ -148,13 +149,12 @@ class SaleDetailsDialog(BaseEditor):
         self._setup_columns()
 
         self.sale_order = self.model.sale
-
         if self.sale_order.status == Sale.STATUS_RENEGOTIATED:
             self.status_details_button.show()
         else:
             self.status_details_button.hide()
 
-        sale_items = self.sale_order.get_items()
+        sale_items = self.store.find(SaleItemsView, sale_id=self.sale_order.id)
         self.items_list.add_list(sale_items)
 
         notes = []
@@ -247,15 +247,20 @@ class SaleDetailsDialog(BaseEditor):
                               data_func=payment_value_colorize)]
 
     def _get_items_columns(self):
-        return [Column('sellable.code', _("Code"), sorted=True,
-                       data_type=str, width=130),
-                Column('sellable.description',
-                       _("Description"), data_type=str, expand=True,
-                       width=200),
-                Column('quantity_unit_string', _("Quantity"), data_type=str,
-                       width=100, justify=gtk.JUSTIFY_RIGHT),
-                Column('price', _("Price"), data_type=currency, width=100),
-                Column('total', _("Total"), data_type=currency, width=100)]
+        return [Column('code', _("Code"), sorted=True, data_type=str, width=130),
+                Column('description', _("Description"), data_type=str,
+                       expand=True, width=200),
+                Column('category', _("Category"), data_type=str, visible=False),
+                Column('manufacturer', _("Manufacturer"), data_type=str,
+                       visible=False),
+                QuantityColumn('quantity', title=_("Qty"),
+                               visible=True),
+                Column('base_price', _("Base price"), data_type=currency,
+                       visible=False),
+                Column('price', _("Sale price"), data_type=currency),
+                Column('item_discount', _("Discount"), data_type=currency,
+                       visible=False),
+                Column('total', _("Total"), data_type=currency)]
 
     def _get_payments_info_columns(self):
         return [Column('change_date', _(u"When"),
