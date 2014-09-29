@@ -537,7 +537,7 @@ class CloseLoanWizard(BaseWizard):
                 # same (client, branch)
                 branch=self.models[0].branch,
                 client=self.models[0].client,
-                salesperson=user.person.salesperson,
+                salesperson=user.person.sales_person,
                 group=PaymentGroup(store=self.store),
                 coupon_id=None)
 

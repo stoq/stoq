@@ -525,7 +525,7 @@ class SaleQuoteWizard(BaseWizard):
 
     def _create_model(self, store):
         user = api.get_current_user(store)
-        salesperson = user.person.salesperson
+        salesperson = user.person.sales_person
 
         return Sale(coupon_id=None,
                     status=Sale.STATUS_QUOTE,

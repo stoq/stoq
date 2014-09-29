@@ -126,7 +126,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
     def __init__(self, store, employee, edit_mode, visual_mode=False):
         self.employee = employee
         self.person = employee.person
-        self.salesperson = self.person.salesperson
+        self.sales_person = self.person.sales_person
         self.is_edit_mode = edit_mode
         self.current_role_history = self._get_active_role_history()
         BaseEditorSlave.__init__(self, store, visual_mode=visual_mode)
@@ -150,16 +150,15 @@ class EmployeeRoleSlave(BaseEditorSlave):
 
     def on_confirm(self):
         if self._is_default_salesperson_role():
-            if self.salesperson:
-                if not self.salesperson.is_active:
-                    self.salesperson.activate()
+            if self.sales_person:
+                if not self.sales_person.is_active:
+                    self.sales_person.activate()
             else:
                 store = self.store
-                self.salesperson = SalesPerson(person=self.person,
-                                               store=store)
-        elif self.salesperson:
-            if self.salesperson.is_active:
-                self.salesperson.inactivate()
+                self.sales_person = SalesPerson(person=self.person, store=store)
+        elif self.sales_person:
+            if self.sales_person.is_active:
+                self.sales_person.inactivate()
 
         old_salary = self.employee.salary
         self.employee.salary = self.model.salary

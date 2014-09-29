@@ -36,7 +36,7 @@ class TestCommissionSearch(GUITest):
         self.clean_domain([Commission])
 
         person = self.store.find(Person, name=u'Deivis Alexandre Junior').one()
-        salesperson = person.salesperson
+        salesperson = person.sales_person
         sale = self.create_sale()
         sale.identifier = 74521
         sale.open_date = localdatetime(2012, 1, 1)
@@ -49,7 +49,7 @@ class TestCommissionSearch(GUITest):
                    store=self.store)
 
         person = self.store.find(Person, name=u'Maria Aparecida Ardana').one()
-        salesperson = person.salesperson
+        salesperson = person.sales_person
         sale = self.create_sale()
         sale.identifier = 85412
         sale.open_date = localdatetime(2012, 2, 2)

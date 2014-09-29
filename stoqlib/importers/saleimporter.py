@@ -64,10 +64,10 @@ class SaleImporter(CSVImporter):
         client = person.client
 
         person = store.find(Person, name=data.salesperson_name).one()
-        if person is None or person.salesperson is None:
+        if person is None or person.sales_person is None:
             raise ValueError(u"%s is not a valid sales person" % (
                 data.salesperson_name, ))
-        salesperson = person.salesperson
+        salesperson = person.sales_person
         group = PaymentGroup(store=store)
         sale = Sale(client=client,
                     open_date=self.parse_date(data.open_date),

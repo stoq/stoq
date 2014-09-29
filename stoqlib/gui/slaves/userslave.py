@@ -278,7 +278,7 @@ class UserDetailsSlave(BaseEditorSlave):
         can_access_pos = profile.check_app_permission(u"pos")
         can_access_sales = profile.check_app_permission(u"sales")
         can_do_sales = can_access_pos or can_access_sales
-        if can_do_sales and not person.salesperson:
+        if can_do_sales and not person.sales_person:
             SalesPerson(person=person, store=self.store)
 
     #

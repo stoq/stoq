@@ -354,7 +354,7 @@ class Person(Domain):
     login_user = Reference('id', 'LoginUser.person_id', on_remote=True)
 
     #: the :obj:`sales person <SalesPerson>` facet for this person
-    salesperson = Reference('id', 'SalesPerson.person_id', on_remote=True)
+    sales_person = Reference('id', 'SalesPerson.person_id', on_remote=True)
 
     #: the |supplier| facet for this person
     supplier = Reference('id', 'Supplier.person_id', on_remote=True)

@@ -885,7 +885,7 @@ class PosApp(ShellApp):
     def _create_sale(self, store):
         user = api.get_current_user(store)
         branch = api.get_current_branch(store)
-        salesperson = user.person.salesperson
+        salesperson = user.person.sales_person
         cfop_id = api.sysparam.get_object_id('DEFAULT_SALES_CFOP')
         nature = api.sysparam.get_string('DEFAULT_OPERATION_NATURE')
         group = PaymentGroup(store=store)
