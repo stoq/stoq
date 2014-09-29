@@ -67,7 +67,7 @@ from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
 from stoqlib.database.expr import (Age, Case, Concat, Date, DateTrunc, Interval,
-                                   Field, NotIn)
+                                   Field, NotIn, StoqNormalizeString)
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          IntCol, PercentCol,
                                          PriceCol, EnumCol,
@@ -2390,3 +2390,35 @@ class ClientsWithCreditView(Viewable):
     ]
 
     clause = Or(credit_spent > 0, credit_received > 0)
+
+
+class PersonAddressView(Viewable):
+    person = Person
+    main_address = Address
+
+    id = Person.id
+    name = Person.name
+    phone_number = Person.phone_number
+    mobile_number = Person.mobile_number
+    fax_number = Person.fax_number
+    email = Person.email
+    cnpj = Company.cnpj
+    cpf = Individual.cpf
+    birth_date = Individual.birth_date
+    rg_number = Individual.rg_number
+
+    clean_name = StoqNormalizeString(Person.name)
+    clean_street = Coalesce(StoqNormalizeString(Address.street), u'')
+
+    tables = [
+        Person,
+        LeftJoin(Individual,
+                 Person.id == Individual.person_id),
+        LeftJoin(Company,
+                 Person.id == Company.person_id),
+        LeftJoin(Address,
+                 And(Address.person_id == Person.id,
+                     Eq(Address.is_main_address, True))),
+    ]
+
+    clause = Eq(Person.merged_with_id, None)

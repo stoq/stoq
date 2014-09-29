@@ -233,6 +233,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`personmergedialog` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.personmergedialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`pluginsdialog` Module
 ---------------------------
 

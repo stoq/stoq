@@ -38,6 +38,10 @@ currency_names = ("dollar", "dollars",
                   "cent", "cents")
 
 
+#: This will be used when detecting duplicated persons
+common_street_prefixes = []
+
+
 class CompanyDocument(object):
     label = _('Document')
     entry_mask = None

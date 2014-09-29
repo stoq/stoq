@@ -103,6 +103,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/dialogs/paymentdetails.py', 51.22),
     ('stoqlib/gui/dialogs/paymentflowhistorydialog.py', 92.11),
     ('stoqlib/gui/dialogs/paymentmethod.py', 87.1),
+    ('stoqlib/gui/dialogs/personmergedialog.py', 91.3),
     ('stoqlib/gui/dialogs/pluginsdialog.py', 40),
     ('stoqlib/gui/dialogs/productiondetails.py', 83.72),
     ('stoqlib/gui/dialogs/productionquotedialog.py', 37.63),

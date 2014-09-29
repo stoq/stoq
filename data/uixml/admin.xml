@@ -43,6 +43,7 @@
       <menuitem action="SearchTaxTemplate"/>
       <menuitem action="SearchEvents"/>
       <menuitem action="SearchCostCenters"/>
+      <menuitem action="SearchDuplicatedPersons"/>
     </placeholder>
    </menu>
   <placeholder action="AppMenubarPH">

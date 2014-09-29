@@ -39,6 +39,8 @@ full_date_format = "%d de %B de %Y"
 currency_names = ("real", "reais",
                   "centavo", "centavos")
 
+common_street_prefixes = ['r. ', 'r ', 'av ', 'av. ', 'rua ', 'avenida ']
+
 
 #
 # CNPJ - Cadastro Nacional da Pessoa Juridica

@@ -1,0 +1,39 @@
+editor: PersonMergeDialog
+GtkDialog(main_dialog.toplevel): title='Duplicate Person Search', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave PersonMergeDialog is attached
+        GtkVBox(toplevel):
+          GtkVBox(vbox2, expand=True, fill=True):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label1, fill=True): 'Search Method:'
+              ProxyComboBox(method_combo, fill=True):
+                item: 'Identical name', selected
+                item: 'First and last name'
+                item: 'First name'
+              GtkButton(search_button, fill=True): 'gtk-find'
+            GtkHBox(hbox2, fill=True):
+              GtkLabel(label2, fill=True): 'Options:'
+              ProxyCheckButton(same_phone, fill=True): 'Same phone', active
+              ProxyCheckButton(same_street, fill=True): 'Same street', active
+            ObjectTree(dup_tree, expand=True, fill=True):
+              column: title='Name'
+              column: title='CPF'
+              column: title='CNPJ'
+              column: title='Phone'
+              column: title='Mobile'
+              column: title='Address'
+              column: title='Fax'
+              column: title='Email'
+            GtkLabel(message, fill=True):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(merge_button): 'Merge', insensitive
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden

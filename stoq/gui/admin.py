@@ -38,6 +38,7 @@ from stoqlib.gui.dialogs.invoicedialog import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
+from stoqlib.gui.dialogs.personmergedialog import PersonMergeDialog
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.dialogs.sellabledialog import SellableTaxConstantsDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
@@ -317,6 +318,8 @@ class AdminApp(ShellApp):
              group.get('search_events')),
             ("SearchCostCenters", None, _("Cost Centers..."),
              group.get('search_cost_centers')),
+            ("SearchDuplicatedPersons", None, _("Duplicated Persons..."),
+             None),
             ("SearchCfop", None, _("C.F.O.P..."),
              group.get('search_cfop')),
             ("SearchFiscalBook", None, _("Fiscal books..."),
@@ -422,3 +425,6 @@ class AdminApp(ShellApp):
     # for the icon
     def on_SearchCostCenters__activate(self, action):
         self.run_dialog(CostCenterSearch, self.store)
+
+    def on_SearchDuplicatedPersons__activate(self, action):
+        self.run_dialog(PersonMergeDialog, self.store)
