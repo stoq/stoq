@@ -1611,10 +1611,10 @@ class TestSale(DomainTest):
 
     def test_get_nfe_coupon_info(self):
         sale = self.create_sale()
-        self.assertIsNone(sale.get_nfe_coupon_info())
+        self.assertIsNone(sale.nfe_coupon_info)
 
         sale.coupon_id = 982738
-        self.assertEquals(sale.get_nfe_coupon_info().coo, 982738)
+        self.assertEquals(sale.nfe_coupon_info.coo, 982738)
 
     def test_get_iss_total(self):
         item = self.create_sale_item()

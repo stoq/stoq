@@ -34,7 +34,6 @@ from xml.sax.saxutils import escape
 
 from kiwi.python import strip_accents, Settable
 
-from stoqlib.domain.sale import SaleItem, SaleComment
 from stoqlib.enums import NFeDanfeOrientation
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.ibpt import calculate_tax_for_item
@@ -76,10 +75,10 @@ def nfe_tostring(element):
 class NFeGenerator(object):
     """NF-e Generator class.
     The NF-e generator is responsible to create a NF-e XML document for a
-    given sale.
+    given operation (e.g. sale, loan, transfer).
     """
-    def __init__(self, sale, store):
-        self._sale = sale
+    def __init__(self, operation, store):
+        self._order = operation
         self._total_taxes = 0
 
         self.store = store
@@ -92,15 +91,19 @@ class NFeGenerator(object):
 
     def generate(self):
         """Generates the NF-e."""
-        branch = self._sale.branch
+        branch = self._order.branch
         self._add_identification(branch)
         self._add_issuer(branch)
-        self._add_recipient(self._sale.client)
-        sale_items = self._sale.get_items().order_by(SaleItem.te_id)
-        self._add_sale_items(sale_items)
+
+        self._add_recipient(self._order.recipient)
+
+        operation_items = self._order.items.order_by('te_id')
+        self._add_items(operation_items)
+
         self._add_totals()
-        self._add_transport_data(self._sale.transporter,
-                                 sale_items)
+        self._add_transport_data(self._order.transporter,
+                                 operation_items)
+
         self._add_billing_data()
         self._add_additional_information()
 
@@ -191,14 +194,15 @@ class NFeGenerator(object):
         today = self._get_today_date()
         aamm = today.strftime('%y%m')
 
-        nnf = self._sale.invoice_number
+        # TODO: Use the invoice number saved in a new database table (Invoice)
+        nnf = self._order.invoice_number
         assert nnf
 
-        payments = self._sale.payments
+        payments = self._order.payments
         series = sysparam.get_int('NFE_SERIAL_NUMBER')
         orientation = sysparam.get_int('NFE_DANFE_ORIENTATION')
-        ecf_info = self._sale.get_nfe_coupon_info()
-        nat_op = self._sale.operation_nature or ''
+        ecf_info = self._order.nfe_coupon_info
+        nat_op = self._order.operation_nature or ''
 
         nfe_identification = NFeIdentification(cuf, branch_location,
                                                series, nnf, today,
@@ -218,6 +222,7 @@ class NFeGenerator(object):
         cdv = self._calculate_verifier_digit(key)
         key += cdv
 
+        # TODO: Save 'key' in new a table (Invoice)
         nfe_identification.set_attr('cDV', cdv)
         self._nfe_identification = nfe_identification
 
@@ -232,7 +237,7 @@ class NFeGenerator(object):
         person = branch.person
         company = person.company
         state_registry = company.state_registry
-        crt = self._sale.branch.crt
+        crt = self._order.branch.crt
         self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
                                      state_registry=state_registry, crt=crt)
         self._nfe_issuer.set_address(person.get_main_address(),
@@ -261,16 +266,17 @@ class NFeGenerator(object):
                                         person.get_phone_number_number())
         self._nfe_data.append(self._nfe_recipient)
 
-    def _add_sale_items(self, sale_items):
-        for item_number, sale_item in enumerate(sale_items):
-            tax_item = calculate_tax_for_item(sale_item)
+    def _add_items(self, operation_items):
+        coupon = self._order.coupon_id
+        for item_number, operation_item in enumerate(operation_items):
+            tax_item = calculate_tax_for_item(operation_item)
             self._total_taxes += tax_item
 
             # item_number should start from 1, not zero.
             item_number += 1
             nfe_item = NFeProduct(item_number)
 
-            sellable = sale_item.sellable
+            sellable = operation_item.sellable
             product = sellable.product
             if product:
                 ncm = product.ncm
@@ -283,34 +289,34 @@ class NFeGenerator(object):
 
             nfe_item.add_product_details(sellable.code,
                                          sellable.get_description(),
-                                         sale_item.get_nfe_cfop_code(),
-                                         sale_item.quantity,
-                                         sale_item.price,
+                                         operation_item.get_nfe_cfop_code(),
+                                         operation_item.quantity,
+                                         operation_item.price,
                                          sellable.unit_description,
                                          barcode=sellable.barcode,
                                          ncm=ncm,
                                          ex_tipi=ex_tipi,
                                          genero=genero)
 
-            nfe_item.add_tax_details(sale_item, self._sale.branch.crt)
+            nfe_item.add_tax_details(operation_item, self._order.branch.crt, coupon)
             self._nfe_data.append(nfe_item)
 
     def _add_totals(self):
-        sale_total = self._sale.get_total_sale_amount()
-        items_total = self._sale.get_sale_subtotal()
+        operation_total = self._order.invoice_total
+        items_total = self._order.invoice_subtotal
         nfe_total = NFeTotal()
-        nfe_total.add_icms_total(sale_total, items_total)
+        nfe_total.add_icms_total(operation_total, items_total)
         self._nfe_data.append(nfe_total)
 
-    def _add_transport_data(self, transporter, sale_items):
+    def _add_transport_data(self, transporter, operation_items):
         nfe_transport = NFeTransport()
         self._nfe_data.append(nfe_transport)
         if transporter:
             nfe_transporter = NFeTransporter(transporter)
             self._nfe_data.append(nfe_transporter)
 
-        for item_number, sale_item in enumerate(sale_items):
-            sellable = sale_item.sellable
+        for item_number, operation_item in enumerate(operation_items):
+            sellable = operation_item.sellable
             product = sellable.product
             if not product:
                 continue
@@ -320,8 +326,8 @@ class NFeGenerator(object):
                 continue
 
             unit = sellable.unit and sellable.unit.get_description() or ''
-            weight = sale_item.quantity * unitary_weight
-            vol = NFeVolume(quantity=sale_item.quantity, unit=unit,
+            weight = operation_item.quantity * unitary_weight
+            vol = NFeVolume(quantity=operation_item.quantity, unit=unit,
                             net_weight=weight, gross_weight=weight)
             self._nfe_data.append(vol)
 
@@ -329,26 +335,25 @@ class NFeGenerator(object):
         cob = NFeBilling()
         self._nfe_data.append(cob)
 
-        sale_total = self._sale.get_total_sale_amount()
-        items_total = self._sale.get_sale_subtotal()
+        operation_total = self._order.invoice_total
+        items_total = self._order.invoice_subtotal
 
-        fat = NFeInvoice(int(self._sale.identifier), items_total,
-                         self._sale.discount_value, sale_total)
+        fat = NFeInvoice(int(self._order.identifier), items_total,
+                         self._order.discount_value, operation_total)
         self._nfe_data.append(fat)
 
-        payments = self._sale.payments
+        payments = self._order.payments
         for i, p in enumerate(payments):
             dup = NFeDuplicata(int(p.identifier), p.due_date, p.value)
             self._nfe_data.append(dup)
 
     def _add_additional_information(self):
-        sale_total = self._sale.get_sale_subtotal()
-        total_tax_percentage = (self._total_taxes / sale_total) * 100
+        operation_total = self._order.invoice_subtotal
+        total_tax_percentage = (self._total_taxes / operation_total) * 100
         tax_msg = "Val Aprox Tributos R$ {:0.2f} ({:0.2f}%) Fonte: IBPT - "
         fisco_info = tax_msg.format(self._total_taxes, total_tax_percentage)
         fisco_info += sysparam.get_string('NFE_FISCO_INFORMATION')
-        notes = '\n'.join([c.comment for c in
-                           self._sale.comments.order_by(SaleComment.date)])
+        notes = '\n'.join(c.comment for c in self._order.comments)
         nfe_info = NFeAdditionalInformation(fisco_info, notes)
         self._nfe_data.append(nfe_info)
 
@@ -782,41 +787,41 @@ class NFeProduct(BaseNFeXMLGroup):
                                     unit, barcode, ncm, ex_tipi, genero)
         self.append(details)
 
-    def add_tax_details(self, sale_item, crt):
+    def add_tax_details(self, operation_item, crt, coupon=None):
         nfe_tax = NFeTax()
 
         # TODO: handle service tax (ISS).
 
-        # If the sale was also printed on a coupon, then we cannot add icms
+        # If the operation was also printed on a coupon, then we cannot add icms
         # details to the NF-e, we should add a empty empty icms informatio tag
-        if sale_item.sale.coupon_id:
+        if coupon:
             # in this case, the cst should be 90 ou 900 (for the 'SIMPLES'). and
             # the values should be empty (note that they should not be 0.00,
             # since that those values may be invalid. Just '')
-            sale_icms = Settable()
-            sale_icms.csosn = 900
-            sale_icms.cst = 90
+            operation_icms = Settable()
+            operation_icms.csosn = 900
+            operation_icms.cst = 90
             # We still have to export the 'orig' field of the icms info.
-            sale_icms.orig = sale_item.icms_info.orig
+            operation_icms.orig = operation_item.icms_info.orig
         else:
-            sale_icms = sale_item.icms_info
+            operation_icms = operation_item.icms_info
 
-        if sale_icms:
-            nfe_icms = NFeICMS(sale_icms, crt)
+        if operation_icms:
+            nfe_icms = NFeICMS(operation_icms, crt)
             nfe_tax.append(nfe_icms)
 
-        sale_ipi = sale_item.get_nfe_ipi_info()
-        if sale_ipi:
-            nfe_ipi = NFeIPI(sale_ipi)
+        invoice_ipi = operation_item.get_nfe_ipi_info()
+        if invoice_ipi:
+            nfe_ipi = NFeIPI(invoice_ipi)
             nfe_tax.append(nfe_ipi)
 
-        if True:  # if sale_item.pis_info
+        if True:  # if operation_item.pis
             nfe_pis = NFePIS()
             pis = NFePISOutr()
             nfe_pis.append(pis)
             nfe_tax.append(nfe_pis)
 
-        if True:  # if sale_item.cofins_info
+        if True:  # if operation_item.cofins
             nfe_cofins = NFeCOFINS()
             cofins = NFeCOFINSOutr()
             nfe_cofins.append(cofins)
@@ -941,17 +946,17 @@ class NFeTax(BaseNFeXMLGroup):
 class NFeICMS(BaseNFeXMLGroup):
     tag = 'ICMS'
 
-    def __init__(self, sale_icms_info, crt):
+    def __init__(self, operation_icms_info, crt):
         BaseNFeXMLGroup.__init__(self)
 
         # Simples Nacional
         if crt in [1, 2]:
-            icms_tag_class = NFE_ICMS_CSOSN_MAP.get(sale_icms_info.csosn)
+            icms_tag_class = NFE_ICMS_CSOSN_MAP.get(operation_icms_info.csosn)
         else:  # Regime normal
-            icms_tag_class = NFE_ICMS_CST_MAP.get(sale_icms_info.cst)
+            icms_tag_class = NFE_ICMS_CST_MAP.get(operation_icms_info.cst)
 
         if icms_tag_class:
-            icms_tag = icms_tag_class(sale_icms_info)
+            icms_tag = icms_tag_class(operation_icms_info)
             self.append(icms_tag)
 
     def as_txt(self):
@@ -998,7 +1003,7 @@ class BaseNFeICMS(BaseNFeXMLGroup):
 
     }
 
-    def __init__(self, sale_icms_info):
+    def __init__(self, operation_icms_info):
         BaseNFeXMLGroup.__init__(self)
 
         for (name, default) in self.attributes:
@@ -1006,7 +1011,7 @@ class BaseNFeICMS(BaseNFeXMLGroup):
             if not info_name:
                 continue
 
-            value = getattr(sale_icms_info, info_name, '')
+            value = getattr(operation_icms_info, info_name, '')
             # Only format if the value is a number
             if precision is not None and isinstance(value, Decimal):
                 value = self.format_value(value, precision)
@@ -1043,8 +1048,8 @@ class NFeICMS00(BaseNFeICMS):
                   (u'pICMS', None),
                   (u'vICMS', None)]
 
-    def __init__(self, sale_icms_info):
-        BaseNFeICMS.__init__(self, sale_icms_info)
+    def __init__(self, operation_icms_info):
+        BaseNFeICMS.__init__(self, operation_icms_info)
         # We should fix cst here, otherwise, it will be just 0 (one zero).
         self.set_attr(u'CST', '00')
 
@@ -1544,8 +1549,8 @@ class NFeTotal(BaseNFeXMLGroup):
     tag = u'total'
     txttag = 'W'
 
-    def add_icms_total(self, sale_total, items_total):
-        icms_total = NFeICMSTotal(sale_total, items_total)
+    def add_icms_total(self, operation_total, items_total):
+        icms_total = NFeICMSTotal(operation_total, items_total)
         self.append(icms_total)
 
     def as_txt(self):
@@ -1590,14 +1595,14 @@ class NFeICMSTotal(BaseNFeXMLGroup):
                   (u'vNF', '')]
     txttag = 'W02'
 
-    def __init__(self, sale_total, items_total):
+    def __init__(self, operation_total, items_total):
         # FIXME: Adicionar:
         # - Frete, icms, ipi
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('vBC', self.format_value(sale_total))
-        self.set_attr('vNF', self.format_value(sale_total))
+        self.set_attr('vBC', self.format_value(operation_total))
+        self.set_attr('vNF', self.format_value(operation_total))
         self.set_attr('vProd', self.format_value(items_total))
-        discount = items_total - sale_total
+        discount = items_total - operation_total
         if discount > 0:
             self.set_attr('vDesc', self.format_value(discount))
 
@@ -1772,11 +1777,11 @@ class NFeAdditionalInformation(BaseNFeXMLGroup):
                   (u'infCpl', None)]
     txttag = 'Z'
 
-    def __init__(self, fisco_notes, sale_notes):
+    def __init__(self, fisco_notes, operation_notes):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('infAdFisco', fisco_notes)
-        self.set_attr('infCpl', sale_notes)
+        self.set_attr('infCpl', operation_notes)
 
 
 NFE_ICMS_CST_MAP = {

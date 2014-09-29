@@ -58,7 +58,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    SaleItemAfterSetBatchesEvent,
                                    DeliveryStatusChangedEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.interfaces import IContainer
+from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
                                    SalesPerson, Company, Individual,
@@ -87,6 +87,7 @@ CostCenter  # pylint: disable=W0104
 #
 
 
+@implementer(IInvoiceItem)
 class SaleItem(Domain):
     """An item of a |sellable| within a |sale|.
 
@@ -575,6 +576,7 @@ class Delivery(Domain):
 
 
 @implementer(IContainer)
+@implementer(IInvoice)
 class Sale(Domain):
     """Sale logic, the process of selling a |sellable| to a |client|.
 
@@ -775,7 +777,7 @@ class Sale(Domain):
 
     #: list of :class:`comments <stoqlib.domain.sale.SaleComment>` for
     #: this sale
-    comments = ReferenceSet('id', 'SaleComment.sale_id')
+    comments = ReferenceSet('id', 'SaleComment.sale_id', order_by='SaleComment.date')
 
     def __init__(self, store=None, **kw):
         super(Sale, self).__init__(store=store, **kw)
@@ -823,6 +825,38 @@ class Sale(Domain):
             sale_item.return_to_stock(sale_item.quantity_decreased)
         sale_item.sale = None
         self.store.maybe_remove(sale_item)
+
+    #
+    # IInvoice implementation
+    #
+
+    @property
+    def items(self):
+        return self.get_items()
+
+    @property
+    def recipient(self):
+        return self.client
+
+    @property
+    def invoice_subtotal(self):
+        return self.get_sale_subtotal()
+
+    @property
+    def invoice_total(self):
+        return self.get_total_sale_amount()
+
+    @property
+    def nfe_coupon_info(self):
+        """Returns
+        """
+        if not self.coupon_id:
+            return None
+
+        # FIXME: we still dont have the number of the ecf stored in stoq
+        # (note: this is not the serial number)
+        return Settable(number=u'',
+                        coo=self.coupon_id)
 
     # Status
 
@@ -1493,7 +1527,7 @@ class Sale(Domain):
         return commission
 
     def get_first_sale_comment(self):
-        first_comment = self.comments.order_by(SaleComment.date).first()
+        first_comment = self.comments.first()
         if first_comment:
             return first_comment.comment
         return u''
@@ -1596,21 +1630,6 @@ class Sale(Domain):
     @surcharge_percentage.setter
     def surcharge_percentage(self, value):
         self.surcharge_value = self._get_percentage_value(value)
-
-    #
-    #   NF-e api
-    #
-
-    def get_nfe_coupon_info(self):
-        """Returns
-        """
-        if not self.coupon_id:
-            return None
-
-        # FIXME: we still dont have the number of the ecf stored in stoq
-        # (note: this is not the serial number)
-        return Settable(number=u'',
-                        coo=self.coupon_id)
 
     #
     # Private API
