@@ -1808,7 +1808,9 @@ class ReturnedSaleItemsView(Viewable):
         Join(Sellable, Sellable.id == ReturnedSaleItem.sellable_id),
         Join(ReturnedSale, ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
         Join(Sale, Sale.id == ReturnedSale.sale_id),
-        Join(Branch, Branch.id == Sale.branch_id),
+        # Note that the sale branch may be different than the returned sale
+        # branch
+        Join(Branch, Branch.id == ReturnedSale.branch_id),
     ]
 
     @property
