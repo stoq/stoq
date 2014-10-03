@@ -109,6 +109,24 @@ class _ProductEventData(object):
 
 class TestProduct(DomainTest):
 
+    def test_set_as_storable_product(self):
+        product = self.create_product(description=u'Product without storable')
+        product.manage_stock = False
+
+        storable = self.store.find(Storable, product=product).count()
+        self.assertEquals(storable, 0)
+
+        # Set as storable product
+        product.set_as_storable_product(quantity=2)
+        self.assertEquals(product.manage_stock, True)
+        storable = self.store.find(Storable, product=product).one()
+        self.assertEquals(storable.product, product)
+        product_stock_item = self.store.find(ProductStockItem, storable=storable).one()
+        self.assertEquals(product_stock_item.quantity, 2)
+
+        with self.assertRaises(AssertionError):
+            product.set_as_storable_product(quantity=3)
+
     def setUp(self):
         DomainTest.setUp(self)
         self.sellable = self.create_sellable()
