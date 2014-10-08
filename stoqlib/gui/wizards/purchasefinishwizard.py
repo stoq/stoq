@@ -234,7 +234,6 @@ class PurchaseFinishWizard(BaseWizard):
                           due_date=today,
                           method=money,
                           group=self.purchase.group,
-                          till=None,
                           category=None,
                           store=self.store,
                           payment_type=Payment.TYPE_IN)

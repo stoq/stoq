@@ -213,11 +213,6 @@ class Payment(Domain):
     #: |paymentgroup| for this payment
     group = Reference(group_id, 'PaymentGroup.id')
 
-    till_id = IdCol()
-
-    #: |till| that this payment belongs to
-    till = Reference(till_id, 'Till.id')
-
     category_id = IdCol()
 
     #: |paymentcategory| this payment belongs to, can be None
@@ -307,7 +302,6 @@ class Payment(Domain):
                         due_date=date,
                         method=payment.method,
                         group=payment.group,
-                        till=payment.till,
                         category=payment.category,
                         store=store)
             payments.append(p)

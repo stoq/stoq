@@ -61,7 +61,6 @@ class TestPayment(DomainTest):
                           branch=self.create_branch(),
                           method=None,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
@@ -81,7 +80,6 @@ class TestPayment(DomainTest):
                           due_date=localnow(),
                           method=method,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
@@ -120,7 +118,6 @@ class TestPayment(DomainTest):
                           open_date=localnow(),
                           method=method,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
@@ -186,7 +183,6 @@ class TestPayment(DomainTest):
                           due_date=localnow(),
                           method=method,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
@@ -203,7 +199,6 @@ class TestPayment(DomainTest):
                           due_date=localnow(),
                           method=method,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
@@ -225,7 +220,6 @@ class TestPayment(DomainTest):
                           due_date=localnow(),
                           method=method,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
@@ -242,7 +236,6 @@ class TestPayment(DomainTest):
                           due_date=localnow(),
                           method=method,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
@@ -264,7 +257,6 @@ class TestPayment(DomainTest):
                           open_date=open_date,
                           method=method,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
@@ -295,7 +287,6 @@ class TestPayment(DomainTest):
                           due_date=localnow(),
                           method=method,
                           group=None,
-                          till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)

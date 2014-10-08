@@ -1656,6 +1656,7 @@ class Sale(Domain):
             raise ValueError(
                 _('You must have at least one payment for each payment group'))
 
+        # FIXME: We should make till optional here
         till = Till.get_current(self.store)
         assert till
         for payment in payments:

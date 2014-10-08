@@ -312,7 +312,6 @@ class TestReport(ReportTest):
         branch2 = self.store.find(Branch, Branch.id != branch.id).any()
 
         # Data used to create the examples
-        till = Till.get_last_opened(self.store)
         device = self.create_card_device(description=u'MAQ1')
         provider = self.create_credit_provider(u'PRO1')
         date = datetime.date(2013, 1, 1)
@@ -334,7 +333,6 @@ class TestReport(ReportTest):
         card_data1.card_type = CreditCardData.TYPE_CREDIT
         card_data1.payment.group = sale.group
         card_data1.payment.branch = sale.branch
-        card_data1.payment.till = till
         card_data1.payment.identifier = 1010
 
         card_data2 = self.create_credit_card_data(
@@ -347,7 +345,6 @@ class TestReport(ReportTest):
 
         card_data2.payment.group = sale.group
         card_data2.payment.branch = sale.branch
-        card_data2.payment.till = till
         card_data2.payment.identifier = 1011
 
         # Confirm the sale and pay the payments
@@ -407,7 +404,6 @@ class TestReport(ReportTest):
 
         payment = returned_sale.group.get_items()[1]
         payment.branch = branch
-        payment.till = till
         payment.identifier = 1003
         payment.pay()
         payment.paid_date = date
@@ -417,7 +413,6 @@ class TestReport(ReportTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         payment = method.create_payment(Payment.TYPE_OUT, group, branch, Decimal(100))
         payment.branch = branch
-        payment.till = till
         payment.identifier = 1004
         payment.paid_date = date
         payment.status = Payment.STATUS_PAID
@@ -484,10 +479,8 @@ class TestReport(ReportTest):
         sale.order()
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        till = Till.get_last_opened(self.store)
         method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
-                              sale.get_sale_subtotal(),
-                              till=till)
+                              sale.get_sale_subtotal())
         sale.confirm()
         sale.group.pay()
 

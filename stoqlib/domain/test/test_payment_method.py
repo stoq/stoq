@@ -27,9 +27,6 @@ __tests__ = 'stoqlib/domain/payment/method.py'
 import datetime
 from decimal import Decimal
 
-from kiwi import ValueUnset
-import mock
-
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.payment.method import PaymentMethod, _
 from stoqlib.domain.payment.payment import Payment
@@ -41,19 +38,17 @@ from stoqlib.lib.defaults import quantize
 
 
 class _TestPaymentMethod:
-    def createInPayment(self, till=ValueUnset):
+    def createInPayment(self):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
         return method.create_payment(Payment.TYPE_IN, sale.group,
-                                     sale.branch, Decimal(100),
-                                     till=till)
+                                     sale.branch, Decimal(100))
 
-    def createOutPayment(self, till=ValueUnset):
+    def createOutPayment(self):
         purchase = self.create_purchase_order()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
         return method.create_payment(Payment.TYPE_OUT, purchase.group,
-                                     purchase.branch, Decimal(100),
-                                     till=till)
+                                     purchase.branch, Decimal(100))
 
     def createInPayments(self, no=3):
         sale = self.create_sale()
@@ -104,23 +99,11 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         payment = self.createInPayment()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
-        self.assertEqual(payment.till, Till.get_current(self.store))
-
-        payment_without_till = self.createInPayment(till=None)
-        self.failUnless(isinstance(payment, Payment))
-        self.assertEqual(payment_without_till.value, Decimal(100))
-        self.assertEqual(payment_without_till.till, None)
 
     def test_create_out_payment(self):
         payment = self.createOutPayment()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
-        self.assertEqual(payment.till, None)
-
-        payment_without_till = self.createOutPayment(till=None)
-        self.failUnless(isinstance(payment, Payment))
-        self.assertEqual(payment_without_till.value, Decimal(100))
-        self.assertEqual(payment_without_till.till, None)
 
     def test_create_in_payments(self):
         payments = self.createInPayments()
@@ -248,7 +231,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
             method.create_payment(payment_type=Payment.TYPE_IN, payment_group=group,
                                   branch=branch, value=100, due_date=None,
                                   description=None, base_value=None,
-                                  till=ValueUnset, payment_number=None)
+                                  payment_number=None)
 
         self.create_payment(payment_type=Payment.TYPE_IN, date=None,
                             value=100, method=method, branch=branch,
@@ -257,22 +240,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
             method.create_payment(payment_type=Payment.TYPE_IN, payment_group=group,
                                   branch=branch, value=100, due_date=None,
                                   description=None, base_value=None,
-                                  till=ValueUnset, payment_number=None)
-        with self.assertRaises(AssertionError):
-            method.create_payment(payment_type=9, payment_group=group,
-                                  branch=branch, value=100, due_date=None,
-                                  description=None, base_value=None,
-                                  till=ValueUnset, payment_number=None)
-
-        with mock.patch('stoqlib.domain.till.Till.get_current') as get_current:
-            get_current.side_effect = TillError('foobar')
-
-            with self.assertRaisesRegexp(PaymentMethodError, 'foobar'):
-                method.create_payment(payment_type=Payment.TYPE_IN,
-                                      payment_group=self.create_payment_group(),
-                                      branch=branch, value=100, due_date=None,
-                                      description=None, base_value=None,
-                                      till=ValueUnset)
+                                  payment_number=None)
 
     def test_create_payments_without_installments(self):
         acc = self.create_account()

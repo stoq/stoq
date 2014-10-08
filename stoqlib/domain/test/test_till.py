@@ -140,7 +140,6 @@ class TestTill(DomainTest):
         # money payment method operation
         payment = self.create_payment()
         payment.due_date = till.opening_date
-        payment.till = till
         payment.set_pending()
         TillEntry(description=u'test', value=payment.value, till=till,
                   branch=till.station.branch, payment=payment, store=self.store)

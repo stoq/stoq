@@ -39,7 +39,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.till import Till, TillClosedView
+from stoqlib.domain.till import Till, TillEntry, TillClosedView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tilldetails import TillDetailsDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
@@ -61,7 +61,7 @@ class TillFiscalOperationsView(Viewable):
     :attribute station_name: the value of name branch_station name column
     """
 
-    id = Payment.id
+    id = TillEntry.id
     identifier = Payment.identifier
     identifier_str = Cast(Payment.identifier, 'text')
     date = Payment.open_date
@@ -74,8 +74,9 @@ class TillFiscalOperationsView(Viewable):
     status = Till.status
 
     tables = [
-        Payment,
-        Join(Till, Till.id == Payment.till_id),
+        TillEntry,
+        Join(Payment, Payment.id == TillEntry.payment_id),
+        Join(Till, Till.id == TillEntry.till_id),
         Join(BranchStation, BranchStation.id == Till.station_id),
         Join(Branch, Branch.id == BranchStation.branch_id),
         Join(PaymentGroup, PaymentGroup.id == Payment.group_id),

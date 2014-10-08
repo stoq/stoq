@@ -118,7 +118,6 @@ class _PaymentEditor(BaseEditor):
                        due_date=None,
                        method=money,
                        group=group,
-                       till=None,
                        category=None,
                        payment_type=self.payment_type,
                        bill_received=False)

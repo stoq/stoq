@@ -747,7 +747,6 @@ class ExampleCreator(object):
                        open_date=date,
                        due_date=date,
                        value=Decimal(value or 10),
-                       till=None,
                        method=method or self.get_payment_method(),
                        category=None,
                        store=self.store,

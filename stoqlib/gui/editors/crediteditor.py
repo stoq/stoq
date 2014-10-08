@@ -82,7 +82,6 @@ class CreditEditor(BaseEditor):
                           due_date=localtoday(),
                           method=method,
                           group=group,
-                          till=None,
                           category=None,
                           payment_type=payment_type,
                           bill_received=False)

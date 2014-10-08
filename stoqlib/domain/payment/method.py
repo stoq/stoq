@@ -27,7 +27,6 @@
 
 import operator
 
-from kiwi import ValueUnset
 from storm.expr import And
 from storm.references import Reference
 from zope.interface import implementer
@@ -38,8 +37,7 @@ from stoqlib.database.properties import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.exceptions import (DatabaseInconsistency, PaymentMethodError,
-                                TillError)
+from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.payment import generate_payments_values
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
@@ -162,7 +160,7 @@ class PaymentMethod(Domain):
     #       factory singleton.
     def create_payment(self, payment_type, payment_group, branch, value,
                        due_date=None, description=None, base_value=None,
-                       till=ValueUnset, payment_number=None):
+                       payment_number=None):
         """Creates a new payment according to a payment method interface
 
         :param payment_type: the kind of payment, in or out
@@ -176,11 +174,9 @@ class PaymentMethod(Domain):
         :param details: optional
         :param description: optional, description of the payment
         :param base_value: optional
-        :param till: optional
         :param payment_number: optional
         :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
-        from stoqlib.domain.till import Till
         store = self.store
 
         if due_date is None:
@@ -205,19 +201,6 @@ class PaymentMethod(Domain):
         if not description:
             description = self.describe_payment(payment_group)
 
-        # If till is unset, do some clever guessing
-        if till is ValueUnset:
-            # We only need a till for inpayments
-            if payment_type == Payment.TYPE_IN:
-                try:
-                    till = Till.get_current(store)
-                except TillError as err:
-                    raise PaymentMethodError(str(err))
-            elif payment_type == Payment.TYPE_OUT:
-                till = None
-            else:
-                raise AssertionError(payment_type)
-
         payment = Payment(store=store,
                           branch=branch,
                           payment_type=payment_type,
@@ -227,7 +210,6 @@ class PaymentMethod(Domain):
                           group=payment_group,
                           method=self,
                           category=None,
-                          till=till,
                           description=description,
                           payment_number=payment_number)
         self.operation.payment_create(payment)
