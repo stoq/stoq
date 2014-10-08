@@ -318,7 +318,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        self.add_payments(sale, u'check')
+        self.add_payments(sale, u'money')
         self.failIf(self.store.find(FiscalBookEntry,
                                     entry_type=FiscalBookEntry.TYPE_PRODUCT,
                                     payment_group=sale.group).one())
@@ -335,6 +335,32 @@ class TestSale(DomainTest):
                                      entry_type=FiscalBookEntry.TYPE_PRODUCT,
                                      payment_group=sale.group).one()
         self.failUnless(book_entry)
+        self.assertEqual(book_entry.cfop.code, u'5.102')
+        self.assertEqual(book_entry.icms_value, Decimal("1.8"))
+
+    def test_confirm_money_with_till(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+
+        self.add_payments(sale, u'money')
+        self.assertIsNone(
+            self.store.find(FiscalBookEntry,
+                            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                            payment_group=sale.group).one())
+
+        self.assertTrue(sale.can_confirm())
+        sale.confirm(till=self.create_till())
+        self.assertFalse(sale.can_confirm())
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+        self.assertEqual(sale.confirm_date.date(), datetime.date.today())
+        # Paying all payments, the sale status changes to STATUS_PAID
+        # automatically.
+        sale.group.pay()
+
+        book_entry = self.store.find(FiscalBookEntry,
+                                     entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                                     payment_group=sale.group).one()
         self.assertEqual(book_entry.cfop.code, u'5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
@@ -365,8 +391,34 @@ class TestSale(DomainTest):
         self.assertEqual(book_entry.cfop.code, u'5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
+    def test_confirm_check_with_till(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+
+        self.add_payments(sale, u'check')
+        self.assertIsNone(
+            self.store.find(FiscalBookEntry,
+                            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                            payment_group=sale.group).one())
+
+        self.assertTrue(sale.can_confirm())
+        sale.confirm(till=self.create_till())
+        self.assertFalse(sale.can_confirm())
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+        self.assertEqual(sale.confirm_date.date(), datetime.date.today())
+        # Paying all payments, the sale status changes to STATUS_PAID
+        # automatically.
+        sale.group.pay()
+
+        book_entry = self.store.find(FiscalBookEntry,
+                                     entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                                     payment_group=sale.group).one()
+        self.assertEqual(book_entry.cfop.code, u'5.102')
+        self.assertEqual(book_entry.icms_value, Decimal("1.8"))
+
         for payment in sale.payments:
-            self.assertEquals(payment.status, Payment.STATUS_PENDING)
+            self.assertEquals(payment.status, Payment.STATUS_PAID)
             entry = self.store.find(TillEntry, payment=payment).one()
             self.assertEquals(entry.value, payment.value)
 

@@ -25,7 +25,7 @@
 from decimal import Decimal
 
 from stoqlib.api import api
-from stoqlib.domain.till import Till, TillEntry
+from stoqlib.domain.till import TillEntry
 from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
@@ -42,7 +42,7 @@ class TestTillHistory(GUITest):
                           description=u'desc',
                           date=localdate(2011, 01, 01).date(),
                           value=Decimal(123.0),
-                          till=self.store.find(Till)[0],
+                          till=self.create_till(),
                           payment=None,
                           branch=api.get_current_branch(self.store),
                           store=self.store)

@@ -69,7 +69,6 @@ from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
-from stoqlib.domain.till import Till
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
@@ -969,7 +968,7 @@ class Sale(Domain):
 
         self._set_sale_status(Sale.STATUS_ORDERED)
 
-    def confirm(self):
+    def confirm(self, till=None):
         """Confirms the sale
 
         Confirming a sale means that the customer has confirmed the sale.
@@ -977,6 +976,9 @@ class Sale(Domain):
         the payments are agreed upon but not necessarily received.
 
         All money payments will be set as paid.
+
+        :param till: the |till| where this sale was confirmed. Can
+            be `None` in case the process was automated (e.g. a virtual store)
         """
         assert self.can_confirm()
         assert self.branch
@@ -993,7 +995,7 @@ class Sale(Domain):
         self.total_amount = self.get_total_sale_amount()
 
         self.group.confirm()
-        self._add_inpayments()
+        self._add_inpayments(till=till)
         self._create_fiscal_entries()
 
         if self._create_commission_at_confirm():
@@ -1650,15 +1652,15 @@ class Sale(Domain):
         # discount/surchage cannot have more than 2 decimal points
         return quantize(currency(perc_value))
 
-    def _add_inpayments(self):
+    def _add_inpayments(self, till=None):
         payments = self.payments
         if not payments.count():
             raise ValueError(
                 _('You must have at least one payment for each payment group'))
 
-        # FIXME: We should make till optional here
-        till = Till.get_current(self.store)
-        assert till
+        if till is None:
+            return
+
         for payment in payments:
             assert payment.is_inpayment()
             till.add_entry(payment)

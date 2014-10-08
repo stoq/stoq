@@ -77,10 +77,9 @@ GtkVBox(toplevel):
         column: title='Description', expand
         column: title='Branch', hidden
         column: title='Value'
-        row: 4, u'Amount removed from Till', u'Moda Stoq', <currency $ -2015>
       GtkHBox(removals_label):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-        GtkLabel(): '<b>$ -2015.00</b>'
+        GtkLabel(): '<b>$ 0.00</b>'
     GtkHBox(hbox1):
       GtkVBox(permethod_vbox, expand=True, fill=True):
         ObjectList(permethod_list, expand=True, fill=True):

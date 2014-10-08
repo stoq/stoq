@@ -522,8 +522,13 @@ class FiscalCoupon(gobject.GObject):
             store.rollback(name=savepoint, close=False)
             return False
 
+        # FIXME: This used to be done inside sale.confirm. Maybe it would be
+        # better to do a proper error handling
+        till = Till.get_current(store)
+        assert till
+
         try:
-            sale.confirm()
+            sale.confirm(till=till)
         except SellError as err:
             warning(str(err))
             store.rollback(name=savepoint, close=False)

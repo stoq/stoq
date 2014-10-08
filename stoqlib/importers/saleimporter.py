@@ -22,18 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
-from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import Till
 from stoqlib.importers.csvimporter import CSVImporter
-from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -96,24 +91,3 @@ class SaleImporter(CSVImporter):
             if payment.is_paid():
                 p = store.fetch(payment)
                 p.paid_date = self.parse_date(data.open_date)
-
-    def before_start(self, store):
-        till = Till.get_current(store)
-        if till is None:
-            till = Till(store=store,
-                        station=get_current_station(store))
-            till.open_till()
-            assert till == Till.get_current(store)
-
-    def when_done(self, store):
-        # This is sort of hack, set the opening/closing dates to the date before
-        # it's run, so we can open/close the till in the tests, which uses
-        # the examples.
-        till = Till.get_current(store)
-        # Do not leave anything in the till.
-        till.add_debit_entry(till.get_balance(),
-                             _(u'Amount removed from Till'))
-        till.close_till()
-        yesterday = localtoday() - datetime.timedelta(1)
-        till.opening_date = yesterday
-        till.closing_date = yesterday
