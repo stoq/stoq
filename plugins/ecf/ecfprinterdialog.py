@@ -323,8 +323,8 @@ class ECFListSlave(ModelListSlave):
         Column('is_active', title=_('Active'), data_type=bool, width=60),
     ]
 
-    def __init__(self, parent, store):
-        ModelListSlave.__init__(self, parent, store)
+    def __init__(self, parent, store, reuse_store=False):
+        ModelListSlave.__init__(self, parent, store, reuse_store=reuse_store)
         self.set_list_type(ListType.UNREMOVABLE)
 
     def populate(self):
