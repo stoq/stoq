@@ -240,6 +240,12 @@ class PluggableWizard(GladeDelegate):
         pass
 
     def go_to_next(self):
+        # If the next button is not sensitive, dont let the it change. This may
+        # happen programatically, when this is called without checking the
+        # status of the step.
+        if not self.next_button.get_sensitive():
+            return
+
         if not self._current.validate_step():
             return
 
