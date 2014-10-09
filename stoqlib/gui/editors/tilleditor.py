@@ -52,14 +52,24 @@ _ = stoqlib_gettext
 
 
 def _create_transaction(store, till_entry):
+    if till_entry.value > 0:
+        operation_type = AccountTransaction.TYPE_IN
+        source_account = sysparam.get_object_id('IMBALANCE_ACCOUNT')
+        dest_account = sysparam.get_object_id('TILLS_ACCOUNT')
+    else:
+        operation_type = AccountTransaction.TYPE_OUT
+        source_account = sysparam.get_object_id('TILLS_ACCOUNT')
+        dest_account = sysparam.get_object_id('IMBALANCE_ACCOUNT')
+
     AccountTransaction(description=till_entry.description,
-                       source_account_id=sysparam.get_object_id('IMBALANCE_ACCOUNT'),
-                       account_id=sysparam.get_object_id('TILLS_ACCOUNT'),
-                       value=till_entry.value,
+                       source_account_id=source_account,
+                       account_id=dest_account,
+                       value=abs(till_entry.value),
                        code=unicode(till_entry.identifier),
                        date=TransactionTimestamp(),
                        store=store,
-                       payment=till_entry.payment)
+                       payment=till_entry.payment,
+                       operation_type=operation_type)
 
 
 class _TillOpeningModel(object):
