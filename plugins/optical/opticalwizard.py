@@ -118,23 +118,20 @@ class OpticalItemStep(WorkOrderQuoteItemStep):
         # Now we must remove the products added to the workorders from the
         # stock and we can associate the category selected to the workorders
         storable = sale_item.sellable.product_storable
-        if storable:
-            optical_product = OpticalProduct.get_from_product(storable.product)
-            if optical_product:
-                auto_reserve = optical_product.auto_reserve
-            else:
-                auto_reserve = True
-
-            if sale_item.batch is not None:
-                balance = sale_item.batch.get_balance_for_branch(
-                    sale_item.sale.branch)
-            else:
-                balance = storable.get_balance_for_branch(
-                    sale_item.sale.branch)
+        if not storable:
+            return sale_item
+        optical_product = OpticalProduct.get_from_product(storable.product)
+        if optical_product:
+            auto_reserve = optical_product.auto_reserve
         else:
-            # No storable, consume it all
-            balance = sale_item.quantity
             auto_reserve = True
+
+        if sale_item.batch is not None:
+            balance = sale_item.batch.get_balance_for_branch(
+                sale_item.sale.branch)
+        else:
+            balance = storable.get_balance_for_branch(
+                sale_item.sale.branch)
 
         if auto_reserve:
             quantity_to_reserve = min(balance, sale_item.quantity)

@@ -270,6 +270,26 @@ class TestWorkOrderItem(DomainTest):
         item_without_storable.return_to_stock(4)
         self.assertEqual(item_without_storable.quantity_decreased, 16)
 
+        # Work order with sale
+        sale = self.create_sale()
+        work_order = self.create_workorder()
+        product = self.create_product(stock=10)
+
+        branch = sale.branch
+        storable = product.storable
+        self.assertEquals(storable.get_balance_for_branch(branch), 10)
+
+        sale_item = sale.add_sellable(product.sellable, quantity=3)
+        wo_item = work_order.add_sellable(product.sellable, quantity=3)
+        wo_item.sale_item = sale_item
+        wo_item.reserve(3)
+        self.assertEquals(wo_item.quantity_decreased, 3)
+        self.assertEquals(storable.get_balance_for_branch(branch), 7)
+
+        wo_item.return_to_stock(2)
+        self.assertEquals(wo_item.quantity_decreased, 1)
+        self.assertEquals(storable.get_balance_for_branch(branch), 9)
+
 
 class TestWorkOrder(DomainTest):
     def test_get_total_amount(self):
