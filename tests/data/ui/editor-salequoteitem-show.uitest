@@ -21,9 +21,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               GtkLabel(original_price_lbl): 'Original Price:'
               ProxyLabel(original_price): '<span >$10.00</span>'
               GtkLabel(label5): 'Quantity:'
-              ProxySpinButton(quantity): '2.00'
+              ProxySpinButton(quantity): '2'
               GtkLabel(reserved_lbl): 'Delivered:'
-              ProxySpinButton(reserved): '1.00'
+              ProxySpinButton(reserved): '1'
               GtkLabel(label6): 'Total:'
               ProxyLabel(total): '<span >$300.00</span>'
       GtkHBox(fill=True):

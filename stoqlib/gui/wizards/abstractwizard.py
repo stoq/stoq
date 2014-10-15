@@ -56,7 +56,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.events import WizardSellableItemStepEvent
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.widgets.calculator import CalculatorPopup
-from stoqlib.lib.defaults import MAX_INT
+from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -414,6 +414,11 @@ class SellableItemSlave(BaseEditorSlave):
         self.quantity.set_sensitive(has_sellable)
         self.cost.set_sensitive(has_sellable and self.cost_editable)
         self._update_product_labels_visibility(has_storable)
+
+        unit = sellable and sellable.unit
+        self.quantity.set_digits(
+            QUANTITY_PRECISION if unit and unit.allow_fraction else 0)
+
         self.emit('sellable-selected', sellable)
 
     def get_batch_items(self):

@@ -12,7 +12,7 @@ GtkDialog(main_dialog.toplevel): title='Produce Items', hidden
           GtkLabel(location_content): 'Location:', hidden
           ProxyLabel(location): hidden
           GtkLabel(quantity_lbl): 'Produce:'
-          ProxySpinButton(quantity): '0.000', invalid
+          ProxySpinButton(quantity): '0', invalid
           GtkLabel(label3): 'Unit:'
           ProxyLabel(unit_description): '<span ></span>'
           GtkEventBox(place_holder):

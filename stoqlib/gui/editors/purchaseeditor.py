@@ -29,7 +29,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.lib.defaults import MAX_INT
+from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -64,6 +64,14 @@ class PurchaseItemEditor(BaseEditor):
                        self.quantity_returned]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
+
+        unit = self.model.sellable.unit
+        digits = QUANTITY_PRECISION if unit and unit.allow_fraction else 0
+        for widget in [self.quantity,
+                       self.quantity_sold,
+                       self.quantity_returned]:
+            widget.set_digits(digits)
+
         self.description.set_text(self.model.sellable.get_description())
         self.cost.set_digits(sysparam.get_int('COST_PRECISION_DIGITS'))
 

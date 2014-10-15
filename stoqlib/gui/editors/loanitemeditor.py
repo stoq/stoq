@@ -32,7 +32,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.widgets.calculator import CalculatorPopup
-from stoqlib.lib.defaults import MAX_INT
+from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -64,6 +64,10 @@ class LoanItemEditor(BaseEditor):
         for widget in [self.quantity, self.price]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
+        unit = self.model.sellable.unit
+        self.quantity.set_digits(
+            QUANTITY_PRECISION if unit and unit.allow_fraction else 0)
+
         self.tabs.set_show_tabs(False)
 
     def _has_stock(self, quantity):

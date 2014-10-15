@@ -14,7 +14,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Loan Item"', hidden
               GtkLabel(label4): 'Price:'
               ProxySpinButton(price): '15.00'
               GtkLabel(label5): 'Quantity:'
-              ProxySpinButton(quantity): '2.00'
+              ProxySpinButton(quantity): '2'
               GtkLabel(original_price_lbl): 'Original Price:'
               ProxyLabel(original_price): '<span >$10.00</span>'
               GtkLabel(label6): 'Total:'

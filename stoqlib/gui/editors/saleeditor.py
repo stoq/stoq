@@ -41,7 +41,7 @@ from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
 from stoqlib.gui.widgets.calculator import CalculatorPopup
-from stoqlib.lib.defaults import MAX_INT, quantize
+from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT, quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -84,12 +84,15 @@ class SaleQuoteItemEditor(BaseEditor):
         self.sale.set_text(unicode(self.model.sale.identifier))
         self.description.set_text(self.model.sellable.get_description())
         self.original_price.update(self.model.base_price)
-        for widget in [self.quantity, self.price]:
-            widget.set_adjustment(gtk.Adjustment(lower=1, upper=MAX_INT,
+        for widget in [self.quantity, self.reserved, self.price]:
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1, page_incr=10))
-        self.reserved.set_adjustment(gtk.Adjustment(lower=0,
-                                                    upper=self.quantity_model.quantity,
-                                                    step_incr=1, page_incr=10))
+
+        unit = self.model.sellable.unit
+        digits = QUANTITY_PRECISION if unit and unit.allow_fraction else 0
+        for widget in [self.quantity, self.reserved]:
+            widget.set_digits(digits)
+
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 

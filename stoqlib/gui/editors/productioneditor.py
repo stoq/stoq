@@ -81,7 +81,17 @@ class ProductionItemEditor(BaseEditor):
         self.identifier.set_text(unicode(self.model.order.identifier))
         self.quantity.set_adjustment(
             gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
-        self.quantity.set_digits(QUANTITY_PRECISION)
+
+        if isinstance(self.model, (ProductionItem, ProductionMaterial)):
+            sellable = self.model.product.sellable
+        elif isinstance(self.model, ProductionService):
+            sellable = self.model.service.sellable
+        else:
+            raise AssertionError
+
+        unit = sellable.unit
+        self.quantity.set_digits(
+            QUANTITY_PRECISION if unit and unit.allow_fraction else 0)
 
     def get_max_quantity(self):
         """Returns the maximum quantity allowed in the quantity spinbutton.

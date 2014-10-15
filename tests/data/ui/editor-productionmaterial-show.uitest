@@ -12,7 +12,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Production Material Ite
           GtkLabel(location_content): 'Location:', hidden
           ProxyLabel(location): hidden
           GtkLabel(quantity_lbl): 'Quantity to purchase:'
-          ProxySpinButton(quantity): '0.000'
+          ProxySpinButton(quantity): '0'
           GtkLabel(label3): 'Unit:'
           ProxyLabel(unit_description):
           GtkEventBox(place_holder):

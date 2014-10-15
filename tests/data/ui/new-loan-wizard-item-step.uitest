@@ -11,7 +11,7 @@ GtkDialog(PluggableWizard): title='New Loan Wizard', hidden
               GtkEntry(step.barcode, fill=True): ''
               GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
-            ProxySpinButton(step.quantity): '0.000', insensitive
+            ProxySpinButton(step.quantity): '0', insensitive
             ProxyLabel(step.unit_label): '<span weight="bold"></span>'
             ProxyLabel(step.cost_label): 'Price:'
             ProxySpinButton(step.cost): '0.00', insensitive

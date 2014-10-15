@@ -17,7 +17,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Purchase Item"', hidden
             GtkLabel(cost_lbl): 'Cost:', hidden
             ProxySpinButton(cost): '0.00', hidden
             GtkLabel(label5): 'Quantity:'
-            ProxySpinButton(quantity): '8.00'
+            ProxySpinButton(quantity): '8'
             GtkLabel(expected_lbl): 'Expected receival:'
             ProxyDateEntry(expected_receival_date): None, mandatory
             GtkLabel(total_lbl): 'Total:'

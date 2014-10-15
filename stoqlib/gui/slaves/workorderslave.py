@@ -88,9 +88,9 @@ class _WorkOrderItemEditor(BaseEditor):
 
     def setup_proxies(self):
         unit = self.model.sellable.unit
-        if unit and unit.allow_fraction:
-            self.quantity.set_digits(QUANTITY_PRECISION)
-            self.quantity_reserved.set_digits(QUANTITY_PRECISION)
+        digits = QUANTITY_PRECISION if unit and unit.allow_fraction else 0
+        for widget in [self.quantity, self.quantity_reserved]:
+            widget.set_digits(digits)
 
         self.quantity.set_range(1, MAX_INT)
         # If there's a sale, we can't change it's quantity, but we can
