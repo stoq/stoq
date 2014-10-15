@@ -231,7 +231,7 @@ class SellableSearch(SearchEditor):
             return
 
         row = self.results.get_selected()
-        self._image_viewer.set_sellable(row.sellable)
+        self._image_viewer.set_sellable(row and row.sellable)
 
     #
     # Callbacks
