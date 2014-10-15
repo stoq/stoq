@@ -240,10 +240,10 @@ class SellableEditor(BaseEditor):
                                     self.unit_combo,
                                     ])
 
-        print_labels_button = self.add_button('print_labels', gtk.STOCK_PRINT)
-        print_labels_button.connect('clicked', self.on_print_labels_clicked,
-                                    'print_labels')
-        label = print_labels_button.get_children()[0]
+        self._print_labels_btn = self.add_button('print_labels', gtk.STOCK_PRINT)
+        self._print_labels_btn.connect('clicked', self.on_print_labels_clicked,
+                                       'print_labels')
+        label = self._print_labels_btn.get_children()[0]
         label = label.get_children()[0].get_children()[1]
         label.set_label(_(u'Print labels'))
 
@@ -266,6 +266,7 @@ class SellableEditor(BaseEditor):
                                          self.visual_mode)
         self.add_extra_tab(_(u'Category Prices'), price_slave)
         self._setup_ui_forms()
+        self._update_print_labels()
 
     def _add_demo_warning(self):
         fmt = _("This is a demostration mode of Stoq, you cannot "
@@ -306,6 +307,12 @@ class SellableEditor(BaseEditor):
     def _update_default_sellable_code(self):
         code = Sellable.get_max_value(self.store, Sellable.code)
         self.code.update(next_value_for(code))
+
+    def _update_print_labels(self):
+        sellable = self.model.sellable
+        self._print_labels_btn.set_sensitive(
+            all([sellable.code, sellable.barcode,
+                 sellable.description, sellable.price]))
 
     def _setup_ui_forms(self):
         if not self.db_form:
@@ -534,6 +541,18 @@ class SellableEditor(BaseEditor):
     def on_cost__validate(self, entry, value):
         if value <= 0:
             return ValidationError(_("Cost cannot be zero or negative"))
+
+    def after_description__changed(self, widget):
+        self._update_print_labels()
+
+    def after_code__changed(self, widget):
+        self._update_print_labels()
+
+    def after_barcode__changed(self, widget):
+        self._update_print_labels()
+
+    def after_price__changed(self, widget):
+        self._update_print_labels()
 
     def on_print_labels_clicked(self, button, parent_label_button=None):
         label_data = run_dialog(PrintLabelEditor, None, self.store,
