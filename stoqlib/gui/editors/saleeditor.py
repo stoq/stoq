@@ -121,6 +121,12 @@ class SaleQuoteItemEditor(BaseEditor):
         if storable.is_batch and not self.model.batch:
             return False
 
+        # No stock item means we cannot reserve any quantity yet
+        stock_item = product.storable.get_stock_item(
+            self.model.sale.branch, self.model.batch)
+        if stock_item is None:
+            return False
+
         return True
 
     def _setup_taxes(self):
