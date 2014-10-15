@@ -34,7 +34,7 @@ from storm.expr import And
 from stoqlib.api import api
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.person import Branch
+from stoqlib.domain.person import Branch, SalesPerson
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.gui.base.gtkadds import set_bold
@@ -161,7 +161,10 @@ class CommissionSearch(SearchDialog):
         return columns
 
     def print_report(self):
-        salesperson = self._salesperson_filter.combo.get_selected()
+        salesperson_id = self._salesperson_filter.combo.get_selected()
+        salesperson = (salesperson_id and
+                       self.store.get(SalesPerson, salesperson_id))
+
         print_report(self.report_class, list(self.results),
                      salesperson=salesperson,
                      filters=self.search.get_search_filters())
