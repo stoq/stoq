@@ -83,6 +83,9 @@ class CalculatorPopup(gtk.Window):
         if not self._popped_entry.get_realized():
             return
 
+        if not self._update_ui():
+            return
+
         toplevel = self._popped_entry.get_toplevel().get_toplevel()
         if (isinstance(toplevel, (gtk.Window, gtk.Dialog)) and
             toplevel.get_group()):
@@ -99,7 +102,6 @@ class CalculatorPopup(gtk.Window):
             return
 
         self.grab_add()
-        self._update_ui()
 
     def popdown(self):
         if not self._popped_entry.get_realized():
@@ -182,11 +184,17 @@ class CalculatorPopup(gtk.Window):
         self.set_screen(self._popped_entry.get_screen())
 
     def _update_ui(self):
-        self._new_value = self._data_type(self._popped_entry.get_text())
+        try:
+            self._new_value = self._data_type(self._popped_entry.get_text())
+        except decimal.InvalidOperation:
+            return False
+
         self._entry.set_text('')
         self._entry.set_tooltip_text(_("Use absolute or percentage (%) value"))
         self._preview_new_value()
         self._main_label.set_text(self._get_main_label())
+
+        return True
 
     def _get_main_label(self):
         if self._mode == self.MODE_ADD:
