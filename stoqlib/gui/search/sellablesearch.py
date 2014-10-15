@@ -32,7 +32,7 @@ from storm.expr import Ne
 
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObject
-from stoqlib.domain.product import ProductSupplierInfo
+from stoqlib.domain.product import ProductSupplierInfo, Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
@@ -177,12 +177,9 @@ class SellableSearch(SearchEditor):
         self.set_edit_button_sensitive(bool(sellable_view))
         self.ok_button.set_sensitive(bool(sellable_view))
 
-        # Some viewables may not have the product (for viewables with only
-        # services). Also use hasattr for product since it may be None
         if self.branch_stock_button is not None:
-            storable = (getattr(sellable_view, 'product', None) and
-                        getattr(sellable_view.product, 'storable'))
-            self.branch_stock_button.set_sensitive(bool(storable))
+            self.branch_stock_button.set_sensitive(
+                bool(self._get_selected_storable()))
 
     def executer_query(self, store):
         # If the viewable has a find_by_branch method, then lets use it instead
@@ -209,6 +206,13 @@ class SellableSearch(SearchEditor):
     #
     #  Private
     #
+
+    def _get_selected_storable(self):
+        product = getattr(self.results.get_selected(), 'product', None)
+        if product and self.fast_iter:
+            product = self.store.get(Product, product.id)
+
+        return product and product.storable
 
     def _open_image_viewer(self):
         assert self._image_viewer is None
@@ -255,11 +259,11 @@ class SellableSearch(SearchEditor):
 
     def on_branch_stock_button__clicked(self, widget):
         from stoqlib.gui.search.productsearch import ProductBranchSearch
-        viewable = self.results.get_selected()
-        product = viewable.product
-        if product and product.storable:
-            self.run_dialog(ProductBranchSearch, self, self.store,
-                            product.storable)
+        storable = self._get_selected_storable()
+        if not storable:
+            return
+
+        self.run_dialog(ProductBranchSearch, self, self.store, storable)
 
 
 class SaleSellableSearch(SellableSearch):
