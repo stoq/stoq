@@ -288,6 +288,8 @@ class SalesApp(ShellApp):
 
         cols = [IdentifierColumn('identifier', long_title=_('Order #'),
                                  sorted=True),
+                SearchColumn('coupon_id', title=_('Coupon #'), width=100,
+                             data_type=int, visible=False),
                 SearchColumn('paid', title=_('Paid'), width=120,
                              data_type=bool, visible=False),
                 SearchColumn('open_date', title=_('Open date'), width=120,

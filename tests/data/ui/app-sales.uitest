@@ -134,6 +134,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                     GtkButton(search_button): 'gtk-find'
               SearchResultListView(result_view, expand=True, fill=True):
                 column: title='#'
+                column: title='Coupon #', hidden
                 column: title='Paid', hidden
                 column: title='Open date', hidden
                 column: title='Close date', hidden
@@ -146,9 +147,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                 column: title='Salesperson'
                 column: title='Items'
                 column: title='Total'
-                row: 1, True, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Vitalina Claudino', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
-                row: 2, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Alessandra Almeida Itaber\xe1', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
-                row: 3, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
+                row: 1, 1001, True, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Vitalina Claudino', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
+                row: 2, 1002, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Alessandra Almeida Itaber\xe1', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+                row: 3, 1003, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
           GtkVBox(list_vbox, fill=True):
           GtkEventBox(list_toolbar_holder, fill=True):
     ShellStatusbar():

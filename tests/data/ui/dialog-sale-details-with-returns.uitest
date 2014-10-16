@@ -8,7 +8,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
           GtkTable(table1, fill=True):
             GtkLabel(label9): '<b>Sale Number:</b>'
             ProxyLabel(identifier): '<span >00123</span>'
-            GtkLabel(label14): 'Invoice Number:'
+            GtkLabel(invoice_label): 'Invoice Number:'
             ProxyLabel(invoice_number): '<span ></span>'
             GtkLabel(label1): 'Open Date:'
             ProxyLabel(open_date_lbl): '<span >12/01/10</span>'

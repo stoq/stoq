@@ -51,7 +51,7 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
-                                CouponCreatedEvent)
+                                CouponCreatedEvent, EditorCreateEvent)
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
@@ -93,6 +93,7 @@ class ECFUI(object):
         CheckECFStateEvent.connect(self._on_CheckECFStateEvent)
         HasPendingReduceZ.connect(self._on_HasPendingReduceZ)
         HasOpenCouponEvent.connect(self._on_HasOpenCouponEvent)
+        EditorCreateEvent.connect(self._on_EditorCreateEvent)
 
         self._till_summarize_action = gtk.Action(
             'Summary', _('Summary'), None, None)
@@ -723,3 +724,9 @@ class ECFUI(object):
 
     def _on_CheckECFStateEvent(self):
         self._check_ecf_state()
+
+    def _on_EditorCreateEvent(self, editor, model, store, *args):
+        from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+        if isinstance(editor, SaleDetailsDialog):
+            editor.invoice_label.set_text(_('Coupon Number'))
+            editor.invoice_number.update(model.coupon_id)
