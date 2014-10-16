@@ -1,6 +1,6 @@
 import unittest
 
-from stoqlib.lib.event import Event
+from stoqlib.lib.event import Event, _WeakRef
 
 
 class ReturnStatus:
@@ -114,3 +114,16 @@ class EventTest(unittest.TestCase):
         MyEvent.connect(lambda: 666)
         retval = MyEvent.emit()
         self.assertEqual(retval, None)
+
+    def test_weakref_comparison(self):
+        def xxx():
+            pass
+
+        def yyy():
+            pass
+
+        zzz = lambda: None
+
+        self.assertEqual(_WeakRef(xxx), _WeakRef(xxx))
+        self.assertNotEqual(_WeakRef(xxx), _WeakRef(yyy))
+        self.assertNotEqual(_WeakRef(xxx), zzz)

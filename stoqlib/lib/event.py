@@ -71,6 +71,9 @@ class _WeakRef(object):
             self.id = id(func)
 
     def __eq__(self, other):
+        if type(self) is not type(other):
+            return False
+
         if self.id != other.id:
             return False
 
@@ -81,6 +84,9 @@ class _WeakRef(object):
         # Both are bound methods, compare their objects to
         # support n objects connecting n events.
         return self.obj() is other.obj()
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __call__(self, *args, **kwargs):
         func = self.meth()
