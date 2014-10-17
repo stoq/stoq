@@ -675,7 +675,7 @@ class TestSellable(DomainTest):
 
     def test_can_remove(self):
         sellable = Sellable(store=self.store)
-        self.failIf(sellable.can_remove())
+        self.assertTrue(sellable.can_remove())
 
         sellable = self.create_sellable()
         storable = Storable(product=sellable.product, store=self.store)

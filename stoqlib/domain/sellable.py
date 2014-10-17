@@ -626,25 +626,16 @@ class Sellable(Domain):
           - Sold or received
           - The |product| is in a |purchase|
         """
-        from stoqlib.domain.sale import SaleItem
-        if self.store.find(SaleItem, sellable=self).count():
-            # FIXME: Find a better way of doing this.
-            # Quotes (and maybe other cases) don't go to the history,
-            # so make sure there's nothing left on SaleItem referencing
-            # this sellable.
+        if self.product and not self.product.can_remove():
             return False
 
-        # If the product is in a purchase.
-        from stoqlib.domain.purchase import PurchaseItem
-        if self.store.find(PurchaseItem, sellable=self).count():
+        if self.service and not self.service.can_remove():
             return False
 
-        if self.product:
-            return self.product.can_remove()
-        elif self.service:
-            return self.service.can_remove()
-
-        return False
+        return super(Sellable, self).can_remove(
+            skip=[('product', 'sellable_id'),
+                  ('service', 'sellable_id'),
+                  ('client_category_price', 'sellable_id')])
 
     def can_close(self):
         """Whether we can close this sellable.

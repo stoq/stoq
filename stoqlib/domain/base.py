@@ -36,7 +36,7 @@ from storm.properties import Property
 from storm.references import Reference
 from storm.store import AutoReload
 
-from stoqlib.database.expr import CharLength, Field, LPad
+from stoqlib.database.expr import CharLength, Field, LPad, UnionAll
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import IntCol, IdCol, UnicodeCol
 from stoqlib.domain.events import DomainMergeEvent
@@ -291,6 +291,42 @@ class Domain(ORMObject):
 
             clause = Field(table, column) == other.id
             self.store.execute(Update({column: self.id}, clause, table))
+
+    def can_remove(self, skip=None):
+        """Check if this object can be removed from the database
+
+        This will check if there's any object referencing self
+
+        :param skip: an itarable containing the (table, column) to skip
+            the check. Use this to avoid false positives when you will
+            delete those skipped by hand before self.
+        """
+        skip = skip or set()
+        selects = []
+        refs = self.store.list_references(self.__class__.id)
+
+        for t_name, c_name, ot_name, oc_name, u, d in refs:
+            if (t_name, c_name) in skip:
+                continue
+
+            column = Field(t_name, c_name)
+            selects.append(
+                Select(columns=[1], tables=[t_name],
+                       where=column == self.id, limit=1))
+
+        # If everything was skipped, there's no query to execute
+        if not len(selects):
+            return True
+
+        # We can only pass limit=1 to UnionAll if there's more than one select.
+        # If not, storm will put the limit anyway and it will join with the
+        # select's limit producing an error: multiple LIMIT clauses not allowed
+        if len(selects) > 1:
+            extra = {'limit': 1}
+        else:
+            extra = {}
+
+        return not any(self.store.execute(UnionAll(*selects, **extra)))
 
     #
     #  Classmethods

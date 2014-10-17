@@ -356,21 +356,13 @@ class Product(Domain):
         ``False`` if the product was sold, received or used in a
         production. ``True`` otherwise.
         """
-        from stoqlib.domain.production import ProductionItem
-        if self.get_history().count():
+        if self.storable and not self.storable.can_remove():
             return False
-        storable = self.storable
-        if storable and storable.get_stock_items().count():
-            return False
-        # Return False if the product is component of other.
-        elif self.store.find(ProductComponent,
-                             component=self).count():
-            return False
-        # Return False if the component(product) is used in a production.
-        elif self.store.find(ProductionItem,
-                             product=self).count():
-            return False
-        return True
+
+        return super(Product, self).can_remove(
+            skip=[('storable', 'product_id'),
+                  ('product_supplier_info', 'product_id'),
+                  ('product_component', 'product_id')])
 
     def can_close(self):
         """Checks if this product can be closed
@@ -426,11 +418,6 @@ class Product(Domain):
             return self.get_manufacture_time(quantity, branch)
         else:
             return self.suppliers.find().max(ProductSupplierInfo.lead_time) or 0
-
-    def get_history(self):
-        """Returns the list of :class:`ProductHistory` for this product.
-        """
-        return self.store.find(ProductHistory, sellable=self.sellable)
 
     def get_main_supplier_name(self):
         supplier_info = self.get_main_supplier_info()
@@ -543,10 +530,6 @@ class ProductManufacturer(Domain):
 
     def get_description(self):
         return self.name
-
-    def can_remove(self):
-        """ Check if the manufacturer is used in some product."""
-        return not self.store.find(Product, manufacturer=self).count()
 
     def remove(self):
         """Remove this registry from the database."""
@@ -1379,12 +1362,6 @@ class ProductQualityTest(Domain):
         else:
             a, b = self.get_range_value()
             return a <= value <= b
-
-    def can_remove(self):
-        from stoqlib.domain.production import ProductionItemQualityResult
-        if self.store.find(ProductionItemQualityResult, quality_test=self).count():
-            return False
-        return True
 
 
 _StockSummary = Alias(Select(

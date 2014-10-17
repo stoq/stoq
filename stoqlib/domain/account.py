@@ -291,11 +291,13 @@ class Account(Domain):
         if self.station:
             return False
 
-        # Can't remove an account which has children
-        if self.has_child_accounts():
-            return False
-
-        return True
+        # When we remove this Account, all the related AccountTransaction will
+        # be assigned to the IMBALANCE_ACCOUNT and BankAccount will be removed,
+        # so we need to skip them here
+        return super(Account, self).can_remove(
+            skip=[('account_transaction', 'account_id'),
+                  ('account_transaction', 'source_account_id'),
+                  ('bank_account', 'account_id')])
 
     def remove(self, store):
         """Remove the current account. This updates all transactions which

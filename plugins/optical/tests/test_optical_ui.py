@@ -120,7 +120,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
             self.assertEquals(kwargs['hide_footer'], True)
 
     def test_product_editor(self):
-        product = self.create_product()
+        product = self.create_product(stock=10)
         editor = ProductEditor(store=self.store, model=product)
         self.check_editor(editor, u'editor-product-optical-plugin')
 

@@ -37,7 +37,6 @@ from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.sellable import (Sellable,
                                      SellableUnit, SellableCategory)
-from stoqlib.domain.production import ProductionService
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -72,11 +71,7 @@ class Service(Domain):
             # for creating deliveries.
             return False
 
-        # False if the service is used in a production.
-        if self.store.find(ProductionService, service=self).count():
-            return False
-
-        return True
+        return super(Service, self).can_remove()
 
     def can_close(self):
         # The delivery item cannot be closed as it will be

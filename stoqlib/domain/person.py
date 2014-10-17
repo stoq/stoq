@@ -81,7 +81,6 @@ from stoqlib.domain.interfaces import IDescribable, IActive
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.profile import UserProfile
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import DatabaseInconsistency, LoginError, SellError
@@ -811,10 +810,14 @@ class ClientCategory(Domain):
 
     def can_remove(self):
         """ Check if the client category is used in some product."""
-        return self.store.find(ClientCategoryPrice, category=self).is_empty()
+        return super(ClientCategory, self).can_remove(
+            skip=[('client', 'category_id')])
 
     def remove(self):
         """Remove this client category from the database."""
+        self.store.execute(Update(
+            {Client.category_id: None}, Client.category_id == self.id, Client))
+
         self.store.remove(self)
 
 

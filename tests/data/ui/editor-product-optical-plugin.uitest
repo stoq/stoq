@@ -14,7 +14,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
               GtkLabel(barcode_lbl): 'Barcode:'
               ProxyEntry(barcode): ''
               GtkLabel(product_type_lbl): 'Type:'
-              ProxyLabel(product_type_str): '<span ></span>'
+              ProxyLabel(product_type_str): '<span >Regular product</span>'
               GtkLabel(label10): 'Default Sales C.F.O.P.:'
               ProxyComboEntry(default_sale_cfop):
                 item: ''
@@ -116,11 +116,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                       ProxyEntry(location): ''
                       GtkLabel(min_lbl): 'Minimum:'
                       GtkHBox(min_hbox):
-                        ProxySpinButton(minimum_quantity, expand=True, fill=True): '0.00', insensitive
+                        ProxySpinButton(minimum_quantity, expand=True, fill=True): '0.00'
                         GtkLabel(min_unit, fill=True): 'Unit(s)'
                       GtkLabel(max_lbl): 'Maximum:'
                       GtkHBox(max_hbox):
-                        ProxySpinButton(maximum_quantity, expand=True, fill=True): '0.00', insensitive
+                        ProxySpinButton(maximum_quantity, expand=True, fill=True): '0.00'
                         GtkLabel(max_unit, fill=True): 'Unit(s)'
                   GtkLabel(label5): '<b>Stock Details</b>'
                 GtkFrame(nfe_frame, fill=True):
@@ -242,7 +242,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(): 'gtk-delete'
       GtkButton(_print_labels_btn): 'gtk-print', insensitive
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

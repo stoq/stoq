@@ -28,7 +28,7 @@ from decimal import Decimal
 
 from kiwi.ui.objectlist import Column
 
-from stoqlib.domain.person import ClientCategory, Client
+from stoqlib.domain.person import ClientCategory
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.clientcategoryeditor import ClientCategoryEditor
 from stoqlib.lib.formatters import get_formatted_percentage
@@ -54,8 +54,7 @@ class ClientCategoryListSlave(ModelListSlave):
             warning(_("%s cannot be deleted, because is used in one or more "
                       "products.") % model.name)
             return
-        for client in store.find(Client, category=model):
-            client.category = None
+
         model = store.fetch(model)
         model.remove()
 

@@ -30,7 +30,7 @@ Most of them are specific to PostgreSQL
 
 from storm.expr import (Expr, NamedFunc, PrefixExpr, SQL, ComparableExpr,
                         compile as expr_compile, FromExpr, Undef, EXPR,
-                        is_safe_token, BinaryOper)
+                        is_safe_token, BinaryOper, SetExpr)
 
 
 class Age(NamedFunc):
@@ -238,6 +238,21 @@ def compile_generate_series(compile, expr, state):
                                                 expr_compile(expr.step, state))
     state.pop()
     return expr
+
+
+class UnionAll(SetExpr):
+    """Union all the results
+
+    UNION is to UNION ALL what a python's set is to a list. UNION
+    will remove duplicates from the resulting rows while UNION ALL
+    will just join all data, making it a little bit faster but possibly
+    with more rows.
+    """
+    __slots__ = ()
+    oper = " UNION ALL "
+
+
+expr_compile.set_precedence(10, UnionAll)
 
 
 def is_sql_identifier(identifier):

@@ -26,8 +26,9 @@ __tests__ = 'stoqlib/domain/base.py'
 
 import mock
 from storm.exceptions import NotOneError
+from storm.references import Reference
 
-from stoqlib.database.properties import IntCol, UnicodeCol, BoolCol
+from stoqlib.database.properties import IntCol, UnicodeCol, BoolCol, IdCol
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -42,6 +43,14 @@ class Ding(Domain):
 class Dong(Domain):
     __storm_table__ = 'dong'
     bool_field = BoolCol(default=False)
+    ding_id = IdCol()
+    ding = Reference(ding_id, Ding.id)
+
+
+class Dung(Domain):
+    __storm_table__ = 'dung'
+    ding_id = IdCol()
+    ding = Reference(ding_id, Ding.id)
 
 
 class TestSelect(DomainTest):
@@ -50,18 +59,26 @@ class TestSelect(DomainTest):
     def setUpClass(cls):
         DomainTest.setUpClass()
         RECREATE_SQL = """
+        DROP TABLE IF EXISTS dung;
+        DROP TABLE IF EXISTS dong;
         DROP TABLE IF EXISTS ding;
+
         CREATE TABLE ding (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
             te_id bigint UNIQUE REFERENCES transaction_entry(id),
             int_field integer default 0,
             str_field text default ''
         );
-        DROP TABLE IF EXISTS dong;
         CREATE TABLE dong (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
             te_id bigint UNIQUE REFERENCES transaction_entry(id),
-            bool_field boolean default false
+            bool_field boolean default false,
+            ding_id uuid REFERENCES ding(id) ON UPDATE CASCADE
+        );
+        CREATE TABLE dung (
+            id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+            te_id bigint UNIQUE REFERENCES transaction_entry(id),
+            ding_id uuid REFERENCES ding(id) ON UPDATE CASCADE
         );
         """
         cls.store.execute(RECREATE_SQL)
@@ -226,3 +243,20 @@ class TestSelect(DomainTest):
                 "more than one result found when trying to "
                 "check_unique_tuple_exists on table 'Ding' for values: "
                 "u'int_field => 1, str_field => XXX'")
+
+    def test_can_remove(self):
+        ding = Ding(store=self.store)
+        dung = Dung(store=self.store)
+        dong = Dong(store=self.store)
+        self.assertTrue(ding.can_remove())
+
+        dung.ding = ding
+        self.assertFalse(ding.can_remove())
+        self.assertTrue(ding.can_remove(skip=[('dung', 'ding_id')]))
+
+        dong.ding = ding
+        self.assertFalse(ding.can_remove())
+        self.assertFalse(ding.can_remove(skip=[('dung', 'ding_id')]))
+        self.assertFalse(ding.can_remove(skip=[('dong', 'ding_id')]))
+        self.assertTrue(ding.can_remove(skip=[('dong', 'ding_id'),
+                                              ('dung', 'ding_id')]))
