@@ -184,7 +184,7 @@ class StartSaleQuoteStep(WizardEditorStep):
     def on_notes_button__clicked(self, *args):
         self.store.savepoint('before_run_notes_editor')
 
-        model = self.model.get_first_sale_comment()
+        model = self.model.comments.first()
         if not model:
             model = SaleComment(store=self.store, sale=self.model,
                                 author=api.get_current_user(self.store))
