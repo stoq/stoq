@@ -947,6 +947,7 @@ class ProductBatchView(Viewable):
     product = Product
 
     id = ProductStockItem.id
+    branch_name = Company.fancy_name
     description = Sellable.description
     quantity = ProductStockItem.quantity
     batch_number = StorableBatch.batch_number
@@ -957,6 +958,8 @@ class ProductBatchView(Viewable):
 
     tables = [
         ProductStockItem,
+        Join(Branch, ProductStockItem.branch_id == Branch.id),
+        Join(Company, Branch.person_id == Company.person_id),
         Join(StorableBatch, ProductStockItem.batch_id == StorableBatch.id),
         Join(Storable, ProductStockItem.storable_id == Storable.id),
         Join(Product, Storable.product_id == Product.id),

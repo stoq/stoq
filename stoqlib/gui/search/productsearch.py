@@ -433,6 +433,8 @@ class ProductBatchSearch(ProductSearch):
         cols = [SearchColumn('category', title=_('Category'), data_type=str),
                 SearchColumn('description', title=_('Description'), data_type=str,
                              sorted=True, expand=True),
+                SearchColumn('branch_name', title=_('Branch'), data_type=str,
+                             visible=False),
                 SearchColumn('manufacturer', title=_('Manufacturer'),
                              data_type=str, visible=False),
                 SearchColumn('model', title=_('Model'),
