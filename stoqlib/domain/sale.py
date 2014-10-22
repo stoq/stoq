@@ -1662,7 +1662,10 @@ class Sale(Domain):
             return
 
         for payment in payments:
-            assert payment.is_inpayment()
+            if not payment.is_inpayment():
+                # There may be a change payment if the client has overpaid the
+                # sale.
+                continue
             till.add_entry(payment)
 
     def _create_commission_at_confirm(self):

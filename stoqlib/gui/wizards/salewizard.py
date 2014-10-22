@@ -198,6 +198,8 @@ class BaseMethodSelectionStep(object):
             if self.wizard.need_create_payment():
                 self.cash_change_slave.enable_cash_change()
             else:
+                # In this case, the user has already paid more than the total
+                # sale amount.
                 self.cash_change_slave.disable_cash_change()
         elif method and method.method_name == u'credit':
             self.wizard.enable_finish()
@@ -205,6 +207,30 @@ class BaseMethodSelectionStep(object):
         else:
             self.wizard.disable_finish()
             self.cash_change_slave.disable_cash_change()
+
+    def _create_change_payment(self):
+        if self.cash_change_slave.credit_checkbutton.get_active():
+            method_name = u'credit'
+        else:
+            method_name = u'money'
+
+        payments_value = self.model.group.get_total_confirmed_value()
+        sale_total = self.model.get_total_sale_amount()
+        # To have reached this far, the payments value must be greater than the
+        # sale total
+        assert payments_value > sale_total, (payments_value, sale_total)
+
+        method = PaymentMethod.get_by_name(self.store, method_name)
+        description = _(u'%s returned for sale %s') % (method.description,
+                                                       self.model.identifier)
+        payment = method.create_payment(Payment.TYPE_OUT,
+                                        payment_group=self.model.group,
+                                        branch=self.model.branch,
+                                        value=(payments_value - sale_total),
+                                        description=description)
+        payment.set_pending()
+        if method_name == u'credit':
+            payment.pay()
 
     #
     #   Public API
@@ -249,6 +275,8 @@ class BaseMethodSelectionStep(object):
 
     def next_step(self):
         if not self.wizard.need_create_payment():
+            if self.cash_change_slave.credit_checkbutton.get_active():
+                self._create_change_payment()
             return
 
         selected_method = self.get_selected_method()

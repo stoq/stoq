@@ -50,11 +50,11 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
             GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
               GtkVBox(toplevel):
                 GtkTable(table1, padding=6):
-                  ProxyLabel(title_lbl): '<span underline="single">Cash Change</span>'
                   ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
                   ProxyEntry(received_value): '$100.00'
                   ProxyLabel(kiwilabel2): 'Change:'
                   ProxyLabel(change_value_lbl): '<span weight="bold">$ 0.00</span>'
+                  ProxyCheckButton(credit_checkbutton): 'Create credit for future sales', hidden
             GtkExpander(step.subtotal_expander, expand=True, fill=True):
               GtkEventBox(step.discount_surcharge_slave): slave SaleDiscountSlave is attached
                 GtkVBox(toplevel):

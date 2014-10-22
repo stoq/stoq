@@ -27,8 +27,10 @@ from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 
+from stoqlib.enums import ReturnPolicy
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.formatters import get_formatted_price
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -46,7 +48,6 @@ class CashChangeSlave(BaseEditorSlave):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        self.title_lbl.set_underline(True)
         self.change_value_lbl.set_bold(True)
         self.update_total_sale_amount(self.wizard.get_total_amount())
         self._update_change()
@@ -57,9 +58,11 @@ class CashChangeSlave(BaseEditorSlave):
 
     def enable_cash_change(self):
         self.received_value.set_sensitive(True)
+        self._update_change()
 
     def disable_cash_change(self):
         self.received_value.set_sensitive(False)
+        self._update_change()
 
     def update_total_sale_amount(self, value):
         if value < 0:
@@ -100,3 +103,14 @@ class CashChangeSlave(BaseEditorSlave):
                        self.wizard.get_total_paid())
         change_value = currency(value) - sale_amount
         self.change_value_lbl.set_text(get_formatted_price(change_value))
+
+        # There is some change for the clientchange, but we cannot edit the
+        # received value. This means that the client has already paid more than
+        # the total sale amount.
+        if change_value > 0 and not self.received_value.get_sensitive():
+            self.credit_checkbutton.set_visible(True)
+            policy = sysparam.get_int('RETURN_POLICY_ON_SALES')
+            self.credit_checkbutton.set_sensitive(policy == ReturnPolicy.CLIENT_CHOICE)
+            self.credit_checkbutton.set_active(policy == ReturnPolicy.RETURN_CREDIT)
+        else:
+            self.credit_checkbutton.set_visible(False)

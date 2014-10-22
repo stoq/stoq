@@ -435,6 +435,36 @@ class TestConfirmSaleWizard(GUITest):
 
         self.assertEquals(sale.payments[0].method.method_name, u'store_credit')
 
+    def test_overpaid_sale(self):
+        sale = self.create_sale()
+        sale.identifier = 1345
+        self.add_product(sale, price=10)
+        payment = self.create_payment(payment_type=Payment.TYPE_IN, value=50,
+                                      group=sale.group)
+        payment.set_pending()
+        payment.pay()
+
+        self._create_wizard(sale=sale, total_paid=50)
+        self._check_wizard('wizard-sale-overpaid-sale')
+
+        # The method selection holder should be hidden (since the client has
+        # overpaid
+        self.assertFalse(self.step.select_method_holder.get_visible())
+        self.assertTrue(self.step.cash_change_slave.credit_checkbutton.get_visible())
+        self.click(self.step.cash_change_slave.credit_checkbutton)
+
+        # confirm the checkout
+        with mock.patch.object(self.store, 'commit'):
+            self._go_to_next()
+
+        payments = list(sale.group.get_items())
+        self.assertEquals(len(payments), 2)
+        self.assertEquals(payments[0], payment)
+        self.assertEquals(payments[1].payment_type, Payment.TYPE_OUT)
+        self.assertEquals(payments[1].value, 40)
+
+        sale.confirm(till=self.create_till())
+
 
 class TestSalesPersonStep(GUITest):
     def test_update_widgets(self):
