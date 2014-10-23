@@ -128,6 +128,10 @@ class ECFUI(object):
         return None
 
     def _validate_printer(self):
+        # Check fiscal printer setup. If something went wrong with the setup,
+        # block the till
+        if not self._printer._driver.setup_complete():
+            raise DeviceError(_("An error occurred during fiscal printer setup"))
         if self._printer is None:
             raise DeviceError(
                 _("This operation requires a connected fiscal printer"))
