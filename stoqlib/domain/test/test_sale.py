@@ -1661,7 +1661,7 @@ class TestSale(DomainTest):
         sale.client = self.create_client()
         self.assertEquals(sale.get_client_name(), u'Client')
 
-    def test_get_nfe_coupon_info(self):
+    def test_nfe_coupon_info(self):
         sale = self.create_sale()
         self.assertIsNone(sale.nfe_coupon_info)
 
@@ -2096,18 +2096,7 @@ class TestSaleItem(DomainTest):
         sale_item = sale.add_sellable(product.sellable)
         self.assertEqual(sale_item.get_description(), u'Description')
 
-    def test_get_nfe_icms_info(self):
-        item = self.create_sale_item()
-        self.assertIs(item.get_nfe_icms_info(), item.icms_info)
-
-        item.sale.coupon_id = 123456
-        self.assertIsNone(item.get_nfe_icms_info())
-
-    def test_get_nfe_ipi_info(self):
-        item = self.create_sale_item()
-        self.assertIs(item.get_nfe_ipi_info(), item.ipi_info)
-
-    def test_get_nfe_cfop_code(self):
+    def test_nfe_cfop_code(self):
         item = self.create_sale_item()
         client = self.create_client()
         self.create_address(person=client.person)
@@ -2115,18 +2104,18 @@ class TestSaleItem(DomainTest):
         item.sale.coupon_id = 912839712
 
         # Test if branch address isn't the same of client
-        self.assertEquals(item.get_nfe_cfop_code(), u'6929')
+        self.assertEquals(item.nfe_cfop_code, u'6929')
 
         # Test if branch address is the same of client
         item.sale.branch.person = client.person
-        self.assertEquals(item.get_nfe_cfop_code(), u'5929')
+        self.assertEquals(item.nfe_cfop_code, u'5929')
 
         # Test without sale coupon
         item.sale.coupon_id = None
-        cfop_code = item.get_nfe_cfop_code()
+        cfop_code = item.nfe_cfop_code
 
         item.cfop = None
-        self.assertEquals(item.get_nfe_cfop_code(), cfop_code)
+        self.assertEquals(item.nfe_cfop_code, cfop_code)
 
     def test_sale_discount(self):
         sale = self.create_sale()

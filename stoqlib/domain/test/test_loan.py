@@ -31,6 +31,8 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan, LoanItem, _
 from stoqlib.domain.product import StockTransactionHistory
+from stoqlib.domain.taxes import (ProductTaxTemplate, ProductIcmsTemplate,
+                                  ProductIpiTemplate)
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -216,6 +218,55 @@ class TestLoan(DomainTest):
         loan.set_items_discount(5)
         self.assertEqual(loan.get_total_amount(), 19)
 
+    # NF-e operations
+
+    def test_comments(self):
+        loan = self.create_loan()
+        loan.notes = u'Loan notes 1\n Loan notes 2'
+        expected_notes = u'Loan notes 1\n Loan notes 2'
+        comments = '\n'.join(c.comment for c in loan.comments)
+        self.assertEquals(expected_notes, comments)
+
+    def test_discount_value(self):
+        loan = self.create_loan()
+        loan_item1 = self.create_loan_item(loan=loan)
+
+        self.assertEqual(loan.invoice_total, currency(10))
+
+        # Loan item price < base_price
+        loan_item1.price = 9
+        self.assertEquals(loan.discount_value, currency(1))
+        self.assertEqual(loan.invoice_total, currency(9))
+
+        # Loan item price > base_price
+        loan_item2 = self.create_loan_item()
+        loan_item2.price = 20
+        loan_item2.loan = loan
+        self.assertEqual(loan.invoice_total, currency(29))
+        self.assertEquals(loan.discount_value, currency(1))
+        self.assertEquals(loan.invoice_subtotal, currency(20))
+
+    def test_get_items(self):
+        loan = self.create_loan()
+        loan_item = self.create_loan_item(loan=loan)
+        items = loan.get_items()
+        self.assertEquals(items[0], loan_item)
+
+    def test_recipient(self):
+        client = self.create_client()
+        loan = self.create_loan(client=client)
+        self.assertEquals(loan.recipient, client)
+
+    def test_invoice_number(self):
+        # FIXME: Check using the invoice number saved in new database table.
+        loan = self.create_loan()
+        self.assertEquals(loan.invoice_number, 1)
+
+    def test_operation_nature(self):
+        # FIXME: Check using the operation_nature that will be saved in new field.
+        loan = self.create_loan()
+        self.assertEquals(loan.operation_nature, u'Loan')
+
 
 class TestLoanItem(DomainTest):
 
@@ -335,3 +386,37 @@ class TestLoanItem(DomainTest):
         # It requires a currency value but is 5% of discount
         loan_item.set_discount(decimal.Decimal('4.9'))
         self.assertEqual(loan_item.get_total(), currency('9.51'))
+
+    # NF-e operations
+
+    def test_nfe_data(self):
+        # FIXME: Improve this test after fix the properties, icms_info and ipi_info.
+        loan = self.create_loan()
+        product = self.create_product()
+        icms_tax_template = ProductTaxTemplate(store=self.store,
+                                               tax_type=ProductTaxTemplate.TYPE_ICMS)
+        icms_template = ProductIcmsTemplate(store=self.store,
+                                            product_tax_template=icms_tax_template)
+
+        ipi_tax_template = ProductTaxTemplate(store=self.store,
+                                              tax_type=ProductTaxTemplate.TYPE_IPI)
+        ipi_template = ProductIpiTemplate(store=self.store,
+                                          product_tax_template=ipi_tax_template)
+        product.icms_template = icms_template
+        product.ipi_template = ipi_template
+
+        loan_item = loan.add_sellable(product.sellable)
+        self.assertEquals(loan_item.icms_info, None)
+        self.assertEquals(loan_item.ipi_info, None)
+
+    def test_nfe_cfop_code(self):
+        loan_item = self.create_loan_item()
+        client = self.create_client()
+        loan_item.loan.client = client
+        self.create_address(person=client.person)
+
+        # Branch address isn't the same of client
+        self.assertEquals(loan_item.nfe_cfop_code, u'6917')
+        # Branch address is the same of client
+        loan_item.loan.branch.person = client.person
+        self.assertEquals(loan_item.nfe_cfop_code, u'5917')

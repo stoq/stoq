@@ -35,6 +35,7 @@ from xml.sax.saxutils import escape
 
 from kiwi.python import strip_accents, Settable
 
+from stoqlib.domain.sale import Sale
 from stoqlib.enums import NFeDanfeOrientation
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.ibpt import calculate_tax_for_item
@@ -99,7 +100,7 @@ class NFeGenerator(object):
 
         self._add_recipient(self._order.recipient)
 
-        operation_items = self._order.items.order_by('te_id')
+        operation_items = self._order.get_items().order_by('te_id')
         self._add_items(operation_items)
 
         self._add_totals()
@@ -201,10 +202,14 @@ class NFeGenerator(object):
         nnf = self._order.invoice_number
         assert nnf
 
-        payments = self._order.payments
+        payments = self._order.payments or []
         series = sysparam.get_int('NFE_SERIAL_NUMBER')
         orientation = sysparam.get_int('NFE_DANFE_ORIENTATION')
-        ecf_info = self._order.nfe_coupon_info
+
+        ecf_info = None
+        if isinstance(self._order, Sale):
+            ecf_info = self._order.nfe_coupon_info
+
         nat_op = self._order.operation_nature or ''
 
         nfe_identification = NFeIdentification(cuf, branch_location, recipient_location,
@@ -270,7 +275,10 @@ class NFeGenerator(object):
         self._nfe_data.append(self._nfe_recipient)
 
     def _add_items(self, operation_items):
-        coupon = self._order.coupon_id
+        coupon = None
+        if isinstance(self._order, Sale):
+            coupon = self._order.coupon_id
+
         for item_number, operation_item in enumerate(operation_items):
             tax_item = calculate_tax_for_item(operation_item)
             self._total_taxes += tax_item
@@ -292,7 +300,7 @@ class NFeGenerator(object):
 
             nfe_item.add_product_details(sellable.code,
                                          sellable.get_description(),
-                                         operation_item.get_nfe_cfop_code(),
+                                         operation_item.nfe_cfop_code,
                                          operation_item.quantity,
                                          operation_item.price,
                                          sellable.unit_description,
@@ -345,7 +353,7 @@ class NFeGenerator(object):
                          self._order.discount_value, operation_total)
         self._nfe_data.append(fat)
 
-        payments = self._order.payments
+        payments = self._order.payments or []
         for i, p in enumerate(payments):
             dup = NFeDuplicata(int(p.identifier), p.due_date, p.value)
             self._nfe_data.append(dup)
@@ -659,7 +667,7 @@ class NFeEcfInfo(BaseNFeXMLGroup):
                   (u'nECF', ''),
                   (u'nCOO', '')]
 
-    txttag = 'B20j'
+    txttag = 'BA|\nBA20'
 
     def __init__(self, n_ecf, coo):
         BaseNFeXMLGroup.__init__(self)
@@ -872,7 +880,7 @@ class NFeProduct(BaseNFeXMLGroup):
             nfe_icms = NFeICMS(operation_icms, crt)
             nfe_tax.append(nfe_icms)
 
-        invoice_ipi = operation_item.get_nfe_ipi_info()
+        invoice_ipi = operation_item.ipi_info
         if invoice_ipi:
             nfe_ipi = NFeIPI(invoice_ipi)
             nfe_tax.append(nfe_ipi)

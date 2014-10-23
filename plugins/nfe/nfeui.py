@@ -28,6 +28,7 @@ import time
 
 from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.sale import Sale
+from stoqlib.gui.events import NewLoanWizardFinishEvent
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -41,6 +42,7 @@ log = logging.getLogger(__name__)
 class NFeUI(object):
     def __init__(self):
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
+        NewLoanWizardFinishEvent.connect(self._on_NewLoanWizardFinish)
 
         pm = PermissionManager.get_permission_manager()
         pm.set('InvoiceLayout', pm.PERM_HIDDEN)
@@ -54,7 +56,7 @@ class NFeUI(object):
     # Private
     #
 
-    def _get_save_location(self):
+    def _get_save_location(self, operation_dir):
         stoq_dir = get_application_dir()
 
         # Until we finish the stoqnfe app, we will only export the nfe, so it
@@ -62,33 +64,33 @@ class NFeUI(object):
         # nfe_dir = os.path.join(stoq_dir, 'generated_nfe')
         nfe_dir = os.path.join(stoq_dir, 'exported_nfe',
                                time.strftime('%Y'), time.strftime('%m'),
-                               time.strftime('%d'))
+                               time.strftime('%d'), operation_dir)
 
         if not os.path.isdir(nfe_dir):
             os.makedirs(nfe_dir)
 
         return nfe_dir
 
-    def _can_create_nfe(self, sale):
+    def _can_create_nfe(self, operation):
         # FIXME: certainly, there is more conditions to check before we create
         #        the nfe. Maybe the user should have a chance to fix the
         #        missing information before we create the nfe.
-        # return sale.client is not None
+        # return operation.recipient is not None
 
         # Since we are only exporting the nfe there is no problem if there is
         # some missing information...
 
-        # ... except the client
-        if not sale.client:
+        # ... except the recipient
+        if not operation.recipient:
             return False
 
         return True
 
-    def _create_nfe(self, sale, store):
-        if self._can_create_nfe(sale):
-            generator = NFeGenerator(sale, store)
+    def _create_nfe(self, operation, store, operation_dir=''):
+        if self._can_create_nfe(operation):
+            generator = NFeGenerator(operation, store)
             generator.generate()
-            generator.export_txt(location=self._get_save_location())
+            generator.export_txt(location=self._get_save_location(operation_dir))
 
     #
     # Events
@@ -96,4 +98,9 @@ class NFeUI(object):
 
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:
-            self._create_nfe(sale, sale.store)
+            operation_dir = _('Sales')
+            self._create_nfe(sale, sale.store, operation_dir)
+
+    def _on_NewLoanWizardFinish(self, loan):
+        operation_dir = _('Loans')
+        self._create_nfe(loan, loan.store, operation_dir)

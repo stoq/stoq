@@ -210,6 +210,41 @@ class SaleItem(Domain):
         return 0
 
     #
+    # Invoice implementation
+    #
+
+    @property
+    def nfe_cfop_code(self):
+        """Returns the cfop code to be used on the NF-e
+
+        If the sale was also printed on a ECF, then the cfop should be:
+          * 5.929: if sold to a |Client| in the same state or
+          * 6-929: if sold to a |Client| in a different state.
+
+        :returns: the cfop code
+        """
+        if self.sale.coupon_id:
+            # find out if the client is in the same state as we are.
+            client_address = self.sale.client.person.get_main_address()
+            our_address = self.sale.branch.person.get_main_address()
+
+            same_state = True
+            if (our_address.city_location.state !=
+                client_address.city_location.state):
+                same_state = False
+
+            if same_state:
+                return u'5929'
+            else:
+                return u'6929'
+
+        if self.cfop:
+            return self.cfop.code.replace(u'.', u'')
+
+        # FIXME: remove sale cfop?
+        return self.sale.cfop.code.replace(u'.', u'')
+
+    #
     #  Public API
     #
 
@@ -387,57 +422,6 @@ class SaleItem(Domain):
         """
         service = self.store.find(Service, sellable=self.sellable).one()
         return service is not None
-
-    def get_nfe_icms_info(self):
-        """ICMS details to be used on the NF-e
-
-        If the sale was also printed on a coupon, then we cannot add icms
-        details to the NF-e (or at least, we should modify then accordingly)
-
-        :returns: the :class:`icms info <stoqlib.domain.taxes.SaleItemIcms>`
-            or *None*, if a coupon has been printed for this Sale
-        """
-        if self.sale.coupon_id:
-            return None
-
-        return self.icms_info
-
-    def get_nfe_ipi_info(self):
-        """IPI details for this SaleItem
-
-        :returns: the :class:`ipi info <stoqlib.domain.taxes.SaleItemIpip>`
-        """
-        return self.ipi_info
-
-    def get_nfe_cfop_code(self):
-        """Returns the cfop code to be used on the NF-e
-
-        If the sale was also printed on a ECF, then the cfop should be:
-          * 5.929: if sold to a |Client| in the same state or
-          * 6-929: if sold to a |Client| in a different state.
-
-        :returns: the cfop code
-        """
-        if self.sale.coupon_id:
-            # find out if the client is in the same state as we are.
-            client_address = self.sale.client.person.get_main_address()
-            our_address = self.sale.branch.person.get_main_address()
-
-            same_state = True
-            if (our_address.city_location.state !=
-                client_address.city_location.state):
-                same_state = False
-
-            if same_state:
-                return u'5929'
-            else:
-                return u'6929'
-
-        if self.cfop:
-            return self.cfop.code.replace(u'.', u'')
-
-        # FIXME: remove sale cfop?
-        return self.sale.cfop.code.replace(u'.', u'')
 
     def get_sale_surcharge(self):
         """The surcharge percentage (relative to the original price
@@ -829,10 +813,6 @@ class Sale(Domain):
     #
     # IInvoice implementation
     #
-
-    @property
-    def items(self):
-        return self.get_items()
 
     @property
     def recipient(self):
