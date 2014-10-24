@@ -296,6 +296,7 @@ class ECFEditor(BaseEditor):
                          'vale compra': PaymentMethodType.GIFT_CERTIFICATE
                          }
 
+        payment_methods = []
         for device_value, constant_name in driver.get_payment_constants():
             lower = constant_name.lower()
             lower = lower.replace('é', 'e')  # Workaround method names with
@@ -304,6 +305,9 @@ class ECFEditor(BaseEditor):
             if payment_enum is None:
                 continue
 
+            # Avoid register the same method twice for the same device
+            if payment_enum in payment_methods:
+                continue
             DeviceConstant(constant_enum=int(payment_enum),
                            constant_name=unicode(constant_name),
                            constant_type=DeviceConstant.TYPE_PAYMENT,
@@ -311,6 +315,7 @@ class ECFEditor(BaseEditor):
                            device_value=device_value,
                            printer=model,
                            store=self.store)
+            payment_methods.append(payment_enum)
 
 
 class ECFListSlave(ModelListSlave):
