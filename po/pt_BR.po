@@ -13154,7 +13154,7 @@ msgstr "Não foi possível imprimir os boletos"
 #: ../stoqlib/gui/fiscalprinter.py:603 ../stoqlib/gui/fiscalprinter.py:646
 #: ../stoqlib/gui/fiscalprinter.py:691 ../stoqlib/gui/fiscalprinter.py:717
 msgid "An error occurred while trying to print. Would you like to try again?"
-msgstr "Um error ocorreu ao tentar imprimir. Você quer tentar denovo?"
+msgstr "Um erro ocorreu ao tentar imprimir. Você quer tentar denovo?"
 
 #: ../stoqlib/gui/fiscalprinter.py:606 ../stoqlib/gui/fiscalprinter.py:649
 #: ../stoqlib/gui/fiscalprinter.py:665 ../stoqlib/gui/fiscalprinter.py:694
