@@ -544,12 +544,8 @@ class InstallPostgresStep(BaseWizardStep):
         self.label.set_markup(label)
 
     def _can_install(self):
-        try:
-            import aptdaemon
-            aptdaemon  # pylint: disable=W0104
-            return True
-        except ImportError:
-            return False
+        from stoqlib.gui.utils.aptpackageinstaller import has_apt
+        return has_apt
 
     def _install_postgres(self):
         from stoqlib.gui.utils.aptpackageinstaller import AptPackageInstaller
