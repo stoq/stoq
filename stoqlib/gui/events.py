@@ -172,6 +172,14 @@ class PrintReportEvent(Event):
     """
 
 
+class SaleQuoteFinishPrintEvent(Event):
+    """Emitted when finish a sale quote
+
+    If a callsite return a value from this event, the default report will not be printed.
+    :param sale: the sale that will generate a new report
+    """
+
+
 #
 #   Searching Events
 #

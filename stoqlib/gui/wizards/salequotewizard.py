@@ -57,7 +57,7 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.discounteditor import DiscountEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.events import SaleQuoteWizardFinishEvent
+from stoqlib.gui.events import SaleQuoteWizardFinishEvent, SaleQuoteFinishPrintEvent
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
@@ -538,6 +538,9 @@ class SaleQuoteWizard(BaseWizard):
 
     @public(since='1.8.0')
     def print_quote_details(self, quote, payments_created=False):
+        already_printed = SaleQuoteFinishPrintEvent.emit(self.model)
+        if already_printed is not None:
+            return
         msg_list = []
         if not quote.group.payments.is_empty():
             msg_list.append(
