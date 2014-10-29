@@ -5,6 +5,7 @@
         <tr>
           <td>${ _("Category") }</td>
           <td>${ _("Item") }</td>
+          <td>${ _("Supplier code") }</td>
           <td>${ _("Cost") }</td>
           <td>${ _("Quantity") }</td>
           <td>${ _("Total") }</td>
@@ -18,6 +19,7 @@
           <td></td>
           <td></td>
           <td></td>
+          <td></td>
         </tr>
       </tfoot>
 
@@ -26,6 +28,10 @@
           <tr>
             <td>${ item.sellable.get_category_description() }</td>
             <td>${ item.sellable.get_description() }</td>
+            <%
+              product = item.sellable.product
+            %>
+            <td>${ product.get_product_supplier_code(report.order.supplier) or "-"}</td>
             <td></td>
             <td>${ format_quantity(item.quantity) } ${ item.sellable.unit_description }</td>
             <td></td>

@@ -445,6 +445,11 @@ class Product(Domain):
         return self.store.find(ProductSupplierInfo,
                                product=self)
 
+    def get_product_supplier_code(self, supplier):
+        query = And(ProductSupplierInfo.product == self.id,
+                    ProductSupplierInfo.supplier == supplier)
+        return self.store.find(ProductSupplierInfo.supplier_code, query).one()
+
     def get_components(self):
         """Returns the products which are our |components|.
 
