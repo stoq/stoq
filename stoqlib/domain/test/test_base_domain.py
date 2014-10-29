@@ -28,7 +28,8 @@ import mock
 from storm.exceptions import NotOneError
 from storm.references import Reference
 
-from stoqlib.database.properties import IntCol, UnicodeCol, BoolCol, IdCol
+from stoqlib.database.properties import (IntCol, UnicodeCol, BoolCol, IdCol,
+                                         IdentifierCol)
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -49,6 +50,7 @@ class Dong(Domain):
 
 class Dung(Domain):
     __storm_table__ = 'dung'
+    identifier = IdentifierCol()
     ding_id = IdCol()
     ding = Reference(ding_id, Ding.id)
 
@@ -77,6 +79,7 @@ class TestSelect(DomainTest):
         );
         CREATE TABLE dung (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+            identifier SERIAL NOT NULL,
             te_id bigint UNIQUE REFERENCES transaction_entry(id),
             ding_id uuid REFERENCES ding(id) ON UPDATE CASCADE
         );
@@ -260,3 +263,12 @@ class TestSelect(DomainTest):
         self.assertFalse(ding.can_remove(skip=[('dong', 'ding_id')]))
         self.assertTrue(ding.can_remove(skip=[('dong', 'ding_id'),
                                               ('dung', 'ding_id')]))
+
+    def test_get_temporary_identifier(self):
+        dung = Dung(store=self.store)
+        dung.identifier = Dung.get_temporary_identifier(self.store)
+        self.assertEquals(dung.identifier, -1)
+
+        new_dung = Dung(store=self.store)
+        new_dung.identifier = Dung.get_temporary_identifier(self.store)
+        self.assertEquals(new_dung.identifier, -2)

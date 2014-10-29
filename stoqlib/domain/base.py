@@ -333,6 +333,20 @@ class Domain(ORMObject):
     #
 
     @classmethod
+    def get_temporary_identifier(cls, store):
+        """Returns a temporary negative identifier
+
+        This should be used when working with syncronized databases and a
+        purchase order is being created in a branch different than the
+        destination branch.
+
+        The sincronizer will be responsible for setting the definitive
+        identifier once the order arives at the destination
+        """
+        lower_value = store.find(cls).min(cls.identifier)
+        return min(lower_value, 0) - 1
+
+    @classmethod
     def find_distinct_values(cls, store, attr, exclude_empty=True):
         """Find distinct values for a given attr
 
