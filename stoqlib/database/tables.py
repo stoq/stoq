@@ -32,6 +32,7 @@
 
 import collections
 import logging
+import os
 
 from kiwi.python import namedAny
 
@@ -169,7 +170,8 @@ def _get_tables_cache():
         for path, table_names in plugin.get_tables():
             for table_name in table_names:
                 desc = p_manager.get_description_by_name(p_name)
-                klass = namedAny('.'.join([desc.name, path, table_name]))
+                basepath = os.path.basename(desc.dirname)
+                klass = namedAny('.'.join([basepath, path, table_name]))
                 _tables_cache[table_name] = klass
 
     return _tables_cache
