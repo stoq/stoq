@@ -128,6 +128,11 @@ class EnumVariable(Variable):
     def parse_set(set, value, from_db):
         return value
 
+    def parse_get(self, value, to_db):
+        if isinstance(value, str):
+            value = unicode(value)
+        return value
+
 
 class EnumCol(SimpleProperty):
     variable_class = EnumVariable

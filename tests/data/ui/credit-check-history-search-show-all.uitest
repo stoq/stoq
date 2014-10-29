@@ -23,9 +23,9 @@ GtkDialog(toplevel): title='Client Credit Check History Search', hidden
             column: title='Status'
             column: title='Notes', expand
             column: title='User'
-            row: datetime.datetime(2011, 1, 1, 0, 0), u'Client', u'1', 'not-included', u'random note', u'individual'
-            row: datetime.datetime(2011, 1, 1, 0, 0), u'Client2', u'2', 'not-included', u'random note', u'individual'
-            row: datetime.datetime(2011, 1, 1, 0, 0), u'Client2', u'3', 'not-included', u'random note', u'individual'
+            row: datetime.datetime(2011, 1, 1, 0, 0), u'Client', u'1', u'not-included', u'random note', u'individual'
+            row: datetime.datetime(2011, 1, 1, 0, 0), u'Client2', u'2', u'not-included', u'random note', u'individual'
+            row: datetime.datetime(2011, 1, 1, 0, 0), u'Client2', u'3', u'not-included', u'random note', u'individual'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):

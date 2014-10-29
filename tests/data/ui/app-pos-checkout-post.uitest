@@ -177,7 +177,7 @@ model: Sellable<4>
   on_sale_end_date: None
   on_sale_price: <currency $ 0>
   on_sale_start_date: None
-  status: 'available'
+  status: u'available'
 
 model: ProductStockItem<5>
   quantity: Decimal('3.000')
