@@ -160,7 +160,7 @@ class PaymentMethod(Domain):
     #       factory singleton.
     def create_payment(self, payment_type, payment_group, branch, value,
                        due_date=None, description=None, base_value=None,
-                       payment_number=None):
+                       payment_number=None, identifier=None):
         """Creates a new payment according to a payment method interface
 
         :param payment_type: the kind of payment, in or out
@@ -202,6 +202,7 @@ class PaymentMethod(Domain):
             description = self.describe_payment(payment_group)
 
         payment = Payment(store=store,
+                          identifier=identifier,
                           branch=branch,
                           payment_type=payment_type,
                           due_date=due_date,
