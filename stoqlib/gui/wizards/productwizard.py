@@ -23,9 +23,14 @@
 ##
 ##
 
+import gtk
+
+from stoqlib.api import api
 from stoqlib.domain.product import Product
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -105,3 +110,37 @@ class ProductCreateWizard(BaseWizard):
     def finish(self):
         self.retval = self.model
         self.close()
+
+    #
+    #  Classmethods
+    #
+
+    @classmethod
+    def run_wizard(cls, parent):
+        """Run the wizard to create a product
+
+        This will run the wizard and after finishing, ask if the user
+        wants to create another product alike. The product will be
+        cloned and `stoqlib.gui.editors.producteditor.ProductEditor`
+        will run as long as the user chooses to create one alike
+        """
+        with api.new_store() as store:
+            rv = run_dialog(cls, parent, store)
+
+        if rv:
+            inner_rv = rv
+
+            while yesno(_("Would you like to register another product alike?"),
+                        gtk.RESPONSE_NO, _("Yes"), _("No")):
+                with api.new_store() as store:
+                    template = store.fetch(rv)
+                    inner_rv = run_dialog(ProductEditor, parent, store,
+                                          product_type=template.product_type,
+                                          template=template)
+
+                if not inner_rv:
+                    break
+
+        # We are insterested in the first rv that means that at least one
+        # obj was created.
+        return rv

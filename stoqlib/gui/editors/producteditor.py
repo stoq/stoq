@@ -287,7 +287,15 @@ class ProductEditor(SellableEditor):
     proxy_widgets = SellableEditor.proxy_widgets + product_widgets
 
     def __init__(self, store, model=None, visual_mode=False,
-                 product_type=Product.TYPE_COMMON):
+                 product_type=Product.TYPE_COMMON, template=None):
+        """
+        :param product_type: one of the available
+            :attr:`stoqlib.domain.product.Product.product_types` that
+            will be used when creating a new one
+        :param template: a product to use as a template when creating
+            a new one. Some properties will be copied from it.
+        """
+        self._template = template
         self._product_type = product_type
         SellableEditor.__init__(self, store, model, visual_mode=visual_mode)
         # This can't be done in setup_slaves() as we need to access
@@ -345,8 +353,6 @@ class ProductEditor(SellableEditor):
     def create_model(self, store):
         self._model_created = True
         sellable = Sellable(store=store)
-        sellable.tax_constant_id = sysparam.get_object_id('DEFAULT_PRODUCT_TAX_CONSTANT')
-        sellable.unit_id = sysparam.get_object_id('SUGGESTED_UNIT')
         model = Product(store=store, sellable=sellable)
         if self._product_type != Product.TYPE_WITHOUT_STOCK:
             storable = Storable(product=model, store=store)
@@ -357,6 +363,25 @@ class ProductEditor(SellableEditor):
             model.manage_stock = False
         elif self._product_type == Product.TYPE_CONSIGNED:
             model.consignment = True
+
+        if self._template is not None:
+            sellable.tax_constant = self._template.sellable.tax_constant
+            sellable.unit = self._template.sellable.unit
+            sellable.category = self._template.sellable.category
+
+            model.manufacturer = self._template.manufacturer
+            model.brand = self._template.brand
+            model.family = self._template.family
+
+            for supplier_info in self._template.suppliers:
+                ProductSupplierInfo(
+                    store=self.store,
+                    product=model,
+                    supplier=supplier_info.supplier)
+        else:
+            sellable.tax_constant_id = sysparam.get_object_id(
+                'DEFAULT_PRODUCT_TAX_CONSTANT')
+            sellable.unit_id = sysparam.get_object_id('SUGGESTED_UNIT')
 
         return model
 

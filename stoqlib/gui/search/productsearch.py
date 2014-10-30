@@ -58,8 +58,8 @@ from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 from stoqlib.lib.defaults import sort_sellable_code
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
                                        ProductClosedStockReport,
                                        ProductPriceReport, ProductStockReport,
@@ -187,6 +187,12 @@ class ProductSearch(SellableSearch):
 
     def get_editor_model(self, product_full_stock_view):
         return product_full_stock_view.product
+
+    def run_editor(self, obj):
+        if obj is None:
+            return ProductCreateWizard.run_wizard(self)
+
+        return super(ProductSearch, self).run_editor(obj)
 
     def get_columns(self):
         cols = [SearchColumn('code', title=_('Code'), data_type=str,

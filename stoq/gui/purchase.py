@@ -436,8 +436,7 @@ class PurchaseApp(ShellApp):
             self.select_result(res)
 
     def _new_product(self):
-        with api.new_store() as store:
-            self.run_dialog(ProductCreateWizard, store)
+        ProductCreateWizard.run_wizard(self)
 
     def _new_consignment(self):
         with api.new_store() as store:

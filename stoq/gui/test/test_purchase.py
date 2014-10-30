@@ -230,9 +230,10 @@ class TestPurchase(BaseGUITest):
                                               u"Cancel order", u"Don't cancel")
                 self.assertEquals(purchase.status, PurchaseOrder.ORDER_CANCELLED)
 
-    @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
-    @mock.patch('stoq.gui.purchase.api.new_store')
+    @mock.patch('stoqlib.gui.wizards.productwizard.run_dialog')
+    @mock.patch('stoqlib.gui.wizards.productwizard.api.new_store')
     def test_new_product(self, new_store, run_dialog):
+        run_dialog.return_value = False
         new_store.return_value = self.store
 
         self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
@@ -252,7 +253,7 @@ class TestPurchase(BaseGUITest):
             with mock.patch.object(self.store, 'commit'):
                 self.activate(app.NewProduct)
                 run_dialog.assert_called_once_with(ProductCreateWizard,
-                                                   self.store)
+                                                   app, self.store)
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
     def test_new_consignment(self, run_dialog):
