@@ -116,7 +116,6 @@ class Domain(ORMObject):
         user = get_current_user(self.store)
         station = get_current_station(self.store)
 
-        self.te.dirty = True
         self.te_modified.te_time = TransactionTimestamp()
         self.te_modified.user_id = user and user.id
         self.te_modified.station_id = station and station.id

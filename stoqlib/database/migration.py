@@ -344,7 +344,9 @@ class StoqlibSchemaMigration(SchemaMigration):
     def check_uptodate(self):
         retval = super(StoqlibSchemaMigration, self).check_uptodate()
 
-        if not sysparam.check_parameter_presence():
+        # If the database already needs upgrading, dont check the parameters
+        # presence (since they may need an upgrade as well)
+        if retval and not sysparam.check_parameter_presence():
             return False
 
         return retval
