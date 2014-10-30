@@ -279,7 +279,7 @@ class Domain(ORMObject):
                     self.__class__.__name__, ', '.join(sorted(values_str))))
             return self.store.find(cls, query).any()
 
-    def merge_with(self, other, skip=None):
+    def merge_with(self, other, skip=None, copy_empty_values=True):
         """Does automatic references updating when merging two objects.
 
         This will update all tables that reference the `other` object and make
@@ -291,11 +291,17 @@ class Domain(ORMObject):
         :param skip: A set of (table, column) that should be skiped by the
           automatic update. This are normally tables that require a special
           treatment, like when there are constraints.
+        :param copy_empty_values: If True, attributes that are either null or an
+          empty string in self will be updated with the value from the other
+          object (given that the other attribute is not empty as well)
         """
         skip = skip or set()
         event_skip = DomainMergeEvent.emit(self, other)
         if event_skip:
             skip = skip.union(event_skip)
+
+        if copy_empty_values:
+            self.copy_empty_values(other)
 
         refs = self.store.list_references(type(self).id)
         for (table, column, other_table, other_column, u, d) in refs:
@@ -304,6 +310,19 @@ class Domain(ORMObject):
 
             clause = Field(table, column) == other.id
             self.store.execute(Update({column: self.id}, clause, table))
+
+    def copy_empty_values(self, other):
+        """Copies the values from other object if missing in self
+
+        This will copy all values from the other object that are missing from
+        this one.
+        """
+        empty_values = [None, u'']
+        for attr_property, column in self._storm_columns.items():
+            self_value = getattr(self, column.name)
+            other_value = getattr(other, column.name)
+            if self_value in empty_values and other_value not in empty_values:
+                setattr(self, column.name, other_value)
 
     def can_remove(self, skip=None):
         """Check if this object can be removed from the database

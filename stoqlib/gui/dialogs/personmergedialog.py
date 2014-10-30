@@ -223,7 +223,8 @@ class PersonMergeDialog(BaseEditor):
         rest = to_merge[1:]
         total = len(rest)
         for i, other in enumerate(rest):
-            first.merge_with(store.fetch(other.person.person))
+            first.merge_with(store.fetch(other.person.person),
+                             copy_empty_values=True)
             self._update_progress(i, total)
 
         self._close_progress()
@@ -248,12 +249,9 @@ class PersonMergeDialog(BaseEditor):
         self._progress_dialog.stop()
 
     def _search_duplicates(self):
-        data = self.store.find(PersonAddressView).order_by(PersonAddressView.name)
-        # XXX: Remove limit before final version
-        data = data[:5000]
-
-        total = data.count()
         self._create_progress(_('Searching duplicates'))
+        data = self.store.find(PersonAddressView).order_by(PersonAddressView.name)
+        total = data.count()
         self.dup_tree.clear()
         dups_total = 0
 

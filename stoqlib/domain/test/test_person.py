@@ -1344,7 +1344,6 @@ class StoqlibUpdateTracer(BaseStatementTracer):
 
 class TestPersonMerging(DomainTest):
     person_updates = [
-        'UPDATE address SET (is_main_address=%s, person_id=%s|person_id=%s, is_main_address=%s) WHERE address.person_id = %s',  # nopep8
         'UPDATE calls SET person_id=%s WHERE calls.person_id = %s',
         'UPDATE contact_info SET person_id=%s WHERE contact_info.person_id = %s',
         'UPDATE fiscal_book_entry SET drawee_id=%s WHERE fiscal_book_entry.drawee_id = %s',
@@ -1367,14 +1366,27 @@ class TestPersonMerging(DomainTest):
 
     def test_merge_client(self):
         person = self.create_person()
+        person.email = u'teste@email.com'
+        person.mobile_number = u'999'
+        person.notes = u'Person 1'
         client = self.create_client(person=person)
+        address = self.create_address(person=person)
+        address.streetnumber = 123
         sale = self.create_sale(client=client)
         self.assertEquals(list(client.sales), [sale])
 
         person2 = self.create_person()
+        person2.phone_number = u'123'
+        person2.mobile_number = u'456'
+        person2.notes = u'Person 2'
         client2 = self.create_client(person=person2)
+        address2 = self.create_address(person=person2)
+        address2.streetnumber = None
         self.store.flush()
 
+        address_update = 'UPDATE address SET streetnumber=%s WHERE address.id = %s'
+        email_update = 'UPDATE person SET email=%s WHERE person.id = %s'
+        notes_update = 'UPDATE person SET notes=%s WHERE person.id = %s'
         expected_updates = [
             'UPDATE client_salary_history SET client_id=%s WHERE client_salary_history.client_id = %s',  # nopep8
             'UPDATE credit_check_history SET client_id=%s WHERE credit_check_history.client_id = %s',  # nopep8
@@ -1389,17 +1401,30 @@ class TestPersonMerging(DomainTest):
             'UPDATE optical_patient_test SET client_id=%s WHERE optical_patient_test.client_id = %s',  # nopep8
             'UPDATE optical_patient_visual_acuity SET client_id=%s WHERE optical_patient_visual_acuity.client_id = %s',  # nopep8
         ]
-        tracer = StoqlibUpdateTracer(sorted(expected_updates) + sorted(self.person_updates))
+        tracer = StoqlibUpdateTracer(sorted(expected_updates) +
+                                     [notes_update, address_update, email_update] +
+                                     sorted(self.person_updates))
         with tracer:
             person2.merge_with(person)
 
         self.store.invalidate()
         self.assertEquals(sale.client, client2)
+        # The person2 didnt have an email, but now it shold have
+        self.assertEquals(person2.email, 'teste@email.com')
+        # The phone and mobile for the person2 should remain the same
+        self.assertEquals(person2.phone_number, '123')
+        self.assertEquals(person2.mobile_number, '456')
+        # The notes should be merged
+        self.assertEquals(person2.notes, 'Person 2\nPerson 1')
+
+        # The address should also be updated
+        self.assertEquals(address2.streetnumber, 123)
 
     def test_merge_supplier(self):
         supplier = self.create_supplier()
         supplier2 = self.create_supplier()
 
+        cnpj_query = 'UPDATE company SET cnpj=%s WHERE company.id = %s'
         info_query = (
             'UPDATE product_supplier_info SET supplier_id=%s'
             ' WHERE product_supplier_info.supplier_id = %s AND product_supplier_info.product_id'
@@ -1410,7 +1435,8 @@ class TestPersonMerging(DomainTest):
             'UPDATE purchase_order SET supplier_id=%s WHERE purchase_order.supplier_id = %s',
             'UPDATE receiving_order SET supplier_id=%s WHERE receiving_order.supplier_id = %s',
         ]
-        tracer = StoqlibUpdateTracer([info_query] + expected_updates + self.person_updates)
+        tracer = StoqlibUpdateTracer([cnpj_query, info_query] + expected_updates
+                                     + self.person_updates)
         with tracer:
             supplier.person.merge_with(supplier2.person)
 

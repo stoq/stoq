@@ -513,7 +513,7 @@ class Person(Domain):
             # to fix the reference of that facet.
             other_facet.person = self
 
-    def merge_with(self, other):
+    def merge_with(self, other, copy_empty_values=True):
         """Merges this person with other objects
 
         This will fix all references that point to the other person, and make
@@ -528,16 +528,15 @@ class Person(Domain):
             other_facet = getattr(other, facet)
             self.merge_facet(this_facet, other_facet)
 
-        store = self.store
-        # Addresses require an special tratment, since the person can have only
-        # one main address.
-        store.execute(
-            Update({Address.is_main_address: False, Address.person_id: self.id},
-                   Address.person_id == other.id,
-                   Address))
-
         skip.add(('address', 'person_id'))
-        super(Person, self).merge_with(other, skip)
+        if copy_empty_values:
+            if other.notes:
+                self.notes += '\n' + other.notes
+
+            if self.address and other.address:
+                self.address.copy_empty_values(other.address)
+
+        super(Person, self).merge_with(other, skip, copy_empty_values)
         other.merged_with_id = self.id
 
 
@@ -647,6 +646,14 @@ class Individual(Domain):
     # Public API
     #
 
+    def merge_with(self, other, copy_empty_values=True):
+        skip = None
+        super(Individual, self).merge_with(other, skip, copy_empty_values)
+        # If we copied the value from the other object, we also need to reset
+        # it, so that there are no duplicate documents in the database
+        if copy_empty_values:
+            other.cpf = u''
+
     def get_marital_statuses(self):
         return [(self.marital_statuses[i], i)
                 for i in self.marital_statuses.keys()]
@@ -749,6 +756,14 @@ class Company(Domain):
     #
     # Public API
     #
+
+    def merge_with(self, other, copy_empty_values=True):
+        skip = None
+        super(Company, self).merge_with(other, skip, copy_empty_values)
+        # If we copied the value from the other object, we also need to reset
+        # it, so that there are no duplicate documents in the database
+        if copy_empty_values:
+            other.cnpj = u''
 
     def get_cnpj_number(self):
         """Returns the cnpj number without any non-numeric characters
@@ -1196,7 +1211,7 @@ class Supplier(Domain):
     # Public API
     #
 
-    def merge_with(self, other):
+    def merge_with(self, other, copy_empty_values=True):
         from stoqlib.domain.product import ProductSupplierInfo
         # product_supplier_info needs special treatment, since there is a unique
         # with the supplier_id
@@ -1209,7 +1224,7 @@ class Supplier(Domain):
         self.store.execute(Update({ProductSupplierInfo.supplier_id: self.id},
                                   clause, ProductSupplierInfo))
 
-        super(Supplier, self).merge_with(other, skip)
+        super(Supplier, self).merge_with(other, skip, copy_empty_values)
 
     def get_name(self):
         """
@@ -1440,7 +1455,7 @@ class LoginUser(Domain):
     # Public API
     #
 
-    def merge_with(self, other):
+    def merge_with(self, other, copy_empty_values=True):
         # user_branch_access is unique for (user_id, branch_id), so we should
         # only migrate what the current user does not have (and maybe delete the
         # rest)
@@ -1453,7 +1468,7 @@ class LoginUser(Domain):
         self.store.execute(Update({UserBranchAccess.user_id: self.id},
                                   clause, UserBranchAccess))
 
-        super(LoginUser, self).merge_with(other, skip)
+        super(LoginUser, self).merge_with(other, skip, copy_empty_values)
 
     @classmethod
     def hash(cls, password):
@@ -1613,7 +1628,7 @@ class Branch(Domain):
     # Public API
     #
 
-    def merge_with(self, other):
+    def merge_with(self, other, copy_empty_values=True):
         # We cannot merge branches right now, since identifiers should be unique
         # by branch and changing identifiers would not be nice.
         assert False
