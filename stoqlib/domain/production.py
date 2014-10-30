@@ -514,6 +514,8 @@ class ProductionMaterial(Domain):
         if not remaining:
             return
         storable = self.product.storable
+        if not storable:
+            return
         storable.increase_stock(remaining, self.order.branch,
                                 StockTransactionHistory.TYPE_PRODUCTION_RETURNED,
                                 self.id)

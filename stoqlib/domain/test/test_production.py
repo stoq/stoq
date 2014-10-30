@@ -460,6 +460,20 @@ class TestProductionMaterial(DomainTest):
                             object_id=material.id,
                             type=StockTransactionHistory.TYPE_PRODUCTION_RETURNED).one())
 
+    def test_return_remaining_component_without_storable(self):
+        item = self.create_production_item(quantity=1, storable=False)
+
+        order = item.order
+        order.status = ProductionOrder.ORDER_CLOSED
+        material = order.get_material_items()[0]
+        material.allocated = 10
+        material.return_remaining()
+
+        self.assertFalse(
+            self.store.find(StockTransactionHistory,
+                            object_id=material.id,
+                            type=StockTransactionHistory.TYPE_PRODUCTION_RETURNED).one())
+
     def test_add_lost(self):
         item = self.create_production_item(quantity=3)
         order = item.order

@@ -583,14 +583,15 @@ class ExampleCreator(object):
                                description=u'production',
                                store=self.store)
 
-    def create_production_item(self, quantity=1, order=None):
+    def create_production_item(self, quantity=1, order=None, storable=True):
         from stoqlib.domain.product import ProductComponent, Storable
         from stoqlib.domain.production import (ProductionItem,
                                                ProductionMaterial)
         product = self.create_product(10)
         Storable(product=product, store=self.store)
         component = self.create_product(5)
-        Storable(product=component, store=self.store)
+        if storable:
+            Storable(product=component, store=self.store)
         ProductComponent(product=product,
                          component=component,
                          store=self.store)
