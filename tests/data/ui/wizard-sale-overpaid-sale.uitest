@@ -1,0 +1,162 @@
+wizard: ConfirmSaleWizard
+GtkDialog(PluggableWizard): title='Sale Checkout', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave SalesPersonStep is attached
+        GtkVBox(step.toplevel):
+          GtkTable(step.data_table, fill=True):
+            ProxyLabel(step.salesperson_lbl): 'Salesperson:'
+            ProxyComboEntry(step.salesperson): insensitive
+              item: 'Administrator'
+              item: 'Cleusa Blanc Ferreira Norbiato'
+              item: 'Deivis Alexandre Junior'
+              item: 'Maria Aparecida Ardana'
+              item: 'Osvaldo Denadai Marin'
+              item: 'SalesPerson', selected
+            GtkLabel(step.invoice_number_label): 'Invoice Number:'
+            ProxySpinButton(step.invoice_number): '1004'
+            GtkLabel(step.label1): 'Client:'
+            GtkHBox():
+              ProxyEntry(step.client, expand=True, fill=True): ''
+              GtkButton():
+              GtkButton():
+            GtkLabel(step.expire_label): 'Expire', hidden
+            ProxyDateEntry(step.expire_date): None, hidden
+            GtkLabel(step.transporter_lbl): 'Transporter:'
+            ProxyComboEntry(step.transporter):
+              item: 'Jos\xc3\xa9 Carlos de Carvalho'
+            GtkButton(step.create_transporter):
+            GtkLabel(step.client_category_lbl): 'Client Category:', hidden
+            ProxyComboBox(step.client_category): hidden
+            GtkLabel(step.cfop_lbl): 'C.F.O.P.:', hidden
+            ProxyComboEntry(step.cfop): hidden
+            GtkButton(step.create_cfop): hidden
+            GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
+            ProxyComboBox(step.cost_center): hidden
+          GtkHSeparator(step.hseparator1, fill=True):
+          GtkHBox(step.hbox2, fill=True):
+            GtkTable(step.summary_table, expand=True, fill=True):
+              ProxyLabel(step.kiwilabel3): 'Subtotal:'
+              ProxyLabel(step.subtotal_lbl): '<span >$10.00</span>'
+              ProxyLabel(step.kiwilabel1): 'Already paid:'
+              ProxyLabel(step.total_paid_lbl): '<span >$50.00</span>'
+              ProxyLabel(step.kiwilabel5): 'Total:'
+              ProxyLabel(step.total_lbl): '<span >$ -40.00</span>'
+            GtkLabel(step.label3, expand=True, fill=True):
+            GtkHButtonBox(step.hbuttonbox1, pack-end):
+              GtkButton(step.observations_button, pack-end): 'Observations...'
+          GtkHBox(step.total_box, expand=True, fill=True):
+            GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
+              GtkVBox(toplevel):
+                GtkTable(table1, padding=6):
+                  ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
+                  ProxyEntry(received_value): '$ 0.00', insensitive
+                  ProxyLabel(kiwilabel2): 'Change:'
+                  ProxyLabel(change_value_lbl): '<span weight="bold">$40.00</span>'
+                  ProxyCheckButton(credit_checkbutton): 'Create credit for future sales'
+            GtkExpander(step.subtotal_expander, expand=True, fill=True): hidden
+              GtkEventBox(step.discount_surcharge_slave): slave SaleDiscountSlave is attached
+                GtkVBox(toplevel):
+                  GtkHBox(hbox6, fill=True):
+                    ProxyLabel(kiwilabel9, fill=True): 'Discount:'
+                  GtkTable(table1, fill=True):
+                    ProxyRadioButton(discount_perc_ck): active
+                    GtkHBox(hbox2):
+                      ProxyEntry(discount_perc, fill=True): '0.0'
+                      ProxyLabel(kiwilabel1, fill=True): '%'
+                    ProxyRadioButton(discount_value_ck):
+                    GtkHBox(hbox4):
+                      ProxyEntry(discount_value, fill=True): '0.00', insensitive
+                      GtkLabel(label4, expand=True, fill=True):
+              GtkLabel(step.label2): 'Order Details'
+          GtkEventBox(step.select_method_holder, fill=True, pack-end): slave SelectPaymentMethodSlave is attached, hidden
+            GtkVBox(toplevel):
+              GtkFrame(frame1, expand=True, fill=True):
+                GtkHBox(methods_box):
+                  GtkRadioButton(padding=6): 'Money', active
+                  GtkRadioButton(padding=6): 'Bill', hidden
+                  GtkRadioButton(padding=6): 'Card'
+                  GtkRadioButton(padding=6): 'Check'
+                  GtkRadioButton(padding=6): 'Credit', hidden
+                  GtkRadioButton(padding=6): 'Deposit'
+                  GtkRadioButton(padding=6): 'Store Credit', hidden
+                  GtkRadioButton(padding=6): 'Multiple'
+                GtkLabel(): 'Payment method:'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(help_button): 'gtk-help'
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: Sale<1>
+  cancel_date: None
+  close_date: datetime.today()
+  confirm_date: None
+  discount_value: <currency $ 0>
+  expire_date: None
+  group_id: PaymentGroup<2>
+  invoice_number: None
+  open_date: datetime.today()
+  operation_nature: u''
+  paid: True
+  return_date: None
+  service_invoice_number: None
+  status: u'ordered'
+  surcharge_value: <currency $ 0>
+  total_amount: <currency $ 0>
+
+model: PaymentGroup<2>
+
+model: Payment<3>
+  base_value: <currency $50>
+  bill_received: False
+  cancel_date: None
+  description: u'Test'
+  discount: <currency $ 0>
+  due_date: datetime.today()
+  group_id: PaymentGroup<2>
+  interest: <currency $ 0>
+  open_date: datetime.today()
+  paid_date: datetime.today()
+  paid_value: <currency $50>
+  payment_number: None
+  payment_type: u'in'
+  penalty: <currency $ 0>
+  status: u'paid'
+  value: <currency $50>
+
+model: Sellable<4>
+  barcode: u''
+  base_price: <currency $10>
+  code: u''
+  commission: <currency $ 0>
+  cost: <currency $125>
+  description: u'Description'
+  max_discount: Decimal('0')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: u'available'
+
+model: ProductStockItem<5>
+  quantity: Decimal('100.000')
+  stock_cost: <currency $ 0>
+
+model: SaleItem<6>
+  average_cost: <currency $ 0>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
+  sale_id: Sale<1>
+  sellable_id: Sellable<4>
+
