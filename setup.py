@@ -178,7 +178,6 @@ install_requires = [
     "PIL >= 1.1.5",
     "PyGTK >= 2.20",
     "Twisted >= 0.2.5",
-    "aptdaemon >= 3.0",
     "dateutil >= 1.4.1",
     "kiwi-gtk >= 1.9.29",
     "psycopg2 >= 2.0.5",
