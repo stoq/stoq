@@ -247,6 +247,11 @@ class TestBranchEditor(_BasePersonEditorTest):
         editor = BranchEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-branch-company-create')
 
+    def test_edit_company(self):
+        branch = api.sysparam.get_object(self.store, 'MAIN_COMPANY')
+        editor = BranchEditor(self.store, branch, role_type=Person.ROLE_COMPANY)
+        self.check_editor(editor, 'editor-branch-edit')
+
 
 class TestEmployeeRoleEditor(GUITest):
     def test_create(self):

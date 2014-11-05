@@ -57,6 +57,10 @@ class BranchDetailsSlave(BaseEditorSlave):
         self.crt.prefill(self.crt_options)
 
     def setup_proxies(self):
+        if api.sysparam.compare_object('MAIN_COMPANY', self.model):
+            self.active_check.set_sensitive(False)
+            self.inactive_check.set_sensitive(False)
+            self.label1.set_sensitive(False)
         self._setup_manager_entry()
         self._setup_crt_combo()
         self.proxy = self.add_proxy(self.model,

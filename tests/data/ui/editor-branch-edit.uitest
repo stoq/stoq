@@ -1,0 +1,108 @@
+editor: BranchEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Stoq Roupas e Acess\xc3\xb3rios Ltda"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave BranchEditor is attached
+        GtkHBox(toplevel):
+          GtkEventBox(main_holder, expand=True, fill=True): slave CompanyEditorTemplate is attached
+            GtkHBox(hbox1):
+              GtkEventBox(main_holder, expand=True, fill=True): slave _PersonEditorTemplate is attached
+                GtkVBox(toplevel):
+                  GtkNotebook(person_notebook, expand=True, fill=True):
+                    GtkVBox(identification_tab):
+                      GtkTable(table1, fill=True):
+                        GtkLabel(name_lbl): 'Name:'
+                        ProxyEntry(name): 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                        GtkLabel(phone_number_lbl): 'Phone Number:'
+                        ProxyEntry(phone_number): '48763983'
+                        GtkLabel(email_lbl): 'E-mail:'
+                        ProxyEntry(email): ''
+                        GtkLabel(fax_lbl): 'Fax:'
+                        ProxyEntry(fax_number): '32118271'
+                        GtkLabel(mobile_lbl): 'Mobile:'
+                        ProxyEntry(mobile_number): ''
+                      GtkHBox(hbox2, fill=True):
+                        GtkLabel(label5, expand=True, fill=True):
+                        GtkButton(contact_info_button, fill=True): 'Co_ntacts...'
+                        GtkButton(credit_check_history_button, fill=True): 'Credit Check History...', hidden
+                        GtkButton(calls_button, fill=True): 'Calls...'
+                      GtkHSeparator(hseparator1, fill=True):
+                      GtkEventBox(address_holder, fill=True): slave AddressSlave is attached
+                        GtkTable(table2):
+                          GtkLabel(address_lbl): 'Street:'
+                          ProxyEntry(street): 'Avendia S\xc3\xa3o Carlos'
+                          GtkHBox(hbox2):
+                            GtkLabel(label8, expand=True, fill=True):
+                            ProxyCheckButton(streetnumber_check, fill=True): 'Number:', active
+                          GtkHBox(hbox1):
+                            ProxyEntry(streetnumber, expand=True, fill=True): '2333'
+                            GtkLabel(postal_code_lbl, fill=True): 'Postal Code:'
+                            ProxyEntry(postal_code, fill=True): '13560-001'
+                          GtkLabel(district_lbl): 'District:'
+                          ProxyEntry(district): 'Centro'
+                          GtkLabel(complement_lbl): 'Complement:'
+                          ProxyEntry(complement): ''
+                          GtkLabel(city_lbl): 'City:'
+                          ProxyEntry(city): 'S\xc3\xa3o Carlos'
+                          GtkLabel(state_lbl): 'State:'
+                          ProxyEntry(state): 'SP'
+                          GtkLabel(country_lbl): 'Country:'
+                          ProxyComboEntry(country):
+                            item: 'Brazil', selected
+                            item: '... 252 more countries ...'
+                      GtkHBox(hbox1, fill=True):
+                        ProxyLabel(kiwilabel2, expand=True, fill=True):
+                        GtkButton(address_button, fill=True): 'More _Addresses...'
+                      GtkEventBox(role_holder, fill=True):
+                    GtkVBox(person_data_tab):
+                      GtkFrame(individual_frame, fill=True): hidden
+                        GtkEventBox(individual_holder):
+                      GtkFrame(company_frame, fill=True):
+                        GtkEventBox(company_holder): slave CompanyDocumentsSlave is attached
+                          GtkTable(table1):
+                            GtkLabel(label1): 'Doing business as:'
+                            ProxyEntry(fancy_name): 'Moda Stoq'
+                            GtkLabel(cnpj_lbl): 'CNPJ:'
+                            ProxyEntry(cnpj): '24.198.774/7322-35'
+                            GtkLabel(label3): 'State Registry:'
+                            ProxyEntry(state_registry): '982737266222'
+                            GtkLabel(label4): 'City Registry:'
+                            ProxyEntry(city_registry): ''
+                    GtkVBox(details_tab):
+                      GtkEventBox(person_status_holder, fill=True): slave BranchDetailsSlave is attached
+                        GtkTable(table1):
+                          GtkLabel(label4): 'Manager:'
+                          ProxyComboEntry(manager):
+                            item: 'Administrator'
+                            item: 'Cleusa Blanc Ferreira Norbiato'
+                            item: 'Deivis Alexandre Junior'
+                            item: 'Maria Aparecida Ardana'
+                            item: 'Osvaldo Denadai Marin'
+                          GtkLabel(label3): 'Acronym:'
+                          ProxyEntry(acronym): ''
+                          GtkLabel(label2): 'Tax Policy:'
+                          ProxyComboBox(crt):
+                            item: '1 - Simples Nacional', selected
+                            item: '2 - Simples Nacional \xe2\x80\x93 excesso de sublimite da receita bruta'
+                            item: '3 - Regime Normal'
+                          GtkLabel(label1): 'Branch status:', insensitive
+                          ProxyRadioButton(active_check): 'Active', active, insensitive
+                          ProxyRadioButton(inactive_check): 'Inactive', insensitive
+                          ProxyCheckButton(can_execute_foreign_work_orders): 'Can execute work orders from other branches'
+                      GtkEventBox(details_holder, fill=True):
+                      GtkEventBox(note_holder, expand=True, fill=True): slave NoteSlave is attached
+                        GtkVBox(toplevel):
+                          GtkLabel(message_label, fill=True): hidden
+                          GtkLabel(observations_label, fill=True): 'Observations:'
+                          GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+                            ProxyTextView(notes):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+      GtkButton(main_dialog.help_button, padding=6): 'gtk-help'
