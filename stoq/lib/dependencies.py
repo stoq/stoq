@@ -85,7 +85,6 @@ class DependencyChecker(object):
         self._check_twisted_core(TWISTED_CORE_REQUIRED)
         self._check_twisted_web(TWISTED_WEB_REQUIRED)
         self._check_xlwt(XLWT_REQUIRED)
-        self._check_weasyprint(WEASYPRINT_REQUIRED)
 
         # Database
         self._check_psql(PSQL_REQUIRED)
@@ -101,6 +100,9 @@ class DependencyChecker(object):
         self._check_mako(MAKO_REQUIRED)
         if platform.system() not in ['Darwin', 'Windows']:
             self._check_pypoppler(PYPOPPLER_REQUIRED)
+
+        # This needs to be imported *after* poppler. Don't ask me why
+        self._check_weasyprint(WEASYPRINT_REQUIRED)
 
         # ECF
         # FIXME: makes sense to allow Stoq to run with all of these disabled.
