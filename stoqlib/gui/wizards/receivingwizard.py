@@ -403,6 +403,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receive Purchase Order")
     size = (750, 350)
+    need_cancel_confirmation = True
     # help_section = 'purchase-new-receival'
 
     def __init__(self, store):

@@ -1,5 +1,5 @@
 wizard: PersonRoleWizard
-GtkDialog(PluggableWizard): title='New Transporter', hidden
+GtkDialog(toplevel): title='New Transporter', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

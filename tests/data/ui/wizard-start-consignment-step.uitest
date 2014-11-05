@@ -1,5 +1,5 @@
 wizard: ConsignmentWizard
-GtkDialog(PluggableWizard): title='New Consignment', hidden
+GtkDialog(toplevel): title='New Consignment', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

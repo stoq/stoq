@@ -1,5 +1,5 @@
 wizard: ProductionWizard
-GtkDialog(PluggableWizard): title='New Production', hidden
+GtkDialog(toplevel): title='New Production', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

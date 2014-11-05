@@ -32,6 +32,7 @@ from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.base.dialogs import RunnableView
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.utils.help import show_section
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -289,6 +290,10 @@ class BaseWizard(PluggableWizard, RunnableView):
     size = ()
     help_section = None
 
+    #: if we need to ask the user if he really wants to cancel the dialog if
+    #: there are any changes done that would be lost otherwise
+    need_cancel_confirmation = False
+
     def __init__(self, store, first_step, model=None, title=None,
                  size=None, edit_mode=False):
         logger.info('Entering wizard: %s' % self.__class__.__name__)
@@ -305,6 +310,15 @@ class BaseWizard(PluggableWizard, RunnableView):
         if self.help_section:
             self.set_help_section(self.help_section)
 
+        # FIXME: There're some places (e.g. FirstTimeConfigWizard) that will
+        # pass store=None here. Fix that so we can remove this workaround
+        if isinstance(self.store, StoqlibStore):
+            # This needs to be the last thing done on __init__ since we don't
+            # want to consider things like create_model as a change
+            self._store_pending_count = store.get_pending_count()
+        else:
+            self._store_pending_count = None
+
     def set_help_section(self, section):
         def on_help__clicked(button):
             show_section(section)
@@ -317,6 +331,12 @@ class BaseWizard(PluggableWizard, RunnableView):
         self.help_button.show()
 
     def cancel(self):
+        if (self._need_cancel_confirmation() and
+            not yesno(_("If you cancel this dialog all changes will be "
+                        "lost. Are you sure?"), gtk.RESPONSE_NO,
+                      _("Cancel"), _("Don't cancel"))):
+            return True
+
         logger.info('Canceling wizard: %s' % self.__class__.__name__)
         PluggableWizard.cancel(self)
         self.close()
@@ -335,3 +355,41 @@ class BaseWizard(PluggableWizard, RunnableView):
         if isinstance(self.store, StoqlibStore):
             self.store.retval = self.retval
         return super(BaseWizard, self).close()
+
+    def has_changes(self):
+        """Check if there are changes on this wizard
+
+        By default we will check if there're any pending changes on
+        :obj:`.store` and that information will be used by
+        :attr:`.need_cancel_confirmation`
+        """
+        if not isinstance(self.store, StoqlibStore):
+            return False
+
+        return self.store.get_pending_count() > self._store_pending_count
+
+    #
+    #  Private
+    #
+
+    def _need_cancel_confirmation(self):
+        return self.need_cancel_confirmation and self.has_changes()
+
+    #
+    #  Callbacks
+    #
+
+    def on_toplevel__delete_event(self, widget, *args, **kwargs):
+        # Avoid the dialog being closed when hitting 'Esc' and we would need
+        # confirm the cancelation.
+        if self._need_cancel_confirmation():
+            return True
+
+    def on_toplevel__response(self, dialog, response, *args, **kwargs):
+        # FIXME: For the delete-event to really stops from destroying the
+        # dialog, we also need to stop the response event emission. See
+        # http://faq.pygtk.org/index.py?req=show&file=faq10.013.htp
+        # for more details
+        if (self._need_cancel_confirmation() and
+                response == gtk.RESPONSE_DELETE_EVENT):
+            dialog.emit_stop_by_name('response')

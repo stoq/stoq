@@ -1,5 +1,5 @@
 wizard: PurchaseFinishWizard
-GtkDialog(PluggableWizard): title='Purchase Finish', hidden
+GtkDialog(toplevel): title='Purchase Finish', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

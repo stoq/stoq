@@ -1,5 +1,5 @@
 wizard: WorkOrderPackageReceiveWizard
-GtkDialog(PluggableWizard): title='Receive work orders', hidden
+GtkDialog(toplevel): title='Receive work orders', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

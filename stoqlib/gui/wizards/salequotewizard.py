@@ -496,6 +496,7 @@ class SaleQuotePaymentStep(WizardEditorStep):
 class SaleQuoteWizard(BaseWizard):
     size = (775, 400)
     help_section = 'sale-quote'
+    need_cancel_confirmation = True
 
     def __init__(self, store, model=None):
         title = self.get_title(model)

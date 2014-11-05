@@ -1,5 +1,5 @@
 wizard: QuotePurchaseWizard
-GtkDialog(PluggableWizard): title='New Quote', hidden
+GtkDialog(toplevel): title='New Quote', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

@@ -585,6 +585,7 @@ class FinishPurchaseStep(WizardEditorStep):
 class PurchaseWizard(BaseWizard):
     size = (775, 400)
     help_section = 'purchase-new'
+    need_cancel_confirmation = True
 
     def __init__(self, store, model=None, edit_mode=False):
         title = self._get_title(model)
