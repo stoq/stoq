@@ -372,6 +372,9 @@ class ProductEditor(SellableEditor):
             model.manufacturer = self._template.manufacturer
             model.brand = self._template.brand
             model.family = self._template.family
+            model.ncm = self._template.ncm
+            model.icms_template = self._template.icms_template
+            model.ipi_template = self._template.ipi_template
 
             for supplier_info in self._template.suppliers:
                 ProductSupplierInfo(
