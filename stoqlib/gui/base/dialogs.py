@@ -27,7 +27,6 @@ import inspect
 import logging
 
 import gtk
-from gtk import keysyms
 from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.ui.views import BaseView
@@ -90,12 +89,10 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.enable_confirm_validation = False
         self._message_bar = None
         self._create_dialog_ui()
-        self._setup_keyactions()
         if delete_handler is None:
             delete_handler = self._delete_handler
         GladeDelegate.__init__(self, delete_handler=delete_handler,
-                               gladefile=self.gladefile,
-                               keyactions=self.keyactions)
+                               gladefile=self.gladefile)
         help_section = help_section or self.help_section
         if help_section:
             self._add_help_button(help_section)
@@ -190,9 +187,6 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.ok_button.set_use_underline(True)
         action_area.pack_start(self.ok_button, True, True, 6)
         self.ok_button.show()
-
-    def _setup_keyactions(self):
-        self.keyactions = {keysyms.Escape: self.cancel}
 
     def _try_confirm(self, *args):
         """Only confirm if ok button is actually enabled.
