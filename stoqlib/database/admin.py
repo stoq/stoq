@@ -384,7 +384,7 @@ def initialize_system(password=None, testsuite=False,
     try:
         db_settings.clean_database(db_settings.dbname, force=force)
         create_base_schema()
-        create_log("INIT START")
+        create_log.info("INIT START")
         store = new_store()
         populate_initial_data(store)
         register_accounts(store)
@@ -406,4 +406,4 @@ def initialize_system(password=None, testsuite=False,
         #     collect_traceback(sys.exc_info(), submit=True)
         # raise SystemExit("Could not initialize system: %r" % (e, ))
         raise
-    create_log("INIT DONE")
+    create_log.info("INIT DONE")
