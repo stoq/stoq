@@ -335,6 +335,10 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         self.main_dialog.connect('confirm', self._on_main_dialog__confirm)
         self.main_dialog.connect('cancel', self._on_main_dialog__cancel)
 
+        dialog_toplevel = self.main_dialog.get_toplevel()
+        dialog_toplevel.connect('response', self._on_toplevel__response)
+        dialog_toplevel.connect('delete-event', self._on_toplevel__delete_event)
+
         # This helps kiwis ui test, set the name of ourselves to
         # the classname of the slave, which is much more helpful than
         # just "BasicDialog"
@@ -356,12 +360,32 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         # to consider things like self.create_model as a change
         self._store_pending_count = store.get_pending_count()
 
+    #
+    #  Private
+    #
+
     def _get_title_format(self):
         if self.visual_mode:
             return _(u"Details of %s")
         if self.edit_mode:
             return _(u'Edit Details of "%s"')
         return _(u"Add %s")
+
+    def _need_cancel_confirmation(self):
+        return self.need_cancel_confirmation and self.has_changes()
+
+    #
+    #  Public
+    #
+
+    def has_changes(self):
+        """Check if there are changes on this editor
+
+        By default we will check if there're any pending changes on
+        :obj:`.store` and that information will be used by
+        :attr:`.need_cancel_confirmation`
+        """
+        return self.store.get_pending_count() > self._store_pending_count
 
     def get_title(self, model):
         if self.title:
@@ -422,9 +446,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         """
         Cancel the dialog.
         """
-        has_changes = (self.store.get_pending_count() >
-                       self._store_pending_count)
-        if (self.need_cancel_confirmation and has_changes and
+        if (self._need_cancel_confirmation() and
             not yesno(_("If you cancel this dialog all changes will be lost. "
                         "Are you sure?"), gtk.RESPONSE_NO,
                       _("Cancel"), _("Don't cancel"))):
@@ -536,6 +558,21 @@ class BaseEditor(BaseEditorSlave, RunnableView):
 
     def _validation_function(self, is_valid):
         self.refresh_ok(is_valid)
+
+    def _on_toplevel__delete_event(self, widget, *args, **kwargs):
+        # Avoid the dialog being closed when hitting 'Esc' and we would need
+        # confirm the cancelation.
+        if self._need_cancel_confirmation():
+            return True
+
+    def _on_toplevel__response(self, dialog, response, *args, **kwargs):
+        # FIXME: For the delete-event to really stops from destroying the
+        # dialog, we also need to stop the response event emission. See
+        # http://faq.pygtk.org/index.py?req=show&file=faq10.013.htp
+        # for more details
+        if (self._need_cancel_confirmation() and
+                response == gtk.RESPONSE_DELETE_EVENT):
+            dialog.emit_stop_by_name('response')
 
 
 class BaseRelationshipEditorSlave(GladeSlaveDelegate):
