@@ -73,13 +73,16 @@ class _PaymentEditor(BaseEditor):
         return collections.OrderedDict(
             branch_id=PersonField(_('Branch'), proxy=True, person_type=Branch,
                                   can_add=False, can_edit=False, mandatory=True),
-            method=PaymentMethodField(_('Method'), proxy=True, mandatory=True,
-                                      separate=True),
+            method=PaymentMethodField(_('Method'),
+                                      payment_type=self.payment_type,
+                                      proxy=True, mandatory=True, separate=True),
             description=TextField(_('Description'), proxy=True, mandatory=True),
-            person_id=PersonField(proxy=True),
+            person_id=PersonField(person_type=self.person_type, proxy=True),
             value=PriceField(_('Value'), proxy=True, mandatory=True),
             due_date=DateField(_('Due date'), proxy=True, mandatory=True),
-            category=PaymentCategoryField(_('Category'), proxy=True),
+            category=PaymentCategoryField(_('Category'),
+                                          category_type=self.category_type,
+                                          proxy=True),
             repeat=ChoiceField(_('Repeat')),
             end_date=DateField(_('End date')),
             attachment=AttachmentField(_('Attachment'))
@@ -92,10 +95,6 @@ class _PaymentEditor(BaseEditor):
         :param model: a :class:`stoqlib.domain.payment.payment.Payment` object or None
 
         """
-        self.fields['person_id'].person_type = self.person_type
-        self.fields['category'].category_type = self.category_type
-        self.fields['method'].payment_type = self.payment_type
-
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
         if category:

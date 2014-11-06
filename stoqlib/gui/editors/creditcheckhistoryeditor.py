@@ -48,7 +48,8 @@ class CreditCheckHistoryEditor(BaseEditor):
             client_id=PersonField(_('Client'), proxy=True, person_type=Client,
                                   mandatory=True),
             identifier=TextField(_('Identifier'), proxy=True, mandatory=True),
-            status=ChoiceField('Status', mandatory=True),
+            status=ChoiceField('Status', values=self.get_status_options(),
+                               mandatory=True),
             check_date=DateField(_('Date'), proxy=True),
             user=ChoiceField(_('User')),
             notes=MultiLineField(_('Notes'), proxy=True),
@@ -56,7 +57,6 @@ class CreditCheckHistoryEditor(BaseEditor):
 
     def __init__(self, store, model, client, visual_mode=None):
         self._client = client
-        self.fields['status'].values = self.get_status_options()
 
         BaseEditor.__init__(self, store, model, visual_mode)
 

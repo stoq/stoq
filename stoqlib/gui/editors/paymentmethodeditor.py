@@ -317,18 +317,18 @@ class CardPaymentDetailsEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
+        device_values = api.for_combo(
+            CardPaymentDevice.get_devices(self.store))
+        provider_values = api.for_combo(
+            CreditProvider.get_card_providers(self.store))
+
         return collections.OrderedDict(
-            device=ChoiceField(_('Device'), proxy=True, mandatory=True),
-            provider=ChoiceField(_('Provider'), proxy=True, mandatory=True),
+            device=ChoiceField(_('Device'), proxy=True, mandatory=True,
+                               values=device_values),
+            provider=ChoiceField(_('Provider'), proxy=True, mandatory=True,
+                                 values=provider_values),
             auth=IntegerField(_('Authorization'), proxy=True, mandatory=True)
         )
-
-    def __init__(self, store, model, visual_mode=None):
-        self.fields['device'].values = api.for_combo(
-            CardPaymentDevice.get_devices(store))
-        self.fields['provider'].values = api.for_combo(
-            CreditProvider.get_card_providers(store))
-        BaseEditor.__init__(self, store, model)
 
     def on_confirm(self):
         self.model.update_card_data(device=self.model.device,

@@ -95,11 +95,20 @@ class CreateDeliveryEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
+        # Only users with admin or purchase permission can modify transporters
+        user = api.get_current_user(self.store)
+        can_modify_transporter = any((
+            user.profile.check_app_permission(u'admin'),
+            user.profile.check_app_permission(u'purchase'),
+        ))
+
         return collections.OrderedDict(
             client_id=PersonField(_("Client"), proxy=True, mandatory=True,
                                   person_type=Client),
             transporter_id=PersonField(_("Transporter"), proxy=True,
-                                       person_type=Transporter),
+                                       person_type=Transporter,
+                                       can_add=can_modify_transporter,
+                                       can_edit=can_modify_transporter),
             address=AddressField(_("Address"), proxy=True, mandatory=True),
             price=PriceField(_("Delivery cost"), proxy=True),
             estimated_fix_date=DateField(_("Estimated delivery date"), proxy=True),
@@ -126,15 +135,6 @@ class CreateDeliveryEditor(BaseEditor):
         self.additional_info_label.set_color('red')
         self.register_validate_function(self._validate_widgets)
         self.set_description(self.model_name)
-
-        # Only users with admin or purchase permission can modify transporters
-        user = api.get_current_user(self.store)
-        can_modify_transporter = any((
-            user.profile.check_app_permission(u'admin'),
-            user.profile.check_app_permission(u'purchase'),
-        ))
-        self.fields['transporter_id'].can_add = can_modify_transporter
-        self.fields['transporter_id'].can_edit = can_modify_transporter
 
         self._update_widgets()
 
@@ -233,11 +233,20 @@ class DeliveryEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
+        # Only users with admin or purchase permission can modify transporters
+        user = api.get_current_user(self.store)
+        can_modify_transporter = any((
+            user.profile.check_app_permission(u'admin'),
+            user.profile.check_app_permission(u'purchase'),
+        ))
+
         return collections.OrderedDict(
             client_str=TextField(_("Client"), proxy=True, editable=False,
                                  colspan=2),
             transporter_id=PersonField(_("Transporter"), proxy=True,
-                                       person_type=Transporter, colspan=2),
+                                       person_type=Transporter, colspan=2,
+                                       can_add=can_modify_transporter,
+                                       can_edit=can_modify_transporter),
             address=AddressField(_("Address"), proxy=True, mandatory=True,
                                  colspan=2),
             was_delivered_check=BoolField(_("Was sent to deliver?")),
@@ -279,15 +288,6 @@ class DeliveryEditor(BaseEditor):
         for widget in (self.receive_date, self.deliver_date,
                        self.tracking_code):
             widget.set_sensitive(False)
-
-        # Only users with admin or purchase permission can modify transporters
-        user = api.get_current_user(self.store)
-        can_modify_transporter = any((
-            user.profile.check_app_permission(u'admin'),
-            user.profile.check_app_permission(u'purchase'),
-        ))
-        self.fields['transporter_id'].can_add = can_modify_transporter
-        self.fields['transporter_id'].can_edit = can_modify_transporter
 
     def _update_status_widgets(self):
         if self.model.status == Delivery.STATUS_INITIAL:
