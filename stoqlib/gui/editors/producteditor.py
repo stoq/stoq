@@ -394,6 +394,14 @@ class ProductEditor(SellableEditor):
         if not self.model.manage_stock and self.model.storable:
             self.store.remove(self.model.storable)
 
+        # When creating a purchase, we use the supplier cost instead of the one
+        # in the sellable. If there is only one supplier for this product, also
+        # update its cost. TODO: What should we do when there is more than one
+        # supplier?
+        infos = list(self.model.get_suppliers_info())
+        if len(infos) == 1:
+            infos[0].base_cost = self.model.sellable.cost
+
 
 class ProductionProductEditor(ProductEditor):
 
