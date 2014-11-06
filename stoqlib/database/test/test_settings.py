@@ -28,11 +28,39 @@ import os
 
 import mock
 
-from stoqlib.database.settings import DatabaseSettings
+from stoqlib.database.settings import DatabaseSettings, get_database_version
 from stoqlib.domain.test.domaintest import DomainTest
 
 
+class _FakeResults(object):
+    def __init__(self, retval):
+        self._retval = retval
+
+    def get_one(self):
+        return (self._retval, )
+
+
 class DatabaseSettingsTest(DomainTest):
+
+    def test_get_database_version(self):
+        store = mock.Mock()
+
+        # Test version returned by Ubuntu
+        store.execute.return_value = _FakeResults(
+            "PostgreSQL 9.1.14 on x86_64-unknown-linux-gnu, compiled by gcc "
+            "(Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3, 64-bit")
+        self.assertEqual(get_database_version(store), (9, 1, 14))
+
+        # Test version returned by Windows
+        store.execute.return_value = _FakeResults(
+            "PostgreSQL 9.3.4, compiled by Visual C++ build 1600, 64-bit")
+        self.assertEqual(get_database_version(store), (9, 3, 4))
+
+        # Test version returned by Debian (while postgresql were in beta)
+        store.execute.return_value = _FakeResults(
+            "PostgreSQL 9.4beta3 on x86_64-unknown-linux-gnu, compiled by gcc "
+            "(Debian 4.9.1-16) 4.9.1, 64-bit")
+        self.assertEqual(get_database_version(store), (9, 4, 0))
 
     def test_get_store_dsn(self):
         settings = DatabaseSettings(address='address',
