@@ -31,6 +31,7 @@ from stoqlib.domain.person import Client, CreditCheckHistory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.fields import PersonField
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -41,15 +42,17 @@ class CreditCheckHistoryEditor(BaseEditor):
     model_name = _("Client Credit Check History")
     size = (400, -1)
 
-    fields = collections.OrderedDict(
-        client_id=PersonField(_('Client'), proxy=True, person_type=Client,
-                              mandatory=True),
-        identifier=TextField(_('Identifier'), proxy=True, mandatory=True),
-        status=ChoiceField('Status', mandatory=True),
-        check_date=DateField(_('Date'), proxy=True),
-        user=ChoiceField(_('User')),
-        notes=MultiLineField(_('Notes'), proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            client_id=PersonField(_('Client'), proxy=True, person_type=Client,
+                                  mandatory=True),
+            identifier=TextField(_('Identifier'), proxy=True, mandatory=True),
+            status=ChoiceField('Status', mandatory=True),
+            check_date=DateField(_('Date'), proxy=True),
+            user=ChoiceField(_('User')),
+            notes=MultiLineField(_('Notes'), proxy=True),
+        )
 
     def __init__(self, store, model, client, visual_mode=None):
         self._client = client

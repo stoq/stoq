@@ -28,6 +28,7 @@ import collections
 
 from kiwi.ui.forms import BoolField, MultiLineField, PriceField, TextField
 
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.costcenter import CostCenter
@@ -40,12 +41,14 @@ class CostCenterEditor(BaseEditor):
     size = (300, -1)
     model_type = CostCenter
 
-    fields = collections.OrderedDict(
-        name=TextField(_('Name'), mandatory=True, proxy=True),
-        budget=PriceField(_('Budget'), mandatory=True, proxy=True),
-        description=MultiLineField(_('Description'), mandatory=True, proxy=True),
-        is_active=BoolField(_('Active'), proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            name=TextField(_('Name'), mandatory=True, proxy=True),
+            budget=PriceField(_('Budget'), mandatory=True, proxy=True),
+            description=MultiLineField(_('Description'), mandatory=True, proxy=True),
+            is_active=BoolField(_('Active'), proxy=True),
+        )
 
     #
     # BaseEditor Hooks

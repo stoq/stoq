@@ -30,6 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import TextField
 
 from stoqlib.api import api
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cfop
 from stoqlib.gui.base.dialogs import run_dialog
@@ -43,11 +44,13 @@ class CfopEditor(BaseEditor):
     model_name = _('C.F.O.P.')
     model_type = CfopData
 
-    fields = collections.OrderedDict(
-        code=TextField(_('C.F.O.P.'), input_mask="0.000", mandatory=True,
-                       proxy=True),
-        description=TextField(_('Description'), mandatory=True, proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            code=TextField(_('C.F.O.P.'), input_mask="0.000", mandatory=True,
+                           proxy=True),
+            description=TextField(_('Description'), mandatory=True, proxy=True),
+        )
 
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode)

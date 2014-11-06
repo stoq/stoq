@@ -32,6 +32,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import (Client, Branch, Employee, EmployeeRole,
                                    Individual, LoginUser,
                                    Supplier, Transporter)
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -191,9 +192,11 @@ class EmployeeRoleEditor(BaseEditor):
     model_name = _('Employee Role')
     confirm_widgets = ['name']
 
-    fields = collections.OrderedDict(
-        name=TextField(_('Name'), proxy=True, mandatory=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            name=TextField(_('Name'), proxy=True, mandatory=True),
+        )
 
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)

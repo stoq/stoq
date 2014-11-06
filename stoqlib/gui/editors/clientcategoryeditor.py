@@ -34,6 +34,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import ClientCategory
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -45,10 +46,12 @@ class ClientCategoryEditor(BaseEditor):
     confirm_widgets = ['name',
                        'max_discount']
 
-    fields = collections.OrderedDict(
-        name=TextField(_('Name'), proxy=True),
-        max_discount=PercentageField(_('Max Discount'), proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            name=TextField(_('Name'), proxy=True),
+            max_discount=PercentageField(_('Max Discount'), proxy=True),
+        )
 
     def create_model(self, store):
         return ClientCategory(name=u'', store=store)

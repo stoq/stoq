@@ -51,6 +51,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.translation import stoqlib_gettext
@@ -69,11 +70,13 @@ class _WorkOrderItemEditor(BaseEditor):
     model_type = WorkOrderItem
     confirm_widgets = ['price', 'quantity', 'quantity_reserved']
 
-    fields = collections.OrderedDict(
-        price=PriceField(_(u'Price'), proxy=True, mandatory=True),
-        quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
-        quantity_reserved=NumericField(_(u'Reserved quantity')),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            price=PriceField(_(u'Price'), proxy=True, mandatory=True),
+            quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
+            quantity_reserved=NumericField(_(u'Reserved quantity')),
+        )
 
     def __init__(self, store, model, visual_mode=False):
         self._original_quantity_decreased = model.quantity_decreased

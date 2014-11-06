@@ -37,6 +37,7 @@ from stoqlib.domain.loan import Loan
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -52,9 +53,11 @@ class DiscountEditor(BaseEditor):
     model_type = object
     confirm_widgets = ['discount']
 
-    fields = collections.OrderedDict(
-        discount=TextField(_('Discount to apply'), mandatory=True)
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            discount=TextField(_('Discount to apply'), mandatory=True)
+        )
 
     def __init__(self, store, model, user=None, visual_mode=False):
         if not isinstance(model, (Sale, Loan)):

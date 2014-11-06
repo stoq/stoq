@@ -36,6 +36,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.colorutils import get_random_color
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -52,12 +53,15 @@ class PaymentCategoryEditor(BaseEditor):
         (_('Receivable'), PaymentCategory.TYPE_RECEIVABLE)
     ]
 
-    fields = collections.OrderedDict(
-        name=TextField(_('Name'), proxy=True),
-        color=ColorField(_('Color'), proxy=True),
-        category_type=ChoiceField(_('Type'), data_type=int,
-                                  values=_category_type_values, proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            name=TextField(_('Name'), proxy=True),
+            color=ColorField(_('Color'), proxy=True),
+            category_type=ChoiceField(
+                _('Type'), data_type=int,
+                values=self._category_type_values, proxy=True),
+        )
 
     def __init__(self, store, model=None,
                  category_type=None, visual_mode=False):

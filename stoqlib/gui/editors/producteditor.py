@@ -43,6 +43,7 @@ from stoqlib.domain.sellable import (Sellable,
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import quantize, MAX_INT
 from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
@@ -471,9 +472,11 @@ class ProductManufacturerEditor(BaseEditor):
     model_type = ProductManufacturer
     confirm_widgets = ['name']
 
-    fields = collections.OrderedDict(
-        name=TextField(_('Name'), proxy=True, mandatory=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            name=TextField(_('Name'), proxy=True, mandatory=True),
+        )
 
     def create_model(self, store):
         return ProductManufacturer(name=u'', store=store)

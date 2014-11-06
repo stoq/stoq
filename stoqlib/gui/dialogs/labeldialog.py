@@ -30,6 +30,7 @@ from kiwi.ui.forms import NumericField, TextField, PriceField
 from kiwi.python import Settable
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -42,14 +43,16 @@ class PrintLabelEditor(BaseEditor):
     model_type = object
     title = _(u'Print labels')
 
-    fields = collections.OrderedDict(
-        code=TextField(_('Code'), proxy=True),
-        description=TextField(_('Description'), proxy=True),
-        barcode=TextField(_('Barcode'), proxy=True),
-        price=PriceField(_('Price'), proxy=True),
-        quantity=NumericField(_('Quantity'), proxy=True),
-        skip=NumericField(_('Labels to skip'), proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            code=TextField(_('Code'), proxy=True),
+            description=TextField(_('Description'), proxy=True),
+            barcode=TextField(_('Barcode'), proxy=True),
+            price=PriceField(_('Price'), proxy=True),
+            quantity=NumericField(_('Quantity'), proxy=True),
+            skip=NumericField(_('Labels to skip'), proxy=True),
+        )
 
     def __init__(self, store, sellable, model=None, max_quantity=None,
                  visual_mode=False):
@@ -82,9 +85,11 @@ class SkipLabelsEditor(BaseEditor):
     model_type = object
     title = _('Labels to skip')
 
-    fields = collections.OrderedDict(
-        skip=NumericField(_('Labels to skip'), proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            skip=NumericField(_('Labels to skip'), proxy=True),
+        )
 
     def __init__(self, store):
         BaseEditor.__init__(self, store, None)

@@ -38,6 +38,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.fields import AddressField, PersonField
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -92,15 +93,17 @@ class CreateDeliveryEditor(BaseEditor):
     form_columns = 2
     size = (750, 550)
 
-    fields = collections.OrderedDict(
-        client_id=PersonField(_("Client"), proxy=True, mandatory=True,
-                              person_type=Client),
-        transporter_id=PersonField(_("Transporter"), proxy=True,
-                                   person_type=Transporter),
-        address=AddressField(_("Address"), proxy=True, mandatory=True),
-        price=PriceField(_("Delivery cost"), proxy=True),
-        estimated_fix_date=DateField(_("Estimated delivery date"), proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            client_id=PersonField(_("Client"), proxy=True, mandatory=True,
+                                  person_type=Client),
+            transporter_id=PersonField(_("Transporter"), proxy=True,
+                                       person_type=Transporter),
+            address=AddressField(_("Address"), proxy=True, mandatory=True),
+            price=PriceField(_("Delivery cost"), proxy=True),
+            estimated_fix_date=DateField(_("Estimated delivery date"), proxy=True),
+        )
 
     def __init__(self, store, model=None, sale_items=None):
         self.sale_items = sale_items
@@ -228,20 +231,22 @@ class DeliveryEditor(BaseEditor):
     form_holder_name = 'forms'
     form_columns = 2
 
-    fields = collections.OrderedDict(
-        client_str=TextField(_("Client"), proxy=True, editable=False,
-                             colspan=2),
-        transporter_id=PersonField(_("Transporter"), proxy=True,
-                                   person_type=Transporter, colspan=2),
-        address=AddressField(_("Address"), proxy=True, mandatory=True,
-                             colspan=2),
-        was_delivered_check=BoolField(_("Was sent to deliver?")),
-        deliver_date=DateField(_("Delivery date"), mandatory=True, proxy=True),
-        tracking_code=TextField(_("Tracking code"), proxy=True),
-        was_received_check=BoolField(_("Was received by client?")),
-        receive_date=DateField(_("Receive date"), mandatory=True, proxy=True),
-        empty=EmptyField(),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            client_str=TextField(_("Client"), proxy=True, editable=False,
+                                 colspan=2),
+            transporter_id=PersonField(_("Transporter"), proxy=True,
+                                       person_type=Transporter, colspan=2),
+            address=AddressField(_("Address"), proxy=True, mandatory=True,
+                                 colspan=2),
+            was_delivered_check=BoolField(_("Was sent to deliver?")),
+            deliver_date=DateField(_("Delivery date"), mandatory=True, proxy=True),
+            tracking_code=TextField(_("Tracking code"), proxy=True),
+            was_received_check=BoolField(_("Was received by client?")),
+            receive_date=DateField(_("Receive date"), mandatory=True, proxy=True),
+            empty=EmptyField(),
+        )
 
     def __init__(self, store, *args, **kwargs):
         self._configuring_proxies = False

@@ -37,6 +37,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -46,10 +47,12 @@ class CreditEditor(BaseEditor):
 
     confirm_widgets = ['description', 'value']
 
-    fields = collections.OrderedDict(
-        description=TextField(_('Description'), proxy=True, mandatory=True),
-        value=PriceField(_('Value'), proxy=True, mandatory=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            description=TextField(_('Description'), proxy=True, mandatory=True),
+            value=PriceField(_('Value'), proxy=True, mandatory=True),
+        )
 
     def __init__(self, store, client, model=None):
         self.client = store.fetch(client)

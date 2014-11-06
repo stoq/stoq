@@ -65,6 +65,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.formatters import get_formatted_percentage
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -314,11 +315,13 @@ class CardPaymentDetailsEditor(BaseEditor):
     """
     model_type = CreditCardData
 
-    fields = collections.OrderedDict(
-        device=ChoiceField(_('Device'), proxy=True, mandatory=True),
-        provider=ChoiceField(_('Provider'), proxy=True, mandatory=True),
-        auth=IntegerField(_('Authorization'), proxy=True, mandatory=True)
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            device=ChoiceField(_('Device'), proxy=True, mandatory=True),
+            provider=ChoiceField(_('Provider'), proxy=True, mandatory=True),
+            auth=IntegerField(_('Authorization'), proxy=True, mandatory=True)
+        )
 
     def __init__(self, store, model, visual_mode=None):
         self.fields['device'].values = api.for_combo(

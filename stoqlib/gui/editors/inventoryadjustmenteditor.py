@@ -36,6 +36,7 @@ from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.fields import CfopField
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -191,18 +192,20 @@ class InventoryItemAdjustmentEditor(BaseEditor):
     hide_footer = False
     model_type = InventoryItem
 
-    fields = collections.OrderedDict(
-        description=TextField(_("Product"), proxy=True, editable=False),
-        recorded_quantity=TextField(_("Previous quantity"), proxy=True,
-                                    editable=False),
-        counted_quantity=TextField(_("Counted quantity"), proxy=True,
-                                   editable=False),
-        difference=TextField(_("Difference"), proxy=True, editable=False),
-        actual_quantity=NumericField(_("Actual quantity"), proxy=True,
-                                     mandatory=True),
-        cfop_data=CfopField(_("C.F.O.P"), proxy=True),
-        reason=MultiLineField(_("Reason"), proxy=True, mandatory=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            description=TextField(_("Product"), proxy=True, editable=False),
+            recorded_quantity=TextField(_("Previous quantity"), proxy=True,
+                                        editable=False),
+            counted_quantity=TextField(_("Counted quantity"), proxy=True,
+                                       editable=False),
+            difference=TextField(_("Difference"), proxy=True, editable=False),
+            actual_quantity=NumericField(_("Actual quantity"), proxy=True,
+                                         mandatory=True),
+            cfop_data=CfopField(_("C.F.O.P"), proxy=True),
+            reason=MultiLineField(_("Reason"), proxy=True, mandatory=True),
+        )
 
     def __init__(self, store, model, invoice_number):
         BaseEditor.__init__(self, store, model)

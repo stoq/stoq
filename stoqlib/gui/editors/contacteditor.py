@@ -35,6 +35,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import ContactInfo
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -46,10 +47,12 @@ class ContactInfoEditor(BaseEditor):
 
     confirm_widgets = ['description', 'contact_info']
 
-    fields = collections.OrderedDict(
-        description=TextField(_('Description'), mandatory=True, proxy=True),
-        contact_info=TextField(_('Contact Info'), mandatory=True, proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            description=TextField(_('Description'), mandatory=True, proxy=True),
+            contact_info=TextField(_('Contact Info'), mandatory=True, proxy=True),
+        )
 
     def __init__(self, store, model=None, person=None):
         self.person = person

@@ -32,6 +32,7 @@ from kiwi.ui.forms import ColorField, TextField
 from stoqlib.domain.workorder import WorkOrderCategory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.colorutils import get_random_color
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -44,10 +45,12 @@ class WorkOrderCategoryEditor(BaseEditor):
     model_type = WorkOrderCategory
     confirm_widgets = ['name']
 
-    fields = collections.OrderedDict(
-        name=TextField(_('Name'), proxy=True),
-        color=ColorField(_('Color'), proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            name=TextField(_('Name'), proxy=True),
+            color=ColorField(_('Color'), proxy=True),
+        )
 
     #
     # BaseEditor

@@ -51,6 +51,7 @@ from stoqlib.gui.fields import (AttachmentField, PaymentCategoryField,
 from stoqlib.lib.dateutils import (get_interval_type_items,
                                    interval_type_as_relativedelta,
                                    localtoday)
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -67,20 +68,22 @@ class _PaymentEditor(BaseEditor):
     category_type = None
     payment_type = None
 
-    fields = collections.OrderedDict(
-        branch_id=PersonField(_('Branch'), proxy=True, person_type=Branch,
-                              can_add=False, can_edit=False, mandatory=True),
-        method=PaymentMethodField(_('Method'), proxy=True, mandatory=True,
-                                  separate=True),
-        description=TextField(_('Description'), proxy=True, mandatory=True),
-        person_id=PersonField(proxy=True),
-        value=PriceField(_('Value'), proxy=True, mandatory=True),
-        due_date=DateField(_('Due date'), proxy=True, mandatory=True),
-        category=PaymentCategoryField(_('Category'), proxy=True),
-        repeat=ChoiceField(_('Repeat')),
-        end_date=DateField(_('End date')),
-        attachment=AttachmentField(_('Attachment'))
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            branch_id=PersonField(_('Branch'), proxy=True, person_type=Branch,
+                                  can_add=False, can_edit=False, mandatory=True),
+            method=PaymentMethodField(_('Method'), proxy=True, mandatory=True,
+                                      separate=True),
+            description=TextField(_('Description'), proxy=True, mandatory=True),
+            person_id=PersonField(proxy=True),
+            value=PriceField(_('Value'), proxy=True, mandatory=True),
+            due_date=DateField(_('Due date'), proxy=True, mandatory=True),
+            category=PaymentCategoryField(_('Category'), proxy=True),
+            repeat=ChoiceField(_('Repeat')),
+            end_date=DateField(_('End date')),
+            attachment=AttachmentField(_('Attachment'))
+        )
 
     def __init__(self, store, model=None, category=None):
         """ A base class for additional payments
@@ -312,8 +315,11 @@ class OutPaymentEditor(_PaymentEditor):
     help_section = 'account-payable'
     category_type = PaymentCategory.TYPE_PAYABLE
 
-    fields = _PaymentEditor.fields.copy()
-    fields['bill_received'] = BoolField(_('The bill has arrived.'), proxy=True)
+    @cached_property()
+    def fields(self):
+        fields = super(OutPaymentEditor, self).fields
+        fields['bill_received'] = BoolField(_('The bill has arrived.'), proxy=True)
+        return fields
 
 
 def get_dialog_for_payment(payment):

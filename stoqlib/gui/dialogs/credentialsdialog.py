@@ -32,6 +32,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import LoginUser
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.exceptions import LoginError
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -45,10 +46,12 @@ class CredentialsDialog(BaseEditor):
     model_type = Settable
     title = _(u'Credentials Dialog')
 
-    fields = collections.OrderedDict(
-        username=TextField(_('Username'), mandatory=True, proxy=True),
-        password=PasswordField(_('Password'), proxy=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            username=TextField(_('Username'), mandatory=True, proxy=True),
+            password=PasswordField(_('Password'), proxy=True),
+        )
 
     confirm_widgets = ('password', )
 

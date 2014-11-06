@@ -44,6 +44,7 @@ from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.utils.databaseform import DatabaseForm
 from stoqlib.gui.utils.printing import print_labels
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.message import yesno, warning
@@ -69,10 +70,12 @@ class SellableTaxConstantEditor(BaseEditor):
     model_type = SellableTaxConstant
     model_name = _('Taxes and Tax rates')
 
-    fields = collections.OrderedDict(
-        description=TextField(_('Name'), proxy=True, mandatory=True),
-        tax_value=PercentageField(_('Value'), proxy=True, mandatory=True),
-    )
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            description=TextField(_('Name'), proxy=True, mandatory=True),
+            tax_value=PercentageField(_('Value'), proxy=True, mandatory=True),
+        )
 
     #
     # BaseEditor
