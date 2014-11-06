@@ -40,12 +40,10 @@ from stoqlib.domain.person import Branch, Employee, Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
-from stoqlib.domain.till import Till
 from stoqlib.domain.views import ProductWithStockBranchView
-from stoqlib.exceptions import TillError
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
-from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
@@ -136,18 +134,6 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def next_step(self):
         self.wizard.create_payments = self.create_payments.read()
-
-        if self.wizard.create_payments:
-            try:
-                till = Till.get_current(self.store)
-            except TillError as e:
-                warning(str(e))
-                return self
-
-            if not till:
-                warning(_("You need to open the till before doing this operation."))
-                return self
-
         return DecreaseItemStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
@@ -275,6 +261,7 @@ class DecreaseItemStep(SellableItemStep):
 class StockDecreaseWizard(BaseWizard):
     size = (775, 400)
     title = _('Manual Stock Decrease')
+    need_cancel_confirmation = True
 
     def __init__(self, store):
         model = self._create_model(store)

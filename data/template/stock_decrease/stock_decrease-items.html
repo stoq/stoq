@@ -3,6 +3,7 @@
       <thead>
         <tr>
           <td>${ _("Code") }</td>
+          <td>${ _("Barcode") }</td>
           <td>${ _("Item") }</td>
           <td>${ _("Batch") }</td>
           <td>${ _("Qty") }</td>
@@ -24,6 +25,7 @@
           %>
           <tr>
             <td>${ item.sellable.code }</td>
+            <td>${ item.sellable.barcode }</td>
             <td>${ item.sellable.get_description() }</td>
             % if item.batch:
               <td>${ item.batch.batch_number }</td>
@@ -43,6 +45,7 @@
           <td></td>
           <td></td>
           <td></td>
+          <td></td>
           <td>${ format_quantity(total) }</td>
           % if report.payments:
             <td>${ format_price(total_cost)}</td>
@@ -51,6 +54,7 @@
       </tbody>
       <tfoot>
         <tr>
+          <td></td>
           <td></td>
           <td></td>
           <td></td>
