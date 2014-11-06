@@ -181,6 +181,8 @@ class TillApp(ShellApp):
         self._printer.run_initial_checks()
         self.check_open_inventory()
 
+        self.search.focus_search_entry()
+
     def deactivate(self):
         self.uimanager.remove_ui(self.till_ui)
 

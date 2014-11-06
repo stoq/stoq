@@ -290,6 +290,8 @@ class ServicesApp(ShellApp):
         if refresh:
             self._update_view()
 
+        self.search.focus_search_entry()
+
     def deactivate(self):
         self.uimanager.remove_ui(self.services_ui)
 

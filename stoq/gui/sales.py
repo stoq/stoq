@@ -249,6 +249,8 @@ class SalesApp(ShellApp):
         self.check_open_inventory()
         self._update_toolbar()
 
+        self.search.focus_search_entry()
+
     def setup_focus(self):
         self.refresh()
 

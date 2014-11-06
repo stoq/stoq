@@ -204,6 +204,8 @@ class StockApp(ShellApp):
 
         self._update_widgets()
 
+        self.search.focus_search_entry()
+
     def setup_focus(self):
         self.refresh()
 

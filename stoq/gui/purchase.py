@@ -216,6 +216,8 @@ class PurchaseApp(ShellApp):
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.check_open_inventory()
 
+        self.search.focus_search_entry()
+
     def setup_focus(self):
         self.refresh()
 

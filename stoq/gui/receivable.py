@@ -154,6 +154,8 @@ class ReceivableApp(BaseAccountWindow):
         if refresh:
             self.refresh()
 
+        self.search.focus_search_entry()
+
     def deactivate(self):
         self.uimanager.remove_ui(self.receivable_ui)
 

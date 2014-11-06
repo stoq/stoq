@@ -148,6 +148,8 @@ class ProductionApp(ShellApp):
         self._update_widgets()
         self.check_open_inventory()
 
+        self.search.focus_search_entry()
+
     def deactivate(self):
         self.uimanager.remove_ui(self.production_ui)
 

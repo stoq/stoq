@@ -118,6 +118,8 @@ class InventoryApp(ShellApp):
         self._update_widgets()
         self.window.SearchToolItem.set_sensitive(False)
 
+        self.search.focus_search_entry()
+
     def deactivate(self):
         self.uimanager.remove_ui(self.inventory_ui)
         self.window.SearchToolItem.set_sensitive(True)
