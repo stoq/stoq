@@ -134,6 +134,7 @@ class SearchSlave(SlaveDelegate):
         self._primary_filter = search_filter
 
         self._create_ui()
+        self.focus_search_entry()
 
     #
     # Private API
