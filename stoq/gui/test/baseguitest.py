@@ -63,7 +63,7 @@ class BaseGUITest(GUITest):
         # getting refreshed would make the results disapear
         self._refresh_mock = mock.patch(
             'stoq.gui.shell.shellapp.ShellApp.refresh',
-            new=lambda s: original_refresh(s, rollback=False))
+            new=lambda s, rollback=False: original_refresh(s, rollback=False))
 
         self._refresh_mock.start()
         super(BaseGUITest, self).setUp()
