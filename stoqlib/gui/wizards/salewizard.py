@@ -44,7 +44,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Client, SalesPerson, Transporter
 from stoqlib.domain.sale import Sale, SaleComment
-from stoqlib.enums import CreatePaymentStatus
+from stoqlib.enums import CreatePaymentStatus, ChangeSalespersonPolicy
 from stoqlib.exceptions import SellError, StoqlibError, PaymentMethodError
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import warning, marker
@@ -638,10 +638,16 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         marker('Finished filling sales persons')
 
         marker('Read parameter')
-        if not sysparam.get_bool('ACCEPT_CHANGE_SALESPERSON'):
-            self.salesperson.set_sensitive(False)
-        else:
+        change_salesperson = sysparam.get_int('ACCEPT_CHANGE_SALESPERSON')
+        if change_salesperson == ChangeSalespersonPolicy.ALLOW:
             self.salesperson.grab_focus()
+        elif change_salesperson == ChangeSalespersonPolicy.DISALLOW:
+            self.salesperson.set_sensitive(False)
+        elif change_salesperson == ChangeSalespersonPolicy.FORCE_CHOOSE:
+            self.model.salesperson = None
+            self.salesperson.grab_focus()
+        else:
+            raise AssertionError
         marker('Finished reading parameter')
         self._setup_clients_widget()
         self._fill_transporter_combo()
@@ -686,7 +692,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.wizard.payment_group.clear_unused()
         self.register_validate_function(self._refresh_next)
         self._update_next_step(self.get_selected_method())
-        if hasattr(self, 'cash_change_slave'):
+        # If there's no salesperson, keep the focus there as it should be
+        # selected first to have a nice flow
+        if (hasattr(self, 'cash_change_slave') and
+                self.model.salesperson is not None):
             self.cash_change_slave.received_value.grab_focus()
 
         self.force_validation()

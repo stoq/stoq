@@ -116,8 +116,8 @@ class TestParameter(DomainTest):
         assert isinstance(param, bool)
 
     def test_accept_change_salesperson(self):
-        param = self.sparam.get_bool('ACCEPT_CHANGE_SALESPERSON')
-        assert isinstance(param, bool)
+        param = self.sparam.get_int('ACCEPT_CHANGE_SALESPERSON')
+        assert isinstance(param, int)
 
     def test_return_policy_on_sales(self):
         param = self.sparam.get_int('RETURN_POLICY_ON_SALES')

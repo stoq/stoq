@@ -83,6 +83,18 @@ class LatePaymentPolicy(enum):
      DISALLOW_SALES) = range(3)
 
 
+class ChangeSalespersonPolicy(enum):
+    """Policy for changing the |salesperson| on POS sales
+
+    This enum is used by the :class:`parameter
+    <stoqlib.lib.parameters.ParameterDetails>` ACCEPT_CHANGE_SALESPERSON
+    """
+
+    (DISALLOW,
+     ALLOW,
+     FORCE_CHOOSE) = range(3)
+
+
 class SearchFilterPosition(enum):
     """
     An enum used to indicate where a search filter should be added to

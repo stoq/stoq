@@ -31,7 +31,7 @@ from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
-from stoqlib.enums import LatePaymentPolicy
+from stoqlib.enums import LatePaymentPolicy, ChangeSalespersonPolicy
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.lib.dateutils import localdatetime, localtoday
@@ -203,6 +203,27 @@ class TestConfirmSaleWizard(GUITest):
 
         entry = self.store.find(CostCenterEntry, cost_center=self.sale.cost_center)
         self.assertEquals(len(list(entry)), 1)
+
+    def test_param_accept_change_salesperson_allow(self):
+        with self.sysparam(
+                ACCEPT_CHANGE_SALESPERSON=int(ChangeSalespersonPolicy.ALLOW)):
+            self._create_wizard()
+            self.assertTrue(self.step.salesperson.get_sensitive())
+            self.assertIsNotNone(self.step.salesperson.read())
+
+    def test_param_accept_change_salesperson_disallow(self):
+        with self.sysparam(
+                ACCEPT_CHANGE_SALESPERSON=int(ChangeSalespersonPolicy.DISALLOW)):
+            self._create_wizard()
+            self.assertFalse(self.step.salesperson.get_sensitive())
+            self.assertIsNotNone(self.step.salesperson.read())
+
+    def test_param_accept_change_salesperson_force_choose(self):
+        with self.sysparam(
+                ACCEPT_CHANGE_SALESPERSON=int(ChangeSalespersonPolicy.FORCE_CHOOSE)):
+            self._create_wizard()
+            self.assertTrue(self.step.salesperson.get_sensitive())
+            self.assertIsNone(self.step.salesperson.read())
 
     def test_step_payment_method_check(self):
         sysparam.set_bool(self.store, 'MANDATORY_CHECK_NUMBER', False)

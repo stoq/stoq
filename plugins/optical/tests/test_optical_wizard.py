@@ -32,6 +32,7 @@ import gtk
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.workorder import WorkOrderCategory, WorkOrderItem
+from stoqlib.enums import ChangeSalespersonPolicy
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
@@ -161,15 +162,26 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         OpticalSaleQuoteWizard(self.store, model=sale)
 
     def test_param_accept_change_salesperson(self):
-        with self.sysparam(ACCEPT_CHANGE_SALESPERSON=True):
+        with self.sysparam(
+                ACCEPT_CHANGE_SALESPERSON=int(ChangeSalespersonPolicy.ALLOW)):
             wizard = OpticalSaleQuoteWizard(self.store)
             step = wizard.get_current_step()
             self.assertTrue(step.salesperson.get_sensitive())
+            self.assertIsNotNone(step.salesperson.read())
 
-        with self.sysparam(ACCEPT_CHANGE_SALESPERSON=False):
+        with self.sysparam(
+                ACCEPT_CHANGE_SALESPERSON=int(ChangeSalespersonPolicy.DISALLOW)):
             wizard = OpticalSaleQuoteWizard(self.store)
             step = wizard.get_current_step()
             self.assertFalse(step.salesperson.get_sensitive())
+            self.assertIsNotNone(step.salesperson.read())
+
+        with self.sysparam(
+                ACCEPT_CHANGE_SALESPERSON=int(ChangeSalespersonPolicy.FORCE_CHOOSE)):
+            wizard = OpticalSaleQuoteWizard(self.store)
+            step = wizard.get_current_step()
+            self.assertTrue(step.salesperson.get_sensitive())
+            self.assertIsNone(step.salesperson.read())
 
     @mock.patch('stoqlib.gui.wizards.workorderquotewizard.warning')
     def test_multiple_work_orders(self, warning):

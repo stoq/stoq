@@ -43,6 +43,7 @@ from stoqlib.domain.person import ClientCategory, Client, SalesPerson
 from stoqlib.domain.sale import Sale, SaleItem, SaleComment
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
+from stoqlib.enums import ChangeSalespersonPolicy
 from stoqlib.exceptions import TaxError
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.decorators import public
@@ -86,10 +87,17 @@ class StartSaleQuoteStep(WizardEditorStep):
         # Salesperson combo
         salespersons = self.store.find(SalesPerson)
         self.salesperson.prefill(api.for_person_combo(salespersons))
-        if not sysparam.get_bool('ACCEPT_CHANGE_SALESPERSON'):
-            self.salesperson.set_sensitive(False)
-        else:
+
+        change_salesperson = sysparam.get_int('ACCEPT_CHANGE_SALESPERSON')
+        if change_salesperson == ChangeSalespersonPolicy.ALLOW:
             self.salesperson.grab_focus()
+        elif change_salesperson == ChangeSalespersonPolicy.DISALLOW:
+            self.salesperson.set_sensitive(False)
+        elif change_salesperson == ChangeSalespersonPolicy.FORCE_CHOOSE:
+            self.model.salesperson = None
+            self.salesperson.grab_focus()
+        else:
+            raise AssertionError
 
         # CFOP combo
         if sysparam.get_bool('ASK_SALES_CFOP'):

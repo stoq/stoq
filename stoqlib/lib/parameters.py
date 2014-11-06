@@ -32,7 +32,8 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.enums import LatePaymentPolicy, ReturnPolicy
+from stoqlib.enums import (LatePaymentPolicy, ReturnPolicy,
+                           ChangeSalespersonPolicy)
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.barcode import BarcodeInfo
 from stoqlib.lib.countries import get_countries
@@ -353,10 +354,17 @@ _details = [
         u'ACCEPT_CHANGE_SALESPERSON',
         _(u'Sales'),
         _(u'Change salesperson'),
-        _(u'Once this parameter is set to true, the user will be '
-          u'able to change the salesperson of an opened '
-          u'order on sale checkout dialog'),
-        bool, initial=False),
+        _(u'Determines weather we are able or not to change the salesperson '
+          u'on the sale checkout dialog. Both "Allowed" and "Disallowed" will '
+          u'select the current user by default, but only the former will '
+          u'allow it to be changed. "Choose" will force the current user to '
+          u'indicate the correct salesperson.'),
+        int, initial=int(ChangeSalespersonPolicy.DISALLOW),
+        options={
+            int(ChangeSalespersonPolicy.DISALLOW): _(u'Disallowed'),
+            int(ChangeSalespersonPolicy.ALLOW): _(u"Allowed"),
+            int(ChangeSalespersonPolicy.FORCE_CHOOSE): _(u'Choose'),
+        }),
 
     ParameterDetails(
         u'RETURN_POLICY_ON_SALES',

@@ -148,6 +148,7 @@
             </child>
             <child>
               <object class="ProxyComboEntry" id="salesperson">
+                <property name="mandatory">True</property>
                 <property name="visible">True</property>
                 <property name="data_type">object</property>
                 <property name="model_attribute">salesperson</property>
