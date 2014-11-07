@@ -62,6 +62,22 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkHBox(hbox):
           GtkToolbar(expand=True, fill=True):
+            GtkMenuToolButton(): 'Home'
+                GtkMenu(): hidden
+                  GtkImageMenuItem(): 'Accounts Payable'
+                  GtkImageMenuItem(): 'Accounts Receivable'
+                  GtkImageMenuItem(): 'Administrative'
+                  GtkImageMenuItem(): 'Calendar', hidden
+                  GtkImageMenuItem(): 'Financial'
+                  GtkImageMenuItem(): 'Inventory'
+                  GtkImageMenuItem(): 'Point of Sales'
+                  GtkImageMenuItem(): 'Production'
+                  GtkImageMenuItem(): 'Purchase'
+                  GtkImageMenuItem(): 'Sales'
+                  GtkImageMenuItem(): 'Services'
+                  GtkImageMenuItem(): 'Stock'
+                  GtkImageMenuItem(): 'Till'
+            GtkSeparatorToolItem():
             GtkMenuToolButton(): 'New'
                 GtkMenu(): hidden
                   GtkImageMenuItem(): 'Client call'

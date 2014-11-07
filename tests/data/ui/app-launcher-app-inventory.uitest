@@ -48,6 +48,22 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar():
+      GtkMenuToolButton(): 'Home'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Accounts Payable'
+            GtkImageMenuItem(): 'Accounts Receivable'
+            GtkImageMenuItem(): 'Administrative'
+            GtkImageMenuItem(): 'Calendar'
+            GtkImageMenuItem(): 'Financial'
+            GtkImageMenuItem(): 'Inventory', hidden
+            GtkImageMenuItem(): 'Point of Sales'
+            GtkImageMenuItem(): 'Production'
+            GtkImageMenuItem(): 'Purchase'
+            GtkImageMenuItem(): 'Sales'
+            GtkImageMenuItem(): 'Services'
+            GtkImageMenuItem(): 'Stock'
+            GtkImageMenuItem(): 'Till'
+      GtkSeparatorToolItem():
       GtkMenuToolButton(): 'New'
           GtkMenu(): hidden
             GtkImageMenuItem(): 'Inventory'

@@ -28,6 +28,7 @@ import locale
 import logging
 import platform
 import os
+import operator
 
 import gtk
 from kiwi.component import get_utility
@@ -45,14 +46,14 @@ from stoqlib.gui.utils.introspection import introspect_slaves
 from stoqlib.gui.utils.keybindings import get_accel, get_accels
 from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.gui.utils.openbrowser import open_browser
-from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.interfaces import IAppInfo, IApplicationDescriptions
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.permissions import PermissionManager
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext, locale_sorted
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.widgets.toolmenuaction import ToolMenuAction
 from stoq.gui.shell.statusbar import ShellStatusbar
-from stoq.lib.applist import get_application_icon
+from stoq.lib.applist import get_application_icon, Application
 import stoq
 
 _ = stoqlib_gettext
@@ -152,6 +153,7 @@ class ShellWindow(GladeDelegate):
             ('FileMenu', None, _("_File")),
             ('FileMenuNew', None),
             ("NewMenu", None, _("New")),
+            ("HomeMenu", gtk.STOCK_HOME, _("Home"), None, _("Go back to launcher")),
 
             ('NewWindow', None, _("_Window"),
              group.get('new_window'),
@@ -220,9 +222,27 @@ class ShellWindow(GladeDelegate):
         self.add_tool_menu_actions([
             ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
             ("SearchToolItem", _("Search"), None, gtk.STOCK_FIND),
+            ("HomeToolItem", _("Home"), None, gtk.STOCK_HOME),
         ])
         self.NewToolItem.props.is_important = True
         self.SearchToolItem.props.is_important = True
+
+    def _create_application_actions(self):
+        def callback(action, name):
+            self.switch_application(name)
+
+        self.application_actions = {}
+        actions = []
+        for app in self.get_available_applications():
+            action = gtk.Action(app.name, app.fullname, app.description, app.icon)
+            action.connect('activate', callback, app.name)
+            actions.append(action)
+            self.application_actions[app.name] = action
+
+        # By default, the menu comes with an 'Empty' item that we must hide
+        self.HomeToolItem.get_proxies()[0].get_menu().get_children()[-1].hide()
+        self.HomeToolItem.add_actions(self.uimanager, actions,
+                                      add_separator=False)
 
     def _create_shared_ui(self):
         self.ToggleToolbar.connect(
@@ -264,6 +284,8 @@ class ShellWindow(GladeDelegate):
         #        Purchase shows an extra search tool menu labeled 'empty'
         for child in search_tool_menu.get_children():
             search_tool_menu.remove(child)
+
+        self._create_application_actions()
 
     def _create_statusbar(self):
         statusbar = ShellStatusbar(self)
@@ -604,6 +626,7 @@ class ShellWindow(GladeDelegate):
         self.ChangePassword.set_visible(False)
         self.SignOut.set_visible(False)
         self.Close.set_sensitive(True)
+        self.HomeToolItem.set_sensitive(True)
         # We only care about Quit on OSX
         self.Quit.set_visible(bool(self._osx_app))
 
@@ -616,6 +639,8 @@ class ShellWindow(GladeDelegate):
         self.get_toplevel().set_title(app.get_title())
         self.application_box.show()
         app.toplevel = self.get_toplevel()
+        if app.app_name != 'launcher':
+            self.application_actions[app.app_name].set_visible(False)
 
         # StartApplicationEvent must be emitted before calling app.activate(),
         # so that the plugins can have the chance to modify the application
@@ -641,6 +666,8 @@ class ShellWindow(GladeDelegate):
         """
         self.application_box.hide()
         if self.current_app:
+            if self.current_app.app_name != 'launcher':
+                self.application_actions[self.current_app.app_name].set_visible(True)
             inventory_bar = getattr(self.current_app, 'inventory_bar', None)
             if inventory_bar:
                 inventory_bar.hide()
@@ -812,6 +839,10 @@ class ShellWindow(GladeDelegate):
         self.toplevel.destroy()
         self.hide()
 
+    def switch_application(self, app_name, **params):
+        self.hide_app(empty=True)
+        self.run_application(app_name, **params)
+
     def run_application(self, app_name, **params):
         """
         Load and show an application in a shell window.
@@ -840,6 +871,29 @@ class ShellWindow(GladeDelegate):
         shell_app_window.hide()
 
         return shell_app
+
+    def get_available_applications(self):
+        user = api.get_current_user(self.store)
+
+        permissions = {}
+        for settings in user.profile.profile_settings:
+            permissions[settings.app_dir_name] = settings.has_permission
+
+        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
+
+        available_applications = []
+
+        # sorting by app_full_name
+        for name, full, icon, descr in locale_sorted(
+            descriptions, key=operator.itemgetter(1)):
+            # FIXME:
+            # if name in self._hidden_apps:
+            #    continue
+            # and name not in self._blocked_apps:
+            if permissions.get(name):
+                available_applications.append(
+                    Application(name, full, icon, descr))
+        return available_applications
 
     #
     # Kiwi callbacks
@@ -986,6 +1040,9 @@ class ShellWindow(GladeDelegate):
 
         self._shutdown_application()
         self.get_toplevel().destroy()
+
+    def on_HomeToolItem__activate(self, action):
+        self._hide_current_application()
 
     # Edit
 

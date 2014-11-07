@@ -71,6 +71,10 @@
   </menu>
 </menubar>
 <toolbar action="toolbar">
+  <toolitem action="HomeToolItem">
+    <menu action="HomeMenu"/>
+  </toolitem>
+  <separator/>
   <toolitem action="NewToolItem">
     <menu action="NewToolMenu">
       <menuitem action="NewWindow"/>

@@ -60,6 +60,22 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar(): hidden
+      GtkMenuToolButton(): 'Home'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Accounts Payable'
+            GtkImageMenuItem(): 'Accounts Receivable'
+            GtkImageMenuItem(): 'Administrative'
+            GtkImageMenuItem(): 'Calendar'
+            GtkImageMenuItem(): 'Financial'
+            GtkImageMenuItem(): 'Inventory'
+            GtkImageMenuItem(): 'Point of Sales', hidden
+            GtkImageMenuItem(): 'Production'
+            GtkImageMenuItem(): 'Purchase'
+            GtkImageMenuItem(): 'Sales'
+            GtkImageMenuItem(): 'Services'
+            GtkImageMenuItem(): 'Stock'
+            GtkImageMenuItem(): 'Till'
+      GtkSeparatorToolItem():
       GtkMenuToolButton(): 'New'
           GtkMenu(): hidden
             GtkImageMenuItem(): '_Window'

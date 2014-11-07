@@ -23,16 +23,12 @@
 ##
 """ Application to launcher other application.  """
 
-import operator
 
 import gtk
-from kiwi.component import get_utility
 from stoqlib.api import api
-from stoqlib.lib.interfaces import IApplicationDescriptions
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 
 from stoq.gui.shell.shellapp import ShellApp
-from stoq.lib.applist import Application
 
 _ = stoqlib_gettext
 
@@ -61,7 +57,7 @@ class LauncherApp(ShellApp):
         self.iconview.set_selection_mode(gtk.SELECTION_BROWSE)
         self.iconview.set_spacing(10)
 
-        for app in self._get_available_applications():
+        for app in self.window.get_available_applications():
             pixbuf = self.get_toplevel().render_icon(app.icon, gtk.ICON_SIZE_DIALOG)
             text = '<b>%s</b>\n<small>%s</small>' % (
                 api.escape(app.fullname),
@@ -80,6 +76,7 @@ class LauncherApp(ShellApp):
         self.window.SignOut.set_visible(True)
         self.window.Close.set_sensitive(False)
         self.window.Quit.set_visible(True)
+        self.window.HomeToolItem.set_sensitive(False)
         self.window.Print.set_sensitive(False)
         self.window.Print.set_visible(False)
         self.window.ExportSpreadSheet.set_visible(False)
@@ -104,30 +101,6 @@ class LauncherApp(ShellApp):
         for row in self.model:
             if row[COL_APP].name == app_name:
                 return row[COL_APP]
-
-    def _get_available_applications(self):
-        user = api.get_current_user(self.store)
-
-        permissions = {}
-        for settings in user.profile.profile_settings:
-            permissions[settings.app_dir_name] = settings.has_permission
-
-        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
-
-        available_applications = []
-
-        # sorting by app_full_name
-        for name, full, icon, descr in locale_sorted(
-            descriptions, key=operator.itemgetter(1)):
-            # FIXME:
-            # if name in self._hidden_apps:
-            #    continue
-            # and name not in self._blocked_apps:
-            if permissions.get(name):
-                available_applications.append(
-                    Application(name, full, icon, descr))
-
-        return available_applications
 
     #
     # Callbacks
