@@ -272,11 +272,11 @@ class ProductWithStockView(ProductFullStockView):
 
     clause = And(
         ProductFullStockView.clause,
-        ProductFullStockView.stock >= 0,
+        ProductFullStockView.stock > 0,
     )
 
 
-class ProductWithStockBranchView(ProductWithStockView):
+class ProductWithStockBranchView(ProductFullStockView):
     """The same as ProductWithStockView but has a branch_id property that must
     be used to filte.
 
@@ -289,7 +289,7 @@ class ProductWithStockBranchView(ProductWithStockView):
     branch_id = Field('_stock_summary', 'branch_id')
     storable_id = Field('_stock_summary', 'storable_id')
 
-    tables = ProductWithStockView.tables[:]
+    tables = ProductFullStockView.tables[:]
     tables[3] = LeftJoin(_StockBranchSummary, storable_id == Storable.id)
 
 
