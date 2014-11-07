@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-07 14:15-0200\n"
-"PO-Revision-Date: 2014-11-07 16:30+0000\n"
-"Last-Translator: Thiago Bellini Ribeiro <hackedbellini@gmail.com>\n"
+"POT-Creation-Date: 2014-11-07 18:07-0200\n"
+"PO-Revision-Date: 2014-11-07 20:07+0000\n"
+"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/stoq/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5825,7 +5825,7 @@ msgstr ""
 msgid "Edit optical details..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:209 ../stoq/gui/shell/shellwindow.py:219
+#: ../plugins/optical/opticalui.py:209 ../stoq/gui/shell/shellwindow.py:221
 #: ../stoqlib/gui/search/callsearch.py:86
 #: ../stoqlib/gui/utils/keybindings.py:58
 msgid "Print"
@@ -6600,12 +6600,10 @@ msgid "Check the server configuration and try again."
 msgstr ""
 
 #: ../stoq/gui/config.py:972
-#, python-brace-format
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
 #: ../stoq/gui/config.py:978
-#, python-brace-format
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
@@ -6889,7 +6887,7 @@ msgstr ""
 msgid "No products found in the inventory."
 msgstr ""
 
-#: ../stoq/gui/launcher.py:90
+#: ../stoq/gui/launcher.py:87
 msgid "Open a new window"
 msgstr ""
 
@@ -8266,244 +8264,252 @@ msgstr ""
 msgid "[%s] - %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:87 ../stoqlib/gui/utils/printing.py:254
+#: ../stoq/gui/shell/shellwindow.py:88 ../stoqlib/gui/utils/printing.py:254
 msgid "Stoq"
 msgstr ""
 
 #. Menus
-#: ../stoq/gui/shell/shellwindow.py:152
+#: ../stoq/gui/shell/shellwindow.py:153
 msgid "_File"
 msgstr ""
 
 #. Toolbar
-#: ../stoq/gui/shell/shellwindow.py:154 ../stoq/gui/shell/shellwindow.py:200
-#: ../stoq/gui/shell/shellwindow.py:221
+#: ../stoq/gui/shell/shellwindow.py:155 ../stoq/gui/shell/shellwindow.py:202
+#: ../stoq/gui/shell/shellwindow.py:223
 msgid "New"
 msgstr ""
 
+#: ../stoq/gui/shell/shellwindow.py:156 ../stoq/gui/shell/shellwindow.py:225
+msgid "Home"
+msgstr ""
+
 #: ../stoq/gui/shell/shellwindow.py:156
-msgid "_Window"
+msgid "Go back to launcher"
 msgstr ""
 
 #: ../stoq/gui/shell/shellwindow.py:158
+msgid "_Window"
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:160
 msgid "Opens up a new window"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:159
+#: ../stoq/gui/shell/shellwindow.py:161
 #: ../stoqlib/gui/dialogs/crashreportdialog.py:167
 msgid "Close"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:161
+#: ../stoq/gui/shell/shellwindow.py:163
 msgid "Close the current view and go back to the initial screen"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:162
+#: ../stoq/gui/shell/shellwindow.py:164
 msgid "Change password..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:164
+#: ../stoq/gui/shell/shellwindow.py:166
 msgid "Change the password for the currently logged in user"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:165
+#: ../stoq/gui/shell/shellwindow.py:167
 msgid "Sign out..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:167
+#: ../stoq/gui/shell/shellwindow.py:169
 msgid "Sign out the currently logged in user and login as another"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:168
+#: ../stoq/gui/shell/shellwindow.py:170
 msgid "Print..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:170
+#: ../stoq/gui/shell/shellwindow.py:172
 #: ../stoqlib/gui/search/searchdialog.py:289
 msgid "Export to spreadsheet..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:171 ../stoqlib/database/runtime.py:685
+#: ../stoq/gui/shell/shellwindow.py:173 ../stoqlib/database/runtime.py:685
 msgid "Quit"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:173
+#: ../stoq/gui/shell/shellwindow.py:175
 msgid "Exit the application"
 msgstr ""
 
 #. Edit
-#: ../stoq/gui/shell/shellwindow.py:176
+#: ../stoq/gui/shell/shellwindow.py:178
 msgid "_Edit"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:177
+#: ../stoq/gui/shell/shellwindow.py:179
 msgid "_Preferences"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:179 ../stoqlib/gui/utils/keybindings.py:60
+#: ../stoq/gui/shell/shellwindow.py:181 ../stoqlib/gui/utils/keybindings.py:60
 msgid "Show preferences"
 msgstr ""
 
 #. View
-#: ../stoq/gui/shell/shellwindow.py:182
+#: ../stoq/gui/shell/shellwindow.py:184
 msgid "_View"
 msgstr ""
 
 #. Search
-#: ../stoq/gui/shell/shellwindow.py:185
+#: ../stoq/gui/shell/shellwindow.py:187
 msgid "_Search"
 msgstr ""
 
 #. Help
-#: ../stoq/gui/shell/shellwindow.py:188
+#: ../stoq/gui/shell/shellwindow.py:190
 msgid "_Help"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:189
+#: ../stoq/gui/shell/shellwindow.py:191
 msgid "Contents"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:191
+#: ../stoq/gui/shell/shellwindow.py:193
 msgid "Translate Stoq..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:192
+#: ../stoq/gui/shell/shellwindow.py:194
 msgid "Translate this application online"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:193
+#: ../stoq/gui/shell/shellwindow.py:195
 msgid "Get support online..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:194
+#: ../stoq/gui/shell/shellwindow.py:196
 msgid "Get support for Stoq online"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:195
+#: ../stoq/gui/shell/shellwindow.py:197
 msgid "Online chat..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:196
+#: ../stoq/gui/shell/shellwindow.py:198
 msgid "Talk about Stoq online"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:201 ../stoq/gui/shell/shellwindow.py:222
+#: ../stoq/gui/shell/shellwindow.py:203 ../stoq/gui/shell/shellwindow.py:224
 #: ../stoqlib/gui/search/searchfilters.py:662
 #: ../stoqlib/gui/widgets/searchentry.py:41
 msgid "Search"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:206
+#: ../stoq/gui/shell/shellwindow.py:208
 msgid "_Toolbar"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:208
+#: ../stoq/gui/shell/shellwindow.py:210
 msgid "Show or hide the toolbar"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:209
+#: ../stoq/gui/shell/shellwindow.py:211
 msgid "_Statusbar"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:211
+#: ../stoq/gui/shell/shellwindow.py:213
 msgid "Show or hide the statusbar"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:212
+#: ../stoq/gui/shell/shellwindow.py:214
 msgid "_Fullscreen"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:214
+#: ../stoq/gui/shell/shellwindow.py:216
 msgid "Enter or leave fullscreen mode"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:276
+#: ../stoq/gui/shell/shellwindow.py:298
 #, python-format
 msgid "User: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:277
+#: ../stoq/gui/shell/shellwindow.py:299
 #, python-format
 msgid "Computer: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:286
+#: ../stoq/gui/shell/shellwindow.py:308
 msgid "About Stoq"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:347 ../stoq/gui/shell/shellwindow.py:931
+#: ../stoq/gui/shell/shellwindow.py:369 ../stoq/gui/shell/shellwindow.py:985
 msgid "Enable production mode"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:348
+#: ../stoq/gui/shell/shellwindow.py:370
 msgid "You are using Stoq in demonstration mode."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:349
+#: ../stoq/gui/shell/shellwindow.py:371
 #, python-format
 msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the"
 " limitations and finish the demonstration."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:365
+#: ../stoq/gui/shell/shellwindow.py:387
 #, python-format
 msgid "Welcome to Stoq version %s!"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:367
+#: ../stoq/gui/shell/shellwindow.py:389
 msgid "See what's new"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:375
+#: ../stoq/gui/shell/shellwindow.py:397
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under development,\n"
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:450
+#: ../stoq/gui/shell/shellwindow.py:472
 #, python-format
 msgid "Release date: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:574
+#: ../stoq/gui/shell/shellwindow.py:596
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:758
+#: ../stoq/gui/shell/shellwindow.py:785
 msgid "Show help for this application"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:775
+#: ../stoq/gui/shell/shellwindow.py:802
 msgid "Debug"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:776
+#: ../stoq/gui/shell/shellwindow.py:803
 msgid "Introspect slaves"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:777
+#: ../stoq/gui/shell/shellwindow.py:804
 msgid "Remove settings cache"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:928
+#: ../stoq/gui/shell/shellwindow.py:982
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:931
+#: ../stoq/gui/shell/shellwindow.py:985
 msgid "Continue testing"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1077
+#: ../stoq/gui/shell/shellwindow.py:1134
 msgid "Learn More..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1078
+#: ../stoq/gui/shell/shellwindow.py:1135
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""
@@ -9240,14 +9246,12 @@ msgid "User"
 msgstr ""
 
 #: ../stoqlib/domain/event.py:124
-#, python-brace-format
 msgid ""
 "Sale {sale_number}: User {user_name} authorized {discount_value} of discount changing\n"
 " {product} value from {original_price} to {new_price}."
 msgstr ""
 
 #: ../stoqlib/domain/event.py:156
-#, python-brace-format
 msgid ""
 "sale {sale_number}: User {user_name} authorized {discount_value} of discount"
 " changing the value from {original_price} to {new_price}."
@@ -9356,7 +9360,6 @@ msgstr ""
 
 #. TRANSLATORS: This will generate something like: 1/1 Money for sale 00001
 #: ../stoqlib/domain/payment/method.py:280
-#, python-brace-format
 msgid "{installment} {method_name} for {order_description}"
 msgstr ""
 
@@ -9422,12 +9425,10 @@ msgid "This payment is already paid."
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:423
-#, python-brace-format
 msgid "{method} payment with value {value:.2f} was paid"
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:427
-#, python-brace-format
 msgid ""
 "{method} payment with value original value {original_value:.2f} was paid "
 "with value {value:.2f}"
@@ -9439,7 +9440,6 @@ msgid "Invalid status for cancel operation, got %s"
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:454
-#, python-brace-format
 msgid "{method} payment with value {value:.2f} was cancelled"
 msgstr ""
 
@@ -9916,69 +9916,59 @@ msgid "Unable to make sales for clients with status %s"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1019
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1025
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1052
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid and confirmed with value"
 " {total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1058
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid and confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1064
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1070
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid with value {total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1141
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1145
-#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was partially returned with value"
 " {total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1154
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1158
-#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was partially returned with value "
 "{total_value:.2f}. Reason: {reason}"
@@ -11279,7 +11269,6 @@ msgstr ""
 #. change it's positions. In the way it is,
 #. it will product for example 'December 2012'
 #: ../stoqlib/gui/dialogs/sintegradialog.py:109
-#, python-brace-format
 msgid "{month} {year}"
 msgstr ""
 
@@ -16915,7 +16904,6 @@ msgstr ""
 
 #. :
 #: ../stoqlib/reporting/report.py:121
-#, python-brace-format
 msgid "Listing {rows} of a total of {total_rows} {item}"
 msgstr ""
 
@@ -16954,12 +16942,10 @@ msgid "Sold Items by Branch Report"
 msgstr ""
 
 #: ../stoqlib/reporting/sale.py:132
-#, python-brace-format
 msgid "payment for {salesperson} on branch {branch}"
 msgstr ""
 
 #: ../stoqlib/reporting/sale.py:134
-#, python-brace-format
 msgid "payments for {salesperson} on branch {branch}"
 msgstr ""
 
