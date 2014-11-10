@@ -36,7 +36,6 @@ import gobject
 from kiwi.component import get_utility
 from kiwi.utils import gsignal
 
-from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_system_locale
@@ -111,12 +110,10 @@ def collect_report():
 
     # PostgreSQL database server
     try:
+        from stoqlib.database.settings import get_database_version
         default_store = get_default_store()
-        result = default_store.execute('SHOW server_version;')
-        pg_version = result.get_one()
-        result.close()
-        report_['postgresql_version'] = list(map(int, pg_version[0].split('.')))
-    except StoqlibError:
+        report_['postgresql_version'] = get_database_version(default_store)
+    except Exception:
         pass
 
     # Tracebacks

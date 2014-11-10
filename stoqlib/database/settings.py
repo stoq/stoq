@@ -237,9 +237,7 @@ def get_database_version(store):
     :raises: :exc:`stoqlib.exceptions.DatabaseError` if any error ocour
         in the process
     """
-    full_version = store.execute('SELECT VERSION();').get_one()[0]
-    server_version = full_version.split(' ')[1].split('.')
-
+    server_version = store.execute('SHOW server_version;').get_one()[0].split('.')
     try:
         if len(server_version) == 2:
             # Postgresql betas will return its version as something like:
