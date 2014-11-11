@@ -425,17 +425,9 @@ class CashAdvanceEditor(BaseEditor):
         self.cash_slave.model.value = -abs(self.cash_slave.model.value)
 
 
-class CashOutEditor(BaseEditor):
-    """An editor to Remove cash from the Till
-    It extends BaseCashSlave to include a reason entry.
-    """
-
-    model_name = _(u'Cash Out')
+class BaseCashEditor(BaseEditor):
     model_type = Settable
-    gladefile = 'CashOutEditor'
-    title = _(u'Reverse Payment')
-
-    help_section = 'till-remove-money'
+    gladefile = 'BaseCashEditor'
 
     def __init__(self, store):
         BaseEditor.__init__(self, store)
@@ -453,10 +445,11 @@ class CashOutEditor(BaseEditor):
                         till=till,
                         balance=till.get_balance())
 
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, [u'reason'])
+
     def setup_slaves(self):
-        self.cash_slave = RemoveCashSlave(self.store, self.model)
-        self.cash_slave.value.connect('content-changed',
-                                      self._on_cash_slave__value_changed)
+        self.cash_slave = self.cash_slave_class(self.store, self.model)
         self.attach_slave("base_cash_holder", self.cash_slave)
 
     def on_confirm(self):
@@ -464,66 +457,40 @@ class CashOutEditor(BaseEditor):
         till = self.model.till
         assert till
         try:
-            TillRemoveCashEvent.emit(till=till, value=value)
+            self.event.emit(till=till, value=value)
         except (TillError, DeviceError, DriverError) as e:
             warning(str(e))
             self.retval = False
             return
 
-        till_entry = till.add_debit_entry(
-            value, (_(u'Cash out: %s') % (self.reason.get_text(), )))
+        till_entry = self.create_entry(till, value, self.model.reason)
 
         TillAddTillEntryEvent.emit(till_entry, self.store)
         _create_transaction(self.store, till_entry)
 
-    def _on_cash_slave__value_changed(self, entry):
-        self.cash_slave.model.value = -abs(self.cash_slave.model.value)
+
+class CashOutEditor(BaseCashEditor):
+    """An editor to Remove cash from the Till
+    """
+
+    model_name = _(u'Cash Out')
+    title = _(u'Reverse Payment')
+    cash_slave_class = RemoveCashSlave
+    event = TillRemoveCashEvent
+    help_section = 'till-remove-money'
+
+    def create_entry(self, till, value, reason):
+        return till.add_debit_entry(value, (_(u'Cash out: %s') % (reason, )))
 
 
-class CashInEditor(BaseEditor):
+class CashInEditor(BaseCashEditor):
     """An editor to Add cash to the Till
-    It uses BaseCashSlave without any extensions
     """
 
     model_name = _(u'Cash In')
-    model_type = Settable
-    gladefile = 'CashOutEditor'
-
+    cash_slave_class = BaseCashSlave
+    event = TillAddCashEvent
     help_section = 'till-add-money'
 
-    def __init__(self, store):
-        BaseEditor.__init__(self, store)
-        self.set_confirm_widget(self.reason)
-        self.set_confirm_widget(self.cash_slave.value)
-
-    #
-    # BaseEditorSlave
-    #
-
-    def create_model(self, store):
-        till = Till.get_current(store)
-        return Settable(value=currency(0),
-                        reason=u'',
-                        till=till,
-                        balance=till.get_balance())
-
-    def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(self.store, self.model)
-        self.attach_slave("base_cash_holder", self.cash_slave)
-
-    def on_confirm(self):
-        till = self.model.till
-        assert till
-        try:
-            TillAddCashEvent.emit(till=till, value=self.model.value)
-        except (TillError, DeviceError, DriverError) as e:
-            warning(str(e))
-            self.retval = False
-            return
-
-        till_entry = till.add_credit_entry(
-            self.model.value,
-            (_(u'Cash in: %s') % (self.reason.get_text(), )))
-
-        TillAddTillEntryEvent.emit(till_entry, self.store)
-        _create_transaction(self.store, till_entry)
+    def create_entry(self, till, value, reason):
+        return till.add_credit_entry(value, (_(u'Cash in: %s') % (reason, )))

@@ -121,6 +121,8 @@ class TestCashInEditor(_BaseTestTillEditor):
         editor = CashInEditor(self.store)
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
         editor.cash_slave.proxy.update('value', currency(10))
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+        editor.reason.update(u'Cash in test')
         self.assertSensitive(editor.main_dialog, ['ok_button'])
 
         TillAddCashEvent.connect(_till_event)
@@ -150,6 +152,8 @@ class TestCashOutEditor(_BaseTestTillEditor):
         editor = CashOutEditor(self.store)
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
         editor.cash_slave.proxy.update('value', currency(10))
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+        editor.reason.update(u'Cash out test')
         self.assertSensitive(editor.main_dialog, ['ok_button'])
 
         TillRemoveCashEvent.connect(_till_event)
@@ -168,3 +172,24 @@ class TestCashAdvanceEditor(_BaseTestTillEditor):
     def test_create(self):
         editor = CashAdvanceEditor(self.store)
         self.check_editor(editor, 'editor-cashadvance-create')
+
+    @mock.patch('stoqlib.gui.editors.tilleditor.warning')
+    def test_confirm(self, warning):
+        # Add some amount to till so it can be removed
+        payment = self.create_payment(payment_type=Payment.TYPE_IN,
+                                      value=currency(50))
+        self.till.add_entry(payment)
+
+        editor = CashAdvanceEditor(self.store)
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+        editor.cash_slave.proxy.update('value', currency(10))
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+
+        TillRemoveCashEvent.connect(_till_event)
+        editor.confirm()
+        self.assertEqual(editor.retval, False)
+        warning.assert_called_once_with("ERROR")
+
+        TillRemoveCashEvent.disconnect(_till_event)
+        editor.confirm()
+        self.assertEqual(editor.retval, editor.model)
