@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-07 18:23-0200\n"
-"PO-Revision-Date: 2014-11-07 20:09+0000\n"
+"POT-Creation-Date: 2014-11-10 14:32-0200\n"
+"PO-Revision-Date: 2014-11-10 14:27+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -9147,22 +9147,22 @@ msgid ""
 "computer."
 msgstr "Para resolver, abra o aplicativo 'administrador' e reative este computador."
 
-#: ../stoqlib/database/settings.py:348
+#: ../stoqlib/database/settings.py:346
 msgid "Could not find a database server on this computer"
 msgstr "Não foi possível encontrar um servidor de banco de dados neste computador"
 
-#: ../stoqlib/database/settings.py:359
+#: ../stoqlib/database/settings.py:357
 #, python-format
 msgid ""
 "Could not connect to %s database. The error message is '%s'. Please fix the "
 "connection settings you have set and try again."
 msgstr "Não foi possível conectar ao banco de dados %s. A mensagem de erro é '%s'.Por favor, corrija as configurações que você definiu e tente novamente."
 
-#: ../stoqlib/database/settings.py:825
+#: ../stoqlib/database/settings.py:823
 msgid "Problem with PostgreSQL version"
 msgstr "Problema com a versão do PostgreSQL"
 
-#: ../stoqlib/database/settings.py:826
+#: ../stoqlib/database/settings.py:824
 #, python-format
 msgid ""
 "The version of the PostgreSQL database server (%s) and the postgres client "
@@ -15672,7 +15672,7 @@ msgstr "Descrição de produto"
 
 #: ../stoqlib/lib/invoice.py:923
 msgid "Product item code"
-msgstr "Código do produtos"
+msgstr "Código do produto"
 
 #: ../stoqlib/lib/invoice.py:936
 msgid "Product item situation"
@@ -15898,7 +15898,7 @@ msgstr "Quando adicionando um novo endereço para uma determinada pessoa esse pa
 
 #: ../stoqlib/lib/parameters.py:306
 msgid "Allow registration of new city locations"
-msgstr "Permitir o registro de novas localizações de cidade"
+msgstr "Permitir o registro de novas cidades"
 
 #. Change the note here when we have more locations to reflect it
 #: ../stoqlib/lib/parameters.py:308
@@ -15919,7 +15919,7 @@ msgstr "Esta filial trabalha com serviços de entrega? Em caso negativo, a opç�
 
 #: ../stoqlib/lib/parameters.py:324
 msgid "Show cost column in sales"
-msgstr "Exibir coluna custo na venda"
+msgstr "Exibir coluna custo no aplicativo vendas"
 
 #: ../stoqlib/lib/parameters.py:325
 msgid "should the cost column be displayed when creating a new sale quote."

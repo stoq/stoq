@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-07 18:23-0200\n"
+"POT-Creation-Date: 2014-11-10 14:32-0200\n"
 "PO-Revision-Date: 2014-11-07 20:07+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/stoq/language/fr/)\n"
@@ -9143,22 +9143,22 @@ msgid ""
 "computer."
 msgstr ""
 
-#: ../stoqlib/database/settings.py:348
+#: ../stoqlib/database/settings.py:346
 msgid "Could not find a database server on this computer"
 msgstr ""
 
-#: ../stoqlib/database/settings.py:359
+#: ../stoqlib/database/settings.py:357
 #, python-format
 msgid ""
 "Could not connect to %s database. The error message is '%s'. Please fix the "
 "connection settings you have set and try again."
 msgstr ""
 
-#: ../stoqlib/database/settings.py:825
+#: ../stoqlib/database/settings.py:823
 msgid "Problem with PostgreSQL version"
 msgstr ""
 
-#: ../stoqlib/database/settings.py:826
+#: ../stoqlib/database/settings.py:824
 #, python-format
 msgid ""
 "The version of the PostgreSQL database server (%s) and the postgres client "
