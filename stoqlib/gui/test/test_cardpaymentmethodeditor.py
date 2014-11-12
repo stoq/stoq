@@ -27,7 +27,8 @@ import mock
 
 from decimal import Decimal
 
-from stoqlib.domain.payment.card import CreditCardData
+from stoqlib.domain.payment.card import (CreditCardData, CreditProvider,
+                                         CardPaymentDevice, CardOperationCost)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.editors.paymentmethodeditor import CardDeviceEditor
 from stoqlib.gui.editors.paymentmethodeditor import CardDeviceListSlave
@@ -36,6 +37,7 @@ from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostListSlave
 from stoqlib.gui.editors.paymentmethodeditor import CardPaymentDetailsEditor
 from stoqlib.gui.editors.paymentmethodeditor import CardPaymentMethodEditor
 from stoqlib.gui.editors.paymentmethodeditor import CreditProviderEditor
+from stoqlib.gui.editors.paymentmethodeditor import ProviderListSlave
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -213,24 +215,91 @@ class TestCardPaymentDetailsEditor(GUITest):
         return operation_cost
 
 
+class TestProviderListSlave(GUITest):
+    def test_show(self):
+        self.create_credit_provider()
+        slave = ProviderListSlave(store=self.store, reuse_store=True)
+        self.check_slave(slave, 'slave-providerlist-show')
+
+    @mock.patch('stoqlib.gui.editors.paymentmethodeditor.info')
+    @mock.patch('stoqlib.gui.editors.paymentmethodeditor.yesno')
+    def test_remove(self, yesno, info):
+        provider = self.create_credit_provider(u'Default Provider')
+        check_provider = self.store.find(CreditProvider, short_name=u'Default Provider').count()
+        self.assertEquals(check_provider, 1)
+        slave = ProviderListSlave(store=self.store, reuse_store=True)
+        slave.listcontainer.list.select(provider)
+
+        # Try remove the provider it's being referenced by a operation cost
+        operation_cost = self.create_operation_cost(provider=provider)
+        yesno.return_value = gtk.RESPONSE_OK
+        self.click(slave.listcontainer.remove_button)
+        info.assert_called_with("You can not remove this provider.\n"
+                                "It is being used in card device.")
+
+        # Try remove the provider it's being referenced by a credit card data
+        operation_cost.provider = None
+        card_data = self.create_credit_card_data(provider=provider)
+        self.click(slave.listcontainer.remove_button)
+        info.assert_called_with("You can not remove this provider.\n"
+                                "You already have payments using this provider.")
+
+        card_data.provider = None
+        self.click(slave.listcontainer.remove_button)
+        yesno.assert_called_with("Do you want remove %s?" % provider.short_name,
+                                 gtk.RESPONSE_NO,
+                                 "Remove",
+                                 "Cancel")
+        check_provider = self.store.find(CreditProvider, short_name=u'Default Provider').count()
+        self.assertEquals(check_provider, 0)
+
+
 class TestCardDeviceListSlave(GUITest):
 
-    @mock.patch('stoqlib.gui.editors.paymentmethodeditor.yesno')
-    def test_show(self, yesno):
-        device = self.create_card_device(u'Cielo')
+    def test_show(self):
+        self.create_card_device(u'Cielo')
         self.create_card_device(u'Santander')
 
         slave = CardDeviceListSlave(store=self.store, reuse_store=True)
         self.check_slave(slave, 'slave-carddevicelist-show')
 
-        slave.listcontainer.list.select(device)
+    @mock.patch('stoqlib.gui.editors.paymentmethodeditor.yesno')
+    @mock.patch('stoqlib.gui.editors.paymentmethodeditor.info')
+    def test_remove(self, info, yesno):
+        device = self.create_card_device(u'Default Device')
+        devices = self.store.find(CardPaymentDevice, description=u'Default Device').count()
+        self.assertEquals(devices, 1)
 
+        slave = CardDeviceListSlave(store=self.store, reuse_store=True)
+        slave.listcontainer.list.select(device)
         yesno.return_value = True
+
+        self.create_operation_cost(device=device)
+        provider = self.create_credit_provider(u"Provider")
+        provider.provider_id = u"PROVIDER TEST"
+        provider.default_device = device
+        self.create_credit_card_data(device=device, provider=provider)
+
         self.click(slave.listcontainer.remove_button)
-        yesno.assert_called_once_with('Removing this device will also remove'
-                                      ' all related costs.', gtk.RESPONSE_NO,
+        providers = self.store.find(CreditProvider, default_device=device).count()
+        info.assert_called_with("Can not remove this device.\n"
+                                "It is being used as default device in %s credit provider(s)."
+                                % providers)
+
+        provider.default_device = None
+        self.click(slave.listcontainer.remove_button)
+        yesno.assert_called_once_with("Removing this device will also remove"
+                                      " all related costs.", gtk.RESPONSE_NO,
                                       "Remove",
                                       "Keep device")
+
+        # Check if device and its references were deleted
+        devices = self.store.find(CardPaymentDevice, description=u'Default Device').count()
+        operations = self.store.find(CardOperationCost, device=device).count()
+        card_data = self.store.find(CreditCardData, device=device).count()
+        self.assertEquals(devices, 0)
+        self.assertEquals(operations, 0)
+        self.assertEquals(card_data, 0)
 
 
 class TestCardOperationCostListSlave(GUITest):

@@ -67,7 +67,7 @@ from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.formatters import get_formatted_percentage
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -402,6 +402,23 @@ class ProviderListSlave(ModelListSlave):
         providers = self.store.find(CreditProvider)
         return providers.order_by(CreditProvider.short_name)
 
+    def remove_item(self, provider):
+        if self.store.find(CardOperationCost, provider=provider).any():
+            info(_("You can not remove this provider.\n"
+                   "It is being used in card device."))
+            return False
+        elif self.store.find(CreditCardData, provider=provider).any():
+            info(_("You can not remove this provider.\n"
+                   "You already have payments using this provider."))
+            return False
+
+        msg = _('Do you want remove %s?' % provider.short_name)
+        remove = yesno(msg, gtk.RESPONSE_NO, _('Remove'), _("Cancel"))
+        if remove:
+            self.delete_model(provider, self.store)
+            self.remove_list_item(provider)
+        return False
+
 
 class CardDeviceListSlave(ModelListSlave):
     """Slave listing all :obj:`stoqlib.domain.payment.card.CardPaymentDevice` objects
@@ -418,12 +435,18 @@ class CardDeviceListSlave(ModelListSlave):
         devices = CardPaymentDevice.get_devices(self.store)
         return devices.order_by(CardPaymentDevice.description)
 
-    def remove_item(self, item):
+    def remove_item(self, device):
+        providers = self.store.find(CreditProvider, default_device=device).count()
+        if providers > 0:
+            info(_("Can not remove this device.\n"
+                   "It is being used as default device in %s credit provider(s)."
+                   % providers))
+            return False
         msg = _('Removing this device will also remove all related costs.')
         remove = yesno(msg, gtk.RESPONSE_NO, _('Remove'), _("Keep device"))
         if remove:
-            self.remove_list_item(item)
-            self._delete_model(item)
+            device.delete(device.id, self.store)
+            self.remove_list_item(device)
         return False
 
 
