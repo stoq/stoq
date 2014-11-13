@@ -70,6 +70,12 @@ class TestWorkOrderItemEditor(GUITest):
             gbfb.assert_called_once_with(workorder.branch)
             self.assertInvalid(editor, ['quantity'])
 
+        # Item without stock control.
+        product2 = self.create_product()
+        item2 = workorder.add_sellable(product2.sellable, quantity=2)
+        editor = _WorkOrderItemEditor(self.store, model=item2)
+        self.check_editor(editor, 'editor-workorderitem-without-storable-show')
+
     def test_show_with_sale(self):
         workorder = self.create_workorder(description=u'Test equipment')
         workorder.sale = self.create_sale()

@@ -99,7 +99,9 @@ class _WorkOrderItemEditor(BaseEditor):
         # If there's a sale, we can't change it's quantity, but we can
         # reserve/return_to_stock them. On the other hand, if there's no sale,
         # the quantity_reserved must be in sync with quantity
-        if self.model.order.sale_id is not None:
+        # *Only products with stock control can be reserved
+        storable = self.model.sellable.product_storable
+        if self.model.order.sale_id is not None and storable:
             self.price.set_sensitive(False)
             self.quantity.set_sensitive(False)
             self.quantity_reserved.set_range(0, self.model.quantity)
@@ -144,7 +146,7 @@ class _WorkOrderItemEditor(BaseEditor):
                                                            s_item)
                 if wo_item.batch is not None:
                     wo_item.reserve(wo_item.quantity)
-        else:
+        elif storable:
             self.model.reserve(diff)
 
     #
@@ -278,8 +280,10 @@ class _WorkOrderItemSlave(SellableItemSlave):
     def get_order_item(self, sellable, price, quantity, batch=None):
         item = self.model.add_sellable(sellable, price=price,
                                        quantity=quantity, batch=batch)
-        # Items added here are consumed at the same time
-        item.reserve(quantity)
+        # Storable items added here are consumed at the same time
+        storable = item.sellable.product_storable
+        if storable:
+            item.reserve(quantity)
         return item
 
     def get_sellable_view_query(self):
