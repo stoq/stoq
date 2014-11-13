@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 14:32-0200\n"
-"PO-Revision-Date: 2014-11-07 20:07+0000\n"
+"POT-Creation-Date: 2014-11-12 12:12-0200\n"
+"PO-Revision-Date: 2014-11-12 14:09+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/stoq/language/hr/)\n"
 "MIME-Version: 1.0\n"
@@ -214,6 +214,14 @@ msgstr ""
 #: ../data/glade/BankDataSlave.ui.h:3
 #: ../data/glade/BasePaymentMethodSlave.ui.h:6
 msgid "Bank Account:"
+msgstr ""
+
+#: ../data/glade/BaseCashEditor.ui.h:1
+#: ../data/glade/PaymentChangeDialog.ui.h:5
+#: ../data/glade/SaleReturnInvoiceStep.ui.h:8
+#: ../data/glade/StartStockDecreaseStep.ui.h:5
+#: ../data/template/stock_decrease/stock_decrease-details.html:29
+msgid "Reason:"
 msgstr ""
 
 #: ../data/glade/BaseCashSlave.ui.h:2 ../data/glade/TillOpening.ui.h:2
@@ -539,14 +547,6 @@ msgstr ""
 #: ../data/glade/CashChangeSlave.ui.h:4
 #: ../data/glade/SaleReturnInvoiceStep.ui.h:7
 msgid "Create credit for future sales"
-msgstr ""
-
-#: ../data/glade/CashInEditor.ui.h:1 ../data/glade/CashOutEditor.ui.h:1
-#: ../data/glade/PaymentChangeDialog.ui.h:5
-#: ../data/glade/SaleReturnInvoiceStep.ui.h:8
-#: ../data/glade/StartStockDecreaseStep.ui.h:5
-#: ../data/template/stock_decrease/stock_decrease-details.html:29
-msgid "Reason:"
 msgstr ""
 
 #: ../data/glade/ClientCreditSlave.ui.h:1
@@ -3187,8 +3187,8 @@ msgstr ""
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:104
 #: ../stoqlib/gui/editors/inventoryeditor.py:122
 #: ../stoqlib/gui/editors/paymenteditor.py:79
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:413
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:437
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:430
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:460
 #: ../stoqlib/gui/editors/shortcutseditor.py:140
 #: ../stoqlib/gui/editors/tilleditor.py:253
 #: ../stoqlib/gui/search/callsearch.py:112
@@ -4879,6 +4879,7 @@ msgstr ""
 #: ../stoq/gui/inventory.py:101 ../stoq/gui/production.py:123
 #: ../stoq/gui/purchase.py:172 ../stoq/gui/sales.py:218
 #: ../stoqlib/gui/base/wizards.py:337 ../stoqlib/gui/editors/baseeditor.py:452
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:416
 msgid "Cancel"
 msgstr ""
 
@@ -9611,7 +9612,7 @@ msgid "By Sale Total"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:173
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:441
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:464
 msgid "Days"
 msgstr ""
 
@@ -11923,32 +11924,57 @@ msgstr ""
 msgid "Max Installments"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:422
-msgid "Removing this device will also remove all related costs."
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:407
+msgid ""
+"You can not remove this provider.\n"
+"It is being used in card device."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:423
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:411
+msgid ""
+"You can not remove this provider.\n"
+"You already have payments using this provider."
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:415
+#, python-format
+msgid "Do you want remove %s?"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:416
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:446
 #: ../stoqlib/gui/editors/sellableeditor.py:289 ../stoqlib/gui/fields.py:434
 msgid "Remove"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:423
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:441
+#, python-format
+msgid ""
+"Can not remove this device.\n"
+"It is being used as default device in %s credit provider(s)."
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:445
+msgid "Removing this device will also remove all related costs."
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:446
 msgid "Keep device"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:439
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:462
 msgid "Installments"
 msgstr ""
 
 #. Translators: Fee is Taxa in pt_BR
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:443
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:466
 #: ../stoqlib/gui/search/paymentsearch.py:188
 #: ../stoqlib/reporting/payment.py:76
 msgid "Fee"
 msgstr ""
 
 #. Translators: Fare is Tarifa in pt_BR
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:446
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:469
 #: ../stoqlib/gui/search/paymentsearch.py:185
 msgid "Fare"
 msgstr ""
@@ -12451,12 +12477,12 @@ msgid "Initial Amount"
 msgstr ""
 
 #: ../stoqlib/gui/editors/tilleditor.py:240
-#: ../stoqlib/gui/editors/tilleditor.py:488
+#: ../stoqlib/gui/editors/tilleditor.py:490
 msgid "Cash In"
 msgstr ""
 
 #: ../stoqlib/gui/editors/tilleditor.py:242
-#: ../stoqlib/gui/editors/tilleditor.py:433
+#: ../stoqlib/gui/editors/tilleditor.py:476
 msgid "Cash Out"
 msgstr ""
 
@@ -12501,16 +12527,16 @@ msgstr ""
 msgid "Cash advance paid to employee: %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:436
+#: ../stoqlib/gui/editors/tilleditor.py:477
 msgid "Reverse Payment"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:474
+#: ../stoqlib/gui/editors/tilleditor.py:483
 #, python-format
 msgid "Cash out: %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:526
+#: ../stoqlib/gui/editors/tilleditor.py:496
 #, python-format
 msgid "Cash in: %s"
 msgstr ""
