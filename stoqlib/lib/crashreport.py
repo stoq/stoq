@@ -36,12 +36,21 @@ import gobject
 from kiwi.component import get_utility
 from kiwi.utils import gsignal
 
+try:
+    import raven
+    has_raven = True
+except ImportError:
+    has_raven = False
+
 from stoqlib.database.runtime import get_default_store
-from stoqlib.lib.interfaces import IAppInfo
-from stoqlib.lib.osutils import get_system_locale
 from stoqlib.lib.environment import is_developer_mode
+from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.osutils import get_product_key
+from stoqlib.lib.osutils import get_system_locale
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import InstalledPlugin
 from stoqlib.lib.uptime import get_uptime
-from stoqlib.lib.webservice import WebService
+from stoqlib.lib.webservice import WebService, get_main_cnpj
 
 log = logging.getLogger(__name__)
 _tracebacks = []
@@ -108,11 +117,16 @@ def collect_report():
     report_['stoqdrivers_version'] = stoqdrivers.__version__ + (
         _get_revision(stoqdrivers),)
 
+    report_['product_key'] = get_product_key()
+
     # PostgreSQL database server
     try:
         from stoqlib.database.settings import get_database_version
         default_store = get_default_store()
         report_['postgresql_version'] = get_database_version(default_store)
+        report_['plugins'] = InstalledPlugin.get_plugin_names(default_store)
+        report_['demo'] = sysparam.get_bool('DEMO_MODE')
+        report_['cnpj'] = get_main_cnpj(default_store)
     except Exception:
         pass
 
@@ -140,16 +154,39 @@ def collect_traceback(tb, output=True, submit=False):
     if output:
         traceback.print_exception(*tb)
 
-    if 'STOQ_SENTRY_URL' in os.environ:
-        try:
-            from raven import Client
-            has_raven = True
-        except ImportError:
-            has_raven = False
+    if has_raven and not is_developer_mode():  # pragma no cover
+        sentry_url = os.environ.get(
+            'STOQ_SENTRY_URL',
+            ('http://89169350b0c0434895e315aa6490341a:'
+             '0f5dce716eb5497fbf75c52fe873b3e8@sentry.stoq.com.br/4'))
+        client = raven.Client(sentry_url)
 
-        if has_raven:
-            client = Client(os.environ['STOQ_SENTRY_URL'])
-            client.captureException(tb)
+        extra = collect_report()
+        extra.pop('tracebacks')
+
+        # Don't sent logs to sentry
+        if 'log' in extra:
+            del extra['log']
+        if 'log_name' in extra:
+            del extra['log_name']
+
+        tags = {}
+        for name in ['architecture', 'cnpj', 'system', 'app_name',
+                     'app_version', 'distribution', 'python_version',
+                     'psycopg_version', 'pygtk_version', 'gtk_version',
+                     'kiwi_version', 'reportlab_version',
+                     'stoqdrivers_version', 'postgresql_version']:
+            value = extra.pop(name, None)
+            if value is None:
+                continue
+
+            if isinstance(value, (tuple, list)):
+                chr_ = '.' if name.endswith('_version') else ' '
+                value = chr_.join(str(v) for v in value)
+
+            tags[name] = value
+
+        client.captureException(tb, tags=tags, extra=extra)
 
     if is_developer_mode() and submit:
         report()
@@ -168,7 +205,6 @@ class ReportSubmitter(gobject.GObject):
 
         self._api = WebService()
         self._report = collect_report()
-        self._count = 0
 
     def _done(self, args):
         self.emit('submitted', args)

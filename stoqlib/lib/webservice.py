@@ -41,7 +41,6 @@ from twisted.web.iweb import IBodyProducer
 from zope.interface import implementer
 
 from stoqlib.database.runtime import get_default_store
-from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_product_key
@@ -49,6 +48,24 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 
 log = logging.getLogger(__name__)
+
+
+def get_main_cnpj(store):
+    """Get the MAIN_COMPANY' cnpj without ORM interaction"""
+    # We avoid using Storm, otherwise crash-reporting will break
+    # for errors that happens in patches modifying any of the
+    # tables in the FROM clause below
+    result = store.execute("""
+        SELECT company.cnpj
+        FROM parameter_data, branch, company
+        WHERE field_name = 'MAIN_COMPANY' AND
+              branch.id::text = field_value AND
+              branch.person_id = company.person_id;""")
+
+    data = result.get_one()
+    result.close()
+
+    return data[0] if data else ''
 
 
 class JsonDownloader(Protocol):
@@ -147,26 +164,6 @@ class WebService(object):
         d.addCallback(dataReceived)
         return d
 
-    def _get_cnpj(self):
-        # We avoid using SQLObject, otherwise crash-reporting will break
-        # for errors that happens in patches modifying any of the
-        # tables in the FROM clause below
-        try:
-            default_store = get_default_store()
-        except StoqlibError:
-            return ''
-        result = default_store.execute("""SELECT company.cnpj
-          FROM parameter_data, branch, company, person
-         WHERE field_name = 'MAIN_COMPANY' AND
-               branch.id::text = field_value AND
-               branch.person_id = person.id AND
-               company.person_id = person.id;""")
-        data = result.get_one()
-        result.close()
-        if data:
-            return data[0]
-        return ''
-
     #
     #   Public API
     #
@@ -180,7 +177,7 @@ class WebService(object):
         params = {
             'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': platform.dist(),
-            'cnpj': self._get_cnpj(),
+            'cnpj': get_main_cnpj(),
             'plugins': InstalledPlugin.get_plugin_names(store),
             'product_key': get_product_key(),
             'time': datetime.datetime.today().isoformat(),
@@ -190,7 +187,6 @@ class WebService(object):
         return self._do_request('GET', 'version.json', **params)
 
     def bug_report(self, report):
-        report['cnpj'] = self._get_cnpj()
         params = {
             'product_key': get_product_key(),
             'report': json.dumps(report)
@@ -221,7 +217,7 @@ class WebService(object):
             app_version = 'Unknown'
         default_store = get_default_store()
         params = {
-            'cnpj': self._get_cnpj(),
+            'cnpj': get_main_cnpj(),
             'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': ' '.join(platform.dist()),
             'email': email,

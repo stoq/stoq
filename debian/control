@@ -23,7 +23,7 @@ Depends: ${misc:Depends}, ${python:Depends},
  python-twisted-core (>= 10.0.0), python-twisted-web (>= 10.0.0), librsvg2-common,
  python-xlwt (>= 0.7.2), iso-codes (>= 3.12.1-1),
  python-storm (>= 0.19), python-weasyprint (>= 0.15), libxss1
-Recommends: python-aptdaemon.gtkwidgets
+Recommends: python-raven, python-aptdaemon.gtkwidgets
 Homepage: http://www.stoq.com.br/
 Description: A powerful retail system
  Stoq is a suite of Retail Management System applications.
