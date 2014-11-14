@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-12 12:12-0200\n"
-"PO-Revision-Date: 2014-11-12 14:12+0000\n"
+"POT-Creation-Date: 2014-11-13 14:27-0200\n"
+"PO-Revision-Date: 2014-11-13 13:13+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -4303,12 +4303,12 @@ msgstr "Retirado por"
 
 #: ../data/template/till/card-summary.html:1
 msgid "Per Card Provider"
-msgstr "Por Provedor de Cartão"
+msgstr "Por Bandeira de Cartão"
 
 #: ../data/template/till/card-summary.html:5
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:159
 msgid "Provider Name"
-msgstr "Nome do Provedor"
+msgstr "Nome da bandeira"
 
 #: ../data/template/till/card-summary.html:6
 #: ../data/template/till/summary.html:7
@@ -9292,7 +9292,7 @@ msgstr "Cartão de Crédito Parcelado Lojista"
 
 #: ../stoqlib/domain/payment/card.py:318
 msgid "Credit Card Installments Provider"
-msgstr "Cartão de Crédito Parcelado administradora"
+msgstr "Cartão de crédito parcelado administradora"
 
 #: ../stoqlib/domain/payment/card.py:320
 msgid "Debit Card Pre-dated"
@@ -9313,7 +9313,7 @@ msgstr "Crédito Parc. Loja"
 #. abbreviated to fit a small space
 #: ../stoqlib/domain/payment/card.py:331
 msgid "Credit Inst. Provider"
-msgstr "Crédito Parc. Provedor"
+msgstr "Crédito parc. administradora"
 
 #: ../stoqlib/domain/payment/card.py:332
 msgid "Debit Pre-dated"
@@ -11917,7 +11917,7 @@ msgstr "Dispositivo"
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:328
 #: ../stoqlib/gui/search/paymentsearch.py:175
 msgid "Provider"
-msgstr "Provedor"
+msgstr "Bandeira"
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:330
 #: ../stoqlib/gui/search/paymentsearch.py:189
@@ -11956,7 +11956,7 @@ msgstr "Remover"
 msgid ""
 "Can not remove this device.\n"
 "It is being used as default device in %s credit provider(s)."
-msgstr "Você não pode remover esse dispositivo.\nEle está é o dispositivo padrão em %s bandeira(s)"
+msgstr "Você não pode remover esse dispositivo.\nEle é o dispositivo padrão em %s bandeira(s)"
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:445
 msgid "Removing this device will also remove all related costs."
@@ -15075,7 +15075,7 @@ msgstr "Valor inválido, por favor verifique se foi digitado corretamente."
 
 #: ../stoqlib/gui/wizards/salewizard.py:330
 msgid "You need active credit providers to use the card payment method."
-msgstr "Você precisa de provedores de créditos ativos para usar o pagamento com cartão."
+msgstr "Você precisa de bandeiras ativas para usar o pagamento com cartão."
 
 #: ../stoqlib/gui/wizards/salewizard.py:429
 msgid "Adjusted qty"
