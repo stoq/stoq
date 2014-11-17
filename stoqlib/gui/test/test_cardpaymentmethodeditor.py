@@ -134,6 +134,20 @@ class TestCreditProviderEditor(GUITest):
         editor = CreditProviderEditor(self.store, provider)
         self.check_editor(editor, 'editor-creditprovidereditor-show')
 
+    def test_validation(self):
+        provider = self.create_credit_provider()
+        editor = CreditProviderEditor(self.store, provider)
+
+        editor.max_installments.set_value(-1)
+        self.assertInvalid(editor, ['max_installments'])
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+        editor.max_installments.set_value(0)
+        self.assertInvalid(editor, ['max_installments'])
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+        editor.max_installments.set_value(1)
+        self.assertValid(editor, ['max_installments'])
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+
 
 class TestCardPaymentDetailsEditor(GUITest):
     def test_show(self):

@@ -309,6 +309,10 @@ class CreditProviderEditor(BaseEditor):
     def create_model(self, store):
         return CreditProvider(store=store)
 
+    def on_max_installments__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(_("The max installments must be greater than zero."))
+
 
 class CardPaymentDetailsEditor(BaseEditor):
     """Editor for :obj: `stoqlib.domain.payment.CreditCardData`
