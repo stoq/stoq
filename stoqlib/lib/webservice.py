@@ -177,7 +177,7 @@ class WebService(object):
         params = {
             'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': platform.dist(),
-            'cnpj': get_main_cnpj(),
+            'cnpj': get_main_cnpj(store),
             'plugins': InstalledPlugin.get_plugin_names(store),
             'product_key': get_product_key(),
             'time': datetime.datetime.today().isoformat(),
@@ -217,7 +217,7 @@ class WebService(object):
             app_version = 'Unknown'
         default_store = get_default_store()
         params = {
-            'cnpj': get_main_cnpj(),
+            'cnpj': get_main_cnpj(default_store),
             'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': ' '.join(platform.dist()),
             'email': email,
