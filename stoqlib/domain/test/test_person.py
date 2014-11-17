@@ -1159,6 +1159,12 @@ class TestClientView(DomainTest):
         result = self.store.find(ClientView, id=client.id).one()
         self.assertEquals(result.get_description(), u'Client (Dummy shop)')
 
+    def test_status_str(self):
+        client = self.create_client()
+        client.person.individual.cpf = u'123.123.123.-12'
+        result = self.store.find(ClientView, id=client.id).one()
+        self.assertEquals(result.status_str, 'Solvent')
+
     def test_cnpj_or_cpf(self):
         client = self.create_client()
         client.person.individual.cpf = u'123.123.123.-12'

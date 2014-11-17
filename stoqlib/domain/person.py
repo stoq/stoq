@@ -2002,12 +2002,20 @@ class ClientView(Viewable):
     #
 
     def get_description(self):
+        return self.description
+
+    @property
+    def description(self):
         return self.name + (self.fancy_name
                             and u" (%s)" % self.fancy_name or u"")
 
     #
     # Public API
     #
+
+    @property
+    def status_str(self):
+        return Client.statuses[self.status]
 
     @property
     def cnpj_or_cpf(self):

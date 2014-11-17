@@ -70,6 +70,7 @@ class IDescribable(Interface):
     """It defines that a object can be described through get_description
     method.
     """
+    # TODO: Replace this with a property
     def get_description():
         """ Returns a description that identifies the object """
 

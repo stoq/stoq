@@ -824,6 +824,7 @@ class SaleItemsView(Viewable):
     sale_id = SaleItem.sale_id
     sale_identifier = Sale.identifier
     sale_date = Sale.open_date
+    client_id = Client.id
     client_name = Person.name
     quantity = SaleItem.quantity
     price = SaleItem.price
