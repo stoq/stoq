@@ -189,8 +189,9 @@ class ProductSearch(SellableSearch):
         return product_full_stock_view.product
 
     def run_editor(self, obj):
-        if obj is None:
-            return ProductCreateWizard.run_wizard(self)
+        editor_class = self.get_editor_class_for_object(obj)
+        if obj is None and issubclass(editor_class, ProductCreateWizard):
+            return editor_class.run_wizard(self)
 
         return super(ProductSearch, self).run_editor(obj)
 
