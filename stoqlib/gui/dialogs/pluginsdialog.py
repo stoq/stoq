@@ -33,7 +33,6 @@ from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.stockicons import STOQ_PLUGIN
-from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import yesno
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -92,9 +91,6 @@ class PluginManagerDialog(BasicDialog):
         plugins = []
 
         for name in sorted(self._manager.available_plugins_names):
-            # FIXME: Remove when magento plugin is functional for end users
-            if not is_developer_mode() and name == 'magento':
-                continue
             if platform.system() == 'Windows':
                 if name in ['ecf', 'tef']:
                     continue
