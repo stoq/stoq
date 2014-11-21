@@ -90,7 +90,6 @@ scripts = [
     'bin/stoq',
     # FIXME: Move those to a stoq subcommand so they can execute from eggs
     'bin/stoqdbadmin',
-    'bin/stoqcreatedbuser',
     'bin/stoq-daemon',
 ]
 data_files = [
@@ -102,6 +101,7 @@ data_files = [
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.jpg')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.gif')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.bmp')),
+    ('$datadir/scripts', listfiles('data', 'scripts', '*.sh')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
     ('$datadir/sql', listfiles('data', 'sql', '*.py')),
     ('$datadir/uixml', listfiles('data', 'uixml', '*.xml')),

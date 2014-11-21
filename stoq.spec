@@ -59,7 +59,6 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %defattr(-, root, root, 0755)
 %doc AUTHORS CONTRIBUTORS COPYING COPYING.pt_BR README NEWS
 %{_bindir}/stoq
-%{_bindir}/stoqcreatedbuser
 %{_bindir}/stoqdbadmin
 %{_bindir}/stoq-daemon
 %{_libdir}/python*/site-packages/*.egg-info

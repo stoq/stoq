@@ -24,6 +24,9 @@
 ##
 """ Schema Update Wizard """
 
+import platform
+import sys
+
 import glib
 import gtk
 
@@ -31,6 +34,7 @@ from stoqlib.api import api
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.gui.widgets.processview import ProcessView
+from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -122,7 +126,17 @@ class UpdateSchemaStep(BaseWizardStep):
 
     def _launch_stoqdbadmin(self):
         self.wizard.disable_next()
-        args = ['stoqdbadmin', 'updateschema', '-v']
+        if sys.argv[0].endswith('.egg'):
+            args = [sys.executable, sys.argv[0]]
+        elif platform.system() == 'Windows':
+            if library.uninstalled:
+                args = ['stoq.bat']
+            else:
+                args = ['stoq.exe']
+        else:
+            args = ['stoq']
+
+        args.extend(['dbadmin', 'updateschema', '-v'])
         args.extend(api.db_settings.get_command_line_arguments())
         self.process_view.execute_command(args)
         self.progressbar.set_text(_('Applying database patches...'))

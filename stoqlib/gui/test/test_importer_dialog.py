@@ -38,5 +38,5 @@ class TestImporterDialog(GUITest):
         args, kwargs = execute_command.call_args
 
         args = args[0]
-        self.assertEquals(args[:7], ['stoqdbadmin', 'import', '-t', 'format',
+        self.assertEquals(args[:8], ['stoq', 'dbadmin', 'import', '-t', 'format',
                                      '--import-filename', 'filename', '-v'])

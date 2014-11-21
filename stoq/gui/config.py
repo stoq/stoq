@@ -48,6 +48,7 @@ Current flow of the database steps:
 
 import logging
 import platform
+import sys
 
 import glib
 import gtk
@@ -664,18 +665,21 @@ class CreateDatabaseStep(BaseWizardStep):
         logger.info('_launch_stoqdbadmin')
         self.wizard.disable_back()
         self.wizard.disable_next()
-        stoqdbadmin = 'stoqdbadmin'
-        if platform.system() == 'Windows':
+
+        if sys.argv[0].endswith('.egg'):
+            args = [sys.executable, sys.argv[0]]
+        elif platform.system() == 'Windows':
             if library.uninstalled:
-                stoqdbadmin += '.bat'
+                args = ['stoq.bat']
             else:
-                stoqdbadmin += '.exe'
-            # FIXME: listen to file input for
-            #        APPDATA/stoqdbadmin/stderr.log + stdout.log
-        args = [stoqdbadmin, 'init',
-                '--no-load-config',
-                '--no-register-station',
-                '-v']
+                args = ['stoq.exe']
+        else:
+            args = ['stoq']
+
+        args.extend([
+            'dbadmin', 'init',
+            '--no-load-config', '--no-register-station', '-v'])
+
         if self.wizard.create_examples:
             args.append('--demo')
         elif self.wizard.enable_production:

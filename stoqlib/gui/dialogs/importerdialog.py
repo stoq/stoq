@@ -37,7 +37,7 @@ class ImporterDialog(ProgressbarDialog):
     def __init__(self, format, filename):
         self.start_msg = _("Importing %s...") % (filename, )
 
-        args = ['stoqdbadmin', 'import',
+        args = ['stoq', 'dbadmin', 'import',
                 '-t', format,
                 '--import-filename', filename,
                 '-v']

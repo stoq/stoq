@@ -89,9 +89,13 @@ if platform.system() == 'Windows':
             fp = open(os.devnull, "w")
         setattr(sys, name, fp)
 
-from stoq import main
+if len(sys.argv) > 1 and sys.argv[1] == 'dbadmin':
+    from stoq.dbadmin import main
+    sys.argv.pop(1)
+else:
+    from stoq.main import main
 
 try:
-    sys.exit(main.main(sys.argv))
+    sys.exit(main(sys.argv))
 except KeyboardInterrupt:
     raise SystemExit

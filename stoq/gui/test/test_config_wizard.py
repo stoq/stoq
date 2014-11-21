@@ -117,7 +117,7 @@ class TestFirstTimeConfigWizard(GUITest):
 
         self.check_wizard(wizard, u'wizard-config-installing')
         execute_command.assert_called_once_with([
-            u'stoqdbadmin', u'init',
+            u'stoq', u'dbadmin', u'init',
             u'--no-load-config', u'--no-register-station', u'-v',
             u'--enable-plugins', u'ecf',
             u'--create-dbuser',

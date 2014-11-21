@@ -286,12 +286,18 @@ class StoqCommandHandler:
         if proc.returncode == 0:
             return 0
 
+        from stoqlib.lib.kiwilibrary import library
+
+        createdbuser = library.get_resource_filename(
+            'stoq', 'scripts', 'createdbuser.sh')
+
         args = ['pkexec',
                 '-u', 'postgres',
-                'stoqcreatedbuser',
+                createdbuser,
                 username]
         proc = Process(args)
         proc.communicate()
+
         if proc.returncode != 0:
             print("ERROR: Failed to run %r" % (args, ))
             return 30
