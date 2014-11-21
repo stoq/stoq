@@ -37,6 +37,7 @@ N_ = _ = stoqlib_gettext
 
 
 class SelectPaymentMethodSlave(GladeSlaveDelegate):
+    domain = 'stoq'
     gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 

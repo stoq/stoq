@@ -218,6 +218,7 @@ class BankDataSlave(BaseEditorSlave):
 class PaymentListSlave(GladeSlaveDelegate):
     """A slave to manage payments with one/multiple installment(s)"""
 
+    domain = 'stoq'
     gladefile = 'PaymentListSlave'
     gsignal('payment-edited')
 

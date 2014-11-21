@@ -22,9 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import os
-
-from kiwi.environ import environ
 from zope.interface import implementer
 
 from stoqlib.database.migration import PluginSchemaMigration
@@ -44,17 +41,14 @@ class ECFPlugin(object):
     #
 
     def get_migration(self):
-        environ.add_resource('ecfsql',
-                             os.path.join(os.path.dirname(__file__), 'sql'))
-        return PluginSchemaMigration(self.name, 'ecfsql', ['*.sql', '*.py'])
+        return PluginSchemaMigration(self.name, 'ecf', 'sql',
+                                     ['*.sql', '*.py'])
 
     def get_tables(self):
         return [('ecfdomain', ["ECFPrinter", "DeviceConstant",
                                "FiscalSaleHistory", "ECFDocumentHistory"])]
 
     def activate(self):
-        environ.add_resource('glade',
-                             os.path.join(os.path.dirname(__file__), 'glade'))
         # Do this in a nested import so we can import the plugin without
         # importing gtk.
         from ecf.ecfui import ECFUI

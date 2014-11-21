@@ -63,6 +63,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
     :cvar gladefile:
     :cvar model_type:
     """
+    domain = 'stoq'
     gladefile = None
     model_type = None
     fields = None
@@ -590,6 +591,7 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
     Subclasses must implement get_targets, get_columns, get_relations, and
     create_model.
     """
+    domain = 'stoq'
     gladefile = 'RelationshipEditor'
     target_name = None
     model_type = None

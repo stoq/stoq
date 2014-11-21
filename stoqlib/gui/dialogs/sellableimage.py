@@ -34,6 +34,7 @@ _pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
 
 class SellableImageViewer(GladeDelegate, RunnableView):
     title = _("Sellable Image Viewer")
+    domain = 'stoq'
     gladefile = "SellableImageViewer"
     position = (0, 0)
 

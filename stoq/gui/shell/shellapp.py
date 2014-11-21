@@ -49,6 +49,8 @@ class ShellApp(GladeDelegate):
     duplication between other applications.
     """
 
+    domain = 'stoq'
+
     #: This attribute is used when generating titles for applications.
     #: It's also useful if we get a list of available applications with
     #: the application names translated. This list is going to be used when

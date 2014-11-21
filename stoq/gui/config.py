@@ -106,6 +106,7 @@ LOGO_HEIGHT = 32
 
 class BaseWizardStep(WizardStep, GladeSlaveDelegate):
     """A wizard step base class definition"""
+    domain = 'stoq'
     gladefile = None
 
     def __init__(self, wizard, previous=None):

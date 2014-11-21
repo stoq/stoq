@@ -22,9 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import os
-
-from kiwi.environ import environ
 from zope.interface import implementer
 
 from stoqlib.database.migration import PluginSchemaMigration
@@ -46,9 +43,7 @@ class NFePlugin(object):
     #
 
     def get_migration(self):
-        environ.add_resource('nfesql',
-                             os.path.join(os.path.dirname(__file__), 'sql'))
-        return PluginSchemaMigration(self.name, 'nfesql', ['*.sql'])
+        return PluginSchemaMigration(self.name, 'nfe', 'sql', ['*.sql'])
 
     def get_tables(self):
         return []

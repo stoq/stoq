@@ -184,6 +184,7 @@ class SaleListToolbar(GladeSlaveDelegate):
     """ A simple sale toolbar with common operations like, returning a sale,
     changing installments and showing its details.
     """
+    domain = 'stoq'
     gladefile = "SaleListToolbar"
     gsignal('sale-returned', object)
     gsignal('sale-edited', object)

@@ -228,6 +228,7 @@ class AdditionListSlave(SearchSlave):
     buttons
     """
 
+    domain = 'stoq'
     toplevel_name = gladefile = 'AdditionListSlave'
     widgets = ('add_button',
                'delete_button',

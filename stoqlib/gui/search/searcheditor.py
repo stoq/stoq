@@ -305,7 +305,7 @@ class SearchEditorToolBar(GladeSlaveDelegate):
 
     toplevel_name = 'ToolBar'
     gladefile = 'SearchEditor'
-    domain = 'stoqlib'
+    domain = 'stoq'
 
     gsignal('edit')
     gsignal('add')

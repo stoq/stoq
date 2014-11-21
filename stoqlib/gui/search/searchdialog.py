@@ -49,6 +49,7 @@ class _SearchDialogDetailsSlave(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'New' and 'Edit' buttons. """
 
+    domain = 'stoq'
     gladefile = 'SearchDialogDetailsSlave'
 
     gsignal('details')
@@ -273,7 +274,7 @@ class SearchDialog(BasicDialog):
         if image:
             image_widget = gtk.Image()
             image_widget.set_from_file(
-                environ.find_resource('pixmaps', image))
+                environ.get_resource_filename('stoq', 'pixmaps', image))
             image_widget.show()
             button.set_image(image_widget)
         elif stock:
@@ -507,6 +508,7 @@ class SearchDialogPrintSlave(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'print_price_button' buttons. """
 
+    domain = 'stoq'
     gladefile = 'SearchDialogPrintSlave'
 
     gsignal('print')
@@ -523,6 +525,7 @@ class SearchDialogButtonSlave(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing buttons. """
 
+    domain = 'stoq'
     gladefile = 'SearchDialogButtonSlave'
 
     gsignal('click')

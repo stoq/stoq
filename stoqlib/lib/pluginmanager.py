@@ -38,7 +38,7 @@ from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.lib.message import error
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
-from stoqlib.lib.osutils import get_system_locale
+from stoqlib.lib.osutils import get_system_locale, get_application_dir
 from stoqlib.lib.settings import get_settings
 
 log = logging.getLogger(__name__)
@@ -127,8 +127,30 @@ class PluginManager(object):
     # Private
     #
 
+    def _get_external_plugins_paths(self):
+        # This is the dir containing stoq/kiwi/stoqdrivers/etc
+        checkout = os.path.dirname(library.get_root())
+
+        # If there's n foobar plugin on the checkout, it will expand to find:
+        #     CHECKOUT/<git_repository>/foobar/foobar.plugin
+        for filename in glob.iglob(os.path.join(checkout, '*', '*', '*.plugin')):
+            # In the example above, the path here is expected to be on
+            # <git_repository>, not on <git_repository>/foobar/
+            yield os.path.dirname(os.path.dirname(filename))
+
     def _read_plugin_descriptions(self):
-        for path in library.get_resource_paths('plugin'):
+        # Development plugins on the same checkout
+        paths = [os.path.join(library.get_root(), 'plugins')]
+
+        # Plugins on $HOME/.stoq/plugins
+        paths.append(os.path.join(get_application_dir(), 'plugins'))
+
+        if library.get_resource_exists('stoq', 'plugins'):
+            paths.append(library.get_resource_filename('stoq', 'plugins'))
+
+        paths.extend(list(self._get_external_plugins_paths()))
+
+        for path in paths:
             for filename in glob.iglob(os.path.join(path, '*', '*.plugin')):
                 self._register_plugin_description(filename)
             for filename in glob.iglob(os.path.join(path, '*.egg')):
@@ -190,11 +212,6 @@ class PluginManager(object):
             raise TypeError("The object %s does not implement IPlugin "
                             "interface" % (plugin, ))
         self._plugins[plugin.name] = plugin
-
-        if library.uninstalled:
-            gladedir = os.path.join('plugins', plugin.name, 'glade')
-            if os.path.exists(gladedir):
-                library.add_global_resource('glade', gladedir)
 
     def activate_plugin(self, plugin_name):
         """Activates a plugin

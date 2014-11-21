@@ -148,6 +148,7 @@ class SchemaMigration(object):
       - Makes sure that all applications are present
     """
 
+    patch_resource_domain = None
     patch_resource = None
     patch_patterns = ["patch*.sql", "patch*.py"]
 
@@ -179,14 +180,16 @@ class SchemaMigration(object):
 
     def _get_patches(self):
         patches = []
-        for filename in environ.get_resource_names('stoq', self.patch_resource):
+        for filename in environ.get_resource_names(self.patch_resource_domain,
+                                                   self.patch_resource):
             for pattern in self.patch_patterns:
                 if not fnmatch.fnmatch(filename, pattern):
                     continue
                 if not self._patchname_is_valid(filename):
                     print("Invalid patch name: %s" % filename)
                     continue
-                filename = environ.get_resource_filename('stoq', self.patch_resource, filename)
+                filename = environ.get_resource_filename(
+                    self.patch_resource_domain, self.patch_resource, filename)
                 patches.append(Patch(filename, self))
 
         return sorted(patches)
@@ -339,6 +342,7 @@ class StoqlibSchemaMigration(SchemaMigration):
     It's responsible for migrating the data for stoqlib itself
     and all its plugins
     """
+    patch_resource_domain = 'stoq'
     patch_resource = 'sql'
 
     def check_uptodate(self):
@@ -470,7 +474,7 @@ class PluginSchemaMigration(SchemaMigration):
     """This is a SchemaMigration class which is suitable for use within
     a plugin
     """
-    def __init__(self, plugin_name, resource, patterns):
+    def __init__(self, plugin_name, resource_domain, resource, patterns):
         """
         Create a new PluginSchemaMigration object.
         :param plugin_name: name of the plugin
@@ -478,6 +482,7 @@ class PluginSchemaMigration(SchemaMigration):
         :param patterns: sql patch pattern
         """
         self.plugin_name = plugin_name
+        self.patch_resource_domain = resource_domain
         self.patch_resource = resource
         self.patch_patterns = patterns
         SchemaMigration.__init__(self)

@@ -79,6 +79,8 @@ class WizardStep:
 
 class PluggableWizard(GladeDelegate):
     """ Wizard controller and view class """
+
+    domain = 'stoq'
     gladefile = 'PluggableWizard'
 
     def __init__(self, title, first_step, size=None, edit_mode=False):
@@ -263,6 +265,7 @@ class PluggableWizard(GladeDelegate):
 
 class BaseWizardStep(WizardStep, GladeSlaveDelegate):
     """A wizard step base class definition"""
+    domain = 'stoq'
     gladefile = None
 
     def __init__(self, store, wizard, previous=None):

@@ -78,9 +78,9 @@ class HTMLReport(object):
         html.flush()
 
     def render(self, stylesheet=None):
-        template_dirs = environ.get_resource_paths('template')
+        template_dir = environ.get_resource_filename('stoq', 'template')
         html = weasyprint.HTML(string=self.get_html(),
-                               base_url=template_dirs[0])
+                               base_url=template_dir)
 
         return html.render(stylesheets=[weasyprint.CSS(string=stylesheet)])
 

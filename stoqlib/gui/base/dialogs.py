@@ -79,6 +79,8 @@ class BasicDialog(GladeDelegate, RunnableView):
     """Abstract class that offers a Dialog with two buttons. It should be
     subclassed and customized.
     """
+
+    domain = 'stoq'
     help_section = None
     gsignal('confirm', object, retval=bool)
     gsignal('cancel', object)

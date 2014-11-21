@@ -82,10 +82,16 @@ class WelcomeDialog(BasicDialog):
             self.toplevel.hide()
 
     def get_uri(self):
+        # Make sure we extract everything from html in case we are running
+        # from an egg
+        environ.get_resource_filename('stoq', 'html')
+
         if locale.getlocale()[0] == 'pt_BR' or platform.system() == 'Windows':
-            content = environ.find_resource('html', 'welcome-pt_BR.html')
+            content = environ.get_resource_filename('stoq', 'html',
+                                                    'welcome-pt_BR.html')
         else:
-            content = environ.find_resource('html', 'welcome.html')
+            content = environ.get_resource_filename('stoq', 'html',
+                                                    'welcome.html')
         if api.sysparam.get_bool('DEMO_MODE'):
             content += '?demo-mode'
         return 'file:///' + content

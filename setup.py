@@ -45,22 +45,17 @@ from stoq import website, version
 
 
 building_egg = 'bdist_egg' in sys.argv
-if building_egg:
-    plugin_base_dir = os.path.join('stoq', 'data')
-else:
-    plugin_base_dir = '$datadir'
-
-plugin_dir = os.path.join(plugin_base_dir, 'plugins')
 
 
 def listplugins(plugins, exts):
+    plugin_dir = os.path.join('$datadir', 'plugins')
     dirs = []
     for package in listpackages('plugins'):
         # strip plugins
         dirs.append(package.replace('.', '/'))
     files = []
     for directory in dirs:
-        install_dir = os.path.join(plugin_base_dir, directory)
+        install_dir = os.path.join('$datadir', directory)
         files.append((install_dir, listfiles(directory, '*.py')))
         files.append((install_dir, listfiles(directory, '*.plugin')))
 
@@ -93,9 +88,8 @@ packages.extend(listpackages('stoqlib', exclude='stoqlib.tests'))
 
 scripts = [
     'bin/stoq',
+    # FIXME: Move those to a stoq subcommand so they can execute from eggs
     'bin/stoqdbadmin',
-
-    # FIXME: move these to /usr/lib/stoq/
     'bin/stoqcreatedbuser',
     'bin/stoq-daemon',
 ]
@@ -115,15 +109,26 @@ data_files = [
     ('$datadir/html/css', listfiles('data', 'html', 'css', '*.css')),
     ('$datadir/html/images', listfiles('data', 'html', 'images', '*.png')),
     ('$datadir/html/js', listfiles('data', 'html', 'js', '*.js')),
+    ('$datadir/docs', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
+                       'COPYING.stoqlib', 'README', 'docs/copyright']),
 ]
+
+if building_egg:
+    data_files.append(('', ['__main__.py']))
 
 data_files += list_templates()
 
 if building_egg:
-    data_files.append(
-        ('stoq/data/docs',
-         ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
-          'COPYING.stoqlib', 'README', 'docs/copyright']))
+    data_files.extend([
+        ('$datadir/docs/manual/pt_BR',
+         listfiles('docs/manual/pt_BR', '*.page')),
+        ('$datadir/docs/manual/pt_BR',
+         listfiles('docs/manual/pt_BR', '*.xml')),
+        ('$datadir/docs/manual/pt_BR',
+         listfiles('docs/manual/pt_BR/figures', '*.png')),
+        ('$datadir/docs/manual/pt_BR',
+         listfiles('docs/manual/pt_BR/figures', '*.svg')),
+    ])
 else:
     data_files.extend([
         ('share/applications', ['stoq.desktop']),
@@ -141,25 +146,6 @@ else:
         ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
         ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
     ])
-
-# FIXME: We are using $datadir/../ for locale/doc as a workaround for kiwi.
-# Without this, he would not find the proper resource when installing
-# stoq from a wheel
-resources = dict(
-    locale='$datadir/../locale',
-    plugin=plugin_dir,
-)
-global_resources = dict(
-    csv='$datadir/csv',
-    docs='$datadir/../doc/stoq',
-    glade='$datadir/glade',
-    uixml='$datadir/uixml',
-    html='$datadir/html',
-    misc='$datadir/misc',
-    pixmaps='$datadir/pixmaps',
-    sql='$datadir/sql',
-    template='$datadir/template',
-)
 
 PLUGINS = ['ecf', 'nfe', 'books', 'optical']
 PLUGIN_EXTS = [('csv', '*csv'),
@@ -191,7 +177,5 @@ setup(name='stoq',
       packages=packages,
       data_files=data_files,
       scripts=scripts,
-      resources=resources,
       install_requires=install_requires,
-      global_resources=global_resources,
       zip_safe=building_egg)

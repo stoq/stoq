@@ -42,6 +42,8 @@ class PaulistaInvoiceDialog(BaseEditor):
     hide_footer = False
     size = (-1, 160)
     model_type = Settable
+    translation_domain = 'stoq'
+    domain = 'ecf'
     gladefile = "PaulistaInvoice"
     proxy_widgets = ("document", )
     cpf_mask = u"000.000.000-00"

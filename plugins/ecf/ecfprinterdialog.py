@@ -67,6 +67,8 @@ class _PrinterModel(object):
 
 
 class ECFEditor(BaseEditor):
+    translation_domain = 'stoq'
+    domain = 'ecf'
     gladefile = 'FiscalPrinterDialog'
     model_type = ECFPrinter
     model_name = _('Fiscal Printer')

@@ -34,7 +34,8 @@ def render_template(filename, **ns):
     @kwargs: keyword arguments to send to the template
     @return: the rendered template
     """
-    lookup = TemplateLookup(directories=environ.get_resource_paths('template'),
+    directories = environ.get_resource_filename('stoq', 'template')
+    lookup = TemplateLookup(directories=directories,
                             output_encoding='utf8', input_encoding='utf8',
                             default_filters=['h'])
     tmpl = lookup.get_template(filename)

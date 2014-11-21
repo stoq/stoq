@@ -141,7 +141,7 @@ def populate_initial_data(store):
         return
 
     log.info('Populating initial data')
-    initial_data = environ.find_resource('sql', 'initial.sql')
+    initial_data = environ.get_resource_filename('stoq', 'sql', 'initial.sql')
     if db_settings.execute_sql(initial_data) != 0:
         error(u'Failed to populate initial data')
 
@@ -299,9 +299,9 @@ def _create_procedural_languages():
 def _get_latest_schema():
     schema_pattern = "schema-??.sql"
     schemas = []
-    for resource in environ.get_resource_paths("sql"):
-        for filename in glob.glob(os.path.join(resource, schema_pattern)):
-            schemas.append(filename)
+    resource = environ.get_resource_filename('stoq', 'sql')
+    for filename in glob.glob(os.path.join(resource, schema_pattern)):
+        schemas.append(filename)
     assert schemas
     schemas.sort()
     return schemas[-1]
@@ -313,9 +313,9 @@ def create_database_functions():
     This will simply read data/sql/functions.sql and execute it
     """
     with tempfile.NamedTemporaryFile(suffix='stoqfunctions-') as tmp_f:
-        with open(environ.find_resource('sql', 'functions.sql')) as f:
-            tmp_f.write(render_template_string(f.read()))
-            tmp_f.flush()
+        functions = environ.get_resource_string('stoq', 'sql', 'functions.sql')
+        tmp_f.write(render_template_string(functions))
+        tmp_f.flush()
         if db_settings.execute_sql(tmp_f.name) != 0:
             error(u'Failed to create functions')
 
@@ -330,13 +330,6 @@ def create_base_schema():
     schema = _get_latest_schema()
     if db_settings.execute_sql(schema) != 0:
         error(u'Failed to create base schema')
-
-    try:
-        schema = environ.find_resource('sql', '%s-schema.sql' % db_settings.rdbms)
-        if db_settings.execute_sql(schema) != 0:
-            error(u'Failed to create %s specific schema' % (db_settings.rdbms, ))
-    except EnvironmentError:
-        pass
 
     migration = StoqlibSchemaMigration()
     migration.apply_all_patches()
@@ -370,7 +363,7 @@ def create_default_profile_settings():
 def _install_invoice_templates():
     log.info("Installing invoice templates")
     importer = InvoiceImporter()
-    importer.feed_file(environ.find_resource('csv', 'invoices.csv'))
+    importer.feed_file(environ.get_resource_filename('stoq', 'csv', 'invoices.csv'))
     importer.process()
 
 

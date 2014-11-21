@@ -47,6 +47,8 @@ LATE_PRESCRIPTION_DAYS = 365
 
 
 class MedicDetailsSlave(BaseEditorSlave):
+    translation_domain = 'stoq'
+    domain = 'optical'
     gladefile = 'MedicDetailsSlave'
     title = _(u'Medic Details')
     model_type = object
@@ -75,6 +77,8 @@ class MedicDetailsSlave(BaseEditorSlave):
 # FIXME: Implement this completely:
 # - Improve interface
 class ProductOpticSlave(BaseEditorSlave):
+    translation_domain = 'stoq'
+    domain = 'optical'
     gladefile = 'ProductOpticSlave'
     title = _(u'Optic Details')
     model_type = object
@@ -136,6 +140,8 @@ class ProductOpticSlave(BaseEditorSlave):
 class WorkOrderOpticalSlave(BaseEditorSlave):
     """This slave edits the optical information needed by a given workorder.
     """
+    translation_domain = 'stoq'
+    domain = 'optical'
     gladefile = 'WorkOrderOpticalSlave'
     title = _(u'Optical Details')
     model_type = object

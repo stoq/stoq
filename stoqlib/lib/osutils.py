@@ -139,7 +139,6 @@ def find_program(program):
     :param program: name of the program to find
     :returns: the complete path of the program or None if it couldn't be found
     """
-
     for path in os.environ['PATH'].split(':'):
         fullpath = os.path.join(path, program)
         if os.path.exists(fullpath):

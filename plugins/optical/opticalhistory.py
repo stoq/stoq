@@ -48,6 +48,8 @@ _ = stoqlib_gettext
 #
 
 class OpticalPatientHistoryEditor(BaseEditor):
+    translation_domain = 'stoq'
+    domain = 'optical'
     gladefile = 'PatientHistory'
     # TRANSLATORS: Traduzir como 'Anamnese'
     title = _(u'Patient History')
@@ -108,6 +110,8 @@ class OpticalPatientHistoryEditor(BaseEditor):
 
 
 class OpticalPatientMeasuresEditor(BaseEditor):
+    translation_domain = 'stoq'
+    domain = 'optical'
     gladefile = 'PatientMeasures'
     title = _(u'Measures')
     model_type = OpticalPatientMeasures
@@ -138,6 +142,8 @@ class OpticalPatientMeasuresEditor(BaseEditor):
 
 
 class OpticalPatientTestEditor(BaseEditor):
+    translation_domain = 'stoq'
+    domain = 'optical'
     gladefile = 'PatientTest'
     title = _(u'Test')
     model_type = OpticalPatientTest
@@ -165,6 +171,8 @@ class OpticalPatientTestEditor(BaseEditor):
 
 
 class OpticalPatientVisualAcuityEditor(BaseEditor):
+    translation_domain = 'stoq'
+    domain = 'optical'
     gladefile = 'PatientVisualAcuity'
     title = _(u'Visual Acuity')
     size = (-1, 350)
@@ -234,6 +242,8 @@ class OpticalPatientVisualAcuityListSlave(_BaseListSlave):
 class OpticalPatientDetails(BaseEditor):
     model_type = Client
     size = (500, 300)
+    translation_domain = 'stoq'
+    domain = 'optical'
     gladefile = 'PatientHistoryDialog'
 
     list_slaves = [

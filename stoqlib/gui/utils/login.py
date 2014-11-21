@@ -46,6 +46,7 @@ log = logging.getLogger(__name__)
 
 
 class LoginDialog(GladeDelegate, RunnableView):
+    domain = 'stoq'
     toplevel_name = gladefile = "LoginDialog"
     size = (-1, -1)
 

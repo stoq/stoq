@@ -33,6 +33,6 @@ class WebResource(Resource):
 
     def __init__(self):
         Resource.__init__(self)
-        path = environ.get_resource_paths('html')[0]
+        path = environ.get_resource_filename('stoq', 'html')
         self.putChild('static', File(path))
         self.putChild('calendar-events.json', CalendarEvents())

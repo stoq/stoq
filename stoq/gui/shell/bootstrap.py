@@ -236,9 +236,6 @@ class ShellBootstrap(object):
             gdk.event_handler_set(event_handler)
 
     def _setup_kiwi(self):
-        from kiwi.ui.views import set_glade_loader_func
-        set_glade_loader_func(self._glade_loader_func)
-
         from kiwi.datatypes import get_localeconv
         from kiwi.ui.widgets.label import ProxyLabel
         ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
@@ -385,14 +382,6 @@ class ShellBootstrap(object):
         print()
         import pdb
         pdb.pm()
-
-    def _glade_loader_func(self, view, filename, domain, resource_str_func):
-        from kiwi.ui.builderloader import BuilderWidgetTree
-        if not filename.endswith('ui'):
-            filename += '.ui'
-        ui_string = resource_str_func('stoq', 'glade', filename)
-
-        return BuilderWidgetTree(view, None, domain, ui_string)
 
     def _write_exception_hook(self, exctype, value, tb):
         # NOTE: This exception hook depends on gtk, kiwi, twisted being present

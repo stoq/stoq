@@ -225,6 +225,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
 
 
 class EmployeeRoleHistorySlave(GladeSlaveDelegate):
+    domain = 'stoq'
     gladefile = "EmployeeRoleHistorySlave"
 
     def __init__(self, employee):

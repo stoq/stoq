@@ -38,6 +38,8 @@ _ = stoqlib_gettext
 
 
 class ProductBookSlave(BaseEditorSlave):
+    translation_domain = 'stoq'
+    domain = 'books'
     gladefile = 'ProductBookSlave'
     title = _(u'Book Details')
     model_type = Book

@@ -22,9 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import os
-
-from kiwi.environ import environ
 from zope.interface import implementer
 
 from stoqlib.database.migration import PluginSchemaMigration
@@ -47,9 +44,8 @@ class OpticalPlugin(object):
     #
 
     def get_migration(self):
-        environ.add_resource('opticalsql',
-                             os.path.join(os.path.dirname(__file__), 'sql'))
-        return PluginSchemaMigration(self.name, 'opticalsql', ['*.sql', '*.py'])
+        return PluginSchemaMigration(self.name, 'optical', 'sql',
+                                     ['*.sql', '*.py'])
 
     def get_tables(self):
         return [('opticaldomain', ['OpticalMedic',
@@ -61,8 +57,6 @@ class OpticalPlugin(object):
                                    'OpticalPatientVisualAcuity'])]
 
     def activate(self):
-        environ.add_resource('glade',
-                             os.path.join(os.path.dirname(__file__), 'glade'))
         self.ui = OpticalUI()
 
     def get_dbadmin_commands(self):

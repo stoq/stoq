@@ -40,7 +40,7 @@ def load_taxes_csv():
     if taxes_data:
         return
 
-    filename = environ.find_resource('csv', 'tabela_ibpt.csv')
+    filename = environ.get_resource_filename('stoq', 'csv', 'tabela_ibpt.csv')
     csv_file = (csv.reader(open(filename, "r")))
     for (ncm, ex, tabela, nac, imp, __) in csv_file:
         if tabela == '1':

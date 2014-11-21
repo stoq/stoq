@@ -229,7 +229,7 @@ class TestFirstTimeConfigWizard(GUITest):
         step = wizard.get_current_step()
         step.password_slave.password.update(u'foobar')
         step.password_slave.confirm_password.update(u'foobar')
-        self.check_wizard(wizard, u'wizard-config-admin-password')
+        self.check_wizard(wizard, u'wizard-config-admin-password-remote')
         with tempfile.NamedTemporaryFile() as f:
             os.environ[u'PGPASSFILE'] = f.name
             self.click(wizard.next_button)

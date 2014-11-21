@@ -23,7 +23,6 @@
 ##
 
 import datetime
-import gzip
 import locale
 import logging
 import platform
@@ -434,15 +433,16 @@ class ShellWindow(GladeDelegate):
             toplevel.move(x, y)
 
     def _read_resource(self, domain, name):
-        try:
-            data = environ.get_resource_string('stoq', domain, name)
-            if data:
-                return data
-        except EnvironmentError:
-            pass
+        from stoqlib.lib.kiwilibrary import library
 
-        license = environ.find_resource(domain, name + '.gz')
-        return gzip.GzipFile(license).read()
+        # On development, documentation resources (e.g. COPYING) will
+        # be located directly on the library's root
+        devpath = os.path.join(library.get_root(), name)
+        if os.path.exists(devpath):
+            with open(devpath) as f:
+                return f.read()
+
+        return environ.get_resource_string('stoq', domain, name)
 
     def _update_toolbar_style(self):
         toolbar = self.uimanager.get_widget('/toolbar')

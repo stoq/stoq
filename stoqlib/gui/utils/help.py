@@ -45,9 +45,17 @@ def show_section(section, screen=None):
         if section != '':
             uri += '/' + section + '.page'
     else:
-        uri = 'stoq'
-        if section != '':
-            uri += '?' + section
+        if library.get_resource_exists('stoq', 'docs', 'manual', 'pt_BR'):
+            manual_dir = library.get_resource_filename(
+                'stoq', 'docs', 'manual', 'pt_BR')
+            if section:
+                uri = os.path.join(manual_dir, section + '.page')
+            else:
+                uri = manual_dir
+        else:
+            uri = 'stoq'
+            if section:
+                uri += '?' + section
 
     if not screen:
         toplevel = get_current_toplevel()

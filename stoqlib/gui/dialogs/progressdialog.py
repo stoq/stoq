@@ -40,6 +40,7 @@ class ProgressDialog(GladeDelegate):
     * *cancel* (): Emitted when a the cancel button is clicked
 
     """
+    domain = 'stoq'
     gladefile = "ProgressDialog"
     toplevel_name = "ProgressDialog"
 

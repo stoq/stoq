@@ -22,9 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import os
-
-from kiwi.environ import environ
 from zope.interface import implementer
 
 from stoqlib.database.migration import PluginSchemaMigration
@@ -47,16 +44,12 @@ class BooksPlugin(object):
     #
 
     def get_migration(self):
-        environ.add_resource('booksql',
-                             os.path.join(os.path.dirname(__file__), 'sql'))
-        return PluginSchemaMigration(self.name, 'booksql', ['*.sql'])
+        return PluginSchemaMigration(self.name, 'books', 'sql', ['*.sql'])
 
     def get_tables(self):
         return [('booksdomain', ['BookPublisher', 'Book'])]
 
     def activate(self):
-        environ.add_resource('glade',
-                             os.path.join(os.path.dirname(__file__), 'glade'))
         self.ui = BooksUI()
 
     def get_dbadmin_commands(self):

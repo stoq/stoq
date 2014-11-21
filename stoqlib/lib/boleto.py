@@ -128,7 +128,8 @@ class BankInfo(object):
 
         self.logo_image_path = ""
         if self.logo:
-            self.logo_image_path = environ.find_resource('pixmaps', self.logo)
+            self.logo_image_path = environ.get_resource_filename(
+                'stoq', 'pixmaps', self.logo)
 
     @property
     def campo_livre(self):

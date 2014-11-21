@@ -49,7 +49,7 @@ log = logging.getLogger(__name__)
 
 def _import_one(klass, filename):
     imp = klass()
-    imp.feed_file(environ.find_resource('csv', filename))
+    imp.feed_file(environ.get_resource_filename('stoq', 'csv', filename))
     imp.process()
 
 

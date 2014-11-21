@@ -35,7 +35,8 @@ class TestOpticalUI(BaseGUITest):
         plugin = OpticalPlugin()
         migration = plugin.get_migration()
         self.assertEquals(migration.plugin_name, u'optical')
-        self.assertEquals(migration.patch_resource, u'opticalsql')
+        self.assertEquals(migration.patch_resource_domain, u'optical')
+        self.assertEquals(migration.patch_resource, u'sql')
         self.assertEquals(migration.patch_patterns, ['*.sql', '*.py'])
 
     def test_get_tables(self):
