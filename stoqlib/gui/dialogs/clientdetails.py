@@ -332,7 +332,7 @@ class PaymentsTab(DetailsTab):
 
     def get_columns(self):
         return [IdentifierColumn('identifier'),
-                Column("method_name", title=_("Type"),
+                Column("method_description", title=_("Type"),
                        data_type=str, width=90),
                 Column("description", title=_("Description"),
                        data_type=str, searchable=True, width=190,

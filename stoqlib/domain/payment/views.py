@@ -165,6 +165,10 @@ class BasePaymentView(Viewable):
         return self.status == Payment.STATUS_PENDING
 
     @property
+    def method_description(self):
+        return self.method.description
+
+    @property
     def status_str(self):
         return Payment.statuses[self.status]
 
