@@ -60,7 +60,6 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %doc AUTHORS CONTRIBUTORS COPYING COPYING.pt_BR README NEWS
 %{_bindir}/stoq
 %{_bindir}/stoqdbadmin
-%{_bindir}/stoq-daemon
 %{_libdir}/python*/site-packages/*.egg-info
 %{_sysconfdir}/stoq
 %{_datadir}/icons/hicolor/48x48/apps/stoq.png

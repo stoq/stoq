@@ -25,16 +25,14 @@
 import base64
 import errno
 import os
-import signal
 import shutil
-import sys
+import threading
 
 from twisted.internet import defer, reactor
 from twisted.web.xmlrpc import Proxy
 
-from stoqlib.database.settings import db_settings
-from stoqlib.lib.osutils import find_program, get_application_dir
-from stoqlib.lib.process import Process
+from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.threadutils import terminate_thread
 
 
 class TryAgainError(Exception):
@@ -49,7 +47,7 @@ class DaemonManager(object):
     def __init__(self):
         self._daemon_id = _get_random_id()
         self._port = None
-        self._process = None
+        self._thread = None
 
     def start(self):
         try:
@@ -59,23 +57,22 @@ class DaemonManager(object):
         else:
             return defer.succeed(self)
 
-        stoq_daemon = find_program('stoq-daemon')
-        if not stoq_daemon:
-            raise AssertionError
-        args = [sys.executable,
-                stoq_daemon,
-                '--daemon-id', self._daemon_id]
-        args.extend(db_settings.get_command_line_arguments())
-        self._process = Process(args)
+        # FIXME: We should not be importing stoq inside stoqlib
+        from stoq.daemonmain import Daemon
+        daemon = Daemon(self._daemon_id)
+        self._thread = threading.Thread(target=daemon.run)
+        self._thread.daemon = True
+        self._thread.start()
 
         reactor.callLater(0.1, self._check_active)
         self._defer = defer.Deferred()
         return self._defer
 
     def stop(self):
-        if not self._process:
+        if not self._thread:
             return
-        os.kill(self._process.pid, signal.SIGINT)
+
+        terminate_thread(self._thread)
 
         appdir = get_application_dir()
         daemondir = os.path.join(appdir, 'daemon', self._daemon_id)

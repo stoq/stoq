@@ -88,9 +88,7 @@ packages.extend(listpackages('stoqlib', exclude='stoqlib.tests'))
 
 scripts = [
     'bin/stoq',
-    # FIXME: Move those to a stoq subcommand so they can execute from eggs
     'bin/stoqdbadmin',
-    'bin/stoq-daemon',
 ]
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),

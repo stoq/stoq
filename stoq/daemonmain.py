@@ -30,8 +30,6 @@ import os
 import sys
 import pango
 
-from twisted.internet import reactor
-
 from stoqlib.net.xmlrpcservice import XMLRPCService
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.environment import is_developer_mode
@@ -51,8 +49,6 @@ pango  # pylint: disable=W0104
 class Daemon(object):
     def __init__(self, daemon_id):
         self._daemon_id = daemon_id
-        self._start_xmlrpc()
-        self._write_daemon_pids()
 
     def _start_xmlrpc(self):
         port = None
@@ -73,10 +69,12 @@ class Daemon(object):
             self.shutdown()
 
     def shutdown(self):
-        reactor.stop()
+        # FIXME: This is never called
+        self._xmlrpc.stop()
 
     def run(self):
-        reactor.run()
+        self._start_xmlrpc()
+        self._write_daemon_pids()
 
 
 def main(args):
