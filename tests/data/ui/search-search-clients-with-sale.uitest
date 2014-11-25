@@ -42,6 +42,8 @@ GtkDialog(toplevel): title='Clients with Sale', hidden
             column: title='Phone', hidden
             column: title='Client category', hidden
             column: title='Document', hidden
+            column: title='Address', hidden
+            column: title='City', hidden
             column: title='CPF', hidden
             column: title='CNPJ', hidden
             column: title='Birth Date', hidden
@@ -49,7 +51,7 @@ GtkDialog(toplevel): title='Clients with Sale', hidden
             column: title='# Sales'
             column: title='# Items'
             column: title='Total Amount'
-            row: u'Zeca', u'', u'', None, u'', u'', None, None, datetime.today(), 1L, Decimal('3.000'), Decimal('30.00000')
+            row: u'Zeca', u'', u'', None, u'', u'Mainstreet 138, Cidade Araci', u'12345-678 - Los Angeles - Californa', u'', None, None, datetime.today(), 1L, Decimal('3.000'), Decimal('30.00000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

@@ -182,6 +182,7 @@ class TestClientsWithSaleSearch(GUITest):
         current_branch = api.get_current_branch(self.store)
         sellable = self.create_sellable()
         client = self.create_client(name=u'Zeca')
+        self.create_address(client.person)
 
         sale = self.create_sale(client=client, branch=current_branch)
         sale.add_sellable(sellable, quantity=3)

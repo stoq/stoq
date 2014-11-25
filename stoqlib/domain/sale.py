@@ -48,6 +48,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.database.viewable import Viewable
+from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.base import Domain
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.event import Event
@@ -2300,6 +2301,9 @@ class SalesPersonSalesView(Viewable):
 
 
 class ClientsWithSaleView(Viewable):
+    main_address = Address
+    city_location = CityLocation
+
     id = Person.id
     person_name = Person.name
     phone = Person.phone_number
@@ -2327,15 +2331,28 @@ class ClientsWithSaleView(Viewable):
         Join(SaleItem, SaleItem.sale_id == Sale.id),
         Join(Sellable, Sellable.id == SaleItem.sellable_id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
+        LeftJoin(Address,
+                 And(Address.person_id == Person.id,
+                     Eq(Address.is_main_address, True))),
+        LeftJoin(CityLocation, Address.city_location_id == CityLocation.id),
     ]
 
-    group_by = [id, Individual.id, Company.id, ClientCategory.id]
+    group_by = [id, Individual.id, Company.id, ClientCategory.id,
+                Address.id, CityLocation.id]
 
     clause = Sale.status == Sale.STATUS_CONFIRMED
 
     #
     # Public API
     #
+
+    @property
+    def address_string(self):
+        return self.main_address.get_address_string()
+
+    @property
+    def details_string(self):
+        return self.main_address.get_details_string()
 
     @property
     def cnpj_or_cpf(self):
