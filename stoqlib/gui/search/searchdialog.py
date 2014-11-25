@@ -29,6 +29,8 @@ from kiwi.environ import environ
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
+from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
+from stoqlib.domain.person import Individual
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
@@ -324,6 +326,21 @@ class SearchDialog(BasicDialog):
     def print_report(self):
         print_report(self.report_class, self.results, list(self.results),
                      filters=self.search.get_search_filters())
+
+    def birthday_search(self, state):
+        """ Returns a birthday query suitable for search filters.
+            This should be assigned on search_column when you want to filter for
+            birth day. e.g.:
+            SearchColumn('birth_date', search_column=self.birthday_search)
+        """
+        if isinstance(state, DateQueryState):
+            if state.date:
+                return Individual.get_birthday_query(state.date)
+        elif isinstance(state, DateIntervalQueryState):
+            if state.start and state.end:
+                return Individual.get_birthday_query(state.start, state.end)
+        else:
+            raise AssertionError
 
     # FIXME: -> remove/use
 

@@ -32,8 +32,7 @@ import pango
 from storm.expr import Eq
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
-from stoqlib.domain.person import (Individual, EmployeeRole,
+from stoqlib.domain.person import (EmployeeRole,
                                    Branch, BranchView,
                                    Client, ClientView,
                                    Employee, EmployeeView,
@@ -206,16 +205,6 @@ class ClientSearch(BasePersonSearch):
                              visible=False, search_func=self.birthday_search,
                              search_label=_('Birthday'))]
 
-    def birthday_search(self, state):
-        if isinstance(state, DateQueryState):
-            if state.date:
-                return Individual.get_birthday_query(state.date)
-        elif isinstance(state, DateIntervalQueryState):
-            if state.start and state.end:
-                return Individual.get_birthday_query(state.start, state.end)
-        else:
-            raise AssertionError
-
     def get_editor_model(self, client_view):
         return client_view.client
 
@@ -371,7 +360,6 @@ class ClientsWithSaleSearch(SearchDialog):
     search_spec = ClientsWithSaleView
     report_class = ClientsWithSaleReport
     size = (800, 450)
-    fast_iter = True
     unlimited_results = True
     branch_filter_column = Sale.branch_id
     text_field_columns = [ClientsWithSaleView.person_name,
@@ -406,12 +394,15 @@ class ClientsWithSaleSearch(SearchDialog):
                              visible=False),
                 Column('cnpj_or_cpf', title=_(u"Document"), data_type=str,
                        visible=False),
+                Column('address_string', title=_(u"Address"), data_type=str, visible=False),
+                Column('details_string', title=_(u"City"), data_type=str, visible=False),
                 SearchColumn('cpf', title=_(u"CPF"), data_type=str,
                              visible=False),
                 SearchColumn('cnpj', title=_(u"CNPJ"), data_type=str,
                              visible=False),
-                Column('birth_date', title=_(u"Birth Date"),
-                       data_type=datetime.date, visible=False),
+                SearchColumn('birth_date', _('Birth Date'), datetime.date,
+                             visible=False, search_func=self.birthday_search,
+                             search_label=_('Birthday')),
                 Column('last_purchase', title=_(u"Last purchase"),
                        data_type=datetime.date),
                 Column('sales', title=_(u"# Sales"), data_type=int),
