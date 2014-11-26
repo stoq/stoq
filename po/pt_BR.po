@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-24 16:59-0200\n"
-"PO-Revision-Date: 2014-11-17 16:39+0000\n"
+"POT-Creation-Date: 2014-11-25 10:18-0200\n"
+"PO-Revision-Date: 2014-11-25 12:10+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -14107,7 +14107,7 @@ msgstr "Item de ordem de serviço"
 
 #: ../stoqlib/gui/slaves/workorderslave.py:78
 msgid "Reserved quantity"
-msgstr "Quantidade reservada:"
+msgstr "Quantidade reservada"
 
 #: ../stoqlib/gui/slaves/workorderslave.py:169
 #: ../stoqlib/gui/wizards/abstractwizard.py:742
