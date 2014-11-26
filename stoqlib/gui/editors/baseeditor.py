@@ -357,9 +357,10 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         # will create one if its None
         EditorCreateEvent.emit(self, self.model, store, visual_mode)
 
-        # This needs to be the last thing done on __init__ since we don't want
-        # to consider things like self.create_model as a change
-        self._store_pending_count = store.get_pending_count()
+        if store is not None:
+            # This needs to be the last thing done on __init__ since we don't want
+            # to consider things like self.create_model as a change
+            self._store_pending_count = store.get_pending_count()
 
     #
     #  Private
@@ -386,6 +387,8 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         :obj:`.store` and that information will be used by
         :attr:`.need_cancel_confirmation`
         """
+        if self.store is None:
+            return False
         return self.store.get_pending_count() > self._store_pending_count
 
     def get_title(self, model):
