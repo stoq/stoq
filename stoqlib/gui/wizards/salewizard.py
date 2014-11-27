@@ -735,7 +735,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.invoice_proxy = self.add_proxy(self.invoice_model,
                                             self.invoice_widgets)
         if self.model.client:
-            self.client.set_sensitive(False)
+            self.client_gadget.set_editable(False)
         if sysparam.get_bool('ASK_SALES_CFOP'):
             self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
         marker('Finished setting up proxies')

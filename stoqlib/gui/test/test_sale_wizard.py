@@ -354,7 +354,8 @@ class TestConfirmSaleWizard(GUITest):
         self.assertEquals(
             self.step.pm_slave.get_selected_method().method_name, u'money')
 
-    def test_sale_to_client_with_late_payments(self):
+    @mock.patch('stoqlib.gui.widgets.searchentry.run_dialog')
+    def test_sale_to_client_with_late_payments(self, run_dialog):
         #: this parameter allows a client to buy even if he has late payments
         sysparam.set_int(self.store, 'LATE_PAYMENTS_POLICY',
                          int(LatePaymentPolicy.ALLOW_SALES))
@@ -418,8 +419,7 @@ class TestConfirmSaleWizard(GUITest):
         # FIXME: This is not updating correcly
         # self.assertNotSensitive(wizard, ['next_button'])
 
-        #: this parameter disallows a client with late payments to buy with
-        #: store credit
+        #: this parameter disallows a client with late payments to buy
         sysparam.set_int(self.store, 'LATE_PAYMENTS_POLICY',
                          int(LatePaymentPolicy.DISALLOW_SALES))
 
@@ -434,6 +434,8 @@ class TestConfirmSaleWizard(GUITest):
         self.assertEquals(
             unicode(step.client.emit('validate', sale.client.id)),
             u'It is not possible to sell for clients with late payments.')
+        step.client.activate()
+        self.assertEquals(run_dialog.call_count, 0)
 
         self._select_method('check')
         self.assertEquals(
