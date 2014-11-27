@@ -956,6 +956,7 @@ class ProductBatchView(Viewable):
     category = SellableCategory.description
     manufacturer = ProductManufacturer.name
     model = Product.model
+    brand = Product.brand
 
     tables = [
         ProductStockItem,
