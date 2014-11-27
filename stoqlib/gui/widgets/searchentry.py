@@ -217,6 +217,8 @@ class SearchEntryGadget(object):
     #
 
     def _on_entry_activate(self, entry):
+        if not self._entry.get_property('editable'):
+            return
         text = entry.get_text()
         self._filter.set_state(text)
         state = self._filter.get_state()
@@ -260,3 +262,8 @@ class ClientSearchEntryGadget(SearchEntryGadget):
                                    parent=parent, model_property=model_property,
                                    search_class=search_class,
                                    search_columns=search_columns)
+
+    def set_editable(self, can_edit):
+        self.find_button.set_sensitive(can_edit)
+        self.edit_button.set_sensitive(can_edit)
+        self._entry.set_property('editable', can_edit)
