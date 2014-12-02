@@ -22,89 +22,73 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import base64
-import errno
-import os
-import shutil
 import threading
 
 from twisted.internet import defer, reactor
 from twisted.web.xmlrpc import Proxy
 
-from stoqlib.lib.osutils import get_application_dir
+from stoqlib.net.xmlrpcservice import XMLRPCService
+from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.threadutils import terminate_thread
 
 
-class TryAgainError(Exception):
-    pass
+class Daemon(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
 
+        self.port = None
+        # Indicate that this Thread is a daemon. Accordingly to the
+        # documentation, the entire python program exits when no alive
+        # non-daemon threads are left.
+        self.daemon = True
 
-def _get_random_id():
-    return base64.urlsafe_b64encode(os.urandom(8))[:-1]
+    #
+    #  Public API
+    #
+
+    def run(self):
+        port = 8080 if is_developer_mode() else None
+        self._xmlrpc = XMLRPCService(port)
+        self._xmlrpc.serve()
+
+        self.port = self._xmlrpc.port
+
+    def stop(self):
+        terminate_thread(self)
+        self.port = None
 
 
 class DaemonManager(object):
     def __init__(self):
-        self._daemon_id = _get_random_id()
-        self._port = None
-        self._thread = None
+        self._daemon = None
 
     def start(self):
-        try:
-            self._get_port()
-        except TryAgainError:
-            pass
-        else:
+        if self._daemon and self._daemon.port is not None:
             return defer.succeed(self)
 
-        # FIXME: We should not be importing stoq inside stoqlib
-        from stoq.daemonmain import Daemon
-        daemon = Daemon(self._daemon_id)
-        self._thread = threading.Thread(target=daemon.run)
-        self._thread.daemon = True
-        self._thread.start()
+        self._daemon = Daemon()
+        self._daemon.start()
 
         reactor.callLater(0.1, self._check_active)
         self._defer = defer.Deferred()
         return self._defer
 
     def stop(self):
-        if not self._thread:
+        if not self._daemon:
             return
 
-        terminate_thread(self._thread)
-
-        appdir = get_application_dir()
-        daemondir = os.path.join(appdir, 'daemon', self._daemon_id)
-        try:
-            shutil.rmtree(daemondir)
-        except OSError:
-            pass
-
-    def _get_port(self):
-        appdir = get_application_dir()
-        portfile = os.path.join(appdir, 'daemon', self._daemon_id, 'port')
-
-        try:
-            data = open(portfile).read()
-        except IOError as e:
-            if e.errno == errno.ENOENT:
-                raise TryAgainError
-            raise
-        return int(data)
+        self._daemon.stop()
 
     def _check_active(self):
-        try:
-            port = self._get_port()
-        except TryAgainError:
+        if self._daemon is None or self._daemon.port is None:
             reactor.callLater(0.1, self._check_active)
             return
-        self._port = port
+
         self._defer.callback(self)
 
     @property
     def base_uri(self):
-        return 'http://localhost:%d' % (self._port, )
+        return 'http://localhost:%d' % (self._daemon.port, )
 
     def get_client(self):
         return Proxy('%s/XMLRPC' % (self.base_uri, ))

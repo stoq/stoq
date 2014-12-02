@@ -33,7 +33,6 @@ EXCEPTIONS = OrderedDict((
     ('plugins/nfe/nfegenerator.py', 74.10),
     ('plugins/nfe/nfeplugin.py', 83.33),
     ('plugins/nfe/nfeui.py', 47.22),
-    ('stoq/daemonmain.py', 29.73),
     ('stoq/dbadmin.py', 13.31),
     ('stoq/gui/accounts.py', 0.4552),
     ('stoq/gui/admin.py', 61.19),

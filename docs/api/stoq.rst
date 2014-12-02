@@ -9,14 +9,6 @@ stoq Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`daemonmain` Module
-------------------------
-
-.. automodule:: stoq.daemonmain
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`dbadmin` Module
 ---------------------
 
