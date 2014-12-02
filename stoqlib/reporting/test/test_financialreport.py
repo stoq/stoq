@@ -33,7 +33,6 @@ class TestAccount(DomainTest):
         f = FinancialIntervalReport(self.store, 2012)
         f.run()
         data = f.get_data()
-        print data.keys()
 
         # ===> Check banks transactions per month <===
         banks = data.get(u'Banks')
