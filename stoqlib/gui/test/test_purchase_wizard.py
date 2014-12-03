@@ -73,83 +73,92 @@ class TestPurchaseWizard(GUITest):
         # Allow creating purchases in the past.
         sysparam.set_bool(self.store, 'ALLOW_OUTDATED_OPERATIONS', True)
 
-        self.wizard = PurchaseWizard(self.store)
-        purchase_branch = self.create_branch()
-        purchase_order = PurchaseOrder(branch=purchase_branch)
-        sellable = self.create_sellable()
-        purchase_order.add_item(sellable=sellable)
-        self.wizard.model.identifier = 12345
-        self.wizard.model.open_date = localdate(2010, 1, 3).date()
-        self._check_start_step('wizard-purchase-start-step')
-        self._check_item_step('wizard-purchase-item-step')
-        self._check_payment_step('wizard-purchase-payment-step')
+        with self.sysparam(MANDATORY_CHECK_NUMBER=True):
+            self.wizard = PurchaseWizard(self.store)
+            purchase_branch = self.create_branch()
+            purchase_order = PurchaseOrder(branch=purchase_branch)
+            sellable = self.create_sellable()
+            purchase_order.add_item(sellable=sellable)
+            self.wizard.model.identifier = 12345
+            self.wizard.model.open_date = localdate(2010, 1, 3).date()
+            self._check_start_step('wizard-purchase-start-step')
+            self._check_item_step('wizard-purchase-item-step')
+            payment_step = self.wizard.get_current_step()
+            payment_step.slave.bank_first_check_number.set_text('12')
+            self._check_payment_step('wizard-purchase-payment-step')
 
-        purchase = self.wizard.model
-        models = [purchase]
-        models.extend(purchase.get_items())
-        models.extend(purchase.payments)
-        models.append(purchase.group)
+            purchase = self.wizard.model
+            models = [purchase]
+            models.extend(purchase.get_items())
+            models.extend(purchase.payments)
+            models.append(purchase.group)
 
-        self.check_wizard(self.wizard, 'wizard-purchase-finish-step',
-                          models=models)
+            self.check_wizard(self.wizard, 'wizard-purchase-finish-step',
+                              models=models)
 
-        self.click(self.wizard.next_button)
+            self.click(self.wizard.next_button)
 
     def test_create_and_receive(self):
-        self.wizard = PurchaseWizard(self.store)
-        self.wizard.model.identifier = 12345
-        self.wizard.model.open_date = localdate(2010, 1, 3).date()
-        self._check_start_step()
-        self._check_item_step()
-        self._check_payment_step()
+        with self.sysparam(MANDATORY_CHECK_NUMBER=True):
+            self.wizard = PurchaseWizard(self.store)
+            self.wizard.model.identifier = 12345
+            self.wizard.model.open_date = localdate(2010, 1, 3).date()
+            self._check_start_step()
+            self._check_item_step()
+            payment_step = self.wizard.get_current_step()
+            payment_step.slave.bank_first_check_number.set_text('12')
+            self._check_payment_step()
 
-        finish_step = self.wizard.get_current_step()
-        finish_step.receive_now.set_active(True)
-        self.wizard.model.expected_receival_date = localdate(2010, 1, 4).date()
+            finish_step = self.wizard.get_current_step()
+            finish_step.receive_now.set_active(True)
+            self.wizard.model.expected_receival_date = localdate(2010, 1, 4).date()
 
-        self.wizard.enable_next()
-        self.click(self.wizard.next_button)
+            self.wizard.enable_next()
+            self.click(self.wizard.next_button)
 
-        receiving_step = self.wizard.get_current_step()
-        receiving_step.invoice_slave.identifier.set_text("12345")
-        receiving_step.invoice_slave.invoice_number.update(67890)
+            receiving_step = self.wizard.get_current_step()
+            receiving_step.invoice_slave.identifier.set_text("12345")
+            receiving_step.invoice_slave.invoice_number.update(67890)
 
-        self.check_wizard(self.wizard, 'wizard-purchase-invoice-step')
+            self.check_wizard(self.wizard, 'wizard-purchase-invoice-step')
 
-        self.click(self.wizard.next_button)
+            self.click(self.wizard.next_button)
 
-        purchase = self.wizard.model
-        models = [purchase]
-        models.extend(purchase.get_items())
-        models.extend(purchase.payments)
-        models.append(purchase.group)
+            purchase = self.wizard.model
+            models = [purchase]
+            models.extend(purchase.get_items())
+            models.extend(purchase.payments)
+            models.append(purchase.group)
 
-        receive = self.wizard.receiving_model
-        models.append(receive)
-        models.extend(receive.get_items())
-        for item in receive.get_items():
-            models.extend(
-                list(item.sellable.product_storable.get_stock_items()))
+            receive = self.wizard.receiving_model
+            models.append(receive)
+            models.extend(receive.get_items())
+            for item in receive.get_items():
+                models.extend(
+                    list(item.sellable.product_storable.get_stock_items()))
 
-        self.check_wizard(self.wizard, 'wizard-purchase-done-received',
-                          models=models)
+            self.check_wizard(self.wizard, 'wizard-purchase-done-received',
+                              models=models)
 
     def test_no_receive_now_for_batch_items(self):
-        sellable = self.create_sellable()
-        product = self.create_product()
-        storable = self.create_storable(is_batch=True)
-        storable.product = product
-        sellable.product = product
+        with self.sysparam(MANDATORY_CHECK_NUMBER=True):
+            sellable = self.create_sellable()
+            product = self.create_product()
+            storable = self.create_storable(is_batch=True)
+            storable.product = product
+            sellable.product = product
 
-        wizard = PurchaseWizard(self.store)
-        self.click(wizard.next_button)
+            wizard = PurchaseWizard(self.store)
+            self.click(wizard.next_button)
 
-        step = wizard.get_current_step()
-        step.sellable_selected(sellable)
-        self.click(step.add_sellable_button)
-        self.click(wizard.next_button)
+            step = wizard.get_current_step()
+            step.sellable_selected(sellable)
+            self.click(step.add_sellable_button)
+            self.click(wizard.next_button)
 
-        self.click(wizard.next_button)
+            payment_step = wizard.get_current_step()
+            payment_step.slave.bank_first_check_number.set_text('12')
+            self.click(wizard.next_button)
 
-        step = wizard.get_current_step()
-        self.assertNotVisible(step, ['receive_now'])
+            step = wizard.get_current_step()
+            self.assertNotVisible(step, ['receive_now'])

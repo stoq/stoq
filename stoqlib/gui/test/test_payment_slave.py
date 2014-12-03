@@ -80,40 +80,37 @@ class TestBillPaymentSlaves(GUITest):
 
 class TestCheckPaymentSlaves(GUITest):
     def test_create(self):
-        sysparam.set_bool(self.store, 'MANDATORY_CHECK_NUMBER', True)
+        with self.sysparam(MANDATORY_CHECK_NUMBER=True):
+            wizard = PurchaseWizard(self.store)
 
-        wizard = PurchaseWizard(self.store)
-
-        method = PaymentMethod.get_by_name(self.store, u'check')
-        order = self.create_purchase_order()
-        order.identifier = 12345
-        slave = CheckMethodSlave(wizard, None, self.store, order, method,
-                                 Decimal(200))
-        self.check_slave(slave, 'slave-check-method')
+            method = PaymentMethod.get_by_name(self.store, u'check')
+            order = self.create_purchase_order()
+            order.identifier = 12345
+            slave = CheckMethodSlave(wizard, None, self.store, order, method,
+                                     Decimal(200))
+            self.check_slave(slave, 'slave-check-method')
 
     def test_check_payment_mandatory_check_number(self):
-        sysparam.set_bool(self.store, 'MANDATORY_CHECK_NUMBER', True)
+        with self.sysparam(MANDATORY_CHECK_NUMBER=True):
+            wizard = PurchaseWizard(self.store)
 
-        wizard = PurchaseWizard(self.store)
+            method = PaymentMethod.get_by_name(self.store, u'check')
+            order = self.create_purchase_order()
+            order.identifier = 123456
+            CheckMethodSlave(wizard, None, self.store, order, method, Decimal(200))
 
-        method = PaymentMethod.get_by_name(self.store, u'check')
-        order = self.create_purchase_order()
-        order.identifier = 123456
-        CheckMethodSlave(wizard, None, self.store, order, method, Decimal(200))
-
-        self.assertNotSensitive(wizard, ['next_button'])
+            self.assertNotSensitive(wizard, ['next_button'])
 
     def test_check_payment(self):
-        sysparam.set_bool(self.store, 'MANDATORY_CHECK_NUMBER', False)
+        with self.sysparam(MANDATORY_CHECK_NUMBER=False):
+            wizard = PurchaseWizard(self.store)
 
-        wizard = PurchaseWizard(self.store)
+            method = PaymentMethod.get_by_name(self.store, u'check')
+            order = self.create_purchase_order()
+            order.identifier = 1234567
+            CheckMethodSlave(wizard, None, self.store, order, method, Decimal(200))
 
-        method = PaymentMethod.get_by_name(self.store, u'check')
-        order = self.create_purchase_order()
-        order.identifier = 1234567
-        CheckMethodSlave(wizard, None, self.store, order, method, Decimal(200))
-
-        self.assertSensitive(wizard, ['next_button'])
+            self.assertSensitive(wizard, ['next_button'])
 
 
 class TestCardPaymentSlaves(GUITest):

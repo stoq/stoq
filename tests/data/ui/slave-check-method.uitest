@@ -22,7 +22,7 @@ GtkFrame(frame1):
         GtkLabel(bank_account_label, fill=True): 'Bank Account:'
         ProxyEntry(bank_account, fill=True): ''
         GtkLabel(bank_label1, expand=True, fill=True, padding=6): 'First Number:'
-        ProxyEntry(bank_first_check_number, expand=True, padding=6): ''
+        ProxyEntry(bank_first_check_number, expand=True, padding=6): '', mandatory
     GtkEventBox(slave_holder, expand=True, fill=True): slave PaymentListSlave is attached
       GtkVBox(toplevel):
         ObjectList(payment_list, expand=True, fill=True):
