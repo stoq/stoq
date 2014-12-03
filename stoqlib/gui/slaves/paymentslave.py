@@ -562,6 +562,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.interval_type_combo.prefill(interval_types)
         self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
         self.interval_type_combo.set_sensitive(has_installments)
+        if sysparam.get_bool('MANDATORY_CHECK_NUMBER'):
+            self.bank_first_check_number.set_property('mandatory', True)
 
         # PaymentListSlave setup
         self._setup_payment_list()
@@ -674,15 +676,19 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     def after_bank_id__changed(self, widget):
         self._clear_if_unset(widget, 'bank_id')
+        self.setup_payments()
 
     def after_bank_branch__changed(self, widget):
         self._clear_if_unset(widget, 'bank_branch')
+        self.setup_payments()
 
     def after_bank_account__changed(self, widget):
         self._clear_if_unset(widget, 'bank_account')
+        self.setup_payments()
 
     def after_bank_first_check_number__changed(self, widget):
         self._clear_if_unset(widget, 'bank_first_check_number')
+        self.setup_payments()
 
     def on_installments_number__validate(self, widget, value):
         if not value:
