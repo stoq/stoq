@@ -417,6 +417,8 @@ class StockApp(ShellApp):
         model = self.run_dialog(ProductStockEditor, store, product)
         store.confirm(model)
         store.close()
+        if model:
+            self.refresh()
 
     def _on_info_transfers__clicked(self, button):
         self._search_transfers()
