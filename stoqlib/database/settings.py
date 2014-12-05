@@ -234,31 +234,11 @@ def get_database_version(store):
 
     :param store: a store
     :returns: the version as a 3 item tuple
-    :raises: :exc:`stoqlib.exceptions.DatabaseError` if any error ocour
-        in the process
     """
-    server_version = store.execute('SHOW server_version;').get_one()[0].split('.')
-    try:
-        if len(server_version) == 2:
-            # Postgresql betas will return its version as something like:
-            # '9.4beta2', '9.4~beta3'
-            version_tuple = (
-                int(server_version[0]),
-                int(re.sub(r'[\~]*beta[0-9]*', '', server_version[1])),
-                0)
-        else:
-            # We do the replace on server_version[2] because postgresql reports
-            # its version a little different on other platforms. For example, on
-            # Windows, it reports like this:
-            # "PostgreSQL 9.3.4, compiled by Visual C++ build 1600, 64-bit"
-            version_tuple = (int(server_version[0]),
-                             int(server_version[1]),
-                             int(server_version[2].replace(',', '')))
-    except ValueError:
-        raise DatabaseError(
-            "Error getting server version: %s" % (server_version, ))
-
-    return version_tuple
+    version_num = store.execute('SHOW server_version_num;').get_one()[0]
+    version_num = '0' * (6 - len(version_num)) + version_num
+    return tuple(map(
+        int, [version_num[i:i + 2] for i in range(0, len(version_num), 2)]))
 
 
 class DatabaseSettings(object):

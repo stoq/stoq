@@ -46,16 +46,20 @@ class DatabaseSettingsTest(DomainTest):
         store = mock.Mock()
 
         # Test version returned by Ubuntu
-        store.execute.return_value = _FakeResults("9.1.14")
+        store.execute.return_value = _FakeResults("90114")
         self.assertEqual(get_database_version(store), (9, 1, 14))
 
         # Test version returned by Windows
-        store.execute.return_value = _FakeResults("9.3.4")
+        store.execute.return_value = _FakeResults("90304")
         self.assertEqual(get_database_version(store), (9, 3, 4))
 
         # Test version returned by Debian (while postgresql were in beta)
-        store.execute.return_value = _FakeResults("9.4beta3")
+        store.execute.return_value = _FakeResults("90400")
         self.assertEqual(get_database_version(store), (9, 4, 0))
+
+        # Fake version 10.1.99
+        store.execute.return_value = _FakeResults("100199")
+        self.assertEqual(get_database_version(store), (10, 1, 99))
 
     def test_get_store_dsn(self):
         settings = DatabaseSettings(address='address',
