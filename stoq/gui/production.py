@@ -239,8 +239,11 @@ class ProductionApp(ShellApp):
         assert order is not None
         store = api.new_store()
         model = store.fetch(order)
+        initial_status = model.status
         self.run_dialog(ProductionDetailsDialog, store, model)
         store.confirm(True)
+        if initial_status != model.status:
+            self.refresh()
         store.close()
 
     def _finalize_production(self):
