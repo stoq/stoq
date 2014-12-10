@@ -318,10 +318,14 @@ class PluginManager(object):
         A helper method to activate all installed plugins in just one
         call, without having to get and activate one by one.
         """
-        # FIXME: Get intersection to avoid trying to activate a plugin that
-        #        isn't available. We should do something to remove such ones.
-        for plugin_name in (set(self.installed_plugins_names) &
-                            set(self.available_plugins_names)):
+        available_plugins = self.available_plugins_names
+
+        for plugin_name in self.installed_plugins_names:
+            if not plugin_name in available_plugins:
+                raise AssertionError(
+                    "Plugin %r not found on the system. "
+                    "Available plugins: %r" % (plugin_name, available_plugins))
+
             if not self.is_active(plugin_name):
                 self.activate_plugin(plugin_name)
 

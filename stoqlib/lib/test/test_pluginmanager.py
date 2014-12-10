@@ -25,6 +25,7 @@
 
 """Test for stoqlib.lib.pluginmanager module"""
 
+import contextlib
 import io
 import os
 import shutil
@@ -306,31 +307,31 @@ class TestPluginManager(DomainTest):
         dep_plugin.reset()
 
     def test_activate_installed_plugins(self):
-        available_plugins_names = set(['a_', 'b_', 'c_', 'd_'])
-        installed_plugins_names = set(['b_', 'c_', 'e_'])
-        should_be_called = (available_plugins_names &
-                            installed_plugins_names)
-        names_called = []
+        with contextlib.nested(
+                mock.patch.object(PluginManager, 'available_plugins_names'),
+                mock.patch.object(PluginManager, 'installed_plugins_names'),
+                mock.patch.object(PluginManager, 'activate_plugin')) as ctx:
+            available_plugins, installed_plugins, activate_plugin = ctx
 
-        _available = PluginManager.available_plugins_names
-        PluginManager.available_plugins_names = available_plugins_names
-        _installed = PluginManager.installed_plugins_names
-        PluginManager.installed_plugins_names = installed_plugins_names
-        _activate = PluginManager.activate_plugin
-        PluginManager.activate_plugin = lambda s, n: names_called.append(n)
+            available_plugins.__get__ = mock.Mock(
+                return_value=['a', 'b', 'c', 'd'])
+            installed_plugins.__get__ = mock.Mock(
+                return_value=['b', 'c'])
 
-        self._manager.activate_installed_plugins()
+            self._manager.activate_installed_plugins()
 
-        # Test if some plugin was called twice
-        for name_called in names_called:
-            self.assertEqual(names_called.count(name_called), 1)
+            self.assertEqual(activate_plugin.call_count, 2)
+            activate_plugin.assert_has_calls(
+                [mock.call('b'), mock.call('c')])
 
-        # Test if all plugins that should be installed were
-        self.assertEqual(len(set(names_called) ^ should_be_called), 0)
+            installed_plugins.__get__ = mock.Mock(
+                return_value=['b', 'c', 'e'])
 
-        PluginManager.installed_plugins_names = _installed
-        PluginManager.available_plugins_names = _available
-        PluginManager.activate_plugin = _activate
+            with self.assertRaisesRegexp(
+                    AssertionError,
+                    ("Plugin 'e' not found on the system. "
+                     "Available plugins: \['a', 'b', 'c', 'd'\]")):
+                self._manager.activate_installed_plugins()
 
     #
     #  Private
