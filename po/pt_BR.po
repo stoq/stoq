@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-09 14:44-0200\n"
-"PO-Revision-Date: 2014-12-09 16:44+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2014-12-10 14:26-0200\n"
+"PO-Revision-Date: 2014-12-10 16:23+0000\n"
+"Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1109,13 +1109,13 @@ msgstr "Data final:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:6
 #: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/QualityTestEditor.ui.h:3
-#: ../stoqlib/gui/search/searchfilters.py:171
+#: ../stoqlib/gui/search/searchfilters.py:172
 msgid "From:"
 msgstr "De:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:7
 #: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:4
-#: ../stoqlib/gui/search/searchfilters.py:181
+#: ../stoqlib/gui/search/searchfilters.py:182
 msgid "To:"
 msgstr "Até:"
 
@@ -3337,7 +3337,7 @@ msgstr "Altura do selim"
 
 #: ../data/template/bikeshop/bike-measures.html:6
 msgid "Center/Top"
-msgstr ""
+msgstr "Centro/Topo"
 
 #: ../data/template/bikeshop/bike-measures.html:7
 msgid "Saddle/Stem Distance"
@@ -3345,7 +3345,7 @@ msgstr "Distância selim/mesa"
 
 #: ../data/template/bikeshop/bike-measures.html:8
 msgid "Saddle tip/Stem center"
-msgstr ""
+msgstr "Ponta Selim/Centro mesa"
 
 #: ../data/template/bikeshop/bike-measures.html:9
 msgid "Stem Height"
@@ -3353,15 +3353,15 @@ msgstr "Altura da mesa"
 
 #: ../data/template/bikeshop/bike-measures.html:10
 msgid "Fork tip/Stem top"
-msgstr ""
+msgstr "Ponta garfo/Topo mesa"
 
 #: ../data/template/bikeshop/bike-measures.html:11
 msgid "Time Started"
-msgstr ""
+msgstr "Hora de Início"
 
 #: ../data/template/bikeshop/bike-measures.html:12
 msgid "Time Finished"
-msgstr ""
+msgstr "Hora finalização"
 
 #: ../data/template/bikeshop/quote.html:19
 #: ../data/template/workorder/quote.html:18
@@ -8422,7 +8422,7 @@ msgid "Talk about Stoq online"
 msgstr "Falar sobre o Stoq on-line"
 
 #: ../stoq/gui/shell/shellwindow.py:202 ../stoq/gui/shell/shellwindow.py:223
-#: ../stoqlib/gui/search/searchfilters.py:662
+#: ../stoqlib/gui/search/searchfilters.py:663
 #: ../stoqlib/gui/widgets/searchentry.py:41
 msgid "Search"
 msgstr "Buscar"
@@ -13476,37 +13476,37 @@ msgstr "S_elecione Itens"
 msgid "Method:"
 msgstr "Forma:"
 
-#: ../stoqlib/gui/search/searchfilters.py:226
+#: ../stoqlib/gui/search/searchfilters.py:227
 msgid "from"
 msgstr "de"
 
-#: ../stoqlib/gui/search/searchfilters.py:227
+#: ../stoqlib/gui/search/searchfilters.py:228
 msgid "to"
 msgstr "para"
 
-#: ../stoqlib/gui/search/searchfilters.py:287
+#: ../stoqlib/gui/search/searchfilters.py:288
 msgid "Custom day"
 msgstr "Dia"
 
-#: ../stoqlib/gui/search/searchfilters.py:288
+#: ../stoqlib/gui/search/searchfilters.py:289
 msgid "Custom interval"
 msgstr "Intervalo"
 
-#: ../stoqlib/gui/search/searchfilters.py:413
-#: ../stoqlib/gui/search/searchfilters.py:423
-#: ../stoqlib/gui/search/searchfilters.py:443
+#: ../stoqlib/gui/search/searchfilters.py:414
+#: ../stoqlib/gui/search/searchfilters.py:424
+#: ../stoqlib/gui/search/searchfilters.py:444
 msgid "Invalid date"
 msgstr "Data inválida"
 
-#: ../stoqlib/gui/search/searchfilters.py:671
+#: ../stoqlib/gui/search/searchfilters.py:672
 msgid "Add a filter"
 msgstr "Adicionar um filtro"
 
-#: ../stoqlib/gui/search/searchfilters.py:675
+#: ../stoqlib/gui/search/searchfilters.py:676
 msgid "Clear the search"
 msgstr "Limpar busca"
 
-#: ../stoqlib/gui/search/searchfilters.py:801
+#: ../stoqlib/gui/search/searchfilters.py:802
 msgid "And"
 msgstr "e"
 
@@ -13547,7 +13547,7 @@ msgid "Between"
 msgstr "Entre"
 
 #: ../stoqlib/gui/search/searchoptions.py:194
-#: ../stoqlib/gui/search/searchoptions.py:249
+#: ../stoqlib/gui/search/searchoptions.py:254
 msgid "Equals to"
 msgstr "Igual a"
 
@@ -13560,18 +13560,22 @@ msgid "Lower or Equal"
 msgstr "Menor ou igual"
 
 #: ../stoqlib/gui/search/searchoptions.py:226
+msgid "Identical to"
+msgstr "Idêntico à"
+
+#: ../stoqlib/gui/search/searchoptions.py:231
 msgid "Contains Exactly"
 msgstr "Contém exatamente"
 
-#: ../stoqlib/gui/search/searchoptions.py:231
+#: ../stoqlib/gui/search/searchoptions.py:236
 msgid "Contains All Words"
 msgstr "Contém todas as palavras"
 
-#: ../stoqlib/gui/search/searchoptions.py:236
+#: ../stoqlib/gui/search/searchoptions.py:241
 msgid "Does Not Contain"
 msgstr "Não contém"
 
-#: ../stoqlib/gui/search/searchoptions.py:254
+#: ../stoqlib/gui/search/searchoptions.py:259
 msgid "Different from"
 msgstr "Diferente de"
 

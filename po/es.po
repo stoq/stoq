@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-09 14:44-0200\n"
-"PO-Revision-Date: 2014-12-09 16:44+0000\n"
+"POT-Creation-Date: 2014-12-10 14:26-0200\n"
+"PO-Revision-Date: 2014-12-10 16:18+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/stoq/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -1105,13 +1105,13 @@ msgstr "Fecha de finalización:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:6
 #: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/QualityTestEditor.ui.h:3
-#: ../stoqlib/gui/search/searchfilters.py:171
+#: ../stoqlib/gui/search/searchfilters.py:172
 msgid "From:"
 msgstr "De:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:7
 #: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:4
-#: ../stoqlib/gui/search/searchfilters.py:181
+#: ../stoqlib/gui/search/searchfilters.py:182
 msgid "To:"
 msgstr "A:"
 
@@ -8418,7 +8418,7 @@ msgid "Talk about Stoq online"
 msgstr "Hablar sobre Stoq en línea"
 
 #: ../stoq/gui/shell/shellwindow.py:202 ../stoq/gui/shell/shellwindow.py:223
-#: ../stoqlib/gui/search/searchfilters.py:662
+#: ../stoqlib/gui/search/searchfilters.py:663
 #: ../stoqlib/gui/widgets/searchentry.py:41
 msgid "Search"
 msgstr "Buscar"
@@ -13472,37 +13472,37 @@ msgstr ""
 msgid "Method:"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:226
+#: ../stoqlib/gui/search/searchfilters.py:227
 msgid "from"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:227
+#: ../stoqlib/gui/search/searchfilters.py:228
 msgid "to"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:287
+#: ../stoqlib/gui/search/searchfilters.py:288
 msgid "Custom day"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:288
+#: ../stoqlib/gui/search/searchfilters.py:289
 msgid "Custom interval"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:413
-#: ../stoqlib/gui/search/searchfilters.py:423
-#: ../stoqlib/gui/search/searchfilters.py:443
+#: ../stoqlib/gui/search/searchfilters.py:414
+#: ../stoqlib/gui/search/searchfilters.py:424
+#: ../stoqlib/gui/search/searchfilters.py:444
 msgid "Invalid date"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:671
+#: ../stoqlib/gui/search/searchfilters.py:672
 msgid "Add a filter"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:675
+#: ../stoqlib/gui/search/searchfilters.py:676
 msgid "Clear the search"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:801
+#: ../stoqlib/gui/search/searchfilters.py:802
 msgid "And"
 msgstr ""
 
@@ -13543,7 +13543,7 @@ msgid "Between"
 msgstr ""
 
 #: ../stoqlib/gui/search/searchoptions.py:194
-#: ../stoqlib/gui/search/searchoptions.py:249
+#: ../stoqlib/gui/search/searchoptions.py:254
 msgid "Equals to"
 msgstr ""
 
@@ -13556,18 +13556,22 @@ msgid "Lower or Equal"
 msgstr ""
 
 #: ../stoqlib/gui/search/searchoptions.py:226
-msgid "Contains Exactly"
+msgid "Identical to"
 msgstr ""
 
 #: ../stoqlib/gui/search/searchoptions.py:231
-msgid "Contains All Words"
+msgid "Contains Exactly"
 msgstr ""
 
 #: ../stoqlib/gui/search/searchoptions.py:236
+msgid "Contains All Words"
+msgstr ""
+
+#: ../stoqlib/gui/search/searchoptions.py:241
 msgid "Does Not Contain"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchoptions.py:254
+#: ../stoqlib/gui/search/searchoptions.py:259
 msgid "Different from"
 msgstr ""
 
