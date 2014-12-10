@@ -222,6 +222,11 @@ class StringSearchOption(object):
     pass
 
 
+class IdenticalTo(StringSearchOption):
+    name = _('Identical to')
+    mode = StringQueryState.IDENTICAL_TO
+
+
 class ContainsExactly(StringSearchOption):
     name = _('Contains Exactly')
     mode = StringQueryState.CONTAINS_EXACTLY

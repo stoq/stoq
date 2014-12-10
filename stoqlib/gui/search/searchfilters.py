@@ -45,6 +45,7 @@ from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
                                             NumberIntervalQueryState, BoolQueryState)
 from stoqlib.gui.search.searchoptions import (Any,
                                               Between,
+                                              IdenticalTo,
                                               ContainsExactly,
                                               ContainsAll,
                                               DoesNotContain,
@@ -681,7 +682,7 @@ class StringSearchFilter(SearchFilter):
         self.pack_start(self.entry, False, False, 6)
         self.entry.show()
 
-        for option in (ContainsAll, ContainsExactly, DoesNotContain):
+        for option in (ContainsAll, ContainsExactly, DoesNotContain, IdenticalTo):
             self._add_option(option)
         self.mode.select_item_by_position(0)
 

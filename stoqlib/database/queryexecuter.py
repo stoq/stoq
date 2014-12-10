@@ -88,8 +88,9 @@ class StringQueryState(QueryState):
     :cvar text: string
     """
     (CONTAINS_EXACTLY,
+     IDENTICAL_TO,
      NOT_CONTAINS,
-     CONTAINS_ALL) = range(3)
+     CONTAINS_ALL) = range(4)
 
     def __init__(self, filter, text, mode=CONTAINS_ALL):
         QueryState.__init__(self, filter)
@@ -530,7 +531,7 @@ class QueryExecuter(object):
             return And(*queries)
 
     def _parse_string_state(self, state, table_field):
-        if not state.text:
+        if not state.text.strip():
             return
 
         def _like(value):
@@ -541,8 +542,10 @@ class QueryExecuter(object):
         if state.mode == StringQueryState.CONTAINS_ALL:
             queries = [_like(word) for word in state.text.split(' ') if word]
             retval = And(*queries)
+        elif state.mode == StringQueryState.IDENTICAL_TO:
+            retval = Lower(table_field) == state.text.lower()
         elif state.mode == StringQueryState.CONTAINS_EXACTLY:
-            retval = (Lower(table_field) == state.text.lower())
+            retval = (_like(state.text.lower()))
         elif state.mode == StringQueryState.NOT_CONTAINS:
             queries = [Not(_like(word)) for word in state.text.split(' ') if word]
             retval = And(*queries)

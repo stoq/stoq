@@ -98,6 +98,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
                         item: 'Contains Exactly'
+                        item: 'Identical to'
                         item: 'Does Not Contain'
                       HintedEntry(padding=6): '', hidden
                     GtkButton(): 'gtk-find'
