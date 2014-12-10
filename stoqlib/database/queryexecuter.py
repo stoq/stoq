@@ -530,7 +530,7 @@ class QueryExecuter(object):
             return And(*queries)
 
     def _parse_string_state(self, state, table_field):
-        if not state.text:
+        if not state.text.strip():
             return
 
         def _like(value):
