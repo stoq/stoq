@@ -26,13 +26,16 @@
 """Test for stoqlib.lib.pluginmanager module"""
 
 import io
+import os
+import shutil
+import tempfile
 
 import mock
 from kiwi.python import Settable
 from zope.interface import implementer
 
 from stoqlib.database.runtime import new_store
-from stoqlib.domain.plugin import InstalledPlugin
+from stoqlib.domain.plugin import InstalledPlugin, PluginEgg
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
 from stoqlib.lib.pluginmanager import (PluginError, register_plugin,
@@ -133,6 +136,48 @@ class TestPluginManager(DomainTest):
     #
     #  Tests
     #
+
+    @mock.patch('stoqlib.lib.pluginmanager.get_application_dir')
+    @mock.patch('stoqlib.lib.pluginmanager.get_default_store')
+    def test_create_eggs_cache(self, get_default_store, get_application_dir):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            get_default_store.return_value = self.store
+            get_application_dir.return_value = temp_dir
+            plugins_dir = os.path.join(temp_dir, 'plugins')
+            os.makedirs(plugins_dir)
+
+            with open(os.path.join(plugins_dir, 'foobar.egg'), 'wb') as f:
+                f.write('wrong_content')
+
+            with open(os.path.join(plugins_dir, 'foo.egg'), 'wb') as f:
+                f.write('foo_content')
+
+            PluginEgg(store=self.store, plugin_name=u'foobar',
+                      egg_content='right_content',
+                      egg_md5sum=u'e194544df936c31ebf9b4c2d4a6ef213')
+            PluginEgg(store=self.store, plugin_name=u'foo',
+                      egg_content='will_not_be_overwritten',
+                      egg_md5sum=u'2b3bd636ec90eb39c3c171dd831b8c30')
+            PluginEgg(store=self.store, plugin_name=u'bar',
+                      egg_content='bar_content',
+                      egg_md5sum=u'5f084b7281515082703bd903708c977a')
+
+            self._manager._create_eggs_cache()
+
+            # foobar didn't match md5 so it should have been overwritten
+            with open(os.path.join(plugins_dir, 'foobar.egg')) as f:
+                self.assertEqual(f.read(), 'right_content')
+
+            # foo matched so it should be untouched
+            with open(os.path.join(plugins_dir, 'foo.egg')) as f:
+                self.assertEqual(f.read(), 'foo_content')
+
+            # bar didn't exist so it should have been created
+            with open(os.path.join(plugins_dir, 'bar.egg')) as f:
+                self.assertEqual(f.read(), 'bar_content')
+        finally:
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
     def test_get_plugin_manager(self):
         # PluginManager should be a singleton

@@ -32,12 +32,13 @@ from kiwi.desktopparser import DesktopParser
 from kiwi.component import get_utility, provide_utility
 from zope.interface import implementer
 
-from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.database.exceptions import SQLError
-from stoqlib.domain.plugin import InstalledPlugin
-from stoqlib.lib.message import error
-from stoqlib.lib.kiwilibrary import library
+from stoqlib.database.runtime import get_default_store, new_store
+from stoqlib.domain.plugin import InstalledPlugin, PluginEgg
+from stoqlib.lib.fileutils import md5sum_for_filename
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
+from stoqlib.lib.kiwilibrary import library
+from stoqlib.lib.message import error
 from stoqlib.lib.osutils import get_system_locale, get_application_dir
 from stoqlib.lib.settings import get_settings
 
@@ -101,6 +102,7 @@ class PluginManager(object):
         self._active_plugins = {}
         self._plugin_descriptions = {}
 
+        self._create_eggs_cache()
         self._read_plugin_descriptions()
 
     #
@@ -126,6 +128,38 @@ class PluginManager(object):
     #
     # Private
     #
+
+    def _create_eggs_cache(self):
+        log.info("Creating cache for plugins eggs")
+
+        # $HOME/.stoq/plugins
+        default_store = get_default_store()
+        path = os.path.join(get_application_dir(), 'plugins')
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        existing_eggs = {
+            unicode(os.path.basename(f)[:-4]): md5sum_for_filename(f) for f in
+            glob.iglob(os.path.join(path, '*.egg'))}
+
+        # Now extract all eggs from the database and put it where stoq know
+        # how to load them
+        for plugin_name, egg_md5sum in default_store.using(PluginEgg).find(
+                (PluginEgg.plugin_name, PluginEgg.egg_md5sum)):
+            # A little optimization to avoid loading the egg in memory if we
+            # already have a valid version cached.
+            if existing_eggs.get(plugin_name, u'') == egg_md5sum:
+                log.info("Plugin %r egg md5sum matches. Skipping it..." % (
+                    plugin_name, ))
+                continue
+
+            log.info("Creating egg cache for plugin %r" % (plugin_name, ))
+            egg_filename = '%s.egg' % (plugin_name, )
+            plugin_egg = default_store.find(
+                PluginEgg, plugin_name=plugin_name).one()
+
+            with open(os.path.join(path, egg_filename), 'wb') as f:
+                f.write(plugin_egg.egg_content)
 
     def _get_external_plugins_paths(self):
         # This is the dir containing stoq/kiwi/stoqdrivers/etc

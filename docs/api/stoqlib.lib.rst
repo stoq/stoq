@@ -169,6 +169,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`fileutils` Module
+-----------------------
+
+.. automodule:: stoqlib.lib.fileutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`formatters` Module
 ------------------------
 

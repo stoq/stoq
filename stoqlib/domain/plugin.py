@@ -26,7 +26,7 @@
 # pylint: enable=E1101
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.properties import UnicodeCol, IntCol
+from stoqlib.database.properties import UnicodeCol, IntCol, BLOBCol
 
 
 class InstalledPlugin(Domain):
@@ -47,3 +47,13 @@ class InstalledPlugin(Domain):
         :returns: list of strings
         """
         return [p.plugin_name for p in store.find(cls)]
+
+
+class PluginEgg(Domain):
+    """A cache for plugins eggs"""
+
+    __storm_table__ = 'plugin_egg'
+
+    plugin_name = UnicodeCol()
+    egg_content = BLOBCol(default=None)
+    egg_md5sum = UnicodeCol(default=None)
