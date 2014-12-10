@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-02 13:33-0200\n"
-"PO-Revision-Date: 2014-11-17 16:04+0000\n"
+"POT-Creation-Date: 2014-12-09 14:44-0200\n"
+"PO-Revision-Date: 2014-12-09 16:44+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/stoq/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -1506,7 +1506,7 @@ msgstr ""
 #: ../data/glade/MultipleMethodSlave.ui.h:2
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
 #: ../data/template/optical/saledetails.html:39
-#: ../stoqlib/gui/slaves/paymentslave.py:1242
+#: ../stoqlib/gui/slaves/paymentslave.py:1248
 #: ../stoqlib/gui/wizards/salereturnwizard.py:373
 msgid "Missing:"
 msgstr ""
@@ -3214,7 +3214,7 @@ msgstr ""
 #: ../stoqlib/gui/search/tillsearch.py:116
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:278
 #: ../stoqlib/gui/slaves/paymentslave.py:253
-#: ../stoqlib/gui/slaves/paymentslave.py:1262
+#: ../stoqlib/gui/slaves/paymentslave.py:1268
 #: ../stoqlib/gui/slaves/productionslave.py:187
 #: ../stoqlib/gui/slaves/productslave.py:258
 #: ../stoqlib/gui/slaves/productslave.py:513
@@ -3258,7 +3258,7 @@ msgstr ""
 #: ../stoqlib/gui/search/paymentsearch.py:82
 #: ../stoqlib/gui/search/paymentsearch.py:177
 #: ../stoqlib/gui/slaves/paymentslave.py:278
-#: ../stoqlib/gui/slaves/paymentslave.py:1267
+#: ../stoqlib/gui/slaves/paymentslave.py:1273
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:126
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:91
 msgid "Due date"
@@ -3294,7 +3294,7 @@ msgstr ""
 #: ../stoqlib/gui/search/tillsearch.py:122
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:281
 #: ../stoqlib/gui/slaves/paymentslave.py:280
-#: ../stoqlib/gui/slaves/paymentslave.py:1266
+#: ../stoqlib/gui/slaves/paymentslave.py:1272
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:132
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:94
 #: ../stoqlib/reporting/payment.py:74
@@ -3331,12 +3331,32 @@ msgstr ""
 msgid "Saddle Height"
 msgstr ""
 
+#: ../data/template/bikeshop/bike-measures.html:6
+msgid "Center/Top"
+msgstr ""
+
 #: ../data/template/bikeshop/bike-measures.html:7
 msgid "Saddle/Stem Distance"
 msgstr ""
 
+#: ../data/template/bikeshop/bike-measures.html:8
+msgid "Saddle tip/Stem center"
+msgstr ""
+
 #: ../data/template/bikeshop/bike-measures.html:9
 msgid "Stem Height"
+msgstr ""
+
+#: ../data/template/bikeshop/bike-measures.html:10
+msgid "Fork tip/Stem top"
+msgstr ""
+
+#: ../data/template/bikeshop/bike-measures.html:11
+msgid "Time Started"
+msgstr ""
+
+#: ../data/template/bikeshop/bike-measures.html:12
+msgid "Time Finished"
 msgstr ""
 
 #: ../data/template/bikeshop/quote.html:19
@@ -3497,7 +3517,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/purchasedetails.py:216
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:148
 #: ../stoqlib/gui/dialogs/saledetails.py:268
-#: ../stoqlib/gui/slaves/paymentslave.py:997
+#: ../stoqlib/gui/slaves/paymentslave.py:1003
 msgid "Payment"
 msgstr ""
 
@@ -4026,7 +4046,7 @@ msgstr ""
 #: ../stoqlib/gui/search/salesearch.py:297
 #: ../stoqlib/gui/search/transfersearch.py:129
 #: ../stoqlib/gui/search/workordersearch.py:61
-#: ../stoqlib/gui/slaves/paymentslave.py:1264
+#: ../stoqlib/gui/slaves/paymentslave.py:1270
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:131
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:93
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:119
@@ -6588,10 +6608,12 @@ msgid "Check the server configuration and try again."
 msgstr ""
 
 #: ../stoq/gui/config.py:977
+#, python-brace-format
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
 #: ../stoq/gui/config.py:983
+#, python-brace-format
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
@@ -6865,7 +6887,7 @@ msgid "Cancel inventory"
 msgstr ""
 
 #: ../stoq/gui/inventory.py:220 ../stoq/gui/pos.py:833 ../stoq/gui/pos.py:1264
-#: ../stoq/gui/production.py:259 ../stoq/gui/purchase.py:414
+#: ../stoq/gui/production.py:262 ../stoq/gui/purchase.py:414
 #: ../stoq/gui/sales.py:522 ../stoqlib/gui/base/wizards.py:340
 #: ../stoqlib/gui/editors/baseeditor.py:456
 msgid "Don't cancel"
@@ -7220,7 +7242,7 @@ msgstr ""
 msgid "This will cancel the current order. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/pos.py:833 ../stoq/gui/production.py:259
+#: ../stoq/gui/pos.py:833 ../stoq/gui/production.py:262
 #: ../stoq/gui/purchase.py:408
 msgid "Cancel order"
 msgstr ""
@@ -7406,19 +7428,19 @@ msgstr ""
 msgid "Cancelled"
 msgstr ""
 
-#: ../stoq/gui/production.py:247
+#: ../stoq/gui/production.py:250
 msgid "The selected order will be finalized."
 msgstr ""
 
-#: ../stoq/gui/production.py:248
+#: ../stoq/gui/production.py:251
 msgid "Finalize order"
 msgstr ""
 
-#: ../stoq/gui/production.py:248
+#: ../stoq/gui/production.py:251
 msgid "Don't finalize"
 msgstr ""
 
-#: ../stoq/gui/production.py:258 ../stoq/gui/purchase.py:410
+#: ../stoq/gui/production.py:261 ../stoq/gui/purchase.py:410
 msgid "The selected order will be cancelled."
 msgstr ""
 
@@ -9145,22 +9167,22 @@ msgid ""
 "computer."
 msgstr ""
 
-#: ../stoqlib/database/settings.py:346
+#: ../stoqlib/database/settings.py:326
 msgid "Could not find a database server on this computer"
 msgstr ""
 
-#: ../stoqlib/database/settings.py:357
+#: ../stoqlib/database/settings.py:337
 #, python-format
 msgid ""
 "Could not connect to %s database. The error message is '%s'. Please fix the "
 "connection settings you have set and try again."
 msgstr ""
 
-#: ../stoqlib/database/settings.py:823
+#: ../stoqlib/database/settings.py:803
 msgid "Problem with PostgreSQL version"
 msgstr ""
 
-#: ../stoqlib/database/settings.py:824
+#: ../stoqlib/database/settings.py:804
 #, python-format
 msgid ""
 "The version of the PostgreSQL database server (%s) and the postgres client "
@@ -9248,12 +9270,14 @@ msgid "User"
 msgstr ""
 
 #: ../stoqlib/domain/event.py:124
+#, python-brace-format
 msgid ""
 "Sale {sale_number}: User {user_name} authorized {discount_value} of discount changing\n"
 " {product} value from {original_price} to {new_price}."
 msgstr ""
 
 #: ../stoqlib/domain/event.py:156
+#, python-brace-format
 msgid ""
 "sale {sale_number}: User {user_name} authorized {discount_value} of discount"
 " changing the value from {original_price} to {new_price}."
@@ -9362,6 +9386,7 @@ msgstr ""
 
 #. TRANSLATORS: This will generate something like: 1/1 Money for sale 00001
 #: ../stoqlib/domain/payment/method.py:280
+#, python-brace-format
 msgid "{installment} {method_name} for {order_description}"
 msgstr ""
 
@@ -9427,10 +9452,12 @@ msgid "This payment is already paid."
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:423
+#, python-brace-format
 msgid "{method} payment with value {value:.2f} was paid"
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:427
+#, python-brace-format
 msgid ""
 "{method} payment with value original value {original_value:.2f} was paid "
 "with value {value:.2f}"
@@ -9442,6 +9469,7 @@ msgid "Invalid status for cancel operation, got %s"
 msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:454
+#, python-brace-format
 msgid "{method} payment with value {value:.2f} was cancelled"
 msgstr ""
 
@@ -9918,59 +9946,69 @@ msgid "Unable to make sales for clients with status %s"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1020
+#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1026
+#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1053
+#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid and confirmed with value"
 " {total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1059
+#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid and confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1065
+#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid with value "
 "{total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1071
+#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid with value {total_value:.2f}."
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1142
+#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1146
+#, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was partially returned with value"
 " {total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1155
+#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:1159
+#, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was partially returned with value "
 "{total_value:.2f}. Reason: {reason}"
@@ -11272,6 +11310,7 @@ msgstr ""
 #. change it's positions. In the way it is,
 #. it will product for example 'December 2012'
 #: ../stoqlib/gui/dialogs/sintegradialog.py:109
+#, python-brace-format
 msgid "{month} {year}"
 msgstr ""
 
@@ -11875,7 +11914,7 @@ msgid "Date cannot be empty"
 msgstr ""
 
 #: ../stoqlib/gui/editors/paymenteditor.py:258
-#: ../stoqlib/gui/slaves/paymentslave.py:1575
+#: ../stoqlib/gui/slaves/paymentslave.py:1581
 msgid "The value must be greater than zero."
 msgstr ""
 
@@ -13816,7 +13855,7 @@ msgid "Bank account"
 msgstr ""
 
 #: ../stoqlib/gui/slaves/paymentslave.py:295
-#: ../stoqlib/gui/slaves/paymentslave.py:1244
+#: ../stoqlib/gui/slaves/paymentslave.py:1250
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:119
 #: ../stoqlib/gui/wizards/salereturnwizard.py:371
 msgid "Overpaid:"
@@ -13826,52 +13865,52 @@ msgstr ""
 msgid "Payment dates can't repeat or be lower than previous dates."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:690
+#: ../stoqlib/gui/slaves/paymentslave.py:696
 msgid "The number of installments cannot be 0"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:695
+#: ../stoqlib/gui/slaves/paymentslave.py:701
 #, python-format
 msgid "The number of installments must be less then %d"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:705
+#: ../stoqlib/gui/slaves/paymentslave.py:711
 msgid "Expected first installment date must be set to a future date"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:985
+#: ../stoqlib/gui/slaves/paymentslave.py:991
 #, python-format
 msgid "Number of installments must be greater than %d and lower than %d"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:1246
+#: ../stoqlib/gui/slaves/paymentslave.py:1252
 #: ../stoqlib/gui/wizards/salereturnwizard.py:375
 msgid "Difference:"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:1334
+#: ../stoqlib/gui/slaves/paymentslave.py:1340
 #, python-format
 msgid "You can not add more payments using the %s payment method."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:1404
+#: ../stoqlib/gui/slaves/paymentslave.py:1410
 msgid "Payment renegotiated"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:1582
+#: ../stoqlib/gui/slaves/paymentslave.py:1588
 msgid "The value must be lesser than the missing value."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:1586
+#: ../stoqlib/gui/slaves/paymentslave.py:1592
 msgid "You must provide a payment value."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:1591
+#: ../stoqlib/gui/slaves/paymentslave.py:1597
 #, python-format
 msgid "Client does not have enough credit. Client store credit: %s."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentslave.py:1597
+#: ../stoqlib/gui/slaves/paymentslave.py:1603
 #, python-format
 msgid "Client does not have enough credit. Client credit: %s."
 msgstr ""
@@ -16937,6 +16976,7 @@ msgstr ""
 
 #. :
 #: ../stoqlib/reporting/report.py:121
+#, python-brace-format
 msgid "Listing {rows} of a total of {total_rows} {item}"
 msgstr ""
 
@@ -16975,10 +17015,12 @@ msgid "Sold Items by Branch Report"
 msgstr ""
 
 #: ../stoqlib/reporting/sale.py:132
+#, python-brace-format
 msgid "payment for {salesperson} on branch {branch}"
 msgstr ""
 
 #: ../stoqlib/reporting/sale.py:134
+#, python-brace-format
 msgid "payments for {salesperson} on branch {branch}"
 msgstr ""
 
