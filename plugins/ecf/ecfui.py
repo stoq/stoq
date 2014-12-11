@@ -55,6 +55,7 @@ from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
 from ecf.cat52 import MODEL_CODES
@@ -731,6 +732,9 @@ class ECFUI(object):
 
     def _on_EditorCreateEvent(self, editor, model, store, *args):
         from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-        if isinstance(editor, SaleDetailsDialog):
+        manager = get_plugin_manager()
+        nfe_active = manager.is_active('nfe')
+        if not nfe_active and isinstance(editor, SaleDetailsDialog):
+            # Only display the coupon number if the nfe is not active.
             editor.invoice_label.set_text(_('Coupon Number'))
             editor.invoice_number.update(model.coupon_id)
