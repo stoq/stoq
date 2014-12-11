@@ -50,7 +50,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import (Branch, Client, Person, SalesPerson,
                                    Company, LoginUser, Employee)
-from stoqlib.domain.product import StockTransactionHistory
+from stoqlib.domain.product import Product, StockTransactionHistory
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.dateutils import localnow, localtoday
@@ -771,8 +771,14 @@ class WorkOrder(Domain):
 
         :returns: ``True`` if all is synchronized, ``False`` otherwise
         """
-        return self.order_items.find(WorkOrderItem.quantity_decreased !=
-                                     WorkOrderItem.quantity).is_empty()
+        tables = [WorkOrderItem,
+                  Join(Sellable, WorkOrderItem.sellable_id == Sellable.id),
+                  LeftJoin(Product, Product.sellable_id == Sellable.id)]
+        # Only products that manage stock should be checked for quantity_decreased
+        return self.store.using(*tables).find(
+            WorkOrderItem,
+            And(WorkOrderItem.quantity_decreased != WorkOrderItem.quantity,
+                Eq(Product.manage_stock, True))).is_empty()
 
     def is_in_transport(self):
         """Checks if this work order is in transport
