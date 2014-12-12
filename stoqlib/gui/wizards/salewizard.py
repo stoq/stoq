@@ -28,7 +28,7 @@ import decimal
 
 import gtk
 from kiwi.component import get_utility
-from kiwi.currency import currency
+from kiwi.currency import currency, format_price
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
@@ -193,6 +193,7 @@ class BaseMethodSelectionStep(object):
     #
 
     def _update_next_step(self, method):
+        received_value = self.cash_change_slave.received_value
         if method and method.method_name == u'money':
             self.wizard.enable_finish()
             if self.wizard.need_create_payment():
@@ -203,9 +204,11 @@ class BaseMethodSelectionStep(object):
                 self.cash_change_slave.disable_cash_change()
         elif method and method.method_name == u'credit':
             self.wizard.enable_finish()
+            received_value.set_text(format_price(self.get_remaining_value()))
             self.cash_change_slave.disable_cash_change()
         else:
             self.wizard.disable_finish()
+            received_value.set_text(format_price(self.get_remaining_value()))
             self.cash_change_slave.disable_cash_change()
 
     def _create_change_payment(self):
@@ -235,6 +238,12 @@ class BaseMethodSelectionStep(object):
     #
     #   Public API
     #
+
+    # FIXME This should be on Sale domain but the domain needs to be refactored
+    def get_remaining_value(self):
+        sale_total = self.model.get_total_sale_amount()
+        payments_value = self.model.group.get_total_confirmed_value()
+        return sale_total - payments_value
 
     def get_selected_method(self):
         return self.pm_slave.get_selected_method()
@@ -769,7 +778,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         client = self.store.get(Client, client_id)
         method = self.pm_slave.get_selected_method()
         try:
-            client.can_purchase(method, self.model.get_total_sale_amount())
+            client.can_purchase(method, self.get_remaining_value())
         except SellError as e:
             return ValidationError(e)
 
