@@ -777,7 +777,8 @@ class WorkOrder(Domain):
         # Only products that manage stock should be checked for quantity_decreased
         return self.store.using(*tables).find(
             WorkOrderItem,
-            And(WorkOrderItem.quantity_decreased != WorkOrderItem.quantity,
+            And(WorkOrderItem.order_id == self.id,
+                WorkOrderItem.quantity_decreased != WorkOrderItem.quantity,
                 Eq(Product.manage_stock, True))).is_empty()
 
     def is_in_transport(self):

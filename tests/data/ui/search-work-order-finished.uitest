@@ -1,0 +1,42 @@
+search: WorkOrderFinishedSearch
+GtkDialog(toplevel): title='Search for work orders', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
+        GtkVBox(vbox):
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+          SearchResultListView(result_view, expand=True, fill=True):
+            column: title='#'
+            column: title='Status', hidden
+            column: title='Equipment (Description)', expand
+            column: title='Client'
+            column: title='Open date'
+            column: title='Approval date', hidden
+            column: title='Finish date'
+            column: title='Total'
+            row: 123, u'Finished', u'Description - ', u'Client', datetime.datetime(2014, 1, 1, 0, 0), datetime.datetime(2014, 1, 1, 0, 0), datetime.datetime(2014, 1, 1, 0, 0), Decimal('10.00000')
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button):
+                GtkButton(print_button): 'gtk-print', hidden
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
