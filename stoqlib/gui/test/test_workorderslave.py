@@ -67,7 +67,11 @@ class TestWorkOrderItemEditor(GUITest):
         with mock.patch.object(storable, 'get_balance_for_branch') as gbfb:
             gbfb.return_value = 0
             editor.quantity.update(20)
-            gbfb.assert_called_once_with(workorder.branch)
+            # Called 2 times:
+            # on_quantity__content_changed() - Is necessary check if the quantity
+            # is valid to avoid update the quantity_reserved widget.
+            # on_quantity__validate()
+            self.assertEqual(gbfb.call_count, 2)
             self.assertInvalid(editor, ['quantity'])
 
         # Item without stock control.

@@ -29,6 +29,7 @@ import decimal
 
 import gtk
 
+from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -199,9 +200,16 @@ class _WorkOrderItemEditor(BaseEditor):
             self.price.validate(force=True)
 
     def on_quantity__content_changed(self, entry):
-        self.quantity_reserved.update(entry.read())
+        # Check if 'quantity' widget is valid, before update the 'quantity_reserved'.
+        # We need make this, because the 'validate' signal of 'quantity_reserved'
+        # is not emitted when force the update of that widget
+        if self.quantity.validate() is not ValueUnset:
+            self.quantity_reserved.update(entry.read())
 
     def on_quantity__validate(self, entry, value):
+        if value <= 0:
+            return ValidationError("The quantity must be greater than 0")
+
         return self._validate_quantity(value)
 
     def on_quantity_reserved__validate(self, widget, value):

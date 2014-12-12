@@ -34,6 +34,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -98,3 +99,21 @@ class WorkOrderSearch(SearchDialog):
 
 class WorkOrderFinishedSearch(WorkOrderSearch):
     search_spec = WorkOrderFinishedView
+
+    def confirm(self, retval=None):
+        """Confirms the dialog
+
+        Before confirm, we need to check if all items of the selected
+        work order were totally reserved.
+
+        :param retval: optional parameter which will be selected when the
+          dialog is closed
+        """
+        if retval is None:
+            retval = self.get_selection()
+        work_order = retval.work_order
+        if not work_order.is_items_totally_reserved():
+            return warning(_("You need to reserve all items to close that work order."))
+        self.retval = retval
+        self.search.save_columns()
+        self.close()
