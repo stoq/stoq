@@ -78,7 +78,7 @@ class ReturnedSaleSearch(SearchDialog):
                 SearchColumn('client_name', _('Client'), expand=True,
                              data_type=str),
                 SearchColumn('return_date', _('Return Date'),
-                             data_type=datetime.date),
+                             data_type=datetime.date, sorted=True),
                 SearchColumn('reason', _('Return Reason'),
                              data_type=str),
                 SearchColumn('responsible_name', _('Responsible'),
