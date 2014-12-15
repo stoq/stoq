@@ -137,6 +137,7 @@ class ProductFullStockView(Viewable):
     location = Product.location
     model = Product.model
     brand = Product.brand
+    ncm = Product.ncm
 
     manufacturer = ProductManufacturer.name
     tax_description = SellableTaxConstant.description

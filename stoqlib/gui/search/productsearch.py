@@ -208,6 +208,9 @@ class ProductSearch(SellableSearch):
                              data_type=str, visible=False),
                 SearchColumn('model', title=_('Model'), data_type=str,
                              visible=False),
+                SearchColumn('ncm', title=_('NCM'), data_type=str,
+                             visible=False),
+                Column('unit', title=_('Unit'), data_type=str, visible=False),
                 SearchColumn('location', title=_('Location'), data_type=str,
                              visible=False)]
         # The price/cost columns must be controlled by hide_cost_column and
