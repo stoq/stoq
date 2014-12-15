@@ -159,13 +159,15 @@ class StoqAPI(object):
         """
         from stoqlib.domain.person import Person
         from storm import Undef
+        from storm.expr import Eq
         store = resultset._store
         facet = resultset._find_spec.default_cls
         where = resultset._where
 
         # This is fetching all persons to cache the objects and avoid extra
         # queries when constructing the combo strings.
-        resultset = store.find((Person, facet), Person.id == facet.person_id)
+        resultset = store.find((Person, facet), Person.id == facet.person_id,
+                               Eq(Person.merged_with_id, None))
         if where is not Undef:
             resultset = resultset.find(where)
 
