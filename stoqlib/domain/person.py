@@ -1360,6 +1360,17 @@ class Employee(Domain):
             return _(u'Active')
         return _(u'Inactive')
 
+    def merge_with(self, other, copy_empty_values=True):
+        skip = None
+
+        # To merged employees: change the EmployeeRoleHistory status to inactive.
+        # This is necessary to show that the employee has only an active role.
+        clause = (EmployeeRoleHistory.employee_id == other.id)
+        self.store.execute(Update({EmployeeRoleHistory.is_active: False},
+                                  clause, EmployeeRoleHistory))
+
+        super(Employee, self).merge_with(other, skip, copy_empty_values)
+
     #
     # IDescribable
     #

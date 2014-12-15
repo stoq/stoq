@@ -1360,6 +1360,8 @@ class TestPersonMerging(DomainTest):
     ]
 
     employee_updates = [
+        'UPDATE employee_role_history SET is_active=%s'
+        ' WHERE employee_role_history.employee_id = %s',
         'UPDATE branch SET manager_id=%s WHERE branch.manager_id = %s',  # nopep8
         'UPDATE employee_role_history SET employee_id=%s WHERE employee_role_history.employee_id = %s',  # nopep8
         'UPDATE production_order SET responsible_id=%s WHERE production_order.responsible_id = %s',  # nopep8
