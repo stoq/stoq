@@ -1,0 +1,26 @@
+editor: SystemParameterEditor
+GtkDialog(main_dialog.toplevel): title="Edit 'Additional information on fiscal coupon' Parameter", hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SystemParameterEditor is attached
+        GtkTable(table1):
+          GtkLabel(label1): 'Group:'
+          ProxyLabel(kiwilabel1): 'General'
+          GtkLabel(label2): 'Parameter Name:'
+          GtkVBox(vbox1):
+            ProxyLabel(parameter_name, fill=True): '<span underline="single">Additional information on fiscal coupon</span>'
+            ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">This will be printed in the promotional message area of the fiscal coupon\nIMPORTANT NOTE:\nThis template cannot have more than 2 line, and each line more than 50 characters, and you have to break it manually using the characters "\\n" or (enter key) or the fiscal printer may not print it correctly.</span>'
+          GtkLabel(label3): 'Current Value:'
+          GtkAlignment(container):
+            GtkScrolledWindow():
+              ProxyTextView(_entry):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+      GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

@@ -32,6 +32,7 @@ from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
                                     CancelItemError)
 from storm.expr import Desc
 
+from stoqlib.api import api
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
@@ -433,6 +434,10 @@ class Coupon(object):
         parts = [msg.format(self._total_taxes, total_taxes_percentage),
                  _(u'Salesperson: %s') % sale.get_salesperson_name(),
                  _('Stoq Retail Management')]
+        additional_info = api.sysparam.get_string('ADDITIONAL_INFORMATION_ON_COUPON')
+        if additional_info:
+            # We are adding the information before the Stoq Ad
+            parts.insert(-1, additional_info)
         message = '\n'.join(parts)
         message += ' - www.stoq.com.br'
         self._create_fiscal_sale_data(sale)

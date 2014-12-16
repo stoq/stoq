@@ -12,6 +12,7 @@ GtkVBox(toplevel):
     row: u'Accounts', u'Parent till account', uuid.uuid()
     row: u'Accounts', u'Imbalance account', uuid.uuid()
     row: u'ECF', u'Enable paulista invoice', u'0'
+    row: u'ECF', u'Additional information on fiscal coupon', u''
     row: u'ECF', u'Allow to cancel the last fiscal coupon', u'1'
     row: u'General', u'Glabels template file', u''
     row: u'General', u'Cat 52 destination directory', u'~/.stoq/cat52'

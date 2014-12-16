@@ -63,7 +63,7 @@ class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
                  initial=None, options=None, combo_data=None, range=None,
                  multiline=False, validator=None, onupgrade=None,
-                 change_callback=None, editor=None):
+                 change_callback=None, editor=None, wrap=True):
         self.key = key
         self.group = group
         self.short_desc = short_desc
@@ -80,6 +80,7 @@ class ParameterDetails(object):
         self.onupgrade = onupgrade
         self.change_callback = change_callback
         self.editor = editor
+        self.wrap = wrap
 
     #
     #  Public API
@@ -830,7 +831,21 @@ _details = [
         _(u'Allow to cancel the last fiscal coupon'),
         _(u'When set to false, the user will not be able to cancel the last coupon, '
           u'only return it.'),
-        bool, initial=True)
+        bool, initial=True),
+
+    # Some fiscal printers can print up to 8 rows and 70 characters each row.
+    # But we want to write an documentation to make sure it will work
+    # on every fiscal printer
+    ParameterDetails(
+        u'ADDITIONAL_INFORMATION_ON_COUPON',
+        _(u'ECF'),
+        _(u'Additional information on fiscal coupon'),
+        _(u'This will be printed in the promotional message area of the fiscal coupon\n'
+          u'IMPORTANT NOTE:\n'
+          u'This template cannot have more than 2 line, and each line more '
+          u'than 50 characters, and you have to break it manually using the characters '
+          u'"\\n" or (enter key) or the fiscal printer may not print it correctly.'),
+        unicode, multiline=True, initial=u'', wrap=False)
 ]
 
 

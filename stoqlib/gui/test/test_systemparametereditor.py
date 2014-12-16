@@ -73,6 +73,12 @@ class TestSystemParameterEditor(GUITest):
         editor = SystemParameterEditor(self.store, parameter_data)
         self.check_editor(editor, 'editor-systemparameter-text-view-entry')
 
+    def test_unwrapped_text_view_entry(self):
+        parameter_data = self.store.find(ParameterData,
+                                         field_name=u'ADDITIONAL_INFORMATION_ON_COUPON').one()
+        editor = SystemParameterEditor(self.store, parameter_data)
+        self.check_editor(editor, 'editor-systemparameter-unwrapped-text-view-entry')
+
     def test_image(self):
         parameter_data = self.store.find(ParameterData,
                                          field_name=u'CUSTOM_LOGO_FOR_REPORTS').one()

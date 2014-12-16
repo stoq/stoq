@@ -125,7 +125,8 @@ class SystemParameterEditor(BaseEditor):
         widget.props.sensitive = self.sensitive
         widget.data_type = unicode
         widget.model_attribute = "field_value"
-        widget.set_wrap_mode(gtk.WRAP_WORD)
+        if self.detail.wrap:
+            widget.set_wrap_mode(gtk.WRAP_WORD)
         self.proxy.add_widget("field_value", widget)
         sw.add(widget)
         sw.show()
