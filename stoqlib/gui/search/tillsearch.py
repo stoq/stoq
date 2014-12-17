@@ -138,6 +138,13 @@ class TillClosedSearch(SearchDialog):
     searching_by_date = True
     branch_filter_column = TillClosedView.branch_id
 
+    def setup_widgets(self):
+        self.update_widgets()
+
+    def update_widgets(self):
+        selected = self.get_selection()
+        self.set_details_button_sensitive(bool(selected))
+
     def create_filters(self):
         self.set_text_field_columns(['responsible_open_name',
                                      'responsible_close_name'])

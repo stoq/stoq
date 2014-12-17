@@ -89,8 +89,10 @@ class TestTillSearch(GUITest):
 
         dialog = TillClosedSearch(self.store)
         dialog.search.refresh()
+        self.assertNotSensitive(dialog._details_slave, ['details_button'])
         with mock.patch("stoqlib.gui.search.tillsearch.run_dialog") as r_dialog:
             dialog.results.select(model)
+            self.assertSensitive(dialog._details_slave, ['details_button'])
             self.click(dialog._details_slave.details_button)
             r_dialog.assert_called_once_with(TillDetailsDialog, dialog,
                                              dialog.store, model)
