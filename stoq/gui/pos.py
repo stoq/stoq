@@ -28,6 +28,7 @@ import logging
 
 import pango
 import gtk
+from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
 from kiwi.python import Settable
@@ -1283,11 +1284,13 @@ class PosApp(ShellApp):
         self._update_buttons()
 
     def on_quantity__activate(self, entry):
-        self._checkout_or_add_item(must_add=True)
+        # Before activate, check if 'quantity' widget is valid.
+        if self.quantity.validate() is not ValueUnset:
+            self._checkout_or_add_item(must_add=True)
 
     def on_quantity__validate(self, entry, value):
         self._update_buttons()
-        if value == 0:
+        if value <= 0:
             return ValidationError(_("Quantity must be a positive number"))
 
     def on_sale_items__selection_changed(self, sale_items, sale_item):

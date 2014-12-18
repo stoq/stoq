@@ -25,6 +25,7 @@
 import contextlib
 from decimal import Decimal
 
+from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter
 import mock
@@ -363,6 +364,39 @@ class TestPos(BaseGUITest):
         service.sellable.barcode = u'99991234'
         pos.barcode.set_text(u'99991234')
         self.activate(pos.barcode)
+
+    def test_quantity_activate(self):
+        pos = self.create_app(PosApp, u'pos')
+        self._pos_open_till(pos)
+        sellable = self.create_sellable()
+        sellable.barcode = u'12345678'
+        unit = self.create_sellable_unit(u'UN', False)
+        sellable.unit = unit
+
+        pos.barcode.set_text(u'12345678')
+        # Clear the quantity field
+        pos.quantity.set_text("")
+        self.assertTrue(bool(pos.quantity.validate() is ValueUnset))
+        self.activate(pos.quantity)
+        self.assertEquals(len(pos.sale_items), 0)
+
+        # Quantity less than 0
+        pos.quantity.update(-1)
+        self.assertTrue(bool(pos.quantity.validate() is ValueUnset))
+        self.activate(pos.quantity)
+        self.assertEquals(len(pos.sale_items), 0)
+
+        # Quantity equal to 0
+        pos.quantity.update(0)
+        self.assertTrue(bool(pos.quantity.validate() is ValueUnset))
+        self.activate(pos.quantity)
+        self.assertEquals(len(pos.sale_items), 0)
+
+        # Quantity greater than 0
+        pos.quantity.update(1)
+        self.activate(pos.quantity)
+        self.assertTrue(bool(pos.quantity.validate() is not ValueUnset))
+        self.assertEquals(len(pos.sale_items), 1)
 
     @mock.patch('stoq.gui.pos.POSConfirmSaleEvent.emit')
     def test_pos_confirm_sale_event(self, emit):
