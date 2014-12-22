@@ -175,6 +175,12 @@ class StartSaleQuoteStep(WizardEditorStep):
     #
 
     def after_client__content_changed(self, widget):
+        # During the setup of client_gadget, the client is changed. So this method is
+        # called before the client_gadget be completely created.
+        # Check if the client_gadget was created to continue setting other widgets.
+        if not hasattr(self, 'client_gadget'):
+            return
+
         client = self.model.client
         self.toogle_client_details()
         self._client_credit_set_visible(bool(client))
