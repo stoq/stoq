@@ -98,6 +98,16 @@ class TestPurchaseWizard(GUITest):
 
             self.click(self.wizard.next_button)
 
+    def test_edit_purchase_without_open_date(self):
+        purchase_order = self.create_purchase_order()
+        self.create_purchase_order_item(purchase_order)
+        purchase_order.status = PurchaseOrder.ORDER_PENDING
+        purchase_order.open_date = None
+        self.wizard = PurchaseWizard(self.store, purchase_order)
+        start_step = self.wizard.get_current_step()
+        self.assertEquals(start_step.open_date.mandatory, True)
+        self.assertNotSensitive(self.wizard, ['next_button'])
+
     def test_create_and_receive(self):
         with self.sysparam(MANDATORY_CHECK_NUMBER=True):
             self.wizard = PurchaseWizard(self.store)
