@@ -158,7 +158,7 @@ class StoqCommandHandler:
 
         try:
             initialize_system(password=unicode(options.password),
-                              force=options.force)
+                              force=options.force, empty=options.empty)
         except ValueError as e:
             # Database server is missing pg_trgm
             if 'pg_trgm' in str(e):
@@ -170,7 +170,7 @@ class StoqCommandHandler:
             from stoqlib.importers.stoqlibexamples import create
             create(utilities=True)
 
-        if options.register_station:
+        if options.register_station and not options.empty:
             self._register_station()
 
         if options.plugins:
@@ -201,6 +201,9 @@ class StoqCommandHandler:
         group.add_option('', '--force',
                          action='store_true',
                          dest='force')
+        group.add_option('', '--empty',
+                         action='store_true',
+                         dest='empty')
 
     def cmd_configure(self, options):
         """Save initial configuration"""

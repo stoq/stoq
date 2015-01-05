@@ -375,9 +375,14 @@ def _install_invoice_templates():
 
 
 def initialize_system(password=None, testsuite=False,
-                      force=False):
+                      force=False, empty=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
+    :param force: When False, we will ask the user if he really wants to replace
+      the existing database.
+    :param empty: If we should create the database without any data. When we do
+      this the database will not be really usable by stoq. This should be used
+      to create a database for the syncronization server.
     """
 
     log.info("Initialize_system")
@@ -386,21 +391,22 @@ def initialize_system(password=None, testsuite=False,
         create_base_schema()
         create_log.info("INIT START")
         store = new_store()
-        populate_initial_data(store)
-        register_accounts(store)
-        register_payment_methods(store)
-        from stoqlib.domain.uiform import create_default_forms
-        create_default_forms(store)
-        ensure_sellable_constants(store)
-        sysparam.ensure_system_parameters(store)
-        store.commit(close=True)
-        _ensure_card_providers()
-        create_default_profiles()
-        _install_invoice_templates()
+        if not empty:
+            populate_initial_data(store)
+            register_accounts(store)
+            register_payment_methods(store)
+            from stoqlib.domain.uiform import create_default_forms
+            create_default_forms(store)
+            ensure_sellable_constants(store)
+            sysparam.ensure_system_parameters(store)
+            store.commit(close=True)
+            _ensure_card_providers()
+            create_default_profiles()
+            _install_invoice_templates()
 
-        if not testsuite:
-            create_default_profile_settings()
-            ensure_admin_user(password)
+            if not testsuite:
+                create_default_profile_settings()
+                ensure_admin_user(password)
     except Exception:
         # if not testsuite:
         #     collect_traceback(sys.exc_info(), submit=True)
