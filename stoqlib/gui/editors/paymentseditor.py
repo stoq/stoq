@@ -65,6 +65,10 @@ class _PaymentsEditor(BaseEditor):
         for payment in self.slave.payments:
             if payment.is_preview():
                 payment.set_pending()
+            # Set the payment status to paid for credit method.
+            # This avoid the credit to be used on another sale.
+            if payment.is_pending() and payment.method.method_name == u'credit':
+                payment.pay()
 
     # Mimic a Wizard, so that we can use the payment slaves
     def refresh_next(self, valid):
