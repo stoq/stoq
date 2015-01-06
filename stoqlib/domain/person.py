@@ -554,7 +554,8 @@ class Individual(Domain):
     STATUS_MARRIED = u'married'
     STATUS_DIVORCED = u'divorced'
     STATUS_WIDOWED = u'widowed'
-    STATUS_SEPARATED = u'separated'
+    # FIXME: Change to 'separated' after fix this typo in database.
+    STATUS_SEPARATED = u'separeted'
     STATUS_COHABITATION = u'cohabitation'
 
     marital_statuses = collections.OrderedDict([
