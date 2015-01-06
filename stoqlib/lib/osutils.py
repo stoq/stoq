@@ -86,7 +86,7 @@ def get_documents_dir():
 def get_username():
     """:returns: the current username"""
     if _system == 'Linux' or _system == 'Darwin':
-        return os.environ['USER']
+        return os.environ.get('USER')
     elif _system == 'Windows':
         return os.environ['USERNAME']
     else:
