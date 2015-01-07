@@ -102,9 +102,9 @@ class TestPurchaseWizard(GUITest):
         purchase_order = self.create_purchase_order()
         self.create_purchase_order_item(purchase_order)
         purchase_order.status = PurchaseOrder.ORDER_PENDING
-        purchase_order.open_date = None
         self.wizard = PurchaseWizard(self.store, purchase_order)
         start_step = self.wizard.get_current_step()
+        start_step.open_date.update(None)
         self.assertEquals(start_step.open_date.mandatory, True)
         self.assertNotSensitive(self.wizard, ['next_button'])
 

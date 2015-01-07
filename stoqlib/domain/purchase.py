@@ -198,7 +198,7 @@ class PurchaseOrder(Domain):
     identifier = IdentifierCol()
 
     status = EnumCol(allow_none=False, default=ORDER_QUOTING)
-    open_date = DateTimeCol(default_factory=localnow)
+    open_date = DateTimeCol(default_factory=localnow, allow_none=False)
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default_factory=localnow)
     expected_pay_date = DateTimeCol(default_factory=localnow)

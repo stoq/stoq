@@ -148,13 +148,6 @@ class StartPurchaseStep(WizardEditorStep):
     def post_init(self):
         self.open_date.grab_focus()
 
-        # FIXME This is an attempt to minimize the damage for those purchase
-        # wich was created without opening date.
-        # Remove me when a Not NULL contstraint is added to the database,
-        # and all purchase is assure to have an opening date
-        if not self.open_date.get_date():
-            self.open_date.set_sensitive(True)
-
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
