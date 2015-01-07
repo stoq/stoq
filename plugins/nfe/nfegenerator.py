@@ -23,6 +23,7 @@
 ##
 """ NF-e XML document generation """
 
+from dateutil.tz import tzlocal
 from decimal import Decimal
 import datetime
 import math
@@ -77,6 +78,7 @@ class NFeGenerator(object):
     The NF-e generator is responsible to create a NF-e XML document for a
     given operation (e.g. sale, loan, transfer).
     """
+
     def __init__(self, operation, store):
         self._order = operation
         self._total_taxes = 0
@@ -92,7 +94,7 @@ class NFeGenerator(object):
     def generate(self):
         """Generates the NF-e."""
         branch = self._order.branch
-        self._add_identification(branch)
+        self._add_identification(branch, self._order.recipient)
         self._add_issuer(branch)
 
         self._add_recipient(self._order.recipient)
@@ -171,8 +173,8 @@ class NFeGenerator(object):
             return '0'
         return str(11 - remainder)
 
-    def _get_today_date(self):
-        return datetime.date.today()
+    def _get_now_datetime(self):
+        return datetime.datetime.now()
 
     def _get_cnpj(self, branch):
         company = branch.person.company
@@ -186,13 +188,14 @@ class NFeGenerator(object):
 
         return cnpj
 
-    def _add_identification(self, branch):
+    def _add_identification(self, branch, recipient):
         # Pg. 71
         branch_location = branch.person.get_main_address().city_location
         cuf = str(branch_location.state_code or '')
 
-        today = self._get_today_date()
-        aamm = today.strftime('%y%m')
+        recipient_location = recipient.person.get_main_address().city_location
+        now = self._get_now_datetime()
+        aamm = now.strftime('%y%m')
 
         # TODO: Use the invoice number saved in a new database table (Invoice)
         nnf = self._order.invoice_number
@@ -204,8 +207,8 @@ class NFeGenerator(object):
         ecf_info = self._order.nfe_coupon_info
         nat_op = self._order.operation_nature or ''
 
-        nfe_identification = NFeIdentification(cuf, branch_location,
-                                               series, nnf, today,
+        nfe_identification = NFeIdentification(cuf, branch_location, recipient_location,
+                                               series, nnf, now,
                                                list(payments), orientation,
                                                ecf_info, nat_op)
         # The nfe-key requires all the "zeros", so we should format the
@@ -428,6 +431,9 @@ class BaseNFeXMLGroup(object):
         # Pg. 93 (and others)
         return date.strftime('%Y-%m-%d')
 
+    def format_datetime(self, date):
+        return date.replace(tzinfo=tzlocal(), microsecond=0).isoformat()
+
     def format_value(self, value, precision=2):
         _format = Decimal('10e-%d' % precision)
         return value.quantize(_format)
@@ -473,7 +479,7 @@ class NFeData(BaseNFeXMLGroup):
     def __init__(self, key):
         BaseNFeXMLGroup.__init__(self)
         self.element.set('xmlns', 'http://www.portalfiscal.inf.br/nfe')
-        self.element.set('versao', u'2.00')
+        self.element.set('versao', u'3.10')
 
         # Pg. 92
         assert len(key) == 44
@@ -507,24 +513,32 @@ class NFeIdentification(BaseNFeXMLGroup):
                   1 - Pagamento a prazo
                   2 - outros
         - mod: Utilizar código 55 para identificação de NF-e emitida em
-               substituição ao modelo 1 ou 1A.
+            substituição ao modelo 1 ou 1A. # XXX: Para NFC-e, o modelo é 65
         - serie: Série do Documento Fiscal, informar 0 (zero) para série
                  única.
         - nNF: Número do documento fiscal.
-        - dEmi: Data de emissão do documento fiscal.
+        - dhEmi: Data de emissão do documento fiscal.
+        - dhSaiEnt: Data e hora da saída (opcional).
         - tpNF: Tipo de documento fiscal.
                 0 - entrada
                 1 - saída (default)
+        - idDest: Identificador destino (1/2/3 - Interna/Interstadual/Exterior)
         - cMunFG: Código do município de ocorrência do fato gerador.
         - tpImp: Formato de impressão do DANFE.
                  1 - Retrato
                  2 - Paisagem (default)
+                 3 - Simplificado;
+                 4 - Danfe NFC-e
+                 5 - Danfe NFC-e em msg eletronica (ver doc)
         - tpEmis: Forma de emissão da NF-e
                   1 - Normal (default)
                   2 - Contingência FS
                   3 - Contingência SCAN
                   4 - Contingência DPEC
                   5 - Contingência FS-DA
+                  6 - Contingência SVC-AN
+                  7 - Contingência SVC-RS
+                  9 - Contingência off-line da NFC-e
         - cDV: Dígito verificador da chave de acesso da NF-e.
         - tpAmb: Identificação do ambiente.
                  1 - Produção
@@ -533,6 +547,16 @@ class NFeIdentification(BaseNFeXMLGroup):
                   1 - NF-e normal (default)
                   2 - NF-e complementar
                   3 - NF-e de ajuste
+                  4 - Devolução de mercadoria
+        - indFinal: Indica operação com consumidor final (0 - nomral, 1 Consum.
+        Final)
+        - indPres: Indica presença do comprador no momento da operação
+            0 - Não se aplica
+            1 - presencial
+            2 - não presencial, pela internet
+            3 - não presencial, teleatendimento
+            4 - NFC-e em entrga a domicilio
+            9 - Não presencial - outros
         - procEmi: Identificador do processo de emissão da NF-e.
                    0 - emissãp da NF-e com aplicativo do contribuinte
                    1 - NF-e avulsa pelo fisco
@@ -542,6 +566,8 @@ class NFeIdentification(BaseNFeXMLGroup):
                        (default).
         - verProc: Identificador da versão do processo de emissão (versão do
                    aplicativo emissor de NF-e)
+
+        Verificar documentação para tags sobre entrada em contingencia
     """
     tag = u'ide'
     attributes = [(u'cUF', ''),
@@ -551,10 +577,10 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'mod', '55'),
                   (u'serie', '0'),
                   (u'nNF', ''),
-                  (u'dEmi', ''),
-                  (u'dSaiEnt', ''),
-                  (u'hSaiEnt', ''),
+                  (u'dhEmi', ''),
+                  (u'dhSaiEnt', ''),
                   (u'tpNF', '1'),
+                  (u'idDest', '1'),
                   (u'cMunFG', ''),
                   (u'tpImp', '2'),
                   (u'tpEmis', '1'),
@@ -562,6 +588,8 @@ class NFeIdentification(BaseNFeXMLGroup):
                   # TODO: Change tpAmb=1 in the final version.
                   (u'tpAmb', '1'),
                   (u'finNFe', '1'),
+                  (u'indFinal', '0'),  # FIXME
+                  (u'indPres', '0'),  # FIXME
                   (u'procEmi', '3'),
                   (u'verProc', ''),
                   (u'dhCont', ''),
@@ -572,8 +600,8 @@ class NFeIdentification(BaseNFeXMLGroup):
         NFeDanfeOrientation.LANDSCAPE: '2',
     }
 
-    def __init__(self, cUF, city_location, series, nnf, emission_date, payments,
-                 orientation, ecf_info, nat_op):
+    def __init__(self, cUF, branch_location, recipient_location, series, nnf,
+                 emission_date, payments, orientation, ecf_info, nat_op):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
@@ -586,14 +614,22 @@ class NFeIdentification(BaseNFeXMLGroup):
         if installments == 1:
             payment = payments[0]
             if (payment.paid_date and
-                payment.paid_date.date() == datetime.date.today()):
+                    payment.paid_date.date() == datetime.date.today()):
                 payment_type = 0
         self.set_attr('indPag', payment_type)
 
+        if branch_location.country != recipient_location.country:
+            idDest = 3
+        elif branch_location.state != recipient_location.state:
+            idDest = 2
+        else:
+            idDest = 1
+        self.set_attr('idDest', idDest)
+
         self.set_attr('nNF', nnf)
         self.set_attr('serie', series)
-        self.set_attr('dEmi', self.format_date(emission_date))
-        self.set_attr('cMunFG', str(city_location.city_code or ''))
+        self.set_attr('dhEmi', self.format_datetime(emission_date))
+        self.set_attr('cMunFG', str(branch_location.city_code or ''))
         self.set_attr('tpImp', self.danfe_orientation[orientation])
         self.set_attr('natOp', nat_op[:60] or 'Venda')
 
@@ -646,6 +682,9 @@ class NFeAddress(BaseNFeXMLGroup):
         - XPais: nome do país.
         - Fone: número do telefone.
     """
+    # TODO: For countries different of Brazil.
+    # The fields -> xMun, UF, CPais and XPais must be represented
+    # respectively by 'Exterior', 'EX', Country code and Country name.
     attributes = [(u'xLgr', ''),
                   (u'nro', ''),
                   (u'xCpl', ''),
@@ -741,6 +780,19 @@ class NFeIssuer(BaseNFeXMLGroup):
 
 # Pg. 99
 class NFeRecipient(NFeIssuer):
+    """
+    - Txttag(E) attributes:
+        - xNome: Razão social ou nome do emitente.
+        - indIEDest: Indicador da IE do Destinatário.
+            1 - Contribuinte ICMS
+            2 - Contribuinte isento de Inscrição no cadastro de Contribuinte do ICMS
+            9 - Não Contribuinte, que pode ou não possuir Inscrição Estadual no
+                Cadastro de Contribuintes do ICMS.
+        - IE: Inscrição estadual.
+        - ISUF: Inscrição Suframa.
+        - IM: Inscrição Municipal do Tomador do Serviço.
+        - email: email.
+    """
     tag = 'dest'
     address_tag = u'enderDest'
     txttag = 'E'
@@ -760,8 +812,18 @@ class NFeRecipient(NFeIssuer):
             ie = self._ie or 'ISENTO'
         else:
             ie = ''
-        base = '%s|%s|%s||%s\n' % (self.txttag, self.get_attr('xNome'), ie,
-                                   self.get_attr('email'))
+
+        if ie and ie.upper() != 'ISENTO':
+            iedest = 1
+        elif self.get_attr('CNPJ'):
+            iedest = 2
+            # In version 3.10, the field IE is not informed with literal 'ISENTO'.
+            ie = ''
+        else:
+            iedest = 9
+
+        base = '%s|%s|%s|%s||%s\n' % (self.txttag, self.get_attr('xNome'), iedest,
+                                      ie, self.get_attr('email'))
         return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
@@ -979,12 +1041,16 @@ class BaseNFeICMS(BaseNFeXMLGroup):
         'vBCST': ('v_bc_st', 2),
         'vICMS': ('v_icms', 2),
         'vICMSST': ('v_icms_st', 2),
+        'vICMSDeson': ('v_icms_st_deson', 2),
+        'vICMSOp': ('v_icms_op', 2),
+        'vICMSDif': ('v_icms_dif', 2),
 
         'pICMS': ('p_icms', 2),
         'pMVAST': ('p_mva_st', 2),
         'pRedBC': ('p_red_bc', 2),
         'pRedBCST': ('p_red_bc_st', 2),
         'pICMSST': ('p_icms_st', 2),
+        'pDif': ('p_dif', 2),
 
         # Simples Nacional
         'CSOSN': ('csosn', 0),
@@ -1099,7 +1165,9 @@ class NFeICMS20(BaseNFeICMS):
                   (u'pRedBC', ''),
                   (u'vBC', ''),
                   (u'pICMS', ''),
-                  (u'vICMS', '')]
+                  (u'vICMS', ''),
+                  (u'vICMSDeson', ''),
+                  (u'motDesICMS', '')]
 
 
 class NFeICMS30(BaseNFeICMS):
@@ -1115,7 +1183,9 @@ class NFeICMS30(BaseNFeICMS):
                   (u'pRedBCST', ''),
                   (u'vBCST', ''),
                   (u'pICMSST', ''),
-                  (u'vICMSST', '')]
+                  (u'vICMSST', ''),
+                  (u'vICMSDeson', ''),
+                  (u'motDesICMS', '')]
 
 
 # Pg. 111
@@ -1126,7 +1196,7 @@ class NFeICMS40(BaseNFeICMS):
     txttag = 'N06'
     attributes = [(u'orig', ''),
                   (u'CST', ''),
-                  (u'vICMS', ''),
+                  (u'vICMSDeson', ''),
                   (u'motDesICMS', '')]
 
 
@@ -1139,6 +1209,9 @@ class NFeICMS51(BaseNFeICMS):
                   (u'pRedBC', ''),
                   (u'vBC', ''),
                   (u'pICMS', ''),
+                  (u'vICMSOp', ''),
+                  (u'pDif', ''),
+                  (u'vICMSDif', ''),
                   (u'vICMS', ''),
                   ]
 
@@ -1148,8 +1221,8 @@ class NFeICMS60(BaseNFeICMS):
     txttag = 'N08'
     attributes = [(u'orig', ''),
                   (u'CST', ''),
-                  (u'vBCST', ''),
-                  (u'vICMSST', '')]
+                  (u'vBCSTRet', ''),
+                  (u'vICMSSTRet', '')]
 
 
 class NFeICMS70(BaseNFeICMS):
@@ -1167,7 +1240,9 @@ class NFeICMS70(BaseNFeICMS):
                   (u'pRedBCST', ''),
                   (u'vBCST', ''),
                   (u'pICMSST', ''),
-                  (u'vICMSST', '')]
+                  (u'vICMSST', ''),
+                  (u'vICMSDeson', ''),
+                  (u'motDesICMS', '')]
 
 
 class NFeICMS90(BaseNFeICMS):
@@ -1176,8 +1251,8 @@ class NFeICMS90(BaseNFeICMS):
     attributes = [(u'orig', ''),
                   (u'CST', ''),
                   (u'modBC', ''),
-                  (u'pRedBC', ''),  # Note: documentation (1.1) is wrong!
                   (u'vBC', ''),
+                  (u'pRedBC', ''),
                   (u'pICMS', ''),
                   (u'vICMS', ''),
                   (u'modBCST', ''),
@@ -1185,7 +1260,9 @@ class NFeICMS90(BaseNFeICMS):
                   (u'pRedBCST', ''),
                   (u'vBCST', ''),
                   (u'pICMSST', ''),
-                  (u'vICMSST', '')]
+                  (u'vICMSST', ''),
+                  (u'vICMSDeson', ''),
+                  (u'motDesICMS', '')]
 
 
 class NFeICMSPart(BaseNFeICMS):
@@ -1195,21 +1272,9 @@ class NFeICMSPart(BaseNFeICMS):
 
     tag = 'ICMSPart'
     txttag = 'N10a'
-    attributes = [(u'orig', ''),
-                  (u'CST', ''),
-                  (u'modBC', ''),
-                  (u'pRedBC', ''),
-                  (u'vBC', ''),
-                  (u'pICMS', ''),
-                  (u'vICMS', ''),
-                  (u'modBCST', ''),
-                  (u'pMVAST', ''),
-                  (u'pRedBCST', ''),
-                  (u'vBCST', ''),
-                  (u'pICMSST', ''),
-                  (u'vICMSST', ''),
-                  (u'pBCOp', ''),
-                  (u'UFST', '')]
+    attributes = NFeICMS90.attributes[:]
+    attributes.extend([(u'pBCOp', ''),
+                       (u'UFST', '')])
 
 
 class NFeICMSST(BaseNFeICMS):
@@ -1298,7 +1363,6 @@ class NFeICMSSN500(BaseNFeICMS):
     txttag = 'N10g'
     attributes = [(u'orig', ''),
                   (u'CSOSN', ''),
-                  (u'modBCST', ''),
                   (u'vBCSTRet', ''),
                   (u'vICMSSTRet', ''),
                   ]
@@ -1366,13 +1430,11 @@ class NFeIPI(BaseNFeXMLGroup):
 class NFeIPITrib(BaseNFeXMLGroup):
     tax = u'IPITrib'
     txttag = 'O07'
-    attributes = [(u'CST', ''),
-                  (u'VIPI', '')]
+    attributes = [(u'CST', '')]
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('VIPI', ipi_info.v_ipi or '')
-        if ipi_info.cst:
+        if ipi_info.cst is not None:
             self.set_attr('CST', '%02d' % ipi_info.cst)
 
         if ipi_info.calculo == ipi_info.CALC_ALIQUOTA:
@@ -1389,25 +1451,29 @@ class NFeIPITrib(BaseNFeXMLGroup):
 class NFeIPITribAliq(BaseNFeXMLGroup):
     tax = u'IPITrib'
     txttag = 'O10'
-    attributes = [(u'VBC', ''),
-                  (u'PIPI', '')]
+    attributes = [(u'vBC', ''),
+                  (u'pIPI', ''),
+                  (u'vIPI', '')]
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('VBC', ipi_info.v_bc or '')
-        self.set_attr('PIPI', ipi_info.p_ipi or '')
+        self.set_attr('vBC', "%.2f" % ipi_info.v_bc)
+        self.set_attr('pIPI', ipi_info.p_ipi or '')
+        self.set_attr('vIPI', ipi_info.v_ipi)
 
 
 class NFeIPITribUnid(BaseNFeXMLGroup):
     tax = u'IPITrib'
     txttag = 'O11'
-    attributes = [(u'QUnid', ''),
-                  (u'VUnid', '')]
+    attributes = [(u'qUnid', ''),
+                  (u'vUnid', ''),
+                  (u'vIPI', '')]
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('QUnid', ipi_info.q_unid or '')
-        self.set_attr('VUnid', ipi_info.v_unid or '')
+        self.set_attr('qUnid', ipi_info.q_unid or '')
+        self.set_attr('vUnid', self.format_value(ipi_info.v_unid, precision=4))
+        self.set_attr('vIPI', ipi_info.v_ipi)
 
 
 class NFeIPINT(BaseNFeXMLGroup):
@@ -1565,6 +1631,7 @@ class NFeICMSTotal(BaseNFeXMLGroup):
     - Attributes:
         - vBC: Base de Cálculo do ICMS.
         - vICMS: Valor Total do ICMS.
+        - vICMSDeson: Valor Total do ICMS desonerado.
         - vBCST: Base de Cálculo do ICMS ST.
         - vST: Valor Total do ICMS ST.
         - vProd    Valor Total dos produtos e serviços.
@@ -1577,10 +1644,12 @@ class NFeICMSTotal(BaseNFeXMLGroup):
         - vCOFINS Valor do COFINS.
         - vOutro: Outras Despesas acessórias.
         - vNF: Valor Total da NF-e.
+        - vTotTrib: Valor aproximado total de tributos federais, estaduais e municipais.
     """
     tag = u'ICMSTot'
     attributes = [(u'vBC', ''),
                   (u'vICMS', '0.00'),
+                  (u'vICMSDeson', ''),
                   (u'vBCST', '0'),
                   (u'vST', '0'),
                   (u'vProd', ''),
@@ -1592,7 +1661,8 @@ class NFeICMSTotal(BaseNFeXMLGroup):
                   (u'vPIS', '0'),
                   (u'vCOFINS', '0'),
                   (u'vOutro', '0'),
-                  (u'vNF', '')]
+                  (u'vNF', ''),
+                  (u'vTotTrib', '')]
     txttag = 'W02'
 
     def __init__(self, operation_total, items_total):

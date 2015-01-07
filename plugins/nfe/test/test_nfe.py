@@ -45,7 +45,7 @@ from nfe.nfegenerator import NFeGenerator, NFeIdentification
 
 class TestNfeGenerator(DomainTest):
     def _test_generated_files(self, new_client=None):
-        due_date = datetime.datetime(2011, 10, 24)
+        due_date = datetime.datetime(2011, 10, 24, 0, 0, 0, 0)
         sale = self._create_sale(1666, due_date=due_date)
         sale.identifier = 1234
         if new_client:
@@ -57,13 +57,13 @@ class TestNfeGenerator(DomainTest):
         # If we generate random cnf, the test will always fail
         _get_random_cnf = NFeIdentification._get_random_cnf
         NFeIdentification._get_random_cnf = lambda s: 10000001
-        # Mimic today behavior
-        _get_today_date = NFeGenerator._get_today_date
-        NFeGenerator._get_today_date = lambda s: due_date
+        # Mimic now_datetime behavior
+        _get_now_datetime = NFeGenerator._get_now_datetime
+        NFeGenerator._get_now_datetime = lambda s: due_date
 
         generator.generate()
         NFeIdentification._get_random_cnf = _get_random_cnf
-        NFeGenerator._get_today_date = _get_today_date
+        NFeGenerator._get_now_datetime = _get_now_datetime
 
         basedir = get_tests_datadir('plugins')
 
