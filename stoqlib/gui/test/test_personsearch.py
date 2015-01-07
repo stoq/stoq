@@ -193,8 +193,11 @@ class TestClientsWithSaleSearch(GUITest):
 
         search = ClientsWithSaleSearch(self.store)
         search.search.refresh()
-
+        self.assertNotSensitive(search._details_slave, ['details_button'])
         self.check_search(search, 'search-clients-with-sale')
+
+        search.results.select(search.results[0])
+        self.assertSensitive(search._details_slave, ['details_button'])
 
 
 class TestClientsWithCreditSearch(GUITest):
@@ -217,5 +220,8 @@ class TestClientsWithCreditSearch(GUITest):
 
         search = ClientsWithCreditSearch(self.store)
         search.search.refresh()
-
+        self.assertNotSensitive(search._details_slave, ['details_button'])
         self.check_search(search, 'search-clients-with-credit')
+
+        search.results.select(search.results[0])
+        self.assertSensitive(search._details_slave, ['details_button'])

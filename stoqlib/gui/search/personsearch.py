@@ -368,6 +368,7 @@ class ClientsWithSaleSearch(SearchDialog):
 
     def setup_widgets(self):
         self.add_csv_button(_('Clients With Sales'), _('clients'))
+        self.update_widgets()
 
     def create_filters(self):
         # Extra filters (that are not columns)
@@ -410,6 +411,10 @@ class ClientsWithSaleSearch(SearchDialog):
                        format_func=format_quantity,),
                 Column('total_amount', title=_(u"Total Amount"), data_type=currency)]
 
+    def update_widgets(self):
+        client_view = self.results.get_selected()
+        self.set_details_button_sensitive(client_view is not None)
+
     # Callbacks
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()
@@ -427,6 +432,7 @@ class ClientsWithCreditSearch(SearchDialog):
 
     def setup_widgets(self):
         self.add_csv_button(self.title, _('clients'))
+        self.update_widgets()
 
     def get_columns(self, *args):
         return [SearchColumn('name', title=_(u"Client"), data_type=str,
@@ -449,6 +455,10 @@ class ClientsWithCreditSearch(SearchDialog):
                              data_type=currency),
                 SearchColumn('remaining_credit', title=_(u"Available"),
                              data_type=currency)]
+
+    def update_widgets(self):
+        client_view = self.results.get_selected()
+        self.set_details_button_sensitive(client_view is not None)
 
     # Callbacks
     def on_details_button_clicked(self, *args):
