@@ -709,7 +709,7 @@ CREATE TABLE purchase_order (
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     identifier SERIAL NOT NULL,
     status purchase_order_status NOT NULL,
-    open_date timestamp,
+    open_date timestamp NOT NULL,
     quote_deadline timestamp,
     expected_receival_date timestamp,
     expected_pay_date timestamp,
