@@ -1200,8 +1200,9 @@ class MultipleMethodSlave(BaseEditorSlave):
         self._outstanding_value = self._total_value - total_payments
         self.toggle_new_payments()
 
-        if self._outstanding_value > 0:
-            value = self.value.read()
+        if self.value.validate() is ValueUnset:
+            self.value.update(self._outstanding_value)
+        elif self._outstanding_value > 0:
             method_name = self._method.method_name
             if method_name == u'credit':
                 # Set value to client's current credit or outstanding value, if

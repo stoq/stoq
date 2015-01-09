@@ -28,9 +28,10 @@ import unittest
 
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.slaves.paymentslave import (BillMethodSlave, CheckMethodSlave,
-                                             CardMethodSlave)
+                                             CardMethodSlave, MultipleMethodSlave)
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
@@ -140,6 +141,80 @@ class TestCardPaymentSlaves(GUITest):
             raise AssertionError
 
         self.check_slave(slave, 'slave-card-installments-store')
+
+
+class TestMultipleMethodSlave(GUITest):
+    def _create_sale(self):
+        client = self.create_client()
+        client.credit_limit = 20
+        sale = self.create_sale(client=client)
+        sale.identifier = 1234
+        sellable = self.create_sellable(price=10)
+        sale.add_sellable(sellable)
+        return sale
+
+    def test_create(self):
+        sale = self._create_sale()
+        subtotal = sale.get_sale_subtotal()
+
+        wizard = ConfirmSaleWizard(self.store, sale, subtotal)
+        slave = MultipleMethodSlave(wizard, None, self.store, sale)
+        self.check_slave(slave, 'slave-multiple-method')
+
+    def test_on_method_toggled(self):
+        sale = self._create_sale()
+        subtotal = sale.get_sale_subtotal()
+
+        wizard = ConfirmSaleWizard(self.store, sale, subtotal)
+        slave = MultipleMethodSlave(wizard, None, self.store, sale)
+
+        self.assertEquals(slave.value.read(), 10)
+        self.assertEquals(unicode(slave.value.emit("validate", 0)),
+                          u"You must provide a payment value.")
+        self.assertNotSensitive(slave, ['add_button'])
+
+        # Test with an invalid value.
+        slave.value.set_text("Test")
+        self.assertNotSensitive(slave, ['add_button'])
+        for radio in slave.methods_box.get_children():
+            if radio.get_label() == 'Check':
+                radio.set_active(True)
+                break
+        # Check if value was updated.
+        self.assertEquals(slave.value.read(), 10)
+        self.assertSensitive(slave, ['add_button'])
+
+        # Test with store credit.
+        for radio in slave.methods_box.get_children():
+            if radio.get_label() == 'Store Credit':
+                radio.set_active(True)
+                break
+        self.assertEquals(slave.value.read(), 10)
+        self.assertSensitive(slave, ['add_button'])
+        self.assertEquals(unicode(slave.value.emit("validate", 30)),
+                          u"Client does not have enough credit. Client store credit: 20.0.")
+        self.assertNotSensitive(slave, ['add_button'])
+        slave.value.update(10)
+        self.assertSensitive(slave, ['add_button'])
+
+        # Change the payment method.
+        for radio in slave.methods_box.get_children():
+            if radio.get_label() == 'Bill':
+                radio.set_active(True)
+                break
+        self.assertEquals(slave.value.read(), 10)
+        self.assertSensitive(slave, ['add_button'])
+
+        # Change to money.
+        slave.value.update(5)
+        self.assertSensitive(slave, ['add_button'])
+        for radio in slave.methods_box.get_children():
+            if radio.get_label() == 'Money':
+                radio.set_active(True)
+                break
+        # Check if the value typed was kept.
+        self.assertEquals(slave.value.read(), 5)
+        self.assertSensitive(slave, ['add_button'])
 
 
 if __name__ == '__main__':
