@@ -31,6 +31,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard, NewLoanWizard
 from stoqlib.lib.dateutils import localdatetime, localtoday
+from stoqlib.lib.defaults import MAX_INT
 
 
 class TestNewLoanWizard(GUITest):
@@ -39,7 +40,7 @@ class TestNewLoanWizard(GUITest):
     def test_confirm(self, yesno, print_report):
         client = self.create_client()
         branch = api.get_current_branch(self.store)
-        storable = self.create_storable(branch=branch, stock=1)
+        storable = self.create_storable(branch=branch, stock=1, unit_cost=10)
         sellable = storable.product.sellable
         wizard = NewLoanWizard(self.store)
 
@@ -52,7 +53,36 @@ class TestNewLoanWizard(GUITest):
         step = wizard.get_current_step()
         step.barcode.set_text(sellable.barcode)
         step.sellable_selected(sellable)
+
+        # This is a workaround to be able to set a value bigger than MAX_INT,
+        # so we can get its validation
+        step.quantity.get_adjustment().set_upper(MAX_INT + 1)
+        # Checking values bigger than MAX_INT for quantity
+        step.quantity.update(MAX_INT + 1)
+        self.assertInvalid(step, ['quantity'])
+        # Checking values bigger than we have on stock
+        step.quantity.update(2)
+        self.assertInvalid(step, ['quantity'])
+        # Checking negative value
+        step.quantity.update(-1)
+        self.assertInvalid(step, ['quantity'])
+        # Checking valid values
         step.quantity.update(1)
+        self.assertValid(step, ['quantity'])
+
+        # Checking negative value
+        step.cost.update(-1)
+        self.assertInvalid(step, ['cost'])
+        # This is a workaround to be able to set a value bigger than MAX_INT,
+        # so we can get its validation
+        step.cost.get_adjustment().set_upper(MAX_INT + 1)
+        # Checking values bigger than MAX_INT for cost
+        step.cost.update(MAX_INT + 1)
+        self.assertInvalid(step, ['cost'])
+        # Checking valid value
+        step.cost.update(10)
+        self.assertValid(step, ['cost'])
+
         self.click(step.add_sellable_button)
         loan_item = self.store.find(LoanItem, sellable=sellable).one()
         module = 'stoqlib.gui.events.NewLoanWizardFinishEvent.emit'

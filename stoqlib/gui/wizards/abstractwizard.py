@@ -514,11 +514,15 @@ class SellableItemSlave(BaseEditorSlave):
     #
     #  Private
     #
-
     def _setup_widgets(self):
         self._update_product_labels_visibility(False)
+        cost_digits = sysparam.get_int('COST_PRECISION_DIGITS')
         self.quantity.set_sensitive(False)
+        # 10 for the length of MAX_INT, 3 for the precision and 1 for comma
+        self.quantity.set_max_length(14)
         self.cost.set_sensitive(False)
+        # 10 for the length of MAX_INT and 1 for comma
+        self.cost.set_max_length(10 + cost_digits + 1)
         self.add_sellable_button.set_sensitive(False)
         self.unit_label.set_bold(True)
 
@@ -528,7 +532,7 @@ class SellableItemSlave(BaseEditorSlave):
 
         self._reset_sellable()
         self._setup_summary()
-        self.cost.set_digits(sysparam.get_int('COST_PRECISION_DIGITS'))
+        self.cost.set_digits(cost_digits)
         self.quantity.set_digits(3)
 
         self.barcode.grab_focus()
@@ -722,9 +726,13 @@ class SellableItemSlave(BaseEditorSlave):
         if not self.proxy.model.sellable:
             return
 
-        # only support positive quantities
+        # Only support positive quantities
         if value <= 0:
             return ValidationError(_(u'The quantity must be positive'))
+
+        # Dont allow numbers bigger than MAX_INT (see stoqlib.lib.defaults)
+        if value > MAX_INT:
+            return ValidationError(_(u'The quantity cannot be bigger than %s') % MAX_INT)
 
         sellable = self.proxy.model.sellable
         if sellable and not sellable.is_valid_quantity(value):
@@ -745,6 +753,10 @@ class SellableItemSlave(BaseEditorSlave):
         sellable = self.proxy.model.sellable
         if not sellable:
             return
+
+        # Dont allow numbers bigger than MAX_INT (see stoqlib.lib.defaults)
+        if value > MAX_INT:
+            return ValidationError(_('Price cannot be bigger than %s') % MAX_INT)
 
         if value <= 0:
             return ValidationError(_(u'Cost must be greater than zero.'))
