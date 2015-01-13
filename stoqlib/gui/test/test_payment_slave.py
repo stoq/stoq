@@ -142,6 +142,21 @@ class TestCardPaymentSlaves(GUITest):
 
         self.check_slave(slave, 'slave-card-installments-store')
 
+    def test_on_auth_number_validate(self):
+        sellable = self.create_sellable(price=100)
+        sale = self.create_sale()
+        sale.add_sellable(sellable)
+        subtotal = sale.get_sale_subtotal()
+        wizard = ConfirmSaleWizard(self.store, sale, subtotal)
+        method = PaymentMethod.get_by_name(self.store, u'card')
+        slave = CardMethodSlave(wizard, None, self.store, sale, method)
+        slave.auth_number.update(1234567)
+        self.assertEquals(unicode(slave.auth_number.emit("validate", 1234567)),
+                          "Authorization number must have 6 digits or less.")
+        self.assertNotSensitive(wizard, ['next_button'])
+        slave.auth_number.update(123456)
+        self.assertSensitive(wizard, ['next_button'])
+
 
 class TestMultipleMethodSlave(GUITest):
     def _create_sale(self):

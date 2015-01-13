@@ -991,6 +991,10 @@ class CardMethodSlave(BaseEditorSlave):
                                      'than %d and lower than %d')
                                    % (min_installments, max_installments))
 
+    def on_auth_number__validate(self, entry, value):
+        if entry.get_text_length() > 6:
+            return ValidationError(_("Authorization number must have 6 digits or less."))
+
 
 class _MultipleMethodEditor(BaseEditor):
     """A generic editor that attaches a payment method slave in a toplevel
