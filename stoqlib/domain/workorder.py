@@ -834,7 +834,8 @@ class WorkOrder(Domain):
         """Checks if this work order can be cancelled
 
         The order can be cancelled at any point, once it's not
-        finished (this is done by checking :meth:`.is_finished`)
+        finished (this is done by checking :meth:`.is_finished`) or its already
+        cancelled
 
         If the work order is related to a sale, the user cannot cancel it, and
         should cancel the sale instead.
@@ -843,6 +844,8 @@ class WorkOrder(Domain):
           used when the sale is being canceled
         :returns: ``True`` if can be cancelled, ``False`` otherwise
         """
+        if self.status == self.STATUS_CANCELLED:
+            return False
         if not ignore_sale and self.sale_id:
             return False
         return not self.is_finished()
