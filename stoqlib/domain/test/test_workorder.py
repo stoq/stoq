@@ -477,7 +477,8 @@ class TestWorkOrder(DomainTest):
 
             # After adding, only STATUS_WORK_IN_PROGRESS should be True
             if status in [WorkOrder.STATUS_WORK_FINISHED,
-                          WorkOrder.STATUS_DELIVERED]:
+                          WorkOrder.STATUS_DELIVERED,
+                          WorkOrder.STATUS_CANCELLED]:
                 self.assertFalse(workorder.can_cancel())
             else:
                 self.assertTrue(workorder.can_cancel())
