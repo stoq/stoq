@@ -211,9 +211,20 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
                        label, work_order, work_order_id)
 
     def _remove_work_order(self, holder, name, work_order, work_order_id):
+        if work_order.is_finished():
+            warning(_("You cannot remove workorder with the status '%s'")
+                    % work_order.status_str)
+            return
         if not work_order.get_items().find().is_empty():
             warning(_("This workorder already has items and cannot be removed"))
             return
+
+        # We cannot remove the WO from the database (since it already has some
+        # history), but we can disassociate it from the sale, cancel and leave
+        # a reason for it.
+        reason = (_(u'Removed from sale %s') % work_order.sale.identifier)
+        work_order.sale = None
+        work_order.cancel(reason=reason)
 
         self._work_order_ids.remove(work_order_id)
 
@@ -224,12 +235,6 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
 
         # And remove the WO
         self.wizard.workorders.remove(work_order)
-
-        # FIXME: Allow to remove the workorder in case the model is new.
-        # We cannot remove the WO from the database (since it already has some
-        # history), but we can disassociate it from the sale and cancel it.
-        work_order.sale = None
-        work_order.cancel()
 
         self.force_validation()
 

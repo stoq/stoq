@@ -31,7 +31,7 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale, SaleComment
-from stoqlib.domain.workorder import WorkOrderCategory, WorkOrderItem
+from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory, WorkOrderItem
 from stoqlib.enums import ChangeSalespersonPolicy
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.test.uitestutils import GUITest
@@ -184,7 +184,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
             self.assertIsNone(step.salesperson.read())
 
     @mock.patch('stoqlib.gui.wizards.workorderquotewizard.warning')
-    def test_multiple_work_orders(self, warning):
+    def test_remove_work_orders(self, warning):
         client = self.create_client()
 
         wizard = OpticalSaleQuoteWizard(self.store)
@@ -193,6 +193,9 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         for i in range(3):
             wo = self.create_workorder()
             wo.sale = step.model
+            if i == 1:
+                wo.status = WorkOrder.STATUS_WORK_FINISHED
+                finished_order = wo
 
         wo.add_sellable(self.create_sellable())
 
@@ -200,25 +203,52 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         self.check_wizard(wizard, 'wizard-optical-work-order-step-multiple-wo')
 
         step = wizard.get_current_step()
-        assert step.work_orders_nb.get_n_pages() == 3
+        self.assertEquals(step.work_orders_nb.get_n_pages(), 3)
 
         # Test removing the first, with no items
         self.click(step.slaves['WO 1'].close_button)
+        self.assertEquals(step.work_orders_nb.get_n_pages(), 2)
+
+        # Test trying to remove the second, since the WO is finished
+        self.click(step.slaves['WO 2'].close_button)
+        warning.assert_called_once_with(
+            ("You cannot remove workorder with the status '%s'") % finished_order.status_str)
+        self.assertEquals(step.work_orders_nb.get_n_pages(), 2)
 
         # Test removing the third, which has items
+        warning.reset_mock()
         self.click(step.slaves['WO 3'].close_button)
         warning.assert_called_once_with(
             'This workorder already has items and cannot be removed')
+        self.assertEquals(step.work_orders_nb.get_n_pages(), 2)
 
-        # Test removing the second, which has no items
-        self.click(step.slaves['WO 2'].close_button)
+    def test_remove_last_work_order(self):
+        client = self.create_client()
 
-        # Test removing the third, which is not possible any more since
-        # it's the last
-        self.click(step.slaves['WO 3'].close_button)
+        wizard = OpticalSaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+        step.client_gadget.set_value(client)
 
-        # Add a new
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+
+        # Trying to remove the only workorder of that sale
+        self.click(step.slaves['WO 1'].close_button)
+        self.assertEquals(step.work_orders_nb.get_n_pages(), 1)
+
+    def test_add_work_orders(self):
+        client = self.create_client()
+
+        wizard = OpticalSaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+        step.client_gadget.set_value(client)
+
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+
+        # Add a new tab
         self.click(step.new_tab_button)
+        self.assertEquals(step.work_orders_nb.get_n_pages(), 2)
 
     def test_item_step(self):
         client = self.create_client()
