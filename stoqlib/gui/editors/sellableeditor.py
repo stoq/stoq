@@ -387,6 +387,7 @@ class SellableEditor(BaseEditor):
 
     def _fill_categories(self):
         categories = self.store.find(SellableCategory)
+        self.category_combo.set_sensitive(any(categories) and not self.visual_mode)
         self.category_combo.prefill(api.for_combo(categories,
                                                   attr='full_description'))
 

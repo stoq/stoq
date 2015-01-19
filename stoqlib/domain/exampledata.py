@@ -28,6 +28,7 @@ import datetime
 from decimal import Decimal
 
 from stoqdrivers.enum import TaxType
+from storm.expr import Delete
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.runtime import (get_current_station,
@@ -63,8 +64,7 @@ class ExampleCreator(object):
         # start, there is already data that could cause unwanted behavior in
         # a few tests, like GUI search ones.
         for domain in domains:
-            for item in self.store.find(domain):
-                self.store.remove(item)
+            self.store.execute(Delete(table=domain))
 
     def set_store(self, store):
         self.store = store
