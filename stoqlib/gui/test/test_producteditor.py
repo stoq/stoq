@@ -23,8 +23,11 @@
 ##
 
 import mock
+from storm.expr import Update
 
 from decimal import Decimal
+from stoqlib.domain.sellable import SellableCategory, Sellable
+from stoqlib.domain.commission import CommissionSource
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductionProductEditor)
@@ -43,6 +46,17 @@ class TestProductEditor(GUITest):
         editor = ProductEditor(self.store)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-create')
+
+    def test_create_without_category(self):
+        # Removing data from SellableCategory, so we can test the validation of
+        # category_combo update when there is no category.
+        self.store.execute(Update({Sellable.category_id: None}, table=Sellable))
+        self.clean_domain([CommissionSource, SellableCategory])
+
+        editor = ProductEditor(self.store)
+        editor.code.update("12345")
+        self.assertNotSensitive(editor, ['category_combo'])
+        self.check_editor(editor, 'editor-product-create-no-category')
 
     def test_show(self):
         product = self.create_product(storable=True)

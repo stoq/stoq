@@ -1,0 +1,174 @@
+editor: ProductEditor
+GtkDialog(main_dialog.toplevel): title='Add Product', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ProductEditor is attached
+        GtkNotebook(toplevel):
+          GtkVBox(sellable_tab):
+            GtkTable(table, expand=True, fill=True):
+              GtkLabel(code_lbl): 'Code:'
+              ProxyEntry(code): '12345'
+              GtkLabel(label8): 'Status:'
+              ProxyLabel(status_str): '<span >Available</span>'
+              GtkLabel(barcode_lbl): 'Barcode:'
+              ProxyEntry(barcode): ''
+              GtkLabel(product_type_lbl): 'Type:'
+              ProxyLabel(product_type_str): '<span >Regular product</span>'
+              GtkLabel(label10): 'Default Sales C.F.O.P.:'
+              ProxyComboEntry(default_sale_cfop):
+                item: ''
+                item: '5.102 Venda de Mercadoria Adquirida'
+                item: '5.202 Devolucao'
+                item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
+              GtkLabel(category_lbl): 'Category:'
+              GtkHBox(hbox1):
+                ProxyComboEntry(category_combo, expand=True, fill=True): insensitive
+                GtkButton(add_category):
+                GtkButton(edit_category): insensitive
+              GtkLabel(label2): 'Description:'
+              ProxyEntry(description): '', mandatory
+              ProxyLabel(label4): 'Cost ($CURRENCY):'
+              GtkHBox(cost_hbox):
+                ProxySpinButton(cost, fill=True): '0.00', invalid
+              GtkLabel(label9): 'Tributary Situation:'
+              GtkHBox(tax_hbox):
+                ProxyComboBox(tax_constant, fill=True):
+                  item: 'Exemption'
+                  item: 'No tax', selected
+                  item: 'Substitution'
+                GtkHBox(tax_box, fill=True):
+                  ProxyLabel(tax_value): '<span ></span>'
+                  GtkLabel(label_percent, fill=True): '%'
+              ProxyLabel(label5): 'Sale Price ($CURRENCY):'
+              GtkHBox(price_hbox):
+                ProxySpinButton(price, fill=True): '0.00', invalid
+                GtkButton(sale_price_button, fill=True):
+              GtkLabel(label3): 'Unit:'
+              GtkHBox(unit_hbox):
+                ProxyComboBox(unit_combo, expand=True, fill=True):
+                  item: 'No units', selected
+                  item: 'Kg'
+                  item: 'Lt'
+                  item: 'm '
+              ProxyLabel(requires_weighing_label): '<span size="small"></span>'
+              GtkEventBox(slave_holder): slave SellableDetailsSlave is attached
+                GtkVBox(toplevel):
+                  GtkTable(table1, expand=True, fill=True):
+                    GtkLabel(notes_lbl): 'Details:'
+                    GtkScrolledWindow(scrolledwindow1):
+                      ProxyTextView(notes):
+                    GtkVBox(vbox2):
+                      GtkEventBox(sellable_image_holder, expand=True, fill=True): slave ImageSlave is attached
+                        GtkHBox(toplevel):
+                          GtkEventBox(eventbox, expand=True, fill=True):
+                            GtkImage(image):
+                  GtkLabel(label1, fill=True): 'Right-click image for more options'
+          GtkEventBox(): slave ProductInformationSlave is attached
+            GtkAlignment(alignment2):
+              GtkVBox(vbox1):
+                GtkFrame(general_frame, fill=True):
+                  GtkAlignment(alignment1):
+                    GtkTable(table4):
+                      GtkLabel(manufacturer_lbl): 'Manufacturer:'
+                      ProxyComboEntry(manufacturer):
+                        item: ''
+                      GtkLabel(brand_lbl): 'Brand:'
+                      ProxyEntry(brand): ''
+                      GtkLabel(model_lbl): 'Model:'
+                      ProxyEntry(product_model): ''
+                      GtkLabel(family_lbl): 'Family:'
+                      ProxyEntry(family): ''
+                      GtkLabel(width_lbl): 'Width:'
+                      ProxySpinButton(width): '0'
+                      GtkLabel(weight_lbl): 'Weight:'
+                      GtkHBox(hbox2):
+                        ProxySpinButton(weight, expand=True, fill=True): '0.000'
+                        GtkLabel(kg_lbl, fill=True): 'Kg'
+                      GtkLabel(depth_lbl): 'Depth:'
+                      ProxySpinButton(depth): '0'
+                      GtkLabel(height_lbl): 'Height:'
+                      ProxySpinButton(height): '0'
+                      GtkLabel(part_number_lbl): 'Part-Number:'
+                      ProxyEntry(part_number): ''
+                  GtkLabel(label4): '<b>General Details</b>'
+                GtkFrame(storable_frame, fill=True):
+                  GtkAlignment(alignment5):
+                    GtkTable(table2):
+                      GtkLabel(location_lbl): 'Location:'
+                      ProxyEntry(location): ''
+                      GtkLabel(min_lbl): 'Minimum:'
+                      GtkHBox(min_hbox):
+                        ProxySpinButton(minimum_quantity, expand=True, fill=True): '0.00'
+                        GtkLabel(min_unit, fill=True): 'Unit(s)'
+                      GtkLabel(max_lbl): 'Maximum:'
+                      GtkHBox(max_hbox):
+                        ProxySpinButton(maximum_quantity, expand=True, fill=True): '0.00'
+                        GtkLabel(max_unit, fill=True): 'Unit(s)'
+                  GtkLabel(label5): '<b>Stock Details</b>'
+                GtkFrame(nfe_frame, fill=True):
+                  GtkAlignment(alignment6):
+                    GtkTable(table3):
+                      GtkLabel(ncm_lbl): 'NCM:'
+                      ProxyEntry(ncm): ''
+                      GtkLabel(ex_tipi_lbl): 'EX TIPI:'
+                      ProxyEntry(ex_tipi): ''
+                      GtkLabel(genero_lbl): 'G\xc3\xaanero:'
+                      ProxyEntry(genero): ''
+                  GtkLabel(label6): '<b>Mercosul Details</b>'
+          GtkEventBox(): slave CategoryPriceSlave is attached
+            GtkVBox(toplevel):
+              GtkHBox(hbox1, fill=True):
+                GtkLabel(model_name_label, fill=True): 'Category:'
+                ProxyComboEntry(target_combo, expand=True, fill=True): invalid
+                GtkButton(add_button, fill=True): 'gtk-add', insensitive
+              GtkVBox(model_vbox, expand=True, fill=True):
+                kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):
+                  GtkVBox(expand=True, fill=True, padding=6):
+                    ObjectList(expand=True, fill=True):
+                      column: title='Category', expand
+                      column: title='Price'
+                      column: title='Markup'
+                    GtkHBox(fill=True):
+                      GtkButton(fill=True): 'gtk-add', hidden
+                      GtkButton(fill=True): 'gtk-remove', insensitive
+                      GtkButton(fill=True): 'gtk-edit', insensitive
+          GtkEventBox(): slave ProductSupplierSlave is attached
+            GtkVBox(toplevel):
+              GtkHBox(hbox1, fill=True):
+                GtkLabel(model_name_label, fill=True): 'Supplier:'
+                ProxyComboEntry(target_combo, expand=True, fill=True): invalid
+                  item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
+                GtkButton(add_button, fill=True): 'gtk-add'
+              GtkVBox(model_vbox, expand=True, fill=True):
+                kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):
+                  GtkVBox(expand=True, fill=True, padding=6):
+                    ObjectList(expand=True, fill=True):
+                      column: title='Supplier', expand
+                      column: title='Product Code'
+                      column: title='Lead time'
+                      column: title='Minimum Purchase'
+                      column: title='Cost'
+                    GtkHBox(fill=True):
+                      GtkButton(fill=True): 'gtk-add', hidden
+                      GtkButton(fill=True): 'gtk-remove', insensitive
+                      GtkButton(fill=True): 'gtk-edit', insensitive
+          GtkEventBox(): slave ProductTaxSlave is attached
+            GtkAlignment(toplevel):
+              GtkTable(table1):
+                GtkLabel(label1): 'ICMS Class:'
+                ProxyComboBox(icms_template):
+                  item: None, selected
+                GtkLabel(label2): 'IPI Class:'
+                ProxyComboBox(ipi_template):
+                  item: None, selected
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(_print_labels_btn): 'gtk-print', insensitive
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
+      GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

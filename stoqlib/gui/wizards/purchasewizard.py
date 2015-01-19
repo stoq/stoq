@@ -91,6 +91,7 @@ class StartPurchaseStep(WizardEditorStep):
 
     def _fill_supplier_combo(self):
         suppliers = Supplier.get_active_suppliers(self.store)
+        self.edit_supplier.set_sensitive(any(suppliers))
         self.supplier.prefill(api.for_person_combo(suppliers))
 
     def _fill_branch_combo(self):
@@ -179,6 +180,9 @@ class StartPurchaseStep(WizardEditorStep):
 
     def on_add_supplier__clicked(self, button):
         self._add_supplier()
+
+    def on_supplier__content_changed(self, supplier):
+        self.edit_supplier.set_sensitive(bool(self.supplier.get_selected()))
 
     def on_edit_supplier__clicked(self, button):
         self._edit_supplier()

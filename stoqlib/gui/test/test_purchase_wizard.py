@@ -21,6 +21,7 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
+from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import Storable
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.test.uitestutils import GUITest
@@ -97,6 +98,22 @@ class TestPurchaseWizard(GUITest):
                               models=models)
 
             self.click(self.wizard.next_button)
+
+    def test_create_without_active_supplier(self):
+        # Inactivating all the suppliers, so they wont show on PurchaseWizard
+        suppliers = self.store.find(Supplier)
+        for supplier in suppliers:
+            supplier.status = Supplier.STATUS_INACTIVE
+
+        wizard = PurchaseWizard(self.store)
+        step = wizard.get_current_step()
+        self.assertEquals(step.edit_supplier.get_sensitive(), False)
+        step.supplier.set_text('Invalid supplier')
+        self.assertEquals(step.edit_supplier.get_sensitive(), False)
+
+        # Activating the suppliers back
+        for supplier in suppliers:
+            supplier.status = Supplier.STATUS_ACTIVE
 
     def test_edit_purchase_without_open_date(self):
         purchase_order = self.create_purchase_order()
