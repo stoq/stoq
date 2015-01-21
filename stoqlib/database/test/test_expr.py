@@ -28,7 +28,7 @@ import datetime
 
 from storm.expr import Cast
 
-from stoqlib.database.expr import Between, GenerateSeries, Field
+from stoqlib.database.expr import Case, Between, GenerateSeries, Field
 from stoqlib.domain.event import Event
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -80,3 +80,36 @@ class ViewableTest(DomainTest):
         self.assertEquals(len(data), 6)
 
         self.assertEquals(data, [5, 6, 7, 8, 9, 10])
+
+    def test_case(self):
+        # Ordinary case
+        series = GenerateSeries(0, 5)
+        case = Case(condition=Field('generate_series', 'generate_series') <= 3,
+                    result=0, else_=1)
+        data = list(self.store.using(series).find(case))
+        self.assertEquals(data, [0, 0, 0, 0, 1, 1])
+
+        # else_ is None
+        case = Case(condition=Field('generate_series', 'generate_series') <= 3,
+                    result=Field('generate_series', 'generate_series'),
+                    else_=None)
+        data = list(self.store.using(series).find(case))
+        self.assertEquals(data, [0, 1, 2, 3, None, None])
+
+        # else_ is a False equivalent value
+        case = Case(condition=Field('generate_series', 'generate_series') <= 3,
+                    result=Field('generate_series', 'generate_series'), else_=0)
+        data = list(self.store.using(series).find(case))
+        self.assertEquals(data, [0, 1, 2, 3, 0, 0])
+
+        # else_ is False
+        case = Case(condition=Field('generate_series', 'generate_series') != 1,
+                    result=True, else_=False)
+        data = list(self.store.using(series).find(case))
+        self.assertEquals(data, [True, False, True, True, True, True])
+
+        # result is None
+        case = Case(condition=Field('generate_series', 'generate_series') != 1,
+                    result=None, else_=False)
+        data = list(self.store.using(series).find(case))
+        self.assertEquals(data, [None, False, None, None, None, None])
