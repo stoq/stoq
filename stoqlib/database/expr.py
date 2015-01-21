@@ -177,7 +177,7 @@ class Case(ComparableExpr):
 def compile_case(compile, expr, state):
     stmt = "CASE WHEN %s THEN %s" % (expr_compile(expr.condition, state),
                                      expr_compile(expr.result, state))
-    if expr.else_:
+    if expr.else_ is not None:
         stmt += ' ELSE ' + expr_compile(expr.else_, state)
     stmt += ' END'
     return stmt
