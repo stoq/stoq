@@ -40,6 +40,7 @@ from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.searchcolumns import (AccessorColumn, SearchColumn,
                                               QuantityColumn)
 from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
@@ -388,8 +389,14 @@ class PurchaseSellableSearch(SellableSearch):
 
     def run_editor(self, obj=None):
         store = api.new_store()
-        product = self.run_dialog(self.editor_class, self, store,
-                                  store.fetch(obj), visual_mode=self._read_only)
+        if not obj:
+            self.editor_class = ProductCreateWizard
+            product = self.editor_class.run_wizard(self)
+            product = product and store.fetch(product)
+        else:
+            self.editor_class = ProductEditor
+            product = self.run_dialog(self.editor_class, self, store,
+                                      store.fetch(obj), visual_mode=self._read_only)
 
         # This means we are creating a new product. After that, add the
         # current supplier as the supplier for this product
