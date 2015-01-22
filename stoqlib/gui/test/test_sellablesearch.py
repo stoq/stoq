@@ -34,6 +34,7 @@ from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.sellablesearch import (SellableSearch,
                                                PurchaseSellableSearch,
                                                SaleSellableSearch)
+from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -101,3 +102,19 @@ class TestPurchaseSellableSearch(GUITest):
                 run_dialog.assert_called_once_with(ProductEditor, dialog,
                                                    self.store, product,
                                                    visual_mode=False)
+
+    @mock.patch('stoqlib.gui.search.searcheditor.api.new_store')
+    @mock.patch('stoqlib.gui.wizards.productwizard.run_dialog')
+    def test_run_wizard(self, run_dialog, new_store):
+        run_dialog.return_value = None
+        new_store.return_value = self.store
+        query = Sellable.get_unblocked_sellables_query(self.store)
+        dialog = PurchaseSellableSearch(store=self.store,
+                                        search_spec=ProductFullStockView,
+                                        search_query=query)
+
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.click(dialog._toolbar.new_button)
+                run_dialog.assert_called_once_with(ProductCreateWizard, dialog,
+                                                   self.store)
