@@ -192,8 +192,7 @@ class ImageSlave(BaseEditorSlave):
 
     def _on_popup_save__activate(self, menu):
         model = self._image_model
-        name = ('%s-%d.png' %
-                (model.get_description() or 'stoqimg', model.id))
+        name = '%s.png' % model.get_description()
         filename = save(current_name=name,
                         folder=os.path.expanduser('~/'))
         if filename:
