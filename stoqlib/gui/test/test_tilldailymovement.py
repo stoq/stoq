@@ -43,6 +43,50 @@ class TestTillHistory(GUITest):
         self.click(dialog.search_button)
         self.check_dialog(dialog, 'till-dailymovement-dialog-show')
 
+    def test_show_with_check_payments(self):
+        dialog = TillDailyMovementDialog(self.store)
+
+        # Sale with check
+        sale = self.create_sale()
+        sale.identifier = 1234
+        self.add_product(sale)
+        payments = self.add_payments(sale, method_type=u'check', installments=2)
+        sale.order()
+        sale.confirm()
+        sale.group.pay()
+        # Set the check data
+        number = 0
+        for payment in payments:
+            number += 1
+            payment.payment_number = unicode(number)
+            bank = payment.check_data.bank_account
+            bank.bank_number = 1
+            bank.bank_branch = u'1234-23'
+            bank.bank_account = u'12345-23'
+
+        # New sale to use blank values in check data
+        sale = self.create_sale()
+        sale.identifier = 7894
+        self.add_product(sale)
+        payments = self.add_payments(sale, method_type=u'check', installments=3)
+        sale.order()
+        sale.confirm()
+        sale.group.pay()
+        # Set some blank values
+        number = 0
+        for payment in payments:
+            number += 1
+            payment.payment_number = unicode(number)
+            bank = payment.check_data.bank_account
+            bank.bank_number = None
+            bank.bank_branch = u'4561-12'
+            bank.bank_account = u'45678-89'
+        # Remove the payment_number of the second installment
+        payments[1].payment_number = u""
+
+        self.click(dialog.search_button)
+        self.check_dialog(dialog, 'till-dailymovement-dialog-check-payments')
+
     def test_show_synchronized(self):
         with self.sysparam(SYNCHRONIZED_MODE=True):
             dialog = TillDailyMovementDialog(self.store)

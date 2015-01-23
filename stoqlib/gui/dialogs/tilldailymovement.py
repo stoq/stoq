@@ -229,6 +229,23 @@ class TillDailyMovementDialog(BaseEditor):
                 sale_payments = self.sales.setdefault(sale, {})
                 details = ''
                 method_desc = p.method.get_description()
+                if p.check_data:
+                    account = p.check_data.bank_account
+                    numbers = [payment.payment_number for payment in p.sale.payments
+                               if bool(payment.payment_number)]
+                    # Ensure that the check numbers are ordered
+                    numbers.sort()
+                    parts = []
+                    if account.bank_number:
+                        parts.append(_(u'Bank: %s') % account.bank_number)
+                    if account.bank_branch:
+                        parts.append(_(u'Agency: %s') % account.bank_branch)
+                    if account.bank_account:
+                        parts.append(_(u'Account: %s') % account.bank_account)
+                    if numbers:
+                        parts.append(_(u'Numbers: %s') % ', '.join(numbers))
+                    details = ' / '.join(parts)
+
                 if p.card_data:
                     if p.card_data.card_type == CreditCardData.TYPE_DEBIT:
                         method_desc += ' ' + _('Debit')

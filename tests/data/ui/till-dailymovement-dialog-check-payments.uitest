@@ -1,0 +1,114 @@
+dialog: TillDailyMovementDialog
+GtkVBox(toplevel):
+  GtkVBox(vbox2, fill=True):
+    GtkHBox(hbox2, fill=True):
+      GtkLabel(label9, fill=True): 'Branch:'
+      ProxyComboBox(branch, fill=True):
+        item: 'Any'
+        item: 'Moda Stoq', selected
+        item: 'Stoq Elite Fashion'
+      GtkButton(search_button, fill=True): 'gtk-find'
+    GtkHBox(daterange_hbox, fill=True):
+      DateSearchFilter(date_filter):
+        GtkLabel(): 'Date:'
+        ProxyComboBox(padding=6):
+          item: 'Today', selected
+          item: 'Yesterday'
+          item: 'Last week'
+          item: 'Last month'
+          item: 'Custom day'
+          item: 'Custom interval'
+        GtkLabel(): 'From:', insensitive
+        ProxyDateEntry(padding=6): date.today(), insensitive
+        GtkLabel(): 'To:', insensitive
+        ProxyDateEntry(padding=6): date.today(), insensitive
+  GtkNotebook(history_notebook, expand=True, fill=True):
+    GtkVBox(sales_vbox):
+      ObjectTree(sales_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Sales Person'
+        column: title='Client', expand
+        column: title='Branch', hidden
+        column: title='Value'
+        row: 1234, u'SalesPerson', 'Not Specified', u'Moda Stoq', '$10.00'
+          row: None, u'Check', u'Bank: 1 / Agency: 1234-23 / Account: 12345-23 / Numbers: 1, 2', None, '$10.00 (2x)'
+        row: 7894, u'SalesPerson', 'Not Specified', u'Moda Stoq', '$10.00'
+          row: None, u'Check', u'Agency: 4561-12 / Account: 45678-89 / Numbers: 1, 3', None, '$10.00 (3x)'
+    GtkVBox(vbox4):
+      ObjectList(inpayments_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Method'
+        column: title='Description', expand
+        column: title='Branch', hidden
+        column: title='Payment Value'
+    GtkVBox(purchases_vbox):
+      ObjectTree(purchases_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Status'
+        column: title='Responsible', expand
+        column: title='Branch'
+        column: title='Notes'
+        column: title='Supplier'
+        column: title='Value'
+    GtkVBox(vbox3):
+      ObjectList(outpayments_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Method'
+        column: title='Description', expand
+        column: title='Branch', hidden
+        column: title='Payment Value'
+    GtkVBox(return_sales_vbox):
+      ObjectTree(return_sales_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Sales Person'
+        column: title='Client', expand
+        column: title='Return Date'
+        column: title='Branch', hidden
+        column: title='Sale Value'
+    GtkVBox(supplies_vbox):
+      ObjectList(supplies_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Branch', hidden
+        column: title='Value'
+      GtkHBox(supplies_label):
+        GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+        GtkLabel(): '<b>$ 0.00</b>'
+    GtkVBox(removals_vbox):
+      ObjectList(removals_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Branch', hidden
+        column: title='Value'
+      GtkHBox(removals_label):
+        GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+        GtkLabel(): '<b>$ 0.00</b>'
+    GtkHBox(hbox1):
+      GtkVBox(permethod_vbox, expand=True, fill=True):
+        ObjectList(permethod_list, expand=True, fill=True):
+          column: title='Payment Method', expand
+          column: title='Income Total'
+          column: title='Outgoing Total'
+          row: u'Check', Decimal('20.00'), 0
+        GtkTable(table1, fill=True):
+          GtkLabel(label10): 'Subtotal:'
+          ProxyLabel(in_subtotal): '<span >$20.00</span>'
+          GtkLabel(label13): 'Subtotal:'
+          ProxyLabel(out_subtotal): '<span >$ 0.00</span>'
+          GtkLabel(label11): 'Credit:'
+          ProxyLabel(in_credit): '<span >$ 0.00</span>'
+          GtkLabel(label14): 'Credit:'
+          ProxyLabel(out_credit): '<span >$ 0.00</span>'
+          GtkLabel(label12): 'Total Income:'
+          ProxyLabel(in_total): '<span >$20.00</span>'
+          GtkLabel(label15): 'Total Outgoing:'
+          ProxyLabel(out_total): '<span >$ 0.00</span>'
+      GtkVBox(percard_vbox, expand=True, fill=True):
+        ObjectList(percard_list, expand=True, fill=True):
+          column: title='Provider Name', expand
+          column: title='Income Total'
+        GtkHBox(percard_label):
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+          GtkLabel(): '<b>$ 0.00</b>'
+  GtkHButtonBox(hbuttonbox1, fill=True):
+    GtkButton(print_button): 'gtk-print'
