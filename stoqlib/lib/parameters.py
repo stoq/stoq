@@ -63,7 +63,7 @@ class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
                  initial=None, options=None, combo_data=None, range=None,
                  multiline=False, validator=None, onupgrade=None,
-                 change_callback=None, editor=None, wrap=True):
+                 change_callback=None, editor=None, wrap=True, allow_none=False):
         self.key = key
         self.group = group
         self.short_desc = short_desc
@@ -81,6 +81,7 @@ class ParameterDetails(object):
         self.change_callback = change_callback
         self.editor = editor
         self.wrap = wrap
+        self.allow_none = allow_none
 
     #
     #  Public API
@@ -207,7 +208,7 @@ _details = [
         _(u'Suggested supplier'),
         _(u'The supplier suggested when we are adding a new product in the '
           u'system'),
-        u'person.Supplier'),
+        u'person.Supplier', allow_none=True),
 
     ParameterDetails(
         u'SUGGESTED_UNIT',

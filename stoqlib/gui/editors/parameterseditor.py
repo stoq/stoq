@@ -48,7 +48,8 @@ _ = stoqlib_gettext
 class SystemParameterEditor(BaseEditor):
     gladefile = "SystemParameterEditor"
     proxy_widgets = ("parameter_name",
-                     "parameter_desc")
+                     "parameter_desc",
+                     "parameter_group")
     model_type = ParameterData
     help_section = 'param'
 
@@ -75,6 +76,7 @@ class SystemParameterEditor(BaseEditor):
     def _setup_widgets(self):
         self.parameter_name.set_underline(True)
         self.parameter_desc.set_size("small")
+        self.parameter_group.set_label(_(self.model.get_group()))
 
     def _setup_entry_slave(self, box=None):
         widget = ProxyEntry()
@@ -175,9 +177,13 @@ class SystemParameterEditor(BaseEditor):
         widget.props.sensitive = self.sensitive
         widget.model_attribute = "field_value"
         widget.data_type = unicode
-        widget.mandatory = True
+
+        detail = sysparam.get_detail_by_name(self.model.field_name)
+        is_mandatory = not detail.allow_none
+        self._block_none_value = is_mandatory
+        widget.set_property('mandatory', is_mandatory)
+
         if not data:
-            detail = sysparam.get_detail_by_name(self.model.field_name)
             field_type = detail.get_parameter_type()
             # FIXME: DEFAULT_PAYMENT_METHOD needs to filter information from
             # domain because it cannot be any non-creatable method.

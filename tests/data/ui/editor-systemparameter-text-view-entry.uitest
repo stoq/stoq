@@ -6,7 +6,7 @@ GtkDialog(main_dialog.toplevel): title="Edit 'Additional Information for the Fis
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SystemParameterEditor is attached
         GtkTable(table1):
           GtkLabel(label1): 'Group:'
-          ProxyLabel(kiwilabel1): 'General'
+          ProxyLabel(parameter_group): 'NF-e'
           GtkLabel(label2): 'Parameter Name:'
           GtkVBox(vbox1):
             ProxyLabel(parameter_name, fill=True): '<span underline="single">Additional Information for the Fisco</span>'
