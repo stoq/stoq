@@ -204,11 +204,15 @@ class BaseMethodSelectionStep(object):
                 self.cash_change_slave.disable_cash_change()
         elif method and method.method_name == u'credit':
             self.wizard.enable_finish()
-            received_value.set_text(format_price(self.get_remaining_value()))
+            if self.wizard.need_create_payment():
+                received_value.set_text(format_price(self.get_remaining_value()))
             self.cash_change_slave.disable_cash_change()
         else:
             self.wizard.disable_finish()
-            received_value.set_text(format_price(self.get_remaining_value()))
+            if self.wizard.need_create_payment():
+                received_value.set_text(format_price(self.get_remaining_value()))
+            else:
+                self.wizard.enable_finish()
             self.cash_change_slave.disable_cash_change()
 
     def _create_change_payment(self):
