@@ -25,6 +25,7 @@
 
 import decimal
 
+from kiwi.python import strip_accents
 from kiwi.ui.objectlist import Column
 from zope.interface import providedBy
 
@@ -58,6 +59,8 @@ class ParameterSearch(BaseEditor):
         self._parameters = self.store.find(ParameterData)
         self._reset_results()
         self.edit_button.set_sensitive(False)
+        # Hiding the button to avoid confusion about discarding the changes
+        self.main_dialog.cancel_button.hide()
 
     def _reset_results(self):
         self.results.clear()
@@ -115,7 +118,9 @@ class ParameterSearch(BaseEditor):
         store.close()
 
     def _filter_results(self, text):
+        text = strip_accents(text)
         query = text.lower()
+        query = query.split()
         self._reset_results()
 
         if not query:
@@ -123,8 +128,12 @@ class ParameterSearch(BaseEditor):
             return
 
         for param in self._parameters:
-            if (query not in param.get_group().lower() and
-                query not in param.get_short_description().lower()):
+            group = strip_accents(param.get_group()).lower()
+            desc = strip_accents(param.get_short_description()).lower()
+
+            group_matches = all(i in group for i in query)
+            desc_matches = all(i in desc for i in query)
+            if not group_matches and not desc_matches:
                 self.results.remove(param)
 
     #
@@ -140,9 +149,15 @@ class ParameterSearch(BaseEditor):
     def on_results__double_click(self, list, data):
         self._edit_item(data)
 
+    def on_results__row_activated(self, list, data):
+        self._edit_item(data)
+
     def on_entry__activate(self, widget):
         self._filter_results(widget.get_text())
 
     def on_show_all_button__clicked(self, widget):
-        self.entry.update('')
+        self.entry.set_text('')
         self._reset_results()
+
+    def on_search_button__clicked(self, widget):
+        self._filter_results(self.entry.get_text())

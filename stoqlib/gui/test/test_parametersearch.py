@@ -35,10 +35,17 @@ class TestParameterSearch(GUITest):
 
         self.check_search(search, 'parameter-no-filter')
 
-        search.entry.activate()
+        # clicking on search button
+        search.entry.set_text('')
+        self.click(search.search_button)
         self.check_search(search, 'parameter-no-filter')
 
-        search.entry.update('account')
+        # multiple words in any order search
+        search.entry.set_text('city default')
+        search.entry.activate()
+        self.check_search(search, 'parameter-string-multiple-words-filter')
+
+        search.entry.set_text('account')
         search.entry.activate()
         self.check_search(search, 'parameter-string-filter')
 
@@ -55,9 +62,15 @@ class TestParameterSearch(GUITest):
         self.click(search.edit_button)
         self.assertEquals(run_dialog.call_count, 1)
 
+        run_dialog.reset_mock()
         search.on_results__double_click(list(search.results),
                                         search.results[0])
-        self.assertEquals(run_dialog.call_count, 2)
+        self.assertEquals(run_dialog.call_count, 1)
+
+        run_dialog.reset_mock()
+        search.on_results__row_activated(list(search.results),
+                                         search.results[0])
+        self.assertEquals(run_dialog.call_count, 1)
 
     def test_get_parameter_data_domain(self):
         search = ParameterSearch(self.store)
