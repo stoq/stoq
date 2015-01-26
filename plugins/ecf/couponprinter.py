@@ -401,6 +401,8 @@ class Coupon(object):
             card_payments[card_data.nsu] += payment.value
 
         for payment in sale.payments:
+            if not payment.is_inpayment():
+                continue
             constant = self._get_payment_method_constant(payment)
 
             # When adding a money payment, use base_value so that the payback
