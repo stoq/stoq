@@ -45,7 +45,7 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView, ReturnedSaleItemsView
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.till import Till, TillEntry
-from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.views import ProductFullStockView, SoldItemsByBranchView
 from stoqlib.domain.workorder import WorkOrderView
 from stoqlib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
 from stoqlib.lib.parameters import sysparam
@@ -60,7 +60,8 @@ from stoqlib.reporting.product import ProductReport, ProductPriceReport
 from stoqlib.reporting.production import ProductionOrderReport
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
-from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
+from stoqlib.reporting.sale import (SaleOrderReport, SalesPersonReport,
+                                    SoldItemsByBranchReport)
 from stoqlib.reporting.salereturn import SaleReturnReport
 from stoqlib.reporting.till import TillHistoryReport, TillDailyMovementReport
 from stoqlib.reporting.test.reporttest import ReportTest
@@ -524,6 +525,15 @@ class TestReport(ReportTest):
         sale.status = Sale.STATUS_QUOTE
         sale.expire_date = datetime.date(2003, 12, 20)
         self._diff_expected(SaleOrderReport, 'sale-order-quote-report', sale)
+
+    def test_sold_items_by_branch_report(self):
+        from stoqlib.gui.search.salesearch import SoldItemsByBranchSearch
+        search = SoldItemsByBranchSearch(self.store)
+        search.width = 1000
+        sold_items = self.store.find(SoldItemsByBranchView).order_by(SoldItemsByBranchView.code)
+        search.results.add_list(sold_items, clear=True)
+        self._diff_expected(SoldItemsByBranchReport, 'sold-items-by-branch-report',
+                            search.results, list(search.results))
 
     def test_product_price_report(self):
         # the order_by clause is only needed by the test
