@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 18:50-0200\n"
-"PO-Revision-Date: 2015-01-15 20:55+0000\n"
+"POT-Creation-Date: 2015-01-29 12:44-0200\n"
+"PO-Revision-Date: 2015-01-29 14:44+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/stoq/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -4130,8 +4130,8 @@ msgstr ""
 #: ../stoqlib/domain/sale.py:1364
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:222
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:223
-#: ../stoqlib/gui/dialogs/tilldailymovement.py:265
-#: ../stoqlib/gui/dialogs/tilldailymovement.py:266
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:282
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:283
 msgid "Not Specified"
 msgstr ""
 
@@ -4396,7 +4396,7 @@ msgstr ""
 #: ../data/template/till/summary.html:50 ../stoqlib/domain/account.py:164
 #: ../stoqlib/domain/payment/card.py:324
 #: ../stoqlib/domain/payment/operation.py:420
-#: ../stoqlib/gui/dialogs/tilldailymovement.py:236
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:253
 msgid "Credit"
 msgstr ""
 
@@ -9307,7 +9307,7 @@ msgid "Debit Card Pre-dated"
 msgstr ""
 
 #: ../stoqlib/domain/payment/card.py:325
-#: ../stoqlib/gui/dialogs/tilldailymovement.py:234
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:251
 msgid "Debit"
 msgstr ""
 
@@ -11365,6 +11365,26 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:66
 #: ../stoqlib/reporting/till.py:50
 msgid "Daily Movement"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:240
+#, python-format
+msgid "Bank: %s"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:242
+#, python-format
+msgid "Agency: %s"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:244
+#, python-format
+msgid "Account: %s"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:246
+#, python-format
+msgid "Numbers: %s"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/tilldetails.py:36
