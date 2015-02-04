@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -30,12 +30,13 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column, SummaryLabel
+from kiwi.ui.widgets.combo import ProxyComboBox
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, ProductComponent,
                                     ProductQualityTest, Product,
-                                    ProductManufacturer)
+                                    ProductManufacturer, GridGroup)
 from stoqlib.domain.production import ProductionOrderProducingView
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.domain.views import ProductFullStockView
@@ -54,6 +55,130 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+class ProductAttributeSlave(BaseEditorSlave):
+    gladefile = 'ProductAttributeSlave'
+    model_type = object
+    proxy_widgets = ['attribute_group_combo']
+
+    def _setup_widgets(self):
+        self._widgets = {}
+        group = self.store.find(GridGroup)
+        self.attribute_group_combo.prefill(api.for_combo(group,
+                                                         attr='description',
+                                                         empty=_("Select a group")))
+        self.attribute_group_combo.connect('changed',
+                                           self._on_attribute_group_combo_selection__changed)
+
+    def _add_attribute(self, attr):
+        widget = gtk.CheckButton(label=attr.description)
+        widget.set_sensitive(attr.has_option())
+        self.vbox1.pack_start(widget, expand=False)
+        widget.show()
+        self._widgets[widget] = attr
+
+    def setup_proxies(self):
+        self._setup_widgets()
+
+    def get_selected_attributes(self):
+        active_check_box = []
+        for widget, value in self._widgets.iteritems():
+            if widget.get_active():
+                active_check_box.append(value)
+        return active_check_box
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def _on_attribute_group_combo_selection__changed(self, widget):
+        for check_box in self._widgets.keys():
+            check_box.destroy()
+        # After we destroy the check buttons we should reset the list of widgets
+        self._widgets = {}
+        group = self.attribute_group_combo.get_selected()
+        if not group:
+            return
+        for attr in group.attributes:
+            self._add_attribute(attr)
+
+
+class ProductGridSlave(BaseEditorSlave):
+    gladefile = 'ProductGridSlave'
+    model_type = Product
+
+    def __init__(self, store, model, visual_mode=False):
+        self._attr_list = list(model.attributes)
+        self._option_list = {}
+        self._widgets = {}
+        BaseEditorSlave.__init__(self, store, model, visual_mode)
+
+    def _setup_widgets(self):
+        self.attr_table.resize(len(self._attr_list), 2)
+        for pos, attribute in enumerate(self._attr_list):
+            self._add_options(attribute, pos)
+        self.add_product_button.set_sensitive(False)
+        self.product_list.set_columns(self._get_columns())
+        self.product_list.add_list(self.model.children)
+
+    def _add_options(self, attr, pos):
+        combo = ProxyComboBox()
+        label = gtk.Label(attr.attribute.description)
+
+        # This dictionary is populated with the purpose of tests
+        self._widgets[attr.attribute.description] = combo
+        self.attr_table.attach(label, 0, 1, pos, pos + 1, 0, 0, 0, 0)
+        self.attr_table.attach(combo, 1, 2, pos, pos + 1, 0, gtk.EXPAND | gtk.FILL, 0, 0)
+        self.attr_table.show_all()
+        self._fill_options(combo, attr)
+        combo.connect('changed', self._on_combo_selection__changed)
+
+    def _fill_options(self, widget, attr):
+        options = attr.options
+        widget.prefill(api.for_combo(options, empty=_("Select an option")))
+
+    def _get_columns(self):
+        return [Column('description', title=_('Description'), data_type=str,
+                       expand=True, sorted=True),
+                Column('sellable.code', title=_('Code'), data_type=str)]
+
+    def can_add(self):
+        selected_option = self._option_list.values()
+        # In order to add a new product...
+        # ...The user should select all options...
+        if len(selected_option) != len(self._attr_list):
+            return False
+
+        # ...and he should have selected valid options
+        if not all(selected_option):
+            return False
+
+        # Also, make sure a product with those options doesn't exists.
+        child_exists = self.model.child_exists(selected_option)
+        if child_exists:
+            return False
+
+        return True
+
+    def setup_proxies(self):
+        self._setup_widgets()
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def _on_combo_selection__changed(self, widget):
+        self._option_list[widget] = widget.get_selected()
+        self.add_product_button.set_sensitive(self.can_add())
+
+    def on_add_product_button__clicked(self, widget):
+        if not self.model.description:
+            warning(_('You should fill the description first'))
+            return False
+        self.model.add_grid_child(self._option_list.values())
+        self.product_list.add_list(self.model.children)
+        self.add_product_button.set_sensitive(False)
 
 
 class ProductInformationSlave(BaseEditorSlave):

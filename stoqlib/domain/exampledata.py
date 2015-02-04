@@ -316,7 +316,7 @@ class ExampleCreator(object):
 
     def create_product(self, price=None, with_supplier=True,
                        branch=None, stock=None, storable=False, code=u'',
-                       description=u'Description'):
+                       description=u'Description', is_grid=False):
         from stoqlib.domain.product import Storable, StockTransactionHistory
         sellable = self.create_sellable(price=price, code=code,
                                         description=description)
@@ -325,7 +325,6 @@ class ExampleCreator(object):
         product = sellable.product
         if not branch:
             branch = get_current_branch(self.store)
-
         if storable or stock:
             storable = Storable(product=product, store=self.store)
         if stock:
@@ -333,8 +332,48 @@ class ExampleCreator(object):
                                     type=StockTransactionHistory.TYPE_INITIAL,
                                     object_id=None,
                                     unit_cost=10)
+        product.is_grid = is_grid
+        if is_grid:
+            product.manage_stock = False
 
         return product
+
+    def create_attribute_group(self, description=None):
+        from stoqlib.domain.product import GridGroup
+        if not description:
+            description = u'grid group 1'
+        return GridGroup(store=self.store, description=description)
+
+    def create_grid_attribute(self, attribute_group=None, description=None):
+        from stoqlib.domain.product import GridAttribute
+        if not attribute_group:
+            attribute_group = self.create_attribute_group()
+        if not description:
+            description = u'grid attribute 1'
+
+        return GridAttribute(store=self.store, description=description,
+                             group_id=attribute_group.id)
+
+    def create_attribute_option(self, grid_attribute=None, description=None):
+        from stoqlib.domain.product import GridOption
+        if not grid_attribute:
+            grid_attribute = self.create_grid_attribute()
+        if not description:
+            description = u'grid option 1'
+
+        return GridOption(store=self.store, description=description,
+                          attribute_id=grid_attribute.id)
+
+    def create_product_attribute(self, product=None, attribute=None):
+        from stoqlib.domain.product import ProductAttribute
+        if not product:
+            product = self.create_product(is_grid=True)
+        if not attribute:
+            attribute = self.create_grid_attribute()
+            self.create_attribute_option(attribute)
+
+        return ProductAttribute(store=self.store, product_id=product.id,
+                                attribute_id=attribute.id)
 
     def create_product_manufacturer(self, name=None):
         from stoqlib.domain.product import ProductManufacturer

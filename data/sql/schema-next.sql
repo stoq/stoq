@@ -518,6 +518,7 @@ CREATE TABLE product (
     production_time integer DEFAULT 0,
     manage_stock boolean DEFAULT TRUE,
     is_composed boolean DEFAULT FALSE,
+    is_grid boolean DEFAULT FALSE,
     width numeric(10, 2) CONSTRAINT positive_width
         CHECK (width >= 0),
     height numeric(10, 2) CONSTRAINT positive_height
@@ -529,9 +530,52 @@ CREATE TABLE product (
     icms_template_id uuid REFERENCES product_icms_template(id) ON UPDATE CASCADE,
     ipi_template_id uuid REFERENCES product_ipi_template(id) ON UPDATE CASCADE,
     manufacturer_id uuid REFERENCES product_manufacturer(id) ON UPDATE CASCADE,
+    parent_id uuid REFERENCES product(id)  ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE
 );
 CREATE RULE update_te AS ON UPDATE TO product DO ALSO SELECT update_te(old.te_id);
+
+CREATE TABLE grid_group (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
+    description text
+);
+CREATE RULE update_te AS ON UPDATE TO grid_group DO ALSO SELECT update_te(old.te_id);
+
+CREATE TABLE grid_attribute (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
+    description text,
+    group_id uuid REFERENCES grid_group(id) ON UPDATE CASCADE
+);
+CREATE RULE update_te AS ON UPDATE TO grid_attribute DO ALSO SELECT update_te(old.te_id);
+
+CREATE TABLE grid_option (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
+    description text,
+    attribute_id uuid REFERENCES grid_attribute(id) ON UPDATE CASCADE
+);
+CREATE RULE update_te AS ON UPDATE TO grid_option DO ALSO SELECT update_te(old.te_id);
+
+CREATE TABLE product_attribute (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
+    product_id uuid REFERENCES product(id) ON UPDATE CASCADE,
+    attribute_id uuid REFERENCES grid_attribute(id) ON UPDATE CASCADE,
+    UNIQUE (product_id, attribute_id)
+);
+CREATE RULE update_te AS ON UPDATE TO product_attribute DO ALSO SELECT update_te(old.te_id);
+
+CREATE TABLE product_option_map (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
+    product_id uuid REFERENCES product(id) ON UPDATE CASCADE,
+    attribute_id uuid REFERENCES grid_attribute(id) ON UPDATE CASCADE,
+    option_id uuid REFERENCES grid_option(id) ON UPDATE CASCADE
+);
+CREATE RULE update_te AS ON UPDATE TO product_option_map DO ALSO SELECT update_te(old.te_id);
+
 
 CREATE TABLE product_component (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),

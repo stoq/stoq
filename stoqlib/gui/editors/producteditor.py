@@ -37,7 +37,7 @@ from stoqlib.api import api
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
                                     ProductQualityTest, Storable,
-                                    ProductManufacturer)
+                                    ProductManufacturer, ProductAttribute)
 from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant)
 from stoqlib.gui.base.dialogs import run_dialog
@@ -288,7 +288,7 @@ class ProductEditor(SellableEditor):
     proxy_widgets = SellableEditor.proxy_widgets + product_widgets
 
     def __init__(self, store, model=None, visual_mode=False,
-                 product_type=Product.TYPE_COMMON, template=None):
+                 product_type=Product.TYPE_COMMON, template=None, wizard=None):
         """
         :param product_type: one of the available
             :attr:`stoqlib.domain.product.Product.product_types` that
@@ -298,6 +298,7 @@ class ProductEditor(SellableEditor):
         """
         self._template = template
         self._product_type = product_type
+        self._wizard = wizard
         SellableEditor.__init__(self, store, model, visual_mode=visual_mode)
         # This can't be done in setup_slaves() as we need to access
         # self.main_dialog when setting up the quality test slave
@@ -336,7 +337,8 @@ class ProductEditor(SellableEditor):
 
     def get_extra_tabs(self):
         from stoqlib.gui.slaves.productslave import (ProductTaxSlave,
-                                                     ProductSupplierSlave)
+                                                     ProductSupplierSlave,
+                                                     ProductGridSlave)
         extra_tabs = []
 
         suppliers_slave = ProductSupplierSlave(self.store, self.model,
@@ -345,6 +347,20 @@ class ProductEditor(SellableEditor):
 
         tax_slave = ProductTaxSlave(self.store, self.model, self.visual_mode)
         extra_tabs.append((_(u'Taxes'), tax_slave))
+
+        if self.model.product_type == Product.TYPE_GRID:
+            # If there is a wizard, it means we are creating a new product.
+            # Store the selected attributes in the database
+            if self._wizard:
+                for attribute in self._wizard.attr_list:
+                    ProductAttribute(store=self.store,
+                                     product_id=self.model.id,
+                                     attribute_id=attribute.id)
+
+            attribute_option_slave = ProductGridSlave(self.store,
+                                                      self.model,
+                                                      self.visual_mode)
+            extra_tabs.append((_(u'Grid'), attribute_option_slave))
         return extra_tabs
 
     def setup_widgets(self):
@@ -364,6 +380,10 @@ class ProductEditor(SellableEditor):
             model.manage_stock = False
         elif self._product_type == Product.TYPE_CONSIGNED:
             model.consignment = True
+        elif self._product_type == Product.TYPE_GRID:
+            model.is_grid = True
+            # Configurable products should not manage stock
+            model.manage_stock = False
 
         if self._template is not None:
             sellable.tax_constant = self._template.sellable.tax_constant

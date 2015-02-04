@@ -3,19 +3,23 @@
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="ProductTypeStep">
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkAlignment" id="alignment1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="top_padding">12</property>
         <property name="left_padding">12</property>
         <property name="right_padding">12</property>
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">What kind of product are you adding?</property>
                 <property name="justify">center</property>
                 <attributes>
@@ -32,6 +36,7 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">(Hint: Hover the mouse over the options to see more details)</property>
                 <property name="justify">center</property>
                 <attributes>
@@ -47,9 +52,11 @@
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkLabel" id="label3">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -60,14 +67,15 @@
                 <child>
                   <object class="GtkVBox" id="vbox2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkRadioButton" id="common">
                         <property name="label" translatable="yes">Regular product</property>
-                        <property name="tooltip_text" translatable="yes">The default kind of product.</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="tooltip_text" translatable="yes">The default kind of product.</property>
                         <property name="use_action_appearance">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
@@ -85,14 +93,15 @@
                         <child>
                           <object class="GtkVBox" id="vbox3">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkRadioButton" id="batch">
                                 <property name="label" translatable="yes">Product with batch control</property>
-                                <property name="tooltip_text" translatable="yes">Like common, but offers batch control. Note that you will need to provide the batch number for each each increase or decrease on stock (e.g. Purchases, Sales).</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="tooltip_text" translatable="yes">Like common, but offers batch control. Note that you will need to provide the batch number for each each increase or decrease on stock (e.g. Purchases, Sales).</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
@@ -107,10 +116,10 @@
                             <child>
                               <object class="GtkRadioButton" id="without_stock">
                                 <property name="label" translatable="yes">Product without stock control</property>
-                                <property name="tooltip_text" translatable="yes">Like common, but doesn't control stock. That is, although you can still make purchases for it and receive them, the quantity on stock is unknown (and thus, unlimited).</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="tooltip_text" translatable="yes">Like common, but doesn't control stock. That is, although you can still make purchases for it and receive them, the quantity on stock is unknown (and thus, unlimited).</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
@@ -125,10 +134,10 @@
                             <child>
                               <object class="GtkRadioButton" id="consigned">
                                 <property name="label" translatable="yes">Consigned product</property>
-                                <property name="tooltip_text" translatable="yes">The product is not really yours. The supplier lends you some quantity and after some time you return the not sold products and pay for the ones that sold.</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="tooltip_text" translatable="yes">The product is not really yours. The supplier lends you some quantity and after some time you return the not sold products and pay for the ones that sold.</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
@@ -140,11 +149,28 @@
                                 <property name="position">2</property>
                               </packing>
                             </child>
+                            <child>
+                              <object class="GtkRadioButton" id="grid">
+                                <property name="label" translatable="yes">Grid</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="draw_indicator">True</property>
+                                <property name="group">common</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
                           </object>
                         </child>
                         <child type="label">
                           <object class="GtkLabel" id="label4">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">More Options</property>
                           </object>
                         </child>

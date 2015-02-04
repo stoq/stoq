@@ -30,6 +30,7 @@ from stoqlib.domain.product import Product
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.slaves.productslave import ProductAttributeSlave
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -42,7 +43,10 @@ class ProductTypeStep(BaseWizardStep):
     #
 
     def next_step(self):
-        return ProductEditorStep(self.wizard.store, self.wizard, previous=self)
+        if self.wizard.product_type == Product.TYPE_GRID:
+            return ProductAttributeEditorStep(self.wizard.store, self.wizard, previous=self)
+        else:
+            return ProductEditorStep(self.wizard.store, self.wizard, previous=self)
 
     #
     #  Callbacks
@@ -64,6 +68,22 @@ class ProductTypeStep(BaseWizardStep):
         if radio.get_active():
             self.wizard.product_type = Product.TYPE_CONSIGNED
 
+    def on_grid__toggled(self, radio):
+        if radio.get_active():
+            self.wizard.product_type = Product.TYPE_GRID
+
+
+class ProductAttributeEditorStep(BaseWizardStep):
+    gladefile = 'HolderTemplate'
+
+    def post_init(self):
+        self.slave = ProductAttributeSlave(self.wizard.store, object())
+        self.attach_slave('product_attribute_holder', self.slave, self.place_holder)
+
+    def next_step(self):
+        self.wizard.attr_list = self.slave.get_selected_attributes()
+        return ProductEditorStep(self.wizard.store, self.wizard, previous=self)
+
 
 class ProductEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
@@ -73,7 +93,8 @@ class ProductEditorStep(BaseWizardStep):
     #
 
     def post_init(self):
-        self.slave = ProductEditor(self.wizard.store,
+        # self.wizard.model will return something if it is coming back from
+        self.slave = ProductEditor(self.store, wizard=self.wizard,
                                    product_type=self.wizard.product_type)
         self.slave.get_toplevel().reparent(self.place_holder)
         self.wizard.model = self.slave.model
@@ -95,6 +116,7 @@ class ProductCreateWizard(BaseWizard):
     size = (800, 450)
     title = _('Product creation wizard')
     help_section = 'product-new'
+    need_cancel_confirmation = True
 
     # args and kwargs are here to get extra parameters sent by SearchEditor's
     # run_dialog. We will just ignore them since they are not useful here

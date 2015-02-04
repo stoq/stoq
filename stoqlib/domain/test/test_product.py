@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,8 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent,
                                     ProductQualityTest, Storable,
                                     StorableBatch, StorableBatchView,
-                                    StockTransactionHistory, ProductManufacturer)
+                                    StockTransactionHistory, ProductManufacturer,
+                                    GridOption)
 from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
@@ -390,12 +391,17 @@ class TestProduct(DomainTest):
 
     def test_product_type(self):
         commom_product = self.create_product(storable=True)
+
         product_without_stock = self.create_product(storable=False)
         product_without_stock.manage_stock = False
+
         consigned_product = self.create_product(storable=True)
         consigned_product.consignment = True
+
         batch_product = self.create_product(storable=True)
         batch_product.storable.is_batch = True
+
+        grid_product = self.create_product(is_grid=True)
 
         self.assertEqual(commom_product.product_type,
                          Product.TYPE_COMMON)
@@ -405,6 +411,50 @@ class TestProduct(DomainTest):
                          Product.TYPE_CONSIGNED)
         self.assertEqual(batch_product.product_type,
                          Product.TYPE_BATCH)
+        self.assertEqual(grid_product.product_type,
+                         Product.TYPE_GRID)
+
+    def test_add_grid_child(self):
+        grid_product = self.create_product(is_grid=True)
+        self.create_product_attribute(product=grid_product)
+
+        grid_option = self.store.find(GridOption)
+        grid_product.add_grid_child(list(grid_option))
+        # Testing that the child already exists and the method will raise and
+        # AssertionError when check the existence of that child
+        self.assertRaises(AssertionError, grid_product.add_grid_child, list(grid_option))
+
+
+class TestGridGroup(DomainTest):
+
+    def test_get_attribute(self):
+        attribute_group = self.create_attribute_group()
+        grid_attr = self.create_grid_attribute(attribute_group)
+        attribute = attribute_group.attributes
+        self.assertEquals(list(attribute)[0], grid_attr)
+
+
+class TestGridAttribute(DomainTest):
+
+    def test_has_options(self):
+        grid_attr = self.create_grid_attribute()
+        self.assertEqual(grid_attr.has_option(), False)
+        self.create_attribute_option(grid_attribute=grid_attr)
+        self.assertEqual(grid_attr.has_option(), True)
+
+
+class TestAttributeOption(DomainTest):
+
+    def test_get_description(self):
+        attr_option = self.create_attribute_option()
+        self.assertEquals(attr_option.get_description(), u'grid option 1')
+
+
+class TestProductAttribute(DomainTest):
+
+    def test_options(self):
+        product_attribute = self.create_product_attribute()
+        self.assertEquals(product_attribute.options.count(), 1)
 
 
 class TestProductSellableItem(DomainTest):

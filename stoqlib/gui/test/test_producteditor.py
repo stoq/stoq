@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,8 +26,9 @@ import mock
 from storm.expr import Update
 
 from decimal import Decimal
-from stoqlib.domain.sellable import SellableCategory, Sellable
+from stoqlib.domain.product import Product
 from stoqlib.domain.commission import CommissionSource
+from stoqlib.domain.sellable import SellableCategory, Sellable
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductionProductEditor)
@@ -57,6 +58,12 @@ class TestProductEditor(GUITest):
         editor.code.update("12345")
         self.assertNotSensitive(editor, ['category_combo'])
         self.check_editor(editor, 'editor-product-create-no-category')
+
+    def test_create_grid_product(self):
+        grid_product = self.create_product(is_grid=True)
+        editor = ProductEditor(self.store, grid_product)
+        self.assertEquals(grid_product.product_type, Product.TYPE_GRID)
+        self.check_editor(editor, 'editor-product-create-grid-product')
 
     def test_show(self):
         product = self.create_product(storable=True)

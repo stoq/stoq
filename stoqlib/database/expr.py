@@ -127,6 +127,30 @@ class LPad(NamedFunc):
     name = "LPAD"
 
 
+class ArrayAgg(NamedFunc):
+    __slots__ = ()
+    name = "array_agg"
+
+
+class Contains(BinaryOper):
+    __slots__ = ()
+    oper = " @> "
+
+
+class IsContainedBy(BinaryOper):
+    __slots__ = ()
+    oper = " <@ "
+
+
+@expr_compile.when(Contains, IsContainedBy)
+def compile_contains(expr_compile, expr, state):
+    # We currently support only the first argument as a list.
+    expr1 = "ARRAY[%s]" % ",".join(expr_compile(i, state) for i in expr.expr1)
+
+    return '%s%s%s' % (expr1, expr.oper,
+                       expr_compile(expr.expr2, state))
+
+
 class NotIn(BinaryOper):
     __slots__ = ()
     oper = " NOT IN "

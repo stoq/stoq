@@ -54,6 +54,7 @@ model: Product<3>
   genero: None
   height: Decimal('0')
   is_composed: False
+  is_grid: False
   location: u''
   manage_stock: True
   model: u''
@@ -72,6 +73,7 @@ model: Product<4>
   genero: None
   height: Decimal('0')
   is_composed: False
+  is_grid: False
   location: u''
   manage_stock: True
   model: u''

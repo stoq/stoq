@@ -86,10 +86,11 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from storm.expr import And, Eq, LeftJoin, Alias, Sum, Coalesce, Select, Join
+from storm.expr import (And, Eq, LeftJoin, Alias, Sum, Coalesce, Select, Join, Cast)
 from zope.interface import implementer
 
-from stoqlib.database.expr import Field, TransactionTimestamp
+from stoqlib.database.expr import (Field, TransactionTimestamp,
+                                   ArrayAgg, Contains, IsContainedBy)
 from stoqlib.database.properties import (BoolCol, DateTimeCol, DecimalCol,
                                          EnumCol, IdCol, IntCol, PercentCol,
                                          PriceCol, QuantityCol, UnicodeCol)
@@ -103,6 +104,7 @@ from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.sellable import Sellable
 from stoqlib.exceptions import StockError
 from stoqlib.lib.dateutils import localnow, localtoday
+from stoqlib.lib.stringutils import next_value_for
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
 _ = stoqlib_gettext
@@ -200,12 +202,14 @@ class Product(Domain):
     TYPE_BATCH = 1
     TYPE_WITHOUT_STOCK = 2
     TYPE_CONSIGNED = 3
+    TYPE_GRID = 4
 
     product_types = {
         TYPE_COMMON: _("Regular product"),
         TYPE_BATCH: _("Product with batch control"),
         TYPE_WITHOUT_STOCK: _("Product without stock control"),
         TYPE_CONSIGNED: _("Consigned product"),
+        TYPE_GRID: _("Grid product"),
     }
 
     sellable_id = IdCol()
@@ -220,6 +224,16 @@ class Product(Domain):
     #: This is stored on Product to avoid a join to find out if there is any
     #: components or not.
     is_composed = BoolCol(default=False)
+
+    #: ``True`` if this product is parent of another product.
+    #: This is also an indication that this product will have other products
+    #: "attached" to itself
+    is_grid = BoolCol(default=False)
+
+    #: id of his parent
+    parent_id = IdCol()
+    #: Indicates the parent of this product.
+    parent = Reference(parent_id, 'Product.id')
 
     #: If this product will use stock management.
     #: When this is set to ``True``, a corresponding |storable| should be created.
@@ -287,6 +301,16 @@ class Product(Domain):
     #: list of |suppliers| that sells this product
     suppliers = ReferenceSet('id', 'ProductSupplierInfo.product_id')
 
+    #: list of |product| that is child of this product
+    children = ReferenceSet('id', 'Product.parent_id')
+
+    #: list of |grid_attribute| of this product
+    attributes = ReferenceSet('id', 'ProductAttribute.product_id')
+
+    #
+    # Properties
+    #
+
     @property
     def description(self):
         return self.sellable.description
@@ -299,7 +323,9 @@ class Product(Domain):
     def product_type(self):
         storable = self.storable
 
-        if not self.manage_stock:
+        if self.is_grid:
+            return self.TYPE_GRID
+        elif not self.manage_stock:
             assert storable is None
             return self.TYPE_WITHOUT_STOCK
         elif storable.is_batch:
@@ -494,6 +520,52 @@ class Product(Domain):
                 return True
         return False
 
+    def child_exists(self, options):
+        """Check if the child already exists
+
+        :param options: a list of |attribute_option| that the child should match
+        :returns: True if the child exists, otherwise ``False``
+        """
+
+        tables = [ProductOptionMap,
+                  Join(Product, Product.id == ProductOptionMap.product_id)]
+        query = Product.parent == self
+        data = self.store.using(*tables).find(ProductOptionMap.product_id, query)
+
+        # Here we are combining all the options for a given product, and checking
+        # if the given option matches any of the existing ones.
+        option_ids = list(o.id for o in options)
+        other_options = ArrayAgg(Cast(ProductOptionMap.option_id, 'text'))
+        having = And(Contains(option_ids, other_options),
+                     IsContainedBy(option_ids, other_options))
+        data = data.group_by(ProductOptionMap.product_id).having(having)
+        return not data.is_empty()
+
+    def add_grid_child(self, options):
+        """Create a new product, child of self
+
+        :param options: a list of |attribute_option| that the child may have
+        """
+        assert not self.child_exists(options)
+
+        sellable = Sellable(store=self.store,
+                            cost=self.sellable.cost)
+        new_code = Sellable.get_max_value(self.store, Sellable.code)
+        sellable.code = next_value_for(new_code)
+
+        child = Product(store=self.store, sellable=sellable, parent=self)
+        Storable(store=self.store, product=child)
+
+        desc_parts = [self.description]
+        for option in options:
+            desc_parts.append(option.description)
+            ProductOptionMap(store=self.store,
+                             product=child,
+                             attribute=option.attribute,
+                             option=option)
+
+        sellable.description = u' '.join(desc_parts)
+
     #
     # Domain
     #
@@ -515,6 +587,84 @@ class Product(Domain):
             emitted_store_list.add(store)
 
         self._emitted_store_list = emitted_store_list
+
+
+class GridGroup(Domain):
+    """Attributes Group for product grid"""
+
+    __storm_table__ = 'grid_group'
+
+    #: group description
+    description = UnicodeCol()
+
+    attributes = ReferenceSet('id', 'GridAttribute.group_id')
+
+
+class GridAttribute(Domain):
+    """Product Attributes for product grid"""
+
+    __storm_table__ = 'grid_attribute'
+
+    #: description of self
+    description = UnicodeCol()
+
+    #: GridGroup id
+    group_id = IdCol()
+    group = Reference(group_id, 'GridGroup.id')
+
+    def has_option(self):
+        """Return ``True`` if self is referenced on any |grid_option|,
+        otherwise ``False``
+        """
+        return not self.store.find(GridOption, attribute=self).is_empty()
+
+
+class GridOption(Domain):
+    """Attribute options for product grid"""
+
+    __storm_table__ = 'grid_option'
+
+    #: Attribute id for that option
+    attribute_id = IdCol()
+    attribute = Reference(attribute_id, 'GridAttribute.id')
+
+    #: description of self
+    description = UnicodeCol()
+
+    def get_description(self):
+        return self.description
+
+
+class ProductAttribute(Domain):
+    """Tells what attributes that product have"""
+
+    __storm_table__ = 'product_attribute'
+
+    #: id of the product
+    product_id = IdCol()
+    product = Reference(product_id, 'Product.id')
+
+    #: id of the attribute
+    attribute_id = IdCol()
+    attribute = Reference(attribute_id, 'GridAttribute.id')
+
+    #: a list of |grid_option| of the grid_attribute
+    options = ReferenceSet('attribute_id', 'GridOption.attribute_id')
+
+
+class ProductOptionMap(Domain):
+    """This class is used to map attribute and options to the product"""
+
+    __storm_table__ = 'product_option_map'
+
+    product_id = IdCol()
+    product = Reference(product_id, 'Product.id')
+
+    attribute_id = IdCol()
+    attribute = Reference(attribute_id, 'GridAttribute.id')
+
+    option_id = IdCol()
+    option = Reference(option_id, 'GridOption.id')
 
 
 @implementer(IDescribable)
