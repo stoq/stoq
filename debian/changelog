@@ -1,3 +1,9 @@
+stoq (1.9~rc9) precise; urgency=medium
+
+  * 1.9 Release candidate 9
+
+ -- Ronaldo Maia <romaia@async.com.br>  Mon, 09 Feb 2015 11:36:28 -0200
+
 stoq (1.9~rc8) precise; urgency=low
 
   * 1.9 Release candidate 8
