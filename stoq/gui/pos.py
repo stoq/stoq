@@ -141,6 +141,11 @@ class PosApp(ShellApp):
         self._trade = None
         self._trade_infobar = None
 
+        # The sellable and batch selected, in case the parameter
+        # CONFIRM_QTY_ON_BARCODE_ACTIVATE is used.
+        self._sellable = None
+        self._batch = None
+
         ShellApp.__init__(self, window, store=store)
 
         self._delivery = None
@@ -418,10 +423,15 @@ class PosApp(ShellApp):
         else:
             self.sale_items.update(sale_item)
         self.sale_items.select(sale_item)
+        # Reset all the widgets for adding a new sellable.
         self.barcode.set_text('')
         self.barcode.grab_focus()
         self._reset_quantity_proxy()
         self._update_totals()
+        self._sellable = None
+        self._batch = None
+        if self._confirm_quantity:
+            self.sellable_description.set_text('')
 
     def _update_list(self, sellable, batch=None):
         assert isinstance(sellable, Sellable)
@@ -484,6 +494,10 @@ class PosApp(ShellApp):
         return currency(sum([item.total for item in self.sale_items]))
 
     def _get_sellable_and_batch(self):
+        # There is already a sellable selected. Return it instead.
+        if self._sellable:
+            return self._sellable, self._batch
+
         text = self.barcode.get_text()
         if not text:
             raise StoqlibError("_get_sellable_and_batch needs a barcode")
@@ -690,7 +704,8 @@ class PosApp(ShellApp):
         data = read_scale_info(self.store)
         self.quantity.set_value(data.weight)
 
-    def _run_advanced_search(self, search_str=None, message=None):
+    def _run_advanced_search(self, message=None, confirm_quantity=False):
+        search_str = self.barcode.get_text()
         sellable_view_item = self.run_dialog(
             SaleSellableSearch,
             self.store,
@@ -703,7 +718,11 @@ class PosApp(ShellApp):
             return
 
         sellable = sellable_view_item.sellable
-        self._add_sellable(sellable)
+        if confirm_quantity:
+            self._set_selected_sellable(sellable)
+            self.quantity.grab_focus()
+        else:
+            self._add_sellable(sellable)
 
     def _reset_quantity_proxy(self):
         self.sellableitem_proxy.model.quantity = Decimal(1)
@@ -719,23 +738,33 @@ class PosApp(ShellApp):
         # If a delivery was removed, we need to remove all
         # the references to it eg self._delivery
         if (sale_item.sellable ==
-            sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable):
+                sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable):
             self._delivery = None
 
     #
     # Sale Order operations
     #
 
-    def _add_sale_item(self, search_str=None):
+    def _add_sale_item(self, confirm_quantity):
+        """Try to create a sale_item based on the barcode field.
+
+        :param confirm_quantity: When True, instead of adding the sellable, we
+          will move to the quantity field. Otherwise, we will just add the
+          sellable.
+        """
         sellable, batch = self._get_sellable_and_batch()
         if not sellable:
             message = (_("The barcode '%s' does not exist. "
                          "Searching for a product instead...")
                        % self.barcode.get_text())
-            self._run_advanced_search(search_str, message)
+            self._run_advanced_search(message, confirm_quantity)
             return
 
-        self._add_sellable(sellable, batch=batch)
+        if confirm_quantity:
+            self._set_selected_sellable(sellable, batch)
+            self.quantity.grab_focus()
+        else:
+            self._add_sellable(sellable, batch=batch)
 
     def _add_sellable(self, sellable, batch=None):
         quantity = self._read_quantity()
@@ -752,8 +781,8 @@ class PosApp(ShellApp):
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
-                sellable.unit.unit_index == UnitType.WEIGHT and
-                self._scale_settings):
+                    sellable.unit.unit_index == UnitType.WEIGHT and
+                    self._scale_settings):
                 self._read_scale(sellable)
 
         storable = sellable.product_storable
@@ -767,8 +796,6 @@ class PosApp(ShellApp):
                 return
 
         self._update_list(sellable, batch=batch)
-        self.sellable_description.set_text('')
-        self.barcode.grab_focus()
 
     def _check_available_stock(self, storable, sellable):
         branch = api.get_current_branch(self.store)
@@ -926,21 +953,16 @@ class PosApp(ShellApp):
 
         return sale
 
-    def _set_additional_info(self, search_str=None):
-        """Show additional information about a product.
+    def _set_selected_sellable(self, sellable, batch=None):
+        """Saves the selected sellable for adding later.
 
-        If parameter 'CONFIRM_QTY_ON_BARCODE_ACTIVATE' if set to true it shall
-        set the product's name into a bold label below the barcode search label.
+        The user has selected a sellable, but he is still going to confirm
+        the quantity. We should have what he has selected to add later.
         """
-        sellable, batch = self._get_sellable_and_batch()
-        if sellable:
-            self.sellable_description.set_text(sellable.description)
-        else:
-            self.barcode.grab_focus()
-            message = (_("The barcode '%s' does not exist. "
-                         "Searching for a product instead...")
-                       % self.barcode.get_text())
-            self._run_advanced_search(search_str, message)
+        self._sellable = sellable
+        self._batch = batch
+        self.sellable_description.set_text(sellable.description)
+        self._update_buttons()
 
     @public(since="1.5.0")
     def checkout(self, cancel_clear=False):
@@ -975,7 +997,7 @@ class PosApp(ShellApp):
                 return
 
             if (sysparam.get_bool('USE_TRADE_AS_DISCOUNT') and
-                subtotal == returned_total):
+                    subtotal == returned_total):
                 info(_("Traded value is equal to the new sale's value. "
                        "Please add more items or return it in Sales app, "
                        "then make a new sale"))
@@ -1029,17 +1051,20 @@ class PosApp(ShellApp):
         self._update_widgets()
         self.barcode.grab_focus()
 
-    def _checkout_or_add_item(self, must_add=False):
+    def _checkout_or_add_item(self):
+        # This is called when the user activates the barcode field.
         search_str = self.barcode.get_text()
         if search_str == '':
+            # The user pressed enter with an empty string. Start checkout
             if len(self.sale_items) >= 1:
                 self.checkout()
         else:
-            if not self._confirm_quantity or must_add:
-                self._add_sale_item(search_str)
-            else:
-                self.quantity.grab_focus()
-                self._set_additional_info(search_str)
+            # The user typed something. Try to add the sellable.
+            # In case there was an already selected sellable, we should reset
+            # it, since the user may have changed what he is searching for.
+            self._sellable = None
+            self._batch = None
+            self._add_sale_item(confirm_quantity=self._confirm_quantity)
 
     def _remove_trade_infobar(self):
         if not self._trade_infobar:
@@ -1071,9 +1096,9 @@ class PosApp(ShellApp):
         if coupon:
             while not coupon.open():
                 if not yesno(
-                    _("It is not possible to start a new sale if the "
-                      "fiscal coupon cannot be opened."),
-                    gtk.RESPONSE_YES, _("Try again"), _("Cancel sale")):
+                        _("It is not possible to start a new sale if the "
+                          "fiscal coupon cannot be opened."),
+                        gtk.RESPONSE_YES, _("Try again"), _("Cancel sale")):
                     return None
 
         self.set_sensitive([self.PaymentReceive], False)
@@ -1248,7 +1273,7 @@ class PosApp(ShellApp):
     #
 
     def _on_context_add__activate(self, menu_item):
-        self._run_advanced_search()
+        self._run_advanced_search(confirm_quantity=False)
 
     def _on_context_remove__activate(self, menu_item):
         self._remove_selected_item()
@@ -1271,10 +1296,10 @@ class PosApp(ShellApp):
         return True
 
     def on_advanced_search__clicked(self, button):
-        self._run_advanced_search()
+        self._run_advanced_search(confirm_quantity=self._confirm_quantity)
 
     def on_add_button__clicked(self, button):
-        self._add_sale_item()
+        self._add_sale_item(confirm_quantity=False)
 
     def on_barcode__activate(self, entry):
         marker("enter pressed")
@@ -1286,7 +1311,7 @@ class PosApp(ShellApp):
     def on_quantity__activate(self, entry):
         # Before activate, check if 'quantity' widget is valid.
         if self.quantity.validate() is not ValueUnset:
-            self._checkout_or_add_item(must_add=True)
+            self._add_sale_item(confirm_quantity=False)
 
     def on_quantity__validate(self, entry, value):
         self._update_buttons()
