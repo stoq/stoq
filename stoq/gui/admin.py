@@ -47,6 +47,8 @@ from stoqlib.gui.search.costcentersearch import CostCenterSearch
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
+from stoqlib.gui.search.gridsearch import (AttributeGroupSearch,
+                                           GridAttributeSearch)
 from stoqlib.gui.search.personsearch import (ClientSearch,
                                              EmployeeRoleSearch,
                                              EmployeeSearch,
@@ -268,6 +270,12 @@ class Tasks(object):
     def _open_user_profiles(self):
         self.app.run_dialog(UserProfileSearch, self.app.store)
 
+    def _open_attribute_group(self):
+        self.app.run_dialog(AttributeGroupSearch, self.app.store)
+
+    def _open_grid_attribute(self):
+        self.app.run_dialog(GridAttributeSearch, self.app.store)
+
 
 class AdminApp(ShellApp):
 
@@ -285,6 +293,8 @@ class AdminApp(ShellApp):
         'SearchComputer': 'stations',
         'SearchTaxTemplate': 'tax_templates',
         'SearchEvents': 'events',
+        'ConfigureAttributeGroup': 'attribute_group',
+        'ConfigureGridAttribute': 'grid_attribute',
         'ConfigureDevices': 'devices',
         'ConfigurePaymentMethods': 'payment_methods',
         'ConfigurePaymentCategories': 'payment_categories',
@@ -336,6 +346,8 @@ class AdminApp(ShellApp):
             ("ConfigureMenu", None, _("_Configure")),
             ("ConfigureDevices", None, _("Devices..."),
              group.get('config_devices')),
+            ("ConfigureAttributeGroup", None, _("Attribute Group...")),
+            ("ConfigureGridAttribute", None, _("Grid Attribute...")),
             ("ConfigurePaymentMethods", None, _("Payment methods..."),
              group.get('config_payment_methods')),
             ("ConfigurePaymentCategories", None, _("Payment categories..."),

@@ -523,7 +523,7 @@ class Product(Domain):
     def child_exists(self, options):
         """Check if the child already exists
 
-        :param options: a list of |attribute_option| that the child should match
+        :param options: a list of |grid_option| that the child should match
         :returns: True if the child exists, otherwise ``False``
         """
 
@@ -544,7 +544,7 @@ class Product(Domain):
     def add_grid_child(self, options):
         """Create a new product, child of self
 
-        :param options: a list of |attribute_option| that the child may have
+        :param options: a list of |grid_option| that the child may have
         """
         assert not self.child_exists(options)
 
@@ -619,6 +619,7 @@ class GridAttribute(Domain):
         return not self.store.find(GridOption, attribute=self).is_empty()
 
 
+@implementer(IDescribable)
 class GridOption(Domain):
     """Attribute options for product grid"""
 
@@ -633,6 +634,10 @@ class GridOption(Domain):
 
     def get_description(self):
         return self.description
+
+    def can_remove(self):
+        """Check if we can remove the attribute_option from database"""
+        return self.store.find(ProductOptionMap, option=self).is_empty()
 
 
 class ProductAttribute(Domain):

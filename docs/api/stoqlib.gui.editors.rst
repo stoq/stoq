@@ -137,6 +137,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`grideditor` Module
+------------------------
+
+.. automodule:: stoqlib.gui.editors.grideditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`inventoryadjustmenteditor` Module
 ---------------------------------------
 

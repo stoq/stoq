@@ -449,6 +449,18 @@ class TestAttributeOption(DomainTest):
         attr_option = self.create_attribute_option()
         self.assertEquals(attr_option.get_description(), u'grid option 1')
 
+    def test_can_remove(self):
+        grid_product = self.create_product(is_grid=True)
+        attribute = self.create_grid_attribute()
+        option1 = self.create_attribute_option(grid_attribute=attribute)
+        self.assertEquals(option1.can_remove(), True)
+
+        options = []
+        options.append(option1)
+        grid_product.add_grid_child(options)
+        # We shouldnt be able to remove that option if a product is actually using it
+        self.assertEquals(option1.can_remove(), False)
+
 
 class TestProductAttribute(DomainTest):
 

@@ -89,6 +89,14 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`gridsearch` Module
+------------------------
+
+.. automodule:: stoqlib.gui.search.gridsearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`loansearch` Module
 ------------------------
 
