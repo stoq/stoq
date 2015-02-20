@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-29 12:44-0200\n"
+"POT-Creation-Date: 2015-02-19 12:51-0200\n"
 "PO-Revision-Date: 2015-01-29 14:44+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/stoq/language/fi/)\n"
@@ -688,8 +688,9 @@ msgstr "Maksut"
 #: ../data/glade/CostCenterDialog.ui.h:6
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
 #: ../data/glade/TillDailyMovementDialog.ui.h:2
-#: ../data/template/till/sales.html:2 ../stoq/gui/sales.py:103
-#: ../stoq/lib/applist.py:57 ../stoqlib/gui/dialogs/clientdetails.py:143
+#: ../data/template/till/sales.html:2 ../plugins/nfe/nfeui.py:101
+#: ../stoq/gui/sales.py:103 ../stoq/lib/applist.py:57
+#: ../stoqlib/gui/dialogs/clientdetails.py:143
 #: ../stoqlib/gui/search/salesearch.py:207 ../stoqlib/lib/parameters.py:198
 #: ../stoqlib/lib/parameters.py:231 ../stoqlib/lib/parameters.py:240
 #: ../stoqlib/lib/parameters.py:248 ../stoqlib/lib/parameters.py:266
@@ -1877,7 +1878,7 @@ msgstr ""
 msgid "Transfers"
 msgstr "Siirrot"
 
-#: ../data/glade/ProductStockHistoryDialog.ui.h:6
+#: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../plugins/nfe/nfeui.py:105
 msgid "Loans"
 msgstr ""
 
@@ -1890,7 +1891,7 @@ msgid "Inventories"
 msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:9
-#: ../stoqlib/domain/sale.py:668 ../stoqlib/gui/dialogs/loandetails.py:68
+#: ../stoqlib/domain/sale.py:652 ../stoqlib/gui/dialogs/loandetails.py:68
 #: ../stoqlib/gui/dialogs/productstockdetails.py:251
 #: ../stoqlib/gui/search/consignmentsearch.py:62
 #: ../stoqlib/gui/search/loansearch.py:88
@@ -2071,7 +2072,7 @@ msgstr "Muutokset"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:14
 #: ../data/template/purchase/purchase-items.html:9 ../stoq/gui/purchase.py:271
-#: ../stoqlib/domain/sale.py:665
+#: ../stoqlib/domain/sale.py:649
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:74
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:81
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:473
@@ -2082,7 +2083,7 @@ msgstr "Järjestetty"
 #: ../data/glade/PurchaseDetailsDialog.ui.h:17
 #: ../data/template/payment_flow_history/history-table.html:11
 #: ../data/template/purchase/purchase-items.html:13
-#: ../stoq/gui/purchase.py:274 ../stoqlib/domain/sale.py:479
+#: ../stoq/gui/purchase.py:274 ../stoqlib/domain/sale.py:463
 #: ../stoqlib/domain/transfer.py:125 ../stoqlib/domain/workorder.py:176
 #: ../stoqlib/gui/search/personsearch.py:452
 #: ../stoqlib/gui/search/productsearch.py:288
@@ -4127,7 +4128,7 @@ msgstr ""
 
 #: ../data/template/purchase/purchase-details.html:19
 #: ../data/template/purchase/purchase-details.html:29
-#: ../stoqlib/domain/sale.py:1364
+#: ../stoqlib/domain/sale.py:1344
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:222
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:223
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:282
@@ -5059,7 +5060,7 @@ msgstr ""
 msgid "The CNPJ is not valid."
 msgstr ""
 
-#: ../plugins/nfe/nfegenerator.py:184
+#: ../plugins/nfe/nfegenerator.py:187
 #, python-format
 msgid "The CNPJ of %s is not valid."
 msgstr ""
@@ -6835,8 +6836,8 @@ msgstr ""
 #. STATUS_LOANED: stock is completely synchronized
 #: ../stoq/gui/inventory.py:156 ../stoq/gui/production.py:177
 #: ../stoq/gui/purchase.py:264 ../stoqlib/domain/inventory.py:246
-#: ../stoqlib/domain/loan.py:212 ../stoqlib/domain/production.py:77
-#: ../stoqlib/domain/sale.py:663 ../stoqlib/domain/stockdecrease.py:144
+#: ../stoqlib/domain/loan.py:245 ../stoqlib/domain/production.py:77
+#: ../stoqlib/domain/sale.py:647 ../stoqlib/domain/stockdecrease.py:144
 #: ../stoqlib/domain/till.py:88 ../stoqlib/domain/workorder.py:174
 #: ../stoqlib/domain/workorder.py:595
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:142
@@ -6850,7 +6851,7 @@ msgid "Date Opened"
 msgstr ""
 
 #: ../stoq/gui/inventory.py:159 ../stoq/gui/production.py:179
-#: ../stoqlib/domain/inventory.py:247 ../stoqlib/domain/loan.py:213
+#: ../stoqlib/domain/inventory.py:247 ../stoqlib/domain/loan.py:246
 #: ../stoqlib/domain/production.py:81 ../stoqlib/domain/purchase.py:186
 #: ../stoqlib/domain/sellable.py:393 ../stoqlib/domain/till.py:89
 msgid "Closed"
@@ -7410,7 +7411,7 @@ msgstr ""
 #: ../stoq/gui/production.py:181 ../stoq/gui/services.py:97
 #: ../stoq/gui/services.py:506 ../stoqlib/domain/inventory.py:248
 #: ../stoqlib/domain/payment/payment.py:142 ../stoqlib/domain/production.py:82
-#: ../stoqlib/domain/purchase.py:185 ../stoqlib/domain/sale.py:667
+#: ../stoqlib/domain/purchase.py:185 ../stoqlib/domain/sale.py:651
 #: ../stoqlib/domain/workorder.py:596
 msgid "Cancelled"
 msgstr ""
@@ -9274,11 +9275,16 @@ msgstr ""
 msgid "Stoq image"
 msgstr ""
 
-#: ../stoqlib/domain/loan.py:268 ../stoqlib/domain/sale.py:798
+#: ../stoqlib/domain/loan.py:307 ../stoqlib/domain/sale.py:782
 #: ../stoqlib/domain/stockdecrease.py:210
-#: ../stoqlib/domain/test/test_loan.py:46
+#: ../stoqlib/domain/test/test_loan.py:48
 #, python-format
 msgid "Invalid status %d"
+msgstr ""
+
+#. TODO: Save the operation nature in new loan table field.
+#: ../stoqlib/domain/loan.py:362 ../stoqlib/reporting/loanreceipt.py:39
+msgid "Loan"
 msgstr ""
 
 #: ../stoqlib/domain/payment/card.py:229
@@ -9429,7 +9435,7 @@ msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:141
 #: ../stoqlib/domain/payment/renegotiation.py:60
-#: ../stoqlib/domain/purchase.py:183 ../stoqlib/domain/sale.py:666
+#: ../stoqlib/domain/purchase.py:183 ../stoqlib/domain/sale.py:650
 #: ../stoqlib/domain/stockdecrease.py:145
 msgid "Confirmed"
 msgstr ""
@@ -9479,7 +9485,7 @@ msgstr ""
 msgid "NOT PAID"
 msgstr ""
 
-#: ../stoqlib/domain/payment/renegotiation.py:62 ../stoqlib/domain/sale.py:669
+#: ../stoqlib/domain/payment/renegotiation.py:62 ../stoqlib/domain/sale.py:653
 msgid "Renegotiated"
 msgstr ""
 
@@ -9741,7 +9747,7 @@ msgstr ""
 msgid "Decimal"
 msgstr ""
 
-#: ../stoqlib/domain/production.py:78 ../stoqlib/domain/sale.py:477
+#: ../stoqlib/domain/production.py:78 ../stoqlib/domain/sale.py:461
 #: ../stoqlib/domain/workorder.py:597
 msgid "Waiting"
 msgstr ""
@@ -9777,7 +9783,7 @@ msgstr ""
 msgid "Can not consume this quantity."
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:181 ../stoqlib/domain/sale.py:664
+#: ../stoqlib/domain/purchase.py:181 ../stoqlib/domain/sale.py:648
 msgid "Quoting"
 msgstr ""
 
@@ -9904,132 +9910,132 @@ msgstr ""
 msgid "Traded items for sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:220
+#: ../stoqlib/domain/sale.py:255
 msgid ""
 "Stoq still doesn't support sales for branch companies different than the "
 "current one"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:225
+#: ../stoqlib/domain/sale.py:260
 #, python-format
 msgid ""
 "%s is not available for sale. Try making it available first and then try "
 "again."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:478 ../stoqlib/domain/transfer.py:124
+#: ../stoqlib/domain/sale.py:462 ../stoqlib/domain/transfer.py:124
 #: ../stoqlib/domain/workorder.py:175
 #: ../stoqlib/gui/search/transfersearch.py:110
 msgid "Sent"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:965
+#: ../stoqlib/domain/sale.py:945
 msgid "The sale must have sellable items"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:967
+#: ../stoqlib/domain/sale.py:947
 #, python-format
 msgid "Unable to make sales for clients with status %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1020
+#: ../stoqlib/domain/sale.py:1000
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1026
+#: ../stoqlib/domain/sale.py:1006
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1053
+#: ../stoqlib/domain/sale.py:1033
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid and confirmed with value"
 " {total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1059
+#: ../stoqlib/domain/sale.py:1039
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid and confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1065
+#: ../stoqlib/domain/sale.py:1045
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid with value "
 "{total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1071
+#: ../stoqlib/domain/sale.py:1051
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid with value {total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1142
+#: ../stoqlib/domain/sale.py:1122
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1146
+#: ../stoqlib/domain/sale.py:1126
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was partially returned with value"
 " {total_value:.2f}. Reason: {reason}"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1155
+#: ../stoqlib/domain/sale.py:1135
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1159
+#: ../stoqlib/domain/sale.py:1139
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was partially returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1335
+#: ../stoqlib/domain/sale.py:1315
 #, python-format
 msgid "Delivery Address: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1342
+#: ../stoqlib/domain/sale.py:1322
 #, python-format
 msgid "\"%s\" Notes: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1345
+#: ../stoqlib/domain/sale.py:1325
 #, python-format
 msgid "\"%s\" Estimated Fix Date: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1389
+#: ../stoqlib/domain/sale.py:1369
 #, python-format
 msgid "The sale %r have a client but no client_role defined."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1660
+#: ../stoqlib/domain/sale.py:1640
 msgid "You must have at least one payment for each payment group"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1732
+#: ../stoqlib/domain/sale.py:1712
 msgid "Sale orders must have items, which means products or services"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1737
+#: ../stoqlib/domain/sale.py:1717
 msgid "Sale total quantity should never be zero"
 msgstr ""
 
@@ -16855,10 +16861,6 @@ msgstr ""
 
 #: ../stoqlib/reporting/labelreport.py:65
 msgid "Template file for printing labels was not found."
-msgstr ""
-
-#: ../stoqlib/reporting/loanreceipt.py:39
-msgid "Loan"
 msgstr ""
 
 #: ../stoqlib/reporting/loanreceipt.py:94
