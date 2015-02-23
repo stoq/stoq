@@ -24,7 +24,7 @@
 
 import mock
 
-from stoqlib.gui.dialogs.receivingdialog import ReturnedSalesDialog
+from stoqlib.gui.dialogs.returnedsaledialog import ReturnedSaleDialog
 from stoqlib.gui.search.returnedsalesearch import (ReturnedSaleSearch,
                                                    PendingReturnedSaleSearch)
 from stoqlib.gui.test.uitestutils import GUITest
@@ -50,7 +50,7 @@ class TestReturnedSaleSearch(GUITest):
         search.search.refresh()
         search.results.double_click(0)
         self.assertEquals(run_dialog.call_count, 1)
-        run_dialog.assert_called_once_with(ReturnedSalesDialog, search, self.store,
+        run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
                                            search.results[0])
 
         run_dialog.reset_mock()
@@ -58,7 +58,7 @@ class TestReturnedSaleSearch(GUITest):
         self.assertSensitive(search._details_slave, ['details_button'])
         self.click(search._details_slave.details_button)
         self.assertEquals(run_dialog.call_count, 1)
-        run_dialog.assert_called_once_with(ReturnedSalesDialog, search, self.store,
+        run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
                                            search.results[0])
 
 
@@ -82,7 +82,7 @@ class TestPendingReturnedSaleSearch(GUITest):
         # Testing double click
         search.results.double_click(0)
         self.assertEquals(run_dialog.call_count, 1)
-        run_dialog.assert_called_once_with(ReturnedSalesDialog, search,
+        run_dialog.assert_called_once_with(ReturnedSaleDialog, search,
                                            self.store, search.results[0])
 
         # Testing pressing the button
@@ -90,5 +90,5 @@ class TestPendingReturnedSaleSearch(GUITest):
         search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['details_button'])
         self.click(search._details_slave.details_button)
-        run_dialog.assert_called_once_with(ReturnedSalesDialog, search,
+        run_dialog.assert_called_once_with(ReturnedSaleDialog, search,
                                            self.store, search.results[0])

@@ -391,8 +391,8 @@ class ExampleCreator(object):
                                 store=self.store)
 
     def create_sellable(self, price=None, product=True,
-                        description=u'Description', code=u''):
-        from stoqlib.domain.product import Product
+                        description=u'Description', code=u'', storable=False):
+        from stoqlib.domain.product import Product, Storable
         from stoqlib.domain.service import Service
         from stoqlib.domain.sellable import Sellable
         tax_constant_id = sysparam.get_object_id('DEFAULT_PRODUCT_TAX_CONSTANT')
@@ -405,7 +405,9 @@ class ExampleCreator(object):
         sellable.code = code
         sellable.tax_constant_id = tax_constant_id
         if product:
-            Product(sellable=sellable, store=self.store)
+            p = Product(sellable=sellable, store=self.store)
+            if storable:
+                Storable(product=p, store=self.store)
         else:
             Service(sellable=sellable, store=self.store)
         return sellable
@@ -474,12 +476,12 @@ class ExampleCreator(object):
             sale = self.create_sale()
         return sale.create_sale_return_adapter()
 
-    def create_pending_returned_sale(self):
+    def create_pending_returned_sale(self, product=None):
         from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
         sale_branch = get_current_branch(self.store)
         return_branch = self.create_branch()
         client = self.create_client()
-        product = self.create_product()
+        product = product or self.create_product()
         sale = self.create_sale(branch=sale_branch, client=client)
         sale_item = sale.add_sellable(sellable=product.sellable)
 
@@ -496,9 +498,9 @@ class ExampleCreator(object):
                          sellable=sale_item.sellable)
         return r_sale
 
-    def create_returned_sale_item(self, returned_sale=None):
+    def create_returned_sale_item(self, returned_sale=None, sale_item=None):
         from stoqlib.domain.returnedsale import ReturnedSaleItem
-        sale_item = self.create_sale_item()
+        sale_item = sale_item or self.create_sale_item()
         returned_sale = returned_sale or self.create_returned_sale()
         return ReturnedSaleItem(store=self.store,
                                 quantity=1,
@@ -507,9 +509,10 @@ class ExampleCreator(object):
                                 returned_sale=returned_sale,
                                 sellable=sale_item.sellable)
 
-    def create_sale_item(self, sale=None, product=True, quantity=1):
+    def create_sale_item(self, sale=None, product=True, quantity=1,
+                         sellable=None):
         from stoqlib.domain.sale import SaleItem
-        sellable = self.create_sellable(product=product)
+        sellable = sellable or self.create_sellable(product=product)
         return SaleItem(store=self.store,
                         quantity=quantity,
                         price=100,

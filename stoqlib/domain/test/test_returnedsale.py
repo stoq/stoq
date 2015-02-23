@@ -367,19 +367,81 @@ class TestReturnedSale(DomainTest):
         returned_sale = self.create_returned_sale()
         self.assertEquals(returned_sale.operation_nature, u'Sale Return')
 
+    def test_status(self):
+        rsale = self.create_returned_sale()
+        rsale.status = ReturnedSale.STATUS_PENDING
+        self.assertTrue(rsale.is_pending())
+
+        rsale.status = ReturnedSale.STATUS_CONFIRMED
+        self.assertTrue(rsale.can_undo())
+
+        rsale.status = ReturnedSale.STATUS_CANCELLED
+        self.assertTrue(rsale.is_undone())
+
+    def test_undo(self):
+        sale_item = self.create_sale_item()
+        sale = sale_item.sale
+        sale.status = Sale.STATUS_RETURNED
+        sale.return_date = sale_item.sale.open_date
+
+        returned_item = self.create_returned_sale_item(sale_item=sale_item)
+        returned_sale = returned_item.returned_sale
+        returned_sale.status = ReturnedSale.STATUS_CONFIRMED
+        returned_sale.sale = sale
+
+        returned_item.returned_sale.undo(reason=u'teste')
+
+        self.assertEquals(sale.status, sale.STATUS_CONFIRMED)
+        self.assertEquals(sale.return_date, None)
+        self.assertEquals(returned_item.returned_sale.status,
+                          ReturnedSale.STATUS_CANCELLED)
+
+    def test_guess_payment_method(self):
+        # Note that this is not testing the real return process, only the guess
+        # payment method method
+        rsale = self.create_returned_sale()
+        self.create_returned_sale_item(rsale)
+
+        credit_method = self.get_payment_method(u'credit')
+        bill_method = self.get_payment_method(u'bill')
+
+        # Without payments we should have guessed 'money'
+        method = rsale._guess_payment_method()
+        self.assertEquals(method, 'money')
+
+        payment = self.create_payment(method=credit_method,
+                                      value=rsale.returned_total,
+                                      group=rsale.group)
+        payment.set_pending()
+        self.assertEquals(rsale._guess_payment_method(), 'credit')
+
+        # Now add another credit payment. The guessed should still be credit
+        payment = self.create_payment(method=credit_method,
+                                      value=rsale.returned_total,
+                                      group=rsale.group)
+        payment.set_pending()
+        self.assertEquals(rsale._guess_payment_method(), 'credit')
+
+        # If we now add a different method, the guessed type should be money
+        payment = self.create_payment(method=bill_method,
+                                      value=rsale.returned_total,
+                                      group=rsale.group)
+        payment.set_pending()
+        self.assertEquals(rsale._guess_payment_method(), 'money')
+
 
 class TestReturnedSaleItem(DomainTest):
     def test_constructor(self):
         with self.assertRaisesRegexp(
-            ValueError,
-            "A sale_item or a sellable is mandatory to create this object"):
+                ValueError,
+                "A sale_item or a sellable is mandatory to create this object"):
             ReturnedSaleItem(store=self.store)
 
         sellable = self.create_sellable()
         sale_item = self.create_sale_item()
         with self.assertRaisesRegexp(
-            ValueError,
-            "sellable must be the same as sale_item.sellable"):
+                ValueError,
+                "sellable must be the same as sale_item.sellable"):
             ReturnedSaleItem(sellable=sellable,
                              sale_item=sale_item,
                              store=self.store)
@@ -410,13 +472,42 @@ class TestReturnedSaleItem(DomainTest):
         branch = self.create_branch()
 
         with mock.patch(
-            'stoqlib.domain.product.Storable.increase_stock') as increase_stock:
+                'stoqlib.domain.product.Storable.increase_stock') as increase_stock:
             item.return_(branch)
         self.assertEquals(item.sale_item.quantity_decreased, 0)
 
         increase_stock.assert_called_once_with(
             decimal.Decimal(1), branch, StockTransactionHistory.TYPE_RETURNED_SALE,
             item.id, batch=item.batch)
+
+    def test_undo(self):
+        sellable = self.create_sellable(product=True, storable=True)
+        sale_item = self.create_sale_item(sellable=sellable)
+        returned_item = self.create_returned_sale_item(sale_item=sale_item)
+
+        # Lets supose this item is already returned
+        self.assertEquals(sale_item.quantity, 1)
+        self.assertEquals(sale_item.quantity_decreased, 0)
+
+        # If there is not enought stock, we should raise an error
+        from stoqlib.exceptions import StockError
+        with self.assertRaisesRegexp(
+                StockError,
+                "Quantity to sell is greater than the available stock."):
+            returned_item.undo()
+
+        # Lets increase the stock
+        storable = sale_item.sellable.product.storable
+        storable.increase_stock(10, sale_item.sale.branch,
+                                type=StockTransactionHistory.TYPE_INITIAL,
+                                object_id=None)
+
+        # Now we should be able to undo the return
+        returned_item.undo()
+        # The quantity decreased should be 1
+        self.assertEquals(sale_item.quantity_decreased, 1)
+        # And there should be 9 itens in stock
+        self.assertEquals(storable.get_balance_for_branch(sale_item.sale.branch), 9)
 
     # NF-e operations
 

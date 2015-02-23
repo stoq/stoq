@@ -1481,6 +1481,7 @@ class TestPersonMerging(DomainTest):
             'UPDATE receiving_order SET responsible_id=%s WHERE receiving_order.responsible_id = %s',  # nopep8
             'UPDATE returned_sale SET confirm_responsible_id=%s WHERE returned_sale.confirm_responsible_id = %s',  # nopep8
             'UPDATE returned_sale SET responsible_id=%s WHERE returned_sale.responsible_id = %s',  # nopep8
+            'UPDATE returned_sale SET undo_responsible_id=%s WHERE returned_sale.undo_responsible_id = %s',  # nopep8
             'UPDATE sale_comment SET author_id=%s WHERE sale_comment.author_id = %s',  # nopep8
             'UPDATE stock_decrease SET responsible_id=%s WHERE stock_decrease.responsible_id = %s',  # nopep8
             'UPDATE stock_transaction_history SET responsible_id=%s WHERE stock_transaction_history.responsible_id = %s',  # nopep8

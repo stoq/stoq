@@ -304,12 +304,6 @@
                   <object class="ObjectList" id="returned_items_list">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -392,7 +386,22 @@
           <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="spacing">6</property>
             <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="undo_button">
+                <property name="label" translatable="yes">Undo Returned Sale</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkButton" id="print_button">
                 <property name="label">gtk-print</property>
@@ -405,7 +414,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>

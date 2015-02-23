@@ -195,6 +195,7 @@ class SaleItem(Domain):
 
     @property
     def returned_quantity(self):
+        # FIXME: Verificar status do ReturnedSale
         return self.store.find(ReturnedSaleItem,
                                sale_item=self).sum(ReturnedSaleItem.quantity) or Decimal('0')
 
@@ -230,7 +231,7 @@ class SaleItem(Domain):
 
             same_state = True
             if (our_address.city_location.state !=
-                client_address.city_location.state):
+                    client_address.city_location.state):
                 same_state = False
 
             if same_state:
@@ -934,6 +935,9 @@ class Sale(Domain):
         return (self.status == Sale.STATUS_QUOTE or
                 self.status == Sale.STATUS_ORDERED)
 
+    def is_returned(self):
+        return self.status == Sale.STATUS_RETURNED
+
     def order(self):
         """Orders the sale
 
@@ -1073,6 +1077,15 @@ class Sale(Domain):
 
         self.close_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_RENEGOTIATED)
+
+    def set_not_returned(self):
+        """Sets a sale as not returnd
+
+        This will reset the sale status to confirmed (once you can only returna
+        confirmed sale). Also, the return_date will be reset.
+        """
+        self._set_sale_status(Sale.STATUS_CONFIRMED)
+        self.return_date = None
 
     def cancel(self, force=False):
         """Cancel the sale
@@ -1784,6 +1797,7 @@ class SaleComment(Domain):
 
 class ReturnedSaleItemsView(Viewable):
     branch = Branch
+    returned_sale = ReturnedSale
 
     # returned and original sale item
     id = ReturnedSaleItem.id

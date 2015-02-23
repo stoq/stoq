@@ -170,6 +170,21 @@ class ReturnedSaleItem(Domain):
         if self.sale_item:
             self.sale_item.quantity_decreased -= self.quantity
 
+    def undo(self):
+        """Undo this item return.
+
+        This is the oposite of the return, ie, the item will be removed back
+        from stock and the sale item decreased quantity will be restored.
+        """
+        storable = self.sellable.product_storable
+        if storable:
+            storable.decrease_stock(self.quantity, self.returned_sale.branch,
+                                    # FIXME: Create a new type
+                                    StockTransactionHistory.TYPE_RETURNED_SALE,
+                                    self.id, batch=self.batch)
+        if self.sale_item:
+            self.sale_item.quantity_decreased += self.quantity
+
 
 @implementer(IContainer)
 @implementer(IInvoice)
@@ -191,16 +206,21 @@ class ReturnedSale(Domain):
 
     __storm_table__ = 'returned_sale'
 
-    #: This status means that this returned sale is made on another branch and
-    # it needs to be received by the branch who made that sale
+    #: This returned sale was received on another branch, but is not yet
+    #: confirmed. A product goes back to stock only after confirmation
     STATUS_PENDING = u'pending'
 
-    #: This status indicates that the returned_sale is already received
+    #: This return was confirmed, meaning the product stock was increased.
     STATUS_CONFIRMED = u'confirmed'
+
+    #: This returned sale was canceled, ie, The product stock is decreased back
+    #: and the original sale still have the products.
+    STATUS_CANCELLED = 'cancelled'
 
     statuses = collections.OrderedDict([
         (STATUS_PENDING, _(u'Pending')),
         (STATUS_CONFIRMED, _(u'Confirmed')),
+        (STATUS_CANCELLED, _(u'Cancelled')),
     ])
 
     #: A numeric identifier for this object. This value should be used instead of
@@ -217,11 +237,17 @@ class ReturnedSale(Domain):
     #: the date that the |returned sale| with the status pending was received
     confirm_date = DateTimeCol(default=None)
 
+    # When this returned sale was undone
+    undo_date = DateTimeCol(default=None)
+
     #: the invoice number for this returning
     invoice_number = IntCol(default=None)
 
     #: the reason why this return was made
     reason = UnicodeCol(default=u'')
+
+    #: The reason this returned sale was undone
+    undo_reason = UnicodeCol(default=u'')
 
     sale_id = IdCol(default=None)
 
@@ -242,6 +268,10 @@ class ReturnedSale(Domain):
 
     #: the |loginuser| responsible for receiving the pending return
     confirm_responsible = Reference(confirm_responsible_id, 'LoginUser.id')
+
+    undo_responsible_id = IdCol()
+    #: the |loginuser| responsible for undoing this returned sale.
+    undo_responsible = Reference(undo_responsible_id, 'LoginUser.id')
 
     branch_id = IdCol()
 
@@ -293,8 +323,8 @@ class ReturnedSale(Domain):
         if not self.sale:
             return currency(0)
 
-        returned = self.store.find(ReturnedSale,
-                                   sale=self.sale)
+        # TODO: Filter by status
+        returned = self.store.find(ReturnedSale, sale=self.sale)
         # This will sum the total already returned for this sale,
         # excluiding *self* within the same store
         returned_total = sum([returned_sale.returned_total for returned_sale in
@@ -408,6 +438,15 @@ class ReturnedSale(Domain):
         return store.using(*tables).find(cls, And(cls.status == cls.STATUS_PENDING,
                                                   Sale.branch == branch))
 
+    def is_pending(self):
+        return self.status == ReturnedSale.STATUS_PENDING
+
+    def is_undone(self):
+        return self.status == ReturnedSale.STATUS_CANCELLED
+
+    def can_undo(self):
+        return self.status == ReturnedSale.STATUS_CONFIRMED
+
     def return_(self, method_name=u'money', login_user=None):
         """Do the return of this returned sale.
 
@@ -513,14 +552,80 @@ class ReturnedSale(Domain):
         self.confirm_responsible = login_user
         self.confirm_date = localnow()
 
+    def undo(self, reason):
+        """Undo this returned sale.
+
+        This includes removing the returned items from stock again (updating the
+        quantity decreased on the sale).
+
+        :param reason: The reason for this operation.
+        """
+        assert self.can_undo()
+        for item in self.get_items():
+            item.undo()
+
+        # We now need to create a new in payment for the total amount of this
+        # returned sale.
+        method_name = self._guess_payment_method()
+        method = PaymentMethod.get_by_name(self.store, method_name)
+        description = _(u'%s return undone for sale %s') % (
+            method.description, self.sale.identifier)
+        payment = method.create_payment(Payment.TYPE_IN,
+                                        payment_group=self.group,
+                                        branch=self.branch,
+                                        value=self.returned_total,
+                                        description=description)
+        payment.set_pending()
+        payment.pay()
+
+        self.status = self.STATUS_CANCELLED
+        self.cancel_date = localnow()
+        self.undo_reason = reason
+
+        # if the sale status is returned, we must reset it to confirmed (only
+        # confirmed sales can be returned)
+        if self.sale.is_returned():
+            self.sale.set_not_returned()
+
     #
     #  Private
     #
+
+    def _guess_payment_method(self):
+        """Guesses the payment method used in this returned sale.
+        """
+        value = self.returned_total
+        # Now look for the out payment, ie, the payment that we possibly created
+        # for the returned value.
+        payments = list(self.sale.payments.find(payment_type=Payment.TYPE_OUT,
+                                                value=value))
+        if len(payments) == 1:
+            # There is only one payment that matches our criteria, we can trust it
+            # is the one we are looking for.
+            method = payments[0].method.method_name
+        elif len(payments) == 0:
+            # This means that the returned sale didn't endup creating any return
+            # payment for the client. Let's just create a money payment then
+            method = u'money'
+        else:
+            # This means that we found more than one return payment for this
+            # value. This probably means that the user has returned multiple
+            # items in different returns.
+            methods = set(payment.method.method_name for payment in payments)
+            if len(methods) == 1:
+                # All returns were using the same method. Lets use that one them
+                method = methods.pop()
+            else:
+                # The previous returns used different methods, let's pick money
+                method = u'money'
+
+        return method
 
     def _return_items(self):
         # We must have at least one item to return
         assert self.returned_items.count()
 
+        # FIXME
         branch = get_current_branch(self.store)
         for item in self.returned_items:
             item.return_(branch)

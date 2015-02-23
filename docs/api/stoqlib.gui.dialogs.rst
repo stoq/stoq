@@ -321,6 +321,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`returnedsaledialog` Module
+--------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.returnedsalesdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`saledetails` Module
 -------------------------
 

@@ -1170,10 +1170,7 @@ class ReturnedSalesView(Viewable):
         return bool(self.is_pending() and same_branch)
 
     def is_pending(self):
-        return self.returned_sale.status == ReturnedSale.STATUS_PENDING
-
-    def get_items(self):
-        return self.returned_sale.returned_items
+        return self.returned_sale.is_pending()
 
     @property
     def status_str(self):

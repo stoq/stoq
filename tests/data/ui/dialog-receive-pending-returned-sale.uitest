@@ -1,4 +1,4 @@
-dialog: ReturnedSalesDialog
+dialog: ReturnedSaleDialog
 GtkVBox(details_vbox):
   GtkTable(table1, fill=True):
     GtkLabel(label4): 'Returned Sale:'
@@ -25,9 +25,12 @@ GtkVBox(details_vbox):
         column: title='Product Code'
         column: title='Description', expand
         column: title='Qty returned'
-        row: u'', u'Description', Decimal('1.000')
+        column: title='Price'
+        column: title='Total'
+        row: u'', u'Description', Decimal('1.000'), <currency $100>, Decimal('100.000')
     GtkHBox(hbox1):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
-        ProxyTextView(reason):
+        ProxyTextView(reason): invalid
   GtkHButtonBox(hbuttonbox1, fill=True):
+    GtkButton(undo_button): 'Undo Returned Sale', insensitive
     GtkButton(print_button): 'gtk-print'

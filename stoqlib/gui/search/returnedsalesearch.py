@@ -28,8 +28,9 @@ import datetime
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import ReturnedSalesView, PendingReturnedSalesView
+from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.receivingdialog import ReturnedSalesDialog
+from stoqlib.gui.dialogs.returnedsaledialog import ReturnedSaleDialog
 from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
@@ -59,7 +60,12 @@ class ReturnedSaleSearch(SearchDialog):
         self.update_widgets()
 
     def _show_details(self, item_view):
-        run_dialog(ReturnedSalesDialog, self, self.store, item_view)
+        run_dialog(ReturnedSaleDialog, self, self.store, item_view)
+
+    def _get_status_values(self):
+        items = [(value, key) for key, value in ReturnedSale.statuses.items()]
+        items.insert(0, (_('Any'), None))
+        return items
 
     #
     # SearchDialog Hooks
@@ -71,8 +77,12 @@ class ReturnedSaleSearch(SearchDialog):
         self.set_print_button_sensitive(bool(selected))
 
     def get_columns(self):
+        # TODO: Add status column
         return [IdentifierColumn('identifier', title=_(u"Item #")),
                 IdentifierColumn('sale_identifier', _('Sale #')),
+                SearchColumn('status_str', _('Status'),
+                             data_type=str, search_attribute='status',
+                             valid_values=self._get_status_values()),
                 SearchColumn('client_name', _('Client'), expand=True,
                              data_type=str),
                 SearchColumn('return_date', _('Return Date'),
@@ -109,7 +119,7 @@ class PendingReturnedSaleSearch(ReturnedSaleSearch):
     branch_filter_column = Sale.branch_id
 
     def _show_pending_returned_sale_details(self, order_view):
-        run_dialog(ReturnedSalesDialog, self, self.store, order_view)
+        run_dialog(ReturnedSaleDialog, self, self.store, order_view)
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_(u"Returned #")),

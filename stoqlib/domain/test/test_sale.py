@@ -1147,6 +1147,18 @@ class TestSale(DomainTest):
 
         self.failIf(sale.can_set_renegotiated())
 
+    def test_set_not_returned(self):
+        sale = self.create_sale()
+        sale.status = Sale.STATUS_RETURNED
+        sale.return_date = localtoday()
+
+        self.assertTrue(sale.is_returned())
+        sale.set_not_returned()
+        self.assertFalse(sale.is_returned())
+
+        self.assertEquals(sale.status, Sale.STATUS_CONFIRMED)
+        self.assertEquals(sale.return_date, None)
+
     def test_products(self):
         sale = self.create_sale()
         self.assertTrue(sale.products.is_empty())
