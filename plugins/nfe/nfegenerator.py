@@ -364,7 +364,11 @@ class NFeGenerator(object):
         tax_msg = "Val Aprox Tributos R$ {:0.2f} ({:0.2f}%) Fonte: IBPT - "
         fisco_info = tax_msg.format(self._total_taxes, total_tax_percentage)
         fisco_info += sysparam.get_string('NFE_FISCO_INFORMATION')
-        notes = '\n'.join(c.comment for c in self._order.comments)
+        comments = self._order.comments
+        if isinstance(comments, basestring):
+            notes = comments
+        else:
+            notes = '\n'.join(c.comment for c in self._order.comments)
         nfe_info = NFeAdditionalInformation(fisco_info, notes)
         self._nfe_data.append(nfe_info)
 

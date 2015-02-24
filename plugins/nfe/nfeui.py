@@ -28,7 +28,7 @@ import time
 
 from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.events import NewLoanWizardFinishEvent
+from stoqlib.gui.events import NewLoanWizardFinishEvent, StockTransferWizardFinishEvent
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -43,6 +43,7 @@ class NFeUI(object):
     def __init__(self):
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
         NewLoanWizardFinishEvent.connect(self._on_NewLoanWizardFinish)
+        StockTransferWizardFinishEvent.connect(self._on_StockTransferWizardFinish)
 
         pm = PermissionManager.get_permission_manager()
         pm.set('InvoiceLayout', pm.PERM_HIDDEN)
@@ -104,3 +105,7 @@ class NFeUI(object):
     def _on_NewLoanWizardFinish(self, loan):
         operation_dir = _('Loans')
         self._create_nfe(loan, loan.store, operation_dir)
+
+    def _on_StockTransferWizardFinish(self, transfer):
+        operation_dir = _('Transfers')
+        self._create_nfe(transfer, transfer.store, operation_dir)

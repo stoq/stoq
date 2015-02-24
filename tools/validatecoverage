@@ -32,7 +32,7 @@ EXCEPTIONS = OrderedDict((
     ('plugins/ecf/paulistainvoicedialog.py', 92.00),
     ('plugins/nfe/nfegenerator.py', 74.10),
     ('plugins/nfe/nfeplugin.py', 83.33),
-    ('plugins/nfe/nfeui.py', 45.00),
+    ('plugins/nfe/nfeui.py', 43.00),
     ('stoq/dbadmin.py', 13.31),
     ('stoq/gui/accounts.py', 0.4552),
     ('stoq/gui/admin.py', 61.19),

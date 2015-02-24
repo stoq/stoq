@@ -819,7 +819,7 @@ class ExampleCreator(object):
                              store=self.store)
 
     def create_transfer_order_item(self, order=None, quantity=5, sellable=None,
-                                   batch=None):
+                                   batch=None, stock_cost=50):
         from stoqlib.domain.product import Product, Storable, StockTransactionHistory
         if not order:
             order = self.create_transfer_order()
@@ -830,6 +830,7 @@ class ExampleCreator(object):
             storable = Storable(product=product, store=self.store)
             storable.increase_stock(quantity, order.source_branch,
                                     type=StockTransactionHistory.TYPE_TRANSFER_FROM,
+                                    unit_cost=stock_cost,
                                     object_id=None)
         return order.add_sellable(sellable, batch=batch, quantity=quantity)
 

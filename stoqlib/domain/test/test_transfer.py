@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from kiwi.currency import currency
+
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.transfer import TransferOrderItem
@@ -35,6 +37,37 @@ class TestTransferOrderItem(DomainTest):
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order)
         self.assertEquals(item.get_total(), 625)
+
+    def test_price(self):
+        transfer_item = self.create_transfer_order_item(stock_cost=50)
+        self.assertEquals(transfer_item.price, transfer_item.stock_cost)
+
+    def test_icms_info(self):
+        transfer_item = self.create_transfer_order_item()
+        self.assertEquals(transfer_item.icms_info, None)
+
+    def test_ipi_info(self):
+        transfer_item = self.create_transfer_order_item()
+        self.assertEquals(transfer_item.ipi_info, None)
+
+    def test_nfe_cfop_code(self):
+        order = self.create_transfer_order()
+        transfer_item = self.create_transfer_order_item(order)
+        source = order.source_branch
+        destination = order.destination_branch
+
+        location = self.create_city_location(city='São Carlos',
+                                             state='SP', country='Brazil')
+        # Source branch address is the same of destination branch
+        source.person.address.city_location = location
+        destination.person.address.city_location = location
+        self.assertEquals(transfer_item.nfe_cfop_code, u'5152')
+
+        # Source branch address isn't the same of destination branch
+        location = self.create_city_location(city='Salvador',
+                                             state='BA', country='Brazil')
+        destination.person.address.city_location = location
+        self.assertEquals(transfer_item.nfe_cfop_code, u'6152')
 
 
 class TestTransferOrder(DomainTest):
@@ -154,3 +187,24 @@ class TestTransferOrder(DomainTest):
         order.source_branch = None
         self.assertFalse(order.branch)
         self.assertEquals(order.branch, order.source_branch)
+
+    def test_discount_value(self):
+        order = self.create_transfer_order()
+        self.assertEquals(order.discount_value, currency(0))
+
+    def test_invoice_total(self):
+        order = self.create_transfer_order()
+        self.create_transfer_order_item(order, quantity=1, stock_cost=20)
+        self.assertEquals(order.invoice_total, 20)
+        self.create_transfer_order_item(order, quantity=2, stock_cost=20)
+        self.assertEquals(order.invoice_total, 60)
+
+    def test_recipient(self):
+        destination_branch = self.create_branch()
+        order = self.create_transfer_order(dest_branch=destination_branch)
+        self.assertEquals(order.destination_branch, order.recipient)
+
+    def test_operation_nature(self):
+        # FIXME: Check using the operation_nature that will be saved in new field.
+        order = self.create_transfer_order()
+        self.assertEquals(order.operation_nature, u'Transfer')
