@@ -1159,6 +1159,26 @@ class ReturnedSalesView(Viewable):
     ]
 
 
+class PendingReturnedSalesView(ReturnedSalesView):
+    sale = Sale
+
+    receiving_date = ReturnedSale.confirm_date
+    receiving_responsible = ReturnedSale.confirm_responsible_id
+
+    clause = ReturnedSale.status == ReturnedSale.STATUS_PENDING
+
+    def _is_pending(self):
+        return self.returned_sale.status == ReturnedSale.STATUS_PENDING
+
+    def can_receive(self):
+        from stoqlib.api import api
+        same_branch = self.sale.branch == api.get_current_branch(self.store)
+        return bool(self._is_pending() and same_branch)
+
+    def get_items(self):
+        return self.returned_sale.returned_items
+
+
 class LoanView(Viewable):
     PersonBranch = ClassAlias(Person, 'person_branch')
     PersonResponsible = ClassAlias(Person, 'person_responsible')

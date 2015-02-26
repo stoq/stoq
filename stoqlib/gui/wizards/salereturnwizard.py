@@ -503,7 +503,9 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
                 info(_("A reversal payment to the client will be created. "
                        "You can see it on the Payable Application."))
 
-        self.model.return_(method_name=u'credit' if self.credit else u'money')
+        login_user = api.get_current_user(self.store)
+        self.model.return_(method_name=u'credit' if self.credit else u'money',
+                           login_user=login_user)
         self.retval = self.model
         self.close()
 

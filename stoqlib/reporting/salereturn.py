@@ -47,3 +47,21 @@ class SaleReturnReport(HTMLReport):
 
     def get_subtitle(self):
         return _(u'Sale %s') % self.returned_sale.identifier
+
+
+class PendingReturnReceipt(HTMLReport):
+
+    template_filename = 'return_sale/pending_receipt.html'
+    title = _("Pending Returned Sale Report")
+    complete_header = False
+
+    def __init__(self, filename, pending_return):
+        self.pending_return = pending_return
+        HTMLReport.__init__(self, filename)
+
+    def get_namespace(self):
+        return dict(subtitle="Return number: %s" % (self.pending_return.identifier, ),
+                    pending_return=self.pending_return)
+
+    def get_subtitle(self):
+        return _(u'Returned Sale %s') % self.pending_return.identifier

@@ -1,0 +1,14 @@
+<%inherit file="../base/base.html" />
+
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="title_head">
+  <title>${ title }</title>
+</%block>
+
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes) }
+  <%include file="pending_return_sale-details.html" />
+  <%include file="pending_return_sale-items.html" />
+</div> <!-- end div.page -->

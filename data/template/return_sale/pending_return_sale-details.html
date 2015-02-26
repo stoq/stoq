@@ -1,0 +1,27 @@
+      <section>
+        <table class="details">
+          <tbody>
+            <tr>
+              <td>${ _("Sale:") }</td>
+              <td>${ pending_return.sale_identifier}</td>
+            </tr>
+            <tr>
+              <td>${ _("Invoice number:") }</td>
+              <td>${ pending_return.invoice_number or "-" }</td>
+            </tr>
+            <tr>
+              <td>${ _("Return date:") }</td>
+              <td>${ pending_return.return_date.strftime('%x')}</td>
+            </tr>
+            <tr>
+              <td>${ _("Returned on Branch:") }</td>
+              <td>${ pending_return.branch_name }</td>
+            </tr>
+            <tr>
+              <td>${ _("Responsible:") }</td>
+              <td>${ pending_return.responsible_name }</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+

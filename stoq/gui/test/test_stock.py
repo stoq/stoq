@@ -38,6 +38,7 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
+from stoqlib.gui.search.returnedsalesearch import PendingReturnedSaleSearch
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
@@ -132,5 +133,7 @@ class TestStock(BaseGUITest):
                                StockDecreaseSearch, [])
         self._check_run_dialog(app.NewTransfer,
                                StockTransferWizard, [])
+        self._check_run_dialog(app.SearchPendingReturnedSales,
+                               PendingReturnedSaleSearch, [])
         self._check_run_dialog(app.NewReceiving,
                                ReceivingOrderWizard, [])

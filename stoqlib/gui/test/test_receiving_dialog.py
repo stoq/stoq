@@ -22,10 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
 import mock
 
+from stoqlib.domain.returnedsale import ReturnedSale
+from stoqlib.domain.views import PendingReturnedSalesView
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
-from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
+from stoqlib.gui.dialogs.receivingdialog import (ReceivingOrderDetailsDialog,
+                                                 PendingReturnedSalesDialog)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -49,3 +53,35 @@ class TestReceivingDialog(GUITest):
         warning.assert_called_once_with('It was not possible to print the '
                                         'labels. The template file was not '
                                         'found.')
+
+
+class TestPendingReturnedSalesDialog(GUITest):
+    def test_show(self):
+        pending_return = self.create_pending_returned_sale()
+        pending_return.sale.identifier = 336
+        model = self.store.find(PendingReturnedSalesView).one()
+        dialog = PendingReturnedSalesDialog(self.store, model)
+        self.check_dialog(dialog, 'dialog-receive-pending-returned-sale')
+
+    @mock.patch('stoqlib.gui.dialogs.receivingdialog.yesno')
+    def test_receive_pending_returned_sale(self, yesno):
+        self.create_pending_returned_sale()
+        model = self.store.find(PendingReturnedSalesView).one()
+        dialog = PendingReturnedSalesDialog(self.store, model)
+        self.assertEquals(dialog.receive_button.get_property('visible'), True)
+        self.assertEquals(model.returned_sale.status, ReturnedSale.STATUS_PENDING)
+        with mock.patch.object(self.store, 'commit'):
+            self.click(dialog.receive_button)
+            yesno.assert_called_once_with(u'Receive pending returned sale?',
+                                          gtk.RESPONSE_YES,
+                                          u'Receive', u"Don't receive")
+            self.assertEquals(model.returned_sale.status, ReturnedSale.STATUS_CONFIRMED)
+
+    @mock.patch('stoqlib.gui.dialogs.receivingdialog.print_report')
+    def test_print_button(self, print_report):
+        self.create_pending_returned_sale()
+        model = self.store.find(PendingReturnedSalesView).one()
+        dialog = PendingReturnedSalesDialog(self.store, model)
+
+        self.click(dialog.print_button)
+        print_report.assert_called_once_with(dialog.report_class, dialog.model)

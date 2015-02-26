@@ -1,0 +1,44 @@
+<section id="items">
+<table class="list">
+  <thead>
+    <tr>
+      <td>${ _("Code") }</td>
+      <td>${ _("Item") }</td>
+      <td>${ _("Quantity") }</td>
+    </tr>
+  </thead>
+
+  <tfoot>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tfoot>
+
+  <tbody >
+    % for item in pending_return.returned_sale.returned_items:
+      <tr>
+        <td>${ item.sellable.code }</td>
+        <td>${ item.sellable.description }</td>
+        <td>${ item.quantity }</td>
+      </tr>
+    % endfor
+  </tbody>
+
+  <tbody class="summary">
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+
+</table>
+</section>
+
+<section class="signatures">
+  <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                     if there is not enough space -->
+  <span class="signature">${ pending_return.responsible_name }</span>
+</section>

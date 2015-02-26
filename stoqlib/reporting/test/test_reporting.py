@@ -45,7 +45,8 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView, ReturnedSaleItemsView
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.till import Till, TillEntry
-from stoqlib.domain.views import ProductFullStockView, SoldItemsByBranchView
+from stoqlib.domain.views import (ProductFullStockView, SoldItemsByBranchView,
+                                  PendingReturnedSalesView)
 from stoqlib.domain.workorder import WorkOrderView
 from stoqlib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
 from stoqlib.lib.parameters import sysparam
@@ -62,7 +63,7 @@ from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import (SaleOrderReport, SalesPersonReport,
                                     SoldItemsByBranchReport)
-from stoqlib.reporting.salereturn import SaleReturnReport
+from stoqlib.reporting.salereturn import SaleReturnReport, PendingReturnReceipt
 from stoqlib.reporting.till import TillHistoryReport, TillDailyMovementReport
 from stoqlib.reporting.test.reporttest import ReportTest
 from stoqlib.reporting.workorder import WorkOrdersReport
@@ -182,6 +183,16 @@ class TestReport(ReportTest):
 
         self._diff_expected(SaleReturnReport, 'sale-return-report', self.store,
                             client, model, returned_items)
+
+    def test_pending_returned_sale_receipt(self):
+        pending_returned_sale = self.create_pending_returned_sale()
+        date = datetime.datetime(2015, 3, 6)
+        pending_returned_sale.return_date = date
+        pending_returned_sale.sale.identifier = 439
+        pending_returned_sale.identifier = 58
+        model = self.store.find(PendingReturnedSalesView).one()
+        self._diff_expected(PendingReturnReceipt, 'pending-returned-sale-receipt',
+                            model)
 
     def test_in_payment_receipt(self):
         payer = self.create_client()

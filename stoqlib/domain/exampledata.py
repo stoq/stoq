@@ -474,6 +474,28 @@ class ExampleCreator(object):
             sale = self.create_sale()
         return sale.create_sale_return_adapter()
 
+    def create_pending_returned_sale(self):
+        from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
+        sale_branch = get_current_branch(self.store)
+        return_branch = self.create_branch()
+        client = self.create_client()
+        product = self.create_product()
+        sale = self.create_sale(branch=sale_branch, client=client)
+        sale_item = sale.add_sellable(sellable=product.sellable)
+
+        r_sale = ReturnedSale(store=self.store,
+                              sale=sale,
+                              branch=return_branch,
+                              responsible=get_current_user(self.store))
+
+        ReturnedSaleItem(store=self.store,
+                         quantity=1,
+                         price=100,
+                         sale_item=sale_item,
+                         returned_sale=r_sale,
+                         sellable=sale_item.sellable)
+        return r_sale
+
     def create_returned_sale_item(self):
         from stoqlib.domain.returnedsale import ReturnedSaleItem
         sale_item = self.create_sale_item()

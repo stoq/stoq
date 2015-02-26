@@ -26,10 +26,11 @@
 import datetime
 
 from stoqlib.domain.person import Branch
-from stoqlib.domain.sale import SaleView
-from stoqlib.domain.views import ReturnedSalesView
+from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.views import ReturnedSalesView, PendingReturnedSalesView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.dialogs.receivingdialog import PendingReturnedSalesDialog
 from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
@@ -80,7 +81,7 @@ class ReturnedSaleSearch(SearchDialog):
                 SearchColumn('return_date', _('Return Date'),
                              data_type=datetime.date, sorted=True),
                 SearchColumn('reason', _('Return Reason'),
-                             data_type=str),
+                             data_type=str, visible=False),
                 SearchColumn('responsible_name', _('Responsible'),
                              data_type=str),
                 SearchColumn('branch_name', _('Branch'),
@@ -102,3 +103,37 @@ class ReturnedSaleSearch(SearchDialog):
             raise ValueError("You should have only one item selected at "
                              "this point ")
         self._show_details(selected_returns[0])
+
+
+class PendingReturnedSaleSearch(ReturnedSaleSearch):
+    title = _(u"Pending Returned Sale Search")
+    size = (830, 520)
+    search_spec = PendingReturnedSalesView
+    branch_filter_column = Sale.branch_id
+
+    def _show_pending_returned_sale_details(self, order_view):
+        run_dialog(PendingReturnedSalesDialog, self, self.store,
+                   order_view)
+
+    def get_columns(self):
+        return [IdentifierColumn('identifier', title=_(u"Returned #")),
+                IdentifierColumn('sale_identifier', _('Sale #')),
+                SearchColumn('client_name', _('Client'), expand=True,
+                             data_type=str),
+                SearchColumn('return_date', _('Return Date'),
+                             data_type=datetime.date, sorted=True),
+                SearchColumn('reason', _('Return Reason'),
+                             data_type=str),
+                SearchColumn('responsible_name', _('Responsible'),
+                             data_type=str),
+                SearchColumn('branch_name', _('Returned on Branch'),
+                             data_type=str),
+                SearchColumn('invoice_number', _('Invoice number'),
+                             data_type=int, visible=False),
+                ]
+
+    def on_details_button_clicked(self, button):
+        self._show_pending_returned_sale_details(self.results.get_selected())
+
+    def on_row_activated(self, klist, item_view):
+        self._show_pending_returned_sale_details(item_view)

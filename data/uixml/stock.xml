@@ -54,6 +54,7 @@
       <menuitem action="SearchBrandItemsByBranch"/>
       <menuitem action="SearchBatchItems"/>
       <menuitem action="SearchClosedStockItems"/>
+      <menuitem action="SearchPendingReturnedSales"/>
       <separator/>
       <menuitem action="LoanSearch"/>
       <menuitem action="LoanSearchItems"/>

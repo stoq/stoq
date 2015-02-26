@@ -27,7 +27,6 @@ import logging
 
 import pango
 import gtk
-
 from kiwi.datatypes import converter
 
 from stoqlib.api import api
@@ -35,6 +34,7 @@ from stoqlib.enums import SearchFilterPosition
 from stoqlib.domain.person import Branch
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.domain.transfer import TransferOrder
+from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
@@ -44,6 +44,7 @@ from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
+from stoqlib.gui.search.returnedsalesearch import PendingReturnedSaleSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch,
                                               ProductBrandSearch,
@@ -123,6 +124,7 @@ class StockApp(ShellApp):
              _("Search for closed stock items")),
             ("LoanSearch", None, _("Loans...")),
             ("LoanSearchItems", None, _("Loan items...")),
+            ("SearchPendingReturnedSales", None, _("Pending returned sales...")),
             ("ProductMenu", None, _("Product")),
             ("ProductStockHistory", gtk.STOCK_INFO, _("History..."),
              group.get('history'),
@@ -199,6 +201,7 @@ class StockApp(ShellApp):
 
         if not open_inventory:
             self.transfers_bar = self._create_pending_info_message()
+            self.returned_bar = self._create_pending_returned_sale_message()
         else:
             self.transfers_bar = None
 
@@ -212,6 +215,8 @@ class StockApp(ShellApp):
     def deactivate(self):
         if self.transfers_bar:
             self.transfers_bar.hide()
+        if self.returned_bar:
+            self.returned_bar.hide()
 
         self.uimanager.remove_ui(self.stock_ui)
         self._close_image_viewer()
@@ -318,6 +323,7 @@ class StockApp(ShellApp):
         self.set_sensitive([self.NewTransfer],
                            transfer_active and has_branches)
         self.set_sensitive([self.SearchTransfer], has_branches)
+        self.set_sensitive([self.SearchPendingReturnedSales], has_branches)
 
     def _update_edit_image(self, pixbuf=None):
         if not pixbuf:
@@ -368,10 +374,28 @@ class StockApp(ShellApp):
 
         return info_bar
 
+    def _create_pending_returned_sale_message(self):
+        branch = api.get_current_branch(self.store)
+        n_returned = ReturnedSale.get_pending_returned_sales(self.store, branch).count()
+
+        if not n_returned:
+            return None
+
+        msg = stoqlib_ngettext(_(u"You have %s returned sale to receive"),
+                               _(u"You have %s returned sales to receive"),
+                               n_returned) % n_returned
+        info_returned_bar = self.window.add_info_bar(gtk.MESSAGE_QUESTION, msg)
+        button = info_returned_bar.add_button(_(u"Returned sale"), gtk.RESPONSE_OK)
+        button.connect('clicked', self._on_info_returned_sales__clicked)
+
+        return info_returned_bar
+
     def _search_transfers(self):
         branch = api.get_current_branch(self.store)
         self.run_dialog(TransferOrderSearch, self.store)
 
+        # After the search is closed we may want to update , or even hide the
+        # message, if there is no pending transfer to receive
         if self.transfers_bar:
             n_transfers = TransferOrder.get_pending_transfers(self.store, branch).count()
 
@@ -382,6 +406,25 @@ class StockApp(ShellApp):
                 self.transfers_bar.set_message(msg)
             else:
                 self.transfers_bar.hide()
+        self.refresh()
+
+    def _search_pending_returned_sales(self):
+        with api.new_store() as store:
+            self.run_dialog(PendingReturnedSaleSearch, store)
+
+        branch = api.get_current_branch(self.store)
+        # After the search is closed we may want to update , or even hide the
+        # message, if there is no pending returned sale to receive
+        if self.returned_bar:
+            n_returned = ReturnedSale.get_pending_returned_sales(self.store, branch).count()
+
+            if n_returned > 0:
+                msg = stoqlib_ngettext(_(u"You have %s returned sale to receive"),
+                                       _(u"You have %s returned sales to receive"),
+                                       n_returned) % n_returned
+                self.returned_bar.set_message(msg)
+            else:
+                self.returned_bar.hide()
         self.refresh()
 
     #
@@ -422,6 +465,9 @@ class StockApp(ShellApp):
 
     def _on_info_transfers__clicked(self, button):
         self._search_transfers()
+
+    def _on_info_returned_sales__clicked(self, button):
+        self._search_pending_returned_sales()
 
     # Stock
 
@@ -489,6 +535,9 @@ class StockApp(ShellApp):
 
     def on_SearchTransfer__activate(self, action):
         self._search_transfers()
+
+    def on_SearchPendingReturnedSales__activate(self, action):
+        self._search_pending_returned_sales()
 
     def on_SearchPurchasedStockItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.store)

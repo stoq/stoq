@@ -25,14 +25,16 @@
 # pylint: enable=E1101
 
 import decimal
+import collections
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
+from storm.expr import And, Join
 from zope.interface import implementer
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
-                                         IdCol)
+                                         IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
@@ -156,13 +158,31 @@ class ReturnedSale(Domain):
 
     __storm_table__ = 'returned_sale'
 
+    #: This status means that this returned sale is made on another branch and
+    # it needs to be received by the branch who made that sale
+    STATUS_PENDING = u'pending'
+
+    #: This status indicates that the returned_sale is already received
+    STATUS_CONFIRMED = u'confirmed'
+
+    statuses = collections.OrderedDict([
+        (STATUS_PENDING, _(u'Pending')),
+        (STATUS_CONFIRMED, _(u'Confirmed')),
+    ])
+
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
+    #: Status of the returned sale
+    status = EnumCol(default=STATUS_PENDING)
+
     #: the date this return was done
     return_date = DateTimeCol(default_factory=localnow)
+
+    #: the date that the |returned sale| with the status pending was received
+    confirm_date = DateTimeCol(default=None)
 
     #: the invoice number for this returning
     invoice_number = IntCol(default=None)
@@ -184,6 +204,11 @@ class ReturnedSale(Domain):
 
     #: the |loginuser| responsible for doing this return
     responsible = Reference(responsible_id, 'LoginUser.id')
+
+    confirm_responsible_id = IdCol()
+
+    #: the |loginuser| responsible for receiving the pending return
+    confirm_responsible = Reference(confirm_responsible_id, 'LoginUser.id')
 
     branch_id = IdCol()
 
@@ -298,7 +323,22 @@ class ReturnedSale(Domain):
     #  Public API
     #
 
-    def return_(self, method_name=u'money'):
+    @classmethod
+    def get_pending_returned_sales(cls, store, branch):
+        """Returns a list of pending |returned_sale|
+
+        :param store: a store
+        :param branch: the |branch| where the sale was made
+        """
+        from stoqlib.domain.sale import Sale
+
+        tables = [cls, Join(Sale, cls.sale_id == Sale.id)]
+        # We want the returned_sale which sale was made on the branch
+        # So we are comparing Sale.branch with |branch| to build the query
+        return store.using(*tables).find(cls, And(cls.status == cls.STATUS_PENDING,
+                                                  Sale.branch == branch))
+
+    def return_(self, method_name=u'money', login_user=None):
         """Do the return of this returned sale.
 
         :param unicode method_name: The name of the payment method that will be
@@ -342,11 +382,13 @@ class ReturnedSale(Domain):
             if method_name == u'credit':
                 payment.pay()
 
-        self._return_items()
         # FIXME: For now, we are not reverting the comission as there is a
         # lot of things to consider. See bug 5215 for information about it.
         self._revert_fiscal_entry()
+
         self.sale.return_(self)
+        if self.sale.branch == self.branch:
+            self.confirm(login_user)
 
     def trade(self):
         """Do a trade for this return
@@ -389,6 +431,17 @@ class ReturnedSale(Domain):
         for item in self.get_items():
             self.remove_item(item)
         self.store.remove(self)
+
+    def confirm(self, login_user):
+        """Receive the returned_sale_items from a pending |returned_sale|
+
+        :param user: the |login_user| that received the pending returned sale
+        """
+        assert self.status == self.STATUS_PENDING
+        self._return_items()
+        self.status = self.STATUS_CONFIRMED
+        self.confirm_responsible = login_user
+        self.confirm_date = localnow()
 
     #
     #  Private

@@ -32,13 +32,17 @@ from kiwi.ui.objectlist import Column, SummaryLabel
 from stoqlib.api import api
 from stoqlib.domain.receiving import (ReceivingOrderItem,
                                       ReceivingOrder)
+from stoqlib.domain.returnedsale import ReturnedSale
+from stoqlib.domain.views import PendingReturnedSalesView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
+from stoqlib.lib.message import yesno
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
-from stoqlib.gui.utils.printing import print_labels
+from stoqlib.gui.utils.printing import print_labels, print_report
+from stoqlib.reporting.salereturn import PendingReturnReceipt
 
 _ = stoqlib_gettext
 
@@ -118,3 +122,64 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         label_data = run_dialog(SkipLabelsEditor, self, self.store)
         if label_data:
             print_labels(label_data, self.store, receiving=self.model)
+
+
+class PendingReturnedSalesDialog(BaseEditor):
+    """This dialog shows the details about pending returned sale
+
+    * Sale Details
+    * Invoice Details
+    * Receiving Details
+    """
+
+    title = _("Pending Returned Sale Details")
+    hide_footer = True
+    size = (850, 400)
+    model_type = PendingReturnedSalesView
+    report_class = PendingReturnReceipt
+    gladefile = "PendingReturnedSalesDetails"
+    proxy_widgets = ['sale', 'invoice_number', 'returned_date',
+                     'returned_branch_name', 'responsible_name', 'reason',
+                     'receiving_responsible', 'receiving_date']
+
+    def _setup_status(self):
+        self.receive_button.set_property('visible', self.model.can_receive())
+        returned_sale = self.store.get(ReturnedSale, self.model.id)
+        if returned_sale.confirm_responsible:
+            self.receiving_responsible.update(returned_sale.confirm_responsible.username)
+            self.receiving_date.update(returned_sale.confirm_date)
+
+    def _setup_widgets(self):
+        self._setup_status()
+        self.returned_items_list.set_columns(self._get_returned_items_columns())
+        self.returned_items_list.add_list(self.model.get_items())
+
+    def _get_returned_items_columns(self):
+        return [Column("sellable.code", title=_("Product Code"), data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT, width=130),
+                Column("sellable.description", title=_("Description"),
+                       data_type=str, width=80, expand=True),
+                Column("quantity", title=_("Qty returned"), data_type=int)]
+
+    #
+    # BaseEditor Hooks
+    #
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    # Callbacks
+    #
+
+    def on_receive_button__clicked(self, event):
+        if yesno(_(u'Receive pending returned sale?'), gtk.RESPONSE_YES, _(u'Receive'),
+                 _(u"Don't receive")):
+            current_user = api.get_current_user(self.store)
+            self.model.returned_sale.confirm(current_user)
+            self.store.commit(close=False)
+            self._setup_status()
+
+    def on_print_button__clicked(self, button):
+        print_report(self.report_class, self.model)

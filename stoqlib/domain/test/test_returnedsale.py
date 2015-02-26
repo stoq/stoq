@@ -31,6 +31,7 @@ from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 
 __tests__ = 'stoqlib/domain/returnedsale.py'
@@ -279,6 +280,46 @@ class TestReturnedSale(DomainTest):
         self.assertEqual(payment.value, returned_sale2.returned_total)
         self.assertEqual(storable.get_balance_for_branch(branch),
                          balance_before_trade + 1)
+
+    @mock.patch('stoqlib.domain.returnedsale.get_current_branch')
+    def test_return_on_another_branch(self, gcb):
+        # Branch where the sale was created
+        sale_branch = get_current_branch(self.store)
+        # Branch where the sale was returned
+        return_branch = self.create_branch()
+        gcb.return_value = return_branch
+
+        product = self.create_product(branch=sale_branch, stock=2)
+        client = self.create_client()
+        # Creating a sale on sale_branch
+        sale = self.create_sale(branch=sale_branch, client=client)
+        sale_item = sale.add_sellable(sellable=product.sellable)
+
+        # Adding payments and confirming the sale
+        payments = self.add_payments(sale, method_type=u'bill',
+                                     installments=2)
+        payments[0].status = Payment.STATUS_PENDING
+        self.add_payments(sale, method_type=u'money')
+        sale.order()
+        sale.confirm()
+
+        # Creating the returned_sale
+        rsale = ReturnedSale(branch=return_branch,
+                             sale=sale,
+                             store=self.store)
+        ReturnedSaleItem(store=self.store,
+                         returned_sale=rsale,
+                         sale_item=sale_item,
+                         quantity=1)
+
+        rsale.return_(u'credit')
+        # Checking the status of sale and returned_sale
+        self.assertEquals(rsale.status, ReturnedSale.STATUS_PENDING)
+        self.assertEquals(sale.status, Sale.STATUS_RETURNED)
+        # Checking the quantity on sale_branch
+        self.assertEquals(product.storable.get_balance_for_branch(sale_branch), 1)
+        # We should not increase the stock of that product on return_branch
+        self.assertEquals(product.storable.get_balance_for_branch(return_branch), 0)
 
 
 class TestReturnedSaleItem(DomainTest):

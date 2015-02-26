@@ -77,6 +77,7 @@ CREATE TYPE stock_decrease_status AS ENUM ('initial', 'confirmed');
 CREATE TYPE till_status AS ENUM ('pending', 'open', 'closed');
 CREATE TYPE transfer_order_status AS ENUM ('pending', 'sent', 'received');
 CREATE TYPE account_transaction_operation_type AS ENUM ('in', 'out');
+CREATE TYPE returned_sale_status AS ENUM ('pending', 'confirmed');
 
 --
 -- Tables that are not syncronized
@@ -981,12 +982,15 @@ CREATE TABLE returned_sale (
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     identifier serial NOT NULL,
+    status returned_sale_status NOT NULL,
     return_date timestamp,
+    confirm_date timestamp,
     reason text,
     invoice_number integer CONSTRAINT valid_invoice_number
         CHECK (invoice_number > 0 AND invoice_number <= 999999999)
         DEFAULT NULL UNIQUE,
     responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
+    confirm_responsible_id uuid REFERENCES login_user(id) ON UPDATE CASCADE,
     branch_id uuid NOT NULL REFERENCES branch(id) ON UPDATE CASCADE,
     sale_id uuid REFERENCES sale(id) ON UPDATE CASCADE,
     new_sale_id uuid UNIQUE REFERENCES sale(id) ON UPDATE CASCADE,
