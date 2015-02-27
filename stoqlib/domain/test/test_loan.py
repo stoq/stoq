@@ -255,7 +255,7 @@ class TestLoan(DomainTest):
     def test_recipient(self):
         client = self.create_client()
         loan = self.create_loan(client=client)
-        self.assertEquals(loan.recipient, client)
+        self.assertEquals(loan.recipient, client.person)
 
     def test_invoice_number(self):
         # FIXME: Check using the invoice number saved in new database table.

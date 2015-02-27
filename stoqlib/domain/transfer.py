@@ -248,7 +248,7 @@ class TransferOrder(Domain):
 
     @property
     def recipient(self):
-        return self.destination_branch
+        return self.destination_branch.person
 
     @property
     def operation_nature(self):

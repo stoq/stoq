@@ -194,7 +194,7 @@ class NFeGenerator(object):
         branch_location = branch.person.get_main_address().city_location
         cuf = str(branch_location.state_code or '')
 
-        recipient_location = recipient.person.get_main_address().city_location
+        recipient_location = recipient.get_main_address().city_location
         now = self._get_now_datetime()
         aamm = now.strftime('%y%m')
 
@@ -253,11 +253,10 @@ class NFeGenerator(object):
         self._nfe_data.append(self._nfe_issuer)
 
     def _add_recipient(self, recipient):
-        person = recipient.person
-        name = person.name
-        individual = person.individual
-        company = person.company
-        email = person.email
+        name = recipient.name
+        individual = recipient.individual
+        company = recipient.company
+        email = recipient.email
         if individual and individual.cpf:
             cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
             self._nfe_recipient = NFeRecipient(name, cpf=cpf, email=email)
@@ -270,8 +269,8 @@ class NFeGenerator(object):
         else:
             self._nfe_recipient = NFeRecipient(name, cpf='', email=email)
 
-        self._nfe_recipient.set_address(person.get_main_address(),
-                                        person.get_phone_number_number())
+        self._nfe_recipient.set_address(recipient.get_main_address(),
+                                        recipient.get_phone_number_number())
         self._nfe_data.append(self._nfe_recipient)
 
     def _add_items(self, operation_items):
@@ -365,10 +364,11 @@ class NFeGenerator(object):
         fisco_info = tax_msg.format(self._total_taxes, total_tax_percentage)
         fisco_info += sysparam.get_string('NFE_FISCO_INFORMATION')
         comments = self._order.comments
+        # The SEFAZ software, do not accepts '\n' in the additional information field.
         if isinstance(comments, basestring):
-            notes = comments
+            notes = comments.replace('\n', ' ')
         else:
-            notes = '\n'.join(c.comment for c in self._order.comments)
+            notes = ' / '.join(c.comment.replace('\n', ' ') for c in self._order.comments)
         nfe_info = NFeAdditionalInformation(fisco_info, notes)
         self._nfe_data.append(nfe_info)
 
@@ -621,6 +621,9 @@ class NFeIdentification(BaseNFeXMLGroup):
         # changed to 8 in nfe 2.0)
         self.set_attr('cNF', self._get_random_cnf())
 
+        # FIXME: Today, when generate the .txt, the paid_date is blank. So the 'indPag'
+        # always will be the code 1 ('Pagamento a prazo').
+        # Improve the way to check the payment_type ('indPag' attribute).
         payment_type = 1
         installments = len(payments)
         if installments == 1:

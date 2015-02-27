@@ -158,6 +158,48 @@ class TestStockDecrease(DomainTest):
         decrease.add_sellable(sellable2, quantity=5)
         self.assertEquals(decrease.get_total_cost(), 250)
 
+    # NF-e operations
+
+    def test_comments(self):
+        decrease = self.create_stock_decrease(reason=u'Reason')
+        self.assertEquals(decrease.comments, decrease.reason)
+
+    def test_discount_value(self):
+        decrease = self.create_stock_decrease()
+        self.assertEquals(decrease.discount_value, currency(0))
+
+    def test_invoice_totals(self):
+        decrease = self.create_stock_decrease()
+        decrease_item = self.create_stock_decrease_item(decrease, quantity=2)
+        decrease_item.cost = 50
+        self.assertEquals(decrease.invoice_subtotal, 100)
+        self.assertEquals(decrease.invoice_total, 100)
+
+    def test_payments(self):
+        decrease = self.create_stock_decrease()
+        self.assertEquals(decrease.payments, None)
+
+        group = self.create_payment_group()
+        decrease.group = group
+        self.assertEquals(decrease.payments.count(), 0)
+
+        payment = self.create_payment()
+        group.add_item(payment)
+        self.assertEquals(decrease.payments.count(), 1)
+        payment2 = self.create_payment()
+        group.add_item(payment2)
+        self.assertEquals(decrease.payments.count(), 2)
+
+    def test_recipient(self):
+        person = self.create_person()
+        decrease = self.create_stock_decrease(destination=person)
+        self.assertEquals(decrease.recipient, person)
+
+    def test_operation_nature(self):
+        # FIXME: Check using the operation_nature that will be save in new field
+        decrease = self.create_stock_decrease()
+        self.assertEquals(decrease.operation_nature, u'Stock decrease')
+
 
 class TestStockDecreaseItem(DomainTest):
     def test_constructor(self):
@@ -188,3 +230,24 @@ class TestStockDecreaseItem(DomainTest):
         self.assertEquals(item.get_quantity_unit_string(), u'1.000')
         item.sellable.unit = self.create_sellable_unit(description=u'U')
         self.assertEquals(item.get_quantity_unit_string(), u'1.000 U')
+
+    # NF-e operations
+
+    def test_price(self):
+        decrease_item = self.create_stock_decrease_item()
+        decrease_item.cost = 100
+        self.assertEquals(decrease_item.price, decrease_item.cost)
+
+    def test_icms_info(self):
+        decrease_item = self.create_stock_decrease_item()
+        self.assertEquals(decrease_item.icms_info, None)
+
+    def test_ipi_info(self):
+        decrease_item = self.create_stock_decrease_item()
+        self.assertEquals(decrease_item.ipi_info, None)
+
+    def test_nfe_cfop_code(self):
+        decrease = self.create_stock_decrease()
+        decrease_item = self.create_stock_decrease_item(decrease)
+        cfop = decrease.cfop.code.replace('.', '')
+        self.assertEquals(decrease_item.nfe_cfop_code, cfop)

@@ -33,7 +33,8 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IContainer
+from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
@@ -47,6 +48,7 @@ _ = stoqlib_gettext
 #
 
 
+@implementer(IInvoiceItem)
 class StockDecreaseItem(Domain):
     """An item in a stock decrease object.
 
@@ -91,6 +93,31 @@ class StockDecreaseItem(Domain):
         Domain.__init__(self, store=store, sellable=sellable, **kw)
 
     #
+    # IInvoiceItem implementation
+    #
+
+    @property
+    def price(self):
+        return self.cost
+
+    @property
+    def icms_info(self):
+        # FIXME: We must return the ICMS values, based on calculation between
+        # the ProductIcmsTemplate and the stock_decrease_item.
+        return None
+
+    @property
+    def ipi_info(self):
+        # FIXME: We must return the IPI values, based on calculation between
+        # the ProductIpiTemplate and the loan_item.
+        return None
+
+    @property
+    def nfe_cfop_code(self):
+        cfop = self.stock_decrease.cfop.code
+        return cfop.replace('.', '')
+
+    #
     # Public API
     #
 
@@ -125,6 +152,7 @@ class StockDecreaseItem(Domain):
 
 
 @implementer(IContainer)
+@implementer(IInvoice)
 class StockDecrease(Domain):
     """Stock Decrease object implementation.
 
@@ -199,6 +227,44 @@ class StockDecrease(Domain):
     #: a |costcenter| set, a |costcenterentry| will be created for each product
     #: decreased.
     cost_center = Reference(cost_center_id, 'CostCenter.id')
+
+    #: |transporter| used in stock decrease
+    transporter = None
+
+    #
+    # IInvoice implementation
+    #
+
+    @property
+    def comments(self):
+        return self.reason
+
+    @property
+    def discount_value(self):
+        return currency(0)
+
+    @property
+    def invoice_subtotal(self):
+        return currency(self.get_total_cost())
+
+    @property
+    def invoice_total(self):
+        return currency(self.get_total_cost())
+
+    @property
+    def payments(self):
+        if self.group:
+            return self.group.get_valid_payments().order_by(Payment.open_date)
+        return None
+
+    @property
+    def recipient(self):
+        return self.person
+
+    @property
+    def operation_nature(self):
+        # TODO: Save the operation nature in new loan table field.
+        return _(u"Stock decrease")
 
     #
     # Classmethods

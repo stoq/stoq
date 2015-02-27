@@ -202,7 +202,7 @@ class TestTransferOrder(DomainTest):
     def test_recipient(self):
         destination_branch = self.create_branch()
         order = self.create_transfer_order(dest_branch=destination_branch)
-        self.assertEquals(order.destination_branch, order.recipient)
+        self.assertEquals(order.destination_branch.person, order.recipient)
 
     def test_operation_nature(self):
         # FIXME: Check using the operation_nature that will be saved in new field.

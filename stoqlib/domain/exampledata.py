@@ -521,7 +521,8 @@ class ExampleCreator(object):
                                  quantity=quantity,
                                  store=self.store)
 
-    def create_stock_decrease(self, branch=None, user=None, reason=u'', group=None):
+    def create_stock_decrease(self, branch=None, user=None, reason=u'', group=None,
+                              destination=None):
         from stoqlib.domain.stockdecrease import StockDecrease
 
         employee = self.create_employee()
@@ -529,6 +530,7 @@ class ExampleCreator(object):
         return StockDecrease(responsible=user or get_current_user(self.store),
                              removed_by=employee,
                              branch=branch or get_current_branch(self.store),
+                             person=destination or self.create_person(),
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
                              reason=reason,

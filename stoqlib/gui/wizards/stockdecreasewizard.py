@@ -165,9 +165,6 @@ class DecreaseItemStep(SellableItemStep):
         self.hide_edit_button()
         if not self.wizard.create_payments:
             self.cost_label.hide()
-            # Since the model is set to None, we need to remove cost from the
-            # proxy or when hiding it an AttributeError will be raised
-            self.proxy.remove_widget('cost')
             self.cost.hide()
             self.cost.update(0)
 
@@ -302,7 +299,7 @@ class StockDecreaseWizard(BaseWizard):
         self.model.confirm()
         self.close()
 
+        StockDecreaseWizardFinishEvent.emit(self.model)
         # Commit before printing to avoid losing data if something breaks
         self.store.confirm(self.retval)
-        StockDecreaseWizardFinishEvent.emit(self.model)
         self._receipt_dialog()
