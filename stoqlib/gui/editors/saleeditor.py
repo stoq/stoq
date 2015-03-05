@@ -39,7 +39,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
+from stoqlib.gui.slaves.taxslave import InvoiceItemIcmsSlave, InvoiceItemIpiSlave
 from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT, quantize
 from stoqlib.lib.parameters import sysparam
@@ -138,11 +138,11 @@ class SaleQuoteItemEditor(BaseEditor):
             return
 
         if self.nfe_is_active:
-            self.icms_slave = SaleItemICMSSlave(self.store,
-                                                self.model.icms_info)
+            self.icms_slave = InvoiceItemIcmsSlave(self.store,
+                                                   self.model.icms_info)
             self.add_tab(_('ICMS'), self.icms_slave)
 
-            self.ipi_slave = SaleItemIPISlave(self.store, self.model.ipi_info)
+            self.ipi_slave = InvoiceItemIpiSlave(self.store, self.model.ipi_info)
             self.add_tab(_('IPI'), self.ipi_slave)
 
     def _update_total(self):

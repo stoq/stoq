@@ -27,7 +27,7 @@ from decimal import Decimal
 from dateutil.relativedelta import relativedelta
 from stoqlib.domain.taxes import (ProductIcmsTemplate,
                                   ProductTaxTemplate,
-                                  SaleItemIpi)
+                                  InvoiceItemIpi)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localnow
 
@@ -89,8 +89,8 @@ class TestProductIcmsTemplate(DomainTest):
         self.assertFalse(icms_template.is_p_cred_sn_valid())
 
 
-class TestSaleItemIcms(DomainTest):
-    """Tests for SaleItemIcms class"""
+class TestInvoiceItemIcms(DomainTest):
+    """Tests for InvoiceItemIcms class"""
 
     def _get_sale_item(self, sale_item_icms=None, quantity=1, price=10):
         sale = self.create_sale()
@@ -108,7 +108,7 @@ class TestSaleItemIcms(DomainTest):
         calculated for wrong values of csosn
         """
         # Test for CSOSN 101. This should get v_cred_icms_sn calculated.
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item_icms.csosn = 101
         sale_item_icms.update_values()
@@ -120,7 +120,7 @@ class TestSaleItemIcms(DomainTest):
                          expected_v_cred_icms_sn)
 
         # Test for CSOSN 201. This should get v_cred_icms_sn calculated.
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 2, 30)
         sale_item_icms.csosn = 201
         sale_item_icms.p_cred_sn = Decimal("2.90")
@@ -131,7 +131,7 @@ class TestSaleItemIcms(DomainTest):
                          expected_v_cred_icms_sn)
 
         # Test for CSOSN 500. This should not get v_cred_icms_sn calculated.
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item_icms.csosn = 500
         sale_item_icms.p_cred_sn = Decimal("3.10")
@@ -139,13 +139,13 @@ class TestSaleItemIcms(DomainTest):
         self.failIf(sale_item_icms.v_cred_icms_sn)
 
     def test_update_values_normal(self):
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 0
         sale_item_icms.update_values()
 
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 10
@@ -161,44 +161,44 @@ class TestSaleItemIcms(DomainTest):
         sale_item_icms.p_red_bc = 10
         sale_item_icms.update_values()
 
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 20
         sale_item_icms.update_values()
 
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 30
         sale_item_icms.update_values()
 
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 40
         sale_item_icms.update_values()
 
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 51
         sale_item_icms.update_values()
 
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 60
         sale_item_icms.update_values()
 
-        sale_item_icms = self.create_sale_item_icms()
+        sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 70
         sale_item_icms.update_values()
 
 
-class TestSaleItemIpi(DomainTest):
+class TestInvoiceItemIpi(DomainTest):
     def _get_sale_item(self, sale_item_ipi=None, quantity=1, price=10):
         sale = self.create_sale()
         product = self.create_product(price=price)
@@ -210,20 +210,20 @@ class TestSaleItemIpi(DomainTest):
         return sale_item
 
     def test_set_initial_values(self):
-        sale_item_ipi = SaleItemIpi(store=self.store)
+        sale_item_ipi = InvoiceItemIpi(store=self.store)
         self._get_sale_item(sale_item_ipi, 1, 10)
         sale_item_ipi.cst = 0
         sale_item_ipi.p_ipi = 0
         sale_item_ipi.set_initial_values()
 
-        sale_item_ipi = SaleItemIpi(store=self.store)
+        sale_item_ipi = InvoiceItemIpi(store=self.store)
         self._get_sale_item(sale_item_ipi, 1, 10)
         sale_item_ipi.cst = 0
-        sale_item_ipi.calculo = SaleItemIpi.CALC_UNIDADE
+        sale_item_ipi.calculo = InvoiceItemIpi.CALC_UNIDADE
         sale_item_ipi.set_initial_values()
 
-        sale_item_ipi = SaleItemIpi(store=self.store)
+        sale_item_ipi = InvoiceItemIpi(store=self.store)
         self._get_sale_item(sale_item_ipi, 1, 10)
         sale_item_ipi.cst = 1
-        sale_item_ipi.calculo = SaleItemIpi.CALC_UNIDADE
+        sale_item_ipi.calculo = InvoiceItemIpi.CALC_UNIDADE
         sale_item_ipi.set_initial_values()

@@ -69,7 +69,7 @@ from stoqlib.domain.product import (Product, ProductHistory, Storable,
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.service import Service
-from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
+from stoqlib.domain.taxes import InvoiceItemIcms, InvoiceItemIpi
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
@@ -159,13 +159,13 @@ class SaleItem(Domain):
 
     icms_info_id = IdCol()
 
-    #: the :class:`stoqlib.domain.taxes.SaleItemIcms` tax for *self*
-    icms_info = Reference(icms_info_id, 'SaleItemIcms.id')
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemIcms` tax for *self*
+    icms_info = Reference(icms_info_id, 'InvoiceItemIcms.id')
 
     ipi_info_id = IdCol()
 
-    #: the :class:`stoqlib.domain.taxes.SaleItemIpi` tax for *self*
-    ipi_info = Reference(ipi_info_id, 'SaleItemIpi.id')
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax for *self*
+    ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
 
     def __init__(self, store=None, **kw):
         if not 'kw' in kw:
@@ -179,8 +179,8 @@ class SaleItem(Domain):
                 kw['cfop'] = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 
             store = kw.get('store', store)
-            kw['ipi_info'] = SaleItemIpi(store=store)
-            kw['icms_info'] = SaleItemIcms(store=store)
+            kw['ipi_info'] = InvoiceItemIpi(store=store)
+            kw['icms_info'] = InvoiceItemIcms(store=store)
         Domain.__init__(self, store=store, **kw)
 
         product = self.sellable.product
@@ -1837,13 +1837,13 @@ class ReturnedSaleItemsView(Viewable):
 
 
 _SaleItemSummary = Select(columns=[SaleItem.sale_id,
-                                   Alias(Sum(SaleItemIpi.v_ipi), 'v_ipi'),
+                                   Alias(Sum(InvoiceItemIpi.v_ipi), 'v_ipi'),
                                    Alias(Sum(SaleItem.quantity), 'total_quantity'),
                                    Alias(Sum(SaleItem.quantity *
                                              SaleItem.price), 'subtotal')],
                           tables=[SaleItem,
-                                  LeftJoin(SaleItemIpi,
-                                           SaleItemIpi.id == SaleItem.ipi_info_id)],
+                                  LeftJoin(InvoiceItemIpi,
+                                           InvoiceItemIpi.id == SaleItem.ipi_info_id)],
                           group_by=[SaleItem.sale_id])
 SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
 
@@ -2204,7 +2204,7 @@ class SoldSellableView(Viewable):
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(Person_Client, Client.person_id == Person_Client.id),
         LeftJoin(Person_SalesPerson, SalesPerson.person_id == Person_SalesPerson.id),
-        LeftJoin(SaleItemIpi, SaleItemIpi.id == SaleItem.ipi_info_id),
+        LeftJoin(InvoiceItemIpi, InvoiceItemIpi.id == SaleItem.ipi_info_id),
     ]
 
 

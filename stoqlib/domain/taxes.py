@@ -172,8 +172,8 @@ class ProductTaxTemplate(Domain):
         return self.types[self.tax_type]
 
 
-class SaleItemIcms(BaseICMS):
-    __storm_table__ = 'sale_item_icms'
+class InvoiceItemIcms(BaseICMS):
+    __storm_table__ = 'invoice_item_icms'
     v_bc = PriceCol(default=None)
     v_icms = PriceCol(default=None)
 
@@ -278,8 +278,8 @@ class SaleItemIcms(BaseICMS):
             self._update_normal(sale_item)
 
 
-class SaleItemIpi(BaseIPI):
-    __storm_table__ = 'sale_item_ipi'
+class InvoiceItemIpi(BaseIPI):
+    __storm_table__ = 'invoice_item_ipi'
     v_ipi = PriceCol(default=0)
     v_bc = PriceCol(default=None)
     v_unid = PriceCol(default=None)

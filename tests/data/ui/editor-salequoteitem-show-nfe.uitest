@@ -26,7 +26,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               ProxySpinButton(reserved): '1'
               GtkLabel(label6): 'Total:'
               ProxyLabel(total): '<span >$300.00</span>'
-          GtkEventBox(): slave SaleItemICMSSlave is attached
+          GtkEventBox(): slave InvoiceItemIcmsSlave is attached
             GtkTable(table1):
               GtkLabel(cst_label): 'CST:'
               ProxyComboBox(cst): insensitive
@@ -114,7 +114,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               ProxyEntry(v_icms_st_ret): '', insensitive
               GtkLabel(v_cred_icms_sn_label): 'Valor ICMS SN:'
               ProxyEntry(v_cred_icms_sn): '', insensitive
-          GtkEventBox(): slave SaleItemIPISlave is attached
+          GtkEventBox(): slave InvoiceItemIpiSlave is attached
             GtkTable(table1):
               GtkLabel(cst_label): 'CST:'
               ProxyComboBox(cst):

@@ -909,7 +909,7 @@ CREATE TABLE sale_comment (
 );
 CREATE RULE update_te AS ON UPDATE TO sale_comment DO ALSO SELECT update_te(old.te_id);
 
-CREATE TABLE sale_item_icms (
+CREATE TABLE invoice_item_icms (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     bc_include_ipi boolean DEFAULT TRUE,
@@ -933,9 +933,9 @@ CREATE TABLE sale_item_icms (
     v_icms_st numeric(20, 2),
     v_icms_st_ret numeric(20, 2)
 );
-CREATE RULE update_te AS ON UPDATE TO sale_item_icms DO ALSO SELECT update_te(old.te_id);
+CREATE RULE update_te AS ON UPDATE TO invoice_item_icms DO ALSO SELECT update_te(old.te_id);
 
-CREATE TABLE sale_item_ipi (
+CREATE TABLE invoice_item_ipi (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     cl_enq text,
@@ -951,7 +951,7 @@ CREATE TABLE sale_item_ipi (
     v_bc numeric(20, 2),
     v_unid numeric(20, 4)
 );
-CREATE RULE update_te AS ON UPDATE TO sale_item_ipi DO ALSO SELECT update_te(old.te_id);
+CREATE RULE update_te AS ON UPDATE TO invoice_item_ipi DO ALSO SELECT update_te(old.te_id);
 
 CREATE TABLE sale_item (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
@@ -971,8 +971,8 @@ CREATE TABLE sale_item (
     sale_id uuid REFERENCES sale(id) ON UPDATE CASCADE,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
-    icms_info_id uuid REFERENCES sale_item_icms(id) ON UPDATE CASCADE,
-    ipi_info_id uuid REFERENCES sale_item_ipi(id) ON UPDATE CASCADE,
+    icms_info_id uuid REFERENCES invoice_item_icms(id) ON UPDATE CASCADE,
+    ipi_info_id uuid REFERENCES invoice_item_ipi(id) ON UPDATE CASCADE,
     cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
 );
 CREATE RULE update_te AS ON UPDATE TO sale_item DO ALSO SELECT update_te(old.te_id);

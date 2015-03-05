@@ -31,8 +31,8 @@ import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
-from stoqlib.domain.taxes import (SaleItemIcms, ProductIcmsTemplate,
-                                  SaleItemIpi, ProductIpiTemplate)
+from stoqlib.domain.taxes import (InvoiceItemIcms, ProductIcmsTemplate,
+                                  InvoiceItemIpi, ProductIpiTemplate)
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -309,8 +309,8 @@ class ICMSTemplateSlave(BaseICMSSlave):
     hide_widgets = BaseICMSSlave.value_widgets
 
 
-class SaleItemICMSSlave(BaseICMSSlave):
-    model_type = SaleItemIcms
+class InvoiceItemIcmsSlave(BaseICMSSlave):
+    model_type = InvoiceItemIcms
     proxy_widgets = (BaseICMSSlave.combo_widgets +
                      BaseICMSSlave.percentage_widgets +
                      BaseICMSSlave.bool_widgets +
@@ -420,12 +420,12 @@ class BaseIPISlave(BaseTaxSlave):
 
         calculo = self.calculo.get_selected_data()
 
-        if calculo == SaleItemIpi.CALC_ALIQUOTA:
+        if calculo == InvoiceItemIpi.CALC_ALIQUOTA:
             self.p_ipi.set_sensitive(True)
             self.v_bc.set_sensitive(True)
             self.v_unid.set_sensitive(False)
             self.q_unid.set_sensitive(False)
-        elif calculo == SaleItemIpi.CALC_UNIDADE:
+        elif calculo == InvoiceItemIpi.CALC_UNIDADE:
             self.p_ipi.set_sensitive(False)
             self.v_bc.set_sensitive(False)
             self.v_unid.set_sensitive(True)
@@ -446,8 +446,8 @@ class IPITemplateSlave(BaseIPISlave):
     hide_widgets = BaseIPISlave.value_widgets
 
 
-class SaleItemIPISlave(BaseIPISlave):
-    model_type = SaleItemIpi
+class InvoiceItemIpiSlave(BaseIPISlave):
+    model_type = InvoiceItemIpi
     proxy_widgets = BaseIPISlave.all_widgets
 
     def setup_callbacks(self):

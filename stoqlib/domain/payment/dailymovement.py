@@ -31,15 +31,15 @@ from storm.info import ClassAlias
 from stoqlib.database.expr import Field, NullIf
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.person import Branch, Client, Company, Person, SalesPerson
-from stoqlib.domain.sale import Sale, SaleItem, SaleItemIpi
+from stoqlib.domain.sale import Sale, SaleItem, InvoiceItemIpi
 
 
 _SaleItemSummary = Select(columns=[SaleItem.sale_id,
                                    Alias(Sum(SaleItem.quantity * SaleItem.price +
-                                         SaleItemIpi.v_ipi), 'subtotal')],
+                                         InvoiceItemIpi.v_ipi), 'subtotal')],
                           tables=[SaleItem,
-                                  LeftJoin(SaleItemIpi,
-                                           SaleItem.ipi_info_id == SaleItemIpi.id)],
+                                  LeftJoin(InvoiceItemIpi,
+                                           SaleItem.ipi_info_id == InvoiceItemIpi.id)],
                           group_by=[SaleItem.sale_id])
 
 SaleItemSummary = Alias(_SaleItemSummary, '_sale_items')

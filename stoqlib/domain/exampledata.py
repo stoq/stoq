@@ -124,8 +124,8 @@ class ExampleCreator(object):
             'ReturnedSale': self.create_returned_sale,
             'Sale': self.create_sale,
             'SaleItem': self.create_sale_item,
-            'SaleItemIcms': self.create_sale_item_icms,
-            'SaleItemIpi': self.create_sale_item_ipi,
+            'InvoiceItemIcms': self.create_invoice_item_icms,
+            'InvoiceItemIpi': self.create_invoice_item_ipi,
             'SalesPerson': self.create_sales_person,
             'Sellable': self.create_sellable,
             'SellableCategory': self.create_sellable_category,
@@ -516,13 +516,13 @@ class ExampleCreator(object):
                         sale=sale or self.create_sale(),
                         sellable=sellable)
 
-    def create_sale_item_icms(self):
-        from stoqlib.domain.taxes import SaleItemIcms
-        return SaleItemIcms(store=self.store)
+    def create_invoice_item_icms(self):
+        from stoqlib.domain.taxes import InvoiceItemIcms
+        return InvoiceItemIcms(store=self.store)
 
-    def create_sale_item_ipi(self):
-        from stoqlib.domain.taxes import SaleItemIpi
-        return SaleItemIpi(store=self.store)
+    def create_invoice_item_ipi(self):
+        from stoqlib.domain.taxes import InvoiceItemIpi
+        return InvoiceItemIpi(store=self.store)
 
     def create_client_category(self, name=u'Category 1'):
         from stoqlib.domain.person import ClientCategory
