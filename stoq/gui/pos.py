@@ -1055,8 +1055,14 @@ class PosApp(ShellApp):
         # This is called when the user activates the barcode field.
         search_str = self.barcode.get_text()
         if search_str == '':
-            # The user pressed enter with an empty string. Start checkout
-            if len(self.sale_items) >= 1:
+            # The user pressed enter with an empty string. Maybe start checkout
+            checkout = True
+            need_confirmation = sysparam.get_bool('CONFIRM_SALES_ON_TILL')
+            if (need_confirmation and not
+                    yesno(_('Close the order?'), gtk.RESPONSE_NO, _('Confirm'),
+                          _("Don't confirm"))):
+                checkout = False
+            if len(self.sale_items) >= 1 and checkout:
                 self.checkout()
         else:
             # The user typed something. Try to add the sellable.
