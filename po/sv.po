@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-03 16:50-0300\n"
-"PO-Revision-Date: 2015-03-03 19:36+0000\n"
+"POT-Creation-Date: 2015-03-06 18:22-0300\n"
+"PO-Revision-Date: 2015-03-05 14:35+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/stoq/language/sv/)\n"
 "MIME-Version: 1.0\n"
@@ -341,7 +341,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:346
 #: ../stoqlib/gui/wizards/salereturnwizard.py:234
 #: ../stoqlib/gui/wizards/salewizard.py:440
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:205
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:202
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:67
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:338
 #: ../stoqlib/reporting/product.py:128
@@ -703,7 +703,7 @@ msgstr "Betalningar"
 #: ../data/glade/CostCenterDialog.ui.h:6
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
 #: ../data/glade/TillDailyMovementDialog.ui.h:2
-#: ../data/template/till/sales.html:2 ../plugins/nfe/nfeui.py:102
+#: ../data/template/till/sales.html:2 ../plugins/nfe/nfeui.py:104
 #: ../stoq/gui/sales.py:103 ../stoq/lib/applist.py:57
 #: ../stoqlib/gui/dialogs/clientdetails.py:143
 #: ../stoqlib/gui/search/salesearch.py:207 ../stoqlib/lib/parameters.py:198
@@ -1898,11 +1898,11 @@ msgstr ""
 msgid "Receivings"
 msgstr ""
 
-#: ../data/glade/ProductStockHistoryDialog.ui.h:5 ../plugins/nfe/nfeui.py:110
+#: ../data/glade/ProductStockHistoryDialog.ui.h:5 ../plugins/nfe/nfeui.py:112
 msgid "Transfers"
 msgstr "Överföringar"
 
-#: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../plugins/nfe/nfeui.py:106
+#: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../plugins/nfe/nfeui.py:108
 msgid "Loans"
 msgstr "Utlåningar"
 
@@ -3245,7 +3245,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:337
 #: ../stoqlib/gui/wizards/salereturnwizard.py:217
 #: ../stoqlib/gui/wizards/salewizard.py:436
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:200
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:197
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:141
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:332
 #: ../stoqlib/reporting/product.py:89 ../stoqlib/reporting/product.py:126
@@ -3653,7 +3653,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:333
 #: ../stoqlib/gui/wizards/salereturnwizard.py:213
 #: ../stoqlib/gui/wizards/salewizard.py:432
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:199
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:196
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:328
 #: ../stoqlib/reporting/product.py:88 ../stoqlib/reporting/product.py:125
 #: ../stoqlib/reporting/service.py:45
@@ -3799,7 +3799,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/receivingwizard.py:250
 #: ../stoqlib/gui/wizards/salequotewizard.py:344
 #: ../stoqlib/gui/wizards/salewizard.py:438
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:203
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:200
 #: ../stoqlib/net/calendarevents.py:135
 msgid "Category"
 msgstr "Kategori"
@@ -3881,7 +3881,7 @@ msgstr "Pris"
 #: ../stoqlib/gui/wizards/salequotewizard.py:370
 #: ../stoqlib/gui/wizards/salereturnwizard.py:237
 #: ../stoqlib/gui/wizards/salewizard.py:446
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:215
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:212
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:148
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:345
 #: ../stoqlib/reporting/financial.py:181 ../stoqlib/reporting/financial.py:241
@@ -4203,7 +4203,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasewizard.py:302
 #: ../stoqlib/gui/wizards/receivingwizard.py:259
 #: ../stoqlib/gui/wizards/salequotewizard.py:352
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:214
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:211
 msgid "Cost"
 msgstr "Kostnad"
 
@@ -4765,7 +4765,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasewizard.py:300
 #: ../stoqlib/gui/wizards/receivingwizard.py:257
 #: ../stoqlib/gui/wizards/salequotewizard.py:348
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:208
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:205
 #: ../stoqlib/reporting/product.py:129
 msgid "Unit"
 msgstr "Enhet"
@@ -5090,6 +5090,10 @@ msgstr ""
 #: ../plugins/nfe/nfegenerator.py:187
 #, python-format
 msgid "The CNPJ of %s is not valid."
+msgstr ""
+
+#: ../plugins/nfe/nfeui.py:116
+msgid "Stock decreases"
 msgstr ""
 
 #. -*- coding: utf-8 -*-
@@ -5903,7 +5907,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/receivingwizard.py:420
 #: ../stoqlib/gui/wizards/salequotewizard.py:569
 #: ../stoqlib/gui/wizards/salereturnwizard.py:514
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:288
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:285
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:224
 msgid "Don't print"
 msgstr ""
@@ -6872,7 +6876,7 @@ msgstr ""
 #: ../stoq/gui/inventory.py:156 ../stoq/gui/production.py:177
 #: ../stoq/gui/purchase.py:264 ../stoqlib/domain/inventory.py:246
 #: ../stoqlib/domain/loan.py:245 ../stoqlib/domain/production.py:77
-#: ../stoqlib/domain/sale.py:647 ../stoqlib/domain/stockdecrease.py:144
+#: ../stoqlib/domain/sale.py:647 ../stoqlib/domain/stockdecrease.py:172
 #: ../stoqlib/domain/till.py:88 ../stoqlib/domain/workorder.py:174
 #: ../stoqlib/domain/workorder.py:595
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:142
@@ -9313,7 +9317,7 @@ msgid "Stoq image"
 msgstr ""
 
 #: ../stoqlib/domain/loan.py:307 ../stoqlib/domain/sale.py:782
-#: ../stoqlib/domain/stockdecrease.py:210
+#: ../stoqlib/domain/stockdecrease.py:276
 #: ../stoqlib/domain/test/test_loan.py:48
 #, python-format
 msgid "Invalid status %d"
@@ -9473,7 +9477,7 @@ msgstr ""
 #: ../stoqlib/domain/payment/payment.py:141
 #: ../stoqlib/domain/payment/renegotiation.py:60
 #: ../stoqlib/domain/purchase.py:183 ../stoqlib/domain/sale.py:650
-#: ../stoqlib/domain/stockdecrease.py:145
+#: ../stoqlib/domain/stockdecrease.py:173
 msgid "Confirmed"
 msgstr "Bekräftad"
 
@@ -10107,6 +10111,11 @@ msgstr ""
 #: ../stoqlib/domain/station.py:76 ../stoqlib/gui/editors/stationeditor.py:77
 #, python-format
 msgid "There is already a station registered as `%s'."
+msgstr ""
+
+#. TODO: Save the operation nature in new loan table field.
+#: ../stoqlib/domain/stockdecrease.py:267
+msgid "Stock decrease"
 msgstr ""
 
 #: ../stoqlib/domain/test/test_person.py:145
@@ -14952,7 +14961,7 @@ msgid "Would you like to print the receipt now?"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/loanwizard.py:460
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:288
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:285
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:224
 msgid "Print receipt"
 msgstr ""
@@ -15290,11 +15299,11 @@ msgid ""
 "another one."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:263
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:260
 msgid "Manual Stock Decrease"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:286
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:283
 msgid "Would you like to print a receipt?"
 msgstr ""
 
