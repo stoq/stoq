@@ -496,10 +496,10 @@ class ExampleCreator(object):
                          sellable=sale_item.sellable)
         return r_sale
 
-    def create_returned_sale_item(self):
+    def create_returned_sale_item(self, returned_sale=None):
         from stoqlib.domain.returnedsale import ReturnedSaleItem
         sale_item = self.create_sale_item()
-        returned_sale = self.create_returned_sale()
+        returned_sale = returned_sale or self.create_returned_sale()
         return ReturnedSaleItem(store=self.store,
                                 quantity=1,
                                 price=100,

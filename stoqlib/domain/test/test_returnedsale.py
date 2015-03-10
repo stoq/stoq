@@ -321,6 +321,52 @@ class TestReturnedSale(DomainTest):
         # We should not increase the stock of that product on return_branch
         self.assertEquals(product.storable.get_balance_for_branch(return_branch), 0)
 
+    # NF-e operations
+
+    def test_comments(self):
+        returned_sale = self.create_returned_sale()
+        returned_sale.reason = u'Reason'
+        self.assertEquals(returned_sale.comments, returned_sale.reason)
+
+    def test_discount_value(self):
+        returned_sale = self.create_returned_sale()
+        self.assertEquals(returned_sale.discount_value, currency(0))
+
+    def test_returned_sale_totals(self):
+        # Verificar esse funcionamento no Stoq
+        sale = self.create_sale()
+        product = self.create_product(price=100)
+        sale_item = sale.add_sellable(product.sellable)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+
+        returned_sale = ReturnedSale(branch=sale.branch,
+                                     sale=sale,
+                                     store=self.store)
+        ReturnedSaleItem(returned_sale=returned_sale,
+                         sale_item=sale_item,
+                         quantity=1)
+        self.assertEquals(returned_sale.invoice_subtotal, 100)
+        self.assertEquals(returned_sale.invoice_total, 100)
+
+    def test_recipient(self):
+        # Without client
+        sale = self.create_sale()
+        returned_sale = self.create_returned_sale(sale)
+        self.assertEquals(returned_sale.recipient, None)
+
+        # With client
+        client = self.create_client()
+        sale2 = self.create_sale(client=client)
+        returned_sale = self.create_returned_sale(sale2)
+        self.assertEquals(returned_sale.recipient, client.person)
+
+    def test_nfe_cfop_code(self):
+        # FIXME: Check using the operation_nature that will be saved in new field.
+        returned_sale = self.create_returned_sale()
+        self.assertEquals(returned_sale.operation_nature, u'Sale Return')
+
 
 class TestReturnedSaleItem(DomainTest):
     def test_constructor(self):
@@ -371,3 +417,26 @@ class TestReturnedSaleItem(DomainTest):
         increase_stock.assert_called_once_with(
             decimal.Decimal(1), branch, StockTransactionHistory.TYPE_RETURNED_SALE,
             item.id, batch=item.batch)
+
+    # NF-e operations
+
+    def test_icms_info(self):
+        returned_item = self.create_returned_sale_item()
+        self.assertEquals(returned_item.icms_info, None)
+
+    def test_ipi_info(self):
+        returned_item = self.create_returned_sale_item()
+        self.assertEquals(returned_item.ipi_info, None)
+
+    def test_nfe_cfop_code(self):
+        client = self.create_client()
+        self.create_address(person=client.person)
+
+        sale = self.create_sale(client=client)
+        returned_sale = self.create_returned_sale(sale)
+        returned_sale_item = self.create_returned_sale_item(returned_sale)
+        # Branch address isn't the same of client
+        self.assertEquals(returned_sale_item.nfe_cfop_code, u'2202')
+        #Branch address is the same of client
+        returned_sale.branch.person = client.person
+        self.assertEquals(returned_sale_item.nfe_cfop_code, u'1202')

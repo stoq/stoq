@@ -39,6 +39,7 @@ from stoqlib.lib.message import yesno
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.events import SaleReturnWizardFinishEvent
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.utils.printing import print_labels, print_report
 from stoqlib.reporting.salereturn import PendingReturnReceipt
@@ -178,6 +179,7 @@ class ReturnedSalesDialog(BaseEditor):
                  _(u"Don't receive")):
             current_user = api.get_current_user(self.store)
             self.model.returned_sale.confirm(current_user)
+            SaleReturnWizardFinishEvent.emit(self.model.returned_sale)
             self.store.commit(close=False)
             self._setup_status()
 

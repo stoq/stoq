@@ -35,6 +35,7 @@ from xml.sax.saxutils import escape
 
 from kiwi.python import strip_accents, Settable
 
+from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import NFeDanfeOrientation
 from stoqlib.exceptions import ModelDataError
@@ -42,6 +43,10 @@ from stoqlib.lib.ibpt import calculate_tax_for_item
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import validate_cnpj
+
+# NF-e operation type
+INVOICE_IN = 0
+INVOICE_OUT = 1
 
 
 def nfe_tostring(element):
@@ -207,15 +212,18 @@ class NFeGenerator(object):
         orientation = sysparam.get_int('NFE_DANFE_ORIENTATION')
 
         ecf_info = None
+        tpnf = INVOICE_OUT
         if isinstance(self._order, Sale):
             ecf_info = self._order.nfe_coupon_info
+        elif isinstance(self._order, ReturnedSale):
+            tpnf = INVOICE_IN
 
         nat_op = self._order.operation_nature or ''
 
         nfe_identification = NFeIdentification(cuf, branch_location, recipient_location,
                                                series, nnf, now,
                                                list(payments), orientation,
-                                               ecf_info, nat_op)
+                                               ecf_info, nat_op, tpnf)
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
@@ -560,7 +568,7 @@ class NFeIdentification(BaseNFeXMLGroup):
                   2 - NF-e complementar
                   3 - NF-e de ajuste
                   4 - Devolução de mercadoria
-        - indFinal: Indica operação com consumidor final (0 - nomral, 1 Consum.
+        - indFinal: Indica operação com consumidor final (0 - normal, 1 Consum.
         Final)
         - indPres: Indica presença do comprador no momento da operação
             0 - Não se aplica
@@ -613,7 +621,7 @@ class NFeIdentification(BaseNFeXMLGroup):
     }
 
     def __init__(self, cUF, branch_location, recipient_location, series, nnf,
-                 emission_date, payments, orientation, ecf_info, nat_op):
+                 emission_date, payments, orientation, ecf_info, nat_op, tpnf):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
@@ -644,9 +652,13 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('nNF', nnf)
         self.set_attr('serie', series)
         self.set_attr('dhEmi', self.format_datetime(emission_date))
+        self.set_attr('tpNF', tpnf)
         self.set_attr('cMunFG', str(branch_location.city_code or ''))
         self.set_attr('tpImp', self.danfe_orientation[orientation])
         self.set_attr('natOp', nat_op[:60] or 'Venda')
+
+        if tpnf == INVOICE_IN:
+            self.set_attr('finNFe', '4')
 
         if ecf_info:
             info = NFeEcfInfo(ecf_info.number, ecf_info.coo)

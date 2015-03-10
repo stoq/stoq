@@ -816,7 +816,9 @@ class Sale(Domain):
 
     @property
     def recipient(self):
-        return self.client.person
+        if self.client:
+            return self.client.person
+        return None
 
     @property
     def invoice_subtotal(self):

@@ -1717,6 +1717,16 @@ class TestSale(DomainTest):
         results = self.store.find(FiscalBookEntry, payment_group=sale.group)
         self.assertIn(fiscal, list(results))
 
+    def test_recipient(self):
+        # Without client
+        sale = self.create_sale()
+        self.assertEquals(sale.recipient, None)
+
+        # With client
+        client = self.create_client()
+        sale2 = self.create_sale(client=client)
+        self.assertEquals(sale2.recipient, client.person)
+
 
 class TestSaleItem(DomainTest):
     def test__init__(self):

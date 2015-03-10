@@ -27,9 +27,10 @@ import os
 import time
 
 from stoqlib.domain.events import SaleStatusChangedEvent
+from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.events import (NewLoanWizardFinishEvent, StockTransferWizardFinishEvent,
-                                StockDecreaseWizardFinishEvent)
+                                StockDecreaseWizardFinishEvent, SaleReturnWizardFinishEvent)
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -46,6 +47,7 @@ class NFeUI(object):
         NewLoanWizardFinishEvent.connect(self._on_NewLoanWizardFinish)
         StockTransferWizardFinishEvent.connect(self._on_StockTransferWizardFinish)
         StockDecreaseWizardFinishEvent.connect(self._on_StockDecreaseWizardFinish)
+        SaleReturnWizardFinishEvent.connect(self._on_SaleReturnWizardFinish)
 
         pm = PermissionManager.get_permission_manager()
         pm.set('InvoiceLayout', pm.PERM_HIDDEN)
@@ -115,3 +117,8 @@ class NFeUI(object):
     def _on_StockDecreaseWizardFinish(self, stock_decrease):
         operation_dir = _('Stock decreases')
         self._create_nfe(stock_decrease, stock_decrease.store, operation_dir)
+
+    def _on_SaleReturnWizardFinish(self, returned_sale):
+        if returned_sale.status == ReturnedSale.STATUS_CONFIRMED:
+            operation_dir = _('Returned sales')
+            self._create_nfe(returned_sale, returned_sale.store, operation_dir)

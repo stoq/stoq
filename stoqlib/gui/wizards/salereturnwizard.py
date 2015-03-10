@@ -490,8 +490,6 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
                 # Set payments created on SaleReturnPaymentStep as pending
                 payment.set_pending()
 
-        SaleReturnWizardFinishEvent.emit(self.model)
-
         total_amount = self.model.total_amount
         # If the user chose to create credit for the client instead of returning
         # money, there is no need to display this messages.
@@ -506,6 +504,7 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
         login_user = api.get_current_user(self.store)
         self.model.return_(method_name=u'credit' if self.credit else u'money',
                            login_user=login_user)
+        SaleReturnWizardFinishEvent.emit(self.model)
         self.retval = self.model
         self.close()
 
