@@ -33,7 +33,6 @@ from stoqlib.api import api
 from stoqlib.domain.receiving import (ReceivingOrderItem,
                                       ReceivingOrder)
 from stoqlib.domain.returnedsale import ReturnedSale
-from stoqlib.domain.views import PendingReturnedSalesView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import yesno
@@ -124,29 +123,30 @@ class ReceivingOrderDetailsDialog(BaseEditor):
             print_labels(label_data, self.store, receiving=self.model)
 
 
-class PendingReturnedSalesDialog(BaseEditor):
+class ReturnedSalesDialog(BaseEditor):
     """This dialog shows the details about pending returned sale
 
     * Sale Details
     * Invoice Details
     * Receiving Details
     """
+    from stoqlib.domain.views import ReturnedSalesView
 
-    title = _("Pending Returned Sale Details")
+    title = _("Returned Sale Details")
     hide_footer = True
     size = (850, 400)
-    model_type = PendingReturnedSalesView
+    model_type = ReturnedSalesView
     report_class = PendingReturnReceipt
-    gladefile = "PendingReturnedSalesDetails"
-    proxy_widgets = ['sale', 'invoice_number', 'returned_date',
-                     'returned_branch_name', 'responsible_name', 'reason',
-                     'receiving_responsible', 'receiving_date']
+    gladefile = "ReturnedSalesDetails"
+    proxy_widgets = ['sale_identifier', 'invoice_number', 'returned_date',
+                     'identifier', 'responsible_name', 'reason',
+                     'status_str']
 
     def _setup_status(self):
         self.receive_button.set_property('visible', self.model.can_receive())
         returned_sale = self.store.get(ReturnedSale, self.model.id)
-        if returned_sale.confirm_responsible:
-            self.receiving_responsible.update(returned_sale.confirm_responsible.username)
+        if not self.model.is_pending():
+            self.receiving_responsible.set_text(returned_sale.confirm_responsible.person.name)
             self.receiving_date.update(returned_sale.confirm_date)
 
     def _setup_widgets(self):

@@ -1,21 +1,24 @@
-dialog: PendingReturnedSalesDialog
+dialog: ReturnedSalesDialog
 GtkVBox(details_vbox):
-  GtkTable(table1, fill=True, padding=6):
-    GtkLabel(label1): 'Sale:'
-    ProxyLabel(sale): '<span >00336</span>'
-    GtkButton(receive_button): 'Receive'
+  GtkTable(table1, fill=True):
+    GtkLabel(label4): 'Returned Sale:'
+    ProxyLabel(identifier): '<span >00060</span>'
     ProxyLabel(kiwilabel7): 'Invoice number:'
     ProxyLabel(invoice_number): '<span ></span>'
+    GtkLabel(label1): 'Sale:'
+    ProxyLabel(sale_identifier): '<span >00336</span>'
+    ProxyLabel(kiwilabel4): 'Status:'
+    GtkHBox(hbox2):
+      ProxyLabel(status_str, fill=True): '<span >Pending</span>'
+      GtkButton(receive_button, fill=True): 'Receive'
     GtkLabel(label3): 'Returned date:'
     ProxyLabel(returned_date): '<span >YYYY-MM-DD</span>'
-    ProxyLabel(kiwilabel2): 'Receival date:'
-    ProxyLabel(receiving_date): '<span ></span>'
-    ProxyLabel(kiwilabel3): 'Returned branch:'
-    ProxyLabel(returned_branch_name): '<span >Dummy shop</span>'
-    ProxyLabel(kiwilabel1): 'Responsible:'
-    ProxyLabel(receiving_responsible): '<span ></span>'
-    ProxyLabel(kiwilabel5): 'Responsible:'
+    ProxyLabel(kiwilabel2): 'Confirm date:'
+    ProxyLabel(receiving_date):
+    ProxyLabel(kiwilabel5): 'Received By:'
     ProxyLabel(responsible_name): '<span >Administrator</span>'
+    ProxyLabel(kiwilabel1): 'Confirmed By:'
+    ProxyLabel(receiving_responsible):
   GtkNotebook(notebook1, expand=True, fill=True):
     GtkVBox(products_vbox):
       ObjectList(returned_items_list, expand=True, fill=True):
@@ -26,5 +29,5 @@ GtkVBox(details_vbox):
     GtkHBox(hbox1):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(reason):
-  GtkHButtonBox(hbuttonbox1, expand=True, fill=True):
+  GtkHButtonBox(hbuttonbox1, fill=True):
     GtkButton(print_button): 'gtk-print'

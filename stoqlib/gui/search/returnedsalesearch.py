@@ -26,11 +26,10 @@
 import datetime
 
 from stoqlib.domain.person import Branch
-from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import ReturnedSalesView, PendingReturnedSalesView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.dialogs.receivingdialog import PendingReturnedSalesDialog
+from stoqlib.gui.dialogs.receivingdialog import ReturnedSalesDialog
 from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
@@ -60,9 +59,7 @@ class ReturnedSaleSearch(SearchDialog):
         self.update_widgets()
 
     def _show_details(self, item_view):
-        sale_view = self.store.find(SaleView, id=item_view.sale_id).one()
-        run_dialog(SaleDetailsDialog, self, self.store,
-                   sale_view)
+        run_dialog(ReturnedSalesDialog, self, self.store, item_view)
 
     #
     # SearchDialog Hooks
@@ -112,8 +109,7 @@ class PendingReturnedSaleSearch(ReturnedSaleSearch):
     branch_filter_column = Sale.branch_id
 
     def _show_pending_returned_sale_details(self, order_view):
-        run_dialog(PendingReturnedSalesDialog, self, self.store,
-                   order_view)
+        run_dialog(ReturnedSalesDialog, self, self.store, order_view)
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_(u"Returned #")),

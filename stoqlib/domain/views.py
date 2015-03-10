@@ -1131,12 +1131,18 @@ class ReturnedSalesView(Viewable):
     #: The branch this sale was sold
     branch = Branch
 
+    #: The sale that is being returned
+    sale = Sale
+
     id = ReturnedSale.id
     identifier = ReturnedSale.identifier
     identifier_str = Cast(ReturnedSale.identifier, 'text')
     return_date = ReturnedSale.return_date
     reason = ReturnedSale.reason
     invoice_number = ReturnedSale.invoice_number
+    receiving_date = ReturnedSale.confirm_date
+    receiving_responsible = ReturnedSale.confirm_responsible_id
+    status = ReturnedSale.status
 
     sale_id = Sale.id
     sale_identifier = Sale.identifier
@@ -1158,25 +1164,25 @@ class ReturnedSalesView(Viewable):
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
     ]
 
-
-class PendingReturnedSalesView(ReturnedSalesView):
-    sale = Sale
-
-    receiving_date = ReturnedSale.confirm_date
-    receiving_responsible = ReturnedSale.confirm_responsible_id
-
-    clause = ReturnedSale.status == ReturnedSale.STATUS_PENDING
-
-    def _is_pending(self):
-        return self.returned_sale.status == ReturnedSale.STATUS_PENDING
-
     def can_receive(self):
         from stoqlib.api import api
         same_branch = self.sale.branch == api.get_current_branch(self.store)
-        return bool(self._is_pending() and same_branch)
+        return bool(self.is_pending() and same_branch)
+
+    def is_pending(self):
+        return self.returned_sale.status == ReturnedSale.STATUS_PENDING
 
     def get_items(self):
         return self.returned_sale.returned_items
+
+    @property
+    def status_str(self):
+        return ReturnedSale.statuses[self.status]
+
+
+class PendingReturnedSalesView(ReturnedSalesView):
+
+    clause = ReturnedSale.status == ReturnedSale.STATUS_PENDING
 
 
 class LoanView(Viewable):

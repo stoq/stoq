@@ -29,7 +29,7 @@ from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.views import PendingReturnedSalesView
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.dialogs.receivingdialog import (ReceivingOrderDetailsDialog,
-                                                 PendingReturnedSalesDialog)
+                                                 ReturnedSalesDialog)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -55,19 +55,20 @@ class TestReceivingDialog(GUITest):
                                         'found.')
 
 
-class TestPendingReturnedSalesDialog(GUITest):
+class TestReturnedSalesDialog(GUITest):
     def test_show(self):
         pending_return = self.create_pending_returned_sale()
         pending_return.sale.identifier = 336
+        pending_return.identifier = 60
         model = self.store.find(PendingReturnedSalesView).one()
-        dialog = PendingReturnedSalesDialog(self.store, model)
+        dialog = ReturnedSalesDialog(self.store, model)
         self.check_dialog(dialog, 'dialog-receive-pending-returned-sale')
 
     @mock.patch('stoqlib.gui.dialogs.receivingdialog.yesno')
     def test_receive_pending_returned_sale(self, yesno):
         self.create_pending_returned_sale()
         model = self.store.find(PendingReturnedSalesView).one()
-        dialog = PendingReturnedSalesDialog(self.store, model)
+        dialog = ReturnedSalesDialog(self.store, model)
         self.assertEquals(dialog.receive_button.get_property('visible'), True)
         self.assertEquals(model.returned_sale.status, ReturnedSale.STATUS_PENDING)
         with mock.patch.object(self.store, 'commit'):
@@ -81,7 +82,7 @@ class TestPendingReturnedSalesDialog(GUITest):
     def test_print_button(self, print_report):
         self.create_pending_returned_sale()
         model = self.store.find(PendingReturnedSalesView).one()
-        dialog = PendingReturnedSalesDialog(self.store, model)
+        dialog = ReturnedSalesDialog(self.store, model)
 
         self.click(dialog.print_button)
         print_report.assert_called_once_with(dialog.report_class, dialog.model)
