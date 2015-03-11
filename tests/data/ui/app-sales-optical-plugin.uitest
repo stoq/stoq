@@ -36,6 +36,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Edit...', insensitive
           GtkImageMenuItem(): 'Change client...', hidden, insensitive
+          GtkImageMenuItem(): 'Change salesperson...', hidden, insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
           GtkImageMenuItem(): 'Return...', insensitive
           GtkSeparatorMenuItem():
@@ -195,6 +196,7 @@ GtkMenu(popup): hidden
   GtkSeparatorMenuItem():
   GtkImageMenuItem(): 'Edit...', insensitive
   GtkImageMenuItem(): 'Change client...', hidden, insensitive
+  GtkImageMenuItem(): 'Change salesperson...', hidden, insensitive
   GtkImageMenuItem(): 'Cancel...', insensitive
   GtkImageMenuItem(): 'Return...', insensitive
   GtkSeparatorMenuItem():

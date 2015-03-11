@@ -39,7 +39,7 @@ from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView, SaleComment
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
-from stoqlib.gui.editors.saleeditor import SaleClientEditor
+from stoqlib.gui.editors.saleeditor import SaleClientEditor, SalesPersonEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
@@ -196,6 +196,7 @@ class SalesApp(ShellApp):
 
             ("SalesCancel", None, _("Cancel...")),
             ("ChangeClient", gtk.STOCK_EDIT, _("Change client...")),
+            ("ChangeSalesperson", gtk.STOCK_EDIT, _("Change salesperson...")),
             ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
             ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
              _("Return the selected sale, canceling it's payments")),
@@ -217,6 +218,7 @@ class SalesApp(ShellApp):
         self.SearchDelivery.set_short_label(_("Deliveries"))
         self.SalesCancel.set_short_label(_("Cancel"))
         self.ChangeClient.set_short_label(_("Change Client"))
+        self.ChangeSalesperson.set_short_label(_("Change Salesperson"))
         self.Edit.set_short_label(_("Edit"))
         self.Return.set_short_label(_("Return"))
         self.Details.set_short_label(_("Details"))
@@ -228,6 +230,8 @@ class SalesApp(ShellApp):
             self.search.enable_lazy_search()
         if not api.sysparam.get_bool('CHANGE_CLIENT_AFTER_CONFIRMED'):
             self.ChangeClient.set_visible(False)
+        if not api.sysparam.get_bool('CHANGE_SALESPERSON_AFTER_CONFIRMED'):
+            self.ChangeSalesperson.set_visible(False)
 
         self.popup = self.uimanager.get_widget('/SaleSelection')
 
@@ -367,6 +371,8 @@ class SalesApp(ShellApp):
         # If the sale cannot be edit anymore, we only allow to change the client
         self.set_sensitive([self.ChangeClient],
                            bool(sale_view and not sale_view.can_edit()))
+        self.set_sensitive([self.ChangeSalesperson],
+                           bool(sale_view and not sale_view.can_edit()))
         self.sale_toolbar.set_report_filters(self.search.get_search_filters())
 
     def _print_invoice(self):
@@ -474,6 +480,15 @@ class SalesApp(ShellApp):
         if store.committed:
             self.refresh()
 
+    def _change_salesperson(self):
+        sale_view = self.results.get_selected()
+        with api.new_store() as store:
+            sale = store.fetch(sale_view.sale)
+            self.run_dialog(SalesPersonEditor, store=store, model=sale)
+
+        if store.committed:
+            self.refresh()
+
     #
     # Kiwi callbacks
     #
@@ -531,6 +546,9 @@ class SalesApp(ShellApp):
 
     def on_ChangeClient__activate(self, action):
         self._change_sale_client()
+
+    def on_ChangeSalesperson__activate(self, action):
+        self._change_salesperson()
 
     def on_SalesPrintInvoice__activate(self, action):
         return self._print_invoice()

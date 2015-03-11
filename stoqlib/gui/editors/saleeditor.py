@@ -29,7 +29,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.api import api
-from stoqlib.domain.person import Client
+from stoqlib.domain.person import Client, SalesPerson
 from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale, SaleItem
@@ -316,13 +316,15 @@ class SaleQuoteItemEditor(BaseEditor):
 
 
 class SaleClientEditor(BaseEditor):
-    gladefile = 'SaleClientEditor'
+    gladefile = 'SaleDetailsEditor'
     model_type = Sale
     model_name = _('Sale')
-    proxy_widgets = ['client', 'identifier', 'salesperson', 'status', 'open_date']
+    proxy_widgets = ['client', 'identifier', 'salesperson_combo', 'status', 'open_date']
 
     def setup_proxies(self):
         self._fill_clients_combo()
+        self._fill_salesperson_combo()
+        self._setup_widgets()
         self.add_proxy(self.model, self.proxy_widgets)
 
     def toogle_client_details(self):
@@ -339,6 +341,9 @@ class SaleClientEditor(BaseEditor):
     def on_confirm(self):
         self.model.group.payer = self.model.client and self.model.client.person
 
+    def _setup_widgets(self):
+        self.salesperson_combo.set_sensitive(False)
+
     def _get_client(self):
         return self.store.get(Client, self.client.read())
 
@@ -346,6 +351,10 @@ class SaleClientEditor(BaseEditor):
         items = Client.get_active_items(self.store)
         self.client.prefill(items)
         self.client.set_sensitive(len(self.client.get_model()))
+
+    def _fill_salesperson_combo(self):
+        salespersons = SalesPerson.get_active_salespersons(self.store)
+        self.salesperson_combo.prefill(api.for_combo(salespersons))
 
     def on_client__changed(self, widget):
         self.toogle_client_details()
@@ -361,3 +370,11 @@ class SaleClientEditor(BaseEditor):
     def on_client_details__clicked(self, button):
         client = self.model.client
         run_dialog(ClientDetailsDialog, self, self.store, client)
+
+
+class SalesPersonEditor(SaleClientEditor):
+    title = _('Salesperson change')
+
+    def _setup_widgets(self):
+        self.client_lbl.hide()
+        self.client_box.hide()

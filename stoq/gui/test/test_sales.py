@@ -32,6 +32,7 @@ from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.editors.saleeditor import SalesPersonEditor
 from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
@@ -270,6 +271,32 @@ class TestSales(BaseGUITest):
                 self.assertEquals(kwargs['model'], results[0].sale)
                 self.assertEquals(kwargs['store'], self.store)
                 self.assertEquals(run_dialog.call_count, 1)
+
+    @mock.patch('stoq.gui.sales.api.new_store')
+    def test_change_salesperson(self, new_store):
+        with self.sysparam(CHANGE_SALESPERSON_AFTER_CONFIRMED=True):
+            new_store.return_value = self.store
+
+            app = self.create_app(SalesApp, u'sales')
+            results = app.results
+            results.select(results[0])
+
+            results[0].status = Sale.STATUS_CONFIRMED
+            results[0].sale.status = Sale.STATUS_CONFIRMED
+            app._update_toolbar()
+
+            with contextlib.nested(
+                    mock.patch.object(app, 'run_dialog'),
+                    mock.patch.object(self.store, 'commit'),
+                    mock.patch.object(self.store, 'close')) as context:
+                run_dialog = context[0]
+                self.activate(app.ChangeSalesperson)
+                args, kwargs = run_dialog.call_args
+                self.assertEquals(kwargs['model'], results[0].sale)
+                self.assertEquals(kwargs['store'], self.store)
+                run_dialog.assert_called_once_with(SalesPersonEditor,
+                                                   store=self.store,
+                                                   model=results[0].sale)
 
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_not_sale_cancel(self, new_store):

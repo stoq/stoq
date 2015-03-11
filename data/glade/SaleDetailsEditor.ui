@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="SaleClientEditor">
+  <object class="GtkWindow" id="SaleDetailsEditor">
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="border_width">6</property>
             <property name="n_rows">4</property>
             <property name="n_columns">2</property>
@@ -21,10 +24,12 @@
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">&lt;b&gt;Sale Number:&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
@@ -38,6 +43,7 @@
                 <child>
                   <object class="ProxyLabel" id="identifier">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <property name="use_markup">True</property>
                     <property name="data_type">unicode</property>
@@ -52,6 +58,7 @@
                 <child>
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Open Date:</property>
                   </object>
@@ -64,6 +71,7 @@
                 <child>
                   <object class="ProxyLabel" id="open_date">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <property name="use_markup">True</property>
                     <property name="data_type">date</property>
@@ -83,6 +91,7 @@
             <child>
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Salesperson:</property>
               </object>
@@ -92,23 +101,9 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyLabel" id="salesperson">
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="use_markup">True</property>
-                <property name="data_type">unicode</property>
-                <property name="model_attribute">salesperson_name</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
               <object class="ProxyLabel" id="client_lbl">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Client:</property>
                 <property name="model_attribute">client_supplier_lbl</property>
@@ -119,11 +114,13 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox2">
+              <object class="GtkHBox" id="client_box">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="ProxyComboEntry" id="client">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="data_type">unicode</property>
                     <property name="model_attribute">client_id</property>
                   </object>
@@ -143,6 +140,7 @@
                     <child>
                       <object class="GtkImage" id="create_image">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="stock">gtk-add</property>
                         <property name="icon-size">1</property>
                       </object>
@@ -164,6 +162,7 @@
                     <child>
                       <object class="GtkImage" id="info_image">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="stock">gtk-info</property>
                         <property name="icon-size">1</property>
                       </object>
@@ -186,6 +185,7 @@
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Status:</property>
               </object>
@@ -197,6 +197,7 @@
             <child>
               <object class="ProxyLabel" id="status">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
                 <property name="data_type">unicode</property>
@@ -207,6 +208,20 @@
                 <property name="right_attach">2</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyComboEntry" id="salesperson_combo">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="data_type">object</property>
+                <property name="model_attribute">salesperson</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
               </packing>
             </child>
           </object>

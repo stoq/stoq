@@ -517,6 +517,13 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'CHANGE_SALESPERSON_AFTER_CONFIRMED',
+        _(u'Sales'),
+        _(u'Allow salesperson change after sale\'s confirmation'),
+        _(u'This parameter allows to change the salesperson after a sale\'s confirmation.'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'DEFAULT_RECEIVING_CFOP',
         _(u'Purchase'),
         _(u'Default Receiving C.F.O.P.'),

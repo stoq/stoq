@@ -31,7 +31,8 @@ from kiwi.currency import currency
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.event import Event
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor, SaleClientEditor
+from stoqlib.gui.editors.saleeditor import (SaleQuoteItemEditor, SaleClientEditor,
+                                            SalesPersonEditor)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -183,11 +184,14 @@ class TestSaleClientEditor(GUITest):
         zoidberg = self.create_client(u"Zoidberg")
         bender = self.create_client(u"Bender")
         sale = self.create_sale(client=zoidberg)
+
         sale.identifier = 12345
         sale.status = sale.STATUS_CONFIRMED
         editor = SaleClientEditor(self.store, model=sale)
+
         self.assertEquals(editor.status.get_text(),
                           (u"Confirmed" or u"Ordered"))
+        self.assertFalse(editor.salesperson_combo.get_sensitive())
         self.assertEquals(zoidberg, editor.model.client)
 
         editor.client.select_item_by_data(bender.id)
@@ -195,3 +199,24 @@ class TestSaleClientEditor(GUITest):
         self.assertEquals(bender, sale.client)
 
         self.check_editor(editor, 'editor-sale-client-edit')
+
+
+class TestSalesPersonEditor(GUITest):
+    def test_change_salesperson(self):
+        salesperson1 = self.create_sales_person()
+        salesperson2 = self.create_sales_person()
+        sale = self.create_sale()
+
+        sale.identifier = 1337
+        sale.status = sale.STATUS_CONFIRMED
+        sale.salesperson = salesperson1
+
+        editor = SalesPersonEditor(self.store, model=sale)
+        self.check_editor(editor, 'editor-salesperson-edit')
+        self.assertEquals(editor.salesperson_combo.get_selected(), salesperson1)
+        self.assertFalse(editor.client_box.get_property('visible'))
+        self.assertFalse(editor.client_lbl.get_property('visible'))
+
+        editor.salesperson_combo.select_item_by_data(salesperson2)
+        self.click(editor.main_dialog.ok_button)
+        self.assertEquals(sale.salesperson, salesperson2)

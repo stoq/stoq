@@ -1,35 +1,35 @@
-editor: SaleClientEditor
-GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale"', hidden
+editor: SalesPersonEditor
+GtkDialog(main_dialog.toplevel): title='Salesperson change', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SaleClientEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SalesPersonEditor is attached
         GtkVBox(toplevel):
           GtkTable(table1, fill=True):
             GtkHBox(hbox1):
               GtkLabel(label1, expand=True, fill=True): '<b>Sale Number:</b>'
-              ProxyLabel(identifier, expand=True, fill=True): '<span >12345</span>'
+              ProxyLabel(identifier, expand=True, fill=True): '<span >01337</span>'
               GtkLabel(label5, expand=True, fill=True): 'Open Date:'
               ProxyLabel(open_date, expand=True, fill=True): '<span >YYYY-MM-DD</span>'
             GtkLabel(label3): 'Status:'
             ProxyLabel(status): '<span >Confirmed</span>'
             GtkLabel(label4): 'Salesperson:'
-            ProxyComboEntry(salesperson_combo): insensitive
+            ProxyComboEntry(salesperson_combo):
               item: 'Administrator'
               item: 'Cleusa Blanc Ferreira Norbiato'
               item: 'Deivis Alexandre Junior'
               item: 'Maria Aparecida Ardana'
               item: 'Osvaldo Denadai Marin'
               item: 'SalesPerson', selected
-            ProxyLabel(client_lbl): 'Client:'
-            GtkHBox(client_box):
+              item: 'SalesPerson (1)'
+              item: 'SalesPerson (2)'
+            ProxyLabel(client_lbl): 'Client:', hidden
+            GtkHBox(client_box): hidden
               ProxyComboEntry(client, expand=True, fill=True):
                 item: 'Alessandra Almeida Itaber\xc3\xa1'
-                item: 'Bender', selected
                 item: 'Franciso Elisio de Lima Junior'
                 item: 'Luis Sergio da Silva Marin'
                 item: 'Vitalina Claudino'
-                item: 'Zoidberg'
               GtkButton(create_client, fill=True):
               GtkButton(client_details, fill=True):
       GtkHBox(fill=True):

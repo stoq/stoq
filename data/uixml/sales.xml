@@ -76,6 +76,7 @@
       <separator/>
       <menuitem action="Edit"/>
       <menuitem action="ChangeClient"/>
+      <menuitem action="ChangeSalesperson"/>
       <menuitem action="SalesCancel"/>
       <menuitem action="Return"/>
       <separator/>
@@ -89,6 +90,7 @@
   <separator/>
   <menuitem action="Edit"/>
   <menuitem action="ChangeClient"/>
+  <menuitem action="ChangeSalesperson"/>
   <menuitem action="SalesCancel"/>
   <menuitem action="Return"/>
   <separator/>
