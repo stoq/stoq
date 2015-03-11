@@ -2,24 +2,38 @@
         <table class="details">
           <tbody>
             <tr>
-              <td>${ _("Sale:") }</td>
-              <td>${ pending_return.sale_identifier}</td>
-            </tr>
-            <tr>
+              <!-- The subtitle already have the returned sale identifier, so we
+                  dont need to show it again-->
+              <td></td>
+              <td></td>
               <td>${ _("Invoice number:") }</td>
               <td>${ pending_return.invoice_number or "-" }</td>
             </tr>
             <tr>
-              <td>${ _("Return date:") }</td>
+              <td>${ _("Sale:") }</td>
+              <td>${ pending_return.sale_identifier}</td>
+              <td>${ _("Status:") }</td>
+              <td>${ pending_return.status_str}</td>
+            </tr>
+            <tr>
+              <td>${ _("Returned date:") }</td>
               <td>${ pending_return.return_date.strftime('%x')}</td>
+              <td>${ _("Confirm date:") }</td>
+              % if not pending_return.is_pending():
+                <td>${ pending_return.receiving_date.strftime('%x')}</td>
+              % else:
+                <td>${ _("Not Received") }</td>
+              % endif
             </tr>
             <tr>
-              <td>${ _("Returned on Branch:") }</td>
-              <td>${ pending_return.branch_name }</td>
-            </tr>
-            <tr>
-              <td>${ _("Responsible:") }</td>
+              <td>${ _("Received By:") }</td>
               <td>${ pending_return.responsible_name }</td>
+              <td>${ _("Confirmed By:") }</td>
+              % if not pending_return.is_pending():
+                <td>${ pending_return.returned_sale.confirm_responsible.person.name }</td>
+              % else:
+                <td>${ _("Not Received") }</td>
+              % endif
             </tr>
           </tbody>
         </table>
