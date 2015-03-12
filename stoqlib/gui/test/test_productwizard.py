@@ -31,9 +31,40 @@ from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 
 
 class TestProducCreateWizard(GUITest):
+    @mock.patch('stoqlib.gui.wizards.productwizard.warning')
+    def test_create_without_group(self, warning):
+        wizard = ProductCreateWizard(self.store)
+        type_step = wizard.get_current_step()
+        type_step.grid.set_active(True)
+        self.click(wizard.next_button)
+        warning.assert_called_once_with("You need to register an attribute group first")
+        # Checking that are still on the same step after the warning
+        self.assertEquals(wizard.get_current_step(), type_step)
 
-    def test_create_grid_product_without_attribute_option(self):
+    @mock.patch('stoqlib.gui.wizards.productwizard.warning')
+    def test_create_without_attribute(self, warning):
+        attribute_group = self.create_attribute_group()
 
+        wizard = ProductCreateWizard(self.store)
+        type_step = wizard.get_current_step()
+        type_step.grid.set_active(True)
+        self.click(wizard.next_button)
+
+        attribute_step = wizard.get_current_step()
+        self.click(wizard.next_button)
+        # Testing without selecting a group
+        warning.assert_called_once_with("You should select an attribute first")
+        # Checking that we are in the same step after the warning
+        self.assertEquals(wizard.get_current_step(), attribute_step)
+
+        warning.reset_mock()
+        # Selecting a group but it doesnt have a GridAttribute
+        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        self.click(wizard.next_button)
+        warning.assert_called_once_with("You should select an attribute first")
+
+    @mock.patch('stoqlib.gui.wizards.productwizard.warning')
+    def test_create_with_attribute_not_selected(self, warning):
         attribute_group = self.create_attribute_group()
         self.create_grid_attribute(attribute_group=attribute_group)
 
@@ -43,14 +74,40 @@ class TestProducCreateWizard(GUITest):
         self.click(wizard.next_button)
 
         attribute_step = wizard.get_current_step()
-        # Selecting the attribute_group on the combo
-        attribute_step.slave.attribute_group_combo.select(attribute_group)
+        self.click(wizard.next_button)
+        warning.reset_mock()
+        # Selecting a group with a GridAttribute
+        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        self.click(wizard.next_button)
+        warning.assert_called_once_with("You should select an attribute first")
+
+    @mock.patch('stoqlib.gui.wizards.productwizard.warning')
+    def test_create_with_attribute_without_option(self, warning):
+        attribute_group = self.create_attribute_group()
+        self.create_grid_attribute(attribute_group=attribute_group)
+
+        wizard = ProductCreateWizard(self.store)
+        type_step = wizard.get_current_step()
+        type_step.grid.set_active(True)
+        self.click(wizard.next_button)
+
+        attribute_step = wizard.get_current_step()
+        self.click(wizard.next_button)
+        warning.reset_mock()
+        # Selecting a group with a GridAttribute
+        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        self.click(wizard.next_button)
+        warning.assert_called_once_with("You should select an attribute first")
+
+        warning.reset_mock()
         # At this point we dont have any attribute_option for grid_attribute
         for i in attribute_step.slave._widgets.keys():
             self.assertEquals(i.get_sensitive(), False)
+        self.click(wizard.next_button)
+        warning.assert_called_once_with("You should select an attribute first")
 
     @mock.patch('stoqlib.gui.slaves.productslave.warning')
-    def test_create_grid_product_with_attribute_option(self, warning):
+    def test_create_grid_product(self, warning):
         attribute_group = self.create_attribute_group()
         grid_attribute = self.create_grid_attribute(attribute_group=attribute_group,
                                                     description=u'attr 1')

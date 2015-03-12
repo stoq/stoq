@@ -39,7 +39,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductQualityTest, Storable,
                                     StorableBatch, StorableBatchView,
                                     StockTransactionHistory, ProductManufacturer,
-                                    GridOption)
+                                    GridOption, GridGroup)
 from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
@@ -432,6 +432,14 @@ class TestGridGroup(DomainTest):
         grid_attr = self.create_grid_attribute(attribute_group)
         attribute = attribute_group.attributes
         self.assertEquals(list(attribute)[0], grid_attr)
+
+    def test_has_group(self):
+        # Testing without group
+        self.assertEquals(GridGroup.has_group(self.store), None)
+
+        # Testing with group
+        attribute_group = self.create_attribute_group()
+        self.assertEquals(GridGroup.has_group(self.store), attribute_group)
 
 
 class TestGridAttribute(DomainTest):

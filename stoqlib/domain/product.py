@@ -599,6 +599,10 @@ class GridGroup(Domain):
 
     attributes = ReferenceSet('id', 'GridAttribute.group_id')
 
+    @classmethod
+    def has_group(cls, store):
+        return store.find(cls).any()
+
 
 class GridAttribute(Domain):
     """Product Attributes for product grid"""

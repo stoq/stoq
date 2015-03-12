@@ -26,12 +26,12 @@
 import gtk
 
 from stoqlib.api import api
-from stoqlib.domain.product import Product
+from stoqlib.domain.product import Product, GridGroup
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.productslave import ProductAttributeSlave
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -46,7 +46,14 @@ class ProductTypeStep(BaseWizardStep):
         if self.wizard.product_type == Product.TYPE_GRID:
             return ProductAttributeEditorStep(self.wizard.store, self.wizard, previous=self)
         else:
-            return ProductEditorStep(self.wizard.store, self.wizard, previous=self)
+            return ProductEditorStep(store=self.wizard.store, wizard=self.wizard, previous=self)
+
+    def validate_step(self):
+        if (self.wizard.product_type == Product.TYPE_GRID and
+                not GridGroup.has_group(self.wizard.store)):
+            warning(_("You need to register an attribute group first"))
+            return False
+        return True
 
     #
     #  Callbacks
@@ -76,9 +83,17 @@ class ProductTypeStep(BaseWizardStep):
 class ProductAttributeEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
 
-    def post_init(self):
+    def __init__(self, store, wizard, previous):
+        BaseWizardStep.__init__(self, store, wizard, previous)
+
         self.slave = ProductAttributeSlave(self.wizard.store, object())
         self.attach_slave('product_attribute_holder', self.slave, self.place_holder)
+
+    def validate_step(self):
+        if len(self.slave.get_selected_attributes()) == 0:
+            warning(_("You should select an attribute first"))
+            return False
+        return True
 
     def next_step(self):
         self.wizard.attr_list = self.slave.get_selected_attributes()
