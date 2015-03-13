@@ -38,7 +38,7 @@ from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.events import CreatePaymentEvent
-from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.fiscal import CfopData, Invoice
 from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -678,7 +678,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             gtk.Adjustment(lower=1, upper=999999999, step_incr=1))
 
         if not self.model.invoice_number:
-            new_invoice_number = Sale.get_last_invoice_number(self.store) + 1
+            new_invoice_number = Invoice.get_last_invoice_number(self.store) + 1
             self.invoice_model.invoice_number = new_invoice_number
         else:
             new_invoice_number = self.model.invoice_number
@@ -832,8 +832,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                 _("Invoice number must be between 1 and 999999999"))
 
         exists = self.store.find(
-            Sale, And(Sale.invoice_number == value,
-                      Sale.id != self.model.id))
+            Invoice, And(Invoice.invoice_number == value,
+                         Invoice.id != self.model.id))
         if not exists.is_empty():
             return ValidationError(_(u'Invoice number already used.'))
 

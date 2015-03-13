@@ -208,8 +208,8 @@ class NFeGenerator(object):
         now = self._get_now_datetime()
         aamm = now.strftime('%y%m')
 
-        # TODO: Use the invoice number saved in a new database table (Invoice)
-        nnf = self._order.invoice_number
+        invoice = self._order.invoice
+        nnf = invoice.invoice_number
         assert nnf
 
         payments = self._order.payments or []
@@ -233,6 +233,7 @@ class NFeGenerator(object):
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
         serie = '%03d' % int(nfe_identification.get_attr('serie'))
+
         cnf = '%08d' % nfe_identification.get_attr('cNF')
         nnf_str = '%09d' % nnf
         cnpj = self._get_cnpj(branch)
@@ -243,7 +244,9 @@ class NFeGenerator(object):
         cdv = self._calculate_verifier_digit(key)
         key += cdv
 
-        # TODO: Save 'key' in new a table (Invoice)
+        # Save key and cnf in Invoice table.
+        invoice.save_nfe_info(unicode(cnf), unicode(key))
+
         nfe_identification.set_attr('cDV', cdv)
         self._nfe_identification = nfe_identification
 

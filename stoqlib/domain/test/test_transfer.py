@@ -33,22 +33,27 @@ __tests__ = 'stoqlib/domain/transfer.py'
 
 class TestTransferOrderItem(DomainTest):
 
+    def test__init__(self):
+        with self.assertRaisesRegexp(
+            TypeError, 'You must provide a sellable argument'):
+                TransferOrderItem(store=self.store)
+        item = self.create_transfer_order_item()
+        self.assertIsNotNone(item.icms_info)
+        self.assertIsNotNone(item.ipi_info)
+
     def test_get_total(self):
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order)
         self.assertEquals(item.get_total(), 625)
 
+    def test_parent(self):
+        order = self.create_transfer_order()
+        item = self.create_transfer_order_item(order)
+        self.assertEquals(item.parent, order)
+
     def test_price(self):
         transfer_item = self.create_transfer_order_item(stock_cost=50)
         self.assertEquals(transfer_item.price, transfer_item.stock_cost)
-
-    def test_icms_info(self):
-        transfer_item = self.create_transfer_order_item()
-        self.assertEquals(transfer_item.icms_info, None)
-
-    def test_ipi_info(self):
-        transfer_item = self.create_transfer_order_item()
-        self.assertEquals(transfer_item.ipi_info, None)
 
     def test_nfe_cfop_code(self):
         order = self.create_transfer_order()

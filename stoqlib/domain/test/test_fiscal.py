@@ -25,9 +25,13 @@
 
 __tests__ = 'stoqlib/domain/fiscal.py'
 
-from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 
+from storm.expr import Update
+
+from stoqlib.domain.fiscal import CfopData, FiscalBookEntry, Invoice
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.transfer import TransferOrder
 
 
 class TestCfopData(DomainTest):
@@ -113,3 +117,33 @@ class TestIssBookEntry(DomainTest):
         self.failIf(entry.get_entry_by_payment_group(
             self.store, payment_group,
             entry.entry_type))
+
+
+class TestInvoice(DomainTest):
+    def test_get_next_invoice_number(self):
+        sale = self.create_sale()
+        sale.invoice_number = 1234
+        self.add_product(sale)
+        self.add_payments(sale, u'money')
+        sale.order()
+        sale.confirm()
+
+        # Test when the Invoice table is empty.
+        self.store.execute(Update({Sale.invoice_id: None}, table=Sale))
+        self.store.execute(Update({TransferOrder.invoice_id: None},
+                                  table=TransferOrder))
+        self.clean_domain([Invoice])
+
+        last_invoice_number = Invoice.get_last_invoice_number(self.store)
+        next_invoice_number = Invoice.get_next_invoice_number(self.store)
+        self.assertEquals(last_invoice_number, 1234)
+        self.assertEquals(next_invoice_number, 1235)
+
+        # Creating a transfer order.
+        transfer = self.create_transfer_order()
+        transfer.invoice_number = next_invoice_number
+        self.create_transfer_order_item(transfer)
+        transfer.send()
+        next_invoice_number = Invoice.get_next_invoice_number(self.store)
+        self.assertEquals(transfer.invoice.invoice_number, 1235)
+        self.assertEquals(next_invoice_number, 1236)

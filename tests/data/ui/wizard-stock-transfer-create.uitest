@@ -9,7 +9,7 @@ GtkDialog(toplevel): title='Stock Transfer', hidden
             ProxyLabel(step.kiwilabel1): 'Open date:'
             ProxyLabel(step.open_date): '<span >YYYY-MM-DD</span>'
             ProxyLabel(step.kiwilabel2): 'Invoice number:'
-            ProxyEntry(step.invoice_number): ''
+            ProxyEntry(step.invoice_number): '1004'
             ProxyLabel(step.kiwilabel3): 'Sending branch:'
             ProxyLabel(step.source_branch): '<span >Moda Stoq</span>'
             ProxyLabel(step.kiwilabel4): 'Receiving branch:'

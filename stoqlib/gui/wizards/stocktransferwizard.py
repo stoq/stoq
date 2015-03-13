@@ -26,10 +26,12 @@
 from decimal import Decimal
 
 import gtk
+from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from storm.expr import And
 
 from stoqlib.api import api
+from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
@@ -84,6 +86,15 @@ class StockTransferInitialStep(WizardEditorStep):
         employees = self.store.find(Employee)
         self.source_responsible.prefill(api.for_person_combo(employees))
 
+        manager = get_plugin_manager()
+        nfe_is_active = manager.is_active('nfe')
+        self.invoice_number.set_property('mandatory', nfe_is_active)
+
+        # Set an initial invoice number to TransferOrder and Invoice
+        if not self.model.invoice_number:
+            new_invoice_number = Invoice.get_next_invoice_number(self.store)
+            self.model.invoice_number = new_invoice_number
+
     def _validate_destination_branch(self):
         other_branch = self.destination_branch.read()
 
@@ -110,6 +121,17 @@ class StockTransferInitialStep(WizardEditorStep):
 
     def validate_step(self):
         return self._validate_destination_branch()
+
+    def on_invoice_number__validate(self, widget, value):
+        if not 0 < value <= 999999999:
+            return ValidationError(
+                _("Invoice number must be between 1 and 999999999"))
+
+        exists = self.store.find(Invoice,
+                                 And(Invoice.invoice_number == value,
+                                     Invoice.id != self.model.invoice_id))
+        if not exists.is_empty():
+            return ValidationError(_(u'Invoice number already used.'))
 
 
 class StockTransferItemStep(SellableItemStep):

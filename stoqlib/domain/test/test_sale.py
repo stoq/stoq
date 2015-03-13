@@ -2118,6 +2118,11 @@ class TestSaleItem(DomainTest):
         sale_item = sale.add_sellable(product.sellable)
         self.assertEqual(sale_item.get_description(), u'Description')
 
+    def test_parent(self):
+        sale = self.create_sale()
+        sale_item = self.create_sale_item(sale)
+        self.assertEquals(sale_item.parent, sale)
+
     def test_nfe_cfop_code(self):
         item = self.create_sale_item()
         client = self.create_client()

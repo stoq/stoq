@@ -111,6 +111,7 @@ class IInvoice(Interface):
 class IInvoiceItem(Interface):
     """Information of NF-e items"""
 
+    parent = Attribute("The parent operation")
     sellable = Attribute("Sellable")
     quantity = Attribute("Quantity")
     price = Attribute("Price")

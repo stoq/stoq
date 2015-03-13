@@ -48,7 +48,12 @@ from stoqlib.lib.dateutils import localtoday
 
 class BaseTax(Domain):
 
-    def set_from_template(self, template):
+    def set_item_tax(self, invoice_item):
+        """ Set the tax of an invoice item.
+
+        :param invoice_item: the item of in/out invoice
+        """
+        template = invoice_item.sellable.product.icms_template
         if not template:
             return
 
@@ -59,14 +64,14 @@ class BaseTax(Domain):
             value = getattr(template, column.name)
             setattr(self, column.name, value)
 
-        self.set_initial_values()
+        self.set_initial_values(invoice_item)
 
-    def set_initial_values(self):
+    def set_initial_values(self, invoice_item):
         """Use this method to setup the initial values of the fields.
         """
-        self.update_values()
+        self.update_values(invoice_item)
 
-    def update_values(self):
+    def update_values(self, invoice_item):
         pass
 
 
@@ -186,15 +191,16 @@ class InvoiceItemIcms(BaseICMS):
     v_bc_st_ret = PriceCol(default=None)
     v_icms_st_ret = PriceCol(default=None)
 
-    def _calc_cred_icms_sn(self, sale_item):
+    def _calc_cred_icms_sn(self, invoice_item):
+        # FIXME: Não está calculando o vBCST nem o vICMSST CSOSN [101, 201]
         if self.p_cred_sn >= 0:
-            self.v_cred_icms_sn = sale_item.get_total() * self.p_cred_sn / 100
+            self.v_cred_icms_sn = invoice_item.get_total() * self.p_cred_sn / 100
 
-    def _calc_st(self, sale_item):
-        self.v_bc_st = sale_item.price * sale_item.quantity
+    def _calc_st(self, invoice_item):
+        self.v_bc_st = invoice_item.price * invoice_item.quantity
 
-        if self.bc_st_include_ipi and sale_item.ipi_info:
-            self.v_bc_st += sale_item.ipi_info.v_ipi
+        if self.bc_st_include_ipi and invoice_item.ipi_info:
+            self.v_bc_st += invoice_item.ipi_info.v_ipi
 
         if self.p_red_bc_st is not None:
             self.v_bc_st -= self.v_bc_st * self.p_red_bc_st / 100
@@ -206,11 +212,11 @@ class InvoiceItemIcms(BaseICMS):
         if self.v_icms is not None and self.v_icms_st is not None:
             self.v_icms_st -= self.v_icms
 
-    def _calc_normal(self, sale_item):
-        self.v_bc = sale_item.price * sale_item.quantity
+    def _calc_normal(self, invoice_item):
+        self.v_bc = invoice_item.price * invoice_item.quantity
 
-        if self.bc_include_ipi and sale_item.ipi_info:
-            self.v_bc += sale_item.ipi_info.v_ipi
+        if self.bc_include_ipi and invoice_item.ipi_info:
+            self.v_bc += invoice_item.ipi_info.v_ipi
 
         if self.p_red_bc is not None:
             self.v_bc -= self.v_bc * self.p_red_bc / 100
@@ -218,44 +224,44 @@ class InvoiceItemIcms(BaseICMS):
         if self.p_icms is not None and self.v_bc is not None:
             self.v_icms = self.v_bc * self.p_icms / 100
 
-    def _update_normal(self, sale_item):
+    def _update_normal(self, invoice_item):
         """Atualiza os dados de acordo com os calculos do Regime Tributário
         Normal (Não simples)
         """
         if self.cst == 0:
             self.p_red_bc = Decimal(0)
-            self._calc_normal(sale_item)
+            self._calc_normal(invoice_item)
 
         elif self.cst == 10:
             self.p_red_bc = Decimal(0)
-            self._calc_normal(sale_item)
-            self._calc_st(sale_item)
+            self._calc_normal(invoice_item)
+            self._calc_st(invoice_item)
 
         elif self.cst == 20:
-            self._calc_normal(sale_item)
+            self._calc_normal(invoice_item)
 
         elif self.cst == 30:
             self.v_icms = 0
             self.v_bc = 0
 
-            self._calc_st(sale_item)
+            self._calc_st(invoice_item)
 
         elif self.cst in (40, 41, 50):
             self.v_icms = 0
             self.v_bc = 0
 
         elif self.cst == 51:
-            self._calc_normal(sale_item)
+            self._calc_normal(invoice_item)
 
         elif self.cst == 60:
             self.v_icms_st = 0
             self.v_bc_st = 0
 
         elif self.cst in (70, 90):
-            self._calc_normal(sale_item)
-            self._calc_st(sale_item)
+            self._calc_normal(invoice_item)
+            self._calc_st(invoice_item)
 
-    def _update_simples(self, sale_item):
+    def _update_simples(self, invoice_item):
         if self.csosn == 500:
             self.v_bc_st_ret = 0
             self.v_icms_st_ret = 0
@@ -263,19 +269,16 @@ class InvoiceItemIcms(BaseICMS):
         if self.csosn in [101, 201]:
             if self.p_cred_sn is None:
                 self.p_cred_sn = Decimal(0)
-            self._calc_cred_icms_sn(sale_item)
+            self._calc_cred_icms_sn(invoice_item)
 
-    def update_values(self):
-        from stoqlib.domain.sale import SaleItem
-        store = self.store
-        sale_item = store.find(SaleItem, icms_info=self).one()
-        branch = sale_item.sale.branch
+    def update_values(self, invoice_item):
+        branch = invoice_item.parent.branch
 
         # Simples nacional
         if branch.crt in [1, 2]:
-            self._update_simples(sale_item)
+            self._update_simples(invoice_item)
         else:
-            self._update_normal(sale_item)
+            self._update_normal(invoice_item)
 
 
 class InvoiceItemIpi(BaseIPI):
@@ -284,25 +287,18 @@ class InvoiceItemIpi(BaseIPI):
     v_bc = PriceCol(default=None)
     v_unid = PriceCol(default=None)
 
-    def set_initial_values(self):
-        from stoqlib.domain.sale import SaleItem
-        store = self.store
-        sale_item = store.find(SaleItem, ipi_info=self).one()
-        self.q_unid = sale_item.quantity
-        self.v_unid = sale_item.price
-        self.update_values()
+    def set_initial_values(self, invoice_item):
+        self.q_unid = invoice_item.quantity
+        self.v_unid = invoice_item.price
+        self.update_values(invoice_item)
 
-    def update_values(self):
-        from stoqlib.domain.sale import SaleItem
-        store = self.store
-        sale_item = store.find(SaleItem, ipi_info=self).one()
-
+    def update_values(self, invoice_item):
         # IPI is only calculated if cst is one of the following
         if not self.cst in (0, 49, 50, 99):
             return
 
         if self.calculo == self.CALC_ALIQUOTA:
-            self.v_bc = sale_item.price * sale_item.quantity
+            self.v_bc = invoice_item.price * invoice_item.quantity
             if self.p_ipi is not None:
                 self.v_ipi = self.v_bc * self.p_ipi / 100
         elif self.calculo == self.CALC_UNIDADE:
