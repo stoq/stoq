@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-11 18:12-0300\n"
-"PO-Revision-Date: 2015-03-11 21:13+0000\n"
+"POT-Creation-Date: 2015-03-12 17:32-0300\n"
+"PO-Revision-Date: 2015-03-12 20:32+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/stoq/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -9775,112 +9775,112 @@ msgstr ""
 msgid "Grid product"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:962 ../stoqlib/domain/product.py:1014
+#: ../stoqlib/domain/product.py:966 ../stoqlib/domain/product.py:1018
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1021
+#: ../stoqlib/domain/product.py:1025
 msgid "Quantity to sell is greater than the available stock."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1296
+#: ../stoqlib/domain/product.py:1300
 #, python-format
 msgid "Adjustment for inventory %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1297
+#: ../stoqlib/domain/product.py:1301
 #, python-format
 msgid "Returned from loan %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1298
+#: ../stoqlib/domain/product.py:1302
 #, python-format
 msgid "Loaned for loan %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1299
+#: ../stoqlib/domain/product.py:1303
 #, python-format
 msgid "Allocated for production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1300 ../stoqlib/domain/product.py:1301
+#: ../stoqlib/domain/product.py:1304 ../stoqlib/domain/product.py:1305
 #, python-format
 msgid "Produced in production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1302
+#: ../stoqlib/domain/product.py:1306
 #, python-format
 msgid "Returned remaining from production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1304
+#: ../stoqlib/domain/product.py:1308
 #, python-format
 msgid "Received for receiving order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1305
+#: ../stoqlib/domain/product.py:1309
 #, python-format
 msgid "Returned sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1306
+#: ../stoqlib/domain/product.py:1310
 #, python-format
 msgid "Returned from canceled sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1307
+#: ../stoqlib/domain/product.py:1311
 #, python-format
 msgid "Sold in sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1308
+#: ../stoqlib/domain/product.py:1312
 #, python-format
 msgid "Product removal for stock decrease %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1309
+#: ../stoqlib/domain/product.py:1313
 #, python-format
 msgid "Transfered from branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1311
+#: ../stoqlib/domain/product.py:1315
 #, python-format
 msgid "Transfered to this branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1313
+#: ../stoqlib/domain/product.py:1317
 msgid "Registred initial stock"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1314
+#: ../stoqlib/domain/product.py:1318
 msgid "Imported from previous version"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1315
+#: ../stoqlib/domain/product.py:1319
 #, python-format
 msgid "Consigned product returned %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1316
+#: ../stoqlib/domain/product.py:1320
 #, python-format
 msgid "Used on work order %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1317
+#: ../stoqlib/domain/product.py:1321
 #, python-format
 msgid "Returned to stock on work order %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1318
+#: ../stoqlib/domain/product.py:1322
 #, python-format
 msgid "Reserved for sale %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1485
+#: ../stoqlib/domain/product.py:1489
 msgid "Boolean"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1486
+#: ../stoqlib/domain/product.py:1490
 msgid "Decimal"
 msgstr ""
 
@@ -10393,7 +10393,7 @@ msgstr ""
 #: ../stoqlib/domain/workorder.py:1024 ../stoqlib/gui/base/dialogs.py:467
 #: ../stoqlib/gui/editors/parameterseditor.py:214
 #: ../stoqlib/gui/search/parametersearch.py:104
-#: ../stoqlib/gui/wizards/productwizard.py:156
+#: ../stoqlib/gui/wizards/productwizard.py:171
 #: ../stoqlib/reporting/inventory.py:44
 msgid "No"
 msgstr ""
@@ -10402,7 +10402,7 @@ msgstr ""
 #: ../stoqlib/domain/workorder.py:1024 ../stoqlib/gui/base/dialogs.py:467
 #: ../stoqlib/gui/editors/parameterseditor.py:208
 #: ../stoqlib/gui/search/parametersearch.py:104
-#: ../stoqlib/gui/wizards/productwizard.py:156
+#: ../stoqlib/gui/wizards/productwizard.py:171
 #: ../stoqlib/reporting/inventory.py:44
 msgid "Yes"
 msgstr ""
@@ -15125,11 +15125,19 @@ msgstr ""
 msgid "Edit Production"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/productwizard.py:117
+#: ../stoqlib/gui/wizards/productwizard.py:54
+msgid "You need to register an attribute group first"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/productwizard.py:94
+msgid "You should select an attribute first"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/productwizard.py:132
 msgid "Product creation wizard"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/productwizard.py:155
+#: ../stoqlib/gui/wizards/productwizard.py:170
 msgid "Would you like to register another product alike?"
 msgstr ""
 
