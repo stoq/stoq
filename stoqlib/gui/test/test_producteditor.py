@@ -65,6 +65,26 @@ class TestProductEditor(GUITest):
         self.assertEquals(grid_product.product_type, Product.TYPE_GRID)
         self.check_editor(editor, 'editor-product-create-grid-product')
 
+    def test_create_with_template(self):
+        attribute_group = self.create_attribute_group()
+        grid_attribute = self.create_grid_attribute(attribute_group=attribute_group,
+                                                    description=u'attr 1')
+        grid_attribute2 = self.create_grid_attribute(attribute_group=attribute_group,
+                                                     description=u'attr 2')
+        grid_product = self.create_product(storable=True, is_grid=True)
+        self.create_product_attribute(product=grid_product, attribute=grid_attribute)
+        self.create_product_attribute(product=grid_product, attribute=grid_attribute2)
+        editor = ProductEditor(self.store, product_type=Product.TYPE_GRID,
+                               template=grid_product)
+        # Be sure that its not the same product
+        self.assertNotEqual(grid_product, editor.model)
+        # But they have the same list of |grid_attribute|
+        grid_product_attributes = set(attr.attribute for attr in grid_product.attributes)
+        model_attributes = set(attr.attribute for attr in editor.model.attributes)
+        self.assertEquals(grid_product_attributes, model_attributes)
+        # and they are not empty
+        self.assertNotEquals(len(model_attributes), 0)
+
     def test_show(self):
         product = self.create_product(storable=True)
         editor = ProductEditor(self.store, product)

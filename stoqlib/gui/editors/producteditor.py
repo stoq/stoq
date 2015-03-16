@@ -397,6 +397,10 @@ class ProductEditor(SellableEditor):
             model.icms_template = self._template.icms_template
             model.ipi_template = self._template.ipi_template
 
+            for product_attr in self._template.attributes:
+                ProductAttribute(store=self.store,
+                                 product_id=model.id,
+                                 attribute_id=product_attr.attribute.id)
             for supplier_info in self._template.suppliers:
                 ProductSupplierInfo(
                     store=self.store,

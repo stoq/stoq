@@ -84,6 +84,10 @@ class GridAttributeEditor(BaseEditor):
         group = self.store.find(GridGroup)
         self.group_combo.prefill(api.for_combo(group, attr='description'))
         self.proxy = self.add_proxy(self.model, GridAttributeEditor.proxy_widgets)
+        # XXX: There is a bug in kiwi that when the model value for the combo is
+        # None, it will not update the model after adding the proxy. Prefilling
+        # again will force the update.
+        self.group_combo.prefill(api.for_combo(group, attr='description'))
 
 
 class AttributeOptionEditor(BaseEditor):
@@ -135,3 +139,17 @@ class _AttributeOptionsSlave(ModelListSlave):
     def run_editor(self, store, model):
         return self.run_dialog(self.editor_class, store=store, model=model,
                                attribute=self._attribute)
+
+
+def test_grid_editor():  # pragma nocover
+    from stoqlib.gui.base.dialogs import run_dialog
+    ec = api.prepare_test()
+    group = ec.store.find(GridGroup).any()
+    attribute = ec.create_grid_attribute(attribute_group=group)
+    attribute.group = None
+    run_dialog(GridAttributeEditor,
+               parent=None, store=ec.store, model=attribute)
+    print attribute.group
+
+if __name__ == '__main__':  # pragma nocover
+    test_grid_editor()

@@ -24,8 +24,10 @@
 
 __tests__ = 'stoqlib.gui.wizards.productwizard'
 
+import contextlib
 import mock
 
+from stoqlib.domain.product import Product
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 
@@ -168,3 +170,40 @@ class TestProducCreateWizard(GUITest):
         for combo in grid_slave._widgets.values():
             combo.select_item_by_position(1)
         self.assertEquals(grid_slave.add_product_button.get_sensitive(), False)
+
+    @mock.patch('stoqlib.gui.wizards.productwizard.yesno')
+    def test_create_product_alike(self, yesno):
+        attribute_group = self.create_attribute_group()
+        grid_attribute = self.create_grid_attribute(attribute_group=attribute_group,
+                                                    description=u'attr 1')
+        grid_attribute2 = self.create_grid_attribute(attribute_group=attribute_group,
+                                                     description=u'attr 2')
+        self.create_attribute_option(grid_attribute=grid_attribute,
+                                     description=u'option for attr 1')
+        self.create_attribute_option(grid_attribute=grid_attribute2,
+                                     description=u'option for attr 2')
+
+        grid_product = self.create_product(storable=True, is_grid=True)
+        self.create_product_attribute(product=grid_product, attribute=grid_attribute)
+
+        # We need the mocked yesno to return different values each time it
+        # is called inside of run_wizard bellow
+        values = [True, False]
+
+        def fake_yes_no(*args, **kwargs):
+            return values.pop(0)
+
+        with contextlib.nested(
+                mock.patch('stoqlib.gui.wizards.productwizard.run_dialog'),
+                mock.patch('stoqlib.gui.wizards.productwizard.api.new_store'),
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')
+        ) as (run_dialog, new_store, commit, close):
+            new_store.return_value = self.store
+            run_dialog.return_value = grid_product
+            yesno.side_effect = fake_yes_no
+            ProductCreateWizard.run_wizard(None)
+        # This is the second call to yesno()
+        args, kwargs = run_dialog.call_args_list[1]
+        self.assertEquals(kwargs['product_type'], Product.TYPE_GRID)
+        self.assertEquals(kwargs['template'], grid_product)
