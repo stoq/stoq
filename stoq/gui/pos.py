@@ -1058,7 +1058,7 @@ class PosApp(ShellApp):
             # The user pressed enter with an empty string. Maybe start checkout
             checkout = True
             need_confirmation = sysparam.get_bool('CONFIRM_SALES_ON_TILL')
-            if (need_confirmation and not
+            if (len(self.sale_items) > 0 and need_confirmation and not
                     yesno(_('Close the order?'), gtk.RESPONSE_NO, _('Confirm'),
                           _("Don't confirm"))):
                 checkout = False
