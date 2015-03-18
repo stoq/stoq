@@ -34,13 +34,13 @@ major_version = 1
 minor_version = 9
 
 #: Micro version, increase when doing a bug fix for a stable release
-micro_version = 0
+micro_version = 1
 
 #: extra version, rc1, rc2, etc goes here.
 extra_version = ''
 
 #: the date the software was released
-release_date = (2015, 2, 17)
+release_date = (2015, 3, 18)
 
 #: if this is a stable release
 stable = True
