@@ -4,7 +4,7 @@ B|35|10000001|Venda|0|55|1|1666|2011-10-24T00:00:00-02:00||1|1|3548906|1|1|8|1|1
 C|Stoq Roupas e Acessorios Ltda||982737266222||||1|
 C02|24198774732235|
 C05|Avendia Sao Carlos|2333||Centro|3548906|Sao Carlos|SP|13560001|1058|BRASIL|48763983|
-E|Client|9|||
+E|Client|9||||
 E03||
 E05|Rua dos Tomates|2666|||3548906|Sao Carlos|SP|87654321|1058|BRASIL||
 H|1||

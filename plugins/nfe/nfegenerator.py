@@ -188,6 +188,11 @@ class NFeGenerator(object):
 
         return cnpj
 
+    def _format_state_registry(self, state_registry):
+        if state_registry.isalpha():
+            return state_registry.upper()
+        return ''.join([s for s in state_registry if s in '1234567890'])
+
     def _add_identification(self, branch, recipient):
         # Pg. 71
         branch_location = branch.person.get_main_address().city_location
@@ -239,7 +244,7 @@ class NFeGenerator(object):
         name = branch.person.name
         person = branch.person
         company = person.company
-        state_registry = company.state_registry
+        state_registry = self._format_state_registry(company.state_registry)
         crt = self._order.branch.crt
         self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
                                      state_registry=state_registry, crt=crt)
@@ -258,7 +263,8 @@ class NFeGenerator(object):
             self._nfe_recipient = NFeRecipient(name, cpf=cpf, email=email)
         elif company and company.cnpj:
             cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
-            state_registry = company.state_registry
+            state_registry = self._format_state_registry(company.state_registry)
+
             self._nfe_recipient = NFeRecipient(name, cnpj=cnpj,
                                                state_registry=state_registry,
                                                email=email)
@@ -315,7 +321,18 @@ class NFeGenerator(object):
         nfe_transport = NFeTransport()
         self._nfe_data.append(nfe_transport)
         if transporter:
-            nfe_transporter = NFeTransporter(transporter)
+            person = transporter.person
+            individual = person.individual
+            if individual is not None:
+                cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
+                nfe_transporter = NFeTransporter(transporter, cpf=cpf)
+            else:
+                company = person.company
+                cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
+                state_registry = self._format_state_registry(company.state_registry)
+                nfe_transporter = NFeTransporter(transporter, cnpj=cnpj,
+                                                 state_registry=state_registry)
+
             self._nfe_data.append(nfe_transporter)
 
         for item_number, operation_item in enumerate(operation_items):
@@ -705,7 +722,7 @@ class NFeAddress(BaseNFeXMLGroup):
         postal_code = ''.join([i for i in
                                address.postal_code if i in '1234567890'])
 
-        self.set_attr('xLgr', address.street)
+        self.set_attr('xLgr', address.street[:60])
         self.set_attr('nro', address.streetnumber or '0')
         self.set_attr('xCpl', address.complement)
         self.set_attr('xBairro', address.district)
@@ -713,7 +730,9 @@ class NFeAddress(BaseNFeXMLGroup):
         self.set_attr('cMun', str(location.city_code or ''))
         self.set_attr('UF', location.state)
         self.set_attr('CEP', postal_code)
-        self.set_attr('Fone', phone_number)
+        # Only export the phone number if it has 6 digits or more
+        if len(str(phone_number)) > 6:
+            self.set_attr('Fone', phone_number)
 
 
 # Pg. 96
@@ -744,8 +763,9 @@ class NFeIssuer(BaseNFeXMLGroup):
         else:
             self.set_attr('CPF', cpf)
 
-        self.set_attr('xNome', name)
+        self.set_attr('xNome', name[:60])
         self.set_attr('CRT', crt)
+
         self._ie = state_registry
 
     def set_address(self, address, phone_number=None):
@@ -813,7 +833,7 @@ class NFeRecipient(NFeIssuer):
         else:
             ie = ''
 
-        if ie and ie.upper() != 'ISENTO':
+        if ie and ie != 'ISENTO':
             iedest = 1
         elif self.get_attr('CNPJ'):
             iedest = 2
@@ -822,8 +842,8 @@ class NFeRecipient(NFeIssuer):
         else:
             iedest = 9
 
-        base = '%s|%s|%s|%s||%s\n' % (self.txttag, self.get_attr('xNome'), iedest,
-                                      ie, self.get_attr('email'))
+        base = '%s|%s|%s|%s|||%s\n' % (self.txttag, self.get_attr('xNome'), iedest,
+                                       ie, self.get_attr('email'))
         return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
@@ -1715,21 +1735,16 @@ class NFeTransporter(BaseNFeXMLGroup):
                   (u'xMun', ''),
                   (u'UF', '')]
 
-    def __init__(self, transporter):
+    def __init__(self, transporter, cpf=None, cnpj=None, state_registry=None):
         BaseNFeXMLGroup.__init__(self)
         person = transporter.person
         name = person.name
-        self.set_attr('xNome', name)
-
-        individual = person.individual
-        if individual is not None:
-            cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
-            self.set_attr('CPF', cpf)
-        else:
-            company = person.company
-            cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
+        self.set_attr('xNome', name[:60])
+        if cnpj is not None:
             self.set_attr('CNPJ', cnpj)
-            self.set_attr('IE', company.state_registry)
+            self.set_attr('IE', state_registry)
+        else:
+            self.set_attr('CPF', cpf)
 
         address = person.get_main_address()
         if address:
@@ -1751,8 +1766,8 @@ class NFeTransporter(BaseNFeXMLGroup):
                                             self.get_attr('xNome') or '',
                                             self.get_attr('IE') or '',
                                             self.get_attr('xEnder') or '',
-                                            self.get_attr('UF') or '',
-                                            self.get_attr('xMun') or '', )
+                                            self.get_attr('xMun') or '',
+                                            self.get_attr('UF') or '', )
         doc_txt = self.get_doc_txt()
 
         return base_txt + doc_txt
