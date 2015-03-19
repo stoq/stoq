@@ -45,6 +45,7 @@ from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.formatters import format_sellable_description
 from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.transfer import TransferOrderReceipt
 
@@ -119,6 +120,13 @@ class StockTransferItemStep(SellableItemStep):
     validate_stock = True
     cost_editable = False
 
+    def __init__(self, wizard, previous, store, model):
+        manager = get_plugin_manager()
+        nfe_is_active = manager.is_active('nfe')
+        if nfe_is_active:
+            self.cost_editable = True
+        SellableItemStep.__init__(self, wizard, previous, store, model)
+
     #
     # SellableItemStep hooks
     #
@@ -134,7 +142,7 @@ class StockTransferItemStep(SellableItemStep):
         return list(self.model.get_items())
 
     def get_order_item(self, sellable, cost, quantity, batch=None):
-        return self.model.add_sellable(sellable, batch, quantity)
+        return self.model.add_sellable(sellable, batch, quantity, cost)
 
     def get_columns(self):
         return [

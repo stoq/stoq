@@ -267,7 +267,7 @@ class TransferOrder(Domain):
     def status_str(self):
         return(self.statuses[self.status])
 
-    def add_sellable(self, sellable, batch, quantity=1):
+    def add_sellable(self, sellable, batch, quantity=1, cost=None):
         """Add the given |sellable| to this |transfer|.
 
         :param sellable: The |sellable| we are transfering
@@ -287,7 +287,7 @@ class TransferOrder(Domain):
                                  sellable=sellable,
                                  batch=batch,
                                  quantity=quantity,
-                                 stock_cost=stock_item.stock_cost)
+                                 stock_cost=cost or stock_item.stock_cost)
 
     def can_send(self):
         return (self.status == self.STATUS_PENDING and

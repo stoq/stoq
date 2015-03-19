@@ -45,6 +45,7 @@ from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -163,7 +164,9 @@ class DecreaseItemStep(SellableItemStep):
     def post_init(self):
         self.hide_add_button()
         self.hide_edit_button()
-        if not self.wizard.create_payments:
+        manager = get_plugin_manager()
+        nfe_is_active = manager.is_active('nfe')
+        if not self.wizard.create_payments and not nfe_is_active:
             self.cost_label.hide()
             self.cost.hide()
             self.cost.update(0)
