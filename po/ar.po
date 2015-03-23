@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 10:55-0300\n"
+"POT-Creation-Date: 2015-03-23 11:53-0300\n"
 "PO-Revision-Date: 2015-03-20 13:55+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/stoq/language/ar/)\n"
@@ -2380,7 +2380,7 @@ msgstr ""
 #: ../data/glade/TransferOrderDetails.ui.h:2 ../stoq/gui/receivable.py:141
 #: ../stoq/gui/stock.py:148 ../stoq/gui/stock.py:372
 #: ../stoqlib/domain/account.py:152
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:121
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:122
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:118
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:65
 msgid "Receive"
@@ -2410,8 +2410,8 @@ msgid "Reason"
 msgstr ""
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:12
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:137
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:144
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:138
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:145
 msgid "Undo Returned Sale"
 msgstr ""
 
@@ -11383,20 +11383,20 @@ msgstr ""
 msgid "Qty returned"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:120
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:121
 msgid "Receive pending returned sale?"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:121
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:122
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:119
 msgid "Don't receive"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:145
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:146
 msgid "Don't Undo"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:157
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:158
 msgid ""
 "It was not possible to undo this returned sale. Some of the returned "
 "products are out of stock."

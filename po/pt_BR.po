@@ -7,15 +7,15 @@
 # Johan Dahlin <jdahlin@async.com.br>, 2005
 # luisoishi <luisoishi@async.com.br>, 2015
 # Rafael Neri <rafepel@gmail.com>, 2014
-# romaia <romaia@async.com.br>, 2014
+# romaia <romaia@async.com.br>, 2014-2015
 # Thiago Bellini Ribeiro <hackedbellini@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 10:55-0300\n"
-"PO-Revision-Date: 2015-03-20 13:55+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2015-03-23 11:53-0300\n"
+"PO-Revision-Date: 2015-03-23 15:33+0000\n"
+"Last-Translator: luisoishi <luisoishi@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -215,11 +215,11 @@ msgstr "Este campo é obrigatório"
 
 #: ../data/glade/AttributeGroupEditor.ui.h:2
 msgid "Group name:"
-msgstr ""
+msgstr "Nome do grupo:"
 
 #: ../data/glade/AttributeOptionEditor.ui.h:2
 msgid "Attribute option:"
-msgstr ""
+msgstr "Opção de atributo"
 
 #: ../data/glade/BankDataSlave.ui.h:1
 #: ../data/glade/BasePaymentMethodSlave.ui.h:4
@@ -1144,12 +1144,12 @@ msgstr "Até:"
 
 #: ../data/glade/GridAttributeEditor.ui.h:2
 msgid "Attribute name:"
-msgstr ""
+msgstr "Nome do atributo"
 
 #: ../data/glade/GridAttributeEditor.ui.h:3
 #: ../data/glade/ProductAttributeSlave.ui.h:1
 msgid "Attribute group:"
-msgstr ""
+msgstr "Grupo de atributo"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:1
 msgid "Gender:"
@@ -2025,7 +2025,7 @@ msgstr "O produto não é realmente seu. O fornecedor lhe empresta alguma quanti
 #: ../data/glade/ProductTypeStep.ui.h:11
 #: ../stoqlib/gui/editors/producteditor.py:363
 msgid "Grid"
-msgstr ""
+msgstr "Grade"
 
 #: ../data/glade/ProductTypeStep.ui.h:12
 msgid "More Options"
@@ -2340,22 +2340,22 @@ msgstr "<b>Renegociação número:</b>"
 
 #: ../data/glade/ReturnedSaleUndoDialog.ui.h:1
 msgid "This will undo the returned sale. Are you sure?"
-msgstr ""
+msgstr "Isto vai desfazer a devolução. Você tem certeza?"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:1
 #: ../data/template/return_sale/pending_return_sale-details.html:13
 msgid "Sale:"
-msgstr ""
+msgstr "Venda:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:2
 #: ../data/template/return_sale/pending_return_sale-details.html:29
 msgid "Received By:"
-msgstr ""
+msgstr "Recebido por:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:3
 #: ../data/template/return_sale/pending_return_sale-details.html:21
 msgid "Confirm date:"
-msgstr ""
+msgstr "Data de confirmação"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:4
 #: ../data/glade/StartStockDecreaseStep.ui.h:9
@@ -2370,22 +2370,22 @@ msgstr "Nota fiscal:"
 #: ../data/glade/ReturnedSalesDetails.ui.h:5
 #: ../data/template/return_sale/pending_return_sale-details.html:19
 msgid "Returned date:"
-msgstr ""
+msgstr "Data da devolução:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:6
 #: ../data/template/return_sale/pending_return_sale-details.html:31
 msgid "Confirmed By:"
-msgstr ""
+msgstr "Confirmado por:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:8
 msgid "Returned Sale:"
-msgstr ""
+msgstr "Venda devolvida:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:9
 #: ../data/glade/TransferOrderDetails.ui.h:2 ../stoq/gui/receivable.py:141
 #: ../stoq/gui/stock.py:148 ../stoq/gui/stock.py:372
 #: ../stoqlib/domain/account.py:152
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:121
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:122
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:118
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:65
 msgid "Receive"
@@ -2393,7 +2393,7 @@ msgstr "Receber"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:10
 msgid "Returned Items"
-msgstr ""
+msgstr "Itens devolvidos"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:11
 #: ../data/glade/StockDecreaseDetails.ui.h:9
@@ -2415,10 +2415,10 @@ msgid "Reason"
 msgstr "Razão"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:12
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:137
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:144
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:138
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:145
 msgid "Undo Returned Sale"
-msgstr ""
+msgstr "Desfazer devolução"
 
 #: ../data/glade/SaleDetailsDialog.ui.h:1
 #: ../data/glade/SaleDetailsEditor.ui.h:1
@@ -4308,7 +4308,7 @@ msgstr "Código do fornecedor"
 #: ../data/template/return_sale/pending_return_sale-details.html:25
 #: ../data/template/return_sale/pending_return_sale-details.html:35
 msgid "Not Received"
-msgstr ""
+msgstr "Não recebido"
 
 #: ../data/template/return_sale/return_sale-details.html:7
 msgid "Sale date:"
@@ -5170,11 +5170,11 @@ msgstr "O CNPJ de %s não é válido."
 
 #: ../plugins/nfe/nfeui.py:118
 msgid "Stock decreases"
-msgstr ""
+msgstr "Saídas manuais"
 
 #: ../plugins/nfe/nfeui.py:123
 msgid "Returned sales"
-msgstr ""
+msgstr "Vendas devolvidas"
 
 #. -*- coding: utf-8 -*-
 #. vi:si:et:sw=4:sts=4:ts=4
@@ -6214,11 +6214,11 @@ msgstr "Dispositivos..."
 
 #: ../stoq/gui/admin.py:349
 msgid "Attribute Group..."
-msgstr ""
+msgstr "Grupo de atributo..."
 
 #: ../stoq/gui/admin.py:350
 msgid "Grid Attribute..."
-msgstr ""
+msgstr "Atributo da grade"
 
 #: ../stoq/gui/admin.py:351
 msgid "Payment methods..."
@@ -7368,7 +7368,7 @@ msgstr "O valor da troca é igual ao valor da nova venda. Por favor, adicione ma
 
 #: ../stoq/gui/pos.py:1062
 msgid "Close the order?"
-msgstr ""
+msgstr "Fechar a ordem?"
 
 #: ../stoq/gui/pos.py:1062 ../stoq/gui/purchase.py:171 ../stoq/gui/till.py:148
 msgid "Confirm"
@@ -7965,7 +7965,7 @@ msgstr "Alterar cliente..."
 
 #: ../stoq/gui/sales.py:199
 msgid "Change salesperson..."
-msgstr ""
+msgstr "Alterar vendedor..."
 
 #: ../stoq/gui/sales.py:200
 msgid "_Print invoice..."
@@ -8008,7 +8008,7 @@ msgstr "Alterar Cliente"
 
 #: ../stoq/gui/sales.py:221
 msgid "Change Salesperson"
-msgstr ""
+msgstr "Alterar vendedor"
 
 #: ../stoq/gui/sales.py:223 ../stoq/gui/till.py:149
 #: ../stoqlib/gui/wizards/salereturnwizard.py:211
@@ -8764,7 +8764,7 @@ msgstr "Pesquisa por itens fechados no estoque"
 
 #: ../stoq/gui/stock.py:127
 msgid "Pending returned sales..."
-msgstr ""
+msgstr "Devolução pendente"
 
 #: ../stoq/gui/stock.py:128 ../stoqlib/domain/uiform.py:150
 #: ../stoqlib/gui/dialogs/clientdetails.py:226
@@ -8855,16 +8855,16 @@ msgstr "Há %s transferências pendentes"
 #: ../stoq/gui/stock.py:384 ../stoq/gui/stock.py:422
 #, python-format
 msgid "You have %s returned sale to receive"
-msgstr ""
+msgstr "Você tem %s devolução para receber"
 
 #: ../stoq/gui/stock.py:385 ../stoq/gui/stock.py:423
 #, python-format
 msgid "You have %s returned sales to receive"
-msgstr ""
+msgstr "Você tem %s devoluções a receber"
 
 #: ../stoq/gui/stock.py:388
 msgid "Returned sale"
-msgstr ""
+msgstr "Venda devolvida"
 
 #: ../stoq/gui/till.py:81 ../stoq/lib/applist.py:62
 #: ../stoqlib/lib/parameters.py:719
@@ -9792,7 +9792,7 @@ msgstr "Dias"
 
 #: ../stoqlib/domain/product.py:212
 msgid "Grid product"
-msgstr ""
+msgstr "Produto grade"
 
 #: ../stoqlib/domain/product.py:966 ../stoqlib/domain/product.py:1018
 msgid "quantity must be a positive number"
@@ -10074,7 +10074,7 @@ msgstr "Itens trocados para venda %s"
 #: ../stoqlib/domain/returnedsale.py:571
 #, python-format
 msgid "%s return undone for sale %s"
-msgstr ""
+msgstr "%s devolução desfeita pela venda %s"
 
 #: ../stoqlib/domain/sale.py:256
 msgid ""
@@ -10237,7 +10237,7 @@ msgstr "Já existe uma estação registrada como `%s'."
 #. TODO: Save the operation nature in new loan table field.
 #: ../stoqlib/domain/stockdecrease.py:267
 msgid "Stock decrease"
-msgstr ""
+msgstr "Saída manual"
 
 #: ../stoqlib/domain/test/test_person.py:145
 #, python-format
@@ -11369,15 +11369,15 @@ msgstr "Detalhes de renegociação"
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:54
 msgid "Returned Sale Details"
-msgstr ""
+msgstr "Detalhes da venda devolvida"
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:72
 msgid "Return reason"
-msgstr ""
+msgstr "Razão da devolução"
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:74
 msgid "Undo reason"
-msgstr ""
+msgstr "Razão do cancelamento da devolução"
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:88
 #: ../stoqlib/gui/slaves/productslave.py:701
@@ -11386,26 +11386,26 @@ msgstr "Código do produto"
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:92
 msgid "Qty returned"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:120
-msgid "Receive pending returned sale?"
-msgstr ""
+msgstr "Qtde devolvida"
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:121
+msgid "Receive pending returned sale?"
+msgstr "Receber devolução pendente?"
+
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:122
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:119
 msgid "Don't receive"
 msgstr "Não receber"
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:145
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:146
 msgid "Don't Undo"
-msgstr ""
+msgstr "Não desfazer"
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:157
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:158
 msgid ""
 "It was not possible to undo this returned sale. Some of the returned "
 "products are out of stock."
-msgstr ""
+msgstr "Não foi possível desfazer a devolução. Alguns dos itens devolvidos não possuem estoque suficiente."
 
 #: ../stoqlib/gui/dialogs/saledetails.py:134
 msgid "Sale Comment"
@@ -11587,22 +11587,22 @@ msgstr "Movimento diário"
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:240
 #, python-format
 msgid "Bank: %s"
-msgstr ""
+msgstr "Banco: %s"
 
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:242
 #, python-format
 msgid "Agency: %s"
-msgstr ""
+msgstr "Agência: %s"
 
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:244
 #, python-format
 msgid "Account: %s"
-msgstr ""
+msgstr "Conta: %s"
 
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:246
 #, python-format
 msgid "Numbers: %s"
-msgstr ""
+msgstr "Número: %s"
 
 #: ../stoqlib/gui/dialogs/tilldetails.py:36
 msgid "Till Details"
@@ -11910,15 +11910,15 @@ msgstr "As mudanças serão aplicadas após a reinicialização do Stoq"
 
 #: ../stoqlib/gui/editors/grideditor.py:38
 msgid "Attribute Group"
-msgstr ""
+msgstr "Grupo de atributo"
 
 #: ../stoqlib/gui/editors/grideditor.py:61
 msgid "Grid Attribute"
-msgstr ""
+msgstr "Atributo da grade"
 
 #: ../stoqlib/gui/editors/grideditor.py:90
 msgid "Attribute Option"
-msgstr ""
+msgstr "Opção do atributo"
 
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:48
 msgid "Products Adjustment"
@@ -12585,7 +12585,7 @@ msgstr "O valor de venda não pode ser maior que %s."
 
 #: ../stoqlib/gui/editors/saleeditor.py:376
 msgid "Salesperson change"
-msgstr ""
+msgstr "Alterar vendedor"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:71
 msgid "Taxes and Tax rates"
@@ -13239,27 +13239,27 @@ msgstr "Mostrar entradas do tipo"
 
 #: ../stoqlib/gui/search/gridsearch.py:39
 msgid "Attribute Group Search"
-msgstr ""
+msgstr "Pesquisar grupo de atributo"
 
 #: ../stoqlib/gui/search/gridsearch.py:45
 msgid "Attribute Group Matching:"
-msgstr ""
+msgstr "Grupo de atributo contendo:"
 
 #: ../stoqlib/gui/search/gridsearch.py:52
 msgid "Attribute group"
-msgstr ""
+msgstr "Grupo de atributo"
 
 #: ../stoqlib/gui/search/gridsearch.py:57
 msgid "Grid Attribute Search"
-msgstr ""
+msgstr "Pesquisar atributo de grade"
 
 #: ../stoqlib/gui/search/gridsearch.py:63
 msgid "Attribute Matching:"
-msgstr ""
+msgstr "Atributo contendo:"
 
 #: ../stoqlib/gui/search/gridsearch.py:70
 msgid "Attribute"
-msgstr ""
+msgstr "Atributo"
 
 #: ../stoqlib/gui/search/gridsearch.py:72
 #: ../stoqlib/gui/search/parametersearch.py:70
@@ -13668,15 +13668,15 @@ msgstr "Razão da Devolução"
 
 #: ../stoqlib/gui/search/returnedsalesearch.py:116
 msgid "Pending Returned Sale Search"
-msgstr ""
+msgstr "Busca de devolução pendente"
 
 #: ../stoqlib/gui/search/returnedsalesearch.py:125
 msgid "Returned #"
-msgstr ""
+msgstr "Devolução #"
 
 #: ../stoqlib/gui/search/returnedsalesearch.py:135
 msgid "Returned on Branch"
-msgstr ""
+msgstr "Devolvido na filial"
 
 #: ../stoqlib/gui/search/salesearch.py:65
 msgid "Search for Sales"
@@ -14236,15 +14236,15 @@ msgstr "Já existe um número de série no intervalor %d - %d"
 
 #: ../stoqlib/gui/slaves/productslave.py:70
 msgid "Select a group"
-msgstr ""
+msgstr "Selecione um grupo"
 
 #: ../stoqlib/gui/slaves/productslave.py:139
 msgid "Select an option"
-msgstr ""
+msgstr "Selecione uma opção"
 
 #: ../stoqlib/gui/slaves/productslave.py:177
 msgid "You should fill the description first"
-msgstr ""
+msgstr "Você deveria preencher a descrição primeiro"
 
 #: ../stoqlib/gui/slaves/productslave.py:311
 msgid "NCM must have 8 digits."
@@ -15170,11 +15170,11 @@ msgstr "Editar produção"
 
 #: ../stoqlib/gui/wizards/productwizard.py:54
 msgid "You need to register an attribute group first"
-msgstr ""
+msgstr "Você precisa cadastrar um grupo de atributos primeiro"
 
 #: ../stoqlib/gui/wizards/productwizard.py:94
 msgid "You should select an attribute first"
-msgstr ""
+msgstr "Você deve selecionar um atributo primeiro"
 
 #: ../stoqlib/gui/wizards/productwizard.py:132
 msgid "Product creation wizard"
@@ -16580,12 +16580,12 @@ msgstr "Este parâmetro permite a alteração do cliente depois da confirmação
 
 #: ../stoqlib/lib/parameters.py:522
 msgid "Allow salesperson change after sale's confirmation"
-msgstr ""
+msgstr "Permitir alterar vendedor depois da confirmação da venda"
 
 #: ../stoqlib/lib/parameters.py:523
 msgid ""
 "This parameter allows to change the salesperson after a sale's confirmation."
-msgstr ""
+msgstr "Este parâmetro permite a alteração do vendedor depois da confirmação da venda."
 
 #: ../stoqlib/lib/parameters.py:529
 msgid "Default Receiving C.F.O.P."
@@ -16978,7 +16978,7 @@ msgid ""
 "This will be printed in the promotional message area of the fiscal coupon\n"
 "IMPORTANT NOTE:\n"
 "This template cannot have more than 2 line, and each line more than 50 characters, and you have to break it manually using the characters \"\\n\" or (enter key) or the fiscal printer may not print it correctly."
-msgstr ""
+msgstr "Este texto será impresso na mensagem promocional do cupom fiscal.\nNOTA IMPORTANTE:\nEste texto não pode ter mais que 2 linhas, e cada linha mais que 50 caracteres, e você deve inseria a quebra de linha manualmente usando os caracteres \"\\n\" (tecla enter), ou  a impressora poderá não imprimir corretamente."
 
 #: ../stoqlib/lib/payment.py:77
 msgid "Need at least one value"
@@ -17414,12 +17414,12 @@ msgstr "%s/venda"
 
 #: ../stoqlib/reporting/salereturn.py:55
 msgid "Pending Returned Sale Report"
-msgstr ""
+msgstr "Relatório de Devolução Pendente"
 
 #: ../stoqlib/reporting/salereturn.py:67
 #, python-format
 msgid "Returned Sale %s"
-msgstr ""
+msgstr "Venda Devolvida %s"
 
 #: ../stoqlib/reporting/service.py:34 ../stoqlib/reporting/service.py:41
 msgid "Service Listing"
