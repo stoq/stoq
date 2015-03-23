@@ -102,6 +102,7 @@ class ReturnedSaleDialog(BaseEditor):
         if store.committed:
             self.model.sync()
             self.proxy.update('status_str')
+            self.undo_button.set_sensitive(False)
             self._update_reason()
 
     #
