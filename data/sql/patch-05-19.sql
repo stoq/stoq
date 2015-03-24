@@ -3,11 +3,12 @@ ALTER TABLE sale_item_ipi RENAME TO invoice_item_ipi;
 
 ALTER INDEX sale_item_icms_pkey RENAME TO invoice_item_icms_pkey;
 ALTER INDEX sale_item_icms_te_id_key RENAME TO invoice_item_icms_te_id_key;
-ALTER TABLE invoice_item_icms RENAME CONSTRAINT sale_item_icms_te_id_fkey TO invoice_item_icms_te_id_fkey;
+-- These dont work for postgres 9.1, and we should support that.
+--ALTER TABLE invoice_item_icms RENAME CONSTRAINT sale_item_icms_te_id_fkey TO invoice_item_icms_te_id_fkey;
 
 ALTER INDEX sale_item_ipi_pkey RENAME TO invoice_item_ipi_pkey;
 ALTER INDEX sale_item_ipi_te_id_key RENAME TO invoice_item_ipi_te_id_key;
-ALTER TABLE invoice_item_ipi RENAME CONSTRAINT sale_item_ipi_te_id_fkey TO invoice_item_ipi_te_id_fkey;
+-- ALTER TABLE invoice_item_ipi RENAME CONSTRAINT sale_item_ipi_te_id_fkey TO invoice_item_ipi_te_id_fkey;
 
 CREATE TYPE invoice_type AS ENUM ('in', 'out');
 
