@@ -1,0 +1,35 @@
+dialog: ReturnedSaleDialog
+GtkVBox(details_vbox):
+  GtkTable(table1, fill=True):
+    GtkLabel(label4): 'Returned Sale:'
+    ProxyLabel(identifier): '<span >00060</span>'
+    ProxyLabel(kiwilabel7): 'Invoice number:'
+    ProxyLabel(invoice_number): '<span ></span>'
+    GtkLabel(label1): 'Sale:'
+    ProxyLabel(sale_identifier): '<span >00336</span>'
+    ProxyLabel(kiwilabel4): 'Status:'
+    GtkHBox(hbox2):
+      ProxyLabel(status_str, fill=True): '<span >Cancelled</span>'
+      GtkButton(receive_button, fill=True): 'Receive', hidden
+    GtkLabel(label3): 'Returned date:'
+    ProxyLabel(returned_date): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(kiwilabel2): 'Confirm date:'
+    ProxyLabel(receiving_date): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(kiwilabel5): 'Received By:'
+    ProxyLabel(responsible_name): '<span >Administrator</span>'
+    ProxyLabel(kiwilabel1): 'Confirmed By:'
+    ProxyLabel(receiving_responsible): '<span >Administrator</span>'
+  GtkNotebook(notebook1, expand=True, fill=True):
+    GtkVBox(products_vbox):
+      ObjectList(returned_items_list, expand=True, fill=True):
+        column: title='Product Code'
+        column: title='Description', expand
+        column: title='Qty returned'
+        column: title='Price'
+        column: title='Total'
+    GtkHBox(hbox1):
+      GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+        ProxyTextView(reason): invalid
+  GtkHButtonBox(hbuttonbox1, fill=True):
+    GtkButton(undo_button): 'Undo Returned Sale', insensitive
+    GtkButton(print_button): 'gtk-print'
