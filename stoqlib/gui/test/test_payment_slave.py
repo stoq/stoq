@@ -28,7 +28,8 @@ import unittest
 
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.slaves.paymentslave import (BillMethodSlave, CheckMethodSlave,
-                                             CardMethodSlave, MultipleMethodSlave)
+                                             CardMethodSlave, MultipleMethodSlave,
+                                             MoneyMethodSlave)
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
@@ -79,6 +80,24 @@ class TestBillPaymentSlaves(GUITest):
         self.assertInvalid(slave, ['first_duedate'])
 
 
+class TestMoneyMethodSlave(GUITest):
+    def test_create_with_param_mandatory_check_number_true(self):
+        with self.sysparam(MANDATORY_CHECK_NUMBER=True):
+            wizard = PurchaseWizard(self.store)
+
+            method = PaymentMethod.get_by_name(self.store, u'money')
+            order = self.create_purchase_order()
+            order.identifier = 12345
+            slave = MoneyMethodSlave(wizard,
+                                     None,
+                                     self.store,
+                                     order,
+                                     method,
+                                     Decimal(200))
+            self.assertEquals(
+                slave.bank_first_check_number.get_property('mandatory'), False)
+
+
 class TestCheckPaymentSlaves(GUITest):
     def test_create(self):
         with self.sysparam(MANDATORY_CHECK_NUMBER=True):
@@ -89,6 +108,8 @@ class TestCheckPaymentSlaves(GUITest):
             order.identifier = 12345
             slave = CheckMethodSlave(wizard, None, self.store, order, method,
                                      Decimal(200))
+            self.assertEquals(
+                slave.bank_first_check_number.get_property('mandatory'), True)
             self.check_slave(slave, 'slave-check-method')
 
     def test_check_payment_mandatory_check_number(self):

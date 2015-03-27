@@ -563,8 +563,9 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.interval_type_combo.prefill(interval_types)
         self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
         self.interval_type_combo.set_sensitive(has_installments)
-        if sysparam.get_bool('MANDATORY_CHECK_NUMBER'):
-            self.bank_first_check_number.set_property('mandatory', True)
+        if self.method.method_name == 'check':
+            check_mandatory = sysparam.get_bool('MANDATORY_CHECK_NUMBER')
+            self.bank_first_check_number.set_property('mandatory', check_mandatory)
 
         # PaymentListSlave setup
         self._setup_payment_list()
