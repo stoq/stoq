@@ -204,13 +204,16 @@ class TestStockDecrease(DomainTest):
 class TestStockDecreaseItem(DomainTest):
     def test_constructor(self):
         with self.assertRaisesRegexp(
-            TypeError, 'You must provide a sellable argument'):
+                TypeError, 'You must provide a sellable argument'):
             StockDecreaseItem(store=self.store)
 
         with self.assertRaisesRegexp(
-            TypeError, 'You must provide a sellable argument'):
+                TypeError, 'You must provide a sellable argument'):
             StockDecreaseItem(store=self.store,
                               sellable=None)
+        item = self.create_stock_decrease_item()
+        self.assertIsNotNone(item.icms_info)
+        self.assertIsNotNone(item.ipi_info)
 
     def test_get_description(self):
         decrease = self.create_stock_decrease()
@@ -233,18 +236,15 @@ class TestStockDecreaseItem(DomainTest):
 
     # NF-e operations
 
+    def test_parent(self):
+        order = self.create_stock_decrease()
+        item = self.create_stock_decrease_item(order)
+        self.assertEquals(item.parent, order)
+
     def test_price(self):
         decrease_item = self.create_stock_decrease_item()
         decrease_item.cost = 100
         self.assertEquals(decrease_item.price, decrease_item.cost)
-
-    def test_icms_info(self):
-        decrease_item = self.create_stock_decrease_item()
-        self.assertEquals(decrease_item.icms_info, None)
-
-    def test_ipi_info(self):
-        decrease_item = self.create_stock_decrease_item()
-        self.assertEquals(decrease_item.ipi_info, None)
 
     def test_nfe_cfop_code(self):
         decrease = self.create_stock_decrease()

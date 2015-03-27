@@ -33,7 +33,7 @@ from storm.expr import And, Eq
 
 from stoqlib.api import api
 from stoqlib.domain.costcenter import CostCenter
-from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.fiscal import CfopData, Invoice
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Branch, Employee, Person
@@ -117,6 +117,15 @@ class StartStockDecreaseStep(WizardEditorStep):
         self._fill_cfop_combo()
         self._fill_cost_center_combo()
         self._fill_person_combo()
+
+        manager = get_plugin_manager()
+        nfe_is_active = manager.is_active('nfe')
+        self.invoice_number.set_property('mandatory', nfe_is_active)
+        self.person.set_property('mandatory', nfe_is_active)
+
+        if not self.model.invoice_number:
+            new_invoice_number = Invoice.get_next_invoice_number(self.store)
+            self.model.invoice_number = new_invoice_number
 
         if not sysparam.get_bool('CREATE_PAYMENTS_ON_STOCK_DECREASE'):
             self.create_payments.hide()

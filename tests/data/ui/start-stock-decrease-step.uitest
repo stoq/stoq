@@ -39,7 +39,7 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
             item: 'Maria Aparecida Ardana'
             item: 'Osvaldo Denadai Marin'
           GtkLabel(step.label7): 'Invoice number:'
-          ProxyEntry(step.invoice_number): ''
+          ProxyEntry(step.invoice_number): '1004'
           GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
           ProxyComboBox(step.cost_center): hidden
           ProxyCheckButton(step.create_payments): 'Create payments', hidden
