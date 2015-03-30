@@ -1145,7 +1145,6 @@ class ReturnedSalesView(Viewable):
     status = ReturnedSale.status
 
     sale_id = Sale.id
-    sale_identifier = Sale.identifier
     sale_identifier_str = Cast(Sale.identifier, 'text')
 
     responsible_name = PersonResponsible.name
@@ -1163,6 +1162,10 @@ class ReturnedSalesView(Viewable):
         LeftJoin(Client, Client.id == Sale.client_id),
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
     ]
+
+    @property
+    def sale_identifier(self):
+        return self.sale.identifier
 
     def can_receive(self):
         from stoqlib.api import api
