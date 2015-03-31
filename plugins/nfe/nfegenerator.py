@@ -676,7 +676,7 @@ class NFeEcfInfo(BaseNFeXMLGroup):
                   (u'nECF', ''),
                   (u'nCOO', '')]
 
-    txttag = 'B20j'
+    txttag = 'BA|\nBA20'
 
     def __init__(self, n_ecf, coo):
         BaseNFeXMLGroup.__init__(self)
