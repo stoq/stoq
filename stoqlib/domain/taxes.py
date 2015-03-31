@@ -53,7 +53,7 @@ class BaseTax(Domain):
 
         :param invoice_item: the item of in/out invoice
         """
-        template = invoice_item.sellable.product.icms_template
+        template = self.get_tax_template(invoice_item)
         if not template:
             return
 
@@ -66,12 +66,21 @@ class BaseTax(Domain):
 
         self.set_initial_values(invoice_item)
 
+    @classmethod
+    def get_tax_template(cls, invoice_item):  # pragma no cover
+        """Use this method in InvoiceItemIpi or InvoiceItemIcms classes to get
+        the respective tax template.
+
+        :param invoice_item: the item of in/out invoice
+        """
+        raise NotImplementedError
+
     def set_initial_values(self, invoice_item):
         """Use this method to setup the initial values of the fields.
         """
         self.update_values(invoice_item)
 
-    def update_values(self, invoice_item):
+    def update_values(self, invoice_item):  # pragma no cover
         pass
 
 
@@ -280,6 +289,10 @@ class InvoiceItemIcms(BaseICMS):
         else:
             self._update_normal(invoice_item)
 
+    @classmethod
+    def get_tax_template(cls, invoice_item):
+        return invoice_item.sellable.product.icms_template
+
 
 class InvoiceItemIpi(BaseIPI):
     __storm_table__ = 'invoice_item_ipi'
@@ -304,3 +317,7 @@ class InvoiceItemIpi(BaseIPI):
         elif self.calculo == self.CALC_UNIDADE:
             if self.q_unid is not None and self.v_unid is not None:
                 self.v_ipi = self.q_unid * self.v_unid
+
+    @classmethod
+    def get_tax_template(cls, invoice_item):
+        return invoice_item.sellable.product.ipi_template

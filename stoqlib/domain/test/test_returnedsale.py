@@ -445,6 +445,9 @@ class TestReturnedSaleItem(DomainTest):
             ReturnedSaleItem(sellable=sellable,
                              sale_item=sale_item,
                              store=self.store)
+        returned_item = self.create_returned_sale_item()
+        self.assertIsNotNone(returned_item.icms_info)
+        self.assertIsNotNone(returned_item.ipi_info)
 
     def test_total(self):
         sale_item = self.create_sale_item()
@@ -456,6 +459,14 @@ class TestReturnedSaleItem(DomainTest):
         self.assertEquals(item.total, 10)
         item.quantity = 20
         self.assertEquals(item.total, 200)
+
+    def test_get_total(self):
+        sale_item = self.create_sale_item()
+        returned_item = ReturnedSaleItem(store=self.store,
+                                         sale_item=sale_item)
+        returned_item.quantity = 2
+        returned_item.price = 100
+        self.assertEquals(returned_item.get_total(), 200)
 
     def test_return_(self):
         sale = self.create_sale()
@@ -511,13 +522,10 @@ class TestReturnedSaleItem(DomainTest):
 
     # NF-e operations
 
-    def test_icms_info(self):
-        returned_item = self.create_returned_sale_item()
-        self.assertEquals(returned_item.icms_info, None)
-
-    def test_ipi_info(self):
-        returned_item = self.create_returned_sale_item()
-        self.assertEquals(returned_item.ipi_info, None)
+    def test_parent(self):
+        returned_sale = self.create_returned_sale()
+        returned_item = self.create_returned_sale_item(returned_sale)
+        self.assertEquals(returned_item.parent, returned_sale)
 
     def test_nfe_cfop_code(self):
         client = self.create_client()

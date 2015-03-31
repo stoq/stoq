@@ -26,6 +26,7 @@ from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
 from stoqlib.domain.taxes import (ProductIcmsTemplate,
+                                  ProductIpiTemplate,
                                   ProductTaxTemplate,
                                   InvoiceItemIpi)
 from stoqlib.domain.test.domaintest import DomainTest
@@ -44,12 +45,20 @@ class TestBaseTax(DomainTest):
             store=self.store,
             product_tax_template=tax_template)
 
+        tax_template = ProductTaxTemplate(
+            store=self.store,
+            tax_type=ProductTaxTemplate.TYPE_IPI)
+        ipi_template = ProductIpiTemplate(
+            store=self.store,
+            product_tax_template=tax_template)
+
         product = self.create_product()
         product.icms_template = icms_template
+        product.ipi_template = ipi_template
         sale_item = self.create_sale_item()
         sale_item.sellable.product = product
         sale_item.icms_info.set_item_tax(sale_item)
-        icms_template.set_item_tax(sale_item)
+        sale_item.ipi_info.set_item_tax(sale_item)
 
 
 class TestProductTaxTemplate(DomainTest):

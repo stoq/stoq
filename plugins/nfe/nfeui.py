@@ -29,7 +29,8 @@ import time
 from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.events import (StockTransferWizardFinishEvent,
+from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
+                                StockTransferWizardFinishEvent,
                                 StockDecreaseWizardFinishEvent)
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.permissions import PermissionManager
@@ -43,13 +44,13 @@ log = logging.getLogger(__name__)
 
 class NFeUI(object):
     def __init__(self):
+        SaleReturnWizardFinishEvent.connect(self._on_SaleReturnWizardFinish)
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
         StockDecreaseWizardFinishEvent.connect(self._on_StockDecreaseWizardFinish)
         StockTransferWizardFinishEvent.connect(self._on_StockTransferWizardFinish)
         # TODO: Before enable the the NF-e generation. Save the invoice data,
         # in Invoice table (for each operation below).
 #        NewLoanWizardFinishEvent.connect(self._on_NewLoanWizardFinish)
-#        SaleReturnWizardFinishEvent.connect(self._on_SaleReturnWizardFinish)
 
         pm = PermissionManager.get_permission_manager()
         pm.set('InvoiceLayout', pm.PERM_HIDDEN)

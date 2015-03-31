@@ -24,6 +24,7 @@
 
 import mock
 
+from stoqlib.domain.fiscal import Invoice
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salereturnwizard import (SaleReturnWizard,
                                                   SaleTradeWizard)
@@ -130,12 +131,13 @@ class TestSaleReturnWizard(GUITest):
         self.assertInvalid(step, ['invoice_number'])
         self.assertNotSensitive(wizard, ['next_button'])
 
-        module = 'stoqlib.domain.base.Domain.check_unique_value_exists'
-        with mock.patch(module) as check_unique_value_exists:
-            check_unique_value_exists.return_value = True
-            step.invoice_number.update(2)
-            self.assertInvalid(step, ['invoice_number'])
-            self.assertNotSensitive(wizard, ['next_button'])
+        # Check if the invoice number already exists in Invoice table
+        invoice = Invoice(invoice_type=Invoice.TYPE_OUT)
+        invoice.invoice_number = 123
+        returned_sale.invoice = invoice
+        step.invoice_number.update(123)
+        self.assertInvalid(step, ['invoice_number'])
+        self.assertNotSensitive(wizard, ['next_button'])
 
         step.invoice_number.update(1)
         self.assertValid(step, ['invoice_number'])

@@ -30,9 +30,11 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError, converter
 from kiwi.ui.objectlist import Column
+from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_user, get_current_branch
+from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
@@ -41,6 +43,7 @@ from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
@@ -358,6 +361,15 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         return self.model.total_amount > 0
 
     def setup_proxies(self):
+        manager = get_plugin_manager()
+        nfe_is_active = manager.is_active('nfe')
+        self.invoice_number.set_property('mandatory', nfe_is_active)
+
+        # Set an initial invoice number.
+        if not self.model.invoice_number:
+            new_invoice_number = Invoice.get_next_invoice_number(self.store)
+            self.model.invoice_number = new_invoice_number
+
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     #
@@ -395,8 +407,10 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         if not 0 < value <= 999999999:
             return ValidationError(_("Invoice number must be between "
                                      "1 and 999999999"))
-        if self.model.check_unique_value_exists(ReturnedSale.invoice_number,
-                                                value):
+        exists = self.store.find(Invoice,
+                                 And(Invoice.invoice_number == value,
+                                     Invoice.id != self.model.invoice_id))
+        if not exists.is_empty():
             return ValidationError(_("Invoice number already exists."))
 
     def on_credit_checkbutton__toggled(self, widget):
