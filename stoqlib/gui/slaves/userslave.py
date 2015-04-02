@@ -116,11 +116,10 @@ class PasswordEditorSlave(BaseEditorSlave):
 
     def on_password__validate(self, entry, password):
         if len(password) < MINIMUM_PASSWORD_CHAR_LEN:
-            return ValidationError(_
-                                  (u"Passwords must have at least %d characters")
+            return ValidationError(_(u"Passwords must have at least %d characters")
                                    % MINIMUM_PASSWORD_CHAR_LEN)
         if ((self.model.confirm_password and self._confirm_password) and
-            password != self.confirm_password.get_text()):
+                password != self.confirm_password.get_text()):
             return ValidationError(_(u"Passwords don't matches"))
 
     def on_password__content_changed(self, entry):
@@ -158,7 +157,7 @@ class PasswordEditor(BaseEditor):
 
     def _needs_password_confirmation(self):
         current_user = api.get_current_user(self.store)
-        return not current_user.profile.name in ['Administrador']
+        return not current_user.profile.check_app_permission(u'admin')
 
     #
     # BaseEditorSlave Hooks
