@@ -48,12 +48,12 @@ from stoqlib.lib.dateutils import localtoday
 
 class BaseTax(Domain):
 
-    def set_item_tax(self, invoice_item):
+    def set_item_tax(self, invoice_item, template=None):
         """ Set the tax of an invoice item.
 
         :param invoice_item: the item of in/out invoice
         """
-        template = self.get_tax_template(invoice_item)
+        template = template or self.get_tax_template(invoice_item)
         if not template:
             return
 

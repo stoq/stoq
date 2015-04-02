@@ -1,343 +1,475 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">100</property>
-    <property name="lower">0</property>
-    <property name="page_increment">10</property>
-    <property name="step_increment">1</property>
-    <property name="page_size">0</property>
-    <property name="value">0</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment2">
-    <property name="upper">100</property>
-    <property name="lower">0</property>
-    <property name="page_increment">10</property>
-    <property name="step_increment">1</property>
-    <property name="page_size">0</property>
-    <property name="value">0</property>
-  </object>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="TaxIPISlave">
-    <property name="default_height">250</property>
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
+    <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
     <child>
-      <object class="GtkTable" id="table1">
-        <property name="column_spacing">6</property>
-        <property name="n_columns">4</property>
-        <property name="n_rows">7</property>
-        <property name="row_spacing">6</property>
+      <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
-          <object class="GtkLabel" id="cst_label">
-            <property name="label">CST:</property>
+          <object class="GtkTable" id="table1">
             <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="x_options">fill</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="cnpj_prod_label">
-            <property name="label">CNPJ do Produtor:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">2</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="q_selo_label">
-            <property name="label">Quantidade do
+            <property name="can_focus">False</property>
+            <property name="n_rows">8</property>
+            <property name="n_columns">4</property>
+            <property name="column_spacing">6</property>
+            <property name="row_spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="cst_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">CST:</property>
+              </object>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="cnpj_prod_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">CNPJ do Produtor:</property>
+              </object>
+              <packing>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="q_selo_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Quantidade do
 selo de controle:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">3</property>
-            <property name="top_attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="calculo_label">
-            <property name="label">C&#xE1;lculo do IPI:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">4</property>
-            <property name="top_attach">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_bc_label">
-            <property name="label">BC IPI:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">5</property>
-            <property name="top_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_unid_label">
-            <property name="label">Valor por unidade
-tribut&#xE1;vel:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">6</property>
-            <property name="top_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyComboBox" id="cst">
-            <property name="data_type">int</property>
-            <property name="model_attribute">cst</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="cnpj_prod">
-            <property name="data_type">unicode</property>
-            <property name="model_attribute">cnpj_prod</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">2</property>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxySpinButton" id="q_selo">
-            <property name="adjustment">adjustment1</property>
-            <property name="data_type">int</property>
-            <property name="model_attribute">q_selo</property>
-            <property name="text" translatable="yes">0</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">3</property>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyComboBox" id="calculo">
-            <property name="data_type">int</property>
-            <property name="model_attribute">calculo</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">4</property>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_bc">
-            <property name="data_type">Decimal</property>
-            <property name="editable">False</property>
-            <property name="model_attribute">v_bc</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">5</property>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_unid">
-            <property name="data_type">Decimal</property>
-            <property name="model_attribute">v_unid</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">6</property>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="cl_enq_label">
-            <property name="label">Classe de Enquadramento
+              </object>
+              <packing>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="calculo_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Cálculo do IPI:</property>
+              </object>
+              <packing>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="v_bc_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">BC IPI:</property>
+              </object>
+              <packing>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="v_unid_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Valor por unidade
+tributável:</property>
+              </object>
+              <packing>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyComboBox" id="cst">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="data_type">int</property>
+                <property name="model_attribute">cst</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="cnpj_prod">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="truncate_multiline">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">True</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">cnpj_prod</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxySpinButton" id="q_selo">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="xalign">1</property>
+                <property name="primary_icon_activatable">True</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="adjustment">adjustment1</property>
+                <property name="numeric">True</property>
+                <property name="data_type">int</property>
+                <property name="model_attribute">q_selo</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyComboBox" id="calculo">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="data_type">int</property>
+                <property name="model_attribute">calculo</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="v_bc">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="editable">False</property>
+                <property name="invisible_char">•</property>
+                <property name="xalign">1</property>
+                <property name="truncate_multiline">True</property>
+                <property name="primary_icon_activatable">True</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">v_bc</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="v_unid">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="xalign">1</property>
+                <property name="truncate_multiline">True</property>
+                <property name="primary_icon_activatable">True</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">v_unid</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="cl_enq_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Classe de Enquadramento
 Para cigarros e bebidas:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="x_options">fill</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="c_selo_label">
-            <property name="label">C&#xF3;digo do selo
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="c_selo_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Código do selo
 de controle IPI:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">2</property>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="c_enq_label">
-            <property name="label">C&#xF3;digo de enquadramento
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="c_enq_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Código de enquadramento
 legal do ipi:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="p_ipi_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Alíquota do IPI:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="q_unid_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Quantidade total:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="v_ipi_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label">Valor do IPI</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="cl_enq">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="truncate_multiline">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">True</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">cl_enq</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="c_selo">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="truncate_multiline">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">True</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">c_selo</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="c_enq">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="truncate_multiline">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">True</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">c_enq</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxySpinButton" id="p_ipi">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="xalign">1</property>
+                <property name="primary_icon_activatable">True</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="adjustment">adjustment2</property>
+                <property name="numeric">True</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">p_ipi</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="q_unid">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="xalign">1</property>
+                <property name="truncate_multiline">True</property>
+                <property name="primary_icon_activatable">True</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">q_unid</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="v_ipi">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="editable">False</property>
+                <property name="invisible_char">•</property>
+                <property name="xalign">1</property>
+                <property name="truncate_multiline">True</property>
+                <property name="primary_icon_activatable">True</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">currency</property>
+                <property name="model_attribute">v_ipi</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="template_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Template:</property>
+              </object>
+            </child>
+            <child>
+              <object class="ProxyComboBox" id="template">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="data_type">object</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
           <packing>
-            <property name="bottom_attach">3</property>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="p_ipi_label">
-            <property name="label">Al&#xED;quota do IPI:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">5</property>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="q_unid_label">
-            <property name="label">Quantidade total:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">6</property>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_ipi_label">
-            <property name="label">Valor do IPI</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">7</property>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">6</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="cl_enq">
-            <property name="data_type">unicode</property>
-            <property name="model_attribute">cl_enq</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="c_selo">
-            <property name="data_type">unicode</property>
-            <property name="model_attribute">c_selo</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">2</property>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="c_enq">
-            <property name="data_type">unicode</property>
-            <property name="model_attribute">c_enq</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">3</property>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxySpinButton" id="p_ipi">
-            <property name="adjustment">adjustment2</property>
-            <property name="data_type">Decimal</property>
-            <property name="model_attribute">p_ipi</property>
-            <property name="text">0</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">5</property>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="q_unid">
-            <property name="data_type">Decimal</property>
-            <property name="model_attribute">q_unid</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">6</property>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_ipi">
-            <property name="data_type">currency</property>
-            <property name="editable">False</property>
-            <property name="model_attribute">v_ipi</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-          </object>
-          <packing>
-            <property name="bottom_attach">7</property>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">6</property>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
 </interface>

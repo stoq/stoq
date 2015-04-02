@@ -40,7 +40,6 @@ class TestBaseTax(DomainTest):
         tax_template = ProductTaxTemplate(
             store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
-
         icms_template = ProductIcmsTemplate(
             store=self.store,
             product_tax_template=tax_template)

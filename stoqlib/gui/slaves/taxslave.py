@@ -32,7 +32,8 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
 from stoqlib.domain.taxes import (InvoiceItemIcms, ProductIcmsTemplate,
-                                  InvoiceItemIpi, ProductIpiTemplate)
+                                  InvoiceItemIpi, ProductIpiTemplate,
+                                  ProductTaxTemplate)
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -53,6 +54,7 @@ class BaseTaxSlave(BaseEditorSlave):
     field_options = {}
 
     def __init__(self, store, *args, **kargs):
+        self.is_updating = False
         self.proxy = None
         BaseEditorSlave.__init__(self, store, *args, **kargs)
 
@@ -103,6 +105,23 @@ class BaseTaxSlave(BaseEditorSlave):
                     lbl.set_sensitive(True)
 
 
+class InvoiceItemMixin(object):
+
+    def fill_combo(self, combo, type):
+        types = [(None, None)]
+        types.extend([(t.name, t.get_tax_model()) for t in
+                      self.store.find(ProductTaxTemplate, tax_type=type)])
+        combo.prefill(types)
+
+    def on_template__changed(self, widget):
+        template = widget.read()
+        if not template:
+            return
+
+        self.model.set_item_tax(self.invoice_item, template)
+        self.update_values(self.proxy_widgets)
+
+
 #
 #   ICMS
 #
@@ -111,7 +130,7 @@ class BaseTaxSlave(BaseEditorSlave):
 class BaseICMSSlave(BaseTaxSlave):
     gladefile = 'TaxICMSSlave'
 
-    combo_widgets = ['cst', 'orig', 'mod_bc', 'mod_bc_st', 'csosn']
+    combo_widgets = ['cst', 'csosn', 'orig', 'mod_bc', 'mod_bc_st']
     percentage_widgets = ['p_icms', 'p_mva_st', 'p_red_bc_st', 'p_icms_st',
                           'p_red_bc', 'p_cred_sn']
     value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st',
@@ -266,8 +285,8 @@ class BaseICMSSlave(BaseTaxSlave):
 
     def _update_p_cred_sn_valid_until(self):
         if (self.p_cred_sn.get_value()
-            and not self.p_cred_sn_valid_until.get_date()):
-                # Set the default expire date to the last day of current month.
+                and not self.p_cred_sn_valid_until.get_date()):
+            # Set the default expire date to the last day of current month.
             default_expire_date = (localtoday().date() +
                                    relativedelta(day=1, months=+1, days=-1))
             self.p_cred_sn_valid_until.set_date(default_expire_date)
@@ -306,10 +325,10 @@ class ICMSTemplateSlave(BaseICMSSlave):
     proxy_widgets = (BaseICMSSlave.combo_widgets +
                      BaseICMSSlave.percentage_widgets +
                      BaseICMSSlave.date_widgets)
-    hide_widgets = BaseICMSSlave.value_widgets
+    hide_widgets = BaseICMSSlave.value_widgets + ['template']
 
 
-class InvoiceItemIcmsSlave(BaseICMSSlave):
+class InvoiceItemIcmsSlave(BaseICMSSlave, InvoiceItemMixin):
     model_type = InvoiceItemIcms
     proxy_widgets = (BaseICMSSlave.combo_widgets +
                      BaseICMSSlave.percentage_widgets +
@@ -317,7 +336,13 @@ class InvoiceItemIcmsSlave(BaseICMSSlave):
                      BaseICMSSlave.value_widgets)
     hide_widgets = BaseICMSSlave.date_widgets
 
+    def __init__(self, store, model, invoice_item):
+        self.invoice_item = invoice_item
+        BaseICMSSlave.__init__(self, store, model)
+
     def setup_callbacks(self):
+        self.fill_combo(self.template, ProductTaxTemplate.TYPE_ICMS)
+
         for name in self.percentage_widgets:
             widget = getattr(self, name)
             widget.connect_after('changed', self._after_field_changed)
@@ -328,13 +353,23 @@ class InvoiceItemIcmsSlave(BaseICMSSlave):
         self.cst.connect_after('changed', self._after_field_changed)
         self.csosn.connect_after('changed', self._after_field_changed)
 
-    def update_values(self):
-        self.model.update_values()
-        for name in self.value_widgets:
+    def update_values(self, widgets=None):
+        self.is_updating = True
+        self.model.update_values(self.invoice_item)
+        widgets = widgets or self.value_widgets
+        for name in widgets:
+            if name in ('csosn', 'cst'):
+                continue
             self.proxy.update(name)
 
+        # We need to update cst and csosn last: Since when one of those is
+        # changed we change some widgets sensitivity, when changing the widget
+        # sensitivity, kiwi will reset the model value incorrectly.
+        self.proxy.update_many(['csosn', 'cst'])
+        self.is_updating = False
+
     def _after_field_changed(self, widget):
-        if not self.proxy:
+        if not self.proxy or self.is_updating:
             return
 
         self.update_values()
@@ -443,26 +478,39 @@ class IPITemplateSlave(BaseIPISlave):
     proxy_widgets = (BaseIPISlave.combo_widgets +
                      BaseIPISlave.percentage_widgets +
                      BaseIPISlave.text_widgets)
-    hide_widgets = BaseIPISlave.value_widgets
+    hide_widgets = BaseIPISlave.value_widgets + ['template']
 
 
-class InvoiceItemIpiSlave(BaseIPISlave):
+class InvoiceItemIpiSlave(BaseIPISlave, InvoiceItemMixin):
     model_type = InvoiceItemIpi
     proxy_widgets = BaseIPISlave.all_widgets
 
+    def __init__(self, store, model, invoice_item):
+        self.invoice_item = invoice_item
+        BaseIPISlave.__init__(self, store, model)
+
     def setup_callbacks(self):
+        self.fill_combo(self.template, ProductTaxTemplate.TYPE_IPI)
         self.p_ipi.connect_after('changed', self._after_field_changed)
         self.q_unid.connect_after('changed', self._after_field_changed)
         self.v_unid.connect_after('changed', self._after_field_changed)
         self.cst.connect_after('changed', self._after_field_changed)
 
-    def update_values(self):
-        self.model.update_values()
-        self.proxy.update('v_bc')
-        self.proxy.update('v_ipi')
+    def update_values(self, widgets=None):
+        self.model.update_values(self.invoice_item)
+        widgets = widgets or ['v_bc', 'v_ipi']
+        for name in widgets:
+            if name == 'cst':
+                continue
+            self.proxy.update(name)
+
+        # We need to update cst and csosn last: Since when one of those is
+        # changed we change some widgets sensitivity, when changing the widget
+        # sensitivity, kiwi will reset the model value incorrectly.
+        self.proxy.update('cst')
 
     def _after_field_changed(self, widget):
-        if not self.proxy:
+        if not self.proxy or self.is_updating:
             return
 
         self.update_values()

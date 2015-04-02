@@ -139,10 +139,12 @@ class SaleQuoteItemEditor(BaseEditor):
 
         if self.nfe_is_active:
             self.icms_slave = InvoiceItemIcmsSlave(self.store,
-                                                   self.model.icms_info)
+                                                   self.model.icms_info,
+                                                   self.model)
             self.add_tab(_('ICMS'), self.icms_slave)
 
-            self.ipi_slave = InvoiceItemIpiSlave(self.store, self.model.ipi_info)
+            self.ipi_slave = InvoiceItemIpiSlave(self.store,
+                                                 self.model.ipi_info, self.model)
             self.add_tab(_('IPI'), self.ipi_slave)
 
     def _update_total(self):
@@ -259,7 +261,7 @@ class SaleQuoteItemEditor(BaseEditor):
             return ValidationError(_(u"The price must be greater than zero."))
 
         if (not sysparam.get_bool('ALLOW_HIGHER_SALE_PRICE') and
-            value > self.model.base_price):
+                value > self.model.base_price):
             return ValidationError(_(u'The sell price cannot be greater '
                                    'than %s.') % self.model.base_price)
 
