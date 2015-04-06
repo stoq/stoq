@@ -204,7 +204,11 @@ class NFeGenerator(object):
         branch_location = branch.person.get_main_address().city_location
         cuf = str(branch_location.state_code or '')
 
-        recipient_location = recipient.get_main_address().city_location
+        recipient_address = recipient.get_main_address()
+        if recipient_address:
+            recipient_location = recipient_address.city_location
+        else:
+            recipient_location = branch_location
         now = self._get_now_datetime()
         aamm = now.strftime('%y%m')
 
@@ -748,6 +752,10 @@ class NFeAddress(BaseNFeXMLGroup):
         self.tag = tag
         BaseNFeXMLGroup.__init__(self)
 
+        # FIXME: We should make sure that there is an address in Stoq before
+        # creating the sale (or whatever other operation)
+        if not address:
+            return
         location = address.city_location
         postal_code = ''.join([i for i in
                                address.postal_code if i in '1234567890'])
