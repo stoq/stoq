@@ -370,7 +370,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             widget.set_pixbuf(None)
 
     def on_estimated_finish__validate(self, widget, date):
-        if date < localtoday():
+        if date.date() < self.model.work_order.open_date.date():
+            # FIXME change the string of this validation error
             return ValidationError(_(u'Estimated finish date cannot be in the '
                                      'past.'))
 

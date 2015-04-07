@@ -209,11 +209,15 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
     @mock.patch('plugins.optical.opticalslave.localtoday')
     def test_estimated_finish(self, localtoday_):
         workorder = self.create_workorder()
+        workorder.open_date = localdate(2015, 4, 2)
         slave = WorkOrderOpticalSlave(self.store, workorder)
-        localtoday_.return_value = localdate(2014, 1, 1)
-        res = slave.estimated_finish.emit("validate", localdate(2013, 1, 1))
+        #localtoday_.return_value = localdate(2014, 1, 1)
+        res = slave.estimated_finish.emit("validate", localdate(2015, 4, 1))
         self.assertEquals(unicode(res),
                           u'Estimated finish date cannot be in the past.')
+        # Can be edited without changing the estimated_finish
+        res2 = slave.estimated_finish.emit("validate", localdate(2015, 4, 2))
+        self.assertEquals(res2, None)
 
     def test_medic_details(self):
         medic = self.create_optical_medic()
