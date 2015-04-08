@@ -137,7 +137,7 @@ class BankInfo(object):
 
     @property
     def barcode(self):
-        num = "%03d%1s%1s%4s%10s%24s" % (
+        num = "%03d%1s%1s%4s%10s%25s" % (
             self.bank_number,
             self.moeda,
             'X',
