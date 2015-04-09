@@ -1,7 +1,17 @@
+ALTER TABLE sale
+    DROP CONSTRAINT sale_invoice_number_key,
+    ADD CONSTRAINT sale_invoice_number_branch_id_key UNIQUE (invoice_number, branch_id);
+
+ALTER TABLE returned_sale
+    DROP CONSTRAINT returned_sale_invoice_number_key,
+    ADD CONSTRAINT returned_sale_invoice_number_branch_id_key UNIQUE (invoice_number, branch_id);
+
 -- Alter invoice table
 ALTER TABLE invoice
     ADD COLUMN cnf text,
-    ALTER COLUMN invoice_number DROP NOT NULL;
+    ALTER COLUMN invoice_number DROP NOT NULL,
+    ADD COLUMN branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
+    ADD CONSTRAINT invoice_branch_id_invoice_number_key UNIQUE (branch_id, invoice_number);
 
 -- Add the icms_info_id and ipi_info columns
 ALTER TABLE loan_item

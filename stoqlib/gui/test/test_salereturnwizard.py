@@ -24,6 +24,7 @@
 
 import mock
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salereturnwizard import (SaleReturnWizard,
@@ -102,7 +103,8 @@ class TestSaleReturnWizard(GUITest):
             _reset_objectlist(objectlist)
 
     def test_sale_return_invoice_step(self):
-        sale = self.create_sale()
+        main_branch = get_current_branch(self.store)
+        sale = self.create_sale(branch=main_branch)
         self.add_product(sale)
         self.add_product(sale, quantity=2)
         self.add_payments(sale)
@@ -132,14 +134,16 @@ class TestSaleReturnWizard(GUITest):
         self.assertNotSensitive(wizard, ['next_button'])
 
         # Check if the invoice number already exists in Invoice table
-        invoice = Invoice(invoice_type=Invoice.TYPE_OUT)
+        invoice = Invoice(invoice_type=Invoice.TYPE_OUT, branch=main_branch)
         invoice.invoice_number = 123
-        returned_sale.invoice = invoice
         step.invoice_number.update(123)
         self.assertInvalid(step, ['invoice_number'])
         self.assertNotSensitive(wizard, ['next_button'])
 
         step.invoice_number.update(1)
+        self.assertValid(step, ['invoice_number'])
+        invoice.branch = self.create_branch()
+        step.invoice_number.update(123)
         self.assertValid(step, ['invoice_number'])
         self.assertSensitive(wizard, ['next_button'])
 

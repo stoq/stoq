@@ -520,8 +520,10 @@ class ReturnedSale(Domain):
 
         self.sale.return_(self)
 
+        # Save invoice number, operation_nature and branch in Invoice table.
         self.invoice.invoice_number = self.invoice_number
         self.invoice.operation_nature = self.operation_nature
+        self.invoice.branch = self.branch
 
         if self.sale.branch == self.branch:
             self.confirm(login_user)

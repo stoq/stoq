@@ -30,7 +30,6 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError, converter
 from kiwi.ui.objectlist import Column
-from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_user, get_current_branch
@@ -407,10 +406,9 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         if not 0 < value <= 999999999:
             return ValidationError(_("Invoice number must be between "
                                      "1 and 999999999"))
-        exists = self.store.find(Invoice,
-                                 And(Invoice.invoice_number == value,
-                                     Invoice.id != self.model.invoice_id))
-        if not exists.is_empty():
+        invoice = self.model.invoice
+        branch = self.model.branch
+        if invoice.check_unique_invoice_number_by_branch(value, branch):
             return ValidationError(_("Invoice number already exists."))
 
     def on_credit_checkbutton__toggled(self, widget):

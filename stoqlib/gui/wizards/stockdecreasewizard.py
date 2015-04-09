@@ -28,6 +28,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq
 
@@ -153,6 +154,19 @@ class StartStockDecreaseStep(WizardEditorStep):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     self.proxy_widgets)
+
+    #
+    # Callbacks
+    #
+    def on_invoice_number__validate(self, widget, value):
+        if not 0 < value <= 999999999:
+            return ValidationError(
+                _(u"Invoice number must be between 1 and 999999999"))
+
+        invoice = self.model.invoice
+        branch = self.model.branch
+        if invoice.check_unique_invoice_number_by_branch(value, branch):
+            return ValidationError(_(u"Invoice number already used."))
 
 
 class DecreaseItemStep(SellableItemStep):

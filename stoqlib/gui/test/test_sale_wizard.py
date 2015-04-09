@@ -86,13 +86,13 @@ class TestConfirmSaleWizard(GUITest):
         # 1: select sales_person
         # 1: select transporter
         # 1: select cost cebnter
-        # 2: select invoice number
+        # 3: select invoice number
         # 1: select payment method
         # 4: select sale_item
         #  - one is need_adjust_batches
         # 1: select payment status
         # 1: select the branch acronym for sale repr()
-        self.assertEquals(tracer.count, 15)
+        self.assertEquals(tracer.count, 16)
 
     def test_create(self):
         self._create_wizard()

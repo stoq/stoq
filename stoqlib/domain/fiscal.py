@@ -246,6 +246,11 @@ class Invoice(Domain):
     #: numeric code randomly generated for each NF-e
     cnf = UnicodeCol()
 
+    branch_id = IdCol()
+
+    #: the |branch| where this invoice was generated
+    branch = Reference(branch_id, 'Branch.id')
+
     @classmethod
     def get_next_invoice_number(cls, store):
         return Invoice.get_last_invoice_number(store) + 1
@@ -259,11 +264,12 @@ class Invoice(Domain):
         :returns: an integer representing the last sale invoice number
         """
         from stoqlib.domain.sale import Sale
-        last = store.find(cls).max(cls.invoice_number)
+        current_branch = get_current_branch(store)
+        last = store.find(cls, branch=current_branch).max(cls.invoice_number)
         # If the Invoice table is empty. Get the last invoice number saved
         # in Sale table.
         if last is None:
-            last = Sale.get_last_invoice_number(store)
+            last = store.find(Sale, branch=current_branch).max(Sale.invoice_number)
         return last or 0
 
     def save_nfe_info(self, cnf, key):
@@ -271,6 +277,13 @@ class Invoice(Domain):
         """
         self.cnf = cnf
         self.key = key
+
+    def check_unique_invoice_number_by_branch(self, invoice_number, branch):
+        """Check if the invoice_number is used in determined branch
+        """
+        queries = {Invoice.invoice_number: invoice_number,
+                   Invoice.branch_id: branch.id}
+        return self.check_unique_tuple_exists(queries)
 
 
 class IcmsIpiView(_FiscalBookEntryView):

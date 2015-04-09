@@ -32,7 +32,6 @@ from kiwi.currency import currency, format_price
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
-from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
@@ -626,7 +625,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         # case when one of the parameters, CONFIRM_SALES_ON_TILL or
         # USE_TRADE_AS_DISCOUNT is enabled).
         if (not sysparam.get_bool('CONFIRM_SALES_ON_TILL') and
-            not sysparam.get_bool('USE_TRADE_AS_DISCOUNT')):
+                not sysparam.get_bool('USE_TRADE_AS_DISCOUNT')):
             self.model.discount_value = currency(0)
             self.model.surcharge_value = currency(0)
 
@@ -680,7 +679,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             gtk.Adjustment(lower=1, upper=999999999, step_incr=1))
 
         if not self.model.invoice_number:
-            new_invoice_number = Invoice.get_last_invoice_number(self.store) + 1
+            new_invoice_number = Invoice.get_next_invoice_number(self.store)
             self.invoice_model.invoice_number = new_invoice_number
         else:
             new_invoice_number = self.model.invoice_number
@@ -833,10 +832,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             return ValidationError(
                 _("Invoice number must be between 1 and 999999999"))
 
-        exists = self.store.find(
-            Invoice, And(Invoice.invoice_number == value,
-                         Invoice.id != self.model.id))
-        if not exists.is_empty():
+        invoice = self.model.invoice
+        branch = self.model.branch
+        if invoice.check_unique_invoice_number_by_branch(value, branch):
             return ValidationError(_(u'Invoice number already used.'))
 
 

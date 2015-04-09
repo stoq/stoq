@@ -333,9 +333,10 @@ class StockDecrease(Domain):
 
         self.status = StockDecrease.STATUS_CONFIRMED
 
-        # Save the invoice number and operation_nature in Invoice Table
+        # Save the invoice number, operation_nature and branch in Invoice Table
         self.invoice.invoice_number = self.invoice_number
         self.invoice.operation_nature = self.operation_nature
+        self.invoice.branch = branch
 
         if self.group:
             self.group.confirm()

@@ -329,9 +329,10 @@ class TransferOrder(Domain):
         for item in self.get_items():
             item.send()
 
-        # Save invoice number and operation_nature in Invoice table.
+        # Save invoice number, operation_nature and branch in Invoice table.
         self.invoice.invoice_number = self.invoice_number
         self.invoice.operation_nature = self.operation_nature
+        self.invoice.branch = self.branch
 
         self.status = self.STATUS_SENT
 

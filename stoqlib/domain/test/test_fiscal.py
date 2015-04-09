@@ -26,8 +26,10 @@
 __tests__ = 'stoqlib/domain/fiscal.py'
 
 
+import mock
 from storm.expr import Update
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry, Invoice
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
@@ -121,7 +123,8 @@ class TestIssBookEntry(DomainTest):
 
 class TestInvoice(DomainTest):
     def test_get_next_invoice_number(self):
-        sale = self.create_sale()
+        main_branch = get_current_branch(self.store)
+        sale = self.create_sale(branch=main_branch)
         sale.invoice_number = 1234
         self.add_product(sale)
         self.add_payments(sale, u'money')
@@ -139,11 +142,30 @@ class TestInvoice(DomainTest):
         self.assertEquals(last_invoice_number, 1234)
         self.assertEquals(next_invoice_number, 1235)
 
-        # Creating a transfer order.
-        transfer = self.create_transfer_order()
+        # Creating a transfer order on same branch.
+        transfer = self.create_transfer_order(source_branch=main_branch)
         transfer.invoice_number = next_invoice_number
         self.create_transfer_order_item(transfer)
         transfer.send()
         next_invoice_number = Invoice.get_next_invoice_number(self.store)
         self.assertEquals(transfer.invoice.invoice_number, 1235)
         self.assertEquals(next_invoice_number, 1236)
+
+        # Creating a new sale and new tranfer on a different branch
+        with mock.patch('stoqlib.domain.fiscal.get_current_branch') as get_branch:
+            new_branch = self.create_branch()
+            get_branch.return_value = new_branch
+            new_sale = self.create_sale(branch=new_branch)
+            new_sale.invoice_number = 1234
+            last_invoice_number = Invoice.get_last_invoice_number(self.store)
+            next_invoice_number = Invoice.get_next_invoice_number(self.store)
+            self.assertEquals(last_invoice_number, 1234)
+            self.assertEquals(next_invoice_number, 1235)
+
+            new_transfer = self.create_transfer_order(source_branch=new_branch)
+            new_transfer.invoice_number = next_invoice_number
+            self.create_transfer_order_item(new_transfer)
+            new_transfer.send()
+            next_invoice_number = Invoice.get_next_invoice_number(self.store)
+            self.assertEquals(new_transfer.invoice.invoice_number, 1235)
+            self.assertEquals(next_invoice_number, 1236)
