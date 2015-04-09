@@ -204,6 +204,7 @@ class StockApp(ShellApp):
             self.returned_bar = self._create_pending_returned_sale_message()
         else:
             self.transfers_bar = None
+            self.returned_bar = None
 
         self._update_widgets()
 

@@ -26,7 +26,8 @@ import contextlib
 
 import mock
 
-from stoqlib.database.runtime import StoqlibStore
+from stoqlib.database.runtime import StoqlibStore, get_current_branch
+from stoqlib.domain.transfer import TransferOrder
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.editors.producteditor import ProductStockEditor
@@ -76,6 +77,21 @@ class TestStock(BaseGUITest):
     def test_initial(self):
         app = self.create_app(StockApp, u'stock')
         self.check_app(app, u'stock')
+
+    def test_message_bars_with_inventory(self):
+        self.create_inventory()
+        app = self.create_app(StockApp, u'stock')
+        self.assertIsNone(app.transfers_bar)
+        self.assertIsNone(app.returned_bar)
+
+    def test_message_bars_without_inventory(self):
+        self.create_pending_returned_sale()
+        branch = get_current_branch(self.store)
+        transfer = self.create_transfer_order(dest_branch=branch)
+        transfer.status = TransferOrder.STATUS_SENT
+        app = self.create_app(StockApp, u'stock')
+        self.assertIsNotNone(app.returned_bar)
+        self.assertIsNotNone(app.transfers_bar)
 
     def test_select(self):
         app = self.create_app(StockApp, u'stock')
