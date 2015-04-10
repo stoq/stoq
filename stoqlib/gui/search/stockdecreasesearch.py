@@ -31,6 +31,7 @@ import gtk
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.stockdecrease import StockDecrease
+from stoqlib.domain.views import StockDecreaseView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
@@ -45,10 +46,12 @@ _ = stoqlib_gettext
 class StockDecreaseSearch(SearchDialog):
     title = _(u"Manual Stock Decrease Search")
     size = (750, 500)
-    search_spec = StockDecrease
+    search_spec = StockDecreaseView
     report_class = StockDecreaseReport
     selection_mode = gtk.SELECTION_MULTIPLE
-    text_field_columns = [StockDecrease.reason]
+    text_field_columns = [StockDecreaseView.removed_by_name,
+                          StockDecreaseView.branch_name,
+                          StockDecreaseView.reason]
     branch_filter_column = StockDecrease.branch_id
 
     def __init__(self, store):
@@ -57,7 +60,7 @@ class StockDecreaseSearch(SearchDialog):
 
     def _show_details(self, item):
         run_dialog(StockDecreaseDetailsDialog, self, self.store,
-                   item)
+                   item.stock_decrease)
 
     def _setup_widgets(self):
         self.results.connect('row_activated', self.on_row_activated)
@@ -82,13 +85,13 @@ class StockDecreaseSearch(SearchDialog):
                        data_type=datetime.date, sorted=True, width=100),
                 Column('branch_name', title=_('Branch'),
                        data_type=str, expand=True),
-                Column('removed_by_name', title=_('Removed By'),
-                       data_type=str, width=120),
+                SearchColumn('removed_by_name', title=_('Removed By'),
+                             data_type=str, width=120),
                 Column('total_items_removed', title=_('Items removed'),
                        data_type=Decimal, width=110),
                 Column('cfop_description', title=_('CFOP'), data_type=str,
                        expand=True),
-                SearchColumn('reason', title=_("Reason"), data_type=str),
+                SearchColumn('reason', title=_('Reason'), data_type=str),
                 ]
 
     #

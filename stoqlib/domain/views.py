@@ -36,6 +36,7 @@ from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.costcenter import CostCenterEntry
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, Supplier, Company, LoginUser,
                                    Branch, Client, Employee, Transporter,
@@ -628,12 +629,18 @@ class StockDecreaseView(Viewable):
     """
     _PersonBranch = ClassAlias(Person, "person_branch")
 
+    stock_decrease = StockDecrease
+
     id = StockDecrease.id
     identifier = StockDecrease.identifier
     confirm_date = StockDecrease.confirm_date
-
+    reason = StockDecrease.reason
+    cfop_description = CfopData.description
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), _PersonBranch.name)
     removed_by_name = Person.name
+
+    # Aggregate
+    total_items_removed = Sum(StockDecreaseItem.quantity)
 
     tables = [
         StockDecrease,
@@ -642,7 +649,12 @@ class StockDecreaseView(Viewable):
         Join(Branch, StockDecrease.branch_id == Branch.id),
         Join(_PersonBranch, Branch.person_id == _PersonBranch.id),
         Join(Company, Company.person_id == _PersonBranch.id),
+        LeftJoin(CfopData, CfopData.id == StockDecrease.cfop_id),
+        Join(StockDecreaseItem,
+             StockDecreaseItem.stock_decrease_id == StockDecrease.id)
     ]
+
+    group_by = [id, CfopData.id, Company.id, Person.id, _PersonBranch]
 
 
 class StockDecreaseItemsView(Viewable):

@@ -43,10 +43,12 @@ class TestStockDecreaseSearch(GUITest):
         dec = self.create_stock_decrease(reason=u'Defective product')
         dec.identifier = 54287
         dec.confirm_date = datetime.datetime(2012, 1, 1)
+        self.create_stock_decrease_item(stock_decrease=dec)
 
         dec = self.create_stock_decrease(reason=u'Item was stolen')
         dec.identifier = 74268
         dec.confirm_date = datetime.datetime(2012, 2, 2)
+        self.create_stock_decrease_item(stock_decrease=dec, quantity=100)
 
     def test_search(self):
         self._create_domain()
@@ -78,10 +80,10 @@ class TestStockDecreaseSearch(GUITest):
         self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(StockDecreaseDetailsDialog,
                                            search, self.store,
-                                           search.results[0])
+                                           search.results[0].stock_decrease)
 
         run_dialog.reset_mock()
         search.results.emit('row_activated', search.results[0])
         run_dialog.assert_called_once_with(StockDecreaseDetailsDialog,
                                            search, self.store,
-                                           search.results[0])
+                                           search.results[0].stock_decrease)

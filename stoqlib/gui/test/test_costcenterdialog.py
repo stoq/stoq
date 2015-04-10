@@ -39,6 +39,8 @@ class TestCostCenterDialog(GUITest):
         sale_item = self.create_sale_item()
         sale = sale_item.sale
         stock_decrease = self.create_stock_decrease()
+        # The decrease needs an item to be shown in the dialog
+        self.create_stock_decrease_item(stock_decrease=stock_decrease)
 
         stock_transaction.type = StockTransactionHistory.TYPE_SELL
         stock_transaction.object_id = sale_item.id
