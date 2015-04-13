@@ -802,6 +802,14 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'PRINT_SALE_DETAILS_ON_POS',
+        _(u'Sales'),
+        _(u'Printing of sale details on point of sales'),
+        _(u'This parameter indicates if Stoq should print the sale details'
+          u'when finishing a sale on point of sales.'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'MANDATORY_CHECK_NUMBER',
         _(u'Payments'),
         _(u'Mandatory check number'),

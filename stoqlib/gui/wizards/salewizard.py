@@ -47,7 +47,7 @@ from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.enums import CreatePaymentStatus, ChangeSalespersonPolicy
 from stoqlib.exceptions import SellError, StoqlibError, PaymentMethodError
 from stoqlib.lib.formatters import get_formatted_cost
-from stoqlib.lib.message import warning, marker
+from stoqlib.lib.message import warning, marker, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -66,8 +66,10 @@ from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.reporting.sale import SaleOrderReport
 
 N_ = _ = stoqlib_gettext
 
@@ -942,6 +944,11 @@ class ConfirmSaleWizard(BaseWizard):
     def need_create_payment(self):
         return self.get_total_to_pay() > 0
 
+    def print_sale_details(self):
+        if yesno(_("Do you want to print this sale's details?"), gtk.RESPONSE_YES,
+                 _("Yes"), _("No")):
+            print_report(SaleOrderReport, self.model)
+
     def finish(self):
         missing = get_missing_items(self.model, self.store)
         if missing:
@@ -986,6 +993,9 @@ class ConfirmSaleWizard(BaseWizard):
         group.payer = self.model.client and self.model.client.person
 
         ConfirmSaleWizardFinishEvent.emit(self.model)
+
+        if sysparam.get_bool('PRINT_SALE_DETAILS_ON_POS'):
+            self.print_sale_details()
 
 
 def test():  # pragma nocover
