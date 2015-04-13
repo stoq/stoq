@@ -116,9 +116,11 @@ class TestProducCreateWizard(GUITest):
         grid_attribute2 = self.create_grid_attribute(attribute_group=attribute_group,
                                                      description=u'attr 2')
         self.create_attribute_option(grid_attribute=grid_attribute,
-                                     description=u'option for attr 1')
+                                     description=u'option for attr 1',
+                                     order=1)
         self.create_attribute_option(grid_attribute=grid_attribute2,
-                                     description=u'option for attr 2')
+                                     description=u'option for attr 2',
+                                     order=2)
 
         # Creating the wizard
         wizard = ProductCreateWizard(self.store)
@@ -179,9 +181,11 @@ class TestProducCreateWizard(GUITest):
         grid_attribute2 = self.create_grid_attribute(attribute_group=attribute_group,
                                                      description=u'attr 2')
         self.create_attribute_option(grid_attribute=grid_attribute,
-                                     description=u'option for attr 1')
+                                     description=u'option for attr 1',
+                                     order=1)
         self.create_attribute_option(grid_attribute=grid_attribute2,
-                                     description=u'option for attr 2')
+                                     description=u'option for attr 2',
+                                     order=2)
 
         grid_product = self.create_product(storable=True, is_grid=True)
         self.create_product_attribute(product=grid_product, attribute=grid_attribute)

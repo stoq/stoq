@@ -354,7 +354,8 @@ class ExampleCreator(object):
         return GridAttribute(store=self.store, description=description,
                              group_id=attribute_group.id)
 
-    def create_attribute_option(self, grid_attribute=None, description=None):
+    def create_attribute_option(self, grid_attribute=None, description=None,
+                                order=None):
         from stoqlib.domain.product import GridOption
         if not grid_attribute:
             grid_attribute = self.create_grid_attribute()
@@ -362,7 +363,8 @@ class ExampleCreator(object):
             description = u'grid option 1'
 
         return GridOption(store=self.store, description=description,
-                          attribute_id=grid_attribute.id)
+                          attribute_id=grid_attribute.id,
+                          option_order=order or 1)
 
     def create_product_attribute(self, product=None, attribute=None):
         from stoqlib.domain.product import ProductAttribute

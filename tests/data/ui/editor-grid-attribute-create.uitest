@@ -4,15 +4,17 @@ GtkDialog(main_dialog.toplevel): title='Add Grid Attribute', hidden
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave GridAttributeEditor is attached
-        GtkTable(table1):
-          GtkLabel(label2): 'Attribute group:'
-          ProxyComboBox(group_combo):
-          GtkLabel(label1): 'Attribute name:'
-          ProxyEntry(description): '', mandatory
-          GtkEventBox(options_holder): slave _AttributeOptionsSlave is attached
+        GtkVBox(toplevel):
+          GtkTable(attribute_elements, fill=True):
+            GtkLabel(label2): 'Attribute group:'
+            ProxyComboBox(group_combo):
+            GtkLabel(label1): 'Attribute name:'
+            ProxyEntry(description): '', mandatory
+          GtkEventBox(options_holder, expand=True, fill=True): slave _AttributeOptionsSlave is attached
             kiwi+ui+listdialog+ListContainer(listcontainer):
               ObjectList(expand=True, fill=True):
                 column: title='Description', expand
+                column: title='Option order'
               GtkVBox(fill=True, padding=6):
                 GtkButton(fill=True): 'gtk-add'
                 GtkButton(fill=True): 'gtk-remove', insensitive

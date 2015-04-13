@@ -21,6 +21,7 @@ CREATE TABLE grid_option (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
+    option_order integer,
     attribute_id uuid REFERENCES grid_attribute(id) ON UPDATE CASCADE
 );
 CREATE RULE update_te AS ON UPDATE TO grid_option DO ALSO SELECT update_te(old.te_id);

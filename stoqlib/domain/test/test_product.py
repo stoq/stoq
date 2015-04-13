@@ -460,7 +460,7 @@ class TestGridAttribute(DomainTest):
         self.assertEqual(grid_attr.has_option(), True)
 
 
-class TestAttributeOption(DomainTest):
+class TestGridOption(DomainTest):
 
     def test_get_description(self):
         attr_option = self.create_attribute_option()

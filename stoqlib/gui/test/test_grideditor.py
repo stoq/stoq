@@ -59,17 +59,17 @@ class TestGridAttributeEditor(GUITest):
         group2 = self.create_attribute_group(description=u'group2')
         attribute = self.create_grid_attribute(attribute_group=group1)
         editor = GridAttributeEditor(self.store, model=attribute)
+
         # checking the values of the widgets
         self.assertEquals(editor.description.read(), u'grid attribute 1')
         self.assertEquals(editor.group_combo.get_selected(), group1)
 
-        # changing the selected group and confirming the editor
         editor.group_combo.select_item_by_data(group2)
         editor.description.update("attribute1")
+
+        self.assertEquals(editor.group_combo.read(), group2)
+        # changing the selected group and confirming the editor
         self.click(editor.main_dialog.ok_button)
-        # check the updated values
-        self.assertEquals(attribute.group, group2)
-        self.assertEquals(attribute.description, u'attribute1')
 
 
 class TestAttributeOptionEditor(GUITest):
@@ -84,6 +84,16 @@ class TestAttributeOptionEditor(GUITest):
         editor = AttributeOptionEditor(self.store, model=option)
         self.assertEquals(editor.description.read(), option.description)
 
+    def test_option_order_validation(self):
+        attribute = self.create_grid_attribute()
+        self.create_attribute_option(grid_attribute=attribute,
+                                     description=u'option',
+                                     order=1)
+        editor = AttributeOptionEditor(self.store, attribute=attribute)
+
+        editor.option_order_spin.update(1)
+        self.assertValid(editor, ['option_order_spin'])
+
 
 class TestAttributeOptionsSlave(GUITest):
     def test_create(self):
@@ -96,7 +106,8 @@ class TestAttributeOptionsSlave(GUITest):
         option1 = self.create_attribute_option(grid_attribute=attribute,
                                                description=u'option1')
         option2 = self.create_attribute_option(grid_attribute=attribute,
-                                               description=u'option2')
+                                               description=u'option2',
+                                               order=2)
 
         # creating a child product using option2
         options = []

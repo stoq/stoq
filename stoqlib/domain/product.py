@@ -640,12 +640,14 @@ class GridOption(Domain):
 
     __storm_table__ = 'grid_option'
 
+    #: description of self
+    description = UnicodeCol()
+    #: Order that the option will be shown
+    option_order = IntCol()
+
     #: Attribute id for that option
     attribute_id = IdCol()
     attribute = Reference(attribute_id, 'GridAttribute.id')
-
-    #: description of self
-    description = UnicodeCol()
 
     def get_description(self):
         return self.description

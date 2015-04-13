@@ -7,6 +7,8 @@ GtkDialog(main_dialog.toplevel): title='Add Attribute Option', hidden
         GtkTable(table1):
           GtkLabel(label1): 'Attribute option:'
           ProxyEntry(description): '', mandatory
+          GtkLabel(label2): 'Option order:'
+          ProxySpinButton(option_order_spin): ''
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

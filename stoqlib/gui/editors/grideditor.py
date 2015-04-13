@@ -23,6 +23,8 @@
 ##
 """ Grid configuration editor implementation."""
 
+import gtk
+
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
@@ -66,6 +68,7 @@ class GridAttributeEditor(BaseEditor):
 
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode)
+        # Only let the user edit if its a new attribute
         if model:
             self.set_description(model.description)
 
@@ -94,7 +97,7 @@ class AttributeOptionEditor(BaseEditor):
     model_name = _('Attribute Option')
     model_type = GridOption
     gladefile = 'AttributeOptionEditor'
-    proxy_widgets = ['description']
+    proxy_widgets = ['description', 'option_order_spin']
     confirm_widgets = ['description']
 
     def __init__(self, store, model=None, visual_mode=False, attribute=None):
@@ -112,6 +115,10 @@ class AttributeOptionEditor(BaseEditor):
                           attribute=self._attribute)
 
     def setup_proxies(self):
+        self.option_order_spin.set_adjustment(gtk.Adjustment(lower=0,
+                                                             upper=100,
+                                                             step_incr=1,
+                                                             page_incr=5))
         self.proxy = self.add_proxy(self.model, AttributeOptionEditor.proxy_widgets)
 
 
@@ -119,7 +126,8 @@ class _AttributeOptionsSlave(ModelListSlave):
     model_type = GridOption
     editor_class = AttributeOptionEditor
     columns = [
-        Column('description', _('Description'), data_type=str, expand=True)
+        Column('description', _('Description'), data_type=str, expand=True),
+        Column('option_order', _('Option order'), data_type=int)
     ]
 
     def __init__(self, store, attribute):

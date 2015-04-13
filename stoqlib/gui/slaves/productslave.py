@@ -36,7 +36,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, ProductComponent,
                                     ProductQualityTest, Product,
-                                    ProductManufacturer, GridGroup)
+                                    ProductManufacturer, GridGroup, GridOption)
 from stoqlib.domain.production import ProductionOrderProducingView
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.domain.views import ProductFullStockView
@@ -135,8 +135,10 @@ class ProductGridSlave(BaseEditorSlave):
         combo.connect('changed', self._on_combo_selection__changed)
 
     def _fill_options(self, widget, attr):
-        options = attr.options
-        widget.prefill(api.for_combo(options, empty=_("Select an option")))
+        options = attr.options.order_by(GridOption.option_order,
+                                        GridOption.description)
+        widget.prefill(api.for_combo(options, empty=_("Select an option"),
+                       sorted=False))
 
     def _get_columns(self):
         return [Column('description', title=_('Description'), data_type=str,
@@ -236,8 +238,8 @@ class ProductInformationSlave(BaseEditorSlave):
                                    other=[self.max_lbl,
                                           self.max_unit])
         if (not self.minimum_quantity.get_visible() and
-            not self.maximum_quantity.get_visible() and
-            not self.location.get_visible()):
+                not self.maximum_quantity.get_visible() and
+                not self.location.get_visible()):
             self.storable_frame.hide()
 
         # Mercosul
@@ -246,8 +248,8 @@ class ProductInformationSlave(BaseEditorSlave):
         self.db_form.update_widget(self.genero, other=self.genero_lbl)
 
         if (not self.ncm.get_visible() and
-            not self.ex_tipi.get_visible() and
-            not self.genero.get_visible()):
+                not self.ex_tipi.get_visible() and
+                not self.genero.get_visible()):
             self.nfe_frame.hide()
 
     def setup_proxies(self):
