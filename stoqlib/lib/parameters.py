@@ -849,6 +849,15 @@ _details = [
           u'only return it.'),
         bool, initial=True),
 
+    ParameterDetails(
+        u'UPDATE_PRODUCTS_COST_ON_PURCHASE',
+        _(u'Purchase'),
+        _(u'Automatic update of products cost when making a new purchase.'),
+        _(u'When a new purchase is made, it\'s products cost are set to '
+          u'the purchase\'s items cost.'),
+        bool, initial=False),
+
+
     # Some fiscal printers can print up to 8 rows and 70 characters each row.
     # But we want to write an documentation to make sure it will work
     # on every fiscal printer

@@ -477,6 +477,17 @@ class Product(Domain):
                     ProductSupplierInfo.supplier == supplier)
         return self.store.find(ProductSupplierInfo.supplier_code, query).one()
 
+    def get_product_supplier_info(self, supplier):
+        """Returns the product information for the specified supplier.
+
+        :param supplier: the |supplier|
+        :returns: The supplier's product information
+        :rtype: :class:'ProductSupplierInfo'
+        """
+        query = And(ProductSupplierInfo.product == self,
+                    ProductSupplierInfo.supplier == supplier)
+        return self.store.find(ProductSupplierInfo, query).one()
+
     def get_components(self):
         """Returns the products which are our |components|.
 

@@ -451,6 +451,18 @@ class PurchaseOrder(Domain):
 
         purchase_item.quantity_received += quantity_received
 
+    def update_products_cost(self):
+        """Update purchase's items cost
+
+        Update the costs of all products on this purchase
+        to the costs specified in the order.
+        """
+        for item in self.get_items():
+            item.sellable.cost = item.cost
+            product = item.sellable.product
+            product_supplier = product.get_product_supplier_info(self.supplier)
+            product_supplier.base_cost = item.cost
+
     @property
     def status_str(self):
         return PurchaseOrder.translate_status(self.status)

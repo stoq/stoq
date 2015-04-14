@@ -630,13 +630,13 @@ class ExampleCreator(object):
                          purchase=purchase_order,
                          branch=purchase_order.branch)
 
-    def create_purchase_order_item(self, order=None):
+    def create_purchase_order_item(self, order=None, cost=125):
         if not order:
             order = self.create_purchase_order()
         from stoqlib.domain.purchase import PurchaseItem
         return PurchaseItem(store=self.store,
                             quantity=8, quantity_received=0,
-                            cost=125, base_cost=125,
+                            cost=cost, base_cost=125,
                             sellable=self.create_sellable(),
                             order=order)
 

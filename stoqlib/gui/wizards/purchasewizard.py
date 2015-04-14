@@ -27,7 +27,6 @@
 import datetime
 
 import gtk
-
 from kiwi.component import get_utility
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
@@ -641,6 +640,9 @@ class PurchaseWizard(BaseWizard):
             self.receiving_model.confirm()
 
         self.close()
+
+        if sysparam.get_bool('UPDATE_PRODUCTS_COST_ON_PURCHASE'):
+            self.model.update_products_cost()
 
 
 def test():  # pragma nocover

@@ -224,6 +224,29 @@ class TestPurchaseOrder(DomainTest):
             order.increase_quantity_received(purchase_item=item,
                                              quantity_received=3)
 
+    def test_update_products_cost(self):
+        order = self.create_purchase_order()
+        supplier = self.create_supplier()
+        order.supplier = supplier
+        #We have an order and a supplier for it
+        item = self.create_purchase_order_item(order=order, cost=100)
+        #The order now has an item with cost 100
+        item.sellable.cost = 200
+        #The sellable cost is different from the item cost
+
+        product_supplier = self.create_product_supplier_info(supplier=supplier,
+                                                             product=item.sellable.product)
+        product_supplier.base_cost = 150
+        #The base cost for the product of this order's supplier
+        #is also different from the item cost
+
+        order.update_products_cost()
+        #Now the sellable cost and the supplier's product cost
+        #should be qual to the order's item cost
+
+        self.assertEqual(item.sellable.cost, 100)
+        self.assertEqual(product_supplier.base_cost, 100)
+
     def test_get_branch_name(self):
         branch = self.create_branch(name=u'Test')
         order = self.create_purchase_order(branch=branch)

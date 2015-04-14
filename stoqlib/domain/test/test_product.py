@@ -145,6 +145,15 @@ class TestProduct(DomainTest):
                             product=self.product, is_main_supplier=True)
         self.failUnless(self.product.get_main_supplier_info())
 
+    def test_get_product_supplier_info(self):
+        supplier = self.create_supplier()
+        self.failIf(self.product.get_product_supplier_info(supplier))
+        product_supplier = ProductSupplierInfo(store=self.store,
+                                               supplier=supplier,
+                                               product=self.product)
+        self.assertEqual(self.product.get_product_supplier_info(supplier),
+                         product_supplier)
+
     def test_get_components(self):
         self.assertEqual(list(self.product.get_components()), [])
 
