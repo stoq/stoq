@@ -41,9 +41,9 @@ class SpreadSheetExporter:
     """
     title = _('Exporter to Spreadseet')
 
-    def export(self, object_list, name, filename_prefix):
+    def export(self, object_list, name, filename_prefix, data=None):
         xls = XLSExporter(name)
-        xls.add_from_object_list(object_list)
+        xls.add_from_object_list(object_list, data)
         temporary = xls.save(filename_prefix)
         self.export_temporary(temporary)
 

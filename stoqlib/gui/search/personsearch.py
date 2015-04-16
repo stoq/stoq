@@ -175,6 +175,9 @@ class ClientSearch(BasePersonSearch):
         self.person_doc_l10n = api.get_l10n_field('person_document')
         SearchEditor.__init__(self, store, **kwargs)
 
+    def setup_widgets(self):
+        self.add_csv_button(_("Client"), _("client"))
+
     #
     # SearchDialog Hooks
     #

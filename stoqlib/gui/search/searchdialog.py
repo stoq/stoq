@@ -490,8 +490,17 @@ class SearchDialog(BasicDialog):
             self.csv_button.set_sensitive(bool(obj))
 
     def _on_export_csv_button__clicked(self, widget):
+        if not self.unlimited_results:
+            executer = self.search.get_query_executer()
+            data = executer.search(limit=-1)
+        else:
+            # The results are already unlimited, let the exporter get the data
+            # from the objectlist
+            data = None
+
         sse = SpreadSheetExporter()
         sse.export(object_list=self.results,
+                   data=data,
                    name=self._csv_name,
                    filename_prefix=self._csv_prefix)
 

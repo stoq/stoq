@@ -137,10 +137,10 @@ class XLSExporter(object):
 
         return temporary
 
-    def add_from_object_list(self, objectlist):
+    def add_from_object_list(self, objectlist, data=None):
         columns = objectlist.get_visible_columns()
         self.set_column_types([
             c.data_type for c in columns])
         self.set_column_headers([
             getattr(c, 'long_title', None) or c.title for c in columns])
-        self.add_cells(objectlist.get_cell_contents())
+        self.add_cells(objectlist.get_cell_contents(data))

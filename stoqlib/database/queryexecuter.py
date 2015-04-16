@@ -244,7 +244,7 @@ class QueryExecuter(object):
 
     # Public API
 
-    def search(self, states=None, resultset=None):
+    def search(self, states=None, resultset=None, limit=None):
         """
         Execute a search.
 
@@ -252,12 +252,14 @@ class QueryExecuter(object):
           just execute a normal store.find() on the search_spec set in
           .set_search_spec()
         :param states:
+        :param limit: use this limit instead of the one defined by set_limit()
         """
         if resultset is None:
             resultset = self._query(self.store)
         resultset = self._parse_states(resultset, states)
-        if self._limit > 0:
-            resultset.config(limit=self._limit)
+        limit = limit or self._limit
+        if limit > 0:
+            resultset.config(limit=limit)
         return resultset
 
     def search_async(self, states=None, resultset=None):
