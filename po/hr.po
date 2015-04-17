@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 17:55-0300\n"
+"POT-Creation-Date: 2015-04-16 17:05-0300\n"
 "PO-Revision-Date: 2015-04-15 20:55+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/stoq/language/hr/)\n"
@@ -73,7 +73,7 @@ msgstr "Dodaj novi račun"
 #: ../stoqlib/gui/search/commissionsearch.py:119
 #: ../stoqlib/gui/search/loansearch.py:134
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:113
-#: ../stoqlib/gui/search/personsearch.py:383
+#: ../stoqlib/gui/search/personsearch.py:386
 #: ../stoqlib/gui/search/productsearch.py:269
 #: ../stoqlib/gui/search/productsearch.py:320
 #: ../stoqlib/gui/search/salesearch.py:213
@@ -404,7 +404,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:113
 #: ../stoqlib/gui/editors/costcentereditor.py:50
 #: ../stoqlib/gui/search/costcentersearch.py:54
-#: ../stoqlib/gui/search/personsearch.py:229
+#: ../stoqlib/gui/search/personsearch.py:232
 #: ../stoqlib/gui/search/stationsearch.py:57
 msgid "Active"
 msgstr ""
@@ -425,7 +425,7 @@ msgstr ""
 #: ../stoqlib/domain/test/test_person.py:1048
 #: ../stoqlib/domain/test/test_person.py:1094
 #: ../stoqlib/domain/test/test_person.py:1113
-#: ../stoqlib/gui/search/personsearch.py:230
+#: ../stoqlib/gui/search/personsearch.py:233
 msgid "Inactive"
 msgstr ""
 
@@ -2124,7 +2124,7 @@ msgstr ""
 #: ../data/template/purchase/purchase-items.html:13
 #: ../stoq/gui/purchase.py:274 ../stoqlib/domain/sale.py:468
 #: ../stoqlib/domain/transfer.py:181 ../stoqlib/domain/workorder.py:176
-#: ../stoqlib/gui/search/personsearch.py:452
+#: ../stoqlib/gui/search/personsearch.py:455
 #: ../stoqlib/gui/search/productsearch.py:288
 #: ../stoqlib/gui/search/purchasesearch.py:68
 #: ../stoqlib/gui/search/transfersearch.py:109
@@ -3492,10 +3492,10 @@ msgstr ""
 #: ../stoqlib/gui/search/costcentersearch.py:51
 #: ../stoqlib/gui/search/personsearch.py:112
 #: ../stoqlib/gui/search/personsearch.py:142
-#: ../stoqlib/gui/search/personsearch.py:191
-#: ../stoqlib/gui/search/personsearch.py:239
-#: ../stoqlib/gui/search/personsearch.py:292
-#: ../stoqlib/gui/search/personsearch.py:336
+#: ../stoqlib/gui/search/personsearch.py:194
+#: ../stoqlib/gui/search/personsearch.py:242
+#: ../stoqlib/gui/search/personsearch.py:295
+#: ../stoqlib/gui/search/personsearch.py:339
 #: ../stoqlib/gui/search/salespersonsearch.py:58
 #: ../stoqlib/gui/search/stationsearch.py:51 ../stoqlib/reporting/sale.py:154
 msgid "Name"
@@ -3505,8 +3505,8 @@ msgstr ""
 #: ../data/template/optical/opticaldetails.html:27
 #: ../data/template/workorder/quote.html:37
 #: ../stoqlib/gui/dialogs/personmergedialog.py:302
-#: ../stoqlib/gui/search/personsearch.py:392
-#: ../stoqlib/gui/search/personsearch.py:442
+#: ../stoqlib/gui/search/personsearch.py:395
+#: ../stoqlib/gui/search/personsearch.py:445
 #: ../stoqlib/gui/search/salesearch.py:260
 msgid "Phone"
 msgstr ""
@@ -3527,7 +3527,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/deliveryeditor.py:112
 #: ../stoqlib/gui/editors/deliveryeditor.py:250
 #: ../stoqlib/gui/search/deliverysearch.py:85
-#: ../stoqlib/gui/search/personsearch.py:398
+#: ../stoqlib/gui/search/personsearch.py:401
 msgid "Address"
 msgstr ""
 
@@ -3769,8 +3769,9 @@ msgstr ""
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:90
 #: ../stoqlib/gui/search/deliverysearch.py:91
 #: ../stoqlib/gui/search/loansearch.py:145
-#: ../stoqlib/gui/search/personsearch.py:388
-#: ../stoqlib/gui/search/personsearch.py:438
+#: ../stoqlib/gui/search/personsearch.py:179
+#: ../stoqlib/gui/search/personsearch.py:391
+#: ../stoqlib/gui/search/personsearch.py:441
 #: ../stoqlib/gui/search/returnedsalesearch.py:86
 #: ../stoqlib/gui/search/returnedsalesearch.py:127
 #: ../stoqlib/gui/search/salesearch.py:88
@@ -3840,8 +3841,8 @@ msgstr ""
 #: ../stoqlib/gui/editors/categoryeditor.py:41
 #: ../stoqlib/gui/editors/paymenteditor.py:83
 #: ../stoqlib/gui/search/loansearch.py:80
-#: ../stoqlib/gui/search/personsearch.py:193
-#: ../stoqlib/gui/search/personsearch.py:444
+#: ../stoqlib/gui/search/personsearch.py:196
+#: ../stoqlib/gui/search/personsearch.py:447
 #: ../stoqlib/gui/search/productionsearch.py:97
 #: ../stoqlib/gui/search/productsearch.py:203
 #: ../stoqlib/gui/search/productsearch.py:366
@@ -4123,8 +4124,8 @@ msgstr ""
 #: ../stoqlib/gui/search/paymentsearch.py:88
 #: ../stoqlib/gui/search/paymentsearch.py:181
 #: ../stoqlib/gui/search/personsearch.py:116
-#: ../stoqlib/gui/search/personsearch.py:301
-#: ../stoqlib/gui/search/personsearch.py:338
+#: ../stoqlib/gui/search/personsearch.py:304
+#: ../stoqlib/gui/search/personsearch.py:341
 #: ../stoqlib/gui/search/returnedsalesearch.py:83
 #: ../stoqlib/gui/search/salesearch.py:297
 #: ../stoqlib/gui/search/transfersearch.py:129
@@ -4740,9 +4741,9 @@ msgstr ""
 #: ../stoqlib/gui/search/paymentsearch.py:145
 #: ../stoqlib/gui/search/personsearch.py:93
 #: ../stoqlib/gui/search/personsearch.py:99
-#: ../stoqlib/gui/search/personsearch.py:184
-#: ../stoqlib/gui/search/personsearch.py:231
-#: ../stoqlib/gui/search/personsearch.py:282
+#: ../stoqlib/gui/search/personsearch.py:187
+#: ../stoqlib/gui/search/personsearch.py:234
+#: ../stoqlib/gui/search/personsearch.py:285
 #: ../stoqlib/gui/search/productionsearch.py:88
 #: ../stoqlib/gui/search/productsearch.py:487
 #: ../stoqlib/gui/search/productsearch.py:528
@@ -5130,15 +5131,15 @@ msgstr ""
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
 #: ../stoqlib/gui/dialogs/personmergedialog.py:300
-#: ../stoqlib/gui/search/personsearch.py:400
-#: ../stoqlib/gui/search/personsearch.py:448
+#: ../stoqlib/gui/search/personsearch.py:403
+#: ../stoqlib/gui/search/personsearch.py:451
 msgid "CPF"
 msgstr ""
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:4
 #: ../stoqlib/gui/dialogs/personmergedialog.py:301
-#: ../stoqlib/gui/search/personsearch.py:402
-#: ../stoqlib/gui/search/personsearch.py:450
+#: ../stoqlib/gui/search/personsearch.py:405
+#: ../stoqlib/gui/search/personsearch.py:453
 msgid "CNPJ"
 msgstr ""
 
@@ -5730,9 +5731,9 @@ msgstr ""
 
 #: ../plugins/optical/medicssearch.py:67
 #: ../stoqlib/gui/search/personsearch.py:144
-#: ../stoqlib/gui/search/personsearch.py:195
-#: ../stoqlib/gui/search/personsearch.py:241
-#: ../stoqlib/gui/search/personsearch.py:297
+#: ../stoqlib/gui/search/personsearch.py:198
+#: ../stoqlib/gui/search/personsearch.py:244
+#: ../stoqlib/gui/search/personsearch.py:300
 msgid "Phone Number"
 msgstr ""
 
@@ -7017,7 +7018,7 @@ msgstr ""
 #: ../stoq/gui/purchase.py:77 ../stoq/gui/receivable.py:72
 #: ../stoq/gui/sales.py:106 ../stoq/gui/services.py:163 ../stoq/gui/till.py:84
 #: ../stoqlib/gui/search/personsearch.py:169
-#: ../stoqlib/gui/search/personsearch.py:225
+#: ../stoqlib/gui/search/personsearch.py:228
 msgid "matching:"
 msgstr ""
 
@@ -8779,7 +8780,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:198
 #: ../stoqlib/gui/editors/producteditor.py:283
 #: ../stoqlib/gui/editors/producteditor.py:474
-#: ../stoqlib/gui/search/personsearch.py:379
+#: ../stoqlib/gui/search/personsearch.py:382
 #: ../stoqlib/gui/search/productsearch.py:116
 #: ../stoqlib/gui/search/salesearch.py:220
 #: ../stoqlib/gui/search/salesearch.py:302
@@ -9222,7 +9223,7 @@ msgstr ""
 msgid "The current database user does not have super user rights"
 msgstr ""
 
-#: ../stoqlib/database/admin.py:343 ../stoqlib/gui/search/personsearch.py:299
+#: ../stoqlib/database/admin.py:343 ../stoqlib/gui/search/personsearch.py:302
 msgid "Manager"
 msgstr ""
 
@@ -10222,7 +10223,7 @@ msgstr ""
 
 #: ../stoqlib/domain/sellable.py:392
 #: ../stoqlib/gui/dialogs/batchselectiondialog.py:239
-#: ../stoqlib/gui/search/personsearch.py:456
+#: ../stoqlib/gui/search/personsearch.py:459
 msgid "Available"
 msgstr ""
 
@@ -10292,8 +10293,8 @@ msgstr ""
 
 #: ../stoqlib/domain/uiform.py:105
 #: ../stoqlib/gui/dialogs/personmergedialog.py:309
-#: ../stoqlib/gui/search/personsearch.py:390
-#: ../stoqlib/gui/search/personsearch.py:440
+#: ../stoqlib/gui/search/personsearch.py:393
+#: ../stoqlib/gui/search/personsearch.py:443
 #: ../stoqlib/gui/search/salesearch.py:262
 msgid "Email"
 msgstr ""
@@ -10319,7 +10320,7 @@ msgid "Complement"
 msgstr ""
 
 #: ../stoqlib/domain/uiform.py:111 ../stoqlib/gui/dialogs/addressdialog.py:39
-#: ../stoqlib/gui/search/personsearch.py:399 ../stoqlib/l10n/br/br.py:133
+#: ../stoqlib/gui/search/personsearch.py:402 ../stoqlib/l10n/br/br.py:133
 #: ../stoqlib/l10n/generic/generic.py:84
 msgid "City"
 msgstr ""
@@ -10334,7 +10335,7 @@ msgid "Country"
 msgstr ""
 
 #: ../stoqlib/domain/uiform.py:117 ../stoqlib/gui/search/personsearch.py:113
-#: ../stoqlib/gui/search/personsearch.py:264
+#: ../stoqlib/gui/search/personsearch.py:267
 #: ../stoqlib/gui/slaves/employeeslave.py:249
 msgid "Role"
 msgstr ""
@@ -13370,134 +13371,138 @@ msgstr ""
 msgid "Client Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:185
+#: ../stoqlib/gui/search/personsearch.py:179 ../stoqlib/reporting/person.py:33
+msgid "client"
+msgstr ""
+
+#: ../stoqlib/gui/search/personsearch.py:188
 msgid "Show clients with status"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:197
+#: ../stoqlib/gui/search/personsearch.py:200
 msgid "Mobile Number"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:200
-#: ../stoqlib/gui/search/personsearch.py:396
-#: ../stoqlib/gui/search/personsearch.py:446
+#: ../stoqlib/gui/search/personsearch.py:203
+#: ../stoqlib/gui/search/personsearch.py:399
+#: ../stoqlib/gui/search/personsearch.py:449
 #: ../stoqlib/l10n/generic/generic.py:46 ../stoqlib/l10n/generic/generic.py:56
 msgid "Document"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:203
+#: ../stoqlib/gui/search/personsearch.py:206
 msgid "RG"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:204
-#: ../stoqlib/gui/search/personsearch.py:404
+#: ../stoqlib/gui/search/personsearch.py:207
+#: ../stoqlib/gui/search/personsearch.py:407
 msgid "Birth Date"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:206
-#: ../stoqlib/gui/search/personsearch.py:406
+#: ../stoqlib/gui/search/personsearch.py:209
+#: ../stoqlib/gui/search/personsearch.py:409
 msgid "Birthday"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:222
+#: ../stoqlib/gui/search/personsearch.py:225
 msgid "Transporter Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:233
+#: ../stoqlib/gui/search/personsearch.py:236
 msgid "Show transporters with status"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:243
+#: ../stoqlib/gui/search/personsearch.py:246
 msgid "Freight (%)"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:251
+#: ../stoqlib/gui/search/personsearch.py:254
 msgid "Employee Role Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:254
+#: ../stoqlib/gui/search/personsearch.py:257
 msgid "Role Matching"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:268
+#: ../stoqlib/gui/search/personsearch.py:271
 msgid "Branch Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:271
+#: ../stoqlib/gui/search/personsearch.py:274
 msgid "matching"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:283
+#: ../stoqlib/gui/search/personsearch.py:286
 msgid "Show branches with status"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:293
+#: ../stoqlib/gui/search/personsearch.py:296
 msgid "Fancy name"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:295
+#: ../stoqlib/gui/search/personsearch.py:298
 msgid "Acronym"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:318
+#: ../stoqlib/gui/search/personsearch.py:321
 msgid "User Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:322
+#: ../stoqlib/gui/search/personsearch.py:325
 msgid "Users Matching:"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:331
+#: ../stoqlib/gui/search/personsearch.py:334
 msgid "Login Name"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:333
+#: ../stoqlib/gui/search/personsearch.py:336
 #: ../stoqlib/gui/search/profilesearch.py:54
 msgid "Profile"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:359
+#: ../stoqlib/gui/search/personsearch.py:362
 msgid "Clients with Sale"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:370
+#: ../stoqlib/gui/search/personsearch.py:373
 msgid "Clients With Sales"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:370
-#: ../stoqlib/gui/search/personsearch.py:434 ../stoqlib/reporting/person.py:33
+#: ../stoqlib/gui/search/personsearch.py:373
+#: ../stoqlib/gui/search/personsearch.py:437 ../stoqlib/reporting/person.py:33
 msgid "clients"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:376
+#: ../stoqlib/gui/search/personsearch.py:379
 msgid "Product category"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:394
+#: ../stoqlib/gui/search/personsearch.py:397
 msgid "Client category"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:407
+#: ../stoqlib/gui/search/personsearch.py:410
 msgid "Last purchase"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:409
+#: ../stoqlib/gui/search/personsearch.py:412
 msgid "# Sales"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:410
+#: ../stoqlib/gui/search/personsearch.py:413
 msgid "# Items"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:412
+#: ../stoqlib/gui/search/personsearch.py:415
 msgid "Total Amount"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:426
+#: ../stoqlib/gui/search/personsearch.py:429
 msgid "Clients with Credit"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:454
+#: ../stoqlib/gui/search/personsearch.py:457
 msgid "Spent"
 msgstr ""
 
@@ -17228,10 +17233,6 @@ msgstr ""
 
 #: ../stoqlib/reporting/person.py:32
 msgid "Clients With Sale"
-msgstr ""
-
-#: ../stoqlib/reporting/person.py:33
-msgid "client"
 msgstr ""
 
 #: ../stoqlib/reporting/product.py:38 ../stoqlib/reporting/product.py:70
