@@ -494,11 +494,13 @@ class PosApp(ShellApp):
         return currency(sum([item.total for item in self.sale_items]))
 
     def _get_sellable_and_batch(self):
-        # There is already a sellable selected. Return it instead.
-        if self._sellable:
+        text = self.barcode.get_text()
+
+        # There is already a sellable selected and codebar not changed.
+        # Return it instead.
+        if self._sellable and not text:
             return self._sellable, self._batch
 
-        text = self.barcode.get_text()
         if not text:
             raise StoqlibError("_get_sellable_and_batch needs a barcode")
         text = unicode(text)
@@ -683,13 +685,13 @@ class PosApp(ShellApp):
         self.extra_details_lbl.set_markup(extra_markup)
         self.extra_details_lbl.set_tooltip_markup(extra_markup)
 
-    def _has_barcode_str(self):
-        return self.barcode.get_text().strip() != ''
+    def _has_sellable(self):
+        return bool(self.barcode.get_text().strip() != '' or self._sellable)
 
     def _update_buttons(self):
-        has_barcode = self._has_barcode_str()
         has_quantity = self._read_quantity() > 0
-        self.set_sensitive([self.add_button], has_barcode and has_quantity)
+        has_sellable = self._has_sellable()
+        self.set_sensitive([self.add_button], has_sellable and has_quantity)
         self.set_sensitive([self.advanced_search], has_quantity)
 
     def _read_quantity(self):
@@ -765,6 +767,8 @@ class PosApp(ShellApp):
             self.quantity.grab_focus()
         else:
             self._add_sellable(sellable, batch=batch)
+
+            self._update_widgets()
 
     def _add_sellable(self, sellable, batch=None):
         quantity = self._read_quantity()
@@ -962,6 +966,7 @@ class PosApp(ShellApp):
         self._sellable = sellable
         self._batch = batch
         self.sellable_description.set_text(sellable.description)
+        self.barcode.set_text('')
         self._update_buttons()
 
     @public(since="1.5.0")
@@ -1315,8 +1320,10 @@ class PosApp(ShellApp):
         self._update_buttons()
 
     def on_quantity__activate(self, entry):
-        # Before activate, check if 'quantity' widget is valid.
-        if self.quantity.validate() is not ValueUnset:
+        # Before activate, check if 'quantity' widget is valid and if we have a
+        # sellable selected
+        has_sellable = self._has_sellable()
+        if self.quantity.validate() is not ValueUnset and has_sellable:
             self._add_sale_item(confirm_quantity=False)
 
     def on_quantity__validate(self, entry, value):
