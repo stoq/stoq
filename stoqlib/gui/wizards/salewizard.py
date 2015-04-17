@@ -944,7 +944,7 @@ class ConfirmSaleWizard(BaseWizard):
 
     def print_sale_details(self):
         if yesno(_("Do you want to print this sale's details?"), gtk.RESPONSE_YES,
-                 _("Yes"), _("No")):
+                 _("Print Details"), _("Don't Print")):
             print_report(SaleOrderReport, self.model)
 
     def finish(self):
