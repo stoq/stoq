@@ -803,3 +803,17 @@ class TestSellable(DomainTest):
                                        "Tax Class.\n"
                                        "If you don't know what this means, contact "
                                        "the system administrator."))
+
+    def test_copy_sellable(self):
+        sellable = self.create_sellable()
+        new_sellable = sellable.copy_sellable(self.store)
+        props = ['base_price', 'category_id', 'cost', 'max_discount',
+                 'on_sale_price', 'max_discount', 'commission', 'notes',
+                 'unit_id', 'category_id', 'tax_constant_id',
+                 'default_sale_cfop_id', 'on_sale_price', 'on_sale_start_date',
+                 'on_sale_end_date']
+
+        for prop in props:
+            # Checking that all attributes have the same value
+            self.assertEquals(getattr(sellable, prop),
+                              getattr(new_sellable, prop))

@@ -559,8 +559,7 @@ class Product(Domain):
         """
         assert not self.child_exists(options)
 
-        sellable = Sellable(store=self.store,
-                            cost=self.sellable.cost)
+        sellable = self.sellable.copy_sellable(self.store)
         new_code = Sellable.get_max_value(self.store, Sellable.code)
         sellable.code = next_value_for(new_code)
 
