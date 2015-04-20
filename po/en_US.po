@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
@@ -11,20 +10,20 @@ msgstr ""
 "POT-Creation-Date: 2015-04-17 17:02-0300\n"
 "PO-Revision-Date: 2015-04-17 20:02+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
-"Language-Team: Bosnian (http://www.transifex.com/projects/p/stoq/language/bs/)\n"
+"Language-Team: English (United States) (http://www.transifex.com/projects/p/stoq/language/en_US/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: bs\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account name:"
-msgstr "Naziv računa:"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:2
 msgid "Account code:"
-msgstr "Kod naloga:"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:3
 #: ../data/glade/SellableCategoryEditor.ui.h:2
@@ -42,7 +41,7 @@ msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:5
 msgid "Hold control to remove selection."
-msgstr "Držite control da obrišete izbor"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:1
 #: ../data/glade/TransferOrderDetails.ui.h:4
@@ -52,7 +51,7 @@ msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:377
 msgid "Add a new account"
-msgstr "Dodaj novi račun"
+msgstr ""
 
 #. Daterange filter
 #. Date
@@ -84,7 +83,7 @@ msgstr "Dodaj novi račun"
 #: ../stoqlib/gui/search/transfersearch.py:92
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:344
 msgid "Date:"
-msgstr "Datum:"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:4
 #: ../data/glade/CallsEditor.ui.h:3 ../data/glade/CardDeviceEditor.ui.h:1
@@ -104,19 +103,19 @@ msgstr "Datum:"
 #: ../data/glade/WorkOrderEditor.ui.h:7
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:5
 msgid "Description:"
-msgstr "Opis:"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:5
 #: ../data/glade/SellableEditor.ui.h:1
 msgid "Code:"
-msgstr "Kôd:"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:6
 #: ../data/glade/DeviceConstantEditor.ui.h:3
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
 #: ../data/template/base/promissory-note.html:65
 msgid "Value:"
-msgstr "Vrijednost:"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:7
 msgid "Operation Type:"
@@ -124,16 +123,16 @@ msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:1
 msgid "New..."
-msgstr "Novo..."
+msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:2 ../data/glade/SearchEditor.ui.h:2
 #: ../stoqlib/gui/test/test_productsearch.py:81
 msgid "_Edit..."
-msgstr "_Uredi..."
+msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:3
 msgid "_Delete"
-msgstr "_Obriši"
+msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:4
 #: ../data/glade/CardMethodEditor.ui.h:1
@@ -156,11 +155,11 @@ msgstr "_Obriši"
 #: ../stoqlib/gui/search/searcheditor.py:174
 #: ../stoqlib/gui/test/test_productsearch.py:102
 msgid "Details"
-msgstr "Detalji"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:1
 msgid "Street:"
-msgstr "Ulica:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:2
 #: ../data/glade/BasePaymentDataEditor.ui.h:4
@@ -169,7 +168,7 @@ msgstr "Ulica:"
 #: ../data/template/base/promissory-note.html:45
 #: ../stoqlib/gui/editors/accounteditor.py:219
 msgid "Number:"
-msgstr "Broj:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:3
 msgid "Complement:"
@@ -177,11 +176,11 @@ msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:4
 msgid "State:"
-msgstr "Entitet:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:5
 msgid "Postal Code:"
-msgstr "Poštanski broj:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:6
 msgid "District:"
@@ -189,16 +188,16 @@ msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:7
 msgid "City:"
-msgstr "Grad:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:8
 #: ../plugins/books/glade/ProductBookSlave.ui.h:13
 msgid "Country:"
-msgstr "Država:"
+msgstr ""
 
 #: ../data/glade/AdminPasswordStep.ui.h:1
 msgid "Enter the password and then click <b>Forward</b> to continue."
-msgstr "Unesite šifru a zatim kliknite <b>Naprijed</b> da nastavite."
+msgstr ""
 
 #: ../data/glade/AttributeGroupEditor.ui.h:1
 #: ../data/glade/AttributeOptionEditor.ui.h:1
@@ -234,7 +233,7 @@ msgstr ""
 #: ../data/glade/BankDataSlave.ui.h:3
 #: ../data/glade/BasePaymentMethodSlave.ui.h:6
 msgid "Bank Account:"
-msgstr "Bankovni račun"
+msgstr ""
 
 #: ../data/glade/BaseCashEditor.ui.h:1
 #: ../data/glade/PaymentChangeDialog.ui.h:5
@@ -264,13 +263,13 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/BasePaymentDataEditor.ui.h:3
 msgid "Value ($CURRENCY):"
-msgstr "Vrijednost ($CURRENCY):"
+msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:1
 #: ../data/glade/CardOperationCostEditor.ui.h:3
 #: ../data/template/quote/quote-details.html:31
 msgid "Installments:"
-msgstr "Instalacije:"
+msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:2
 msgid "Start at:"
@@ -278,7 +277,7 @@ msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:3
 msgid "With intervals of:"
-msgstr "Intervali od:"
+msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:7
 msgid "First Number:"
@@ -439,11 +438,11 @@ msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:1
 msgid "Company Details"
-msgstr "Detalji o kompaniji"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:2
 msgid "Company Name:"
-msgstr "Naziv kompanije:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:3
 #: ../data/glade/CompanyDocumentsSlave.ui.h:2
@@ -479,7 +478,7 @@ msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:8 ../data/glade/PersonEditorTemplate.ui.h:3
 msgid "Fax:"
-msgstr "Faks:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:9
 msgid "ISS:"
@@ -494,7 +493,7 @@ msgstr ""
 #: ../data/glade/BranchDialog.ui.h:11
 #: ../data/glade/PersonEditorTemplate.ui.h:2
 msgid "Phone Number:"
-msgstr "Broj telefona:"
+msgstr ""
 
 #: ../data/glade/CallsEditor.ui.h:2
 msgid "Attendant:"
@@ -554,17 +553,17 @@ msgstr ""
 
 #: ../data/glade/CashAdvanceEditor.ui.h:1
 msgid "Credit for Employee:"
-msgstr "Kredit za zaposlenika:"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/CashChangeSlave.ui.h:2
 msgid "Received: ($CURRENCY)"
-msgstr "Primljeno: ($CURRENCY)"
+msgstr ""
 
 #: ../data/glade/CashChangeSlave.ui.h:3
 #: ../data/glade/MultipleMethodSlave.ui.h:3
 msgid "Change:"
-msgstr "Promijeni:"
+msgstr ""
 
 #: ../data/glade/CashChangeSlave.ui.h:4
 #: ../data/glade/SaleReturnInvoiceStep.ui.h:7
@@ -612,7 +611,7 @@ msgstr ""
 #: ../data/template/sale/sale-details.html:18
 #: ../plugins/optical/glade/PatientHistoryDialog.ui.h:1
 msgid "Client:"
-msgstr "Klijent:"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:2
 #: ../data/glade/SupplierDetailsDialog.ui.h:2
@@ -638,7 +637,7 @@ msgstr ""
 #: ../data/glade/ClientDetailsDialog.ui.h:4
 #: ../data/glade/SupplierDetailsDialog.ui.h:4
 msgid "Further Details"
-msgstr "Dodatne informacije:"
+msgstr ""
 
 #: ../data/glade/ClientStatusSlave.ui.h:1
 msgid "Financial Status:"
@@ -758,7 +757,7 @@ msgstr ""
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:2
 msgid "Additional _Instructions"
-msgstr "Dodatne _upute"
+msgstr ""
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:3
 msgid "There is Additional Instructions"
@@ -831,7 +830,7 @@ msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:2
 msgid "Please, fill the details about your database."
-msgstr "Molimo, popunite detalje o vašoj bazi podataka."
+msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:3
 #: ../data/template/payment_receipt/receipt.html:18
@@ -844,17 +843,17 @@ msgstr ""
 #: ../data/glade/DeviceSettingsEditor.ui.h:3
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:2
 msgid "Port:"
-msgstr "Port:"
+msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:5
 #: ../data/glade/UserDetailsSlave.ui.h:1
 msgid "Username:"
-msgstr "Korisničko ime:"
+msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:6
 #: ../data/glade/PasswordEditorSlave.ui.h:1
 msgid "Password:"
-msgstr "Šifra:"
+msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:7
 msgid "Database Name:"
@@ -866,7 +865,7 @@ msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:9 ../data/glade/WelcomeStep.ui.h:7
 msgid "Click <b>Forward</b> to continue."
-msgstr "Kliknite <b>Naprijed</b> za nastavak."
+msgstr ""
 
 #: ../data/glade/DeviceConstantEditor.ui.h:4
 msgid "ASCII value:"
@@ -898,11 +897,11 @@ msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:2
 msgid "Registry:"
-msgstr "Registar:"
+msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:3
 msgid "Vacation:"
-msgstr "Odmor:"
+msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:4
 #: ../data/glade/InitialStockDialog.ui.h:1
@@ -932,15 +931,15 @@ msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:7
 msgid "Serie:"
-msgstr "Serija:"
+msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:8
 msgid "Work Permit"
-msgstr "Radna dozvola:"
+msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:10
 msgid "Branch Number:"
-msgstr "Broj filijale:"
+msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:11
 #: ../data/glade/PaymentConfirmSlave.ui.h:12
@@ -956,7 +955,7 @@ msgstr ""
 #: ../data/template/till/purchases.html:60
 #: ../stoqlib/gui/editors/accounteditor.py:306
 msgid "Bank:"
-msgstr "Banka:"
+msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:14
 msgid "PIS"
@@ -966,7 +965,7 @@ msgstr ""
 msgid ""
 "Education \n"
 "Level:"
-msgstr "Obrazovanje \nNivo:"
+msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:17
 msgid ""
@@ -994,7 +993,7 @@ msgstr ""
 
 #: ../data/glade/EmployeeStatusSlave.ui.h:1
 msgid "Employee Status:"
-msgstr "Status zaposlenika:"
+msgstr ""
 
 #: ../data/glade/FeedbackDialog.ui.h:1 ../data/glade/TefStep.ui.h:6
 msgid "Email:"
@@ -1002,7 +1001,7 @@ msgstr ""
 
 #: ../data/glade/FeedbackDialog.ui.h:2
 msgid "Feedback:"
-msgstr "Komentari:"
+msgstr ""
 
 #: ../data/glade/FinishInstallationStep.ui.h:1
 msgid "<b>Installation complete</b>"
@@ -10747,7 +10746,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/callseditor.py:37
 #: ../stoqlib/gui/search/callsearch.py:84
 msgid "Calls"
-msgstr "Pozivi"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:428
 msgid "Call details"
