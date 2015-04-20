@@ -29,6 +29,7 @@ from kiwi.ui.objectlist import Column
 from stoqlib.domain.product import GridGroup, GridAttribute
 from stoqlib.gui.editors.grideditor import AttributeGroupEditor, GridAttributeEditor
 from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -70,3 +71,13 @@ class GridAttributeSearch(SearchEditor):
         return [Column('description', _('Attribute'), data_type=str,
                        expand=True, sorted=True),
                 Column('group.description', _('Group'), data_type=str)]
+
+    #
+    # Callbacks
+    #
+
+    def _on_toolbar__new(self, toolbar):
+        if not self.store.find(GridGroup).any():
+            warning(_("You need to register an atribute group first."))
+        else:
+            self.run()

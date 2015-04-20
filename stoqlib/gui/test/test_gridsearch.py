@@ -22,6 +22,8 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
 from stoqlib.gui.search.gridsearch import (AttributeGroupSearch,
                                            GridAttributeSearch)
 from stoqlib.gui.test.uitestutils import GUITest
@@ -39,3 +41,19 @@ class TestAttributeSearch(GUITest):
         search = GridAttributeSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'grid-attribute')
+
+    @mock.patch('stoqlib.gui.search.gridsearch.warning')
+    def test_create_without_group(self, warning):
+        search = GridAttributeSearch(self.store)
+
+        self.click(search._toolbar.new_button)
+        warning.asser_called_once_with("You need to register an atribute group"
+                                       " first.")
+
+    @mock.patch('stoqlib.gui.search.searcheditor.run_dialog')
+    def test_create_with_group(self, run_dialog):
+        search = GridAttributeSearch(self.store)
+        self.create_attribute_group()
+
+        self.click(search._toolbar.new_button)
+        self.assertEquals(run_dialog.call_count, 1)
