@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-17 17:02-0300\n"
-"PO-Revision-Date: 2015-04-17 20:58+0000\n"
+"POT-Creation-Date: 2015-04-20 10:13-0300\n"
+"PO-Revision-Date: 2015-04-20 14:52+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -1149,12 +1149,12 @@ msgstr "Até:"
 
 #: ../data/glade/GridAttributeEditor.ui.h:2
 msgid "Attribute name:"
-msgstr "Nome do atributo"
+msgstr "Nome do atributo:"
 
 #: ../data/glade/GridAttributeEditor.ui.h:3
 #: ../data/glade/ProductAttributeSlave.ui.h:1
 msgid "Attribute group:"
-msgstr "Grupo de atributo:"
+msgstr "Grupo do atributo:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:1
 msgid "Gender:"
@@ -2360,7 +2360,7 @@ msgstr "Recebido por:"
 #: ../data/glade/ReturnedSalesDetails.ui.h:3
 #: ../data/template/return_sale/pending_return_sale-details.html:21
 msgid "Confirm date:"
-msgstr "Data de confirmação"
+msgstr "Data de confirmação:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:4
 #: ../data/glade/StartStockDecreaseStep.ui.h:9
@@ -2384,7 +2384,7 @@ msgstr "Confirmado por:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:8
 msgid "Returned Sale:"
-msgstr "Venda devolvida:"
+msgstr "Devolução:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:9
 #: ../data/glade/TransferOrderDetails.ui.h:2 ../stoq/gui/receivable.py:141
@@ -3061,7 +3061,7 @@ msgstr "Responsável pelo orçamento:"
 
 #: ../data/glade/WorkOrderQuoteSlave.ui.h:2
 msgid "Estimated time:"
-msgstr "Tempo estimado de trabalho:"
+msgstr "Tempo estimado:"
 
 #: ../data/glade/WorkOrderQuoteSlave.ui.h:3
 msgid "Estimated cost:"
@@ -4416,7 +4416,7 @@ msgstr "Retirado por"
 
 #: ../data/template/till/card-summary.html:1
 msgid "Per Card Provider"
-msgstr "Por Bandeira de Cartão"
+msgstr "Por bandeira de cartão"
 
 #: ../data/template/till/card-summary.html:5
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:159
@@ -4531,7 +4531,7 @@ msgstr "Operações de Suprimento/Sangria:"
 
 #: ../data/template/till/till.html:41
 msgid "Summary:"
-msgstr "Sumário:"
+msgstr "Resumo:"
 
 #: ../data/template/till/till.html:68
 msgid "Signature"
@@ -5107,7 +5107,7 @@ msgstr "Editar constantes ..."
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:5
 msgid "Register CRO:"
-msgstr "Registro CRO:"
+msgstr "CRO de registro:"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:6
 msgid "Register Date:"
@@ -5504,7 +5504,7 @@ msgstr "Centralização:"
 #. pt_BR: Giro
 #: ../plugins/optical/glade/PatientTest.ui.h:11
 msgid "Spin:"
-msgstr "Giro"
+msgstr "Giro:"
 
 #. pt_BR: Sobre refração
 #: ../plugins/optical/glade/PatientTest.ui.h:13
@@ -5514,12 +5514,12 @@ msgstr "Sobre refração:"
 #. pt_BR: Fluoresceína
 #: ../plugins/optical/glade/PatientTest.ui.h:15
 msgid "Fluorescein:"
-msgstr "Fluoresceína"
+msgstr "Fluoresceína:"
 
 #. pt_BR: Bicromático
 #: ../plugins/optical/glade/PatientTest.ui.h:17
 msgid "Bichrome:"
-msgstr "Bicromático"
+msgstr "Bicromático:"
 
 #: ../plugins/optical/glade/PatientTest.ui.h:18
 msgid "Client approved"
@@ -5927,7 +5927,7 @@ msgstr "Valor deve ser múltiplo de %s"
 
 #: ../plugins/optical/opticalslave.py:367
 msgid "Attention: prescription date is older than one year"
-msgstr "Atenção: prescrição é mais antiga do que um ano"
+msgstr "Atenção: receita é mais antiga do que um ano"
 
 #. FIXME change the string of this validation error
 #: ../plugins/optical/opticalslave.py:375
@@ -6162,7 +6162,7 @@ msgstr "Você deve criar pelo menos um leiaute de nota fiscal antes de adicionar
 msgid ""
 "You must define a manager to this branch before you can create a sintegra "
 "archive"
-msgstr "Você deve definir um gerente para esta filial e então, poderá gerar o arquivo sintegra"
+msgstr "Você deve definir um gerente para esta filial antes de gerar o arquivo sintegra"
 
 #: ../stoq/gui/admin.py:282 ../stoq/lib/applist.py:34
 msgid "Administrative"
@@ -7561,7 +7561,7 @@ msgstr "Cancelada"
 
 #: ../stoq/gui/production.py:250
 msgid "The selected order will be finalized."
-msgstr "A ordem selecionada será cancelada."
+msgstr "A ordem selecionada será finalizada."
 
 #: ../stoq/gui/production.py:251
 msgid "Finalize order"
@@ -7573,7 +7573,7 @@ msgstr "Não finalizar"
 
 #: ../stoq/gui/production.py:261 ../stoq/gui/purchase.py:410
 msgid "The selected order will be cancelled."
-msgstr "O pedido selecionado será cancelado."
+msgstr "A ordem selecionado será cancelada."
 
 #: ../stoq/gui/purchase.py:96
 msgid "Order..."
@@ -8008,7 +8008,7 @@ msgstr "Nova cotação"
 
 #: ../stoq/gui/sales.py:214
 msgid "New Sale Quote with Work Order"
-msgstr "Nova Cotação de Venda com Ordem de Serviço"
+msgstr "Nova cotação de venda com ordem de serviço"
 
 #: ../stoq/gui/sales.py:218
 msgid "Deliveries"
@@ -8016,7 +8016,7 @@ msgstr "Entregas"
 
 #: ../stoq/gui/sales.py:220
 msgid "Change Client"
-msgstr "Alterar Cliente"
+msgstr "Alterar cliente"
 
 #: ../stoq/gui/sales.py:221
 msgid "Change Salesperson"
@@ -9941,7 +9941,7 @@ msgstr "Não é possível perder mais itens do que o total a produzir."
 #: ../stoqlib/domain/production.py:498
 #: ../stoqlib/gui/editors/productioneditor.py:204
 msgid "Can not allocate this quantity."
-msgstr "Não pode alocar esta quantidade."
+msgstr "Não é possível alocar esta quantidade."
 
 #: ../stoqlib/domain/production.py:535
 msgid "Cannot loose this quantity."
@@ -14130,7 +14130,7 @@ msgstr "Fornecedor: "
 
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:519
 msgid "Source account:"
-msgstr "Conta origem"
+msgstr "Conta origem:"
 
 #. TRANSLATORS: 'cash removal' is 'sangria' in pt_BR
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:527
@@ -15503,11 +15503,11 @@ msgstr "Deseja imprimir os detalhes da venda?"
 
 #: ../stoqlib/gui/wizards/salewizard.py:947
 msgid "Print Details"
-msgstr ""
+msgstr "Imprimir detalhes"
 
 #: ../stoqlib/gui/wizards/salewizard.py:947
 msgid "Don't Print"
-msgstr ""
+msgstr "Não imprimir"
 
 #: ../stoqlib/gui/wizards/salewizard.py:976
 #, python-format
@@ -17025,7 +17025,7 @@ msgstr "Atualização automática do custo dos produtos ao fazer uma nova compra
 msgid ""
 "When a new purchase is made, it's products cost are set to the purchase's "
 "items cost."
-msgstr ""
+msgstr "Quando uma nova compra é realizada, o custo dos produtos é atualizado com o custo da compra."
 
 #: ../stoqlib/lib/parameters.py:867
 msgid "Additional information on fiscal coupon"
@@ -17036,7 +17036,7 @@ msgid ""
 "This will be printed in the promotional message area of the fiscal coupon\n"
 "IMPORTANT NOTE:\n"
 "This template cannot have more than 2 line, and each line more than 50 characters, and you have to break it manually using the characters \"\\n\" or (enter key) or the fiscal printer may not print it correctly."
-msgstr "Este texto será impresso na mensagem promocional do cupom fiscal.\nNOTA IMPORTANTE:\nEste texto não pode ter mais que 2 linhas, e cada linha mais que 50 caracteres, e você deve inseria a quebra de linha manualmente usando os caracteres \"\\n\" (tecla enter), ou  a impressora poderá não imprimir corretamente."
+msgstr "Este texto será impresso na mensagem promocional do cupom fiscal.\nNOTA IMPORTANTE:\nEste texto não pode ter mais que 2 linhas, e cada linha mais que 50 caracteres, e você deve inserir a quebra de linha manualmente usando os caracteres \"\\n\" (tecla enter), ou a impressora poderá não imprimir corretamente."
 
 #: ../stoqlib/lib/payment.py:77
 msgid "Need at least one value"
