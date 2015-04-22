@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-20 10:13-0300\n"
-"PO-Revision-Date: 2015-04-20 14:52+0000\n"
+"POT-Creation-Date: 2015-04-21 09:56-0300\n"
+"PO-Revision-Date: 2015-04-21 13:33+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -6443,7 +6443,7 @@ msgstr "Mostrar contas a receber na lista"
 
 #: ../stoq/gui/calendar.py:310
 msgid "Show purchases in the list"
-msgstr "Mostrar pagamentos na lista"
+msgstr "Mostrar compras na lista"
 
 #: ../stoq/gui/calendar.py:311
 msgid "Client Calls"
@@ -6504,7 +6504,7 @@ msgstr "Imprime este calendário"
 #: ../stoq/gui/config.py:204
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
-msgstr "O endereço '%s' do banco de dados é inválido. Por favor, corrija ele e tente de novo"
+msgstr "O endereço '%s' do banco de dados é inválido. Por favor, corrija ele e tente novamente"
 
 #: ../stoq/gui/config.py:206 ../stoq/gui/config.py:211
 msgid "Invalid database address"
@@ -6979,7 +6979,7 @@ msgstr "Aberto"
 
 #: ../stoq/gui/inventory.py:157 ../stoq/gui/purchase.py:265
 msgid "Date Opened"
-msgstr "Data de Abertura"
+msgstr "Data de abertura"
 
 #: ../stoq/gui/inventory.py:159 ../stoq/gui/production.py:179
 #: ../stoqlib/domain/inventory.py:247 ../stoqlib/domain/loan.py:246
@@ -7118,7 +7118,7 @@ msgstr "Imprimir um recibo para o pagamento selecionado"
 #: ../stoqlib/gui/utils/keybindings.py:200
 #: ../stoqlib/gui/utils/keybindings.py:336
 msgid "Search for payment categories"
-msgstr "Buscar por categorias de pagamentos"
+msgstr "Pesquisa por categorias de pagamentos"
 
 #: ../stoq/gui/payable.py:122 ../stoq/gui/receivable.py:130
 msgid "Bills and checks..."
@@ -7161,7 +7161,7 @@ msgstr "Categoria de pagamento"
 
 #: ../stoq/gui/payable.py:203 ../stoq/gui/receivable.py:207
 msgid "Paid or due date"
-msgstr "Pagas ou vencidas"
+msgstr "Pagas ou vencidas em"
 
 #: ../stoq/gui/payable.py:293
 msgid ""
@@ -7174,7 +7174,7 @@ msgstr "Pagamentos efetuados"
 
 #: ../stoq/gui/payable.py:401 ../stoq/gui/receivable.py:412
 msgid "Late payments"
-msgstr "Pagamentos em atraso"
+msgstr "Pagamentos atrasados"
 
 #: ../stoq/gui/pos.py:135 ../stoq/lib/applist.py:48
 msgid "Point of Sales"
@@ -7680,7 +7680,7 @@ msgstr "Edita o pedido selecionado, permitindo que você altere os seus detalhes
 
 #: ../stoq/gui/purchase.py:156 ../stoq/gui/services.py:221
 msgid "Show details of the selected order"
-msgstr "Mostrar detalhes da ordem selecionada"
+msgstr "Mostra detalhes da ordem selecionada"
 
 #: ../stoq/gui/purchase.py:157 ../stoq/gui/services.py:212
 msgid "Finish..."
@@ -9806,112 +9806,112 @@ msgstr "Dias"
 msgid "Grid product"
 msgstr "Produto grade"
 
-#: ../stoqlib/domain/product.py:979 ../stoqlib/domain/product.py:1031
+#: ../stoqlib/domain/product.py:978 ../stoqlib/domain/product.py:1030
 msgid "quantity must be a positive number"
 msgstr "quantidade deve ser um número positivo"
 
-#: ../stoqlib/domain/product.py:1038
+#: ../stoqlib/domain/product.py:1037
 msgid "Quantity to sell is greater than the available stock."
 msgstr "A quantidade a ser vendida é maior que a disponível em estoque."
 
-#: ../stoqlib/domain/product.py:1313
+#: ../stoqlib/domain/product.py:1312
 #, python-format
 msgid "Adjustment for inventory %s"
 msgstr "Ajuste para inventário %s"
 
-#: ../stoqlib/domain/product.py:1314
+#: ../stoqlib/domain/product.py:1313
 #, python-format
 msgid "Returned from loan %s"
 msgstr "Retornado do empréstimo %s"
 
-#: ../stoqlib/domain/product.py:1315
+#: ../stoqlib/domain/product.py:1314
 #, python-format
 msgid "Loaned for loan %s"
 msgstr "Emprestado no empréstimo %s"
 
-#: ../stoqlib/domain/product.py:1316
+#: ../stoqlib/domain/product.py:1315
 #, python-format
 msgid "Allocated for production %s"
 msgstr "Alocado para a produção %s"
 
-#: ../stoqlib/domain/product.py:1317 ../stoqlib/domain/product.py:1318
+#: ../stoqlib/domain/product.py:1316 ../stoqlib/domain/product.py:1317
 #, python-format
 msgid "Produced in production %s"
 msgstr "Produzido na produção %s"
 
-#: ../stoqlib/domain/product.py:1319
+#: ../stoqlib/domain/product.py:1318
 #, python-format
 msgid "Returned remaining from production %s"
 msgstr "Devolvido o restante da produção %s"
 
-#: ../stoqlib/domain/product.py:1321
+#: ../stoqlib/domain/product.py:1320
 #, python-format
 msgid "Received for receiving order %s"
 msgstr "Recebido na ordem de recebimento %s"
 
-#: ../stoqlib/domain/product.py:1322
+#: ../stoqlib/domain/product.py:1321
 #, python-format
 msgid "Returned sale %s"
 msgstr "Venda devolvida %s"
 
-#: ../stoqlib/domain/product.py:1323
+#: ../stoqlib/domain/product.py:1322
 #, python-format
 msgid "Returned from canceled sale %s"
 msgstr "Devolvido da venda cancelada %s"
 
-#: ../stoqlib/domain/product.py:1324
+#: ../stoqlib/domain/product.py:1323
 #, python-format
 msgid "Sold in sale %s"
 msgstr "Vendido na venda %s"
 
-#: ../stoqlib/domain/product.py:1325
+#: ../stoqlib/domain/product.py:1324
 #, python-format
 msgid "Product removal for stock decrease %s"
 msgstr "Produto removido para saída manual %s"
 
-#: ../stoqlib/domain/product.py:1326
+#: ../stoqlib/domain/product.py:1325
 #, python-format
 msgid "Transfered from branch in transfer order %s"
 msgstr "Transferido de filial  na transferência %s"
 
-#: ../stoqlib/domain/product.py:1328
+#: ../stoqlib/domain/product.py:1327
 #, python-format
 msgid "Transfered to this branch in transfer order %s"
 msgstr "Transferido para esta filial na transferência %s"
 
-#: ../stoqlib/domain/product.py:1330
+#: ../stoqlib/domain/product.py:1329
 msgid "Registred initial stock"
 msgstr "Estoque inicial registrado"
 
-#: ../stoqlib/domain/product.py:1331
+#: ../stoqlib/domain/product.py:1330
 msgid "Imported from previous version"
 msgstr "Importado de versão anterior"
 
-#: ../stoqlib/domain/product.py:1332
+#: ../stoqlib/domain/product.py:1331
 #, python-format
 msgid "Consigned product returned %s."
 msgstr "Produto consignado devolvido %s."
 
-#: ../stoqlib/domain/product.py:1333
+#: ../stoqlib/domain/product.py:1332
 #, python-format
 msgid "Used on work order %s."
 msgstr "Utilizado na ordem de serviço %s."
 
-#: ../stoqlib/domain/product.py:1334
+#: ../stoqlib/domain/product.py:1333
 #, python-format
 msgid "Returned to stock on work order %s."
 msgstr "Retornado para o estoque na ordem de serviço %s."
 
-#: ../stoqlib/domain/product.py:1335
+#: ../stoqlib/domain/product.py:1334
 #, python-format
 msgid "Reserved for sale %s."
 msgstr "Reservado para a venda %s"
 
-#: ../stoqlib/domain/product.py:1502
+#: ../stoqlib/domain/product.py:1501
 msgid "Boolean"
 msgstr "Boleano"
 
-#: ../stoqlib/domain/product.py:1503
+#: ../stoqlib/domain/product.py:1502
 msgid "Decimal"
 msgstr "Decimal"
 
@@ -11235,7 +11235,7 @@ msgstr "Consumido"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:166
 msgid "Serial Number"
-msgstr "Número de Série"
+msgstr "Número de série"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:188
 msgid "Tests Passed"
@@ -13256,34 +13256,38 @@ msgstr "livro-fiscal"
 msgid "Show entries of type"
 msgstr "Mostrar entradas do tipo"
 
-#: ../stoqlib/gui/search/gridsearch.py:39
+#: ../stoqlib/gui/search/gridsearch.py:40
 msgid "Attribute Group Search"
 msgstr "Pesquisar grupo de atributo"
 
-#: ../stoqlib/gui/search/gridsearch.py:45
+#: ../stoqlib/gui/search/gridsearch.py:46
 msgid "Attribute Group Matching:"
 msgstr "Grupo de atributo contendo:"
 
-#: ../stoqlib/gui/search/gridsearch.py:52
+#: ../stoqlib/gui/search/gridsearch.py:53
 msgid "Attribute group"
 msgstr "Grupo de atributo"
 
-#: ../stoqlib/gui/search/gridsearch.py:57
+#: ../stoqlib/gui/search/gridsearch.py:58
 msgid "Grid Attribute Search"
 msgstr "Pesquisar atributo de grade"
 
-#: ../stoqlib/gui/search/gridsearch.py:63
+#: ../stoqlib/gui/search/gridsearch.py:64
 msgid "Attribute Matching:"
 msgstr "Atributo contendo:"
 
-#: ../stoqlib/gui/search/gridsearch.py:70
+#: ../stoqlib/gui/search/gridsearch.py:71
 msgid "Attribute"
 msgstr "Atributo"
 
-#: ../stoqlib/gui/search/gridsearch.py:72
+#: ../stoqlib/gui/search/gridsearch.py:73
 #: ../stoqlib/gui/search/parametersearch.py:70
 msgid "Group"
 msgstr "Grupo"
+
+#: ../stoqlib/gui/search/gridsearch.py:81
+msgid "You need to register an atribute group first."
+msgstr "Você precisa cadastrar um grupo de atributos antes."
 
 #: ../stoqlib/gui/search/loansearch.py:50
 msgid "Loan Items Search"
@@ -14255,7 +14259,7 @@ msgstr "Falso"
 #: ../stoqlib/gui/slaves/productionslave.py:402
 #, python-format
 msgid "There already is a serial number in the range %d - %d"
-msgstr "Já existe um número de série no intervalor %d - %d"
+msgstr "Já existe um número de série no intervalo %d - %d"
 
 #: ../stoqlib/gui/slaves/productslave.py:70
 msgid "Select a group"
