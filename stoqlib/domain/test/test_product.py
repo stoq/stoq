@@ -41,7 +41,8 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     StockTransactionHistory, ProductManufacturer,
                                     GridOption, GridGroup)
 from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
-                                       ProductionItemQualityResult)
+                                       ProductionItemQualityResult,
+                                       ProductionItem)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.test.domaintest import DomainTest
@@ -237,13 +238,36 @@ class TestProduct(DomainTest):
                                 StockTransactionHistory.TYPE_INITIAL, None)
         self.assertTrue(product.can_close())
 
+    def test_can_close_children(self):
+        # Create a grid product
+        product = self.create_product(is_grid=True)
+
+        # Create a child for the grid product created
+        product_child = self.create_product(storable=True, parent=product)
+        # In this state, the product can be closed
+        self.assertTrue(product.can_close_children())
+
+        # Increase child's stock in 1
+        product_child.storable.increase_stock(1, get_current_branch(self.store),
+                                              StockTransactionHistory.TYPE_INITIAL,
+                                              None)
+        # In this state, the product's children can't be closed
+        self.assertFalse(product.can_close_children())
+
+        # Decrease child's stock to 0 again
+        product_child.storable.decrease_stock(1, get_current_branch(self.store),
+                                              StockTransactionHistory.TYPE_INITIAL,
+                                              None)
+        # Now the product's children can be closed again
+        self.assertTrue(product.can_close_children())
+
     def test_can_remove(self):
-        product = self.create_product()
-        storable = Storable(product=product, store=self.store)
+        product = self.create_product(storable=True)
         self.assertTrue(product.can_remove())
 
-        storable.increase_stock(1, get_current_branch(self.store),
-                                StockTransactionHistory.TYPE_INITIAL, None)
+        product.storable.increase_stock(1, get_current_branch(self.store),
+                                        StockTransactionHistory.TYPE_INITIAL,
+                                        None)
         self.assertFalse(product.can_remove())
 
         # Product was sold.
@@ -260,8 +284,7 @@ class TestProduct(DomainTest):
 
         # Product is a component.
         product = self.create_product(10)
-        component = self.create_product(5)
-        Storable(product=component, store=self.store)
+        component = self.create_product(5, storable=True)
         self.assertTrue(component.can_remove())
 
         ProductComponent(product=product,
@@ -271,9 +294,7 @@ class TestProduct(DomainTest):
         self.assertFalse(component.can_remove())
 
         # Product is used in a production.
-        from stoqlib.domain.production import ProductionItem
-        product = self.create_product()
-        Storable(product=product, store=self.store)
+        product = self.create_product(storable=True)
         self.assertTrue(product.can_remove())
         order = self.create_production_order()
         ProductionItem(product=product,
@@ -283,9 +304,95 @@ class TestProduct(DomainTest):
 
         self.assertFalse(product.can_remove())
 
+    def test_can_remove_children(self):
+        # First, we create a grid product
+        product = self.create_product(is_grid=True)
+
+        # Create a child for the grid product created
+        product_child = self.create_product(storable=True, parent=product)
+
+        # In this state, the product's children can be removed
+        self.assertTrue(product.can_remove_children())
+        # Increase child's stock in 1
+        product_child.storable.increase_stock(1, get_current_branch(self.store),
+                                              StockTransactionHistory.TYPE_INITIAL,
+                                              None)
+        self.assertFalse(product.can_remove_children())
+
+        # Product's child was sold.
+        sale = self.create_sale()
+        sale.add_sellable(product_child.sellable, quantity=1, price=10)
+
+        method = PaymentMethod.get_by_name(self.store, u'money')
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, sale.get_sale_subtotal())
+
+        sale.order()
+        sale.confirm()
+
+        # Since the child was used in a sale, it can't be removed
+        self.assertFalse(product.can_remove_children())
+
+        # Product's child is a component.
+        # First, we create a grid product
+        product = self.create_product(is_grid=True)
+
+        # Create a child for the grid product created that will be
+        # the component
+        component = self.create_product(5, storable=True, parent=product)
+
+        # Create a composed product
+        composed_product = self.create_product(10)
+        self.assertTrue(product.can_remove_children())
+
+        # Set the component child as a component of the composed product
+        ProductComponent(product=composed_product,
+                         component=component,
+                         store=self.store)
+        # Since the child is a component, we can't remove this
+        # product's children
+        self.assertFalse(product.can_remove_children())
+
+        # Product's child is used in a production.
+        # First, we create a grid product
+        product = self.create_product(is_grid=True)
+
+        # Create a child for the grid product created
+        product_child = self.create_product(storable=True, parent=product)
+
+        # In this state, the product's children can be removed
+        self.assertTrue(product.can_remove_children())
+
+        order = self.create_production_order()
+        ProductionItem(product=product_child,
+                       order=order,
+                       quantity=1,
+                       store=self.store)
+
+        # Since the child is used in a production, we can't remove this
+        # product's children
+        self.assertFalse(product.can_remove_children())
+
+    def test_close(self):
+        # First, we create a grid product
+        product = self.create_product(is_grid=True)
+
+        # Create a child for the grid product created
+        self.create_product(storable=True, parent=product)
+
+        # The initial status is 'available'
+        self.assertTrue(product.sellable.status == Sellable.STATUS_AVAILABLE)
+        for child in product.children:
+            self.assertTrue(child.sellable.status == Sellable.STATUS_AVAILABLE)
+
+        product.sellable.close()
+        # Now the product and it's children should be closed
+        self.assertTrue(product.sellable.status == Sellable.STATUS_CLOSED)
+        for child in product.children:
+            self.assertTrue(child.sellable.status == Sellable.STATUS_CLOSED)
+
     def test_remove(self):
-        product = self.create_product()
-        Storable(product=product, store=self.store)
+        # Test for non grid product
+        product = self.create_product(storable=True)
         component = ProductComponent(product=product,
                                      component=None,
                                      quantity=1,
@@ -300,6 +407,23 @@ class TestProduct(DomainTest):
         self.assertTrue(resultset.is_empty())
 
         resultset = self.store.find(ProductComponent, id=component.id)
+        self.assertTrue(resultset.is_empty())
+
+        # Test for grid product
+        product = self.create_product(is_grid=True)
+        self.create_product_attribute(product=product)
+        grid_option = self.store.find(GridOption)
+        product.add_grid_child(list(grid_option))
+
+        total = self.store.find(Product, id=product.id).count()
+        self.assertEquals(total, 1)
+        total = self.store.find(Product, parent=product).count()
+        self.assertEquals(total, 1)
+
+        product.remove()
+        resultset = self.store.find(Product, id=product.id)
+        self.assertTrue(resultset.is_empty())
+        resultset = self.store.find(Product, parent=product)
         self.assertTrue(resultset.is_empty())
 
     def test_increase_decrease_stock(self):

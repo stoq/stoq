@@ -316,13 +316,14 @@ class ExampleCreator(object):
 
     def create_product(self, price=None, with_supplier=True,
                        branch=None, stock=None, storable=False, code=u'',
-                       description=u'Description', is_grid=False):
+                       description=u'Description', is_grid=False, parent=None):
         from stoqlib.domain.product import Storable, StockTransactionHistory
         sellable = self.create_sellable(price=price, code=code,
                                         description=description)
         if with_supplier:
             self.create_product_supplier_info(product=sellable.product)
         product = sellable.product
+        product.parent = parent
         if not branch:
             branch = get_current_branch(self.store)
         if storable or stock:

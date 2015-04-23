@@ -61,6 +61,10 @@ class Service(Domain):
         """Removes this service from the database."""
         self.store.remove(self)
 
+    def close(self):
+        # We don't have to do anything special when closing a service.
+        pass
+
     #
     # Sellable helpers
     #

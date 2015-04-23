@@ -307,6 +307,9 @@ class Product(Domain):
     #: list of |grid_attribute| of this product
     attributes = ReferenceSet('id', 'ProductAttribute.product_id')
 
+    #: list of |grid_option| of this product
+    grid_options = ReferenceSet('id', 'ProductOptionMap.product_id')
+
     #
     # Properties
     #
@@ -366,15 +369,25 @@ class Product(Domain):
     def remove(self):
         """Deletes this product from the database.
         """
+        for child in self.children:
+            child.remove()
+        for attr in self.attributes:
+            self.store.remove(attr)
         storable = self.storable
         if storable:
             self.store.remove(storable)
-        for i in self.get_suppliers_info():
-            self.store.remove(i)
-        for i in self.get_components():
-            self.store.remove(i)
-
+        for option in self.grid_options:
+            self.store.remove(option)
+        for supplier in self.get_suppliers_info():
+            self.store.remove(supplier)
+        for component in self.get_components():
+            self.store.remove(component)
         self.store.remove(self)
+
+    def can_remove_children(self):
+        """Checks if this product's children can be removed
+        """
+        return all(child.sellable.can_remove() for child in self.children)
 
     def can_remove(self):
         """Whether we can delete this product and it's |sellable| from the
@@ -383,13 +396,25 @@ class Product(Domain):
         ``False`` if the product was sold, received or used in a
         production. ``True`` otherwise.
         """
+        if self.is_grid:
+            return self.can_remove_children()
+
         if self.storable and not self.storable.can_remove():
             return False
 
         return super(Product, self).can_remove(
             skip=[('storable', 'product_id'),
                   ('product_supplier_info', 'product_id'),
+                  ('product_option_map', 'product_id'),
                   ('product_component', 'product_id')])
+
+    def can_close_children(self):
+        """Checks if this product's children can be closed
+
+        Called by |self| to check if it's children can be closed or not.
+        A product child can be closed if it doesn't have any stock left
+        """
+        return all(child.sellable.can_close() for child in self.children)
 
     def can_close(self):
         """Checks if this product can be closed
@@ -397,9 +422,17 @@ class Product(Domain):
         Called by |sellable| to check if it can be closed or not.
         A product can be closed if it doesn't have any stock left
         """
+        if self.is_grid:
+            return self.can_close_children()
         if self.manage_stock:
             return self.storable.get_total_balance() == 0
         return True
+
+    def close(self):
+        """Closes the product's children
+        """
+        for child in self.children:
+            child.sellable.close()
 
     def get_manufacture_time(self, quantity, branch):
         """Returns the estimated time in days to manufacture a product

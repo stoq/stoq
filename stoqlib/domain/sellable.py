@@ -608,7 +608,10 @@ class Sellable(Domain):
         return self.status == Sellable.STATUS_CLOSED
 
     def close(self):
-        """Mark the sellable as closed
+        """Mark the sellable as closed.
+
+        After the sellable is closed, this will call the close method of the
+        service or product related to this sellable.
 
         :raises: :exc:`ValueError`: if the sellable is already closed
         """
@@ -617,6 +620,9 @@ class Sellable(Domain):
 
         assert self.can_close()
         self.status = Sellable.STATUS_CLOSED
+
+        obj = self.service or self.product
+        obj.close()
 
     def can_remove(self):
         """Whether we can delete this sellable from the database.
