@@ -37,7 +37,7 @@ from kiwi.python import strip_accents, Settable
 
 from stoqlib.enums import NFeDanfeOrientation
 from stoqlib.exceptions import ModelDataError
-from stoqlib.lib.ibpt import calculate_tax_for_item
+from stoqlib.lib.ibpt import generate_ibpt_message
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import validate_cnpj
@@ -107,7 +107,7 @@ class NFeGenerator(object):
                                  operation_items)
 
         self._add_billing_data()
-        self._add_additional_information()
+        self._add_additional_information(operation_items)
 
     def save(self, location=''):
         """Saves the NF-e.
@@ -278,9 +278,6 @@ class NFeGenerator(object):
     def _add_items(self, operation_items):
         coupon = self._order.coupon_id
         for item_number, operation_item in enumerate(operation_items):
-            tax_item = calculate_tax_for_item(operation_item)
-            self._total_taxes += tax_item
-
             # item_number should start from 1, not zero.
             item_number += 1
             nfe_item = NFeProduct(item_number)
@@ -367,13 +364,16 @@ class NFeGenerator(object):
             dup = NFeDuplicata(int(p.identifier), p.due_date, p.value)
             self._nfe_data.append(dup)
 
-    def _add_additional_information(self):
-        operation_total = self._order.invoice_subtotal
-        total_tax_percentage = (self._total_taxes / operation_total) * 100
-        tax_msg = "Val Aprox Tributos R$ {:0.2f} ({:0.2f}%) Fonte: IBPT - "
-        fisco_info = tax_msg.format(self._total_taxes, total_tax_percentage)
+    def _add_additional_information(self, operation_items):
+        fisco_info = generate_ibpt_message(operation_items)
         fisco_info += sysparam.get_string('NFE_FISCO_INFORMATION')
-        notes = '\n'.join(c.comment for c in self._order.comments)
+        comments = self._order.comments
+        # The SEFAZ software, do not accepts '\n' in the additional information field.
+        fisco_info = fisco_info.replace('\n', ' ')
+        if isinstance(comments, basestring):
+            notes = comments.replace('\n', ' ')
+        else:
+            notes = ' / '.join(c.comment.replace('\n', ' ') for c in self._order.comments)
         nfe_info = NFeAdditionalInformation(fisco_info, notes)
         self._nfe_data.append(nfe_info)
 

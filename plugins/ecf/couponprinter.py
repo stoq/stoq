@@ -37,7 +37,7 @@ from stoqlib.database.runtime import new_store
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DeviceError
-from stoqlib.lib.ibpt import calculate_tax_for_item
+from stoqlib.lib.ibpt import generate_ibpt_message
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -53,6 +53,7 @@ class CouponPrinter(object):
     CouponPrinter is a wrapper around the FiscalPrinter class inside
     stoqdrivers, refer to it for documentation
     """
+
     def __init__(self, printer):
         # This is an ECFPrinter instance
         self._printer = printer
@@ -288,10 +289,6 @@ class Coupon(object):
     def _get_capability(self, name):
         return self._driver.get_capabilities()[name]
 
-    def _add_tax_for_item(self, item):
-        tax_item = calculate_tax_for_item(item)
-        self._total_taxes += tax_item
-
     #
     # IContainer implementation
     #
@@ -305,7 +302,6 @@ class Coupon(object):
           0 if added but not printed (gift certificates, free deliveries)
         """
         sellable = item.sellable
-        self._add_tax_for_item(item)
         max_len = self._get_capability("item_description").max_len
         description = sellable.description[:max_len]
         unit_desc = ''
@@ -429,10 +425,9 @@ class Coupon(object):
         return True
 
     def close(self, sale):
-        sale_total = sale.get_sale_subtotal()
-        total_taxes_percentage = (self._total_taxes / sale_total) * 100
-        msg = "Val Aprox Tributos R${:0.2f} ({:0.2f}%) Fonte:IBPT"
-        parts = [msg.format(self._total_taxes, total_taxes_percentage),
+        sale_items = sale.get_items()
+        ibpt_msg = generate_ibpt_message(sale_items)
+        parts = [ibpt_msg,
                  _(u'Salesperson: %s') % sale.get_salesperson_name(),
                  _('Stoq Retail Management')]
         message = '\n'.join(parts)
