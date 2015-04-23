@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 09:56-0300\n"
-"PO-Revision-Date: 2015-04-21 13:33+0000\n"
+"POT-Creation-Date: 2015-04-22 09:00-0300\n"
+"PO-Revision-Date: 2015-04-22 12:19+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -2345,7 +2345,7 @@ msgstr "<b>Renegociação número:</b>"
 
 #: ../data/glade/ReturnedSaleUndoDialog.ui.h:1
 msgid "This will undo the returned sale. Are you sure?"
-msgstr "Isto vai desfazer a devolução. Você tem certeza?"
+msgstr "Isto irá desfazer a devolução. Você tem certeza?"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:1
 #: ../data/template/return_sale/pending_return_sale-details.html:13
