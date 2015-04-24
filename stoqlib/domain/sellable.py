@@ -820,23 +820,28 @@ class Sellable(Domain):
             'max_discount': max_discount,
         }
 
-    def copy_sellable(self, store):
-        """This method create a copy of self
+    def copy_sellable(self, target=None):
+        """This method copies self to another sellable
 
+        If the |sellable| target is None, a new sellable is created.
+
+        :param target: The |sellable| target for the copy
         returns: a |sellable| identical to self
         """
-        new_sellable = Sellable(store=store)
+        if target is None:
+            target = Sellable(store=self.store)
+
         props = ['base_price', 'category_id', 'cost', 'max_discount',
-                 'on_sale_price', 'max_discount', 'commission',
-                 'notes', 'unit_id', 'category_id', 'tax_constant_id',
-                 'default_sale_cfop_id', 'on_sale_price', 'on_sale_start_date',
-                 'on_sale_end_date']
+                 'commission', 'notes', 'unit_id', 'category_id',
+                 'tax_constant_id', 'default_sale_cfop_id', 'on_sale_price',
+                 'on_sale_start_date', 'on_sale_end_date']
 
         for prop in props:
             value = getattr(self, prop)
-            setattr(new_sellable, prop, value)
+            setattr(target, prop, value)
 
-        return new_sellable
+        return target
+
     #
     # IDescribable implementation
     #

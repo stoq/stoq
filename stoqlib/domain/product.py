@@ -592,7 +592,7 @@ class Product(Domain):
         """
         assert not self.child_exists(options)
 
-        sellable = self.sellable.copy_sellable(self.store)
+        sellable = self.sellable.copy_sellable()
         new_code = Sellable.get_max_value(self.store, Sellable.code)
         sellable.code = next_value_for(new_code)
 
@@ -608,6 +608,20 @@ class Product(Domain):
                              option=option)
 
         sellable.description = u' '.join(desc_parts)
+
+    def update_children_info(self):
+        """Update a grid product's children informations.
+
+        This will update all the children of this product, copying all the
+        |sellable| attributes except from the description, which
+        is recreated by appending each grid option description.
+        """
+        for child in self.children:
+            self.sellable.copy_sellable(target=child.sellable)
+            desc_parts = [self.description]
+            for opt in child.grid_options:
+                desc_parts.append(opt.option.description)
+            child.sellable.description = u' '.join(desc_parts)
 
     #
     # Domain

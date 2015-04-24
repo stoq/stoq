@@ -381,9 +381,9 @@ class TestSellable(DomainTest):
 
     def test_set_available(self):
         sellable = self.create_sellable()
-        with self.assertRaisesRegexp(
-            ValueError, 'This sellable is already available'):
-            sellable.set_available()
+        with self.assertRaisesRegexp(ValueError,
+                                     'This sellable is already available'):
+                sellable.set_available()
 
     def test_get_unblocked_sellables(self):
         # Sellable and query without supplier
@@ -807,10 +807,10 @@ class TestSellable(DomainTest):
     def test_copy_sellable(self):
         sellable = self.create_sellable()
         new_sellable = sellable.copy_sellable(self.store)
-        props = ['base_price', 'category_id', 'cost', 'max_discount',
-                 'on_sale_price', 'max_discount', 'commission', 'notes',
+        props = ['base_price', 'category_id', 'cost', 'on_sale_price',
+                 'max_discount', 'commission', 'notes',
                  'unit_id', 'category_id', 'tax_constant_id',
-                 'default_sale_cfop_id', 'on_sale_price', 'on_sale_start_date',
+                 'default_sale_cfop_id', 'on_sale_start_date',
                  'on_sale_end_date']
 
         for prop in props:

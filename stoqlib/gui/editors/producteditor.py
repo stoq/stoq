@@ -427,6 +427,9 @@ class ProductEditor(SellableEditor):
         if len(infos) == 1:
             infos[0].base_cost = self.model.sellable.cost
 
+        if self.model.is_grid:
+            self.model.update_children_info()
+
 
 class ProductionProductEditor(ProductEditor):
 

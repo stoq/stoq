@@ -557,6 +557,21 @@ class TestProduct(DomainTest):
         # AssertionError when check the existence of that child
         self.assertRaises(AssertionError, grid_product.add_grid_child, list(grid_option))
 
+    def test_update_children_info(self):
+        grid_product = self.create_product(is_grid=True)
+        self.create_product_attribute(product=grid_product)
+
+        grid_option = self.store.find(GridOption)
+        grid_product.add_grid_child(list(grid_option))
+
+        child_product = self.store.find(Product, parent=grid_product).one()
+
+        grid_product.sellable.cost = 3
+        child_product.sellable.cost = 2
+
+        grid_product.update_children_info()
+        self.assertEquals(getattr(child_product.sellable, 'cost'), 3)
+
 
 class TestGridGroup(DomainTest):
 
