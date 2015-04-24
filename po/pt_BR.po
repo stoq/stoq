@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-22 09:00-0300\n"
-"PO-Revision-Date: 2015-04-22 12:19+0000\n"
+"PO-Revision-Date: 2015-04-23 20:49+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -9317,7 +9317,7 @@ msgstr "O computador <u>%s</u> não está ativo no Stoq"
 msgid ""
 "To solve this, open the administrator application and re-activate this "
 "computer."
-msgstr "Para resolver, abra o aplicativo 'administrador' e reative este computador."
+msgstr "Para resolver, abra o aplicativo 'administrativo' e reative este computador."
 
 #: ../stoqlib/database/settings.py:326
 msgid "Could not find a database server on this computer"
@@ -9328,7 +9328,7 @@ msgstr "Não foi possível encontrar um servidor de banco de dados neste computa
 msgid ""
 "Could not connect to %s database. The error message is '%s'. Please fix the "
 "connection settings you have set and try again."
-msgstr "Não foi possível conectar ao banco de dados %s. A mensagem de erro é '%s'.Por favor, corrija as configurações que você definiu e tente novamente."
+msgstr "Não foi possível conectar ao banco de dados %s. A mensagem de erro é '%s'. Por favor, corrija as configurações que você definiu e tente novamente."
 
 #: ../stoqlib/database/settings.py:803
 msgid "Problem with PostgreSQL version"
@@ -16641,7 +16641,7 @@ msgstr "C.F.O.P. Padrão (Código de Operações Fiscais) utilizado quando receb
 
 #: ../stoqlib/lib/parameters.py:537
 msgid "Default C.F.O.P. for Stock Decreases"
-msgstr "C.F.O.P. padrão para diminuição de estoque"
+msgstr "C.F.O.P. padrão para saídas manuais."
 
 #: ../stoqlib/lib/parameters.py:538
 msgid ""
@@ -16673,7 +16673,7 @@ msgstr "Taxa padrão de ISS"
 
 #: ../stoqlib/lib/parameters.py:556
 msgid "Default ISS to be applied on all the services of a sale. "
-msgstr "Taxa padrão de ICMS que será aplicado em todos os serviços de uma venda "
+msgstr "Taxa padrão de ISS que será aplicado em todos os serviços de uma venda "
 
 #: ../stoqlib/lib/parameters.py:558
 #, python-format
