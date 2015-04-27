@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 09:00-0300\n"
-"PO-Revision-Date: 2015-04-23 20:49+0000\n"
+"POT-Creation-Date: 2015-04-24 14:27-0300\n"
+"PO-Revision-Date: 2015-04-24 21:28+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -3467,7 +3467,7 @@ msgstr "Equipamento"
 #: ../data/template/bikeshop/quote.html:26
 #: ../data/template/workorder/quote.html:25 ../stoq/gui/services.py:396
 msgid "Estimated start"
-msgstr "Data estimada para iniciar"
+msgstr "Inicio estimado"
 
 #: ../data/template/bikeshop/quote.html:27
 #: ../data/template/optical/saledetails.html:74
@@ -3475,7 +3475,7 @@ msgstr "Data estimada para iniciar"
 #: ../data/template/workorder/quote.html:26 ../stoq/gui/services.py:398
 #: ../stoq/gui/services.py:415 ../stoqlib/gui/search/salesearch.py:324
 msgid "Estimated finish"
-msgstr "Data estimada para finalizar"
+msgstr "Final estimado"
 
 #: ../data/template/bikeshop/quote.html:30
 #: ../data/template/workorder/quote.html:29
@@ -3492,7 +3492,7 @@ msgstr "Custo estimado"
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:400
 #: ../stoqlib/gui/editors/personeditor.py:198
-#: ../stoqlib/gui/editors/producteditor.py:502
+#: ../stoqlib/gui/editors/producteditor.py:505
 #: ../stoqlib/gui/editors/sellableeditor.py:76
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:51
 #: ../stoqlib/gui/search/costcentersearch.py:51
@@ -5185,7 +5185,7 @@ msgstr "Saídas manuais"
 
 #: ../plugins/nfe/nfeui.py:126
 msgid "Returned sales"
-msgstr "Vendas devolvidas"
+msgstr "Devoluções"
 
 #. -*- coding: utf-8 -*-
 #. vi:si:et:sw=4:sts=4:ts=4
@@ -5780,7 +5780,7 @@ msgstr "Data de confirmação"
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:110
 #: ../stoqlib/gui/dialogs/manufacturerdialog.py:42
 #: ../stoqlib/gui/dialogs/saledetails.py:254
-#: ../stoqlib/gui/editors/producteditor.py:495
+#: ../stoqlib/gui/editors/producteditor.py:498
 #: ../stoqlib/gui/search/productsearch.py:207
 #: ../stoqlib/gui/search/productsearch.py:371
 #: ../stoqlib/gui/search/productsearch.py:448
@@ -6128,7 +6128,7 @@ msgstr "Cargos"
 
 #: ../stoq/gui/admin.py:113 ../stoqlib/gui/dialogs/sellabledialog.py:73
 #: ../stoqlib/gui/editors/producteditor.py:349
-#: ../stoqlib/gui/editors/producteditor.py:456
+#: ../stoqlib/gui/editors/producteditor.py:459
 msgid "Taxes"
 msgstr "Impostos"
 
@@ -8207,7 +8207,7 @@ msgstr "Ajuda do Serviços"
 
 #: ../stoq/gui/services.py:286 ../stoqlib/gui/utils/keybindings.py:156
 msgid "Create a new work order"
-msgstr "criar uma nova ordem de serviço"
+msgstr "Criar uma nova ordem de serviço"
 
 #: ../stoq/gui/services.py:288
 msgid "Search for work order categories"
@@ -8236,7 +8236,7 @@ msgstr "Nenhuma ordem de serviço finalizada foi encontrada."
 
 #: ../stoq/gui/services.py:332
 msgid "No delivered or cancelled work orders could be found."
-msgstr "Nenhuma ordem de serviço entregue ou finalizada foi encontrada."
+msgstr "Nenhuma ordem de serviço entregue ou cancelada foi encontrada."
 
 #: ../stoq/gui/services.py:336
 #, python-format
@@ -8413,7 +8413,7 @@ msgstr "Pesquisar:"
 msgid ""
 "There is an inventory process open at the moment.\n"
 "While that inventory is open, you will be unable to do operations that modify your stock."
-msgstr "Há um processo de inventário aberto neste momento.\nEnquanto esse inventário é aberto, você não será capaz de realizar operações que modifiquem seu estoque."
+msgstr "Há um processo de inventário aberto neste momento.\nEnquanto esse inventário estiver aberto, você não será capaz de realizar operações que modifiquem seu estoque."
 
 #: ../stoq/gui/shell/shellapp.py:164
 #, python-format
@@ -8785,7 +8785,7 @@ msgstr "Devoluções pendentes..."
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:72
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:198
 #: ../stoqlib/gui/editors/producteditor.py:283
-#: ../stoqlib/gui/editors/producteditor.py:474
+#: ../stoqlib/gui/editors/producteditor.py:477
 #: ../stoqlib/gui/search/personsearch.py:382
 #: ../stoqlib/gui/search/productsearch.py:116
 #: ../stoqlib/gui/search/salesearch.py:220
@@ -8801,7 +8801,7 @@ msgstr "Histórico..."
 
 #: ../stoq/gui/stock.py:131
 msgid "Show the stock history of the selected product"
-msgstr "Mostra a história do estoque do produto selecionado"
+msgstr "Mostra o histórico de estoque do produto selecionado"
 
 #: ../stoq/gui/stock.py:134
 msgid "Edit the selected product, allowing you to change it's details"
@@ -8823,7 +8823,7 @@ msgstr "Transferência"
 
 #: ../stoq/gui/stock.py:151
 msgid "History"
-msgstr "Historico"
+msgstr "Histórico"
 
 #: ../stoq/gui/stock.py:172
 msgid "Print a report of these products"
@@ -8876,7 +8876,7 @@ msgstr "Você tem %s devoluções a receber"
 
 #: ../stoq/gui/stock.py:389
 msgid "Returned sale"
-msgstr "Venda devolvida"
+msgstr "Devolução"
 
 #: ../stoq/gui/till.py:81 ../stoq/lib/applist.py:62
 #: ../stoqlib/lib/parameters.py:719
@@ -9466,7 +9466,7 @@ msgstr "Cartão de débito"
 
 #: ../stoqlib/domain/payment/card.py:317
 msgid "Credit Card Installments Store"
-msgstr "Cartão de Crédito Parcelado Lojista"
+msgstr "Cartão de crédito parcelado lojista"
 
 #: ../stoqlib/domain/payment/card.py:318
 msgid "Credit Card Installments Provider"
@@ -9485,7 +9485,7 @@ msgstr "Débito"
 #. abbreviated to fit a small space
 #: ../stoqlib/domain/payment/card.py:328
 msgid "Credit Inst. Store"
-msgstr "Crédito Parc. Loja"
+msgstr "Crédito parc. loja"
 
 #. translators: This is 'Credit Card Installments Provider, but should be
 #. abbreviated to fit a small space
@@ -9510,7 +9510,7 @@ msgstr "pedido %s"
 #: ../stoqlib/domain/payment/group.py:271
 #, python-format
 msgid "renegotiation %s"
-msgstr "Renegociação %s"
+msgstr "renegociação %s"
 
 #: ../stoqlib/domain/payment/group.py:273
 #, python-format
@@ -9623,7 +9623,7 @@ msgstr "Pagamento em {method} de valor original {original_value:.2f} foi pago co
 #: ../stoqlib/domain/payment/payment.py:440
 #, python-format
 msgid "Invalid status for cancel operation, got %s"
-msgstr "Estado inválido para a operação cancel, recebeu %s"
+msgstr "Estado inválido para o cancelamento: %s"
 
 #: ../stoqlib/domain/payment/payment.py:454
 #, python-brace-format
@@ -9633,7 +9633,7 @@ msgstr "Pagamento em {method} de valor {value:.2f} foi cancelado"
 #: ../stoqlib/domain/payment/payment.py:465
 #, python-format
 msgid "Invalid status for change_due_date operation, got %s"
-msgstr "Estado inválido para a operação change_due_date, recebeu %s"
+msgstr "Estado inválido para alteração de vencimento: %s"
 
 #: ../stoqlib/domain/payment/payment.py:504
 #: ../stoqlib/domain/payment/payment.py:526
@@ -9643,7 +9643,7 @@ msgstr "Data não pode ser menor que a data de abertura"
 #: ../stoqlib/domain/payment/payment.py:506
 #: ../stoqlib/domain/payment/payment.py:528
 msgid "Date can not be greather then future date"
-msgstr "Data não pode ser maior que a data futura"
+msgstr "Data não pode ser maior que hoje"
 
 #: ../stoqlib/domain/payment/payment.py:582
 msgid "NOT PAID"
@@ -9806,112 +9806,112 @@ msgstr "Dias"
 msgid "Grid product"
 msgstr "Produto grade"
 
-#: ../stoqlib/domain/product.py:978 ../stoqlib/domain/product.py:1030
+#: ../stoqlib/domain/product.py:1025 ../stoqlib/domain/product.py:1077
 msgid "quantity must be a positive number"
 msgstr "quantidade deve ser um número positivo"
 
-#: ../stoqlib/domain/product.py:1037
+#: ../stoqlib/domain/product.py:1084
 msgid "Quantity to sell is greater than the available stock."
 msgstr "A quantidade a ser vendida é maior que a disponível em estoque."
 
-#: ../stoqlib/domain/product.py:1312
+#: ../stoqlib/domain/product.py:1359
 #, python-format
 msgid "Adjustment for inventory %s"
 msgstr "Ajuste para inventário %s"
 
-#: ../stoqlib/domain/product.py:1313
+#: ../stoqlib/domain/product.py:1360
 #, python-format
 msgid "Returned from loan %s"
 msgstr "Retornado do empréstimo %s"
 
-#: ../stoqlib/domain/product.py:1314
+#: ../stoqlib/domain/product.py:1361
 #, python-format
 msgid "Loaned for loan %s"
 msgstr "Emprestado no empréstimo %s"
 
-#: ../stoqlib/domain/product.py:1315
+#: ../stoqlib/domain/product.py:1362
 #, python-format
 msgid "Allocated for production %s"
 msgstr "Alocado para a produção %s"
 
-#: ../stoqlib/domain/product.py:1316 ../stoqlib/domain/product.py:1317
+#: ../stoqlib/domain/product.py:1363 ../stoqlib/domain/product.py:1364
 #, python-format
 msgid "Produced in production %s"
 msgstr "Produzido na produção %s"
 
-#: ../stoqlib/domain/product.py:1318
+#: ../stoqlib/domain/product.py:1365
 #, python-format
 msgid "Returned remaining from production %s"
 msgstr "Devolvido o restante da produção %s"
 
-#: ../stoqlib/domain/product.py:1320
+#: ../stoqlib/domain/product.py:1367
 #, python-format
 msgid "Received for receiving order %s"
 msgstr "Recebido na ordem de recebimento %s"
 
-#: ../stoqlib/domain/product.py:1321
+#: ../stoqlib/domain/product.py:1368
 #, python-format
 msgid "Returned sale %s"
-msgstr "Venda devolvida %s"
+msgstr "Devolução %s"
 
-#: ../stoqlib/domain/product.py:1322
+#: ../stoqlib/domain/product.py:1369
 #, python-format
 msgid "Returned from canceled sale %s"
-msgstr "Devolvido da venda cancelada %s"
+msgstr "Devolvido na venda cancelada %s"
 
-#: ../stoqlib/domain/product.py:1323
+#: ../stoqlib/domain/product.py:1370
 #, python-format
 msgid "Sold in sale %s"
 msgstr "Vendido na venda %s"
 
-#: ../stoqlib/domain/product.py:1324
+#: ../stoqlib/domain/product.py:1371
 #, python-format
 msgid "Product removal for stock decrease %s"
 msgstr "Produto removido para saída manual %s"
 
-#: ../stoqlib/domain/product.py:1325
+#: ../stoqlib/domain/product.py:1372
 #, python-format
 msgid "Transfered from branch in transfer order %s"
 msgstr "Transferido de filial  na transferência %s"
 
-#: ../stoqlib/domain/product.py:1327
+#: ../stoqlib/domain/product.py:1374
 #, python-format
 msgid "Transfered to this branch in transfer order %s"
 msgstr "Transferido para esta filial na transferência %s"
 
-#: ../stoqlib/domain/product.py:1329
+#: ../stoqlib/domain/product.py:1376
 msgid "Registred initial stock"
 msgstr "Estoque inicial registrado"
 
-#: ../stoqlib/domain/product.py:1330
+#: ../stoqlib/domain/product.py:1377
 msgid "Imported from previous version"
 msgstr "Importado de versão anterior"
 
-#: ../stoqlib/domain/product.py:1331
+#: ../stoqlib/domain/product.py:1378
 #, python-format
 msgid "Consigned product returned %s."
 msgstr "Produto consignado devolvido %s."
 
-#: ../stoqlib/domain/product.py:1332
+#: ../stoqlib/domain/product.py:1379
 #, python-format
 msgid "Used on work order %s."
 msgstr "Utilizado na ordem de serviço %s."
 
-#: ../stoqlib/domain/product.py:1333
+#: ../stoqlib/domain/product.py:1380
 #, python-format
 msgid "Returned to stock on work order %s."
 msgstr "Retornado para o estoque na ordem de serviço %s."
 
-#: ../stoqlib/domain/product.py:1334
+#: ../stoqlib/domain/product.py:1381
 #, python-format
 msgid "Reserved for sale %s."
 msgstr "Reservado para a venda %s"
 
-#: ../stoqlib/domain/product.py:1501
+#: ../stoqlib/domain/product.py:1548
 msgid "Boolean"
 msgstr "Boleano"
 
-#: ../stoqlib/domain/product.py:1502
+#: ../stoqlib/domain/product.py:1549
 msgid "Decimal"
 msgstr "Decimal"
 
@@ -10076,7 +10076,7 @@ msgstr "Devolução"
 #: ../stoqlib/gui/wizards/salewizard.py:232
 #, python-format
 msgid "%s returned for sale %s"
-msgstr "%s devolvida pela venda %s"
+msgstr "%s devolvido pela venda %s"
 
 #: ../stoqlib/domain/returnedsale.py:547
 #, python-format
@@ -10099,7 +10099,7 @@ msgstr "O Stoq ainda não suporta vendas para filiais diferentes da atual."
 msgid ""
 "%s is not available for sale. Try making it available first and then try "
 "again."
-msgstr "%s não está disponível para venda. Tente disponibilizá-lo e tente mais tarde."
+msgstr "%s não está disponível para venda. Mude seu estado para disponível e tente novamente."
 
 #: ../stoqlib/domain/sale.py:467 ../stoqlib/domain/transfer.py:180
 #: ../stoqlib/domain/workorder.py:175
@@ -10109,12 +10109,12 @@ msgstr "Enviado"
 
 #: ../stoqlib/domain/sale.py:961
 msgid "The sale must have sellable items"
-msgstr "A venda deve ter itens vendáveis"
+msgstr "A venda deve possuir itens"
 
 #: ../stoqlib/domain/sale.py:963
 #, python-format
 msgid "Unable to make sales for clients with status %s"
-msgstr "Incapaz de fazer vendas para clientes com estado %s"
+msgstr "Não é possível fazer vendas para clientes com estado %s"
 
 #: ../stoqlib/domain/sale.py:1021
 #, python-brace-format
@@ -10215,12 +10215,12 @@ msgstr "Pedidos de venda devem ter itens, o que significa produtos ou serviços"
 
 #: ../stoqlib/domain/sale.py:1747
 msgid "Sale total quantity should never be zero"
-msgstr "O total da quantidade de venda deve nunca ser zero"
+msgstr "O total da venda deve nunca ser zero"
 
 #: ../stoqlib/domain/sellable.py:364
 #, python-format
 msgid "The sellable code %r already exists"
-msgstr "O código de %r já existe"
+msgstr "O código %r já existe"
 
 #: ../stoqlib/domain/sellable.py:371
 #, python-format
@@ -10234,7 +10234,7 @@ msgid "Available"
 msgstr "Disponível"
 
 #. Translators: ICMS tax rate credit = Alíquota de crédito do ICMS
-#: ../stoqlib/domain/sellable.py:755
+#: ../stoqlib/domain/sellable.py:761
 #, python-format
 msgid ""
 "You cannot sell this item before updating the 'ICMS tax rate credit' field on '%s' Tax Class.\n"
@@ -10655,15 +10655,15 @@ msgstr "N.F. #"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:216
 msgid "Returned Sale"
-msgstr "Venda devolvida"
+msgstr "Devolução"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:216
 msgid "Returned Sales"
-msgstr "Vendas devolvidas"
+msgstr "Devoluções"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:217
 msgid "Returned sale details"
-msgstr "Detalhes da venda devolvida"
+msgstr "Detalhes da devoluçao"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:251
 msgid "Product details"
@@ -11381,7 +11381,7 @@ msgstr "Detalhes de renegociação"
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:54
 msgid "Returned Sale Details"
-msgstr "Detalhes da venda devolvida"
+msgstr "Detalhes da devolução"
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:72
 msgid "Return reason"
@@ -12447,27 +12447,27 @@ msgstr "Componente do produto"
 msgid "The component quantity must be greater than zero."
 msgstr "A quantidade do componente deve ser maior que zero."
 
-#: ../stoqlib/gui/editors/producteditor.py:433
+#: ../stoqlib/gui/editors/producteditor.py:436
 msgid "Cost must be greater than the sum of the components."
 msgstr "O custo deve ser maior que do que a soma dos componentes."
 
-#: ../stoqlib/gui/editors/producteditor.py:455
+#: ../stoqlib/gui/editors/producteditor.py:458
 msgid "Components"
 msgstr "Componentes"
 
-#: ../stoqlib/gui/editors/producteditor.py:457
+#: ../stoqlib/gui/editors/producteditor.py:460
 msgid "Quality"
 msgstr "Qualidade"
 
-#: ../stoqlib/gui/editors/producteditor.py:468
+#: ../stoqlib/gui/editors/producteditor.py:471
 msgid "Cost cannot be zero or negative."
 msgstr "Custo não pode ser zero ou negativo."
 
-#: ../stoqlib/gui/editors/producteditor.py:518
+#: ../stoqlib/gui/editors/producteditor.py:521
 msgid "The manufacturer should have a name."
 msgstr "O fabricante deve ter um nome."
 
-#: ../stoqlib/gui/editors/producteditor.py:522
+#: ../stoqlib/gui/editors/producteditor.py:525
 #, python-format
 msgid "The manufacturer '%s' already exists."
 msgstr "O fabricante '%s' já existe."
@@ -13695,7 +13695,7 @@ msgstr "Razão da Devolução"
 
 #: ../stoqlib/gui/search/returnedsalesearch.py:116
 msgid "Pending Returned Sale Search"
-msgstr "Busca de devolução pendente"
+msgstr "Busca de devoluções pendentes"
 
 #: ../stoqlib/gui/search/returnedsalesearch.py:125
 msgid "Returned #"
@@ -17274,7 +17274,7 @@ msgstr "Listagem de marcas por filial"
 #: ../stoqlib/reporting/product.py:83
 #, python-format
 msgid "product from branch %s"
-msgstr "produtos na filial %s"
+msgstr "produtos da filial %s"
 
 #: ../stoqlib/reporting/product.py:84
 #, python-format
@@ -17472,12 +17472,12 @@ msgstr "%s/venda"
 
 #: ../stoqlib/reporting/salereturn.py:55
 msgid "Pending Returned Sale Report"
-msgstr "Relatório de Devolução Pendente"
+msgstr "Relatório de Devoluções Pendentes"
 
 #: ../stoqlib/reporting/salereturn.py:67
 #, python-format
 msgid "Returned Sale %s"
-msgstr "Venda Devolvida %s"
+msgstr "Devolução %s"
 
 #: ../stoqlib/reporting/service.py:34 ../stoqlib/reporting/service.py:41
 msgid "Service Listing"

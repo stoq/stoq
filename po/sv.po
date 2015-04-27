@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 09:00-0300\n"
+"POT-Creation-Date: 2015-04-24 14:27-0300\n"
 "PO-Revision-Date: 2015-04-21 12:54+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/stoq/language/sv/)\n"
@@ -3485,7 +3485,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:400
 #: ../stoqlib/gui/editors/personeditor.py:198
-#: ../stoqlib/gui/editors/producteditor.py:502
+#: ../stoqlib/gui/editors/producteditor.py:505
 #: ../stoqlib/gui/editors/sellableeditor.py:76
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:51
 #: ../stoqlib/gui/search/costcentersearch.py:51
@@ -5773,7 +5773,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:110
 #: ../stoqlib/gui/dialogs/manufacturerdialog.py:42
 #: ../stoqlib/gui/dialogs/saledetails.py:254
-#: ../stoqlib/gui/editors/producteditor.py:495
+#: ../stoqlib/gui/editors/producteditor.py:498
 #: ../stoqlib/gui/search/productsearch.py:207
 #: ../stoqlib/gui/search/productsearch.py:371
 #: ../stoqlib/gui/search/productsearch.py:448
@@ -6121,7 +6121,7 @@ msgstr ""
 
 #: ../stoq/gui/admin.py:113 ../stoqlib/gui/dialogs/sellabledialog.py:73
 #: ../stoqlib/gui/editors/producteditor.py:349
-#: ../stoqlib/gui/editors/producteditor.py:456
+#: ../stoqlib/gui/editors/producteditor.py:459
 msgid "Taxes"
 msgstr ""
 
@@ -8778,7 +8778,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:72
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:198
 #: ../stoqlib/gui/editors/producteditor.py:283
-#: ../stoqlib/gui/editors/producteditor.py:474
+#: ../stoqlib/gui/editors/producteditor.py:477
 #: ../stoqlib/gui/search/personsearch.py:382
 #: ../stoqlib/gui/search/productsearch.py:116
 #: ../stoqlib/gui/search/salesearch.py:220
@@ -9799,112 +9799,112 @@ msgstr "Dagar"
 msgid "Grid product"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:978 ../stoqlib/domain/product.py:1030
+#: ../stoqlib/domain/product.py:1025 ../stoqlib/domain/product.py:1077
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1037
+#: ../stoqlib/domain/product.py:1084
 msgid "Quantity to sell is greater than the available stock."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1312
+#: ../stoqlib/domain/product.py:1359
 #, python-format
 msgid "Adjustment for inventory %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1313
+#: ../stoqlib/domain/product.py:1360
 #, python-format
 msgid "Returned from loan %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1314
+#: ../stoqlib/domain/product.py:1361
 #, python-format
 msgid "Loaned for loan %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1315
+#: ../stoqlib/domain/product.py:1362
 #, python-format
 msgid "Allocated for production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1316 ../stoqlib/domain/product.py:1317
+#: ../stoqlib/domain/product.py:1363 ../stoqlib/domain/product.py:1364
 #, python-format
 msgid "Produced in production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1318
+#: ../stoqlib/domain/product.py:1365
 #, python-format
 msgid "Returned remaining from production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1320
+#: ../stoqlib/domain/product.py:1367
 #, python-format
 msgid "Received for receiving order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1321
+#: ../stoqlib/domain/product.py:1368
 #, python-format
 msgid "Returned sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1322
+#: ../stoqlib/domain/product.py:1369
 #, python-format
 msgid "Returned from canceled sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1323
+#: ../stoqlib/domain/product.py:1370
 #, python-format
 msgid "Sold in sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1324
+#: ../stoqlib/domain/product.py:1371
 #, python-format
 msgid "Product removal for stock decrease %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1325
+#: ../stoqlib/domain/product.py:1372
 #, python-format
 msgid "Transfered from branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1327
+#: ../stoqlib/domain/product.py:1374
 #, python-format
 msgid "Transfered to this branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1329
+#: ../stoqlib/domain/product.py:1376
 msgid "Registred initial stock"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1330
+#: ../stoqlib/domain/product.py:1377
 msgid "Imported from previous version"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1331
+#: ../stoqlib/domain/product.py:1378
 #, python-format
 msgid "Consigned product returned %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1332
+#: ../stoqlib/domain/product.py:1379
 #, python-format
 msgid "Used on work order %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1333
+#: ../stoqlib/domain/product.py:1380
 #, python-format
 msgid "Returned to stock on work order %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1334
+#: ../stoqlib/domain/product.py:1381
 #, python-format
 msgid "Reserved for sale %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1501
+#: ../stoqlib/domain/product.py:1548
 msgid "Boolean"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1502
+#: ../stoqlib/domain/product.py:1549
 msgid "Decimal"
 msgstr ""
 
@@ -10227,7 +10227,7 @@ msgid "Available"
 msgstr "Tillgänglig"
 
 #. Translators: ICMS tax rate credit = Alíquota de crédito do ICMS
-#: ../stoqlib/domain/sellable.py:755
+#: ../stoqlib/domain/sellable.py:761
 #, python-format
 msgid ""
 "You cannot sell this item before updating the 'ICMS tax rate credit' field on '%s' Tax Class.\n"
@@ -12440,27 +12440,27 @@ msgstr ""
 msgid "The component quantity must be greater than zero."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:433
+#: ../stoqlib/gui/editors/producteditor.py:436
 msgid "Cost must be greater than the sum of the components."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:455
+#: ../stoqlib/gui/editors/producteditor.py:458
 msgid "Components"
 msgstr "Komponenter"
 
-#: ../stoqlib/gui/editors/producteditor.py:457
+#: ../stoqlib/gui/editors/producteditor.py:460
 msgid "Quality"
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:468
+#: ../stoqlib/gui/editors/producteditor.py:471
 msgid "Cost cannot be zero or negative."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:518
+#: ../stoqlib/gui/editors/producteditor.py:521
 msgid "The manufacturer should have a name."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:522
+#: ../stoqlib/gui/editors/producteditor.py:525
 #, python-format
 msgid "The manufacturer '%s' already exists."
 msgstr ""
