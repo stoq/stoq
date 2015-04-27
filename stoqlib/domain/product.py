@@ -370,7 +370,7 @@ class Product(Domain):
         """Deletes this product from the database.
         """
         for child in self.children:
-            child.remove()
+            child.sellable.remove()
         for attr in self.attributes:
             self.store.remove(attr)
         storable = self.storable
