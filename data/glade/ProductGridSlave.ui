@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.24"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="ProductGridSlave">
     <property name="can_focus">False</property>
@@ -10,7 +10,7 @@
     <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
     <child>
-      <object class="GtkAlignment" id="alignment1">
+      <object class="GtkAlignment" id="grid_tab_alignment">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="top_padding">6</property>

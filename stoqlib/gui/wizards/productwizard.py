@@ -147,6 +147,7 @@ class ProductCreateWizard(BaseWizard):
     def finish(self):
         self.retval = self.model
         self.close()
+        self.model.update_children_info()
 
     #
     #  Classmethods

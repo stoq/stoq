@@ -182,7 +182,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                 ProxyComboBox(ipi_template):
                   item: None, selected
           GtkEventBox(): slave ProductGridSlave is attached
-            GtkAlignment(alignment1):
+            GtkAlignment(grid_tab_alignment):
               GtkVBox(vbox1):
                 GtkHBox(hbox1, fill=True):
                   GtkTable(attr_table, expand=True, fill=True):

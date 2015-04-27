@@ -357,10 +357,12 @@ class ProductEditor(SellableEditor):
                                      product_id=self.model.id,
                                      attribute_id=attribute.id)
 
-            attribute_option_slave = ProductGridSlave(self.store,
-                                                      self.model,
+            attribute_option_slave = ProductGridSlave(self.store, self.model,
                                                       self.visual_mode)
             extra_tabs.append((_(u'Grid'), attribute_option_slave))
+            attribute_option_slave.grid_tab_alignment.connect('focus',
+                                                              self._on_grid_tab_alignment__focus)
+
         return extra_tabs
 
     def setup_widgets(self):
@@ -429,6 +431,13 @@ class ProductEditor(SellableEditor):
 
         if self.model.is_grid:
             self.model.update_children_info()
+
+    #
+    #   Callbacks
+    #
+
+    def _on_grid_tab_alignment__focus(self, widget, value):
+        self.model.update_children_info()
 
 
 class ProductionProductEditor(ProductEditor):
