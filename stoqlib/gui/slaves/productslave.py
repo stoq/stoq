@@ -31,6 +31,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column, SummaryLabel
 from kiwi.ui.widgets.combo import ProxyComboBox
+from storm.expr import Eq
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
@@ -426,7 +427,8 @@ class ProductComponentSlave(BaseEditorSlave):
             attr = ProductFullStockView.category_description
 
         products = []
-        for product_view in self.store.find(ProductFullStockView).order_by(attr):
+        query = Eq(Product.is_grid, False)
+        for product_view in self.store.find(ProductFullStockView, query).order_by(attr):
             if product_view.product is self._product:
                 continue
 

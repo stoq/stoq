@@ -294,6 +294,9 @@ class ProductWithStockBranchView(ProductFullStockView):
     tables = ProductFullStockView.tables[:]
     tables[3] = LeftJoin(_StockBranchSummary, storable_id == Storable.id)
 
+    clause = And(ProductFullStockView.clause,
+                 Eq(Product.is_grid, False))
+
 
 # This subselect should query only from PurchaseItem, otherwise, more one
 # product may appear more than once in the results (if there are purchase
@@ -326,6 +329,9 @@ class ProductFullStockItemView(ProductFullStockView):
     tables.append(LeftJoin(Alias(_PurchaseItemTotal, '_purchase_total'),
                            Field('_purchase_total',
                                  'sellable_id') == Sellable.id))
+
+    clause = And(ProductFullStockView.clause,
+                 Eq(Product.is_grid, False))
 
 
 class ProductFullStockItemSupplierView(ProductFullStockItemView):
@@ -461,6 +467,7 @@ class SellableFullStockView(Viewable):
     category_description = SellableCategory.description
 
     stock = Coalesce(Field('_stock_summary', 'stock'), 0)
+    clause = Or(Eq(Product.is_grid, False), Eq(Product.is_grid, None))
 
     tables = [
         Sellable,

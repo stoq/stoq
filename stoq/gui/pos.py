@@ -539,6 +539,11 @@ class PosApp(ShellApp):
                     sellable = None
                     batch = None
 
+        # The user can't add the parent product of a grid directly to the sale.
+        # TODO: Display a dialog to let the user choose an specific grid product.
+        if sellable and sellable.product and sellable.product.is_grid:
+            sellable = None
+
         # If the barcode has the price information, we need to calculate the
         # corresponding weight.
         if barinfo and sellable and barinfo.mode == BarcodeInfo.MODE_PRICE:
