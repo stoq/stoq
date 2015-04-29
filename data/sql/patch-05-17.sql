@@ -5,7 +5,8 @@ ALTER TABLE product
 CREATE TABLE grid_group (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
-    description text
+    description text,
+    is_active boolean DEFAULT True
 );
 CREATE RULE update_te AS ON UPDATE TO grid_group DO ALSO SELECT update_te(old.te_id);
 
@@ -13,6 +14,7 @@ CREATE TABLE grid_attribute (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
+    is_active boolean DEFAULT True,
     group_id uuid REFERENCES grid_group(id) ON UPDATE CASCADE
 );
 CREATE RULE update_te AS ON UPDATE TO grid_attribute DO ALSO SELECT update_te(old.te_id);
@@ -21,6 +23,7 @@ CREATE TABLE grid_option (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
     description text,
+    is_active boolean DEFAULT True,
     option_order integer,
     attribute_id uuid REFERENCES grid_attribute(id) ON UPDATE CASCADE
 );

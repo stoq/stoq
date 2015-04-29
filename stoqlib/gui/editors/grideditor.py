@@ -40,13 +40,15 @@ class AttributeGroupEditor(BaseEditor):
     model_name = _('Attribute Group')
     model_type = GridGroup
     gladefile = 'AttributeGroupEditor'
-    proxy_widgets = ['description']
+    proxy_widgets = ['description', 'active_check_box']
     confirm_widgets = ['description']
 
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode)
         if model:
             self.set_description(model.description)
+
+        self.active_check_box.set_property('sensitive', bool(model))
 
     #
     # BaseEditor Hooks
@@ -64,13 +66,15 @@ class GridAttributeEditor(BaseEditor):
     model_type = GridAttribute
     gladefile = 'GridAttributeEditor'
     size = (400, 350)
-    proxy_widgets = ['description', 'group_combo']
+    proxy_widgets = ['description', 'group_combo', 'active_check_box']
 
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode)
         # Only let the user edit if its a new attribute
         if model:
             self.set_description(model.description)
+
+        self.active_check_box.set_property('sensitive', bool(model))
 
     #
     # BaseEditor Hooks
@@ -81,23 +85,25 @@ class GridAttributeEditor(BaseEditor):
         self.attach_slave('options_holder', slave)
 
     def create_model(self, store):
-        return GridAttribute(store=self.store, description=u'')
+        group = GridGroup.get_active_groups(store).any()
+        return GridAttribute(store=self.store, description=u'', group=group)
 
     def setup_proxies(self):
-        group = self.store.find(GridGroup)
-        self.group_combo.prefill(api.for_combo(group, attr='description'))
-        self.proxy = self.add_proxy(self.model, GridAttributeEditor.proxy_widgets)
-        # XXX: There is a bug in kiwi that when the model value for the combo is
-        # None, it will not update the model after adding the proxy. Prefilling
-        # again will force the update.
-        self.group_combo.prefill(api.for_combo(group, attr='description'))
+        groups = list(GridGroup.get_active_groups(self.store))
+        # If the current group is no longer active, we must add it to the list
+        # of groups:
+        if not self.model.group.is_active:
+            groups.append(self.model.group)
+
+        self.group_combo.prefill(api.for_combo(groups, attr='description'))
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
 
 class AttributeOptionEditor(BaseEditor):
     model_name = _('Attribute Option')
     model_type = GridOption
     gladefile = 'AttributeOptionEditor'
-    proxy_widgets = ['description', 'option_order_spin']
+    proxy_widgets = ['description', 'option_order_spin', 'active_check_box']
     confirm_widgets = ['description']
 
     def __init__(self, store, model=None, visual_mode=False, attribute=None):
@@ -105,6 +111,8 @@ class AttributeOptionEditor(BaseEditor):
         BaseEditor.__init__(self, store, model, visual_mode)
         if model:
             self.set_description(model.description)
+
+        self.active_check_box.set_property('sensitive', bool(model))
 
     #
     # BaseEditor Hooks
@@ -127,6 +135,7 @@ class _AttributeOptionsSlave(ModelListSlave):
     editor_class = AttributeOptionEditor
     columns = [
         Column('description', _('Description'), data_type=str, expand=True),
+        Column('is_active', _('Active'), data_type=bool),
         Column('option_order', _('Option order'), data_type=int)
     ]
 

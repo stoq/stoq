@@ -606,11 +606,13 @@ class TestGridGroup(DomainTest):
 
 class TestGridAttribute(DomainTest):
 
-    def test_has_options(self):
+    def test_has_active_options(self):
         grid_attr = self.create_grid_attribute()
-        self.assertEqual(grid_attr.has_option(), False)
-        self.create_attribute_option(grid_attribute=grid_attr)
-        self.assertEqual(grid_attr.has_option(), True)
+        option = self.create_attribute_option(grid_attribute=grid_attr)
+        option.is_active = False
+        self.assertFalse(grid_attr.has_active_options())
+        option.is_active = True
+        self.assertTrue(grid_attr.has_active_options())
 
 
 class TestGridOption(DomainTest):

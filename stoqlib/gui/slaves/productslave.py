@@ -37,7 +37,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, ProductComponent,
                                     ProductQualityTest, Product,
-                                    ProductManufacturer, GridGroup, GridOption)
+                                    ProductManufacturer, GridGroup)
 from stoqlib.domain.production import ProductionOrderProducingView
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.domain.views import ProductFullStockView
@@ -65,7 +65,7 @@ class ProductAttributeSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         self._widgets = {}
-        group = self.store.find(GridGroup)
+        group = GridGroup.get_active_groups(self.store)
         self.attribute_group_combo.prefill(api.for_combo(group,
                                                          attr='description',
                                                          empty=_("Select a group")))
@@ -73,8 +73,11 @@ class ProductAttributeSlave(BaseEditorSlave):
                                            self._on_attribute_group_combo_selection__changed)
 
     def _add_attribute(self, attr):
+        if not attr.is_active:
+            # Do not attach the widget if the attribute is inactive
+            return
         widget = gtk.CheckButton(label=attr.description)
-        widget.set_sensitive(attr.has_option())
+        widget.set_sensitive(attr.has_active_options())
         self.vbox1.pack_start(widget, expand=False)
         widget.show()
         self._widgets[widget] = attr
@@ -136,8 +139,7 @@ class ProductGridSlave(BaseEditorSlave):
         combo.connect('changed', self._on_combo_selection__changed)
 
     def _fill_options(self, widget, attr):
-        options = attr.options.order_by(GridOption.option_order,
-                                        GridOption.description)
+        options = attr.options.find(is_active=True)
         widget.prefill(api.for_combo(options, empty=_("Select an option"),
                        sorted=False))
 

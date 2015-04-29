@@ -304,7 +304,7 @@ class Product(Domain):
     #: list of |product| that is child of this product
     children = ReferenceSet('id', 'Product.parent_id')
 
-    #: list of |grid_attribute| of this product
+    #: list of |product_attribute| of this product
     attributes = ReferenceSet('id', 'ProductAttribute.product_id')
 
     #: list of |grid_option| of this product
@@ -663,7 +663,18 @@ class GridGroup(Domain):
     #: group description
     description = UnicodeCol()
 
+    #: Indicates if grid_group is active
+    is_active = BoolCol(allow_none=False, default=True)
+
     attributes = ReferenceSet('id', 'GridAttribute.group_id')
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_active_groups(cls, store):
+        return store.find(cls, is_active=True)
 
     @classmethod
     def has_group(cls, store):
@@ -678,15 +689,25 @@ class GridAttribute(Domain):
     #: description of self
     description = UnicodeCol()
 
+    #: Indicates if grid_group is active
+    is_active = BoolCol(allow_none=False, default=True)
+
     #: GridGroup id
     group_id = IdCol()
     group = Reference(group_id, 'GridGroup.id')
 
-    def has_option(self):
-        """Return ``True`` if self is referenced on any |grid_option|,
+    #
+    # Public API
+    #
+
+    def has_active_options(self):
+        """Check if the grid_attribute have active |grid_option|
+
+        :return: ``True`` if self is referenced on any |grid_option|,
         otherwise ``False``
         """
-        return not self.store.find(GridOption, attribute=self).is_empty()
+        query = And(GridOption.attribute == self, Eq(GridOption.is_active, True))
+        return not self.store.find(GridOption, query).is_empty()
 
 
 @implementer(IDescribable)
@@ -697,12 +718,20 @@ class GridOption(Domain):
 
     #: description of self
     description = UnicodeCol()
+
+    #: Indicates if grid_group is active
+    is_active = BoolCol(allow_none=False, default=True)
+
     #: Order that the option will be shown
     option_order = IntCol()
 
     #: Attribute id for that option
     attribute_id = IdCol()
     attribute = Reference(attribute_id, 'GridAttribute.id')
+
+    #
+    # Public API
+    #
 
     def get_description(self):
         return self.description
@@ -726,7 +755,9 @@ class ProductAttribute(Domain):
     attribute = Reference(attribute_id, 'GridAttribute.id')
 
     #: a list of |grid_option| of the grid_attribute
-    options = ReferenceSet('attribute_id', 'GridOption.attribute_id')
+    options = ReferenceSet('attribute_id', 'GridOption.attribute_id',
+                           order_by=('GridOption.option_order',
+                                     'GridOption.description'))
 
 
 class ProductOptionMap(Domain):

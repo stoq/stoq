@@ -1,5 +1,5 @@
 editor: GridAttributeEditor
-GtkDialog(main_dialog.toplevel): title='Add Grid Attribute', hidden
+GtkDialog(main_dialog.toplevel): title='Edit Details of "grid attribute 1"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -10,8 +10,8 @@ GtkDialog(main_dialog.toplevel): title='Add Grid Attribute', hidden
             ProxyComboBox(group_combo):
               item: 'grid group 1', selected
             GtkLabel(label1): 'Attribute name:'
-            ProxyEntry(description): '', mandatory
-            ProxyCheckButton(active_check_box): 'Is active', active, insensitive
+            ProxyEntry(description): 'grid attribute 1'
+            ProxyCheckButton(active_check_box): 'Is active', active
           GtkEventBox(options_holder, expand=True, fill=True): slave _AttributeOptionsSlave is attached
             kiwi+ui+listdialog+ListContainer(listcontainer):
               ObjectList(expand=True, fill=True):
@@ -29,4 +29,4 @@ GtkDialog(main_dialog.toplevel): title='Add Grid Attribute', hidden
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

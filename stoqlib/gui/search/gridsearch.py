@@ -51,7 +51,8 @@ class AttributeGroupSearch(SearchEditor):
 
     def get_columns(self):
         return [Column('description', _('Attribute group'), data_type=str,
-                       expand=True, sorted=True)]
+                       expand=True, sorted=True),
+                Column('is_active', _('Active'), data_type=bool)]
 
 
 class GridAttributeSearch(SearchEditor):
@@ -70,6 +71,7 @@ class GridAttributeSearch(SearchEditor):
     def get_columns(self):
         return [Column('description', _('Attribute'), data_type=str,
                        expand=True, sorted=True),
+                Column('is_active', _('Active'), data_type=bool),
                 Column('group.description', _('Group'), data_type=str)]
 
     #
@@ -77,7 +79,7 @@ class GridAttributeSearch(SearchEditor):
     #
 
     def _on_toolbar__new(self, toolbar):
-        if not self.store.find(GridGroup).any():
-            warning(_("You need to register an atribute group first."))
+        if not self.store.find(GridGroup, is_active=True).any():
+            warning(_("You need an active atribute group."))
         else:
             self.run()

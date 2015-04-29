@@ -7,6 +7,7 @@ GtkDialog(main_dialog.toplevel): title='Add Attribute Group', hidden
         GtkTable(table1):
           GtkLabel(label1): 'Group name:'
           ProxyEntry(description): '', mandatory
+          ProxyCheckButton(active_check_box): 'Is active', active, insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

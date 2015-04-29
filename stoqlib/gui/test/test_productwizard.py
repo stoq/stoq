@@ -43,6 +43,20 @@ class TestProducCreateWizard(GUITest):
         # Checking that are still on the same step after the warning
         self.assertEquals(wizard.get_current_step(), type_step)
 
+    def test_create_inactive_group(self):
+        inactive_group = self.create_attribute_group()
+        inactive_group.is_active = False
+        wizard = ProductCreateWizard(self.store)
+        type_step = wizard.get_current_step()
+        type_step.grid.set_active(True)
+        self.click(wizard.next_button)
+        attribute_step = wizard.get_current_step()
+
+        groups = attribute_step.slave.attribute_group_combo
+        for combo_model in groups.get_model_items():
+            # The inactive group should not be shown on combo
+            self.assertNotEquals(combo_model, inactive_group.description)
+
     @mock.patch('stoqlib.gui.wizards.productwizard.warning')
     def test_create_without_attribute(self, warning):
         attribute_group = self.create_attribute_group()
@@ -64,6 +78,21 @@ class TestProducCreateWizard(GUITest):
         attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
         self.click(wizard.next_button)
         warning.assert_called_once_with("You should select an attribute first")
+
+    def test_create_inactive_attribute(self):
+        attribute_group = self.create_attribute_group()
+        attribute = self.create_grid_attribute(attribute_group=attribute_group)
+        attribute.is_active = False
+
+        wizard = ProductCreateWizard(self.store)
+        type_step = wizard.get_current_step()
+        type_step.grid.set_active(True)
+        self.click(wizard.next_button)
+
+        attribute_step = wizard.get_current_step()
+        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        # Inactive attributes should not be shown
+        self.assertEquals(attribute_step.slave._widgets, {})
 
     @mock.patch('stoqlib.gui.wizards.productwizard.warning')
     def test_create_with_attribute_not_selected(self, warning):
@@ -107,6 +136,22 @@ class TestProducCreateWizard(GUITest):
             self.assertEquals(i.get_sensitive(), False)
         self.click(wizard.next_button)
         warning.assert_called_once_with("You should select an attribute first")
+
+    def test_create_with_inactive_option(self):
+        attribute_group = self.create_attribute_group()
+        attribute = self.create_grid_attribute(attribute_group=attribute_group)
+        option = self.create_attribute_option(grid_attribute=attribute)
+        option.is_active = False
+
+        wizard = ProductCreateWizard(self.store)
+        type_step = wizard.get_current_step()
+        type_step.grid.set_active(True)
+        self.click(wizard.next_button)
+
+        attribute_step = wizard.get_current_step()
+        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        for check_box in attribute_step.slave._widgets.keys():
+            self.assertEquals(check_box.get_sensitive(), False)
 
     @mock.patch('stoqlib.gui.slaves.productslave.warning')
     def test_create_grid_product(self, warning):

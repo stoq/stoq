@@ -51,8 +51,16 @@ class TestAttributeGroupEditor(GUITest):
 
 class TestGridAttributeEditor(GUITest):
     def test_create(self):
+        self.create_attribute_group()
         editor = GridAttributeEditor(self.store)
         self.check_editor(editor, 'editor-grid-attribute-create')
+
+    def test_edit_with_inactive_group(self):
+        group = self.create_attribute_group()
+        model = self.create_grid_attribute(attribute_group=group)
+        group.is_active = False
+        editor = GridAttributeEditor(self.store, model=model)
+        self.check_editor(editor, 'editor-grid-attribute-edit-inactive')
 
     def test_edit_attribute(self):
         group1 = self.create_attribute_group(description=u'group1')
