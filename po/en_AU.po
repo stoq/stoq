@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-24 14:27-0300\n"
+"POT-Creation-Date: 2015-04-27 14:49-0300\n"
 "PO-Revision-Date: 2015-04-21 12:54+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (Australia) (http://www.transifex.com/projects/p/stoq/language/en_AU/)\n"
@@ -2022,7 +2022,7 @@ msgid ""
 msgstr ""
 
 #: ../data/glade/ProductTypeStep.ui.h:11
-#: ../stoqlib/gui/editors/producteditor.py:363
+#: ../stoqlib/gui/editors/producteditor.py:362
 msgid "Grid"
 msgstr ""
 
@@ -3486,7 +3486,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:400
 #: ../stoqlib/gui/editors/personeditor.py:198
-#: ../stoqlib/gui/editors/producteditor.py:505
+#: ../stoqlib/gui/editors/producteditor.py:514
 #: ../stoqlib/gui/editors/sellableeditor.py:76
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:51
 #: ../stoqlib/gui/search/costcentersearch.py:51
@@ -4766,40 +4766,40 @@ msgstr "Any"
 msgid "There must be a printer configured"
 msgstr "There must be a printer configured"
 
-#: ../plugins/ecf/couponprinter.py:112 ../plugins/ecf/couponprinter.py:123
+#: ../plugins/ecf/couponprinter.py:113 ../plugins/ecf/couponprinter.py:124
 msgid "Could not cancel coupon"
 msgstr "Could not cancel coupon"
 
-#: ../plugins/ecf/couponprinter.py:150
+#: ../plugins/ecf/couponprinter.py:151
 msgid "Could not print summary"
 msgstr "Could not print summary"
 
-#: ../plugins/ecf/couponprinter.py:159 ../plugins/ecf/couponprinter.py:168
+#: ../plugins/ecf/couponprinter.py:160 ../plugins/ecf/couponprinter.py:169
 msgid "Could not read memory"
 msgstr "Could not read memory"
 
-#: ../plugins/ecf/couponprinter.py:177
+#: ../plugins/ecf/couponprinter.py:178
 #, python-format
 msgid "Invalid serial number for fiscal printer connected to %s"
 msgstr "Invalid serial number for fiscal printer connected to %s"
 
-#: ../plugins/ecf/couponprinter.py:325 ../plugins/ecf/couponprinter.py:342
+#: ../plugins/ecf/couponprinter.py:321 ../plugins/ecf/couponprinter.py:338
 msgid "Could not print item"
 msgstr "Could not print item"
 
-#: ../plugins/ecf/couponprinter.py:381
+#: ../plugins/ecf/couponprinter.py:377
 #, python-format
 msgid ""
 "The payment method used in this sale (%s) is not configured in the fiscal "
 "printer."
 msgstr "The payment method used in this sale (%s) is not configured in the fiscal printer."
 
-#: ../plugins/ecf/couponprinter.py:437
+#: ../plugins/ecf/couponprinter.py:432
 #, python-format
 msgid "Salesperson: %s"
 msgstr ""
 
-#: ../plugins/ecf/couponprinter.py:438 ../stoqlib/exporters/xlsutils.py:44
+#: ../plugins/ecf/couponprinter.py:433 ../stoqlib/exporters/xlsutils.py:44
 #: ../stoqlib/reporting/boleto.py:875
 msgid "Stoq Retail Management"
 msgstr ""
@@ -5774,7 +5774,7 @@ msgstr "Confirm date"
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:110
 #: ../stoqlib/gui/dialogs/manufacturerdialog.py:42
 #: ../stoqlib/gui/dialogs/saledetails.py:254
-#: ../stoqlib/gui/editors/producteditor.py:498
+#: ../stoqlib/gui/editors/producteditor.py:507
 #: ../stoqlib/gui/search/productsearch.py:207
 #: ../stoqlib/gui/search/productsearch.py:371
 #: ../stoqlib/gui/search/productsearch.py:448
@@ -6122,7 +6122,7 @@ msgstr "Roles"
 
 #: ../stoq/gui/admin.py:113 ../stoqlib/gui/dialogs/sellabledialog.py:73
 #: ../stoqlib/gui/editors/producteditor.py:349
-#: ../stoqlib/gui/editors/producteditor.py:459
+#: ../stoqlib/gui/editors/producteditor.py:468
 msgid "Taxes"
 msgstr "Taxes"
 
@@ -8779,7 +8779,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:72
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:198
 #: ../stoqlib/gui/editors/producteditor.py:283
-#: ../stoqlib/gui/editors/producteditor.py:477
+#: ../stoqlib/gui/editors/producteditor.py:486
 #: ../stoqlib/gui/search/personsearch.py:382
 #: ../stoqlib/gui/search/productsearch.py:116
 #: ../stoqlib/gui/search/salesearch.py:220
@@ -10423,7 +10423,7 @@ msgstr ""
 #: ../stoqlib/domain/workorder.py:1024 ../stoqlib/gui/base/dialogs.py:467
 #: ../stoqlib/gui/editors/parameterseditor.py:214
 #: ../stoqlib/gui/search/parametersearch.py:104
-#: ../stoqlib/gui/wizards/productwizard.py:171
+#: ../stoqlib/gui/wizards/productwizard.py:172
 #: ../stoqlib/reporting/inventory.py:44
 msgid "No"
 msgstr "No"
@@ -10432,7 +10432,7 @@ msgstr "No"
 #: ../stoqlib/domain/workorder.py:1024 ../stoqlib/gui/base/dialogs.py:467
 #: ../stoqlib/gui/editors/parameterseditor.py:208
 #: ../stoqlib/gui/search/parametersearch.py:104
-#: ../stoqlib/gui/wizards/productwizard.py:171
+#: ../stoqlib/gui/wizards/productwizard.py:172
 #: ../stoqlib/reporting/inventory.py:44
 msgid "Yes"
 msgstr "Yes"
@@ -12441,27 +12441,27 @@ msgstr "Product Component"
 msgid "The component quantity must be greater than zero."
 msgstr "The component quantity must be greater than zero."
 
-#: ../stoqlib/gui/editors/producteditor.py:436
+#: ../stoqlib/gui/editors/producteditor.py:445
 msgid "Cost must be greater than the sum of the components."
 msgstr "Cost must be greater than the sum of the components."
 
-#: ../stoqlib/gui/editors/producteditor.py:458
+#: ../stoqlib/gui/editors/producteditor.py:467
 msgid "Components"
 msgstr "Components"
 
-#: ../stoqlib/gui/editors/producteditor.py:460
+#: ../stoqlib/gui/editors/producteditor.py:469
 msgid "Quality"
 msgstr "Quality"
 
-#: ../stoqlib/gui/editors/producteditor.py:471
+#: ../stoqlib/gui/editors/producteditor.py:480
 msgid "Cost cannot be zero or negative."
 msgstr "Cost cannot be zero or negative."
 
-#: ../stoqlib/gui/editors/producteditor.py:521
+#: ../stoqlib/gui/editors/producteditor.py:530
 msgid "The manufacturer should have a name."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:525
+#: ../stoqlib/gui/editors/producteditor.py:534
 #, python-format
 msgid "The manufacturer '%s' already exists."
 msgstr ""
@@ -15201,7 +15201,7 @@ msgstr ""
 msgid "Product creation wizard"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/productwizard.py:170
+#: ../stoqlib/gui/wizards/productwizard.py:171
 msgid "Would you like to register another product alike?"
 msgstr ""
 
