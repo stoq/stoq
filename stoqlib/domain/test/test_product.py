@@ -581,10 +581,91 @@ class TestProduct(DomainTest):
         child_product = self.store.find(Product, parent=grid_product).one()
 
         grid_product.sellable.cost = 3
+        grid_product.brand = u'brand1'
         child_product.sellable.cost = 2
+        child_product.brand = u'brand2'
 
         grid_product.update_children_info()
-        self.assertEquals(getattr(child_product.sellable, 'cost'), 3)
+        self.assertEquals(child_product.sellable.cost, 3)
+        self.assertEquals(child_product.brand, u'brand1')
+
+    def test_copy_product(self):
+        product = self.create_product()
+        new_product = product.copy_product()
+
+        sellable_props = ['base_price', 'category_id', 'cost', 'on_sale_price',
+                          'max_discount', 'commission', 'notes', 'unit_id',
+                          'tax_constant_id', 'default_sale_cfop_id',
+                          'on_sale_start_date', 'on_sale_end_date']
+
+        prod_props = ['manufacturer', 'brand', 'family', 'width', 'height', 'depth',
+                      'weight', 'ncm', 'ex_tipi', 'genero', 'icms_template',
+                      'ipi_template']
+
+        supplier_props = ['base_cost', 'notes', 'is_main_supplier', 'lead_time',
+                          'minimum_purchase', 'icms', 'supplier']
+
+        # Checking if all sellable attributes have the same values
+        for prop in sellable_props:
+            self.assertEquals(getattr(product.sellable, prop),
+                              getattr(new_product.sellable, prop))
+
+        # Checking if the product attributes have the same values
+        for prop in prod_props:
+            self.assertEquals(getattr(product, prop),
+                              getattr(new_product, prop))
+
+        # Checking if the the number of suppliers and the suppliers themselves are the
+        # same.
+        prod_suppliers = list(product.suppliers)
+        new_prod_suppliers = list(new_product.suppliers)
+
+        self.assertEquals(len(prod_suppliers),
+                          len(new_prod_suppliers))
+
+        for i in range(product.suppliers.count()):
+            for prop in supplier_props:
+                self.assertEquals(getattr(prod_suppliers[i], prop),
+                                  getattr(new_prod_suppliers[i], prop))
+
+    def test_copy_product_suppliers(self):
+        product = self.create_product()
+        new_product = self.create_product()
+        supplier = self.create_supplier(name=u'Shirt Supplier')
+        supplier_info = self.create_product_supplier_info(product=product,
+                                                          supplier=supplier)
+
+        props = ['base_cost', 'notes', 'is_main_supplier', 'lead_time',
+                 'minimum_purchase', 'icms', 'supplier']
+
+        product._copy_product_suppliers(new_product)
+
+        prod_suppliers = list(product.suppliers)
+        new_prod_suppliers = list(new_product.suppliers)
+
+        # Checking if the the number of suppliers and the suppliers themselves are the
+        # same.
+        self.assertEquals(len(prod_suppliers),
+                          len(new_prod_suppliers))
+
+        for i in range(product.suppliers.count()):
+            for prop in props:
+                self.assertEquals(getattr(prod_suppliers[i], prop),
+                                  getattr(new_prod_suppliers[i], prop))
+
+        # Removing one of the source product supplier e and making the copy
+        # again.
+        product.store.remove(supplier_info)
+        product._copy_product_suppliers(new_product)
+
+        # Checking if the target suppliers were updated.
+        self.assertEquals(len(prod_suppliers),
+                          len(new_prod_suppliers))
+
+        for i in range(product.suppliers.count()):
+            for prop in props:
+                self.assertEquals(getattr(prod_suppliers[i], prop),
+                                  getattr(new_prod_suppliers[i], prop))
 
 
 class TestGridGroup(DomainTest):

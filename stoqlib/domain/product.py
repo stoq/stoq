@@ -343,6 +343,43 @@ class Product(Domain):
         return self.product_types[self.product_type]
 
     #
+    # Private
+    #
+
+    def _copy_product_suppliers(self, target):
+        """Copy the suppliers reference set from self to a target product
+
+        :param target: The target |product| for the suppliers copy.
+        :returns: A |ProductSupplierInfo| ReferenceSet
+        """
+        # This dictionary is used as reference to tell us if the target has a
+        # supplier that it's parent doesn't.
+        target_suppliers = {info.supplier: info for info in target.suppliers}
+
+        props = ['base_cost', 'notes', 'is_main_supplier', 'lead_time',
+                 'minimum_purchase', 'icms', 'supplier']
+        for info in self.suppliers:
+            try:
+                # If this supplier is already related to the target, we will
+                # update it. We also pop it from our reference dictionary.
+                prod_sup = target_suppliers.pop(info.supplier)
+            except KeyError:
+                # If the supplier isn't in the dictionary, that means we must
+                # create it for the target.
+                prod_sup = ProductSupplierInfo(product=target)
+
+            for prop in props:
+                value = getattr(info, prop)
+                setattr(prod_sup, prop, value)
+
+        # If there is something left in the target_suppliers, this means those
+        # suppliers are not related to the parent anymore. So we remove it.
+        for info in target_suppliers.values():
+            target.store.remove(info)
+
+        return target
+
+    #
     #  Public API
     #
 
@@ -592,11 +629,11 @@ class Product(Domain):
         """
         assert not self.child_exists(options)
 
-        sellable = self.sellable.copy_sellable()
         new_code = Sellable.get_max_value(self.store, Sellable.code)
-        sellable.code = next_value_for(new_code)
 
-        child = Product(store=self.store, sellable=sellable, parent=self)
+        child = self.copy_product()
+        child.parent = self
+        child.sellable.code = next_value_for(new_code)
         Storable(store=self.store, product=child)
 
         desc_parts = [self.description]
@@ -607,7 +644,7 @@ class Product(Domain):
                              attribute=option.attribute,
                              option=option)
 
-        sellable.description = u' '.join(desc_parts)
+        child.sellable.description = u' '.join(desc_parts)
 
     def update_children_description(self):
         """Update a grid product's children descriptions.
@@ -629,8 +666,37 @@ class Product(Domain):
         calling the update_children_description method.
         """
         for child in self.children:
-            self.sellable.copy_sellable(target=child.sellable)
+            self.copy_product(target=child)
         self.update_children_description()
+
+    def copy_product(self, target=None):
+        """This method copies self to another product.
+
+        If the |product| target is None, a new product is created. The copy is
+        made by copying all the |sellable| attributes and some of the
+        |product| attributes.
+
+        :param target: The |product| target for the copy.
+        returns: a |product| similar to self.
+        """
+        if target is None:
+            sellable = self.sellable.copy_sellable()
+            target = Product(store=self.store, sellable=sellable)
+        else:
+            self.sellable.copy_sellable(target=target.sellable)
+
+        props = ['manufacturer', 'brand', 'family', 'width', 'height', 'depth',
+                 'weight', 'ncm', 'ex_tipi', 'genero', 'icms_template',
+                 'ipi_template']
+        for prop in props:
+            value = getattr(self, prop)
+            setattr(target, prop, value)
+
+        # Since the suppliers are a reference set, we need to copy each object
+        # from ProductSupplierInfo
+        self._copy_product_suppliers(target)
+
+        return target
 
     #
     # Domain

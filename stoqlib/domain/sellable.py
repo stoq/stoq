@@ -832,9 +832,9 @@ class Sellable(Domain):
             target = Sellable(store=self.store)
 
         props = ['base_price', 'category_id', 'cost', 'max_discount',
-                 'commission', 'notes', 'unit_id', 'category_id',
-                 'tax_constant_id', 'default_sale_cfop_id', 'on_sale_price',
-                 'on_sale_start_date', 'on_sale_end_date']
+                 'commission', 'notes', 'unit_id', 'tax_constant_id',
+                 'default_sale_cfop_id', 'on_sale_price', 'on_sale_start_date',
+                 'on_sale_end_date']
 
         for prop in props:
             value = getattr(self, prop)
