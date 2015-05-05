@@ -429,7 +429,7 @@ class ProductEditor(SellableEditor):
         if len(infos) == 1:
             infos[0].base_cost = self.model.sellable.cost
 
-        if self.model.is_grid:
+        if self.model.is_grid and self.has_changes():
             self.model.update_children_info()
 
     #
@@ -437,7 +437,7 @@ class ProductEditor(SellableEditor):
     #
 
     def _on_grid_tab_alignment__focus(self, widget, value):
-        self.model.update_children_info()
+        self.model.update_children_description()
 
 
 class ProductionProductEditor(ProductEditor):

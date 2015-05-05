@@ -609,19 +609,28 @@ class Product(Domain):
 
         sellable.description = u' '.join(desc_parts)
 
-    def update_children_info(self):
-        """Update a grid product's children informations.
+    def update_children_description(self):
+        """Update a grid product's children descriptions.
 
-        This will update all the children of this product, copying all the
-        |sellable| attributes except from the description, which
-        is recreated by appending each grid option description.
+        This method updates all the this product's children description by
+        appending the parent description with each grid option description.
         """
         for child in self.children:
-            self.sellable.copy_sellable(target=child.sellable)
             desc_parts = [self.description]
             for opt in child.grid_options:
                 desc_parts.append(opt.option.description)
             child.sellable.description = u' '.join(desc_parts)
+
+    def update_children_info(self):
+        """Update a grid product's children informations.
+
+        This will update all the children of this product, copying all the
+        |sellable| attributes except from the description, which is updated by
+        calling the update_children_description method.
+        """
+        for child in self.children:
+            self.sellable.copy_sellable(target=child.sellable)
+        self.update_children_description()
 
     #
     # Domain
