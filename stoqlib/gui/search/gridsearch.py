@@ -27,7 +27,7 @@
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.product import GridGroup, GridAttribute
-from stoqlib.gui.editors.grideditor import AttributeGroupEditor, GridAttributeEditor
+from stoqlib.gui.editors.grideditor import GridGroupEditor, GridAttributeEditor
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -36,11 +36,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class AttributeGroupSearch(SearchEditor):
-    title = _("Attribute Group Search")
+class GridGroupSearch(SearchEditor):
+    title = _("Grid Group Search")
     search_spec = GridGroup
     text_field_columns = ['description']
-    editor_class = AttributeGroupEditor
+    editor_class = GridGroupEditor
     size = (-1, 390)
     advanced_search = False
     search_label = _('Attribute Group Matching:')
@@ -80,6 +80,6 @@ class GridAttributeSearch(SearchEditor):
 
     def _on_toolbar__new(self, toolbar):
         if not self.store.find(GridGroup, is_active=True).any():
-            warning(_("You need an active atribute group."))
+            warning(_("You need an active grid group."))
         else:
             self.run()

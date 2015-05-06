@@ -1,4 +1,4 @@
-slave: _AttributeOptionsSlave
+slave: _GridOptionsSlave
 kiwi+ui+listdialog+ListContainer(listcontainer):
   ObjectList(expand=True, fill=True):
     column: title='Description', expand

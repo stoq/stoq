@@ -36,10 +36,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class AttributeGroupEditor(BaseEditor):
-    model_name = _('Attribute Group')
+class GridGroupEditor(BaseEditor):
+    model_name = _('Grid Group')
     model_type = GridGroup
-    gladefile = 'AttributeGroupEditor'
+    gladefile = 'GridGroupEditor'
     proxy_widgets = ['description', 'active_check_box']
     confirm_widgets = ['description']
 
@@ -58,7 +58,7 @@ class AttributeGroupEditor(BaseEditor):
         return GridGroup(store=self.store, description=u'')
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, AttributeGroupEditor.proxy_widgets)
+        self.proxy = self.add_proxy(self.model, GridGroupEditor.proxy_widgets)
 
 
 class GridAttributeEditor(BaseEditor):
@@ -81,7 +81,7 @@ class GridAttributeEditor(BaseEditor):
     #
 
     def setup_slaves(self):
-        slave = _AttributeOptionsSlave(self.store, self.model)
+        slave = _GridOptionsSlave(self.store, self.model)
         self.attach_slave('options_holder', slave)
 
     def create_model(self, store):
@@ -99,10 +99,10 @@ class GridAttributeEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
 
-class AttributeOptionEditor(BaseEditor):
-    model_name = _('Attribute Option')
+class GridOptionEditor(BaseEditor):
+    model_name = _('Grid Attribute Option')
     model_type = GridOption
-    gladefile = 'AttributeOptionEditor'
+    gladefile = 'GridOptionEditor'
     proxy_widgets = ['description', 'option_order_spin', 'active_check_box']
     confirm_widgets = ['description']
 
@@ -127,12 +127,12 @@ class AttributeOptionEditor(BaseEditor):
                                                              upper=100,
                                                              step_incr=1,
                                                              page_incr=5))
-        self.proxy = self.add_proxy(self.model, AttributeOptionEditor.proxy_widgets)
+        self.proxy = self.add_proxy(self.model, GridOptionEditor.proxy_widgets)
 
 
-class _AttributeOptionsSlave(ModelListSlave):
+class _GridOptionsSlave(ModelListSlave):
     model_type = GridOption
-    editor_class = AttributeOptionEditor
+    editor_class = GridOptionEditor
     columns = [
         Column('description', _('Description'), data_type=str, expand=True),
         Column('is_active', _('Active'), data_type=bool),

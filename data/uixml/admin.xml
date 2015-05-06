@@ -57,7 +57,7 @@
       <menuitem action="ConfigureParameters"/>
       <menuitem action="ConfigureInvoices"/>
       <menuitem action="ConfigureInvoicePrinters"/>
-      <menuitem action="ConfigureAttributeGroup"/>
+      <menuitem action="ConfigureGridGroup"/>
       <menuitem action="ConfigureGridAttribute"/>
       <separator/>
       <placeholder name="ConfigurePH"/>

@@ -25,25 +25,25 @@
 import gtk
 import mock
 
-from stoqlib.gui.editors.grideditor import (AttributeGroupEditor,
+from stoqlib.gui.editors.grideditor import (GridGroupEditor,
                                             GridAttributeEditor,
-                                            AttributeOptionEditor,
-                                            _AttributeOptionsSlave)
+                                            GridOptionEditor,
+                                            _GridOptionsSlave)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
-class TestAttributeGroupEditor(GUITest):
+class TestGridGroupEditor(GUITest):
     def test_create(self):
-        editor = AttributeGroupEditor(self.store)
+        editor = GridGroupEditor(self.store)
         self.check_editor(editor, 'editor-grid-group-create')
 
     def test_edit_group(self):
         group = self.create_attribute_group()
-        editor = AttributeGroupEditor(self.store, model=group)
+        editor = GridGroupEditor(self.store, model=group)
         self.assertEquals(editor.description.read(), u'grid group 1')
 
     def test_description_activation(self):
-        editor = AttributeGroupEditor(self.store)
+        editor = GridGroupEditor(self.store)
         editor.description.update("new group")
         retval = editor.description.activate()
         self.assertEquals(retval, True)
@@ -80,16 +80,16 @@ class TestGridAttributeEditor(GUITest):
         self.click(editor.main_dialog.ok_button)
 
 
-class TestAttributeOptionEditor(GUITest):
+class TestGridOptionEditor(GUITest):
     def test_create(self):
-        editor = AttributeOptionEditor(self.store)
+        editor = GridOptionEditor(self.store)
         self.check_editor(editor, 'editor-grid-option-create')
 
     def test_edit_option(self):
         attribute = self.create_grid_attribute()
         option = self.create_attribute_option(grid_attribute=attribute,
                                               description=u'option')
-        editor = AttributeOptionEditor(self.store, model=option)
+        editor = GridOptionEditor(self.store, model=option)
         self.assertEquals(editor.description.read(), option.description)
 
     def test_option_order_validation(self):
@@ -97,16 +97,16 @@ class TestAttributeOptionEditor(GUITest):
         self.create_attribute_option(grid_attribute=attribute,
                                      description=u'option',
                                      order=1)
-        editor = AttributeOptionEditor(self.store, attribute=attribute)
+        editor = GridOptionEditor(self.store, attribute=attribute)
 
         editor.option_order_spin.update(1)
         self.assertValid(editor, ['option_order_spin'])
 
 
-class TestAttributeOptionsSlave(GUITest):
+class TestGridOptionsSlave(GUITest):
     def test_create(self):
         attribute = self.create_grid_attribute()
-        slave = _AttributeOptionsSlave(self.store, attribute)
+        slave = _GridOptionsSlave(self.store, attribute)
         self.check_slave(slave, 'slave-grid-option')
 
     def test_remove_button(self):
@@ -124,7 +124,7 @@ class TestAttributeOptionsSlave(GUITest):
         grid_product.add_grid_child(options)
 
         # Creating the slave
-        slave = _AttributeOptionsSlave(self.store, attribute)
+        slave = _GridOptionsSlave(self.store, attribute)
         # At first remove_button should be insensitive
         self.assertNotSensitive(slave.listcontainer, ['remove_button'])
 
@@ -143,7 +143,7 @@ class TestAttributeOptionsSlave(GUITest):
                                               description=u'option1')
 
         # Creating the slave
-        slave = _AttributeOptionsSlave(self.store, attribute)
+        slave = _GridOptionsSlave(self.store, attribute)
         # At first remove_button should be insensitive
         self.assertNotSensitive(slave.listcontainer, ['remove_button'])
 
@@ -154,20 +154,20 @@ class TestAttributeOptionsSlave(GUITest):
         self.click(slave.listcontainer.remove_button)
         self.assertEquals(len(slave.listcontainer.list), 0)
 
-    @mock.patch('stoqlib.gui.editors.grideditor._AttributeOptionsSlave.run_dialog')
+    @mock.patch('stoqlib.gui.editors.grideditor._GridOptionsSlave.run_dialog')
     def test_run_editor(self, run_dialog):
         attribute = self.create_grid_attribute()
         option = self.create_attribute_option(grid_attribute=attribute,
                                               description=u'option1')
 
-        slave = _AttributeOptionsSlave(self.store, attribute)
+        slave = _GridOptionsSlave(self.store, attribute)
         self.assertSensitive(slave.listcontainer, ['add_button'])
         self.click(slave.listcontainer.add_button)
-        run_dialog.assert_called_once_with(AttributeOptionEditor, store=self.store,
+        run_dialog.assert_called_once_with(GridOptionEditor, store=self.store,
                                            model=None, attribute=attribute)
 
         run_dialog.reset_mock()
         slave.listcontainer.list.select(option)
         self.click(slave.listcontainer.edit_button)
-        run_dialog.assert_called_once_with(AttributeOptionEditor, store=self.store,
+        run_dialog.assert_called_once_with(GridOptionEditor, store=self.store,
                                            model=option, attribute=attribute)

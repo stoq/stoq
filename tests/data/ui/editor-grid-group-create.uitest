@@ -1,9 +1,9 @@
-editor: AttributeGroupEditor
-GtkDialog(main_dialog.toplevel): title='Add Attribute Group', hidden
+editor: GridGroupEditor
+GtkDialog(main_dialog.toplevel): title='Add Grid Group', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave AttributeGroupEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave GridGroupEditor is attached
         GtkTable(table1):
           GtkLabel(label1): 'Group name:'
           ProxyEntry(description): '', mandatory

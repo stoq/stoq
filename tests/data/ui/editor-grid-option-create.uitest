@@ -1,9 +1,9 @@
-editor: AttributeOptionEditor
-GtkDialog(main_dialog.toplevel): title='Add Attribute Option', hidden
+editor: GridOptionEditor
+GtkDialog(main_dialog.toplevel): title='Add Grid Attribute Option', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave AttributeOptionEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave GridOptionEditor is attached
         GtkTable(toplevel):
           GtkLabel(label1): 'Attribute option:'
           ProxyEntry(description): '', mandatory

@@ -24,14 +24,14 @@
 
 import mock
 
-from stoqlib.gui.search.gridsearch import (AttributeGroupSearch,
+from stoqlib.gui.search.gridsearch import (GridGroupSearch,
                                            GridAttributeSearch)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestAttributeGroupSearch(GUITest):
     def test_create(self):
-        search = AttributeGroupSearch(self.store)
+        search = GridGroupSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'grid-group')
 

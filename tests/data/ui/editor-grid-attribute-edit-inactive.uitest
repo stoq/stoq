@@ -12,7 +12,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "grid attribute 1"', hid
             GtkLabel(label1): 'Attribute name:'
             ProxyEntry(description): 'grid attribute 1'
             ProxyCheckButton(active_check_box): 'Is active', active
-          GtkEventBox(options_holder, expand=True, fill=True): slave _AttributeOptionsSlave is attached
+          GtkEventBox(options_holder, expand=True, fill=True): slave _GridOptionsSlave is attached
             kiwi+ui+listdialog+ListContainer(listcontainer):
               ObjectList(expand=True, fill=True):
                 column: title='Description', expand
