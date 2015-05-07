@@ -146,7 +146,11 @@ class TestNfeGenerator(DomainTest):
                                     StockTransactionHistory.TYPE_INITIAL,
                                     sale.id)
 
-            sale.add_sellable(sellable, data[3])
+            sale_item = sale.add_sellable(sellable, data[3])
+            icms_info = sale_item.icms_info
+            icms_info.csosn = 201
+            icms_info.p_icms_st = 1
+            icms_info.update_values(sale_item)
 
         sale.client = self.create_client()
         self._create_address(sale.client.person,

@@ -201,7 +201,6 @@ class InvoiceItemIcms(BaseICMS):
     v_icms_st_ret = PriceCol(default=None)
 
     def _calc_cred_icms_sn(self, invoice_item):
-        # FIXME: Não está calculando o vBCST nem o vICMSST CSOSN [101, 201]
         if self.p_cred_sn >= 0:
             self.v_cred_icms_sn = invoice_item.get_total() * self.p_cred_sn / 100
 
@@ -271,7 +270,7 @@ class InvoiceItemIcms(BaseICMS):
             self._calc_st(invoice_item)
 
     def _update_simples(self, invoice_item):
-        if self.csosn == 500:
+        if self.csosn in [300, 400, 500]:
             self.v_bc_st_ret = 0
             self.v_icms_st_ret = 0
 
@@ -279,6 +278,15 @@ class InvoiceItemIcms(BaseICMS):
             if self.p_cred_sn is None:
                 self.p_cred_sn = Decimal(0)
             self._calc_cred_icms_sn(invoice_item)
+
+        if self.csosn in [201, 202, 203]:
+            self._calc_st(invoice_item)
+
+        if self.csosn == 900:
+            if self.p_cred_sn is None:
+                self.p_cred_sn = Decimal(0)
+            self._calc_normal(invoice_item)
+            self._calc_st(invoice_item)
 
     def update_values(self, invoice_item):
         branch = invoice_item.parent.branch

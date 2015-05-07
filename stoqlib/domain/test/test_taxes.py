@@ -153,6 +153,17 @@ class TestInvoiceItemIcms(DomainTest):
         sale_item_icms.update_values(sale_item)
         self.failIf(sale_item_icms.v_cred_icms_sn)
 
+    def test_update_values_simples(self):
+        # Test for CSOSN 900. This should get v_icms and v_icms_st calculated
+        sale_item_icms = self.create_invoice_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 200)
+        sale_item_icms.csosn = 900
+        sale_item_icms.p_icms = 1
+        sale_item_icms.p_icms_st = 2
+        sale_item_icms.update_values(sale_item)
+        self.assertEquals(sale_item_icms.v_icms, Decimal("2"))
+        self.assertEquals(sale_item_icms.v_icms_st, Decimal("2"))
+
     def test_update_values_normal(self):
         sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)

@@ -23,6 +23,7 @@
 ##
 """ NF-e XML document generation """
 
+from collections import namedtuple
 from dateutil.tz import tzlocal
 from decimal import Decimal
 import datetime
@@ -330,10 +331,8 @@ class NFeGenerator(object):
             self._nfe_data.append(nfe_item)
 
     def _add_totals(self):
-        operation_total = self._order.invoice_total
-        items_total = self._order.invoice_subtotal
         nfe_total = NFeTotal()
-        nfe_total.add_icms_total(operation_total, items_total)
+        nfe_total.add_icms_total(self._order)
         self._nfe_data.append(nfe_total)
 
     def _add_transport_data(self, transporter, operation_items):
@@ -1483,7 +1482,12 @@ class NFeIPI(BaseNFeXMLGroup):
 class NFeIPITrib(BaseNFeXMLGroup):
     tax = u'IPITrib'
     txttag = 'O07'
-    attributes = [(u'CST', '')]
+    # The NF-e documentation is wrong:
+    # 'vIPI' is represented on tags 'O10' and 'O11', but when we try
+    # import the .txt in SEFAZ emissor, the IPI value is not imported.
+    # The 'vIPI' only was imported sucessfully on tag 'O07'.
+    attributes = [(u'CST', ''),
+                  (u'vIPI', '')]
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
@@ -1494,6 +1498,7 @@ class NFeIPITrib(BaseNFeXMLGroup):
             self.append(NFeIPITribAliq(ipi_info))
         else:
             self.append(NFeIPITribUnid(ipi_info))
+        self.set_attr('vIPI', self.format_value(ipi_info.v_ipi))
 
     def as_txt(self):
         base = BaseNFeXMLGroup.as_txt(self)
@@ -1505,28 +1510,24 @@ class NFeIPITribAliq(BaseNFeXMLGroup):
     tax = u'IPITrib'
     txttag = 'O10'
     attributes = [(u'vBC', ''),
-                  (u'pIPI', ''),
-                  (u'vIPI', '')]
+                  (u'pIPI', '')]
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
         self.set_attr('vBC', "%.2f" % ipi_info.v_bc)
         self.set_attr('pIPI', ipi_info.p_ipi or '')
-        self.set_attr('vIPI', ipi_info.v_ipi)
 
 
 class NFeIPITribUnid(BaseNFeXMLGroup):
     tax = u'IPITrib'
     txttag = 'O11'
     attributes = [(u'qUnid', ''),
-                  (u'vUnid', ''),
-                  (u'vIPI', '')]
+                  (u'vUnid', '')]
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
         self.set_attr('qUnid', ipi_info.q_unid or '')
         self.set_attr('vUnid', self.format_value(ipi_info.v_unid, precision=4))
-        self.set_attr('vIPI', ipi_info.v_ipi)
 
 
 class NFeIPINT(BaseNFeXMLGroup):
@@ -1668,8 +1669,8 @@ class NFeTotal(BaseNFeXMLGroup):
     tag = u'total'
     txttag = 'W'
 
-    def add_icms_total(self, operation_total, items_total):
-        icms_total = NFeICMSTotal(operation_total, items_total)
+    def add_icms_total(self, operation):
+        icms_total = NFeICMSTotal(operation)
         self.append(icms_total)
 
     def as_txt(self):
@@ -1718,16 +1719,43 @@ class NFeICMSTotal(BaseNFeXMLGroup):
                   (u'vTotTrib', '')]
     txttag = 'W02'
 
-    def __init__(self, operation_total, items_total):
+    def __init__(self, operation):
         # FIXME: Adicionar:
-        # - Frete, icms, ipi
+        # - Frete, seguro, outras despesas
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('vBC', self.format_value(operation_total))
-        self.set_attr('vNF', self.format_value(operation_total))
-        self.set_attr('vProd', self.format_value(items_total))
-        discount = items_total - operation_total
-        if discount > 0:
-            self.set_attr('vDesc', self.format_value(discount))
+
+        totals = self._get_totals(operation)
+        self.set_attr('vBC', self.format_value(totals.bc_total))
+        self.set_attr('vICMS', self.format_value(totals.icms_total))
+        self.set_attr('vBCST', self.format_value(totals.bc_st_total))
+        self.set_attr('vST', self.format_value(totals.icms_st_total))
+        self.set_attr('vIPI', self.format_value(totals.ipi_total))
+
+        self.set_attr('vProd', self.format_value(totals.prod_total))
+        # FIXME: The discount total, must be the sum of discount applied in each item.
+#        operation_total = operation.invoice_total
+#        items_total = operation.invoice_subtotal
+#        discount = items_total - operation_total
+#        if discount > 0:
+#            self.set_attr('vDesc', self.format_value(discount))
+        nf_total = totals.prod_total + totals.icms_st_total + totals.ipi_total
+        self.set_attr('vNF', self.format_value(nf_total))
+
+    def _get_totals(self, operation):
+        Totals = namedtuple('Totals', 'bc_total, bc_st_total, icms_total,'
+                            'icms_st_total, ipi_total, prod_total')
+        bc_total = bc_st_total = prod_total = Decimal('0')
+        icms_total = icms_st_total = ipi_total = Decimal('0')
+        for item in operation.get_items():
+            bc_total += item.icms_info.v_bc or 0
+            bc_st_total += item.icms_info.v_bc_st or 0
+            prod_total += item.quantity * item.price
+            icms_total += item.icms_info.v_icms or 0
+            icms_st_total += item.icms_info.v_icms_st or 0
+            ipi_total += item.ipi_info.v_ipi or 0
+        totals = Totals(bc_total, bc_st_total, icms_total, icms_st_total,
+                        ipi_total, prod_total)
+        return totals
 
 
 # Pg. 124

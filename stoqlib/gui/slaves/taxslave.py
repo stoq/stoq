@@ -147,8 +147,8 @@ class BaseICMSSlave(BaseTaxSlave):
 
     normal_widgets = ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
                       'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
-                      'mod_bc', 'p_icms', 'v_bc', 'v_icms', 'bc_include_ipi',
-                      'bc_st_include_ipi']
+                      'mod_bc', 'p_icms', 'v_bc', 'v_icms', 'p_red_bc',
+                      'bc_include_ipi', 'bc_st_include_ipi']
 
     tooltips = {
         'p_icms': u'Aliquota do imposto',
@@ -324,6 +324,7 @@ class ICMSTemplateSlave(BaseICMSSlave):
     model_type = ProductIcmsTemplate
     proxy_widgets = (BaseICMSSlave.combo_widgets +
                      BaseICMSSlave.percentage_widgets +
+                     BaseICMSSlave.bool_widgets +
                      BaseICMSSlave.date_widgets)
     hide_widgets = BaseICMSSlave.value_widgets + ['template']
 
