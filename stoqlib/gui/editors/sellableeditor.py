@@ -37,6 +37,7 @@ from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableUnit,
                                      SellableTaxConstant,
                                      ClientCategoryPrice)
+from stoqlib.domain.product import Product
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -437,6 +438,8 @@ class SellableEditor(BaseEditor):
         details_slave = SellableDetailsSlave(self.store, self.model.sellable,
                                              visual_mode=self.visual_mode)
         self.attach_slave('slave_holder', details_slave)
+        if isinstance(self.model, Product) and self.model.parent is not None:
+            details_slave.notes.set_property('sensitive', False)
 
         # Make everything aligned by pytting notes_lbl on the same size group
         self.left_labels_group.add_widget(details_slave.notes_lbl)

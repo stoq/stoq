@@ -312,6 +312,15 @@ class ProductEditor(SellableEditor):
         for tabname, tabslave in self.get_extra_tabs():
             self.add_extra_tab(tabname, tabslave)
 
+    def _disable_child_widgets(self):
+        """This method disables edition of attributes gotten from parent.
+        """
+        widgets = [self.description, self.category_combo, self.cost, self.price,
+                   self.default_sale_cfop, self.unit_combo, self.tax_constant,
+                   self.add_category]
+        for widget in widgets:
+            widget.set_property('sensitive', False)
+
     #
     #  SellableEditor
     #
@@ -328,12 +337,15 @@ class ProductEditor(SellableEditor):
         from stoqlib.gui.slaves.productslave import ProductInformationSlave
         info_slave = ProductInformationSlave(self.store, self.model, self.db_form,
                                              visual_mode=self.visual_mode)
+
         self.add_extra_tab(_(u'Details'), info_slave)
 
     def setup_proxies(self):
         super(ProductEditor, self).setup_proxies()
 
         self.add_proxy(self.model, self.product_widgets)
+        if self.model.parent is not None:
+            self._disable_child_widgets()
 
     def get_extra_tabs(self):
         from stoqlib.gui.slaves.productslave import (ProductTaxSlave,

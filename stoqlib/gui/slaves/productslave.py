@@ -268,6 +268,9 @@ class ProductInformationSlave(BaseEditorSlave):
             self.minimum_quantity.set_sensitive(False)
             self.maximum_quantity.set_sensitive(False)
 
+        if self.model.parent is not None:
+            self._disable_child_widgets()
+
     def update_visual_mode(self):
         self.minimum_quantity.set_sensitive(False)
         self.maximum_quantity.set_sensitive(False)
@@ -288,6 +291,14 @@ class ProductInformationSlave(BaseEditorSlave):
         self.brand.hide()
         self.family_lbl.hide()
         self.family.hide()
+
+    def _disable_child_widgets(self):
+        widgets = [self.manufacturer, self.brand, self.family, self.width,
+                   self.height, self.weight, self.depth, self.ncm, self.ex_tipi,
+                   self.genero]
+
+        for widget in widgets:
+            widget.set_property('sensitive', False)
 
     #
     # Kiwi Callbacks
@@ -366,6 +377,12 @@ class ProductTaxSlave(BaseEditorSlave):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        if self.model.parent is not None:
+            self._disable_child_widgets()
+
+    def _disable_child_widgets(self):
+        self.icms_template.set_property('sensitive', False)
+        self.ipi_template.set_property('sensitive', False)
 
 
 class ProductComponentSlave(BaseEditorSlave):
@@ -694,6 +711,9 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
         if suggested is not None:
             self.target_combo.select(suggested)
 
+        if self._product.parent is not None:
+            self._disable_child_widgets()
+
     def get_targets(self):
         suppliers = Supplier.get_active_suppliers(self.store)
         return api.for_person_combo(suppliers)
@@ -727,3 +747,8 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
                                     store=self.store)
         model.base_cost = product.sellable.cost
         return model
+
+    def _disable_child_widgets(self):
+        self.add_button.set_property('sensitive', False)
+        self.target_combo.set_property('sensitive', False)
+        self.relations_list.set_list_type(ListType.READONLY)
