@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-05 15:39-0300\n"
-"PO-Revision-Date: 2015-05-05 18:39+0000\n"
+"POT-Creation-Date: 2015-05-07 10:16-0300\n"
+"PO-Revision-Date: 2015-05-07 13:16+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/stoq/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -199,32 +199,6 @@ msgstr "Pays :"
 #: ../data/glade/AdminPasswordStep.ui.h:1
 msgid "Enter the password and then click <b>Forward</b> to continue."
 msgstr "Entrez le mot de passe et puis cliquez sur <b> Forward </ b> pour continuer."
-
-#: ../data/glade/AttributeGroupEditor.ui.h:1
-#: ../data/glade/AttributeOptionEditor.ui.h:1
-#: ../data/glade/GridAttributeEditor.ui.h:1
-#: ../data/glade/UserDetailsSlave.ui.h:4
-#: ../data/glade/WorkOrderQuoteSlave.ui.h:7
-msgid "This field is mandatory"
-msgstr ""
-
-#: ../data/glade/AttributeGroupEditor.ui.h:2
-msgid "Group name:"
-msgstr ""
-
-#: ../data/glade/AttributeGroupEditor.ui.h:3
-#: ../data/glade/AttributeOptionEditor.ui.h:4
-#: ../data/glade/GridAttributeEditor.ui.h:4
-msgid "Is active"
-msgstr ""
-
-#: ../data/glade/AttributeOptionEditor.ui.h:2
-msgid "Attribute option:"
-msgstr ""
-
-#: ../data/glade/AttributeOptionEditor.ui.h:3
-msgid "Option order:"
-msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:1
 #: ../data/glade/BasePaymentMethodSlave.ui.h:4
@@ -1150,6 +1124,13 @@ msgstr ""
 msgid "To:"
 msgstr ""
 
+#: ../data/glade/GridAttributeEditor.ui.h:1
+#: ../data/glade/GridGroupEditor.ui.h:1 ../data/glade/GridOptionEditor.ui.h:1
+#: ../data/glade/UserDetailsSlave.ui.h:4
+#: ../data/glade/WorkOrderQuoteSlave.ui.h:7
+msgid "This field is mandatory"
+msgstr ""
+
 #: ../data/glade/GridAttributeEditor.ui.h:2
 msgid "Attribute name:"
 msgstr ""
@@ -1157,6 +1138,23 @@ msgstr ""
 #: ../data/glade/GridAttributeEditor.ui.h:3
 #: ../data/glade/ProductAttributeSlave.ui.h:1
 msgid "Attribute group:"
+msgstr ""
+
+#: ../data/glade/GridAttributeEditor.ui.h:4
+#: ../data/glade/GridGroupEditor.ui.h:3 ../data/glade/GridOptionEditor.ui.h:4
+msgid "Is active"
+msgstr ""
+
+#: ../data/glade/GridGroupEditor.ui.h:2
+msgid "Group name:"
+msgstr ""
+
+#: ../data/glade/GridOptionEditor.ui.h:2
+msgid "Attribute option:"
+msgstr ""
+
+#: ../data/glade/GridOptionEditor.ui.h:3
+msgid "Option order:"
 msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:1
@@ -9809,112 +9807,112 @@ msgstr ""
 msgid "Grid product"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1065 ../stoqlib/domain/product.py:1117
+#: ../stoqlib/domain/product.py:1131 ../stoqlib/domain/product.py:1183
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1124
+#: ../stoqlib/domain/product.py:1190
 msgid "Quantity to sell is greater than the available stock."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1399
+#: ../stoqlib/domain/product.py:1465
 #, python-format
 msgid "Adjustment for inventory %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1400
+#: ../stoqlib/domain/product.py:1466
 #, python-format
 msgid "Returned from loan %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1401
+#: ../stoqlib/domain/product.py:1467
 #, python-format
 msgid "Loaned for loan %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1402
+#: ../stoqlib/domain/product.py:1468
 #, python-format
 msgid "Allocated for production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1403 ../stoqlib/domain/product.py:1404
+#: ../stoqlib/domain/product.py:1469 ../stoqlib/domain/product.py:1470
 #, python-format
 msgid "Produced in production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1405
+#: ../stoqlib/domain/product.py:1471
 #, python-format
 msgid "Returned remaining from production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1407
+#: ../stoqlib/domain/product.py:1473
 #, python-format
 msgid "Received for receiving order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1408
+#: ../stoqlib/domain/product.py:1474
 #, python-format
 msgid "Returned sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1409
+#: ../stoqlib/domain/product.py:1475
 #, python-format
 msgid "Returned from canceled sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1410
+#: ../stoqlib/domain/product.py:1476
 #, python-format
 msgid "Sold in sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1411
+#: ../stoqlib/domain/product.py:1477
 #, python-format
 msgid "Product removal for stock decrease %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1412
+#: ../stoqlib/domain/product.py:1478
 #, python-format
 msgid "Transfered from branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1414
+#: ../stoqlib/domain/product.py:1480
 #, python-format
 msgid "Transfered to this branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1416
+#: ../stoqlib/domain/product.py:1482
 msgid "Registred initial stock"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1417
+#: ../stoqlib/domain/product.py:1483
 msgid "Imported from previous version"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1418
+#: ../stoqlib/domain/product.py:1484
 #, python-format
 msgid "Consigned product returned %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1419
+#: ../stoqlib/domain/product.py:1485
 #, python-format
 msgid "Used on work order %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1420
+#: ../stoqlib/domain/product.py:1486
 #, python-format
 msgid "Returned to stock on work order %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1421
+#: ../stoqlib/domain/product.py:1487
 #, python-format
 msgid "Reserved for sale %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1588
+#: ../stoqlib/domain/product.py:1654
 msgid "Boolean"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1589
+#: ../stoqlib/domain/product.py:1655
 msgid "Decimal"
 msgstr ""
 
@@ -11924,7 +11922,7 @@ msgid "Changes will be applied after all instances of Stoq are restarted."
 msgstr ""
 
 #: ../stoqlib/gui/editors/grideditor.py:40
-msgid "Attribute Group"
+msgid "Grid Group"
 msgstr ""
 
 #: ../stoqlib/gui/editors/grideditor.py:65
@@ -11932,7 +11930,7 @@ msgid "Grid Attribute"
 msgstr ""
 
 #: ../stoqlib/gui/editors/grideditor.py:103
-msgid "Attribute Option"
+msgid "Grid Attribute Option"
 msgstr ""
 
 #: ../stoqlib/gui/editors/grideditor.py:139
@@ -13260,7 +13258,7 @@ msgid "Show entries of type"
 msgstr ""
 
 #: ../stoqlib/gui/search/gridsearch.py:40
-msgid "Attribute Group Search"
+msgid "Grid Group Search"
 msgstr ""
 
 #: ../stoqlib/gui/search/gridsearch.py:46
@@ -13289,7 +13287,7 @@ msgid "Group"
 msgstr ""
 
 #: ../stoqlib/gui/search/gridsearch.py:83
-msgid "You need an active atribute group."
+msgid "You need an active grid group."
 msgstr ""
 
 #: ../stoqlib/gui/search/loansearch.py:50
