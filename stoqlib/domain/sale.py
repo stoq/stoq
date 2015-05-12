@@ -1948,6 +1948,9 @@ class SaleView(Viewable):
     #: the salesperson name
     salesperson_name = Coalesce(Person_SalesPerson.name, u'')
 
+    #: the |sale| salesperson id
+    salesperson_id = SalesPerson.id
+
     #: the |sale| client name
     client_name = Coalesce(Person_Client.name, u'')
 
