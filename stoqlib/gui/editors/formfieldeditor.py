@@ -30,6 +30,7 @@ from kiwi.ui.objectlist import ObjectList, Column
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.domain.uiform import UIForm, UIField
 from stoqlib.lib.message import info
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -79,6 +80,21 @@ class FormFieldEditor(BasicDialog):
             return
         self.fields.add_list(self.store.find(UIField,
                                              ui_form=form), clear=True)
+        self.fields.set_cell_data_func(self._uifield__cell_data_func)
+
+    def _uifield__cell_data_func(self, column, renderer, obj, text):
+        if isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        manager = get_plugin_manager()
+        if manager.is_active('nfe'):
+            is_editable = obj.field_name not in [u'street', u'district',
+                                                 u'city', u'state',
+                                                 u'country', u'street_number']
+
+            renderer.set_property('sensitive', is_editable)
+            renderer.set_property('activatable', is_editable)
+        return text
 
     def _get_columns(self):
         return [Column('description', title=_('Description'), data_type=str,

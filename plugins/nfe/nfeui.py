@@ -29,9 +29,11 @@ import time
 from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.uiform import UIField
 from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
                                 StockTransferWizardFinishEvent,
                                 StockDecreaseWizardFinishEvent)
+from stoqlib.api import api
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -59,6 +61,7 @@ class NFeUI(object):
         # since the nfe plugin was enabled, the user must not be able to print
         # the regular fiscal invoice (replaced by the nfe).
         pm.set('app.sales.print_invoice', pm.PERM_HIDDEN)
+        self._update_forms()
 
     #
     # Private
@@ -99,6 +102,16 @@ class NFeUI(object):
             generator = NFeGenerator(operation, store)
             generator.generate()
             generator.export_txt(location=self._get_save_location(operation_dir))
+
+    def _update_forms(self):
+        store = api.new_store()
+        # To generate a NF-e this fields are mandatory
+        forms = [u'street', u'district', u'city', u'state', u'country',
+                 u'street_number']
+        fields = store.find(UIField, UIField.field_name.is_in(forms))
+        for field in fields:
+            field.update_field(mandatory=True, visible=True)
+        store.commit()
 
     #
     # Events

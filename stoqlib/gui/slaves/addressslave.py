@@ -32,6 +32,7 @@ from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
 
@@ -223,6 +224,10 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         if model is not None:
             model = store.fetch(model)
             model = _AddressModel(model, store)
+
+        plugin = get_plugin_manager()
+        self._nfe_active = plugin.is_active('nfe')
+
         BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     #
@@ -275,8 +280,11 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         self._update_streetnumber()
 
     def validate_confirm(self):
-        return (CityLocationMixin.validate_confirm(self) and
-                self.model.is_valid_model())
+        if self._nfe_active:
+            # If the plugin is active we must validate the model
+            return (CityLocationMixin.validate_confirm(self) and
+                    self.model.is_valid_model())
+        return CityLocationMixin.validate_confirm(self)
 
     #
     #  Private

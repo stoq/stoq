@@ -119,7 +119,7 @@ class Tasks(object):
         ]
 
         for label, name, pixbuf in locale_sorted(
-            items, key=operator.itemgetter(0)):
+                items, key=operator.itemgetter(0)):
             self.add_item(label, name, pixbuf)
 
     @public(since="1.5.0")
@@ -276,6 +276,9 @@ class Tasks(object):
     def _open_grid_attribute(self):
         self.app.run_dialog(GridAttributeSearch, self.app.store)
 
+    def _open_ui_form(self):
+        self._open_forms()
+
 
 class AdminApp(ShellApp):
 
@@ -300,6 +303,7 @@ class AdminApp(ShellApp):
         'ConfigurePaymentCategories': 'payment_categories',
         'ConfigureClientCategories': 'client_categories',
         'ConfigureTaxes': 'taxes',
+        'ConfigureUIForm': 'ui_form',
         'ConfigureSintegra': 'sintegra',
         'ConfigureParameters': 'parameters',
         'ConfigureInvoices': 'invoice_layouts',
@@ -361,6 +365,7 @@ class AdminApp(ShellApp):
             ("ConfigureSintegra", None, _("Sintegra..."),
              group.get('config_sintegra')),
             ("ConfigurePlugins", None, _("Plugins...")),
+            ("ConfigureUIForm", None, _("Forms...")),
             ("ConfigureTaxes", None, _("Taxes..."),
              group.get('config_taxes')),
             ("ConfigureParameters", None, _("Parameters..."),
