@@ -24,6 +24,9 @@ GtkDialog(main_dialog.toplevel): title='Add payment', hidden
                 item: 'Money', selected
                 item: 'Store Credit'
               GtkHBox():
+              ProxyLabel(account_lbl): 'Destination account:', hidden
+              ProxyComboBox(account): hidden
+              GtkHBox():
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): '', mandatory
               GtkHBox():

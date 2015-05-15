@@ -24,8 +24,23 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
                 item: 'Money', selected
                 item: 'Store Credit'
               GtkHBox():
-              ProxyLabel(account_lbl): 'Destination account:', hidden
-              ProxyComboBox(account): hidden
+              ProxyLabel(account_lbl): 'Destination account:'
+              ProxyComboBox(account): insensitive
+                item: 'Assets'
+                item: 'Banks'
+                item: 'Banks:Banco do Brasil'
+                item: 'Conta de Investimento'
+                item: 'Equity'
+                item: 'Expenses', selected
+                item: 'Expenses:Aluguel'
+                item: 'Expenses:Impostos'
+                item: 'Expenses:Luz'
+                item: 'Expenses:Sal\xc3\xa1rios'
+                item: 'Expenses:Telefonia'
+                item: 'Imbalance'
+                item: 'Income'
+                item: 'Saldos Iniciais'
+                item: 'Tills'
               GtkHBox():
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): 'Test payment'

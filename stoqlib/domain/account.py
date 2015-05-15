@@ -199,7 +199,7 @@ class Account(Domain):
         return self.description
 
     #
-    # Public API
+    # Class Methods
     #
 
     @classmethod
@@ -214,7 +214,7 @@ class Account(Domain):
             raise TypeError("station cannot be None")
         if not isinstance(station, BranchStation):
             raise TypeError("station must be a BranchStation, not %r" %
-                           (station, ))
+                            (station, ))
         return store.find(cls, station=station).one()
 
     @classmethod
@@ -227,6 +227,20 @@ class Account(Domain):
         :rtype: resultset
         """
         return store.find(cls, parent=parent)
+
+    @classmethod
+    def get_accounts(cls, store):
+        """Get a list of all accounts
+
+        :param store: a store
+        :returns all accounts
+        :rtype: resultset
+        """
+        return store.find(cls)
+
+    #
+    # Properties
+    #
 
     @property
     def long_description(self):
@@ -249,6 +263,10 @@ class Account(Domain):
         return self.store.find(AccountTransaction,
                                Or(self.id == AccountTransaction.account_id,
                                   self.id == AccountTransaction.source_account_id))
+
+    #
+    # Public API
+    #
 
     def get_total_for_interval(self, start, end):
         """Fetch total value for a given interval

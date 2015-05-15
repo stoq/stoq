@@ -32,6 +32,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import BoolField, ChoiceField, DateField, PriceField, TextField
 
 from stoqlib.api import api
+from stoqlib.domain.account import Account
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -67,6 +68,7 @@ class _PaymentEditor(BaseEditor):
     person_type = None
     category_type = None
     payment_type = None
+    account_label = None
 
     @cached_property()
     def fields(self):
@@ -76,6 +78,7 @@ class _PaymentEditor(BaseEditor):
             method=PaymentMethodField(_('Method'),
                                       payment_type=self.payment_type,
                                       proxy=True, mandatory=True, separate=True),
+            account=ChoiceField(self.account_label),
             description=TextField(_('Description'), proxy=True, mandatory=True),
             person_id=PersonField(person_type=self.person_type, proxy=True),
             value=PriceField(_('Value'), proxy=True, mandatory=True),
@@ -129,6 +132,20 @@ class _PaymentEditor(BaseEditor):
                                                adverb=True)
         repeat_types.insert(0, (_('Once'), _ONCE))
         self.repeat.prefill(repeat_types)
+        is_paid = self.model.is_paid()
+        # Show account information only after the payment is paid
+        if is_paid:
+            accounts = Account.get_accounts(self.store)
+            self.account.prefill(api.for_combo(accounts, attr='long_description'))
+            if self.payment_type == Payment.TYPE_OUT:
+                account = self.model.transaction.source_account
+            else:
+                account = self.model.transaction.account
+            self.account.select(account)
+            self.account.set_property('sensitive', False)
+        else:
+            self.account.hide()
+            self.account_lbl.hide()
         self.add_proxy(self.model, _PaymentEditor.proxy_widgets)
 
     def validate_confirm(self):
@@ -289,6 +306,7 @@ class InPaymentEditor(_PaymentEditor):
     person_attribute = 'payer'
     person_type = Client
     _person_label = _("Payer:")
+    account_label = _("Destination account")
     help_section = 'account-receivable'
     category_type = PaymentCategory.TYPE_RECEIVABLE
 
@@ -311,6 +329,7 @@ class OutPaymentEditor(_PaymentEditor):
     person_attribute = 'recipient'
     person_type = Supplier
     _person_label = _("Recipient:")
+    account_label = _("Source account")
     help_section = 'account-payable'
     category_type = PaymentCategory.TYPE_PAYABLE
 

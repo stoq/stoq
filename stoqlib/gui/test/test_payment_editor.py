@@ -26,6 +26,7 @@ import unittest
 from decimal import Decimal
 
 import mock
+from stoqlib.domain.account import Account
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
@@ -55,6 +56,22 @@ class TestPaymentEditor(GUITest):
         self.assertEquals(editor.model.value, 0)
         self.assertEquals(editor.model.category, None)
         self.check_editor(editor, 'editor-in-payment-create')
+
+    def test_edit_paid_out_payment(self):
+        payment = self.create_payment()
+        payment.status = Payment.STATUS_PENDING
+        account = self.store.find(Account, description=u'Income').one()
+        payment.pay(account=account)
+        editor = OutPaymentEditor(self.store, payment)
+        self.check_editor(editor, 'editor-paid-out-payment-edit')
+
+    def test_edit__paid_in_payment(self):
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        payment.status = Payment.STATUS_PENDING
+        account = self.store.find(Account, description=u'Expenses').one()
+        payment.pay(account=account)
+        editor = InPaymentEditor(self.store, payment)
+        self.check_editor(editor, 'editor-paid-in-payment-edit')
 
     def test_confirm(self):
         editor = OutPaymentEditor(self.store)

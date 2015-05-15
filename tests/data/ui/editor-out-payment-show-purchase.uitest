@@ -22,6 +22,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
                 item: 'Deposit'
                 item: 'Money', selected
               GtkHBox():
+              ProxyLabel(account_lbl): 'Source account:', hidden
+              ProxyComboBox(account): hidden
+              GtkHBox():
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): '1/1 Money for order 12345'
               GtkHBox():
