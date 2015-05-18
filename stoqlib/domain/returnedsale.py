@@ -24,7 +24,7 @@
 
 # pylint: enable=E1101
 
-import decimal
+from decimal import Decimal
 import collections
 
 from kiwi.currency import currency
@@ -101,6 +101,8 @@ class ReturnedSaleItem(Domain):
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax fo *self*
     ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
 
+    item_discount = Decimal('0')
+
     def __init__(self, store=None, **kwargs):
         # TODO: Add batch logic here. (get if from sale_item or check if was
         # passed togheter with sellable)
@@ -142,6 +144,10 @@ class ReturnedSaleItem(Domain):
     #
     # IInvoiceItem implementation
     #
+
+    @property
+    def base_price(self):
+        return self.price
 
     @property
     def parent(self):
@@ -660,7 +666,7 @@ class ReturnedSale(Domain):
             item.return_(branch)
 
     def _get_returned_percentage(self):
-        return decimal.Decimal(self.returned_total / self.sale.total_amount)
+        return Decimal(self.returned_total / self.sale.total_amount)
 
     def _clean_not_used_items(self):
         store = self.store

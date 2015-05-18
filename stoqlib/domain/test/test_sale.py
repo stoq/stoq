@@ -2144,6 +2144,14 @@ class TestSaleItem(DomainTest):
         item.cfop = None
         self.assertEquals(item.nfe_cfop_code, cfop_code)
 
+    def test_item_discount(self):
+        item = self.create_sale_item()
+        item.price = 100
+        item.base_price = 150
+        self.assertEquals(item.item_discount, 50)
+        item.price = 150
+        self.assertEquals(item.item_discount, 0)
+
     def test_sale_discount(self):
         sale = self.create_sale()
 

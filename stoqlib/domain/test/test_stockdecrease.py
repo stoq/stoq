@@ -241,6 +241,11 @@ class TestStockDecreaseItem(DomainTest):
         item = self.create_stock_decrease_item(order)
         self.assertEquals(item.parent, order)
 
+    def test_base_price(self):
+        decrease_item = self.create_stock_decrease_item()
+        decrease_item.cost = 140
+        self.assertEquals(decrease_item.base_price, 140)
+
     def test_price(self):
         decrease_item = self.create_stock_decrease_item()
         decrease_item.cost = 100

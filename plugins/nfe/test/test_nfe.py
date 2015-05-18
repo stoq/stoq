@@ -133,11 +133,12 @@ class TestNfeGenerator(DomainTest):
         # [1] - Code
         # [2] - Price
         # [3] - Quantity
-        for data in [(u"Laranja", u"1", Decimal(1), Decimal(10)),
-                     (u"Limão", u"2", Decimal('0.5'), Decimal(15)),
-                     (u"Abacaxi", u"3", Decimal(3), Decimal(1)),
-                     (u"Cenoura", u"4", Decimal('1.5'), Decimal(6)),
-                     (u"Pêssego", u"5", Decimal('3.5'), Decimal(3))]:
+        # [4] - Base price
+        for data in [(u"Laranja", u"1", Decimal(1), Decimal(10), Decimal('1.5')),
+                     (u"Limão", u"2", Decimal('0.5'), Decimal(15), Decimal('0.3')),
+                     (u"Abacaxi", u"3", Decimal(3), Decimal(1), Decimal('3.3')),
+                     (u"Cenoura", u"4", Decimal('1.5'), Decimal(6), Decimal('1.9')),
+                     (u"Pêssego", u"5", Decimal('3.5'), Decimal(3), Decimal('3.0'))]:
             sellable = self._create_sellable(data[0], data[1], data[2])
 
             storable = Storable(product=sellable.product,
@@ -147,6 +148,8 @@ class TestNfeGenerator(DomainTest):
                                     sale.id)
 
             sale_item = sale.add_sellable(sellable, data[3])
+            # Set the base price to test the discount in NF-e.
+            sale_item.base_price = data[4]
             icms_info = sale_item.icms_info
             icms_info.csosn = 201
             icms_info.p_icms_st = 1

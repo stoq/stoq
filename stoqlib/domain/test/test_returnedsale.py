@@ -522,6 +522,12 @@ class TestReturnedSaleItem(DomainTest):
 
     # NF-e operations
 
+    def test_base_price(self):
+        returned_item = self.create_returned_sale_item()
+        returned_item.price = 150
+        self.assertEquals(returned_item.base_price, 150)
+        self.assertEquals(returned_item.item_discount, 0)
+
     def test_parent(self):
         returned_sale = self.create_returned_sale()
         returned_item = self.create_returned_sale_item(returned_sale)

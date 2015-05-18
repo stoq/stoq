@@ -285,6 +285,7 @@ class InvoiceItemIcms(BaseICMS):
         if self.csosn == 900:
             if self.p_cred_sn is None:
                 self.p_cred_sn = Decimal(0)
+            self._calc_cred_icms_sn(invoice_item)
             self._calc_normal(invoice_item)
             self._calc_st(invoice_item)
 

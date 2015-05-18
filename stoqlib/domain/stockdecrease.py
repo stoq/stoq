@@ -25,6 +25,8 @@
 
 # pylint: enable=E1101
 
+from decimal import Decimal
+
 from kiwi.currency import currency
 from storm.references import Reference
 from zope.interface import implementer
@@ -91,6 +93,8 @@ class StockDecreaseItem(Domain):
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax for *self*
     ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
 
+    item_discount = Decimal('0')
+
     def __init__(self, store=None, sellable=None, **kwargs):
         if sellable is None:
             raise TypeError('You must provide a sellable argument')
@@ -119,6 +123,10 @@ class StockDecreaseItem(Domain):
     @property
     def parent(self):
         return self.stock_decrease
+
+    @property
+    def base_price(self):
+        return self.cost
 
     @property
     def price(self):

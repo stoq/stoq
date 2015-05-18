@@ -215,6 +215,12 @@ class SaleItem(Domain):
     #
 
     @property
+    def item_discount(self):
+        if self.price < self.base_price:
+            return self.base_price - self.price
+        return Decimal('0')
+
+    @property
     def parent(self):
         return self.sale
 

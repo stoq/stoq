@@ -25,6 +25,8 @@
 
 # pylint: enable=E1101
 
+from decimal import Decimal
+
 from kiwi.currency import currency
 from storm.expr import Join, LeftJoin, Sum, Cast, Coalesce, And
 from storm.info import ClassAlias
@@ -89,6 +91,8 @@ class TransferOrderItem(Domain):
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax for *self*
     ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
 
+    item_discount = Decimal('0')
+
     def __init__(self, store=None, **kwargs):
         if not 'sellable' in kwargs:
             raise TypeError('You must provide a sellable argument')
@@ -108,6 +112,10 @@ class TransferOrderItem(Domain):
     @property
     def parent(self):
         return self.transfer_order
+
+    @property
+    def base_price(self):
+        return self.stock_cost
 
     @property
     def price(self):

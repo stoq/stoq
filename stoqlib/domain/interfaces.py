@@ -114,9 +114,11 @@ class IInvoiceItem(Interface):
     parent = Attribute("The parent operation")
     sellable = Attribute("Sellable")
     quantity = Attribute("Quantity")
+    base_price = Attribute("Base price")
     price = Attribute("Price")
     icms_info = Attribute("ICMS")
     ipi_info = Attribute("IPI")
     nfe_cfop_code = Attribute("C.F.O.P code")
+    item_discount = Attribute("The discount applied in item")
 
 # pylint: enable=E0102,E0211,E0213

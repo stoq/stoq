@@ -35,7 +35,7 @@ class TestTransferOrderItem(DomainTest):
 
     def test__init__(self):
         with self.assertRaisesRegexp(
-            TypeError, 'You must provide a sellable argument'):
+                TypeError, 'You must provide a sellable argument'):
                 TransferOrderItem(store=self.store)
         item = self.create_transfer_order_item()
         self.assertIsNotNone(item.icms_info)
@@ -50,6 +50,10 @@ class TestTransferOrderItem(DomainTest):
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order)
         self.assertEquals(item.parent, order)
+
+    def test_base_price(self):
+        transfer_item = self.create_transfer_order_item(stock_cost=70)
+        self.assertEquals(transfer_item.base_price, 70)
 
     def test_price(self):
         transfer_item = self.create_transfer_order_item(stock_cost=50)
