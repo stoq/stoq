@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 16:05-0300\n"
-"PO-Revision-Date: 2015-05-14 19:05+0000\n"
+"POT-Creation-Date: 2015-05-18 17:21-0300\n"
+"PO-Revision-Date: 2015-05-18 20:22+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -155,8 +155,8 @@ msgstr "E_xcluir"
 #: ../stoq/gui/sales.py:224 ../stoq/gui/till.py:150
 #: ../stoqlib/gui/editors/accounteditor.py:352
 #: ../stoqlib/gui/editors/accounteditor.py:353
-#: ../stoqlib/gui/editors/paymenteditor.py:176
-#: ../stoqlib/gui/editors/paymenteditor.py:178
+#: ../stoqlib/gui/editors/paymenteditor.py:193
+#: ../stoqlib/gui/editors/paymenteditor.py:195
 #: ../stoqlib/gui/editors/producteditor.py:341
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:62
 #: ../stoqlib/gui/search/searcheditor.py:174
@@ -3193,7 +3193,7 @@ msgstr "#"
 #: ../data/template/till/return-sales.html:37
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:70
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:119
-#: ../stoqlib/gui/editors/paymenteditor.py:76
+#: ../stoqlib/gui/editors/paymenteditor.py:78
 #: ../stoqlib/gui/search/commissionsearch.py:133
 #: ../stoqlib/gui/search/paymentsearch.py:78
 msgid "Method"
@@ -3272,7 +3272,7 @@ msgstr "Forma"
 #: ../stoqlib/gui/editors/grideditor.py:137
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:104
 #: ../stoqlib/gui/editors/inventoryeditor.py:122
-#: ../stoqlib/gui/editors/paymenteditor.py:79
+#: ../stoqlib/gui/editors/paymenteditor.py:82
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:434
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:464
 #: ../stoqlib/gui/editors/shortcutseditor.py:140
@@ -3341,7 +3341,7 @@ msgstr "Descrição"
 #: ../stoqlib/gui/dialogs/saledetails.py:234
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:92
 #: ../stoqlib/gui/dialogs/supplierdetails.py:141
-#: ../stoqlib/gui/editors/paymenteditor.py:82
+#: ../stoqlib/gui/editors/paymenteditor.py:85
 #: ../stoqlib/gui/search/paymentsearch.py:82
 #: ../stoqlib/gui/search/paymentsearch.py:177
 #: ../stoqlib/gui/slaves/paymentslave.py:278
@@ -3373,7 +3373,7 @@ msgstr "Vencimento"
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:149
 #: ../stoqlib/gui/dialogs/tillhistory.py:69
 #: ../stoqlib/gui/editors/crediteditor.py:54
-#: ../stoqlib/gui/editors/paymenteditor.py:81
+#: ../stoqlib/gui/editors/paymenteditor.py:84
 #: ../stoqlib/gui/editors/sellableeditor.py:78
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:129
 #: ../stoqlib/gui/search/paymentsearch.py:91
@@ -3809,7 +3809,7 @@ msgstr "Cliente"
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:130
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:141
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:148
-#: ../stoqlib/gui/editors/paymenteditor.py:74
+#: ../stoqlib/gui/editors/paymenteditor.py:76
 #: ../stoqlib/gui/editors/personeditor.py:286
 #: ../stoqlib/gui/editors/workordereditor.py:377
 #: ../stoqlib/gui/search/loansearch.py:143
@@ -3852,7 +3852,7 @@ msgstr "Data de expiração"
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:133
 #: ../stoqlib/gui/dialogs/workordercategorydialog.py:43
 #: ../stoqlib/gui/editors/categoryeditor.py:41
-#: ../stoqlib/gui/editors/paymenteditor.py:83
+#: ../stoqlib/gui/editors/paymenteditor.py:86
 #: ../stoqlib/gui/search/loansearch.py:80
 #: ../stoqlib/gui/search/personsearch.py:196
 #: ../stoqlib/gui/search/personsearch.py:447
@@ -4188,7 +4188,7 @@ msgid "Recipient"
 msgstr "Cedente"
 
 #: ../data/template/payment_receipt/receipt.html:36
-#: ../stoqlib/gui/editors/paymenteditor.py:313
+#: ../stoqlib/gui/editors/paymenteditor.py:331
 msgid "Recipient:"
 msgstr "Destinatário:"
 
@@ -9398,11 +9398,11 @@ msgstr "Dinheiro"
 msgid "Asset"
 msgstr "Ativo"
 
-#: ../stoqlib/domain/account.py:451
+#: ../stoqlib/domain/account.py:469
 msgid "Payment needs to be paid"
 msgstr "O pagamento deve ser efetuado"
 
-#: ../stoqlib/domain/account.py:493
+#: ../stoqlib/domain/account.py:511
 #, python-format
 msgid "Reverted: %s"
 msgstr "Revertido: %s"
@@ -10649,7 +10649,7 @@ msgid "Client categories"
 msgstr "Categorias de cliente"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:144
-#: ../stoqlib/gui/editors/paymenteditor.py:172
+#: ../stoqlib/gui/editors/paymenteditor.py:189
 msgid "Sale details"
 msgstr "Detalhes da venda"
 
@@ -12136,55 +12136,63 @@ msgstr "A categoria de pagamento deve ter um nome."
 msgid "The payment category '%s' already exists."
 msgstr "A categoria de pagamento '%s' já existe."
 
-#: ../stoqlib/gui/editors/paymenteditor.py:64
+#: ../stoqlib/gui/editors/paymenteditor.py:65
 #: ../stoqlib/reporting/payment.py:37
 msgid "payment"
 msgstr "pagamentos"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:86
+#: ../stoqlib/gui/editors/paymenteditor.py:89
 msgid "Repeat"
 msgstr "Repetir"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:87
+#: ../stoqlib/gui/editors/paymenteditor.py:90
 msgid "End date"
 msgstr "Data final"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:88
+#: ../stoqlib/gui/editors/paymenteditor.py:91
 msgid "Attachment"
 msgstr "Anexo"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:130
+#: ../stoqlib/gui/editors/paymenteditor.py:133
 msgid "Once"
 msgstr "Uma vez"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:174
+#: ../stoqlib/gui/editors/paymenteditor.py:191
 msgid "Purchase details"
 msgstr "Detalhes da compra"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:228
+#: ../stoqlib/gui/editors/paymenteditor.py:245
 msgid "End date cannot be before start date"
 msgstr "A data final não pode ser antes da data inicial"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:230
+#: ../stoqlib/gui/editors/paymenteditor.py:247
 #, python-format
 msgid "End date must be after %s for this repeat interval"
 msgstr "Data final deve ser depois de %s para este intervalo de repetição"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:238
-#: ../stoqlib/gui/editors/paymenteditor.py:240
+#: ../stoqlib/gui/editors/paymenteditor.py:255
+#: ../stoqlib/gui/editors/paymenteditor.py:257
 msgid "Date cannot be empty"
 msgstr "A data não pode ser vazia"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:258
+#: ../stoqlib/gui/editors/paymenteditor.py:275
 #: ../stoqlib/gui/slaves/paymentslave.py:1587
 msgid "The value must be greater than zero."
 msgstr "O valor deve ser maior que zero"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:291
+#: ../stoqlib/gui/editors/paymenteditor.py:308
 msgid "Payer:"
 msgstr "Cliente:"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:320
+#: ../stoqlib/gui/editors/paymenteditor.py:309
+msgid "Destination account"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:332
+msgid "Source account"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:339
 msgid "The bill has arrived."
 msgstr "A cobrança chegou."
 
