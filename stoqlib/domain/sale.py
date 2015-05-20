@@ -210,6 +210,30 @@ class SaleItem(Domain):
             return (1 - (self.price / self.base_price)) * 100
         return 0
 
+    @property
+    def price_with_discount(self):
+        """Applies the sale discount to this item.
+
+        This will apply the discount given in the sale proportionally to this
+        item.
+
+        This value should be used when returning or trading this item, since the
+        user should not receive more than what he paid for.
+
+        Please note that this may result in rounding problems, since precision
+        may be lost when appling the discount in the items.
+
+        :returns: price with discount/surcharge
+        """
+        diff = self.sale.discount_value - self.sale.surcharge_value
+        if diff == 0:
+            return currency(self.price)
+
+        # Dont use self.sale.(surcharge/discount)_percentage here since they are
+        # already quantized, and we may lose even more precision.
+        percentage = diff / self.sale.get_sale_subtotal()
+        return currency(quantize(self.price * (1 - percentage)))
+
     #
     # Invoice implementation
     #
@@ -1521,6 +1545,10 @@ class Sale(Domain):
                 returned_sale=returned_sale,
                 quantity=sale_item.quantity_decreased,
                 batch=sale_item.batch,
+                # XXX Please note that when applying the sale discount in the
+                # items, ther may be some rounding issues, leaving the total
+                # value either greater or lower than the expected value.
+                price=sale_item.price_with_discount
             )
         return returned_sale
 
@@ -1842,7 +1870,7 @@ class ReturnedSaleItemsView(Viewable):
     batch_date = StorableBatch.create_date
 
     # summaries
-    total = SaleItem.price * ReturnedSaleItem.quantity
+    total = ReturnedSaleItem.price * ReturnedSaleItem.quantity
 
     tables = [
         ReturnedSaleItem,
