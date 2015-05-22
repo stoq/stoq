@@ -49,6 +49,7 @@ class ShellBootstrap(object):
 
     When this is completed Stoq is ready to connect to a database.
     """
+
     def __init__(self, options, initial):
         self._initial = initial
         self._log_filename = None
@@ -229,8 +230,8 @@ class ShellBootstrap(object):
             # the program without saving any kind of state
             def event_handler(event):
                 if (event.type == gdk.KEY_PRESS and
-                    event.state & gdk.CONTROL_MASK and
-                    event.keyval == gtk.keysyms.q):
+                        event.state & gdk.CONTROL_MASK and
+                        event.keyval == gtk.keysyms.q):
                     os._exit(0)
                 gtk.main_do_event(event)
             gdk.event_handler_set(event_handler)
@@ -287,7 +288,7 @@ class ShellBootstrap(object):
         #
         if stoq.stable:
             if (stoq.micro_version >= FIRST_UNSTABLE_MICRO_VERSION and
-                not 'rc' in stoq.extra_version):
+                    not 'rc' in stoq.extra_version):
                 raise SystemExit(
                     "Stable stoq release should set micro_version to "
                     "%d or lower" % (FIRST_UNSTABLE_MICRO_VERSION, ))
@@ -390,6 +391,16 @@ class ShellBootstrap(object):
         #       really early on for users with weird environments.
         if not self.entered_main:
             self._setup_twisted(raise_=False)
+
+        try:
+            from psycopg2 import OperationalError
+            if exctype == OperationalError:
+                from stoqlib.lib.message import error
+                from stoqlib.lib.translation import stoqlib_gettext as _
+                return error(_('There was an error quering the database'),
+                             str(value))
+        except ImportError:
+            pass
 
         appname = 'unknown'
         try:

@@ -48,7 +48,7 @@ EXCEPTIONS = OrderedDict((
     ('stoq/gui/receivable.py', 76.17),
     ('stoq/gui/sales.py', 68.38),
     ('stoq/gui/services.py', 52.08),
-    ('stoq/gui/shell/bootstrap.py', 67.80),
+    ('stoq/gui/shell/bootstrap.py', 64.36),
     ('stoq/gui/shell/shell.py', 15.48),
     ('stoq/gui/shell/shellapp.py', 80.54),
     ('stoq/gui/shell/shellwindow.py', 61.00),
