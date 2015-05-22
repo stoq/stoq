@@ -187,8 +187,9 @@ class SaleQuoteItemEditor(BaseEditor):
                                              ['quantity', 'reserved'])
 
     def _maybe_log_discount(self):
-        # If not authorized to apply a discount
-        if self.manager is None:
+        # If not authorized to apply a discount or the CredentialsDialog is
+        # cancelled, dont generate the log
+        if not self.manager:
             return
 
         price = self.model.sellable.get_price_for_category(self.model.sale.client_category)
