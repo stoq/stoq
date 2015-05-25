@@ -310,6 +310,10 @@ class Product(Domain):
     #: list of |grid_option| of this product
     grid_options = ReferenceSet('id', 'ProductOptionMap.product_id')
 
+    #: This indicaters if this product is only used internally by the store.
+    #: This means this product can be bought but cannot be sold
+    internal_use = BoolCol(default=False)
+
     #
     # Properties
     #

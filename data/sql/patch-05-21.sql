@@ -1,0 +1,1 @@
+ALTER TABLE product ADD COLUMN internal_use BOOLEAN DEFAULT FALSE;

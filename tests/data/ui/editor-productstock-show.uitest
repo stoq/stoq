@@ -32,6 +32,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                       ProxySpinButton(height): '0'
                       GtkLabel(part_number_lbl): 'Part-Number:'
                       ProxyEntry(part_number): ''
+                      ProxyCheckButton(internal_use): 'Internal use'
                   GtkLabel(label4): '<b>General Details</b>'
                 GtkFrame(storable_frame, fill=True):
                   GtkAlignment(alignment5):

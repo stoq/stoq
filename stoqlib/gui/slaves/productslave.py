@@ -191,7 +191,7 @@ class ProductInformationSlave(BaseEditorSlave):
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width',
                      'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero',
-                     'product_model', 'brand', 'family']
+                     'product_model', 'brand', 'family', 'internal_use']
     storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
     def __init__(self, store, model, db_form=None, visual_mode=False):

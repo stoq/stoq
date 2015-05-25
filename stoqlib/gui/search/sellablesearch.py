@@ -335,7 +335,7 @@ class SaleSellableSearch(SellableSearch):
 
         sellable = sellable_view.sellable
         if (sellable.product_storable and
-            self._quantity > self._get_available_stock(sellable_view)):
+                self._quantity > self._get_available_stock(sellable_view)):
             self.ok_button.set_sensitive(False)
         else:
             self.ok_button.set_sensitive(True)
@@ -401,7 +401,7 @@ class PurchaseSellableSearch(SellableSearch):
         # This means we are creating a new product. After that, add the
         # current supplier as the supplier for this product
         if (obj is None and product and
-            not product.is_supplied_by(self._supplier)):
+                not product.is_supplied_by(self._supplier)):
             ProductSupplierInfo(store=store,
                                 supplier=store.fetch(self._supplier),
                                 product=product,

@@ -53,6 +53,7 @@ model: Product<3>
   family: u''
   genero: None
   height: Decimal('0')
+  internal_use: False
   is_composed: False
   is_grid: False
   location: u''
@@ -72,6 +73,7 @@ model: Product<4>
   family: u''
   genero: None
   height: Decimal('0')
+  internal_use: False
   is_composed: False
   is_grid: False
   location: u''

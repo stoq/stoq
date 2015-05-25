@@ -467,7 +467,10 @@ class SellableFullStockView(Viewable):
     category_description = SellableCategory.description
 
     stock = Coalesce(Field('_stock_summary', 'stock'), 0)
-    clause = Or(Eq(Product.is_grid, False), Eq(Product.is_grid, None))
+    # If the sellable is a service Product.internal_use will return None, so we
+    # must add it to the query to include services
+    clause = And(Or(Eq(Product.internal_use, False), Eq(Product.internal_use, None)),
+                 Or(Eq(Product.is_grid, False), Eq(Product.is_grid, None)))
 
     tables = [
         Sellable,
