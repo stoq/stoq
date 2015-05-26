@@ -47,19 +47,32 @@ class TestDiscountEditor(GUITest):
         sale_item2 = sale.add_sellable(self.create_sellable(), price=200)
         sale_item2.base_price = 200
 
-        # 10% of discount
-        editor = DiscountEditor(self.store, sale, user=user)
-        editor.discount.update(u'10%')
-        self.click(editor.main_dialog.ok_button)
-        self.assertEqual(sale_item1.price, 90)
-        self.assertEqual(sale_item2.price, 180)
-
         # 75 of discount (25%)
         editor = DiscountEditor(self.store, sale, user=user)
         editor.discount.update(u'75')
         self.click(editor.main_dialog.ok_button)
         self.assertEqual(sale_item1.price, 75)
         self.assertEqual(sale_item2.price, 150)
+
+    def test_confirm_with_percentage(self):
+        user = self.create_user()
+        user.profile.max_discount = decimal.Decimal('50')
+
+        sellable = self.create_sellable(price=100, product=True)
+        sellable.barcode = u'123'
+
+        sale = self.create_sale()
+        sale_item1 = sale.add_sellable(self.create_sellable(), price=100)
+        sale_item1.base_price = 100
+        sale_item2 = sale.add_sellable(self.create_sellable(), price=200)
+        sale_item2.base_price = 200
+
+        # 10% of discount
+        editor = DiscountEditor(self.store, sale, user=user)
+        editor.discount.update(u'10%')
+        self.click(editor.main_dialog.ok_button)
+        self.assertEqual(sale_item1.price, 90)
+        self.assertEqual(sale_item2.price, 180)
 
         # 10.5% of discount (with . and ,)
         editor = DiscountEditor(self.store, sale, user=user)
@@ -72,3 +85,27 @@ class TestDiscountEditor(GUITest):
         self.click(editor.main_dialog.ok_button)
         self.assertEqual(sale_item1.price, 89.5)
         self.assertEqual(sale_item2.price, 179)
+
+    def test_confirm_with_round(self):
+        user = self.create_user()
+        user.profile.max_discount = decimal.Decimal('50')
+
+        sellable1 = self.create_sellable()
+        sellable2 = self.create_sellable()
+        sellable3 = self.create_sellable()
+        sellable4 = self.create_sellable()
+        sellable1.price = 597
+        sellable2.price = 397
+        sellable3.price = decimal.Decimal("1576.5")
+        sellable4.price = 569
+
+        sale = self.create_sale()
+        sale.add_sellable(sellable1, quantity=2)
+        sale.add_sellable(sellable2, quantity=2)
+        sale.add_sellable(sellable3, quantity=2)
+        sale.add_sellable(sellable4, quantity=2)
+
+        editor = DiscountEditor(self.store, sale, user=user)
+        editor.discount.update(u'966')
+        self.click(editor.main_dialog.ok_button)
+        self.assertEquals(sale.get_total_sale_amount(), decimal.Decimal('5313'))

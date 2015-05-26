@@ -64,7 +64,6 @@ class DiscountEditor(BaseEditor):
             raise TypeError("Expected Sale or Loan, found: %r" % self.model_type)
         self._user = user
         BaseEditor.__init__(self, store, model=model, visual_mode=visual_mode)
-        self.register_validate_function(self._validation_func)
 
     #
     #  BaseEditor
@@ -124,9 +123,6 @@ class DiscountEditor(BaseEditor):
 
         return discount
 
-    def _validation_func(self, is_valid):
-        self.refresh_ok(is_valid and bool(self._get_discount_percentage()))
-
     #
     #  Callbacks
     #
@@ -146,7 +142,7 @@ class DiscountEditor(BaseEditor):
             return
 
         discount = self._get_discount_percentage()
-        if not discount:
+        if discount is None:
             return ValidationError(_("The discount syntax is not valid"))
 
         self._user = self._user or api.get_current_user(self.store)

@@ -1216,29 +1216,27 @@ class Sale(Domain):
         """
         new_total = currency(0)
         items = self.get_items()
-        item = None
-        candidate = None
 
         for item in items:
             item.set_discount(discount)
             new_total += item.price * item.quantity
-            if item.quantity == 1:
-                candidate = item
 
         # Since we apply the discount percentage above, items can generate a
         # 3rd decimal place, that will be rounded to the 2nd, making the value
-        # differ. Find that difference and apply it to a sale item, preferable
-        # to one with a quantity of 1 since, for instance, applying +0,1 to an
-        # item with a quantity of 4 would make it's total +0,4 (+0,3 extra than
-        # we are trying to adjust here).
+        # differ. Find that difference and apply it to a sale item. The sale
+        # item that will be used for this rounding is the first one that the
+        # quantity can divide the diff.
         discount_value = quantize((self.get_sale_base_subtotal() * discount) / 100)
         diff = new_total - self.get_sale_base_subtotal() + discount_value
+
         if diff:
-            item = candidate or item
             # The value cannot be <= 0
             # Note that we should use price instead of base_price, since the
             # for above may have changed the price already
-            item.price = max(item.price - diff, Decimal('0.01'))
+            for item in items:
+                if (diff * 100) % item.quantity == 0:
+                    item.price = max(item.price - diff / item.quantity, Decimal('0.01'))
+                    break
 
     #
     # Accessors
