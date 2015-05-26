@@ -378,13 +378,10 @@ class ExampleCreator(object):
         return ProductAttribute(store=self.store, product_id=product.id,
                                 attribute_id=attribute.id)
 
-    def create_product_manufacturer(self, name=None):
+    def create_product_manufacturer(self, name=u'', code=u''):
         from stoqlib.domain.product import ProductManufacturer
 
-        if name is None:
-            name = u''
-
-        return ProductManufacturer(store=self.store, name=name)
+        return ProductManufacturer(store=self.store, name=name, code=code)
 
     def create_product_component(self, product=None, component=None,
                                  storable=False):

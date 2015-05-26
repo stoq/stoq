@@ -858,11 +858,16 @@ class ProductManufacturer(Domain):
     #: manufacturer's name
     name = UnicodeCol()
 
+    #: code of the manufacturer
+    code = UnicodeCol()
+
     #
     # IDescribable
     #
 
     def get_description(self):
+        if self.code:
+            return _('%s (%s)' % (self.name, self.code))
         return self.name
 
     def remove(self):

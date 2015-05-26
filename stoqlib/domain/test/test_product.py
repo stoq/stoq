@@ -1059,14 +1059,21 @@ class TestProductEvent(DomainTest):
 
 
 class TestProductManufacturer(DomainTest):
-    def test_get_description(self):
+    def test_get_description_without_code(self):
         manufacturer_name = u'PManufacturer'
 
         manufacturer = self.create_product_manufacturer(name=manufacturer_name)
-        result = self.store.find(ProductManufacturer,
-                                 name=manufacturer_name).one()
 
-        self.assertEqual(result.name, manufacturer.get_description())
+        self.assertEqual(manufacturer.name, manufacturer.get_description())
+
+    def test_get_description_with_code(self):
+        manufacturer_name = u'PManufacturer'
+
+        manufacturer = self.create_product_manufacturer(name=manufacturer_name,
+                                                        code=u'code')
+
+        manufacturer_string = ('%s (%s)' % (manufacturer.name, manufacturer.code))
+        self.assertEqual(manufacturer_string, manufacturer.get_description())
 
     def test_can_remove(self):
         manufacturer = self.create_product_manufacturer(name=u'Test')

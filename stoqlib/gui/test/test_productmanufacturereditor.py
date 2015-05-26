@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -31,3 +31,13 @@ class TestProductManufacturerEditor(GUITest):
     def test_create(self):
         editor = ProductManufacturerEditor(self.store)
         self.check_editor(editor, 'editor-productmanufacturer-create')
+
+    def test_validate_code(self):
+        self.create_product_manufacturer(name=u'name', code=u'code')
+        editor = ProductManufacturerEditor(self.store)
+        editor.code.update(u'code')
+        # This cannot register 2 manufacturer with the same code
+        self.assertInvalid(editor, ['code'])
+        # This code should be ok
+        editor.code.update(u'code2')
+        self.assertValid(editor, ['code'])

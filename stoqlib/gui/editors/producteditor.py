@@ -524,6 +524,7 @@ class ProductManufacturerEditor(BaseEditor):
     def fields(self):
         return collections.OrderedDict(
             name=TextField(_('Name'), proxy=True, mandatory=True),
+            code=TextField(_('Code'), proxy=True),
         )
 
     def create_model(self, store):
@@ -544,6 +545,11 @@ class ProductManufacturerEditor(BaseEditor):
                                                 new_name):
             return ValidationError(
                 _("The manufacturer '%s' already exists.") % new_name)
+
+    def on_code__validate(self, widget, new_code):
+        if self.model.check_unique_value_exists(ProductManufacturer.code,
+                                                new_code):
+            return ValidationError(_("The code '%s' already exists") % new_code)
 
 
 def test_product():  # pragma nocover
