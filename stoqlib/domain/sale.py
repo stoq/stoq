@@ -1038,12 +1038,15 @@ class Sale(Domain):
             self.group.payer = self.client.person
 
         self.confirm_date = TransactionTimestamp()
-        self._set_sale_status(Sale.STATUS_CONFIRMED)
 
         # When confirming a sale, all credit and money payments are
         # automatically paid.
+        # Since some plugins may listen to the sale status change event, we should
+        # set payments as paid before the status change.
         for method in (u'money', u'credit'):
             self.group.pay_method_payments(method)
+
+        self._set_sale_status(Sale.STATUS_CONFIRMED)
 
         # do not log money payments twice
         if not self.only_paid_with_money():

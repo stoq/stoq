@@ -654,10 +654,9 @@ class NFeIdentification(BaseNFeXMLGroup):
         # changed to 8 in nfe 2.0)
         self.set_attr('cNF', self._get_random_cnf())
 
-        # FIXME: Today, when generate the .txt, the paid_date is blank. So the 'indPag'
-        # always will be the code 1 ('Pagamento a prazo').
-        # Improve the way to check the payment_type ('indPag' attribute).
         payment_type = 1
+        # FIXME:Improve the way to check the payment_type ('indPag' attribute).
+        # We must consider card payment method, as cash payment ('à vista')
         installments = len(payments)
         if installments == 1:
             payment = payments[0]
