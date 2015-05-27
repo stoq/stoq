@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-25 18:00-0300\n"
-"PO-Revision-Date: 2015-05-25 21:00+0000\n"
+"POT-Creation-Date: 2015-05-26 17:07-0300\n"
+"PO-Revision-Date: 2015-05-26 15:04+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/stoq/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -1867,40 +1867,48 @@ msgid "Kg"
 msgstr "Kg"
 
 #: ../data/glade/ProductInformationSlave.ui.h:11
-msgid "<b>General Details</b>"
+msgid "Internal use"
 msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:12
+msgid "When checked, this product will not be available for selling"
+msgstr ""
+
+#: ../data/glade/ProductInformationSlave.ui.h:13
+msgid "<b>General Details</b>"
+msgstr ""
+
+#: ../data/glade/ProductInformationSlave.ui.h:14
 #: ../data/glade/ProductionItemEditor.ui.h:4
 msgid "Location:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:13
+#: ../data/glade/ProductInformationSlave.ui.h:15
 #: ../data/glade/SellableItemSlave.ui.h:3
 msgid "Minimum:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:14
+#: ../data/glade/ProductInformationSlave.ui.h:16
 msgid "Un"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:15
+#: ../data/glade/ProductInformationSlave.ui.h:17
 msgid "Maximum:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:16
+#: ../data/glade/ProductInformationSlave.ui.h:18
 msgid "<b>Stock Details</b>"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:17
+#: ../data/glade/ProductInformationSlave.ui.h:19
 msgid "NCM:"
 msgstr "NCM:"
 
-#: ../data/glade/ProductInformationSlave.ui.h:18
+#: ../data/glade/ProductInformationSlave.ui.h:20
 msgid "EX TIPI:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:19
+#: ../data/glade/ProductInformationSlave.ui.h:21
 msgid "<b>Mercosul Details</b>"
 msgstr ""
 
@@ -3699,6 +3707,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:97
 #: ../stoqlib/gui/editors/deliveryeditor.py:153
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:102
+#: ../stoqlib/gui/editors/producteditor.py:527
 #: ../stoqlib/gui/search/consignmentsearch.py:52
 #: ../stoqlib/gui/search/loansearch.py:78
 #: ../stoqlib/gui/search/productsearch.py:199
@@ -4235,7 +4244,7 @@ msgstr ""
 
 #: ../data/template/purchase/purchase-details.html:19
 #: ../data/template/purchase/purchase-details.html:29
-#: ../stoqlib/domain/sale.py:1404
+#: ../stoqlib/domain/sale.py:1405
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:222
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:223
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:282
@@ -9816,112 +9825,118 @@ msgstr ""
 msgid "Grid product"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1131 ../stoqlib/domain/product.py:1183
+#: ../stoqlib/domain/product.py:870 ../stoqlib/reporting/purchase.py:62
+#: ../stoqlib/reporting/purchase.py:88
+#, python-format
+msgid "%s (%s)"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1140 ../stoqlib/domain/product.py:1192
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1190
+#: ../stoqlib/domain/product.py:1199
 msgid "Quantity to sell is greater than the available stock."
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1465
-#, python-format
-msgid "Adjustment for inventory %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1466
-#, python-format
-msgid "Returned from loan %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1467
-#, python-format
-msgid "Loaned for loan %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1468
-#, python-format
-msgid "Allocated for production %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1469 ../stoqlib/domain/product.py:1470
-#, python-format
-msgid "Produced in production %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1471
-#, python-format
-msgid "Returned remaining from production %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1473
-#, python-format
-msgid "Received for receiving order %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1474
 #, python-format
-msgid "Returned sale %s"
+msgid "Adjustment for inventory %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1475
 #, python-format
-msgid "Returned from canceled sale %s"
+msgid "Returned from loan %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1476
 #, python-format
-msgid "Sold in sale %s"
+msgid "Loaned for loan %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1477
 #, python-format
-msgid "Product removal for stock decrease %s"
+msgid "Allocated for production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1478
+#: ../stoqlib/domain/product.py:1478 ../stoqlib/domain/product.py:1479
 #, python-format
-msgid "Transfered from branch in transfer order %s"
+msgid "Produced in production %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1480
 #, python-format
-msgid "Transfered to this branch in transfer order %s"
+msgid "Returned remaining from production %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1482
-msgid "Registred initial stock"
+#, python-format
+msgid "Received for receiving order %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1483
-msgid "Imported from previous version"
+#, python-format
+msgid "Returned sale %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1484
 #, python-format
-msgid "Consigned product returned %s."
+msgid "Returned from canceled sale %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1485
 #, python-format
-msgid "Used on work order %s."
+msgid "Sold in sale %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1486
 #, python-format
-msgid "Returned to stock on work order %s."
+msgid "Product removal for stock decrease %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1487
 #, python-format
+msgid "Transfered from branch in transfer order %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1489
+#, python-format
+msgid "Transfered to this branch in transfer order %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1491
+msgid "Registred initial stock"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1492
+msgid "Imported from previous version"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1493
+#, python-format
+msgid "Consigned product returned %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1494
+#, python-format
+msgid "Used on work order %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1495
+#, python-format
+msgid "Returned to stock on work order %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1496
+#, python-format
 msgid "Reserved for sale %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1654
+#: ../stoqlib/domain/product.py:1663
 msgid "Boolean"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1655
+#: ../stoqlib/domain/product.py:1664
 msgid "Decimal"
 msgstr ""
 
@@ -10126,104 +10141,104 @@ msgstr ""
 msgid "Unable to make sales for clients with status %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1051
+#: ../stoqlib/domain/sale.py:1054
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1057
+#: ../stoqlib/domain/sale.py:1060
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1084
+#: ../stoqlib/domain/sale.py:1087
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid and confirmed with value"
 " {total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1090
+#: ../stoqlib/domain/sale.py:1093
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid and confirmed with value "
 "{total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1096
+#: ../stoqlib/domain/sale.py:1099
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was paid with value "
 "{total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1102
+#: ../stoqlib/domain/sale.py:1105
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was paid with value {total_value:.2f}."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1182
+#: ../stoqlib/domain/sale.py:1185
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1186
+#: ../stoqlib/domain/sale.py:1189
 #, python-brace-format
 msgid ""
 "Sale {sale_number} to client {client_name} was partially returned with value"
 " {total_value:.2f}. Reason: {reason}"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1195
+#: ../stoqlib/domain/sale.py:1198
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was totally returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1199
+#: ../stoqlib/domain/sale.py:1202
 #, python-brace-format
 msgid ""
 "Sale {sale_number} without a client was partially returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1375
+#: ../stoqlib/domain/sale.py:1376
 #, python-format
 msgid "Delivery Address: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1382
+#: ../stoqlib/domain/sale.py:1383
 #, python-format
 msgid "\"%s\" Notes: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1385
+#: ../stoqlib/domain/sale.py:1386
 #, python-format
 msgid "\"%s\" Estimated Fix Date: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1429
+#: ../stoqlib/domain/sale.py:1430
 #, python-format
 msgid "The sale %r have a client but no client_role defined."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1704
+#: ../stoqlib/domain/sale.py:1705
 msgid "You must have at least one payment for each payment group"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1776
+#: ../stoqlib/domain/sale.py:1777
 msgid "Sale orders must have items, which means products or services"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1781
+#: ../stoqlib/domain/sale.py:1782
 msgid "Sale total quantity should never be zero"
 msgstr ""
 
@@ -11888,17 +11903,17 @@ msgstr ""
 msgid "Discount to apply"
 msgstr ""
 
-#: ../stoqlib/gui/editors/discounteditor.py:74
+#: ../stoqlib/gui/editors/discounteditor.py:73
 #: ../stoqlib/gui/widgets/calculator.py:193
 #: ../stoqlib/gui/widgets/calculator.py:351
 msgid "Use absolute or percentage (%) value"
 msgstr ""
 
-#: ../stoqlib/gui/editors/discounteditor.py:150
+#: ../stoqlib/gui/editors/discounteditor.py:146
 msgid "The discount syntax is not valid"
 msgstr ""
 
-#: ../stoqlib/gui/editors/discounteditor.py:156
+#: ../stoqlib/gui/editors/discounteditor.py:152
 #, python-format
 msgid "You are only allowed to give a discount of %d%%"
 msgstr ""
@@ -12481,13 +12496,18 @@ msgstr ""
 msgid "Cost cannot be zero or negative."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:542
+#: ../stoqlib/gui/editors/producteditor.py:543
 msgid "The manufacturer should have a name."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:546
+#: ../stoqlib/gui/editors/producteditor.py:547
 #, python-format
 msgid "The manufacturer '%s' already exists."
+msgstr ""
+
+#: ../stoqlib/gui/editors/producteditor.py:552
+#, python-format
+msgid "The code '%s' already exists"
 msgstr ""
 
 #: ../stoqlib/gui/editors/productioneditor.py:68
@@ -17377,11 +17397,6 @@ msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:51
 msgid "Purchase Order"
-msgstr ""
-
-#: ../stoqlib/reporting/purchase.py:62 ../stoqlib/reporting/purchase.py:88
-#, python-format
-msgid "%s (%s)"
 msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:91
