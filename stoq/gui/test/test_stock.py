@@ -37,7 +37,8 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch,
                                               ProductClosedStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
-from stoqlib.gui.search.transfersearch import TransferOrderSearch
+from stoqlib.gui.search.transfersearch import (TransferOrderSearch,
+                                               TransferItemSearch)
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.search.returnedsalesearch import PendingReturnedSaleSearch
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
@@ -137,6 +138,8 @@ class TestStock(BaseGUITest):
                                PurchaseReceivingSearch, [])
         self._check_run_dialog(app.SearchTransfer,
                                TransferOrderSearch, [])
+        self._check_run_dialog(app.SearchTransferItems,
+                               TransferItemSearch, [])
         self._check_run_dialog(app.SearchPurchasedStockItems,
                                PurchasedItemsSearch, [])
         self._check_run_dialog(app.SearchStockItems,

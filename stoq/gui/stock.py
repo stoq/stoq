@@ -52,7 +52,8 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductBatchSearch,
                                               ProductClosedStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
-from stoqlib.gui.search.transfersearch import TransferOrderSearch
+from stoqlib.gui.search.transfersearch import (TransferOrderSearch,
+                                               TransferItemSearch)
 from stoqlib.gui.search.searchcolumns import SearchColumn, QuantityColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
@@ -124,6 +125,7 @@ class StockApp(ShellApp):
              _("Search for closed stock items")),
             ("LoanSearch", None, _("Loans...")),
             ("LoanSearchItems", None, _("Loan items...")),
+            ("SearchTransferItems", None, _("Transfer items...")),
             ("SearchPendingReturnedSales", None, _("Pending returned sales...")),
             ("ProductMenu", None, _("Product")),
             ("ProductStockHistory", gtk.STOCK_INFO, _("History..."),
@@ -323,8 +325,11 @@ class StockApp(ShellApp):
         transfer_active = self.NewTransfer.get_sensitive()
         self.set_sensitive([self.NewTransfer],
                            transfer_active and has_branches)
-        self.set_sensitive([self.SearchTransfer], has_branches)
-        self.set_sensitive([self.SearchPendingReturnedSales], has_branches)
+        # Building a list of searches that we must disable if there is no
+        # branches other than the main company
+        searches = [self.SearchTransfer, self.SearchTransferItems,
+                    self.SearchPendingReturnedSales]
+        self.set_sensitive(searches, has_branches)
 
     def _update_edit_image(self, pixbuf=None):
         if not pixbuf:
@@ -536,6 +541,9 @@ class StockApp(ShellApp):
 
     def on_SearchTransfer__activate(self, action):
         self._search_transfers()
+
+    def on_SearchTransferItems__activate(self, action):
+        self.run_dialog(TransferItemSearch, self.store)
 
     def on_SearchPendingReturnedSales__activate(self, action):
         self._search_pending_returned_sales()

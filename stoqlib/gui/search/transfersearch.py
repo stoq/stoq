@@ -32,7 +32,8 @@ from kiwi.ui.objectlist import Column
 from storm.expr import And, Or
 
 from stoqlib.api import api
-from stoqlib.domain.transfer import TransferOrder, TransferOrderView
+from stoqlib.domain.transfer import (TransferOrder, TransferOrderView,
+                                     TransferItemView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
@@ -42,7 +43,7 @@ from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.transfer import TransferOrderReport
+from stoqlib.reporting.transfer import TransferOrderReport, TransferItemReport
 
 _ = stoqlib_gettext
 
@@ -150,3 +151,32 @@ class TransferOrderSearch(SearchDialog):
 
     def on_details_button_clicked(self, button):
         self._show_transfer_order_details(self.results.get_selected_rows()[0])
+
+
+class TransferItemSearch(TransferOrderSearch):
+    title = _(u"Transfer Item Search")
+    size = (750, 500)
+    search_spec = TransferItemView
+    report_class = TransferItemReport
+
+    def _show_transfer_order_details(self, order_view):
+        transfer_order = order_view.transfer_order
+        run_dialog(TransferOrderDetailsDialog, self, self.store,
+                   transfer_order)
+
+    def get_columns(self):
+        return [IdentifierColumn('identifier'),
+                SearchColumn('receival_date', _('Receival Date'),
+                             data_type=datetime.date, width=100,
+                             visible=False),
+                SearchColumn('item_description', _('Item'), data_type=str),
+                SearchColumn('item_quantity', _('Quantity'), data_type=Decimal,
+                             format_func=format_quantity, width=110),
+                SearchColumn('source_branch_name', _('Source'),
+                             data_type=str, expand=True),
+                SearchColumn('destination_branch_name', _('Destination'),
+                             data_type=str, width=220),
+                Column('transfer_order.status_str', _('Status'), data_type=str,
+                       width=100, visible=False),
+                Column('open_date', _('Open date'),
+                       data_type=datetime.date, sorted=True, width=100)]

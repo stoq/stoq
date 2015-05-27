@@ -43,6 +43,7 @@ from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch, Company
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.taxes import InvoiceItemIcms, InvoiceItemIpi
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
@@ -396,14 +397,13 @@ class TransferOrder(Domain):
         return sum([item.quantity for item in self.get_items()], 0)
 
 
-class TransferOrderView(Viewable):
+class BaseTransferView(Viewable):
     BranchDest = ClassAlias(Branch, 'branch_dest')
     PersonDest = ClassAlias(Person, 'person_dest')
     CompanyDest = ClassAlias(Company, 'company_dest')
 
     transfer_order = TransferOrder
 
-    id = TransferOrder.id
     identifier = TransferOrder.identifier
     identifier_str = Cast(TransferOrder.identifier, 'text')
     status = TransferOrder.status
@@ -414,9 +414,6 @@ class TransferOrderView(Viewable):
     source_branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person.name)
     destination_branch_name = Coalesce(NullIf(CompanyDest.fancy_name, u''),
                                        PersonDest.name)
-
-    # Aggregates
-    total_items = Sum(TransferOrderItem.quantity)
 
     group_by = [TransferOrder, source_branch_name, destination_branch_name]
 
@@ -438,3 +435,22 @@ class TransferOrderView(Viewable):
     def branch(self):
         # We need this property for the acronym to appear in the identifier
         return self.store.get(Branch, self.source_branch_id)
+
+
+class TransferOrderView(BaseTransferView):
+    id = TransferOrder.id
+
+    # Aggregates
+    total_items = Sum(TransferOrderItem.quantity)
+
+
+class TransferItemView(BaseTransferView):
+    id = TransferOrderItem.id
+    item_quantity = TransferOrderItem.quantity
+    item_description = Sellable.description
+
+    group_by = BaseTransferView.group_by[:]
+    group_by.extend([TransferOrderItem, Sellable])
+
+    tables = BaseTransferView.tables[:]
+    tables.append(Join(Sellable, Sellable.id == TransferOrderItem.sellable_id))

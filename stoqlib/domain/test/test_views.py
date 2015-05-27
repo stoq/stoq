@@ -63,6 +63,10 @@ def _get_all_views():
             # Exclude Viewable, since we just want to test it's subclasses
             if not issubclass(klass, Viewable) or klass is Viewable:
                 continue
+            # This is a base viewable for other classes that should not be
+            # tested.
+            if klass.__name__ == 'BaseTransferView':
+                continue
         except TypeError:
             continue
 

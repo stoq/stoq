@@ -66,3 +66,8 @@ class TransferOrderReceipt(HTMLReport):
 class TransferOrderReport(ObjectListReport):
     title = _("Transfer report")
     main_object_name = (_("transfer"), _("transfers"))
+
+
+class TransferItemReport(ObjectListReport):
+    title = _("Transfer item report")
+    main_object_name = (_("transfer item"), _("transfer items"))

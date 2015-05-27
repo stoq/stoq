@@ -47,6 +47,7 @@
       <menuitem action="SearchPurchaseReceiving"/>
       <menuitem action="SearchProductHistory"/>
       <menuitem action="SearchTransfer"/>
+      <menuitem action="SearchTransferItems"/>
       <menuitem action="SearchStockDecrease"/>
       <menuitem action="SearchPurchasedStockItems"/>
       <menuitem action="SearchStockItems"/>

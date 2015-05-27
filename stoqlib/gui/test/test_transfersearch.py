@@ -29,9 +29,10 @@ from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.lib.dateutils import localdate, localdatetime
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.search.transfersearch import TransferOrderSearch
+from stoqlib.gui.search.transfersearch import (TransferOrderSearch,
+                                               TransferItemSearch)
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.reporting.transfer import TransferOrderReport
+from stoqlib.reporting.transfer import TransferOrderReport, TransferItemReport
 
 
 class TestTransferOrderSearch(GUITest):
@@ -145,3 +146,62 @@ class TestTransferOrderSearch(GUITest):
         run_dialog.assert_called_once_with(TransferOrderDetailsDialog, search,
                                            self.store,
                                            search.results[0].transfer_order)
+
+
+class TestTransferItemSearch(GUITest):
+    def _create_domain(self):
+        self.clean_domain([TransferOrderItem, TransferOrder])
+
+        other_branch = Branch.get_active_remote_branches(self.store)[0]
+        current_branch = api.get_current_branch(self.store)
+
+        # One transfer that we did not receive yet
+        order = self.create_transfer_order(source_branch=other_branch,
+                                           dest_branch=current_branch)
+        self.create_transfer_order_item(order=order)
+        order.identifier = 75168
+        order.open_date = localdatetime(2012, 1, 1)
+        order.send()
+
+    def test_search(self):
+        self._create_domain()
+
+        search = TransferItemSearch(self.store)
+        # At this point none of the button should be sensitive
+        self.assertNotSensitive(search._details_slave, ['details_button'])
+        self.assertNotSensitive(search._details_slave, ['print_button'])
+        search.search.refresh()
+        # After the search is made, print_button should be available
+        self.assertNotSensitive(search._details_slave, ['details_button'])
+        self.assertSensitive(search._details_slave, ['print_button'])
+        search.results.select(search.results[0])
+        # details_button will be sensitive only after the user select a row
+        self.assertSensitive(search._details_slave, ['details_button'])
+        self.assertSensitive(search._details_slave, ['print_button'])
+        self.check_search(search, 'transfer-item-pending')
+
+    @mock.patch('stoqlib.gui.search.searchdialog.print_report')
+    @mock.patch('stoqlib.gui.search.transfersearch.run_dialog')
+    def test_button(self, run_dialog, print_report):
+        self._create_domain()
+
+        search = TransferItemSearch(self.store)
+        search.search.refresh()
+        search.results.select(search.results[0])
+
+        # Testing double click on the row
+        search.results.emit('row_activated', search.results[0])
+        run_dialog.assert_called_once_with(TransferOrderDetailsDialog, search,
+                                           self.store,
+                                           search.results[0].transfer_order)
+        # Testing clicking on details button
+        run_dialog.reset_mock()
+        self.click(search._details_slave.details_button)
+        run_dialog.assert_called_once_with(TransferOrderDetailsDialog, search,
+                                           self.store,
+                                           search.results[0].transfer_order)
+        # Testing clicking on print button
+        self.click(search._details_slave.print_button)
+        print_report.assert_called_once_with(TransferItemReport, search.results,
+                                             list(search.results),
+                                             filters=search.search.get_search_filters())
