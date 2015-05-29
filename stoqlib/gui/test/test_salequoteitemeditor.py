@@ -28,6 +28,7 @@ import mock
 from decimal import Decimal
 from kiwi.currency import currency
 
+
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.event import Event
 from stoqlib.domain.sale import Sale
@@ -37,44 +38,58 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSaleQuoteItemEditor(GUITest):
+    def test_show(self):
+        sale = self.create_sale()
+        storable = self.create_storable(branch=sale.branch, stock=20)
+        sale_item = sale.add_sellable(storable.product.sellable)
+        sale_item.price = 100
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        editor.item_slave.sale.set_label('12345')
+
+        self.check_editor(editor, 'editor-salequoteitem-show')
+        module = 'stoqlib.lib.pluginmanager.PluginManager.is_active'
+        with mock.patch(module) as patch:
+            patch.return_value = True
+            editor = SaleQuoteItemEditor(self.store, sale_item)
+            editor.item_slave.sale.set_label('23456')
+            self.check_editor(editor, 'editor-salequoteitem-show-nfe')
+
+
+class TestSaleQuoteItemSlave(GUITest):
     def test_show_param_allow_higher_sale_price(self):
         sale = self.create_sale()
         storable = self.create_storable(branch=sale.branch, stock=20)
         sale_item = sale.add_sellable(storable.product.sellable)
         sale_item.price = 100
         editor = SaleQuoteItemEditor(self.store, sale_item)
-        editor.sale.set_label('12345')
+        slave = editor.item_slave
+        slave.sale.set_label('12345')
 
         # quantity=1, price=100
         with self.sysparam(ALLOW_HIGHER_SALE_PRICE=True):
-            self.assertEqual(editor.total.read(), 100)
-            editor.quantity.update(2)
-            self.assertEqual(editor.total.read(), 200)
-            editor.price.update(150)
-            self.assertEqual(editor.total.read(), 300)
+            self.assertEqual(slave.total.read(), 100)
+            slave.quantity.update(2)
+            self.assertEqual(slave.total.read(), 200)
+            slave.price.update(150)
+            self.assertEqual(slave.total.read(), 300)
 
-            editor.reserved.update(1)
+            slave.reserved.update(1)
             self.click(editor.main_dialog.ok_button)
 
-            self.check_editor(editor, 'editor-salequoteitem-show')
-            module = 'stoqlib.lib.pluginmanager.PluginManager.is_active'
-            with mock.patch(module) as patch:
-                patch.return_value = True
-                editor = SaleQuoteItemEditor(self.store, sale_item)
-                editor.sale.set_label('23456')
-                self.check_editor(editor, 'editor-salequoteitem-show-nfe')
+            self.check_editor(editor, 'slave-salequoteitem-with-higher-price-show')
 
     def test_edit_product_without_storable(self):
         sale_item = self.create_sale_item()
         sale_item.price = 100
         self.assertEqual(sale_item.quantity, 1)
         editor = SaleQuoteItemEditor(self.store, sale_item)
-        editor.sale.set_label('12345')
-        self.assertNotVisible(editor, ['reserved'])
+        slave = editor.item_slave
+        slave.sale.set_label('12345')
+        self.assertNotVisible(slave, ['reserved'])
 
-        self.assertEqual(editor.total.read(), 100)
-        editor.quantity.update(3)
-        self.assertEqual(editor.total.read(), 300)
+        self.assertEqual(slave.total.read(), 100)
+        slave.quantity.update(3)
+        self.assertEqual(slave.total.read(), 300)
         self.click(editor.main_dialog.ok_button)
         self.assertEqual(sale_item.quantity, 3)
 
@@ -89,25 +104,27 @@ class TestSaleQuoteItemEditor(GUITest):
         self.assertEqual(sale_item.quantity, 1)
 
         editor = SaleQuoteItemEditor(self.store, sale_item)
-        self.assertNotVisible(editor, ['reserved'])
-        editor.quantity.update(2)
-        self.assertEqual(editor.total.read(), 20)
+        slave = editor.item_slave
+        self.assertNotVisible(slave, ['reserved'])
+        slave.quantity.update(2)
+        self.assertEqual(slave.total.read(), 20)
         self.click(editor.main_dialog.ok_button)
         self.assertEqual(sale_item.quantity, 2)
 
     def test_show_param_no_allow_higher_sale_price(self):
         sale_item = self.create_sale_item()
         editor = SaleQuoteItemEditor(self.store, sale_item)
-        editor.sale.set_label('12345')
+        slave = editor.item_slave
+        slave.sale.set_label('12345')
 
         # quantity=1, price=100
         with self.sysparam(ALLOW_HIGHER_SALE_PRICE=False):
-            self.assertEqual(editor.total.read(), 100)
-            editor.quantity.update(2)
-            self.assertEqual(editor.total.read(), 200)
-            editor.price.update(150)
+            self.assertEqual(slave.total.read(), 100)
+            slave.quantity.update(2)
+            self.assertEqual(slave.total.read(), 200)
+            slave.price.update(150)
             # The price greater than 100 should be invalid.
-            self.assertInvalid(editor, ['price'])
+            self.assertInvalid(slave, ['price'])
 
     def test_on_confirm_with_discount(self):
         events_before = self.store.find(Event).count()
@@ -123,9 +140,10 @@ class TestSaleQuoteItemEditor(GUITest):
         manager.profile.max_discount = Decimal('10')
 
         editor = SaleQuoteItemEditor(self.store, sale_item)
+        slave = editor.item_slave
 
         # Try applying 9% of discount
-        editor.price.update(currency('9.10'))
+        slave.price.update(currency('9.10'))
 
         # The user is not allowed to give 10% discount
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
@@ -133,7 +151,7 @@ class TestSaleQuoteItemEditor(GUITest):
         # Lets call the manager and ask for permission
         with mock.patch('stoqlib.gui.editors.saleeditor.run_dialog') as rd:
             rd.return_value = manager
-            editor.price.emit('icon-press', gtk.ENTRY_ICON_PRIMARY, None)
+            slave.price.emit('icon-press', gtk.ENTRY_ICON_PRIMARY, None)
 
         # Now it should be possible to confirm
         self.click(editor.main_dialog.ok_button)
@@ -158,8 +176,9 @@ class TestSaleQuoteItemEditor(GUITest):
         manager.profile.max_discount = Decimal('10')
 
         editor = SaleQuoteItemEditor(self.store, sale_item)
+        slave = editor.item_slave
         # Try applying 10% of discount
-        editor.price.update(currency('9.00'))
+        slave.price.update(currency('9.00'))
 
         # The user is not allowed to give 10% discount
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
@@ -167,10 +186,10 @@ class TestSaleQuoteItemEditor(GUITest):
         # Lets call the manager and ask for permission
         with mock.patch('stoqlib.gui.editors.saleeditor.run_dialog') as rd:
             rd.return_value = manager
-            editor.price.emit('icon-press', gtk.ENTRY_ICON_PRIMARY, None)
+            slave.price.emit('icon-press', gtk.ENTRY_ICON_PRIMARY, None)
 
         # Forget about the discount
-        editor.price.update(currency('10'))
+        slave.price.update(currency('10'))
 
         # This will not trigger an event
         self.click(editor.main_dialog.ok_button)

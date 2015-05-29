@@ -1,32 +1,21 @@
-editor: SaleQuoteItemEditor
-GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidden
+editor: TransferItemEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Transfer Item"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SaleQuoteItemEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave TransferItemEditor is attached
         GtkNotebook(toplevel):
-          GtkEventBox(item-holder): slave SaleQuoteItemSlave is attached
+          GtkEventBox(item-holder): slave TransferItemSlave is attached
             GtkVBox(toplevel):
               GtkTable(table1):
-                GtkLabel(label3): 'Order:'
-                GtkLabel(sale): '23456'
                 GtkLabel(label2): 'Description:'
-                ProxyLabel(description): '<span >Description</span>'
-                GtkLabel(cfop_label): 'CFOP:'
-                ProxyComboEntry(cfop):
-                  item: '5.102 Venda de Mercadoria Adquirida', selected
-                  item: '5.202 Devolucao'
-                  item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
-                GtkLabel(label4): 'Price:'
-                ProxySpinButton(price): '100.00'
-                GtkLabel(original_price_lbl): 'Original Price:'
-                ProxyLabel(original_price): '<span >$10.00</span>'
-                GtkLabel(label5): 'Quantity:'
-                ProxySpinButton(quantity): '1'
-                GtkLabel(reserved_lbl): 'Delivered:'
-                ProxySpinButton(reserved): '0'
-                GtkLabel(label6): 'Total:'
-                ProxyLabel(total): '<span >$100.00</span>'
+                ProxyLabel(description):
+                GtkLabel(label3): 'Cost:'
+                ProxySpinButton(stock_cost): '150.00'
+                GtkLabel(label5): 'Original cost:'
+                ProxyLabel(original_cost): '<span >$100.00</span>'
+                GtkLabel(label4): 'Quantity:'
+                ProxySpinButton(quantity): '10.00'
           GtkEventBox(): slave InvoiceItemIcmsSlave is attached
             GtkTable(table1):
               GtkLabel(template_label): 'Template:'

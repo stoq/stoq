@@ -1,0 +1,26 @@
+editor: TransferItemEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Transfer Item"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave TransferItemEditor is attached
+        GtkNotebook(toplevel):
+          GtkEventBox(item-holder): slave TransferItemSlave is attached
+            GtkVBox(toplevel):
+              GtkTable(table1):
+                GtkLabel(label2): 'Description:'
+                ProxyLabel(description):
+                GtkLabel(label3): 'Cost:'
+                ProxySpinButton(stock_cost): '150.00'
+                GtkLabel(label5): 'Original cost:'
+                ProxyLabel(original_cost): '<span >$100.00</span>'
+                GtkLabel(label4): 'Quantity:'
+                ProxySpinButton(quantity): '10.00'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

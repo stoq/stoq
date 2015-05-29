@@ -1,0 +1,11 @@
+slave: TransferItemSlave
+GtkVBox(toplevel):
+  GtkTable(table1):
+    GtkLabel(label2): 'Description:'
+    ProxyLabel(description):
+    GtkLabel(label3): 'Cost:'
+    ProxySpinButton(stock_cost): '150.00'
+    GtkLabel(label5): 'Original cost:'
+    ProxyLabel(original_cost): '<span >$100.00</span>'
+    GtkLabel(label4): 'Quantity:'
+    ProxySpinButton(quantity): '10.00'

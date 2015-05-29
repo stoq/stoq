@@ -169,6 +169,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`invoiceitemeditor` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.editors.invoiceitemeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`loanitemeditor` Module
 ----------------------------
 
@@ -333,6 +341,14 @@ editors Package
 ------------------------
 
 .. automodule:: stoqlib.gui.editors.tilleditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`transfereditor` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.transfereditor
     :members:
     :undoc-members:
     :show-inheritance:

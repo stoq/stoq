@@ -33,7 +33,7 @@ GtkDialog(toplevel): title='Stock Transfer', hidden
               GtkHBox(hbox1, fill=True):
                 GtkHBox(button_box):
                   GtkButton(add_button): hidden
-                  GtkButton(edit_button): hidden, insensitive
+                  GtkButton(edit_button): insensitive
                   GtkButton(delete_button): insensitive
                 GtkHBox(message_hbox, expand=True, fill=True): hidden
                   GtkLabel(message_label, expand=True, fill=True):

@@ -42,6 +42,7 @@ from stoqlib.gui.base.wizards import (BaseWizard, WizardEditorStep)
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
+from stoqlib.gui.editors.transfereditor import TransferItemEditor
 from stoqlib.gui.events import StockTransferWizardFinishEvent
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
@@ -140,6 +141,7 @@ class StockTransferItemStep(SellableItemStep):
     batch_selection_dialog = BatchDecreaseSelectionDialog
     validate_stock = True
     cost_editable = False
+    item_editor = TransferItemEditor
 
     def __init__(self, wizard, previous, store, model):
         manager = get_plugin_manager()
@@ -217,7 +219,6 @@ class StockTransferItemStep(SellableItemStep):
 
     def post_init(self):
         self.hide_add_button()
-        self.hide_edit_button()
 
         SellableItemStep.post_init(self)
 

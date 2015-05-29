@@ -29,19 +29,19 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.api import api
-from stoqlib.domain.person import Client, SalesPerson
 from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.person import Client, SalesPerson
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.editors.invoiceitemeditor import InvoiceItemEditor
+from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.slaves.taxslave import InvoiceItemIcmsSlave, InvoiceItemIpiSlave
-from stoqlib.gui.widgets.calculator import CalculatorPopup
-from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT, quantize
+from stoqlib.lib.defaults import quantize, QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -49,52 +49,57 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class SaleQuoteItemEditor(BaseEditor):
-    gladefile = 'SaleQuoteItemEditor'
+class SaleQuoteItemEditor(InvoiceItemEditor):
     model_type = SaleItem
     model_name = _("Sale Quote Item")
-    proxy_widgets = ['price',
-                     'cfop']
+
+    def setup_slaves(self):
+        self.item_slave = SaleQuoteItemSlave(self.store, self.model, parent=self)
+        self.attach_slave('item-holder', self.item_slave)
+
+
+class SaleQuoteItemSlave(BaseEditorSlave):
+    gladefile = 'SaleQuoteItemSlave'
+    model_type = SaleItem
+    proxy_widgets = ['price', 'cfop']
 
     #: The manager is someone who can allow a bigger discount for a sale item.
     manager = None
 
-    def __init__(self, store, model):
-        manager = get_plugin_manager()
-        self.nfe_is_active = manager.is_active('nfe')
-        self.proxy = None
-        self.icms_slave = None
-        self.ipi_slave = None
-
+    def __init__(self, store, model, parent):
+        self.model = model
+        self.icms_slave = parent.icms_slave
+        self.ipi_slave = parent.ipi_slave
         # Use a temporary object to edit the quantities, so we can delay the
         # database constraint checks
         self.quantity_model = Settable(quantity=model.quantity,
                                        reserved=model.quantity_decreased)
 
-        BaseEditor.__init__(self, store, model)
+        self.proxy = None
+        BaseEditorSlave.__init__(self, store, self.model)
 
         sale = self.model.sale
         if sale.status == Sale.STATUS_CONFIRMED:
             self._set_not_editable()
 
     def _setup_widgets(self):
-        self._calc = CalculatorPopup(self.price,
-                                     CalculatorPopup.MODE_SUB)
+        self._calc = CalculatorPopup(self.price, CalculatorPopup.MODE_SUB)
 
         self.sale.set_text(unicode(self.model.sale.identifier))
         self.description.set_text(self.model.sellable.get_description())
         self.original_price.update(self.model.base_price)
-        for widget in [self.quantity, self.reserved, self.price]:
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
-                                                 step_incr=1, page_incr=10))
 
+        self.price.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
+                                                 step_incr=1, page_incr=10))
         unit = self.model.sellable.unit
         digits = QUANTITY_PRECISION if unit and unit.allow_fraction else 0
         for widget in [self.quantity, self.reserved]:
             widget.set_digits(digits)
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
+                                                 step_incr=1, page_incr=10))
 
-        first_page = self.tabs.get_nth_page(0)
-        self.tabs.set_tab_label_text(first_page, _(u'Basic'))
+        manager = get_plugin_manager()
+        self.nfe_is_active = manager.is_active('nfe')
 
         if not self.nfe_is_active:
             self.cfop_label.hide()
@@ -109,73 +114,7 @@ class SaleQuoteItemEditor(BaseEditor):
         cfop_items = CfopData.get_for_sale(self.store)
         self.cfop.prefill(api.for_combo(cfop_items))
 
-        self._setup_taxes()
         self._update_total()
-
-    def _can_reserve(self):
-        # It is only possible to reserver for products with storable
-        product = self.model.sellable.product
-        if not product or not product.storable:
-            return False
-
-        # If the storable is has batches, but the sale item still dont have, its
-        # not possible to reserve.
-        storable = product.storable
-        if storable.is_batch and not self.model.batch:
-            return False
-
-        # No stock item means we cannot reserve any quantity yet
-        stock_item = product.storable.get_stock_item(
-            self.model.sale.branch, self.model.batch)
-        if stock_item is None:
-            return False
-
-        return True
-
-    def _setup_taxes(self):
-        # This taxes are only for products, not services
-        if not self.model.sellable.product:
-            return
-
-        if self.nfe_is_active:
-            self.icms_slave = InvoiceItemIcmsSlave(self.store,
-                                                   self.model.icms_info,
-                                                   self.model)
-            self.add_tab(_('ICMS'), self.icms_slave)
-
-            self.ipi_slave = InvoiceItemIpiSlave(self.store,
-                                                 self.model.ipi_info, self.model)
-            self.add_tab(_('IPI'), self.ipi_slave)
-
-    def _update_total(self):
-        # We need to update the total manually, since the model quantity update
-        # is delayed
-        total = self.model.price * self.quantity_model.quantity
-        if self.model.ipi_info:
-            total += self.model.ipi_info.v_ipi
-        self.total.update(currency(quantize(total)))
-
-    def _validate_quantity(self, new_quantity, allow_zero=False):
-        if not allow_zero and new_quantity <= 0:
-            return ValidationError(_(u"The quantity should be "
-                                     u"greater than zero."))
-
-        sellable = self.model.sellable
-        if not sellable.is_valid_quantity(new_quantity):
-            return ValidationError(_(u"This product unit (%s) does not "
-                                     u"support fractions.") %
-                                   sellable.unit_description)
-
-    def add_tab(self, name, slave):
-        event_box = gtk.EventBox()
-        event_box.set_border_width(6)
-        event_box.show()
-        self.tabs.append_page(event_box, gtk.Label(name))
-        self.attach_slave(name, slave, event_box)
-
-    def _set_not_editable(self):
-        self.price.set_sensitive(False)
-        self.quantity.set_sensitive(False)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -185,6 +124,10 @@ class SaleQuoteItemEditor(BaseEditor):
         # before quantity_reserved in the database
         self.reserved_proxy = self.add_proxy(self.quantity_model,
                                              ['quantity', 'reserved'])
+
+    def _set_not_editable(self):
+        self.price.set_sensitive(False)
+        self.quantity.set_sensitive(False)
 
     def _maybe_log_discount(self):
         # If not authorized to apply a discount or the CredentialsDialog is
@@ -201,7 +144,8 @@ class SaleQuoteItemEditor(BaseEditor):
         discount = 100 - new_price * 100 / price
 
         Event.log_sale_item_discount(
-            store=self.store, sale_number=self.model.sale.identifier,
+            store=self.store,
+            sale_number=self.model.sale.identifier,
             user_name=self.manager.username,
             discount_value=discount,
             product=self.model.sellable.description,
@@ -211,7 +155,8 @@ class SaleQuoteItemEditor(BaseEditor):
     def _maybe_reserve_products(self):
         if not self._can_reserve():
             # Not reserve products. But allow to edit sale item quantity,
-            # if the batch is not informed or sale item has no storable.
+            # if the batch is not informed or sale item has no
+            # storable.
             self.model.quantity = self.quantity_model.quantity
             return
 
@@ -233,6 +178,44 @@ class SaleQuoteItemEditor(BaseEditor):
             # quantity value.
             self.model.quantity = self.quantity_model.quantity
 
+    def _can_reserve(self):
+        # It is only possible to reserver for products with storable
+        product = self.model.sellable.product
+        if not product or not product.storable:
+            return False
+
+        # If the storable is has batches, but the sale item still dont have, its
+        # not possible to reserve.
+        storable = product.storable
+        if storable.is_batch and not self.model.batch:
+            return False
+
+        # No stock item means we cannot reserve any quantity yet
+        stock_item = product.storable.get_stock_item(self.model.sale.branch,
+                                                     self.model.batch)
+        if stock_item is None:
+            return False
+
+        return True
+
+    def _update_total(self):
+        # We need to update the total manually, since the model quantity
+        # update is delayed
+        total = self.model.price * self.quantity_model.quantity
+        if self.model.ipi_info:
+            total += self.model.ipi_info.v_ipi
+        self.total.update(currency(quantize(total)))
+
+    def _validate_quantity(self, new_quantity, allow_zero=False):
+        if not allow_zero and new_quantity <= 0:
+            return ValidationError(_(u"The quantity should be "
+                                     u"greater than zero."))
+        sellable = self.model.sellable
+        if not sellable.is_valid_quantity(new_quantity):
+            return ValidationError(_(u"This product unit (%s) does not "
+                                     u"support fractions.") %
+                                   sellable.unit_description)
+
     def on_confirm(self):
         self._maybe_log_discount()
         self._maybe_reserve_products()
@@ -242,16 +225,15 @@ class SaleQuoteItemEditor(BaseEditor):
     #
 
     def after_price__changed(self, widget):
-        if self.icms_slave:
-            self.icms_slave.update_values()
         if self.ipi_slave:
             self.ipi_slave.update_values()
+        if self.icms_slave:
+            self.icms_slave.update_values()
 
         self._update_total()
 
     def after_quantity__changed(self, widget):
         self._update_total()
-
         reserved = min(self.quantity_model.quantity,
                        self.quantity_model.reserved)
         self.reserved.get_adjustment().set_upper(self.quantity_model.quantity)
@@ -264,7 +246,7 @@ class SaleQuoteItemEditor(BaseEditor):
         if (not sysparam.get_bool('ALLOW_HIGHER_SALE_PRICE') and
                 value > self.model.base_price):
             return ValidationError(_(u'The sell price cannot be greater '
-                                   'than %s.') % self.model.base_price)
+                                     'than %s.') % self.model.base_price)
 
         sellable = self.model.sellable
         manager = self.manager or api.get_current_user(self.store)
@@ -274,7 +256,6 @@ class SaleQuoteItemEditor(BaseEditor):
                 user=manager, exclude_item=self.model)
         else:
             extra_discount = None
-
         valid_data = sellable.is_valid_price(
             value, category=self.model.sale.client_category,
             user=manager, extra_discount=extra_discount)

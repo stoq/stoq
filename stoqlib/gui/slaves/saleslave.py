@@ -118,7 +118,7 @@ class SaleDiscountSlave(BaseEditorSlave):
                                    % type_text)
 
         if (not sysparam.get_bool('USE_TRADE_AS_DISCOUNT') and
-            value > self.max_discount):
+                value > self.max_discount):
             self.model.discount_percentage = 0
             return ValidationError(_("%s can not be greater than %d%%")
                                    % (type_text, self.max_discount))
