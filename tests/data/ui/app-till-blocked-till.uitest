@@ -12,9 +12,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
-          GtkImageMenuItem(): 'Open till...'
+          GtkImageMenuItem(): 'Open till...', insensitive
           GtkImageMenuItem(): 'Verify till...', insensitive
-          GtkImageMenuItem(): 'Close till...', insensitive
+          GtkImageMenuItem(): 'Close till...'
           GtkImageMenuItem(): 'Till daily movement...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Print...', insensitive
@@ -96,8 +96,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
       GtkToolButton(): 'Details', insensitive
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
-        GtkVBox(app_vbox, expand=True, fill=True): insensitive
-          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
+        GtkVBox(app_vbox, expand=True, fill=True):
+          GtkVBox(large_status, expand=True, fill=True):
+            GtkHSeparator(hseparator1, fill=True):
+            ProxyLabel(status_link, expand=True, fill=True): '<span weight="bold" size="xx-large">Till blocked</span>'
+            GtkHSeparator(hseparator2, fill=True):
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached, hidden, insensitive
             GtkVBox(vbox):
               GtkHBox(fill=True, padding=6):
                 GtkVBox(filters_box, padding=6):
@@ -132,8 +136,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
                 column: title='Total'
           GtkVBox(list_vbox):
             GtkAlignment(alignment1):
-              GtkHBox(footer_hbox):
-                ProxyLabel(till_status_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Till closed</span>'
+              GtkHBox(footer_hbox): hidden
+                ProxyLabel(small_status, expand=True, fill=True): '<span size="xx-large" weight="bold"><span weight="bold" size="xx-large">Till blocked</span></span>'
                 GtkVBox(vbox1, expand=True, fill=True):
                   ProxyLabel(total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
                   ProxyLabel(total_payment_label, expand=True, fill=True): hidden

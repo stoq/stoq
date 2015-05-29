@@ -24,10 +24,12 @@
 
 import contextlib
 import decimal
+from datetime import datetime
 
 import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.till import Till
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.editors.tilleditor import CashInEditor
@@ -35,6 +37,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
+from stoqlib.lib.dateutils import localtoday
 
 from stoq.gui.till import TillApp
 from stoq.gui.test.baseguitest import BaseGUITest
@@ -54,9 +57,29 @@ class TestTill(BaseGUITest):
             self.assertEquals(called_dialog, dialog)
             self.assertEquals(store, self.store)
 
-    def test_initial(self):
+    def test_initial_with_open_till(self):
+        till = self.create_till()
+        till.opening_date = localtoday()
+        till.status = Till.STATUS_OPEN
         app = self.create_app(TillApp, u'till')
-        self.check_app(app, u'till')
+        self.check_app(app, u'till-opened-till')
+
+    def test_initial_with_closed_till(self):
+        app = self.create_app(TillApp, u'till')
+        self.check_app(app, u'till-closed-till')
+
+    @mock.patch('stoqlib.gui.fiscalprinter.api.new_store')
+    @mock.patch('stoqlib.gui.fiscalprinter.yesno')
+    @mock.patch('stoqlib.gui.fiscalprinter.run_dialog')
+    def test_initial_with_blocked_till(self, yesno, new_store, run_dialog):
+        till = self.create_till()
+        till.opening_date = datetime(2015, 1, 2)
+        till.status = Till.STATUS_OPEN
+
+        new_store.return_value = self.store
+        yesno.return_value = False
+        app = self.create_app(TillApp, u'till')
+        self.check_app(app, u'till-blocked-till')
 
     def test_select(self):
         sale = self.create_sale(branch=get_current_branch(self.store))

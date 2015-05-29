@@ -12,11 +12,51 @@
       <object class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
         <child>
+          <placeholder/>
+        </child>
+        <child>
           <object class="GtkVBox" id="app_vbox">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <placeholder/>
+              <object class="GtkVBox" id="large_status">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkHSeparator" id="hseparator1">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyLabel" id="status_link">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHSeparator" id="hseparator2">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkEventBox" id="search_holder">
@@ -42,7 +82,7 @@
                       <object class="GtkHBox" id="footer_hbox">
                         <property name="visible">True</property>
                         <child>
-                          <object class="ProxyLabel" id="till_status_label">
+                          <object class="ProxyLabel" id="small_status">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes" context="yes">Till Opened Since 01/01/2006</property>
@@ -98,6 +138,9 @@
                     <property name="position">0</property>
                   </packing>
                 </child>
+                <child>
+                  <placeholder/>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -109,7 +152,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">0</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>

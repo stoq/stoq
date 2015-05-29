@@ -164,6 +164,8 @@ class TillApp(ShellApp):
         self.list_vbox.set_focus_chain([self.footer_hbox])
         self._setup_printer()
         self._setup_widgets()
+        self.status_link.set_use_markup(True)
+        self.status_link.set_justify(gtk.JUSTIFY_CENTER)
 
     def get_title(self):
         return _('[%s] - Till') % (
@@ -384,8 +386,8 @@ class TillApp(ShellApp):
             self.total_payment_label.set_bold(True)
             self.total_label.set_size('large')
 
-        self.till_status_label.set_size('xx-large')
-        self.till_status_label.set_bold(True)
+        self.small_status.set_size('xx-large')
+        self.small_status.set_bold(True)
 
     def _update_toolbar_buttons(self):
         sale_view = self.results.get_selected()
@@ -454,35 +456,52 @@ class TillApp(ShellApp):
                    self.Confirm, self.Return, self.Details]
         self.set_sensitive(widgets, has_ecf)
         text = _(u"Till operations requires a connected fiscal printer")
-        self.till_status_label.set_text(text)
+        self.small_status.set_text(text)
 
     def _update_till_status(self, closed, blocked):
-        # Three different situations;
+        # Three different situations:
         #
         # - Till is closed
         # - Till is opened
         # - Till was not closed the previous fiscal day (blocked)
 
         self.set_sensitive([self.TillOpen], closed)
-        self.set_sensitive([self.TillClose, self.PaymentReceive],
-                           not closed or blocked)
-
+        self.set_sensitive([self.TillClose], not closed or blocked)
         widgets = [self.TillVerify, self.TillAddCash, self.TillRemoveCash,
-                   self.SearchTillHistory, self.app_vbox]
+                   self.SearchTillHistory, self.search_holder, self.PaymentReceive]
         self.set_sensitive(widgets, not closed and not blocked)
 
+        def large(s):
+            return '<span weight="bold" size="xx-large">%s</span>' % (
+                api.escape(s), )
+
         if closed:
-            text = _(u"Till closed")
+            text = large(_(u"Till closed"))
+            self.search_holder.hide()
+            self.footer_hbox.hide()
+            self.large_status.show()
             self.clear()
             self.setup_focus()
+            # Adding the label on footer without the link
+            self.small_status.set_text(text)
+
+            if not blocked:
+                text += '\n\n<span size="large"><a href="open-till">%s</a></span>' % (
+                    api.escape(_('Open till')))
+            self.status_link.set_markup(text)
         elif blocked:
-            text = _(u"Till blocked from previous day")
+            self.search_holder.hide()
+            self.footer_hbox.hide()
+            text = large(_(u"Till blocked"))
+            self.status_link.set_markup(text)
+            self.small_status.set_text(text)
         else:
+            self.search_holder.show()
+            self.footer_hbox.show()
+            self.large_status.hide()
             till = Till.get_current(self.store)
             text = _(u"Till opened on %s") % till.opening_date.strftime('%x')
-
-        self.till_status_label.set_text(text)
-
+            self.small_status.set_text(text)
         self._update_toolbar_buttons()
         self._update_total()
         if sysparam.get_bool('SHOW_TOTAL_PAYMENTS_ON_TILL'):
@@ -521,6 +540,11 @@ class TillApp(ShellApp):
 
     def on_Return__activate(self, action):
         self._return_sale()
+
+    def on_status_link__activate_link(self, button, link):
+        if link == 'open-till':
+            self._printer.open_till()
+        return True
 
     def _on_PrinterHelper__till_status_changed(self, printer, closed, blocked):
         self._update_till_status(closed, blocked)
