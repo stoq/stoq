@@ -296,7 +296,7 @@ class ECFUI(object):
 
         printer = self._printer.get_printer()
 
-        if (sysparam.get_bool('ENABLE_PAULISTA_INVOICE') and not
+        if (sysparam.get_bool('ENABLE_DOCUMENT_ON_INVOICE') and not
             (printer.user_number and printer.register_date and
              printer.register_cro)):
             response = warning(
@@ -349,7 +349,7 @@ class ECFUI(object):
 
     def _needs_cat52(self, printer):
         # If the param is not enabled, we dont need.
-        if not sysparam.get_bool('ENABLE_PAULISTA_INVOICE'):
+        if not sysparam.get_bool('ENABLE_DOCUMENT_ON_INVOICE'):
             return False
 
         # Even if the parameter is enabled, we can only generate cat52 for
@@ -567,7 +567,7 @@ class ECFUI(object):
                             document=document)
 
     def _identify_customer(self, coupon, sale=None):
-        if not sysparam.get_bool('ENABLE_PAULISTA_INVOICE'):
+        if not sysparam.get_bool('ENABLE_DOCUMENT_ON_INVOICE'):
             return
 
         model = None

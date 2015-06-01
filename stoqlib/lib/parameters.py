@@ -254,11 +254,11 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
-        u'ENABLE_PAULISTA_INVOICE',
+        u'ENABLE_DOCUMENT_ON_INVOICE',
         _(u'ECF'),
-        _(u'Enable paulista invoice'),
-        _(u'Once this parameter is set, we will be able to join to the '
-          u'Sao Paulo state program of fiscal commitment.'),
+        _(u'Enable document on invoice'),
+        _(u'Once this parameter is set, we will confirm the client document '
+          u'when  registering a fiscal coupon.'),
         bool, initial=False),
 
     ParameterDetails(
