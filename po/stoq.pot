@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 17:09-0300\n"
-"PO-Revision-Date: 2015-05-27 20:09+0000\n"
+"POT-Creation-Date: 2015-06-01 17:48-0300\n"
+"PO-Revision-Date: 2015-06-01 20:48+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (http://www.transifex.com/projects/p/stoq/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -16345,14 +16345,14 @@ msgid ""
 msgstr "If you have a computer that will be a Point of Sales and have a fiscal printer connected, set this False, so the Till menu will appear on POS. If you prefer to separate the Till menu from POS set this True."
 
 #: ../stoqlib/lib/parameters.py:259
-msgid "Enable paulista invoice"
-msgstr "Enable paulista invoice"
+msgid "Enable document on invoice"
+msgstr "Enable document on invoice"
 
 #: ../stoqlib/lib/parameters.py:260
 msgid ""
-"Once this parameter is set, we will be able to join to the Sao Paulo state "
-"program of fiscal commitment."
-msgstr "Once this parameter is set, we will be able to join to the Sao Paulo state program of fiscal commitment."
+"Once this parameter is set, we will confirm the client document when  "
+"registering a fiscal coupon."
+msgstr "Once this parameter is set, we will confirm the client document when  registering a fiscal coupon."
 
 #: ../stoqlib/lib/parameters.py:267
 msgid "Default payment method selected"

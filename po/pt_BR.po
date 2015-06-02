@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 17:09-0300\n"
-"PO-Revision-Date: 2015-05-27 20:09+0000\n"
+"POT-Creation-Date: 2015-06-01 17:48-0300\n"
+"PO-Revision-Date: 2015-06-01 20:48+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -16352,14 +16352,14 @@ msgid ""
 msgstr "Se você tem um computador que será um Ponto de Vendas e o mesmo possui uma impressora conectada, escolha Falso, então o menu Caixa aparecerá na POS. Se você prefere separar o menu Caixa da POS escolha Verdadeiro."
 
 #: ../stoqlib/lib/parameters.py:259
-msgid "Enable paulista invoice"
-msgstr "Habilitar nota fiscal paulista"
+msgid "Enable document on invoice"
+msgstr ""
 
 #: ../stoqlib/lib/parameters.py:260
 msgid ""
-"Once this parameter is set, we will be able to join to the Sao Paulo state "
-"program of fiscal commitment."
-msgstr "Uma vez que este parâmetro esteja definido, vamos ter a possibilidade de aderir ao Programa Nota Fiscal Paulista do estado São Paulo."
+"Once this parameter is set, we will confirm the client document when  "
+"registering a fiscal coupon."
+msgstr ""
 
 #: ../stoqlib/lib/parameters.py:267
 msgid "Default payment method selected"

@@ -4,13 +4,13 @@
 # 
 # Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2011
-# Giuseppe Pignataro <anubisteam01@gmail.com>, 2014
+# Giuseppe Pignataro <rogepix@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 17:09-0300\n"
-"PO-Revision-Date: 2015-05-27 20:09+0000\n"
+"POT-Creation-Date: 2015-06-01 17:48-0300\n"
+"PO-Revision-Date: 2015-06-01 20:48+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/stoq/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -16347,13 +16347,13 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:259
-msgid "Enable paulista invoice"
+msgid "Enable document on invoice"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:260
 msgid ""
-"Once this parameter is set, we will be able to join to the Sao Paulo state "
-"program of fiscal commitment."
+"Once this parameter is set, we will confirm the client document when  "
+"registering a fiscal coupon."
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:267
