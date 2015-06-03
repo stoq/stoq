@@ -318,6 +318,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/net/calendarevents.py', 16.2),
     ('stoqlib/net/gtk2reactor.py', 25.7),
     ('stoqlib/net/socketutils.py', 25.),
+    ('stoqlib/net/stoqlink.py', 31.43),
     ('stoqlib/net/webserver.py', 39.39),
     ('stoqlib/net/xmlrpcservice.py', 45.1),
     ('stoqlib/reporting/boleto.py', 80.14),
@@ -342,6 +343,7 @@ for a, b in zip(EXCEPTIONS, sorted(EXCEPTIONS)):
 
 _errors = []
 
+
 def _error(msg):
     _errors.append(msg)
 
@@ -359,8 +361,7 @@ for module in sorted(root.findall('.//class')):
     current = float(module.attrib.get('line-rate')) * 100
     if current != 100 and filename not in EXCEPTIONS:
         _error("2: %s has a coverage of %s%%, but expected 100%%, "
-               "add it to %s:" % (
-            filename, current, tool))
+               "add it to %s:" % (filename, current, tool))
         fixes.append("    '%s': %.2f," % (filename, current))
         continue
 
@@ -370,8 +371,8 @@ for module in sorted(root.findall('.//class')):
 
     if int(current + 1) < int(expect):
         _error("1: %s has a coverage of %s%%, but expected %s%%, "
-               "add more tests or update %s" % (
-            filename, current, expect, tool))
+               "add more tests or update %s" % (filename, current, expect,
+                                                tool))
         continue
     if current == 100 and expect < 100:
         _error("3: %s reached 100%%, remove it from %s" % (

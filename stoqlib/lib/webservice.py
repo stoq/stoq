@@ -46,6 +46,7 @@ from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_product_key
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
+from stoqlib.net.stoqlink import collect_link_statistics
 
 log = logging.getLogger(__name__)
 
@@ -208,6 +209,18 @@ class WebService(object):
             'product_key': get_product_key(),
         }
         return self._do_request('GET', 'tefrequest.json', **params)
+
+    def link_update(self, store):
+        # TODO: Create a parameter for this.
+        key = os.environ.get('STOQ_LINK_KEY', '')
+        if not key:
+            return
+
+        params = {
+            'key': key,
+            'data': collect_link_statistics(store)
+        }
+        return self._do_request('POST', 'api/store', **params)
 
     def feedback(self, screen, email, feedback):
         app_info = get_utility(IAppInfo, None)
