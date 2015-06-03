@@ -56,14 +56,17 @@ class InvoiceLayoutEditor(BaseEditor):
     model_type = InvoiceLayout
     gladefile = 'InvoiceLayoutEditor'
     size = (780, 540)
-    proxy_widgets = ['description', 'width', 'height']
+    proxy_widgets = ['description', 'width', 'height', 'continuous_page']
 
+    #
     # BaseEditor
+    #
+
     def __init__(self, store, model=None):
         BaseEditor.__init__(self, store, model)
         self.enable_normal_window()
-        button = self.add_button(stock=gtk.STOCK_PRINT_PREVIEW)
-        button.connect('clicked', self._on_preview_button__clicked)
+        self.preview_button = self.add_button(stock=gtk.STOCK_PRINT_PREVIEW)
+        self.preview_button.connect('clicked', self._on_preview_button__clicked)
 
     def create_model(self, store):
         return InvoiceLayout(description=u'Untitled',
@@ -90,7 +93,9 @@ class InvoiceLayoutEditor(BaseEditor):
         else:
             self.grid.grab_focus()
 
+    #
     # Callbacks
+    #
 
     def on_width__validate(self, widget, value):
         if not value > 0:
@@ -118,7 +123,9 @@ class InvoiceLayoutEditor(BaseEditor):
     def _on_preview_button__clicked(self, button):
         self._print_preview()
 
+    #
     # Private
+    #
 
     def _create_grid(self):
         self.grid = InvoiceGrid('Monospace 8',
@@ -133,7 +140,7 @@ class InvoiceLayoutEditor(BaseEditor):
 
     def _create_field_list(self):
         items = ObjectList([Column('description', width=200),
-                            Column('len', data_type=int, editable=True)])
+                            Column('len', data_type=int)])
         items.enable_dnd()
         items.set_size_request(200, -1)
         descriptions = {}
@@ -195,7 +202,7 @@ class InvoiceLayoutEditor(BaseEditor):
 
     def _print_preview(self):
         # Get the last opened date
-        sale = self.store.find(Sale).any()
+        sale = self.store.find(Sale).order_by(Sale.identifier).last()
         if not sale:
             info(_("You need at least one sale to be able to preview "
                    "invoice layouts"))
@@ -244,3 +251,16 @@ class InvoicePrinterEditor(BaseEditor):
     def on_confirm(self):
         # Bug!
         self.model.layout = self.layout.get_selected()
+
+
+def test():  # pragma nocover
+    from stoqlib.api import api
+    from stoqlib.gui.base.dialogs import run_dialog
+    creator = api.prepare_test()
+    model = creator.store.find(InvoiceLayout, description=u'teste').any()
+    retval = run_dialog(InvoiceLayoutEditor, None, creator.store, model)
+    creator.store.confirm(retval)
+
+
+if __name__ == '__main__':  # pragma nocover
+    test()

@@ -90,11 +90,36 @@ class InvoiceTest(DomainTest):
         address.person = sale.client.person
 
         layout = self.store.find(InvoiceLayout).one()
+        layout.continuous_page = False
         invoice = SaleInvoice(sale, layout)
         invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
 
         try:
             compare_invoice_file(invoice, 'sale-invoice')
+        except AssertionError as e:
+            self.fail(e)
+
+    def test_sale_invoice_continuous_page(self):
+        sale = self.create_sale()
+        for i in range(10):
+            price = 50 + i
+            code = unicode(1000 + i)
+            self._add_product(sale, tax=18, price=price, code=code)
+
+        sale.order()
+        self._add_payments(sale)
+        sale.confirm()
+        sale.client = self.create_client()
+        address = self.create_address()
+        address.person = sale.client.person
+
+        layout = self.store.find(InvoiceLayout).one()
+        layout.continuous_page = True
+        invoice = SaleInvoice(sale, layout)
+        invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
+
+        try:
+            compare_invoice_file(invoice, 'sale-invoice-continuous')
         except AssertionError as e:
             self.fail(e)
 

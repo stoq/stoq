@@ -30,7 +30,7 @@
 from storm.references import Reference
 from zope.interface import implementer
 
-from stoqlib.database.properties import IntCol, UnicodeCol, IdCol
+from stoqlib.database.properties import IntCol, UnicodeCol, IdCol, BoolCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
@@ -95,6 +95,9 @@ class InvoiceLayout(Domain):
     #: the height in units of the layout
     height = IntCol()
 
+    #: Indicates the type of paper used to print the layout
+    continuous_page = BoolCol()
+
     @property
     def size(self):
         return self.width, self.height
@@ -117,8 +120,7 @@ class InvoiceLayout(Domain):
         return store.find(InvoiceField, layout=self, field_name=name).one()
 
     def get_description(self):
-        """
-        Gets the description of the field
+        """Gets the description of the field
 
         :returns: description.
         """

@@ -13,6 +13,7 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
               ProxySpinButton(width, fill=True): '80'
               GtkLabel(label3, fill=True): 'Height:'
               ProxySpinButton(height, fill=True): '40'
+              ProxyCheckButton(continuous_page, expand=True, fill=True): 'Continuous page'
           GtkHPaned(hpaned, expand=True, fill=True):
             GtkVBox(left_vbox):
               GtkFrame(frame1, fill=True):
@@ -25,7 +26,6 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                     ProxyLabel(field_name, expand=True, fill=True):
                     ProxyLabel(field_pos, expand=True, fill=True):
                     ProxyLabel(field_size, expand=True, fill=True):
-                GtkLabel(): 'Field:'
               ObjectList(expand=True, fill=True, pack-end):
                 column: title='Description'
                 column: title='Len'
@@ -98,6 +98,6 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
-      GtkButton(): 'gtk-print-preview'
+      GtkButton(preview_button): 'gtk-print-preview'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

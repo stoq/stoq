@@ -47,6 +47,7 @@ def splititers(iterator, size):
 
 class InvoicePage(object):
     """This represent a page part of an invoice"""
+
     def __init__(self, width, height):
         """
         Create a new InvoicePage object.
@@ -197,11 +198,11 @@ class _Invoice(object):
         return (invoice_field.fetch(field.width, field.height),
                 invoice_field.field_type)
 
-    def _add_field(self, page, field):
+    def _add_field(self, page, field, height_delta=0):
         data, field_type = self._fetch_data_by_field(field)
 
         page.add(field_type,
-                 field.x, field.y,
+                 field.x, field.y + height_delta,
                  field.width, field.height,
                  data)
 
@@ -226,7 +227,11 @@ class _Invoice(object):
         # Split up the data by page
         page_list_fields = {}
         for field, field_type, data in list_fields:
-            line_data = splititers(data, field.height)
+            if self.layout.continuous_page:
+                line_data = [data]
+            else:
+                line_data = splititers(data, field.height)
+
             for n, lines in enumerate(line_data):
                 if not n in page_list_fields:
                     page_list_fields[n] = []
@@ -244,10 +249,22 @@ class _Invoice(object):
         list_field_data = self._fetch_list_fields()
 
         pages = []
+        # The height delta is how many lines the footer should be offset to the
+        # bottom when printing continuously.
+        height_delta = 0
+        if self.layout.continuous_page:
+            # When printing continuously, there is only one page
+            first_page = list_field_data[0]
+            # Get the first field of this page
+            field = first_page[0]
+            # And the number of lines in this field
+            height_delta = len(field[2]) - 1
+
         for page_no in sorted(list_field_data):
             list_fields = list_field_data[page_no]
 
-            page = InvoicePage(self.layout.width, self.layout.height)
+            page = InvoicePage(self.layout.width,
+                               self.layout.height + height_delta)
 
             # Header fields
             for field in self.header_fields:
@@ -265,7 +282,7 @@ class _Invoice(object):
         if pages:
             last_page = pages[-1]
             for field in self.footer_fields:
-                self._add_field(last_page, field)
+                self._add_field(last_page, field, height_delta)
 
         return pages
 
