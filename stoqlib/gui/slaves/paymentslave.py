@@ -1140,7 +1140,11 @@ class MultipleMethodSlave(BaseEditorSlave):
 
     def _get_total_amount(self):
         if isinstance(self.model, Sale):
-            return self.model.get_total_sale_amount()
+            sale_total = self.model.get_total_sale_amount()
+            # When editing the payments of a returned sale, we should deduct the
+            # value that was already returned.
+            returned_total = self.model.get_returned_value()
+            return sale_total - returned_total
         elif isinstance(self.model, ReturnedSale):
             return self.model.sale_total
         elif isinstance(self.model, PaymentRenegotiation):
