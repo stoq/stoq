@@ -31,3 +31,32 @@ class TestInvoiceLayoutEditor(GUITest):
     def test_create(self):
         editor = InvoiceLayoutEditor(self.store)
         self.check_editor(editor, 'editor-invoicelayout-create')
+
+    def test_select_free_text(self):
+        layout = self.create_invoice_layout()
+        field = self.create_invoice_field(field_name=u'FREE_TEXT',
+                                          layout=layout, content=u'free text')
+        field2 = self.create_invoice_field(field_name=u'CLIENT_NAME', layout=layout)
+        editor = InvoiceLayoutEditor(self.store, model=layout)
+        field_info = editor.grid.add_field(field.field_name, u'FREE_TEXT',
+                                           0, 0, 10, 1, field)
+        field_info2 = editor.grid.add_field(field2.field_name, u'CLIENT_NAME',
+                                            0, 1, 10, 1, field2)
+
+        # Testing selecting the client_name widget
+        editor.grid.select_field(field_info2)
+        self.assertNotSensitive(editor, ['text'])
+        self.assertEquals(editor.text.read(), u'')
+
+        # Selecting a free text widget
+        editor.grid.select_field(field_info)
+        self.assertEquals(editor.text.read(), u'free text')
+        # We have to do this to emmit __changed signal
+        editor.text.insert_text(u'new ')
+        self.assertEquals(editor.text.read(), u'new free text')
+
+        ## Testing clicking on the grid but not on a widget
+        editor.grid.select_field(None)
+        self.assertNotSensitive(editor, ['text'])
+        self.assertEquals(editor.text.read(), u'')
+        self.assertEquals(editor.field_name.read(), u'')

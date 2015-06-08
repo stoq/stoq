@@ -527,6 +527,17 @@ class ExampleCreator(object):
         from stoqlib.domain.taxes import InvoiceItemIpi
         return InvoiceItemIpi(store=self.store)
 
+    def create_invoice_layout(self):
+        from stoqlib.domain.invoice import InvoiceLayout
+        return InvoiceLayout(store=self.store, description=u'Untitled',
+                             width=80, height=40)
+
+    def create_invoice_field(self, field_name=None, layout=None, content=u''):
+        from stoqlib.domain.invoice import InvoiceField
+        return InvoiceField(store=self.store, layout=layout,
+                            field_name=field_name,
+                            x=0, y=0, width=10, height=1, content=content)
+
     def create_client_category(self, name=u'Category 1'):
         from stoqlib.domain.person import ClientCategory
         return ClientCategory(name=name, store=self.store)

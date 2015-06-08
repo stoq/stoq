@@ -17,15 +17,15 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
           GtkHPaned(hpaned, expand=True, fill=True):
             GtkVBox(left_vbox):
               GtkFrame(frame1, fill=True):
-                GtkHBox(hbox1):
-                  GtkVBox(vbox3, fill=True, padding=2):
-                    GtkLabel(label4, expand=True, fill=True): 'Name:'
-                    GtkLabel(label5, expand=True, fill=True): 'Position:'
-                    GtkLabel(label6, fill=True): 'Size:'
-                  GtkVBox(vbox4, expand=True, fill=True):
-                    ProxyLabel(field_name, expand=True, fill=True):
-                    ProxyLabel(field_pos, expand=True, fill=True):
-                    ProxyLabel(field_size, expand=True, fill=True):
+                GtkTable(table1):
+                  GtkLabel(label4): 'Name:'
+                  ProxyLabel(field_name):
+                  GtkLabel(label5): 'Position:'
+                  ProxyLabel(field_pos):
+                  GtkLabel(label6): 'Size:'
+                  ProxyLabel(field_size):
+                  ProxyLabel(text_lbl): 'Text:'
+                  ProxyEntry(text): '', insensitive
               ObjectList(expand=True, fill=True, pack-end):
                 column: title='Description'
                 column: title='Len'
@@ -47,6 +47,7 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Client state abbreviation', 2
                 row: 'Clients state registry number or document number', 14
                 row: 'Company document number', 4
+                row: 'Free text', 10
                 row: 'Incoming invoice', 1
                 row: u'INSCR_ESTADUAL_SUBSTITUTO_TRIB', 4
                 row: u'Invoice number', 6

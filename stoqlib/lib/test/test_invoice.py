@@ -123,6 +123,26 @@ class InvoiceTest(DomainTest):
         except AssertionError as e:
             self.fail(e)
 
+    def test_invoice_without_client(self):
+        sale = self.create_sale()
+        for i in range(10):
+            price = 50 + i
+            code = unicode(1000 + i)
+            self._add_product(sale, tax=18, price=price, code=code)
+        sale.order()
+        self._add_payments(sale)
+        sale.confirm()
+
+        layout = self.store.find(InvoiceLayout).one()
+        layout.continuous_page = True
+        invoice = SaleInvoice(sale, layout)
+        invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
+
+        try:
+            compare_invoice_file(invoice, 'sale-invoice-without-client')
+        except AssertionError as e:
+            self.fail(e)
+
     def test_has_invoice_number(self):
         sale = self.create_sale()
         for i in range(10):

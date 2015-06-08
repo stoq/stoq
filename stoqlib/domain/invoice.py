@@ -111,14 +111,6 @@ class InvoiceLayout(Domain):
         return self.store.find(InvoiceField,
                                layout=self)
 
-    def get_field_by_name(self, name):
-        """Fetches an invoice field by using it's name
-
-        :param name: name of the field
-        """
-        store = self.store
-        return store.find(InvoiceField, layout=self, field_name=name).one()
-
     def get_description(self):
         """Gets the description of the field
 
@@ -148,6 +140,9 @@ class InvoiceField(Domain):
     #: the name of the field, this is used to identify
     #: and fetch the data when printing the invoice
     field_name = UnicodeCol()
+
+    #: the free text of the field
+    content = UnicodeCol(default=u'')
 
     #: the layout this field belongs to
     layout_id = IdCol()

@@ -65,6 +65,7 @@ class InvoiceLayoutEditor(BaseEditor):
     def __init__(self, store, model=None):
         BaseEditor.__init__(self, store, model)
         self.enable_normal_window()
+        self.text.set_sensitive(False)
         self.preview_button = self.add_button(stock=gtk.STOCK_PRINT_PREVIEW)
         self.preview_button.connect('clicked', self._on_preview_button__clicked)
 
@@ -81,10 +82,10 @@ class InvoiceLayoutEditor(BaseEditor):
                                     InvoiceLayoutEditor.proxy_widgets)
 
         for field in self.model.fields:
-            description = self._field_descriptions[field.field_name]
+            description = field.content or self._field_descriptions[field.field_name]
             grid_field = self.grid.add_field(field.field_name, description,
                                              field.x, field.y,
-                                             field.width, field.height)
+                                             field.width, field.height, field)
             grid_field.model = field
             grid_field.widget.show()
 
@@ -123,6 +124,12 @@ class InvoiceLayoutEditor(BaseEditor):
     def _on_preview_button__clicked(self, button):
         self._print_preview()
 
+    def on_text__changed(self, widget):
+        text = unicode(widget.get_text())
+
+        self._selected_field.model.content = text
+        self._selected_field.update_label(text)
+
     #
     # Private
     #
@@ -157,10 +164,13 @@ class InvoiceLayoutEditor(BaseEditor):
         items.show()
 
     def _field_changed(self, grid_field):
+        self._selected_field = grid_field
         if grid_field:
             pos = 'x=%d, y=%d' % (grid_field.x + 1, grid_field.y + 1)
             size = '%dx%d' % (grid_field.width, grid_field.height)
-            name = grid_field.text
+            name = grid_field.name
+            self.text.update(grid_field.model.content)
+            self.text.set_sensitive(name == u'FREE_TEXT')
 
             # This is needed because we might get a selection-changed signal
             # before child-added, model is only assigned to the field info
@@ -175,25 +185,22 @@ class InvoiceLayoutEditor(BaseEditor):
             pos = ''
             size = ''
             name = ''
+            self.text.set_sensitive(False)
+            self.text.update(u'')
         self.field_name.set_text(name)
         self.field_pos.set_text(pos)
         self.field_size.set_text(size)
 
     def _field_added(self, grid_field):
-        field = self.model.get_field_by_name(grid_field.text)
-        if field is not None:
-            field.x = grid_field.x
-            field.y = grid_field.y
-            field.width = grid_field.width
-            field.height = grid_field.height
-        else:
-            field = InvoiceField(layout=self.model,
-                                 field_name=grid_field.text,
-                                 x=grid_field.x,
-                                 y=grid_field.y,
-                                 width=grid_field.width,
-                                 height=grid_field.height,
-                                 store=self.store)
+        if grid_field.model:
+            return
+        field = InvoiceField(layout=self.model,
+                             field_name=grid_field.name,
+                             x=grid_field.x,
+                             y=grid_field.y,
+                             width=grid_field.width,
+                             height=grid_field.height,
+                             store=self.store)
         grid_field.model = field
 
     def _field_removed(self, grid_field):
@@ -257,7 +264,7 @@ def test():  # pragma nocover
     from stoqlib.api import api
     from stoqlib.gui.base.dialogs import run_dialog
     creator = api.prepare_test()
-    model = creator.store.find(InvoiceLayout, description=u'teste').any()
+    model = creator.store.find(InvoiceLayout, description=u'Untitled').any()
     retval = run_dialog(InvoiceLayoutEditor, None, creator.store, model)
     creator.store.confirm(retval)
 

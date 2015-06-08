@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -182,9 +182,9 @@ class _Invoice(object):
         #   inside arae -> list
 
         for field in self.layout.fields:
-            if field.y + field.height < top:
+            if field.y + field.height <= top:
                 self.header_fields.append(field)
-            elif field.y > bottom:
+            elif field.y >= bottom:
                 self.footer_fields.append(field)
             else:
                 self.list_fields.append(field)
@@ -194,7 +194,7 @@ class _Invoice(object):
         if invoice_field_class is None:
             print('WARNING: Could not find field %s' % (field.field_name, ))
             return
-        invoice_field = invoice_field_class(self)
+        invoice_field = invoice_field_class(self, field)
         return (invoice_field.fetch(field.width, field.height),
                 invoice_field.field_type)
 
@@ -359,8 +359,9 @@ class InvoiceFieldDescription(object):
     name = None
     length = -1
 
-    def __init__(self, invoice):
+    def __init__(self, invoice, field):
         self.invoice = invoice
+        self.field = field
         self.sale = invoice.sale
         self.store = self.sale.store
 
@@ -382,6 +383,16 @@ def get_invoice_field_by_name(field_name):
 
 def get_invoice_fields():
     return list(invoice_fields.values())
+
+
+@_register_invoice_field
+class FreeTextField(InvoiceFieldDescription):
+    name = u"FREE_TEXT"
+    description = _("Free text")
+    length = 10
+
+    def fetch(self, width, height):
+        return self.field.content
 
 
 @_register_invoice_field
@@ -423,6 +434,8 @@ class ClientNameField(InvoiceFieldDescription):
     length = 35
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return self.sale.client.person.name
 
 
@@ -433,6 +446,8 @@ class ClientAddressField(InvoiceFieldDescription):
     length = 34
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return self.sale.client.person.address.get_address_string()
 
 
@@ -443,6 +458,8 @@ class ClientDocumentField(InvoiceFieldDescription):
     length = 14
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         individual = self.sale.client.person.individual
         if individual is not None:
             return individual.cpf
@@ -459,6 +476,8 @@ class ClientDistrictField(InvoiceFieldDescription):
     length = 15
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return self.sale.client.person.address.district
 
 
@@ -469,6 +488,8 @@ class ClientPostalCodeField(InvoiceFieldDescription):
     length = 8
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return self.sale.client.person.address.postal_code
 
 
@@ -479,6 +500,8 @@ class ClientCityField(InvoiceFieldDescription):
     length = 34
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return self.sale.client.person.address.get_city()
 
 
@@ -489,6 +512,8 @@ class ClientPhoneField(InvoiceFieldDescription):
     length = 12
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return self.sale.client.person.phone_number
 
 
@@ -499,6 +524,8 @@ class ClientFaxField(InvoiceFieldDescription):
     length = 12
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return self.sale.client.person.fax_number
 
 
@@ -509,6 +536,8 @@ class ClientPhoneFaxFieldF(InvoiceFieldDescription):
     length = 12
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return '%s / %s' % (
             self.sale.client.person.phone_number,
             self.sale.client.person.fax_number)
@@ -521,6 +550,8 @@ class ClientStateField(InvoiceFieldDescription):
     length = 2
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         return self.sale.client.person.address.get_state()
 
 
@@ -531,6 +562,8 @@ class ClientStateRegistryDocumentField(InvoiceFieldDescription):
     length = 14
 
     def fetch(self, width, height):
+        if not self.sale.client:
+            return ''
         company = self.sale.client.person.company
         if company is None:
             return ''

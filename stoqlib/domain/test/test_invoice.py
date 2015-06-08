@@ -63,13 +63,3 @@ class TestInvoiceLayout(DomainTest):
         self.assertFalse(layout.fields.is_empty())
         self.failUnless(field in layout.fields)
         self.assertEquals([field], list(layout.fields))
-
-    def test_get_field_by_name(self):
-        layout = self.create_layout()
-        self.failIf(layout.get_field_by_name(u'field'))
-        InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
-                     field_name=u'field',
-                     store=self.store)
-        field = layout.get_field_by_name(u'field')
-        self.failUnless(field)
-        self.assertEquals(field.field_name, u'field')

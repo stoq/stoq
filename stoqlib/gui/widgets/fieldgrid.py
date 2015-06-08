@@ -70,16 +70,21 @@ class Range(object):
 
 
 class FieldInfo(object):
-    def __init__(self, grid, text, field, x, y, width=-1, height=1):
+    def __init__(self, grid, name, widget, x, y, width=-1, height=1, model=None):
         if width == -1:
-            width = len(text)
+            width = len(name)
         self.grid = grid
-        self.text = text
-        self.widget = field
+        self.name = name
+        self.widget = widget
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.model = model
+
+    def update_label(self, text):
+        fmt = '<span letter_spacing="3072">%s</span>'
+        self.widget.set_markup(fmt % (glib.markup_escape_text(text), ))
 
     def allocate(self, width, height):
         req_width, req_height = self.widget.size_request()
@@ -192,16 +197,15 @@ class FieldGrid(gtk.Layout):
         self.remove(field.widget)
         self.emit('field-removed', field)
 
-    def _add_field(self, text, description, x, y, width=-1, height=1):
+    def _add_field(self, name, description, x, y, width=-1, height=1, model=None):
         label = gtk.Label()
         label.set_alignment(0, 0)
         label.set_padding(2, 4)
         if not description:
-            description = text
-        fmt = '<span letter_spacing="3072">%s</span>'
-        label.set_markup(fmt % (glib.markup_escape_text(description), ))
+            description = name
         label.modify_font(self.font)
-        field = FieldInfo(self, text, label, x, y, width, height)
+        field = FieldInfo(self, name, label, x, y, width, height, model)
+        field.update_label(description)
         self._fields.append(field)
         self.emit('field-added', field)
 
@@ -493,7 +497,7 @@ class FieldGrid(gtk.Layout):
     # Public API
     #
 
-    def add_field(self, text, description, x, y, width=-1, height=1):
+    def add_field(self, text, description, x, y, width=-1, height=1, model=None):
         """Adds a new field to the grid
 
         :param text: text of the field
@@ -501,7 +505,7 @@ class FieldGrid(gtk.Layout):
         :param x: x position of the field
         :param y: y position of the field
         """
-        return self._add_field(text, description, x, y, width, height)
+        return self._add_field(text, description, x, y, width, height, model)
 
     def select_field(self, field):
         """Selects a field
