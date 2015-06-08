@@ -1,0 +1,66 @@
+search: ProductSearch
+GtkDialog(toplevel): title='Product Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
+        GtkVBox(vbox):
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                ComboSearchFilter(status_filter):
+                  GtkLabel(): 'With status:'
+                  ProxyComboBox(padding=6):
+                    item: 'Any'
+                    item: 'Available', selected
+                    item: 'Closed'
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Identical to'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+              ComboSearchFilter(branch_filter):
+                GtkLabel(): 'In branch:'
+                ProxyComboBox(padding=6):
+                  item: 'Any'
+                  item: 'Moda Stoq', selected
+                  item: 'Stoq Elite Fashion'
+          SearchResultListView(result_view, expand=True, fill=True):
+            column: title='Code'
+            column: title='Barcode'
+            column: title='Category'
+            column: title='Description', expand
+            column: title='Manufacturer', hidden
+            column: title='Model', hidden
+            column: title='NCM', hidden
+            column: title='Unit', hidden
+            column: title='Location', hidden
+            column: title='Cost'
+            column: title='Stock'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button):
+              GtkButton(edit_button): insensitive
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True): slave SearchDialogPrintSlave is attached
+          GtkHButtonBox(toplevel):
+            GtkButton(print_price_button): 'gtk-print', insensitive
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button): hidden
+                GtkButton(print_button): 'gtk-print', insensitive
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+      GtkButton(branch_stock_button, padding=6): 'Stock details', insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...', insensitive

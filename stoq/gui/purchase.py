@@ -228,7 +228,7 @@ class PurchaseApp(ShellApp):
         self._new_order()
 
     def search_activate(self):
-        self.run_dialog(ProductSearch, self.store, hide_price_column=True)
+        self.run_dialog(ProductSearch, self.store)
 
     def search_completed(self, results, states):
         if len(results):
@@ -522,7 +522,7 @@ class PurchaseApp(ShellApp):
         self.run_dialog(SupplierSearch, self.store, hide_footer=True)
 
     def on_Products__activate(self, action):
-        self.run_dialog(ProductSearch, self.store, hide_price_column=True)
+        self.run_dialog(ProductSearch, self.store)
 
     def on_ProductUnits__activate(self, action):
         self.run_dialog(SellableUnitSearch, self.store)

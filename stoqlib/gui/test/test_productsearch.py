@@ -179,6 +179,10 @@ class TestProductSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'product-branch-filter')
 
+    def test_search_without_price_column(self):
+        search = ProductSearch(self.store, hide_price_column=True)
+        self.check_search(search, 'product-search-without-price')
+
 
 class TestProductSearchQuantity(GUITest):
     def _show_search(self):
