@@ -34,6 +34,7 @@ from storm.expr import compile, And, Or, Like, Not, Alias, State, Lower
 from storm.tracer import trace
 import psycopg2
 import psycopg2.extensions
+import re
 
 from stoqlib.database.expr import Date, StoqNormalizeString
 from stoqlib.database.viewable import Viewable
@@ -73,6 +74,7 @@ class NumberIntervalQueryState(QueryState):
     :cvar start: number
     :cvar end: number
     """
+
     def __init__(self, filter, start, end):
         QueryState.__init__(self, filter)
         self.start = start
@@ -106,6 +108,7 @@ class DateQueryState(QueryState):
     Create a new DateQueryState object.
     :cvar date: date
     """
+
     def __init__(self, filter, date):
         QueryState.__init__(self, filter)
         self.date = date
@@ -120,6 +123,7 @@ class DateIntervalQueryState(QueryState):
     :cvar start: start of interval
     :cvar end: end of interval
     """
+
     def __init__(self, filter, start, end):
         QueryState.__init__(self, filter)
         self.start = start
@@ -135,6 +139,7 @@ class BoolQueryState(QueryState):
     Create a new BoolQueryState object.
     :cvar value: value of the query state
     """
+
     def __init__(self, filter, value):
         QueryState.__init__(self, filter)
         self.value = value
@@ -464,7 +469,7 @@ class QueryExecuter(object):
                         queries.append(query)
             else:
                 if (self._query == self._default_query and
-                    not self._query_callbacks):
+                        not self._query_callbacks):
                     raise ValueError(
                         "You need to add a search column or a query callback "
                         "for filter %s" % (search_filter))
@@ -542,7 +547,7 @@ class QueryExecuter(object):
                         case_sensitive=False)
 
         if state.mode == StringQueryState.CONTAINS_ALL:
-            queries = [_like(word) for word in state.text.split(' ') if word]
+            queries = [_like(word) for word in re.split('[ \n\r]', state.text) if word]
             retval = And(*queries)
         elif state.mode == StringQueryState.IDENTICAL_TO:
             retval = Lower(table_field) == state.text.lower()
