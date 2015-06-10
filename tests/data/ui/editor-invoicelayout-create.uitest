@@ -27,69 +27,72 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                   ProxyLabel(text_lbl): 'Text:'
                   ProxyEntry(text): '', insensitive
               ObjectList(expand=True, fill=True, pack-end):
+                column: title='Category'
                 column: title='Description'
-                column: title='Len'
-                row: u'ADDITIONAL_SALE_NOTES', -1
-                row: u'BASE_DE_CALCULO_ICMS', 1
-                row: u'BASE_DE_CALCULO_ICMS_SUBST', 1
-                row: u'BASE_DE_CALCULO_ISS', 1
-                row: u'CFOP', 4
-                row: 'City registry number', 14
-                row: 'Client Address', 34
-                row: "Client's city", 34
-                row: "Client's district", 15
-                row: "Client's document number", 14
-                row: 'Client Fax number', 12
-                row: 'Client name', 35
-                row: 'Client Phone number', 12
-                row: 'Client Phone/Fax number', 12
-                row: "Client's postal code", 8
-                row: 'Client state abbreviation', 2
-                row: 'Clients state registry number or document number', 14
-                row: 'Company document number', 4
-                row: 'Free text', 10
-                row: 'Incoming invoice', 1
-                row: u'INSCR_ESTADUAL_SUBSTITUTO_TRIB', 4
-                row: u'Invoice number', 6
-                row: 'Invoice Type', 10
-                row: 'Creation date', 10
-                row: 'Creation time', 8
-                row: 'Emission date', 10
-                row: 'Outgoing invoice', 1
-                row: 'Payment due dates', 1
-                row: 'Number of payments', 4
-                row: 'Payment values', 1
-                row: 'Product item code', 5
-                row: 'Product item code / description', 35
-                row: 'Product item situation', 1
-                row: 'Product item unit', 2
-                row: 'Product item counter', 3
-                row: 'Product item description', 30
-                row: 'Product item price', 5
-                row: 'Product item quantity', 5
-                row: 'Product item tax', 2
-                row: 'Product item total (price * quantity)', 7
-                row: u'SALESPERSON_NAME', 1
-                row: u'SALE_NUMBER', 1
-                row: 'Service item code', 5
-                row: 'Service item code / description', 35
-                row: 'Service item unit', 2
-                row: 'Service item description', 30
-                row: 'Service item price', 5
-                row: 'Service item quantity', 5
-                row: 'Service item tax', 2
-                row: 'Service item total (price * quantity)', 7
-                row: 'State registry number', 14
-                row: u'VALOR_DESPESAS', 1
-                row: u'VALOR_FRETE', 1
-                row: u'VALOR_ICMS', 1
-                row: u'VALOR_ICMS_SUBST', 1
-                row: u'VALOR_IPI', 1
-                row: u'VALOR_ISS', 1
-                row: u'VALOR_SEGURO', 1
-                row: u'VALOR_TOTAL_NOTA', 1
-                row: u'VALOR_TOTAL_PRODUTOS', 1
-                row: u'VALOR_TOTAL_SERVICOS', 1
+                column: title='Len', hidden
+                row: 'Branch', 'City registry number', 14
+                row: 'Branch', 'Company address', 34
+                row: 'Branch', 'Company city location', 8
+                row: 'Branch', 'Company document number', 18
+                row: 'Branch', 'Company fancy name', 34
+                row: 'Branch', 'Company name', 34
+                row: 'Branch', 'Company postal code', 8
+                row: 'Branch', u'INSCR_ESTADUAL_SUBSTITUTO_TRIB', 4
+                row: 'Branch', 'State registry number', 14
+                row: 'Client', 'Client Address', 34
+                row: 'Client', "Client's city", 34
+                row: 'Client', "Client's district", 15
+                row: 'Client', "Client's document number", 14
+                row: 'Client', 'Client Fax number', 12
+                row: 'Client', 'Client name', 35
+                row: 'Client', 'Client Phone number', 12
+                row: 'Client', 'Client Phone/Fax number', 12
+                row: 'Client', "Client's postal code", 8
+                row: 'Client', 'Client state abbreviation', 2
+                row: 'Client', 'Clients state registry number or document number', 14
+                row: 'Invoice', 'Incoming invoice', 1
+                row: 'Invoice', u'Invoice number', 6
+                row: 'Invoice', 'Invoice Type', 10
+                row: 'Invoice', 'Creation date', 10
+                row: 'Invoice', 'Creation time', 8
+                row: 'Invoice', 'Emission date', 10
+                row: 'Invoice', 'Outgoing invoice', 1
+                row: 'Other', u'CFOP', 4
+                row: 'Other', 'Free text', 10
+                row: 'Payment', 'Payment due dates', 1
+                row: 'Payment', 'Number of payments', 4
+                row: 'Payment', 'Payment values', 1
+                row: 'Product', 'Product item code', 5
+                row: 'Product', 'Product item code / description', 35
+                row: 'Product', 'Product item situation', 1
+                row: 'Product', 'Product item unit', 2
+                row: 'Product', 'Product item counter', 3
+                row: 'Product', 'Product item description', 30
+                row: 'Product', 'Product item price', 5
+                row: 'Product', 'Product item quantity', 5
+                row: 'Product', 'Product item total (price * quantity)', 7
+                row: 'Product', u'VALOR_TOTAL_PRODUTOS', 1
+                row: 'Sale', u'ADDITIONAL_SALE_NOTES', -1
+                row: 'Sale', u'SALESPERSON_NAME', 1
+                row: 'Sale', u'SALE_NUMBER', 1
+                row: 'Sale', u'VALOR_TOTAL_NOTA', 1
+                row: 'Service', 'Service item code', 5
+                row: 'Service', 'Service item code / description', 35
+                row: 'Service', 'Service item unit', 2
+                row: 'Service', 'Service item description', 30
+                row: 'Service', 'Service item price', 5
+                row: 'Service', 'Service item quantity', 5
+                row: 'Service', 'Service item tax', 2
+                row: 'Service', 'Service item total (price * quantity)', 7
+                row: 'Service', u'VALOR_TOTAL_SERVICOS', 1
+                row: 'Tax', u'BASE_DE_CALCULO_ICMS', 1
+                row: 'Tax', u'BASE_DE_CALCULO_ICMS_SUBST', 1
+                row: 'Tax', u'BASE_DE_CALCULO_ISS', 1
+                row: 'Tax', 'Product item tax', 2
+                row: 'Tax', u'VALOR_ICMS', 1
+                row: 'Tax', u'VALOR_ICMS_SUBST', 1
+                row: 'Tax', u'VALOR_IPI', 1
+                row: 'Tax', u'VALOR_ISS', 1
             GtkScrolledWindow(sw):
               GtkViewport(viewport1):
                 stoqlib+gui+widgets+fieldgrid+FieldGrid(grid):

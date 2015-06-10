@@ -146,8 +146,9 @@ class InvoiceLayoutEditor(BaseEditor):
         self.grid.show()
 
     def _create_field_list(self):
-        items = ObjectList([Column('description', width=200),
-                            Column('len', data_type=int)])
+        items = ObjectList([Column('category', sorted=True),
+                            Column('description', width=200),
+                            Column('len', data_type=int, visible=False)])
         items.enable_dnd()
         items.set_size_request(200, -1)
         descriptions = {}
@@ -157,7 +158,8 @@ class InvoiceLayoutEditor(BaseEditor):
             items.append(
                 Settable(description=invoice_field.get_description(),
                          name=invoice_field.name,
-                         len=invoice_field.length))
+                         len=invoice_field.length,
+                         category=invoice_field.category))
             descriptions[invoice_field.name] = invoice_field.description
         self._field_descriptions = descriptions
         self.left_vbox.pack_end(items, True, True)
