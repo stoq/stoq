@@ -42,7 +42,6 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.domain.views import ProductWithStockBranchView
-from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
@@ -53,6 +52,7 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
+from stoqlib.gui.editors.stockdecreaseeditor import StockDecreaseItemEditor
 from stoqlib.gui.events import StockDecreaseWizardFinishEvent
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
@@ -179,6 +179,7 @@ class DecreaseItemStep(SellableItemStep):
     sellable_editable = False
     validate_stock = True
     batch_selection_dialog = BatchDecreaseSelectionDialog
+    item_editor = StockDecreaseItemEditor
 
     #
     # SellableItemStep
@@ -186,7 +187,6 @@ class DecreaseItemStep(SellableItemStep):
 
     def post_init(self):
         self.hide_add_button()
-        self.hide_edit_button()
         manager = get_plugin_manager()
         nfe_is_active = manager.is_active('nfe')
         if not self.wizard.create_payments and not nfe_is_active:
@@ -216,8 +216,6 @@ class DecreaseItemStep(SellableItemStep):
         return self.model.get_items()
 
     def get_columns(self):
-        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT,
-                                    step_incr=1, page_incr=10)
         columns = [
             Column('sellable.code', title=_('Code'), data_type=str),
             Column('sellable.description', title=_('Description'),
@@ -226,7 +224,6 @@ class DecreaseItemStep(SellableItemStep):
             Column('sellable.category_description', title=_('Category'),
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Quantity'), data_type=Decimal,
-                   editable=True, spin_adjustment=adjustment,
                    format_func=format_quantity),
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),

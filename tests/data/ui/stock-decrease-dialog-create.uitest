@@ -35,6 +35,6 @@ GtkVBox(details_vbox):
         column: title='Paid date'
         column: title='Value'
         column: title='Paid value'
-        row: 7777, u'Money', u'1/1 Money for stock decrease 08888', datetime.today(), None, <currency $ 0>, None
+        row: 7777, u'Money', u'1/1 Money for stock decrease 08888', datetime.today(), None, <currency $100>, None
   GtkHButtonBox(hbuttonbox1, fill=True):
     GtkButton(print_button): 'gtk-print'

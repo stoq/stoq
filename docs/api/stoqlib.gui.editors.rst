@@ -329,6 +329,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`stockdecreaseeditor` Module
+---------------------------------
+
+.. automodule:: stoqlib.gui.editors.stockdecreaseeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`taxclasseditor` Module
 ----------------------------
 

@@ -550,11 +550,13 @@ class ExampleCreator(object):
                                    price=price or 100,
                                    store=self.store)
 
-    def create_stock_decrease_item(self, stock_decrease=None, quantity=1):
+    def create_stock_decrease_item(self, stock_decrease=None, quantity=1,
+                                   sellable=None, cost=100):
         from stoqlib.domain.stockdecrease import StockDecreaseItem
         return StockDecreaseItem(stock_decrease=stock_decrease or self.create_stock_decrease(),
-                                 sellable=self.create_sellable(),
+                                 sellable=sellable or self.create_sellable(),
                                  quantity=quantity,
+                                 cost=cost,
                                  store=self.store)
 
     def create_stock_decrease(self, branch=None, user=None, reason=u'', group=None,
