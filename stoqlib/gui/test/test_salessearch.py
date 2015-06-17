@@ -36,7 +36,8 @@ from stoqlib.gui.search.salesearch import (SaleSearch,
                                            SaleWithToolbarSearch,
                                            SalesByPaymentMethodSearch,
                                            SoldItemsByBranchSearch,
-                                           UnconfirmedSaleItemsSearch)
+                                           UnconfirmedSaleItemsSearch,
+                                           SaleTokenSearch)
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 
@@ -197,3 +198,14 @@ class TestUnconfirmedSaleItemsSearch(GUITest):
             sale_view = self.store.find(SaleView, id=search.results[0].sale_id).one()
             run_dialog.assert_called_once_with(SaleDetailsDialog, search,
                                                self.store, sale_view)
+
+
+class TestSaleTokenSearch(GUITest):
+    def test_show(self):
+        self.create_sale_token(code=u'sale token 1')
+        self.create_sale_token(code=u'sale token 2')
+        search = SaleTokenSearch(self.store, hide_footer=True)
+        self.check_search(search, 'sale-token-show')
+
+        search.search.refresh()
+        self.check_search(search, 'sale-token-after-search-show')

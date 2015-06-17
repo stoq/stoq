@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,8 @@ from stoqlib.api import api
 from stoqlib.domain.sale import (Sale,
                                  SaleView,
                                  SalePaymentMethodView,
-                                 SoldItemsByClient)
+                                 SoldItemsByClient,
+                                 SaleToken)
 from stoqlib.domain.person import Branch
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import SoldItemsByBranchView, UnconfirmedSaleItemsView
@@ -46,8 +47,10 @@ from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import set_bold
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.saleeditor import SaleTokenEditor
 from stoqlib.gui.search.searchcolumns import (IdentifierColumn, SearchColumn,
                                               QuantityColumn)
+from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.search.searchfilters import (ComboSearchFilter,
                                               DateSearchFilter)
 from stoqlib.gui.search.searchdialog import SearchDialog
@@ -380,3 +383,23 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
 
     def on_search__search_completed(self, search, result_view, states):
         self._update_summary(result_view)
+
+
+class SaleTokenSearch(SearchEditor):
+    title = _(u'Sale Token Search')
+    size = (500, 400)
+    search_spec = SaleToken
+    editor_class = SaleTokenEditor
+    text_field_columns = [SaleToken.code]
+
+    def __init__(self, store, search_str=None, hide_toolbar=False,
+                 hide_footer=False):
+        SearchEditor.__init__(self, store, search_spec=self.search_spec,
+                              editor_class=self.editor_class,
+                              hide_toolbar=hide_toolbar,
+                              hide_footer=hide_footer)
+
+    def get_columns(self):
+        return [SearchColumn('code', title=_('Code'), data_type=str,
+                             sorted=True, expand=True),
+                Column('status_str', title=_('Status'), data_type=str)]

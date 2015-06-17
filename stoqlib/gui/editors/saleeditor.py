@@ -32,7 +32,7 @@ from stoqlib.api import api
 from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Client, SalesPerson
-from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.domain.sale import Sale, SaleItem, SaleToken
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
@@ -362,3 +362,26 @@ class SalesPersonEditor(SaleClientEditor):
     def _setup_widgets(self):
         self.client_lbl.hide()
         self.client_box.hide()
+
+
+class SaleTokenEditor(BaseEditor):
+    gladefile = 'SaleToken'
+    model_type = SaleToken
+    model_name = _('Sale token')
+    proxy_widgets = ['code']
+    confirm_widgets = ['code']
+
+    def __init__(self, store, model=None, visual_mode=False):
+        BaseEditor.__init__(self, store, model, visual_mode)
+        if model:
+            self.set_description(model.code)
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, SaleTokenEditor.proxy_widgets)
+
+    def create_model(self, store):
+        return SaleToken(store=self.store, code=u'')
+
+    def on_code__validate(self, widget, value):
+        if self.model.check_unique_value_exists(self.model_type.code, value):
+            return ValidationError(_("Code already in use"))

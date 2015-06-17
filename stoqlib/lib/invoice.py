@@ -565,6 +565,19 @@ class AdditionalSaleNotesField(InvoiceFieldDescription):
         return '\n'.join(comments)
 
 
+@_register_invoice_field
+class SaleTokenField(InvoiceFieldDescription):
+    name = u"SALE_TOKEN_CODE"
+    description = _("Sale token code")
+    category = _("Sale")
+    length = 8
+
+    def fetch(self, width, height):
+        if not self.sale.sale_token_id:
+            return ''
+        return self.sale.sale_token.code
+
+
 #
 # Product fields
 #

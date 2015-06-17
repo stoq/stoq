@@ -33,7 +33,7 @@ from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.event import Event
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.saleeditor import (SaleQuoteItemEditor, SaleClientEditor,
-                                            SalesPersonEditor)
+                                            SalesPersonEditor, SaleTokenEditor)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -239,3 +239,25 @@ class TestSalesPersonEditor(GUITest):
         editor.salesperson_combo.select_item_by_data(salesperson2)
         self.click(editor.main_dialog.ok_button)
         self.assertEquals(sale.salesperson, salesperson2)
+
+
+class TestSaleTokenEditor(GUITest):
+    def test_create(self):
+        editor = SaleTokenEditor(self.store)
+        self.check_editor(editor, 'editor-saletoken-create')
+
+    def test_edit(self):
+        token = self.create_sale_token(code=u'sale token 1')
+        editor = SaleTokenEditor(self.store, model=token)
+        self.check_editor(editor, 'editor-saletoken-edit')
+
+    def test_description_valitation(self):
+        self.create_sale_token(code=u'sale token 1')
+        editor = SaleTokenEditor(self.store)
+        editor.code.set_text(u'sale token 1')
+        # We should not be able to register this token, description should be
+        # unique
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+
+        editor.code.set_text(u'sale token 2')
+        self.assertSensitive(editor.main_dialog, ['ok_button'])

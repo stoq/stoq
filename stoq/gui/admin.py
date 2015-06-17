@@ -58,6 +58,7 @@ from stoqlib.gui.search.personsearch import (ClientSearch,
                                              UserSearch)
 from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
+from stoqlib.gui.search.salesearch import SaleTokenSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
     STOQ_CALC, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
@@ -191,6 +192,10 @@ class Tasks(object):
         store.confirm(model)
         store.close()
 
+    def _open_sale_token(self):
+        with api.new_store() as store:
+            self.app.run_dialog(SaleTokenSearch, store, hide_footer=True)
+
     def _open_fiscal_books(self):
         self.app.run_dialog(FiscalBookEntrySearch, self.app.store,
                             hide_footer=True)
@@ -279,6 +284,9 @@ class Tasks(object):
     def _open_ui_form(self):
         self._open_forms()
 
+    def _open_token(self):
+        self._open_sale_token()
+
 
 class AdminApp(ShellApp):
 
@@ -304,6 +312,7 @@ class AdminApp(ShellApp):
         'ConfigureClientCategories': 'client_categories',
         'ConfigureTaxes': 'taxes',
         'ConfigureUIForm': 'ui_form',
+        'ConfigureSaleToken': 'sale_token',
         'ConfigureSintegra': 'sintegra',
         'ConfigureParameters': 'parameters',
         'ConfigureInvoices': 'invoice_layouts',
@@ -368,6 +377,7 @@ class AdminApp(ShellApp):
             ("ConfigureUIForm", None, _("Forms...")),
             ("ConfigureTaxes", None, _("Taxes..."),
              group.get('config_taxes')),
+            ("ConfigureSaleToken", None, _("Sale tokens...")),
             ("ConfigureParameters", None, _("Parameters..."),
              group.get('config_parameters')),
             ("NewUser", None, _("User..."), '',

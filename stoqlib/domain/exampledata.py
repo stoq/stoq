@@ -447,6 +447,11 @@ class ExampleCreator(object):
                     store=self.store)
         return sale
 
+    def create_sale_token(self, code=u''):
+        from stoqlib.domain.sale import SaleToken
+        return SaleToken(store=self.store,
+                         code=code)
+
     def create_sale_comment(self, sale, comment=u'Foo bar', user=None):
         from stoqlib.domain.sale import SaleComment
         return SaleComment(store=self.store, sale=sale, comment=comment,

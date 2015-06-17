@@ -75,6 +75,7 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Sale', u'ADDITIONAL_SALE_NOTES', -1
                 row: 'Sale', u'SALESPERSON_NAME', 1
                 row: 'Sale', u'SALE_NUMBER', 1
+                row: 'Sale', 'Sale token code', 8
                 row: 'Sale', u'VALOR_TOTAL_NOTA', 1
                 row: 'Service', 'Service item code', 5
                 row: 'Service', 'Service item code / description', 35

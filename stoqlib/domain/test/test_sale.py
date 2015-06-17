@@ -43,7 +43,7 @@ from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
                                  ReturnedSaleItemsView, SaleItem,
                                  SaleView, SalesPersonSalesView,
-                                 ClientsWithSaleView)
+                                 ClientsWithSaleView, SaleToken)
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
@@ -1738,6 +1738,15 @@ class TestSale(DomainTest):
         client = self.create_client()
         sale2 = self.create_sale(client=client)
         self.assertEquals(sale2.recipient, client.person)
+
+
+class TestSaleToken(DomainTest):
+    def test_status_change(self):
+        token = self.create_sale_token(code=u'token')
+        token.open_token()
+        self.assertEquals(token.status, SaleToken.STATUS_OCCUPIED)
+        token.close_token()
+        self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
 
 
 class TestSaleItem(DomainTest):
