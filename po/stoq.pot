@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-15 14:14-0300\n"
-"PO-Revision-Date: 2015-06-15 17:15+0000\n"
+"POT-Creation-Date: 2015-06-17 12:09-0300\n"
+"PO-Revision-Date: 2015-06-17 15:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (http://www.transifex.com/projects/p/stoq/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -100,6 +100,7 @@ msgstr "Date:"
 #: ../data/glade/SaleQuoteItemSlave.ui.h:2
 #: ../data/glade/SellableCategoryEditor.ui.h:1
 #: ../data/glade/SellableEditor.ui.h:4 ../data/glade/SellableUnitEditor.ui.h:1
+#: ../data/glade/StockDecreaseItemSlave.ui.h:1
 #: ../data/glade/TransferItemSlave.ui.h:1 ../data/glade/WorkOrderEditor.ui.h:7
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:5
 msgid "Description:"
@@ -328,7 +329,7 @@ msgstr "Batch"
 #: ../stoqlib/gui/wizards/salequotewizard.py:346
 #: ../stoqlib/gui/wizards/salereturnwizard.py:236
 #: ../stoqlib/gui/wizards/salewizard.py:441
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:228
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:226
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:67
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:338
 #: ../stoqlib/reporting/product.py:128
@@ -1444,6 +1445,7 @@ msgstr "Price:"
 #: ../data/glade/ReceivingItemEditor.ui.h:6
 #: ../data/glade/SaleQuoteItemSlave.ui.h:5
 #: ../data/glade/SellableItemSlave.ui.h:2
+#: ../data/glade/StockDecreaseItemSlave.ui.h:3
 #: ../data/glade/TransferItemSlave.ui.h:3 ../data/glade/pos.ui.h:3
 msgid "Quantity:"
 msgstr "Quantity:"
@@ -2200,6 +2202,7 @@ msgstr "Sold Quantity:"
 #: ../data/glade/PurchaseItemEditor.ui.h:4
 #: ../data/glade/ReceivingItemEditor.ui.h:3
 #: ../data/glade/SellableItemSlave.ui.h:4
+#: ../data/glade/StockDecreaseItemSlave.ui.h:2
 #: ../data/glade/TransferItemSlave.ui.h:2
 msgid "Cost:"
 msgstr "Cost:"
@@ -2754,6 +2757,11 @@ msgstr "Identifier:"
 msgid "Products"
 msgstr "Products"
 
+#: ../data/glade/StockDecreaseItemSlave.ui.h:4
+#: ../data/glade/TransferItemSlave.ui.h:4
+msgid "Original cost:"
+msgstr "Original cost:"
+
 #: ../data/glade/StockTransferInitialStep.ui.h:1
 msgid "Comment:"
 msgstr "Comment:"
@@ -2922,10 +2930,6 @@ msgstr "Till Opening"
 #: ../data/glade/TillOpening.ui.h:4
 msgid "Cash to add ($CURRENCY):"
 msgstr "Cash to add ($CURRENCY):"
-
-#: ../data/glade/TransferItemSlave.ui.h:4
-msgid "Original cost:"
-msgstr "Original cost:"
 
 #: ../data/glade/TransferOrderDetails.ui.h:5
 #: ../data/glade/WorkOrderPackageSendEditor.ui.h:2
@@ -3329,7 +3333,7 @@ msgstr "Method"
 #: ../stoqlib/gui/wizards/salequotewizard.py:337
 #: ../stoqlib/gui/wizards/salereturnwizard.py:219
 #: ../stoqlib/gui/wizards/salewizard.py:437
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:223
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:221
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:172
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:332
 #: ../stoqlib/reporting/product.py:89 ../stoqlib/reporting/product.py:126
@@ -3742,7 +3746,7 @@ msgstr "Credit Transactions"
 #: ../stoqlib/gui/wizards/salequotewizard.py:333
 #: ../stoqlib/gui/wizards/salereturnwizard.py:215
 #: ../stoqlib/gui/wizards/salewizard.py:433
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:222
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:220
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:328
 #: ../stoqlib/reporting/product.py:88 ../stoqlib/reporting/product.py:125
 #: ../stoqlib/reporting/service.py:45
@@ -3901,7 +3905,7 @@ msgstr "Expiring date"
 #: ../stoqlib/gui/wizards/receivingwizard.py:250
 #: ../stoqlib/gui/wizards/salequotewizard.py:344
 #: ../stoqlib/gui/wizards/salewizard.py:439
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:226
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:224
 #: ../stoqlib/net/calendarevents.py:135
 msgid "Category"
 msgstr "Category"
@@ -3987,7 +3991,7 @@ msgstr "Price"
 #: ../stoqlib/gui/wizards/salequotewizard.py:370
 #: ../stoqlib/gui/wizards/salereturnwizard.py:239
 #: ../stoqlib/gui/wizards/salewizard.py:447
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:238
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:235
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:179
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:345
 #: ../stoqlib/reporting/financial.py:181 ../stoqlib/reporting/financial.py:241
@@ -4312,7 +4316,7 @@ msgstr "Purchase Ordered Items"
 #: ../stoqlib/gui/wizards/purchasewizard.py:301
 #: ../stoqlib/gui/wizards/receivingwizard.py:259
 #: ../stoqlib/gui/wizards/salequotewizard.py:352
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:237
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:234
 msgid "Cost"
 msgstr "Cost"
 
@@ -4890,7 +4894,7 @@ msgstr "fiscal printer is missing a constant for tax constant '%s'"
 #: ../stoqlib/gui/wizards/purchasewizard.py:299
 #: ../stoqlib/gui/wizards/receivingwizard.py:257
 #: ../stoqlib/gui/wizards/salequotewizard.py:348
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:231
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:228
 #: ../stoqlib/reporting/product.py:129
 msgid "Unit"
 msgstr "Unit"
@@ -6037,7 +6041,7 @@ msgstr "Print quote details"
 #: ../stoqlib/gui/wizards/receivingwizard.py:420
 #: ../stoqlib/gui/wizards/salequotewizard.py:569
 #: ../stoqlib/gui/wizards/salereturnwizard.py:527
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:311
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:308
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:254
 msgid "Don't print"
 msgstr "Don't print"
@@ -12841,6 +12845,18 @@ msgstr "Reset defaults"
 msgid "Shortcut"
 msgstr "Shortcut"
 
+#: ../stoqlib/gui/editors/stockdecreaseeditor.py:41
+msgid "Stock decrease item"
+msgstr "Stock decrease item"
+
+#: ../stoqlib/gui/editors/stockdecreaseeditor.py:90
+msgid "The quantity should be greater than zero"
+msgstr "The quantity should be greater than zero"
+
+#: ../stoqlib/gui/editors/stockdecreaseeditor.py:94
+msgid "The cost must be greater than zero"
+msgstr "The cost must be greater than zero"
+
 #: ../stoqlib/gui/editors/taxclasseditor.py:42
 msgid "Base Category"
 msgstr "Base Category"
@@ -15250,7 +15266,7 @@ msgid "Would you like to print the receipt now?"
 msgstr "Would you like to print the receipt now?"
 
 #: ../stoqlib/gui/wizards/loanwizard.py:460
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:311
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:308
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:254
 msgid "Print receipt"
 msgstr "Print receipt"
@@ -15611,11 +15627,11 @@ msgid ""
 "another one."
 msgstr "The invoice number %s is already used. Confirm the sale again to chose another one."
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:286
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:283
 msgid "Manual Stock Decrease"
 msgstr "Manual Stock Decrease"
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:309
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:306
 msgid "Would you like to print a receipt?"
 msgstr "Would you like to print a receipt?"
 
