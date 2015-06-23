@@ -1058,6 +1058,9 @@ class Sale(Domain):
 
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
+        if self.sale_token:
+            self.sale_token.close_token()
+
         # do not log money payments twice
         if not self.only_paid_with_money():
             if self.client:

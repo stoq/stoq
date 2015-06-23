@@ -313,6 +313,18 @@ class TestSale(DomainTest):
         with self.assertRaisesRegexp(SellError, expected):
             sale.order()
 
+    def test_confirm_with_sale_token(self):
+        token = self.create_sale_token(code=u'Token')
+        sale = self.create_sale(sale_token=token)
+
+        self.add_product(sale)
+        self.add_payments(sale, u'money')
+        sale.status = Sale.STATUS_QUOTE
+        token.status = SaleToken.STATUS_OCCUPIED
+
+        sale.confirm()
+        self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
+
     def test_confirm_money(self):
         sale = self.create_sale()
         self.add_product(sale)
