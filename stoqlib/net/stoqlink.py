@@ -27,9 +27,9 @@ import decimal
 import json
 
 from kiwi.currency import currency
-from storm.expr import Sum, Join
+from storm.expr import Sum, Join, Select, Alias
 
-from stoqlib.database.expr import Date, DateTrunc
+from stoqlib.database.expr import Date, DateTrunc, Field
 from stoqlib.domain.sale import Sale, SaleItem, SaleView
 from stoqlib.domain.sellable import Sellable
 
@@ -61,6 +61,17 @@ def collect_link_statistics(store):
     one_week = datetime.date.today() - datetime.timedelta(days=7)
     query = Date(Sale.confirm_date) >= one_week
 
+    # Profit Margin
+    item_cost = Alias(Select(columns=[SaleItem.sale_id,
+                                      Alias(Sum(SaleItem.quantity *
+                                                SaleItem.average_cost),
+                                            'cost')], tables=SaleItem,
+                             group_by=[SaleItem.sale_id]), 'item_cost')
+
+    column = ((Sum(Sale.total_amount) / Sum(Field('item_cost', 'cost')) - 1) * 100)
+    tables = [Sale, Join(item_cost, Field('item_cost', 'sale_id') == Sale.id)]
+    profit_margin = store.using(*tables).find(column, query).one()
+
     # Sale chart
     columns = (DateTrunc(u'day', Sale.confirm_date), Sum(Sale.total_amount))
     sale_data = store.find(columns, query)
@@ -78,6 +89,8 @@ def collect_link_statistics(store):
     data = dict(
         sales_total=store.find(Sale, query).sum(Sale.total_amount),
         sales_count=store.find(Sale, query).count(),
+        clients_served=store.find(Sale, query).count(Sale.client_id, distinct=True),
+        profit_margin=format(float(profit_margin), '.2f'),
         best_selling=list(product_data),
         sales_chart=list(sale_data),
         timeline=_collect_timeline(store),
