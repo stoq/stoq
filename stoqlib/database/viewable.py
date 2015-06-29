@@ -123,7 +123,7 @@ import inspect
 import warnings
 
 from kiwi.python import ClassInittableObject
-from storm.expr import Expr
+from storm.expr import Expr, JoinExpr
 from storm.properties import PropertyColumn
 
 from stoqlib.database.orm import ORMObject
@@ -209,7 +209,7 @@ class Viewable(ClassInittableObject):
                     continue
 
                 if (is_domain or isinstance(value, PropertyColumn) or
-                    isinstance(value, Expr)):
+                        isinstance(value, Expr)):
                     attributes.append(attr)
                     cls_spec.append(value)
 
@@ -250,3 +250,35 @@ class Viewable(ClassInittableObject):
             new_table.group_by = group_by
 
         return new_table
+
+    @classmethod
+    def has_join_with(cls, table):
+        """Checks if this view has a join with some table.
+
+        This will look at all the joins of the viewable and return True if the
+        given table is in one of the joins, and False otherwise
+
+        :param table: Table that is performed Join.
+        """
+        for i in cls.tables:
+            if not isinstance(i, JoinExpr):
+                if i is table:
+                    return True
+            elif table in (i.left, i.right):
+                return True
+        return False
+
+    @classmethod
+    def has_column(cls, column):
+        """Checks if the given column is selected in this view.
+
+        This will look at all the selected columns and return True if the given
+        one is one of them, False otherwise.
+        Note that this will not work for storm expressions (like Sum or Count)
+
+        :param column: The column to be searched.
+        """
+        for col in cls.cls_spec:
+            if col is column:
+                return True
+        return False

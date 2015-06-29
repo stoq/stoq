@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import decimal
 import logging
 
 import gtk
@@ -29,6 +30,7 @@ from storm.expr import LeftJoin
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.product import Product, ProductManufacturer
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.workorder import WorkOrder
@@ -40,7 +42,6 @@ from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 EditorCreateEvent, RunDialogEvent,
                                 PrintReportEvent, SearchDialogSetupSearchEvent,
                                 ApplicationSetupSearchEvent)
-from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchextension import SearchExtension
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
@@ -68,16 +69,70 @@ log = logging.getLogger(__name__)
 class ProductSearchExtention(SearchExtension):
     spec_attributes = dict(
         gf_glass_type=OpticalProduct.gf_glass_type,
+        gf_size=OpticalProduct.gf_size,
+        gf_lens_type=OpticalProduct.gf_lens_type,
+        gf_color=OpticalProduct.gf_color,
+        gl_photosensitive=OpticalProduct.gl_photosensitive,
+        gl_anti_glare=OpticalProduct.gl_anti_glare,
+        gl_refraction_index=OpticalProduct.gl_refraction_index,
+        gl_classification=OpticalProduct.gl_classification,
+        gl_addition=OpticalProduct.gl_addition,
+        gl_diameter=OpticalProduct.gl_diameter,
+        gl_height=OpticalProduct.gl_height,
+        gl_availability=OpticalProduct.gl_availability,
+        cl_degree=OpticalProduct.cl_degree,
+        cl_classification=OpticalProduct.cl_classification,
+        cl_lens_type=OpticalProduct.cl_lens_type,
+        cl_discard=OpticalProduct.cl_discard,
+        cl_addition=OpticalProduct.cl_addition,
+        cl_cylindrical=OpticalProduct.cl_cylindrical,
+        cl_axis=OpticalProduct.cl_axis,
+        cl_color=OpticalProduct.cl_color,
+        cl_curvature=OpticalProduct.cl_curvature,
     )
     spec_joins = [
         LeftJoin(OpticalProduct, OpticalProduct.product_id == Product.id)
     ]
 
     def get_columns(self):
-        return [
-            SearchColumn('gf_glass_type', title=_('Glass type'), data_type=str,
-                         visible=False)
-        ]
+        info_cols = {
+            _('Frame'): [
+                ('gf_glass_type', _('Glass Type'), str, False),
+                ('gf_size', _('Size'), str, False),
+                ('gf_lens_type', _('Lens Type'), str, False),
+                ('gf_color', _('Color'), str, False),
+            ],
+            _('Glass Lenses'): [
+                ('gl_photosensitive', _('Photosensitive'), str, False),
+                ('gl_anti_glare', _('Anti Glare'), str, False),
+                ('gl_refraction_index', _('Refraction Index'), decimal.Decimal,
+                 False),
+                ('gl_classification', _('Classification'), str, False),
+                ('gl_addition', _('Addition'), str, False),
+                ('gl_diameter', _('Diameter'), str, False),
+                ('gl_height', _('Height'), str, False),
+                ('gl_availability', _('Availability'), str, False),
+            ],
+            _('Contact Lenses'): [
+                ('cl_degree', _('Degree'), decimal.Decimal, False),
+                ('cl_classification', _('Classification'), str, False),
+                ('cl_lens_type', _('Lens Type'), str, False),
+                ('cl_discard', _('Discard'), str, False),
+                ('cl_addition', _('Addition'), str, False),
+                ('cl_cylindrical', _('Cylindrical'), decimal.Decimal, False),
+                ('cl_axis', _('Axis'), decimal.Decimal, False),
+                ('cl_color', _('Color'), str, False),
+                ('cl_curvature', _('Curvature'), str, False),
+            ],
+        }
+
+        columns = []
+        for label, columns_list in info_cols.iteritems():
+            for c in columns_list:
+                columns.append(
+                    SearchColumn(c[0], title='%s - %s' % (label, c[1]),
+                                 data_type=c[2], visible=c[3]))
+        return columns
 
 
 class ServicesSearchExtention(SearchExtension):
@@ -265,7 +320,11 @@ class OpticalUI(object):
             return MedicRoleWizard
 
     def _on_SearchDialogSetupSearchEvent(self, dialog):
-        if isinstance(dialog, ProductSearch):
+        if not issubclass(dialog.search_spec, Viewable):
+            return
+        viewable = dialog.search_spec
+        if (viewable.has_column(Sellable.description) and
+                viewable.has_join_with(Product)):
             dialog.add_extension(ProductSearchExtention())
 
     def _on_ApplicationSetupSearchEvent(self, app):

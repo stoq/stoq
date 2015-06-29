@@ -36,6 +36,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.person import Person, Client, Individual
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import TillEntry
 
@@ -152,3 +153,12 @@ class ViewableTest(DomainTest):
 
         # And we still can hash the object
         assert hash(items[0])
+
+    def test_has_column(self):
+        self.assertTrue(ClientView.has_column(column=ClientView.client))
+        self.assertFalse(ClientView.has_column(column=Sellable.description))
+
+    def test_has_join_with(self):
+        self.assertTrue(ClientView.has_join_with(table=Client))
+        self.assertTrue(ClientView.has_join_with(table=Sale))
+        self.assertFalse(ClientView.has_join_with(table=Sellable))

@@ -27,6 +27,7 @@ import gtk
 import mock
 
 from stoqlib.database.runtime import StoqlibStore
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.workorder import WorkOrderCategory
@@ -188,9 +189,17 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
 
     def test_product_search(self):
         from stoqlib.gui.search.productsearch import ProductSearch
+        from stoqlib.gui.search.costcentersearch import CostCenterSearch
+        # ProductSearch should have new columns
         search = ProductSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'search-optical-product-search')
+
+        # Cost center search does not use a viewable, so it should not have columns
+        assert not issubclass(CostCenterSearch.search_spec, Viewable)
+        search = CostCenterSearch(self.store)
+        search.search.refresh()
+        self.check_search(search, 'search-optical-cost-center-search')
 
     def test_services_app(self):
         product = self.create_product()
