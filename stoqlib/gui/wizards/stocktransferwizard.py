@@ -28,7 +28,6 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
-from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import Invoice
@@ -155,11 +154,9 @@ class StockTransferItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        branch_query = self.sellable_view.branch_id == self.model.branch.id
         sellable_query = Sellable.get_unblocked_sellables_query(self.store,
-                                                                storable=True)
-        query = And(branch_query, sellable_query)
-        return self.sellable_view, query
+                                                                storable=False)
+        return self.sellable_view, sellable_query
 
     def get_saved_items(self):
         return list(self.model.get_items())
@@ -184,11 +181,15 @@ class StockTransferItemStep(SellableItemStep):
         return format_sellable_description(item.sellable, item.batch)
 
     def _get_stock_quantity(self, item):
+        if not item.sellable.product.manage_stock:
+            return
         storable = item.sellable.product_storable
         stock_item = storable.get_stock_item(self.model.branch, item.batch)
         return stock_item.quantity or 0
 
     def _get_total_quantity(self, item):
+        if not item.sellable.product.manage_stock:
+            return
         qty = self._get_stock_quantity(item)
         qty -= item.quantity
         if qty > 0:
@@ -201,7 +202,7 @@ class StockTransferItemStep(SellableItemStep):
     def sellable_selected(self, sellable, batch=None):
         SellableItemStep.sellable_selected(self, sellable, batch=batch)
 
-        if sellable is None:
+        if sellable is None or not sellable.product.manage_stock:
             return
 
         storable = sellable.product_storable

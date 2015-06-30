@@ -98,6 +98,17 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(order.can_send(), False)
         self.assertEqual(order.can_receive(), False)
 
+    def test_add_sellable(self):
+        order = self.create_transfer_order()
+        product = self.create_product()
+        product.manage_stock = False
+        order.add_sellable(product.sellable, None)
+
+        transfer_order_item = self.store.find(TransferOrderItem,
+                                              sellable=product.sellable).one()
+
+        self.assertFalse(transfer_order_item.sellable.product.manage_stock)
+
     def test_send(self):
         qty = 2
         order = self.create_transfer_order()

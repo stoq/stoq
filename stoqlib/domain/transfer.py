@@ -152,11 +152,13 @@ class TransferOrderItem(Domain):
         This method should never be used directly, and to send a transfer you
         should use TransferOrder.send().
         """
-        storable = self.sellable.product_storable
-        storable.decrease_stock(self.quantity,
-                                self.transfer_order.source_branch,
-                                StockTransactionHistory.TYPE_TRANSFER_TO,
-                                self.id, batch=self.batch)
+        product = self.sellable.product
+        if product.manage_stock:
+            storable = product.storable
+            storable.decrease_stock(self.quantity,
+                                    self.transfer_order.source_branch,
+                                    StockTransactionHistory.TYPE_TRANSFER_TO,
+                                    self.id, batch=self.batch)
         ProductHistory.add_transfered_item(self.store,
                                            self.transfer_order.source_branch,
                                            self)
@@ -166,12 +168,14 @@ class TransferOrderItem(Domain):
         This method should never be used directly, and to receive a transfer
         you should use TransferOrder.receive().
         """
-        storable = self.sellable.product_storable
-        storable.increase_stock(self.quantity,
-                                self.transfer_order.destination_branch,
-                                StockTransactionHistory.TYPE_TRANSFER_FROM,
-                                self.id, unit_cost=self.stock_cost,
-                                batch=self.batch)
+        product = self.sellable.product
+        if product.manage_stock:
+            storable = product.storable
+            storable.increase_stock(self.quantity,
+                                    self.transfer_order.destination_branch,
+                                    StockTransactionHistory.TYPE_TRANSFER_FROM,
+                                    self.id, unit_cost=self.stock_cost,
+                                    batch=self.batch)
 
 
 @implementer(IContainer)
@@ -313,15 +317,20 @@ class TransferOrder(Domain):
 
         self.validate_batch(batch, sellable=sellable)
 
-        stock_item = sellable.product_storable.get_stock_item(
-            self.source_branch, batch)
+        product = sellable.product
+        if product.manage_stock:
+            stock_item = product.storable.get_stock_item(
+                self.source_branch, batch)
+            stock_cost = stock_item.stock_cost
+        else:
+            stock_cost = sellable.cost
 
         return TransferOrderItem(store=self.store,
                                  transfer_order=self,
                                  sellable=sellable,
                                  batch=batch,
                                  quantity=quantity,
-                                 stock_cost=cost or stock_item.stock_cost)
+                                 stock_cost=cost or stock_cost)
 
     def can_send(self):
         return (self.status == self.STATUS_PENDING and
