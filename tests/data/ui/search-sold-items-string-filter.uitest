@@ -44,9 +44,11 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
             column: title='Branch'
             column: title='Quantity'
             column: title='Total'
-          GtkHBox(_summary_label):
-            GtkLabel(expand=True, fill=True, padding=6): 'Total:'
-            GtkLabel(): '<b>$ 0.00</b>'
+      GtkHBox(fill=True):
+        GtkLabel(expand=True, fill=True):
+        GtkLabel(items_label): 'Items: 0'
+        GtkLabel(quantity_label): 'Quantity: 0'
+        GtkLabel(total_label): 'Total: $ 0.00'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

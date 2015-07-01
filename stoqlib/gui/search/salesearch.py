@@ -208,9 +208,42 @@ class SoldItemsByBranchSearch(SearchDialog):
 
     def setup_widgets(self):
         self.add_csv_button(_('Sales'), _('sales'))
+        self._setup_summary()
 
-        self.search.set_summary_label('total', label=_(u'Total:'),
-                                      format='<b>%s</b>')
+    def _setup_summary(self):
+        hbox = gtk.HBox()
+        hbox.set_spacing(6)
+
+        self.vbox.pack_start(hbox, False, True)
+        self.vbox.reorder_child(hbox, 2)
+        self.vbox.set_spacing(6)
+
+        hbox.pack_start(gtk.Label(), True, True)
+
+        # Create some labels to show a summary for the search (kiwi's
+        # SummaryLabel supports only one column)
+        self.items_label = gtk.Label()
+        self.quantity_label = gtk.Label()
+        self.total_label = gtk.Label()
+        for widget in [self.items_label, self.quantity_label, self.total_label]:
+            hbox.pack_start(widget, False, False)
+            set_bold(widget)
+
+        hbox.show_all()
+
+    def _update_summary(self, results):
+        items = total_quantity = total = 0
+        for obj in results:
+            items += 1
+            total_quantity += obj.quantity
+            total += obj.total
+
+        self.items_label.set_label(_(u'Items: %s') %
+                                   format_quantity(items))
+        self.quantity_label.set_label(_(u'Quantity: %s') %
+                                      format_quantity(total_quantity))
+        self.total_label.set_label(_(u'Total: %s') %
+                                   get_formatted_price(total))
 
     def create_filters(self):
         date_filter = DateSearchFilter(_('Date:'))
@@ -230,6 +263,9 @@ class SoldItemsByBranchSearch(SearchDialog):
                        format_func=format_quantity, width=100),
                 Column('total', title=_('Total'), data_type=currency, width=80)
                 ]
+
+    def on_search__search_completed(self, search, result_view, states):
+        self._update_summary(result_view)
 
 
 class SoldItemsByClientSearch(SearchDialog):
