@@ -439,7 +439,7 @@ class PosApp(ShellApp):
             sellable.check_taxes_validity()
         except TaxError as strerr:
             # If the sellable icms taxes are not valid, we cannot sell it.
-            warning(strerr)
+            warning(str(strerr))
             return
 
         quantity = self.sellableitem_proxy.model.quantity
