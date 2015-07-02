@@ -87,6 +87,8 @@ class StockDecreaseSearch(SearchDialog):
                        data_type=str, expand=True),
                 SearchColumn('removed_by_name', title=_('Removed By'),
                              data_type=str, width=120),
+                SearchColumn('sent_to_name', title=_('Sent To'),
+                             data_type=str, visible=False),
                 Column('total_items_removed', title=_('Items removed'),
                        data_type=Decimal, width=110),
                 Column('cfop_description', title=_('CFOP'), data_type=str,

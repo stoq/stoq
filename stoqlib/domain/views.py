@@ -638,6 +638,7 @@ class StockDecreaseView(Viewable):
     """Stores information about all stock decreases
     """
     _PersonBranch = ClassAlias(Person, "person_branch")
+    _PersonSentTo = ClassAlias(Person, "person_sent_to")
 
     stock_decrease = StockDecrease
 
@@ -648,6 +649,7 @@ class StockDecreaseView(Viewable):
     cfop_description = CfopData.description
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), _PersonBranch.name)
     removed_by_name = Person.name
+    sent_to_name = _PersonSentTo.name
 
     # Aggregate
     total_items_removed = Sum(StockDecreaseItem.quantity)
@@ -658,13 +660,15 @@ class StockDecreaseView(Viewable):
         Join(Person, Employee.person_id == Person.id),
         Join(Branch, StockDecrease.branch_id == Branch.id),
         Join(_PersonBranch, Branch.person_id == _PersonBranch.id),
+        LeftJoin(_PersonSentTo, StockDecrease.person_id == _PersonSentTo.id),
         Join(Company, Company.person_id == _PersonBranch.id),
         LeftJoin(CfopData, CfopData.id == StockDecrease.cfop_id),
         Join(StockDecreaseItem,
              StockDecreaseItem.stock_decrease_id == StockDecrease.id)
     ]
 
-    group_by = [id, CfopData.id, Company.id, Person.id, _PersonBranch]
+    group_by = [id, CfopData.id, Company.id, Person.id, _PersonBranch,
+                _PersonSentTo]
 
 
 class StockDecreaseItemsView(Viewable):
