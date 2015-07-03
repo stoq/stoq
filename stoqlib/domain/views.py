@@ -978,7 +978,7 @@ class ProductBatchView(Viewable):
     branch_name = Company.fancy_name
     description = Sellable.description
     quantity = ProductStockItem.quantity
-    batch_number = StorableBatch.batch_number
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
     batch_date = StorableBatch.create_date
     category = SellableCategory.description
     manufacturer = ProductManufacturer.name
@@ -989,7 +989,7 @@ class ProductBatchView(Viewable):
         ProductStockItem,
         Join(Branch, ProductStockItem.branch_id == Branch.id),
         Join(Company, Branch.person_id == Company.person_id),
-        Join(StorableBatch, ProductStockItem.batch_id == StorableBatch.id),
+        LeftJoin(StorableBatch, ProductStockItem.batch_id == StorableBatch.id),
         Join(Storable, ProductStockItem.storable_id == Storable.id),
         Join(Product, Storable.product_id == Product.id),
         Join(Sellable, Product.sellable_id == Sellable.id),
