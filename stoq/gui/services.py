@@ -215,7 +215,7 @@ class ServicesApp(ShellApp):
             ("Cancel", gtk.STOCK_CANCEL, _(u"Cancel..."),
              group.get('order_cancel'),
              _(u"Cancel the selected order")),
-            ("DeliverOrder", None, _(u"Delivered...")),
+            ("DeliverOrder", None, _(u"Deliver...")),
             ("Details", gtk.STOCK_INFO, _(u"Details..."),
              group.get('order_details'),
              _(u"Show details of the selected order")),
@@ -470,10 +470,17 @@ class ServicesApp(ShellApp):
 
         self.set_sensitive([self.Edit], has_selected and wo.can_edit())
         self.set_sensitive([self.Details], has_selected)
-        self.set_sensitive([self.Finish], has_selected and wo.can_finish())
+        self.set_sensitive([self.Finish], has_selected and (wo.can_finish() or
+                                                            wo.can_close()))
         self.set_sensitive([self.Cancel], has_selected and wo.can_cancel())
         self.set_sensitive([self.PrintReceipt], has_selected and wo.is_finished())
         self.set_sensitive([self.PrintQuote], has_quote)
+
+        self.Finish.set_short_label(_(u"Finish"))
+        # If the selected work order is already finished, we change the finish
+        # button's label.
+        if has_selected and wo.status == WorkOrder.STATUS_WORK_FINISHED:
+            self.Finish.set_short_label(_(u"Deliver"))
 
         for widget, value in [
                 (self.Approve, has_selected and wo.can_approve()),
@@ -544,6 +551,13 @@ class ServicesApp(ShellApp):
             self._update_view()
             # A category may have been created on the editor
             self._update_filters()
+
+    def _finish_or_deliver_order(self):
+        work_order = self.search.get_selected_item().work_order
+        if work_order.status == WorkOrder.STATUS_WORK_FINISHED:
+            self._close_order()
+        else:
+            self._finish_order()
 
     def _finish_order(self):
         work_order = self.search.get_selected_item().work_order
@@ -769,7 +783,7 @@ class ServicesApp(ShellApp):
         self._edit_order()
 
     def on_Finish__activate(self, action):
-        self._finish_order()
+        self._finish_or_deliver_order()
 
     def on_Cancel__activate(self, action):
         self._cancel_order()
