@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-01 13:55-0300\n"
-"PO-Revision-Date: 2015-07-01 16:55+0000\n"
+"POT-Creation-Date: 2015-07-02 14:03-0300\n"
+"PO-Revision-Date: 2015-07-02 17:03+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (http://www.transifex.com/projects/p/stoq/language/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -2428,7 +2428,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/saledetails.py:277
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:207
 #: ../stoqlib/gui/editors/workordereditor.py:259
-#: ../stoqlib/gui/search/stockdecreasesearch.py:94
+#: ../stoqlib/gui/search/stockdecreasesearch.py:96
 msgid "Reason"
 msgstr "Razão"
 
@@ -14083,10 +14083,14 @@ msgid "Manual Stock Decrease Search"
 msgstr "Pesquisa de saídas manuais"
 
 #: ../stoqlib/gui/search/stockdecreasesearch.py:90
+msgid "Sent To"
+msgstr ""
+
+#: ../stoqlib/gui/search/stockdecreasesearch.py:92
 msgid "Items removed"
 msgstr "Itens removidos"
 
-#: ../stoqlib/gui/search/stockdecreasesearch.py:92
+#: ../stoqlib/gui/search/stockdecreasesearch.py:94
 #: ../stoqlib/gui/wizards/salequotewizard.py:358
 msgid "CFOP"
 msgstr "C.F.O.P."
