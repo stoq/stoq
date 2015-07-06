@@ -4,8 +4,7 @@
 #
 
 Mako >= 0.2.5
-PIL >= 1.1.5
-PyGTK >= 2.20
+Pillow >= 1.1.5
 Twisted >= 0.2.5
 dateutil >= 1.4.1
 kiwi-gtk >= 1.9.40
