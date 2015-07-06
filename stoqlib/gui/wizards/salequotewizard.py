@@ -85,7 +85,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
     def _setup_widgets(self):
         # Salesperson combo
-        salespersons = self.store.find(SalesPerson)
+        salespersons = SalesPerson.get_active_salespersons(self.store)
         self.salesperson.prefill(api.for_person_combo(salespersons))
 
         change_salesperson = sysparam.get_int('ACCEPT_CHANGE_SALESPERSON')

@@ -30,7 +30,7 @@ from kiwi.component import provide_utility
 
 from stoqlib.api import api
 from stoqlib.database.interfaces import ICurrentUser
-from stoqlib.domain.person import LoginUser, Person
+from stoqlib.domain.person import LoginUser, Person, Employee
 from stoqlib.gui.dialogs.contactsdialog import ContactInfoListDialog
 from stoqlib.gui.editors.personeditor import (ClientEditor, UserEditor,
                                               EmployeeRoleEditor,
@@ -206,6 +206,28 @@ class TestEmployeeEditor(_BasePersonEditorTest):
     def test_create_company(self):
         editor = EmployeeEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-employee-company-create')
+
+    def test_update_status(self):
+        employee = self.create_employee()
+        sales_person = self.create_sales_person()
+        employee.person.sales_person = sales_person
+        sales_person.is_active = False
+        editor = EmployeeEditor(self.store, role_type=Person.ROLE_INDIVIDUAL,
+                                model=employee)
+
+        individual_slave = editor._person_slave
+        address_slave = editor._person_slave.address_slave
+        employee_role_slave = editor.role_slave
+
+        individual_slave.name.update('name foo')
+        address_slave.street.update('street foo')
+        address_slave.streetnumber.update(800)
+        address_slave.district.update('district foo')
+        employee_role_slave.salary.update(decimal.Decimal('50'))
+
+        editor.status_slave.statuses_combo.update(Employee.STATUS_NORMAL)
+        self.click(editor.main_dialog.ok_button)
+        self.assertTrue(sales_person.is_active)
 
 
 class TestSupplierEditor(_BasePersonEditorTest):

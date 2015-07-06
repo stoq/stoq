@@ -116,6 +116,18 @@ class EmployeeStatusSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     EmployeeStatusSlave.proxy_widgets)
 
+    def on_confirm(self):
+        sales_person = self.model.person.sales_person
+        if not sales_person:
+            return
+        status = self.model.status
+        if status in [Employee.STATUS_NORMAL, Employee.STATUS_VACATION]:
+            if not sales_person.is_active:
+                sales_person.activate()
+        else:
+            if sales_person.is_active:
+                sales_person.inactivate()
+
 
 class EmployeeRoleSlave(BaseEditorSlave):
     gladefile = 'EmployeeRoleSlave'
