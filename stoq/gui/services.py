@@ -299,7 +299,7 @@ class ServicesApp(ShellApp):
         self.refresh()
 
     def new_activate(self):
-        self._new_order()
+        self.new_order()
 
     def search_activate(self):
         self.run_dialog(ProductSearch, self.store,
@@ -530,10 +530,11 @@ class ServicesApp(ShellApp):
         self.main_filter.update_values(
             [(item.name, item) for item in options])
 
-    def _new_order(self, category=None):
+    def new_order(self, category=None, available_categories=None):
         with api.new_store() as store:
             work_order = self.run_dialog(WorkOrderEditor, store,
-                                         category=store.fetch(category))
+                                         category=store.fetch(category),
+                                         available_categories=available_categories)
 
         if store.committed:
             self._update_view(select_item=work_order)
@@ -768,10 +769,10 @@ class ServicesApp(ShellApp):
         else:
             category = None
 
-        self._new_order(category=category)
+        self.new_order(category=category)
 
     def on_NewOrder__activate(self, action):
-        self._new_order()
+        self.new_order()
 
     def on_SendOrders__activate(self, action):
         self._send_orders()

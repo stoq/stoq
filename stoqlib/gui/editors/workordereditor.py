@@ -26,6 +26,8 @@
 import datetime
 
 import gtk
+
+from storm.expr import In
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 
@@ -72,8 +74,15 @@ class WorkOrderEditor(BaseEditor):
         'quantity',
     ]
 
-    def __init__(self, store, model=None, visual_mode=False, category=None):
+    def __init__(self, store, model=None, visual_mode=False, category=None,
+                 available_categories=None):
+        """
+        @param category: The default category that should be already selected.
+        @param available_categories: A list of categories names that should be
+          available to the user. If None, all categoires will be available
+        """
         self._default_category = category
+        self.categories_for_combo = available_categories
         self.proxy = None
         super(WorkOrderEditor, self).__init__(store, model=model,
                                               visual_mode=visual_mode)
@@ -234,7 +243,12 @@ class WorkOrderEditor(BaseEditor):
             parent=self)
 
     def _fill_categories_combo(self):
-        categories = self.store.find(WorkOrderCategory)
+        if self.categories_for_combo is not None:
+            categories = self.store.find(WorkOrderCategory,
+                                         In(WorkOrderCategory.name,
+                                            self.categories_for_combo))
+        else:
+            categories = self.store.find(WorkOrderCategory)
         self.category.color_attribute = 'color'
         self.category.prefill(
             api.for_combo(categories, empty=_(u"No category")))
