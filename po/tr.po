@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-03 13:27-0300\n"
-"PO-Revision-Date: 2015-07-03 16:27+0000\n"
+"POT-Creation-Date: 2015-07-08 16:19-0300\n"
+"PO-Revision-Date: 2015-07-08 17:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
-"Language-Team: Turkish (http://www.transifex.com/projects/p/stoq/language/tr/)\n"
+"Language-Team: Turkish (http://www.transifex.com/p/stoq/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2417,7 +2417,7 @@ msgstr ""
 #: ../data/glade/ReturnedSalesDetails.ui.h:11
 #: ../data/glade/StockDecreaseDetails.ui.h:9
 #: ../data/template/return_sale/return_sale-items.html:8
-#: ../stoq/gui/sales.py:535 ../stoq/gui/services.py:713
+#: ../stoq/gui/sales.py:535 ../stoq/gui/services.py:714
 #: ../stoqlib/gui/dialogs/clientdetails.py:232
 #: ../stoqlib/gui/dialogs/inventorydetails.py:93
 #: ../stoqlib/gui/dialogs/inventorydetails.py:124
@@ -2428,7 +2428,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:157
 #: ../stoqlib/gui/dialogs/saledetails.py:277
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:207
-#: ../stoqlib/gui/editors/workordereditor.py:259
+#: ../stoqlib/gui/editors/workordereditor.py:273
 #: ../stoqlib/gui/search/stockdecreasesearch.py:96
 msgid "Reason"
 msgstr ""
@@ -3011,8 +3011,8 @@ msgstr ""
 msgid "Equipment:"
 msgstr ""
 
-#: ../data/glade/WorkOrderEditor.ui.h:6 ../stoq/gui/services.py:612
-#: ../stoqlib/gui/editors/workordereditor.py:196
+#: ../data/glade/WorkOrderEditor.ui.h:6 ../stoq/gui/services.py:613
+#: ../stoqlib/gui/editors/workordereditor.py:205
 msgid "Approve"
 msgstr ""
 
@@ -3474,8 +3474,8 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/clientdetails.py:405
 #: ../stoqlib/gui/dialogs/clientdetails.py:409
 #: ../stoqlib/gui/dialogs/clientdetails.py:412
-#: ../stoqlib/gui/editors/workordereditor.py:371
-#: ../stoqlib/gui/editors/workordereditor.py:374
+#: ../stoqlib/gui/editors/workordereditor.py:385
+#: ../stoqlib/gui/editors/workordereditor.py:388
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:122
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:125
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:279
@@ -3794,7 +3794,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/deliveryeditor.py:106
 #: ../stoqlib/gui/editors/deliveryeditor.py:244
 #: ../stoqlib/gui/editors/personeditor.py:55
-#: ../stoqlib/gui/editors/workordereditor.py:378
+#: ../stoqlib/gui/editors/workordereditor.py:392
 #: ../stoqlib/gui/search/callsearch.py:175
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:90
 #: ../stoqlib/gui/search/deliverysearch.py:91
@@ -3833,7 +3833,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:148
 #: ../stoqlib/gui/editors/paymenteditor.py:76
 #: ../stoqlib/gui/editors/personeditor.py:286
-#: ../stoqlib/gui/editors/workordereditor.py:377
+#: ../stoqlib/gui/editors/workordereditor.py:391
 #: ../stoqlib/gui/search/loansearch.py:143
 #: ../stoqlib/gui/search/productsearch.py:446
 #: ../stoqlib/gui/search/productsearch.py:540
@@ -4019,7 +4019,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/saledetails.py:301
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:131
 #: ../stoqlib/gui/editors/creditcheckhistoryeditor.py:55
-#: ../stoqlib/gui/editors/workordereditor.py:426
+#: ../stoqlib/gui/editors/workordereditor.py:440
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:85
 #: ../stoqlib/gui/slaves/workorderslave.py:471
 #: ../stoqlib/gui/slaves/workorderslave.py:488
@@ -4063,7 +4063,7 @@ msgstr ""
 #: ../data/template/optical/prescription.html:10
 #: ../data/template/optical/workorderdetails.html:8
 #: ../plugins/optical/opticalreport.py:33 ../stoq/gui/calendar.py:288
-#: ../stoqlib/gui/editors/workordereditor.py:63
+#: ../stoqlib/gui/editors/workordereditor.py:65
 #: ../stoqlib/lib/parameters.py:829 ../stoqlib/reporting/workorder.py:42
 msgid "Work order"
 msgstr ""
@@ -4079,7 +4079,7 @@ msgstr ""
 
 #: ../data/template/optical/saledetails.html:7
 #: ../plugins/optical/medicssearch.py:118 ../stoq/gui/services.py:370
-#: ../stoqlib/gui/editors/workordereditor.py:367
+#: ../stoqlib/gui/editors/workordereditor.py:381
 #: ../stoqlib/gui/search/commissionsearch.py:130
 #: ../stoqlib/gui/search/deliverysearch.py:80
 #: ../stoqlib/gui/search/returnedsalesearch.py:82
@@ -4160,7 +4160,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/supplierdetails.py:119
 #: ../stoqlib/gui/dialogs/supplierdetails.py:143
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:127
-#: ../stoqlib/gui/editors/workordereditor.py:368
+#: ../stoqlib/gui/editors/workordereditor.py:382
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:83
 #: ../stoqlib/gui/search/deliverysearch.py:82
 #: ../stoqlib/gui/search/paymentsearch.py:88
@@ -4593,7 +4593,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:91
 #: ../stoqlib/gui/dialogs/productstockdetails.py:275
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:141
-#: ../stoqlib/gui/editors/workordereditor.py:381
+#: ../stoqlib/gui/editors/workordereditor.py:395
 #: ../stoqlib/gui/search/deliverysearch.py:93
 #: ../stoqlib/gui/search/loansearch.py:74
 #: ../stoqlib/gui/search/loansearch.py:139
@@ -4628,7 +4628,7 @@ msgid "Order Number"
 msgstr ""
 
 #: ../data/template/workorder/receipt.html:40 ../stoq/gui/services.py:394
-#: ../stoqlib/gui/editors/workordereditor.py:383
+#: ../stoqlib/gui/editors/workordereditor.py:397
 #: ../stoqlib/gui/search/workordersearch.py:71
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:133
 msgid "Approval date"
@@ -5374,7 +5374,7 @@ msgstr ""
 #. TRANSLATORS: Traduzir como 'Anamnese'
 #: ../plugins/optical/glade/PatientHistory.ui.h:42
 #: ../plugins/optical/glade/PatientHistoryDialog.ui.h:3
-#: ../plugins/optical/opticalhistory.py:55 ../plugins/optical/opticalui.py:228
+#: ../plugins/optical/opticalhistory.py:55 ../plugins/optical/opticalui.py:283
 msgid "Patient History"
 msgstr ""
 
@@ -5576,6 +5576,7 @@ msgstr ""
 
 #: ../plugins/optical/glade/PatientTest.ui.h:20
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:13
+#: ../plugins/optical/opticalui.py:122
 msgid "Cylindrical"
 msgstr ""
 
@@ -5702,6 +5703,7 @@ msgid "Spherical"
 msgstr ""
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:14
+#: ../plugins/optical/opticalui.py:123
 msgid "Axis"
 msgstr ""
 
@@ -5711,7 +5713,8 @@ msgid "PD"
 msgstr ""
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:17
-#: ../stoq/gui/pos.py:676 ../stoqlib/domain/uiform.py:137
+#: ../plugins/optical/opticalui.py:113 ../stoq/gui/pos.py:676
+#: ../stoqlib/domain/uiform.py:137
 msgid "Height"
 msgstr ""
 
@@ -5724,6 +5727,7 @@ msgid "Base"
 msgstr ""
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:20
+#: ../plugins/optical/opticalui.py:111 ../plugins/optical/opticalui.py:121
 #: ../stoqlib/gui/widgets/calculator.py:202
 msgid "Addition"
 msgstr ""
@@ -5733,6 +5737,7 @@ msgid "Near"
 msgstr ""
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:22
+#: ../plugins/optical/opticalui.py:99
 msgid "Frame"
 msgstr ""
 
@@ -5819,7 +5824,7 @@ msgstr ""
 msgid "Confirm date"
 msgstr ""
 
-#: ../plugins/optical/medicssearch.py:129 ../plugins/optical/opticalui.py:95
+#: ../plugins/optical/medicssearch.py:129 ../plugins/optical/opticalui.py:150
 #: ../stoq/gui/pos.py:671 ../stoq/gui/stock.py:260
 #: ../stoqlib/domain/uiform.py:142
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:110
@@ -5950,12 +5955,12 @@ msgid "Glasses"
 msgstr ""
 
 #. Translators: Lente Oftálmica
-#: ../plugins/optical/opticalslave.py:121
+#: ../plugins/optical/opticalslave.py:121 ../plugins/optical/opticalui.py:105
 msgid "Glass Lenses"
 msgstr ""
 
 #. Translators: Lente de Contato
-#: ../plugins/optical/opticalslave.py:123
+#: ../plugins/optical/opticalslave.py:123 ../plugins/optical/opticalui.py:116
 msgid "Contact Lenses"
 msgstr ""
 
@@ -5979,37 +5984,90 @@ msgstr ""
 msgid "Estimated finish date cannot be in the past."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:78
-msgid "Glass type"
+#: ../plugins/optical/opticalui.py:100
+msgid "Glass Type"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:144
+#: ../plugins/optical/opticalui.py:101
+#: ../stoqlib/gui/dialogs/invoicedialog.py:50
+msgid "Size"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:102 ../plugins/optical/opticalui.py:119
+msgid "Lens Type"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:103 ../plugins/optical/opticalui.py:124
+#: ../stoqlib/gui/dialogs/paymentcategorydialog.py:55
+#: ../stoqlib/gui/dialogs/workordercategorydialog.py:45
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:60
+#: ../stoqlib/gui/editors/workordercategoryeditor.py:52
+msgid "Color"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:106
+msgid "Photosensitive"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:107
+msgid "Anti Glare"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:108
+msgid "Refraction Index"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:110 ../plugins/optical/opticalui.py:118
+msgid "Classification"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:112
+msgid "Diameter"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:114
+msgid "Availability"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:117
+msgid "Degree"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:120
+msgid "Discard"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:125
+msgid "Curvature"
+msgstr ""
+
+#: ../plugins/optical/opticalui.py:199
 msgid "Optical"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:145 ../stoq/gui/sales.py:136
+#: ../plugins/optical/opticalui.py:200 ../stoq/gui/sales.py:136
 msgid "Sale with work order..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:148
+#: ../plugins/optical/opticalui.py:203
 msgid "Medics..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:151
+#: ../plugins/optical/opticalui.py:206
 msgid "Medics sold items..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:182
+#: ../plugins/optical/opticalui.py:237
 msgid "Edit optical details..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:209 ../stoq/gui/shell/shellwindow.py:220
+#: ../plugins/optical/opticalui.py:264 ../stoq/gui/shell/shellwindow.py:220
 #: ../stoqlib/gui/search/callsearch.py:86
 #: ../stoqlib/gui/utils/keybindings.py:58
 msgid "Print"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:218
+#: ../plugins/optical/opticalui.py:273
 msgid "You cannot create a pre-sale with an open inventory."
 msgstr ""
 
@@ -7588,7 +7646,7 @@ msgstr ""
 msgid "Search items"
 msgstr ""
 
-#: ../stoq/gui/production.py:120 ../stoqlib/gui/editors/workordereditor.py:198
+#: ../stoq/gui/production.py:120 ../stoqlib/gui/editors/workordereditor.py:207
 msgid "Start"
 msgstr ""
 
@@ -8121,7 +8179,7 @@ msgstr ""
 #: ../stoqlib/domain/profile.py:99 ../stoqlib/domain/test/test_profile.py:51
 #: ../stoqlib/gui/dialogs/clientdetails.py:192
 #: ../stoqlib/gui/dialogs/clientdetails.py:228
-#: ../stoqlib/gui/editors/workordereditor.py:379
+#: ../stoqlib/gui/editors/workordereditor.py:393
 #: ../stoqlib/gui/search/commissionsearch.py:131
 #: ../stoqlib/gui/search/salesearch.py:94
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:129
@@ -8298,7 +8356,7 @@ msgid "No work orders in the category %s could be found."
 msgstr ""
 
 #: ../stoq/gui/services.py:376 ../stoq/gui/services.py:378
-#: ../stoq/gui/services.py:381 ../stoqlib/gui/editors/workordereditor.py:369
+#: ../stoq/gui/services.py:381 ../stoqlib/gui/editors/workordereditor.py:383
 #: ../stoqlib/gui/search/workordersearch.py:65
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:120
 msgid "Equipment (Description)"
@@ -8350,66 +8408,66 @@ msgstr ""
 msgid "Rejected"
 msgstr ""
 
-#: ../stoq/gui/services.py:566
+#: ../stoq/gui/services.py:567
 msgid ""
 "This will finish the selected order, marking the work as done. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/services.py:569
+#: ../stoq/gui/services.py:570
 msgid ""
 "Some items on this work order are not fully reserved. Do you still want to "
 "mark it as finished?"
 msgstr ""
 
-#: ../stoq/gui/services.py:573
+#: ../stoq/gui/services.py:574
 msgid "Finish order"
 msgstr ""
 
-#: ../stoq/gui/services.py:573
+#: ../stoq/gui/services.py:574
 msgid "Don't finish"
 msgstr ""
 
-#: ../stoq/gui/services.py:583
+#: ../stoq/gui/services.py:584
 msgid ""
 "This will cancel the selected order. Any reserved items will return to "
 "stock. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/services.py:596
+#: ../stoq/gui/services.py:597
 msgid "This will mark the order as delivered. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/services.py:598
+#: ../stoq/gui/services.py:599
 msgid "Mark as delivered"
 msgstr ""
 
-#: ../stoq/gui/services.py:599
+#: ../stoq/gui/services.py:600
 msgid "Don't mark"
 msgstr ""
 
-#: ../stoq/gui/services.py:610
+#: ../stoq/gui/services.py:611
 msgid ""
 "This will inform the order that the client has approved the work. Are you "
 "sure?"
 msgstr ""
 
-#: ../stoq/gui/services.py:612
+#: ../stoq/gui/services.py:613
 msgid "Don't approve"
 msgstr ""
 
-#: ../stoq/gui/services.py:623
+#: ../stoq/gui/services.py:624
 msgid "This will inform the order that we are waiting. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/services.py:645
+#: ../stoq/gui/services.py:646
 msgid "This will reject the order. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/services.py:658
+#: ../stoq/gui/services.py:659
 msgid "This will undo the rejection of the order. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/services.py:672
+#: ../stoq/gui/services.py:673
 msgid "This will reopen the order. Are you sure?"
 msgstr ""
 
@@ -10415,13 +10473,13 @@ msgstr ""
 
 #: ../stoqlib/domain/uiform.py:126 ../stoqlib/gui/search/personsearch.py:113
 #: ../stoqlib/gui/search/personsearch.py:267
-#: ../stoqlib/gui/slaves/employeeslave.py:249
+#: ../stoqlib/gui/slaves/employeeslave.py:261
 msgid "Role"
 msgstr ""
 
 #: ../stoqlib/domain/uiform.py:127
 #: ../stoqlib/gui/search/clientsalaryhistorysearch.py:64
-#: ../stoqlib/gui/slaves/employeeslave.py:250
+#: ../stoqlib/gui/slaves/employeeslave.py:262
 msgid "Salary"
 msgstr ""
 
@@ -11030,10 +11088,6 @@ msgstr ""
 msgid "Adjust reason"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/invoicedialog.py:50
-msgid "Size"
-msgstr ""
-
 #: ../stoqlib/gui/dialogs/invoicedialog.py:63
 #: ../stoqlib/gui/editors/invoiceeditor.py:55
 msgid "Invoice Layouts"
@@ -11132,13 +11186,6 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:44
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:53
 msgid "Receivable"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/paymentcategorydialog.py:55
-#: ../stoqlib/gui/dialogs/workordercategorydialog.py:45
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:60
-#: ../stoqlib/gui/editors/workordercategoryeditor.py:52
-msgid "Color"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:83
@@ -12991,32 +13038,32 @@ msgstr ""
 msgid "The work order category '%s' already exists."
 msgstr ""
 
-#: ../stoqlib/gui/editors/workordereditor.py:200
+#: ../stoqlib/gui/editors/workordereditor.py:209
 msgid "Continue"
 msgstr ""
 
-#: ../stoqlib/gui/editors/workordereditor.py:202
+#: ../stoqlib/gui/editors/workordereditor.py:211
 msgid "Pause"
 msgstr ""
 
-#: ../stoqlib/gui/editors/workordereditor.py:240 ../stoqlib/gui/fields.py:250
+#: ../stoqlib/gui/editors/workordereditor.py:254 ../stoqlib/gui/fields.py:250
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:100
 msgid "No category"
 msgstr ""
 
-#: ../stoqlib/gui/editors/workordereditor.py:256
+#: ../stoqlib/gui/editors/workordereditor.py:270
 msgid "This will pause the order. Are you sure?"
 msgstr ""
 
-#: ../stoqlib/gui/editors/workordereditor.py:309
+#: ../stoqlib/gui/editors/workordereditor.py:323
 msgid "Send work orders"
 msgstr ""
 
-#: ../stoqlib/gui/editors/workordereditor.py:339
+#: ../stoqlib/gui/editors/workordereditor.py:353
 msgid "You need to select at least one work order"
 msgstr ""
 
-#: ../stoqlib/gui/editors/workordereditor.py:365
+#: ../stoqlib/gui/editors/workordereditor.py:379
 msgid "Send"
 msgstr ""
 
@@ -14204,11 +14251,11 @@ msgstr ""
 msgid "Salary can't be lower than 0."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/employeeslave.py:245
+#: ../stoqlib/gui/slaves/employeeslave.py:257
 msgid "Began"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/employeeslave.py:247
+#: ../stoqlib/gui/slaves/employeeslave.py:259
 msgid "Ended"
 msgstr ""
 
