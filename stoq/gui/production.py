@@ -166,7 +166,7 @@ class ProductionApp(ShellApp):
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True,
+        return [IdentifierColumn('identifier', title=_('Production #'), sorted=True,
                                  order=gtk.SORT_DESCENDING),
                 Column('status_string', title=_(u'Status'), data_type=str,
                        visible=False),

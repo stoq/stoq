@@ -196,7 +196,7 @@ class PurchaseDetailsDialog(BaseEditor):
                 Column('total_received', title=_('Total'), data_type=currency)]
 
     def _get_payments_columns(self):
-        return [IdentifierColumn('identifier'),
+        return [IdentifierColumn('identifier', title=_('Payment #')),
                 Column('description', _("Description"), data_type=str,
                        expand=True, ellipsize=pango.ELLIPSIZE_END),
                 Column('due_date', _("Due date"), sorted=True,

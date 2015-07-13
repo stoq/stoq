@@ -120,7 +120,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                       HintedEntry(search_entry, padding=6): ''
                     GtkButton(search_button): 'gtk-find'
               SearchResultListView(result_view, expand=True, fill=True):
-                column: title='#'
+                column: title='Payment #'
                 column: title='Description', expand
                 column: title='Description'
                 column: title='Comments', hidden

@@ -13,7 +13,7 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
               item: 'Dummy shop', selected
             ObjectList(workorders):
               column: title='Send'
-              column: title='#'
+              column: title='WO #'
               column: title='Sale #', hidden
               column: title='Status'
               column: title='Equipment (Description)', expand

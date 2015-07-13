@@ -366,7 +366,7 @@ class ServicesApp(ShellApp):
 
     def get_columns(self):
         return [
-            IdentifierColumn('identifier', sorted=True),
+            IdentifierColumn('identifier', title=_('WO #'), sorted=True),
             IdentifierColumn('sale_identifier', title=_("Sale #"), visible=False),
             SearchColumn('status_str', title=_(u'Status'),
                          search_attribute='status', data_type=str,

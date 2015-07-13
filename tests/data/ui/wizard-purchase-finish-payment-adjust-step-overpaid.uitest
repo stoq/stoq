@@ -7,7 +7,7 @@ GtkDialog(toplevel): title='Purchase Finish', hidden
         GtkVBox(step.toplevel):
           GtkLabel(step.label1, fill=True): '<b>Payments to pay will be cancelled and new ones will be created to match the remaining value.</b>'
           ObjectList(step.payment_list, expand=True, fill=True):
-            column: title='#'
+            column: title='Purchase #'
             column: title='Description', expand
             column: title='Due date'
             column: title='Paid date'

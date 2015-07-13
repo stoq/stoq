@@ -116,7 +116,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                       HintedEntry(padding=6): ''
                     GtkButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
-                column: title='#'
+                column: title='Production #'
                 column: title='Status', hidden
                 column: title='Description', expand
                 column: title='Responsible'

@@ -103,7 +103,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                       HintedEntry(padding=6): '', hidden
                     GtkButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
-                column: title='Code'
+                column: title='Inventory #'
                 column: title='Status'
                 column: title='Branch', expand
                 column: title='Opened'

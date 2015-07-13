@@ -110,7 +110,7 @@ class TillFiscalOperationsSearch(SearchDialog):
                         columns=['status'])
 
     def get_columns(self, *args):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 SearchColumn('date', title=_('Date'), width=100,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('description', title=_('Description'),

@@ -292,7 +292,7 @@ class SalesApp(ShellApp):
                                         search_attribute='status',
                                         valid_values=self._get_status_values())
 
-        cols = [IdentifierColumn('identifier', long_title=_('Order #'),
+        cols = [IdentifierColumn('identifier', title=_('Sale #'),
                                  sorted=True),
                 SearchColumn('coupon_id', title=_('Coupon #'), width=100,
                              data_type=int, visible=False),

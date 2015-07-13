@@ -224,7 +224,7 @@ class LoanSelectionStep(BaseWizardStep):
         self.search.set_text_field_columns(['client_name', 'identifier_str'])
 
     def _get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Loan #'), sorted=True),
                 SearchColumn('responsible_name', title=_(u'Responsible'),
                              data_type=str, expand=True),
                 SearchColumn('client_name', title=_(u'Client'),

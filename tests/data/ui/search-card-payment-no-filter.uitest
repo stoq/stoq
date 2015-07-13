@@ -36,7 +36,7 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
                   item: 'CREDISHOP'
                   item: 'CERTIF'
           SearchResultListView(result_view, expand=True, fill=True):
-            column: title='#'
+            column: title='Payment #'
             column: title='Description', expand
             column: title='Drawee', expand
             column: title='Card Device', hidden

@@ -21,7 +21,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
           GtkNotebook(notebook2, expand=True, fill=True):
             GtkVBox(payments_vbox):
               ObjectList(payments_list, expand=True, fill=True):
-                column: title='#'
+                column: title='Payment #'
                 column: title='Description', expand
                 column: title='Due date'
                 column: title='Paid date'

@@ -377,7 +377,7 @@ class WorkOrderPackageSendEditor(BaseEditor):
 
         self.workorders.set_columns([
             Column('will_send', _(u"Send"), data_type=bool, editable=True),
-            IdentifierColumn('identifier', sorted=True),
+            IdentifierColumn('identifier', title=_('WO #'), sorted=True),
             IdentifierColumn('sale_identifier', title=_("Sale #"), visible=False),
             Column('status_str', _(u"Status"), data_type=str),
             Column('equipment', _(u"Equipment (Description)"), data_type=str,

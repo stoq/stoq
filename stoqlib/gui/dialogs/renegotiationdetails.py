@@ -115,7 +115,7 @@ class RenegotiationDetailsDialog(BaseEditor):
         self._setup_summary_labels()
 
     def _get_payments_columns(self):
-        return [IdentifierColumn('identifier'),
+        return [IdentifierColumn('identifier', title=_('Payment #')),
                 Column('method.description', _("Type"),
                        data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,

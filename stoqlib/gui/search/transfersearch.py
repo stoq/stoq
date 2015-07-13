@@ -126,7 +126,7 @@ class TransferOrderSearch(SearchDialog):
                       TransferOrder.destination_branch_id == current_branch.id)
 
     def get_columns(self):
-        return [IdentifierColumn('identifier'),
+        return [IdentifierColumn('identifier', title=_('Transfer #')),
                 SearchColumn('transfer_order.status_str', _('Status'), data_type=str,
                              valid_values=self._get_status_values(),
                              search_attribute='status', width=100),
@@ -165,7 +165,7 @@ class TransferItemSearch(TransferOrderSearch):
                    transfer_order)
 
     def get_columns(self):
-        return [IdentifierColumn('identifier'),
+        return [IdentifierColumn('identifier', title=_('Transfer #')),
                 SearchColumn('receival_date', _('Receival Date'),
                              data_type=datetime.date, width=100,
                              visible=False),

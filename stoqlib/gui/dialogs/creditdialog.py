@@ -41,7 +41,7 @@ _ = stoqlib_gettext
 class _CreditInfoListSlave(ModelListSlave):
     model_type = Payment
     editor_class = None
-    columns = [IdentifierColumn('identifier', sorted=True),
+    columns = [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                Column('paid_date', title=_(u'Date'), data_type=datetime.date,
                       width=150),
                Column('description', title=_(u'Description'),

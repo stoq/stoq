@@ -129,7 +129,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         return query
 
     def _get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 SearchColumn('open_date', title=_('Date Started'),
                              data_type=datetime.date, width=100),
                 SearchColumn('expected_receival_date', data_type=datetime.date,

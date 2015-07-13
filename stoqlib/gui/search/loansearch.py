@@ -70,7 +70,7 @@ class LoanItemSearch(ProductSearch):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [IdentifierColumn('loan_identifier', sorted=True),
+        return [IdentifierColumn('loan_identifier', title=_('Loan #'), sorted=True),
                 SearchColumn('opened', title=_(u'Open date'),
                              data_type=datetime.date, visible=False),
                 SearchColumn('closed', title=_(u'Close date'),

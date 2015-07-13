@@ -184,7 +184,7 @@ class SalesTab(DetailsTab):
         return False
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Sale #'), sorted=True),
                 Column("invoice_number", title=_("Invoice #"),
                        data_type=int, width=90),
                 Column("open_date", title=_("Date"), data_type=datetime.date,
@@ -217,7 +217,7 @@ class ReturnedSalesTab(DetailsTab):
     details_lbl = _('Returned sale details')
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Returned #'), sorted=True),
                 Column("invoice_number", title=_("Invoice #"),
                        data_type=int, width=90),
                 Column("return_date", title=_("Return Date"),
@@ -290,7 +290,7 @@ class WorkOrdersTab(DetailsTab):
     details_lbl = _('Work order details')
 
     def get_columns(self):
-        return [IdentifierColumn("identifier", sorted=True),
+        return [IdentifierColumn("identifier", title=_('WO #'), sorted=True),
                 Column("equipment", title=_("Equipment"),
                        data_type=str, expand=True, pack_end=True),
                 Column('category_color', title=_(u'Equipment'),
@@ -331,7 +331,7 @@ class PaymentsTab(DetailsTab):
     details_lbl = _('Payment details')
 
     def get_columns(self):
-        return [IdentifierColumn('identifier'),
+        return [IdentifierColumn('identifier', title=_('Payment #')),
                 Column("method_description", title=_("Type"),
                        data_type=str, width=90),
                 Column("description", title=_("Description"),
@@ -387,7 +387,7 @@ class CreditAccountsTab(DetailsTab):
         self.pack_start(account_summary_label, False)
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 Column('paid_date', title=_(u'Date'), data_type=datetime.date,
                        width=150),
                 Column('description', title=_(u'Description'),
@@ -399,28 +399,6 @@ class CreditAccountsTab(DetailsTab):
 
     def populate(self):
         return self.model.get_credit_transactions()
-
-    def _get_work_order_columns(self):
-        return [IdentifierColumn("identifier", sorted=True),
-                Column("sellable", title=_("Equipment"),
-                       data_type=str, expand=True, pack_end=True),
-                Column("description", title=_("Description"),
-                       data_type=str, expand=True, pack_end=True),
-                Column('category_color', title=_(u'Equipment'),
-                       column='sellable', data_type=gtk.gdk.Pixbuf,
-                       format_func=render_pixbuf),
-                Column('flag_icon', title=_(u'Equipment'),
-                       column='sellable', data_type=gtk.gdk.Pixbuf,
-                       format_func_data=True,
-                       format_func=self._format_state_icon),
-                Column("open_date", title=_("Open date"),
-                       data_type=datetime.date, width=120),
-                Column("approve_date", title=_("Approve date"),
-                       data_type=datetime.date, width=120),
-                Column("finish_date", title=_("Finish date"),
-                       data_type=datetime.date, width=120),
-                Column("total", title=_("Total"),
-                       data_type=currency, width=100)]
 
 
 class CallsTab(DetailsTab):

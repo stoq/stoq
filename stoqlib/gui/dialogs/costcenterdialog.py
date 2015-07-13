@@ -66,7 +66,7 @@ class CostCenterDialog(BaseEditor):
                 Column('total', _('Total'), data_type=currency)]
 
     def _get_payments_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 Column('method.description', _("Method"),
                        data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,
@@ -83,7 +83,7 @@ class CostCenterDialog(BaseEditor):
                        justify=gtk.JUSTIFY_RIGHT)]
 
     def _get_sales_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Sale #'), sorted=True),
                 Column('client_name', title=_('Client'),
                        data_type=unicode, expand=True),
                 Column('branch_name', title=_('Branch'),
@@ -98,7 +98,7 @@ class CostCenterDialog(BaseEditor):
                        width=120)]
 
     def _get_stock_decrease_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=('Decrease #'), sorted=True),
                 Column('confirm_date', _('Date'),
                        data_type=datetime.date, width=100),
                 Column('branch_name', _('Branch'),

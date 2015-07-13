@@ -17,7 +17,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
           GtkNotebook(details_notebook, expand=True, fill=True):
             GtkVBox():
               ObjectList(expand=True, fill=True):
-                column: title='#'
+                column: title='Sale #'
                 column: title='Invoice #'
                 column: title='Date'
                 column: title='Salesperson', expand
@@ -32,7 +32,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 GtkButton(expand=True, fill=True): 'Return sale', insensitive
             GtkVBox():
               ObjectList(expand=True, fill=True):
-                column: title='#'
+                column: title='Returned #'
                 column: title='Invoice #'
                 column: title='Return Date'
                 column: title='Product'
@@ -57,7 +57,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 row: u'', u'Description', datetime.today()
             GtkVBox():
               ObjectList(expand=True, fill=True):
-                column: title='#'
+                column: title='WO #'
                 column: title='Equipment', expand
                 column: title='Equipment'
                 column: title='Equipment'
@@ -67,7 +67,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Total'
             GtkVBox():
               ObjectList(expand=True, fill=True):
-                column: title='#'
+                column: title='Payment #'
                 column: title='Type'
                 column: title='Description', expand
                 column: title='Due date'
@@ -80,7 +80,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 GtkButton(expand=True, fill=True): 'Payment details', insensitive
             GtkVBox():
               ObjectList(expand=True, fill=True):
-                column: title='#'
+                column: title='Payment #'
                 column: title='Date'
                 column: title='Description', expand
                 column: title='Value'

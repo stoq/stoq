@@ -113,7 +113,7 @@ class SupplierDetailsDialog(BaseEditor):
         self.purchases_vbox.pack_start(purchases_summary_label, False)
 
     def _get_purchase_columns(self):
-        return [IdentifierColumn("identifier", sorted=True),
+        return [IdentifierColumn("identifier", title=_('Purchase #'), sorted=True),
                 Column("open_date", title=_("Date"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT, width=80),
                 Column("status_str", title=_("Status"), width=80,
@@ -132,7 +132,7 @@ class SupplierDetailsDialog(BaseEditor):
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
 
     def _get_payments_columns(self):
-        return [IdentifierColumn("identifier"),
+        return [IdentifierColumn("identifier", title=_('Payment #')),
                 Column("method.description", title=_("Type"),
                        data_type=str, width=90),
                 Column("description", title=_("Description"),

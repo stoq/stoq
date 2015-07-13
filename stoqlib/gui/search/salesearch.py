@@ -84,7 +84,7 @@ class _BaseSaleSearch(SearchDialog):
         self.add_filter(status_filter, columns=[SaleView.status])
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True,
+        return [IdentifierColumn('identifier', title=_('Sale #'), sorted=True,
                                  order=gtk.SORT_DESCENDING),
                 SearchColumn('open_date', title=_('Date Started'), width=110,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
@@ -355,7 +355,7 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
                              data_type=Decimal, format_func=format_quantity,
                              visible=False),
                 SearchColumn('total', title=_('Total'), data_type=currency,),
-                IdentifierColumn('wo_identifier', title=_('Work Order'),
+                IdentifierColumn('wo_identifier', title=_('WO #'),
                                  visible=False, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('wo_status_str', title=_('WO Status'), data_type=str,
                              search_attribute='wo_status', visible=False,

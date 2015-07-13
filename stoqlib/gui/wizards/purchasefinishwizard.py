@@ -119,7 +119,7 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
             self.missing_label.set_label(_('Overpaid:'))
 
     def _get_columns(self):
-        return [IdentifierColumn('identifier'),
+        return [IdentifierColumn('identifier', title=_('Purchase #')),
                 Column('description', _("Description"), data_type=str,
                        width=150, expand=True,
                        ellipsize=pango.ELLIPSIZE_END),

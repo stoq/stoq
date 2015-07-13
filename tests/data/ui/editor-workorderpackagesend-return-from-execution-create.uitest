@@ -14,7 +14,7 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
               item: 'Stoq Elite Fashion'
             ObjectList(workorders):
               column: title='Send'
-              column: title='#'
+              column: title='WO #'
               column: title='Sale #', hidden
               column: title='Status'
               column: title='Equipment (Description)', expand

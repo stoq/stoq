@@ -107,7 +107,7 @@ class TillDailyMovementDialog(BaseEditor):
         self._setup_summary_labels()
 
     def _get_sales_columns(self):
-        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
+        return [IdentifierColumn('identifier', title=_('Sale #'), sorted=True),
                 Column('salesperson', title=_('Sales Person'), data_type=str),
                 Column('client', title=_('Client'), data_type=str, expand=True),
                 Column('branch', title=_('Branch'), data_type=str, visible=False),
@@ -115,7 +115,7 @@ class TillDailyMovementDialog(BaseEditor):
                        justify=gtk.JUSTIFY_RIGHT)]
 
     def _get_lonely_payments_columns(self):
-        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
+        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 Column('method', title=_('Method'), data_type=str),
                 Column('description', title=_('Description'), expand=True,
                        data_type=str),
@@ -123,7 +123,7 @@ class TillDailyMovementDialog(BaseEditor):
                 Column('value', title=_('Payment Value'), data_type=currency)]
 
     def _get_purchases_columns(self):
-        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
+        return [IdentifierColumn('identifier', title=_('Code #'), sorted=True),
                 Column('status_str', title=_('Status'), data_type=str),
                 Column('responsible_name', title=_('Responsible'), expand=True,
                        data_type=str),
@@ -133,7 +133,7 @@ class TillDailyMovementDialog(BaseEditor):
                 Column('purchase_total', title=_('Value'), data_type=currency)]
 
     def _get_return_sales_columns(self):
-        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
+        return [IdentifierColumn('identifier', title=_('Code #'), sorted=True),
                 Column('salesperson', title=_('Sales Person'), data_type=str),
                 Column('client', title=_('Client'), expand=True, data_type=str),
                 Column('return_date', title=_('Return Date'),
@@ -142,7 +142,7 @@ class TillDailyMovementDialog(BaseEditor):
                 Column('value', title=_('Sale Value'), data_type=currency)]
 
     def _get_till_columns(self):
-        return [IdentifierColumn('identifier', title=_('Code'), sorted=True),
+        return [IdentifierColumn('identifier', title=_('Entry #'), sorted=True),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('branch_name', title=_('Branch'), data_type=str, visible=False),

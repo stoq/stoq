@@ -65,7 +65,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   ProxyLabel(return_total_lbl, fill=True): '<span >$193.00</span>'
             GtkVBox(payments_vbox):
               ObjectList(payments_list, expand=True, fill=True):
-                column: title='#'
+                column: title='Payment #'
                 column: title='Type'
                 column: title='Description', expand
                 column: title='Due date'

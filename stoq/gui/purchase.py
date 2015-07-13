@@ -256,7 +256,7 @@ class PurchaseApp(ShellApp):
         self.branch_filter = self.create_branch_filter(column=PurchaseOrderView.branch_id)
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', long_title=_('Order #')),
+        return [IdentifierColumn('identifier', title=_('Purchase #')),
                 SearchColumn('status_str', title=_('Status'), width=100,
                              data_type=str, search_attribute='status',
                              valid_values=self._get_status_values(),

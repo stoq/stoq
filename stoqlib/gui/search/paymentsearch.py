@@ -74,7 +74,7 @@ class _BaseBillCheckSearch(SearchDialog):
     #
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 Column('method_description', title=_(u'Method'),
                        data_type=str, expand=True),
                 SearchColumn('payment_number', title=_(u'Number'),
@@ -163,7 +163,7 @@ class CardPaymentSearch(SearchEditor):
 
     def get_columns(self):
         # TODO: Adicionar filtro por card_type
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 SearchColumn('drawee_name', title=_(u'Drawee'), data_type=str,

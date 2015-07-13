@@ -25,21 +25,21 @@ GtkVBox(toplevel):
   GtkNotebook(history_notebook, expand=True, fill=True):
     GtkVBox(sales_vbox):
       ObjectTree(sales_list, expand=True, fill=True):
-        column: title='Code'
+        column: title='Sale #'
         column: title='Sales Person'
         column: title='Client', expand
         column: title='Branch', hidden
         column: title='Value'
     GtkVBox(vbox4):
       ObjectList(inpayments_list, expand=True, fill=True):
-        column: title='Code'
+        column: title='Payment #'
         column: title='Method'
         column: title='Description', expand
         column: title='Branch', hidden
         column: title='Payment Value'
     GtkVBox(purchases_vbox):
       ObjectTree(purchases_list, expand=True, fill=True):
-        column: title='Code'
+        column: title='Code #'
         column: title='Status'
         column: title='Responsible', expand
         column: title='Branch'
@@ -48,7 +48,7 @@ GtkVBox(toplevel):
         column: title='Value'
     GtkVBox(vbox3):
       ObjectList(outpayments_list, expand=True, fill=True):
-        column: title='Code'
+        column: title='Payment #'
         column: title='Method'
         column: title='Description', expand
         column: title='Branch', hidden
@@ -56,7 +56,7 @@ GtkVBox(toplevel):
         row: 9941, u'Credit', u'Test payment', u'Moda Stoq', <currency $100>
     GtkVBox(return_sales_vbox):
       ObjectTree(return_sales_list, expand=True, fill=True):
-        column: title='Code'
+        column: title='Code #'
         column: title='Sales Person'
         column: title='Client', expand
         column: title='Return Date'
@@ -64,7 +64,7 @@ GtkVBox(toplevel):
         column: title='Sale Value'
     GtkVBox(supplies_vbox):
       ObjectList(supplies_list, expand=True, fill=True):
-        column: title='Code'
+        column: title='Entry #'
         column: title='Description', expand
         column: title='Branch', hidden
         column: title='Value'
@@ -73,7 +73,7 @@ GtkVBox(toplevel):
         GtkLabel(): '<b>$ 0.00</b>'
     GtkVBox(removals_vbox):
       ObjectList(removals_list, expand=True, fill=True):
-        column: title='Code'
+        column: title='Entry #'
         column: title='Description', expand
         column: title='Branch', hidden
         column: title='Value'

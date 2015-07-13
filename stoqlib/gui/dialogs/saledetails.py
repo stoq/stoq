@@ -226,7 +226,7 @@ class SaleDetailsDialog(BaseEditor):
         self.comment_info.set_sensitive(False)
 
     def _get_payments_columns(self):
-        return [IdentifierColumn('identifier'),
+        return [IdentifierColumn('identifier', title=_('Payment #')),
                 Column('method.description', _("Type"),
                        data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,

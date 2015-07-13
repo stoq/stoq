@@ -127,7 +127,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
                       HintedEntry(padding=6): ''
                     GtkButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
-                column: title='#'
+                column: title='Sale #'
                 column: title='Status'
                 column: title='Date Started'
                 column: title='Client', expand

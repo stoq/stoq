@@ -114,7 +114,7 @@ class WorkOrderPackageReceiveOrdersStep(WizardEditorStep):
         self.details_btn.set_sensitive(False)
 
         self.workorders.set_columns([
-            IdentifierColumn('identifier', sorted=True),
+            IdentifierColumn('identifier', title=_('WO #'), sorted=True),
             IdentifierColumn('sale_identifier', title=_("Sale #"), visible=False),
             Column('status_str', _(u"Status"), data_type=str),
             Column('equipment', _(u"Equipment (Description)"), data_type=str,

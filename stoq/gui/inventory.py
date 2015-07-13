@@ -145,7 +145,7 @@ class InventoryApp(ShellApp):
                         columns=["branch_id"])
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', title=_('Code'),
+        return [IdentifierColumn('identifier', title=_('Inventory #'),
                                  sorted=True, order=gtk.SORT_DESCENDING),
                 SearchColumn('status_str', title=_('Status'),
                              data_type=str, width=100,

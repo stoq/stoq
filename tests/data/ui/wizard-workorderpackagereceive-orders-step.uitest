@@ -10,7 +10,7 @@ GtkDialog(toplevel): title='Receive work orders', hidden
               GtkLabel(step.label1, fill=True): 'Package:'
               ProxyLabel(step.identifier, expand=True, fill=True): '<span ></span>'
             ObjectList(step.workorders, expand=True, fill=True):
-              column: title='#'
+              column: title='WO #'
               column: title='Sale #', hidden
               column: title='Status'
               column: title='Equipment (Description)', expand

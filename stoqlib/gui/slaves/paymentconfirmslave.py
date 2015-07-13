@@ -273,7 +273,7 @@ class _PaymentConfirmSlave(BaseEditor):
     # Private
 
     def _get_columns(self):
-        return [Column('identifier', _('#'), data_type=int, width=60,
+        return [Column('identifier', _('Payment #'), data_type=int, width=60,
                        visible=False, format_func=str, sorted=True),
                 Column('description', _("Description"), data_type=str),
                 Column('due_date', _("Due"), data_type=datetime.date),
@@ -547,8 +547,8 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
         # to the database
         cost_centers_exists = not cost_centers.is_empty()
 
-        if (cost_centers_exists and
-            isinstance(self.model, _LonelyConfirmationModel)):
+        if (cost_centers_exists and isinstance(self.model,
+                                               _LonelyConfirmationModel)):
             self.cost_center.prefill(api.for_combo(cost_centers, attr='name',
                                                    empty=_('No cost center.')))
             self.cost_center.set_visible(cost_centers_exists)

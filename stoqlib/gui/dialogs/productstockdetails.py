@@ -179,7 +179,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.decrease_vbox.pack_start(decrease_summary_label, False)
 
     def _get_receiving_columns(self):
-        return [IdentifierColumn("order_identifier", sorted=True),
+        return [IdentifierColumn("order_identifier", title=_('Receiving #'), sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
@@ -198,7 +198,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("unit_description", title=_("Unit"), data_type=str)]
 
     def _get_sale_columns(self):
-        return [IdentifierColumn("sale_identifier", sorted=True),
+        return [IdentifierColumn("sale_identifier", title=_('Sale #'), sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
@@ -215,7 +215,8 @@ class ProductStockHistoryDialog(BaseEditor):
                 ]
 
     def _get_transfer_columns(self):
-        return [IdentifierColumn("transfer_order.identifier", sorted=True),
+        return [IdentifierColumn("transfer_order.identifier", title=_('Transfer #'),
+                                 sorted=True),
                 Column('batch.batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
@@ -233,7 +234,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=Decimal)]
 
     def _get_loan_columns(self):
-        return [IdentifierColumn("loan_identifier", sorted=True),
+        return [IdentifierColumn("loan_identifier", title=('Loan #'), sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
@@ -252,7 +253,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=Decimal)]
 
     def _get_decrease_columns(self):
-        return [IdentifierColumn("decrease_identifier", sorted=True),
+        return [IdentifierColumn("decrease_identifier", title=_('Decrease #'), sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
@@ -265,7 +266,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("unit_description", title=_("Unit"), data_type=str)]
 
     def _get_inventory_columns(self):
-        return [IdentifierColumn("inventory_identifier", sorted=True),
+        return [IdentifierColumn("inventory_identifier", title=_('Inventory #'), sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
@@ -284,7 +285,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        format_func=get_formatted_cost)]
 
     def _get_returned_columns(self):
-        return [IdentifierColumn("returned_identifier", sorted=True),
+        return [IdentifierColumn("returned_identifier", title=_('Returned #'), sorted=True),
                 Column('batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),

@@ -84,7 +84,7 @@ class StockDecreaseDetailsDialog(BaseEditor):
             self.notebook.remove_page(2)
 
     def _get_payment_columns(self):
-        return [IdentifierColumn("identifier"),
+        return [IdentifierColumn("identifier", title=_('Payment #')),
                 Column("method.description", title=_("Type"),
                        data_type=str),
                 Column("description", title=_("Description"),

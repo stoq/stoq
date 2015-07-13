@@ -119,7 +119,7 @@ class PaymentReceivingSearch(SearchDialog):
         self.date_filter = date_filter
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', sorted=True),
+        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, expand=True),
                 SearchColumn('drawee', title=_('Drawee'),

@@ -10,7 +10,7 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
             ProxyComboEntry(step.client): insensitive
           GtkLabel(step.label1, fill=True): '<b>The following payments will be renegotiated.</b>'
           ObjectList(step.payment_list, expand=True, fill=True):
-            column: title='#'
+            column: title='Payment #'
             column: title='Description', expand
             column: title='Due date'
             column: title='Status'

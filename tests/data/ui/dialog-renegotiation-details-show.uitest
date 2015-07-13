@@ -34,7 +34,7 @@ GtkVBox(toplevel):
         ProxyLabel(total_lbl): '<span >$ 0.00</span>'
     GtkVBox(payments_vbox):
       ObjectList(payments_list, expand=True, fill=True):
-        column: title='#'
+        column: title='Payment #'
         column: title='Type'
         column: title='Description', expand
         column: title='Due date'

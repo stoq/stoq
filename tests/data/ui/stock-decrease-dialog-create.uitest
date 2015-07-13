@@ -28,7 +28,7 @@ GtkVBox(details_vbox):
         ProxyTextView(reason):
     GtkVBox(vbox2):
       ObjectList(payment_list, expand=True, fill=True):
-        column: title='#'
+        column: title='Payment #'
         column: title='Type'
         column: title='Description'
         column: title='Due date'

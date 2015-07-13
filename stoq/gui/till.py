@@ -213,7 +213,7 @@ class TillApp(ShellApp):
                         columns=['status'])
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', long_title=_('Order #'),
+        return [IdentifierColumn('identifier', title=_('Sale #'),
                                  sorted=True),
                 Column('status_name', title=_(u'Status'), data_type=str,
                        visible=True),

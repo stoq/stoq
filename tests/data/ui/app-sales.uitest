@@ -151,7 +151,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                       HintedEntry(search_entry, padding=6): ''
                     GtkButton(search_button): 'gtk-find'
               SearchResultListView(result_view, expand=True, fill=True):
-                column: title='#'
+                column: title='Sale #'
                 column: title='Coupon #', hidden
                 column: title='Paid', hidden
                 column: title='Open date', hidden
