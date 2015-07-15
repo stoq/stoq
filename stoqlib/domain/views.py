@@ -54,7 +54,7 @@ from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
 from stoqlib.domain.receiving import (ReceivingOrderItem, ReceivingOrder,
                                       PurchaseReceivingMap)
 from stoqlib.domain.sale import SaleItem, Sale, Delivery
-from stoqlib.domain.returnedsale import ReturnedSale
+from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableCategory,
                                      SellableTaxConstant)
@@ -1204,6 +1204,22 @@ class ReturnedSalesView(Viewable):
     @property
     def status_str(self):
         return ReturnedSale.statuses[self.status]
+
+
+class ReturnedItemView(ReturnedSalesView):
+    sellable = Sellable
+    product = Product
+
+    id = ReturnedSaleItem.id
+    item_description = Sellable.description
+    item_quantity = ReturnedSaleItem.quantity
+
+    tables = ReturnedSalesView.tables[:]
+
+    tables.extend([Join(ReturnedSaleItem,
+                        ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
+                   Join(Sellable, ReturnedSaleItem.sellable_id == Sellable.id),
+                   LeftJoin(Product, Sellable.id == Product.sellable_id)])
 
 
 class PendingReturnedSalesView(ReturnedSalesView):

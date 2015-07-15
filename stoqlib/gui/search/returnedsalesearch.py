@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2013-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,14 +27,16 @@ import datetime
 
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.views import ReturnedSalesView, PendingReturnedSalesView
+from stoqlib.domain.views import (ReturnedSalesView, PendingReturnedSalesView,
+                                  ReturnedItemView)
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.returnedsaledialog import ReturnedSaleDialog
-from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
+from stoqlib.gui.search.searchcolumns import (QuantityColumn, SearchColumn,
+                                              IdentifierColumn)
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.sale import ReturnedSalesReport
+from stoqlib.reporting.sale import ReturnedSalesReport, ReturnedItemReport
 
 
 _ = stoqlib_gettext
@@ -143,3 +145,33 @@ class PendingReturnedSaleSearch(ReturnedSaleSearch):
 
     def on_row_activated(self, klist, item_view):
         self._show_pending_returned_sale_details(item_view)
+
+
+class ReturnedItemSearch(ReturnedSaleSearch):
+    title = _(u"Returned Sale Item Search")
+    search_spec = ReturnedItemView
+    report_class = ReturnedItemReport
+    branch_filter_column = Sale.branch_id
+    text_field_columns = [ReturnedItemView.item_description,
+                          ReturnedItemView.responsible_name]
+
+    def get_columns(self):
+        return [IdentifierColumn('identifier', title=_(u"Returned #")),
+                SearchColumn('status_str', _('Status'),
+                             data_type=str, search_attribute='status',
+                             valid_values=self._get_status_values()),
+                SearchColumn('item_description', title=_(u"Item")),
+                QuantityColumn('item_quantity', title=_(u"Qty")),
+                SearchColumn('client_name', _('Client'), expand=True,
+                             data_type=str),
+                SearchColumn('return_date', _('Return Date'),
+                             data_type=datetime.date, sorted=True),
+                SearchColumn('reason', _('Return Reason'),
+                             data_type=str, visible=False),
+                SearchColumn('responsible_name', _('Responsible'),
+                             data_type=str),
+                SearchColumn('branch_name', _('Return branch'),
+                             data_type=str, visible=False),
+                SearchColumn('invoice_number', _('Invoice number'),
+                             data_type=int, visible=False),
+                ]

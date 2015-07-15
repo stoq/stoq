@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -44,7 +44,8 @@ from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
-from stoqlib.gui.search.returnedsalesearch import PendingReturnedSaleSearch
+from stoqlib.gui.search.returnedsalesearch import (PendingReturnedSaleSearch,
+                                                   ReturnedItemSearch)
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch,
                                               ProductBrandSearch,
@@ -126,6 +127,7 @@ class StockApp(ShellApp):
             ("LoanSearch", None, _("Loans...")),
             ("LoanSearchItems", None, _("Loan items...")),
             ("SearchTransferItems", None, _("Transfer items...")),
+            ("SearchReturnedItems", None, _("Returned items...")),
             ("SearchPendingReturnedSales", None, _("Pending returned sales...")),
             ("ProductMenu", None, _("Product")),
             ("ProductStockHistory", gtk.STOCK_INFO, _("History..."),
@@ -547,6 +549,9 @@ class StockApp(ShellApp):
 
     def on_SearchPendingReturnedSales__activate(self, action):
         self._search_pending_returned_sales()
+
+    def on_SearchReturnedItems__activate(self, action):
+        self.run_dialog(ReturnedItemSearch, self.store)
 
     def on_SearchPurchasedStockItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.store)

@@ -91,6 +91,10 @@ class ReturnedSalesReport(ObjectListReport):
     title = _("Returned Sales Report")
 
 
+class ReturnedItemReport(ObjectListReport):
+    title = _("Returned Items Report")
+
+
 class SoldItemsByClientReport(ObjectListReport):
     title = _("Sales By Client Report")
 

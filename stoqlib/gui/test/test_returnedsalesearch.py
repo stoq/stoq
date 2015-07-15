@@ -26,7 +26,8 @@ import mock
 
 from stoqlib.gui.dialogs.returnedsaledialog import ReturnedSaleDialog
 from stoqlib.gui.search.returnedsalesearch import (ReturnedSaleSearch,
-                                                   PendingReturnedSaleSearch)
+                                                   PendingReturnedSaleSearch,
+                                                   ReturnedItemSearch)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -92,3 +93,35 @@ class TestPendingReturnedSaleSearch(GUITest):
         self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search,
                                            self.store, search.results[0])
+
+
+class TestReturnedItemSearch(GUITest):
+    def test_create(self):
+        search = ReturnedItemSearch(self.store)
+        search.search.refresh()
+        self.check_search(search, 'returned-item-search')
+
+    @mock.patch('stoqlib.gui.search.returnedsalesearch.run_dialog')
+    def test_show_details(self, run_dialog):
+        sale = self.create_sale()
+        product = self.create_product(stock=2)
+        client = self.create_client()
+        sale = self.create_sale(client=client)
+        sale.add_sellable(sellable=product.sellable)
+
+        self.create_returned_sale(sale)
+        search = ReturnedItemSearch(self.store)
+        search.search.refresh()
+        search.results.double_click(0)
+        self.assertEquals(run_dialog.call_count, 1)
+        run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
+                                           search.results[0])
+
+        # Testing click on details button
+        run_dialog.reset_mock()
+        search.results.select(search.results[0])
+        self.assertSensitive(search._details_slave, ['details_button'])
+        self.click(search._details_slave.details_button)
+        self.assertEquals(run_dialog.call_count, 1)
+        run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
+                                           search.results[0])

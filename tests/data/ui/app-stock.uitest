@@ -45,6 +45,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
           GtkImageMenuItem(): 'Transfers...'
           GtkImageMenuItem(): 'Transfer items...'
           GtkImageMenuItem(): 'Stock decreases...'
+          GtkImageMenuItem(): 'Returned items...'
           GtkImageMenuItem(): 'Purchased items...'
           GtkImageMenuItem(): 'Stock items...'
           GtkImageMenuItem(): 'Brand items...'

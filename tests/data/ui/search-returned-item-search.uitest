@@ -1,0 +1,50 @@
+search: ReturnedItemSearch
+GtkDialog(toplevel): title='Returned Sale Item Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
+        GtkVBox(vbox):
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                ComboSearchFilter(branch_filter):
+                  GtkLabel(): 'Branch:'
+                  ProxyComboBox(padding=6):
+                    item: 'Any'
+                    item: 'Moda Stoq', selected
+                    item: 'Stoq Elite Fashion'
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Identical to'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+          SearchResultListView(result_view, expand=True, fill=True):
+            column: title='Returned #'
+            column: title='Status'
+            column: title='Item'
+            column: title='Qty'
+            column: title='Client', expand
+            column: title='Return Date'
+            column: title='Return Reason', hidden
+            column: title='Responsible'
+            column: title='Return branch', hidden
+            column: title='Invoice number', hidden
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button): insensitive
+                GtkButton(print_button): 'gtk-print', insensitive
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
