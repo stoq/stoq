@@ -50,6 +50,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localdate, localdatetime, localtoday
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 
 
@@ -2130,7 +2131,8 @@ class TestSaleItem(DomainTest):
     def test_get_quantity_unit_string(self):
         item = self.create_sale_item()
         item.sellable.unit = self.create_sellable_unit(description=u'Kg')
-        str = u"%s %s" % (item.quantity, item.sellable.unit_description)
+        str = u"%s %s" % (format_quantity(item.quantity),
+                          item.sellable.unit_description)
         self.assertEquals(item.get_quantity_unit_string(), str)
 
     def test_get_description(self):

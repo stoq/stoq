@@ -511,6 +511,7 @@ class TestReport(ReportTest):
     def test_sale_order_report(self):
         product = self.create_product(price=100)
         sellable = product.sellable
+        sellable.unit = self.create_sellable_unit(description=u'UN')
         default_date = datetime.date(2007, 1, 1)
         sale = self.create_sale()
         sale.open_date = default_date
@@ -525,6 +526,7 @@ class TestReport(ReportTest):
     def test_sale_order_report_as_quote(self):
         product = self.create_product(price=238)
         sellable = product.sellable
+        sellable.unit = self.create_sellable_unit(description=u'UN')
         default_date = datetime.date(2003, 12, 15)
         sale = self.create_sale()
         sale.open_date = default_date

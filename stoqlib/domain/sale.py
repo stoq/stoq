@@ -73,6 +73,7 @@ from stoqlib.domain.taxes import InvoiceItemIcms, InvoiceItemIpi
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -437,7 +438,8 @@ class SaleItem(Domain):
         return currency(quantize(self.price * self.quantity))
 
     def get_quantity_unit_string(self):
-        return u"%s %s" % (self.quantity, self.sellable.unit_description)
+        return u"%s %s" % (format_quantity(self.quantity),
+                           self.sellable.unit_description)
 
     def get_description(self):
         return self.sellable.get_description()
