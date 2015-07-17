@@ -200,13 +200,10 @@ class ShellApp(GladeDelegate):
             raise NotImplementedError
 
         if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
-            results = self.results.get_selected_rows()
+            results = self.results.get_selected_rows() or list(self.search.get_last_results())
         else:
-            result = self.results.get_selected()
-            results = [result] if result else None
-
-        # There are no itens selected. We should print the entire list
-        if not results:
+            # There are not multiple selection.
+            # We should print the entire list.
             results = list(self.search.get_last_results())
         self.print_report(self.report_table, self.results, results)
 
