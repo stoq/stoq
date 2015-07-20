@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2013-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -705,6 +705,7 @@ class TestWorkOrder(DomainTest):
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_finish(self, localnow):
+        branch = get_current_branch(self.store)
         localnow.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
         workorder.approve()
@@ -717,6 +718,16 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
         self.assertEqual(workorder.finish_date,
                          self.fake.datetime.datetime.now())
+        self.assertEquals(workorder.execution_branch, branch)
+
+        path = 'stoqlib.database.runtime.get_current_branch'
+        with mock.patch(path) as current_branch:
+            new_branch = self.create_branch()
+            current_branch.return_value = new_branch
+            workorder.reopen(reason=u'reopen test')
+            workorder.finish()
+            # Checking that we are not overwriting the value
+            self.assertEquals(workorder.execution_branch, branch)
 
     def test_reopen(self):
         workorder = self.create_workorder()

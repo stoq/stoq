@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2013-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -1063,6 +1063,11 @@ class WorkOrder(Domain):
         """
         assert self.can_finish()
         self.finish_date = localnow()
+        # Make sure we are not overwriting this value, since we can reopen the
+        # order and finish again
+        if not self.execution_branch:
+            branch = get_current_branch(self.store)
+            self.execution_branch = branch
         self._change_status(self.STATUS_WORK_FINISHED)
 
     def reopen(self, reason):
