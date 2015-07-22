@@ -32,6 +32,7 @@ import pango
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
+from storm.expr import Count, And
 
 from stoqlib.api import api
 from stoqlib.domain.sale import (Sale,
@@ -224,24 +225,36 @@ class SoldItemsByBranchSearch(SearchDialog):
         # SummaryLabel supports only one column)
         self.items_label = gtk.Label()
         self.quantity_label = gtk.Label()
+        self.items_per_sale_label = gtk.Label()
         self.total_label = gtk.Label()
-        for widget in [self.items_label, self.quantity_label, self.total_label]:
+        for widget in [self.items_label, self.quantity_label,
+                       self.items_per_sale_label, self.total_label]:
             hbox.pack_start(widget, False, False)
             set_bold(widget)
 
         hbox.show_all()
 
     def _update_summary(self, results):
-        items = total_quantity = total = 0
+        total_quantity = total = 0
         for obj in results:
-            items += 1
             total_quantity += obj.quantity
             total += obj.total
 
-        self.items_label.set_label(_(u'Items: %s') %
-                                   format_quantity(items))
+        queries, having = self.search.parse_states()
+        sale_results = self.store.using(*self.search_spec.tables)
+        sale_results = sale_results.find(Count(Sale.id, distinct=True))
+        if queries:
+            sale_results = sale_results.find(And(*queries))
+
+        sales = sale_results.one()
+        items_per_sale = total_quantity / sales if sales > 0 else 0
+
+        self.items_label.set_label(_(u'Sales: %s') %
+                                   format_quantity(sales))
         self.quantity_label.set_label(_(u'Quantity: %s') %
                                       format_quantity(total_quantity))
+        self.items_per_sale_label.set_label(_(u'Items per sale: %s') %
+                                            format_quantity(items_per_sale))
         self.total_label.set_label(_(u'Total: %s') %
                                    get_formatted_price(total))
 

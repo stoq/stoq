@@ -437,9 +437,13 @@ class QueryExecuter(object):
     def _default_query(self, store):
         return store.find(self.search_spec)
 
-    def _parse_states(self, result, states):
+    def parse_states(self, states):
+        """Parses the state given and return a tuple where the first element is
+        the queries that should be used, and the second is a 'having' that
+        should be used with the query.
+        """
         if states is None:
-            return result
+            return None, None
 
         search_spec = self.search_spec
         if search_spec is None:
@@ -479,12 +483,16 @@ class QueryExecuter(object):
             if query:
                 queries.append(query)
 
-        if queries:
-            result = result.find(And(*queries))
-        if having:
-            result = result.having(And(*having))
+        return queries, having
 
-        return result
+    def _parse_states(self, resultset, states):
+        queries, having = self.parse_states(states)
+        if queries:
+            resultset = resultset.find(And(*queries))
+        if having:
+            resultset = resultset.having(And(*having))
+
+        return resultset
 
     def _construct_state_query(self, search_spec, state, columns):
         queries = []

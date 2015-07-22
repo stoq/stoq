@@ -459,6 +459,12 @@ class SearchSlave(SlaveDelegate):
 
         return filter
 
+    def parse_states(self):
+        """ Returns the states as clauses
+        """
+        states = [(sf.get_state()) for sf in self._search_filters]
+        return self.get_query_executer().parse_states(states)
+
     def get_filter_states(self):
         dict_state = {}
         for search_filter in self._search_filters:
