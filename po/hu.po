@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-17 15:33-0300\n"
-"PO-Revision-Date: 2015-07-17 18:33+0000\n"
+"POT-Creation-Date: 2015-07-22 18:23-0300\n"
+"PO-Revision-Date: 2015-07-22 21:24+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
-"Language-Team: Hungarian (http://www.transifex.com/p/stoq/language/hu/)\n"
+"Language-Team: Hungarian (http://www.transifex.com/projects/p/stoq/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -76,8 +76,8 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:386
 #: ../stoqlib/gui/search/productsearch.py:269
 #: ../stoqlib/gui/search/productsearch.py:320
-#: ../stoqlib/gui/search/salesearch.py:249
-#: ../stoqlib/gui/search/salesearch.py:286
+#: ../stoqlib/gui/search/salesearch.py:262
+#: ../stoqlib/gui/search/salesearch.py:299
 #: ../stoqlib/gui/search/salespersonsearch.py:53
 #: ../stoqlib/gui/search/stockdecreasesearch.py:79
 #: ../stoqlib/gui/search/tillsearch.py:151
@@ -315,8 +315,8 @@ msgstr ""
 #: ../stoqlib/gui/search/loansearch.py:84
 #: ../stoqlib/gui/search/productsearch.py:498
 #: ../stoqlib/gui/search/productsearch.py:543
-#: ../stoqlib/gui/search/salesearch.py:262
-#: ../stoqlib/gui/search/salesearch.py:352
+#: ../stoqlib/gui/search/salesearch.py:275
+#: ../stoqlib/gui/search/salesearch.py:365
 #: ../stoqlib/gui/search/transfersearch.py:173
 #: ../stoqlib/gui/slaves/productslave.py:402
 #: ../stoqlib/gui/slaves/workorderslave.py:78
@@ -700,7 +700,7 @@ msgstr ""
 #: ../data/template/till/sales.html:2 ../plugins/nfe/nfeui.py:122
 #: ../stoq/gui/sales.py:103 ../stoq/lib/applist.py:57
 #: ../stoqlib/gui/dialogs/clientdetails.py:143
-#: ../stoqlib/gui/search/salesearch.py:210 ../stoqlib/lib/parameters.py:198
+#: ../stoqlib/gui/search/salesearch.py:211 ../stoqlib/lib/parameters.py:198
 #: ../stoqlib/lib/parameters.py:231 ../stoqlib/lib/parameters.py:240
 #: ../stoqlib/lib/parameters.py:248 ../stoqlib/lib/parameters.py:266
 #: ../stoqlib/lib/parameters.py:273 ../stoqlib/lib/parameters.py:317
@@ -907,7 +907,7 @@ msgstr ""
 #: ../data/template/purchase/purchase-details.html:13
 #: ../data/template/quote/quote-details.html:13
 #: ../data/template/stock_decrease/stock_decrease-details.html:11
-#: ../stoqlib/gui/search/searchslave.py:712
+#: ../stoqlib/gui/search/searchslave.py:718
 msgid "Branch:"
 msgstr ""
 
@@ -1336,7 +1336,7 @@ msgstr ""
 #: ../data/glade/ProductionDetailsDialog.ui.h:8
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:10
 #: ../data/glade/SaleDetailsDialog.ui.h:13 ../stoq/gui/sales.py:326
-#: ../stoqlib/gui/search/salesearch.py:96
+#: ../stoqlib/gui/search/salesearch.py:97
 #: ../stoqlib/gui/search/transfersearch.py:142
 #: ../stoqlib/reporting/sale.py:156
 msgid "Items"
@@ -1482,8 +1482,8 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:88
 #: ../stoqlib/gui/search/productsearch.py:480
 #: ../stoqlib/gui/search/productsearch.py:519
-#: ../stoqlib/gui/search/salesearch.py:117
-#: ../stoqlib/gui/search/salesearch.py:289
+#: ../stoqlib/gui/search/salesearch.py:118
+#: ../stoqlib/gui/search/salesearch.py:302
 #: ../stoqlib/gui/search/salespersonsearch.py:71
 #: ../stoqlib/gui/slaves/productslave.py:428
 #: ../stoqlib/gui/slaves/workorderslave.py:221
@@ -3166,7 +3166,7 @@ msgstr ""
 msgid "receivable"
 msgstr ""
 
-#: ../data/glade/sales_app.ui.h:1 ../stoqlib/gui/search/salesearch.py:210
+#: ../data/glade/sales_app.ui.h:1 ../stoqlib/gui/search/salesearch.py:211
 #: ../stoqlib/reporting/sale.py:85
 msgid "sales"
 msgstr ""
@@ -3301,7 +3301,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:368
 #: ../stoqlib/gui/search/productsearch.py:444
 #: ../stoqlib/gui/search/purchasesearch.py:64
-#: ../stoqlib/gui/search/salesearch.py:296
+#: ../stoqlib/gui/search/salesearch.py:309
 #: ../stoqlib/gui/search/sellablesearch.py:154
 #: ../stoqlib/gui/search/sellablesearch.py:349
 #: ../stoqlib/gui/search/sellableunitsearch.py:70
@@ -3486,7 +3486,7 @@ msgstr ""
 #: ../data/template/optical/saledetails.html:74
 #: ../data/template/optical/workorderdetails.html:24
 #: ../data/template/workorder/quote.html:26 ../stoq/gui/services.py:398
-#: ../stoq/gui/services.py:415 ../stoqlib/gui/search/salesearch.py:363
+#: ../stoq/gui/services.py:415 ../stoqlib/gui/search/salesearch.py:376
 msgid "Estimated finish"
 msgstr ""
 
@@ -3526,7 +3526,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/personmergedialog.py:302
 #: ../stoqlib/gui/search/personsearch.py:395
 #: ../stoqlib/gui/search/personsearch.py:445
-#: ../stoqlib/gui/search/salesearch.py:299
+#: ../stoqlib/gui/search/salesearch.py:312
 msgid "Phone"
 msgstr ""
 
@@ -3714,10 +3714,10 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:279
 #: ../stoqlib/gui/search/productsearch.py:325
 #: ../stoqlib/gui/search/productsearch.py:364
-#: ../stoqlib/gui/search/salesearch.py:254
-#: ../stoqlib/gui/search/salesearch.py:294
-#: ../stoqlib/gui/search/salesearch.py:339
-#: ../stoqlib/gui/search/salesearch.py:439
+#: ../stoqlib/gui/search/salesearch.py:267
+#: ../stoqlib/gui/search/salesearch.py:307
+#: ../stoqlib/gui/search/salesearch.py:352
+#: ../stoqlib/gui/search/salesearch.py:452
 #: ../stoqlib/gui/search/sellablesearch.py:149
 #: ../stoqlib/gui/search/sellablesearch.py:344
 #: ../stoqlib/gui/search/servicesearch.py:89
@@ -3794,9 +3794,9 @@ msgstr ""
 #: ../stoqlib/gui/search/returnedsalesearch.py:88
 #: ../stoqlib/gui/search/returnedsalesearch.py:129
 #: ../stoqlib/gui/search/returnedsalesearch.py:165
-#: ../stoqlib/gui/search/salesearch.py:91
-#: ../stoqlib/gui/search/salesearch.py:298
-#: ../stoqlib/gui/search/salesearch.py:347
+#: ../stoqlib/gui/search/salesearch.py:92
+#: ../stoqlib/gui/search/salesearch.py:311
+#: ../stoqlib/gui/search/salesearch.py:360
 #: ../stoqlib/gui/search/workordersearch.py:67
 #: ../stoqlib/gui/wizards/loanwizard.py:230
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:128
@@ -3829,8 +3829,8 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:540
 #: ../stoqlib/gui/search/productsearch.py:587
 #: ../stoqlib/gui/search/returnedsalesearch.py:96
-#: ../stoqlib/gui/search/salesearch.py:192
-#: ../stoqlib/gui/search/salesearch.py:260
+#: ../stoqlib/gui/search/salesearch.py:193
+#: ../stoqlib/gui/search/salesearch.py:273
 #: ../stoqlib/gui/search/stationsearch.py:55
 #: ../stoqlib/gui/search/stockdecreasesearch.py:86
 #: ../stoqlib/gui/slaves/userbranchaccessslave.py:38
@@ -3880,9 +3880,9 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:488
 #: ../stoqlib/gui/search/productsearch.py:529
 #: ../stoqlib/gui/search/productsearch.py:542
-#: ../stoqlib/gui/search/salesearch.py:258
-#: ../stoqlib/gui/search/salesearch.py:303
-#: ../stoqlib/gui/search/salesearch.py:340
+#: ../stoqlib/gui/search/salesearch.py:271
+#: ../stoqlib/gui/search/salesearch.py:316
+#: ../stoqlib/gui/search/salesearch.py:353
 #: ../stoqlib/gui/search/sellablesearch.py:152
 #: ../stoqlib/gui/search/sellablesearch.py:357
 #: ../stoqlib/gui/slaves/productionslave.py:185
@@ -3929,7 +3929,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:93
 #: ../stoqlib/gui/search/loansearch.py:90
 #: ../stoqlib/gui/search/productsearch.py:224
-#: ../stoqlib/gui/search/salesearch.py:351
+#: ../stoqlib/gui/search/salesearch.py:364
 #: ../stoqlib/gui/search/sellablesearch.py:163
 #: ../stoqlib/gui/search/sellablesearch.py:355
 #: ../stoqlib/gui/search/servicesearch.py:101
@@ -3968,10 +3968,10 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/saledetails.py:293
 #: ../stoqlib/gui/dialogs/supplierdetails.py:121
 #: ../stoqlib/gui/search/loansearch.py:92
-#: ../stoqlib/gui/search/salesearch.py:99
-#: ../stoqlib/gui/search/salesearch.py:264
-#: ../stoqlib/gui/search/salesearch.py:307
-#: ../stoqlib/gui/search/salesearch.py:357
+#: ../stoqlib/gui/search/salesearch.py:100
+#: ../stoqlib/gui/search/salesearch.py:277
+#: ../stoqlib/gui/search/salesearch.py:320
+#: ../stoqlib/gui/search/salesearch.py:370
 #: ../stoqlib/gui/search/workordersearch.py:75
 #: ../stoqlib/gui/slaves/productslave.py:412
 #: ../stoqlib/gui/slaves/workorderslave.py:270
@@ -3990,8 +3990,8 @@ msgid "Total"
 msgstr ""
 
 #: ../data/template/loan/loan.html:71 ../stoq/gui/pos.py:412
-#: ../stoq/gui/till.py:347 ../stoqlib/gui/search/salesearch.py:245
-#: ../stoqlib/gui/search/salesearch.py:401
+#: ../stoq/gui/till.py:347 ../stoqlib/gui/search/salesearch.py:258
+#: ../stoqlib/gui/search/salesearch.py:414
 #, c-format, python-format
 msgid "Total: %s"
 msgstr ""
@@ -4022,7 +4022,7 @@ msgstr ""
 #: ../data/template/till/sales.html:7
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:111
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:137
-#: ../stoqlib/gui/search/salesearch.py:345
+#: ../stoqlib/gui/search/salesearch.py:358
 msgid "Sales Person"
 msgstr ""
 
@@ -4046,7 +4046,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:109
 #: ../stoqlib/gui/search/productsearch.py:457
 #: ../stoqlib/gui/search/returnedsalesearch.py:164
-#: ../stoqlib/gui/search/salesearch.py:305
+#: ../stoqlib/gui/search/salesearch.py:318
 #: ../stoqlib/gui/wizards/receivingwizard.py:252
 msgid "Qty"
 msgstr ""
@@ -4080,8 +4080,8 @@ msgstr ""
 #: ../stoqlib/gui/search/deliverysearch.py:80
 #: ../stoqlib/gui/search/returnedsalesearch.py:84
 #: ../stoqlib/gui/search/returnedsalesearch.py:128
-#: ../stoqlib/gui/search/salesearch.py:87
-#: ../stoqlib/gui/search/salesearch.py:334
+#: ../stoqlib/gui/search/salesearch.py:88
+#: ../stoqlib/gui/search/salesearch.py:347
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:118
 #: ../stoqlib/reporting/sale.py:151
 msgid "Sale #"
@@ -4089,7 +4089,7 @@ msgstr ""
 
 #: ../data/template/optical/saledetails.html:13
 #: ../data/template/optical/workorderdetails.html:18
-#: ../stoqlib/gui/search/salesearch.py:349
+#: ../stoqlib/gui/search/salesearch.py:362
 msgid "Open Date"
 msgstr ""
 
@@ -4147,7 +4147,7 @@ msgstr ""
 #: ../stoq/gui/purchase.py:260 ../stoq/gui/receivable.py:188
 #: ../stoq/gui/sales.py:290 ../stoq/gui/services.py:371
 #: ../stoq/gui/till.py:218 ../stoqlib/domain/payment/views.py:420
-#: ../stoqlib/domain/workorder.py:1168
+#: ../stoqlib/domain/workorder.py:1173
 #: ../stoqlib/gui/dialogs/clientdetails.py:194
 #: ../stoqlib/gui/dialogs/clientdetails.py:344
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:79
@@ -4167,8 +4167,8 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:341
 #: ../stoqlib/gui/search/returnedsalesearch.py:85
 #: ../stoqlib/gui/search/returnedsalesearch.py:160
-#: ../stoqlib/gui/search/salesearch.py:336
-#: ../stoqlib/gui/search/salesearch.py:441
+#: ../stoqlib/gui/search/salesearch.py:349
+#: ../stoqlib/gui/search/salesearch.py:454
 #: ../stoqlib/gui/search/transfersearch.py:130
 #: ../stoqlib/gui/search/transfersearch.py:179
 #: ../stoqlib/gui/search/workordersearch.py:62
@@ -4331,7 +4331,7 @@ msgid "Payment Settings"
 msgstr ""
 
 #: ../data/template/quote/quote-details.html:29
-#: ../stoqlib/gui/search/salesearch.py:179
+#: ../stoqlib/gui/search/salesearch.py:180
 msgid "Payment Method:"
 msgstr ""
 
@@ -4793,9 +4793,9 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:487
 #: ../stoqlib/gui/search/productsearch.py:528
 #: ../stoqlib/gui/search/returnedsalesearch.py:69
-#: ../stoqlib/gui/search/salesearch.py:81
-#: ../stoqlib/gui/search/salesearch.py:407
-#: ../stoqlib/gui/search/salesearch.py:412
+#: ../stoqlib/gui/search/salesearch.py:82
+#: ../stoqlib/gui/search/salesearch.py:420
+#: ../stoqlib/gui/search/salesearch.py:425
 #: ../stoqlib/gui/search/searchdialog.py:416
 #: ../stoqlib/gui/search/searchdialog.py:429
 #: ../stoqlib/gui/search/searchdialog.py:446
@@ -5809,7 +5809,7 @@ msgstr ""
 
 #: ../plugins/optical/medicssearch.py:90
 #: ../stoqlib/gui/dialogs/saledetails.py:81
-#: ../stoqlib/gui/search/salesearch.py:323
+#: ../stoqlib/gui/search/salesearch.py:336
 msgid "Sale Details"
 msgstr ""
 
@@ -5833,7 +5833,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:371
 #: ../stoqlib/gui/search/productsearch.py:448
 #: ../stoqlib/gui/search/productsearch.py:541
-#: ../stoqlib/gui/search/salesearch.py:343
+#: ../stoqlib/gui/search/salesearch.py:356
 #: ../stoqlib/gui/search/sellablesearch.py:156
 #: ../stoqlib/gui/search/sellablesearch.py:351
 #: ../stoqlib/gui/wizards/salequotewizard.py:340
@@ -8205,7 +8205,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/clientdetails.py:228
 #: ../stoqlib/gui/editors/workordereditor.py:393
 #: ../stoqlib/gui/search/commissionsearch.py:131
-#: ../stoqlib/gui/search/salesearch.py:94
+#: ../stoqlib/gui/search/salesearch.py:95
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:129
 #: ../stoqlib/lib/parameters.py:949 ../stoqlib/net/calendarevents.py:137
 msgid "Salesperson"
@@ -8253,7 +8253,7 @@ msgid "Make the change on the order's menu so you can specify a reason"
 msgstr ""
 
 #: ../stoq/gui/services.py:98 ../stoq/gui/services.py:512
-#: ../stoqlib/domain/workorder.py:600 ../stoqlib/gui/search/salesearch.py:354
+#: ../stoqlib/domain/workorder.py:600 ../stoqlib/gui/search/salesearch.py:367
 msgid "Delivered"
 msgstr ""
 
@@ -8381,7 +8381,7 @@ msgstr ""
 
 #: ../stoq/gui/services.py:369 ../stoqlib/gui/dialogs/clientdetails.py:293
 #: ../stoqlib/gui/editors/workordereditor.py:380
-#: ../stoqlib/gui/search/salesearch.py:358
+#: ../stoqlib/gui/search/salesearch.py:371
 #: ../stoqlib/gui/search/workordersearch.py:61
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:117
 msgid "WO #"
@@ -8944,8 +8944,8 @@ msgstr ""
 #: ../stoqlib/gui/editors/producteditor.py:498
 #: ../stoqlib/gui/search/personsearch.py:382
 #: ../stoqlib/gui/search/productsearch.py:116
-#: ../stoqlib/gui/search/salesearch.py:256
-#: ../stoqlib/gui/search/salesearch.py:341
+#: ../stoqlib/gui/search/salesearch.py:269
+#: ../stoqlib/gui/search/salesearch.py:354
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:177
 #: ../stoqlib/gui/wizards/salequotewizard.py:415 ../stoqlib/lib/invoice.py:589
 #: ../stoqlib/lib/invoice.py:604 ../stoqlib/lib/invoice.py:620
@@ -9128,7 +9128,7 @@ msgid "[%s] - Till"
 msgstr ""
 
 #: ../stoq/gui/till.py:220 ../stoqlib/gui/dialogs/productstockdetails.py:207
-#: ../stoqlib/gui/search/salesearch.py:89
+#: ../stoqlib/gui/search/salesearch.py:90
 #: ../stoqlib/gui/wizards/receivingwizard.py:133
 msgid "Date Started"
 msgstr ""
@@ -10468,7 +10468,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/personmergedialog.py:309
 #: ../stoqlib/gui/search/personsearch.py:393
 #: ../stoqlib/gui/search/personsearch.py:443
-#: ../stoqlib/gui/search/salesearch.py:301
+#: ../stoqlib/gui/search/salesearch.py:314
 msgid "Email"
 msgstr ""
 
@@ -10610,35 +10610,35 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1127
+#: ../stoqlib/domain/workorder.py:1132
 msgid "A reason is needed to reopen the work order"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1133
+#: ../stoqlib/domain/workorder.py:1138
 msgid "This work order cannot be worked on"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1138
+#: ../stoqlib/domain/workorder.py:1143
 msgid "This work order cannot be finished"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1148
+#: ../stoqlib/domain/workorder.py:1153
 msgid "A reason is needed to pause the work order"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1152
+#: ../stoqlib/domain/workorder.py:1157
 msgid "This work order cannot wait for material"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1155
+#: ../stoqlib/domain/workorder.py:1160
 msgid "This work order cannot be re-opened"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1199
+#: ../stoqlib/domain/workorder.py:1204
 msgid "Reopening work order to cancel the sale"
 msgstr ""
 
-#: ../stoqlib/domain/workorder.py:1201 ../stoqlib/gui/fiscalprinter.py:538
+#: ../stoqlib/domain/workorder.py:1206 ../stoqlib/gui/fiscalprinter.py:538
 msgid "The sale was cancelled"
 msgstr ""
 
@@ -13949,77 +13949,82 @@ msgstr ""
 msgid "Return branch"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:68
+#: ../stoqlib/gui/search/salesearch.py:69
 msgid "Search for Sales"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:83
+#: ../stoqlib/gui/search/salesearch.py:84
 msgid "Show sales with status"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:168
+#: ../stoqlib/gui/search/salesearch.py:169
 msgid "Search for Sales by Payment Method"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:170
-#: ../stoqlib/gui/search/salesearch.py:203
+#: ../stoqlib/gui/search/salesearch.py:171
+#: ../stoqlib/gui/search/salesearch.py:204
 msgid "Items matching:"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:200
+#: ../stoqlib/gui/search/salesearch.py:201
 msgid "Sold Items by Branch"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:241
+#: ../stoqlib/gui/search/salesearch.py:252
 #, python-format
-msgid "Items: %s"
+msgid "Sales: %s"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:243
-#: ../stoqlib/gui/search/salesearch.py:397
+#: ../stoqlib/gui/search/salesearch.py:254
+#: ../stoqlib/gui/search/salesearch.py:410
 #, python-format
 msgid "Quantity: %s"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:272
+#: ../stoqlib/gui/search/salesearch.py:256
+#, python-format
+msgid "Items per sale: %s"
+msgstr ""
+
+#: ../stoqlib/gui/search/salesearch.py:285
 msgid "Sold Items by Client"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:283
-#: ../stoqlib/gui/search/salesearch.py:326
+#: ../stoqlib/gui/search/salesearch.py:296
+#: ../stoqlib/gui/search/salesearch.py:339
 msgid "Sale items"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:283
+#: ../stoqlib/gui/search/salesearch.py:296
 msgid "sale items"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:306
+#: ../stoqlib/gui/search/salesearch.py:319
 msgid "Avg price"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:313
+#: ../stoqlib/gui/search/salesearch.py:326
 msgid "Unconfirmed Sale Items Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:326
+#: ../stoqlib/gui/search/salesearch.py:339
 msgid "sale-items"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:360
+#: ../stoqlib/gui/search/salesearch.py:373
 msgid "WO Status"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:365
+#: ../stoqlib/gui/search/salesearch.py:378
 msgid "WO Finish date"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:399
+#: ../stoqlib/gui/search/salesearch.py:412
 #, python-format
 msgid "Delivered: %s"
 msgstr ""
 
-#: ../stoqlib/gui/search/salesearch.py:425
+#: ../stoqlib/gui/search/salesearch.py:438
 msgid "Sale Token Search"
 msgstr ""
 
