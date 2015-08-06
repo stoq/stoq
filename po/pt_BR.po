@@ -4,6 +4,7 @@
 # 
 # Translators:
 # andrelcmarinho <andrelcmarinho@bol.com.br>, 2014
+# gerga <gerga@async.com.br>, 2015
 # Johan Dahlin <jdahlin@async.com.br>, 2005
 # luisoishi <luisoishi@async.com.br>, 2015
 # Marciel Leal <marcielmanoel15@gmail.com>, 2015
@@ -14,10 +15,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-22 18:23-0300\n"
-"PO-Revision-Date: 2015-07-22 21:24+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/language/pt_BR/)\n"
+"POT-Creation-Date: 2015-07-23 12:08-0300\n"
+"PO-Revision-Date: 2015-08-05 13:34+0000\n"
+"Last-Translator: gerga <gerga@async.com.br>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1151,7 +1152,7 @@ msgstr "Grupo do atributo:"
 #: ../data/glade/GridAttributeEditor.ui.h:4
 #: ../data/glade/GridGroupEditor.ui.h:3 ../data/glade/GridOptionEditor.ui.h:4
 msgid "Is active"
-msgstr ""
+msgstr "Ativo"
 
 #: ../data/glade/GridGroupEditor.ui.h:2
 msgid "Group name:"
@@ -1394,7 +1395,7 @@ msgstr "Altura:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:4
 msgid "Continuous page"
-msgstr ""
+msgstr "Página contínua"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:6
 msgid "Position:"
@@ -1407,7 +1408,7 @@ msgstr "Tamanho:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:8
 msgid "Text:"
-msgstr ""
+msgstr "Texto:"
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:2
 msgid "Device name:"
@@ -1871,11 +1872,11 @@ msgstr "Kg"
 
 #: ../data/glade/ProductInformationSlave.ui.h:11
 msgid "Internal use"
-msgstr ""
+msgstr "Uso interno"
 
 #: ../data/glade/ProductInformationSlave.ui.h:12
 msgid "When checked, this product will not be available for selling"
-msgstr ""
+msgstr "Quando selecionado, esse produto não estará disponível para venda "
 
 #: ../data/glade/ProductInformationSlave.ui.h:13
 msgid "<b>General Details</b>"
@@ -2766,7 +2767,7 @@ msgstr "Produtos"
 #: ../data/glade/StockDecreaseItemSlave.ui.h:4
 #: ../data/glade/TransferItemSlave.ui.h:4
 msgid "Original cost:"
-msgstr ""
+msgstr "Custo Original:"
 
 #: ../data/glade/StockTransferInitialStep.ui.h:1
 msgid "Comment:"
@@ -5990,7 +5991,7 @@ msgstr "Data estimada de finalização não pode ser no passado."
 
 #: ../plugins/optical/opticalui.py:100
 msgid "Glass Type"
-msgstr ""
+msgstr "Tipo de Óculos"
 
 #: ../plugins/optical/opticalui.py:101
 #: ../stoqlib/gui/dialogs/invoicedialog.py:50
@@ -5999,7 +6000,7 @@ msgstr "Tamanho"
 
 #: ../plugins/optical/opticalui.py:102 ../plugins/optical/opticalui.py:119
 msgid "Lens Type"
-msgstr ""
+msgstr "Tipo de lente"
 
 #: ../plugins/optical/opticalui.py:103 ../plugins/optical/opticalui.py:124
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:55
@@ -6011,39 +6012,39 @@ msgstr "Cor"
 
 #: ../plugins/optical/opticalui.py:106
 msgid "Photosensitive"
-msgstr ""
+msgstr "Fotossensitividade"
 
 #: ../plugins/optical/opticalui.py:107
 msgid "Anti Glare"
-msgstr ""
+msgstr "Antirreflexo"
 
 #: ../plugins/optical/opticalui.py:108
 msgid "Refraction Index"
-msgstr ""
+msgstr "Índice de Refração"
 
 #: ../plugins/optical/opticalui.py:110 ../plugins/optical/opticalui.py:118
 msgid "Classification"
-msgstr ""
+msgstr "Classificação"
 
 #: ../plugins/optical/opticalui.py:112
 msgid "Diameter"
-msgstr ""
+msgstr "Diâmetro"
 
 #: ../plugins/optical/opticalui.py:114
 msgid "Availability"
-msgstr ""
+msgstr "Disponibilidade"
 
 #: ../plugins/optical/opticalui.py:117
 msgid "Degree"
-msgstr ""
+msgstr "Grau"
 
 #: ../plugins/optical/opticalui.py:120
 msgid "Discard"
-msgstr ""
+msgstr "Descarte"
 
 #: ../plugins/optical/opticalui.py:125
 msgid "Curvature"
-msgstr ""
+msgstr "Curvatura"
 
 #: ../plugins/optical/opticalui.py:199
 msgid "Optical"
@@ -6371,7 +6372,7 @@ msgstr "Plugins..."
 
 #: ../stoq/gui/admin.py:377
 msgid "Forms..."
-msgstr ""
+msgstr "Formulários..."
 
 #: ../stoq/gui/admin.py:378
 msgid "Taxes..."
@@ -7102,7 +7103,7 @@ msgstr "Exibir inventários em:"
 #: ../stoq/gui/inventory.py:148
 #: ../stoqlib/gui/dialogs/productstockdetails.py:269
 msgid "Inventory #"
-msgstr ""
+msgstr "Inventário #"
 
 #. FIXME: This is missing a few states,
 #. STATUS_LOANED: stock is completely synchronized
@@ -7690,7 +7691,7 @@ msgstr "Exibir produções com situação"
 
 #: ../stoq/gui/production.py:169
 msgid "Production #"
-msgstr ""
+msgstr "Produção #"
 
 #: ../stoq/gui/production.py:181 ../stoq/gui/services.py:97
 #: ../stoq/gui/services.py:513 ../stoqlib/domain/inventory.py:248
@@ -8285,7 +8286,7 @@ msgstr "Finaliza a ordem selecionada"
 
 #: ../stoq/gui/services.py:218
 msgid "Deliver..."
-msgstr ""
+msgstr "Entregar..."
 
 #: ../stoq/gui/services.py:222
 msgid "Print quote..."
@@ -8391,7 +8392,7 @@ msgstr "Nenhuma ordem de serviço na categoria %s foi encontrada."
 #: ../stoqlib/gui/search/workordersearch.py:61
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:117
 msgid "WO #"
-msgstr ""
+msgstr "OS #"
 
 #: ../stoq/gui/services.py:376 ../stoq/gui/services.py:378
 #: ../stoq/gui/services.py:381 ../stoqlib/gui/editors/workordereditor.py:383
@@ -8930,11 +8931,11 @@ msgstr "Pesquisa por itens fechados no estoque"
 
 #: ../stoq/gui/stock.py:129
 msgid "Transfer items..."
-msgstr ""
+msgstr "Itens transferidos..."
 
 #: ../stoq/gui/stock.py:130
 msgid "Returned items..."
-msgstr ""
+msgstr "Items devolvidos..."
 
 #: ../stoq/gui/stock.py:131
 msgid "Pending returned sales..."
@@ -10394,7 +10395,7 @@ msgstr "Disponível"
 
 #: ../stoqlib/domain/sale.py:1855
 msgid "Occupied"
-msgstr ""
+msgstr "Ocupado"
 
 #: ../stoqlib/domain/sellable.py:364
 #, python-format
@@ -11448,7 +11449,7 @@ msgstr "Lotes"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:182
 msgid "Receiving #"
-msgstr ""
+msgstr "Recebimento #"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:193
 #: ../stoqlib/gui/dialogs/productstockdetails.py:297
@@ -11463,7 +11464,7 @@ msgstr "Nota fiscal"
 #: ../stoqlib/gui/search/transfersearch.py:129
 #: ../stoqlib/gui/search/transfersearch.py:168
 msgid "Transfer #"
-msgstr ""
+msgstr "Transferência #"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:225
 msgid "Date Created"
@@ -11483,7 +11484,7 @@ msgstr "Emprestado"
 #: ../stoqlib/gui/dialogs/productstockdetails.py:256
 #: ../stoqlib/gui/search/stockdecreasesearch.py:83
 msgid "Decrease #"
-msgstr ""
+msgstr "Saída manual #"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:280
 msgid "Recorded qty"
@@ -11790,7 +11791,7 @@ msgstr "Movimento diário"
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:126
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:136
 msgid "Code #"
-msgstr ""
+msgstr "Código #"
 
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:145
 #: ../stoqlib/gui/dialogs/tillhistory.py:64
@@ -12123,7 +12124,7 @@ msgstr "As mudanças serão aplicadas após a reinicialização do Stoq"
 
 #: ../stoqlib/gui/editors/grideditor.py:40
 msgid "Grid Group"
-msgstr ""
+msgstr "Grupo de atributo"
 
 #: ../stoqlib/gui/editors/grideditor.py:65
 msgid "Grid Attribute"
@@ -12131,7 +12132,7 @@ msgstr "Atributo da grade"
 
 #: ../stoqlib/gui/editors/grideditor.py:103
 msgid "Grid Attribute Option"
-msgstr ""
+msgstr "Opção de atributo"
 
 #: ../stoqlib/gui/editors/grideditor.py:139
 msgid "Option order"
@@ -12388,11 +12389,11 @@ msgstr "Cliente:"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:309
 msgid "Destination account"
-msgstr ""
+msgstr "Conta destino"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:332
 msgid "Source account"
-msgstr ""
+msgstr "Conta origem"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:339
 msgid "The bill has arrived."
@@ -12827,7 +12828,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/saleeditor.py:387
 msgid "Code already in use"
-msgstr ""
+msgstr "Código já está sendo usado"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:72
 msgid "Taxes and Tax rates"
@@ -12992,11 +12993,11 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/stockdecreaseeditor.py:90
 msgid "The quantity should be greater than zero"
-msgstr ""
+msgstr "A quantidade deve ser maior que zero"
 
 #: ../stoqlib/gui/editors/stockdecreaseeditor.py:94
 msgid "The cost must be greater than zero"
-msgstr ""
+msgstr "O custo deve ser maior que zero"
 
 #: ../stoqlib/gui/editors/taxclasseditor.py:42
 msgid "Base Category"
@@ -13097,7 +13098,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/transfereditor.py:94
 msgid "The cost must be greater than zero."
-msgstr ""
+msgstr "O custo deve ser maior que zero"
 
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:44
 msgid "Work order category"
@@ -13949,11 +13950,11 @@ msgstr "Devolvido na filial"
 
 #: ../stoqlib/gui/search/returnedsalesearch.py:151
 msgid "Returned Sale Item Search"
-msgstr ""
+msgstr "Pesquisa de itens devolvidos"
 
 #: ../stoqlib/gui/search/returnedsalesearch.py:173
 msgid "Return branch"
-msgstr ""
+msgstr "Filial"
 
 #: ../stoqlib/gui/search/salesearch.py:69
 msgid "Search for Sales"
@@ -13979,7 +13980,7 @@ msgstr "Itens vendidos por filial"
 #: ../stoqlib/gui/search/salesearch.py:252
 #, python-format
 msgid "Sales: %s"
-msgstr ""
+msgstr "Vendas: %s"
 
 #: ../stoqlib/gui/search/salesearch.py:254
 #: ../stoqlib/gui/search/salesearch.py:410
@@ -13990,7 +13991,7 @@ msgstr "Quantidade: %s"
 #: ../stoqlib/gui/search/salesearch.py:256
 #, python-format
 msgid "Items per sale: %s"
-msgstr ""
+msgstr "Itens por venda: %s"
 
 #: ../stoqlib/gui/search/salesearch.py:285
 msgid "Sold Items by Client"
@@ -14219,7 +14220,7 @@ msgstr "Pesquisa de saídas manuais"
 
 #: ../stoqlib/gui/search/stockdecreasesearch.py:90
 msgid "Sent To"
-msgstr ""
+msgstr "Enviado para"
 
 #: ../stoqlib/gui/search/stockdecreasesearch.py:92
 msgid "Items removed"
@@ -14293,7 +14294,7 @@ msgstr "Data de recebimento"
 
 #: ../stoqlib/gui/search/transfersearch.py:157
 msgid "Transfer Item Search"
-msgstr ""
+msgstr "Pesquisa de itens transferidos"
 
 #: ../stoqlib/gui/search/workordersearch.py:46
 msgid "Search for work orders"
@@ -16285,7 +16286,7 @@ msgstr "%d anos atrás"
 
 #: ../stoqlib/lib/invoice.py:394
 msgid "Free text"
-msgstr ""
+msgstr "Texto livre"
 
 #: ../stoqlib/lib/invoice.py:395 ../stoqlib/lib/invoice.py:533
 #: ../stoqlib/lib/invoice.py:1271 ../stoqlib/lib/invoice.py:1282
@@ -17730,7 +17731,7 @@ msgstr "Relatório de Vendas Devolvidas"
 
 #: ../stoqlib/reporting/sale.py:95
 msgid "Returned Items Report"
-msgstr ""
+msgstr "Relatório de itens devolvidos"
 
 #: ../stoqlib/reporting/sale.py:99
 msgid "Sales By Client Report"
@@ -17875,15 +17876,15 @@ msgstr "transferências"
 
 #: ../stoqlib/reporting/transfer.py:72
 msgid "Transfer item report"
-msgstr ""
+msgstr "Relatório de itens transferidos"
 
 #: ../stoqlib/reporting/transfer.py:73
 msgid "transfer item"
-msgstr ""
+msgstr "item transferido"
 
 #: ../stoqlib/reporting/transfer.py:73
 msgid "transfer items"
-msgstr ""
+msgstr "itens transferidos"
 
 #: ../stoqlib/reporting/workorder.py:35
 msgid "Work orders report"
