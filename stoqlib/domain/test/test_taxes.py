@@ -25,8 +25,7 @@
 from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
-from stoqlib.domain.taxes import (ProductIcmsTemplate,
-                                  ProductIpiTemplate,
+from stoqlib.domain.taxes import (ProductIpiTemplate,
                                   ProductTaxTemplate,
                                   InvoiceItemIpi)
 from stoqlib.domain.test.domaintest import DomainTest
@@ -37,12 +36,7 @@ __tests__ = 'stoqlib/domain/taxes.py'
 
 class TestBaseTax(DomainTest):
     def test_set_item_tax(self):
-        tax_template = ProductTaxTemplate(
-            store=self.store,
-            tax_type=ProductTaxTemplate.TYPE_ICMS)
-        icms_template = ProductIcmsTemplate(
-            store=self.store,
-            product_tax_template=tax_template)
+        icms_template = self.create_product_icms_template()
 
         tax_template = ProductTaxTemplate(
             store=self.store,
@@ -62,13 +56,9 @@ class TestBaseTax(DomainTest):
 
 class TestProductTaxTemplate(DomainTest):
     def test_get_tax_model(self):
-        tax_template = ProductTaxTemplate(
-            store=self.store,
-            tax_type=ProductTaxTemplate.TYPE_ICMS)
+        tax_template = self.create_product_tax_template(tax_type=ProductTaxTemplate.TYPE_ICMS)
         self.failIf(tax_template.get_tax_model())
-        ProductIcmsTemplate(
-            store=self.store,
-            product_tax_template=tax_template)
+        self.create_product_icms_template(tax_template=tax_template)
         self.failUnless(tax_template.get_tax_model())
 
     def test_get_tax_type_str(self):
@@ -82,12 +72,7 @@ class TestProductIcmsTemplate(DomainTest):
     """Tests for ProductIcmsTemplate class"""
 
     def test_is_p_cred_sn_valid(self):
-        tax_template = ProductTaxTemplate(
-            store=self.store,
-            tax_type=ProductTaxTemplate.TYPE_ICMS)
-        icms_template = ProductIcmsTemplate(
-            store=self.store,
-            product_tax_template=tax_template)
+        icms_template = self.create_product_icms_template()
 
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 

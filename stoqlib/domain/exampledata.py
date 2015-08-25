@@ -157,7 +157,7 @@ class ExampleCreator(object):
         return Person(name=name, store=self.store)
 
     def create_branch(self, name=u'Dummy', phone_number=u'12345678',
-                      fax_number=u'87564321', person=None):
+                      fax_number=u'87564321', person=None, crt=1):
         from stoqlib.domain.person import Branch, Company, Person
         if person is None:
             person = Person(name=name, phone_number=phone_number,
@@ -166,7 +166,7 @@ class ExampleCreator(object):
             fancy_name = name + u' shop'
             Company(person=person, fancy_name=fancy_name,
                     store=self.store)
-        return Branch(person=person, store=self.store)
+        return Branch(person=person, store=self.store, crt=crt)
 
     def create_supplier(self, name=u'Supplier', fancy_name=u'Company Name',
                         person=None):
@@ -528,6 +528,25 @@ class ExampleCreator(object):
                         price=100,
                         sale=sale or self.create_sale(),
                         sellable=sellable)
+
+    def create_product_tax_template(self, name=u'Tax template', tax_type=0):
+        from stoqlib.domain.taxes import ProductTaxTemplate
+        return ProductTaxTemplate(store=self.store, name=name, tax_type=tax_type)
+
+    def create_product_icms_template(self, tax_template=None, orig=0, cst=0,
+                                     mod_bc=0, p_icms=0, p_icms_st=0,
+                                     p_mva_st=0, p_red_bc_st=0):
+        from stoqlib.domain.taxes import ProductIcmsTemplate
+        if not tax_template:
+            tax_template = self.create_product_tax_template()
+        return ProductIcmsTemplate(store=self.store,
+                                   product_tax_template=tax_template,
+                                   orig=orig,
+                                   cst=cst, mod_bc=mod_bc,
+                                   p_icms=p_icms,
+                                   p_icms_st=p_icms_st,
+                                   p_mva_st=p_mva_st,
+                                   p_red_bc_st=p_red_bc_st)
 
     def create_invoice_item_icms(self):
         from stoqlib.domain.taxes import InvoiceItemIcms
