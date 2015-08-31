@@ -195,8 +195,16 @@ class CanSeeAllBranches(Event):
 # CouponCreatedEvent
 #
 
+
 class CouponCreatedEvent(Event):
-    pass
+    """Emitted when a coupon is to be created on fiscalprinter.
+
+    :param coupon: The newly created coupon
+    :type coupon: :stoqlib.gui.fiscalprinter.FiscalCoupon
+    :param sale: The |sale| to wich we are creating the coupon.
+        Will be ``None`` when it is still in progress
+        (i.e. a sale in progress on POS).
+    """
 
 
 #

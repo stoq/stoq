@@ -406,7 +406,11 @@ class ECFUI(object):
 
         self._validate_printer()
 
-    def _coupon_create(self, fiscalcoupon):
+    def _coupon_create(self, fiscalcoupon, sale):
+        # External sales are an exception to the general rule and should not
+        # generate an ecf.
+        if sale and sale.is_external():
+            return
 
         # Callsite catches DeviceError
         self._validate_printer()
@@ -624,8 +628,8 @@ class ECFUI(object):
     def _on_TillRemoveCash(self, till, value):
         self._remove_cash(till, value)
 
-    def _on_CouponCreatedEvent(self, coupon):
-        self._coupon_create(coupon)
+    def _on_CouponCreatedEvent(self, coupon, sale):
+        self._coupon_create(coupon, sale)
 
     def _on_AddTillEntry(self, till_entry, store):
         self._set_last_till_entry(till_entry, store)

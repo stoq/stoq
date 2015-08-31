@@ -35,6 +35,7 @@ from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.event import Event
+from stoqlib.domain.events import SaleIsExternalEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
@@ -1751,6 +1752,20 @@ class TestSale(DomainTest):
         client = self.create_client()
         sale2 = self.create_sale(client=client)
         self.assertEquals(sale2.recipient, client.person)
+
+    def test_is_external(self):
+        sale = self.create_sale()
+        self.assertFalse(sale.is_external())
+
+        callback = lambda sale: False
+        SaleIsExternalEvent.connect(callback)
+        self.assertFalse(sale.is_external())
+        SaleIsExternalEvent.disconnect(callback)
+
+        callback = lambda sale: True
+        SaleIsExternalEvent.connect(callback)
+        self.assertTrue(sale.is_external())
+        SaleIsExternalEvent.disconnect(callback)
 
 
 class TestSaleToken(DomainTest):

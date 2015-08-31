@@ -226,8 +226,10 @@ class FiscalPrinterHelper(gobject.GObject):
         else:
             return CLOSE_TILL_NONE
 
-    def create_coupon(self):
+    def create_coupon(self, sale=None):
         """ Creates a new fiscal coupon
+
+        :param sale: The |sale| to which we are creating a coupon
         :returns: a new coupon
         """
 
@@ -242,7 +244,7 @@ class FiscalPrinterHelper(gobject.GObject):
         coupon = FiscalCoupon(self._parent)
 
         try:
-            CouponCreatedEvent.emit(coupon)
+            CouponCreatedEvent.emit(coupon, sale)
         except (DriverError, DeviceError):
             warning(_("It wasn't possible to open the coupon"))
             coupon = None

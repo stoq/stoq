@@ -54,6 +54,7 @@ from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    SaleCanCancelEvent,
+                                   SaleIsExternalEvent,
                                    SaleItemBeforeDecreaseStockEvent,
                                    SaleItemBeforeIncreaseStockEvent,
                                    SaleItemAfterSetBatchesEvent,
@@ -986,6 +987,13 @@ class Sale(Domain):
         """
         return (self.status == Sale.STATUS_QUOTE or
                 self.status == Sale.STATUS_ORDERED)
+
+    def is_external(self):
+        """Check if this is an external sale.
+
+        :rtype: bool
+        """
+        return bool(SaleIsExternalEvent.emit(self))
 
     def is_returned(self):
         return self.status == Sale.STATUS_RETURNED

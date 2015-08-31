@@ -301,7 +301,7 @@ class TillApp(ShellApp):
             store.close()
             return
 
-        coupon = self._open_coupon()
+        coupon = self._open_coupon(sale)
         if not coupon:
             store.close()
             return
@@ -322,8 +322,8 @@ class TillApp(ShellApp):
 
         store.close()
 
-    def _open_coupon(self):
-        coupon = self._printer.create_coupon()
+    def _open_coupon(self, sale=None):
+        coupon = self._printer.create_coupon(sale=sale)
 
         if coupon:
             while not coupon.open():

@@ -208,6 +208,20 @@ class SaleCanCancelEvent(Event):
     """
 
 
+@public(since="1.9.0")
+class SaleIsExternalEvent(Event):
+    """Emitted to check if a |sale| is external.
+
+    External sales are the ones done outside of the commercial
+    establishment.
+
+    The expected return value should be ``True`` if the sale
+    is to be considered as external or ``False`` otherwise.
+
+    :param sale: The sale that we want to check
+    """
+
+
 class SaleItemBeforeDecreaseStockEvent(Event):
     """
     This event is emitted when a |saleitem| is about to decrease the stock
