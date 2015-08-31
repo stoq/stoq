@@ -926,14 +926,23 @@ class TestSale(DomainTest):
         sale.order()
         sale.status = Sale.STATUS_QUOTE
         self.failUnless(sale.can_edit())
+        with mock.patch.object(sale, 'is_external') as is_external:
+            is_external.return_value = True
+            self.assertFalse(sale.can_edit())
 
         sale.status = Sale.STATUS_ORDERED
         self.failUnless(sale.can_edit())
+        with mock.patch.object(sale, 'is_external') as is_external:
+            is_external.return_value = True
+            self.assertFalse(sale.can_edit())
 
         self.add_payments(sale, u'check')
         sale.confirm()
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.failIf(sale.can_edit())
+        with mock.patch.object(sale, 'is_external') as is_external:
+            is_external.return_value = True
+            self.assertFalse(sale.can_edit())
 
     @mock.patch('stoqlib.domain.sale.SaleCanCancelEvent.emit')
     def test_can_cancel(self, can_cancel_emit):

@@ -981,10 +981,16 @@ class Sale(Domain):
         return self.status == Sale.STATUS_CONFIRMED
 
     def can_edit(self):
-        """Only quoting sales can be edited.
+        """Check if the sale can be edited.
+
+        Only quoting and ordered sales can be edited, as long
+        as they are not external.
 
         :returns: ``True`` if the sale can be edited
         """
+        if self.is_external():
+            return False
+
         return (self.status == Sale.STATUS_QUOTE or
                 self.status == Sale.STATUS_ORDERED)
 
