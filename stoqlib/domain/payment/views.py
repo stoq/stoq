@@ -249,9 +249,13 @@ class InPaymentView(BasePaymentView):
             cls.status == Payment.STATUS_PENDING,
             cls.due_date < localtoday() - relativedelta(days=tolerance))
 
-        late_payments = store.find(cls, query)
-        if late_payments.any():
-            return True
+        for late_payments in store.find(cls, query):
+            sale = late_payments.sale
+            # Exclude payments for external sales as they are handled by an
+            # external entity (e.g. a payment gateway) meaning that they be
+            # out of sync with the Stoq database.
+            if not sale or not sale.is_external():
+                return True
 
         return False
 
