@@ -176,6 +176,7 @@ class WebService(object):
         :returns: a deferred with the version_string as a parameter
         """
         params = {
+            'hash': sysparam.get_string('USER_HASH'),
             'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': platform.dist(),
             'cnpj': get_main_cnpj(store),
@@ -189,6 +190,7 @@ class WebService(object):
 
     def bug_report(self, report):
         params = {
+            'hash': sysparam.get_string('USER_HASH'),
             'product_key': get_product_key(),
             'report': json.dumps(report)
         }
@@ -203,6 +205,7 @@ class WebService(object):
 
     def tef_request(self, name, email, phone):
         params = {
+            'hash': sysparam.get_string('USER_HASH'),
             'name': name,
             'email': email,
             'phone': phone,
@@ -212,7 +215,7 @@ class WebService(object):
 
     def link_update(self, store):
         # TODO: Create a parameter for this.
-        key = os.environ.get('STOQ_LINK_KEY', '')
+        key = sysparam.get_string('USER_HASH')
         if not key:
             return
 
@@ -230,6 +233,7 @@ class WebService(object):
             app_version = 'Unknown'
         default_store = get_default_store()
         params = {
+            'hash': sysparam.get_string('USER_HASH'),
             'cnpj': get_main_cnpj(default_store),
             'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': ' '.join(platform.dist()),

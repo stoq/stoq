@@ -62,7 +62,7 @@ class SystemParameterEditor(BaseEditor):
         self._block_none_value = True
         self.sensitive = True
         if model.field_name in ['DEMO_MODE', 'LOCAL_BRANCH',
-                                'SYNCHRONIZED_MODE']:
+                                'SYNCHRONIZED_MODE', 'USER_HASH']:
             self.sensitive = False
 
         self._parameter_details = sysparam.get_detail_by_name(model.field_name)

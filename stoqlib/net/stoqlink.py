@@ -27,9 +27,9 @@ import decimal
 import json
 
 from kiwi.currency import currency
-from storm.expr import Sum, Join, Select, Alias
+from storm.expr import Sum, Join, Select, Alias, Coalesce
 
-from stoqlib.database.expr import Date, DateTrunc, Field
+from stoqlib.database.expr import Date, DateTrunc, Field, NullIf
 from stoqlib.domain.sale import Sale, SaleItem, SaleView
 from stoqlib.domain.sellable import Sellable
 
@@ -64,9 +64,13 @@ def collect_link_statistics(store):
     # Profit Margin
     item_cost = Alias(Select(columns=[SaleItem.sale_id,
                                       Alias(Sum(SaleItem.quantity *
-                                                SaleItem.average_cost),
-                                            'cost')], tables=SaleItem,
-                             group_by=[SaleItem.sale_id]), 'item_cost')
+                                                Coalesce(NullIf(SaleItem.average_cost,
+                                                                0),
+                                                         SaleItem.price)),
+                                            'cost')],
+                             tables=SaleItem,
+                             group_by=[SaleItem.sale_id]),
+                      'item_cost')
 
     column = ((Sum(Sale.total_amount) / Sum(Field('item_cost', 'cost')) - 1) * 100)
     tables = [Sale, Join(item_cost, Field('item_cost', 'sale_id') == Sale.id)]

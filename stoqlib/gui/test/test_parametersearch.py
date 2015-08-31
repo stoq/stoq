@@ -31,26 +31,27 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestParameterSearch(GUITest):
     def test_search(self):
-        search = ParameterSearch(self.store)
+        with self.sysparam(USER_HASH=u'6f33a354e3104fcbae0f7b08087136d4'):
+            search = ParameterSearch(self.store)
 
-        self.check_search(search, 'parameter-no-filter')
+            self.check_search(search, 'parameter-no-filter')
 
-        # clicking on search button
-        search.entry.set_text('')
-        self.click(search.search_button)
-        self.check_search(search, 'parameter-no-filter')
+            # clicking on search button
+            search.entry.set_text('')
+            self.click(search.search_button)
+            self.check_search(search, 'parameter-no-filter')
 
-        # multiple words in any order search
-        search.entry.set_text('city default')
-        search.entry.activate()
-        self.check_search(search, 'parameter-string-multiple-words-filter')
+            # multiple words in any order search
+            search.entry.set_text('city default')
+            search.entry.activate()
+            self.check_search(search, 'parameter-string-multiple-words-filter')
 
-        search.entry.set_text('account')
-        search.entry.activate()
-        self.check_search(search, 'parameter-string-filter')
+            search.entry.set_text('account')
+            search.entry.activate()
+            self.check_search(search, 'parameter-string-filter')
 
-        self.click(search.show_all_button)
-        self.check_search(search, 'parameter-no-filter')
+            self.click(search.show_all_button)
+            self.check_search(search, 'parameter-no-filter')
 
     @mock.patch('stoqlib.gui.search.parametersearch.run_dialog')
     def test_edit(self, run_dialog):

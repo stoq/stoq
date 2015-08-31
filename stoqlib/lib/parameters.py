@@ -24,6 +24,7 @@
 """ Parameters and system data for applications"""
 
 from decimal import Decimal
+from uuid import uuid4
 import logging
 
 from kiwi.datatypes import ValidationError
@@ -870,7 +871,19 @@ _details = [
           u'This template cannot have more than 2 line, and each line more '
           u'than 50 characters, and you have to break it manually using the characters '
           u'"\\n" or (enter key) or the fiscal printer may not print it correctly.'),
-        unicode, multiline=True, initial=u'', wrap=False)
+        unicode, multiline=True, initial=u'', wrap=False),
+
+
+    # This parameter is used for communication with stoq api and stoq link lite.
+    ParameterDetails(
+        u'USER_HASH',
+        _(u'General'),
+        _(u'User hash'),
+        _(u'This hash value is used for integration and communication with stoq api '
+          u'and stoq link. It will be added on ping requests, tef requests and '
+          u'feedbacks data sent to stoq api and on the stoq statistics data sent '
+          u'to stoq link lite.'),
+        unicode, initial=unicode(uuid4().get_hex()))
 ]
 
 
