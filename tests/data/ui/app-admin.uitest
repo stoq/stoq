@@ -114,7 +114,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
               text: Payment Categories, stock: stoq-payable-app
               text: Payment Methods, stock: stoq-money
               text: Plugins, stock: stoq-plugin
+              text: Products, stock: stoq-products
               text: Roles, stock: stoq-users
+              text: Services, stock: stoq-services
               text: Suppliers, stock: stoq-suppliers
               text: Tax Classes, stock: stoq-documents
               text: Taxes, stock: stoq-taxes

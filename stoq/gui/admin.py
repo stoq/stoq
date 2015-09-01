@@ -47,6 +47,7 @@ from stoqlib.gui.search.costcentersearch import CostCenterSearch
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
+from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.gridsearch import (GridGroupSearch,
                                            GridAttributeSearch)
 from stoqlib.gui.search.personsearch import (ClientSearch,
@@ -59,12 +60,13 @@ from stoqlib.gui.search.personsearch import (ClientSearch,
 from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.salesearch import SaleTokenSearch
+from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
     STOQ_CALC, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
     STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_HR, STOQ_MONEY,
     STOQ_PAYABLE_APP, STOQ_PLUGIN, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
-    STOQ_USER_PROFILES, STOQ_USERS)
+    STOQ_USER_PROFILES, STOQ_USERS, STOQ_PRODUCTS, STOQ_SERVICES)
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.decorators import public
@@ -110,7 +112,9 @@ class Tasks(object):
             (_('Payment Categories'), 'payment_categories', STOQ_PAYABLE_APP),
             (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
             (_('Plugins'), 'plugins', STOQ_PLUGIN),
+            (_('Products'), 'products', STOQ_PRODUCTS),
             (_('Roles'), 'employee_roles', STOQ_USERS),
+            (_('Services'), 'services', STOQ_SERVICES),
             (_('Taxes'), 'taxes', STOQ_TAXES),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
             (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
@@ -240,6 +244,12 @@ class Tasks(object):
         model = self.app.run_dialog(PluginManagerDialog, store)
         store.confirm(model)
         store.close()
+
+    def _open_products(self):
+        self.app.run_dialog(ProductSearch, self.app.store)
+
+    def _open_services(self):
+        self.app.run_dialog(ServiceSearch, self.app.store)
 
     def _open_cfop(self):
         self.app.run_dialog(CfopSearch, self.app.store, hide_footer=True)
