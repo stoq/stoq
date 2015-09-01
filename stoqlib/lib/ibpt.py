@@ -37,7 +37,8 @@ from decimal import Decimal
 from stoqlib.database.runtime import get_current_branch, new_store
 
 taxes_data = {}
-TaxInfo = namedtuple('TaxInfo', 'nacionalfederal, importadosfederal, estadual, chave')
+TaxInfo = namedtuple('TaxInfo', 'nacionalfederal, importadosfederal, estadual,'
+                     'fonte, chave')
 
 
 def load_taxes_csv():
@@ -56,6 +57,7 @@ def load_taxes_csv():
         - vigenciafim: Data de fim da vigência desta alíquota.
         - chave: Chave que associa a Tabela IBPT baixada com a empresa.
         - versao: Versão das alíquotas usadas para cálculo.
+        - Fonte: Fonte
     """
 
     # Avoid load taxes more than once.
@@ -68,7 +70,7 @@ def load_taxes_csv():
     state = address.city_location.state
 
     # Change the version according to the updates of IBPT tables.
-    version = '15.1.C'
+    version = '15.2.A'
     filename = environ.get_resource_filename('stoq', 'csv', 'ibpt_tables',
                                              'TabelaIBPTax%s%s.csv'
                                              % (state, version))
@@ -81,7 +83,8 @@ def load_taxes_csv():
         if tipo == '1':
             continue
         tax_dict = taxes_data.setdefault(ncm, {})
-        tax_dict[ex] = TaxInfo(nacionalfederal, importadosfederal, estadual, chave)
+        tax_dict[ex] = TaxInfo(nacionalfederal, importadosfederal, estadual,
+                               fonte, chave)
 
 
 class IBPTGenerator(object):
@@ -107,7 +110,7 @@ class IBPTGenerator(object):
         options = taxes_data.get(ncm, {})
         n_options = len(options)
         if n_options == 0:
-            tax_values = TaxInfo('0', '0', '0', '0')
+            tax_values = TaxInfo('0', '0', '0', '', '0')
         elif n_options == 1:
             tax_values = options['']
         else:
@@ -151,20 +154,24 @@ class IBPTGenerator(object):
 
     def get_ibpt_message(self):
         federal_tax = state_tax = 0
-        key = "0"
         for item in self.items:
             tax_values = self._load_tax_values(item)
             federal_tax += self._calculate_federal_tax(item, tax_values)
             state_tax += self._calculate_state_tax(item, tax_values)
         if tax_values:
+            source = tax_values.fonte
             key = tax_values.chave
+        else:
+            source = ""
+            key = "0"
 
         federal_msg = "%0.2f Federal" % federal_tax
         state_msg = "%0.2f Estadual" % state_tax
 
         final_msg = ("Trib aprox R$: {federal} e {state}\n"
-                     "Fonte: IBPT/FECOMERCIO RJ {key} ")
-        return final_msg.format(federal=federal_msg, state=state_msg, key=key)
+                     "Fonte: {source} {key} ")
+        return final_msg.format(federal=federal_msg, state=state_msg,
+                                source=source, key=key)
 
 
 def generate_ibpt_message(items):

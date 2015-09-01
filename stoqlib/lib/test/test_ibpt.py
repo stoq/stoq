@@ -47,7 +47,7 @@ class TestCalculateTaxForItem(DomainTest):
 
         msg = generate_ibpt_message(sale.get_items())
         expected_msg = ("Trib aprox R$: 0.00 Federal e 0.00 Estadual\n"
-                        "Fonte: IBPT/FECOMERCIO RJ 0 ")
+                        "Fonte:  0 ")
         self.assertEquals(msg, expected_msg)
 
     def test_calculate_item_without_ncm(self):
@@ -64,7 +64,7 @@ class TestCalculateTaxForItem(DomainTest):
 
         msg = generate_ibpt_message(items)
         expected_msg = ("Trib aprox R$: 0.00 Federal e 0.00 Estadual\n"
-                        "Fonte: IBPT/FECOMERCIO RJ 0 ")
+                        "Fonte:  0 ")
         self.assertEquals(msg, expected_msg)
 
     def test_calculate_item_without_icms(self):
@@ -90,7 +90,7 @@ class TestCalculateTaxForItem(DomainTest):
 
         msg = generate_ibpt_message(items)
         expected_msg = ("Trib aprox R$: 4.20 Federal e 18.00 Estadual\n"
-                        "Fonte: IBPT/FECOMERCIO RJ 9oi3aC ")
+                        "Fonte: IBPT 5oi7eW ")
         self.assertEquals(msg, expected_msg)
 
     def test_calculate_item(self):
@@ -138,6 +138,6 @@ class TestCalculateTaxForItem(DomainTest):
         # With tax of international origin.
         icms.orig = 1
         # Federal tax
-        expected_federal_tax = total_item * (Decimal("24.77") / 100)
+        expected_federal_tax = total_item * (Decimal("15.96") / 100)
         federal = generator._calculate_federal_tax(sale_item, tax_values)
         self.assertEquals(federal, expected_federal_tax)
