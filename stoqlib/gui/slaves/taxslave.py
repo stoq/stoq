@@ -31,9 +31,11 @@ import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
-from stoqlib.domain.taxes import (InvoiceItemIcms, ProductIcmsTemplate,
-                                  InvoiceItemIpi, ProductIpiTemplate,
-                                  ProductTaxTemplate)
+from stoqlib.domain.taxes import (InvoiceItemCofins, InvoiceItemIcms,
+                                  InvoiceItemIpi, InvoiceItemPis,
+                                  ProductCofinsTemplate,
+                                  ProductIcmsTemplate, ProductIpiTemplate,
+                                  ProductPisTemplate, ProductTaxTemplate)
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -346,13 +348,13 @@ class InvoiceItemIcmsSlave(BaseICMSSlave, InvoiceItemMixin):
 
         for name in self.percentage_widgets:
             widget = getattr(self, name)
-            widget.connect_after('changed', self._after_field_changed)
+            widget.connect_after('changed', self._after_field__changed)
 
-        self.bc_include_ipi.connect_after('toggled', self._after_field_changed)
+        self.bc_include_ipi.connect_after('toggled', self._after_field__changed)
         self.bc_st_include_ipi.connect_after('toggled',
-                                             self._after_field_changed)
-        self.cst.connect_after('changed', self._after_field_changed)
-        self.csosn.connect_after('changed', self._after_field_changed)
+                                             self._after_field__changed)
+        self.cst.connect_after('changed', self._after_field__changed)
+        self.csosn.connect_after('changed', self._after_field__changed)
 
     def update_values(self, widgets=None):
         self.is_updating = True
@@ -369,11 +371,19 @@ class InvoiceItemIcmsSlave(BaseICMSSlave, InvoiceItemMixin):
         self.proxy.update_many(['csosn', 'cst'])
         self.is_updating = False
 
-    def _after_field_changed(self, widget):
+    #
+    # Kiwi Callbacks
+    #
+
+    def _after_field__changed(self, widget):
         if not self.proxy or self.is_updating:
             return
 
         self.update_values()
+
+#
+# IPI
+#
 
 
 class BaseIPISlave(BaseTaxSlave):
@@ -438,11 +448,19 @@ class BaseIPISlave(BaseTaxSlave):
         99: all_widgets,
     }
 
+    #
+    # Public API
+    #
+
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
         self._update_selected_cst()
         self._update_selected_calculo()
+
+    #
+    # Private API
+    #
 
     def _update_selected_cst(self):
         cst = self.cst.get_selected_data()
@@ -467,6 +485,10 @@ class BaseIPISlave(BaseTaxSlave):
             self.v_unid.set_sensitive(True)
             self.q_unid.set_sensitive(True)
 
+    #
+    # Kiwi callbacks
+    #
+
     def on_cst__changed(self, widget):
         self._update_selected_cst()
 
@@ -490,12 +512,15 @@ class InvoiceItemIpiSlave(BaseIPISlave, InvoiceItemMixin):
         self.invoice_item = invoice_item
         BaseIPISlave.__init__(self, store, model)
 
+    #
+    # Public API
+    #
+
     def setup_callbacks(self):
         self.fill_combo(self.template, ProductTaxTemplate.TYPE_IPI)
-        self.p_ipi.connect_after('changed', self._after_field_changed)
-        self.q_unid.connect_after('changed', self._after_field_changed)
-        self.v_unid.connect_after('changed', self._after_field_changed)
-        self.cst.connect_after('changed', self._after_field_changed)
+        self.p_ipi.connect_after('changed', self._after_field__changed)
+        self.q_unid.connect_after('changed', self._after_field__changed)
+        self.cst.connect_after('changed', self._after_field__changed)
 
     def update_values(self, widgets=None):
         self.model.update_values(self.invoice_item)
@@ -510,8 +535,404 @@ class InvoiceItemIpiSlave(BaseIPISlave, InvoiceItemMixin):
         # sensitivity, kiwi will reset the model value incorrectly.
         self.proxy.update('cst')
 
-    def _after_field_changed(self, widget):
+    #
+    # Kiwi Callbacks
+    #
+
+    def _after_field__changed(self, widget):
         if not self.proxy or self.is_updating:
             return
 
         self.update_values()
+
+#
+# PIS
+#
+
+
+class BasePISSlave(BaseTaxSlave):
+    gladefile = 'TaxPISSlave'
+
+    combo_widgets = ['cst', 'calculo']
+    percentage_widgets = ['p_pis']
+    value_widgets = ['v_pis']
+    all_widgets = (combo_widgets + percentage_widgets + value_widgets)
+
+    field_options = {
+        'cst': (
+            (None, 0),
+            (u'01 - Tributável com Alíquota Básica', 1),
+            (u'02 - Tributável com Alíquota Difenrenciada', 2),
+            (u'04 - Tributável Monofásica - Revenda a Alíquota Zero', 4),
+            (u'05 - Tributável por Substituição Tributária', 5),
+            (u'06 - Tributável a Alíquota Zero', 6),
+            (u'07 - Isenta da Contribuição', 7),
+            (u'08 - Sem Incidência da Contribuição', 8),
+            (u'09 - Com Suspensão da Contribuição', 9),
+            (u'49 - Outras Operações de Saída', 49),
+            (u'50 - Com Direito a Crédito - Vinculada Exclusivamente a Receita'
+             u'Tributada no Mercado Interno', 50),
+            (u'51 - Operação com Direito a Crédito – Vinculada Exclusivamente a'
+             u'Receita Não Tributada no Mercado Interno', 51),
+            (u'52 - Operação com Direito a Crédito - Vinculada Exclusivamente a'
+             u'Receita de Exportação', 52),
+            (u'53 - Operação com Direito a Crédito - Vinculada a Receitas'
+             u'Tributadas e Não-Tributadas no Mercado Interno', 53),
+            (u'54 - Operação com Direito a Crédito - Vinculada a Receitas'
+             u'Tributadas no Mercado Interno e de Exportação', 54),
+            (u'55 - Operação com Direito a Crédito - Vinculada a Receitas'
+             u'Não-Tributadas no Mercado Interno e de Exportação', 55),
+            (u'56 - Operação com Direito a Crédito - Vinculada a Receitas'
+             u'Tributadas e Não-Tributadas no Mercado Interno, e de Exportação', 56),
+            (u'60 - Crédito Presumido - Operação de Aquisição Vinculada'
+             u'Exclusivamente a Receita Tributada no Mercado Interno', 60),
+            (u'61 - Crédito Presumido - Operação de Aquisição Vinculada'
+             u'Exclusivamente a Receita Não-Tributada no Mercado Interno', 61),
+            (u'62 - Crédito Presumido - Operação de Aquisição Vinculada'
+             u'Exclusivamente a Receita de Exportação', 62),
+            (u'63 - Crédito Presumido - Operação de Aquisição Vinculada a'
+             u'Receitas Tributadas e Não-Tributadas no Mercado Interno', 63),
+            (u'64 - Crédito Presumido - Operação de Aquisição Vinculada a'
+             u'Receitas Tributadas no Mercado Interno e de Exportação', 64),
+            (u'65 - Crédito Presumido - Operação de Aquisição Vinculada a'
+             u'Receitas Não-Tributadas no Mercado Interno e de Exportação', 65),
+            (u'66 - Crédito Presumido - Operação de Aquisição Vinculada a'
+             u'Receitas Tributadas e Não-Tributadas no Mercado Interno, e de'
+             u'Exportação', 66),
+            (u'67 - Crédito Presumido - Outras Operações', 67),
+            (u'70 - Operação de Aquisição sem Direito a Crédito', 70),
+            (u'71 - Operação de Aquisição com Isenção', 71),
+            (u'72 - Operação de Aquisição com Suspensão', 72),
+            (u'73 - Operação de Aquisição a Alíquota Zero', 73),
+            (u'74 - Operação de Aquisição sem Incidência da Contribuição', 74),
+            (u'75 - Operação de Aquisição por Substituição Tributária', 75),
+            (u'98 - Outras Operações de Entrada', 98),
+            (u'99 - Outras Operações', 99),
+        ),
+        'calculo': (
+            (u'Percentual', 'percentage'),
+        )
+    }
+
+    # This widgets should be enabled when this option is selected.
+    MAP_VALID_WIDGETS = {
+        0: ['cst'],
+        1: ['cst', 'p_pis'],
+        2: ['cst', 'p_pis'],
+        4: ['cst'],
+        5: ['cst', 'calculo', 'p_pis'],
+        6: ['cst'],
+        7: ['cst'],
+        8: ['cst'],
+        9: ['cst'],
+        49: ['cst', 'calculo', 'p_pis'],
+        50: ['cst', 'calculo', 'p_pis'],
+        51: ['cst', 'calculo', 'p_pis'],
+        52: ['cst', 'calculo', 'p_pis'],
+        53: ['cst', 'calculo', 'p_pis'],
+        54: ['cst', 'calculo', 'p_pis'],
+        55: ['cst', 'calculo', 'p_pis'],
+        56: ['cst', 'calculo', 'p_pis'],
+        60: ['cst', 'calculo', 'p_pis'],
+        61: ['cst', 'calculo', 'p_pis'],
+        62: ['cst', 'calculo', 'p_pis'],
+        63: ['cst', 'calculo', 'p_pis'],
+        64: ['cst', 'calculo', 'p_pis'],
+        65: ['cst', 'calculo', 'p_pis'],
+        66: ['cst', 'calculo', 'p_pis'],
+        67: ['cst', 'calculo', 'p_pis'],
+        70: ['cst', 'calculo', 'p_pis'],
+        71: ['cst', 'calculo', 'p_pis'],
+        72: ['cst', 'calculo', 'p_pis'],
+        73: ['cst', 'calculo', 'p_pis'],
+        74: ['cst', 'calculo', 'p_pis'],
+        75: ['cst', 'calculo', 'p_pis'],
+        98: ['cst', 'calculo', 'p_pis'],
+        99: ['cst', 'calculo', 'p_pis'],
+    }
+
+    #
+    # Public API
+    #
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self._update_selected_cst()
+
+    #
+    # Private API
+    #
+
+    def _update_selected_cst(self):
+        cst = self.cst.get_selected_data()
+        valid_widgets = self.MAP_VALID_WIDGETS.get(cst, ('cst', ))
+        self.set_valid_widgets(valid_widgets)
+
+    def _update_selected_calculo(self):
+        # When the CST is contained in the list the calculation is not performed
+        # because the taxpayer is exempt.
+        if self.model.cst in [0, 2, 4, 6, 7, 8, 9]:
+            return
+
+        calculo = self.calculo.get_selected_data()
+        if calculo == ProductPisTemplate.CALC_PERCENTAGE:
+            self.p_pis.set_sensitive(True)
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_cst__changed(self, widget):
+        self._update_selected_cst()
+
+    def on_calculo__changed(self, widget):
+        self._update_selected_calculo()
+
+    def on_p_pis__validate(self, widget, value):
+        if not 0 <= value <= 100:
+            return ValidationError(_('The PIS aliquot must be between 0 and 100'))
+
+
+class PISTemplateSlave(BasePISSlave):
+    model_type = ProductPisTemplate
+    proxy_widgets = (BasePISSlave.combo_widgets +
+                     BasePISSlave.percentage_widgets)
+    hide_widgets = BasePISSlave.value_widgets + ['template']
+
+
+class InvoiceItemPisSlave(BasePISSlave, InvoiceItemMixin):
+    model_type = InvoiceItemPis
+    proxy_widgets = BasePISSlave.all_widgets
+
+    def __init__(self, store, model, invoice_item):
+        self.invoice_item = invoice_item
+        BasePISSlave.__init__(self, store, model)
+
+    #
+    # Public API
+    #
+
+    def setup_callbacks(self):
+        self.fill_combo(self.template, ProductTaxTemplate.TYPE_PIS)
+        self.p_pis.connect_after('changed', self._after_field__changed)
+        self.cst.connect_after('changed', self._after_field__changed)
+
+    def update_values(self, widgets=None):
+        self.model.update_values(self.invoice_item)
+        widgets = widgets or ['v_pis']
+        for name in widgets:
+            if name == 'cst':
+                continue
+            self.proxy.update(name)
+
+        # We need to update cst last: Since when one of those is
+        # changed we change some widgets sensitivity, when changing the widget
+        # sensitivity, kiwi will reset the model value incorrectly.
+        self.proxy.update('cst')
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def _after_field__changed(self, widget):
+        if not self.proxy or self.is_updating:
+            return
+
+        self.update_values()
+
+#
+# COFINS
+#
+
+
+class BaseCOFINSSlave(BaseTaxSlave):
+    gladefile = 'TaxCOFINSSlave'
+
+    combo_widgets = ['cst', 'calculo']
+    percentage_widgets = ['p_cofins']
+    value_widgets = ['v_cofins']
+    all_widgets = (combo_widgets + percentage_widgets + value_widgets)
+
+    field_options = {
+        'cst': (
+            (None, 0),
+            (u'01 - Tributável com Alíquota Básica', 1),
+            (u'02 - Tributável com Alíquota Difenrenciada', 2),
+            (u'04 - Tributável Monofásica - Revenda a Alíquota Zero', 4),
+            (u'05 - Tributável por Substituição Tributária', 5),
+            (u'06 - Tributável a Alíquota Zero', 6),
+            (u'07 - Isenta da Contribuição', 7),
+            (u'08 - Sem Incidência da Contribuição', 8),
+            (u'09 - Com Suspensão da Contribuição', 9),
+            (u'49 - Outras Operações de Saída', 49),
+            (u'50 - Com Direito a Crédito - Vinculada Exclusivamente a Receita'
+             u'Tributada no Mercado Interno', 50),
+            (u'51 - Operação com Direito a Crédito – Vinculada Exclusivamente a'
+             u'Receita Não Tributada no Mercado Interno', 51),
+            (u'52 - Operação com Direito a Crédito - Vinculada Exclusivamente a'
+             u'Receita de Exportação', 52),
+            (u'53 - Operação com Direito a Crédito - Vinculada a Receitas'
+             u'Tributadas e Não-Tributadas no Mercado Interno', 53),
+            (u'54 - Operação com Direito a Crédito - Vinculada a Receitas'
+             u'Tributadas no Mercado Interno e de Exportação', 54),
+            (u'55 - Operação com Direito a Crédito - Vinculada a Receitas'
+             u'Não-Tributadas no Mercado Interno e de Exportação', 55),
+            (u'56 - Operação com Direito a Crédito - Vinculada a Receitas'
+             u'Tributadas e Não-Tributadas no Mercado Interno, e de Exportação', 56),
+            (u'60 - Crédito Presumido - Operação de Aquisição Vinculada'
+             u'Exclusivamente a Receita Tributada no Mercado Interno', 60),
+            (u'61 - Crédito Presumido - Operação de Aquisição Vinculada'
+             u'Exclusivamente a Receita Não-Tributada no Mercado Interno', 61),
+            (u'62 - Crédito Presumido - Operação de Aquisição Vinculada'
+             u'Exclusivamente a Receita de Exportação', 62),
+            (u'63 - Crédito Presumido - Operação de Aquisição Vinculada a'
+             u'Receitas Tributadas e Não-Tributadas no Mercado Interno', 63),
+            (u'64 - Crédito Presumido - Operação de Aquisição Vinculada a'
+             u'Receitas Tributadas no Mercado Interno e de Exportação', 64),
+            (u'65 - Crédito Presumido - Operação de Aquisição Vinculada a'
+             u'Receitas Não-Tributadas no Mercado Interno e de Exportação', 65),
+            (u'66 - Crédito Presumido - Operação de Aquisição Vinculada a'
+             u'Receitas Tributadas e Não-Tributadas no Mercado Interno, e de'
+             u'Exportação', 66),
+            (u'67 - Crédito Presumido - Outras Operações', 67),
+            (u'70 - Operação de Aquisição sem Direito a Crédito', 70),
+            (u'71 - Operação de Aquisição com Isenção', 71),
+            (u'72 - Operação de Aquisição com Suspensão', 72),
+            (u'73 - Operação de Aquisição a Alíquota Zero', 73),
+            (u'74 - Operação de Aquisição sem Incidência da Contribuição', 74),
+            (u'75 - Operação de Aquisição por Substituição Tributária', 75),
+            (u'98 - Outras Operações de Entrada', 98),
+            (u'99 - Outras Operações', 99),
+        ),
+        'calculo': (
+            (u'Percentual', 'percentage'),
+        )
+    }
+
+    # This widgets should be enabled when this option is selected.
+    MAP_VALID_WIDGETS = {
+        0: ['cst'],
+        1: ['cst', 'p_cofins'],
+        2: ['cst', 'p_cofins'],
+        4: ['cst'],
+        5: ['cst', 'calculo', 'p_cofins'],
+        6: ['cst'],
+        7: ['cst'],
+        8: ['cst'],
+        9: ['cst'],
+        49: ['cst', 'calculo', 'p_cofins'],
+        50: ['cst', 'calculo', 'p_cofins'],
+        51: ['cst', 'calculo', 'p_cofins'],
+        52: ['cst', 'calculo', 'p_cofins'],
+        53: ['cst', 'calculo', 'p_cofins'],
+        54: ['cst', 'calculo', 'p_cofins'],
+        55: ['cst', 'calculo', 'p_cofins'],
+        56: ['cst', 'calculo', 'p_cofins'],
+        60: ['cst', 'calculo', 'p_cofins'],
+        61: ['cst', 'calculo', 'p_cofins'],
+        62: ['cst', 'calculo', 'p_cofins'],
+        63: ['cst', 'calculo', 'p_cofins'],
+        64: ['cst', 'calculo', 'p_cofins'],
+        65: ['cst', 'calculo', 'p_cofins'],
+        66: ['cst', 'calculo', 'p_cofins'],
+        67: ['cst', 'calculo', 'p_cofins'],
+        70: ['cst', 'calculo', 'p_cofins'],
+        71: ['cst', 'calculo', 'p_cofins'],
+        72: ['cst', 'calculo', 'p_cofins'],
+        73: ['cst', 'calculo', 'p_cofins'],
+        74: ['cst', 'calculo', 'p_cofins'],
+        75: ['cst', 'calculo', 'p_cofins'],
+        98: ['cst', 'calculo', 'p_cofins'],
+        99: ['cst', 'calculo', 'p_cofins'],
+    }
+
+    #
+    # Public API
+    #
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self._update_selected_cst()
+
+    #
+    # Private API
+    #
+
+    def _update_selected_cst(self):
+        cst = self.cst.get_selected_data()
+        valid_widgets = self.MAP_VALID_WIDGETS.get(cst, ('cst', ))
+        self.set_valid_widgets(valid_widgets)
+
+    def _update_selected_calculo(self):
+        # When the CST is contained in the list the calculation is not performed
+        # because the taxpayer is exempt.
+        if self.model.cst in [0, 2, 4, 6, 7, 8, 9]:
+            return
+
+        calculo = self.calculo.get_selected_data()
+        if calculo == ProductCofinsTemplate.CALC_PERCENTAGE:
+            self.p_cofins.set_sensitive(True)
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_cst__changed(self, widget):
+        self._update_selected_cst()
+
+    def on_calculo__changed(self, widget):
+        self._update_selected_calculo()
+
+    def on_p_cofins__validate(self, widget, value):
+        if not 0 <= value <= 100:
+            return ValidationError(_('The COFINS aliquot must be between 0 and 100'))
+
+
+class InvoiceItemCofinsSlave(BaseCOFINSSlave, InvoiceItemMixin):
+    model_type = InvoiceItemCofins
+    proxy_widgets = BaseCOFINSSlave.all_widgets
+
+    def __init__(self, store, model, invoice_item):
+        self.invoice_item = invoice_item
+        BaseCOFINSSlave.__init__(self, store, model)
+
+    #
+    # Public API
+    #
+
+    def setup_callbacks(self):
+        self.fill_combo(self.template, ProductTaxTemplate.TYPE_COFINS)
+        self.p_cofins.connect_after('changed', self._after_field__changed)
+        self.cst.connect_after('changed', self._after_field__changed)
+
+    def update_values(self, widgets=None):
+        self.model.update_values(self.invoice_item)
+        widgets = widgets or ['v_cofins']
+        for name in widgets:
+            if name == 'cst':
+                continue
+            self.proxy.update(name)
+
+        # We need to update cst last: Since when one of those is
+        # changed we change some widgets sensitivity, when changing the widget
+        # sensitivity, kiwi will reset the model value incorrectly.
+        self.proxy.update('cst')
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def _after_field__changed(self, widget):
+        if not self.proxy or self.is_updating:
+            return
+
+        self.update_values()
+
+
+class COFINSTemplateSlave(BaseCOFINSSlave):
+    model_type = ProductCofinsTemplate
+    proxy_widgets = (BaseCOFINSSlave.combo_widgets +
+                     BaseCOFINSSlave.percentage_widgets)
+    hide_widgets = BaseCOFINSSlave.value_widgets + ['template']

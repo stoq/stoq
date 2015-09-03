@@ -55,6 +55,8 @@ class StockDecreaseItemSlave(BaseEditorSlave):
         self.model = model
         self.icms_slave = parent.icms_slave
         self.ipi_slave = parent.ipi_slave
+        self.pis_slave = parent.pis_slave
+        self.cofins_slave = parent.cofins_slave
         self.quantity_model = Settable(quantity=model.quantity)
         BaseEditorSlave.__init__(self, store, self.model)
 
@@ -74,6 +76,10 @@ class StockDecreaseItemSlave(BaseEditorSlave):
             self.ipi_slave.update_values()
         if self.icms_slave:
             self.icms_slave.update_values()
+        if self.pis_slave:
+            self.pis_slave.update_values()
+        if self.cofins_slave:
+            self.cofins_slave.update_values()
 
     #
     # Kiwi callbacks

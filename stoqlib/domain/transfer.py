@@ -44,7 +44,7 @@ from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch, Company
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.taxes import InvoiceItemIcms, InvoiceItemIpi
+from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -92,19 +92,31 @@ class TransferOrderItem(Domain):
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax for *self*
     ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
 
+    pis_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemPis` tax for *self*
+    pis_info = Reference(pis_info_id, 'InvoiceItemPis.id')
+
+    cofins_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemCofins` tax for *self*
+    cofins_info = Reference(cofins_info_id, 'InvoiceItemCofins.id')
+
     item_discount = Decimal('0')
 
     def __init__(self, store=None, **kwargs):
         if not 'sellable' in kwargs:
             raise TypeError('You must provide a sellable argument')
-        kwargs['ipi_info'] = InvoiceItemIpi(store=store)
-        kwargs['icms_info'] = InvoiceItemIcms(store=store)
+        check_tax_info_presence(kwargs, store)
+
         super(TransferOrderItem, self).__init__(store=store, **kwargs)
 
         product = self.sellable.product
         if product:
             self.ipi_info.set_item_tax(self)
             self.icms_info.set_item_tax(self)
+            self.pis_info.set_item_tax(self)
+            self.cofins_info.set_item_tax(self)
 
     #
     # IInvoiceItem implementation

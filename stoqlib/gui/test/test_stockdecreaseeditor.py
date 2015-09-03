@@ -24,7 +24,8 @@
 
 import mock
 
-from stoqlib.domain.taxes import (ProductIcmsTemplate, ProductIpiTemplate,
+from stoqlib.domain.taxes import (ProductIcmsTemplate,
+                                  ProductIpiTemplate,
                                   ProductTaxTemplate)
 from stoqlib.gui.editors.stockdecreaseeditor import StockDecreaseItemEditor
 from stoqlib.gui.test.uitestutils import GUITest
@@ -89,9 +90,17 @@ class TestStockDecreaseItemSlave(GUITest):
                                           product_tax_template=tax_template)
         ipi_template.cst = 00
 
+        pis_template = self.create_product_pis_template(cst=49)
+        self.assertEquals(pis_template.cst, 49)
+
+        cofins_template = self.create_product_cofins_template(cst=49)
+        self.assertEquals(cofins_template.cst, 49)
+
         product = self.create_product()
         product.icms_template = icms_template
         product.ipi_template = ipi_template
+        product.pis_template = pis_template
+        product.cofins_template = cofins_template
         decrease_item = self.create_stock_decrease_item(sellable=product.sellable,
                                                         cost=100,
                                                         quantity=1)

@@ -27,7 +27,10 @@
 import gtk
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.slaves.taxslave import InvoiceItemIcmsSlave, InvoiceItemIpiSlave
+from stoqlib.gui.slaves.taxslave import (InvoiceItemCofinsSlave,
+                                         InvoiceItemIcmsSlave,
+                                         InvoiceItemIpiSlave,
+                                         InvoiceItemPisSlave)
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -43,6 +46,8 @@ class InvoiceItemEditor(BaseEditor):
         self.proxy = None
         self.icms_slave = None
         self.ipi_slave = None
+        self.pis_slave = None
+        self.cofins_slave = None
 
         BaseEditor.__init__(self, store, model)
 
@@ -65,6 +70,16 @@ class InvoiceItemEditor(BaseEditor):
                                                  self.model.ipi_info,
                                                  self.model)
             self.add_tab(_('IPI'), self.ipi_slave)
+
+            self.pis_slave = InvoiceItemPisSlave(self.store,
+                                                 self.model.pis_info,
+                                                 self.model)
+            self.add_tab(_('PIS'), self.pis_slave)
+
+            self.cofins_slave = InvoiceItemCofinsSlave(self.store,
+                                                       self.model.cofins_info,
+                                                       self.model)
+            self.add_tab(_('COFINS'), self.cofins_slave)
 
     def add_tab(self, name, slave):
         event_box = gtk.EventBox()

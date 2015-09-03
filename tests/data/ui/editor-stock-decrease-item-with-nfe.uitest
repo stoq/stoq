@@ -133,7 +133,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
                 GtkLabel(cl_enq_label): 'Classe de Enquadramento\nPara cigarros e bebidas:'
                 ProxyEntry(cl_enq): '', insensitive
                 GtkLabel(cnpj_prod_label): 'CNPJ do Produtor:'
-                ProxyEntry(cnpj_prod): '', insensitive
+                ProxyEntry(cnpj_prod): '  .   .   /    -  ', insensitive
                 GtkLabel(c_selo_label): 'C\xc3\xb3digo do selo\nde controle IPI:'
                 ProxyEntry(c_selo): '', insensitive
                 GtkLabel(q_selo_label): 'Quantidade do\nselo de controle:'
@@ -154,6 +154,102 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
                 ProxyEntry(q_unid): '', insensitive
                 GtkLabel(v_ipi_label): 'Valor do IPI'
                 ProxyEntry(v_ipi): '0.00', ineditable, insensitive
+          GtkEventBox(): slave InvoiceItemPisSlave is attached
+            GtkVBox(toplevel):
+              GtkTable(table1, fill=True):
+                GtkLabel(template_label): 'Template:'
+                ProxyComboBox(template):
+                  item: None, selected
+                GtkLabel(cst_label): 'CST:'
+                ProxyComboBox(cst):
+                  item: None, selected
+                  item: '01 - Tribut\xc3\xa1vel com Al\xc3\xadquota B\xc3\xa1sica'
+                  item: '02 - Tribut\xc3\xa1vel com Al\xc3\xadquota Difenrenciada'
+                  item: '04 - Tribut\xc3\xa1vel Monof\xc3\xa1sica - Revenda a Al\xc3\xadquota Zero'
+                  item: '05 - Tribut\xc3\xa1vel por Substitui\xc3\xa7\xc3\xa3o Tribut\xc3\xa1ria'
+                  item: '06 - Tribut\xc3\xa1vel a Al\xc3\xadquota Zero'
+                  item: '07 - Isenta da Contribui\xc3\xa7\xc3\xa3o'
+                  item: '08 - Sem Incid\xc3\xaancia da Contribui\xc3\xa7\xc3\xa3o'
+                  item: '09 - Com Suspens\xc3\xa3o da Contribui\xc3\xa7\xc3\xa3o'
+                  item: '49 - Outras Opera\xc3\xa7\xc3\xb5es de Sa\xc3\xadda'
+                  item: '50 - Com Direito a Cr\xc3\xa9dito - Vinculada Exclusivamente a ReceitaTributada no Mercado Interno'
+                  item: '51 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito \xe2\x80\x93 Vinculada Exclusivamente aReceita N\xc3\xa3o Tributada no Mercado Interno'
+                  item: '52 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada Exclusivamente aReceita de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '53 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada a ReceitasTributadas e N\xc3\xa3o-Tributadas no Mercado Interno'
+                  item: '54 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada a ReceitasTributadas no Mercado Interno e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '55 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada a ReceitasN\xc3\xa3o-Tributadas no Mercado Interno e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '56 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada a ReceitasTributadas e N\xc3\xa3o-Tributadas no Mercado Interno, e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '60 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o VinculadaExclusivamente a Receita Tributada no Mercado Interno'
+                  item: '61 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o VinculadaExclusivamente a Receita N\xc3\xa3o-Tributada no Mercado Interno'
+                  item: '62 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o VinculadaExclusivamente a Receita de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '63 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o Vinculada aReceitas Tributadas e N\xc3\xa3o-Tributadas no Mercado Interno'
+                  item: '64 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o Vinculada aReceitas Tributadas no Mercado Interno e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '65 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o Vinculada aReceitas N\xc3\xa3o-Tributadas no Mercado Interno e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '66 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o Vinculada aReceitas Tributadas e N\xc3\xa3o-Tributadas no Mercado Interno, e deExporta\xc3\xa7\xc3\xa3o'
+                  item: '67 - Cr\xc3\xa9dito Presumido - Outras Opera\xc3\xa7\xc3\xb5es'
+                  item: '70 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o sem Direito a Cr\xc3\xa9dito'
+                  item: '71 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o com Isen\xc3\xa7\xc3\xa3o'
+                  item: '72 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o com Suspens\xc3\xa3o'
+                  item: '73 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o a Al\xc3\xadquota Zero'
+                  item: '74 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o sem Incid\xc3\xaancia da Contribui\xc3\xa7\xc3\xa3o'
+                  item: '75 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o por Substitui\xc3\xa7\xc3\xa3o Tribut\xc3\xa1ria'
+                  item: '98 - Outras Opera\xc3\xa7\xc3\xb5es de Entrada'
+                  item: '99 - Outras Opera\xc3\xa7\xc3\xb5es'
+                GtkLabel(calculo_label): 'C\xc3\xa1lculo do IPI:'
+                ProxyComboBox(calculo): insensitive
+                  item: 'Percentual', selected
+                GtkLabel(p_pis_label): 'Al\xc3\xadquota do PIS:'
+                ProxySpinButton(p_pis): '', insensitive
+                GtkLabel(v_pis_label): 'Valor do PIS:'
+                ProxyEntry(v_pis): '0.00', insensitive
+          GtkEventBox(): slave InvoiceItemCofinsSlave is attached
+            GtkVBox(toplevel):
+              GtkTable(table1, fill=True):
+                GtkLabel(template_label): 'Template:'
+                ProxyComboBox(template):
+                  item: None, selected
+                GtkLabel(cst_label): 'CST:'
+                ProxyComboBox(cst):
+                  item: None, selected
+                  item: '01 - Tribut\xc3\xa1vel com Al\xc3\xadquota B\xc3\xa1sica'
+                  item: '02 - Tribut\xc3\xa1vel com Al\xc3\xadquota Difenrenciada'
+                  item: '04 - Tribut\xc3\xa1vel Monof\xc3\xa1sica - Revenda a Al\xc3\xadquota Zero'
+                  item: '05 - Tribut\xc3\xa1vel por Substitui\xc3\xa7\xc3\xa3o Tribut\xc3\xa1ria'
+                  item: '06 - Tribut\xc3\xa1vel a Al\xc3\xadquota Zero'
+                  item: '07 - Isenta da Contribui\xc3\xa7\xc3\xa3o'
+                  item: '08 - Sem Incid\xc3\xaancia da Contribui\xc3\xa7\xc3\xa3o'
+                  item: '09 - Com Suspens\xc3\xa3o da Contribui\xc3\xa7\xc3\xa3o'
+                  item: '49 - Outras Opera\xc3\xa7\xc3\xb5es de Sa\xc3\xadda'
+                  item: '50 - Com Direito a Cr\xc3\xa9dito - Vinculada Exclusivamente a ReceitaTributada no Mercado Interno'
+                  item: '51 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito \xe2\x80\x93 Vinculada Exclusivamente aReceita N\xc3\xa3o Tributada no Mercado Interno'
+                  item: '52 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada Exclusivamente aReceita de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '53 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada a ReceitasTributadas e N\xc3\xa3o-Tributadas no Mercado Interno'
+                  item: '54 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada a ReceitasTributadas no Mercado Interno e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '55 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada a ReceitasN\xc3\xa3o-Tributadas no Mercado Interno e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '56 - Opera\xc3\xa7\xc3\xa3o com Direito a Cr\xc3\xa9dito - Vinculada a ReceitasTributadas e N\xc3\xa3o-Tributadas no Mercado Interno, e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '60 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o VinculadaExclusivamente a Receita Tributada no Mercado Interno'
+                  item: '61 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o VinculadaExclusivamente a Receita N\xc3\xa3o-Tributada no Mercado Interno'
+                  item: '62 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o VinculadaExclusivamente a Receita de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '63 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o Vinculada aReceitas Tributadas e N\xc3\xa3o-Tributadas no Mercado Interno'
+                  item: '64 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o Vinculada aReceitas Tributadas no Mercado Interno e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '65 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o Vinculada aReceitas N\xc3\xa3o-Tributadas no Mercado Interno e de Exporta\xc3\xa7\xc3\xa3o'
+                  item: '66 - Cr\xc3\xa9dito Presumido - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o Vinculada aReceitas Tributadas e N\xc3\xa3o-Tributadas no Mercado Interno, e deExporta\xc3\xa7\xc3\xa3o'
+                  item: '67 - Cr\xc3\xa9dito Presumido - Outras Opera\xc3\xa7\xc3\xb5es'
+                  item: '70 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o sem Direito a Cr\xc3\xa9dito'
+                  item: '71 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o com Isen\xc3\xa7\xc3\xa3o'
+                  item: '72 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o com Suspens\xc3\xa3o'
+                  item: '73 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o a Al\xc3\xadquota Zero'
+                  item: '74 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o sem Incid\xc3\xaancia da Contribui\xc3\xa7\xc3\xa3o'
+                  item: '75 - Opera\xc3\xa7\xc3\xa3o de Aquisi\xc3\xa7\xc3\xa3o por Substitui\xc3\xa7\xc3\xa3o Tribut\xc3\xa1ria'
+                  item: '98 - Outras Opera\xc3\xa7\xc3\xb5es de Entrada'
+                  item: '99 - Outras Opera\xc3\xa7\xc3\xb5es'
+                GtkLabel(calculo_label): 'C\xc3\xa1lculo da COFINS:'
+                ProxyComboBox(calculo): insensitive
+                  item: 'Percentual', selected
+                GtkLabel(p_cofins_label): 'Al\xc3\xadquota da COFINS:'
+                ProxySpinButton(p_cofins): '', insensitive
+                GtkLabel(v_cofins_label): 'Valor da COFINS:'
+                ProxyEntry(v_cofins): '0.00', insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

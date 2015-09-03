@@ -56,6 +56,8 @@ class TestBaseTax(DomainTest):
         sale_item.sellable.product = product
         sale_item.icms_info.set_item_tax(sale_item)
         sale_item.ipi_info.set_item_tax(sale_item)
+        sale_item.pis_info.set_item_tax(sale_item)
+        sale_item.cofins_info.set_item_tax(sale_item)
 
 
 class TestProductTaxTemplate(DomainTest):
@@ -262,55 +264,46 @@ class TestProductIpiTemplate(DomainTest):
 class TestProductPisTemplate(DomainTest):
     def test_create_percentage(self):
         pis_template = self.create_product_pis_template(
-            cst=1, v_bc=12, p_pis=12, v_aliq_prod=12)
+            cst=1, p_pis=12)
 
         self.assertIsNotNone(pis_template)
         self.assertEquals(pis_template.cst, 1)
         self.assertEquals(pis_template.calculo, ProductPisTemplate.CALC_PERCENTAGE)
-        self.assertEquals(pis_template.v_bc, 12)
         self.assertEquals(pis_template.p_pis, 12)
-        self.assertEquals(pis_template.v_aliq_prod, 12)
 
     def test_create_value(self):
         template = self.create_product_tax_template(tax_type='pis')
         pis_template = self.create_product_pis_template(
-            cst=50, calculo=ProductPisTemplate.CALC_VALUE, v_bc=12,
-            p_pis=12, v_aliq_prod=12, tax_template=template)
+            cst=50, calculo=ProductPisTemplate.CALC_VALUE,
+            p_pis=12, tax_template=template)
 
         self.assertIsNotNone(pis_template)
         self.assertEquals(pis_template.cst, 50)
         self.assertEquals(pis_template.calculo, ProductPisTemplate.CALC_VALUE)
-        self.assertEquals(pis_template.v_bc, 12)
         self.assertEquals(pis_template.p_pis, 12)
-        self.assertEquals(pis_template.v_aliq_prod, 12)
 
 
 class TestProductCofinsTemplate(DomainTest):
     def test_create_percentage(self):
         calculo = ProductCofinsTemplate.CALC_PERCENTAGE
         cofins_template = self.create_product_cofins_template(
-            cst=1, v_bc=12, p_cofins=12, v_aliq_prod=12)
+            cst=1, p_cofins=12)
 
         self.assertIsNotNone(cofins_template)
         self.assertEquals(cofins_template.cst, 1)
         self.assertEquals(cofins_template.calculo, calculo)
-        self.assertEquals(cofins_template.v_bc, 12)
         self.assertEquals(cofins_template.p_cofins, 12)
-        self.assertEquals(cofins_template.v_aliq_prod, 12)
 
     def test_create_value(self):
         template = self.create_product_tax_template()
         calculo = ProductCofinsTemplate.CALC_VALUE
         cofins_template = self.create_product_cofins_template(
-            cst=50, v_bc=12, p_cofins=12, v_aliq_prod=12,
-            tax_template=template, calculo=calculo)
+            cst=50, p_cofins=12, tax_template=template, calculo=calculo)
 
         self.assertIsNotNone(cofins_template)
         self.assertEquals(cofins_template.cst, 50)
         self.assertEquals(cofins_template.calculo, calculo)
-        self.assertEquals(cofins_template.v_bc, 12)
         self.assertEquals(cofins_template.p_cofins, 12)
-        self.assertEquals(cofins_template.v_aliq_prod, 12)
 
 
 class TestInvoiceItemIpi(DomainTest):
@@ -345,62 +338,68 @@ class TestInvoiceItemIpi(DomainTest):
 
 
 class TestInvoiceItemPis(DomainTest):
+    def _get_sale_item(self, sale_item_pis=None, quantity=1, price=10):
+        sale = self.create_sale()
+        product = self.create_product(price=price)
+        sale_item = sale.add_sellable(product.sellable,
+                                      quantity=quantity)
+        if sale_item_pis:
+            sale_item.pis_info = sale_item_pis
+
+        return sale_item
+
     def test_set_initial_values(self):
-        sale_item_pis = self.create_invoice_item_pis(cst=1)
-        sale_item_pis.set_initial_values()
-        self.assertEquals(sale_item_pis.cst, 1)
-        self.assertIsNone(sale_item_pis.q_bc_prod)
-        self.assertIsNone(sale_item_pis.v_aliq_prod)
+        sale_item_pis = self.create_invoice_item_pis(cst=2)
+        sale_item = self._get_sale_item(sale_item_pis, 1, 10)
+        sale_item_pis.set_initial_values(sale_item)
+
+        self.assertEquals(sale_item_pis.cst, 2)
+        self.assertIsNotNone(sale_item_pis.q_bc_prod)
         self.assertIsNone(sale_item_pis.p_pis)
         self.assertIsNone(sale_item_pis.v_bc)
-        self.assertIsNone(sale_item_pis.v_pis)
+        self.assertEquals(sale_item_pis.v_pis, 0)
 
-        sale_item_pis = self.create_invoice_item_pis(cst=5, q_bc_prod=2,
-                                                     v_aliq_prod=25,
-                                                     calculo=InvoiceItemPis.CALC_VALUE)
-        sale_item_pis.set_initial_values()
-        self.assertEquals(sale_item_pis.cst, 5)
-        self.assertEquals(sale_item_pis.q_bc_prod, 2)
-        self.assertEquals(sale_item_pis.v_aliq_prod, 25)
-        self.assertEquals(sale_item_pis.calculo, InvoiceItemPis.CALC_VALUE)
-        self.assertEquals(sale_item_pis.v_pis, 50)
-
-        sale_item_pis = self.create_invoice_item_pis(cst=49, p_pis=10, v_bc=500,
+        sale_item_pis = self.create_invoice_item_pis(cst=49, p_pis=10,
                                                      calculo=InvoiceItemPis.CALC_PERCENTAGE)
-        sale_item_pis.set_initial_values()
+        sale_item = self._get_sale_item(sale_item_pis, 1, 10)
+        sale_item_pis.set_initial_values(sale_item)
+
         self.assertEquals(sale_item_pis.cst, 49)
         self.assertEquals(sale_item_pis.p_pis, 10)
-        self.assertEquals(sale_item_pis.v_bc, 500)
+        self.assertEquals(sale_item_pis.v_bc, 10)
         self.assertEquals(sale_item_pis.calculo, InvoiceItemPis.CALC_PERCENTAGE)
-        self.assertEquals(sale_item_pis.v_pis, 50)
+        self.assertEquals(sale_item_pis.v_pis, 1)
 
 
 class TestInvoiceItemCofins(DomainTest):
+    def _get_sale_item(self, sale_item_cofins=None, quantity=1, price=10):
+        sale = self.create_sale()
+        product = self.create_product(price=price)
+        sale_item = sale.add_sellable(product.sellable,
+                                      quantity=quantity)
+        if sale_item_cofins:
+            sale_item.cofins_info = sale_item_cofins
+
+        return sale_item
+
     def test_set_initial_values(self):
-        sale_item_cofins = self.create_invoice_item_cofins(cst=1)
-        sale_item_cofins.set_initial_values()
-        self.assertEquals(sale_item_cofins.cst, 1)
-        self.assertIsNone(sale_item_cofins.q_bc_prod)
-        self.assertIsNone(sale_item_cofins.v_aliq_prod)
+        sale_item_cofins = self.create_invoice_item_cofins(cst=2)
+        sale_item = self._get_sale_item(sale_item_cofins, 1, 10)
+        sale_item_cofins.set_initial_values(sale_item)
+
+        self.assertEquals(sale_item_cofins.cst, 2)
+        self.assertIsNotNone(sale_item_cofins.q_bc_prod)
         self.assertIsNone(sale_item_cofins.p_cofins)
         self.assertIsNone(sale_item_cofins.v_bc)
-        self.assertIsNone(sale_item_cofins.v_cofins)
-
-        sale_item_cofins = self.create_invoice_item_cofins(cst=5, q_bc_prod=10,
-                                                           v_aliq_prod=10,
-                                                           calculo=InvoiceItemCofins.CALC_VALUE)
-        sale_item_cofins.set_initial_values()
-        self.assertEquals(sale_item_cofins.cst, 5)
-        self.assertEquals(sale_item_cofins.q_bc_prod, 10)
-        self.assertEquals(sale_item_cofins.v_aliq_prod, 10)
-        self.assertEquals(sale_item_cofins.calculo, InvoiceItemCofins.CALC_VALUE)
-        self.assertEquals(sale_item_cofins.v_cofins, 100)
+        self.assertEquals(sale_item_cofins.v_cofins, 0)
 
         sale_item_cofins = self.create_invoice_item_cofins(
-            cst=49, p_cofins=2, v_bc=500, calculo=InvoiceItemCofins.CALC_PERCENTAGE)
-        sale_item_cofins.set_initial_values()
+            cst=49, p_cofins=20, calculo=InvoiceItemCofins.CALC_PERCENTAGE)
+        sale_item = self._get_sale_item(sale_item_cofins, 1, 10)
+        sale_item_cofins.set_initial_values(sale_item)
+
         self.assertEquals(sale_item_cofins.cst, 49)
-        self.assertEquals(sale_item_cofins.p_cofins, 2)
-        self.assertEquals(sale_item_cofins.v_bc, 500)
+        self.assertEquals(sale_item_cofins.p_cofins, 20)
+        self.assertEquals(sale_item_cofins.v_bc, 10)
         self.assertEquals(sale_item_cofins.calculo, InvoiceItemCofins.CALC_PERCENTAGE)
-        self.assertEquals(sale_item_cofins.v_cofins, 10)
+        self.assertEquals(sale_item_cofins.v_cofins, 2)

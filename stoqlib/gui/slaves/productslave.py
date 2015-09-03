@@ -358,11 +358,14 @@ class ProductInformationSlave(BaseEditorSlave):
 class ProductTaxSlave(BaseEditorSlave):
     gladefile = 'ProductTaxSlave'
     model_type = Product
-    proxy_widgets = ['icms_template', 'ipi_template']
+    proxy_widgets = ['icms_template', 'ipi_template', 'pis_template',
+                     'cofins_template']
 
     def update_visual_mode(self):
         self.icms_template.set_sensitive(False)
         self.ipi_template.set_sensitive(False)
+        self.pis_template.set_sensitive(False)
+        self.cofins_template.set_sensitive(False)
 
     def _fill_combo(self, combo, type):
         types = [(None, None)]
@@ -373,6 +376,8 @@ class ProductTaxSlave(BaseEditorSlave):
     def _setup_widgets(self):
         self._fill_combo(self.icms_template, ProductTaxTemplate.TYPE_ICMS)
         self._fill_combo(self.ipi_template, ProductTaxTemplate.TYPE_IPI)
+        self._fill_combo(self.pis_template, ProductTaxTemplate.TYPE_PIS)
+        self._fill_combo(self.cofins_template, ProductTaxTemplate.TYPE_COFINS)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -383,6 +388,8 @@ class ProductTaxSlave(BaseEditorSlave):
     def _disable_child_widgets(self):
         self.icms_template.set_property('sensitive', False)
         self.ipi_template.set_property('sensitive', False)
+        self.pis_template.set_property('sensitive', False)
+        self.cofins_template.set_property('sensitive', False)
 
 
 class ProductComponentSlave(BaseEditorSlave):

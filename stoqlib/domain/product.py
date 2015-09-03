@@ -287,13 +287,29 @@ class Product(Domain):
     #: NFE: see ncm
     genero = UnicodeCol(default=None)
 
+    #: Id of ICMS tax in product tax template
     icms_template_id = IdCol(default=None)
 
+    #: the :class:`stoqlib.domain.taxes.ProductIcmsTemplate` tax for *self*
     icms_template = Reference(icms_template_id, 'ProductIcmsTemplate.id')
 
+    #: Id of IPI tax in product tax template
     ipi_template_id = IdCol(default=None)
 
+    #: the :class:`stoqlib.domain.taxes.ProductIpiTemplate` tax for *self*
     ipi_template = Reference(ipi_template_id, 'ProductIpiTemplate.id')
+
+    #: Id of PIS tax in product tax template
+    pis_template_id = IdCol(default=None)
+
+    #: the :class:`stoqlib.domain.taxes.ProductPisTemplate` tax for *self*
+    pis_template = Reference(pis_template_id, 'ProductPisTemplate.id')
+
+    #: Id of COFINS tax in product tax template
+    cofins_template_id = IdCol(default=None)
+
+    #: the :class:`stoqlib.domain.taxes.ProductCofinsTemplate` tax for *self*
+    cofins_template = Reference(cofins_template_id, 'ProductCofinsTemplate.id')
 
     #: Used for composed products only
     quality_tests = ReferenceSet('id', 'ProductQualityTest.product_id')
@@ -691,7 +707,7 @@ class Product(Domain):
 
         props = ['manufacturer', 'brand', 'family', 'width', 'height', 'depth',
                  'weight', 'ncm', 'ex_tipi', 'genero', 'icms_template',
-                 'ipi_template']
+                 'ipi_template', 'pis_template', 'cofins_template']
         for prop in props:
             value = getattr(self, prop)
             setattr(target, prop, value)

@@ -40,6 +40,7 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import ClientCategory, Client, SalesPerson
+from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleItem, SaleComment
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
@@ -308,6 +309,20 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def get_order_item(self, sellable, price, quantity, batch=None):
         item = self.model.add_sellable(sellable, quantity, price, batch=batch)
+        storable = sellable.product_storable
+        stock_item = self.store.find(ProductStockItem, storable=storable,
+                                     batch=batch, branch=self.model.branch).one()
+        # FIXME: Currently uses the cost of the supplier or cost sellable.
+        # Implement batch control for the cost of the lot not the product.
+        if stock_item is not None:
+            item.average_cost = stock_item.stock_cost
+        else:
+            # When the product does not have stock control. Use the sellable
+            # cost information
+            item.average_cost = sellable.cost
+
+        item.update_tax_values()
+
         # Save temporarily the stock quantity and lead_time so we can show a
         # warning if there is not enough quantity for the sale.
         item._stock_quantity = self.proxy.model.stock_quantity

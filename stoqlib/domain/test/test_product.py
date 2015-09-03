@@ -600,7 +600,7 @@ class TestProduct(DomainTest):
 
         prod_props = ['manufacturer', 'brand', 'family', 'width', 'height', 'depth',
                       'weight', 'ncm', 'ex_tipi', 'genero', 'icms_template',
-                      'ipi_template']
+                      'ipi_template', 'pis_template', 'cofins_template']
 
         supplier_props = ['base_cost', 'notes', 'is_main_supplier', 'lead_time',
                           'minimum_purchase', 'icms', 'supplier']

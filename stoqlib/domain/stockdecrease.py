@@ -39,7 +39,7 @@ from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
-from stoqlib.domain.taxes import InvoiceItemIcms, InvoiceItemIpi
+from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
@@ -83,23 +83,37 @@ class StockDecreaseItem(Domain):
     #: the quantity decreased for this item
     quantity = QuantityCol()
 
+    #: Id of ICMS tax in product tax template
     icms_info_id = IdCol()
 
     #:the :class:`stoqlib.domain.taxes.InvoiceItemIcms` tax for *self*
     icms_info = Reference(icms_info_id, 'InvoiceItemIcms.id')
 
+    #: Id of IPI tax in product tax template
     ipi_info_id = IdCol()
 
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax for *self*
     ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
+
+    #: Id of PIS tax in product tax template
+    pis_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemPis` tax for *self*
+    pis_info = Reference(pis_info_id, 'InvoiceItemPis.id')
+
+    #: Id of COFINS tax in product tax template
+    cofins_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemCofins` tax for *self*
+    cofins_info = Reference(cofins_info_id, 'InvoiceItemCofins.id')
 
     item_discount = Decimal('0')
 
     def __init__(self, store=None, sellable=None, **kwargs):
         if sellable is None:
             raise TypeError('You must provide a sellable argument')
-        kwargs['ipi_info'] = InvoiceItemIpi(store=store)
-        kwargs['icms_info'] = InvoiceItemIcms(store=store)
+        check_tax_info_presence(kwargs, store)
+
         super(StockDecreaseItem, self).__init__(store=store, sellable=sellable,
                                                 **kwargs)
 
@@ -107,6 +121,8 @@ class StockDecreaseItem(Domain):
         if product:
             self.ipi_info.set_item_tax(self)
             self.icms_info.set_item_tax(self)
+            self.pis_info.set_item_tax(self)
+            self.cofins_info.set_item_tax(self)
 
     #
     # Properties

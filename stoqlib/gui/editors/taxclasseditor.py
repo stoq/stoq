@@ -26,13 +26,16 @@
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.taxes import ProductTaxTemplate
-from stoqlib.gui.slaves.taxslave import ICMSTemplateSlave, IPITemplateSlave
+from stoqlib.gui.slaves.taxslave import (COFINSTemplateSlave, ICMSTemplateSlave,
+                                         IPITemplateSlave, PISTemplateSlave)
 
 _ = stoqlib_gettext
 
 TYPE_SLAVES = {
+    ProductTaxTemplate.TYPE_COFINS: COFINSTemplateSlave,
     ProductTaxTemplate.TYPE_ICMS: ICMSTemplateSlave,
     ProductTaxTemplate.TYPE_IPI: IPITemplateSlave,
+    ProductTaxTemplate.TYPE_PIS: PISTemplateSlave,
 }
 
 

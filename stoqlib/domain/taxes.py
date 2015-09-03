@@ -41,6 +41,21 @@ from stoqlib.lib.dateutils import localtoday
 # CST - Codigo ST
 # MVA - Margem de valor adicionado
 
+
+def check_tax_info_presence(kwargs, store):
+    if 'ipi_info' not in kwargs:
+        kwargs['ipi_info'] = InvoiceItemIpi(store=store)
+
+    if 'icms_info' not in kwargs:
+        kwargs['icms_info'] = InvoiceItemIcms(store=store)
+
+    if 'pis_info' not in kwargs:
+        kwargs['pis_info'] = InvoiceItemPis(store=store)
+
+    if 'cofins_info' not in kwargs:
+        kwargs['cofins_info'] = InvoiceItemCofins(store=store)
+
+
 #
 #   Base Tax Classes
 #
@@ -141,17 +156,8 @@ class BasePIS(BaseTax):
     #: Operation type (percentage or value)
     calculo = EnumCol(default=CALC_PERCENTAGE, allow_none=False)
 
-    #: Value of the PIS tax calculation basis.
-    v_bc = PriceCol(default=None)
-
     #: Aliquot in percentage
     p_pis = PercentCol(default=None)
-
-    #: Aliquot in value
-    v_aliq_prod = PriceCol(default=None)
-
-    #: Quantity sold
-    q_bc_prod = QuantityCol(default=None)
 
 
 class BaseCOFINS(BaseTax):
@@ -165,18 +171,8 @@ class BaseCOFINS(BaseTax):
     #: Operation type (percentage or value)
     calculo = EnumCol(default=CALC_PERCENTAGE, allow_none=False)
 
-    #: Value of the PIS tax calculation basis.
-    v_bc = PriceCol(default=None)
-
     #: Aliquot in percentage
     p_cofins = PercentCol(default=None)
-
-    #: Aliquot in value
-    v_aliq_prod = PriceCol(default=None)
-
-    #: Quantity sold
-    q_bc_prod = QuantityCol(default=None)
-
 
 #
 #   Product Tax Classes
@@ -240,10 +236,14 @@ class ProductTaxTemplate(Domain):
     __storm_table__ = 'product_tax_template'
 
     types = {TYPE_ICMS: u"ICMS",
-             TYPE_IPI: u"IPI"}
+             TYPE_IPI: u"IPI",
+             TYPE_PIS: u"PIS",
+             TYPE_COFINS: u"COFINS"}
 
     type_map = {TYPE_ICMS: ProductIcmsTemplate,
-                TYPE_IPI: ProductIpiTemplate}
+                TYPE_IPI: ProductIpiTemplate,
+                TYPE_PIS: ProductPisTemplate,
+                TYPE_COFINS: ProductCofinsTemplate}
 
     name = UnicodeCol(default=u'')
     tax_type = EnumCol(default=TYPE_ICMS, allow_none=False)
@@ -416,25 +416,48 @@ class InvoiceItemPis(BasePIS):
     __storm_table__ = 'invoice_item_pis'
 
     #: Value of PIS tax.
-    v_pis = PriceCol(default=None)
+    v_pis = PriceCol(default=0)
+
+    #: Value of the PIS tax calculation basis.
+    v_bc = PriceCol(default=None)
+
+    #: Quantity sold
+    q_bc_prod = QuantityCol(default=None)
 
     #
     # Public API
     #
 
-    def set_initial_values(self):
-        self.update_values()
+    def set_initial_values(self, invoice_item):
+        self.update_values(invoice_item)
 
-    def update_values(self):
+    def update_values(self, invoice_item):
+        self.q_bc_prod = invoice_item.quantity
+
         # When the CST is contained in the list the calculation is not performed
         # because the taxpayer is exempt.
-        if self.cst in [1, 2, 3, 4, 6, 7, 8, 9]:
+        if self.cst in [2, 4, 6, 7, 8, 9]:
             return
-
-        if self.calculo == self.CALC_PERCENTAGE:
+        cost = self._get_item_cost(invoice_item)
+        self.v_bc = invoice_item.quantity * (invoice_item.price - cost)
+        if self.p_pis is not None:
             self.v_pis = self.v_bc * self.p_pis / 100
-        elif self.calculo == self.CALC_VALUE:
-            self.v_pis = self.q_bc_prod * self.v_aliq_prod
+
+    @classmethod
+    def get_tax_template(cls, invoice_item):
+        return invoice_item.sellable.product.pis_template
+
+    #
+    # Private API
+    #
+
+    def _get_item_cost(self, invoice_item):
+        from stoqlib.domain.sale import SaleItem
+
+        if isinstance(invoice_item, SaleItem):
+            return invoice_item.average_cost
+
+        return 0
 
 
 class InvoiceItemCofins(BaseCOFINS):
@@ -443,22 +466,45 @@ class InvoiceItemCofins(BaseCOFINS):
     __storm_table__ = 'invoice_item_cofins'
 
     #: Value of COFINS tax
-    v_cofins = PriceCol(default=None)
+    v_cofins = PriceCol(default=0)
+
+    #: Value of the COFINS tax calculation basis.
+    v_bc = PriceCol(default=None)
+
+    #: Quantity sold
+    q_bc_prod = QuantityCol(default=None)
 
     #
     # Public API
     #
 
-    def set_initial_values(self):
-        self.update_values()
+    def set_initial_values(self, invoice_item):
+        self.update_values(invoice_item)
 
-    def update_values(self):
+    def update_values(self, invoice_item):
+        self.q_bc_prod = invoice_item.quantity
+
         # When the CST is contained in the list the calculation is not performed
         # because the taxpayer is exempt.
-        if self.cst in [1, 2, 3, 4, 6, 7, 8, 9]:
+        if self.cst in [2, 4, 6, 7, 8, 9]:
             return
-
-        if self.calculo == self.CALC_PERCENTAGE:
+        cost = self._get_item_cost(invoice_item)
+        self.v_bc = invoice_item.quantity * (invoice_item.price - cost)
+        if self.p_cofins is not None:
             self.v_cofins = self.v_bc * self.p_cofins / 100
-        elif self.calculo == self.CALC_VALUE:
-            self.v_cofins = self.q_bc_prod * self.v_aliq_prod
+
+    @classmethod
+    def get_tax_template(cls, invoice_item):
+        return invoice_item.sellable.product.cofins_template
+
+    #
+    # Private API
+    #
+
+    def _get_item_cost(self, invoice_item):
+        from stoqlib.domain.sale import SaleItem
+
+        if isinstance(invoice_item, SaleItem):
+            return invoice_item.average_cost
+
+        return 0

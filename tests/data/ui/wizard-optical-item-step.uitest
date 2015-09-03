@@ -98,7 +98,7 @@ model: SaleItem<3>
   sale_id: Sale<1>
 
 model: SaleItem<4>
-  average_cost: <currency $ 0>
+  average_cost: <currency $125>
   base_price: <currency $10>
   completion_date: None
   estimated_fix_date: datetime.today()
@@ -120,7 +120,7 @@ model: SaleItem<5>
   sale_id: Sale<1>
 
 model: SaleItem<6>
-  average_cost: <currency $ 0>
+  average_cost: <currency $125>
   base_price: <currency $10>
   completion_date: None
   estimated_fix_date: datetime.today()

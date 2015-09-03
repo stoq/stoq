@@ -214,6 +214,8 @@ class TestStockDecreaseItem(DomainTest):
         item = self.create_stock_decrease_item()
         self.assertIsNotNone(item.icms_info)
         self.assertIsNotNone(item.ipi_info)
+        self.assertIsNotNone(item.pis_info)
+        self.assertIsNotNone(item.cofins_info)
 
     def test_get_description(self):
         decrease = self.create_stock_decrease()

@@ -70,7 +70,7 @@ from stoqlib.domain.product import (Product, ProductHistory, Storable,
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.service import Service
-from stoqlib.domain.taxes import InvoiceItemIcms, InvoiceItemIpi
+from stoqlib.domain.taxes import check_tax_info_presence, InvoiceItemIpi
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
@@ -159,15 +159,29 @@ class SaleItem(Domain):
     #        should remove it from the database
     completion_date = DateTimeCol(default=None)
 
+    #: Id of ICMS tax in product tax template
     icms_info_id = IdCol()
 
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIcms` tax for *self*
     icms_info = Reference(icms_info_id, 'InvoiceItemIcms.id')
 
+    #: Id of IPI tax in product tax template
     ipi_info_id = IdCol()
 
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax for *self*
     ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
+
+    #: Id of PIS tax in product tax template
+    pis_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemPis` tax for *self*
+    pis_info = Reference(pis_info_id, 'InvoiceItemPis.id')
+
+    #: Id of COFINS tax in product tax template
+    cofins_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemCofins` tax for *self*
+    cofins_info = Reference(cofins_info_id, 'InvoiceItemCofins.id')
 
     def __init__(self, store=None, **kw):
         if not 'kw' in kw:
@@ -181,8 +195,7 @@ class SaleItem(Domain):
                 kw['cfop'] = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 
             store = kw.get('store', store)
-            kw['ipi_info'] = InvoiceItemIpi(store=store)
-            kw['icms_info'] = InvoiceItemIcms(store=store)
+            check_tax_info_presence(kw, store)
         Domain.__init__(self, store=store, **kw)
 
         product = self.sellable.product
@@ -190,6 +203,8 @@ class SaleItem(Domain):
             # Set ipi details before icms, since icms may depend on the ipi
             self.ipi_info.set_item_tax(self)
             self.icms_info.set_item_tax(self)
+            self.pis_info.set_item_tax(self)
+            self.cofins_info.set_item_tax(self)
 
     #
     #  Properties
@@ -316,6 +331,7 @@ class SaleItem(Domain):
 
             self.average_cost = item.stock_cost
         self.quantity_decreased += quantity_to_decrease
+        self.update_tax_values()
 
     def cancel(self, branch):
         # This is emitted here instead of inside the if bellow because one can
@@ -394,8 +410,7 @@ class SaleItem(Domain):
             self.quantity = missing
         else:
             self.batch, self.quantity = batches.popitem()
-            self.icms_info.update_values(self)
-            self.ipi_info.update_values(self)
+            self.update_tax_values()
 
         new_sale_items = []
         for batch, quantity in batches.items():
@@ -409,8 +424,7 @@ class SaleItem(Domain):
                 base_price=self.base_price,
                 price=self.price,
                 notes=self.notes)
-            new_item.icms_info.update_values(new_item)
-            new_item.ipi_info.update_values(new_item)
+            new_item.update_tax_values()
             new_sale_items.append(new_item)
 
         SaleItemAfterSetBatchesEvent.emit(self, new_sale_items)
@@ -470,6 +484,12 @@ class SaleItem(Domain):
         if self.price > self.base_price:
             return ((self.price / self.base_price) - 1) * 100
         return 0
+
+    def update_tax_values(self):
+        self.icms_info.update_values(self)
+        self.ipi_info.update_values(self)
+        self.pis_info.update_values(self)
+        self.cofins_info.update_values(self)
 
 
 @implementer(IContainer)

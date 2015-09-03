@@ -42,7 +42,7 @@ from stoqlib.domain.interfaces import IContainer, IInvoiceItem, IInvoice
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import StockTransactionHistory
-from stoqlib.domain.taxes import InvoiceItemIcms, InvoiceItemIpi
+from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -91,15 +91,29 @@ class ReturnedSaleItem(Domain):
     #: the |returnedsale| which this item belongs
     returned_sale = Reference(returned_sale_id, 'ReturnedSale.id')
 
+    #: Id of ICMS tax in product tax template
     icms_info_id = IdCol()
 
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIcms` tax for *self*
     icms_info = Reference(icms_info_id, 'InvoiceItemIcms.id')
 
+    #: Id of IPI tax in product tax template
     ipi_info_id = IdCol()
 
     #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax fo *self*
     ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
+
+    #: Id of PIS tax in product tax template
+    pis_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemPis` tax fo *self*
+    pis_info = Reference(pis_info_id, 'InvoiceItemPis.id')
+
+    #: Id of COFINS tax in product tax template
+    cofins_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemCofins` tax fo *self*
+    cofins_info = Reference(cofins_info_id, 'InvoiceItemCofins.id')
 
     item_discount = Decimal('0')
 
@@ -123,8 +137,7 @@ class ReturnedSaleItem(Domain):
             # sale_item.price takes priority over sellable.price
             kwargs['price'] = sale_item.price if sale_item else sellable.price
 
-        kwargs['ipi_info'] = InvoiceItemIpi(store=store)
-        kwargs['icms_info'] = InvoiceItemIcms(store=store)
+        check_tax_info_presence(kwargs, store)
 
         super(ReturnedSaleItem, self).__init__(store=store, **kwargs)
 
@@ -132,6 +145,8 @@ class ReturnedSaleItem(Domain):
         if product:
             self.ipi_info.set_item_tax(self)
             self.icms_info.set_item_tax(self)
+            self.pis_info.set_item_tax(self)
+            self.cofins_info.set_item_tax(self)
 
     @property
     def total(self):

@@ -24,7 +24,8 @@
 
 import mock
 
-from stoqlib.domain.taxes import (ProductIcmsTemplate, ProductIpiTemplate,
+from stoqlib.domain.taxes import (ProductIcmsTemplate,
+                                  ProductIpiTemplate,
                                   ProductTaxTemplate)
 from stoqlib.gui.editors.transfereditor import TransferItemEditor
 from stoqlib.gui.test.uitestutils import GUITest
@@ -93,9 +94,19 @@ class TestTransferItemSlave(GUITest):
                                           product_tax_template=tax_template)
         ipi_template.cst = 00
 
+        tax_template = self.create_product_tax_template(tax_type=ProductTaxTemplate.TYPE_PIS)
+        pis_template = self.create_product_pis_template(cst=49)
+        self.assertEquals(pis_template.cst, 49)
+
+        tax_template = self.create_product_tax_template(tax_type=ProductTaxTemplate.TYPE_COFINS)
+        cofins_template = self.create_product_cofins_template(cst=49)
+        self.assertEquals(cofins_template.cst, 49)
+
         product = self.create_product()
         product.icms_template = icms_template
         product.ipi_template = ipi_template
+        product.pis_template = pis_template
+        product.cofins_template = cofins_template
         transfer_item = self.create_transfer_order_item(sellable=product.sellable,
                                                         stock_cost=100,
                                                         quantity=1)

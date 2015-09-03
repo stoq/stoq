@@ -583,9 +583,8 @@ class ExampleCreator(object):
                                   cst=cst, p_ipi=p_ipi, q_unid=q_unid,
                                   calculo=calculo)
 
-    def create_product_pis_template(self, tax_template=None, cst=1, v_bc=0,
-                                    p_pis=0, v_aliq_prod=0,
-                                    q_bc_prod=0, calculo=None):
+    def create_product_pis_template(self, tax_template=None, cst=1,
+                                    p_pis=0, calculo=None):
         from stoqlib.domain.taxes import (ProductPisTemplate,
                                           ProductTaxTemplate)
 
@@ -596,14 +595,11 @@ class ExampleCreator(object):
             pis_tax = ProductTaxTemplate.TYPE_PIS
             tax_template = self.create_product_tax_template(tax_type=pis_tax)
         return ProductPisTemplate(product_tax_template=tax_template,
-                                  cst=cst, v_bc=v_bc,
-                                  p_pis=p_pis,
-                                  v_aliq_prod=v_aliq_prod,
-                                  q_bc_prod=q_bc_prod, calculo=calculo)
+                                  cst=cst, p_pis=p_pis,
+                                  calculo=calculo)
 
-    def create_product_cofins_template(self, tax_template=None, cst=1, v_bc=0,
-                                       p_cofins=0, v_aliq_prod=0,
-                                       q_bc_prod=0, calculo=None):
+    def create_product_cofins_template(self, tax_template=None, cst=1,
+                                       p_cofins=0, calculo=None):
         from stoqlib.domain.taxes import (ProductCofinsTemplate,
                                           ProductTaxTemplate)
 
@@ -614,10 +610,8 @@ class ExampleCreator(object):
             cofins_tax = ProductTaxTemplate.TYPE_COFINS
             tax_template = self.create_product_tax_template(tax_type=cofins_tax)
         return ProductCofinsTemplate(product_tax_template=tax_template,
-                                     cst=cst, v_bc=v_bc,
-                                     p_cofins=p_cofins,
-                                     v_aliq_prod=v_aliq_prod,
-                                     q_bc_prod=q_bc_prod, calculo=calculo)
+                                     cst=cst, p_cofins=p_cofins,
+                                     calculo=calculo)
 
     def create_invoice_item_icms(self):
         from stoqlib.domain.taxes import InvoiceItemIcms
@@ -627,29 +621,28 @@ class ExampleCreator(object):
         from stoqlib.domain.taxes import InvoiceItemIpi
         return InvoiceItemIpi(store=self.store)
 
-    def create_invoice_item_pis(self, v_pis=None, v_bc=None, p_pis=None,
-                                v_aliq_prod=None, q_bc_prod=None, cst=None,
-                                calculo=None):
+    def create_invoice_item_pis(self, v_pis=0, v_bc=None, p_pis=None,
+                                q_bc_prod=None, cst=None, calculo=None):
         from stoqlib.domain.taxes import InvoiceItemPis
         assert validate_cst(cst)
         if calculo is None:
             calculo = InvoiceItemPis.CALC_PERCENTAGE
 
         return InvoiceItemPis(store=self.store, v_pis=v_pis, v_bc=v_bc,
-                              p_pis=p_pis, v_aliq_prod=v_aliq_prod,
-                              q_bc_prod=q_bc_prod, cst=cst, calculo=calculo)
+                              p_pis=p_pis, q_bc_prod=q_bc_prod,
+                              cst=cst, calculo=calculo)
 
-    def create_invoice_item_cofins(self, v_cofins=None, v_bc=None,
-                                   p_cofins=None, v_aliq_prod=None,
-                                   q_bc_prod=None, cst=None, calculo=None):
+    def create_invoice_item_cofins(self, v_cofins=0, v_bc=None,
+                                   p_cofins=None, q_bc_prod=None,
+                                   cst=None, calculo=None):
         from stoqlib.domain.taxes import InvoiceItemCofins
         assert validate_cst(cst)
         if calculo is None:
             calculo = InvoiceItemCofins.CALC_PERCENTAGE
 
         return InvoiceItemCofins(store=self.store, v_cofins=v_cofins, v_bc=v_bc,
-                                 p_cofins=p_cofins, v_aliq_prod=v_aliq_prod,
-                                 q_bc_prod=q_bc_prod, cst=cst, calculo=calculo)
+                                 p_cofins=p_cofins, q_bc_prod=q_bc_prod,
+                                 cst=cst, calculo=calculo)
 
     def create_invoice_layout(self):
         from stoqlib.domain.invoice import InvoiceLayout

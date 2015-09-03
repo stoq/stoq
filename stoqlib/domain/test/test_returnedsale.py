@@ -448,6 +448,8 @@ class TestReturnedSaleItem(DomainTest):
         returned_item = self.create_returned_sale_item()
         self.assertIsNotNone(returned_item.icms_info)
         self.assertIsNotNone(returned_item.ipi_info)
+        self.assertIsNotNone(returned_item.pis_info)
+        self.assertIsNotNone(returned_item.cofins_info)
 
     def test_total(self):
         sale_item = self.create_sale_item()
