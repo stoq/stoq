@@ -262,8 +262,8 @@ class InvoiceItemIcms(BaseICMS):
             self._calc_normal(invoice_item)
 
         elif self.cst == 60:
-            self.v_icms_st = 0
-            self.v_bc_st = 0
+            self.v_bc_st_ret = 0
+            self.v_icms_st_ret = 0
 
         elif self.cst in (70, 90):
             self._calc_normal(invoice_item)
