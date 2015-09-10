@@ -729,12 +729,48 @@ _details = [
         u'BILL_INSTRUCTIONS',
         _(u'Sales'),
         _(u'Bill instructions '),
-        # Translators: do not translate $DATE
+        # Translators: do not translate $DATE, $INTEREST, $PENALTY
+        # and $INVOICE_NUMBER
         _(u'When printing bills, include the first 3 lines of these on '
           u'the bill itself. This usually includes instructions on how '
-          u'to pay the bill and the validity and the terms. $DATE will be'
-          u'replaced with the due date of the bill'),
+          u'to pay the bill and the validity and the terms. The following '
+          u'placeholders will be replaced by:\n\n'
+          u'$DATE: Replaced with the due date of the bill\n'
+          u'$PENALTY: The calculated penalty based on the parameter aliquot\n'
+          u'$INTEREST: The calculated interest based on the parameter aliquot\n'
+          u'$DISCOUNT: The calculated discount based on the parameter aliquot\n'
+          u'$INVOICE_NUMBER: The sale invoice number\n'),
         unicode, multiline=True, initial=u""),
+
+    ParameterDetails(
+        u'BILL_INTEREST',
+        _(u'Sales'),
+        _(u'Bill interest aliquot'),
+        _(u'The aliquot to calculate the daily interest on the bill. '
+          u'See "Bill instructions" parameter for more information on how '
+          u'this is used'),
+        Decimal, initial=0, range=(0, 100),
+        validator=ParameterDetails.validate_percentage),
+
+    ParameterDetails(
+        u'BILL_PENALTY',
+        _(u'Sales'),
+        _(u'Bill penalty aliquot'),
+        _(u'The aliquot to calculate the penalty on the bill. '
+          u'See "Bill instructions" parameter for more information on how '
+          u'this is used'),
+        Decimal, initial=0, range=(0, 100),
+        validator=ParameterDetails.validate_percentage),
+
+    ParameterDetails(
+        u'BILL_DISCOUNT',
+        _(u'Sales'),
+        _(u'Bill discount aliquot'),
+        _(u'The aliquot to calculate the discount on the bill. '
+          u'See "Bill instructions" parameter for more information on how '
+          u'this is used'),
+        Decimal, initial=0, range=(0, 100),
+        validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
         u'BOOKLET_INSTRUCTIONS',

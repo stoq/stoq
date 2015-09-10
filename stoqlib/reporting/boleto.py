@@ -27,6 +27,8 @@ import datetime
 import sys
 import traceback
 
+from kiwi.currency import currency
+from kiwi.datatypes import converter
 from reportlab.graphics.barcode.common import I2of5
 from reportlab.lib import colors, pagesizes, utils
 from reportlab.lib.units import mm
@@ -867,17 +869,38 @@ class BillReport(object):
 
     def _get_instrucoes(self, payment):
         instructions = []
+
+        sale = payment.group.sale
+        if sale:
+            invoice_number = sale.invoice_number
+        else:
+            invoice_number = payment.identifier
+
+        penalty = currency(
+            (sysparam.get_decimal('BILL_PENALTY') / 100) * payment.value)
+        interest = currency(
+            (sysparam.get_decimal('BILL_INTEREST') / 100) * payment.value)
+        discount = currency(
+            (sysparam.get_decimal('BILL_DISCOUNT') / 100) * payment.value)
         data = sysparam.get_string('BILL_INSTRUCTIONS')
-        for line in data.split('\n')[:3]:
+        for line in data.split('\n')[:4]:
             line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
+            line = line.replace('$PENALTY',
+                                converter.as_string(currency, penalty))
+            line = line.replace('$INTEREST',
+                                converter.as_string(currency, interest))
+            line = line.replace('$DISCOUNT',
+                                converter.as_string(currency, discount))
+            line = line.replace('$INVOICE_NUMBER', str(invoice_number))
             instructions.append(line)
 
+        instructions.append('')
         instructions.append('\n' + _('Stoq Retail Management') + ' - www.stoq.com.br')
         return instructions
 
     def _get_demonstrativo(self):
         payment = self._payments[0]
-        demonstrativo = [payment.group.get_description()]
+        demonstrativo = [payment.group.get_description().capitalize()]
         sale = payment.group.sale
         if sale:
             for item in sale.get_items():
