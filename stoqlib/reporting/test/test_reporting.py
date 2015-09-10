@@ -264,7 +264,8 @@ class TestReport(ReportTest):
         search.width = 1000
         # the order_by clause is only needed by the test
         products = self.store.find(ProductFullStockView)
-        search.results.add_list(products, clear=True)
+        search.results.clear()
+        search.results.search_completed(products)
         self._diff_expected(ProductReport, 'product-report',
                             search.results, list(search.results))
 

@@ -70,6 +70,7 @@ from stoqlib.lib.decorators import cached_property
 # the branch.
 _StockSummary = Alias(Select(
     columns=[ProductStockItem.storable_id,
+             Alias(None, 'branch_id'),
              Alias(Sum(ProductStockItem.quantity), 'stock'),
              Alias(Sum(ProductStockItem.quantity *
                        ProductStockItem.stock_cost), 'total_stock_cost')],
@@ -135,6 +136,7 @@ class ProductFullStockView(Viewable):
 
     # Product
     product_id = Product.id
+    parent_id = Product.parent_id
     location = Product.location
     model = Product.model
     brand = Product.brand
@@ -148,6 +150,7 @@ class ProductFullStockView(Viewable):
     # Aggregates
     total_stock_cost = Coalesce(Field('_stock_summary', 'total_stock_cost'), 0)
     stock = Coalesce(Field('_stock_summary', 'stock'), 0)
+    branch_id = Field('_stock_summary', 'branch_id')
 
     tables = [
         # Keep this first 4 joins in this order, so find_by_branch may change it.
@@ -166,6 +169,17 @@ class ProductFullStockView(Viewable):
     ]
 
     clause = Sellable.status != Sellable.STATUS_CLOSED
+
+    def __eq__(self, other):
+        # Viewable's __eq__ would only consider equal objects of the same
+        # class, but the HighjackedViewable is an exception to the rule!
+        if (other.__class__ in [
+                self.__class__, getattr(self, '_highjacked_viewable', None)] or
+            self.__class__ in [
+                other.__class__, getattr(other, '_highjacked_viewable', None)]):
+            return self.id == other.id
+
+        return super(ProductFullStockView, self).__eq__(other)
 
     @classmethod
     def post_search_callback(cls, sresults):
@@ -189,19 +203,27 @@ class ProductFullStockView(Viewable):
 
         # Highjack the class being queried, since we need to add the branch
         # on the ProductStockItem subselect to filter it later
-        class HighjackedViewable(cls):
+        # Make sure to create it only once or else Viewable would fail to
+        # compare both objects as their class would be different.
+        if '_highjacked_viewable' not in cls.__dict__:
             tables = cls.tables[:]
             tables[3] = LeftJoin(_StockBranchSummary,
                                  Field('_stock_summary',
                                        'storable_id') == Storable.id)
+            cls._highjacked_viewable = type(
+                "Highjacked%s" % (cls.__name__, ),
+                (cls, ),
+                dict(tables=tables))
 
-        HighjackedViewable.__name__ = "Highjacked%s" % cls.__name__
+            # Make sure we will not create a highjack highjacked view
+            cls._highjacked_viewable._highjacked_viewable = (
+                cls._highjacked_viewable)
 
         # Also show products that were never purchased.
         query = Or(Field('_stock_summary', 'branch_id') == branch.id,
                    Eq(Field('_stock_summary', 'branch_id'), None))
 
-        return store.find(HighjackedViewable, query)
+        return store.find(cls._highjacked_viewable, query)
 
     def get_product_and_category_description(self):
         """Returns the product and the category description in one string.
@@ -214,6 +236,14 @@ class ProductFullStockView(Viewable):
             category_description += '[' + self.category_description + '] '
 
         return category_description + self.description
+
+    def get_parent(self):
+        if not self.parent_id:
+            return None
+
+        branch = self.branch_id and self.store.get(Branch, self.branch_id)
+        res = self.find_by_branch(self.store, branch)
+        return res.find(Product.id == self.parent_id).one()
 
     @property
     def stock_cost(self):

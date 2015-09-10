@@ -183,6 +183,9 @@ class Viewable(ClassInittableObject):
             return self.id == other.id
         return False
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     @classmethod
     def __class_init__(cls, new_attrs):
         cls_spec = []

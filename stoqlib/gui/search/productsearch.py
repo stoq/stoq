@@ -128,6 +128,12 @@ class ProductSearch(SellableSearch):
         :param hide_price_column: if it's True no need to show the
                                   column 'price'
         """
+        # We only want to display data as a tree for ProductSearch, but
+        # not setting 'tree = True' on the class definition as it has too many
+        # subclasses for us to manually set to False on each one
+        if self.__class__ is ProductSearch:
+            self.tree = True
+
         self.hide_cost_column = hide_cost_column
         self.hide_price_column = hide_price_column
         SellableSearch.__init__(self, store, hide_footer=hide_footer,

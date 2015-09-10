@@ -42,6 +42,7 @@ from stoqlib.domain.payment.views import (BasePaymentView, InPaymentView,
 from stoqlib.domain.product import (ProductSupplierInfo, ProductStockItem,
                                     Storable, Product, StockTransactionHistory)
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
 from stoqlib.domain.views import ClientWithSalesView
@@ -474,6 +475,37 @@ class TestProductFullStockView(DomainTest):
                                                        supplier=other_supplier)
         results = self.store.find(ProductFullStockItemSupplierView, query)
         self.assertFalse(p1.id in [s.product_id for s in results])
+
+    def test_highjacked_equality(self):
+        self.clean_domain([StockTransactionHistory, ProductStockItem, Storable,
+                           ProductSupplierInfo, Product])
+
+        branch = self.create_branch()
+        self.create_product(branch=branch, stock=1)
+
+        res = self.store.find(ProductFullStockView)
+        res_by_branch = ProductFullStockView.find_by_branch(self.store, branch)
+
+        self.assertEqual(res[0], res_by_branch[0])
+        self.assertEqual(res_by_branch[0], res[0])
+
+        product = self.create_product()
+        other_viewable = self.store.find(
+            ProductFullStockView, Sellable.id == product.sellable.id).one()
+        self.assertNotEqual(res[0], other_viewable)
+        self.assertNotEqual(res[0], object())
+
+    def test_get_parent(self):
+        parent = self.create_product()
+        product = self.create_product(parent=parent)
+
+        viewable = self.store.find(ProductFullStockView,
+                                   Sellable.id == product.sellable.id).one()
+        parent_viewable = self.store.find(
+            ProductFullStockView, Sellable.id == parent.sellable.id).one()
+
+        self.assertIsNone(parent_viewable.get_parent())
+        self.assertEqual(viewable.get_parent(), parent_viewable)
 
 
 class TestProductComponentView(DomainTest):
