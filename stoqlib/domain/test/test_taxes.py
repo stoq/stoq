@@ -58,7 +58,7 @@ class TestProductTaxTemplate(DomainTest):
     def test_get_tax_model(self):
         tax_template = self.create_product_tax_template(tax_type=ProductTaxTemplate.TYPE_ICMS)
         self.failIf(tax_template.get_tax_model())
-        self.create_product_icms_template(tax_template=tax_template)
+        self.create_product_icms_template(tax_template=tax_template, crt=1)
         self.failUnless(tax_template.get_tax_model())
 
     def test_get_tax_type_str(self):
@@ -71,8 +71,18 @@ class TestProductTaxTemplate(DomainTest):
 class TestProductIcmsTemplate(DomainTest):
     """Tests for ProductIcmsTemplate class"""
 
+    def test_create_simples(self):
+        icms_template = self.create_product_icms_template(crt=1)
+        self.assertEquals(icms_template.cst, None)
+        self.assertNotEquals(icms_template.csosn, None)
+
+    def test_create_normal(self):
+        icms_template = self.create_product_icms_template(crt=3)
+        self.assertNotEquals(icms_template.cst, None)
+        self.assertEquals(icms_template.csosn, None)
+
     def test_is_p_cred_sn_valid(self):
-        icms_template = self.create_product_icms_template()
+        icms_template = self.create_product_icms_template(crt=1)
 
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 

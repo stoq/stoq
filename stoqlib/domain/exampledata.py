@@ -533,20 +533,33 @@ class ExampleCreator(object):
         from stoqlib.domain.taxes import ProductTaxTemplate
         return ProductTaxTemplate(store=self.store, name=name, tax_type=tax_type)
 
-    def create_product_icms_template(self, tax_template=None, orig=0, cst=0,
-                                     mod_bc=0, p_icms=0, p_icms_st=0,
-                                     p_mva_st=0, p_red_bc_st=0):
+    def create_product_icms_template(self, tax_template=None, crt=1, orig=0,
+                                     code=0, mod_bc=0, p_icms=0, p_icms_st=0,
+                                     p_mva_st=0, p_red_bc_st=0, p_cred_sn=None,
+                                     mod_bc_st=None, v_icms=None):
         from stoqlib.domain.taxes import ProductIcmsTemplate
         if not tax_template:
             tax_template = self.create_product_tax_template()
+        # Simples nacional
+        if crt in [1, 2]:
+            return ProductIcmsTemplate(store=self.store,
+                                       product_tax_template=tax_template,
+                                       orig=orig, csosn=code, mod_bc=mod_bc,
+                                       p_icms=p_icms, p_icms_st=p_icms_st,
+                                       p_mva_st=p_mva_st,
+                                       p_red_bc_st=p_red_bc_st,
+                                       mod_bc_st=mod_bc_st,
+                                       p_cred_sn=p_cred_sn)
+        # Regime normal
         return ProductIcmsTemplate(store=self.store,
                                    product_tax_template=tax_template,
                                    orig=orig,
-                                   cst=cst, mod_bc=mod_bc,
+                                   cst=code, mod_bc=mod_bc,
                                    p_icms=p_icms,
                                    p_icms_st=p_icms_st,
                                    p_mva_st=p_mva_st,
-                                   p_red_bc_st=p_red_bc_st)
+                                   p_red_bc_st=p_red_bc_st,
+                                   mod_bc_st=mod_bc_st)
 
     def create_invoice_item_icms(self):
         from stoqlib.domain.taxes import InvoiceItemIcms
