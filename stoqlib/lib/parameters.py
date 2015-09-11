@@ -731,7 +731,7 @@ _details = [
         _(u'Bill instructions '),
         # Translators: do not translate $DATE, $INTEREST, $PENALTY
         # and $INVOICE_NUMBER
-        _(u'When printing bills, include the first 3 lines of these on '
+        _(u'When printing bills, include the first 4 lines of these on '
           u'the bill itself. This usually includes instructions on how '
           u'to pay the bill and the validity and the terms. The following '
           u'placeholders will be replaced by:\n\n'

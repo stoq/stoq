@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-18 16:38-0300\n"
+"POT-Creation-Date: 2015-09-11 15:41-0300\n"
 "PO-Revision-Date: 2014-11-17 16:39+0000\n"
 "Last-Translator: romaia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/stoq/"
@@ -690,7 +690,7 @@ msgstr "Transações de estoque"
 #: ../plugins/ecf/deviceconstanteditor.py:202
 #: ../stoqlib/gui/dialogs/clientdetails.py:330
 #: ../stoqlib/lib/parameters.py:694 ../stoqlib/lib/parameters.py:702
-#: ../stoqlib/lib/parameters.py:780 ../stoqlib/lib/parameters.py:797
+#: ../stoqlib/lib/parameters.py:816 ../stoqlib/lib/parameters.py:833
 msgid "Payments"
 msgstr "Pagamentos"
 
@@ -716,8 +716,10 @@ msgstr "Pagamentos"
 #: ../stoqlib/lib/parameters.py:535 ../stoqlib/lib/parameters.py:545
 #: ../stoqlib/lib/parameters.py:555 ../stoqlib/lib/parameters.py:586
 #: ../stoqlib/lib/parameters.py:628 ../stoqlib/lib/parameters.py:730
-#: ../stoqlib/lib/parameters.py:741 ../stoqlib/lib/parameters.py:789
-#: ../stoqlib/lib/parameters.py:805 ../stoqlib/reporting/sale.py:123
+#: ../stoqlib/lib/parameters.py:747 ../stoqlib/lib/parameters.py:757
+#: ../stoqlib/lib/parameters.py:767 ../stoqlib/lib/parameters.py:777
+#: ../stoqlib/lib/parameters.py:825 ../stoqlib/lib/parameters.py:841
+#: ../stoqlib/reporting/sale.py:123
 msgid "Sales"
 msgstr "Vendas"
 
@@ -2765,8 +2767,8 @@ msgstr "Valor atual:"
 #: ../stoqlib/lib/parameters.py:594 ../stoqlib/lib/parameters.py:605
 #: ../stoqlib/lib/parameters.py:613 ../stoqlib/lib/parameters.py:620
 #: ../stoqlib/lib/parameters.py:687 ../stoqlib/lib/parameters.py:722
-#: ../stoqlib/lib/parameters.py:762 ../stoqlib/lib/parameters.py:770
-#: ../stoqlib/lib/parameters.py:820
+#: ../stoqlib/lib/parameters.py:798 ../stoqlib/lib/parameters.py:806
+#: ../stoqlib/lib/parameters.py:856
 msgid "General"
 msgstr "Geral"
 
@@ -4050,7 +4052,7 @@ msgstr "Qtde"
 #: ../data/template/optical/workorderdetails.html:8
 #: ../plugins/optical/opticalreport.py:33 ../stoq/gui/calendar.py:288
 #: ../stoqlib/gui/editors/workordereditor.py:63
-#: ../stoqlib/lib/parameters.py:812 ../stoqlib/reporting/workorder.py:42
+#: ../stoqlib/lib/parameters.py:848 ../stoqlib/reporting/workorder.py:42
 msgid "Work order"
 msgstr "Ordem de serviço"
 
@@ -4783,28 +4785,28 @@ msgstr "Qualquer"
 msgid "There must be a printer configured"
 msgstr "É necessário ter uma impressora configurada"
 
-#: ../plugins/ecf/couponprinter.py:111 ../plugins/ecf/couponprinter.py:122
+#: ../plugins/ecf/couponprinter.py:112 ../plugins/ecf/couponprinter.py:123
 msgid "Could not cancel coupon"
 msgstr "Não foi possível cancelar o cupom"
 
-#: ../plugins/ecf/couponprinter.py:149
+#: ../plugins/ecf/couponprinter.py:150
 msgid "Could not print summary"
 msgstr "Não foi possível imprimir o sumário"
 
-#: ../plugins/ecf/couponprinter.py:158 ../plugins/ecf/couponprinter.py:167
+#: ../plugins/ecf/couponprinter.py:159 ../plugins/ecf/couponprinter.py:168
 msgid "Could not read memory"
 msgstr "Não foi possível ler a memória"
 
-#: ../plugins/ecf/couponprinter.py:176
+#: ../plugins/ecf/couponprinter.py:177
 #, python-format
 msgid "Invalid serial number for fiscal printer connected to %s"
 msgstr "Número serial inválido para impressora fiscal conectado em %s"
 
-#: ../plugins/ecf/couponprinter.py:324 ../plugins/ecf/couponprinter.py:341
+#: ../plugins/ecf/couponprinter.py:320 ../plugins/ecf/couponprinter.py:337
 msgid "Could not print item"
 msgstr "Não foi possível imprimir o item"
 
-#: ../plugins/ecf/couponprinter.py:380
+#: ../plugins/ecf/couponprinter.py:376
 #, python-format
 msgid ""
 "The payment method used in this sale (%s) is not configured in the fiscal "
@@ -4813,13 +4815,13 @@ msgstr ""
 "A forma de pagamento usado nesta venda (%s) não está configurado na "
 "impressora fiscal."
 
-#: ../plugins/ecf/couponprinter.py:436
+#: ../plugins/ecf/couponprinter.py:431
 #, python-format
 msgid "Salesperson: %s"
 msgstr "Vendedor(a): %s"
 
-#: ../plugins/ecf/couponprinter.py:437 ../stoqlib/exporters/xlsutils.py:44
-#: ../stoqlib/reporting/boleto.py:875
+#: ../plugins/ecf/couponprinter.py:432 ../stoqlib/exporters/xlsutils.py:44
+#: ../stoqlib/reporting/boleto.py:898
 msgid "Stoq Retail Management"
 msgstr "Stoq Gestão Comercial"
 
@@ -4985,7 +4987,7 @@ msgid "Fiscalprinters serial number is different!"
 msgstr "O número serial da impressora fiscal é diferente"
 
 #: ../plugins/ecf/ecfui.py:187 ../plugins/ecf/ecfui.py:211
-#: ../stoqlib/lib/parameters.py:256 ../stoqlib/lib/parameters.py:829
+#: ../stoqlib/lib/parameters.py:256 ../stoqlib/lib/parameters.py:865
 msgid "ECF"
 msgstr "ECF"
 
@@ -8148,7 +8150,7 @@ msgstr "Data de expiração"
 #: ../stoqlib/gui/search/commissionsearch.py:131
 #: ../stoqlib/gui/search/salesearch.py:91
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:129
-#: ../stoqlib/lib/parameters.py:909 ../stoqlib/net/calendarevents.py:137
+#: ../stoqlib/lib/parameters.py:945 ../stoqlib/net/calendarevents.py:137
 msgid "Salesperson"
 msgstr "Vendedor"
 
@@ -9713,7 +9715,7 @@ msgstr "Cheque"
 
 #. Reports need a title when printing
 #: ../stoqlib/domain/payment/operation.py:213
-#: ../stoqlib/reporting/boleto.py:815 ../stoqlib/reporting/boleto.py:972
+#: ../stoqlib/reporting/boleto.py:817 ../stoqlib/reporting/boleto.py:995
 msgid "Bill"
 msgstr "Boleto"
 
@@ -11932,7 +11934,7 @@ msgstr "Crédito do cliente não pode ser negativo."
 #: ../stoqlib/gui/editors/deliveryeditor.py:60
 #: ../stoqlib/gui/editors/deliveryeditor.py:88
 #: ../stoqlib/gui/editors/deliveryeditor.py:230
-#: ../stoqlib/lib/parameters.py:930
+#: ../stoqlib/lib/parameters.py:966
 msgid "Delivery"
 msgstr "Entrega"
 
@@ -17122,22 +17124,74 @@ msgstr ""
 msgid "Bill instructions "
 msgstr "Instruções do boleto "
 
-#. Translators: do not translate $DATE
-#: ../stoqlib/lib/parameters.py:733
+#. Translators: do not translate $DATE, $INTEREST, $PENALTY
+#. and $INVOICE_NUMBER
+#: ../stoqlib/lib/parameters.py:734
 msgid ""
-"When printing bills, include the first 3 lines of these on the bill itself. "
+"When printing bills, include the first 4 lines of these on the bill itself. "
 "This usually includes instructions on how to pay the bill and the validity "
-"and the terms. $DATE will bereplaced with the due date of the bill"
+"and the terms. The following placeholders will be replaced by:\n"
+"\n"
+"$DATE: Replaced with the due date of the bill\n"
+"$PENALTY: The calculated penalty based on the parameter aliquot\n"
+"$INTEREST: The calculated interest based on the parameter aliquot\n"
+"$DISCOUNT: The calculated discount based on the parameter aliquot\n"
+"$INVOICE_NUMBER: The sale invoice number\n"
 msgstr ""
-"Ao imprimir boletos, serão inclusas estas 3 primeiras linhas no mesmo. Isso "
-"geralmente inclui instruções sobre como pagar o boleto, a validade e os "
-"termos. $DATE será substituído com a data de vencimento do boleto."
+"Ao imprimir boletos, serão inclusas estas 4 primeiras linhas no mesmo. "
+"Isso geralmente inclui instruções sobre como pagar o boleto, a validade e "
+"os termos. As seguintes tags serão substituídas por:\n"
+"\n"
+"$DATE: Substituída pela data de vencimento do boleto\n"
+"$PENALTY: O valor calculado de multa baseado na alíquota do parâmetro\n"
+"$INTEREST: O valor calculado de juros baseado na alíquota do parâmetro\n"
+"$DISCOUNT: O valor calculado de desconto baseado na alíquota do parâmetro\n"
+"$INVOICE_NUMBER: O número de nota fiscal da venda\n"
 
-#: ../stoqlib/lib/parameters.py:742
+#: ../stoqlib/lib/parameters.py:748
+msgid "Bill interest aliquot"
+msgstr "Alíquota de juros do boleto"
+
+#: ../stoqlib/lib/parameters.py:749
+msgid ""
+"The aliquot to calculate the daily interest on the bill. See \"Bill "
+"instructions\" parameter for more information on how this is used"
+msgstr ""
+"A alíquota utilizada para calcular o juros diários no boleto. Veja o "
+"parâmetro \"Instruções do boleto\" para mais informações de como este valor "
+"é utilizado."
+
+#: ../stoqlib/lib/parameters.py:758
+msgid "Bill penalty aliquot"
+msgstr "Alíquota de multa do boleto"
+
+#: ../stoqlib/lib/parameters.py:759
+msgid ""
+"The aliquot to calculate the penalty on the bill. See \"Bill instructions\" "
+"parameter for more information on how this is used"
+msgstr ""
+"A alíquota utilizada para calcular a multa no boleto. Veja o "
+"parâmetro \"Instruções do boleto\" para mais informações de como este valor "
+"é utilizado."
+
+#: ../stoqlib/lib/parameters.py:768
+msgid "Bill discount aliquot"
+msgstr "Alíquota de desconto do boleto"
+
+#: ../stoqlib/lib/parameters.py:769
+msgid ""
+"The aliquot to calculate the discount on the bill. See \"Bill instructions\" "
+"parameter for more information on how this is used"
+msgstr ""
+"A alíquota utilizada para calcular o desconto no boleto. Veja o "
+"parâmetro \"Instruções do boleto\" para mais informações de como este valor "
+"é utilizado."
+
+#: ../stoqlib/lib/parameters.py:778
 msgid "Booklet instructions "
 msgstr "Instruções do carnê "
 
-#: ../stoqlib/lib/parameters.py:743
+#: ../stoqlib/lib/parameters.py:779
 msgid ""
 "When printing booklets, include the first 4 lines of these on it. This "
 "usually includes instructions on how to pay the booklet and the validity and "
@@ -17146,19 +17200,19 @@ msgstr ""
 "Ao imprimir carnês, incluir nele estas primeiras 4 linhas. Isso normalmente "
 "inclui instruções de como pagar o carnê e os termos de sua validade."
 
-#: ../stoqlib/lib/parameters.py:747
+#: ../stoqlib/lib/parameters.py:783
 msgid "Payable at any branch on presentation of this booklet"
 msgstr "Pagável em qualquer filial mediante apresentação deste carnê"
 
-#: ../stoqlib/lib/parameters.py:751
+#: ../stoqlib/lib/parameters.py:787
 msgid "Smart lists"
 msgstr "Listas inteligentes"
 
-#: ../stoqlib/lib/parameters.py:752
+#: ../stoqlib/lib/parameters.py:788
 msgid "Load items intelligently from the database"
 msgstr "Carrega registros da base de dados inteligentemente"
 
-#: ../stoqlib/lib/parameters.py:753
+#: ../stoqlib/lib/parameters.py:789
 msgid ""
 "This is useful when you have several thousand items, but it may cause some "
 "problems as it's new and untested. If you want to preserve the old list "
@@ -17169,11 +17223,11 @@ msgstr ""
 "comportamento antigo das listas nos aplicativos Contas a Pagar e Contas a "
 "Receber, desabilite esse parâmetro."
 
-#: ../stoqlib/lib/parameters.py:763
+#: ../stoqlib/lib/parameters.py:799
 msgid "Current branch for this database"
 msgstr "Filial atual para esta base de dados"
 
-#: ../stoqlib/lib/parameters.py:764
+#: ../stoqlib/lib/parameters.py:800
 msgid ""
 "When operating with synchronized databases, this parameter will be used to "
 "restrict the data that will be sent to this database."
@@ -17181,11 +17235,11 @@ msgstr ""
 "Quando operando com bases sincronizadas, este parâmetro será utilizado para "
 "restringir os dados que serão enviados para esta base de dados."
 
-#: ../stoqlib/lib/parameters.py:771
+#: ../stoqlib/lib/parameters.py:807
 msgid "Synchronized mode operation"
 msgstr "Modo de operação sincronizado"
 
-#: ../stoqlib/lib/parameters.py:772
+#: ../stoqlib/lib/parameters.py:808
 msgid ""
 "This parameter indicates if Stoq is operating with synchronized databases. "
 "When using synchronized databases, some operations with branches different "
@@ -17195,11 +17249,11 @@ msgstr ""
 "sincronizadas. Quando utilizando bases sincronizadas, algumas operações de "
 "filiais diferentes da atual serão restritas."
 
-#: ../stoqlib/lib/parameters.py:781
+#: ../stoqlib/lib/parameters.py:817
 msgid "Printing of promissory notes on booklets"
 msgstr "Impressão de notas promissórias em carnês"
 
-#: ../stoqlib/lib/parameters.py:782
+#: ../stoqlib/lib/parameters.py:818
 msgid ""
 "This parameter indicates if Stoq should print promissory notes when printing "
 "booklets for payments."
@@ -17207,11 +17261,11 @@ msgstr ""
 "Este parâmetro indica se o Stoq deve imprimir notas promissórias ao imprimir "
 "carnês para pagamentos."
 
-#: ../stoqlib/lib/parameters.py:790
+#: ../stoqlib/lib/parameters.py:826
 msgid "Printing of promissory notes on loans"
 msgstr "Impressão de notas promissórias em empréstimos"
 
-#: ../stoqlib/lib/parameters.py:791
+#: ../stoqlib/lib/parameters.py:827
 msgid ""
 "This parameter indicates if Stoq should print a promissory note when "
 "printing a loan receipt."
@@ -17219,31 +17273,31 @@ msgstr ""
 "Este parâmetro indica se o Stoq deve imprimir uma nota promissória ao "
 "imprimir um recibo de empréstimo."
 
-#: ../stoqlib/lib/parameters.py:798
+#: ../stoqlib/lib/parameters.py:834
 msgid "Mandatory check number"
 msgstr "Número do cheque obrigatório"
 
-#: ../stoqlib/lib/parameters.py:799
+#: ../stoqlib/lib/parameters.py:835
 msgid ""
 "This parameter indicates if the check number on check payments is mandatory."
 msgstr ""
 "Este parâmetro indica que o número do cheque nos pagamentos com cheque são "
 "obrigatórios."
 
-#: ../stoqlib/lib/parameters.py:806
+#: ../stoqlib/lib/parameters.py:842
 msgid "Set authorization number mandatory"
 msgstr "Configurar número de autorização como obrigatório"
 
-#: ../stoqlib/lib/parameters.py:807
+#: ../stoqlib/lib/parameters.py:843
 msgid "Set the authorization number on card payments as mandatory or not."
 msgstr ""
 "Configurar número de autorização em pagamentos com cartão como obrigatórios."
 
-#: ../stoqlib/lib/parameters.py:813
+#: ../stoqlib/lib/parameters.py:849
 msgid "Defect detected template for work orders"
 msgstr "Template para defeito detectado em ordens de serviços"
 
-#: ../stoqlib/lib/parameters.py:814
+#: ../stoqlib/lib/parameters.py:850
 msgid ""
 "A template to be used to fill the \"Defect detected\" field when creating a "
 "new work order."
@@ -17251,11 +17305,11 @@ msgstr ""
 "Um template a ser usado para preencher o campo \"Defeito detectado\" ao "
 "criar uma nova ordem de serviço"
 
-#: ../stoqlib/lib/parameters.py:821
+#: ../stoqlib/lib/parameters.py:857
 msgid "Automatic logout after inactivity period"
 msgstr "Logout automático após período de inatividade"
 
-#: ../stoqlib/lib/parameters.py:822
+#: ../stoqlib/lib/parameters.py:858
 msgid ""
 "Set the maximum time in minutes for the user to remain idle, before being "
 "automatically logout. \n"
@@ -17266,11 +17320,11 @@ msgstr ""
 "Ajuste para zero para desabilitar a funcionalidade. É necessário reiniciar "
 "após a mudança"
 
-#: ../stoqlib/lib/parameters.py:830
+#: ../stoqlib/lib/parameters.py:866
 msgid "Allow to cancel the last fiscal coupon"
 msgstr "Permitir cancelar o último cupom fiscal"
 
-#: ../stoqlib/lib/parameters.py:831
+#: ../stoqlib/lib/parameters.py:867
 msgid ""
 "When set to false, the user will not be able to cancel the last coupon, only "
 "return it."
@@ -17362,16 +17416,16 @@ msgstr "%d compra"
 msgid "%d purchases"
 msgstr "%d compras"
 
-#: ../stoqlib/reporting/boleto.py:824
+#: ../stoqlib/reporting/boleto.py:826
 msgid "Could not print Bill Report"
 msgstr "Não foi possível imprimir o boleto"
 
-#: ../stoqlib/reporting/boleto.py:834
+#: ../stoqlib/reporting/boleto.py:836
 #, python-format
 msgid "Payment method missing a destination account: '%s'"
 msgstr "Forma de pagamento faltando uma conta de destino: '%s'"
 
-#: ../stoqlib/reporting/boleto.py:841
+#: ../stoqlib/reporting/boleto.py:843
 #, python-format
 msgid ""
 "Account '%s' must be a bank account.\n"
@@ -17382,12 +17436,12 @@ msgstr ""
 "Você precisa configurar a forma de pagamento 'Boleto' no aplicativo admin e "
 "tentar novamente."
 
-#: ../stoqlib/reporting/boleto.py:848
+#: ../stoqlib/reporting/boleto.py:850
 #, python-format
 msgid "Improperly configured bank account: %r"
 msgstr "Conta bancária mal configurada: %r"
 
-#: ../stoqlib/reporting/boleto.py:856
+#: ../stoqlib/reporting/boleto.py:858
 #, python-format
 msgid "Missing stoq support for bank %d"
 msgstr "Suporte Stoq para o banco %d está faltando"
@@ -17825,3 +17879,13 @@ msgstr "ordens de serviço"
 #, python-format
 msgid "Order number: %s"
 msgstr "Número da ordem: %s"
+
+#~ msgid ""
+#~ "When printing bills, include the first 3 lines of these on the bill "
+#~ "itself. This usually includes instructions on how to pay the bill and the "
+#~ "validity and the terms. $DATE will bereplaced with the due date of the "
+#~ "bill"
+#~ msgstr ""
+#~ "Ao imprimir boletos, serão inclusas estas 3 primeiras linhas no mesmo. "
+#~ "Isso geralmente inclui instruções sobre como pagar o boleto, a validade e "
+#~ "os termos. $DATE será substituído com a data de vencimento do boleto."
