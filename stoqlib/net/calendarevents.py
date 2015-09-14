@@ -31,6 +31,7 @@ from stoqlib.api import api
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.person import ClientCallsView
 from stoqlib.domain.purchase import PurchaseOrderView
+from stoqlib.domain.views import ClientWithSalesView
 from stoqlib.domain.workorder import WorkOrderView
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
@@ -64,6 +65,8 @@ class CalendarEvents(Resource):
             self._collect_purchase_orders(start, end, day_events, store)
         if resource.args.get('client_calls', [''])[0] == 'true':
             self._collect_client_calls(start, end, day_events, store)
+        if resource.args.get('client_birthdays', [''])[0] == 'true':
+            self._collect_client_birthdays(start, end, day_events, store)
         if resource.args.get('work_orders', [''])[0] == 'true':
             self._collect_work_orders(start, end, day_events, store)
 
@@ -76,14 +79,23 @@ class CalendarEvents(Resource):
 
     @classmethod
     def _append_event(cls, events, date, section, event):
-        d = events.setdefault(date,
-                              dict(receivable=[], payable=[], purchases=[],
-                                   client_calls=[], work_orders=[]))
+        d = events.setdefault(
+            date,
+            dict(receivable=[], payable=[], purchases=[],
+                 client_calls=[], client_birthdays=[], work_orders=[]))
         d[section].append(event)
 
     #
     #   Database Quering
     #
+
+    def _collect_client_birthdays(self, start, end, day_events, store):
+        branch = api.get_current_branch(store)
+        for v in ClientWithSalesView.find_by_birth_date(
+                store, (start, end), branch=branch):
+            for year in xrange(start.year, end.year + 1):
+                date, ev = self._create_client_birthday(v, year)
+                self._append_event(day_events, date, 'client_birthdays', ev)
 
     def _collect_client_calls(self, start, end, day_events, store):
         for v in ClientCallsView.find_by_date(store, (start, end)):
@@ -113,6 +125,20 @@ class CalendarEvents(Resource):
     #
     #   Events creation
     #
+
+    def _create_client_birthday(self, client_view, year):
+        date = client_view.birth_date.date()
+        age = year - date.year
+        date = date.replace(year=year)
+        title = "{client}'s birthday: {age} years".format(
+            client=client_view.name, age=age)
+
+        return date, {"title": title,
+                      "id": client_view.id,
+                      "type": "client-birthday",
+                      "start": str(date),
+                      "url": "stoq://dialog/birthday?id=" + str(client_view.id),
+                      "className": 'client_birthday'}
 
     def _create_client_call(self, call_view):
         date = call_view.date.date()
@@ -227,6 +253,7 @@ class CalendarEvents(Resource):
                 normal_events.extend(events['payable'])
                 normal_events.extend(events['purchases'])
                 normal_events.extend(events['client_calls'])
+                normal_events.extend(events['client_birthdays'])
                 normal_events.extend(events['work_orders'])
         return normal_events
 
@@ -235,6 +262,7 @@ class CalendarEvents(Resource):
         out_payment_events = events['payable']
         purchase_events = events['purchases']
         client_calls = events['client_calls']
+        client_birthdays = events['client_birthdays']
         work_orders = events['work_orders']
 
         events = []
@@ -256,6 +284,18 @@ class CalendarEvents(Resource):
                 title = title_format % len(client_calls)
                 class_name = "client_call"
                 url = "stoq://show/client-calls-by-date?date=%s" % (date,)
+                add_event(title, url, date, class_name, False)
+
+        if client_birthdays:
+            if len(client_birthdays) == 1:
+                events.append(client_birthdays[0])
+            else:
+                title_format = stoqlib_ngettext(_("%d client birthday"),
+                                                _("%d client birthdays"),
+                                                len(client_birthdays))
+                title = title_format % len(client_birthdays)
+                class_name = "client_birthday"
+                url = "stoq://show/client-birthdays-by-date?date=%s" % (date,)
                 add_event(title, url, date, class_name, False)
 
         if work_orders:

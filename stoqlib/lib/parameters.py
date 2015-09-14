@@ -894,7 +894,6 @@ _details = [
           u'the purchase\'s items cost.'),
         bool, initial=False),
 
-
     # Some fiscal printers can print up to 8 rows and 70 characters each row.
     # But we want to write an documentation to make sure it will work
     # on every fiscal printer
@@ -909,6 +908,12 @@ _details = [
           u'"\\n" or (enter key) or the fiscal printer may not print it correctly.'),
         unicode, multiline=True, initial=u'', wrap=False),
 
+    ParameterDetails(
+        u'BIRTHDAY_NOTIFICATION',
+        _(u'General'),
+        _(u'Client birthday notification'),
+        _(u'Notify about clients birthdays on the current day.'),
+        bool, initial=True),
 
     # This parameter is used for communication with stoq api and stoq link lite.
     ParameterDetails(

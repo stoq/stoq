@@ -159,6 +159,7 @@ class CalendarView(WebView):
             out_payments=events.get('out-payments', True),
             purchase_orders=events.get('purchase-orders', True),
             client_calls=events.get('client-calls', True),
+            client_birthdays=events.get('client-birthdays', True),
             work_orders=events.get('work-orders', True),
         )
 
@@ -168,6 +169,7 @@ class CalendarView(WebView):
         events['out-payments'] = self._show_events['out_payments']
         events['purchase-orders'] = self._show_events['purchase_orders']
         events['client-calls'] = self._show_events['client_calls']
+        events['client-birthdays'] = self._show_events['client_birthdays']
         events['work-orders'] = self._show_events['work_orders']
 
     def _update_calendar_size(self, width, height):
@@ -310,6 +312,8 @@ class CalendarApp(ShellApp):
              None, _("Show purchases in the list")),
             ('ClientCallEvents', None, _("Client Calls"),
              None, _("Show client calls in the list")),
+            ('ClientBirthdaysEvents', None, _("Client Birthdays"),
+             None, _("Show client birthdays in the list")),
             ('WorkOrderEvents', None, _("Work orders"),
              None, _("Show work orders in the list")),
         ]
@@ -412,6 +416,7 @@ class CalendarApp(ShellApp):
             in_payments=self.AccountsReceivableEvents.get_active(),
             purchase_orders=self.PurchaseEvents.get_active(),
             client_calls=self.ClientCallEvents.get_active(),
+            client_birthdays=self.ClientCallEvents.get_active(),
             work_orders=self.WorkOrderEvents.get_active(),
         )
 

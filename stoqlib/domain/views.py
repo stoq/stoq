@@ -40,7 +40,7 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, Supplier, Company, LoginUser,
                                    Branch, Client, Employee, Transporter,
-                                   SalesPerson)
+                                   Individual, SalesPerson, ClientView)
 from stoqlib.domain.product import (Product,
                                     ProductStockItem,
                                     ProductHistory,
@@ -1478,3 +1478,44 @@ class CostCenterEntryStockView(Viewable):
     @property
     def total(self):
         return currency(abs(self.stock_cost * self.quantity))
+
+
+class ClientWithSalesView(ClientView):
+    """A client view capable of filtering clients with sales on a given branch."""
+
+    tables = ClientView.tables[:]
+    tables.extend([
+        LeftJoin(Sale,
+                 Sale.client_id == Client.id),
+        LeftJoin(Branch,
+                 Sale.branch_id == Branch.id),
+    ])
+
+    @classmethod
+    def find_by_birth_date(cls, store, date, branch=None):
+        """Find clients by bith date.
+
+        :param store: The store used to do the query
+        :param date: The date to filter the birthdays, either the
+            value directly or a tuple defining a (start, end) interval
+        :param branch: If not ``None`` will be used to filter only clients
+            with at least one sale referencing it done on that |branch|
+        """
+        assert date is not None
+
+        # If we are finding by birth date, exclude those without that
+        # information by default
+        query = [Ne(cls.birth_date, None)]
+
+        if branch is not None:
+            query.append(Branch.id == branch.id)
+
+        if isinstance(date, tuple):
+            query.append(Individual.get_birthday_query(
+                date[0], date[1]))
+        else:
+            query.append(Individual.get_birthday_query(date))
+
+        res = store.find(cls, And(*query))
+        res.config(distinct=True)
+        return res

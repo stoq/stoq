@@ -170,7 +170,8 @@ class ClientSearch(BasePersonSearch):
     text_field_columns = [ClientView.name, ClientView.cpf, ClientView.rg_number,
                           ClientView.phone_number, ClientView.mobile_number]
 
-    def __init__(self, store, **kwargs):
+    def __init__(self, store, birth_date=None, **kwargs):
+        self._birth_date = birth_date
         self.company_doc_l10n = api.get_l10n_field('company_document')
         self.person_doc_l10n = api.get_l10n_field('person_document')
         SearchEditor.__init__(self, store, **kwargs)
@@ -189,6 +190,17 @@ class ClientSearch(BasePersonSearch):
                                           statuses)
         status_filter.select(None)
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
+
+        if self._birth_date:
+            birthday_filter = self.search.add_filter_by_attribute(
+                'birth_date', _('Birthday'), datetime.date,
+                callback=self.birthday_search)
+            # FIXME: The fifth position is a search by day. This is done
+            # elsewhere too but we should not hardcode it. Try to
+            # find a better solution in the future and fix everything
+            birthday_filter.mode.select_item_by_position(5)
+            birthday_filter.start_date.set_date(self._birth_date)
+            self.search.refresh()
 
     def get_columns(self):
         return [SearchColumn('name', _('Name'), str,

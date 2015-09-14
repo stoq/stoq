@@ -103,6 +103,14 @@ class WebView(gtk.ScrolledWindow):
             self.refresh()
         store.close()
 
+    def _dialog_client(self, id):
+        from stoqlib.domain.person import Client
+        from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+
+        with api.new_store() as store:
+            model = store.get(Client, id)
+            run_dialog(ClientDetailsDialog, self.app, store, model)
+
     def _dialog_work_order(self, id):
         from stoqlib.domain.workorder import WorkOrder
         from stoqlib.gui.editors.workordereditor import WorkOrderEditor
@@ -134,6 +142,14 @@ class WebView(gtk.ScrolledWindow):
     def _show_work_orders_by_date(self, date):
         self._show_search_by_date(date, u'services')
 
+    def _show_client_birthdays_by_date(self, date):
+        from stoqlib.gui.search.personsearch import ClientSearch
+
+        with api.new_store() as store:
+            y, m, d = map(int, date.split('-'))
+            date = localdate(y, m, d).date()
+            run_dialog(ClientSearch, self.app, store, birth_date=date)
+
     def _show_client_calls_by_date(self, date):
         from stoqlib.gui.search.callsearch import ClientCallsSearch
 
@@ -151,6 +167,8 @@ class WebView(gtk.ScrolledWindow):
             self._dialog_purchase(**kwargs)
         elif path == '/call':
             self._dialog_call(**kwargs)
+        elif path == '/birthday':
+            self._dialog_client(**kwargs)
         elif path == '/workorder':
             self._dialog_work_order(**kwargs)
         else:
@@ -168,6 +186,8 @@ class WebView(gtk.ScrolledWindow):
             self._show_work_orders_by_date(**kwargs)
         elif path == '/client-calls-by-date':
             self._show_client_calls_by_date(**kwargs)
+        elif path == '/client-birthdays-by-date':
+            self._show_client_birthdays_by_date(**kwargs)
         else:
             raise NotImplementedError(path)
 

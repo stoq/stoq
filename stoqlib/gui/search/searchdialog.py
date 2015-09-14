@@ -328,6 +328,7 @@ class SearchDialog(BasicDialog):
         print_report(self.report_class, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
+    # FIXME: This should be on BasePersonSearch
     def birthday_search(self, state):
         """ Returns a birthday query suitable for search filters.
             This should be assigned on search_column when you want to filter for

@@ -30,10 +30,12 @@ import os
 import operator
 
 import gtk
+import glib
 from kiwi.component import get_utility
 from kiwi.environ import environ
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
+from stoqlib.domain.views import ClientWithSalesView
 from stoqlib.gui.base.dialogs import (add_current_toplevel,
                                       get_current_toplevel,
                                       run_dialog)
@@ -48,7 +50,8 @@ from stoqlib.gui.utils.openbrowser import open_browser
 from stoqlib.lib.interfaces import IAppInfo, IApplicationDescriptions
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.permissions import PermissionManager
-from stoqlib.lib.translation import stoqlib_gettext, locale_sorted
+from stoqlib.lib.translation import (stoqlib_gettext, stoqlib_ngettext,
+                                     locale_sorted)
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.widgets.toolmenuaction import ToolMenuAction
 from stoq.gui.shell.statusbar import ShellStatusbar
@@ -323,7 +326,8 @@ class ShellWindow(GladeDelegate):
         self.hide_app(empty=True)
 
         self._check_demo_mode()
-
+        self._birthdays_bar = None
+        self._check_client_birthdays()
         # json will restore tuples as lists. We need to convert them
         # to tuples or the comparison bellow won't work.
         actual_version = tuple(api.user_settings.get('actual-version', (0,)))
@@ -375,6 +379,41 @@ class ShellWindow(GladeDelegate):
         button = gtk.Button(button_label)
         button.connect('clicked', self._on_enable_production__clicked)
         self.add_info_bar(gtk.MESSAGE_WARNING, msg, action_widget=button)
+
+    def _check_client_birthdays(self):
+        if not api.sysparam.get_bool('BIRTHDAY_NOTIFICATION'):
+            return
+
+        # Display the info bar once per day
+        date = api.user_settings.get('last-birthday-check')
+        last_check = date and datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        if last_check and last_check >= datetime.date.today():
+            return
+
+        # Only display the infobar if the user has access to calendar (because
+        # clicking on the button will open it) and to sales (because it
+        # requires that permission to be able to check client details)
+        user = api.get_current_user(self.store)
+        if not all([user.profile.check_app_permission(u'calendar'),
+                    user.profile.check_app_permission(u'sales')]):
+            return
+
+        branch = api.get_current_branch(self.store)
+        clients_count = ClientWithSalesView.find_by_birth_date(
+            self.store, datetime.datetime.today(), branch=branch).count()
+
+        if clients_count:
+            msg = stoqlib_ngettext(
+                _("There is %s client doing birthday today!"),
+                _("There are %s clients doing birthday today!"),
+                clients_count) % (clients_count, )
+            button = gtk.Button(_("Check the calendar"))
+            button.connect('clicked', self._on_check_calendar__clicked)
+
+            self._birthdays_bar = self.add_info_bar(
+                gtk.MESSAGE_INFO,
+                "<b>%s</b>" % (glib.markup_escape_text(msg), ),
+                action_widget=button)
 
     def _check_information(self):
         """Check some information with Stoq Web API
@@ -652,6 +691,12 @@ class ShellWindow(GladeDelegate):
         if app.app_name != 'launcher':
             self.application_actions[app.app_name].set_visible(False)
 
+        if self._birthdays_bar is not None:
+            if app.app_name in ['launcher', 'sales']:
+                self._birthdays_bar.show()
+            else:
+                self._birthdays_bar.hide()
+
         # StartApplicationEvent must be emitted before calling app.activate(),
         # so that the plugins can have the chance to modify the application
         # before any other event is emitted.
@@ -922,6 +967,13 @@ class ShellWindow(GladeDelegate):
         show_section('changelog')
         self._changelog_bar.hide()
         api.user_settings.set('actual-version', stoq.stoq_version)
+
+    def _on_check_calendar__clicked(self, button):
+        self.switch_application(u'calendar')
+        api.user_settings.set('last-birthday-check',
+                              datetime.date.today().strftime('%Y-%m-%d'))
+        self._birthdays_bar.hide()
+        self._birthdays_bar = None
 
     def _on_toplevel__configure(self, widget, event):
         window = widget.get_window()
