@@ -54,6 +54,13 @@ class TestSystemParameterEditor(GUITest):
         editor._entry.update('any city')
         self.check_editor(editor, 'editor-systemparameter-entry')
 
+    def test_entry_insensitive(self):
+        with self.sysparam(USER_HASH=u'45b27f4258024de58d2308753fcfff21'):
+            parameter_data = self.store.find(ParameterData,
+                                             field_name=u'USER_HASH').one()
+            editor = SystemParameterEditor(self.store, parameter_data)
+        self.check_editor(editor, 'editor-systemparameter-entry-insensitive')
+
     def test_combo_entry(self):
         parameter_data = self.store.find(ParameterData,
                                          field_name=u'COUNTRY_SUGGESTED').one()

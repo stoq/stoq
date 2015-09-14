@@ -80,7 +80,15 @@ class SystemParameterEditor(BaseEditor):
 
     def _setup_entry_slave(self, box=None):
         widget = ProxyEntry()
-        widget.props.sensitive = self.sensitive
+        # Try to simulate insensitive appearance for non-editable entries
+        # while keeping them selectable
+        widget.set_editable(self.sensitive)
+        if not self.sensitive:
+            style = widget.get_style()
+            widget.modify_text(
+                gtk.STATE_NORMAL, style.text[gtk.STATE_INSENSITIVE])
+            widget.modify_base(
+                gtk.STATE_NORMAL, style.base[gtk.STATE_INSENSITIVE])
         widget.data_type = unicode
         widget.model_attribute = "field_value"
         self.proxy.add_widget("field_value", widget)

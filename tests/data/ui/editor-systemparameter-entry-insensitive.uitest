@@ -1,0 +1,25 @@
+editor: SystemParameterEditor
+GtkDialog(main_dialog.toplevel): title="Edit 'User hash' Parameter", hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SystemParameterEditor is attached
+        GtkTable(table1):
+          GtkLabel(label1): 'Group:'
+          ProxyLabel(parameter_group): 'General'
+          GtkLabel(label2): 'Parameter Name:'
+          GtkVBox(vbox1):
+            ProxyLabel(parameter_name, fill=True): '<span underline="single">User hash</span>'
+            ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">This hash value is used for integration and communication with stoq api and stoq link. It will be added on ping requests, tef requests and feedbacks data sent to stoq api and on the stoq statistics data sent to stoq link lite.</span>'
+          GtkLabel(label3): 'Current Value:'
+          GtkAlignment(container):
+            ProxyEntry(_entry): '45b27f4258024de58d2308753fcfff21', ineditable
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+      GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

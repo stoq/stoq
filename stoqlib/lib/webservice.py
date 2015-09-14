@@ -121,6 +121,8 @@ class StringProducer(object):
 class WebService(object):
     API_SERVER = os.environ.get('STOQ_API_HOST', 'http://api.stoq.com.br')
 
+    send_link_data = None
+
     #
     #   Private API
     #
@@ -134,7 +136,7 @@ class WebService(object):
 
         return headers
 
-    def _do_request(self, method, document, **params):
+    def _do_request(self, method, document, callback=None, **params):
         url = '%s/%s' % (self.API_SERVER, document)
         headers = self._get_headers()
 
@@ -163,6 +165,8 @@ class WebService(object):
             response.deliverBody(JsonDownloader(finished))
             return finished
         d.addCallback(dataReceived)
+        if callback:
+            d.addCallback(callback)
         return d
 
     #
@@ -214,16 +218,36 @@ class WebService(object):
         return self._do_request('GET', 'tefrequest.json', **params)
 
     def link_update(self, store):
-        # TODO: Create a parameter for this.
-        key = sysparam.get_string('USER_HASH')
-        if not key:
-            return
+        # Setup a callback (just in case we need it)
+        def callback(response=False):
+            """Send data to Stoq Server if the client is using Stoq Link"""
+            if not response:
+                # On falsy responses we will ignore the next send data
+                WebService.send_link_data = False
+                return
+            # On non falsy responses we will send the next data right away
+            WebService.send_link_data = True
+            params = {
+                'hash': key,
+                'data': collect_link_statistics(store)
+            }
+            return self._do_request('POST', 'api/lite/data', **params)
 
+        key = sysparam.get_string('USER_HASH')
+        if WebService.send_link_data is False:
+            # Don't even try to send data if the user is not using Stoq Link
+            return None
+        elif WebService.send_link_data:
+            # If the instance is using stoq link lite, we may send data
+            return callback(True)
+
+        # If we dont know if the instance is using Stoq Link, we should ask
+        # our server, and then send data in case it is using it.
         params = {
-            'key': key,
-            'data': collect_link_statistics(store)
+            'hash': key,
+            'callback': callback,
         }
-        return self._do_request('POST', 'api/store', **params)
+        return self._do_request('GET', 'api/lite/using', **params)
 
     def feedback(self, screen, email, feedback):
         app_info = get_utility(IAppInfo, None)

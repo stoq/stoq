@@ -331,7 +331,7 @@ class ShellWindow(GladeDelegate):
             api.user_settings.set('last-version-check', None)
             self._display_changelog_message()
 
-        self._check_version()
+        self._check_information()
 
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
@@ -376,11 +376,21 @@ class ShellWindow(GladeDelegate):
         button.connect('clicked', self._on_enable_production__clicked)
         self.add_info_bar(gtk.MESSAGE_WARNING, msg, action_widget=button)
 
-    def _check_version(self):
+    def _check_information(self):
+        """Check some information with Stoq Web API
+
+        - Check if there are new versions of Stoq Available
+        - Check if this Stoq Instance uses Stoq Link (and send data to us if
+          it does).
+        """
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
             return
+        # Check version
         self._version_checker = VersionChecker(self.store, self)
         self._version_checker.check_new_version()
+        # Check Stoq Link usage
+        webapi = WebService()
+        webapi.link_update(self.store)
 
     def _display_changelog_message(self):
         msg = _("Welcome to Stoq version %s!") % stoq.version
