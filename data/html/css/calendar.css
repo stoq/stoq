@@ -72,6 +72,9 @@
 
 
 
+.client_birthday {
+    border-left-color: #f57900;
+}
 
 .client_call {
     border-left-color: #fcaf3e;

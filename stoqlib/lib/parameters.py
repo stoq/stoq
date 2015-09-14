@@ -866,7 +866,14 @@ _details = [
         _(u'Allow to cancel the last fiscal coupon'),
         _(u'When set to false, the user will not be able to cancel the last coupon, '
           u'only return it.'),
-        bool, initial=True)
+        bool, initial=True),
+
+    ParameterDetails(
+        u'BIRTHDAY_NOTIFICATION',
+        _(u'General'),
+        _(u'Client birthday notification'),
+        _(u'Notify about clients birthdays on the current day.'),
+        bool, initial=True),
 ]
 
 

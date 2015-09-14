@@ -44,6 +44,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, ProductStockItem,
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
+from stoqlib.domain.views import ClientWithSalesView
 from stoqlib.domain.views import ProductBrandByBranchView
 from stoqlib.domain.views import ProductComponentView
 from stoqlib.domain.views import ProductFullStockView
@@ -755,3 +756,84 @@ class TestProductBrandByBranchView(DomainTest):
         for i in results2:
             total_products += i.quantity
         self.assertNotEqual(total_products, 0)
+
+
+class TestClientWithSalesView(DomainTest):
+    def test_find_by_birth_date(self):
+        client = self.create_client()
+        client_view_obj = self.store.find(
+            ClientWithSalesView, id=client.id).one()
+        individual = client.person.individual
+
+        # Clients without birthdate should be excluded by default
+        self.assertNotIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, datetime.datetime(2015, 4, 20))))
+
+        individual.birth_date = datetime.datetime(1988, 4, 21)
+
+        # The client should not appear here since his birthday is different
+        # from the one we are querying
+        self.assertNotIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, datetime.datetime(2015, 4, 20))))
+        self.assertNotIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, (datetime.datetime(2015, 2, 10),
+                             datetime.datetime(2015, 4, 20)))))
+
+        self.assertIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, datetime.datetime(2015, 4, 21))))
+        self.assertIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, (datetime.datetime(2015, 4, 10),
+                             datetime.datetime(2015, 4, 28)))))
+
+        branch = self.create_branch()
+
+        # Adding the branch to the query should exclude the client again
+        # as there isn't any sale referencing it on that branch yet
+        self.assertNotIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, datetime.datetime(2015, 4, 21), branch=branch)))
+        self.assertNotIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, (datetime.datetime(2015, 4, 10),
+                             datetime.datetime(2015, 4, 28)), branch=branch)))
+
+        sale = self.create_sale()
+        sale.branch = branch
+        sale.client = client
+
+        self.assertIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, datetime.datetime(2015, 4, 21), branch=branch)))
+        self.assertIn(
+            client_view_obj,
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, (datetime.datetime(2015, 4, 10),
+                             datetime.datetime(2015, 4, 28)), branch=branch)))
+
+        other_sale = self.create_sale()
+        other_sale.branch = branch
+        other_sale.client = client
+
+        # Even with another sale, the query should be distinct
+        self.assertEqual(
+            [client_view_obj],
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, datetime.datetime(2015, 4, 21), branch=branch)))
+        self.assertEqual(
+            [client_view_obj],
+            list(ClientWithSalesView.find_by_birth_date(
+                self.store, (datetime.datetime(2015, 4, 10),
+                             datetime.datetime(2015, 4, 28)), branch=branch)))
