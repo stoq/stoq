@@ -29,7 +29,7 @@ from decimal import Decimal
 from storm.info import get_cls_info
 from storm.references import Reference
 
-from stoqlib.database.properties import (UnicodeCol, QuantityCol, DateTimeCol,
+from stoqlib.database.properties import (EnumCol, UnicodeCol, QuantityCol, DateTimeCol,
                                          PriceCol, IntCol, BoolCol, PercentCol,
                                          IdCol)
 from stoqlib.domain.base import Domain
@@ -113,8 +113,8 @@ class BaseICMS(BaseTax):
 
 
 class BaseIPI(BaseTax):
-    (CALC_ALIQUOTA,
-     CALC_UNIDADE) = range(2)
+    CALC_ALIQUOTA = u'aliquot'
+    CALC_UNIDADE = u'unit'
 
     cl_enq = UnicodeCol(default=u'')
     cnpj_prod = UnicodeCol(default=u'')
@@ -127,8 +127,67 @@ class BaseIPI(BaseTax):
 
     q_unid = QuantityCol(default=None)
 
-    calculo = IntCol(default=CALC_ALIQUOTA)
+    calculo = EnumCol(default=CALC_ALIQUOTA, allow_none=False)
 
+
+class BasePIS(BaseTax):
+    """Contains attributes to be used to calculate PIS tax in Brazil."""
+
+    CALC_PERCENTAGE = u'percentage'
+    CALC_VALUE = u'value'
+
+    cst = IntCol(default=None)
+
+    #: Calculation Basis
+    v_bc = PriceCol(default=None)
+
+    #: Aliquot in percentage
+    p_aliquot_pis = PercentCol(default=None)
+
+    #: Aliquot in value
+    v_aliquot_pis = PriceCol(default=None)
+
+    #: Value of PIS tax
+    v_pis = PriceCol(default=None)
+
+    #: Value of PIS ST tax
+    v_pis_st = PriceCol(default=None)
+
+    #: Units of products.
+    q_unid = QuantityCol(default=None)
+
+    #: Operation type (percentage or value)
+    calculo = EnumCol(default=CALC_PERCENTAGE, allow_none=False)
+
+
+class BaseCOFINS(BaseTax):
+    """Contains attributes to be used to calculate PIS tax in Brazil."""
+
+    CALC_PERCENTAGE = u'percentage'
+    CALC_VALUE = u'value'
+
+    cst = IntCol(default=None)
+
+    #: Calculation Basis
+    v_bc = PriceCol(default=None)
+
+    #: Aliquot in percentage
+    p_aliquot_cofins = PercentCol(default=None)
+
+    #: Aliquot in value
+    v_aliquot_cofins = PriceCol(default=None)
+
+    #: Value of Cofins tax
+    v_cofins = PriceCol(default=None)
+
+    #: Value of Cofins ST tax
+    v_cofins_st = PriceCol(default=None)
+
+    #: Units of product
+    q_unid = QuantityCol(default=None)
+
+    #: Operation type (percentage or value)
+    calculo = EnumCol(default=CALC_PERCENTAGE, allow_none=False)
 
 #
 #   Product Tax Classes
@@ -157,14 +216,37 @@ class ProductIcmsTemplate(BaseICMS):
 
 
 class ProductIpiTemplate(BaseIPI):
+    """Template of IPI tax"""
+
     __storm_table__ = 'product_ipi_template'
+
+    product_tax_template_id = IdCol()
+    product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
+
+
+class ProductPisTemplate(BasePIS):
+    """Template of PIS tax"""
+
+    __storm_table__ = 'product_pis_template'
+
+    product_tax_template_id = IdCol()
+    product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
+
+
+class ProductCofinsTemplate(BaseCOFINS):
+    """Template of COFINS tax"""
+
+    __storm_table__ = 'product_cofins_template'
+
     product_tax_template_id = IdCol()
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
 
 class ProductTaxTemplate(Domain):
-    (TYPE_ICMS,
-     TYPE_IPI) = range(2)
+    TYPE_ICMS = u'icms'
+    TYPE_IPI = u'ipi'
+    TYPE_PIS = u'pis'
+    TYPE_COFINS = u'cofins'
 
     __storm_table__ = 'product_tax_template'
 
@@ -175,7 +257,7 @@ class ProductTaxTemplate(Domain):
                 TYPE_IPI: ProductIpiTemplate}
 
     name = UnicodeCol(default=u'')
-    tax_type = IntCol()
+    tax_type = EnumCol(default=TYPE_ICMS, allow_none=False)
 
     def get_tax_model(self):
         klass = self.type_map[self.tax_type]

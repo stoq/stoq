@@ -141,6 +141,8 @@ _tables = [
                  'InvoicePrinter']),
     ('taxes', ['ProductIcmsTemplate',
                'ProductIpiTemplate',
+               'ProductPisTemplate',
+               'ProductCofinsTemplate',
                'ProductTaxTemplate',
                'InvoiceItemIcms',
                'InvoiceItemIpi']),

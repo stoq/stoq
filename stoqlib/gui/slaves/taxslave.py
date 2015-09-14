@@ -415,8 +415,8 @@ class BaseIPISlave(BaseTaxSlave):
             (u'99 - Outras saídas', 99),
         ),
         'calculo': (
-            (u'Por alíquota', 0),
-            (u'Valor por unidade', 1),
+            (u'Por alíquota', u'aliquot'),
+            (u'Valor por unidade', u'unit'),
         )
     }
 

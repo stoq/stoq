@@ -36,6 +36,7 @@ from stoqlib.database.runtime import (get_current_station,
                                       get_current_user)
 from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.validators import validate_cst
 
 # Do not remove, these are used by doctests
 
@@ -529,8 +530,10 @@ class ExampleCreator(object):
                         sale=sale or self.create_sale(),
                         sellable=sellable)
 
-    def create_product_tax_template(self, name=u'Tax template', tax_type=0):
+    def create_product_tax_template(self, name=u'Tax template', tax_type=None):
         from stoqlib.domain.taxes import ProductTaxTemplate
+        if tax_type is None:
+            tax_type = ProductTaxTemplate.TYPE_ICMS
         return ProductTaxTemplate(store=self.store, name=name, tax_type=tax_type)
 
     def create_product_icms_template(self, tax_template=None, crt=1, orig=0,
@@ -538,7 +541,7 @@ class ExampleCreator(object):
                                      p_mva_st=0, p_red_bc_st=0, p_cred_sn=None,
                                      mod_bc_st=None, v_icms=None):
         from stoqlib.domain.taxes import ProductIcmsTemplate
-        if not tax_template:
+        if tax_template is None:
             tax_template = self.create_product_tax_template()
         # Simples nacional
         if crt in [1, 2]:
@@ -560,6 +563,65 @@ class ExampleCreator(object):
                                    p_mva_st=p_mva_st,
                                    p_red_bc_st=p_red_bc_st,
                                    mod_bc_st=mod_bc_st)
+
+    def create_product_ipi_template(self, tax_template=None, cl_enq=u'000',
+                                    cnpj_prod=u'00.000.000/0001-00',
+                                    c_selo=u'000', q_selo=1, c_enq=u'000', cst=0, p_ipi=0,
+                                    q_unid=0, calculo=None):
+        from stoqlib.domain.taxes import ProductIpiTemplate
+        from stoqlib.domain.taxes import ProductTaxTemplate
+        if calculo is None:
+            calculo = ProductIpiTemplate.CALC_ALIQUOTA
+        if tax_template is None:
+            ipi_tax = ProductTaxTemplate.TYPE_IPI
+            tax_template = self.create_product_tax_template(tax_type=ipi_tax)
+
+        return ProductIpiTemplate(store=self.store,
+                                  product_tax_template=tax_template,
+                                  cl_enq=cl_enq, cnpj_prod=cnpj_prod,
+                                  c_selo=c_selo, q_selo=q_selo, c_enq=c_enq,
+                                  cst=cst, p_ipi=p_ipi, q_unid=q_unid,
+                                  calculo=calculo)
+
+    def create_product_pis_template(self, tax_template=None, cst=0, v_bc=0,
+                                    p_aliquot_pis=0, v_aliquot_pis=0, v_pis=0,
+                                    v_pis_st=0, q_unid=0, calculo=None):
+        from stoqlib.domain.taxes import ProductPisTemplate
+        from stoqlib.domain.taxes import ProductTaxTemplate
+
+        assert validate_cst(cst)
+        if calculo is None:
+            calculo = ProductPisTemplate.CALC_PERCENTAGE
+        if tax_template is None:
+            pis_tax = ProductTaxTemplate.TYPE_PIS
+            tax_template = self.create_product_tax_template(tax_type=pis_tax)
+        return ProductPisTemplate(product_tax_template=tax_template,
+                                  cst=cst, v_bc=v_bc,
+                                  p_aliquot_pis=p_aliquot_pis,
+                                  v_aliquot_pis=v_aliquot_pis,
+                                  v_pis=v_pis, v_pis_st=v_pis_st,
+                                  q_unid=q_unid, calculo=calculo)
+
+    def create_product_cofins_template(self, tax_template=None, cst=1, v_bc=0,
+                                       p_aliquot_cofins=0, v_aliquot_cofins=0,
+                                       v_cofins=0,
+                                       v_cofins_st=0, q_unid=0, calculo=None):
+        from stoqlib.domain.taxes import ProductCofinsTemplate
+        from stoqlib.domain.taxes import ProductTaxTemplate
+
+        assert validate_cst(cst)
+        if calculo is None:
+            calculo = ProductCofinsTemplate.CALC_PERCENTAGE
+        if tax_template is None:
+            cofins_tax = ProductTaxTemplate.TYPE_COFINS
+            tax_template = self.create_product_tax_template(tax_type=cofins_tax)
+        return ProductCofinsTemplate(product_tax_template=tax_template,
+                                     cst=cst, v_bc=v_bc,
+                                     p_aliquot_cofins=p_aliquot_cofins,
+                                     v_aliquot_cofins=v_aliquot_cofins,
+                                     v_cofins=v_cofins,
+                                     v_cofins_st=v_cofins_st,
+                                     q_unid=q_unid, calculo=calculo)
 
     def create_invoice_item_icms(self):
         from stoqlib.domain.taxes import InvoiceItemIcms
