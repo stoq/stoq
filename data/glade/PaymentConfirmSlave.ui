@@ -88,7 +88,6 @@
                 <child>
                   <object class="ProxyDateEntry" id="close_date">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="data_type">date</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">close_date</property>
@@ -116,7 +115,6 @@
                 <child>
                   <object class="ProxyEntry" id="penalty">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -130,13 +128,12 @@
                     <property name="right_attach">2</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
-                    <property name="x_options"></property>
+                    <property name="x_options"/>
                   </packing>
                 </child>
                 <child>
                   <object class="ProxyEntry" id="interest">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -150,13 +147,12 @@
                     <property name="right_attach">2</property>
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
-                    <property name="x_options"></property>
+                    <property name="x_options"/>
                   </packing>
                 </child>
                 <child>
                   <object class="ProxyEntry" id="discount">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -170,7 +166,7 @@
                     <property name="right_attach">2</property>
                     <property name="top_attach">4</property>
                     <property name="bottom_attach">6</property>
-                    <property name="x_options"></property>
+                    <property name="x_options"/>
                   </packing>
                 </child>
                 <child>
@@ -201,7 +197,7 @@
                 <child>
                   <object class="GtkTable" id="table2">
                     <property name="visible">True</property>
-                    <property name="n_rows">5</property>
+                    <property name="n_rows">7</property>
                     <property name="n_columns">2</property>
                     <property name="column_spacing">6</property>
                     <property name="row_spacing">6</property>
@@ -222,7 +218,7 @@
                       <packing>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="y_options"></property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -254,10 +250,10 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="account_label">
+                      <object class="GtkLabel" id="account_origin_lbl">
                         <property name="visible">True</property>
                         <property name="xalign">1</property>
-                        <property name="label" translatable="yes">Account:</property>
+                        <property name="label" translatable="yes">Source Account:</property>
                       </object>
                       <packing>
                         <property name="top_attach">2</property>
@@ -265,11 +261,10 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="ProxyComboBox" id="account">
+                      <object class="ProxyComboBox" id="source_account">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="data_type">object</property>
-                        <property name="model_attribute">account</property>
+                        <property name="model_attribute">source_account</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -285,20 +280,19 @@
                         <property name="label" translatable="yes">Attachment:</property>
                       </object>
                       <packing>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkFileChooserButton" id="attachment_chooser">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
                       </packing>
                     </child>
                     <child>
@@ -308,24 +302,79 @@
                         <property name="label" translatable="yes">Cost Center:</property>
                       </object>
                       <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
                         <property name="y_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
                       <object class="ProxyComboBox" id="cost_center">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="data_type">object</property>
                         <property name="model_attribute">cost_center</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
+                        <property name="y_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="account_dest_lbl">
+                        <property name="visible">True</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Destination Account:</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyComboBox" id="destination_account">
+                        <property name="visible">True</property>
+                        <property name="data_type">object</property>
+                        <property name="model_attribute">destination_account</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="account_label2">
+                        <property name="visible">True</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Account transaction number:</property>
+                      </object>
+                      <packing>
                         <property name="top_attach">4</property>
                         <property name="bottom_attach">5</property>
-                        <property name="y_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyEntry" id="account_transaction_number">
+                        <property name="visible">True</property>
+                        <property name="invisible_char">●</property>
+                        <property name="xalign">1</property>
+                        <property name="truncate_multiline">True</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">True</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
+                        <property name="data_type">unicode</property>
+                        <property name="model_attribute">account_transaction_number</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">4</property>
+                        <property name="bottom_attach">5</property>
                       </packing>
                     </child>
                   </object>

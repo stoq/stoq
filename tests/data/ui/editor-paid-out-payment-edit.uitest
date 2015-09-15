@@ -34,8 +34,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
                 item: 'Expenses:Luz'
                 item: 'Expenses:Sal\xc3\xa1rios'
                 item: 'Expenses:Telefonia'
-                item: 'Imbalance'
-                item: 'Income', selected
+                item: 'Imbalance', selected
+                item: 'Income'
                 item: 'Saldos Iniciais'
                 item: 'Tills'
               GtkHBox():

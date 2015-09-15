@@ -29,8 +29,8 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
                 ProxyLabel(identifier): '<span >47384</span>'
                 GtkLabel(person_label): 'Client:'
                 ProxyLabel(person_name): '<span ></span>'
-                GtkLabel(account_label): 'Destination account:'
-                ProxyComboBox(account):
+                GtkLabel(account_origin_lbl): 'Source Account:'
+                ProxyComboBox(source_account):
                   item: 'Assets'
                   item: 'Banks'
                   item: 'Banks:Banco do Brasil'
@@ -46,6 +46,25 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
                   item: 'Income'
                   item: 'Saldos Iniciais'
                   item: 'Tills'
+                GtkLabel(account_dest_lbl): 'Destination Account:'
+                ProxyComboBox(destination_account):
+                  item: 'Assets'
+                  item: 'Banks'
+                  item: 'Banks:Banco do Brasil'
+                  item: 'Conta de Investimento'
+                  item: 'Equity'
+                  item: 'Expenses'
+                  item: 'Expenses:Aluguel'
+                  item: 'Expenses:Impostos'
+                  item: 'Expenses:Luz'
+                  item: 'Expenses:Sal\xc3\xa1rios'
+                  item: 'Expenses:Telefonia'
+                  item: 'Imbalance', selected
+                  item: 'Income'
+                  item: 'Saldos Iniciais'
+                  item: 'Tills'
+                GtkLabel(account_label2): 'Account transaction number:'
+                ProxyEntry(account_transaction_number): '', invalid
                 GtkLabel(attachment_lbl): 'Attachment:'
                 GtkFileChooserButton(attachment_chooser):
                   GtkButton(expand=True, fill=True):

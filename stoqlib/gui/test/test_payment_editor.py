@@ -61,7 +61,7 @@ class TestPaymentEditor(GUITest):
         payment = self.create_payment()
         payment.status = Payment.STATUS_PENDING
         account = self.store.find(Account, description=u'Income').one()
-        payment.pay(account=account)
+        payment.pay(destination_account=account)
         editor = OutPaymentEditor(self.store, payment)
         self.check_editor(editor, 'editor-paid-out-payment-edit')
 
@@ -69,7 +69,7 @@ class TestPaymentEditor(GUITest):
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
         payment.status = Payment.STATUS_PENDING
         account = self.store.find(Account, description=u'Expenses').one()
-        payment.pay(account=account)
+        payment.pay(source_account=account)
         editor = InPaymentEditor(self.store, payment)
         self.check_editor(editor, 'editor-paid-in-payment-edit')
 

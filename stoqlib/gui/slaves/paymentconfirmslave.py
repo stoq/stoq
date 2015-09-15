@@ -350,15 +350,23 @@ class _PaymentConfirmSlave(BaseEditor):
 
         payment = self._payments[0]
         create_transaction = payment.method.operation.create_transaction()
-        self.account.set_sensitive(create_transaction)
+        for combo in [self.destination_account, self.source_account]:
+            combo.set_sensitive(create_transaction)
+
         if not create_transaction:
             return
 
-        destinations = self.store.find(Account)
-        self.account.prefill(api.for_combo(
-            destinations,
-            attr='long_description'))
-        self.account.select(payment.method.destination_account)
+        destination_combo = self.get_account_destination_combo()
+        for combo in [self.destination_account, self.source_account]:
+            combo.prefill(api.for_combo(
+                self.store.find(Account),
+                attr='long_description'))
+
+            if combo is destination_combo:
+                combo.select(payment.method.destination_account)
+            else:
+                combo.select(
+                    sysparam.get_object(self.store, 'IMBALANCE_ACCOUNT'))
 
     def _setup_attachment_chooser(self):
         self.attachment_chooser.connect('file-set',
@@ -408,11 +416,20 @@ class _PaymentConfirmSlave(BaseEditor):
             self._payments[0].attachment = self._attachment
         pay_date = self.close_date.get_date()
         for payment in self._payments:
+            transaction_number = self.account_transaction_number.read()
+            if not transaction_number or transaction_number is ValueUnset:
+                transaction_number = None
+
             payment.pay(pay_date, payment.paid_value,
-                        account=self.account.get_selected())
+                        source_account=self.source_account.get_selected(),
+                        destination_account=self.destination_account.get_selected(),
+                        account_transaction_number=transaction_number)
         self.model.confirm()
 
     def get_till_info_msg(self):
+        raise NotImplementedError
+
+    def get_account_destination_combo(self):
         raise NotImplementedError
 
     #
@@ -480,13 +497,15 @@ class SalePaymentConfirmSlave(_PaymentConfirmSlave):
 
     def _setup_widgets(self):
         _PaymentConfirmSlave._setup_widgets(self)
-        self.account_label.set_text(_("Destination account:"))
 
     def get_till_info_msg(self):
         # TRANSLATORS: 'cash addition' is 'suprimento' in pt_BR
         return _("Note that this operation will not generate a till entry for "
                  "the money payment(s). \nIf you are adding money on the "
                  "till, do a cash addition in the Till applications too.")
+
+    def get_account_destination_combo(self):
+        return self.destination_account
 
     def create_model(self, store):
         group = self._payments[0].group
@@ -516,7 +535,6 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
         self.discount_label.show()
         self.discount.show()
         self.person_label.set_text(_("Supplier: "))
-        self.account_label.set_text(_("Source account:"))
         self.expander.hide()
         self.pay_penalty.set_active(True)
         self.pay_interest.set_active(True)
@@ -527,6 +545,9 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
         return _("Note that this operation will not generate a till entry for "
                  "the money payment(s). \nIf you are removing money from the "
                  "till, do a cash removal in the Till application too.")
+
+    def get_account_destination_combo(self):
+        return self.source_account
 
     def create_model(self, store):
         group = self._payments[0].group

@@ -389,7 +389,9 @@ class Payment(Domain):
         self.paid_date = None
         self.paid_value = None
 
-    def pay(self, paid_date=None, paid_value=None, account=None):
+    def pay(self, paid_date=None, paid_value=None,
+            source_account=None, destination_account=None,
+            account_transaction_number=None):
         """Pay the current payment set its status as :obj:`.STATUS_PAID`
 
         If this payment belongs to a sale, and all other payments from the sale
@@ -407,7 +409,11 @@ class Payment(Domain):
 
         if (self.is_separate_payment() or
             self.method.operation.create_transaction()):
-            AccountTransaction.create_from_payment(self, account)
+            AccountTransaction.create_from_payment(
+                self,
+                code=account_transaction_number,
+                source_account=source_account,
+                destination_account=destination_account)
 
         sale = self.group and self.group.sale
         if sale:

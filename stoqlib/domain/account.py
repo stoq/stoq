@@ -454,15 +454,18 @@ class AccountTransaction(Domain):
         return cls.TYPE_IN
 
     @classmethod
-    def create_from_payment(cls, payment, account=None):
+    def create_from_payment(cls, payment, code=None,
+                            source_account=None, destination_account=None):
         """Create a new transaction based on a |payment|.
         It's normally used when creating a transaction which represents
         a payment, for instance when you receive a bill or a check from
         a |client| which will enter a |bankaccount|.
 
         :param payment: the |payment| to create the transaction for.
-        :param account: if an outgoing payment, the |account| will be the source of
-          transaction. Otherwise will be the destination account.
+        :param code: the code for the transaction. If not provided,
+            the payment identifier will be used by default
+        :param source_account: the source |account| for the transaction.
+        :param destination_account: the destination |account| for the transaction.
         :returns: the transaction
         """
         if not payment.is_paid():
@@ -471,17 +474,22 @@ class AccountTransaction(Domain):
         value = payment.paid_value
         if payment.is_outpayment():
             operation_type = cls.TYPE_OUT
-            source = account or payment.method.destination_account
-            destination = sysparam.get_object(store, 'IMBALANCE_ACCOUNT')
+            source = source_account or payment.method.destination_account
+            destination = (destination_account or
+                           sysparam.get_object(store, 'IMBALANCE_ACCOUNT'))
         else:
             operation_type = cls.TYPE_IN
-            source = sysparam.get_object(store, 'IMBALANCE_ACCOUNT')
-            destination = account or payment.method.destination_account
+            source = (source_account or
+                      sysparam.get_object(store, 'IMBALANCE_ACCOUNT'))
+            destination = (destination_account or
+                           payment.method.destination_account)
+
+        code = code if code is not None else unicode(payment.identifier)
         return cls(source_account=source,
                    account=destination,
                    value=value,
                    description=payment.description,
-                   code=unicode(payment.identifier),
+                   code=code,
                    date=payment.paid_date,
                    store=store,
                    payment=payment,

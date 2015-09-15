@@ -58,7 +58,7 @@ class TestPurchasePaymentConfirmSlave(GUITest):
 
         slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
-        self.assertSensitive(slave, ['account'])
+        self.assertSensitive(slave, ['source_account', 'destination_account'])
         self.check_editor(slave, 'editor-purchase-payment-confirm-create')
 
 
