@@ -42,6 +42,7 @@
       </menu>
       <menu action="CalendarEvents">
         <menuitem action="ClientCallEvents"/>
+        <menuitem action="ClientBirthdaysEvents"/>
         <menuitem action="AccountsPayableEvents"/>
         <menuitem action="AccountsReceivableEvents"/>
         <menuitem action="PurchaseEvents"/>

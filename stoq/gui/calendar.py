@@ -327,6 +327,7 @@ class CalendarApp(ShellApp):
                           u'payable'),
             purchase_orders=(self.PurchaseEvents, None, u'stock'),
             client_calls=(self.ClientCallEvents, self.NewClientCall, u'sales'),
+            client_birthdays=(self.ClientBirthdaysEvents, None, u'sales'),
             work_orders=(self.WorkOrderEvents, self.NewWorkOrder, u'services'),
         )
 
@@ -416,7 +417,7 @@ class CalendarApp(ShellApp):
             in_payments=self.AccountsReceivableEvents.get_active(),
             purchase_orders=self.PurchaseEvents.get_active(),
             client_calls=self.ClientCallEvents.get_active(),
-            client_birthdays=self.ClientCallEvents.get_active(),
+            client_birthdays=self.ClientBirthdaysEvents.get_active(),
             work_orders=self.WorkOrderEvents.get_active(),
         )
 

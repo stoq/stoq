@@ -33,6 +33,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
           GtkImageMenuItem(): 'Calendar events'
             GtkMenu(): hidden
               GtkCheckMenuItem(): 'Client Calls'
+              GtkCheckMenuItem(): 'Client Birthdays'
               GtkCheckMenuItem(): 'Accounts payable'
               GtkCheckMenuItem(): 'Accounts receivable'
               GtkCheckMenuItem(): 'Purchases'
