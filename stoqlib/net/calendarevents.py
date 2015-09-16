@@ -130,7 +130,7 @@ class CalendarEvents(Resource):
         date = client_view.birth_date.date()
         age = year - date.year
         date = date.replace(year=year)
-        title = "{client}'s birthday: {age} years".format(
+        title = _("{client}'s birthday: {age} years").format(
             client=client_view.name, age=age)
 
         return date, {"title": title,
