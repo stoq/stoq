@@ -161,6 +161,14 @@ class WebService(object):
         d = agent.request(method, url, Headers(headers), producer)
 
         def dataReceived(response):
+            # Avoid displaying an error window while we don't update
+            # api.stoq.com.br with some new endpoints (or it is offline
+            # for some reason).
+            if response.code in [400, 401, 404, 500]:
+                log.warning("%s request to '%s' returned %s",
+                            method, url, response.code)
+                return
+
             finished = Deferred()
             response.deliverBody(JsonDownloader(finished))
             return finished
