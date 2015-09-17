@@ -188,16 +188,7 @@ class TransactionPage(object):
             raise TypeError("unknown model kind: %r" % (self.model.kind, ))
 
     def refresh(self):
-        self.search.result_view.clear()
-        if self.model.kind == 'account':
-            transactions = AccountTransactionView.get_for_account(self.model, self.app.store)
-            self.append_transactions(transactions)
-        elif self.model.kind == 'payable':
-            self._populate_payable_payments(OutPaymentView)
-        elif self.model.kind == 'receivable':
-            self._populate_payable_payments(InPaymentView)
-        else:
-            raise TypeError("unknown model kind: %r" % (self.model.kind, ))
+        self.search.refresh()
 
     def _get_columns(self, kind):
         if kind in ['payable', 'receivable']:
@@ -270,10 +261,6 @@ class TransactionPage(object):
                 self._add_transaction(transaction, description, -value)
             self._add_transaction(transaction, description, value)
         self.update_totals()
-
-    def _populate_payable_payments(self, view_class):
-        for view in self.app.store.find(view_class):
-            self.search.result_view.append(view)
 
     def _add_transaction(self, transaction, description, value):
         item = Settable(transaction=transaction)
