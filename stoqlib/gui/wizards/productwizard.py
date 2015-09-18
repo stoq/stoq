@@ -42,6 +42,10 @@ class ProductTypeStep(BaseWizardStep):
     #  WizardEditorStep
     #
 
+    def post_init(self):
+        # Grid is not ready for 1.10
+        self.grid.hide()
+
     def next_step(self):
         if self.wizard.product_type == Product.TYPE_GRID:
             return ProductAttributeEditorStep(self.wizard.store, self.wizard, previous=self)
