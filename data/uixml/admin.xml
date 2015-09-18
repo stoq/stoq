@@ -60,7 +60,6 @@
       <menuitem action="ConfigureGridGroup"/>
       <menuitem action="ConfigureGridAttribute"/>
       <menuitem action="ConfigureUIForm"/>
-      <menuitem action="ConfigureSaleToken"/>
       <separator/>
       <placeholder name="ConfigurePH"/>
       <separator/>
