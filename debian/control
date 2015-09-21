@@ -3,12 +3,12 @@ Section: python
 Priority: optional
 Maintainer: Stoq Team <stoq-devel@async.com.br>
 Build-Depends: debhelper (>= 8.0.0), python-all (>= 2.6), python-setuptools
-Build-Depends-Indep: python-kiwi (>= 1.9.26)
+Build-Depends-Indep: python-kiwi (>= 1.9.41)
 Homepage: http://www.stoq.com.br/
 Vcs-Git: https://github.com/stoq/stoq.git
 Vcs-Browser: https://github.com/stoq/stoq/
 Standards-Version: 3.9.3
-X-Python-Version: >= 2.6
+X-Python-Version: >= 2.7
 
 Package: stoq
 Architecture: all
@@ -17,7 +17,7 @@ Replaces: stoqlib (<< 1.0), stoq-docs (<< 1.0), stoqdoc (<< 1.0)
 Breaks: stoqlib (<< 1.0)
 Depends: ${misc:Depends}, ${python:Depends},
  python-gtk2 (>= 2.20), python-zope.interface (>= 3.5.2) | python-zopeinterface (>= 3.2.1),
- python-kiwi (>= 1.9.40), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 1:0.9.22),
+ python-kiwi (>= 1.9.41), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 1:0.9.23),
  python-imaging (>= 1.1.5), python-reportlab (>= 2.4), postgresql-client, python-dateutil (>= 1.4.1),
  python-mako (>= 0.2.5), python-gudev, python-poppler (>= 0.12.1), python-webkit (>= 1.1.7),
  python-twisted-core (>= 10.0.0), python-twisted-web (>= 10.0.0), librsvg2-common,

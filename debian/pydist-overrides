@@ -6,3 +6,4 @@ pygtk python-gtk2
 pypoppler python-poppler
 stoqdrivers stoqdrivers
 twisted python-twisted-web
+pillow python-imaging
