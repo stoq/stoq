@@ -6,7 +6,7 @@
 Mako >= 0.2.5
 Pillow >= 1.1.5
 Twisted >= 0.2.5
-dateutil >= 1.4.1
+python-dateutil >= 1.4.1
 kiwi-gtk >= 1.9.41
 psycopg2 >= 2.0.5
 pypoppler >= 0.12.1
