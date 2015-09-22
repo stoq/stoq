@@ -568,8 +568,8 @@ class ExampleCreator(object):
                                     cnpj_prod=u'00.000.000/0001-00',
                                     c_selo=u'000', q_selo=1, c_enq=u'000', cst=0, p_ipi=0,
                                     q_unid=0, calculo=None):
-        from stoqlib.domain.taxes import ProductIpiTemplate
-        from stoqlib.domain.taxes import ProductTaxTemplate
+        from stoqlib.domain.taxes import (ProductIpiTemplate,
+                                          ProductTaxTemplate)
         if calculo is None:
             calculo = ProductIpiTemplate.CALC_ALIQUOTA
         if tax_template is None:
@@ -583,11 +583,11 @@ class ExampleCreator(object):
                                   cst=cst, p_ipi=p_ipi, q_unid=q_unid,
                                   calculo=calculo)
 
-    def create_product_pis_template(self, tax_template=None, cst=0, v_bc=0,
-                                    p_aliquot_pis=0, v_aliquot_pis=0, v_pis=0,
-                                    v_pis_st=0, q_unid=0, calculo=None):
-        from stoqlib.domain.taxes import ProductPisTemplate
-        from stoqlib.domain.taxes import ProductTaxTemplate
+    def create_product_pis_template(self, tax_template=None, cst=1, v_bc=0,
+                                    p_pis=0, v_aliq_prod=0,
+                                    q_bc_prod=0, calculo=None):
+        from stoqlib.domain.taxes import (ProductPisTemplate,
+                                          ProductTaxTemplate)
 
         assert validate_cst(cst)
         if calculo is None:
@@ -597,17 +597,15 @@ class ExampleCreator(object):
             tax_template = self.create_product_tax_template(tax_type=pis_tax)
         return ProductPisTemplate(product_tax_template=tax_template,
                                   cst=cst, v_bc=v_bc,
-                                  p_aliquot_pis=p_aliquot_pis,
-                                  v_aliquot_pis=v_aliquot_pis,
-                                  v_pis=v_pis, v_pis_st=v_pis_st,
-                                  q_unid=q_unid, calculo=calculo)
+                                  p_pis=p_pis,
+                                  v_aliq_prod=v_aliq_prod,
+                                  q_bc_prod=q_bc_prod, calculo=calculo)
 
     def create_product_cofins_template(self, tax_template=None, cst=1, v_bc=0,
-                                       p_aliquot_cofins=0, v_aliquot_cofins=0,
-                                       v_cofins=0,
-                                       v_cofins_st=0, q_unid=0, calculo=None):
-        from stoqlib.domain.taxes import ProductCofinsTemplate
-        from stoqlib.domain.taxes import ProductTaxTemplate
+                                       p_cofins=0, v_aliq_prod=0,
+                                       q_bc_prod=0, calculo=None):
+        from stoqlib.domain.taxes import (ProductCofinsTemplate,
+                                          ProductTaxTemplate)
 
         assert validate_cst(cst)
         if calculo is None:
@@ -617,11 +615,9 @@ class ExampleCreator(object):
             tax_template = self.create_product_tax_template(tax_type=cofins_tax)
         return ProductCofinsTemplate(product_tax_template=tax_template,
                                      cst=cst, v_bc=v_bc,
-                                     p_aliquot_cofins=p_aliquot_cofins,
-                                     v_aliquot_cofins=v_aliquot_cofins,
-                                     v_cofins=v_cofins,
-                                     v_cofins_st=v_cofins_st,
-                                     q_unid=q_unid, calculo=calculo)
+                                     p_cofins=p_cofins,
+                                     v_aliq_prod=v_aliq_prod,
+                                     q_bc_prod=q_bc_prod, calculo=calculo)
 
     def create_invoice_item_icms(self):
         from stoqlib.domain.taxes import InvoiceItemIcms
@@ -630,6 +626,30 @@ class ExampleCreator(object):
     def create_invoice_item_ipi(self):
         from stoqlib.domain.taxes import InvoiceItemIpi
         return InvoiceItemIpi(store=self.store)
+
+    def create_invoice_item_pis(self, v_pis=None, v_bc=None, p_pis=None,
+                                v_aliq_prod=None, q_bc_prod=None, cst=None,
+                                calculo=None):
+        from stoqlib.domain.taxes import InvoiceItemPis
+        assert validate_cst(cst)
+        if calculo is None:
+            calculo = InvoiceItemPis.CALC_PERCENTAGE
+
+        return InvoiceItemPis(store=self.store, v_pis=v_pis, v_bc=v_bc,
+                              p_pis=p_pis, v_aliq_prod=v_aliq_prod,
+                              q_bc_prod=q_bc_prod, cst=cst, calculo=calculo)
+
+    def create_invoice_item_cofins(self, v_cofins=None, v_bc=None,
+                                   p_cofins=None, v_aliq_prod=None,
+                                   q_bc_prod=None, cst=None, calculo=None):
+        from stoqlib.domain.taxes import InvoiceItemCofins
+        assert validate_cst(cst)
+        if calculo is None:
+            calculo = InvoiceItemCofins.CALC_PERCENTAGE
+
+        return InvoiceItemCofins(store=self.store, v_cofins=v_cofins, v_bc=v_bc,
+                                 p_cofins=p_cofins, v_aliq_prod=v_aliq_prod,
+                                 q_bc_prod=q_bc_prod, cst=cst, calculo=calculo)
 
     def create_invoice_layout(self):
         from stoqlib.domain.invoice import InvoiceLayout

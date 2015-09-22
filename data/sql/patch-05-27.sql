@@ -10,12 +10,10 @@ CREATE TABLE product_pis_template (
     product_tax_template_id UUID REFERENCES product_tax_template(id) ON UPDATE CASCADE,
     cst INTEGER,
     calculo product_pis_template_calculo NOT NULL DEFAULT 'percentage',
-    v_bc DECIMAL(10, 2),
-    p_aliquot_pis DECIMAL(10, 2),
-    v_aliquot_pis DECIMAL(10, 2),
-    q_unid numeric(10, 4),
-    v_pis DECIMAL(10, 2),
-    v_pis_st DECIMAL(10, 2)
+    v_bc numeric(10, 2),
+    p_pis numeric(10, 2),
+    v_aliq_prod numeric(10, 2),
+    q_bc_prod numeric(10, 4)
 );
 
 -- Creating table to Cofins tax.
@@ -25,12 +23,36 @@ CREATE TABLE product_cofins_template (
     product_tax_template_id UUID REFERENCES product_tax_template(id) ON UPDATE CASCADE,
     cst INTEGER,
     calculo product_cofins_template_calculo NOT NULL DEFAULT 'percentage',
-    v_bc DECIMAL(10, 2),
-    p_aliquot_cofins DECIMAL(10, 2),
-    v_aliquot_cofins DECIMAL(10, 2),
-    q_unid numeric(10, 4),
-    v_cofins DECIMAL(10, 2),
-    v_cofins_st DECIMAL(10, 2)
+    v_bc numeric(10, 2),
+    p_cofins numeric(10, 2),
+    v_aliq_prod numeric(10, 2),
+    q_bc_prod numeric(10, 4)
+);
+
+CREATE TABLE invoice_item_pis(
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id BIGINT UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
+    product_tax_template_id UUID REFERENCES product_tax_template(id) ON UPDATE CASCADE,
+    cst INTEGER,
+    calculo product_pis_template_calculo NOT NULL DEFAULT 'percentage',
+    v_bc numeric(10, 2),
+    p_pis numeric(10, 2),
+    v_aliq_prod numeric(10, 2),
+    q_bc_prod numeric(10, 4),
+    v_pis numeric(10, 2)
+);
+
+CREATE TABLE invoice_item_cofins(
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id BIGINT UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
+    product_tax_template_id UUID REFERENCES product_tax_template(id) ON UPDATE CASCADE,
+    cst INTEGER,
+    calculo product_cofins_template_calculo NOT NULL DEFAULT 'percentage',
+    v_bc numeric(10, 2),
+    p_cofins numeric(10, 2),
+    v_aliq_prod numeric(10, 2),
+    q_bc_prod numeric(10, 4),
+    v_cofins numeric(10, 2)
 );
 
 -- TAX

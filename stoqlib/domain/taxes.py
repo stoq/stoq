@@ -138,26 +138,20 @@ class BasePIS(BaseTax):
 
     cst = IntCol(default=None)
 
-    #: Calculation Basis
+    #: Operation type (percentage or value)
+    calculo = EnumCol(default=CALC_PERCENTAGE, allow_none=False)
+
+    #: Value of the PIS tax calculation basis.
     v_bc = PriceCol(default=None)
 
     #: Aliquot in percentage
-    p_aliquot_pis = PercentCol(default=None)
+    p_pis = PercentCol(default=None)
 
     #: Aliquot in value
-    v_aliquot_pis = PriceCol(default=None)
+    v_aliq_prod = PriceCol(default=None)
 
-    #: Value of PIS tax
-    v_pis = PriceCol(default=None)
-
-    #: Value of PIS ST tax
-    v_pis_st = PriceCol(default=None)
-
-    #: Units of products.
-    q_unid = QuantityCol(default=None)
-
-    #: Operation type (percentage or value)
-    calculo = EnumCol(default=CALC_PERCENTAGE, allow_none=False)
+    #: Quantity sold
+    q_bc_prod = QuantityCol(default=None)
 
 
 class BaseCOFINS(BaseTax):
@@ -168,26 +162,21 @@ class BaseCOFINS(BaseTax):
 
     cst = IntCol(default=None)
 
-    #: Calculation Basis
+    #: Operation type (percentage or value)
+    calculo = EnumCol(default=CALC_PERCENTAGE, allow_none=False)
+
+    #: Value of the PIS tax calculation basis.
     v_bc = PriceCol(default=None)
 
     #: Aliquot in percentage
-    p_aliquot_cofins = PercentCol(default=None)
+    p_cofins = PercentCol(default=None)
 
     #: Aliquot in value
-    v_aliquot_cofins = PriceCol(default=None)
+    v_aliq_prod = PriceCol(default=None)
 
-    #: Value of Cofins tax
-    v_cofins = PriceCol(default=None)
+    #: Quantity sold
+    q_bc_prod = QuantityCol(default=None)
 
-    #: Value of Cofins ST tax
-    v_cofins_st = PriceCol(default=None)
-
-    #: Units of product
-    q_unid = QuantityCol(default=None)
-
-    #: Operation type (percentage or value)
-    calculo = EnumCol(default=CALC_PERCENTAGE, allow_none=False)
 
 #
 #   Product Tax Classes
@@ -386,10 +375,17 @@ class InvoiceItemIcms(BaseICMS):
 
 
 class InvoiceItemIpi(BaseIPI):
+    """Invoice of IPI tax."""
+
     __storm_table__ = 'invoice_item_ipi'
+
     v_ipi = PriceCol(default=0)
     v_bc = PriceCol(default=None)
     v_unid = PriceCol(default=None)
+
+    #
+    # Public API
+    #
 
     def set_initial_values(self, invoice_item):
         self.q_unid = invoice_item.quantity
@@ -398,7 +394,7 @@ class InvoiceItemIpi(BaseIPI):
 
     def update_values(self, invoice_item):
         # IPI is only calculated if cst is one of the following
-        if not self.cst in (0, 49, 50, 99):
+        if not self.cst in [0, 49, 50, 99]:
             return
 
         if self.calculo == self.CALC_ALIQUOTA:
@@ -412,3 +408,57 @@ class InvoiceItemIpi(BaseIPI):
     @classmethod
     def get_tax_template(cls, invoice_item):
         return invoice_item.sellable.product.ipi_template
+
+
+class InvoiceItemPis(BasePIS):
+    """Invoice of PIS tax."""
+
+    __storm_table__ = 'invoice_item_pis'
+
+    #: Value of PIS tax.
+    v_pis = PriceCol(default=None)
+
+    #
+    # Public API
+    #
+
+    def set_initial_values(self):
+        self.update_values()
+
+    def update_values(self):
+        # When the CST is contained in the list the calculation is not performed
+        # because the taxpayer is exempt.
+        if self.cst in [1, 2, 3, 4, 6, 7, 8, 9]:
+            return
+
+        if self.calculo == self.CALC_PERCENTAGE:
+            self.v_pis = self.v_bc * self.p_pis / 100
+        elif self.calculo == self.CALC_VALUE:
+            self.v_pis = self.q_bc_prod * self.v_aliq_prod
+
+
+class InvoiceItemCofins(BaseCOFINS):
+    """Invoice of COFINS tax."""
+
+    __storm_table__ = 'invoice_item_cofins'
+
+    #: Value of COFINS tax
+    v_cofins = PriceCol(default=None)
+
+    #
+    # Public API
+    #
+
+    def set_initial_values(self):
+        self.update_values()
+
+    def update_values(self):
+        # When the CST is contained in the list the calculation is not performed
+        # because the taxpayer is exempt.
+        if self.cst in [1, 2, 3, 4, 6, 7, 8, 9]:
+            return
+
+        if self.calculo == self.CALC_PERCENTAGE:
+            self.v_cofins = self.v_bc * self.p_cofins / 100
+        elif self.calculo == self.CALC_VALUE:
+            self.v_cofins = self.q_bc_prod * self.v_aliq_prod
