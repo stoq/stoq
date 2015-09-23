@@ -6,10 +6,11 @@
 Mako >= 0.2.5
 Pillow >= 1.1.5
 Twisted >= 0.2.5
-python-dateutil >= 1.4.1
 kiwi-gtk >= 1.9.41
 psycopg2 >= 2.0.5
 pypoppler >= 0.12.1
+python-dateutil >= 1.4.1
+raven >= 5.1.1
 reportlab >= 2.4
 stoqdrivers >= 0.9.23
 storm >= 0.19
