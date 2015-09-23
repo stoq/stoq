@@ -119,6 +119,12 @@ def collect_report():
 
     report_['product_key'] = get_product_key()
 
+    try:
+        from stoqlib.lib.kiwilibrary import library
+        report_['bdist_type'] = library.bdist_type
+    except Exception:
+        pass
+
     # PostgreSQL database server
     try:
         from stoqlib.database.settings import get_database_version
@@ -171,7 +177,7 @@ def collect_traceback(tb, output=True, submit=False):
             del extra['log_name']
 
         tags = {}
-        for name in ['architecture', 'cnpj', 'system', 'app_name',
+        for name in ['architecture', 'cnpj', 'system', 'app_name', 'bdist_type',
                      'app_version', 'distribution', 'python_version',
                      'psycopg_version', 'pygtk_version', 'gtk_version',
                      'kiwi_version', 'reportlab_version',
