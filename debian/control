@@ -22,7 +22,7 @@ Depends: ${misc:Depends}, ${python:Depends},
  python-mako (>= 0.2.5), python-gudev, python-poppler (>= 0.12.1), python-webkit (>= 1.1.7),
  python-twisted-core (>= 10.0.0), python-twisted-web (>= 10.0.0), librsvg2-common,
  python-xlwt (>= 0.7.2), iso-codes (>= 3.12.1-1),
- python-storm (>= 0.19), python-weasyprint (>= 0.15), libxss1
+ python-storm (>= 0.19), python-weasyprint (>= 0.15), libxss1, libc6-i386
 Recommends: python-raven, python-aptdaemon.gtkwidgets
 Homepage: http://www.stoq.com.br/
 Description: A powerful retail system
