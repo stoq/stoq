@@ -111,6 +111,7 @@ class FiscalPrinterHelper(gobject.GObject):
         gobject.GObject.__init__(self)
         self.store = store
         self._parent = parent
+        self._midnight_check_id = None
 
     def open_till(self):
         """Opens the till
@@ -261,6 +262,10 @@ class FiscalPrinterHelper(gobject.GObject):
         This method will call check_till that will eventually,
         disable fiscal related interface.
         """
+        # Avoid setting this up more than once
+        if self._midnight_check_id is not None:
+            return
+
         now = localnow()
         tomorrow = now + datetime.timedelta(1)
 
@@ -269,7 +274,8 @@ class FiscalPrinterHelper(gobject.GObject):
         delta = midnight - now
 
         # Call check_till at the first seconds of the next day.
-        glib.timeout_add(delta.seconds * 1000, self.check_till)
+        self._midnight_check_id = glib.timeout_add_seconds(
+            delta.seconds, self.check_till, True)
 
     def _till_status_changed(self, closed, blocked):
         self.emit('till-status-changed', closed, blocked)
@@ -321,13 +327,18 @@ class FiscalPrinterHelper(gobject.GObject):
             self.emit('ecf-changed', False)
             return False
 
-    def check_till(self):
+    def check_till(self, reset_midnight_check=False):
         try:
             self._check_needs_closing()
             self.emit('ecf-changed', True)
         except (DeviceError, DriverError) as e:
             warning(str(e))
             self.emit('ecf-changed', False)
+
+        if reset_midnight_check:
+            glib.source_remove(self._midnight_check_id)
+            self._midnight_check_id = None
+            self.setup_midnight_check()
 
     def run_initial_checks(self):
         """This will check:
