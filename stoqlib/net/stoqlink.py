@@ -27,7 +27,7 @@ import decimal
 import json
 
 from kiwi.currency import currency
-from storm.expr import Sum, Join, Select, Alias, Coalesce
+from storm.expr import Sum, LeftJoin, Join, Select, Alias, Coalesce
 
 from stoqlib.database.expr import Date, DateTrunc, Field, NullIf
 from stoqlib.domain.sale import Sale, SaleItem, SaleView
@@ -62,13 +62,17 @@ def collect_link_statistics(store):
     query = Date(Sale.confirm_date) >= one_week
 
     # Profit Margin
+    # Try to use SaleItem.average_cost at first, but fall back to Sellable.cost
+    # if average cost is zero.
     item_cost = Alias(Select(columns=[SaleItem.sale_id,
                                       Alias(Sum(SaleItem.quantity *
                                                 Coalesce(NullIf(SaleItem.average_cost,
                                                                 0),
-                                                         SaleItem.price)),
+                                                         Sellable.cost)),
                                             'cost')],
-                             tables=SaleItem,
+                             tables=[SaleItem,
+                                     LeftJoin(Sellable,
+                                              SaleItem.sellable_id == Sellable.id)],
                              group_by=[SaleItem.sale_id]),
                       'item_cost')
 
