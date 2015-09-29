@@ -221,6 +221,45 @@ NEWFILEUID:NONE
 
 
 class OFXImporterTest(DomainTest):
+
+    def test_import_existing_transaction(self):
+        imbalance_account = self.create_account()
+        other_account = self.create_account()
+        with self.sysparam(IMBALANCE_ACCOUNT=imbalance_account):
+            t1 = self.create_account_transaction(
+                incoming=False,
+                code=u'90068259',
+                value=Decimal('5'),
+                account=other_account,
+                source=imbalance_account)
+            t2 = self.create_account_transaction(
+                incoming=True,
+                code=u'90068258',
+                value=Decimal('50'),
+                account=imbalance_account,
+                source=other_account)
+
+            ofx = OFXImporter()
+            ofx.feed(StringIO(OFX_DATA))
+            ofx.set_dry(True)
+            ofx.process(self.store)
+            account = self.store.find(Account).order_by(Account.code).first()
+            self.assertEquals(account.description, "Bank - CHECKING")
+            self.assertEquals(account.code, "1234")
+            self.assertEquals(account.transactions.count(), 2)
+            self.assertEquals(account.account_type, Account.TYPE_BANK)
+            t1, t2 = sorted(account.transactions, key=operator.attrgetter('value'))
+            self.assertEquals(t1.value, 5)
+            self.assertEquals(t1.operation_type, AccountTransaction.TYPE_OUT)
+            self.assertEquals(t1.code, '90068259')
+            self.assertEquals(t1.description, 'Banco taxa 10%')
+            self.assertEquals(t1.source_account, account)
+            self.assertEquals(t2.value, 50)
+            self.assertEquals(t2.operation_type, AccountTransaction.TYPE_IN)
+            self.assertEquals(t2.code, '90068258')
+            self.assertEquals(t2.description, 'A Transaction')
+            self.assertEquals(t2.account, account)
+
     def test_import_bb_juridica(self):
         ofx = OFXImporter()
         ofx.feed(StringIO(OFX_DATA))

@@ -207,6 +207,26 @@ def compile_case(compile, expr, state):
     return stmt
 
 
+class Trim(ComparableExpr):
+    """Remove the longest string containing the given characters."""
+    # http://www.postgresql.org/docs/9.1/static/functions-string.html
+    __slots__ = ("op", "character", "column")
+    prefix = "(unknown)"
+
+    def __init__(self, op, character, column):
+        self.op = op
+        self.character = character
+        self.column = column
+
+
+@expr_compile.when(Trim)
+def compile_trim(compile, expr, state):
+    return "TRIM(%s %s FROM %s)" % (
+        expr.op,
+        expr_compile(expr.character, state),
+        expr_compile(expr.column, state))
+
+
 class Concat(Expr):
     """Concatenates string together using the || operator."""
     # http://www.postgresql.org/docs/8.4/static/functions-string.html

@@ -32,6 +32,9 @@ import decimal
 import logging
 import sgmllib
 
+from storm.expr import And
+
+from stoqlib.database.expr import Trim
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.importers.importer import Importer
 from stoqlib.lib.parameters import sysparam
@@ -180,6 +183,7 @@ class OFXImporter(Importer):
             return False
 
         value = self._parse_number(t['trnamt'])
+        description = self._parse_string(t['memo'])
 
         if value == 0:
             self.skipped += 1
@@ -204,14 +208,33 @@ class OFXImporter(Importer):
             # Skip already present transactions
             self.skipped += 1
             return False
-        t = AccountTransaction(source_account=source_account,
-                               account=account,
-                               description=self._parse_string(t['memo']),
-                               code=code,
-                               value=value,
-                               date=date,
-                               operation_type=operation_type,
-                               store=store)
+
+        # TODO: Check if value and code are enough to consider a match.
+        existing = list(store.find(
+            AccountTransaction,
+            And(AccountTransaction.value == value,
+                Trim(u'LEADING', u'0', AccountTransaction.code) == code.lstrip('0'))))
+        if len(existing) == 1:
+            t = existing[0]
+            t.description = description
+            t.date = date
+
+            # Categorize the transaction if it was still on imbalance
+            if sysparam.compare_object('IMBALANCE_ACCOUNT', t.source_account):
+                t.source_account = source_account
+            if sysparam.compare_object('IMBALANCE_ACCOUNT', t.account):
+                t.account = account
+        else:
+            t = AccountTransaction(
+                store=store,
+                source_account=source_account,
+                account=account,
+                description=description,
+                code=code,
+                value=value,
+                date=date,
+                operation_type=operation_type)
+
         store.flush()
         return True
 

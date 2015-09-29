@@ -1187,7 +1187,7 @@ class ExampleCreator(object):
                        store=self.store)
 
     def create_account_transaction(self, account=None, value=1,
-                                   source=None, incoming=False):
+                                   source=None, incoming=False, code=None):
         from stoqlib.domain.account import AccountTransaction
         if account is None:
             account = self.create_account()
@@ -1204,7 +1204,7 @@ class ExampleCreator(object):
 
         return AccountTransaction(
             description=u"Test Account Transaction",
-            code=u"Code",
+            code=code or u"Code",
             date=localnow(),
             value=value,
             account=account,
