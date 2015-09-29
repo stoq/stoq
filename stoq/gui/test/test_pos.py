@@ -593,8 +593,9 @@ class TestPos(BaseGUITest):
         remove_button = pos._trade_infobar.get_action_area().get_children()[0]
         with mock.patch('stoq.gui.pos.yesno') as yesno:
             self.click(remove_button)
-            yesno.assertEquals("Do you really want to cancel the trade in progress?",
-                               gtk.RESPONSE_NO, "Cancel trade", "Don't cancel")
+            yesno.assert_called_once_with(
+                "Do you really want to cancel the trade in progress?",
+                gtk.RESPONSE_NO, "Cancel trade", "Don't cancel")
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_cancel_order(self, yesno):
