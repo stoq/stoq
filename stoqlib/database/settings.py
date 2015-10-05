@@ -198,21 +198,20 @@ def test_local_database():
 
     :returns: (hostname, port)
     """
+    ports = [5432, 5433, 5434]
 
-    # FIXME: We might want to check other ports in the future,
-    #        ubuntu/debian's postgres packages uses 5433 when upgrading
-    #        to newer versions.
-    port = 5432
     if _system == 'Windows':
         # Windows uses local sockets, just try and see if a connection
         # can be established
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        pair = ('127.0.0.1', port)
-        try:
-            s.connect(pair)
-        except socket.error:
-            return None
-        return pair
+        for port in ports:
+            pair = ('127.0.0.1', port)
+            try:
+                s.connect(pair)
+            except socket.error:
+                pass
+            else:
+                return pair
     else:
         # default location for unix socket files is /tmp,
         # ubuntu/debian patches that to /var/run/postgresl
@@ -221,11 +220,13 @@ def test_local_database():
                 not os.path.isdir(pgdir)):
                 continue
 
-            # Check for the default unix socket which
-            # we will later use to create a database user
-            fname = os.path.join(pgdir, '.s.PGSQL.%d' % (port, ))
-            if os.path.exists(fname):
-                return (pgdir, port)
+            for port in ports:
+                # Check for the default unix socket which
+                # we will later use to create a database user
+                fname = os.path.join(pgdir, '.s.PGSQL.%d' % (port, ))
+                if os.path.exists(fname):
+                    return (pgdir, port)
+
         return None
 
 
