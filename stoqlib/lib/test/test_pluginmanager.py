@@ -180,6 +180,31 @@ class TestPluginManager(DomainTest):
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
+    @mock.patch('stoqlib.lib.webservice.WebService.download_plugin')
+    @mock.patch('stoqlib.lib.pluginmanager.new_store')
+    def test_download_plugin(self, new_store, download_plugin):
+        new_store.return_value = self.store
+
+        self._manager.download_plugin(u'foo')
+        args, kwargs = download_plugin.call_args
+        plugin_name = args[0]
+        callback = kwargs['callback']
+        self.assertEqual(plugin_name, u'foo')
+
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self._manager, '_reload')):
+            with tempfile.NamedTemporaryFile() as f:
+                f.write('foo bar baz')
+                f.flush()
+                callback(f.name)
+
+        plugin_egg = self.store.find(PluginEgg, plugin_name=u'foo').one()
+        self.assertEqual(plugin_egg.egg_content, 'foo bar baz')
+        self.assertEqual(plugin_egg.egg_md5sum,
+                         u'ab07acbb1e496801937adfa772424bf7')
+
     def test_get_plugin_manager(self):
         # PluginManager should be a singleton
         self.assertEqual(self._manager, get_plugin_manager())
