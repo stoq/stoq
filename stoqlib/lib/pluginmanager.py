@@ -98,12 +98,7 @@ class PluginManager(object):
     """
 
     def __init__(self):
-        self._plugins = {}
-        self._active_plugins = {}
-        self._plugin_descriptions = {}
-
-        self._create_eggs_cache()
-        self._read_plugin_descriptions()
+        self._reload()
 
     #
     # Properties
@@ -128,6 +123,14 @@ class PluginManager(object):
     #
     # Private
     #
+
+    def _reload(self):
+        self._plugins = {}
+        self._active_plugins = {}
+        self._plugin_descriptions = {}
+
+        self._create_eggs_cache()
+        self._read_plugin_descriptions()
 
     def _create_eggs_cache(self):
         log.info("Creating cache for plugins eggs")
@@ -210,6 +213,29 @@ class PluginManager(object):
     # Public API
     #
 
+    def download_plugin(self, plugin_name):
+        """Download a plugin from webservice
+
+        :param plugin_name: the name of the plugin to download
+        :returns: a deferred
+        """
+        from stoqlib.lib.webservice import WebService
+
+        def callback(filename):
+            md5sum = unicode(md5sum_for_filename(filename))
+            with open(filename) as f:
+                with new_store() as store:
+                    PluginEgg(
+                        store=store,
+                        plugin_name=plugin_name,
+                        egg_md5sum=md5sum,
+                        egg_content=f.read(),
+                    )
+            self._reload()
+
+        webapi = WebService()
+        return webapi.download_plugin(plugin_name, callback=callback)
+
     def get_plugin(self, plugin_name):
         """Returns a plugin by it's name
 
@@ -217,7 +243,8 @@ class PluginManager(object):
         :returns: the :class:`IPlugin` implementation of the plugin
         """
         if not plugin_name in self._plugin_descriptions:
-            raise PluginError("%s plugin not found" % (plugin_name, ))
+            raise PluginError("Plugin %s not found. Available ones are: %s" % (
+                plugin_name, ', '.join(self.available_plugins_names)))
 
         if not plugin_name in self._plugins:
             self._import_plugin(self._plugin_descriptions[plugin_name])

@@ -236,18 +236,42 @@ class StoqCommandHandler:
         manager = get_plugin_manager()
 
         for plugin_name in plugin_names:
-            if plugin_name not in manager.available_plugins_names:
-                print('ERROR:', plugin_name, 'is not installed.')
-                print("Available plugins are:")
-                for plugin_name in manager.available_plugins_names:
-                    print("  %s" % (plugin_name, ))
+            if plugin_name in manager.installed_plugins_names:
+                print('ERROR: Plugin %s is already enabled' % (plugin_name, ))
                 return
+
+            if plugin_name not in manager.available_plugins_names:
+                self._download_plugin(manager, plugin_name)
 
             try:
                 manager.install_plugin(plugin_name)
             except PluginError as err:
-                print('ERROR:', err)
+                print('ERROR: %s' % (str(err), ))
                 return
+
+    def _download_plugin(self, manager, plugin_name):
+        # FIXME: The webservice need the IAppInfo provided to get the stoq
+        # version. We cannot do that workaround there because we don't want to
+        # import stoq inside stoqlib. Either way, this code to download the
+        # egg will move to the plugin dialog soon.
+        from kiwi.component import provide_utility
+        from stoqlib.lib.appinfo import AppInfo
+        from stoqlib.lib.interfaces import IAppInfo
+        import stoq
+        info = AppInfo()
+        info.set("version", stoq.version)
+        provide_utility(IAppInfo, info)
+
+        from twisted.internet import reactor
+        d = manager.download_plugin(plugin_name)
+
+        def stop_reactor(*args):
+            if reactor.running:
+                reactor.stop()
+
+        d.addCallback(stop_reactor)
+        d.addErrback(stop_reactor)
+        reactor.run()
 
     def _register_station(self):
         # Register the current computer as a branch station

@@ -25,17 +25,19 @@
 
 import datetime
 import json
-import os
 import logging
-import urllib
+import os
 import platform
 import sys
+import tempfile
+import urllib
+import urlparse
 
 from kiwi.component import get_utility
 from twisted.internet import reactor
 from twisted.internet.defer import succeed, Deferred
 from twisted.internet.protocol import Protocol
-from twisted.web.client import Agent
+from twisted.web.client import Agent, HTTPDownloader
 from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
 from zope.interface import implementer
@@ -127,6 +129,10 @@ class WebService(object):
     #   Private API
     #
 
+    def _get_version(self):
+        app_info = get_utility(IAppInfo, None)
+        return app_info.get('version') if app_info is not None else 'Unknown'
+
     def _get_headers(self):
         user_agent = 'Stoq'
         app_info = get_utility(IAppInfo, None)
@@ -176,6 +182,34 @@ class WebService(object):
         if callback:
             d.addCallback(callback)
         return d
+
+    def _do_download_request(self, document, callback=None, **params):
+        url = '%s/%s?%s' % (
+            self.API_SERVER, document, urllib.urlencode(params))
+        headers = self._get_headers()
+        file_ = tempfile.NamedTemporaryFile(delete=False)
+
+        downloader = HTTPDownloader(
+            url, file_.name, agent=headers['User-Agent'], headers=headers)
+
+        def errback(error):
+            # TODO: Handle possible errors
+            log.warning(str(error))
+
+        def callback_(res):
+            if getattr(downloader, 'status', None) == '200' and callback:
+                callback(file_.name)
+
+            # Remove the temporary file after the callback has handled it
+            os.remove(file_)
+
+        downloader.deferred.addErrback(errback)
+        downloader.deferred.addCallback(callback_)
+
+        parsed = urlparse.urlparse(url)
+        reactor.connectTCP(parsed.netloc.split(':')[0],
+                           parsed.port or 80, downloader)
+        return downloader.deferred
 
     #
     #   Public API
@@ -258,11 +292,6 @@ class WebService(object):
         return self._do_request('GET', 'api/lite/using', **params)
 
     def feedback(self, screen, email, feedback):
-        app_info = get_utility(IAppInfo, None)
-        if app_info:
-            app_version = app_info.get('version')
-        else:
-            app_version = 'Unknown'
         default_store = get_default_store()
         params = {
             'hash': sysparam.get_string('USER_HASH'),
@@ -276,6 +305,16 @@ class WebService(object):
             'screen': screen,
             'time': datetime.datetime.today().isoformat(),
             'uname': ' '.join(platform.uname()),
-            'version': app_version,
+            'version': self._get_version(),
         }
         return self._do_request('GET', 'feedback.json', **params)
+
+    def download_plugin(self, plugin_name, md5sum=None, callback=None):
+        params = {
+            'hash': sysparam.get_string('USER_HASH'),
+            'plugin': plugin_name,
+            'md5': md5sum or '',
+            'version': self._get_version(),
+        }
+        return self._do_download_request(
+            'api/eggs', callback=callback, **params)
