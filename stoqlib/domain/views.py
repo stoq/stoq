@@ -155,8 +155,8 @@ class ProductFullStockView(Viewable):
     tables = [
         # Keep this first 4 joins in this order, so find_by_branch may change it.
         Sellable,
-        Join(Product, Product.sellable_id == Sellable.id),
-        LeftJoin(Storable, Storable.product_id == Product.id),
+        Join(Product, Product.id == Sellable.id),
+        LeftJoin(Storable, Storable.id == Product.id),
         LeftJoin(_StockSummary,
                  Field('_stock_summary', 'storable_id') == Storable.id),
 
@@ -421,7 +421,7 @@ class ProductQuantityView(Viewable):
     tables = [
         ProductHistory,
         Join(Sellable, ProductHistory.sellable_id == Sellable.id),
-        Join(Product, Product.sellable_id == Sellable.id),
+        Join(Product, Product.id == Sellable.id),
     ]
 
     # This are columns that are not supposed to be queried, but should still be
@@ -506,8 +506,8 @@ class SellableFullStockView(Viewable):
         Sellable,
         LeftJoin(SellableUnit, SellableUnit.id == Sellable.unit_id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
-        LeftJoin(Product, Product.sellable_id == Sellable.id),
-        LeftJoin(Storable, Storable.product_id == Product.id),
+        LeftJoin(Product, Product.id == Sellable.id),
+        LeftJoin(Storable, Storable.id == Product.id),
         LeftJoin(_StockBranchSummary,
                  Field('_stock_summary', 'storable_id') == Storable.id),
         LeftJoin(ProductManufacturer,
@@ -645,7 +645,7 @@ class SoldItemView(Viewable):
 
     tables = [
         Sellable,
-        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(Product, Product.id == Sellable.id),
         LeftJoin(SaleItem, Sellable.id == SaleItem.sellable_id),
         LeftJoin(Sale, SaleItem.sale_id == Sale.id),
         LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id),
@@ -795,8 +795,8 @@ class PurchasedItemAndStockView(Viewable):
         LeftJoin(PurchaseOrder, PurchaseItem.order_id == PurchaseOrder.id),
         LeftJoin(Branch, PurchaseOrder.branch_id == Branch.id),
         LeftJoin(Sellable, Sellable.id == PurchaseItem.sellable_id),
-        LeftJoin(Product, Product.sellable_id == PurchaseItem.sellable_id),
-        LeftJoin(Storable, Storable.product_id == Product.id),
+        LeftJoin(Product, Product.id == PurchaseItem.sellable_id),
+        LeftJoin(Storable, Storable.id == Product.id),
         LeftJoin(ProductStockItem, ProductStockItem.storable_id == Storable.id),
     ]
 
@@ -899,7 +899,7 @@ class SaleItemsView(Viewable):
         LeftJoin(StorableBatch, StorableBatch.id == SaleItem.batch_id),
         LeftJoin(Sellable, Sellable.id == SaleItem.sellable_id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
-        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(Product, Product.id == Sellable.id),
         LeftJoin(ProductManufacturer,
                  ProductManufacturer.id == Product.manufacturer_id),
         Join(Sale, SaleItem.sale_id == Sale.id),
@@ -991,7 +991,7 @@ class ProductionItemView(Viewable):
         LeftJoin(Product,
                  ProductionItem.product_id == Product.id),
         LeftJoin(Sellable,
-                 Sellable.id == Product.sellable_id),
+                 Sellable.id == Product.id),
         LeftJoin(SellableCategory,
                  SellableCategory.id == Sellable.category_id),
         LeftJoin(SellableUnit,
@@ -1021,8 +1021,8 @@ class ProductBatchView(Viewable):
         Join(Company, Branch.person_id == Company.person_id),
         LeftJoin(StorableBatch, ProductStockItem.batch_id == StorableBatch.id),
         Join(Storable, ProductStockItem.storable_id == Storable.id),
-        Join(Product, Storable.product_id == Product.id),
-        Join(Sellable, Product.sellable_id == Sellable.id),
+        Join(Product, Storable.id == Product.id),
+        Join(Sellable, Product.id == Sellable.id),
         LeftJoin(ProductManufacturer,
                  Product.manufacturer_id == ProductManufacturer.id),
         LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id)
@@ -1052,13 +1052,13 @@ class ProductBrandByBranchView(Viewable):
     tables = [
         ProductStockItem,
         Join(Storable, Storable.id == ProductStockItem.storable_id),
-        Join(Product, Product.id == Storable.product_id),
+        Join(Product, Product.id == Storable.id),
         LeftJoin(ProductManufacturer,
                  ProductManufacturer.id == Product.manufacturer_id),
         Join(Branch, Branch.id == ProductStockItem.branch_id),
         Join(Person, Person.id == Branch.person_id),
         Join(Company, Company.person_id == Person.id),
-        Join(Sellable, Product.sellable_id == Sellable.id),
+        Join(Sellable, Product.id == Sellable.id),
         LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id),
     ]
 
@@ -1094,10 +1094,10 @@ class ProductBrandStockView(Viewable):
     tables = [
         Product,
         LeftJoin(Storable,
-                 Storable.product_id == Product.id),
+                 Storable.id == Product.id),
         LeftJoin(ProductStockItem,
                  ProductStockItem.storable_id == Storable.id),
-        LeftJoin(Sellable, Sellable.id == Product.sellable_id),
+        LeftJoin(Sellable, Sellable.id == Product.id),
         LeftJoin(Branch, Branch.id == ProductStockItem.branch_id)
     ]
     group_by = [id, brand]
@@ -1154,7 +1154,7 @@ class UnconfirmedSaleItemsView(Viewable):
         Join(Branch, Branch.id == Sale.branch_id),
         Join(SalesPerson, SalesPerson.id == Sale.salesperson_id),
         Join(PersonSales, PersonSales.id == SalesPerson.person_id),
-        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(Product, Product.id == Sellable.id),
         LeftJoin(ProductManufacturer, ProductManufacturer.id == Product.manufacturer_id),
         LeftJoin(Client, Client.id == Sale.client_id),
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
@@ -1249,7 +1249,7 @@ class ReturnedItemView(ReturnedSalesView):
     tables.extend([Join(ReturnedSaleItem,
                         ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
                    Join(Sellable, ReturnedSaleItem.sellable_id == Sellable.id),
-                   LeftJoin(Product, Sellable.id == Product.sellable_id)])
+                   LeftJoin(Product, Sellable.id == Product.id)])
 
 
 class PendingReturnedSalesView(ReturnedSalesView):
@@ -1335,7 +1335,7 @@ class LoanItemView(Viewable):
         Join(Loan, LoanItem.loan_id == Loan.id),
         Join(Branch, Loan.branch_id == Branch.id),
         LeftJoin(Sellable, LoanItem.sellable_id == Sellable.id),
-        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(Product, Product.id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
     ]
@@ -1493,8 +1493,8 @@ class CostCenterEntryStockView(Viewable):
         Join(ProductStockItem,
              StockTransactionHistory.product_stock_item_id == ProductStockItem.id),
         Join(Storable, ProductStockItem.storable_id == Storable.id),
-        Join(Product, Storable.product_id == Product.id),
-        Join(Sellable, Product.sellable_id == Sellable.id),
+        Join(Product, Storable.id == Product.id),
+        Join(Sellable, Product.id == Sellable.id),
 
         # possible sale item and stock decrease item
         LeftJoin(SaleItem, SaleItem.id == StockTransactionHistory.object_id),

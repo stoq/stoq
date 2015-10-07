@@ -1505,8 +1505,7 @@ class Sale(Domain):
             SaleItem,
             And(SaleItem.sale_id == self.id,
                 SaleItem.sellable_id == Sellable.id,
-                Product.sellable_id == Sellable.id,
-                Storable.product_id == Product.id,
+                Sellable.id == Storable.id,
                 Eq(Storable.is_batch, True),
                 Eq(SaleItem.batch_id, None)))
 
@@ -1657,8 +1656,8 @@ class Sale(Domain):
         return self.store.find(
             SaleItem,
             And(SaleItem.sale_id == self.id,
-                SaleItem.sellable_id == Product.sellable_id,
-                SaleItem.sellable_id == Sellable.id)).order_by(
+                SaleItem.sellable_id == Sellable.id,
+                Sellable.id == Product.id)).order_by(
             Sellable.code)
 
     @property
@@ -1671,8 +1670,8 @@ class Sale(Domain):
         return self.store.find(
             SaleItem,
             And(SaleItem.sale_id == self.id,
-                SaleItem.sellable_id == Service.sellable_id,
-                SaleItem.sellable_id == Sellable.id)).order_by(
+                SaleItem.sellable_id == Sellable.id,
+                Sellable.id == Service.id)).order_by(
             Sellable.code)
 
     @property
@@ -2401,7 +2400,7 @@ class SoldServicesView(SoldSellableView):
     group_by.append(estimated_fix_date)
 
     tables = SoldSellableView.tables[:]
-    tables.append(Join(Service, Sellable.id == Service.sellable_id))
+    tables.append(Join(Service, Sellable.id == Service.id))
 
 
 class SoldProductsView(SoldSellableView):
@@ -2412,7 +2411,7 @@ class SoldProductsView(SoldSellableView):
     total_value = Sum(SaleItem.quantity * SaleItem.price)
 
     tables = SoldSellableView.tables[:]
-    tables.append(Join(Product, Sellable.id == Product.sellable_id))
+    tables.append(Join(Product, Sellable.id == Product.id))
 
 
 # FIXME: This needs some more work, as currently, this viewable is:
@@ -2552,7 +2551,7 @@ class SoldItemsByClient(Viewable):
     tables = [
         Sellable,
         Join(SellableCategory, SellableCategory.id == Sellable.category_id),
-        Join(Product, Product.sellable_id == Sellable.id),
+        Join(Product, Product.id == Sellable.id),
         Join(SaleItem, SaleItem.sellable_id == Sellable.id),
         Join(Sale, SaleItem.sale_id == Sale.id),
         LeftJoin(Client, Client.id == Sale.client_id),

@@ -46,7 +46,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.product import Product, StockTransactionHistory, Storable
+from stoqlib.domain.product import StockTransactionHistory, Storable
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.domain.person import (Person, Branch, Company, Supplier,
                                    Transporter, LoginUser)
@@ -579,8 +579,7 @@ class PurchaseOrder(Domain):
                                    And(self.id == PurchaseOrder.id,
                                        PurchaseOrder.id == PurchaseItem.order_id,
                                        PurchaseItem.sellable_id == Sellable.id,
-                                       Sellable.id == Product.sellable_id,
-                                       Product.id == Storable.product_id,
+                                       Sellable.id == Storable.id,
                                        Eq(Storable.is_batch, True))).is_empty()
 
     #

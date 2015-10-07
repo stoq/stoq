@@ -212,10 +212,8 @@ class Product(Domain):
         TYPE_GRID: _("Grid product"),
     }
 
-    sellable_id = IdCol()
-
     #: |sellable| for this product
-    sellable = Reference(sellable_id, 'Sellable.id')
+    sellable = Reference('id', 'Sellable.id')
 
     #: if this product is loaned from the |supplier|
     consignment = BoolCol(default=False)
@@ -326,9 +324,18 @@ class Product(Domain):
     #: list of |grid_option| of this product
     grid_options = ReferenceSet('id', 'ProductOptionMap.product_id')
 
+    #: the |storable| for this product
+    storable = Reference('id', 'Storable.id', on_remote=True)
+
     #: This indicaters if this product is only used internally by the store.
     #: This means this product can be bought but cannot be sold
     internal_use = BoolCol(default=False)
+
+    def __init__(self, **kwargs):
+        assert 'sellable' in kwargs
+        kwargs['id'] = kwargs['sellable'].id
+
+        super(Product, self).__init__(**kwargs)
 
     #
     # Properties
@@ -337,10 +344,6 @@ class Product(Domain):
     @property
     def description(self):
         return self.sellable.description
-
-    @property
-    def storable(self):
-        return self.store.find(Storable, product=self).one()
 
     @property
     def product_type(self):
@@ -460,7 +463,7 @@ class Product(Domain):
             return False
 
         return super(Product, self).can_remove(
-            skip=[('storable', 'product_id'),
+            skip=[('storable', 'id'),
                   ('product_supplier_info', 'product_id'),
                   ('product_option_map', 'product_id'),
                   ('product_component', 'product_id')])
@@ -1090,10 +1093,8 @@ class Storable(Domain):
 
     __storm_table__ = 'storable'
 
-    product_id = IdCol()
-
     #: the |product| the stock represents
-    product = Reference(product_id, 'Product.id')
+    product = Reference('id', 'Product.id')
 
     #: If this storable should have a finer grain control by batches. When this
     #: is true, stock for this storable will also require a batch information.
@@ -1106,6 +1107,12 @@ class Storable(Domain):
 
     #: maximum quantity of stock items allowed
     maximum_quantity = QuantityCol(default=0)
+
+    def __init__(self, **kwargs):
+        assert 'product' in kwargs
+        kwargs['id'] = kwargs['product'].id
+
+        super(Storable, self).__init__(**kwargs)
 
     #
     #  Classmethods
@@ -1124,8 +1131,8 @@ class Storable(Domain):
         """
         tables = [
             Sellable,
-            Join(Product, Product.sellable_id == Sellable.id),
-            Join(Storable, Storable.product_id == Product.id),
+            Join(Product, Product.id == Sellable.id),
+            Join(Storable, Storable.id == Product.id),
             LeftJoin(ProductStockItem,
                      And(ProductStockItem.storable_id == cls.id,
                          ProductStockItem.branch_id == branch.id))

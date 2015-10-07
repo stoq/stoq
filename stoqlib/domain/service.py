@@ -29,7 +29,6 @@ from storm.expr import Join, LeftJoin
 from storm.references import Reference
 from zope.interface import implementer
 
-from stoqlib.database.properties import IdCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
@@ -52,10 +51,14 @@ class Service(Domain):
     """Class responsible to store basic service informations."""
     __storm_table__ = 'service'
 
-    sellable_id = IdCol()
-
     #: The |sellable| for this service
-    sellable = Reference(sellable_id, 'Sellable.id')
+    sellable = Reference('id', 'Sellable.id')
+
+    def __init__(self, **kwargs):
+        assert 'sellable' in kwargs
+        kwargs['id'] = kwargs['sellable'].id
+
+        super(Service, self).__init__(**kwargs)
 
     def remove(self):
         """Removes this service from the database."""
@@ -145,7 +148,7 @@ class ServiceView(Viewable):
 
     tables = [
         Sellable,
-        Join(Service, Service.sellable_id == Sellable.id),
+        Join(Service, Service.id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
     ]

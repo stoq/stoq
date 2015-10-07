@@ -24,7 +24,6 @@ model: Storable<1>
   is_batch: False
   maximum_quantity: Decimal('0.000')
   minimum_quantity: Decimal('0.000')
-  product_id: Product<4>
 
 model: Sale<2>
   cancel_date: None

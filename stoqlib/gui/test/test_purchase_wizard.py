@@ -170,10 +170,7 @@ class TestPurchaseWizard(GUITest):
     def test_no_receive_now_for_batch_items(self):
         with self.sysparam(MANDATORY_CHECK_NUMBER=True):
             sellable = self.create_sellable()
-            product = self.create_product()
-            storable = self.create_storable(is_batch=True)
-            storable.product = product
-            sellable.product = product
+            self.create_storable(product=sellable.product, is_batch=True)
 
             wizard = PurchaseWizard(self.store)
             self.click(wizard.next_button)

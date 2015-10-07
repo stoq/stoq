@@ -132,8 +132,7 @@ class TestProduct(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
         self.sellable = self.create_sellable()
-        self.product = Product(sellable=self.sellable,
-                               store=self.store)
+        self.product = self.sellable.product
 
     def test_description(self):
         self.sellable.description = u"Green shoe"

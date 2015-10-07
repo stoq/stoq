@@ -293,7 +293,13 @@ class TestInventoryItem(DomainTest):
         item.inventory.status = Inventory.STATUS_OPEN
         self.assertEquals(item.adjust(invoice_number=invoice_number), None)
 
-        storable.product = None
+        for i in storable.get_stock_items():
+            for transaction_history in self.store.find(StockTransactionHistory,
+                                                       product_stock_item=i):
+                self.store.remove(transaction_history)
+            self.store.remove(i)
+        self.store.remove(storable)
+
         item.is_adjusted = False
         item.inventory.status = Inventory.STATUS_OPEN
         with self.assertRaises(TypeError) as error:

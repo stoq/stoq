@@ -242,8 +242,7 @@ class InventoryApp(ShellApp):
 
         tables = [
             Sellable,
-            Join(Product, Product.sellable_id == Sellable.id),
-            Join(Storable, Storable.product_id == Product.id)
+            Join(Storable, Storable.id == Product.id),
         ]
         sellables = self.store.using(*tables).find(Sellable)
         with open(filename, 'w') as fh:

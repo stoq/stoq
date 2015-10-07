@@ -716,7 +716,7 @@ class MedicSoldItemsView(Viewable):
 
     tables = [
         Sellable,
-        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(Product, Product.id == Sellable.id),
         LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id),
         LeftJoin(ProductManufacturer,
                  Product.manufacturer_id == ProductManufacturer.id),

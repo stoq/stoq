@@ -140,7 +140,7 @@ class ServicesSearchExtention(SearchExtension):
         manufacturer_name=ProductManufacturer.name
     )
     spec_joins = [
-        LeftJoin(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(Product, Product.id == Sellable.id),
         LeftJoin(ProductManufacturer,
                  Product.manufacturer_id == ProductManufacturer.id)
     ]

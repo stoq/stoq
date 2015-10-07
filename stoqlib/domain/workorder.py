@@ -776,7 +776,7 @@ class WorkOrder(Domain):
         """
         tables = [WorkOrderItem,
                   Join(Sellable, WorkOrderItem.sellable_id == Sellable.id),
-                  LeftJoin(Product, Product.sellable_id == Sellable.id)]
+                  LeftJoin(Product, Product.id == Sellable.id)]
         # Only products that manage stock should be checked for quantity_decreased
         return self.store.using(*tables).find(
             WorkOrderItem,

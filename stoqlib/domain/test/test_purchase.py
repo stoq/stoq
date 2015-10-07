@@ -544,10 +544,7 @@ class TestPurchaseOrder(DomainTest):
         self.assertFalse(order.has_batch_item())
 
         sellable = self.create_sellable()
-        product = self.create_product()
-        storable = self.create_storable(is_batch=True)
-        storable.product = product
-        sellable.product = product
+        self.create_storable(product=sellable.product, is_batch=True)
 
         order = self.create_purchase_order()
         order.add_item(sellable, 2)

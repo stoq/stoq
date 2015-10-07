@@ -418,7 +418,13 @@ class TestProductionMaterial(DomainTest):
         self.assertEqual(material.get_stock_quantity(), 15)
         self.assertEqual(material.allocated, 20)
 
-        storable.product = None
+        for i in storable.get_stock_items():
+            for transaction_history in self.store.find(StockTransactionHistory,
+                                                       product_stock_item=i):
+                self.store.remove(transaction_history)
+            self.store.remove(i)
+        self.store.remove(storable)
+
         material.allocate()
         self.assertEquals(material.allocated, material.needed)
 

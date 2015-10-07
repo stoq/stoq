@@ -449,8 +449,8 @@ class Inventory(Domain):
         store = self.store
         tables = [InventoryItem,
                   Join(Product, Product.id == InventoryItem.product_id),
-                  Join(Storable, Storable.product_id == Product.id),
-                  Join(Sellable, Sellable.id == Product.sellable_id),
+                  Join(Storable, Storable.id == Product.id),
+                  Join(Sellable, Sellable.id == Product.id),
                   LeftJoin(StorableBatch, StorableBatch.id == InventoryItem.batch_id)]
         return store.using(*tables).find(
             (InventoryItem, Storable, Product, Sellable, StorableBatch),
@@ -477,8 +477,8 @@ class Inventory(Domain):
             query = And(query, extra_query)
 
         tables = [Sellable,
-                  Join(Product, Product.sellable_id == Sellable.id),
-                  Join(Storable, Storable.product_id == Product.id),
+                  Join(Product, Product.id == Sellable.id),
+                  Join(Storable, Storable.id == Product.id),
                   LeftJoin(StorableBatch, StorableBatch.storable_id == Storable.id),
                   LeftJoin(ProductStockItem,
                            And(ProductStockItem.storable_id == Storable.id,
@@ -576,7 +576,7 @@ class InventoryItemsView(Viewable):
         InventoryItem,
         Join(Inventory, InventoryItem.inventory_id == Inventory.id),
         Join(Product, Product.id == InventoryItem.product_id),
-        Join(Sellable, Sellable.id == Product.sellable_id),
+        Join(Sellable, Sellable.id == Product.id),
         LeftJoin(StorableBatch, InventoryItem.batch_id == StorableBatch.id),
         Join(LoginUser, Inventory.responsible_id == LoginUser.id),
         Join(Person, LoginUser.person_id == Person.id),

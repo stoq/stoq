@@ -447,10 +447,13 @@ class Sellable(Domain):
     tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
     #: the |product| for this sellable or ``None``
-    product = Reference('id', 'Product.sellable_id', on_remote=True)
+    product = Reference('id', 'Product.id', on_remote=True)
 
     #: the |service| for this sellable or ``None``
-    service = Reference('id', 'Service.sellable_id', on_remote=True)
+    service = Reference('id', 'Service.id', on_remote=True)
+
+    #: the |storable| for this |product|'s sellable
+    product_storable = Reference('id', 'Storable.id', on_remote=True)
 
     default_sale_cfop_id = IdCol(default=None)
 
@@ -514,18 +517,6 @@ class Sellable(Domain):
     def status_str(self):
         """The sellable status as a string"""
         return self.statuses[self.status]
-
-    @property
-    def product_storable(self):
-        """If this is a |product| and has stock, fetch the |storable| for this.
-        This is a shortcut to avoid having to do multiple queries and
-        check if |product| is set before fetching the |storable|.
-
-        :returns: The |storable| or ``None`` if there isn't one
-        """
-        from stoqlib.domain.product import Product, Storable
-        return self.store.find(Storable, And(Storable.product_id == Product.id,
-                                             Product.sellable_id == self.id)).one()
 
     @property
     def unit_description(self):
@@ -633,8 +624,8 @@ class Sellable(Domain):
             return False
 
         return super(Sellable, self).can_remove(
-            skip=[('product', 'sellable_id'),
-                  ('service', 'sellable_id'),
+            skip=[('product', 'id'),
+                  ('service', 'id'),
                   ('client_category_price', 'sellable_id')])
 
     def can_close(self):
@@ -939,17 +930,17 @@ class Sellable(Domain):
         """
         from stoqlib.domain.product import Product, ProductSupplierInfo
         query = And(cls.get_available_sellables_query(store),
-                    cls.id == Product.sellable_id,
+                    cls.id == Product.id,
                     Product.consignment == consigned)
         if storable:
             from stoqlib.domain.product import Storable
             query = And(query,
-                        Sellable.id == Product.sellable_id,
-                        Storable.product_id == Product.id)
+                        Sellable.id == Product.id,
+                        Storable.id == Product.id)
 
         if supplier:
             query = And(query,
-                        Sellable.id == Product.sellable_id,
+                        Sellable.id == Product.id,
                         Product.id == ProductSupplierInfo.product_id,
                         ProductSupplierInfo.supplier_id == supplier.id)
 
