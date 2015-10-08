@@ -92,6 +92,7 @@ scripts = [
 ]
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
+    ('$datadir/csv/ibpt_tables', listfiles('data', 'csv', 'ibpt_tables', '*.csv')),
     ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
     ('$datadir/misc', listfiles('data/misc', '*.*')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),

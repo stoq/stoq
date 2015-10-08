@@ -1,4 +1,5 @@
 recursive-include data/csv *.csv
+recursive-include data/csv/ibpt_tables *.csv
 recursive-include data/glade *.ui
 recursive-include data/misc *.gtkrc
 recursive-include data/uixml *.xml
