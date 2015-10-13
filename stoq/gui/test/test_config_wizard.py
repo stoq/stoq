@@ -61,6 +61,7 @@ class TestFirstTimeConfigWizard(GUITest):
         wizard = FirstTimeConfigWizard(options, self.config)
         return wizard
 
+    @mock.patch('stoq.gui.config.needs_schema_update')
     @mock.patch('stoq.gui.config.test_local_database')
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
@@ -75,7 +76,10 @@ class TestFirstTimeConfigWizard(GUITest):
                    yesno,
                    create_default_profile_settings,
                    execute_command,
-                   test_local_database):
+                   test_local_database,
+                   needs_schema_update):
+        needs_schema_update.return_value = False
+
         DatabaseSettingsStep.model_type = self.fake.DatabaseSettings
         self.settings = self.fake.DatabaseSettings(self.store)
 
@@ -171,6 +175,7 @@ class TestFirstTimeConfigWizard(GUITest):
         self.click(wizard.next_button)
         self.assertTrue(self.config.flushed)
 
+    @mock.patch('stoq.gui.config.needs_schema_update')
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
     @mock.patch('stoq.gui.config.yesno')
@@ -185,7 +190,10 @@ class TestFirstTimeConfigWizard(GUITest):
                     warning,
                     yesno,
                     create_default_profile_settings,
-                    execute_command):
+                    execute_command,
+                    needs_schema_update):
+        needs_schema_update.return_value = False
+
         DatabaseSettingsStep.model_type = self.fake.DatabaseSettings
         self.settings = self.fake.DatabaseSettings(self.store)
         get_hostname.return_value = u'foo_hostname'

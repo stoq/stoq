@@ -63,6 +63,7 @@ from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME,
                                     create_default_profile_settings)
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
+from stoqlib.database.migration import needs_schema_update
 from stoqlib.database.settings import (DatabaseSettings, test_local_database,
                                        validate_database_name,
                                        check_extensions, get_database_version)
@@ -70,6 +71,7 @@ from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (BaseWizard, WizardEditorStep,
                                       WizardStep)
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
@@ -87,6 +89,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.net.socketutils import get_hostname
 from twisted.internet import reactor
 
+from stoq.gui.update import SchemaUpdateWizard
 from stoq.gui.shell.shell import PRIVACY_STRING
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup
@@ -993,6 +996,12 @@ class FirstTimeConfigWizard(BaseWizard):
         parser = get_option_parser()
         db_options, unused_args = parser.parse_args(dbargs)
         self.config.set_from_options(db_options)
+
+        if needs_schema_update():
+            retval = run_dialog(SchemaUpdateWizard, None)
+            if not retval:
+                raise SystemExit()
+
         try:
             setup(self.config,
                   options=self.options,
