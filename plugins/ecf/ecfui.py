@@ -43,7 +43,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    GerencialReportPrintEvent,
                                    GerencialReportCancelEvent,
                                    CheckECFStateEvent,
-                                   HasPendingReduceZ, ECFIsLastSaleEvent,
+                                   HasPendingReduceZ, SaleAvoidCancelEvent,
                                    HasOpenCouponEvent)
 from stoqlib.domain.person import Individual, Company
 from stoqlib.domain.sale import Sale, SaleComment
@@ -80,7 +80,7 @@ class ECFUI(object):
         self._printer = None
 
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
-        ECFIsLastSaleEvent.connect(self._on_ECFIsLastSale)
+        SaleAvoidCancelEvent.connect(self._on_SaleAvoidCancel)
         TillOpenEvent.connect(self._on_TillOpen)
         TillCloseEvent.connect(self._on_TillClose)
         TillAddCashEvent.connect(self._on_TillAddCash)
@@ -613,8 +613,12 @@ class ECFUI(object):
             self._confirm_sale(sale)
             self._set_last_sale(sale, sale.store)
 
-    def _on_ECFIsLastSale(self, sale):
-        return self._is_ecf_last_sale(sale)
+    def _on_SaleAvoidCancel(self, sale):
+        if self._is_ecf_last_sale(sale):
+            info(_("That is last sale in ECF. Return using the menu "
+                   "ECF - Cancel Last Document"))
+            return True
+        return False
 
     def _on_TillOpen(self, till):
         return self._open_till(till)

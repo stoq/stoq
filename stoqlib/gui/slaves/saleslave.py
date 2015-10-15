@@ -30,7 +30,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
-from stoqlib.domain.events import ECFIsLastSaleEvent
+from stoqlib.domain.events import SaleAvoidCancelEvent
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.workorder import WorkOrder
@@ -42,7 +42,7 @@ from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.formatters import get_price_format_str
-from stoqlib.lib.message import yesno, info, warning
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SalesReport
@@ -310,9 +310,9 @@ def return_sale(parent, sale, store):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
 
     cancel_last_coupon = sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON')
-    if cancel_last_coupon and ECFIsLastSaleEvent.emit(sale):
-        info(_("That is last sale in ECF. Return using the menu "
-               "ECF - Cancel Last Document"))
+    # A plugin (e.g. ECF) can avoid the cancelation of a sale
+    # because it wants it to be cancelled using another way
+    if cancel_last_coupon and SaleAvoidCancelEvent.emit(sale):
         return
 
     if sale.can_return():

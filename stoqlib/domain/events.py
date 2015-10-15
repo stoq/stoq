@@ -267,12 +267,15 @@ class DeliveryStatusChangedEvent(Event):
     """
 
 
-class ECFIsLastSaleEvent(Event):
+@public(since="1.10.0")
+class SaleAvoidCancelEvent(Event):
     """
     This event is emitted to compare the last |sale| with the last document
     in ECF.
 
     :param sale: |sale| that will be compared.
+    :return: ``True`` if the cancellation should be avoided or
+        ``False` otherwise
     """
 
 #
