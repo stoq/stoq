@@ -26,6 +26,7 @@
 
 import datetime
 import logging
+import serial
 import sys
 
 import glib
@@ -111,12 +112,19 @@ class FiscalPrinterHelper(gobject.GObject):
         gobject.GObject.__init__(self)
         self.store = store
         self._parent = parent
+        self._previous_day = False
         self._midnight_check_id = None
 
     def open_till(self):
         """Opens the till
         """
-        if Till.get_current(self.store) is not None:
+        try:
+            current_till = Till.get_current(self.store)
+        except TillError as e:
+            warning(str(e))
+            return False
+
+        if current_till is not None:
             warning(_("You already have a till operation opened. "
                       "Close the current Till and open another one."))
             return False
@@ -322,7 +330,7 @@ class FiscalPrinterHelper(gobject.GObject):
         try:
             HasOpenCouponEvent.emit()
             return True
-        except (DeviceError, DriverError) as e:
+        except (DeviceError, DriverError, serial.SerialException) as e:
             warning(str(e))
             self.emit('ecf-changed', False)
             return False
