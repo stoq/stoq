@@ -260,6 +260,7 @@ class ReturnedSale(Domain):
     # When this returned sale was undone
     undo_date = DateTimeCol(default=None)
 
+    # FIXME: Duplicated from Invoice. Remove it
     #: the invoice number for this returning
     invoice_number = IntCol(default=None)
 
