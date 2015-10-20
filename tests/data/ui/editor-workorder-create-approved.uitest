@@ -26,7 +26,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                   item: 'Categoty XXX', selected
                 GtkButton(category_create, expand=True, fill=True):
                 GtkButton(category_edit, expand=True, fill=True):
-              GtkLabel(label19): 'Equipment:'
+              GtkLabel(sellable_lbl): 'Equipment:'
               GtkHBox(hbox3):
                 GtkLabel(sellable_desc, expand=True, fill=True): 'Custom'
                 GtkButton(equip_search_button, fill=True):

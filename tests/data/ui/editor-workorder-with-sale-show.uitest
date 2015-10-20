@@ -25,7 +25,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                   item: 'No category', selected
                 GtkButton(category_create, expand=True, fill=True): insensitive
                 GtkButton(category_edit, expand=True, fill=True): insensitive
-              GtkLabel(label19): 'Equipment:'
+              GtkLabel(sellable_lbl): 'Equipment:'
               GtkHBox(hbox3):
                 GtkLabel(sellable_desc, expand=True, fill=True): 'Description'
                 GtkButton(equip_search_button, fill=True):
