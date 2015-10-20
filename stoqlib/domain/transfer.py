@@ -206,6 +206,7 @@ class TransferOrder(Domain):
     #: The date the order was received
     receival_date = DateTimeCol()
 
+    # FIXME: Duplicated from Invoice. Remove it
     #: The invoice number of the transfer
     invoice_number = IntCol()
 

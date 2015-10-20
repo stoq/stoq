@@ -1,9 +1,9 @@
 ALTER TABLE sale
-    DROP CONSTRAINT sale_invoice_number_key,
+    DROP CONSTRAINT IF EXISTS sale_invoice_number_key,
     ADD CONSTRAINT sale_invoice_number_branch_id_key UNIQUE (invoice_number, branch_id);
 
 ALTER TABLE returned_sale
-    DROP CONSTRAINT returned_sale_invoice_number_key,
+    DROP CONSTRAINT IF EXISTS returned_sale_invoice_number_key,
     ADD CONSTRAINT returned_sale_invoice_number_branch_id_key UNIQUE (invoice_number, branch_id);
 
 -- Alter invoice table

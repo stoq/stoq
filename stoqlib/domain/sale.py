@@ -750,8 +750,11 @@ class Sale(Domain):
     #: :obj:`Sale.get_total_sale_amount()` at the time of confirming the sale,
     total_amount = PriceCol(default=0)
 
+    # FIXME: Duplicated from Invoice. Remove it
     #: invoice number for this sale, appears on bills etc.
     invoice_number = IntCol(default=None)
+
+    # FIXME: Duplicated from Invoice. Remove it
     operation_nature = UnicodeCol(default=u'')
 
     cfop_id = IdCol()

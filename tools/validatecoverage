@@ -314,6 +314,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/migration/domainv1.py', 43),
     ('stoqlib/migration/domainv2.py', 42),
     ('stoqlib/migration/domainv3.py', 39),
+    ('stoqlib/migration/domainv4.py', 43),
     ('stoqlib/migration/parameter.py', 27.27),
     ('stoqlib/net/calendarevents.py', 16.2),
     ('stoqlib/net/gtk2reactor.py', 25.7),

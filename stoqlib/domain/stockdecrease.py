@@ -232,6 +232,7 @@ class StockDecrease(Domain):
 
     cfop = Reference(cfop_id, 'CfopData.id')
 
+    # FIXME: Duplicated from Invoice. Remove it
     #: The invoice number of the stock decrease
     invoice_number = IntCol()
 
