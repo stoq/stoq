@@ -56,6 +56,12 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+def get_sellable_information(sellable):
+    if sellable.code:
+        return "%s - %s" % (sellable.code, sellable.description)
+    return sellable.description
+
+
 class WorkOrderEditor(BaseEditor):
     """An editor for working with |workorder| objects"""
 
@@ -184,7 +190,7 @@ class WorkOrderEditor(BaseEditor):
                 widget.set_sensitive(False)
 
         if self.model.sellable:
-            self.sellable_desc.set_text(self.model.sellable.get_description())
+            self.sellable_desc.set_text(get_sellable_information(self.model.sellable))
 
     def _update_view(self):
         self.proxy.update('status_str')
@@ -307,7 +313,7 @@ class WorkOrderEditor(BaseEditor):
             return
 
         sellable = ret.sellable
-        self.sellable_desc.set_text(sellable.description)
+        self.sellable_desc.set_text(get_sellable_information(sellable))
         self.model.sellable = sellable
         self.quantity.set_sensitive(True)
 

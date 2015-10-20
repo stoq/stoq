@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2013-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -141,9 +141,11 @@ class TestWorkOrderEditor(GUITest):
 
         localnow.return_value = localdatetime(2013, 2, 1)
 
+        sellable = self.create_sellable(code=u'Code')
         workorder = self.create_workorder(description=u'Test equipment')
         workorder.identifier = 666
         workorder.client = self.create_client()
+        workorder.sellable = sellable
         workorder.category = WorkOrderCategory(store=self.store,
                                                name=u'Categoty XXX')
         workorder.defect_reported = u"Defect reported"
