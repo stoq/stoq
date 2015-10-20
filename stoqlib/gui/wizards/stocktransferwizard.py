@@ -28,6 +28,7 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
+from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import Invoice
@@ -154,8 +155,9 @@ class StockTransferItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        sellable_query = Sellable.get_unblocked_sellables_query(self.store,
-                                                                storable=False)
+        sellable_query = And(
+            Sellable.get_unblocked_sellables_query(self.store, storable=False),
+            self.sellable_view.branch_id == self.model.source_branch_id)
         return self.sellable_view, sellable_query
 
     def get_saved_items(self):
