@@ -31,6 +31,8 @@ from storm.expr import Sum, Join, Select, Alias, Coalesce
 
 from stoqlib.database.expr import Date, DateTrunc, Field, NullIf
 from stoqlib.domain.sale import Sale, SaleItem, SaleView
+from stoqlib.domain.base import Domain
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import Sellable
 
 
@@ -42,6 +44,8 @@ def default(obj):
         return str(obj)
     if isinstance(obj, datetime.datetime):
         return obj.isoformat()
+    if isinstance(obj, Domain):
+        return obj.serialize()
 
     raise TypeError("Type %r serializable" % type(obj))
 
@@ -76,6 +80,9 @@ def collect_link_statistics(store):
     tables = [Sale, Join(item_cost, Field('item_cost', 'sale_id') == Sale.id)]
     profit_margin = store.using(*tables).find(column, query).one()
 
+    # Pending Payments
+    payments = store.find(Payment, status=Payment.STATUS_PENDING)
+
     # Sale chart
     columns = (DateTrunc(u'day', Sale.confirm_date), Sum(Sale.total_amount))
     sale_data = store.find(columns, query)
@@ -97,6 +104,7 @@ def collect_link_statistics(store):
         profit_margin=format(float(profit_margin), '.2f'),
         best_selling=list(product_data),
         sales_chart=list(sale_data),
+        payments=list(payments),
         timeline=_collect_timeline(store),
         timestamp=datetime.datetime.now())
     return json.dumps(data, default=default)

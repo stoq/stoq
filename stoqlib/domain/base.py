@@ -38,7 +38,7 @@ from storm.store import AutoReload, PENDING_ADD, PENDING_REMOVE
 
 from stoqlib.database.expr import CharLength, Field, LPad, UnionAll
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import IntCol, IdCol, UnicodeCol
+from stoqlib.database.properties import IntCol, IdCol, UnicodeCol, Identifier
 from stoqlib.domain.events import DomainMergeEvent
 from stoqlib.domain.system import TransactionEntry
 
@@ -159,6 +159,19 @@ class Domain(ORMObject):
     #
     # Public API
     #
+
+    def serialize(self):
+        """Returns the object as a dictionary"""
+        dictionary = {}
+        for cls in self.__class__.__mro__:
+            for key, value in cls.__dict__.iteritems():
+                if isinstance(value, Property):
+                    attribute = getattr(self, key)
+                    # Handle Identifier Columns as string instead of int
+                    if type(attribute) == Identifier:
+                        attribute = str(attribute)
+                    dictionary[key] = attribute
+        return dictionary
 
     def on_create(self):
         """Called when *self* is about to be created on the database

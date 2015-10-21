@@ -24,6 +24,8 @@
 
 __tests__ = 'stoqlib/domain/base.py'
 
+import json
+
 import mock
 from storm.exceptions import NotOneError
 from storm.references import Reference
@@ -272,3 +274,35 @@ class TestSelect(DomainTest):
         new_dung = Dung(store=self.store)
         new_dung.identifier = Dung.get_temporary_identifier(self.store)
         self.assertEquals(new_dung.identifier, -2)
+
+    def test_serialize(self):
+        ding = Ding(store=self.store, str_field=u'Sambiquira', int_field=666)
+        self.assertEquals(ding.serialize(), {
+            'id': ding.id,
+            'te_id': ding.te_id,
+            'str_field': 'Sambiquira',
+            'int_field': 666,
+        })
+
+        dong = Dong(store=self.store, bool_field=False)
+        self.assertEquals(dong.serialize(), {
+            'id': dong.id,
+            'te_id': dong.te_id,
+            'bool_field': False,
+            'ding_id': None,
+        })
+
+        dung = Dung(store=self.store)
+        dung.identifier = Dung.get_temporary_identifier(self.store)
+        dung.ding = ding
+        self.assertEquals(dung.serialize(), {
+            'id': dung.id,
+            'te_id': dung.te_id,
+            'identifier': str(dung.identifier),
+            'ding_id': ding.id,
+        })
+
+        # json.loads can properly load a json.dumped from serialize
+        json.loads(json.dumps(ding.serialize()))
+        json.loads(json.dumps(dong.serialize()))
+        json.loads(json.dumps(dung.serialize()))
