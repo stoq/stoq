@@ -181,6 +181,10 @@ class ServicesApp(ShellApp):
         'rejected': Eq(WorkOrder.is_rejected, True),
     }
 
+    def __init__(self, *args, **kwargs):
+        self._other_kinds = {}
+        super(ServicesApp, self).__init__(*args, **kwargs)
+
     #
     # Application
     #
@@ -419,6 +423,29 @@ class ServicesApp(ShellApp):
         dfilter.start_date.set_date(date)
         self.refresh()
 
+    def add_filters(self, filter_items, kind, mapper):
+        """Add additional filter option.
+
+        :param filter_items: list of tuple (name, value, color)
+        :param kind:the kind of filter
+        :param mapper: a dictionary containing the query for each option
+        """
+        for item in filter_items:
+            option = _FilterItem(item[0], item[1], color=item[2])
+            self.main_filter.combo.append_item(option.name, option)
+        self._other_kinds[kind] = mapper
+
+    def new_order(self, category=None, available_categories=None):
+        with api.new_store() as store:
+            work_order = self.run_dialog(WorkOrderEditor, store,
+                                         category=store.fetch(category),
+                                         available_categories=available_categories)
+
+        if store.committed:
+            self._update_view(select_item=work_order)
+            # A category may have been created on the editor
+            self._update_filters()
+
     #
     # Private
     #
@@ -438,11 +465,13 @@ class ServicesApp(ShellApp):
     def _get_main_query(self, state):
         item = state.value
         kind, value = item.value.split(':')
-        if kind == 'category':
+        if kind in self._other_kinds:
+            return self._other_kinds[kind][value]
+        elif kind == 'category':
             return WorkOrder.category_id == item.id
-        if kind == 'status':
+        elif kind == 'status':
             return self._status_query_mapper[value]
-        if kind == 'flag':
+        elif kind == 'flag':
             return self._flags_query_mapper[value]
         else:
             raise AssertionError(kind, value)
@@ -529,17 +558,6 @@ class ServicesApp(ShellApp):
 
         self.main_filter.update_values(
             [(item.name, item) for item in options])
-
-    def new_order(self, category=None, available_categories=None):
-        with api.new_store() as store:
-            work_order = self.run_dialog(WorkOrderEditor, store,
-                                         category=store.fetch(category),
-                                         available_categories=available_categories)
-
-        if store.committed:
-            self._update_view(select_item=work_order)
-            # A category may have been created on the editor
-            self._update_filters()
 
     def _edit_order(self, work_order=None):
         if work_order is None:
