@@ -182,7 +182,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             if to_return > 0:
                 final.return_consignment(to_return)
             if to_sold > 0:
-                total_charged = final.cost * to_sold
+                total_charged += final.cost * to_sold
 
         if total_charged == 0:
             #FIXME Gramatical error
