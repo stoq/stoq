@@ -245,8 +245,8 @@ class FiscalPrinterHelper(gobject.GObject):
 
         try:
             CouponCreatedEvent.emit(coupon, sale)
-        except (DriverError, DeviceError):
-            warning(_("It wasn't possible to open the coupon"))
+        except Exception as e:
+            warning(_("It wasn't possible to open the coupon"), str(e))
             coupon = None
 
         return coupon
