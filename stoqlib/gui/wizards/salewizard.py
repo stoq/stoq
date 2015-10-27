@@ -990,7 +990,9 @@ class ConfirmSaleWizard(BaseWizard):
         #        have a payer, we won't be able to print bills/booklets.
         group.payer = self.model.client and self.model.client.person
 
-        ConfirmSaleWizardFinishEvent.emit(self.model)
+        retval = ConfirmSaleWizardFinishEvent.emit(self.model)
+        if retval is not None:
+            self.retval = retval
 
         if sysparam.get_bool('PRINT_SALE_DETAILS_ON_POS'):
             self.print_sale_details()
