@@ -427,6 +427,32 @@ class StoqCommandHandler:
                          help='Execute SQL command',
                          dest='command')
 
+    def cmd_serve(self, options):
+        """Serve a Stoq XMLRPC server"""
+        from twisted.internet import reactor
+        from stoqlib.lib.daemonutils import DaemonManager
+
+        print('* Starting XMLRPC server...')
+
+        self._read_config(options, register_station=False)
+        port = options.serverport and int(options.serverport)
+        dm = DaemonManager(port=port)
+
+        def on_server_running(daemon_manager):
+            uri = daemon_manager.base_uri
+            print('The XMLRPC server is running on ' + uri)
+
+        defer = dm.start()
+        defer.addCallback(on_server_running)
+
+        reactor.run()
+
+    def opt_serve(self, parser, group):
+        group.add_option('', '--serverport',
+                         action='store',
+                         help='Port to serve the server',
+                         dest='serverport')
+
     def cmd_import(self, options):
         """Import data into Stoq"""
         self._read_config(options, register_station=False)
