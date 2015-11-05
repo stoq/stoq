@@ -23,6 +23,8 @@
 ##
 
 import logging
+import subprocess
+import sys
 
 from twisted.internet import reactor
 from twisted.web import xmlrpc, server
@@ -41,6 +43,18 @@ class XMLRPCResource(xmlrpc.XMLRPC):
     def xmlrpc_start_webservice(self):
         from stoqlib.net.webserver import WebResource
         self._root.putChild('web', WebResource())
+
+    def xmlrpc_dbadmin(self, cmd_args, stdin=None):
+        if sys.argv[0].endswith('.egg'):
+            args = [sys.executable, sys.argv[0]]
+        else:
+            args = ['stoq']
+
+        args.append('dbadmin')
+        args.extend(cmd_args)
+        p = subprocess.Popen(args, stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return p.communicate(input=stdin)
 
 
 class XMLRPCService(server.Site):

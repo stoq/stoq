@@ -33,40 +33,45 @@ from stoqlib.lib.threadutils import terminate_thread
 
 
 class Daemon(threading.Thread):
-    def __init__(self):
+    def __init__(self, port=None):
         threading.Thread.__init__(self)
 
-        self.port = None
+        self.port = port
+        if self.port is None and is_developer_mode():
+            self.port = 8080
         # Indicate that this Thread is a daemon. Accordingly to the
         # documentation, the entire python program exits when no alive
         # non-daemon threads are left.
         self.daemon = True
+        self.running = False
 
     #
     #  Public API
     #
 
     def run(self):
-        port = 8080 if is_developer_mode() else None
-        self._xmlrpc = XMLRPCService(port)
+        self._xmlrpc = XMLRPCService(self.port)
         self._xmlrpc.serve()
 
         self.port = self._xmlrpc.port
+        self.running = True
 
     def stop(self):
         terminate_thread(self)
         self.port = None
+        self.running = False
 
 
 class DaemonManager(object):
-    def __init__(self):
+    def __init__(self, port=None):
+        self._port = port
         self._daemon = None
 
     def start(self):
         if self._daemon and self._daemon.port is not None:
             return defer.succeed(self)
 
-        self._daemon = Daemon()
+        self._daemon = Daemon(port=self._port)
         self._daemon.start()
 
         reactor.callLater(0.1, self._check_active)
@@ -80,7 +85,7 @@ class DaemonManager(object):
         self._daemon.stop()
 
     def _check_active(self):
-        if self._daemon is None or self._daemon.port is None:
+        if self._daemon is None or not self._daemon.running:
             reactor.callLater(0.1, self._check_active)
             return
 
