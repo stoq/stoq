@@ -18,7 +18,15 @@ class PropertyColumnDocumenter(AttributeDocumenter):
         col = self.parent.__dict__.get(self.object_name)
         if col is not None:
             if isinstance(col, Reference):
-                name = col._remote_key.split('.')[0]
+                remote_key = col._remote_key
+                if isinstance(remote_key, tuple):
+                    remote_key = remote_key[0]
+
+                if isinstance(remote_key, PropertyColumn):
+                    name = remote_key.cls.__name__
+                else:
+                    name = remote_key.split('.')[0]
+
                 value = u'**reference to:** *%s*' % (name, )
             else:
                 name = col.__class__.__name__
