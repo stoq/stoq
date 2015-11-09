@@ -1,8 +1,8 @@
 PACKAGE=stoq
-SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 API_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/api/stoq/$(VERSION)/
 MANUAL_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/manual/$(VERSION)/
+SCHEMA_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/schema/$(VERSION)/
 TEST_MODULES=stoq stoqlib plugins tests
 
 # http://stackoverflow.com/questions/2214575/passing-arguments-to-make-run
@@ -27,17 +27,21 @@ manual:
 	mkdir -p docs/manual/pt_BR/_build/html
 	yelp-build html -o docs/manual/pt_BR/_build/html docs/manual/pt_BR
 
+schemadocs:
+	mkdir -p docs/schema/_build/html
+	schemaspy -t pgsql -host $(PGHOST) -db stoq_schema -u $(USER) -s public \
+	    -o docs/schema/_build/html -norows
+	sed -i "s|$(JS_AD)||" docs/schema/_build/html/*html
+	sed -i "s|$(JS_AD)||" docs/schema/_build/html/tables/*html
+
 upload-apidocs:
 	cd docs/api/_build/html && rsync -avz --del . $(API_DOC_DIR)
 
 upload-manual:
 	cd docs/manual/pt_BR/_build/html && rsync -avz --del . $(MANUAL_DOC_DIR)
 
-schemadocs:
-	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR) \
-	    -X '(.*\.te_created_id)|(.*\.te_modified_id)' -norows
-	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/*html
-	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/tables/*html
+upload-schemadocs:
+	cd docs/schema/_build/html && rsync -avz --del . $(SCHEMA_DOC_DIR)
 
 clean:
 	@find . -iname '*pyc' -delete
@@ -81,5 +85,5 @@ jenkins: check-source-all
 	git show|tools/diff-coverage jenkins-test/stoq-$$VERSION/coverage.xml
 
 include utils/utils.mk
-.PHONY: howto apidocs manual upload-apidocs upload-manual schemadocs
+.PHONY: howto apidocs manual schemadocs upload-apidocs upload-manual upload-schemadocs
 .PHONY: clean check check-failed coverage jenkins external deb
