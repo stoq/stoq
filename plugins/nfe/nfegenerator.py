@@ -305,7 +305,6 @@ class NFeGenerator(object):
             item_number += 1
             nfe_item = NFeProduct(item_number)
 
-            discount = operation_item.item_discount
             sellable = operation_item.sellable
             product = sellable.product
             if product:
@@ -317,22 +316,16 @@ class NFeGenerator(object):
                 ex_tipi = ''
                 genero = ''
 
-            if operation_item.price > operation_item.base_price:
-                price = operation_item.price
-            else:
-                price = operation_item.base_price
-
             nfe_item.add_product_details(sellable.code,
                                          sellable.get_description(),
                                          operation_item.nfe_cfop_code,
                                          operation_item.quantity,
-                                         price,
+                                         operation_item.price,
                                          sellable.unit_description,
                                          barcode=sellable.barcode,
                                          ncm=ncm,
                                          ex_tipi=ex_tipi,
-                                         genero=genero,
-                                         discount=discount)
+                                         genero=genero)
 
             nfe_item.add_tax_details(operation_item, self._order.branch.crt, coupon)
             self._nfe_data.append(nfe_item)
@@ -902,10 +895,9 @@ class NFeProduct(BaseNFeXMLGroup):
         self.element.set('nItem', str(number))
 
     def add_product_details(self, code, description, cfop, quantity, price,
-                            unit, barcode, ncm, ex_tipi, genero, discount):
+                            unit, barcode, ncm, ex_tipi, genero):
         details = NFeProductDetails(code, description, cfop, quantity, price,
-                                    unit, barcode, ncm, ex_tipi, genero,
-                                    discount)
+                                    unit, barcode, ncm, ex_tipi, genero)
         self.append(details)
 
     def add_tax_details(self, operation_item, crt, coupon=None):
@@ -1022,7 +1014,7 @@ class NFeProductDetails(BaseNFeXMLGroup):
     txttag = 'I'
 
     def __init__(self, code, description, cfop, quantity, price, unit,
-                 barcode, ncm, ex_tipi, genero, discount):
+                 barcode, ncm, ex_tipi, genero):
         BaseNFeXMLGroup.__init__(self)
         self.set_attr('cProd', code)
 
@@ -1040,8 +1032,6 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('vUnCom', self.format_value(price, precision=4))
         self.set_attr('vUnTrib', self.format_value(price, precision=4))
         self.set_attr('vProd', self.format_value(quantity * price))
-        if discount > 0:
-            self.set_attr('vDesc', self.format_value(discount))
         self.set_attr('qCom', self.format_value(quantity, precision=4))
         self.set_attr('qTrib', self.format_value(quantity, precision=4))
         self.set_attr('uTrib', unit or 'un')
@@ -1752,20 +1742,16 @@ class NFeICMSTotal(BaseNFeXMLGroup):
                             'discount_total')
         bc_total = bc_st_total = prod_total = Decimal('0')
         icms_total = icms_st_total = ipi_total = Decimal('0')
+        # Keep the discount total equal to 0.
+        # The discount was already applied on price of each item.
         discount_total = Decimal('0')
         for item in operation.get_items():
             bc_total += item.icms_info.v_bc or 0
             bc_st_total += item.icms_info.v_bc_st or 0
-
-            if item.price > item.base_price:
-                prod_total += item.quantity * item.price
-            else:
-                prod_total += item.quantity * item.base_price
-
+            prod_total += item.quantity * item.price
             icms_total += item.icms_info.v_icms or 0
             icms_st_total += item.icms_info.v_icms_st or 0
             ipi_total += item.ipi_info.v_ipi or 0
-            discount_total += item.item_discount or 0
         totals = Totals(bc_total, bc_st_total, icms_total, icms_st_total,
                         ipi_total, prod_total, discount_total)
         return totals
