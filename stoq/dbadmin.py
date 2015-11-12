@@ -24,6 +24,7 @@
 ##
 """ stoqdbadmin: Command line utility to manipulate the database.  """
 
+import logging
 import optparse
 import sys
 
@@ -241,7 +242,7 @@ class StoqCommandHandler:
                 return
 
             if plugin_name not in manager.available_plugins_names:
-                self._download_plugin(manager, plugin_name)
+                self._run_task(manager.download_plugin(plugin_name))
 
             try:
                 manager.install_plugin(plugin_name)
@@ -249,7 +250,7 @@ class StoqCommandHandler:
                 print('ERROR: %s' % (str(err), ))
                 return
 
-    def _download_plugin(self, manager, plugin_name):
+    def _provide_app_info(self):
         # FIXME: The webservice need the IAppInfo provided to get the stoq
         # version. We cannot do that workaround there because we don't want to
         # import stoq inside stoqlib. Either way, this code to download the
@@ -262,15 +263,25 @@ class StoqCommandHandler:
         info.set("version", stoq.version)
         provide_utility(IAppInfo, info)
 
+    def _setup_logging(self):
+        ch = logging.StreamHandler(sys.stdout)
+        ch.setLevel(logging.WARNING)
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+
+        root = logging.getLogger()
+        root.setLevel(logging.WARNING)
+        root.addHandler(ch)
+
+    def _run_task(self, deferred):
         from twisted.internet import reactor
-        d = manager.download_plugin(plugin_name)
 
         def stop_reactor(*args):
             if reactor.running:
                 reactor.stop()
 
-        d.addCallback(stop_reactor)
-        d.addErrback(stop_reactor)
+        deferred.addCallback(stop_reactor)
+        deferred.addErrback(stop_reactor)
         reactor.run()
 
     def _register_station(self):
@@ -396,8 +407,27 @@ class StoqCommandHandler:
         self._read_config(options, register_station=False,
                           check_schema=False,
                           load_plugins=False)
+        self._provide_app_info()
+        self._setup_logging()
 
         self._enable_plugins([unicode(plugin_name)])
+
+    def cmd_update_plugins(self, options):
+        """Update plugins on Stoq"""
+        self._read_config(options, register_station=False,
+                          check_schema=False,
+                          load_plugins=False)
+        self._provide_app_info()
+        self._setup_logging()
+
+        from twisted.internet.defer import DeferredList
+        from stoqlib.lib.pluginmanager import get_plugin_manager
+        manager = get_plugin_manager()
+
+        deferred_list = [
+            manager.download_plugin(egg_plugin)
+            for egg_plugin in manager.egg_plugins_names]
+        self._run_task(DeferredList(deferred_list))
 
     def cmd_generate_sintegra(self, options, filename, month):
         """Generate a sintegra file"""
