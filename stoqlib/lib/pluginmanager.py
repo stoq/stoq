@@ -105,6 +105,12 @@ class PluginManager(object):
     #
 
     @property
+    def egg_plugins_names(self):
+        """A list of names of all plugins installed as eggs"""
+        default_store = get_default_store()
+        return [p.plugin_name for p in default_store.find(PluginEgg)]
+
+    @property
     def available_plugins_names(self):
         """A list of names of all available plugins"""
         return list(self._plugin_descriptions.keys())
@@ -225,16 +231,29 @@ class PluginManager(object):
             md5sum = unicode(md5sum_for_filename(filename))
             with open(filename) as f:
                 with new_store() as store:
-                    PluginEgg(
-                        store=store,
-                        plugin_name=plugin_name,
-                        egg_md5sum=md5sum,
-                        egg_content=f.read(),
-                    )
+                    existing_egg = store.find(PluginEgg,
+                                              plugin_name=plugin_name).one()
+                    if existing_egg is not None:
+                        existing_egg.egg_content = f.read()
+                        existing_egg.md5sum = md5sum
+                    else:
+                        PluginEgg(
+                            store=store,
+                            plugin_name=plugin_name,
+                            egg_md5sum=md5sum,
+                            egg_content=f.read(),
+                        )
+
             self._reload()
 
+        default_store = get_default_store()
+        existing_egg = default_store.find(PluginEgg,
+                                          plugin_name=plugin_name).one()
+        md5sum = existing_egg and existing_egg.egg_md5sum
+
         webapi = WebService()
-        return webapi.download_plugin(plugin_name, callback=callback)
+        return webapi.download_plugin(plugin_name, callback=callback,
+                                      md5sum=md5sum)
 
     def get_plugin(self, plugin_name):
         """Returns a plugin by it's name

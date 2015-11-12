@@ -183,7 +183,8 @@ class WebService(object):
             d.addCallback(callback)
         return d
 
-    def _do_download_request(self, document, callback=None, **params):
+    def _do_download_request(self, document, callback=None, errback=None,
+                             **params):
         url = '%s/%s?%s' % (
             self.API_SERVER, document, urllib.urlencode(params))
         headers = self._get_headers()
@@ -192,18 +193,19 @@ class WebService(object):
         downloader = HTTPDownloader(
             url, file_.name, agent=headers['User-Agent'], headers=headers)
 
-        def errback(error):
-            # TODO: Handle possible errors
-            log.warning(str(error))
+        def errback_(error):
+            if errback is not None:
+                code = getattr(downloader, 'status', None)
+                errback(code, error)
 
         def callback_(res):
             if getattr(downloader, 'status', None) == '200' and callback:
                 callback(file_.name)
 
             # Remove the temporary file after the callback has handled it
-            os.remove(file_)
+            os.remove(file_.name)
 
-        downloader.deferred.addErrback(errback)
+        downloader.deferred.addErrback(errback_)
         downloader.deferred.addCallback(callback_)
 
         parsed = urlparse.urlparse(url)
@@ -316,5 +318,17 @@ class WebService(object):
             'md5': md5sum or '',
             'version': self._get_version(),
         }
+
+        def errback(code, error):
+            if code == '204':
+                log.info("No update needed. The plugin is already up to date.")
+            else:
+                return_messages = {
+                    '400': "Plugin not available for this stoq version",
+                    '404': "Plugin does not exist",
+                    '405': "This instance has not acquired the specified plugin",
+                }
+                log.warning(return_messages.get(code, str(error)))
+
         return self._do_download_request(
-            'api/eggs', callback=callback, **params)
+            'api/eggs', callback=callback, errback=errback, **params)
