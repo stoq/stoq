@@ -1,3 +1,9 @@
+stoq (1.10.1) trusty; urgency=low
+
+  * 1.10.1 Bugfix release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Thu, 12 Nov 2015 17:08:06 -0200
+
 stoq (1.10) trusty; urgency=low
 
   * 1.10 Final release
