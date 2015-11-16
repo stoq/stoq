@@ -31,8 +31,9 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPluginManagerDialog(GUITest):
+    @mock.patch('stoqlib.gui.dialogs.pluginsdialog.info')
     @mock.patch('stoqlib.gui.dialogs.pluginsdialog.yesno')
-    def test_confirm(self, yesno):
+    def test_confirm(self, yesno, info):
         yesno.return_value = True
 
         dialog = PluginManagerDialog(self.store)

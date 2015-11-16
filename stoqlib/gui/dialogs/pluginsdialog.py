@@ -34,7 +34,7 @@ from stoqlib.database.runtime import get_default_store
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.stockicons import STOQ_PLUGIN
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
@@ -124,6 +124,9 @@ class PluginManagerDialog(BasicDialog):
         default_store.commit()
         self._manager.install_plugin(plugin_name)
         self._manager.activate_plugin(plugin_name)
+
+        info(_("The plugin %s was successfully activated. Please, restart all "
+               "Stoq instances connected to this installation.") % (plugin_name, ))
 
     #
     # BasicDialog

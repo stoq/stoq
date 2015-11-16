@@ -68,12 +68,21 @@ class PluginDescription(object):
 
         self.name = unicode(os.path.basename(filename).split('.')[0])
         self.entry = config.get('Plugin', 'Module')
-        self.dependencies = []
-        if config.has_option('Plugin', 'Dependencies'):
-            dependencies = config.get('Plugin', 'Dependencies').split(',')
-            for dependency in dependencies:
-                self.dependencies.append(unicode(dependency.strip()))
         self.filename = filename
+
+        if config.has_option('Plugin', 'Dependencies'):
+            self.dependencies = [
+                unicode(dependency.strip()) for dependency in
+                config.get('Plugin', 'Dependencies').split(',')]
+        else:
+            self.dependencies = []
+
+        if config.has_option('Plugin', 'Replaces'):
+            self.replaces = [
+                unicode(replace.strip()) for replace in
+                config.get('Plugin', 'Replaces').split(',')]
+        else:
+            self.replaces = []
 
         settings = get_settings()
         lang = settings.get('user-locale', None)
@@ -365,8 +374,19 @@ class PluginManager(object):
         call, without having to get and activate one by one.
         """
         available_plugins = self.available_plugins_names
+        installed_plugins = self.installed_plugins_names
 
-        for plugin_name in self.installed_plugins_names:
+        replace_dict = {}
+        for plugin_name in available_plugins:
+            for replace in self._plugin_descriptions[plugin_name].replaces:
+                replace_list = replace_dict.setdefault(replace, [])
+                replace_list.append(plugin_name)
+
+        for plugin_name in installed_plugins:
+            if any(will_replace in installed_plugins for
+                   will_replace in replace_dict.get(plugin_name, [])):
+                continue
+
             if not plugin_name in available_plugins:
                 raise AssertionError(
                     "Plugin %r not found on the system. "

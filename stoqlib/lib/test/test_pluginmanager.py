@@ -50,6 +50,7 @@ Version=1
 Name=Test plugin
 Description=Test plugin description
 Dependencies=test1, test2, test3
+Replaces=test4
 Authors=Stoq Team <stoq-devel@async.com.br>
 Copyright=Copyright © 2007 Async Open Source
 Website=http://www.stoq.com.br/
@@ -177,6 +178,9 @@ class TestPluginManager(DomainTest):
             # bar didn't exist so it should have been created
             with open(os.path.join(plugins_dir, 'bar.egg')) as f:
                 self.assertEqual(f.read(), 'bar_content')
+
+            self.assertEqual(set(self._manager.egg_plugins_names),
+                             {'foobar', 'foo', 'bar'})
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -332,16 +336,25 @@ class TestPluginManager(DomainTest):
         dep_plugin.reset()
 
     def test_activate_installed_plugins(self):
+        fake_desc = mock.Mock()
+        fake_desc.replaces = []
+        fake_desc_c = mock.Mock()
+        fake_desc_c.replaces = ['e']
+
         with contextlib.nested(
+                mock.patch.dict(self._manager._plugin_descriptions,
+                                {'a': fake_desc, 'b': fake_desc,
+                                 'c': fake_desc_c, 'd': fake_desc,
+                                 'e': fake_desc}),
                 mock.patch.object(PluginManager, 'available_plugins_names'),
                 mock.patch.object(PluginManager, 'installed_plugins_names'),
                 mock.patch.object(PluginManager, 'activate_plugin')) as ctx:
-            available_plugins, installed_plugins, activate_plugin = ctx
+            desc, available_plugins, installed_plugins, activate_plugin = ctx
 
             available_plugins.__get__ = mock.Mock(
-                return_value=['a', 'b', 'c', 'd'])
+                return_value=['a', 'b', 'c', 'd', 'e'])
             installed_plugins.__get__ = mock.Mock(
-                return_value=['b', 'c'])
+                return_value=['b', 'c', 'e'])
 
             self._manager.activate_installed_plugins()
 
@@ -350,12 +363,12 @@ class TestPluginManager(DomainTest):
                 [mock.call('b'), mock.call('c')])
 
             installed_plugins.__get__ = mock.Mock(
-                return_value=['b', 'c', 'e'])
+                return_value=['b', 'c', 'f'])
 
             with self.assertRaisesRegexp(
                     AssertionError,
-                    ("Plugin 'e' not found on the system. "
-                     "Available plugins: \['a', 'b', 'c', 'd'\]")):
+                    ("Plugin 'f' not found on the system. "
+                     "Available plugins: \['a', 'b', 'c', 'd', 'e'\]")):
                 self._manager.activate_installed_plugins()
 
     #
