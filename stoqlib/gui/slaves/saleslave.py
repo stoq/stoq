@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Slaves for sale management """
+from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import ValidationError
@@ -174,6 +175,11 @@ class SaleDiscountSlave(BaseEditorSlave):
         if not self.discount_value.is_sensitive() or self._proxy is None:
             return
         percentage = quantize(value * 100 / self.model.get_sale_subtotal())
+        # If the quantized percentage value is 100, the value may still be lower
+        # then the subtotal. In this case, lets consider the discount percentage
+        # to be 99.99 (So that we can close a sale for 0.01, for instance)
+        if percentage == 100 and value < self.model.get_sale_subtotal():
+            percentage = Decimal('99.99')
         return self._validate_percentage(percentage, _(u'Discount'))
 
     def on_discount_perc__icon_press(self, entry, icon_pos, event):
