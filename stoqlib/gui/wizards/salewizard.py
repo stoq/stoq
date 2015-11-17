@@ -625,8 +625,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.client.set_property('mandatory', mandatory_client)
 
         marker('Filling sales persons')
-        salespersons = self.store.find(SalesPerson)
-        self.salesperson.prefill(api.for_person_combo(salespersons))
+        salespersons = SalesPerson.get_active_salespersons(self.store)
+        self.salesperson.prefill(salespersons)
         marker('Finished filling sales persons')
 
         marker('Read parameter')

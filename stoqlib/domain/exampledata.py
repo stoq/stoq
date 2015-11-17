@@ -203,10 +203,10 @@ class ExampleCreator(object):
                         role=self.create_employee_role(),
                         store=self.store)
 
-    def create_sales_person(self, person=None):
+    def create_sales_person(self, person=None, name=u'SalesPerson'):
         from stoqlib.domain.person import SalesPerson
         if person is None:
-            employee = self.create_employee()
+            employee = self.create_employee(name=name)
             person = employee.person
         return SalesPerson(person=person, store=self.store)
 
