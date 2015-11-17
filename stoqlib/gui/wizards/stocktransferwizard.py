@@ -70,6 +70,8 @@ class StockTransferInitialStep(WizardEditorStep):
 
     def __init__(self, wizard, store, model):
         self.branch = api.get_current_branch(store)
+        manager = get_plugin_manager()
+        self._nfe_is_active = manager.is_active('nfe')
         WizardEditorStep.__init__(self, store, wizard, model)
 
     def setup_proxies(self):
@@ -87,9 +89,7 @@ class StockTransferInitialStep(WizardEditorStep):
         employees = self.store.find(Employee)
         self.source_responsible.prefill(api.for_person_combo(employees))
 
-        manager = get_plugin_manager()
-        nfe_is_active = manager.is_active('nfe')
-        self.invoice_number.set_property('mandatory', nfe_is_active)
+        self.invoice_number.set_property('mandatory', self._nfe_is_active)
 
         # Set an initial invoice number to TransferOrder and Invoice
         if not self.model.invoice_number:
@@ -97,6 +97,8 @@ class StockTransferInitialStep(WizardEditorStep):
             self.model.invoice_number = new_invoice_number
 
     def _validate_destination_branch(self):
+        if not self._nfe_is_active:
+            return True
         other_branch = self.destination_branch.read()
 
         if not self.branch.is_from_same_company(other_branch):
