@@ -18,11 +18,11 @@ GtkDialog(main_dialog.toplevel): title='Salesperson change', hidden
               item: 'Administrator'
               item: 'Cleusa Blanc Ferreira Norbiato'
               item: 'Deivis Alexandre Junior'
+              item: 'First sales person', selected
               item: 'Maria Aparecida Ardana'
               item: 'Osvaldo Denadai Marin'
-              item: 'SalesPerson', selected
-              item: 'SalesPerson (1)'
-              item: 'SalesPerson (2)'
+              item: 'SalesPerson'
+              item: 'Second sales person'
             ProxyLabel(client_lbl): 'Client:', hidden
             GtkHBox(client_box): hidden
               ProxyComboEntry(client, expand=True, fill=True):

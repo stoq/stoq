@@ -222,8 +222,8 @@ class TestSaleClientEditor(GUITest):
 
 class TestSalesPersonEditor(GUITest):
     def test_change_salesperson(self):
-        salesperson1 = self.create_sales_person()
-        salesperson2 = self.create_sales_person()
+        salesperson1 = self.create_sales_person(name=u'First sales person')
+        salesperson2 = self.create_sales_person(name=u'Second sales person')
         sale = self.create_sale()
 
         sale.identifier = 1337

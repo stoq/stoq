@@ -1082,9 +1082,9 @@ class TestSalesPerson(_PersonFacetTest, DomainTest):
     facet = SalesPerson
 
     def test_getactive_salespersons(self):
-        count = SalesPerson.get_active_salespersons(self.store).count()
+        count = len(SalesPerson.get_active_salespersons(self.store))
         salesperson = self.create_sales_person()
-        one_more = salesperson.get_active_salespersons(self.store).count()
+        one_more = len(salesperson.get_active_salespersons(self.store))
         assert count + 1 == one_more
 
     def test_get_status_string(self):

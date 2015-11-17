@@ -338,7 +338,7 @@ class SaleClientEditor(BaseEditor):
 
     def _fill_salesperson_combo(self):
         salespersons = SalesPerson.get_active_salespersons(self.store)
-        self.salesperson_combo.prefill(api.for_combo(salespersons))
+        self.salesperson_combo.prefill(salespersons)
 
     def on_client__changed(self, widget):
         self.toogle_client_details()

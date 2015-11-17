@@ -1792,22 +1792,39 @@ class SalesPerson(Domain):
 
     @classmethod
     def get_active_salespersons(cls, store):
-        """Get a list of all active salespersons"""
-        query = Eq(cls.is_active, True)
-        return store.find(cls, query)
+        """Get a list of all active salespersons
+
+        When the salesperson is also a user in the system, only the users that
+        have access to the current branch will be returned
+
+        This will returna list of sales person ready to be used with a
+        combo.prefill method
+        """
+        tables = [SalesPerson,
+                  Join(Person, Person.id == SalesPerson.person_id),
+                  LeftJoin(LoginUser, LoginUser.person_id == SalesPerson.person_id),
+                  LeftJoin(UserBranchAccess, UserBranchAccess.user_id == LoginUser.id)]
+        current_branch = get_current_branch(store)
+        query = And(
+            Eq(cls.is_active, True),
+            Or(UserBranchAccess.branch_id == current_branch.id,
+               Eq(UserBranchAccess.branch_id, None)))
+        items = store.using(*tables).find((Person.name, SalesPerson), query)
+        return locale_sorted(items, key=operator.itemgetter(0))
 
     @classmethod
     def get_active_items(cls, store):
         """
         Return a list of active items (name, id)
 
+        When the salesperson is also a user in the system, only the users that
+        have access to the current branch will be returned
+
         :param store: a store
         :returns: the items
         """
-        join1 = LeftJoin(Person, Person.id == cls.person_id)
-        items = store.using(cls, join1).find((Person.name, cls.id),
-                                             Eq(cls.is_active, True))
-        return locale_sorted(items, key=operator.itemgetter(0))
+        return [(name, salesperson.id) for name, salesperson in
+                cls.get_active_salespersons(store)]
 
 
 @implementer(IActive)
