@@ -32,11 +32,13 @@ from kiwi.ui.objectlist import Column
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import StorableBatch
+from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchSelectionDialog
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.defaults import MAX_INT
+from stoqlib.lib.message import warning
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -113,12 +115,28 @@ class InventoryCountTypeStep(BaseWizardStep):
 
     gladefile = 'InventoryCountTypeStep'
 
+    def _read_import_file(self):
+        data = {}
+        with open(self.import_file.get_filename()) as fh:
+            for line in fh:
+                try:
+                    barcode, quantity = line[:-1].split(',')
+                    data[barcode] = int(quantity)
+                except ValueError:
+                    warning(_('It was not possible to import inventory count.'
+                              ' Check file format'))
+                    return
+
+        self.wizard.imported_count = data
+
     #
     #  WizardEditorStep
     #
 
     def next_step(self):
         self.wizard.temporary_items.clear()
+        if self.import_count.get_active():
+            self._read_import_file()
         return InventoryCountItemStep(self.wizard, self,
                                       self.store, self.wizard.model)
 
@@ -128,6 +146,15 @@ class InventoryCountTypeStep(BaseWizardStep):
 
     def on_manual_count__toggled(self, radio):
         self.wizard.manual_count = radio.get_active()
+
+    def on_import_count__toggled(self, radio):
+        import_active = radio.get_active()
+        self.import_file.set_sensitive(import_active)
+        has_file = self.import_file.get_filename()
+        self.wizard.refresh_next((import_active and has_file) or not import_active)
+
+    def on_import_file__file_set(self, chooser):
+        self.wizard.refresh_next(chooser.get_filename())
 
 
 class InventoryCountItemStep(SellableItemStep):
@@ -215,11 +242,23 @@ class InventoryCountItemStep(SellableItemStep):
             elif sellable in self.wizard.temporary_items:
                 continue
             else:
-                tmp_item = _TemporaryInventoryItem(sellable, storable,
-                                                   item.counted_quantity or 0)
-                tmp_item.changed = item.counted_quantity is not None
+                quantity = (item.counted_quantity or
+                            self.wizard.imported_count.pop(sellable.barcode, 0))
+                tmp_item = _TemporaryInventoryItem(sellable, storable, quantity)
+                tmp_item.changed = item.counted_quantity is not None or quantity
                 self.wizard.temporary_items[sellable] = tmp_item
 
+            yield tmp_item
+
+        # There are counted itens in the imported file that were not in the
+        # original inventory items. This means that this item was never stored
+        # in this branch.
+        for barcode, quantity in self.wizard.imported_count.items():
+            sellable = self.store.find(Sellable, barcode=unicode(barcode)).one()
+            storable = sellable.product.storable
+            item = self.model.add_storable(storable, 0)
+            tmp_item = _TemporaryInventoryItem(sellable, storable, quantity)
+            self.wizard.temporary_items[sellable] = tmp_item
             yield tmp_item
 
     def get_batch_items(self):
@@ -338,6 +377,7 @@ class InventoryCountWizard(BaseWizard):
 
     def __init__(self, store, model):
         self.temporary_items = {}
+        self.imported_count = {}
         self.manual_count = True
 
         first_step = InventoryCountTypeStep(store, self, previous=None)
