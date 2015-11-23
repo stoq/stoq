@@ -30,8 +30,7 @@ GtkDialog(main_dialog.toplevel): title='Products Adjustment', hidden
             row: False, u'', u'Description', None, u'No tax', Decimal('5.000'), None, None, Decimal('10.000')
           GtkHButtonBox(hbuttonbox1):
             ProxyButton(adjust_button): '_Adjust', insensitive
-            ProxyLabel(kiwilabel6):
-            ProxyLabel(kiwilabel4):
+            GtkButton(adjust_all_button): 'Adjust All'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

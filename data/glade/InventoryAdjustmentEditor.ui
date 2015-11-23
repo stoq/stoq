@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires kiwiwidgets 0.0 -->
-  <!-- interface-requires gtk+ 2.12 -->
+  <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="InventoryAdjustmentEditor">
     <property name="default_width">440</property>
@@ -19,6 +19,12 @@
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
             <property name="row_spacing">6</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="visible">True</property>
@@ -82,6 +88,7 @@
                 <child>
                   <object class="ProxyEntry" id="invoice_number">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -103,7 +110,7 @@
                 <property name="top_attach">2</property>
                 <property name="bottom_attach">3</property>
                 <property name="x_options">GTK_FILL</property>
-                <property name="y_options"></property>
+                <property name="y_options"/>
               </packing>
             </child>
             <child>
@@ -158,12 +165,6 @@
                 <property name="bottom_attach">2</property>
               </packing>
             </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -184,13 +185,14 @@
         <child>
           <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
+            <property name="spacing">6</property>
             <property name="homogeneous">True</property>
+            <property name="layout_style">start</property>
             <child>
               <object class="ProxyButton" id="adjust_button">
                 <property name="label" translatable="yes">_Adjust</property>
                 <property name="visible">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">adjust_button</property>
@@ -202,27 +204,16 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyLabel" id="kiwilabel6">
+              <object class="GtkButton" id="adjust_all_button">
+                <property name="label" translatable="yes">Adjust All</property>
                 <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="model_attribute">kiwilabel6</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyLabel" id="kiwilabel4">
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="model_attribute">kiwilabel4</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
               </packing>
             </child>
           </object>

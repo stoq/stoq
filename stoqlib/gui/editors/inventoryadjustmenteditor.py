@@ -88,6 +88,7 @@ class InventoryAdjustmentEditor(BaseEditor):
             return
 
         selection = self.inventory_items.get_selected()
+        self.adjust_all_button.set_sensitive(self.invoice_number.is_valid())
         self.adjust_button.set_sensitive(bool(selection) and
                                          not selection.is_adjusted and
                                          self.invoice_number.is_valid())
@@ -168,6 +169,15 @@ class InventoryAdjustmentEditor(BaseEditor):
     def on_adjust_button__clicked(self, button):
         selected = self.inventory_items.get_selected()
         self._run_adjustment_dialog(selected)
+
+    def on_adjust_all_button__clicked(self, button):
+        for item in self.inventory_items:
+            if item.is_adjusted:
+                continue
+            item.actual_quantity = item.counted_quantity
+            item.reason = _(u'Automatic adjustment')
+            item.adjust(self.model.invoice_number)
+            self.inventory_items.update(item)
 
     def on_inventory_items__row_activated(self, objectlist, item):
         if not self.adjust_button.get_sensitive():
