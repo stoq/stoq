@@ -45,6 +45,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Sales...'
           GtkImageMenuItem(): 'Sold Items by Branch...'
+          GtkImageMenuItem(): 'Total sales made by salesperson...'
           GtkImageMenuItem(): 'Clients...'
           GtkImageMenuItem(): 'Products...'
           GtkImageMenuItem(): 'Services...'
