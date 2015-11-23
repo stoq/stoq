@@ -39,6 +39,7 @@ from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
+from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductStockEditor
@@ -59,6 +60,7 @@ from stoqlib.gui.search.searchcolumns import SearchColumn, QuantityColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.utils.keybindings import get_accels
+from stoqlib.gui.utils.printing import print_labels
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
@@ -130,6 +132,7 @@ class StockApp(ShellApp):
             ("SearchReturnedItems", None, _("Returned items...")),
             ("SearchPendingReturnedSales", None, _("Pending returned sales...")),
             ("ProductMenu", None, _("Product")),
+            ("PrintLabels", None, _("Print labels...")),
             ("ProductStockHistory", gtk.STOCK_INFO, _("History..."),
              group.get('history'),
              _('Show the stock history of the selected product')),
@@ -457,6 +460,14 @@ class StockApp(ShellApp):
         sellable = selected.sellable
         self.run_dialog(ProductStockHistoryDialog, self.store, sellable,
                         branch=self.branch_filter.combo.get_selected())
+
+    def on_PrintLabels__activate(self, button):
+        selected = self.results.get_selected()
+        sellable = selected.sellable
+        label_data = self.run_dialog(PrintLabelEditor, None, self.store,
+                                     sellable)
+        if label_data:
+            print_labels(label_data, self.store)
 
     def on_EditProduct__activate(self, button):
         selected = self.results.get_selected()
