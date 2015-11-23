@@ -57,6 +57,18 @@ class TestProductAdjustmentDialog(GUITest):
 
         self.assertEquals(run_dialog.call_count, 1)
 
+    def test_adjust_all(self):
+        inventory = self.create_inventory()
+        item = self.create_inventory_item(inventory, 5)
+        item.counted_quantity = 10
+
+        dialog = InventoryAdjustmentEditor(self.store, inventory)
+        dialog.invoice_number.update(123)
+        self.assertEquals(item.actual_quantity, None)
+        self.click(dialog.adjust_all_button)
+        self.assertEquals(item.actual_quantity, 10)
+        self.assertEquals(item.reason, 'Automatic adjustment')
+
 
 class TestAdjustmentDialog(GUITest):
 
