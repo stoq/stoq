@@ -27,11 +27,14 @@ import datetime
 
 import gtk
 from kiwi.ui.objectlist import Column
+from kiwi.ui.dialogs import save
+from storm.expr import Join
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Branch
-from stoqlib.domain.product import ProductStockItem
+from stoqlib.domain.product import ProductStockItem, Product, Storable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
@@ -86,6 +89,9 @@ class InventoryApp(ShellApp):
             ('Cancel', gtk.STOCK_CANCEL, _('Cancel...'),
              group.get('inventory_cancel'),
              _('Cancel the selected inventory')),
+            ('Export', gtk.STOCK_SAVE, _('Export for external counting...'),
+             None,
+             _('Export the list of products for external counting')),
             ('PrintProductListing', gtk.STOCK_PRINT,
              _('Print product listing...'),
              group.get('inventory_print'),
@@ -228,6 +234,24 @@ class InventoryApp(ShellApp):
         self.refresh()
         self._update_widgets()
 
+    def _export_product_list(self):
+        filename = save(_("Save products file"), self.get_toplevel(),
+                        "%s.txt" % (_('products')))
+        if not filename:
+            return
+
+        tables = [
+            Sellable,
+            Join(Product, Product.sellable_id == Sellable.id),
+            Join(Storable, Storable.product_id == Product.id)
+        ]
+        sellables = self.store.using(*tables).find(Sellable)
+        with open(filename, 'w') as fh:
+            for sellable in sellables:
+                # TODO: Add a dialog for the user to choose the format for
+                # exporting
+                fh.write('%-20s%s\n' % (sellable.barcode, sellable.description))
+
     def _register_product_counting(self):
         store = api.new_store()
         inventory = store.fetch(self.results.get_selected())
@@ -286,6 +310,9 @@ class InventoryApp(ShellApp):
 
     def on_Cancel__activate(self, widget):
         self._cancel_inventory()
+
+    def on_Export__activate(self, widget):
+        self._export_product_list()
 
     def on_PrintProductListing__activate(self, button):
         selected = self.results.get_selected()
