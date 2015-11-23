@@ -53,6 +53,7 @@
      <placeholder name="SearchMenuPH">
        <menuitem action="Sales"/>
        <menuitem action="SoldItemsByBranchSearch"/>
+       <menuitem action="SearchSalesPersonSales"/>
        <menuitem action="Clients"/>
        <menuitem action="ProductSearch"/>
        <menuitem action="ServiceSearch"/>

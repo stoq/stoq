@@ -65,6 +65,7 @@ from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
 from stoqlib.gui.search.sellablesearch import SaleSellableSearch
@@ -190,6 +191,9 @@ class PosApp(ShellApp):
              group.get('search_sales')),
             ("SoldItemsByBranchSearch", None, _("Sold Items by Branch..."),
              group.get('search_sold_items')),
+            ("SearchSalesPersonSales", None,
+             _("Total sales made by salesperson..."), None,
+             _("Search for sales by payment method")),
             ("Clients", None, _("Clients..."),
              group.get('search_clients')),
             ("ProductSearch", None, _("Products..."),
@@ -1169,6 +1173,9 @@ class PosApp(ShellApp):
     def on_Sales__activate(self, action):
         with api.new_store() as store:
             self.run_dialog(SaleWithToolbarSearch, store)
+
+    def on_SearchSalesPersonSales__activate(self, action):
+        self.run_dialog(SalesPersonSalesSearch, self.store)
 
     def on_SoldItemsByBranchSearch__activate(self, action):
         self.run_dialog(SoldItemsByBranchSearch, self.store)
