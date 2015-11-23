@@ -562,6 +562,8 @@ class InventoryItemsView(Viewable):
 
     #: The code of the sellable
     code = Sellable.code
+    # XXX: Maybe we should have this in the database, since the price may change
+    price = Sellable.base_price
 
     #: The description of the product
     description = Sellable.description

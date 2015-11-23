@@ -32,6 +32,7 @@ import pango
 
 from stoqlib.domain.inventory import Inventory, InventoryItemsView
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.utils.printing import print_report
@@ -96,7 +97,8 @@ class InventoryDetailsDialog(BaseEditor):
                 Column('counted_quantity', _("Counted"), data_type=decimal.Decimal),
                 Column('actual_quantity', _("Actual"), data_type=decimal.Decimal),
                 Column('is_adjusted', _("Adjusted"), data_type=bool),
-                Column('product_cost', _("Cost"), data_type=currency, visible=False)]
+                Column('product_cost', _("Cost"), data_type=currency, visible=False),
+                Column('price', _("Price"), data_type=currency, visible=False)]
 
     def _format_description(self, item, data):  # pragma no cover
         return format_sellable_description(item.sellable, item.batch)
@@ -112,6 +114,12 @@ class InventoryDetailsDialog(BaseEditor):
     #
     # Callbacks
     #
+
+    def on_export_button__clicked(self, button):
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.items_list,
+                   name=_('Purchase items'),
+                   filename_prefix=_('purchase-items'))
 
     def on_print_button__clicked(self, button):
         items = list(self._get_report_items())
