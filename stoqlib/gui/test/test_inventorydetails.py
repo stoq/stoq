@@ -116,6 +116,17 @@ class TestInventoryDetails(GUITest):
                                            label_text='Adjust reason',
                                            visual_mode=True)
 
+    @mock.patch('stoqlib.gui.dialogs.purchasedetails.SpreadSheetExporter.export')
+    def test_export_spread_sheet(self, export):
+        inventory = self._create_inventory()
+        self.create_inventory_item(inventory)
+        dialog = InventoryDetailsDialog(self.store, inventory)
+
+        self.assertEquals(export.call_count, 0)
+        self.click(dialog.export_button)
+        self.assertEquals(export.call_count, 1)
+
+
 if __name__ == '__main__':
     from stoqlib.api import api
     c = api.prepare_test()
