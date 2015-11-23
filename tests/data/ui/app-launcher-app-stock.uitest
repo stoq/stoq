@@ -38,6 +38,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
         GtkMenu(): hidden
           GtkImageMenuItem(): 'History...', insensitive
           GtkImageMenuItem(): 'Edit...', insensitive
+          GtkImageMenuItem(): 'Print labels...'
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Received purchases...'
@@ -171,3 +172,4 @@ popup: StockSelection
 GtkMenu(): hidden
   GtkImageMenuItem(): 'History...', insensitive
   GtkImageMenuItem(): 'Edit...', insensitive
+  GtkImageMenuItem(): 'Print labels...'
