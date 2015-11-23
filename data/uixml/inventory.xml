@@ -29,6 +29,9 @@
         <menuitem action="NewInventory"/>
       </placeholder>
     </menu>
+    <placeholder name="FileMenuPH">
+      <menuitem action="Export"/>
+    </placeholder>
   </menu>
   <placeholder name="AppMenubarPH">
     <menu action="InventoryMenu">

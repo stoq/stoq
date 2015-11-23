@@ -10,6 +10,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Export for external counting...'
+          GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Print...', insensitive
           GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
           GtkSeparatorMenuItem():
