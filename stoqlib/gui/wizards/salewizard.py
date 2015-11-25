@@ -554,8 +554,13 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             entry=self.client,
             store=self.store,
             model=self.model,
-            parent=self.wizard)
+            parent=self.wizard,
+            run_editor=self._run_client_editor)
         marker('Filled clients')
+
+    def _run_client_editor(self, store, model):
+        return run_person_role_dialog(ClientEditor, self.wizard, store, model,
+                                      document=self.wizard._current_document)
 
     def _fill_transporter_combo(self):
         marker('Filling transporters')
@@ -585,33 +590,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         cfops = CfopData.get_for_sale(self.store)
         self.cfop.prefill(api.for_combo(cfops))
         marker('Filled CFOPs')
-
-    def _create_client(self):
-        store = api.new_store()
-        client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
-        store.confirm(client)
-
-        if not client:
-            return
-        if len(self.client) == 0:
-            self._setup_clients_widget()
-            return
-        clients = self.client.get_model_items().values()
-        if client.id in clients:
-            if client.is_active:
-                self.client.select(client.id)
-            else:
-                # remove client from combo
-                self.client.select_item_by_data(client.id)
-                iter = self.client.get_active_iter()
-                model = self.client.get_model()
-                model.remove(iter)
-                # just in case the inactive client was selected before.
-                self.client.select_item_by_position(0)
-        elif client.is_active:
-            self.client.append_item(client.person.name, client.id)
-            self.client.select(client.id)
-        store.close()
 
     #
     # Public API
@@ -787,9 +765,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         except SellError as e:
             return ValidationError(e)
 
-    def on_create_client__clicked(self, button):
-        self._create_client()
-
     def on_create_transporter__clicked(self, button):
         store = api.new_store()
         transporter = store.fetch(self.model.transporter)
@@ -853,9 +828,8 @@ class ConfirmSaleWizard(BaseWizard):
     # FIXME: In the long term, we should only create the sale at the end
     #        of this process, but that requires major surgery of the
     #        interaction between salewizard.py, pos.py and fiscalprinter.py
-    def __init__(self, store, model,
-                 subtotal,
-                 total_paid=0):
+    def __init__(self, store, model, subtotal, total_paid=0,
+                 current_document=None):
         """Creates a new SaleWizard that confirms a sale.
         To avoid excessive querying of the database we pass
         some data already queried/calculated before hand.
@@ -864,11 +838,14 @@ class ConfirmSaleWizard(BaseWizard):
         :param model: a |sale|
         :param subtotal: subtotal of the sale
         :param total_paid: totaly value already paid
+        :param current_document: the current document of the identified client,
+          if any
         """
         marker('ConfirmSaleWizard')
         self._check_payment_group(model, store)
         self._subtotal = subtotal
         self._total_paid = total_paid
+        self._current_document = current_document
         self.model = model
 
         # invoice_model is a Settable so avoid bug 4218, where more

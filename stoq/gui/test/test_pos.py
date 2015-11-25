@@ -108,27 +108,30 @@ class TestPos(BaseGUITest):
         return sale
 
     def _auto_confirm_sale_wizard(self, wizard, app, store, sale,
-                                  subtotal, total_paid):
+                                  subtotal, total_paid, current_document):
         payment_method = PaymentMethod.get_by_name(store, u'money')
         return self._auto_confirm_sale(wizard, app, store, sale, subtotal,
                                        total_paid, payment_method)
 
     def _auto_confirm_sale_wizard_with_bill(self, wizard, app, store, sale,
-                                            subtotal, total_paid):
+                                            subtotal, total_paid,
+                                            current_document):
         sale.client = self._create_client(store)
         payment_method = PaymentMethod.get_by_name(store, u'bill')
         return self._auto_confirm_sale(wizard, app, store, sale, subtotal,
                                        total_paid, payment_method)
 
     def _auto_confirm_sale_wizard_with_store_credit(self, wizard, app, store, sale,
-                                                    subtotal, total_paid):
+                                                    subtotal, total_paid,
+                                                    current_document):
         sale.client = self._create_client(store)
         payment_method = PaymentMethod.get_by_name(store, u'store_credit')
         return self._auto_confirm_sale(wizard, app, store, sale, subtotal,
                                        total_paid, payment_method)
 
     def _auto_confirm_sale_wizard_with_trade(self, wizard, app, store, sale,
-                                             subtotal, total_paid):
+                                             subtotal, total_paid,
+                                             current_document):
         sale.order()
         total_paid = sale.group.get_total_confirmed_value()
         total = sale.get_total_sale_amount() - total_paid

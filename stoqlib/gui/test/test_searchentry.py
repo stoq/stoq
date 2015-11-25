@@ -37,7 +37,7 @@ from stoqlib.gui.editors.fiscaleditor import CfopEditor
 
 class TestSearchEntryGadget(GUITest):
 
-    def _create_interface(self):
+    def _create_interface(self, run_editor=None):
         self.sale = self.create_sale()
 
         self.window = gtk.Window()
@@ -46,7 +46,7 @@ class TestSearchEntryGadget(GUITest):
         self.client_gadget = SearchEntryGadget(
             self.entry, self.store, model=self.sale, model_property='client',
             search_columns=['name'], search_class=ClientSearch,
-            parent=self.window)
+            parent=self.window, run_editor=run_editor)
 
     def test_create(self):
         window = gtk.Window()
@@ -86,6 +86,19 @@ class TestSearchEntryGadget(GUITest):
 
         self.assertEquals(self.entry.read(), client.id)
         self.assertEquals(self.entry.get_text(), u'Fulano de Tal')
+
+    @mock.patch('stoqlib.gui.widgets.searchentry.api.new_store')
+    def test_run_editor_override(self, new_store):
+        new_store.return_value = self.store
+        run_editor = mock.MagicMock()
+        run_editor.return_value = None
+        self.assertEquals(run_editor.call_count, 0)
+        self._create_interface(run_editor=run_editor)
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.click(self.client_gadget.edit_button)
+
+        self.assertEquals(run_editor.call_count, 1)
 
     @mock.patch('stoqlib.gui.widgets.searchentry.api.new_store')
     @mock.patch('stoqlib.gui.widgets.searchentry.run_dialog')
