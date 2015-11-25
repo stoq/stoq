@@ -349,7 +349,11 @@ class FiscalCoupon(gobject.GObject):
     are just ignored -- be aware, if a coupon with only services is
     emitted, it will not be opened in fact, but just ignored.
     """
-    gsignal('open')
+
+    #: emitted when the coupon should be opened. The return value should be the
+    #: client's document if any was provided when the coupon was opened.
+    gsignal('open', retval=str)
+
     gsignal('identify-customer', object)
     gsignal('customer-identified', retval=bool)
     gsignal('add-item', object, retval=int)
@@ -369,6 +373,7 @@ class FiscalCoupon(gobject.GObject):
 
         self._coo = None
         self._parent = parent
+        self._current_document = None
         self._item_ids = {}
 
     def emit(self, signal, *args):
@@ -441,7 +446,7 @@ class FiscalCoupon(gobject.GObject):
         while True:
             log.info("opening coupon")
             try:
-                self.emit('open')
+                self._current_document = self.emit('open')
                 break
             except CouponOpenError:
                 if not self.cancel():
@@ -501,8 +506,8 @@ class FiscalCoupon(gobject.GObject):
             return False
 
         model = run_dialog(ConfirmSaleWizard, self._parent, store, sale,
-                           subtotal=subtotal,
-                           total_paid=payments_total)
+                           subtotal=subtotal, total_paid=payments_total,
+                           current_document=self._current_document)
 
         if not model:
             CancelPendingPaymentsEvent.emit()

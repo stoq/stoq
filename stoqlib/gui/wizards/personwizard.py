@@ -78,7 +78,8 @@ class PersonRoleTypeStep(WizardEditorStep):
     gladefile = 'PersonRoleTypeStep'
     model_type = Settable
 
-    def __init__(self, wizard, store):
+    def __init__(self, wizard, store, document=None):
+        self._document = document
         WizardEditorStep.__init__(self, store, wizard)
         self._setup_widgets()
 
@@ -86,6 +87,8 @@ class PersonRoleTypeStep(WizardEditorStep):
         self.document_l10n = api.get_l10n_field('person_document')
         self.person_document.set_mask(self.document_l10n.entry_mask)
         self.person_document.set_width_chars(17)
+        if self._document:
+            self.person_document.update(self._document)
 
         self.document_label.set_text(self.document_l10n.label)
         # Just adding some labels
@@ -184,11 +187,12 @@ class PersonRoleWizard(BaseWizard):
 
     size = (650, 450)
 
-    def __init__(self, store, role_editor):
+    def __init__(self, store, role_editor, document=None):
         if not issubclass(role_editor, BasePersonRoleEditor):
             raise TypeError('Editor %s must be BasePersonRoleEditor '
                             'instance' % role_editor)
         self.role_editor = role_editor
+        self._document = document
 
         BaseWizard.__init__(self, store,
                             self.get_first_step(store),
@@ -198,7 +202,7 @@ class PersonRoleWizard(BaseWizard):
             self.set_help_section(role_editor.help_section)
 
     def get_first_step(self, store):
-        return PersonRoleTypeStep(self, store)
+        return PersonRoleTypeStep(self, store, document=self._document)
 
     def get_role_name(self):
         if not self.role_editor.model_name:

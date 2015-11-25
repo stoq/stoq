@@ -43,7 +43,7 @@ class SearchEntryGadget(object):
     new_tooltip = _('Create')
 
     def __init__(self, entry, store, model, model_property,
-                 search_columns, search_class, parent):
+                 search_columns, search_class, parent, run_editor=None):
         """
         This gadget modifies a ProxyEntry turning it into a replacement for
         ProxyComboEntry.
@@ -85,6 +85,7 @@ class SearchEntryGadget(object):
         self._search_columns = search_columns
         self._search_class = search_class
         self._parent = parent
+        self._on_run_editor = run_editor
 
         # TODO: Respect permission manager
         self._editor_class = search_class.editor_class
@@ -177,7 +178,9 @@ class SearchEntryGadget(object):
         with api.new_store() as store:
             model = getattr(self._model, self._model_property)
             model = store.fetch(model)
-            if self._is_person:
+            if self._on_run_editor:
+                value = self._on_run_editor(store, model)
+            elif self._is_person:
                 value = run_person_role_dialog(self._editor_class, self._parent, store, model)
             else:
                 value = run_dialog(self._editor_class, self._parent, store, model)
@@ -256,12 +259,13 @@ class ClientSearchEntryGadget(SearchEntryGadget):
     new_tooltip = _('Create a new client')
 
     def __init__(self, entry, store, model, parent, model_property='client',
-                 search_class=ClientSearch):
+                 search_class=ClientSearch, run_editor=None):
         search_columns = ['name', 'cpf', 'phone_number', 'mobile_number']
         SearchEntryGadget.__init__(self, entry=entry, store=store, model=model,
                                    parent=parent, model_property=model_property,
                                    search_class=search_class,
-                                   search_columns=search_columns)
+                                   search_columns=search_columns,
+                                   run_editor=run_editor)
 
     def set_editable(self, can_edit):
         self.find_button.set_sensitive(can_edit)

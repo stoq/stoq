@@ -597,6 +597,7 @@ class ECFUI(object):
             return
         coupon.identify_customer('-', '-', model.document,
                                  model.document_type)
+        return model.document
 
     #
     # Events
@@ -650,9 +651,11 @@ class ECFUI(object):
 
     def _on_coupon__open(self, coupon):
         self._validate_printer()
+        document = None
         if not coupon.identify_customer_at_end:
-            self._identify_customer(coupon)
+            document = self._identify_customer(coupon)
         coupon.open()
+        return document
 
     def _on_coupon__identify_customer(self, coupon, person):
         if person.individual:
