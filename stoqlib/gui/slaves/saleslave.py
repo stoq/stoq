@@ -35,6 +35,7 @@ from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.utils.printing import print_report
@@ -62,6 +63,7 @@ class SaleDiscountSlave(BaseEditorSlave):
         self._proxy = None
         self.model = model
         self.model_type = model_type
+        self.manager = None
         self.default_max_discount = sysparam.get_decimal('MAX_SALE_DISCOUNT')
         self.max_discount = self.default_max_discount
         # If there is an original discount, this means the sale was from a trade,
@@ -90,12 +92,16 @@ class SaleDiscountSlave(BaseEditorSlave):
         if client and client.category:
             self.max_discount = max(client.category.max_discount,
                                     self.default_max_discount)
+        if self.manager:
+            self.max_discount = max(self.max_discount,
+                                    self.manager.profile.max_discount)
 
         # Avoid re-validating if the validation parameters didnt change, since
         # that is doint to many queries right now.
         if old_max_discount != self.max_discount:
             self.discount_value.validate()
             self.discount_perc.validate()
+            self.update_sale_discount()
 
     def update_sale_discount(self):
         if self._proxy is None:
@@ -106,6 +112,13 @@ class SaleDiscountSlave(BaseEditorSlave):
             self._proxy.update('discount_percentage')
 
         self.emit('discount-changed')
+
+    def _run_credentials_dialog(self):
+        # Ask for the credentials of a different user that can possibly allow a
+        # bigger discount.
+        self.manager = run_dialog(CredentialsDialog,
+                                  self.get_toplevel().get_toplevel(), self.store)
+        self.update_max_discount()
 
     def _validate_percentage(self, value, type_text):
         if value >= 100:
@@ -131,11 +144,6 @@ class SaleDiscountSlave(BaseEditorSlave):
             self.model.discount_percentage = 0
             return ValidationError(_(u'%s can not be greater than (%.2f%%).')
                                    % (type_text, new_discount))
-
-        old_discount = self.model.discount_value
-        # Avoid unecessary updates if the discount didnt change
-        if self.model.discount_value != old_discount:
-            self.update_sale_discount()
 
     def set_max_discount(self, discount):
         """Set the maximum percentage value for a discount.
@@ -167,6 +175,16 @@ class SaleDiscountSlave(BaseEditorSlave):
             return
         percentage = quantize(value * 100 / self.model.get_sale_subtotal())
         return self._validate_percentage(percentage, _(u'Discount'))
+
+    def on_discount_perc__icon_press(self, entry, icon_pos, event):
+        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+            return
+        self._run_credentials_dialog()
+
+    def on_discount_value__icon_press(self, entry, icon_pos, event):
+        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+            return
+        self._run_credentials_dialog()
 
     @signal_block('discount_value.changed')
     def after_discount_perc__changed(self, *args):
