@@ -403,6 +403,8 @@ class ProductEditor(SellableEditor):
             sellable.tax_constant = self._template.sellable.tax_constant
             sellable.unit = self._template.sellable.unit
             sellable.category = self._template.sellable.category
+            sellable.base_price = self._template.sellable.base_price
+            sellable.cost = self._template.sellable.cost
 
             model.manufacturer = self._template.manufacturer
             model.brand = self._template.brand
