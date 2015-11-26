@@ -2,8 +2,8 @@ Source: stoq
 Section: python
 Priority: optional
 Maintainer: Stoq Team <stoq-devel@async.com.br>
-Build-Depends: debhelper (>= 8.0.0), python-all (>= 2.6), python-setuptools
-Build-Depends-Indep: python-kiwi (>= 1.9.41)
+Build-Depends: debhelper (>= 8.0.0), python-all (>= 2.6),
+ python-setuptools, python-kiwi (>= 1.9.41)
 Homepage: http://www.stoq.com.br/
 Vcs-Git: https://github.com/stoq/stoq.git
 Vcs-Browser: https://github.com/stoq/stoq/
