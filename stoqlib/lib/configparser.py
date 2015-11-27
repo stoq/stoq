@@ -41,8 +41,8 @@ class StoqConfig:
 
     def __init__(self):
         self._config = SafeConfigParser()
-        self._filename = None
         self._settings = None
+        self.filename = None
 
     def _get_config_file(self):
         filename = self.domain + '.conf'
@@ -63,14 +63,15 @@ class StoqConfig:
         config_dir = self.get_config_directory()
         if not os.path.exists(config_dir):
             os.mkdir(config_dir)
-        self._filename = os.path.join(
+        self.filename = os.path.join(
             config_dir, StoqConfig.domain + '.conf')
 
     def load_default(self):
         """
         Loads default configuration file one will be loaded
         """
-        self.load(self._get_config_file())
+        self.filename = self._get_config_file()
+        self.load(self.filename)
 
     def load(self, filename):
         """
@@ -81,7 +82,7 @@ class StoqConfig:
             raise TypeError("Missing filename option")
         if not self._open_config(filename):
             return
-        self._filename = filename
+        self.filename = filename
 
     def load_settings(self, settings):
         """
@@ -105,13 +106,11 @@ class StoqConfig:
         """
         Writes the current configuration data to disk.
         """
-        if not self._filename:
-            self._filename = self._get_config_file()
-        filename = self._filename
+        if not self.filename:
+            self.filename = self._get_config_file()
 
-        fd = open(filename, 'w')
-        self._config.write(fd)
-        fd.close()
+        with open(self.filename, 'w') as f:
+            self._config.write(f)
 
     def get_filename(self):
         config_dir = self.get_config_directory()
