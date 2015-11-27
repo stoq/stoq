@@ -30,6 +30,8 @@ from twisted.internet import reactor
 from twisted.web import xmlrpc, server
 from twisted.web.resource import Resource
 
+from stoqlib.database.settings import db_settings
+from stoqlib.lib.configparser import get_config
 from stoqlib.net.socketutils import get_random_port
 
 log = logging.getLogger(__name__)
@@ -52,6 +54,18 @@ class XMLRPCResource(xmlrpc.XMLRPC):
 
         args.append('dbadmin')
         args.extend(cmd_args)
+
+        config = get_config()
+        for setting_opt, setting in [
+                ('-H', db_settings.address),
+                ('-d', db_settings.dbname),
+                ('-f', config.filename),
+                ('-p', db_settings.port and str(db_settings.port)),
+                ('-u', db_settings.username),
+                ('-w', db_settings.password)]:
+            if setting:
+                args.extend([setting_opt, setting])
+
         p = subprocess.Popen(args, stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return p.communicate(input=stdin)
