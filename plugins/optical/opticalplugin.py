@@ -59,6 +59,9 @@ class OpticalPlugin(object):
     def activate(self):
         self.ui = OpticalUI()
 
+    def get_server_tasks(self):
+        return []
+
     def get_dbadmin_commands(self):
         return []
 

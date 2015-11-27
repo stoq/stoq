@@ -56,6 +56,10 @@ class TestOpticalUI(BaseGUITest):
         plugin.activate()
         self.assertIsNotNone(plugin.ui)
 
+    def test_get_server_tasks(self):
+        plugin = OpticalPlugin()
+        self.assertEquals(plugin.get_server_tasks(), [])
+
     def test_get_dbadmin_commands(self):
         plugin = OpticalPlugin()
         self.assertEquals(plugin.get_dbadmin_commands(), [])

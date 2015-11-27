@@ -51,6 +51,9 @@ class NFePlugin(object):
     def activate(self):
         self.ui = NFeUI()
 
+    def get_server_tasks(self):
+        return []
+
     def get_dbadmin_commands(self):
         return []
 

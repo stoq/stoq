@@ -54,6 +54,9 @@ class ECFPlugin(object):
         from ecf.ecfui import ECFUI
         self.ui = ECFUI()
 
+    def get_server_tasks(self):
+        return []
+
     def get_dbadmin_commands(self):
         return []
 

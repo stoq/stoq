@@ -52,6 +52,9 @@ class BooksPlugin(object):
     def activate(self):
         self.ui = BooksUI()
 
+    def get_server_tasks(self):
+        return []
+
     def get_dbadmin_commands(self):
         return []
 

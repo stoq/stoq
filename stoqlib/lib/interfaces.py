@@ -128,6 +128,17 @@ class IPlugin(Interface):
         """
         pass
 
+    def get_server_tasks():
+        """Get a list of tasks that the server will be responsible to run
+
+        A task is a callable object which will be running a task
+        (can be a daemon, a looping call, etc) on a subprocess
+        inside stoq server.
+
+        :returns: a list of callables
+        """
+        pass
+
     def get_dbadmin_commands():
         """Returns a list of available commands for dbadmin
 

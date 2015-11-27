@@ -37,6 +37,10 @@ class TestBikePlugin(BaseGUITest):
         plugin = BikeShopPlugin()
         self.assertEquals(plugin.get_tables(), [])
 
+    def test_get_server_tasks(self):
+        plugin = BikeShopPlugin()
+        self.assertEquals(plugin.get_server_tasks(), [])
+
     def test_active(self):
         plugin = BikeShopPlugin()
         self.assertIsNone(plugin.ui)
