@@ -57,6 +57,8 @@ _ = stoqlib_gettext
 class _TemporaryReceivingItem(object):
     def __init__(self, item):
         self.purchase_item = item
+        self.code = item.sellable.code
+        self.barcode = item.sellable.barcode
         self.description = item.sellable.description
         self.category_description = item.sellable.get_category_description()
         self.unit_description = item.sellable.unit_description
@@ -245,8 +247,12 @@ class ReceivingOrderItemStep(BaseWizardStep):
     def _setup_widgets(self):
         adjustment = gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
         self.purchase_items.set_columns([
+            Column('code', title=_('Code'),
+                   data_type=str, searchable=True, visible=False),
+            Column('barcode', title=_('Barcode'),
+                   data_type=str, searchable=True, visible=False),
             Column('description', title=_('Description'),
-                   data_type=str, expand=True, searchable=True),
+                   data_type=str, expand=True, searchable=True, sorted=True),
             Column('category_description', title=_('Category'),
                    data_type=str, width=120),
             Column('remaining_quantity', title=_('Qty'), data_type=int,
