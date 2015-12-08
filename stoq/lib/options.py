@@ -84,6 +84,7 @@ def get_option_parser():
     group.add_option('', '--no-load-config',
                      action='store_false',
                      help="do not load stoq.conf",
+                     default=True,
                      dest='load_config')
     # These options are parsed in gtk_init() which is
     # called when the gtk module is imported.
