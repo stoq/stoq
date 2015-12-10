@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -454,6 +455,23 @@ class TestSellable(DomainTest):
         self.assertEqual(
             set([s3]),
             set(self.store.find(Sellable, query)))
+
+    @mock.patch('stoqlib.domain.sellable.localnow')
+    def test_is_on_sale(self, localnow):
+        localnow.return_value = datetime.datetime(2015, 12, 10)
+
+        sellable = self.create_sellable()
+        self.assertFalse(sellable.is_on_sale())
+
+        sellable.on_sale_start_date = datetime.datetime(2015, 12, 5)
+        sellable.on_sale_end_date = datetime.datetime(2015, 12, 11)
+        self.assertFalse(sellable.is_on_sale())
+
+        sellable.on_sale_price = 100
+        self.assertTrue(sellable.is_on_sale())
+
+        sellable.on_sale_end_date = datetime.datetime(2015, 12, 9)
+        self.assertFalse(sellable.is_on_sale())
 
     def test_is_valid_quantity(self):
         sellable = self.create_sellable()

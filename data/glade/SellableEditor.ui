@@ -197,7 +197,7 @@
                         <property name="secondary_icon_sensitive">True</property>
                         <property name="digits">2</property>
                         <property name="data_type">currency</property>
-                        <property name="model_attribute">price</property>
+                        <property name="model_attribute">base_price</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -394,7 +394,7 @@
                     <property name="right_attach">4</property>
                     <property name="top_attach">6</property>
                     <property name="bottom_attach">7</property>
-                    <property name="y_options">GTK_FILL</property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -525,15 +525,6 @@
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
                   <object class="ProxyLabel" id="product_type_str">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -549,6 +540,28 @@
                     <property name="bottom_attach">2</property>
                     <property name="y_options">GTK_FILL</property>
                   </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="on_sale_lbl">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">6</property>
+                    <property name="bottom_attach">7</property>
+                    <property name="y_options"/>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>

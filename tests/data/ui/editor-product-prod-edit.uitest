@@ -68,6 +68,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                   item: 'Kg'
                   item: 'Lt'
                   item: 'm '
+              GtkLabel(on_sale_lbl):
               ProxyLabel(requires_weighing_label): '<span size="small"></span>'
               GtkEventBox(slave_holder): slave SellableDetailsSlave is attached
                 GtkVBox(toplevel):

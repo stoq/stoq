@@ -47,7 +47,7 @@ from stoqlib.gui.utils.databaseform import DatabaseForm
 from stoqlib.gui.utils.printing import print_labels
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import MAX_INT
-from stoqlib.lib.formatters import get_price_format_str
+from stoqlib.lib.formatters import get_price_format_str, get_formatted_price
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.stringutils import next_value_for
@@ -271,6 +271,7 @@ class SellableEditor(BaseEditor):
         self.add_extra_tab(_(u'Category Prices'), price_slave)
         self._setup_ui_forms()
         self._update_print_labels()
+        self._update_on_price_label()
 
     def _add_demo_warning(self):
         fmt = _("This is a demostration mode of Stoq, you cannot "
@@ -311,6 +312,15 @@ class SellableEditor(BaseEditor):
     def _update_default_sellable_code(self):
         code = Sellable.get_max_value(self.store, Sellable.code)
         self.code.update(next_value_for(code))
+
+    def _update_on_price_label(self):
+        if self._sellable.is_on_sale():
+            text = _("Currently on sale for %s") % (
+                get_formatted_price(self._sellable.on_sale_price), )
+        else:
+            text = ''
+
+        self.on_sale_lbl.set_text(text)
 
     def _update_print_labels(self):
         sellable = self.model.sellable
@@ -358,7 +368,7 @@ class SellableEditor(BaseEditor):
                             self.get_toplevel().get_toplevel(),
                             self.store, sellable)
         if result:
-            self.sellable_proxy.update('price')
+            self._update_on_price_label()
         else:
             self.store.rollback_to_savepoint('before_run_editor_sellable_price')
 
@@ -559,6 +569,10 @@ class SellableEditor(BaseEditor):
         self._update_print_labels()
 
     def after_price__changed(self, widget):
+        # This gets called when setting the proxy. It is yet too soon
+        # to update the print labels button
+        if not hasattr(self, '_print_labels_btn'):
+            return
         self._update_print_labels()
 
     def on_print_labels_clicked(self, button, parent_label_button=None):

@@ -552,13 +552,10 @@ class Sellable(Domain):
 
     @property
     def price(self):
-        if self.on_sale_price:
-            today = localnow()
-            start_date = self.on_sale_start_date
-            end_date = self.on_sale_end_date
-            if is_date_in_interval(today, start_date, end_date):
-                return self.on_sale_price
-        return self.base_price
+        if self.is_on_sale():
+            return self.on_sale_price
+        else:
+            return self.base_price
 
     @price.setter
     def price(self, price):
@@ -566,14 +563,10 @@ class Sellable(Domain):
             # Just a precaution for gui validation fails.
             price = 0
 
-        if self.on_sale_price:
-            today = localnow()
-            start_date = self.on_sale_start_date
-            end_date = self.on_sale_end_date
-            if is_date_in_interval(today, start_date, end_date):
-                self.on_sale_price = price
-                return
-        self.base_price = price
+        if self.is_on_sale():
+            self.on_sale_price = price
+        else:
+            self.base_price = price
 
     #
     #  Accessors
@@ -764,6 +757,17 @@ class Sellable(Domain):
                              "If you don't know what this means, contact "
                              "the system administrator.")
                            % icms_template.product_tax_template.name)
+
+    def is_on_sale(self):
+        """Check if the price is currently on sale.
+
+        :return: ``True`` if it is on sale, ``False`` otherwise
+        """
+        if not self.on_sale_price:
+            return False
+
+        return is_date_in_interval(
+            localnow(), self.on_sale_start_date, self.on_sale_end_date)
 
     def is_valid_quantity(self, new_quantity):
         """Whether the new quantity is valid for this sellable or not.
