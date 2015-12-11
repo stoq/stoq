@@ -131,11 +131,9 @@ class IPlugin(Interface):
     def get_server_tasks():
         """Get a list of tasks that the server will be responsible to run
 
-        A task is a callable object which will be running a task
-        (can be a daemon, a looping call, etc) on a subprocess
-        inside stoq server.
+        A task is a object implementing :class:`.IPluginTask`.
 
-        :returns: a list of callables
+        :returns: a list of tasks
         """
         pass
 
@@ -154,6 +152,21 @@ class IPlugin(Interface):
         :param args: a list of C{args}
         """
         pass
+
+
+class IPluginTask(Interface):
+    """A plugin task that can run on stoq server"""
+
+    name = Attribute('name')
+    handle_actions = Attribute('handle_actions')
+
+    def start(**kwargs):
+        """Called to start the task.
+
+        :keyword pipe_connection: the connection used to communicate
+            with the stoqserver api. Will only be present if
+            :attr:`.handle_actions` is ``True``
+        """
 
 
 class IPaymentOperation(Interface):
