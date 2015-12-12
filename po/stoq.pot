@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-10 18:38-0200\n"
-"PO-Revision-Date: 2015-12-10 20:39+0000\n"
+"POT-Creation-Date: 2015-12-11 16:02-0200\n"
+"PO-Revision-Date: 2015-12-11 18:03+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (http://www.transifex.com/async/stoq/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -5124,7 +5124,7 @@ msgid ""
 "?"
 msgstr "Do you really want to cancel the last cash removed number %d and value %.2f ?"
 
-#: ../plugins/ecf/ecfui.py:465 ../stoqlib/gui/dialogs/pluginsdialog.py:137
+#: ../plugins/ecf/ecfui.py:465 ../stoqlib/gui/dialogs/pluginsdialog.py:140
 #: ../stoqlib/gui/fiscalprinter.py:172 ../stoqlib/gui/fiscalprinter.py:324
 msgid "Not now"
 msgstr "Not now"
@@ -11459,13 +11459,20 @@ msgstr "Select the plugin you want to activate and click in the apply button."
 msgid "Activate"
 msgstr "Activate"
 
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:133
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:128
+#, python-format
+msgid ""
+"The plugin %s was successfully activated. Please, restart all Stoq instances"
+" connected to this installation."
+msgstr "The plugin %s was successfully activated. Please, restart all Stoq instances connected to this installation."
+
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:136
 msgid ""
 "Are you sure you want activate this plugin?\n"
 "Please note that, once activated you will not be able to disable it."
 msgstr "Are you sure you want activate this plugin?\nPlease note that, once activated you will not be able to disable it."
 
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:137
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:140
 msgid "Activate plugin"
 msgstr "Activate plugin"
 
