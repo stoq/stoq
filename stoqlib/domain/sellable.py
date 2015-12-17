@@ -47,7 +47,8 @@ from stoqlib.database.properties import (BoolCol, DateTimeCol, EnumCol,
                                          IdCol, IntCol, PercentCol,
                                          PriceCol, UnicodeCol)
 from stoqlib.domain.base import Domain
-from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
+from stoqlib.domain.events import (CategoryCreateEvent, CategoryEditEvent,
+                                   SellableCheckTaxesEvent)
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.image import Image
 from stoqlib.exceptions import SellableError, TaxError
@@ -745,6 +746,7 @@ class Sellable(Domain):
         :raises: :exc:`TaxError` if there are any issues with the sellable taxes.
         """
         icms_template = self.product and self.product.icms_template
+        SellableCheckTaxesEvent.emit(self)
         if not icms_template:
             return
         elif not icms_template.p_cred_sn:

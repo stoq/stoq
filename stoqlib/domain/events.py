@@ -101,6 +101,16 @@ class ProductStockUpdateEvent(Event):
     """
 
 
+class SellableCheckTaxesEvent(Event):
+    """
+    This event is emitted to check the sellable fiscal data.
+
+    If the tax is not valid, one should raise `TaxError` just like
+    sellable.check_tax_validity does.
+
+    :param sellable: the |sellable| that will be checked
+    """
+
 #
 # Service events
 #
