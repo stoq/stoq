@@ -65,6 +65,14 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`popup` Module
+-------------------
+
+.. automodule:: stoqlib.gui.widgets.popup
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`processview` Module
 -------------------------
 

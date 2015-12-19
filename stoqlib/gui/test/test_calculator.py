@@ -142,8 +142,8 @@ class TestCalculatorPopup(GUITest):
         entry.set_text('150')
         calc = CalculatorPopup(entry, CalculatorPopup.MODE_SUB)
 
-        # calc.popup will not work here, so call _update_ui directly
-        calc._update_ui()
+        # calc.popup will not work here, so call validate_popup directly
+        calc.validate_popup()
         calc._entry.set_text('10%')
         event = gtk.gdk.Event(gtk.gdk.KEY_PRESS)
         event.keyval = gtk.keysyms.Return
@@ -170,8 +170,8 @@ class TestCalculatorPopup(GUITest):
         entry.set_text('150')
 
         calc = CalculatorPopup(entry, CalculatorPopup.MODE_SUB)
-        # calc.popup will not work here, so call _update_ui directly
-        calc._update_ui()
+        # calc.popup will not work here, so call validate_popup directly
+        calc.validate_popup()
         self.assertValid(calc, ['_entry'])
         self.assertNotVisible(calc, ['_warning'])
 

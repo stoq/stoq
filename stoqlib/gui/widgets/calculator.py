@@ -32,10 +32,11 @@ from kiwi.ui.widgets.entry import ProxyEntry
 import pango
 
 from stoqlib.gui.stockicons import STOQ_CALC
+from stoqlib.gui.widgets.popup import EntryPopup
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
-class CalculatorPopup(gtk.Window):
+class CalculatorPopup(EntryPopup):
     """A popup calculator for entries
 
     Right now it supports both
@@ -65,91 +66,35 @@ class CalculatorPopup(gtk.Window):
         :param mode: one of :attr:`.MODE_ADD`, :attr:`.MODE_SUB`
         """
         self._mode = mode
-
         self._new_value = None
-        self._popped_entry = entry
         self._data_type = self._data_type_mapper[entry.data_type]
         self._converter = converter.get_converter(self._data_type)
 
-        gtk.Window.__init__(self, gtk.WINDOW_POPUP)
-
-        self._create_ui()
+        super(CalculatorPopup, self).__init__(entry)
 
     #
     # Public API
     #
 
-    def popup(self):
-        if not self._popped_entry.get_realized():
-            return
-
-        if not self._update_ui():
-            return
-
-        toplevel = self._popped_entry.get_toplevel().get_toplevel()
-        if (isinstance(toplevel, (gtk.Window, gtk.Dialog)) and
-            toplevel.get_group()):
-            toplevel.get_group().add_window(self)
-
-        # width is meant for the popup window
-        x, y, width, height = self._get_position()
-        self.set_size_request(width, -1)
-        self.move(x, y)
-        self.show_all()
-
-        if not self._popup_grab_window():
-            self.hide()
-            return
-
-        self.grab_add()
-
-    def popdown(self):
-        if not self._popped_entry.get_realized():
-            return
-
-        self.grab_remove()
-        self.hide()
-        self._popped_entry.grab_focus()
-
-    #
-    #  Private
-    #
-
-    def _create_ui(self):
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK | gtk.gdk.KEY_PRESS_MASK)
-        self.connect('key-press-event', self._on__key_press_event)
-        self.connect('button-press-event', self._on__button_press_event)
-
+    def get_main_widget(self):
         # This is done on entry to check where to put the validation/mandatory
         # icons. We should put the calculator on the other side.
         # Note that spinbuttons are always right aligned and thus
         # xalign will always be 1.0
-        if self._popped_entry.get_property('xalign') > 0.5:
+        if self.entry.get_property('xalign') > 0.5:
             self._icon_pos = 'secondary-icon'
         else:
             self._icon_pos = 'primary-icon'
 
-        self._popped_entry.set_property(self._icon_pos + '-activatable', True)
-        self._popped_entry.set_property(self._icon_pos + '-tooltip-text',
-                                        _("Do calculations on top of this value"))
-        self._popped_entry.connect('notify::sensitive',
-                                   self._on_popped_entry_sensitive__notify)
-        self._popped_entry.connect('icon-press',
-                                   self._on_popped_entry__icon_press)
+        self.entry.set_property(self._icon_pos + '-activatable', True)
+        self.entry.set_property(self._icon_pos + '-tooltip-text',
+                                _("Do calculations on top of this value"))
+        self.entry.connect('notify::sensitive',
+                           self._on_entry_sensitive__notify)
+        self.entry.connect('icon-press', self._on_entry__icon_press)
         self._toggle_calculator_icon()
 
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        self.add(frame)
-        frame.show()
-
-        alignment = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
-        alignment.set_padding(6, 6, 2, 2)
-        frame.add(alignment)
-        alignment.show()
-
         vbox = gtk.VBox(spacing=6)
-        alignment.add(vbox)
         vbox.show()
 
         self._main_label = gtk.Label()
@@ -180,12 +125,11 @@ class CalculatorPopup(gtk.Window):
         self._warning = gtk.Image()
         hbox.pack_start(self._warning, False, False)
 
-        self.set_resizable(False)
-        self.set_screen(self._popped_entry.get_screen())
+        return vbox
 
-    def _update_ui(self):
+    def validate_popup(self):
         try:
-            self._new_value = self._data_type(self._popped_entry.get_text())
+            self._new_value = self._data_type(self.entry.get_text())
         except decimal.InvalidOperation:
             return False
 
@@ -195,6 +139,13 @@ class CalculatorPopup(gtk.Window):
         self._main_label.set_text(self._get_main_label())
 
         return True
+
+    def confirm(self):
+        self._maybe_apply_new_value()
+
+    #
+    #  Private
+    #
 
     def _get_main_label(self):
         if self._mode == self.MODE_ADD:
@@ -214,44 +165,6 @@ class CalculatorPopup(gtk.Window):
                                          gtk.ICON_SIZE_MENU)
             self._warning.set_tooltip_text(warning)
             self._warning.show()
-
-    def _popup_grab_window(self):
-        activate_time = 0L
-        window = self.get_window()
-        grab_status = gtk.gdk.pointer_grab(window, True,
-                                           (gtk.gdk.BUTTON_PRESS_MASK |
-                                            gtk.gdk.BUTTON_RELEASE_MASK |
-                                            gtk.gdk.POINTER_MOTION_MASK),
-                                           None, None, activate_time)
-        if grab_status == gtk.gdk.GRAB_SUCCESS:
-            if gtk.gdk.keyboard_grab(window, True, activate_time) == 0:
-                return True
-            else:
-                window.get_display().pointer_ungrab(activate_time)
-                return False
-
-        return False
-
-    def _get_position(self):
-        widget = self._popped_entry
-
-        allocation = widget.get_allocation()
-        window = widget.get_window()
-
-        if hasattr(window, 'get_root_coords'):
-            x = 0
-            y = 0
-            if not widget.get_has_window():
-                x += allocation.x
-                y += allocation.y
-            x, y = window.get_root_coords(x, y)
-        else:
-            # PyGTK lacks gdk_window_get_root_coords(),
-            # but we can use get_origin() instead, which is the
-            # same thing in our case.
-            x, y = widget.window.get_origin()
-
-        return x, y + allocation.height, allocation.width, allocation.height
 
     def _get_new_value(self):
         operation = self._entry.get_text().strip()
@@ -305,43 +218,21 @@ class CalculatorPopup(gtk.Window):
             self._update_new_value()
             return
 
-        self._popped_entry.update(self._new_value)
+        self.entry.update(self._new_value)
 
         self.popdown()
 
     def _toggle_calculator_icon(self):
-        if self._popped_entry.get_sensitive():
+        if self.entry.get_sensitive():
             pixbuf = self.render_icon(STOQ_CALC, gtk.ICON_SIZE_MENU)
         else:
             pixbuf = None
 
-        self._popped_entry.set_property(self._icon_pos + '-pixbuf', pixbuf)
+        self.entry.set_property(self._icon_pos + '-pixbuf', pixbuf)
 
     #
     #  Callbacks
     #
-
-    def _on__key_press_event(self, window, event):
-        keyval = event.keyval
-        if keyval == gtk.keysyms.Escape:
-            self.popdown()
-            return True
-        elif keyval in [gtk.keysyms.Return,
-                        gtk.keysyms.KP_Enter,
-                        gtk.keysyms.Tab]:
-            self._maybe_apply_new_value()
-            return True
-
-        return False
-
-    def _on__button_press_event(self, window, event):
-        # If we're clicking outside of the window
-        # close the popup
-        if (event.window != self.get_window() or
-            (tuple(self.allocation.intersect(
-                   gtk.gdk.Rectangle(x=int(event.x), y=int(event.y),
-                                     width=1, height=1)))) == (0, 0, 0, 0)):
-            self.popdown()
 
     def _on_entry__validate(self, entry, value):
         try:
@@ -351,7 +242,7 @@ class CalculatorPopup(gtk.Window):
                                    _("Use absolute or percentage (%) value")))
 
         if value:
-            warning = self._popped_entry.emit('validate', value)
+            warning = self.entry.emit('validate', value)
             warning = warning and str(warning)
         else:
             warning = None
@@ -361,10 +252,10 @@ class CalculatorPopup(gtk.Window):
     def _after_entry__changed(self, entry):
         entry.validate(force=True)
 
-    def _on_popped_entry_sensitive__notify(self, obj, pspec):
+    def _on_entry_sensitive__notify(self, obj, pspec):
         self._toggle_calculator_icon()
 
-    def _on_popped_entry__icon_press(self, entry, icon_pos, event):
+    def _on_entry__icon_press(self, entry, icon_pos, event):
         if icon_pos != gtk.ENTRY_ICON_SECONDARY:
             return
 
