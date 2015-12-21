@@ -47,13 +47,14 @@ class RoleEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
 
     def __init__(self, wizard, store, previous, role_type, person=None,
-                 document=None):
+                 document=None, description=None):
         BaseWizardStep.__init__(self, store, wizard, previous=previous)
         self.role_editor = self.wizard.role_editor(self.store,
                                                    person=person,
                                                    role_type=role_type,
                                                    parent=self.wizard,
-                                                   document=document)
+                                                   document=document,
+                                                   description=description)
 
         self.wizard.set_editor(self.role_editor)
         self.person_slave = self.role_editor.get_person_slave()
@@ -78,7 +79,8 @@ class PersonRoleTypeStep(WizardEditorStep):
     gladefile = 'PersonRoleTypeStep'
     model_type = Settable
 
-    def __init__(self, wizard, store, document=None):
+    def __init__(self, wizard, store, document=None, description=None):
+        self._description = description
         self._document = document
         WizardEditorStep.__init__(self, store, wizard)
         self._setup_widgets()
@@ -128,7 +130,8 @@ class PersonRoleTypeStep(WizardEditorStep):
 
         # If someone wants to register with an empty document
         if self.person_document.is_empty():
-            return RoleEditorStep(self.wizard, self.store, self, role_type)
+            return RoleEditorStep(self.wizard, self.store, self, role_type,
+                                  description=self._description)
 
         person = Person.get_by_document(self.store, self.model.person_document)
         return RoleEditorStep(self.wizard, self.store, self, role_type, person,
@@ -187,11 +190,12 @@ class PersonRoleWizard(BaseWizard):
 
     size = (650, 450)
 
-    def __init__(self, store, role_editor, document=None):
+    def __init__(self, store, role_editor, document=None, description=None):
         if not issubclass(role_editor, BasePersonRoleEditor):
             raise TypeError('Editor %s must be BasePersonRoleEditor '
                             'instance' % role_editor)
         self.role_editor = role_editor
+        self._description = description
         self._document = document
 
         BaseWizard.__init__(self, store,
@@ -202,7 +206,9 @@ class PersonRoleWizard(BaseWizard):
             self.set_help_section(role_editor.help_section)
 
     def get_first_step(self, store):
-        return PersonRoleTypeStep(self, store, document=self._document)
+        return PersonRoleTypeStep(self, store,
+                                  document=self._document,
+                                  description=self._description)
 
     def get_role_name(self):
         if not self.role_editor.model_name:

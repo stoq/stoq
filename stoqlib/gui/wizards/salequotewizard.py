@@ -65,7 +65,7 @@ from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.widgets.calculator import CalculatorPopup
-from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
+from stoqlib.gui.widgets.queryentry import ClientEntryGadget
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.reporting.sale import SaleOrderReport
 
@@ -80,8 +80,8 @@ _ = stoqlib_gettext
 class StartSaleQuoteStep(WizardEditorStep):
     gladefile = 'SalesPersonQuoteWizardStep'
     model_type = Sale
-    proxy_widgets = ('client', 'salesperson', 'expire_date',
-                     'operation_nature', 'client_category')
+    proxy_widgets = ['client', 'salesperson', 'expire_date',
+                     'operation_nature', 'client_category']
     cfop_widgets = ('cfop', )
 
     def _setup_widgets(self):
@@ -114,9 +114,6 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         self._client_credit_set_visible(bool(self.client.read()))
 
-    def _get_client(self):
-        return self.store.get(Client, self.client.read())
-
     def _client_credit_set_visible(self, visible):
         if visible and self.model.client:
             self.client_credit.set_text(
@@ -126,10 +123,10 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.client_credit_lbl.set_visible(visible)
 
     def _setup_clients_widget(self):
-        self.client_gadget = ClientSearchEntryGadget(
+        self.client_gadget = ClientEntryGadget(
             entry=self.client,
             store=self.store,
-            model=self.model,
+            initial_value=self.model.client,
             parent=self.wizard)
 
     def _fill_clients_category_combo(self):
@@ -168,8 +165,8 @@ class StartSaleQuoteStep(WizardEditorStep):
         client = self.model.client
 
         if client and client.status != Client.STATUS_SOLVENT:
-            stock = gtk.STOCK_DIALOG_WARNING
-            self.client_gadget.set_edit_button_stock(stock)
+            self.client_gadget.update_edit_button(
+                gtk.STOCK_DIALOG_WARNING, _("The client is not solvent"))
 
     #
     #   Callbacks

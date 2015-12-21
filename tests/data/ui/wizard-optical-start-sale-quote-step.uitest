@@ -19,7 +19,6 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                 GtkHBox():
                   ProxyEntry(step.client, expand=True, fill=True): 'Client'
                   GtkButton():
-                  GtkButton():
                 GtkLabel(step.nature_lbl): 'Operation Nature:'
                 ProxyEntry(step.operation_nature): 'Sale'
                 GtkLabel(step.cfop_lbl): 'C.F.O.P.:', hidden

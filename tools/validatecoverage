@@ -230,6 +230,8 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/widgets/kanbanview.py', 22.41),
     ('stoqlib/gui/widgets/lazyobjectlist.py', 62.56),
     ('stoqlib/gui/widgets/processview.py', 48.78),
+    ('stoqlib/gui/widgets/queryentry.py', 66),
+    ('stoqlib/gui/widgets/searchentry.py', 90),
     ('stoqlib/gui/widgets/searchfilterbutton.py', 86.67),
     ('stoqlib/gui/widgets/splash.py', 28.57),
     ('stoqlib/gui/widgets/toolmenuaction.py', 89.29),

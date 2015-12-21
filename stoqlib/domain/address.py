@@ -43,6 +43,7 @@ from stoqlib.database.properties import UnicodeCol, IntCol, BoolCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.l10n.l10n import get_l10n_field
+from stoqlib.lib.formatters import format_address
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -297,17 +298,7 @@ class Address(Domain):
 
         :returns: the formatted address
         """
-        if self.street and self.streetnumber and self.district:
-            return u'%s %s, %s' % (self.street, self.streetnumber,
-                                   self.district)
-        elif self.street and self.district:
-            return u'%s %s, %s' % (self.street, _(u'N/A'), self.district)
-        elif self.street and self.streetnumber:
-            return u'%s %s' % (self.street, self.streetnumber)
-        elif self.street:
-            return self.street
-
-        return u''
+        return format_address(self)
 
     def get_details_string(self):
         """ Returns a string like ``postal_code - city - state``.

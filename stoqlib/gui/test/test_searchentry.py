@@ -27,6 +27,7 @@ import mock
 import gtk
 from kiwi.ui.widgets.entry import ProxyEntry
 
+from stoqlib.domain.person import ClientView
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.widgets.searchentry import SearchEntryGadget
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -47,6 +48,7 @@ class TestSearchEntryGadget(GUITest):
             self.entry, self.store, model=self.sale, model_property='client',
             search_columns=['name'], search_class=ClientSearch,
             parent=self.window, run_editor=run_editor)
+        self.client_gadget.get_model_obj = lambda obj: obj and obj.client
 
     def test_create(self):
         window = gtk.Window()
@@ -77,14 +79,15 @@ class TestSearchEntryGadget(GUITest):
         new_store.return_value = self.store
         self._create_interface()
         client = self.create_client(name=u'Fulano de Tal')
-        run_dialog.return_value = client
+        run_dialog.return_value = self.store.find(
+            ClientView, ClientView.id == client.id).one()
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.click(self.client_gadget.edit_button)
                 run_dialog.assert_called_once_with(
                     ClientEditor, self.window, self.store, None)
 
-        self.assertEquals(self.entry.read(), client.id)
+        self.assertEquals(self.entry.read(), client)
         self.assertEquals(self.entry.get_text(), u'Fulano de Tal')
 
     @mock.patch('stoqlib.gui.widgets.searchentry.api.new_store')
@@ -115,11 +118,12 @@ class TestSearchEntryGadget(GUITest):
         self.entry.activate()
 
         self.assertEquals(self.entry.get_text(), 'Fulano de Tal')
-        self.assertEquals(self.entry.read(), fulano.id)
+        self.assertEquals(self.entry.read(), fulano)
 
         # Now when we use 'de tal', there are two clients that match. The
         # search should be displayed
-        run_dialog.return_value = ciclano
+        run_dialog.return_value = self.store.find(
+            ClientView, ClientView.id == ciclano.id).one()
 
         self.entry.set_text('de tal')
         self.entry.activate()
@@ -129,7 +133,7 @@ class TestSearchEntryGadget(GUITest):
             double_click_confirm=True)
 
         self.assertEquals(self.entry.get_text(), 'Cicrano de Tal')
-        self.assertEquals(self.entry.read(), ciclano.id)
+        self.assertEquals(self.entry.read(), ciclano)
 
     @mock.patch('stoqlib.gui.widgets.searchentry.api.new_store')
     @mock.patch('stoqlib.gui.widgets.searchentry.run_dialog')

@@ -41,7 +41,7 @@ from stoqlib.domain.fiscal import CfopData, Invoice
 from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import Client, SalesPerson, Transporter
+from stoqlib.domain.person import SalesPerson, Transporter
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.enums import CreatePaymentStatus, ChangeSalespersonPolicy
 from stoqlib.exceptions import SellError, StoqlibError, PaymentMethodError
@@ -66,7 +66,7 @@ from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
 from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
+from stoqlib.gui.widgets.queryentry import ClientEntryGadget
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.sale import SaleOrderReport
 
@@ -531,12 +531,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     # Private API
     #
 
-    def _get_client(self):
-        client_id = self.client.read()
-        if not client_id:
-            return None
-        return self.store.get(Client, client_id)
-
     def _update_totals(self):
         subtotal = self.wizard.get_subtotal()
         self.subtotal_lbl.update(subtotal)
@@ -550,17 +544,18 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def _setup_clients_widget(self):
         marker('Filling clients')
-        self.client_gadget = ClientSearchEntryGadget(
+        self.client_gadget = ClientEntryGadget(
             entry=self.client,
             store=self.store,
-            model=self.model,
+            initial_value=self.model.client,
             parent=self.wizard,
             run_editor=self._run_client_editor)
         marker('Filled clients')
 
-    def _run_client_editor(self, store, model):
+    def _run_client_editor(self, store, model, description=None):
         return run_person_role_dialog(ClientEditor, self.wizard, store, model,
-                                      document=self.wizard._current_document)
+                                      document=self.wizard._current_document,
+                                      description=description)
 
     def _fill_transporter_combo(self):
         marker('Filling transporters')
@@ -743,22 +738,21 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             return
         self.discount_slave.update_max_discount()
         self.pm_slave.set_client(
-            client=self._get_client(),
+            client=self.model.client,
             total_amount=self.wizard.get_total_to_pay())
 
     def on_payment_method_changed(self, slave, method):
         self.force_validation()
         self._update_next_step(method)
 
-    def on_client__validate(self, widget, client_id):
-        if not client_id:
+    def on_client__validate(self, widget, client):
+        if not client:
             return
 
         # this is used to avoid some tests from crashing
         if self.pm_slave is None:
             return
 
-        client = self.store.get(Client, client_id)
         method = self.pm_slave.get_selected_method()
         try:
             client.can_purchase(method, self.get_remaining_value())

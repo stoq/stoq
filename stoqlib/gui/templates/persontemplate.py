@@ -229,7 +229,7 @@ class BasePersonRoleEditor(BaseEditor):
     need_cancel_confirmation = True
 
     def __init__(self, store, model=None, role_type=None, person=None,
-                 visual_mode=False, parent=None, document=None):
+                 visual_mode=False, parent=None, document=None, description=None):
         """ Creates a new BasePersonRoleEditor object
 
         :param store: a store
@@ -240,6 +240,7 @@ class BasePersonRoleEditor(BaseEditor):
         """
         if not (model or role_type is not None):
             raise ValueError('A role_type attribute is required')
+        self._description = description
         self._parent = parent
         self.individual_slave = None
         self.company_slave = None
@@ -261,7 +262,7 @@ class BasePersonRoleEditor(BaseEditor):
         # XXX: Waiting fix for bug 2163. We should not need anymore to
         # provide empty values for mandatory attributes
         if not self.person:
-            self.person = Person(name=u"", store=store)
+            self.person = Person(name=self._description or u'', store=store)
         if not self.role_type in [Person.ROLE_INDIVIDUAL,
                                   Person.ROLE_COMPANY]:
             raise ValueError("Invalid value for role_type attribute, %r" % (

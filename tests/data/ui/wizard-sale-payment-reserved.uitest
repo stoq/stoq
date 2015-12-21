@@ -20,7 +20,6 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
             GtkHBox():
               ProxyEntry(step.client, expand=True, fill=True): ''
               GtkButton():
-              GtkButton():
             GtkLabel(step.expire_label): 'Expire', hidden
             ProxyDateEntry(step.expire_date): None, hidden
             GtkLabel(step.transporter_lbl): 'Transporter:'

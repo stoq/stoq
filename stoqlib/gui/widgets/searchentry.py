@@ -172,7 +172,7 @@ class SearchEntryGadget(object):
                            double_click_confirm=True,
                            initial_string=text)
         if value:
-            self.set_value(value)
+            self.set_value(self.get_model_obj(value))
 
     def _run_editor(self):
         with api.new_store() as store:
@@ -186,7 +186,7 @@ class SearchEntryGadget(object):
                 value = run_dialog(self._editor_class, self._parent, store, model)
 
         if value:
-            value = self.store.fetch(value)
+            value = self.store.fetch(self.get_model_obj(value))
             self.set_value(value)
 
     #
@@ -196,24 +196,24 @@ class SearchEntryGadget(object):
     def set_value(self, obj):
         if obj:
             display_value = obj.get_description()
-            obj_id = obj.id
-            self._entry.prefill([(display_value, obj_id)])
-            self.set_edit_button_stock(gtk.STOCK_INFO)
-            self.edit_button.set_tooltip_text(self.edit_tooltip)
+            self._entry.prefill([(display_value, obj)])
+            self.update_edit_button(gtk.STOCK_INFO, self.edit_tooltip)
         else:
             display_value = ''
-            obj_id = None
             self._entry.prefill([])
-            self.set_edit_button_stock(gtk.STOCK_NEW)
-            self.edit_button.set_tooltip_text(self.new_tooltip)
+            self.update_edit_button(gtk.STOCK_NEW, self.new_tooltip)
 
         self._value = obj
-        self._entry.update(obj_id)
+        self._entry.update(obj)
         self._entry.set_text(display_value)
 
-    def set_edit_button_stock(self, stock):
+    def get_model_obj(self, obj):
+        return obj
+
+    def update_edit_button(self, stock, tooltip):
         image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
         self.edit_button.set_image(image)
+        self.edit_button.set_tooltip_text(tooltip)
 
     #
     #   Callbacks
@@ -234,7 +234,7 @@ class SearchEntryGadget(object):
             return self._run_search()
 
         # This means the search returned only one result.
-        self.set_value(results[0])
+        self.set_value(self.get_model_obj(results[0]))
 
     def _on_entry_changed(self, entry):
         # If the user edits the value in the entry, it invalidates the value.
@@ -266,6 +266,9 @@ class ClientSearchEntryGadget(SearchEntryGadget):
                                    search_class=search_class,
                                    search_columns=search_columns,
                                    run_editor=run_editor)
+
+    def get_model_obj(self, obj):
+        return obj and obj.client
 
     def set_editable(self, can_edit):
         self.find_button.set_sensitive(can_edit)

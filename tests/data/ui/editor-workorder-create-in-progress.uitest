@@ -27,7 +27,6 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
               GtkHBox():
                 ProxyEntry(client, expand=True, fill=True): 'Client'
                 GtkButton():
-                GtkButton():
               GtkLabel(sellable_lbl): 'Equipment:'
               GtkHBox(hbox3):
                 GtkLabel(sellable_desc, expand=True, fill=True): 'Custom'

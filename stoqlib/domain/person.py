@@ -1999,18 +1999,32 @@ class ClientView(Viewable):
     person = Person
     category = ClientCategory
 
+    # Client
     id = Client.id
+    status = Client.status
+
+    # Person
     name = Person.name
     person_id = Person.id
-    fancy_name = Company.fancy_name
     phone_number = Person.phone_number
     mobile_number = Person.mobile_number
-    status = Client.status
+
+    # Company
+    fancy_name = Company.fancy_name
     cnpj = Company.cnpj
+
+    # Individual
     cpf = Individual.cpf
     birth_date = Individual.birth_date
     rg_number = Individual.rg_number
+
+    # ClientCategory
     client_category = ClientCategory.name
+
+    # Address
+    street = Address.street
+    streetnumber = Address.streetnumber
+    district = Address.district
 
     tables = [
         Client,
@@ -2022,6 +2036,9 @@ class ClientView(Viewable):
                  Person.id == Company.person_id),
         LeftJoin(ClientCategory,
                  Client.category_id == ClientCategory.id),
+        LeftJoin(Address,
+                 And(Address.person_id == Person.id,
+                     Eq(Address.is_main_address, True))),
     ]
 
     clause = Eq(Person.merged_with_id, None)

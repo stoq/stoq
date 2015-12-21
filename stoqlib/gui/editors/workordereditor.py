@@ -33,7 +33,7 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
-from stoqlib.domain.person import Client, Branch
+from stoqlib.domain.person import Branch
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderPackage,
                                       WorkOrderApprovedAndFinishedView)
@@ -48,7 +48,7 @@ from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderExecutionSlave,
                                                WorkOrderHistorySlave)
 from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
-from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
+from stoqlib.gui.widgets.queryentry import ClientEntryGadget
 from stoqlib.lib.message import warning
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -99,10 +99,6 @@ class WorkOrderEditor(BaseEditor):
             self.category_create.hide()
         if not pm.can_edit('WorkOrderCategory'):
             self.category_edit.hide()
-
-    def _get_client(self):
-        client_id = self.client.read()
-        return self.store.get(Client, client_id)
 
     #
     #  BaseEditor
@@ -243,10 +239,10 @@ class WorkOrderEditor(BaseEditor):
         self.slaves_notebook.set_current_page(page_num)
 
     def _setup_client_widget(self):
-        self.client_gadget = ClientSearchEntryGadget(
+        self.client_gadget = ClientEntryGadget(
             entry=self.client,
             store=self.store,
-            model=self.model,
+            initial_value=self.model.client,
             parent=self)
 
     def _fill_categories_combo(self):

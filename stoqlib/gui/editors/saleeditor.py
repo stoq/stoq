@@ -312,7 +312,7 @@ class SaleClientEditor(BaseEditor):
         self.add_proxy(self.model, self.proxy_widgets)
 
     def toogle_client_details(self):
-        client = self._get_client()
+        client = self.model.client
         if client is not None:
             if client.status == Client.STATUS_SOLVENT:
                 self.info_image.set_from_stock(gtk.STOCK_INFO,
@@ -327,9 +327,6 @@ class SaleClientEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.salesperson_combo.set_sensitive(False)
-
-    def _get_client(self):
-        return self.store.get(Client, self.client.read())
 
     def _fill_clients_combo(self):
         items = Client.get_active_items(self.store)

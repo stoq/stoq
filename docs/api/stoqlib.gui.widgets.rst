@@ -73,6 +73,14 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`queryentry` Module
+------------------------
+
+.. automodule:: stoqlib.gui.widgets.queryentry
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`searchfilterbutton` Module
 ----------------------------
 

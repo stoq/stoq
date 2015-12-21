@@ -158,6 +158,23 @@ def format_postal_code(postal_code):
                       postal_code[5:8])
 
 
+def format_address(address):
+    """Format the given address to a string.
+
+    This expects an |address|, but any object containing the following
+    attributes would suffice: `street`, `streetnumber` and `district`
+    """
+    if address.street and address.district:
+        number = address.streetnumber or _(u'N/A')
+        return u'%s %s, %s' % (address.street, number, address.district)
+    elif address.street and address.streetnumber:
+        return u'%s %s' % (address.street, address.streetnumber)
+    elif address.street:
+        return address.street
+    else:
+        return u''
+
+
 #
 #  Sellable formatters
 #

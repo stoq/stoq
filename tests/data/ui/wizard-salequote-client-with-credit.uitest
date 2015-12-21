@@ -19,7 +19,6 @@ GtkDialog(toplevel): title='New Sale Quote', hidden
                 GtkHBox():
                   ProxyEntry(step.client, expand=True, fill=True): 'Juca'
                   GtkButton():
-                  GtkButton():
                 GtkLabel(step.nature_lbl): 'Operation Nature:'
                 ProxyEntry(step.operation_nature): 'Sale'
             GtkVBox(step.vbox4, expand=True, fill=True):

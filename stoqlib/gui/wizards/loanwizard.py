@@ -36,8 +36,7 @@ from kiwi.ui.objectlist import Column
 from storm.expr import And, Or, Eq
 
 from stoqlib.api import api
-from stoqlib.domain.person import (Client, LoginUser,
-                                   ClientCategory)
+from stoqlib.domain.person import LoginUser, ClientCategory
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
@@ -62,7 +61,7 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.widgets.searchentry import ClientSearchEntryGadget
+from stoqlib.gui.widgets.queryentry import ClientEntryGadget
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteItemStep
 from stoqlib.reporting.loanreceipt import LoanReceipt
@@ -125,10 +124,10 @@ class StartNewLoanStep(WizardEditorStep):
 
     def _setup_clients_widget(self):
         self.client.mandatory = True
-        self.client_gadget = ClientSearchEntryGadget(
+        self.client_gadget = ClientEntryGadget(
             entry=self.client,
             store=self.store,
-            model=self.model,
+            initial_value=self.model.client,
             parent=self.wizard)
 
     def _fill_clients_category_combo(self):
@@ -144,10 +143,6 @@ class StartNewLoanStep(WizardEditorStep):
         right = parent.child_get_property(old_widget, 'right-attach')
         parent.remove(old_widget)
         parent.attach(new_widget, left, right, top, bottom)
-
-    def _get_client(self):
-        client_id = self.client.read()
-        return self.store.get(Client, client_id)
 
     #
     # WizardStep hooks
@@ -173,7 +168,7 @@ class StartNewLoanStep(WizardEditorStep):
     #
 
     def on_client__changed(self, widget):
-        client = self._get_client()
+        client = widget.read()
         if not client:
             return
         self.client_category.select(client.category)
