@@ -90,7 +90,7 @@ class TestCalculateTaxForItem(DomainTest):
 
         msg = generate_ibpt_message(items)
         expected_msg = ("Trib aprox R$: 4.20 Federal e 18.00 Estadual\n"
-                        "Fonte: IBPT 5oi7eW ")
+                        "Fonte: IBPT ca7gi3 ")
         self.assertEquals(msg, expected_msg)
 
     def test_calculate_item(self):
@@ -127,7 +127,7 @@ class TestCalculateTaxForItem(DomainTest):
         tax_values = generator._load_tax_values(sale_item)
         total_item = sale_item.quantity * sale_item.price
         # Federal tax
-        expected_federal_tax = total_item * (Decimal("13.45") / 100)
+        expected_federal_tax = total_item * (Decimal("4.2") / 100)
         federal = generator._calculate_federal_tax(sale_item, tax_values)
         self.assertEquals(federal, expected_federal_tax)
         # State tax
@@ -138,6 +138,6 @@ class TestCalculateTaxForItem(DomainTest):
         # With tax of international origin.
         icms.orig = 1
         # Federal tax
-        expected_federal_tax = total_item * (Decimal("15.96") / 100)
+        expected_federal_tax = total_item * (Decimal("21.45") / 100)
         federal = generator._calculate_federal_tax(sale_item, tax_values)
         self.assertEquals(federal, expected_federal_tax)
