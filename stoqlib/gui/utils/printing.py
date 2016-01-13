@@ -112,6 +112,11 @@ class PrintOperation(gtk.PrintOperation):
         # might be released just after exiting this function.
         if self._threaded:
             self._in_nested_main_loop = True
+            # Before creating a nested main loop, we need to process everything
+            # that was pending on the main one as even the PrintOperation may
+            # be waiting at this point.
+            while gtk.events_pending():
+                gtk.main_iteration()
             gtk.main()
             self._in_nested_main_loop = False
 
