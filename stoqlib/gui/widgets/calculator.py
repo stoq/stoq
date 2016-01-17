@@ -29,14 +29,14 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
 from kiwi.ui.widgets.entry import ProxyEntry
+from kiwi.ui.popup import PopupWindow
 import pango
 
 from stoqlib.gui.stockicons import STOQ_CALC
-from stoqlib.gui.widgets.popup import EntryPopup
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
-class CalculatorPopup(EntryPopup):
+class CalculatorPopup(PopupWindow):
     """A popup calculator for entries
 
     Right now it supports both
@@ -81,17 +81,17 @@ class CalculatorPopup(EntryPopup):
         # icons. We should put the calculator on the other side.
         # Note that spinbuttons are always right aligned and thus
         # xalign will always be 1.0
-        if self.entry.get_property('xalign') > 0.5:
+        if self.widget.get_property('xalign') > 0.5:
             self._icon_pos = 'secondary-icon'
         else:
             self._icon_pos = 'primary-icon'
 
-        self.entry.set_property(self._icon_pos + '-activatable', True)
-        self.entry.set_property(self._icon_pos + '-tooltip-text',
-                                _("Do calculations on top of this value"))
-        self.entry.connect('notify::sensitive',
-                           self._on_entry_sensitive__notify)
-        self.entry.connect('icon-press', self._on_entry__icon_press)
+        self.widget.set_property(self._icon_pos + '-activatable', True)
+        self.widget.set_property(self._icon_pos + '-tooltip-text',
+                                 _("Do calculations on top of this value"))
+        self.widget.connect('notify::sensitive',
+                            self._on_entry_sensitive__notify)
+        self.widget.connect('icon-press', self._on_entry__icon_press)
         self._toggle_calculator_icon()
 
         vbox = gtk.VBox(spacing=6)
@@ -129,7 +129,7 @@ class CalculatorPopup(EntryPopup):
 
     def validate_popup(self):
         try:
-            self._new_value = self._data_type(self.entry.get_text())
+            self._new_value = self._data_type(self.widget.get_text())
         except decimal.InvalidOperation:
             return False
 
@@ -218,17 +218,17 @@ class CalculatorPopup(EntryPopup):
             self._update_new_value()
             return
 
-        self.entry.update(self._new_value)
+        self.widget.update(self._new_value)
 
         self.popdown()
 
     def _toggle_calculator_icon(self):
-        if self.entry.get_sensitive():
+        if self.widget.get_sensitive():
             pixbuf = self.render_icon(STOQ_CALC, gtk.ICON_SIZE_MENU)
         else:
             pixbuf = None
 
-        self.entry.set_property(self._icon_pos + '-pixbuf', pixbuf)
+        self.widget.set_property(self._icon_pos + '-pixbuf', pixbuf)
 
     #
     #  Callbacks
@@ -242,7 +242,7 @@ class CalculatorPopup(EntryPopup):
                                    _("Use absolute or percentage (%) value")))
 
         if value:
-            warning = self.entry.emit('validate', value)
+            warning = self.widget.emit('validate', value)
             warning = warning and str(warning)
         else:
             warning = None
