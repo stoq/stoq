@@ -422,11 +422,11 @@ class ShellWindow(GladeDelegate):
         - Check if this Stoq Instance uses Stoq Link (and send data to us if
           it does).
         """
-        if not api.sysparam.get_bool('ONLINE_SERVICES'):
-            return
         # Check version
         self._version_checker = VersionChecker(self.store, self)
         self._version_checker.check_new_version()
+        if not api.sysparam.get_bool('ONLINE_SERVICES'):
+            return
         # Check Stoq Link usage
         webapi = WebService()
         webapi.link_update(self.store)
@@ -641,7 +641,7 @@ class ShellWindow(GladeDelegate):
 
         # FIXME: Move over to domain
         if (app_name != 'launcher' and
-            not user.profile.check_app_permission(app_name)):
+                not user.profile.check_app_permission(app_name)):
             error(_("This user lacks credentials \nfor application %s") %
                   app_name)
             return None
@@ -940,7 +940,7 @@ class ShellWindow(GladeDelegate):
 
         # sorting by app_full_name
         for name, full, icon, descr in locale_sorted(
-            descriptions, key=operator.itemgetter(1)):
+                descriptions, key=operator.itemgetter(1)):
             # FIXME:
             # if name in self._hidden_apps:
             #    continue
