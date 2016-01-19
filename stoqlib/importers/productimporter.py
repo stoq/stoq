@@ -80,29 +80,29 @@ class ProductImporter(CSVImporter):
     def process_one(self, data, fields, store):
         base_category = self._get_or_create(
             SellableCategory, store,
-            suggested_markup=int(data.markup),
-            salesperson_commission=int(data.commission),
+            suggested_markup=Decimal(data.markup),
+            salesperson_commission=Decimal(data.commission),
             category=None,
             description=data.base_category)
 
         # create a commission source
         self._get_or_create(
             CommissionSource, store,
-            direct_value=int(data.commission),
-            installments_value=int(data.commission2),
+            direct_value=Decimal(data.commission),
+            installments_value=Decimal(data.commission2),
             category=base_category)
 
         category = self._get_or_create(
             SellableCategory, store,
             description=data.category,
-            suggested_markup=int(data.markup2),
+            suggested_markup=Decimal(data.markup2),
             category=base_category)
 
         sellable = Sellable(store=store,
                             cost=Decimal(data.cost),
                             category=category,
                             description=data.description,
-                            price=int(data.price))
+                            price=Decimal(data.price))
         sellable.barcode = data.barcode
         sellable.code = u'%02d' % self._code
         self._code += 1
