@@ -26,6 +26,7 @@
 from decimal import Decimal
 
 import gtk
+from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from storm.expr import And
@@ -170,6 +171,8 @@ class StockTransferItemStep(SellableItemStep):
 
     def get_columns(self):
         return [
+            Column('sellable.code', title=_(u'Code'), data_type=str,
+                   searchable=True,),
             Column('sellable.description', title=_(u'Description'),
                    data_type=str, expand=True, searchable=True,
                    format_func=self._format_description, format_func_data=True),
@@ -179,6 +182,7 @@ class StockTransferItemStep(SellableItemStep):
                    width=100),
             AccessorColumn('total', title=_(u'Total'), data_type=Decimal,
                            accessor=self._get_total_quantity, width=80),
+            Column('stock_cost', title=_(u'Cost'), data_type=currency),
         ]
 
     def _format_description(self, item, data):
