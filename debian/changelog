@@ -1,3 +1,9 @@
+stoq (1.10.2ubuntu1) UNRELEASED; urgency=medium
+
+  * 1.10.3 Bugfix release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Fri, 22 Jan 2016 17:35:26 -0200
+
 stoq (1.10.2) trusty; urgency=low
 
   * 1.10.2 Bugfix release
