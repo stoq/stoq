@@ -36,13 +36,15 @@ from kiwi.ui.pixbufutils import pixbuf_from_string
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyDateEntry
+from kiwi.ui.widgets.multicombo import ProxyMultiCombo
 from kiwi.utils import gsignal
 from zope.interface import implementer
 
 from stoqlib.database.interfaces import ISearchFilter
 from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
                                             DateQueryState, DateIntervalQueryState,
-                                            NumberIntervalQueryState, BoolQueryState)
+                                            NumberIntervalQueryState,
+                                            BoolQueryState, MultiQueryState)
 from stoqlib.gui.search.searchoptions import (Any,
                                               Between,
                                               IdenticalTo,
@@ -906,3 +908,56 @@ class NumberSearchFilter(SearchFilter):
         num = len(self.mode) + position
         self.mode.insert_item(num, option.name, option_type)
         self._options[option_type] = option
+
+
+class MultiSearchFilter(SearchFilter):
+    """A multi object search filter, containing:
+
+      - a label
+      - a multicombo widget
+    """
+
+    def __init__(self, label, items):
+        super(MultiSearchFilter, self).__init__(label=label)
+
+        self._title_label = gtk.Label(label)
+        self.pack_start(self._title_label, False, False)
+
+        self._combo = ProxyMultiCombo(width=400)
+        self._combo.prefill(items)
+        self._combo.connect('content-changed', self._on_combo__content_changed)
+        self.pack_start(self._combo, False, False, 6)
+
+        self.show_all()
+
+    #
+    # SearchFilter
+    #
+
+    def set_label(self, label):
+        super(MultiSearchFilter, self).set_label(label)
+        self._title_label.set_text(label)
+
+    def get_title_label(self):
+        return self._title_label
+
+    def get_state(self):
+        return MultiQueryState(filter=self,
+                               values=self._combo.get_selection_data())
+
+    def set_state(self, values):
+        self._combo.clear()
+        self._combo.add_selection_by_data(values)
+
+    def get_mode_combo(self):
+        return None
+
+    def get_description(self):
+        return '%s: [%s]' % (', '.join(self._combo.get_selection_label()), )
+
+    #
+    #  Callbacks
+    #
+
+    def _on_combo__content_changed(self, combo):
+        self.emit('changed')

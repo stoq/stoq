@@ -376,7 +376,9 @@ class ServicesApp(ShellApp):
                          search_attribute='status', data_type=str,
                          valid_values=self._get_status_values(), visible=False),
             SearchColumn('category_name', title=_(u'Category'),
-                         data_type=str, visible=False),
+                         data_type=str, visible=False, multiple_selection=True,
+                         search_attribute='category_id',
+                         valid_values=self._get_category_values()),
             Column('equipment', title=_(u'Equipment (Description)'),
                    data_type=str, expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment (Description)'),
@@ -481,6 +483,11 @@ class ServicesApp(ShellApp):
     def _get_status_values(self):
         return ([(_('Any'), None)] +
                 [(v, k) for k, v in WorkOrder.statuses.items()])
+
+    def _get_category_values(self):
+        return [
+            (category.name, category.id, render_pixbuf(category.color))
+            for category in self.store.find(WorkOrderCategory)]
 
     def _update_view(self, select_item=None):
         self.refresh()

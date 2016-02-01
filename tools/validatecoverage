@@ -67,7 +67,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/database/debug.py', 19.05),
     ('stoqlib/database/migration.py', 44),
     ('stoqlib/database/orm.py', 77.27),
-    ('stoqlib/database/queryexecuter.py', 91.29),
+    ('stoqlib/database/queryexecuter.py', 89),
     ('stoqlib/database/runtime.py', 72.13),
     ('stoqlib/database/settings.py', 38),
     ('stoqlib/database/tables.py', 86.96),

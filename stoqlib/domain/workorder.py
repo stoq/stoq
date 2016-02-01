@@ -1331,6 +1331,7 @@ class WorkOrderView(Viewable):
     supplier_order = WorkOrder.supplier_order
 
     # WorkOrderCategory
+    category_id = WorkOrderCategory.id
     category_name = WorkOrderCategory.name
     category_color = WorkOrderCategory.color
 

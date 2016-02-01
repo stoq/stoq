@@ -315,9 +315,11 @@ class SoldItemsByClientSearch(SearchDialog):
                          visible=False),
             SearchColumn('sellable_category', title=_('Category'), data_type=str,
                          visible=False),
-            QuantityColumn('quantity', title=_('Qty')),
-            SearchColumn('price', title=_('Avg price'), data_type=currency),
-            SearchColumn('total', title=_('Total'), data_type=currency,)
+            QuantityColumn('quantity', title=_('Qty'), use_having=True),
+            SearchColumn('price', title=_('Avg price'), data_type=currency,
+                         use_having=True),
+            SearchColumn('total', title=_('Total'), data_type=currency,
+                         use_having=True)
         ]
         return columns
 

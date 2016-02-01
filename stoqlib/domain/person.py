@@ -2426,8 +2426,8 @@ class ClientsWithCreditView(Viewable):
     email = Person.email
     cpf = Individual.cpf
     birth_date = Individual.birth_date
-
     cnpj = Company.cnpj
+    category = ClientCategory.name
 
     credit_received = Field('_out_summary', 'paid_value')
     credit_spent = Coalesce(Field('_in_summary', 'paid_value'), 0)
@@ -2436,6 +2436,7 @@ class ClientsWithCreditView(Viewable):
     tables = [
         Client,
         Join(Person, Person.id == Client.person_id),
+        LeftJoin(ClientCategory, ClientCategory.id == Client.category_id),
         LeftJoin(Individual, Individual.person_id == Person.id),
         LeftJoin(Company, Company.person_id == Person.id),
         LeftJoin(Alias(_InPaymentSummary, '_in_summary'),

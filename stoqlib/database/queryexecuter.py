@@ -148,6 +148,17 @@ class BoolQueryState(QueryState):
         return '<BoolQueryState value=%r>' % (self.value)
 
 
+class MultiQueryState(QueryState):
+    """Query state for objects."""
+
+    def __init__(self, filter, values):
+        super(MultiQueryState, self).__init__(filter)
+        self.values = values
+
+    def __repr__(self):
+        return '<MultiQueryState values=%r>' % (self.values, )
+
+
 class AsyncQueryOperation(gobject.GObject):
 
     (GET_ALL,
@@ -518,6 +529,8 @@ class QueryExecuter(object):
                 query = self._parse_date_interval_state(state, table_field)
             elif isinstance(state, BoolQueryState):
                 query = self._parse_bool_state(state, table_field)
+            elif isinstance(state, MultiQueryState):
+                query = self._parse_multi_query_state(state, table_field)
             else:
                 raise NotImplementedError(state.__class__.__name__)
             if query:
@@ -584,3 +597,6 @@ class QueryExecuter(object):
 
     def _parse_bool_state(self, state, table_field):
         return table_field == state.value
+
+    def _parse_multi_query_state(self, state, table_field):
+        return table_field.is_in(state.values)

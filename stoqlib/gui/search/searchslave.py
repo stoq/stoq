@@ -39,13 +39,14 @@ from stoqlib.api import api
 from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
                                             DateQueryState, DateIntervalQueryState,
                                             NumberIntervalQueryState, BoolQueryState,
-                                            QueryExecuter)
+                                            QueryExecuter, MultiQueryState)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.interfaces import ISearchResultView
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchfilters import (StringSearchFilter, ComboSearchFilter,
                                               DateSearchFilter, NumberSearchFilter,
-                                              BoolSearchFilter, SearchFilter)
+                                              BoolSearchFilter, SearchFilter,
+                                              MultiSearchFilter)
 from stoqlib.gui.search.searchresultview import (SearchResultListView,
                                                  SearchResultTreeView)
 from stoqlib.gui.widgets.lazyobjectlist import LazySummaryLabel
@@ -296,10 +297,12 @@ class SearchSlave(SlaveDelegate):
             attr = column.search_attribute or column.attribute
             self.add_filter_option(attr, column.get_search_label(),
                                    column.data_type, column.valid_values,
-                                   column.search_func, column.use_having)
+                                   column.search_func, column.use_having,
+                                   column.multiple_selection)
 
     def add_filter_option(self, attr, title, data_type, valid_values=None,
-                          callback=None, use_having=False):
+                          callback=None, use_having=False,
+                          multiple_selection=False):
         """Adds a new advanced filter option
 
         Use this if you need a filter option in the advanced filters when you
@@ -313,7 +316,8 @@ class SearchSlave(SlaveDelegate):
         menu_item = gtk.MenuItem(title)
         menu_item.show()
         menu_item.connect('activate', self._on_menu_item__activate, attr, title,
-                          data_type, valid_values, callback, use_having)
+                          data_type, valid_values, callback, use_having,
+                          multiple_selection)
         self.menu.append(menu_item)
 
     def set_message(self, message):
@@ -404,7 +408,8 @@ class SearchSlave(SlaveDelegate):
             self.search()
 
     def add_filter_by_attribute(self, attr, title, data_type, valid_values=None,
-                                callback=None, use_having=False):
+                                callback=None, use_having=False,
+                                multiple_selection=False):
         """Add a filter accordingly to the attributes specified
 
         :param attr: attribute that will be filtered. This can be either the
@@ -434,11 +439,15 @@ class SearchSlave(SlaveDelegate):
             if data_type != int:
                 filter.set_digits(2)
         elif data_type == str:
-            if valid_values:
+            if multiple_selection:
+                assert valid_values, "need valid_values for multiple_selection"
+                filter = MultiSearchFilter(title, valid_values)
+            elif valid_values:
                 filter = ComboSearchFilter(title, valid_values)
+                filter.enable_advanced()
             else:
                 filter = StringSearchFilter(title)
-            filter.enable_advanced()
+                filter.enable_advanced()
         elif data_type == bool:
             filter = BoolSearchFilter(title)
         else:
@@ -489,6 +498,9 @@ class SearchSlave(SlaveDelegate):
             elif isinstance(state, StringQueryState):
                 data['text'] = state.text
                 data['mode'] = state.mode
+            elif isinstance(state, MultiQueryState):
+                # Converting to list since set is not serializable
+                data['values'] = list(state.values)
             else:
                 raise NotImplementedError(state)
         return dict_state
@@ -749,9 +761,10 @@ class SearchSlave(SlaveDelegate):
         self.search()
 
     def _on_menu_item__activate(self, item, attr, title, data_type,
-                                valid_values, callback, use_having):
+                                valid_values, callback, use_having,
+                                multiple_selection):
         self.add_filter_by_attribute(attr, title, data_type, valid_values,
-                                     callback, use_having)
+                                     callback, use_having, multiple_selection)
 
     def _on_search_filter__remove(self, filter):
         self.remove_filter(filter)

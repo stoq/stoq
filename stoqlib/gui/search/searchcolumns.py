@@ -74,16 +74,20 @@ class SearchColumn(Column):
     #: use the query on the *having* part instead of the *where*'s on
     use_having = gobject.property(type=bool, default=False)
 
-    def __init__(self, attribute, title=None, data_type=None,
-                 long_title=None, valid_values=None, search_attribute=None,
-                 **kwargs):
-        """
-        """
-        self.long_title = long_title
-        # FIXME: This is not being used at the moment
-        self.valid_values = valid_values
-        self.search_attribute = search_attribute
-        self.sensitive = True
+    #: if we should allow filtering by multiple values
+    multiple_selection = gobject.property(type=bool, default=False)
+
+    #: the search attribute to use when filtering by this column
+    search_attribute = gobject.property(type=str, default=None)
+
+    #: valid values to select when filtering by this column
+    valid_values = gobject.property(type=object, default=None)
+
+    #: long title to use in this column
+    long_title = gobject.property(type=str, default=None)
+
+    def __init__(self, attribute, title=None, data_type=None, **kwargs):
+        kwargs.setdefault('search_attribute', attribute)
 
         Column.__init__(self, attribute, title, data_type, **kwargs)
 
