@@ -61,12 +61,17 @@ class TestWorkOrderEditor(GUITest):
             self.assertEqual(editor.model.defect_detected, u"XXX\nYYY")
 
         editor.model.identifier = 654
+        self.assertEqual(editor.supplier_order.read(), u"")
+        editor.supplier_order.update(u"A1234")
         editor.proxy.update('identifier')
+        editor.proxy.update('supplier_order')
+        self.assertEqual(editor.supplier_order.read(), u"A1234")
         opening_slave = editor.opening_slave
         execution_slave = editor.execution_slave
         item_slave = execution_slave.sellable_item_slave
         quote_slave = editor.quote_slave
         self.assertSensitive(editor, ['client'])
+        self.assertSensitive(editor, ['supplier_order'])
         self.assertNotSensitive(editor, ['category_edit'])
         # Check creation state
         self.assertEqual(editor.model.status, WorkOrder.STATUS_OPENED)
@@ -144,6 +149,7 @@ class TestWorkOrderEditor(GUITest):
         sellable = self.create_sellable(code=u'Code')
         workorder = self.create_workorder(description=u'Test equipment')
         workorder.identifier = 666
+        workorder.supplier_order = u"A1234"
         workorder.client = self.create_client()
         workorder.sellable = sellable
         workorder.category = WorkOrderCategory(store=self.store,
@@ -153,8 +159,10 @@ class TestWorkOrderEditor(GUITest):
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-initial')
 
+        self.assertEqual(editor.supplier_order.read(), u'A1234')
         self.assertSensitive(editor, ['client'])
         self.assertSensitive(editor, ['category', 'category_create'])
+        self.assertSensitive(editor, ['supplier_order'])
         workorder.defect_detected = u"Defect detected"
         workorder.estimated_hours = 10
         workorder.estimated_hours = 100
@@ -199,12 +207,14 @@ class TestWorkOrderEditor(GUITest):
         # Create a work order with sale
         workorder = self.create_workorder(description=u'Test equipment')
         workorder.identifier = 1234
+        workorder.supplier_order = u'A1234'
         workorder.sale = self.create_sale()
         workorder.client = self.create_client()
         # Create the editor
         editor = WorkOrderEditor(self.store, model=workorder)
         self.assertNotSensitive(editor, ['client'])
         self.assertNotSensitive(editor, ['category', 'category_create'])
+        self.assertSensitive(editor, ['supplier_order'])
         self.check_editor(editor, 'editor-workorder-with-sale-show')
 
 

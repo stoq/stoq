@@ -691,6 +691,9 @@ class WorkOrder(Domain):
 
     history_entries = ReferenceSet('id', 'WorkOrderHistory.work_order_id')
 
+    #: Number of supplier order.
+    supplier_order = UnicodeCol()
+
     @property
     def status_str(self):
         return self.statuses[self.status]

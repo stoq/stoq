@@ -14,18 +14,20 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                 ProxyLabel(status_str, expand=True, fill=True): '<span >Opened</span>'
                 GtkImage(state_icon): hidden
                 GtkButton(toggle_status_btn, fill=True): 'Approve', insensitive
-              GtkLabel(label8): 'Client:'
-              GtkHBox():
-                ProxyEntry(client, expand=True, fill=True): '', mandatory
-                GtkButton():
-                GtkButton():
               GtkLabel(label5): 'Category:'
               GtkHBox(hbox1):
                 ProxyComboBox(category, expand=True, fill=True):
                   item: 'No category', selected
                   item: 'Categoty XXX'
-                GtkButton(category_create, expand=True, fill=True):
-                GtkButton(category_edit, expand=True, fill=True): insensitive
+                GtkButton(category_create, fill=True):
+                GtkButton(category_edit, fill=True): insensitive
+              GtkLabel(label9): 'Supplier order:'
+              ProxyEntry(supplier_order): 'A1234'
+              GtkLabel(label8): 'Client:'
+              GtkHBox():
+                ProxyEntry(client, expand=True, fill=True): '', mandatory
+                GtkButton():
+                GtkButton():
               GtkLabel(sellable_lbl): 'Equipment:'
               GtkHBox(hbox3):
                 GtkLabel(sellable_desc, expand=True, fill=True): 'Custom'

@@ -77,6 +77,7 @@ class WorkOrderEditor(BaseEditor):
         'description',
         'identifier',
         'status_str',
+        'supplier_order',
         'quantity',
     ]
 

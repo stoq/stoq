@@ -19,6 +19,19 @@
 -- Author(s): Stoq Team <stoq-devel@async.com.br>
 --
 
+-- FIXME: Patched not applied:
+--          patch-05-19
+--          patch-05-20
+--          patch-05-21
+--          patch-05-22
+--          patch-05-23
+--          patch-05-24
+--          patch-05-25
+--          patch-05-26
+--          patch-05-27
+--          patch-05-28
+--          patch-05-29
+
 --
 -- Extensions
 --
@@ -1779,6 +1792,7 @@ CREATE TABLE work_order (
     sale_id uuid REFERENCES sale(id) ON UPDATE CASCADE,
     current_branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
     execution_branch_id uuid REFERENCES branch(id) ON UPDATE CASCADE,
+    supplier_order text;
     UNIQUE (identifier, branch_id)
 );
 CREATE RULE update_te AS ON UPDATE TO work_order DO ALSO SELECT update_te(old.te_id);

@@ -14,17 +14,19 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                 ProxyLabel(status_str, expand=True, fill=True): '<span >Opened</span>'
                 GtkImage(state_icon): hidden
                 GtkButton(toggle_status_btn, fill=True): 'Approve'
+              GtkLabel(label5): 'Category:'
+              GtkHBox(hbox1):
+                ProxyComboBox(category, expand=True, fill=True): insensitive
+                  item: 'No category', selected
+                GtkButton(category_create, fill=True): insensitive
+                GtkButton(category_edit, fill=True): insensitive
+              GtkLabel(label9): 'Supplier order:'
+              ProxyEntry(supplier_order): ''
               GtkLabel(label8): 'Client:'
               GtkHBox():
                 ProxyEntry(client, expand=True, fill=True): 'Client', insensitive
                 GtkButton(): insensitive
                 GtkButton(): insensitive
-              GtkLabel(label5): 'Category:'
-              GtkHBox(hbox1):
-                ProxyComboBox(category, expand=True, fill=True): insensitive
-                  item: 'No category', selected
-                GtkButton(category_create, expand=True, fill=True): insensitive
-                GtkButton(category_edit, expand=True, fill=True): insensitive
               GtkLabel(sellable_lbl): 'Equipment:'
               GtkHBox(hbox3):
                 GtkLabel(sellable_desc, expand=True, fill=True): 'Description'
