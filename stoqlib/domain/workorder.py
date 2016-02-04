@@ -1328,6 +1328,7 @@ class WorkOrderView(Viewable):
     is_rejected = WorkOrder.is_rejected
     equipment = Coalesce(Concat(Sellable.description, u" - ", WorkOrder.description),
                          WorkOrder.description)
+    supplier_order = WorkOrder.supplier_order
 
     # WorkOrderCategory
     category_name = WorkOrderCategory.name

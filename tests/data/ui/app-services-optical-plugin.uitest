@@ -152,6 +152,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
                 column: title='Branch', hidden
                 column: title='Current branch', hidden
                 column: title='Execution branch', hidden
+                column: title='Supplier Order #', hidden
                 column: title='Open date'
                 column: title='Approval date', hidden
                 column: title='Estimated start', hidden
@@ -159,7 +160,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
                 column: title='Finish date', hidden
                 column: title='Total'
                 column: title='Manufacturer', hidden
-                row: 99412, None, u'Opened', None, u'Description - ', None, None, u'Client', u'Moda Stoq', u'Moda Stoq', None, datetime.datetime(2013, 12, 7, 0, 0), None, None, None, None, Decimal('0'), u'Empresa Tal'
+                row: 99412, None, u'Opened', None, u'Description - ', None, None, u'Client', u'Moda Stoq', u'Moda Stoq', None, None, datetime.datetime(2013, 12, 7, 0, 0), None, None, None, None, Decimal('0'), u'Empresa Tal'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

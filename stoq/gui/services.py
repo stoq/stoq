@@ -393,6 +393,8 @@ class ServicesApp(ShellApp):
                          data_type=str, visible=False),
             SearchColumn('execution_branch_name', title=_(u'Execution branch'),
                          data_type=str, visible=False),
+            SearchColumn('supplier_order', title=_("Supplier Order #"),
+                         visible=False, data_type=str),
             SearchColumn('open_date', title=_(u'Open date'),
                          data_type=datetime.date),
             SearchColumn('approve_date', title=_(u'Approval date'),
