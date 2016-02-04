@@ -27,7 +27,10 @@ __tests__ = 'stoqlib.gui.wizards.productwizard'
 import contextlib
 import mock
 
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.product import Product
+from stoqlib.gui.editors.producteditor import (ProductPackageComponentEditor,
+                                               TemporaryProductComponent)
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 
@@ -217,6 +220,43 @@ class TestProducCreateWizard(GUITest):
         for combo in grid_slave._widgets.values():
             combo.select_item_by_position(1)
         self.assertEquals(grid_slave.add_product_button.get_sensitive(), False)
+
+    @mock.patch('stoqlib.gui.slaves.productslave.run_dialog')
+    def test_create_package_product(self, run_dialog):
+        wizard = ProductCreateWizard(self.store)
+        type_step = wizard.get_current_step()
+        type_step.package.set_active(True)
+        self.click(wizard.next_button)
+
+        # ProductEditor step
+        editor_step = wizard.get_current_step()
+        # Checking that the slave is attached
+        self.assertEquals(hasattr(editor_step.slave, 'package_slave'), True)
+
+        # Package slave
+        package_slave = editor_step.slave.get_slave('Pack content')
+        self.assertNotSensitive(package_slave, ['add_button', 'remove_button',
+                                                'edit_button'])
+
+        package_slave.component_combo.select_item_by_position(0)
+        selected = package_slave.component_combo.get_selected()
+        temp = TemporaryProductComponent(product=package_slave._product,
+                                         component=selected)
+        # After select a component add button will be sensitive
+        self.assertSensitive(package_slave, ['add_button'])
+        # And the other remain not sensitive
+        self.assertNotSensitive(package_slave, ['remove_button', 'edit_button'])
+        run_dialog.return_value = temp
+        self.click(package_slave.add_button)
+
+        args, kwargs = run_dialog.call_args
+        self.assertEquals(args[0], ProductPackageComponentEditor)
+        self.assertTrue(isinstance(args[2], StoqlibStore))
+        self.assertTrue(isinstance(args[3], TemporaryProductComponent))
+        self.assertTrue(hasattr(args[3], 'product'))
+        self.assertTrue(hasattr(args[3], 'component'))
+        self.assertTrue(hasattr(args[3], 'quantity'))
+        self.assertTrue(hasattr(args[3], 'design_reference'))
 
     @mock.patch('stoqlib.gui.wizards.productwizard.yesno')
     def test_create_product_alike(self, yesno):

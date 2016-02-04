@@ -527,6 +527,10 @@ class TestProduct(DomainTest):
         product_without_stock = self.create_product(storable=False)
         product_without_stock.manage_stock = False
 
+        package_product = self.create_product(storable=False)
+        package_product.manage_stock = False
+        package_product.is_package = True
+
         consigned_product = self.create_product(storable=True)
         consigned_product.consignment = True
 
@@ -545,6 +549,8 @@ class TestProduct(DomainTest):
                          Product.TYPE_BATCH)
         self.assertEqual(grid_product.product_type,
                          Product.TYPE_GRID)
+        self.assertEqual(package_product.product_type,
+                         Product.TYPE_PACKAGE)
 
     def test_add_grid_child(self):
         grid_product = self.create_product(is_grid=True)

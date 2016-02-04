@@ -31,13 +31,13 @@ from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column, SummaryLabel
 from kiwi.ui.widgets.combo import ProxyComboBox
-from storm.expr import Eq
+from storm.expr import Eq, And
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, ProductComponent,
                                     ProductQualityTest, Product,
-                                    ProductManufacturer, GridGroup)
+                                    ProductManufacturer, Storable, GridGroup)
 from stoqlib.domain.production import ProductionOrderProducingView
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.domain.views import ProductFullStockView
@@ -48,7 +48,8 @@ from stoqlib.gui.editors.baseeditor import (BaseEditorSlave,
 from stoqlib.gui.editors.producteditor import (TemporaryProductComponent,
                                                ProductComponentEditor,
                                                QualityTestEditor,
-                                               ProductSupplierEditor)
+                                               ProductSupplierEditor,
+                                               ProductPackageComponentEditor)
 from stoqlib.lib.defaults import quantize, MAX_INT
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import info, yesno, warning
@@ -421,7 +422,8 @@ class ProductComponentSlave(BaseEditorSlave):
                 ]
 
     def _setup_widgets(self):
-        component_list = list(self._get_products())
+        is_package = self.model.product.is_package
+        component_list = list(self._get_products(additional_query=is_package))
         if component_list:
             self.component_combo.prefill(component_list)
         else:
@@ -443,7 +445,7 @@ class ProductComponentSlave(BaseEditorSlave):
             self.add_button.set_sensitive(False)
             self.sort_components_check.set_sensitive(False)
 
-    def _get_products(self, sort_by_name=True):
+    def _get_products(self, sort_by_name=True, additional_query=False):
         # FIXME: This is a kind of workaround until we have the
         # SQLCompletion funcionality, then we will not need to sort the
         # data.
@@ -454,6 +456,10 @@ class ProductComponentSlave(BaseEditorSlave):
 
         products = []
         query = Eq(Product.is_grid, False)
+        if additional_query:
+            # XXX For now, we are not allowing package_product to have another
+            # package_product or batch_product as component
+            query = And(query, Eq(Storable.is_batch, False))
         for product_view in self.store.find(ProductFullStockView, query).order_by(attr):
             if product_view.product is self._product:
                 continue
@@ -537,10 +543,14 @@ class ProductComponentSlave(BaseEditorSlave):
             return
 
         toplevel = self.get_toplevel().get_toplevel()
-        # We cant use savepoint here, since product_component
-        # is not an ORM object.
-        model = run_dialog(ProductComponentEditor, toplevel, self.store,
-                           product_component)
+        if self.model.product.is_package:
+            model = run_dialog(ProductPackageComponentEditor, toplevel,
+                               self.store, product_component)
+        else:
+            # We cant use savepoint here, since product_component
+            # is not an ORM object.
+            model = run_dialog(ProductComponentEditor, toplevel, self.store,
+                               product_component)
         if not model:
             return
 
@@ -656,9 +666,29 @@ class ProductComponentSlave(BaseEditorSlave):
 
     def on_sort_components_check__toggled(self, widget):
         sort_by_name = not widget.get_active()
+        is_package = self.model.product.is_package
         self.component_combo.prefill(
-            self._get_products(sort_by_name=sort_by_name))
+            self._get_products(sort_by_name=sort_by_name,
+                               additional_query=is_package))
         self.component_combo.select_item_by_position(0)
+
+
+class ProductPackageSlave(ProductComponentSlave):
+    def _setup_widgets(self):
+        super(ProductPackageSlave, self)._setup_widgets()
+        self.production_time_box.hide()
+
+    def _get_columns(self):
+            return [Column('code', title=_(u'Code'), data_type=int,
+                           expander=True, sorted=True),
+                    Column('quantity', title=_(u'Quantity'),
+                           data_type=Decimal),
+                    Column('unit', title=_(u'Unit'), data_type=str),
+                    Column('description', title=_(u'Description'),
+                           data_type=str, expand=True),
+                    Column('category', title=_(u'Category'), data_type=str),
+                    Column('total_production_cost', title=_(u'Total'),
+                           format_func=get_formatted_cost, data_type=currency)]
 
 
 class ProductQualityTestSlave(ModelListSlave):

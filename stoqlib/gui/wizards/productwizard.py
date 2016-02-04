@@ -79,6 +79,10 @@ class ProductTypeStep(BaseWizardStep):
         if radio.get_active():
             self.wizard.product_type = Product.TYPE_GRID
 
+    def on_package__toggled(self, radio):
+        if radio.get_active():
+            self.wizard.product_type = Product.TYPE_PACKAGE
+
 
 class ProductAttributeEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
@@ -145,9 +149,20 @@ class ProductCreateWizard(BaseWizard):
     #
 
     def finish(self):
+        last_step = self.get_current_step()
+        # Forcing the wizard to confirm all slaves
+        if not last_step.slave.confirm():
+            return
         self.retval = self.model
         self.close()
         self.model.update_children_info()
+
+    def cancel(self):
+        last_step = self.get_current_step()
+        if isinstance(last_step, ProductEditorStep):
+            last_step.slave.cancel()
+
+        return super(ProductCreateWizard, self).cancel()
 
     #
     #  Classmethods

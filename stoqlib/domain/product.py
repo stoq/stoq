@@ -203,6 +203,7 @@ class Product(Domain):
     TYPE_WITHOUT_STOCK = 2
     TYPE_CONSIGNED = 3
     TYPE_GRID = 4
+    TYPE_PACKAGE = 5
 
     product_types = {
         TYPE_COMMON: _("Regular product"),
@@ -210,6 +211,7 @@ class Product(Domain):
         TYPE_WITHOUT_STOCK: _("Product without stock control"),
         TYPE_CONSIGNED: _("Consigned product"),
         TYPE_GRID: _("Grid product"),
+        TYPE_PACKAGE: _("Package product"),
     }
 
     #: |sellable| for this product
@@ -331,6 +333,9 @@ class Product(Domain):
     #: This means this product can be bought but cannot be sold
     internal_use = BoolCol(default=False)
 
+    # Indicates if the product is a of TYPE_PACKAGE
+    is_package = BoolCol(default=False)
+
     def __init__(self, **kwargs):
         assert 'sellable' in kwargs
         kwargs['id'] = kwargs['sellable'].id
@@ -351,9 +356,12 @@ class Product(Domain):
 
         if self.is_grid:
             return self.TYPE_GRID
-        elif not self.manage_stock:
+        elif not self.manage_stock and not self.is_package:
             assert storable is None
             return self.TYPE_WITHOUT_STOCK
+        elif self.is_package:
+            assert storable is None
+            return self.TYPE_PACKAGE
         elif storable.is_batch:
             return self.TYPE_BATCH
         elif self.consignment:

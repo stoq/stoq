@@ -533,6 +533,7 @@ CREATE TABLE product (
     manage_stock boolean DEFAULT TRUE,
     is_composed boolean DEFAULT FALSE,
     is_grid boolean DEFAULT FALSE,
+    is_package boolean DEFAULT FALSE,
     width numeric(10, 2) CONSTRAINT positive_width
         CHECK (width >= 0),
     height numeric(10, 2) CONSTRAINT positive_height
@@ -806,6 +807,7 @@ CREATE TABLE purchase_item (
     expected_receival_date timestamp,
     sellable_id uuid REFERENCES sellable(id) ON UPDATE CASCADE,
     order_id uuid REFERENCES purchase_order(id) ON UPDATE CASCADE,
+    parent_item_id uuid REFERENCES purchase_item(id) ON UPDATE CASCADE,
     quantity_sold numeric(20, 3) CONSTRAINT positive_quantity_sold
         CHECK (quantity_sold >= 0 AND
                quantity_sold <= quantity_received)
@@ -986,7 +988,8 @@ CREATE TABLE sale_item (
     batch_id uuid REFERENCES storable_batch(id) ON UPDATE CASCADE,
     icms_info_id uuid REFERENCES invoice_item_icms(id) ON UPDATE CASCADE,
     ipi_info_id uuid REFERENCES invoice_item_ipi(id) ON UPDATE CASCADE,
-    cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE
+    cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE,
+    parent_item_id uuid REFERENCES sale_item(id) ON UPDATE CASCADE
 );
 CREATE RULE update_te AS ON UPDATE TO sale_item DO ALSO SELECT update_te(old.te_id);
 

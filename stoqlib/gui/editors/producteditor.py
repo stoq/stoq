@@ -279,6 +279,13 @@ class ProductComponentEditor(BaseEditor):
                                      'greater than zero.'))
 
 
+class ProductPackageComponentEditor(ProductComponentEditor):
+    def setup_proxies(self):
+        super(ProductPackageComponentEditor, self).setup_proxies()
+        self.design_reference.hide()
+        self.design_reference_lbl.hide()
+
+
 class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
@@ -350,7 +357,8 @@ class ProductEditor(SellableEditor):
     def get_extra_tabs(self):
         from stoqlib.gui.slaves.productslave import (ProductTaxSlave,
                                                      ProductSupplierSlave,
-                                                     ProductGridSlave)
+                                                     ProductGridSlave,
+                                                     ProductPackageSlave)
         extra_tabs = []
 
         suppliers_slave = ProductSupplierSlave(self.store, self.model,
@@ -374,6 +382,10 @@ class ProductEditor(SellableEditor):
             extra_tabs.append((_(u'Grid'), attribute_option_slave))
             attribute_option_slave.grid_tab_alignment.connect('focus',
                                                               self._on_grid_tab_alignment__focus)
+        elif self.model.product_type == Product.TYPE_PACKAGE:
+            self.package_slave = ProductPackageSlave(self.store, self.model,
+                                                     visual_mode=self.visual_mode)
+            extra_tabs.append((_(u'Pack content'), self.package_slave))
 
         return extra_tabs
 
@@ -385,7 +397,8 @@ class ProductEditor(SellableEditor):
         self._model_created = True
         sellable = Sellable(store=store)
         model = Product(store=store, sellable=sellable)
-        if self._product_type != Product.TYPE_WITHOUT_STOCK:
+        no_storable = [Product.TYPE_WITHOUT_STOCK, Product.TYPE_PACKAGE]
+        if not self._product_type in no_storable:
             storable = Storable(product=model, store=store)
 
         if self._product_type == Product.TYPE_BATCH:
@@ -397,6 +410,10 @@ class ProductEditor(SellableEditor):
         elif self._product_type == Product.TYPE_GRID:
             model.is_grid = True
             # Configurable products should not manage stock
+            model.manage_stock = False
+        elif self._product_type == Product.TYPE_PACKAGE:
+            model.is_package = True
+            # Package products should not manage stock
             model.manage_stock = False
 
         if self._template is not None:

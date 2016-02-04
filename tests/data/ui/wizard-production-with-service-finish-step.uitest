@@ -58,6 +58,7 @@ model: Product<4>
   internal_use: False
   is_composed: False
   is_grid: False
+  is_package: False
   location: u''
   manage_stock: True
   model: u''
@@ -78,6 +79,7 @@ model: Product<5>
   internal_use: False
   is_composed: False
   is_grid: False
+  is_package: False
   location: u''
   manage_stock: True
   model: u''
