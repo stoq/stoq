@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -37,6 +37,7 @@ from stoqlib.database.expr import NullIf
 from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
                                          IntCol, PriceCol, QuantityCol,
                                          UnicodeCol, EnumCol)
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import Invoice
@@ -189,6 +190,20 @@ class TransferOrderItem(Domain):
                                     self.id, unit_cost=self.stock_cost,
                                     batch=self.batch)
 
+    def cancel(self):
+        """Cancel the receiving of this transfer item.
+
+        This method will return the product to the stock from source branch.
+        This method should never be used directly, and to cancel a transfer you
+        should use TransferOrder.cancel()
+        """
+        storable = self.sellable.product_storable
+        storable.increase_stock(self.quantity,
+                                self.transfer_order.source_branch,
+                                StockTransactionHistory.TYPE_TRANSFER_FROM,
+                                self.id, unit_cost=self.stock_cost,
+                                batch=self.batch)
+
 
 @implementer(IContainer)
 @implementer(IInvoice)
@@ -200,10 +215,12 @@ class TransferOrder(Domain):
     STATUS_PENDING = u'pending'
     STATUS_SENT = u'sent'
     STATUS_RECEIVED = u'received'
+    STATUS_CANCELLED = u'cancelled'
 
     statuses = {STATUS_PENDING: _(u'Pending'),
                 STATUS_SENT: _(u'Sent'),
-                STATUS_RECEIVED: _(u'Received')}
+                STATUS_RECEIVED: _(u'Received'),
+                STATUS_CANCELLED: _(u'Cancelled')}
 
     status = EnumCol(default=STATUS_PENDING)
 
@@ -218,7 +235,14 @@ class TransferOrder(Domain):
     #: The date the order was received
     receival_date = DateTimeCol()
 
-    # FIXME: Duplicated from Invoice. Remove it
+    #: The date the order was cancelled
+    cancel_date = DateTimeCol()
+
+    cancel_responsible_id = IdCol()
+
+    #: The |employee| responsible for cancel the transfer
+    cancel_responsible = Reference(cancel_responsible_id, 'Employee.id')
+
     #: The invoice number of the transfer
     invoice_number = IntCol()
 
@@ -352,6 +376,10 @@ class TransferOrder(Domain):
     def can_receive(self):
         return self.status == self.STATUS_SENT
 
+    def can_cancel(self):
+        return And(self.status == self.STATUS_SENT,
+                   self.source_branch == get_current_branch(self.store))
+
     def send(self):
         """Sends a transfer order to the destination branch.
         """
@@ -378,6 +406,17 @@ class TransferOrder(Domain):
         self.receival_date = receival_date or localnow()
         self.destination_responsible = responsible
         self.status = self.STATUS_RECEIVED
+
+    def cancel(self, responsible, cancel_date=None):
+        """Cancel a transfer order"""
+        assert self.can_cancel()
+
+        for item in self.get_items():
+            item.cancel()
+
+        self.cancel_date = cancel_date or localnow()
+        self.cancel_responsible_id = responsible.id
+        self.status = self.STATUS_CANCELLED
 
     @classmethod
     def get_pending_transfers(cls, store, branch):
@@ -430,7 +469,7 @@ class BaseTransferView(Viewable):
     identifier_str = Cast(TransferOrder.identifier, 'text')
     status = TransferOrder.status
     open_date = TransferOrder.open_date
-    receival_date = TransferOrder.receival_date
+    finish_date = Coalesce(TransferOrder.receival_date, TransferOrder.cancel_date)
     source_branch_id = TransferOrder.source_branch_id
     destination_branch_id = TransferOrder.destination_branch_id
     source_branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person.name)

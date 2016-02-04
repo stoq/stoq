@@ -15,6 +15,7 @@ GtkDialog(toplevel): title='Transfer Item Search', hidden
                     item: 'Pending receive', selected
                     item: 'Received'
                     item: 'Sent'
+                    item: 'Cancelled'
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
@@ -39,8 +40,8 @@ GtkDialog(toplevel): title='Transfer Item Search', hidden
                 GtkLabel(): 'To:', insensitive
                 ProxyDateEntry(padding=6): None, insensitive
           SearchResultListView(result_view, expand=True, fill=True):
-            column: title='Transfer #'
-            column: title='Receival Date', hidden
+            column: title='#'
+            column: title='Finish Date', hidden
             column: title='Item'
             column: title='Quantity'
             column: title='Source', expand

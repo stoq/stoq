@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2013 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -136,6 +136,33 @@ class TestTransferOrder(DomainTest):
         order.receive(self.create_employee())
         after_qty = storable.get_balance_for_branch(order.destination_branch)
         self.assertEqual(after_qty, before_qty + sent_qty)
+
+    def test_cancel(self):
+        quantity = 1
+        order = self.create_transfer_order()
+        item = self.create_transfer_order_item(order, quantity=quantity)
+        storable = item.sellable.product_storable
+
+        # Checking the balance before send
+        sour_before_qty = storable.get_balance_for_branch(order.source_branch)
+        dest_before_qty = storable.get_balance_for_branch(order.destination_branch)
+        self.assertEquals(sour_before_qty, 1)
+        self.assertEquals(dest_before_qty, 0)
+        order.send()
+
+        # Checking the balance after sending
+        sour_during_qty = storable.get_balance_for_branch(order.source_branch)
+        dest_during_qty = storable.get_balance_for_branch(order.destination_branch)
+
+        self.assertEquals(sour_during_qty, 0)
+        self.assertEquals(dest_during_qty, 0)
+
+        order.cancel(self.create_employee())
+        # Checking the balance after cancel
+        sour_after_qty = storable.get_balance_for_branch(order.source_branch)
+        dest_after_qty = storable.get_balance_for_branch(order.destination_branch)
+        self.assertEquals(sour_after_qty, 1)
+        self.assertEquals(dest_after_qty, 0)
 
     def test_add_item(self):
         order = self.create_transfer_order()

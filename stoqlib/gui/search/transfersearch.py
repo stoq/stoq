@@ -29,7 +29,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.ui.objectlist import Column
-from storm.expr import And, Or
+from storm.expr import And, Or, Not
 
 from stoqlib.api import api
 from stoqlib.domain.transfer import (TransferOrder, TransferOrderView,
@@ -92,7 +92,7 @@ class TransferOrderSearch(SearchDialog):
         # Date
         self.date_filter = DateSearchFilter(_('Date:'))
         self.add_filter(self.date_filter, columns=['open_date',
-                                                   'receival_date'])
+                                                   'finish_date'])
 
         # Status
         self.status_filter = ComboSearchFilter(_('With status:'),
@@ -109,6 +109,7 @@ class TransferOrderSearch(SearchDialog):
             (_('Pending receive'), 'pending'),
             (_('Received'), 'received'),
             (_('Sent'), 'sent'),
+            (_('Cancelled'), 'cancelled'),
         ]
 
     def _get_status_query(self, state):
@@ -120,7 +121,11 @@ class TransferOrderSearch(SearchDialog):
             return And(TransferOrder.status == TransferOrder.STATUS_RECEIVED,
                        TransferOrder.destination_branch_id == current_branch.id)
         elif state.value == 'sent':
-            return And(TransferOrder.source_branch_id == current_branch.id)
+            return And(TransferOrder.source_branch_id == current_branch.id,
+                       Not(TransferOrder.status == TransferOrder.STATUS_CANCELLED))
+        elif state.value == 'cancelled':
+            return And(TransferOrder.status == TransferOrder.STATUS_CANCELLED,
+                       TransferOrder.source_branch_id == current_branch.id)
         else:
             return Or(TransferOrder.source_branch_id == current_branch.id,
                       TransferOrder.destination_branch_id == current_branch.id)
@@ -132,7 +137,7 @@ class TransferOrderSearch(SearchDialog):
                              search_attribute='status', width=100),
                 SearchColumn('open_date', _('Open date'),
                              data_type=datetime.date, sorted=True, width=100),
-                SearchColumn('receival_date', _('Receival Date'),
+                SearchColumn('finish_date', _('Finish Date'),
                              data_type=datetime.date, width=100,
                              visible=False),
                 SearchColumn('source_branch_name', _('Source'),
@@ -165,8 +170,8 @@ class TransferItemSearch(TransferOrderSearch):
                    transfer_order)
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', title=_('Transfer #')),
-                SearchColumn('receival_date', _('Receival Date'),
+        return [IdentifierColumn('identifier'),
+                SearchColumn('finish_date', _('Finish Date'),
                              data_type=datetime.date, width=100,
                              visible=False),
                 SearchColumn('item_description', _('Item'), data_type=str),

@@ -1366,6 +1366,7 @@ class TestPersonMerging(DomainTest):
         'UPDATE employee_role_history SET employee_id=%s WHERE employee_role_history.employee_id = %s',  # nopep8
         'UPDATE production_order SET responsible_id=%s WHERE production_order.responsible_id = %s',  # nopep8
         'UPDATE stock_decrease SET removed_by_id=%s WHERE stock_decrease.removed_by_id = %s',  # nopep8
+        'UPDATE transfer_order SET cancel_responsible_id=%s WHERE transfer_order.cancel_responsible_id = %s',  # nopep8
         'UPDATE transfer_order SET destination_responsible_id=%s WHERE transfer_order.destination_responsible_id = %s',  # nopep8
         'UPDATE transfer_order SET source_responsible_id=%s WHERE transfer_order.source_responsible_id = %s',  # nopep8
         'UPDATE work_order SET execution_responsible_id=%s WHERE work_order.execution_responsible_id = %s',  # nopep8

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2015 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -56,6 +56,7 @@ class TransferOrderDetailsDialog(BaseEditor):
     gladefile = "TransferOrderDetails"
     proxy_widgets = ('open_date',
                      'receival_date',
+                     'close_date_lbl',
                      'source_branch_name',
                      'destination_branch_name',
                      'source_responsible_name',
@@ -76,6 +77,14 @@ class TransferOrderDetailsDialog(BaseEditor):
 
         if not sent_remote_order:
             self.receive_button.hide()
+        else:
+            self.cancel_button.hide()
+        if self.model.status == self.model.STATUS_RECEIVED:
+            self.close_date_lbl.set_label(_(u"Receival date:"))
+            self.cancel_button.hide()
+        if self.model.status == self.model.STATUS_CANCELLED:
+            self.close_date_lbl.set_label(_(u"Cancel date:"))
+            self.cancel_button.hide()
 
     def _setup_widgets(self):
         self._setup_status()
@@ -110,6 +119,10 @@ class TransferOrderDetailsDialog(BaseEditor):
     #
 
     def setup_proxies(self):
+        if self.model.status == TransferOrder.STATUS_CANCELLED:
+            self.receival_date.set_property('model-attribute', 'cancel_date')
+        elif self.model.status == TransferOrder.STATUS_RECEIVED:
+            self.receival_date.set_property('model-attribute', 'receival_date')
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def on_receive_button__clicked(self, event):
@@ -120,12 +133,23 @@ class TransferOrderDetailsDialog(BaseEditor):
             responsible = api.get_current_user(self.store).person.employee
             self.model.receive(responsible)
             self.store.commit(close=False)
-
-        self.proxy.update_many(['receival_date',
-                                'destination_responsible_name'])
+            self.receival_date.set_property('model-attribute', 'receival_date')
+            self.proxy.update_many(['destination_responsible_name',
+                                    'receival_date'])
 
         self._setup_status()
 
+    def on_cancel_button__clicked(self, event):
+        if yesno(_(u'Cancel the order?'), gtk.RESPONSE_YES, _(u'Cancel transfer'),
+                 _(u"Don't cancel")):
+            responsible = api.get_current_user(self.store).person.employee
+            self.model.cancel(responsible)
+            self.store.commit(close=False)
+            self.receival_date.set_property('model-attribute', 'cancel_date')
+            self.proxy.update_many(['destination_responsible_name',
+                                    'receival_date'])
+        self.setup_proxies()
+        self._setup_status()
     #
     # Callbacks
     #

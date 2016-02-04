@@ -15,6 +15,7 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
                     item: 'Pending receive'
                     item: 'Received'
                     item: 'Sent', selected
+                    item: 'Cancelled'
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
@@ -42,7 +43,7 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
             column: title='Transfer #'
             column: title='Status'
             column: title='Open date'
-            column: title='Receival Date', hidden
+            column: title='Finish Date', hidden
             column: title='Source', expand
             column: title='Destination'
             column: title='Items'

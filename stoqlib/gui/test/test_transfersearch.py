@@ -75,7 +75,7 @@ class TestTransferOrderSearch(GUITest):
         order.open_date = localdatetime(2012, 3, 3)
         order.send()
 
-        # And another one that we have sent and is recived
+        # One that we have sent and is recived
         order = self.create_transfer_order(source_branch=current_branch,
                                            dest_branch=other_branch)
         self.create_transfer_order_item(order=order)
@@ -85,6 +85,16 @@ class TestTransferOrderSearch(GUITest):
 
         order.receive(responsible)
         order.receival_date = localdatetime(2012, 3, 5)
+
+        # And another one that is cancelled
+        order = self.create_transfer_order(source_branch=current_branch,
+                                           dest_branch=other_branch)
+        self.create_transfer_order_item(order=order)
+        order.identifier = 20491
+        order.open_date = localdatetime(2012, 4, 5)
+        order.send()
+
+        order.cancel(responsible, cancel_date=localdatetime(2012, 4, 6))
 
     def test_search(self):
         self._create_domain()
@@ -101,6 +111,10 @@ class TestTransferOrderSearch(GUITest):
         # Received transfers
         search.status_filter.select('received')
         self.check_search(search, 'transfer-received')
+
+        # Cancelled transfers
+        search.status_filter.select('cancelled')
+        self.check_search(search, 'transfer-cancelled')
 
         # Show all transfers
         search.status_filter.select(None)
