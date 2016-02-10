@@ -24,6 +24,10 @@
 Kiwi integration for Stoq/Storm
 """
 
+import re
+import threading
+import Queue
+
 import glib
 import gobject
 from kiwi.python import Settable
@@ -34,11 +38,11 @@ from storm.expr import compile, And, Or, Like, Not, Alias, State, Lower
 from storm.tracer import trace
 import psycopg2
 import psycopg2.extensions
-import re
 
 from stoqlib.database.expr import Date, StoqNormalizeString
-from stoqlib.database.viewable import Viewable
 from stoqlib.database.interfaces import ISearchFilter
+from stoqlib.database.settings import db_settings
+from stoqlib.database.viewable import Viewable
 
 
 class QueryState(object):
@@ -159,16 +163,49 @@ class MultiQueryState(QueryState):
         return '<MultiQueryState values=%r>' % (self.values, )
 
 
+class AsyncResultSet(object):
+    """Resultset returned by :class:`AsyncQueryOperation`.
+
+    This should perform exactly like a
+    :class:`stoqlib.database.runtime.StoqlibResultSet`. Some methods
+    that are not defined here will be forwarded to it.
+
+    The original resultset can be accessed by :attr:`.resultset`
+    """
+
+    def __init__(self, resultset, result):
+        """
+        :param resultset: the original
+            :class:stoqlib.database.runtime.StoqlibResultset`. It will
+            be used mostly to help constructing the objects on iteration
+        :param result: the :class:`storm.database.Result` queried by
+            the query operation
+        """
+        self.resultset = resultset
+        self._result = result
+
+    def __iter__(self):
+        for values in self._result:
+            yield self.resultset._load_objects(self._result, values)
+
+    def __len__(self):
+        return self._result.rowcount
+
+    def __getattr__(self, attr):
+        return getattr(self.resultset, attr)
+
+
 class AsyncQueryOperation(gobject.GObject):
 
-    (GET_ALL,
-     GET_ONE) = range(2)
+    (STATUS_WAITING,
+     STATUS_EXECUTING,
+     STATUS_FINISHED,
+     STATUS_CANCELLED) = range(4)
 
     gsignal('finish')
 
-    def __init__(self, operation_type, store, resultset, expr):
+    def __init__(self, store, resultset, expr):
         """
-        :param operation_type: kind of operation this is
         :param store: database store
         :param resultset: resultset that will be used to construct
            the result from.
@@ -176,7 +213,7 @@ class AsyncQueryOperation(gobject.GObject):
         """
         gobject.GObject.__init__(self)
 
-        self.operation_type = operation_type
+        self.status = self.STATUS_WAITING
         self.resultset = resultset
         self.expr = expr
 
@@ -189,6 +226,10 @@ class AsyncQueryOperation(gobject.GObject):
     def execute(self, async_conn):
         """Executes a query within an asyncronous psycopg2 connection
         """
+        if self.status == self.STATUS_CANCELLED:
+            return
+
+        self.status = self.STATUS_EXECUTING
 
         # Async variant of Connection.execute() in storm/database.py
         state = State()
@@ -206,34 +247,65 @@ class AsyncQueryOperation(gobject.GObject):
         self._async_cursor.execute(self._statement,
                                    self._parameters)
 
-    def finish(self):
-        """This can only be called when the ``finish``` signal has
-        been emitted.
+        # This can happen if another thread cancelled this while the cursor was
+        # executing. In that case, it is not interested in the retval anymore
+        if self.status == self.STATUS_CANCELLED:
+            return
 
-        :returns: the result, which might be an object or a list depending
-          on self.operation_type
+        self.status = self.STATUS_FINISHED
+        glib.idle_add(self.emit, 'finish')
+
+    def get_result(self):
+        """Get operation result.
+
+        Note that this can only be called when the *finish* signal
+        has been emitted.
+
+        :returns: a :class:`AsyncResultSet` containing the result
         """
+        assert self.status == self.STATUS_FINISHED
+
         trace("connection_raw_execute_success", self._conn,
               self._async_cursor, self._statement, self._parameters)
 
         result = self._conn.result_factory(self._conn,
                                            self._async_cursor)
-        if self.operation_type == AsyncQueryOperation.GET_ALL:
-            # ResultSet.__iter__()
-            retval = []
-            for values in result:
-                obj = self.resultset._load_objects(result, values)
-                retval.append(obj)
-        elif self.operation_type == AsyncQueryOperation.GET_ONE:
-            # ResultSet.one()
-            values = result.get_one()
-            retval = self.resultset._load_objects(result, values)
-        else:
-            raise NotImplementedError(self.operation_type)
+        return AsyncResultSet(self.resultset, result)
 
-        return retval
+    def cancel(self):
+        """Cancel the operation scheduling"""
+        self.status = self.STATUS_CANCELLED
 
 gobject.type_register(AsyncQueryOperation)
+
+
+class _OperationExecuter(threading.Thread):
+
+    _SINGLETON = None
+
+    def __init__(self):
+        super(_OperationExecuter, self).__init__()
+
+        self._conn = psycopg2.connect(db_settings.get_store_dsn())
+        self._queue = Queue.Queue()
+
+    @classmethod
+    def get_instance(cls):
+        if cls._SINGLETON is None:
+            cls._SINGLETON = cls()
+            cls._SINGLETON.daemon = True
+            cls._SINGLETON.start()
+        return cls._SINGLETON
+
+    def run(self):
+        while True:
+            operation = self._queue.get()
+            operation.execute(self._conn)
+            self._queue.task_done()
+
+    def schedule(self, operation):
+        assert isinstance(operation, AsyncQueryOperation)
+        self._queue.put(operation)
 
 
 class QueryExecuter(object):
@@ -254,9 +326,7 @@ class QueryExecuter(object):
         self._filter_query_callbacks = {}
         self._query = self._default_query
         self.post_result = None
-
-        self._async_conn = None
-        self._operations = []
+        self._operation_executer = _OperationExecuter.get_instance()
 
     # Public API
 
@@ -278,7 +348,7 @@ class QueryExecuter(object):
             resultset.config(limit=limit)
         return resultset
 
-    def search_async(self, states=None, resultset=None):
+    def search_async(self, states=None, resultset=None, limit=None):
         """
         Execute a search asynchronously.
         This uses a separate psycopg2 connection which is lazily
@@ -297,7 +367,7 @@ class QueryExecuter(object):
         >>> operation = qe.search_async(resultset=resultset)
 
         >>> def finished(operation, loop):
-        ...     operation.finish()
+        ...     operation.get_result()
         ...     # use result
         ...     loop.quit()
 
@@ -314,11 +384,13 @@ class QueryExecuter(object):
         if resultset is None:
             resultset = self._query(self.store)
         resultset = self._parse_states(resultset, states)
-        operation = AsyncQueryOperation(AsyncQueryOperation.GET_ALL,
-                                        self.store,
+        limit = limit or self._limit
+        if limit > 0:
+            resultset.config(limit=limit)
+        operation = AsyncQueryOperation(self.store,
                                         resultset,
                                         resultset._get_select())
-        self._schedule_operation(operation)
+        self._operation_executer.schedule(operation)
         return operation
 
     def set_limit(self, limit):
@@ -416,34 +488,6 @@ class QueryExecuter(object):
         return result.order_by(attribute)
 
     # Private API
-
-    def _schedule_operation(self, operation):
-        if self._async_conn is None:
-            store_conn = self.store._connection
-            self._async_conn = psycopg2.connect(
-                store_conn._raw_connection.dsn, async=1)
-
-        self._operations.append(operation)
-
-        def wait():
-            if self._async_conn.poll() == psycopg2.extensions.POLL_OK:
-                self._dispatch_operations()
-                return False
-            return True
-
-        glib.timeout_add(0, wait)
-
-    def _dispatch_operations(self):
-        def wait(operation):
-            if self._async_conn.poll() == psycopg2.extensions.POLL_OK:
-                operation.emit('finish')
-                return False
-            return True
-
-        while self._operations:
-            operation = self._operations.pop()
-            operation.execute(self._async_conn)
-            glib.timeout_add(0, wait, operation)
 
     def _default_query(self, store):
         return store.find(self.search_spec)
