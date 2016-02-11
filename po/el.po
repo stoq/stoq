@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-04 11:46-0200\n"
-"PO-Revision-Date: 2016-02-04 13:46+0000\n"
+"POT-Creation-Date: 2016-02-10 14:56-0200\n"
+"PO-Revision-Date: 2016-02-10 16:49+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Greek (http://www.transifex.com/async/stoq/language/el/)\n"
 "MIME-Version: 1.0\n"
@@ -309,7 +309,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/quotedialog.py:93
 #: ../stoqlib/gui/dialogs/receivingdialog.py:90
 #: ../stoqlib/gui/dialogs/saledetails.py:290
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:101
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:110
 #: ../stoqlib/gui/editors/deliveryeditor.py:157
 #: ../stoqlib/gui/editors/deliveryeditor.py:310
 #: ../stoqlib/gui/search/loansearch.py:84
@@ -317,7 +317,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:549
 #: ../stoqlib/gui/search/salesearch.py:275
 #: ../stoqlib/gui/search/salesearch.py:365
-#: ../stoqlib/gui/search/transfersearch.py:173
+#: ../stoqlib/gui/search/transfersearch.py:178
 #: ../stoqlib/gui/slaves/productslave.py:409
 #: ../stoqlib/gui/slaves/workorderslave.py:78
 #: ../stoqlib/gui/slaves/workorderslave.py:266
@@ -1347,7 +1347,7 @@ msgstr ""
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:10
 #: ../data/glade/SaleDetailsDialog.ui.h:13 ../stoq/gui/sales.py:326
 #: ../stoqlib/gui/search/salesearch.py:97
-#: ../stoqlib/gui/search/transfersearch.py:142
+#: ../stoqlib/gui/search/transfersearch.py:147
 #: ../stoqlib/reporting/sale.py:156
 msgid "Items"
 msgstr ""
@@ -1493,7 +1493,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/supplierdetails.py:106
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:168
 #: ../stoqlib/gui/dialogs/tillhistory.py:81
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:88
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:97
 #: ../stoqlib/gui/search/productsearch.py:486
 #: ../stoqlib/gui/search/productsearch.py:525
 #: ../stoqlib/gui/search/salesearch.py:118
@@ -2171,7 +2171,7 @@ msgstr ""
 #: ../data/template/payment_flow_history/history-table.html:11
 #: ../data/template/purchase/purchase-items.html:13
 #: ../stoq/gui/purchase.py:274 ../stoqlib/domain/sale.py:521
-#: ../stoqlib/domain/transfer.py:206 ../stoqlib/domain/workorder.py:176
+#: ../stoqlib/domain/transfer.py:222 ../stoqlib/domain/workorder.py:176
 #: ../stoqlib/gui/search/personsearch.py:467
 #: ../stoqlib/gui/search/productsearch.py:294
 #: ../stoqlib/gui/search/purchasesearch.py:68
@@ -2440,7 +2440,7 @@ msgstr ""
 #: ../stoq/gui/stock.py:155 ../stoq/gui/stock.py:383
 #: ../stoqlib/domain/account.py:152
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:122
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:118
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:131
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:65
 msgid "Receive"
 msgstr ""
@@ -2496,7 +2496,7 @@ msgid "Add Comment"
 msgstr ""
 
 #: ../data/glade/SaleDetailsDialog.ui.h:22
-#: ../data/glade/TransferOrderDetails.ui.h:10
+#: ../data/glade/TransferOrderDetails.ui.h:11
 #: ../data/template/transfer/transfer.html:88 ../stoq/gui/payable.py:174
 #: ../stoq/gui/receivable.py:180
 msgid "Comments"
@@ -2786,7 +2786,7 @@ msgstr ""
 
 #: ../data/glade/StockDecreaseDetails.ui.h:8
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
-#: ../data/glade/TransferOrderDetails.ui.h:9 ../stoq/gui/admin.py:115
+#: ../data/glade/TransferOrderDetails.ui.h:10 ../stoq/gui/admin.py:115
 #: ../stoq/gui/purchase.py:169 ../stoq/gui/sales.py:216
 #: ../stoqlib/gui/dialogs/clientdetails.py:250
 #: ../stoqlib/lib/parameters.py:165
@@ -2974,7 +2974,17 @@ msgid "Destination:"
 msgstr ""
 
 #: ../data/glade/TransferOrderDetails.ui.h:6
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:83
 msgid "Receival date:"
+msgstr ""
+
+#: ../data/glade/TransferOrderDetails.ui.h:9 ../plugins/ecf/ecfui.py:269
+#: ../plugins/ecf/ecfui.py:322 ../stoq/gui/inventory.py:107
+#: ../stoq/gui/production.py:123 ../stoq/gui/purchase.py:172
+#: ../stoq/gui/sales.py:219 ../stoqlib/gui/base/wizards.py:340
+#: ../stoqlib/gui/editors/baseeditor.py:456
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:420
+msgid "Cancel"
 msgstr ""
 
 #: ../data/glade/TransporterDataSlave.ui.h:1
@@ -3310,7 +3320,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:120
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:146
 #: ../stoqlib/gui/dialogs/tillhistory.py:67
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:99
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:108
 #: ../stoqlib/gui/editors/contacteditor.py:53
 #: ../stoqlib/gui/editors/costcentereditor.py:49
 #: ../stoqlib/gui/editors/crediteditor.py:53
@@ -3744,7 +3754,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/stockcostdialog.py:74
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:103
 #: ../stoqlib/gui/dialogs/supplierdetails.py:125
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:97
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:106
 #: ../stoqlib/gui/editors/deliveryeditor.py:153
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:103
 #: ../stoqlib/gui/editors/producteditor.py:529
@@ -3955,7 +3965,7 @@ msgstr ""
 #: ../data/template/stock_decrease/stock_decrease-items.html:7
 #: ../data/template/workorder/workorder-items.html:6
 #: ../stoqlib/gui/search/returnedsalesearch.py:163
-#: ../stoqlib/gui/search/transfersearch.py:172
+#: ../stoqlib/gui/search/transfersearch.py:177
 msgid "Item"
 msgstr ""
 
@@ -4212,8 +4222,8 @@ msgstr ""
 #: ../stoqlib/gui/search/returnedsalesearch.py:160
 #: ../stoqlib/gui/search/salesearch.py:349
 #: ../stoqlib/gui/search/salesearch.py:454
-#: ../stoqlib/gui/search/transfersearch.py:130
-#: ../stoqlib/gui/search/transfersearch.py:179
+#: ../stoqlib/gui/search/transfersearch.py:135
+#: ../stoqlib/gui/search/transfersearch.py:184
 #: ../stoqlib/gui/search/workordersearch.py:62
 #: ../stoqlib/gui/slaves/paymentslave.py:1280
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:131
@@ -4349,7 +4359,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/receivingdialog.py:93
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:137
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:113
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:103
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:112
 #: ../stoqlib/gui/search/productsearch.py:227
 #: ../stoqlib/gui/search/servicesearch.py:97
 #: ../stoqlib/gui/slaves/productslave.py:739
@@ -4641,8 +4651,8 @@ msgstr ""
 #: ../stoqlib/gui/search/deliverysearch.py:93
 #: ../stoqlib/gui/search/loansearch.py:74
 #: ../stoqlib/gui/search/loansearch.py:139
-#: ../stoqlib/gui/search/transfersearch.py:133
-#: ../stoqlib/gui/search/transfersearch.py:181
+#: ../stoqlib/gui/search/transfersearch.py:138
+#: ../stoqlib/gui/search/transfersearch.py:186
 #: ../stoqlib/gui/search/workordersearch.py:69
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:355
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:131
@@ -4654,16 +4664,16 @@ msgid "Receival"
 msgstr ""
 
 #: ../data/template/transfer/transfer.html:34
-#: ../stoqlib/gui/search/transfersearch.py:138
-#: ../stoqlib/gui/search/transfersearch.py:175
+#: ../stoqlib/gui/search/transfersearch.py:143
+#: ../stoqlib/gui/search/transfersearch.py:180
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:65
 msgid "Source"
 msgstr ""
 
 #: ../data/template/transfer/transfer.html:36
 #: ../stoqlib/gui/dialogs/productstockdetails.py:228
-#: ../stoqlib/gui/search/transfersearch.py:140
-#: ../stoqlib/gui/search/transfersearch.py:177
+#: ../stoqlib/gui/search/transfersearch.py:145
+#: ../stoqlib/gui/search/transfersearch.py:182
 msgid "Destination"
 msgstr ""
 
@@ -5083,14 +5093,6 @@ msgstr ""
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
-msgstr ""
-
-#: ../plugins/ecf/ecfui.py:269 ../plugins/ecf/ecfui.py:322
-#: ../stoq/gui/inventory.py:107 ../stoq/gui/production.py:123
-#: ../stoq/gui/purchase.py:172 ../stoq/gui/sales.py:219
-#: ../stoqlib/gui/base/wizards.py:340 ../stoqlib/gui/editors/baseeditor.py:456
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:420
-msgid "Cancel"
 msgstr ""
 
 #: ../plugins/ecf/ecfui.py:270 ../plugins/ecf/ecfui.py:323
@@ -7209,6 +7211,7 @@ msgstr ""
 #: ../stoq/gui/inventory.py:226 ../stoq/gui/pos.py:874 ../stoq/gui/pos.py:1313
 #: ../stoq/gui/production.py:262 ../stoq/gui/purchase.py:414
 #: ../stoq/gui/sales.py:537 ../stoqlib/gui/base/wizards.py:340
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:144
 #: ../stoqlib/gui/editors/baseeditor.py:456
 msgid "Don't cancel"
 msgstr ""
@@ -7223,7 +7226,7 @@ msgstr ""
 msgid "products"
 msgstr ""
 
-#: ../stoq/gui/inventory.py:321
+#: ../stoq/gui/inventory.py:320
 msgid "No products found in the inventory."
 msgstr ""
 
@@ -7775,7 +7778,9 @@ msgstr ""
 #: ../stoq/gui/services.py:544 ../stoqlib/domain/inventory.py:248
 #: ../stoqlib/domain/payment/payment.py:142 ../stoqlib/domain/production.py:82
 #: ../stoqlib/domain/purchase.py:185 ../stoqlib/domain/returnedsale.py:258
-#: ../stoqlib/domain/sale.py:709 ../stoqlib/domain/workorder.py:596
+#: ../stoqlib/domain/sale.py:709 ../stoqlib/domain/transfer.py:223
+#: ../stoqlib/domain/workorder.py:596
+#: ../stoqlib/gui/search/transfersearch.py:112
 msgid "Cancelled"
 msgstr ""
 
@@ -8485,7 +8490,7 @@ msgstr ""
 
 #: ../stoq/gui/services.py:540 ../stoqlib/domain/purchase.py:182
 #: ../stoqlib/domain/returnedsale.py:256 ../stoqlib/domain/till.py:87
-#: ../stoqlib/domain/transfer.py:204
+#: ../stoqlib/domain/transfer.py:220
 msgid "Pending"
 msgstr ""
 
@@ -9071,7 +9076,7 @@ msgid "Stock help"
 msgstr ""
 
 #. TODO: Save the operation nature in new transfer_order table field
-#: ../stoq/gui/stock.py:156 ../stoqlib/domain/transfer.py:307
+#: ../stoq/gui/stock.py:156 ../stoqlib/domain/transfer.py:331
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:181
 msgid "Transfer"
 msgstr ""
@@ -10057,118 +10062,118 @@ msgstr ""
 msgid "Grid product"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:886 ../stoqlib/reporting/purchase.py:62
+#: ../stoqlib/domain/product.py:889 ../stoqlib/reporting/purchase.py:62
 #: ../stoqlib/reporting/purchase.py:88
 #, python-format
 msgid "%s (%s)"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1156 ../stoqlib/domain/product.py:1208
+#: ../stoqlib/domain/product.py:1163 ../stoqlib/domain/product.py:1215
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1215
+#: ../stoqlib/domain/product.py:1222
 msgid "Quantity to sell is greater than the available stock."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1490
+#: ../stoqlib/domain/product.py:1497
 #, python-format
 msgid "Adjustment for inventory %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1491
+#: ../stoqlib/domain/product.py:1498
 #, python-format
 msgid "Returned from loan %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1492
+#: ../stoqlib/domain/product.py:1499
 #, python-format
 msgid "Loaned for loan %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1493
+#: ../stoqlib/domain/product.py:1500
 #, python-format
 msgid "Allocated for production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1494 ../stoqlib/domain/product.py:1495
+#: ../stoqlib/domain/product.py:1501 ../stoqlib/domain/product.py:1502
 #, python-format
 msgid "Produced in production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1496
+#: ../stoqlib/domain/product.py:1503
 #, python-format
 msgid "Returned remaining from production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1498
+#: ../stoqlib/domain/product.py:1505
 #, python-format
 msgid "Received for receiving order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1499
+#: ../stoqlib/domain/product.py:1506
 #, python-format
 msgid "Returned sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1500
+#: ../stoqlib/domain/product.py:1507
 #, python-format
 msgid "Returned from canceled sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1501
+#: ../stoqlib/domain/product.py:1508
 #, python-format
 msgid "Sold in sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1502
+#: ../stoqlib/domain/product.py:1509
 #, python-format
 msgid "Product removal for stock decrease %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1503
+#: ../stoqlib/domain/product.py:1510
 #, python-format
 msgid "Transfered from branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1505
+#: ../stoqlib/domain/product.py:1512
 #, python-format
 msgid "Transfered to this branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1507
+#: ../stoqlib/domain/product.py:1514
 msgid "Registred initial stock"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1508
+#: ../stoqlib/domain/product.py:1515
 msgid "Imported from previous version"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1509
+#: ../stoqlib/domain/product.py:1516
 #, python-format
 msgid "Consigned product returned %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1510
+#: ../stoqlib/domain/product.py:1517
 #, python-format
 msgid "Used on work order %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1511
+#: ../stoqlib/domain/product.py:1518
 #, python-format
 msgid "Returned to stock on work order %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1512
+#: ../stoqlib/domain/product.py:1519
 #, python-format
 msgid "Reserved for sale %s."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1679
+#: ../stoqlib/domain/product.py:1686
 msgid "Boolean"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1680
+#: ../stoqlib/domain/product.py:1687
 msgid "Decimal"
 msgstr ""
 
@@ -10288,17 +10293,17 @@ msgstr ""
 msgid "Purchase total can not be lesser than zero"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:593
+#: ../stoqlib/domain/purchase.py:592
 #, python-format
 msgid "Got an unexpected status value: %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:660
+#: ../stoqlib/domain/purchase.py:659
 msgid "You can not remove an item which does not belong to this group."
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:681
-#: ../stoqlib/domain/test/test_purchase.py:604
+#: ../stoqlib/domain/purchase.py:680
+#: ../stoqlib/domain/test/test_purchase.py:601
 #, python-format
 msgid "quote number %s"
 msgstr ""
@@ -10358,7 +10363,7 @@ msgid ""
 "again."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:520 ../stoqlib/domain/transfer.py:205
+#: ../stoqlib/domain/sale.py:520 ../stoqlib/domain/transfer.py:221
 #: ../stoqlib/domain/workorder.py:175
 #: ../stoqlib/gui/search/transfersearch.py:111
 msgid "Sent"
@@ -10462,25 +10467,25 @@ msgstr ""
 msgid "The sale %r have a client but no client_role defined."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1764
+#: ../stoqlib/domain/sale.py:1763
 msgid "You must have at least one payment for each payment group"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1836
+#: ../stoqlib/domain/sale.py:1835
 msgid "Sale orders must have items, which means products or services"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1841
+#: ../stoqlib/domain/sale.py:1840
 msgid "Sale total quantity should never be zero"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1891 ../stoqlib/domain/sellable.py:393
+#: ../stoqlib/domain/sale.py:1890 ../stoqlib/domain/sellable.py:393
 #: ../stoqlib/gui/dialogs/batchselectiondialog.py:239
 #: ../stoqlib/gui/search/personsearch.py:471
 msgid "Available"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1892
+#: ../stoqlib/domain/sale.py:1891
 msgid "Occupied"
 msgstr ""
 
@@ -10495,7 +10500,7 @@ msgid "The sellable barcode %r already exists"
 msgstr ""
 
 #. Translators: ICMS tax rate credit = Alíquota de crédito do ICMS
-#: ../stoqlib/domain/sellable.py:756
+#: ../stoqlib/domain/sellable.py:747
 #, python-format
 msgid ""
 "You cannot sell this item before updating the 'ICMS tax rate credit' field on '%s' Tax Class.\n"
@@ -10545,7 +10550,7 @@ msgid ""
 "you need assistance"
 msgstr ""
 
-#: ../stoqlib/domain/transfer.py:277
+#: ../stoqlib/domain/transfer.py:301
 msgid "The item does not belong to this transfer order"
 msgstr ""
 
@@ -11565,8 +11570,7 @@ msgid "Invoice"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:218
-#: ../stoqlib/gui/search/transfersearch.py:129
-#: ../stoqlib/gui/search/transfersearch.py:168
+#: ../stoqlib/gui/search/transfersearch.py:134
 msgid "Transfer #"
 msgstr ""
 
@@ -11693,7 +11697,7 @@ msgid "Receive pending returned sale?"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:122
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:119
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:132
 msgid "Don't receive"
 msgstr ""
 
@@ -11946,12 +11950,24 @@ msgstr ""
 msgid "Transfer Order Details"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:105
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:86
+msgid "Cancel date:"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:114
 msgid "Total Cost"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/transferorderdialog.py:118
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:131
 msgid "Receive the order?"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:143
+msgid "Cancel the order?"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/transferorderdialog.py:143
+msgid "Cancel transfer"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/workordercategorydialog.py:60
@@ -14398,12 +14414,12 @@ msgstr ""
 msgid "Pending receive"
 msgstr ""
 
-#: ../stoqlib/gui/search/transfersearch.py:135
-#: ../stoqlib/gui/search/transfersearch.py:169
-msgid "Receival Date"
+#: ../stoqlib/gui/search/transfersearch.py:140
+#: ../stoqlib/gui/search/transfersearch.py:174
+msgid "Finish Date"
 msgstr ""
 
-#: ../stoqlib/gui/search/transfersearch.py:157
+#: ../stoqlib/gui/search/transfersearch.py:162
 msgid "Transfer Item Search"
 msgstr ""
 
