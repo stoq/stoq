@@ -218,9 +218,6 @@ class PurchaseApp(ShellApp):
 
         self.search.focus_search_entry()
 
-    def setup_focus(self):
-        self.refresh()
-
     def deactivate(self):
         self.uimanager.remove_ui(self.purchase_ui)
 

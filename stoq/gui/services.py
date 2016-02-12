@@ -299,9 +299,6 @@ class ServicesApp(ShellApp):
     def deactivate(self):
         self.uimanager.remove_ui(self.services_ui)
 
-    def setup_focus(self):
-        self.refresh()
-
     def new_activate(self):
         self.new_order()
 

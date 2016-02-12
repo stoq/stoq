@@ -217,9 +217,6 @@ class StockApp(ShellApp):
 
         self.search.focus_search_entry()
 
-    def setup_focus(self):
-        self.refresh()
-
     def deactivate(self):
         if self.transfers_bar:
             self.transfers_bar.hide()
