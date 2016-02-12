@@ -33,7 +33,7 @@ from storm.expr import Join
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Branch
-from stoqlib.domain.product import ProductStockItem, Product, Storable
+from stoqlib.domain.product import ProductStockItem, Storable
 from stoqlib.domain.sellable import Sellable
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
@@ -242,7 +242,7 @@ class InventoryApp(ShellApp):
 
         tables = [
             Sellable,
-            Join(Storable, Storable.id == Product.id),
+            Join(Storable, Storable.id == Sellable.id),
         ]
         sellables = self.store.using(*tables).find(Sellable)
         with open(filename, 'w') as fh:
