@@ -620,7 +620,7 @@ class BasePISSlave(BaseTaxSlave):
         1: ['cst', 'p_pis'],
         2: ['cst', 'p_pis'],
         4: ['cst'],
-        5: ['cst', 'calculo', 'p_pis'],
+        5: ['cst'],
         6: ['cst'],
         7: ['cst'],
         8: ['cst'],
@@ -672,7 +672,7 @@ class BasePISSlave(BaseTaxSlave):
     def _update_selected_calculo(self):
         # When the CST is contained in the list the calculation is not performed
         # because the taxpayer is exempt.
-        if self.model.cst in [0, 2, 4, 6, 7, 8, 9]:
+        if self.model.cst in [0, 4, 5, 6, 7, 8, 9]:
             return
 
         calculo = self.calculo.get_selected_data()
@@ -816,7 +816,7 @@ class BaseCOFINSSlave(BaseTaxSlave):
         1: ['cst', 'p_cofins'],
         2: ['cst', 'p_cofins'],
         4: ['cst'],
-        5: ['cst', 'calculo', 'p_cofins'],
+        5: ['cst'],
         6: ['cst'],
         7: ['cst'],
         8: ['cst'],
@@ -868,7 +868,7 @@ class BaseCOFINSSlave(BaseTaxSlave):
     def _update_selected_calculo(self):
         # When the CST is contained in the list the calculation is not performed
         # because the taxpayer is exempt.
-        if self.model.cst in [0, 2, 4, 6, 7, 8, 9]:
+        if self.model.cst in [0, 4, 5, 6, 7, 8, 9]:
             return
 
         calculo = self.calculo.get_selected_data()

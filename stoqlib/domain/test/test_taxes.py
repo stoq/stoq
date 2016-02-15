@@ -349,11 +349,11 @@ class TestInvoiceItemPis(DomainTest):
         return sale_item
 
     def test_set_initial_values(self):
-        sale_item_pis = self.create_invoice_item_pis(cst=2)
+        sale_item_pis = self.create_invoice_item_pis(cst=4)
         sale_item = self._get_sale_item(sale_item_pis, 1, 10)
         sale_item_pis.set_initial_values(sale_item)
 
-        self.assertEquals(sale_item_pis.cst, 2)
+        self.assertEquals(sale_item_pis.cst, 4)
         self.assertIsNotNone(sale_item_pis.q_bc_prod)
         self.assertIsNone(sale_item_pis.p_pis)
         self.assertIsNone(sale_item_pis.v_bc)
@@ -383,11 +383,11 @@ class TestInvoiceItemCofins(DomainTest):
         return sale_item
 
     def test_set_initial_values(self):
-        sale_item_cofins = self.create_invoice_item_cofins(cst=2)
+        sale_item_cofins = self.create_invoice_item_cofins(cst=4)
         sale_item = self._get_sale_item(sale_item_cofins, 1, 10)
         sale_item_cofins.set_initial_values(sale_item)
 
-        self.assertEquals(sale_item_cofins.cst, 2)
+        self.assertEquals(sale_item_cofins.cst, 4)
         self.assertIsNotNone(sale_item_cofins.q_bc_prod)
         self.assertIsNone(sale_item_cofins.p_cofins)
         self.assertIsNone(sale_item_cofins.v_bc)
