@@ -26,6 +26,7 @@
 
 import datetime
 from decimal import Decimal
+from itertools import cycle
 import os
 
 from kiwi.python import strip_accents
@@ -124,23 +125,46 @@ class TestNfeGenerator(DomainTest):
         generator.payment_ids = [5432]
         self.assertRaises(ModelDataError, generator.generate)
 
+    def _add_aliq(self, sale_item):
+        pis_info = sale_item.pis_info
+        pis_info.cst = 1
+        pis_info.p_pis = 10
+
+        cofins_info = sale_item.cofins_info
+        cofins_info.cst = 1
+        cofins_info.p_cofins = 10
+
+    def _add_nt(self, sale_item):
+        pis_info = sale_item.pis_info
+        pis_info.cst = 4
+        cofins_info = sale_item.cofins_info
+        cofins_info.cst = 4
+
+    def _add_outr(self, sale_item):
+        pis_info = sale_item.pis_info
+        pis_info.cst = 49
+        pis_info.p_pis = 10
+        cofins_info = sale_item.cofins_info
+        cofins_info.cst = 49
+        cofins_info.p_cofins = 10
+
     def _create_sale(self, invoice_number, due_date=None):
         sale = self.create_sale()
         sale.invoice_number = invoice_number
         sale.branch = get_current_branch(self.store)
-
+        tax_types = cycle(['aliq', 'nt', 'outr'])
         # [0] - Description
         # [1] - Code
         # [2] - Price
         # [3] - Quantity
         # [4] - Base price
-        for data in [(u"Laranja", u"1", Decimal(1), Decimal(10), Decimal('1.5')),
-                     (u"Limão", u"2", Decimal('0.5'), Decimal(15), Decimal('0.3')),
-                     (u"Abacaxi", u"3", Decimal(3), Decimal(1), Decimal('3.3')),
-                     (u"Cenoura", u"4", Decimal('1.5'), Decimal(6), Decimal('1.9')),
-                     (u"Pêssego", u"5", Decimal('3.5'), Decimal(3), Decimal('3.0'))]:
+        for tax_type, data in zip(tax_types, [
+                (u"Laranja", u"1", Decimal(1), Decimal(10), Decimal('1.5')),
+                (u"Limão", u"2", Decimal('0.5'), Decimal(15), Decimal('0.3')),
+                (u"Abacaxi", u"3", Decimal(3), Decimal(1), Decimal('3.3')),
+                (u"Cenoura", u"4", Decimal('1.5'), Decimal(6), Decimal('1.9')),
+                (u"Pêssego", u"5", Decimal('3.5'), Decimal(3), Decimal('3.0'))]):
             sellable = self._create_sellable(data[0], data[1], data[2])
-
             storable = Storable(product=sellable.product,
                                 store=self.store)
             storable.increase_stock(data[3], get_current_branch(self.store),
@@ -148,12 +172,20 @@ class TestNfeGenerator(DomainTest):
                                     sale.id)
 
             sale_item = sale.add_sellable(sellable, data[3])
+            if tax_type == 'aliq':
+                self._add_aliq(sale_item)
+            elif tax_type == 'nt':
+                self._add_nt(sale_item)
+            elif tax_type == 'outr':
+                self._add_outr(sale_item)
+
             # Set the base price to test the discount in NF-e.
             sale_item.base_price = data[4]
             icms_info = sale_item.icms_info
             icms_info.csosn = 201
             icms_info.p_icms_st = 1
-            icms_info.update_values(sale_item)
+
+            self._update_taxes(sale_item)
 
         sale.client = self.create_client()
         self._create_address(sale.client.person,
@@ -169,6 +201,19 @@ class TestNfeGenerator(DomainTest):
         sale.confirm()
 
         return sale
+
+    def _update_taxes(self, sale_item):
+        if sale_item.icms_info.csosn is not None:
+            sale_item.icms_info.update_values(sale_item)
+
+        if sale_item.ipi_info.cst is not None:
+            sale_item.ipi_info.update_values(sale_item)
+
+        if sale_item.pis_info.cst is not None:
+            sale_item.pis_info.update_values(sale_item)
+
+        if sale_item.cofins_info.cst is not None:
+            sale_item.cofins_info.update_values(sale_item)
 
     def _create_sellable(self, desc, code, price):
         sellable = self.create_sellable(price=price)

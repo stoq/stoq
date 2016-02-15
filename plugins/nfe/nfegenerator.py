@@ -73,6 +73,9 @@ def nfe_tostring(element):
     return xml_str
 
 
+def format_cst(cst):
+    return str(cst).zfill(2)
+
 #
 # the page numbers refers to the "Manual de integração do contribuinte v3.00"
 # and could be found at http://www.nfe.fazenda.gov.br/portal/integracao.aspx
@@ -928,16 +931,12 @@ class NFeProduct(BaseNFeXMLGroup):
             nfe_ipi = NFeIPI(invoice_ipi)
             nfe_tax.append(nfe_ipi)
 
-        if True:  # if operation_item.pis
-            nfe_pis = NFePIS()
-            pis = NFePISOutr()
-            nfe_pis.append(pis)
+        if operation_item.pis_info.cst:
+            nfe_pis = NFePIS(operation_item)
             nfe_tax.append(nfe_pis)
 
-        if True:  # if operation_item.cofins
-            nfe_cofins = NFeCOFINS()
-            cofins = NFeCOFINSOutr()
-            nfe_cofins.append(cofins)
+        if operation_item.cofins_info.cst:
+            nfe_cofins = NFeCOFINS(operation_item)
             nfe_tax.append(nfe_cofins)
 
         self.append(nfe_tax)
@@ -1549,6 +1548,12 @@ class NFePIS(BaseNFeXMLGroup):
     tag = u'PIS'
     txttag = 'Q'
 
+    def __init__(self, sale_item):
+        BaseNFeXMLGroup.__init__(self)
+        pis_info = sale_item.pis_info
+        pis_class = NFE_PIS_MAP.get(pis_info.cst)
+        self.append(pis_class(sale_item))
+
     def as_txt(self):
         base = '%s|\n' % (self.txttag)
         pis = self.get_children()[0]
@@ -1572,26 +1577,116 @@ class NFePISAliq(BaseNFeXMLGroup):
         - vPIS: Valor do PIS.
     """
     tag = u'PISAliq'
+    txttag = 'Q02'
     attributes = [(u'CST', ''),
                   (u'vBC', '0'),
                   (u'pPIS', '0'),
                   (u'vPIS', '0')]
 
+    def __init__(self, sale_item):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('CST', format_cst(sale_item.pis_info.cst))
+        self.set_attr('vBC', self.format_value(sale_item.pis_info.v_bc, 2))
+        self.set_attr('pPIS', sale_item.pis_info.p_pis)
+        self.set_attr('vPIS', self.format_value(sale_item.pis_info.v_pis, 2))
+
+    def as_txt(self):
+        base = '%s|%s|%s|%s|%s|\n' % (self.txttag,
+                                      self.get_attr('CST'),
+                                      self.get_attr('vBC'),
+                                      self.get_attr('pPIS'),
+                                      self.get_attr('vPIS'))
+        return base
+
+
+class NFePISNT(BaseNFeXMLGroup):
+    """Grupo de PIS nao tributada (CST 04, 06, 07, 08, 09)
+
+    - Attributes:
+        - CST: Código de situação tributária do PIS.
+            04 - Operação Tributável (tributação monofásica (alíquota zero)).
+            05 - Operação Tributável (substituição tributária).
+            06 - Operação Tributável (alíquota zero).
+            07 - Operação Isenta da Contribuição.
+            08 - Operação Sem Incidência da Contribuição.
+            09 - Operação com Suspensão da Contribuição.
+    """
+    tag = u'PISNT'
+    txttag = 'Q04'
+    attributes = [(u'CST', '')]
+
+    def __init__(self, sale_item):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('CST', format_cst(sale_item.pis_info.cst))
+
+    def as_txt(self):
+        base = '%s|%s|\n' % (self.txttag,
+                             self.get_attr('CST'))
+        return base
+
 
 # Pg. 118
-class NFePISOutr(NFePISAliq):
-    """
+class NFePISOutr(BaseNFeXMLGroup):
+    """Grupo de PIS Outras Operações (CST 49, 50, 51, 52, 53, 54, 55, 56, 60, 61, 62,
+                                          63, 64, 65, 67, 70, 71, 72, 73, 74, 75, 98, 99)
     - Attributes:
-        - CST: Código da situação tributária do PIS.
-            99 - Operação tributável (tributação monofásica (alíquota zero))
+        -CST: Código de situação tributária do PIS.
+            49 - Outras Operações de Saída
+            50 - Com Direito a Crédito - Vinculada Exclusivamente a Receita
+                 Tributada no Mercado Interno
+            51 - Operação com Direito a Crédito – Vinculada Exclusivamente a
+                 Receita Não Tributada no Mercado Interno
+            52 - Operação com Direito a Crédito - Vinculada Exclusivamente a
+                 Receita de Exportação
+            53 - Operação com Direito a Crédito - Vinculada a Receitas
+                 Tributadas e Não-Tributadas no Mercado Interno
+            54 - Operação com Direito a Crédito - Vinculada a Receitas
+                 Tributadas no Mercado Interno e de Exportação
+            55 - Operação com Direito a Crédito - Vinculada a Receitas
+                 Não-Tributadas no Mercado Interno e de Exportação
+            56 - Operação com Direito a Crédito - Vinculada a Receitas
+                 Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
+            60 - Crédito Presumido - Operação de Aquisição Vinculada
+                 Exclusivamente a Receita Tributada no Mercado Interno
+            61 - Crédito Presumido - Operação de Aquisição Vinculada
+                 Exclusivamente a Receita Não-Tributada no Mercado Interno
+            62 - Crédito Presumido - Operação de Aquisição Vinculada
+                 Exclusivamente a Receita de Exportação
+            63 - Crédito Presumido - Operação de Aquisição Vinculada a
+                 Receitas Tributadas e Não-Tributadas no Mercado Interno
+            64 - Crédito Presumido - Operação de Aquisição Vinculada a
+                 Receitas Tributadas no Mercado Interno e de Exportação
+            65 - Crédito Presumido - Operação de Aquisição Vinculada a
+                 Receitas Não-Tributadas no Mercado Interno e de Exportação
+            66 - Crédito Presumido - Operação de Aquisição Vinculada a
+                 Receitas Tributadas e Não-Tributadas no Mercado Interno, e de
+                 Exportação
+            67 - Crédito Presumido - Outras Operações
+            70 - Operação de Aquisição sem Direito a Crédito
+            71 - Operação de Aquisição com Isenção
+            72 - Operação de Aquisição com Suspensão
+            73 - Operação de Aquisição a Alíquota Zero
+            74 - Operação de Aquisição sem Incidência da Contribuição
+            75 - Operação de Aquisição por Substituição Tributária
+            98 - Outras Operações de Entrada
+            99 - Outras Operações
+        - vBC: Valor da Base de Cálculo do PIS.
+        - pPIS: Alíquota do PIS (em percentual).
+        - vPIS: Valor do PIS.
     """
     tag = u'PISOutr'
-    attributes = NFePISAliq.attributes
     txttag = 'Q05'
+    attributes = [(u'CST', ''),
+                  (u'vBC', '0'),
+                  (u'pPIS', '0'),
+                  (u'vPIS', '0')]
 
-    def __init__(self):
-        NFePISAliq.__init__(self)
-        self.set_attr('CST', '99')
+    def __init__(self, sale_item):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('CST', format_cst(sale_item.pis_info.cst))
+        self.set_attr('vBC', self.format_value(sale_item.pis_info.v_bc, 2))
+        self.set_attr('pPIS', sale_item.pis_info.p_pis)
+        self.set_attr('vPIS', self.format_value(sale_item.pis_info.v_pis, 2))
 
     def as_txt(self):
         base = '%s|%s|%s|\n' % (self.txttag, self.get_attr('CST'),
@@ -1599,12 +1694,17 @@ class NFePISOutr(NFePISAliq):
         q = '%s|%s|%s|\n' % ('Q07', self.get_attr('vBC'), self.get_attr('pPIS'))
         return base + q
 
+
 # Pg. 120, 121
-
-
 class NFeCOFINS(BaseNFeXMLGroup):
     tag = u'COFINS'
     txttag = 'S'
+
+    def __init__(self, sale_item):
+        BaseNFeXMLGroup.__init__(self)
+        cofins_info = sale_item.cofins_info
+        cofins_class = NFE_COFINS_MAP.get(cofins_info.cst)
+        self.append(cofins_class(sale_item))
 
     def as_txt(self):
         base = '%s|\n' % self.txttag
@@ -1628,26 +1728,116 @@ class NFeCOFINSAliq(BaseNFeXMLGroup):
         - vCOFINS: Valor do COFINS.
     """
     tag = u'COFINSAliq'
+    txttag = 'S02'
     attributes = [(u'CST', ''),
                   (u'vBC', '0'),
                   (u'pCOFINS', '0'),
                   (u'vCOFINS', '0')]
 
+    def __init__(self, sale_item):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('CST', format_cst(sale_item.cofins_info.cst))
+        self.set_attr('vBC', self.format_value(sale_item.cofins_info.v_bc, 2))
+        self.set_attr('pCOFINS', sale_item.cofins_info.p_cofins)
+        self.set_attr('vCOFINS', self.format_value(sale_item.cofins_info.v_cofins, 2))
+
+    def as_txt(self):
+        base = '%s|%s|%s|%s|%s|\n' % (self.txttag,
+                                      self.get_attr('CST'),
+                                      self.get_attr('vBC'),
+                                      self.get_attr('pCOFINS'),
+                                      self.get_attr('vCOFINS'))
+        return base
+
+
+class NFeCOFINSNT(BaseNFeXMLGroup):
+    """Grupo de COFINS nao tributada (CST 04, 06, 07, 08, 09)
+
+    - Attributes:
+        - CST: Código de situação tributária da COFINS.
+            04 - Operação Tributável (tributação monofásica (alíquota zero)).
+            05 - Operação Tributável (subtituição tributária)).
+            06 - Operação Tributável (alíquota zero).
+            07 - Operação Isenta da Contribuição.
+            08 - Operação Sem Incidência da Contribuição.
+            09 - Operação com Suspensão da Contribuição.
+    """
+    tag = u'COFINSNT'
+    txttag = 'S04'
+    attributes = [(u'CST', '')]
+
+    def __init__(self, sale_item):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('CST', format_cst(sale_item.cofins_info.cst))
+
+    def as_txt(self):
+        base = '%s|%s|\n' % (self.txttag,
+                             self.get_attr('CST'))
+        return base
+
 
 # Pg. 121
 class NFeCOFINSOutr(NFeCOFINSAliq):
-    """
+    """Grupo de COFINS Outras Operações (CST 49, 50, 51, 52, 53, 54, 55, 56, 60, 61, 62,
+                                          63, 64, 65, 67, 70, 71, 72, 73, 74, 75, 98, 99)
     - Attributes:
-        - CST: Código da situação tributária do COFINS.
-            99 - Outras operações
+        -CST: Código de situação tributária da COFINS.
+            49 - Outras Operações de Saída
+            50 - Com Direito a Crédito - Vinculada Exclusivamente a Receita
+                 Tributada no Mercado Interno
+            51 - Operação com Direito a Crédito – Vinculada Exclusivamente a
+                 Receita Não Tributada no Mercado Interno
+            52 - Operação com Direito a Crédito - Vinculada Exclusivamente a
+                 Receita de Exportação
+            53 - Operação com Direito a Crédito - Vinculada a Receitas
+                 Tributadas e Não-Tributadas no Mercado Interno
+            54 - Operação com Direito a Crédito - Vinculada a Receitas
+                 Tributadas no Mercado Interno e de Exportação
+            55 - Operação com Direito a Crédito - Vinculada a Receitas
+                 Não-Tributadas no Mercado Interno e de Exportação
+            56 - Operação com Direito a Crédito - Vinculada a Receitas
+                 Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
+            60 - Crédito Presumido - Operação de Aquisição Vinculada
+                 Exclusivamente a Receita Tributada no Mercado Interno
+            61 - Crédito Presumido - Operação de Aquisição Vinculada
+                 Exclusivamente a Receita Não-Tributada no Mercado Interno
+            62 - Crédito Presumido - Operação de Aquisição Vinculada
+                 Exclusivamente a Receita de Exportação
+            63 - Crédito Presumido - Operação de Aquisição Vinculada a
+                 Receitas Tributadas e Não-Tributadas no Mercado Interno
+            64 - Crédito Presumido - Operação de Aquisição Vinculada a
+                 Receitas Tributadas no Mercado Interno e de Exportação
+            65 - Crédito Presumido - Operação de Aquisição Vinculada a
+                 Receitas Não-Tributadas no Mercado Interno e de Exportação
+            66 - Crédito Presumido - Operação de Aquisição Vinculada a
+                 Receitas Tributadas e Não-Tributadas no Mercado Interno, e de
+                 Exportação
+            67 - Crédito Presumido - Outras Operações
+            70 - Operação de Aquisição sem Direito a Crédito
+            71 - Operação de Aquisição com Isenção
+            72 - Operação de Aquisição com Suspensão
+            73 - Operação de Aquisição a Alíquota Zero
+            74 - Operação de Aquisição sem Incidência da Contribuição
+            75 - Operação de Aquisição por Substituição Tributária
+            98 - Outras Operações de Entrada
+            99 - Outras Operações
+        - vBC: Valor da Base de Cálculo da COFINS.
+        - pCOFINS: Alíquota da COFINS (em percentual).
+        - vCOFINS: Valor da COFINS.
     """
     tag = u'COFINSOutr'
-    attributes = NFeCOFINSAliq.attributes
+    attributes = [(u'CST', ''),
+                  (u'vBC', '0'),
+                  (u'COFINS', '0'),
+                  (u'vCOFINS', '0')]
     txttag = 'S05'
 
-    def __init__(self):
-        NFeCOFINSAliq.__init__(self)
-        self.set_attr('CST', '99')
+    def __init__(self, sale_item):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('CST', format_cst(sale_item.cofins_info.cst))
+        self.set_attr('vBC', self.format_value(sale_item.cofins_info.v_bc, 2))
+        self.set_attr('pCOFINS', sale_item.cofins_info.p_cofins)
+        self.set_attr('vCOFINS', self.format_value(sale_item.cofins_info.v_cofins, 2))
 
     def as_txt(self):
         base = '%s|%s|%s|\n' % (self.txttag, self.get_attr('CST'),
@@ -1954,4 +2144,75 @@ NFE_ICMS_CSOSN_MAP = {
     400: NFeICMSSN102,
     500: NFeICMSSN500,
     900: NFeICMSSN900,
+}
+
+NFE_PIS_MAP = {
+    1: NFePISAliq,
+    2: NFePISAliq,
+    4: NFePISNT,
+    5: NFePISNT,
+    6: NFePISNT,
+    7: NFePISNT,
+    8: NFePISNT,
+    9: NFePISNT,
+    49: NFePISOutr,
+    50: NFePISOutr,
+    51: NFePISOutr,
+    52: NFePISOutr,
+    53: NFePISOutr,
+    54: NFePISOutr,
+    55: NFePISOutr,
+    56: NFePISOutr,
+    60: NFePISOutr,
+    61: NFePISOutr,
+    62: NFePISOutr,
+    63: NFePISOutr,
+    64: NFePISOutr,
+    65: NFePISOutr,
+    66: NFePISOutr,
+    67: NFePISOutr,
+    70: NFePISOutr,
+    71: NFePISOutr,
+    72: NFePISOutr,
+    73: NFePISOutr,
+    74: NFePISOutr,
+    75: NFePISOutr,
+    98: NFePISOutr,
+    99: NFePISOutr,
+}
+
+
+NFE_COFINS_MAP = {
+    1: NFeCOFINSAliq,
+    2: NFeCOFINSAliq,
+    4: NFeCOFINSNT,
+    5: NFeCOFINSNT,
+    6: NFeCOFINSNT,
+    7: NFeCOFINSNT,
+    8: NFeCOFINSNT,
+    9: NFeCOFINSNT,
+    49: NFeCOFINSOutr,
+    50: NFeCOFINSOutr,
+    51: NFeCOFINSOutr,
+    52: NFeCOFINSOutr,
+    53: NFeCOFINSOutr,
+    54: NFeCOFINSOutr,
+    55: NFeCOFINSOutr,
+    56: NFeCOFINSOutr,
+    60: NFeCOFINSOutr,
+    61: NFeCOFINSOutr,
+    62: NFeCOFINSOutr,
+    63: NFeCOFINSOutr,
+    64: NFeCOFINSOutr,
+    65: NFeCOFINSOutr,
+    66: NFeCOFINSOutr,
+    67: NFeCOFINSOutr,
+    70: NFeCOFINSOutr,
+    71: NFeCOFINSOutr,
+    72: NFeCOFINSOutr,
+    73: NFeCOFINSOutr,
+    74: NFeCOFINSOutr,
+    75: NFeCOFINSOutr,
+    98: NFeCOFINSOutr,
+    99: NFeCOFINSOutr,
 }
