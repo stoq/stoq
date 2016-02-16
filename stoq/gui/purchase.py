@@ -212,7 +212,9 @@ class PurchaseApp(ShellApp):
         self.window.Print.set_tooltip(
             _("Print a report of these orders"))
         if refresh:
-            self._update_view()
+            self.refresh()
+
+        self._update_view()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.check_open_inventory()
 
