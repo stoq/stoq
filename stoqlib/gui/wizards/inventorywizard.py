@@ -254,6 +254,8 @@ class InventoryCountItemStep(SellableItemStep):
         # original inventory items. This means that this item was never stored
         # in this branch.
         for barcode, quantity in self.wizard.imported_count.items():
+            if not quantity:
+                continue
             sellable = self.store.find(Sellable, barcode=unicode(barcode)).one()
             storable = sellable.product.storable
             item = self.model.add_storable(storable, 0)
