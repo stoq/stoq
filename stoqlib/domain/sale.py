@@ -62,6 +62,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
 from stoqlib.domain.fiscal import FiscalBookEntry, Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
                                    SalesPerson, Company, Individual,
                                    ClientCategory)
@@ -1092,8 +1093,9 @@ class Sale(Domain):
         # automatically paid.
         # Since some plugins may listen to the sale status change event, we should
         # set payments as paid before the status change.
-        for method in (u'money', u'credit'):
-            self.group.pay_method_payments(method)
+        for method in self.store.find(PaymentMethod):
+            if method.operation.pay_on_sale_confirm():
+                self.group.pay_method_payments(method.method_name)
 
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 

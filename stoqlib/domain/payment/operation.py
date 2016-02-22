@@ -99,6 +99,9 @@ class MoneyPaymentOperation(object):
     # IPaymentOperation
     #
 
+    def pay_on_sale_confirm(self):
+        return True
+
     def payment_create(self, payment):
         pass
 
@@ -145,6 +148,9 @@ class CheckPaymentOperation(object):
 
     description = _(u'Check')
     max_installments = 12
+
+    def pay_on_sale_confirm(self):
+        return False
 
     def payment_create(self, payment):
         store = payment.store
@@ -217,6 +223,9 @@ class BillPaymentOperation(object):
     # IPaymentOperation
     #
 
+    def pay_on_sale_confirm(self):
+        return False
+
     def payment_create(self, payment):
         pass
 
@@ -282,6 +291,9 @@ class CardPaymentOperation(object):
     #
     # IPaymentOperation
     #
+
+    def pay_on_sale_confirm(self):
+        return False
 
     def payment_create(self, payment):
         return CreditCardData(store=payment.store,
@@ -349,6 +361,9 @@ class StoreCreditPaymentOperation(object):
     #
     # IPaymentOperation
     #
+
+    def pay_on_sale_confirm(self):
+        return False
 
     def payment_create(self, payment):
         pass
@@ -424,6 +439,9 @@ class CreditPaymentOperation(object):
     # IPaymentOperation
     #
 
+    def pay_on_sale_confirm(self):
+        return True
+
     def payment_create(self, payment):
         pass
 
@@ -479,6 +497,9 @@ class DepositPaymentOperation(object):
     # IPaymentOperation
     #
 
+    def pay_on_sale_confirm(self):
+        return False
+
     def payment_create(self, payment):
         pass
 
@@ -529,6 +550,9 @@ class OnlinePaymentOperation(object):
     #
     # IPaymentOperation
     #
+
+    def pay_on_sale_confirm(self):
+        return False
 
     def payment_create(self, payment):
         pass
@@ -581,6 +605,9 @@ class TradePaymentOperation(object):
     #
     # IPaymentOperation
     #
+
+    def pay_on_sale_confirm(self):
+        return False
 
     def payment_create(self, payment):
         pass
@@ -637,6 +664,9 @@ class MultiplePaymentOperation(object):
     #
     # IPaymentOperation
     #
+
+    def pay_on_sale_confirm(self):
+        return False
 
     def payment_create(self, payment):
         pass
@@ -701,6 +731,9 @@ class InvalidPaymentOperation(object):
     #
     # IPaymentOperation
     #
+
+    def pay_on_sale_confirm(self):
+        return False
 
     def payment_create(self, payment):
         pass

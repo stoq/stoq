@@ -156,7 +156,8 @@ class PaymentMethodStep(BaseWizardStep):
         if slave_class is MultipleMethodSlave:
             slave = slave_class(self.wizard, self, self.store, self.model,
                                 method, outstanding_value=self._outstanding_value,
-                                finish_on_total=self._finish_on_total)
+                                finish_on_total=self._finish_on_total,
+                                allow_remove_paid=False)
         else:
             slave = slave_class(self.wizard, self, self.store, self.model,
                                 method, outstanding_value=self._outstanding_value)
@@ -176,7 +177,10 @@ class PaymentMethodStep(BaseWizardStep):
         return self._method_slave.finish()
 
     def has_next_step(self):
-        return False
+        return self._method_slave.has_next_step()
+
+    def next_step(self):
+        return self._method_slave.next_step()
 
     def post_init(self):
         self._method_slave.update_view()

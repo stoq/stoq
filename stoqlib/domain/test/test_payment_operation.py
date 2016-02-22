@@ -50,6 +50,9 @@ from stoqlib.reporting.booklet import BookletReport
 class _TestOperation(DomainTest):
     method_name = None
 
+    def test_pay_on_sale_confirm(self):
+        self.assertFalse(self.operation.pay_on_sale_confirm())
+
     def test_payment_create(self):
         payment = self.create_payment()
         self.operation.payment_create(payment)
@@ -181,6 +184,9 @@ class TestCreditPaymentOperation(_TestOperation):
     method_name = u'credit'
     operation = CreditPaymentOperation()
 
+    def test_pay_on_sale_confirm(self):
+        self.assertTrue(self.operation.pay_on_sale_confirm())
+
 
 class TestDepositPaymentOperation(_TestOperation):
     method_name = u'deposit'
@@ -195,6 +201,9 @@ class TestInvalidPaymentOperation(_TestOperation):
 class TestMoneyPaymentOperation(_TestOperation):
     method_name = u'money'
     operation = MoneyPaymentOperation()
+
+    def test_pay_on_sale_confirm(self):
+        self.assertTrue(self.operation.pay_on_sale_confirm())
 
 
 class TestMultiplePaymentOperation(_TestOperation):

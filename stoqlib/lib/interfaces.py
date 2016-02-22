@@ -178,6 +178,9 @@ class IPaymentOperation(Interface):
     description = Attribute('description')
     max_installments = Attribute('max_installments')
 
+    def pay_on_sale_confirm():
+        """If we should set the payment as paid when confirming a sale"""
+
     def payment_create(payment):
         """This is called when a payment is created
 

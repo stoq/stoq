@@ -637,9 +637,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def update_view(self):
         self._refresh_next()
 
-    def get_interest_total(self):
-        return self.interest_total
-
     #
     # PaymentMethodStep hooks
     #
@@ -653,6 +650,12 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self._create_payments()
 
         return True
+
+    def has_next_step(self):
+        return False
+
+    def next_step(self):
+        return None
 
     #
     # BaseEditor Slave hooks
@@ -803,6 +806,9 @@ class CardMethodSlave(BaseEditorSlave):
 
     def update_view(self):
         self._refresh_next()
+
+    def has_next_step(self):
+        return False
 
     #
     # BaseEditor Slave hooks
@@ -1150,6 +1156,9 @@ class MultipleMethodSlave(BaseEditorSlave):
         # All the payments are created in slaves. We still need to return
         # True so the wizard can finish
         return True
+
+    def has_next_step(self):
+        return False
 
     #
     # Private
