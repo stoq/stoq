@@ -605,6 +605,7 @@ class PurchaseWizard(BaseWizard):
         # selected supplier?
         self.all_products = False
         self.sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
+        self.current_branch = api.get_current_branch(store)
 
         # If we receive the order right after the purchase.
         self.receiving_model = None
@@ -641,7 +642,7 @@ class PurchaseWizard(BaseWizard):
         # items now.
         if not self.sync_mode:
             return False
-        if self.model.branch == api.get_current_branch(self.store):
+        if self.model.branch == self.current_branch:
             return False
 
         return True
