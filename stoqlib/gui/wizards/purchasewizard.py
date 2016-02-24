@@ -153,10 +153,10 @@ class StartPurchaseStep(WizardEditorStep):
 
     def next_step(self):
         self.wizard.all_products = self.all_products.get_active()
-        if self.wizard.is_for_another_branch():
+        if self.wizard.is_for_another_branch() and self.model.identifier > 0:
             info(_('The identifier for this purchase will be defined when it '
                    'is synchronized to the detination branch'))
-            self.model.identifier = PurchaseOrder.get_temporary_identifier(self.store)
+            self.model.identifier = self.wizard.temporary_identifier
         return PurchaseItemStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
@@ -600,12 +600,15 @@ class PurchaseWizard(BaseWizard):
 
     def __init__(self, store, model=None, edit_mode=False):
         title = self._get_title(model)
+        self.sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
+        self.current_branch = api.get_current_branch(store)
+        if self.sync_mode and not model:
+            self.temporary_identifier = PurchaseOrder.get_temporary_identifier(store)
+
         model = model or self._create_model(store)
         # Should we show all products or only the ones associated with the
         # selected supplier?
         self.all_products = False
-        self.sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
-        self.current_branch = api.get_current_branch(store)
 
         # If we receive the order right after the purchase.
         self.receiving_model = None
