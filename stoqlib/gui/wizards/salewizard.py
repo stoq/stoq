@@ -58,7 +58,8 @@ from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
-from stoqlib.gui.events import ConfirmSaleWizardFinishEvent
+from stoqlib.gui.events import (ConfirmSaleWizardFinishEvent,
+                                ClientSaleValidationEvent)
 from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
@@ -761,6 +762,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         try:
             client.can_purchase(method, self.get_remaining_value())
         except SellError as e:
+            return ValidationError(e)
+
+        try:
+            ClientSaleValidationEvent.emit(client.person)
+        except Exception as e:
             return ValidationError(e)
 
     def on_create_transporter__clicked(self, button):

@@ -355,3 +355,13 @@ class SaleQuoteWizardFinishEvent(Event):
 
     :param sale: The |sale| that was created.
     """
+
+
+@public(since="1.10.0")
+class ClientSaleValidationEvent(Event):
+    """
+     This event is issued when the customer is selected in a sale wizard.
+
+     :param person: The person
+        <stoqlib.domain.person.Person> object to extract the street number.
+    """
