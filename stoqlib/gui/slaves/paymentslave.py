@@ -599,14 +599,13 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             raise TypeError
 
     def _get_payment_type(self):
-        if isinstance(self.order, (Sale, PaymentRenegotiation, ReturnedSale,
-                                   StockDecrease)):
-            return Payment.TYPE_IN
-        elif isinstance(self.order, PurchaseOrder):
+        # FIXME: Is it right to consider only PurchaseOrder as TYPE_OUT?
+        # Maybe we should add an interface on order objects for them to
+        # decide which type of payment would be created here
+        if isinstance(self.order, PurchaseOrder):
             return Payment.TYPE_OUT
         else:
-            raise TypeError("Could not guess payment type for %r" %
-                            (self.order, ))
+            return Payment.TYPE_IN
 
     def _create_payments(self):
         """Insert the payment_list's payments in the base."""
@@ -1055,7 +1054,8 @@ class _MultipleMethodEditor(BaseEditor):
         payments = order.group.get_valid_payments().find(
             Payment.method_id == self._method.id)
         max_installments = self._method.max_installments - payments.count()
-        self.slave.installments_number.set_range(1, max_installments)
+        if hasattr(self.slave, 'installments_number'):
+            self.slave.installments_number.set_range(1, max_installments)
 
         self.attach_slave('place_holder', self.slave)
 
@@ -1191,13 +1191,14 @@ class MultipleMethodSlave(BaseEditorSlave):
         manager = get_plugin_manager()
         if manager.is_active('tef'):
             self.remove_button.hide()
-        if isinstance(self.model, (PaymentRenegotiation, Sale, ReturnedSale,
-                                   StockDecrease)):
-            payment_type = Payment.TYPE_IN
-        elif isinstance(self.model, PurchaseOrder):
+
+        # FIXME: Is it right to consider only PurchaseOrder as TYPE_OUT?
+        # Maybe we should add an interface on order objects for them to
+        # decide which type of payment would be created here
+        if isinstance(self.model, PurchaseOrder):
             payment_type = Payment.TYPE_OUT
         else:
-            raise AssertionError
+            payment_type = Payment.TYPE_IN
 
         # FIXME: All this code is duplicating SelectPaymentMethodSlave.
         # Replace this with it

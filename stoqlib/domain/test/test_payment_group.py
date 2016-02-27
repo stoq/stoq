@@ -27,9 +27,11 @@ __tests__ = 'stoqlib/domain/payment/group.py'
 from decimal import Decimal
 
 from nose.exc import SkipTest
+from kiwi.python import Settable
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
+from stoqlib.domain.events import PaymentGroupGetOrderEvent
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
@@ -568,3 +570,31 @@ class TestPaymentGroup(DomainTest):
                           u'renegotiation 99999')
         self.assertEquals(decrease.group.get_description(),
                           u'stock decrease 12345')
+
+        callback = lambda g, s: Settable(payment_description='foobar')
+        PaymentGroupGetOrderEvent.connect(callback)
+        try:
+            self.assertEquals(
+                self.create_payment_group().get_description(), 'foobar')
+        finally:
+            PaymentGroupGetOrderEvent.disconnect(callback)
+
+    def test_get_order_object(self):
+        sale = self.create_sale()
+        purchase = self.create_purchase_order()
+        renegotiation = self.create_payment_renegotiation()
+        decrease = self.create_stock_decrease(group=self.create_payment_group())
+
+        for obj in [sale, purchase, renegotiation, decrease]:
+            self.assertEqual(obj.group.get_order_object(), obj)
+
+        group = self.create_payment_group()
+        self.assertIsNone(group.get_order_object())
+
+        obj = object()
+        callback = lambda g, s: obj
+        PaymentGroupGetOrderEvent.connect(callback)
+        try:
+            self.assertIs(group.get_order_object(), obj)
+        finally:
+            PaymentGroupGetOrderEvent.disconnect(callback)

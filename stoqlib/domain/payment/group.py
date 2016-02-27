@@ -44,6 +44,7 @@ from zope.interface import implementer
 
 from stoqlib.database.properties import IdCol
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import PaymentGroupGetOrderEvent
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.lib.translation import stoqlib_gettext
@@ -160,6 +161,15 @@ class PaymentGroup(Domain):
     # Public API
     #
 
+    def get_order_object(self):
+        """Get the order object related to this payment group"""
+        for obj in [self.sale, self.purchase, self._renegotiation,
+                    self.stock_decrease]:
+            if obj is not None:
+                return obj
+
+        return PaymentGroupGetOrderEvent.emit(self, self.store)
+
     def confirm(self):
         """Confirms all |payments| in this group
 
@@ -260,9 +270,9 @@ class PaymentGroup(Domain):
 
         :returns: the description
         """
-
-        # FIXME: This is hack which won't scale. But I don't know
-        #        a better solution right now. Johan 2008-09-25
+        # FIXME: Now that we have a get_order_object, we can ask each of
+        # those objects (Sale, PurchaseOrder, etc) to describe themselves
+        # and remove those if/elifs bellow
         if self.sale:
             return _(u'sale %s') % self.sale.identifier
         elif self.purchase:
@@ -271,9 +281,10 @@ class PaymentGroup(Domain):
             return _(u'renegotiation %s') % self._renegotiation.identifier
         elif self.stock_decrease:
             return _(u'stock decrease %s') % self.stock_decrease.identifier
-        # FIXME: Add a proper description
-        else:
-            return u''
+
+        order_obj = self.get_order_object()
+        # FIXME: Add a proper description when there's no order_obj
+        return order_obj.payment_description if order_obj else u''
 
     def get_pending_payments(self):
         """Returns a list of pending |payments|

@@ -293,6 +293,15 @@ class SaleAvoidCancelEvent(Event):
 #
 
 
+@public(since="1.11.0")
+class PaymentGroupGetOrderEvent(Event):
+    """Get the order of a payment group.
+
+    :param group: the |paymentgroup| that we want the related order
+    :param store: a store
+    """
+
+
 @public(since="1.5.0")
 class CreatePaymentEvent(Event):
     """
