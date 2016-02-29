@@ -24,7 +24,7 @@ GtkDialog(toplevel): title='Return Sale Order', hidden
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
             GtkVBox(toplevel):
               GtkVBox(list_vbox, expand=True, fill=True):
-                ObjectList(klist, expand=True, fill=True):
+                ObjectTree(klist, expand=True, fill=True):
                   column: title='Return'
                   column: title='Code', hidden
                   column: title='Barcode', hidden

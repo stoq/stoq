@@ -58,6 +58,13 @@ class PurchaseItemEditor(BaseEditor):
         self.quantity_sold.hide()
         self.quantity_returned.hide()
 
+        if model.parent_item:
+            # We should not allow the user to edit the children
+            self._set_not_editable()
+            parent_expected = model.parent_item.expected_receival_date
+            self.expected_receival_date.update(parent_expected)
+            self.expected_receival_date.set_sensitive(False)
+
     def _setup_widgets(self):
         self.order.set_text(unicode(self.model.order.identifier))
         for widget in [self.quantity, self.cost, self.quantity_sold,
@@ -79,9 +86,21 @@ class PurchaseItemEditor(BaseEditor):
         self.cost.set_sensitive(False)
         self.quantity.set_sensitive(False)
 
+    def _maybe_update_children_quantity(self):
+        for child in self.model.children_items:
+            child_qty = child.get_component_quantity(self.model)
+            child.quantity = self.model.quantity * child_qty
+
+    #
+    # Public API
+    #
+
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def on_confirm(self):
+        self._maybe_update_children_quantity()
 
     #
     # Kiwi callbacks

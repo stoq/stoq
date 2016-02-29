@@ -111,6 +111,81 @@ class TestSaleQuoteItemSlave(GUITest):
         self.click(editor.main_dialog.ok_button)
         self.assertEqual(sale_item.quantity, 2)
 
+    def test_reserve(self):
+        product = self.create_product(stock=1, storable=True)
+        sale_item = self.create_sale_item(sellable=product.sellable)
+
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        slave = editor.item_slave
+        self.assertEquals(unicode(slave.reserved.emit('validate', 2)),
+                          "Not enough stock to reserve.")
+
+    def test_reserve_service(self):
+        service = self.create_service(description=u'Service')
+        sale_item = self.create_sale_item(sellable=service.sellable)
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        slave = editor.item_slave
+        self.assertNotVisible(slave, ['reserved'])
+
+    def test_reserve_package(self):
+        package_product = self.create_product(is_package=True)
+        component = self.create_product(stock=1)
+        self.create_product_component(product=package_product,
+                                      component=component)
+        sale_item = self.create_sale_item(sellable=package_product.sellable)
+        self.create_sale_item(sellable=component.sellable, parent_item=sale_item)
+
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        slave = editor.item_slave
+        self.assertEquals(unicode(slave.reserved.emit('validate', 3)),
+                          "One or more components for this package doesn't have "
+                          "enough of stock to reserve")
+        self.assertSensitive(slave, ['reserved', 'quantity', 'price'])
+        slave.reserved.update(1)
+        self.click(editor.main_dialog.ok_button)
+
+        # Nothing to reserve
+        sale_item.quantity_decreased = 1
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        slave = editor.item_slave
+        slave.reserved.update(1)
+        self.click(editor.main_dialog.ok_button)
+
+    def test_return_package_product_to_stock(self):
+        package_product = self.create_product(is_package=True)
+        component = self.create_product(stock=1)
+        self.create_product_component(product=package_product,
+                                      component=component,
+                                      component_quantity=1)
+        sale_item = self.create_sale_item(sellable=package_product.sellable)
+        child_item = self.create_sale_item(sellable=component.sellable, parent_item=sale_item)
+        sale_item.quantity_decreased = 1
+        child_item.quantity_decreased = 1
+        child_storable = child_item.sellable.product_storable
+
+        editor = SaleQuoteItemEditor(self.store, sale_item)
+        slave = editor.item_slave
+        slave.reserved.update(0)
+        self.click(editor.main_dialog.ok_button)
+        stock_item = child_storable.get_stock_item(child_item.sale.branch,
+                                                   child_item.batch)
+        self.assertEquals(stock_item.quantity, 2)
+
+    def test_edit_package_child(self):
+        package_product = self.create_product(is_package=True)
+        component = self.create_product(stock=2)
+        self.create_product_component(product=package_product,
+                                      component=component)
+        sale_item = self.create_sale_item(sellable=package_product.sellable)
+        child = self.create_sale_item(sellable=component.sellable,
+                                      parent_item=sale_item)
+
+        editor = SaleQuoteItemEditor(self.store, child)
+        slave = editor.item_slave
+        # We should be able to see, but not modify those widgets
+        self.assertVisible(slave, ['reserved', 'quantity', 'price'])
+        self.assertNotSensitive(slave, ['reserved', 'quantity', 'price'])
+
     def test_show_param_no_allow_higher_sale_price(self):
         sale_item = self.create_sale_item()
         editor = SaleQuoteItemEditor(self.store, sale_item)

@@ -155,6 +155,16 @@ class TestSale(DomainTest):
         self.assertEqual(items.count(), 1)
         self.assertEqual(sellable, items[0].sellable)
 
+    def test_get_items_with_children(self):
+        sale = self.create_sale()
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component', stock=2)
+        self.create_product_component(product=package, component=component)
+        sale.add_sellable(package.sellable, quantity=1)
+
+        items = sale.get_items(with_children=False)
+        self.assertEquals(items.count(), 1)
+
     def test_remove_item(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
@@ -283,6 +293,24 @@ class TestSale(DomainTest):
         # Verify if the batches not were adjusted
         self.assertEquals(adjusted_batches, False)
         self.assertEquals(sale.need_adjust_batches(), True)
+
+    def test_has_children(self):
+        parent = self.create_sale_item()
+        self.assertFalse(parent.has_children())
+
+        self.create_sale_item(parent_item=parent)
+        self.assertTrue(parent.has_children())
+
+    def test_get_component_quantity(self):
+        package = self.create_product(is_package=True)
+        component = self.create_product(stock=2)
+        self.create_product_component(product=package, component=component,
+                                      component_quantity=2)
+        sale_item = self.create_sale_item(sellable=package.sellable)
+        child = self.create_sale_item(sellable=component.sellable,
+                                      parent_item=sale_item)
+        self.assertEquals(child.get_component_quantity(sale_item), 2)
+        self.assertEquals(child.parent_item, sale_item)
 
     def test_order(self):
         sale = self.create_sale()

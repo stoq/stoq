@@ -55,6 +55,7 @@ model: PurchaseItem<4>
   cost: <currency $125>
   expected_receival_date: None
   order_id: PurchaseOrder<3>
+  parent_item_id: NoneType<2>
   quantity: Decimal('8.000')
   quantity_received: Decimal('0.000')
   quantity_returned: Decimal('0.000')

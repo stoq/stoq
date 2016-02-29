@@ -135,6 +135,51 @@ class TestSaleQuoteWizard(GUITest):
         self.assertTrue(isinstance(args[3], list))
         self.assertEquals(kwargs['title'], 'Missing products')
 
+    def test_add_package_product(self):
+        product = self.create_product(price=10, description=u'Package',
+                                      is_package=True)
+        product.sellable.barcode = u'666'
+        component = self.create_product(stock=2, description=u'Component1')
+        self.create_product_component(product=product, component=component,
+                                      component_quantity=2)
+
+        wizard = SaleQuoteWizard(self.store)
+        self.click(wizard.next_button)
+
+        # SaleQuoteItemStep
+        item_step = wizard.get_current_step()
+        item_step.barcode.set_text(u'666')
+        self.activate(item_step.barcode)
+        self.click(item_step.add_sellable_button)
+        summary_label = item_step.summary.get_value_widget()
+        # XXX We are not summarizing the children price for now
+        self.assertEquals(summary_label.get_text(), '$10.00')
+        # Adding the package, its children should be included on the list as well
+        self.assertEquals(len(list(item_step.slave.klist)), 2)
+
+        klist = item_step.slave.klist
+        klist.select(klist[0])
+        self.assertSensitive(item_step.slave, ['delete_button'])
+
+        selected = klist.get_selected_rows()
+        child = klist.get_descendants(selected[0])
+
+        # Checking the quantity of the child is correctly added
+        self.assertEquals(child[0].quantity, 2)
+        klist.select(child)
+        # We are not allowed to remove children
+        self.assertNotSensitive(item_step.slave, ['delete_button'])
+
+        klist.select(klist[0])
+        with mock.patch('stoqlib.gui.base.lists.yesno') as yesno:
+            yesno.return_value = True
+            self.click(item_step.slave.delete_button)
+            yesno.assert_called_once_with(
+                'Delete this item?', gtk.RESPONSE_NO, 'Delete item', 'Keep it')
+
+        # As we remove the package, remove its children as well
+        self.assertEquals(len(klist), 0)
+
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
     def test_apply_discount(self, run_dialog):
         sellable = self.create_sellable(price=100, product=True)

@@ -204,7 +204,7 @@ class LoanItemStep(SaleQuoteItemStep):
                     Sellable.get_available_sellables_query(self.store))
         return self.sellable_view, query
 
-    def get_order_item(self, sellable, price, quantity, batch=None):
+    def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
         item = self.model.add_sellable(sellable, quantity, price, batch=batch)
         item._stock_quantity = self.proxy.model.stock_quantity
         return item

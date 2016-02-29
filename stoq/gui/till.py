@@ -337,8 +337,10 @@ class TillApp(ShellApp):
 
     def _add_sale_items(self, sale, coupon):
         subtotal = 0
-        for sale_item in sale.get_items():
+        for sale_item in sale.get_items(with_children=False):
             coupon.add_item(sale_item)
+            for child in sale_item.children_items:
+                coupon.add_item(child)
             subtotal += sale_item.price * sale_item.quantity
         return subtotal
 

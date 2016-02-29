@@ -25,6 +25,7 @@
 """ Purchase wizard definition """
 
 import datetime
+from decimal import Decimal
 
 import gtk
 from kiwi.component import get_utility
@@ -253,7 +254,7 @@ class PurchaseItemStep(SellableItemStep):
         can_purchase = self.model.purchase_total > 0
         self.wizard.refresh_next(value and can_purchase)
 
-    def get_order_item(self, sellable, cost, quantity, batch=None):
+    def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
         assert batch is None
         # Associate the product with the supplier if they are not yet. This
         # happens when the user checked the option to show all products on the
@@ -263,9 +264,14 @@ class PurchaseItemStep(SellableItemStep):
             supplier_info = ProductSupplierInfo(product=sellable.product,
                                                 supplier=self.model.supplier,
                                                 store=self.store)
+        if parent:
+            component_quantity = self.get_component_quantity(parent, sellable)
+            quantity = quantity * component_quantity
+            cost = Decimal('0')
+        else:
             supplier_info.base_cost = cost
 
-        item = self.model.add_item(sellable, quantity)
+        item = self.model.add_item(sellable, quantity, parent=parent)
         self._set_expected_receival_date(item)
         item.cost = cost
         return item
@@ -348,7 +354,8 @@ class PurchaseItemStep(SellableItemStep):
                      self).on_quantity__validate(widget, value)
 
     def _on_klist_selection_changed(self, klist, data):
-        can_delete = all(product.quantity_received == 0 for product in data)
+        can_delete = all(item.quantity_received == 0 and item.parent_item is None
+                         for item in data)
         self.slave.delete_button.set_sensitive(can_delete)
 
 

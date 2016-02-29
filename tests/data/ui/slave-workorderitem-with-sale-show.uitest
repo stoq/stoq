@@ -19,7 +19,7 @@ GtkVBox(toplevel):
   GtkEventBox(list_holder, expand=True, fill=True): slave AdditionListSlave is attached
     GtkVBox(toplevel):
       GtkVBox(list_vbox, expand=True, fill=True):
-        ObjectList(klist, expand=True, fill=True):
+        ObjectTree(klist, expand=True, fill=True):
           column: title='Code', hidden
           column: title='Barcode', hidden
           column: title='Description', expand

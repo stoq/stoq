@@ -11,7 +11,7 @@ GtkDialog(toplevel): title='Sale with work order', hidden
           GtkTable(step.item_table, fill=True):
             GtkHBox(step.hbox2):
               ProxyLabel(step.item_lbl, fill=True): 'Item:'
-              GtkEntry(step.barcode, fill=True): '12345681'
+              GtkEntry(step.barcode, fill=True): '666'
               GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
             ProxySpinButton(step.quantity): '0', insensitive
@@ -27,7 +27,7 @@ GtkDialog(toplevel): title='Sale with work order', hidden
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
             GtkVBox(toplevel):
               GtkVBox(list_vbox, expand=True, fill=True):
-                ObjectList(klist, expand=True, fill=True):
+                ObjectTree(klist, expand=True, fill=True):
                   column: title='Code', hidden
                   column: title='Barcode', hidden
                   column: title='Description', expand
@@ -41,9 +41,11 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                   row: u'', u'12345678', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
                   row: u'', u'12345679', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
                   row: u'', u'12345681', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                  row: u'', u'666', u'Package', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                    row: u'', u'', u'Component', u'Patient', Decimal('1.000'), <currency $100>, <currency $ 0>, 0, <currency $ 0>
                 GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
-                  GtkLabel(): '<b>$40.00</b>'
+                  GtkLabel(): '<b>$50.00</b>'
               GtkHBox(hbox1, fill=True):
                 GtkHBox(button_box):
                   GtkButton(add_button): hidden
@@ -87,7 +89,7 @@ model: Client<2>
   status: u'solvent'
 
 model: SaleItem<3>
-  average_cost: <currency $ 0>
+  average_cost: <currency $125>
   base_price: <currency $10>
   completion_date: None
   estimated_fix_date: datetime.today()
@@ -109,7 +111,7 @@ model: SaleItem<4>
   sale_id: Sale<1>
 
 model: SaleItem<5>
-  average_cost: <currency $ 0>
+  average_cost: <currency $125>
   base_price: <currency $10>
   completion_date: None
   estimated_fix_date: datetime.today()
@@ -126,6 +128,29 @@ model: SaleItem<6>
   estimated_fix_date: datetime.today()
   notes: None
   price: <currency $10>
+  quantity: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
+  sale_id: Sale<1>
+
+model: SaleItem<7>
+  average_cost: <currency $125>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
+  sale_id: Sale<1>
+
+model: SaleItem<8>
+  average_cost: <currency $ 0>
+  base_price: <currency $100>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  parent_item_id: SaleItem<7>
+  price: <currency $ 0>
   quantity: Decimal('1.000')
   quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>

@@ -325,7 +325,8 @@ class ProductWithStockBranchView(ProductFullStockView):
     tables[3] = LeftJoin(_StockBranchSummary, storable_id == Storable.id)
 
     clause = And(ProductFullStockView.clause,
-                 Eq(Product.is_grid, False))
+                 Eq(Product.is_grid, False),
+                 Eq(Product.is_package, False))
 
 
 # This subselect should query only from PurchaseItem, otherwise, more one

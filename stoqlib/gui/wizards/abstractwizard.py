@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2016 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -174,9 +174,22 @@ class SellableItemSlave(BaseEditorSlave):
         self.slave = AdditionListSlave(
             self.store, self.get_columns(),
             editor_class=self.item_editor,
-            klist_objects=self.get_saved_items(),
             restore_name=self.__class__.__name__,
-            visual_mode=self.visual_mode)
+            visual_mode=self.visual_mode,
+            tree=True)
+
+        for item in self.get_saved_items():
+            if hasattr(item, 'parent_item'):
+                def add_result(result):
+                    parent = result.parent_item
+                    if parent:
+                        add_result(parent)
+                    if result not in self.slave.klist:
+                        self.slave.klist.append(parent, result)
+                add_result(item)
+            else:
+                self.slave.klist.append(None, item)
+
         self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
         self.slave.connect('before-delete-items',
                            self._on_list_slave__before_delete_items)
@@ -194,7 +207,7 @@ class SellableItemSlave(BaseEditorSlave):
     # Public API
     #
 
-    def add_sellable(self, sellable):
+    def add_sellable(self, sellable, parent=None):
         """Add a sellable to the current step
 
         This will call step.get_order_item to create the correct item for the
@@ -215,12 +228,12 @@ class SellableItemSlave(BaseEditorSlave):
             batch = batch.batch_number
 
         if (storable is not None and storable.is_batch and batch is None and
-            self.batch_selection_dialog is not None):
+                self.batch_selection_dialog is not None):
             order_items.extend(self.get_batch_order_items(sellable,
                                                           value, quantity))
         else:
             order_item = self.get_order_item(sellable, value, quantity,
-                                             batch=batch)
+                                             batch=batch, parent=parent)
             if order_item is not None:
                 order_items.append(order_item)
 
@@ -228,7 +241,11 @@ class SellableItemSlave(BaseEditorSlave):
             if item in self.slave.klist:
                 self.slave.klist.update(item)
             else:
-                self.slave.klist.append(item)
+                self.slave.klist.append(parent, item)
+
+            for child in self.proxy.model.children:
+                if parent is None:
+                    self.add_sellable(child, parent=item)
 
         self.update_total()
 
@@ -245,6 +262,8 @@ class SellableItemSlave(BaseEditorSlave):
         Subclasses can override this if special logic is necessary.
         """
         for item in items:
+            # We need to remove the children before remove the parent_item
+            self.remove_items(getattr(item, 'children_items', []))
             self.model.remove_item(item)
 
     def hide_item_addition_toolbar(self):
@@ -336,7 +355,7 @@ class SellableItemSlave(BaseEditorSlave):
         return (self.sellable_view,
                 Sellable.get_unblocked_sellables_query(self.store))
 
-    def get_order_item(self, sellable, value, quantity, batch=None):
+    def get_order_item(self, sellable, value, quantity, batch=None, parent=None):
         """Adds the sellable to the current model
 
         This method is called when the user added the sellable in the wizard
@@ -370,6 +389,12 @@ class SellableItemSlave(BaseEditorSlave):
         return True
 
     def get_sellable_model(self, sellable, batch=None):
+        """Create a Settable containing multiple information to be used on the
+        slave.
+
+        :param sellable: a |sellable| we are adding to wizard
+        :returns: a Settable containing some information of the item
+        """
         minimum = Decimal(0)
         stock = Decimal(0)
         cost = currency(0)
@@ -377,6 +402,7 @@ class SellableItemSlave(BaseEditorSlave):
         description = u''
         unit_label = u''
 
+        children = {}
         if sellable:
             description = "<b>%s</b>" % api.escape(sellable.get_description())
             cost = getattr(sellable, self.value_column)
@@ -387,6 +413,12 @@ class SellableItemSlave(BaseEditorSlave):
                 minimum = storable.minimum_quantity
                 stock = storable.get_balance_for_branch(self.model.branch)
 
+            product = sellable.product
+            if product:
+                for component in product.get_components():
+                    child_sellable = component.component.sellable
+                    children[child_sellable] = self.get_sellable_model(child_sellable)
+
         return Settable(quantity=quantity,
                         cost=cost,
                         sellable=sellable,
@@ -394,7 +426,8 @@ class SellableItemSlave(BaseEditorSlave):
                         stock_quantity=stock,
                         sellable_description=description,
                         unit_label=unit_label,
-                        batch=batch)
+                        batch=batch,
+                        children=children)
 
     def sellable_selected(self, sellable, batch=None):
         """This will be called when a sellable is selected in the combo.
@@ -766,7 +799,7 @@ class SellableItemSlave(BaseEditorSlave):
             category = getattr(self.model, 'client_category', None)
             default_price = sellable.get_price_for_category(category)
             if (not sysparam.get_bool('ALLOW_HIGHER_SALE_PRICE') and
-                value > default_price):
+                    value > default_price):
                 return ValidationError(_(u'The sell price cannot be greater '
                                          'than %s.') % default_price)
 
@@ -826,3 +859,9 @@ class SellableItemStep(SellableItemSlave, WizardStep):
         #        raise NotImplementedError.
         self.slave.save_columns()
         return True
+
+    def get_component_quantity(self, parent, sellable):
+        product = parent.sellable.product
+        for component in product.get_components():
+            if component.component.sellable == sellable:
+                return component.quantity

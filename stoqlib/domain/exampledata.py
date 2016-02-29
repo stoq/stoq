@@ -317,12 +317,17 @@ class ExampleCreator(object):
 
     def create_product(self, price=None, with_supplier=True,
                        branch=None, stock=None, storable=False, code=u'',
-                       description=u'Description', is_grid=False, parent=None):
+                       description=u'Description', is_grid=False, parent=None,
+                       is_package=False):
         from stoqlib.domain.product import Storable, StockTransactionHistory
         sellable = self.create_sellable(price=price, code=code,
                                         description=description)
         if with_supplier:
             self.create_product_supplier_info(product=sellable.product)
+        if is_package:
+            # Package product should not have stock nor storable
+            assert not stock and not storable
+
         product = sellable.product
         product.parent = parent
         if not branch:
@@ -335,8 +340,10 @@ class ExampleCreator(object):
                                     object_id=None,
                                     unit_cost=10)
         product.is_grid = is_grid
-        if is_grid:
+        if is_grid or is_package:
             product.manage_stock = False
+
+        product.is_package = is_package
 
         return product
 
@@ -385,10 +392,11 @@ class ExampleCreator(object):
         return ProductManufacturer(store=self.store, name=name, code=code)
 
     def create_product_component(self, product=None, component=None,
-                                 storable=False):
+                                 component_quantity=1, storable=False):
         from stoqlib.domain.product import ProductComponent
         return ProductComponent(product=product or self.create_product(storable=storable),
                                 component=component or self.create_product(storable=storable),
+                                quantity=component_quantity,
                                 store=self.store)
 
     def create_sellable(self, price=None, product=True,
@@ -521,14 +529,15 @@ class ExampleCreator(object):
                                 sellable=sale_item.sellable)
 
     def create_sale_item(self, sale=None, product=True, quantity=1,
-                         sellable=None):
+                         sellable=None, parent_item=None):
         from stoqlib.domain.sale import SaleItem
         sellable = sellable or self.create_sellable(product=product)
         return SaleItem(store=self.store,
                         quantity=quantity,
                         price=100,
                         sale=sale or self.create_sale(),
-                        sellable=sellable)
+                        sellable=sellable,
+                        parent_item=parent_item)
 
     def create_product_tax_template(self, name=u'Tax template', tax_type=None):
         from stoqlib.domain.taxes import ProductTaxTemplate
@@ -760,15 +769,17 @@ class ExampleCreator(object):
                          purchase=purchase_order,
                          branch=purchase_order.branch)
 
-    def create_purchase_order_item(self, order=None, cost=125):
+    def create_purchase_order_item(self, order=None, cost=125, sellable=None,
+                                   parent_item=None):
         if not order:
             order = self.create_purchase_order()
         from stoqlib.domain.purchase import PurchaseItem
         return PurchaseItem(store=self.store,
                             quantity=8, quantity_received=0,
                             cost=cost, base_cost=125,
-                            sellable=self.create_sellable(),
-                            order=order)
+                            sellable=sellable or self.create_sellable(),
+                            order=order,
+                            parent_item=parent_item)
 
     def create_production_order(self, branch=None):
         if branch is None:

@@ -285,7 +285,7 @@ class _WorkOrderItemSlave(SellableItemSlave):
     def get_saved_items(self):
         return self.model.order_items
 
-    def get_order_item(self, sellable, price, quantity, batch=None):
+    def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
         item = self.model.add_sellable(sellable, price=price,
                                        quantity=quantity, batch=batch)
         # Storable items added here are consumed at the same time

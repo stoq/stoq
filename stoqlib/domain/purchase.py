@@ -33,7 +33,7 @@ from kiwi.python import Settable
 from storm.expr import (Alias, And, Cast, Coalesce, Count, Eq, Join, LeftJoin,
                         Select, Sum)
 from storm.info import ClassAlias
-from storm.references import Reference
+from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
 from stoqlib.database.expr import Date, Field, NullIf, TransactionTimestamp
@@ -88,6 +88,11 @@ class PurchaseItem(Domain):
 
     #: the |purchase|
     order = Reference(order_id, 'PurchaseOrder.id')
+
+    parent_item_id = IdCol()
+    parent_item = Reference(parent_item_id, 'PurchaseItem.id')
+
+    children_items = ReferenceSet('id', 'PurchaseItem.parent_item_id')
 
     def __init__(self, store=None, **kw):
         if not 'sellable' in kw:
@@ -162,6 +167,16 @@ class PurchaseItem(Domain):
                                 branch=self.order.branch,
                                 type=StockTransactionHistory.TYPE_CONSIGNMENT_RETURNED,
                                 object_id=self.id)
+
+    def get_component_quantity(self, parent):
+        """Get the quantity of a component.
+
+        :param parent: the |purchase_item| parent_item of self
+        :returns: the quantity of the component
+        """
+        for component in parent.sellable.product.get_components():
+            if self.sellable.product == component.component:
+                return component.quantity
 
 
 @implementer(IContainer)
@@ -238,10 +253,11 @@ class PurchaseOrder(Domain):
         item.order = None
         self.store.maybe_remove(item)
 
-    def add_item(self, sellable, quantity=Decimal(1)):
+    def add_item(self, sellable, quantity=Decimal(1), parent=None):
         store = self.store
         return PurchaseItem(store=store, order=self,
-                            sellable=sellable, quantity=quantity)
+                            sellable=sellable, quantity=quantity,
+                            parent_item=parent)
 
     #
     # Properties

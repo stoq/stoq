@@ -129,6 +129,15 @@ class TestPurchaseItem(DomainTest):
                                             sellable=item.sellable)
         self.assertEquals(ordered, Decimal(8))
 
+    def test_get_component_quantity(self):
+        product = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component')
+        self.create_product_component(product=product, component=component)
+        purchase_item = self.create_purchase_order_item(sellable=product.sellable)
+        child_item = self.create_purchase_order_item(sellable=component.sellable,
+                                                     parent_item=purchase_item)
+        self.assertEquals(child_item.get_component_quantity(purchase_item), 1)
+
 
 class TestPurchaseOrder(DomainTest):
 

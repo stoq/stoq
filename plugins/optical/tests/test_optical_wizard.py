@@ -49,12 +49,15 @@ _ = stoqlib_gettext
 
 
 class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
+    def _create_work_order_category(self):
+        return WorkOrderCategory(store=self.store,
+                                 name=u'Category',
+                                 color=u'#ff0000')
+
     @mock.patch('plugins.optical.opticalwizard.yesno')
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
     def test_confirm(self, run_dialog, yesno):
-        WorkOrderCategory(store=self.store,
-                          name=u'Category',
-                          color=u'#ff0000')
+        self._create_work_order_category()
         client = self.create_client()
         medic = self.create_optical_medic()
         self.create_address(person=client.person)
@@ -83,8 +86,15 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         sellable4.barcode = u'12345681'
         self.create_storable(product=sellable4.product)
 
+        sellable5 = self.create_sellable(description=u'Package')
+        sellable5.barcode = u'666'
+        sellable6 = self.create_sellable(description=u'Component', price=100,
+                                         storable=True)
+        self.create_product_component(product=sellable5.product,
+                                      component=sellable6.product)
         wizard = OpticalSaleQuoteWizard(self.store)
 
+        # First Step
         step = wizard.get_current_step()
         step.client_gadget.set_value(client)
 
@@ -103,6 +113,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         self.check_wizard(wizard, 'wizard-optical-start-sale-quote-step')
         self.click(wizard.next_button)
 
+        # OpticalWorkOrder step
         step = wizard.get_current_step()
         slave = step.slaves['WO 1']
         slave.patient.update('Patient')
@@ -113,10 +124,13 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         self.check_wizard(wizard, 'wizard-optical-work-order-step')
 
         self.click(wizard.next_button)
+
+        # OpticalWorkOrderItem Step
         step = wizard.get_current_step()
 
         for barcode in [batch.batch_number, sellable.barcode,
-                        sellable2.barcode, sellable4.barcode]:
+                        sellable2.barcode, sellable4.barcode,
+                        sellable5.barcode]:
             step.barcode.set_text(barcode)
             self.activate(step.barcode)
             step.quantity.update(1)
@@ -150,9 +164,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         self.click(wizard2.next_button)
 
     def test_with_work_order(self):
-        category = WorkOrderCategory(store=self.store,
-                                     name=u'Category',
-                                     color=u'#ff0000')
+        category = self._create_work_order_category()
 
         sale = self.create_sale()
         sale.status = Sale.STATUS_QUOTE

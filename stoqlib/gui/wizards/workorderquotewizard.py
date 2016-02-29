@@ -297,9 +297,9 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
         self._setup_work_orders_widgets()
         super(WorkOrderQuoteItemStep, self).setup_proxies()
 
-    def get_order_item(self, sellable, price, quantity, batch=None):
+    def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
         item = super(WorkOrderQuoteItemStep, self).get_order_item(
-            sellable, price, quantity, batch=batch)
+            sellable, price, quantity, batch=batch, parent=parent)
 
         work_order = self._selected_workorder
         wo_item = work_order.add_sellable(

@@ -24,7 +24,7 @@ GtkDialog(toplevel): title='New Quote', hidden
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
             GtkVBox(toplevel):
               GtkVBox(list_vbox, expand=True, fill=True):
-                ObjectList(klist, expand=True, fill=True):
+                ObjectTree(klist, expand=True, fill=True):
                   column: title='Description', expand
                   column: title='Quantity'
                   column: title='Unit'

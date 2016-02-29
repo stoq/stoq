@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009-2016 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -81,6 +81,10 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         sale = self.model.sale
         if sale.status == Sale.STATUS_CONFIRMED:
             self._set_not_editable()
+        if model.parent_item:
+            # We should not allow the user to edit the children
+            self._set_not_editable()
+            self.reserved.set_sensitive(False)
 
     def _setup_widgets(self):
         self._calc = CalculatorPopup(self.price, CalculatorPopup.MODE_SUB)
@@ -152,6 +156,12 @@ class SaleQuoteItemSlave(BaseEditorSlave):
             original_price=price,
             new_price=new_price)
 
+    def _maybe_update_children_quantity(self):
+        qty = self.model.quantity
+        for child in self.model.children_items:
+            child_quantity = child.get_component_quantity(self.model)
+            child.quantity = qty * child_quantity
+
     def _maybe_reserve_products(self):
         if not self._can_reserve():
             # Not reserve products. But allow to edit sale item quantity,
@@ -163,6 +173,14 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         decreased = self.model.quantity_decreased
         to_reserve = self.quantity_model.reserved
         diff = to_reserve - decreased
+
+        for sale_item in self.model.children_items:
+            component_qty = sale_item.get_component_quantity(self.model) * diff
+            if diff > 0:
+                sale_item.reserve(component_qty)
+            elif diff < 0:
+                sale_item.return_to_stock(abs(component_qty))
+
         if diff > 0:
             # Update quantity first, so that the db constraint does not break
             self.model.quantity = self.quantity_model.quantity
@@ -179,22 +197,27 @@ class SaleQuoteItemSlave(BaseEditorSlave):
             self.model.quantity = self.quantity_model.quantity
 
     def _can_reserve(self):
-        # It is only possible to reserver for products with storable
         product = self.model.sellable.product
-        if not product or not product.storable:
+        # We cant reserve services
+        if not product:
+            return False
+
+        storable = product.storable
+        # Cant reserve products without storable, except if it is a package
+        if not storable and not product.is_package:
             return False
 
         # If the storable is has batches, but the sale item still dont have, its
         # not possible to reserve.
-        storable = product.storable
-        if storable.is_batch and not self.model.batch:
+        if storable and storable.is_batch and not self.model.batch:
             return False
 
         # No stock item means we cannot reserve any quantity yet
-        stock_item = product.storable.get_stock_item(self.model.sale.branch,
-                                                     self.model.batch)
-        if stock_item is None:
-            return False
+        if storable:
+            stock_item = storable.get_stock_item(self.model.sale.branch,
+                                                 self.model.batch)
+            if stock_item is None:
+                return False
 
         return True
 
@@ -219,6 +242,7 @@ class SaleQuoteItemSlave(BaseEditorSlave):
     def on_confirm(self):
         self._maybe_log_discount()
         self._maybe_reserve_products()
+        self._maybe_update_children_quantity()
 
     #
     # Kiwi callbacks
@@ -277,17 +301,32 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         if valid:
             return valid
 
-        storable = self.model.sellable.product.storable
-        decreased = self.model.quantity_decreased
-        to_reserve = value - decreased
-        # There is no need to reserve more products
-        if to_reserve <= 0:
-            return
+        if not self.model.has_children():
+            storable = self.model.sellable.product.storable
+            decreased = self.model.quantity_decreased
+            to_reserve = value - decreased
+            # There is no need to reserve more products
+            if to_reserve <= 0:
+                return
 
-        stock_item = storable.get_stock_item(self.model.sale.branch,
-                                             self.model.batch)
-        if to_reserve > stock_item.quantity:
-            return ValidationError('Not enought stock to reserve.')
+            stock_item = storable.get_stock_item(self.model.sale.branch,
+                                                 self.model.batch)
+            if to_reserve > stock_item.quantity:
+                return ValidationError('Not enough stock to reserve.')
+        else:
+            for child in self.model.children_items:
+                component_qty = child.get_component_quantity(self.model)
+                storable = child.sellable.product_storable
+                decreased = child.quantity_decreased
+                to_reserve = (value * component_qty) - decreased
+                if to_reserve <= 0:
+                    return
+                # XXX Should I keep child.batch here? Since batch is not
+                # available as component yet
+                stock_item = storable.get_stock_item(child.sale.branch, child.batch)
+                if stock_item.quantity < to_reserve:
+                    return ValidationError(_("One or more components for this package "
+                                             "doesn't have enough of stock to reserve"))
 
     def on_price__icon_press(self, entry, icon_pos, event):
         if icon_pos != gtk.ENTRY_ICON_PRIMARY:  # pragma no cover

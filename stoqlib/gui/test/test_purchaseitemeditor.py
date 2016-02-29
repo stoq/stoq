@@ -23,6 +23,8 @@
 ##
 
 
+import datetime
+
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -41,3 +43,20 @@ class TestPurchaseItemEditor(GUITest):
         self.assertEqual(editor.total.read(), 1500)
 
         self.check_editor(editor, 'editor-purchaseitem-show')
+
+    def test_show_package(self):
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component', stock=1)
+        self.create_product_component(product=package, component=component,
+                                      component_quantity=2)
+        item = self.create_purchase_order_item(sellable=package.sellable)
+        child_item = self.create_purchase_order_item(sellable=component.sellable,
+                                                     parent_item=item)
+
+        editor = PurchaseItemEditor(self.store, item)
+        editor.expected_receival_date.update(datetime.datetime.today())
+        editor.quantity.update(1)
+        self.click(editor.main_dialog.ok_button)
+
+        editor = PurchaseItemEditor(self.store, child_item)
+        self.assertEquals(editor.quantity.read(), 2)

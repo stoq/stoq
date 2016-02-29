@@ -248,6 +248,8 @@ class SaleQuoteItemStep(SellableItemStep):
         self.discount_btn = self.slave.add_extra_button(label=_("Apply discount"))
         self.discount_btn.set_sensitive(bool(len(self.slave.klist)))
         self.slave.klist.connect('has-rows', self._on_klist__has_rows)
+        self.slave.klist.connect('selection-changed',
+                                 self._on_klist__selection_changed)
 
     def update_total(self):
         SellableItemStep.update_total(self)
@@ -285,7 +287,7 @@ class SaleQuoteItemStep(SellableItemStep):
         else:
             self.slave.clear_message()
 
-    def add_sellable(self, sellable):
+    def add_sellable(self, sellable, parent=None):
         price = sellable.get_price_for_category(self.model.client_category)
         new_price = self.cost.read()
 
@@ -302,27 +304,46 @@ class SaleQuoteItemStep(SellableItemStep):
                 original_price=price,
                 new_price=new_price)
 
-        SellableItemStep.add_sellable(self, sellable)
+        SellableItemStep.add_sellable(self, sellable, parent=parent)
 
-    def get_order_item(self, sellable, price, quantity, batch=None):
-        item = self.model.add_sellable(sellable, quantity, price, batch=batch)
-        storable = sellable.product_storable
-        stock_item = self.store.find(ProductStockItem, storable=storable,
-                                     batch=batch, branch=self.model.branch).one()
-        # FIXME: Currently uses the cost of the supplier or cost sellable.
-        # Implement batch control for the cost of the lot not the product.
-        if stock_item is not None:
-            item.average_cost = stock_item.stock_cost
-        else:
-            # When the product does not have stock control. Use the sellable
-            # cost information
+    def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
+        """
+        :param sellable: the |sellable|
+        :param price: the price the sellable is being sold
+        :param quantity: the quantity for that is being sold
+        :param batch: the |storable_batch| if exists
+        :param parent: |sale_item|'s parent_item if exists
+        """
+        if parent:
+            component_quantity = self.get_component_quantity(parent, sellable)
+            quantity = parent.quantity * component_quantity
+            price = Decimal('0')
+
+        item = self.model.add_sellable(sellable, quantity, price, batch=batch,
+                                       parent=parent)
+        # Save temporarily the stock quantity and lead_time so we can show a
+        # warning if there is not enough quantity for the sale.
+        if not parent:
+            item._stock_quantity = self.proxy.model.stock_quantity
+            # When the product does not have stock control. Use the
+            # sellable cost information
             item.average_cost = sellable.cost
+        else:
+            storable = sellable.product_storable
+            stock_item = self.store.find(ProductStockItem,
+                                         storable=storable,
+                                         batch=batch,
+                                         branch=self.model.branch).one()
+            # FIXME: Currently uses the cost of the supplier or cost sellable.
+            # Implement batch control for the cost of the lot not the product.
+            if stock_item is not None:
+                item.average_cost = stock_item.stock_cost
+
+            stock = storable.get_balance_for_branch(self.model.branch)
+            item._stock_quantity = stock
 
         item.update_tax_values()
 
-        # Save temporarily the stock quantity and lead_time so we can show a
-        # warning if there is not enough quantity for the sale.
-        item._stock_quantity = self.proxy.model.stock_quantity
         return item
 
     def get_saved_items(self):
@@ -456,6 +477,10 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def _on_klist__has_rows(self, klist, has_rows):
         self.discount_btn.set_sensitive(has_rows)
+
+    def _on_klist__selection_changed(self, klist, selected):
+        can_remove = all(item.parent_item is None for item in selected)
+        self.slave.delete_button.set_sensitive(can_remove)
 
     def on_discount_btn__clicked(self, button):
         rv = run_dialog(DiscountEditor, self.parent, self.store, self.model,

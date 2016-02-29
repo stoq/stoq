@@ -166,7 +166,7 @@ class StockTransferItemStep(SellableItemStep):
     def get_saved_items(self):
         return list(self.model.get_items())
 
-    def get_order_item(self, sellable, cost, quantity, batch=None):
+    def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
         return self.model.add_sellable(sellable, batch, quantity, cost)
 
     def get_columns(self):

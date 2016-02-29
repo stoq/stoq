@@ -207,7 +207,7 @@ class DecreaseItemStep(SellableItemStep):
                     Sellable.get_available_sellables_query(self.store))
         return self.sellable_view, query
 
-    def get_order_item(self, sellable, cost, quantity, batch=None):
+    def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
         return self.model.add_sellable(sellable, cost, quantity, batch=batch)
 
     def get_saved_items(self):

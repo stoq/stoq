@@ -103,6 +103,8 @@ class TemporarySaleItem(object):
         self.deliver = False
         self.estimated_fix_date = None
         self.notes = notes
+        # FIXME Implement package product sale on POS
+        self.parent_item = None
 
     @property
     def full_description(self):

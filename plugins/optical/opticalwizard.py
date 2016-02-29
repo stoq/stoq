@@ -23,6 +23,8 @@
 ##
 """ Wizard for optical pre-sale"""
 
+from decimal import Decimal
+
 import gtk
 import string
 from kiwi.ui.objectlist import Column
@@ -109,9 +111,13 @@ class OpticalItemStep(WorkOrderQuoteItemStep):
     #  WorkOrderQuoteItemStep
     #
 
-    def get_order_item(self, sellable, price, quantity, batch=None):
+    def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
+        if parent:
+            component_quantity = self.get_component_quantity(parent, sellable)
+            price = Decimal('0')
+            quantity = parent.quantity * component_quantity
         sale_item = super(OpticalItemStep, self).get_order_item(
-            sellable, price, quantity, batch=batch)
+            sellable, price, quantity, batch=batch, parent=parent)
         self._setup_patient(sale_item)
 
         wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)

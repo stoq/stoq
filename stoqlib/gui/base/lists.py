@@ -258,6 +258,9 @@ class AdditionListSlave(SearchSlave):
         :param restore_name:  the name used to save and restore the columns
                               on a cache system (e.g. pickle)
         :type restore_name:   basestring
+        :param tree:          Indication of which kind of list we are adding.
+                              If `True` ObjectTree otherwise ObjectList will be
+                              added
         """
         columns = columns or self.get_columns()
         SearchSlave.__init__(self, columns=columns,

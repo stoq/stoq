@@ -184,6 +184,14 @@ class SaleItem(Domain):
     #: the :class:`stoqlib.domain.taxes.InvoiceItemCofins` tax for *self*
     cofins_info = Reference(cofins_info_id, 'InvoiceItemCofins.id')
 
+    #: Id of |sale_item| parent of self
+    parent_item_id = IdCol(default=None)
+
+    parent_item = Reference(parent_item_id, 'SaleItem.id')
+
+    #: A list of children of self
+    children_items = ReferenceSet('id', 'SaleItem.parent_item_id')
+
     def __init__(self, store=None, **kw):
         if not 'kw' in kw:
             if not 'sellable' in kw:
@@ -491,6 +499,19 @@ class SaleItem(Domain):
         self.ipi_info.update_values(self)
         self.pis_info.update_values(self)
         self.cofins_info.update_values(self)
+
+    def has_children(self):
+        return self.children_items.count() > 0
+
+    def get_component_quantity(self, parent):
+        """Get the quantity of a component.
+
+        :param parent: the |sale_item| parent_item of self
+        :returns: the quantity of the component
+        """
+        for component in parent.sellable.product.get_components():
+            if self.sellable.product == component.component:
+                return component.quantity
 
 
 @implementer(IContainer)
@@ -878,9 +899,13 @@ class Sale(Domain):
         assert not sale_item.sale
         sale_item.sale = self
 
-    def get_items(self):
+    def get_items(self, with_children=True):
         store = self.store
-        return store.find(SaleItem, sale=self)
+        query = SaleItem.sale == self
+        if not with_children:
+            query = And(query,
+                        Eq(SaleItem.parent_item_id, None))
+        return store.find(SaleItem, query)
 
     def remove_item(self, sale_item):
         if sale_item.quantity_decreased > 0:
@@ -1269,7 +1294,8 @@ class Sale(Domain):
             as a percentage, e.g. 10.0, 22.5
         """
         new_total = currency(0)
-        items = self.get_items()
+        # We should not set the discount for the components of a package
+        items = [item for item in self.get_items(with_children=False)]
 
         for item in items:
             item.set_discount(discount)
@@ -1557,7 +1583,7 @@ class Sale(Domain):
         return all(payment.is_of_method(u'money') for payment in self.payments)
 
     def add_sellable(self, sellable, quantity=1, price=None,
-                     quantity_decreased=0, batch=None):
+                     quantity_decreased=0, batch=None, parent=None):
         """Adds a new item to a sale.
 
         :param sellable: the |sellable|
@@ -1570,6 +1596,7 @@ class Sale(Domain):
         :param batch: the |batch| this sellable comes from, if the sellable is a
           storable. Should be ``None`` if it is not a storable or if the storable
           does not have batches.
+        :param parent: a |sale_item| parent_item of another |sale_item|
         :returns: a |saleitem| for representing the
           sellable within this sale.
         """
@@ -1577,14 +1604,16 @@ class Sale(Domain):
         # after on self.confirm
         if self.status not in (self.STATUS_QUOTE, self.STATUS_ORDERED):
             self.validate_batch(batch, sellable=sellable)
-        price = price or sellable.price
+        if price is None:
+            price = sellable.price
         return SaleItem(store=self.store,
                         quantity=quantity,
                         quantity_decreased=quantity_decreased,
                         sale=self,
                         sellable=sellable,
                         batch=batch,
-                        price=price)
+                        price=price,
+                        parent_item=parent)
 
     def create_sale_return_adapter(self):
         store = self.store

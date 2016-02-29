@@ -186,3 +186,25 @@ class TestPurchaseWizard(GUITest):
 
             step = wizard.get_current_step()
             self.assertNotVisible(step, ['receive_now'])
+
+    def test_purchase_package(self):
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'component')
+        self.create_product_component(product=package, component=component)
+        wizard = PurchaseWizard(self.store)
+
+        wizard = PurchaseWizard(self.store)
+        self.click(wizard.next_button)
+
+        # Item step
+        step = wizard.get_current_step()
+        step.sellable_selected(package.sellable)
+        self.click(step.add_sellable_button)
+
+        klist = step.slave.klist
+        klist.select(klist[0])
+        self.assertSensitive(step.slave, ['delete_button'])
+        selected = klist.get_selected_rows()
+        child = klist.get_descendants(selected[0])
+        klist.select(child)
+        self.assertNotSensitive(step.slave, ['delete_button'])

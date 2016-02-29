@@ -162,7 +162,7 @@ class ProductionServiceStep(SellableItemStep):
         # This step is optional
         self.wizard.refresh_next(value)
 
-    def get_order_item(self, sellable, cost, quantity, batch=None):
+    def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
         assert batch is None
         item = self._get_production_service_by_sellable(sellable)
         if item is None:
@@ -234,7 +234,10 @@ class ProductionItemStep(SellableItemStep):
     # SellableItemStep virtual methods
     #
 
-    def get_order_item(self, sellable, cost, quantity, batch=None):
+    def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
+        # We should not add the children to the list
+        if parent:
+            return
         # We are not allowing production items to control batches right now
         assert batch is None
         item = self._get_production_item_by_sellable(sellable)
