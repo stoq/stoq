@@ -426,9 +426,6 @@ class FiscalCoupon(gobject.GObject):
           -1 if an error happend
           0 if added but not printed (free deliveries)
         """
-        if sale_item.price <= 0:
-            return 0
-
         log.info("adding sale item %r to coupon" % (sale_item, ))
         item_id = self.emit('add-item', sale_item)
 

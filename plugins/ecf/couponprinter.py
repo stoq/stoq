@@ -283,6 +283,9 @@ class Coupon(object):
         self._driver = driver
         self._item_ids = {}
         self._total_taxes = 0
+        # This is a discount that will be added to the sale discount. See
+        # add_item() for more information.
+        self._temp_discount = 0
 
         self._customer_document = None
         self._customer_document_type = None
@@ -327,7 +330,13 @@ class Coupon(object):
         if discount_value < 0:
             discount_value = 0
             base_price = item.price
-
+        if item.price == 0:
+            # The ECF does not accept an item without a price. So we are adding
+            # the item with a 0.01 price, and this value will be given as a
+            # discount when the coupon is closed.
+            base_price = Decimal('0.01')
+            discount_value = 0
+            self._temp_discount += base_price * item.quantity
         try:
             return self._driver.add_item(code, description, base_price,
                                          tax_constant.device_value,
@@ -363,9 +372,8 @@ class Coupon(object):
         return self._driver.open()
 
     def totalize(self, sale):
-        return self._driver.totalize(sale.discount_value,
-                                     Decimal('0'),
-                                     TaxType.NONE)
+        discount = sale.discount_value + self._temp_discount
+        return self._driver.totalize(discount, Decimal('0'), TaxType.NONE)
 
     def cancel(self):
         return self._driver.cancel()
