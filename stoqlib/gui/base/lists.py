@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source
+## Copyright (C) 2005-2016 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -25,7 +25,7 @@
 
 import gtk
 from kiwi.enums import ListType
-from kiwi.ui.objectlist import ObjectList
+from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.ui.listdialog import ListSlave
 from kiwi.utils import gsignal
 
@@ -241,7 +241,8 @@ class AdditionListSlave(SearchSlave):
     gsignal('after-delete-items')
 
     def __init__(self, store, columns=None, editor_class=None,
-                 klist_objects=None, visual_mode=False, restore_name=None):
+                 klist_objects=None, visual_mode=False, restore_name=None,
+                 tree=False):
         """ Creates a new AdditionListSlave object
 
         :param store:         a store
@@ -262,6 +263,11 @@ class AdditionListSlave(SearchSlave):
         SearchSlave.__init__(self, columns=columns,
                              restore_name=restore_name,
                              store=store)
+        self.tree = tree
+        self.klist = ObjectTree() if tree else ObjectList()
+        self.list_vbox.add(self.klist)
+        self.list_vbox.show_all()
+
         if not self.columns:
             raise StoqlibError("columns must be specified")
         self.visual_mode = visual_mode
@@ -280,7 +286,10 @@ class AdditionListSlave(SearchSlave):
     def _setup_klist(self, klist_objects):
         self.klist.set_columns(self.columns)
         self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        self.klist.add_list(klist_objects)
+        if self.tree:
+            (self.klist.append(obj.parent_item, obj) for obj in klist_objects)
+        else:
+            self.klist.add_list(klist_objects)
         if self.visual_mode:
             self.klist.set_sensitive(False)
 
@@ -298,7 +307,7 @@ class AdditionListSlave(SearchSlave):
         self.edit_button.set_sensitive(_can_edit)
         self.delete_button.set_sensitive(can_delete)
 
-    def _edit_model(self, model=None):
+    def _edit_model(self, model=None, parent=None):
         edit_mode = model
         result = self.run_editor(model)
 
@@ -309,7 +318,10 @@ class AdditionListSlave(SearchSlave):
             self.emit('on-edit-item', result)
             self.klist.update(result)
         else:
-            self.klist.append(result)
+            if self.tree:
+                self.klist.append(parent, result)
+            else:
+                self.klist.append(result)
             # Emit the signal after we added the item to the list to be able to
             # check the length of the list in our validation callbacks.
             self.emit('on-add-item', result)

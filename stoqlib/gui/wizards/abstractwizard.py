@@ -369,16 +369,7 @@ class SellableItemSlave(BaseEditorSlave):
         """
         return True
 
-    def sellable_selected(self, sellable, batch=None):
-        """This will be called when a sellable is selected in the combo.
-        It can be overriden in a subclass if they wish to do additional
-        logic at that point
-
-        :param sellable: the selected |sellable|
-        :param batch: the |batch|, if the |sellable| was selected
-            by it's batch_number
-        """
-        has_storable = False
+    def get_sellable_model(self, sellable, batch=None):
         minimum = Decimal(0)
         stock = Decimal(0)
         cost = currency(0)
@@ -393,20 +384,30 @@ class SellableItemSlave(BaseEditorSlave):
             storable = sellable.product_storable
             unit_label = sellable.unit_description
             if storable:
-                has_storable = True
                 minimum = storable.minimum_quantity
                 stock = storable.get_balance_for_branch(self.model.branch)
 
-        model = Settable(quantity=quantity,
-                         cost=cost,
-                         sellable=sellable,
-                         minimum_quantity=minimum,
-                         stock_quantity=stock,
-                         sellable_description=description,
-                         unit_label=unit_label,
-                         batch=batch)
+        return Settable(quantity=quantity,
+                        cost=cost,
+                        sellable=sellable,
+                        minimum_quantity=minimum,
+                        stock_quantity=stock,
+                        sellable_description=description,
+                        unit_label=unit_label,
+                        batch=batch)
 
-        self.proxy.set_model(model)
+    def sellable_selected(self, sellable, batch=None):
+        """This will be called when a sellable is selected in the combo.
+        It can be overriden in a subclass if they wish to do additional
+        logic at that point
+
+        :param sellable: the selected |sellable|
+        :param batch: the |batch|, if the |sellable| was selected
+            by it's batch_number
+        """
+        has_storable = False
+
+        self.proxy.set_model(self.get_sellable_model(sellable, batch=batch))
 
         has_sellable = bool(sellable)
         self.add_sellable_button.set_sensitive(has_sellable)
