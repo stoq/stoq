@@ -108,7 +108,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               ProxyLabel(expand=True, fill=True): '<span weight="bold" size="xx-large">Till closed</span>\n\n<span size="large"><a href="open-till">Open till</a></span>'
               GtkHSeparator(fill=True):
             GtkHPaned(expand=True, fill=True): hidden
-              ObjectList(): insensitive
+              ObjectTree(): insensitive
                 column: title='Reference'
                 column: title='Description', expand
                 column: title='Price'

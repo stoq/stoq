@@ -279,7 +279,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <child>
-                      <object class="ObjectList" id="sale_items">
+                      <object class="ObjectTree" id="sale_items">
                         <property name="visible">True</property>
                       </object>
                       <packing>

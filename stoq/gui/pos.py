@@ -85,7 +85,8 @@ log = logging.getLogger(__name__)
 @public(since="1.5.0")
 class TemporarySaleItem(object):
     def __init__(self, sellable, quantity, price=None,
-                 notes=None, can_remove=True, quantity_decreased=0, batch=None):
+                 notes=None, can_remove=True, quantity_decreased=0, batch=None,
+                 parent_item=None):
         # Use only 3 decimal places for the quantity
         self.quantity = Decimal('%.3f' % quantity)
         self.quantity_decreased = quantity_decreased
@@ -96,7 +97,7 @@ class TemporarySaleItem(object):
         self.code = sellable.code
         self.can_remove = can_remove
 
-        if not price:
+        if price is None:
             price = sellable.price
         self.base_price = sellable.base_price
         self.price = price
@@ -104,7 +105,7 @@ class TemporarySaleItem(object):
         self.estimated_fix_date = None
         self.notes = notes
         # FIXME Implement package product sale on POS
-        self.parent_item = None
+        self.parent_item = parent_item
 
     @property
     def full_description(self):
@@ -425,7 +426,7 @@ class PosApp(ShellApp):
         if new_item:
             if self._coupon_add_item(sale_item) == -1:
                 return
-            self.sale_items.append(sale_item)
+            self.sale_items.append(sale_item.parent_item, sale_item)
         else:
             self.sale_items.update(sale_item)
         self.sale_items.select(sale_item)
