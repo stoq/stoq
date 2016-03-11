@@ -104,8 +104,8 @@ class TemporarySaleItem(object):
         self.deliver = False
         self.estimated_fix_date = None
         self.notes = notes
-        # FIXME Implement package product sale on POS
         self.parent_item = parent_item
+        self.children_items = []
 
     @property
     def full_description(self):
@@ -497,6 +497,18 @@ class PosApp(ShellApp):
                                           batch=batch)
             self._update_added_item(sale_item)
 
+        # Making sure we are just adding the children if its a package
+        if not sale_item.sellable.product.is_package:
+            return
+        for child in sale_item.sellable.product.get_components():
+            child_quantity = child.quantity * quantity
+            temp_child = TemporarySaleItem(sellable=child.component.sellable,
+                                           quantity=child_quantity,
+                                           price=Decimal('0'),
+                                           parent_item=sale_item)
+            sale_item.children_items.append(temp_child)
+            self._update_added_item(temp_child)
+
     def _get_subtotal(self):
         return currency(sum([item.total for item in self.sale_items]))
 
@@ -641,8 +653,9 @@ class PosApp(ShellApp):
         else:
             can_edit = False
         self.set_sensitive([self.edit_item_button], can_edit)
-        self.set_sensitive([self.remove_item_button],
-                           sale_item is not None and sale_item.can_remove)
+        can_remove = (sale_item is not None and sale_item.can_remove and
+                      sale_item.parent_item is None)
+        self.set_sensitive([self.remove_item_button], can_remove)
 
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
@@ -1060,6 +1073,10 @@ class PosApp(ShellApp):
 
     def _remove_selected_item(self):
         sale_item = self.sale_items.get_selected()
+        for child in sale_item.children_items:
+            assert child.can_remove
+            self._coupon_remove_item(child)
+            self.sale_items.remove(child)
         assert sale_item.can_remove
         self._coupon_remove_item(sale_item)
         self.sale_items.remove(sale_item)

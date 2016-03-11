@@ -285,7 +285,7 @@ class Coupon(object):
         self._total_taxes = 0
         # This is a discount that will be added to the sale discount. See
         # add_item() for more information.
-        self._temp_discount = 0
+        self._temp_discount = {}
 
         self._customer_document = None
         self._customer_document_type = None
@@ -336,19 +336,27 @@ class Coupon(object):
             # discount when the coupon is closed.
             base_price = Decimal('0.01')
             discount_value = 0
-            self._temp_discount += base_price * item.quantity
+
         try:
-            return self._driver.add_item(code, description, base_price,
-                                         tax_constant.device_value,
-                                         item.quantity, unit,
-                                         unit_desc=unit_desc,
-                                         discount=discount_value)
+            item_id = self._driver.add_item(code, description, base_price,
+                                            tax_constant.device_value,
+                                            item.quantity, unit,
+                                            unit_desc=unit_desc,
+                                            discount=discount_value)
         except DriverError as e:
             warning(_("Could not print item"), str(e))
-            return -1
+            item_id = -1
+
+        if item.price == 0 and item_id != -1:
+            self._temp_discount[item_id] = base_price * item.quantity
+
+        return item_id
 
     def remove_item(self, item_id):
         self._driver.cancel_item(item_id)
+        # We need to remove the temporary discount for the item we are removing
+        if item_id in self._temp_discount:
+            del self._temp_discount[item_id]
 
     #
     # Fiscal coupon related functions
@@ -372,7 +380,7 @@ class Coupon(object):
         return self._driver.open()
 
     def totalize(self, sale):
-        discount = sale.discount_value + self._temp_discount
+        discount = sale.discount_value + sum(self._temp_discount.values())
         return self._driver.totalize(discount, Decimal('0'), TaxType.NONE)
 
     def cancel(self):

@@ -355,6 +355,29 @@ class TestPos(BaseGUITest):
 
         self.check_app(app, u'pos-add-sale-item')
 
+    def test_add_package_sale_item(self):
+        app = self.create_app(PosApp, u'pos')
+        self._pos_open_till(app)
+
+        package = self.create_product(description=u'Package', is_package=True)
+        component1 = self.create_product(stock=5, description=u'Component 1')
+        component2 = self.create_product(stock=5, description=u'Component 2')
+        self.create_product_component(product=package, component=component1)
+        self.create_product_component(product=package, component=component2)
+
+        app._add_product_sellable(package.sellable, 1)
+        self.assertEquals(len(list(app.sale_items)), 3)
+
+    def test_add_production_sale_item(self):
+        pos = self.create_app(PosApp, u'pos')
+        self._pos_open_till(pos)
+
+        production = self.create_product(description=u'Production')
+        component1 = self.create_product(stock=5, description=u'Component 1')
+        self.create_product_component(product=production, component=component1)
+        pos._add_product_sellable(production.sellable, 1)
+        self.assertEquals(len(list(pos.sale_items)), 1)
+
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     def test_add_service_sellable(self, run_dialog):
         pos = self.create_app(PosApp, u'pos')
@@ -651,6 +674,26 @@ class TestPos(BaseGUITest):
 
         self.click(pos.remove_item_button)
         self.assertEquals(len(olist), 0)
+
+    def test_remove_package_item(self):
+        pos = self._get_pos_with_open_till()
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(stock=5, description=u'Component')
+        self.create_product_component(product=package, component=component)
+        pos._add_product_sellable(package.sellable, 1)
+
+        otree = pos.sale_items
+        self.assertEquals(len(list(otree)), 2)
+
+        # Selecting the child
+        otree.select_paths([(0, 0)])
+        # We shouldnt be able to remove children
+        self.assertNotSensitive(pos, ['remove_item_button'])
+
+        otree.select(otree[0])
+        self.click(pos.remove_item_button)
+        # As we remove the parent, we should be removing the children as well
+        self.assertEquals(len(list(otree)), 0)
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_close_till_with_open_sale(self, yesno):

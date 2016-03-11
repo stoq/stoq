@@ -437,7 +437,7 @@ class FiscalCoupon(gobject.GObject):
         return list(self._item_ids.keys())
 
     def remove_item(self, sale_item):
-        if sale_item.price <= 0:
+        if sale_item.price < 0:
             return
 
         for item_id in self._item_ids.pop(sale_item):
