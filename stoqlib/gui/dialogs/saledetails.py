@@ -154,8 +154,14 @@ class SaleDetailsDialog(BaseEditor):
         else:
             self.status_details_button.hide()
 
-        sale_items = self.store.find(SaleItemsView, sale_id=self.sale_order.id)
-        self.items_list.add_list(sale_items)
+        parent_items = SaleItemsView.find_parent_items(self.store, self.sale_order)
+        for parent_item in parent_items:
+            self.items_list.append(None, parent_item)
+            if parent_item.product and not parent_item.product.is_package:
+                # Prevent Production components to be shown
+                continue
+            for children in parent_item.get_children():
+                self.items_list.append(parent_item, children)
 
         notes = []
         details = self.sale_order.get_details_str()

@@ -26,6 +26,7 @@ from decimal import Decimal
 import unittest
 
 import mock
+from kiwi.ui.objectlist import ObjectTree
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch
 from stoqlib.domain.payment.payment import Payment
@@ -79,6 +80,7 @@ class TestSaleDetails(GUITest):
         # SaleDetailsDialog needs a SaleView model
         model = self.store.find(SaleView, id=sale.id).one()
         dialog = SaleDetailsDialog(self.store, model)
+        self.assertTrue(isinstance(dialog.items_list, ObjectTree))
         self.check_editor(dialog, 'dialog-sale-details')
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
@@ -106,6 +108,21 @@ class TestSaleDetails(GUITest):
         self.click(dialog.print_return_report)
 
         self.check_editor(dialog, 'dialog-sale-details-with-returns')
+
+    def test_show_package_product(self):
+        sale = self.create_sale()
+        package = self.create_product(description=u'Package', is_package=True)
+        component1 = self.create_product(description=u'Component 1', stock=3)
+        component2 = self.create_product(description=u'Component 2', stock=2)
+        self.create_product_component(product=package, component=component1)
+        self.create_product_component(product=package, component=component2)
+        parent = sale.add_sellable(package.sellable, quantity=1)
+        sale.add_sellable(component1.sellable, quantity=1, parent=parent)
+        sale.add_sellable(component2.sellable, quantity=1, parent=parent)
+
+        model = self.store.find(SaleView, id=sale.id).one()
+        dialog = SaleDetailsDialog(self.store, model)
+        self.assertEquals(len(list(dialog.items_list)), 3)
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.run_dialog')
     def test_client_details(self, run_dialog):

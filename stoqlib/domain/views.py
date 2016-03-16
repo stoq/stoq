@@ -887,6 +887,7 @@ class SaleItemsView(Viewable):
     quantity = SaleItem.quantity
     price = SaleItem.price
     base_price = SaleItem.base_price
+    parent_item_id = SaleItem.parent_item_id
     manufacturer = ProductManufacturer.name
     unit_description = SellableUnit.description
     batch_number = Coalesce(StorableBatch.batch_number, u'')
@@ -910,6 +911,10 @@ class SaleItemsView(Viewable):
         Join(Branch, Sale.branch_id == Branch.id),
     ]
 
+    #
+    # Class methods
+    #
+
     @classmethod
     def find_confirmed(cls, store, sellable):
         clause = And(Sellable.id == sellable.id,
@@ -917,6 +922,19 @@ class SaleItemsView(Viewable):
                         Sale.status == Sale.STATUS_RENEGOTIATED,
                         Sale.status == Sale.STATUS_ORDERED))
         return store.find(cls, clause)
+
+    @classmethod
+    def find_parent_items(cls, store, sale):
+        clause = And(cls.sale_id == sale.id,
+                     Eq(cls.parent_item_id, None))
+        return store.find(cls, clause)
+
+    #
+    # Public API
+    #
+
+    def get_children(self):
+        return self.store.find(SaleItemsView, SaleItemsView.parent_item_id == self.id)
 
 
 class ReceivingItemView(Viewable):

@@ -25,7 +25,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
           GtkNotebook(details_notebook, expand=True, fill=True):
             GtkVBox(vbox):
               GtkVBox(items_vbox, expand=True, fill=True):
-                ObjectList(items_list, expand=True, fill=True):
+                ObjectTree(items_list, expand=True, fill=True):
                   column: title='Code'
                   column: title='Description', expand
                   column: title='Category', hidden
