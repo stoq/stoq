@@ -281,7 +281,7 @@ class QueryEntryGadget(object):
       document)
     """
 
-    MIN_KEY_LENGTH = 2
+    MIN_KEY_LENGTH = 1
     LOADING_ITEMS_TEXT = _("Loading items...")
     NEW_ITEM_TEXT = _("Create a new item with that name")
     NEW_ITEM_TOOLTIP = _("Create a new item")
