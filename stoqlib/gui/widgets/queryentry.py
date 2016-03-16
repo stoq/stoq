@@ -35,6 +35,7 @@ from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.person import Client, ClientView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.searchfilters import StringSearchFilter
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -53,7 +54,7 @@ _LOADING_ITEM_MARKER = object()
 
 class _QueryEntryPopup(PopupWindow):
 
-    gsignal('item-selected', object)
+    gsignal('item-selected', object, bool)
     gsignal('create-item')
 
     PROPAGATE_KEY_PRESS = True
@@ -126,8 +127,19 @@ class _QueryEntryPopup(PopupWindow):
     #  EntryPopup
     #
 
-    def confirm(self):
-        self._activate_selected_item()
+    def confirm(self, fallback_to_search=False):
+        self._activate_selected_item(fallback_to_search=fallback_to_search)
+
+    def handle_key_press_event(self, event):
+        keyval = event.keyval
+        # By default the PopupWindow will call confirm for both Return and
+        # KP_Enter, but also for Tab and Space. We want to fallback to search
+        # in those specific cases
+        if keyval in [gtk.keysyms.Return, gtk.keysyms.KP_Enter]:
+            self.confirm(fallback_to_search=True)
+            return True
+
+        return super(_QueryEntryPopup, self).handle_key_press_event(event)
 
     def get_main_widget(self):
         vbox = gtk.VBox()
@@ -220,14 +232,14 @@ class _QueryEntryPopup(PopupWindow):
             item[COL_SPINNER_PULSE] += 1
         return self.loading
 
-    def _select_item(self, item):
+    def _select_item(self, item, fallback_to_search=False):
         if item is _LOADING_ITEM_MARKER:
             pass
         elif item is _NEW_ITEM_MARKER:
             self.popdown()
             self.emit('create-item')
         else:
-            self.emit('item-selected', item)
+            self.emit('item-selected', item, fallback_to_search)
 
     def _get_selection_color(self):
         settings = gtk.settings_get_default()
@@ -248,9 +260,10 @@ class _QueryEntryPopup(PopupWindow):
         self._selection.select_path(path)
         self._treeview.set_cursor(path)
 
-    def _activate_selected_item(self):
+    def _activate_selected_item(self, fallback_to_search=False):
         model, treeiter = self._selection.get_selected()
-        self._select_item(treeiter and model[treeiter][COL_ITEM])
+        self._select_item(treeiter and model[treeiter][COL_ITEM],
+                          fallback_to_search=fallback_to_search)
 
     #
     #  Callbacks
@@ -287,6 +300,7 @@ class QueryEntryGadget(object):
     NEW_ITEM_TOOLTIP = _("Create a new item")
     EDIT_ITEM_TOOLTIP = _("Edit the selected item")
     ITEM_EDITOR = None
+    SEARCH_CLASS = None
     SEARCH_SPEC = None
     SEARCH_COLUMNS = None
 
@@ -419,6 +433,16 @@ class QueryEntryGadget(object):
         self._last_operation.connect(
             'finish', lambda o: self._popup.add_items(o.get_result()))
 
+    def _run_search(self):
+        text = self.entry.get_text()
+        if not text:
+            return
+
+        item = run_dialog(self.SEARCH_CLASS, self._parent, self.store,
+                          double_click_confirm=True, initial_string=text)
+        if item:
+            self.set_value(self.get_object_from_item(item))
+
     def _run_editor(self, model=None, description=None):
         with api.new_store() as store:
             model = store.fetch(model)
@@ -483,11 +507,14 @@ class QueryEntryGadget(object):
         can_edit = entry.get_editable() and entry.get_sensitive()
         self.edit_button.set_sensitive(can_edit)
 
-    def _on_popup__item_selected(self, popup, item):
+    def _on_popup__item_selected(self, popup, item, fallback_to_search):
         self.set_value(self.get_object_from_item(item))
         popup.popdown()
         self.entry.grab_focus()
         glib.idle_add(self.entry.select_region, len(self.entry.get_text()), -1)
+
+        if item is None and fallback_to_search:
+            self._run_search()
 
     def _on_popup__create_item(self, popup):
         obj = self._run_editor(description=unicode(self.entry.get_text()))
@@ -507,6 +534,7 @@ class ClientEntryGadget(QueryEntryGadget):
     NEW_ITEM_TOOLTIP = _('Create a new client')
     EDIT_ITEM_TOOLTIP = _('Edit the selected client')
     ITEM_EDITOR = ClientEditor
+    SEARCH_CLASS = ClientSearch
     SEARCH_SPEC = ClientView
     SEARCH_COLUMNS = [ClientView.name, ClientView.fancy_name,
                       ClientView.phone_number, ClientView.mobile_number,
