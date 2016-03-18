@@ -51,56 +51,63 @@ class TestSaleReturnWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
     def test_sale_return_items_step(self, info):
         sale = self.create_sale()
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component', stock=3)
+        self.create_product_component(product=package, component=component)
+
         self.add_product(sale, code=u'1234')
         self.add_product(sale, quantity=2, code=u'5678')
+        package_item = sale.add_sellable(package.sellable)
+        sale.add_sellable(component.sellable, parent=package_item, price=0)
         self.add_payments(sale)
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
+
         wizard = SaleReturnWizard(self.store, returned_sale)
         step = wizard.get_current_step()
-        objectlist = step.slave.klist
+        objecttree = step.slave.klist
 
-        def _reset_objectlist(objectlist):
-            for item in objectlist:
+        def _reset_objectlist(objecttree):
+            for item in objecttree:
                 item.quantity = item.max_quantity
                 item.will_return = bool(item.quantity)
-                objectlist.update(item)
+                objecttree.update(item)
 
         self.check_wizard(wizard, 'wizard-sale-return-items-step')
         self.assertSensitive(wizard, ['next_button'])
 
         # If we don't have anything marked as will_return, wizard's
         # next_button should not be sensiive.
-        for item in objectlist:
+        for item in objecttree:
             item.will_return = False
-            objectlist.update(item)
+            objecttree.update(item)
         step.force_validation()
         self.assertNotSensitive(wizard, ['next_button'])
 
-        _reset_objectlist(objectlist)
+        _reset_objectlist(objecttree)
         step.force_validation()
         self.assertSensitive(wizard, ['next_button'])
 
         # If we don't have a quantity to return of anything, wizard's
         # next_button should not be sensiive.
-        for item in objectlist:
+        for item in objecttree:
             item.quantity = 0
-            objectlist.update(item)
+            objecttree.update(item)
         step.force_validation()
         self.assertNotSensitive(wizard, ['next_button'])
 
-        _reset_objectlist(objectlist)
+        _reset_objectlist(objecttree)
         step.force_validation()
         self.assertSensitive(wizard, ['next_button'])
 
-        for item in objectlist:
+        for item in objecttree:
             item.quantity = item.max_quantity + 1
             # If anything is marked to return with more than max_quantity
             # wizard's next_button should not be sensitive
             step.force_validation()
             self.assertNotSensitive(wizard, ['next_button'])
-            _reset_objectlist(objectlist)
+            _reset_objectlist(objecttree)
 
     def test_sale_return_invoice_step(self):
         main_branch = get_current_branch(self.store)
@@ -316,3 +323,32 @@ class TestSaleTradeWizard(GUITest):
         self.assertSensitive(wizard, ['next_button'])
 
         self.check_wizard(wizard, 'wizard-trade-sale-selection-step-unknown-sale')
+
+    def test_unknown_sale_item_step(self):
+        with self.sysparam(ALLOW_TRADE_NOT_REGISTERED_SALES=True):
+            package = self.create_product(description=u'Package', is_package=True)
+            package.sellable.barcode = u'666'
+            component = self.create_product(description=u'Component', stock=2)
+            self.create_product_component(product=package, component=component)
+            production = self.create_production_item()
+            production.product.sellable.barcode = u'333'
+
+            wizard = SaleTradeWizard(self.store)
+            step = wizard.get_current_step()
+            self.click(step.unknown_sale_check)
+            self.click(wizard.next_button)
+
+            item_step = wizard.get_current_step()
+            # Testing add package_item
+            item_step.barcode.set_text(u'666')
+            self.activate(item_step.barcode)
+            self.click(item_step.add_sellable_button)
+            # Children must be added to the list
+            self.assertEquals(len(list(item_step.slave.klist)), 2)
+
+            # Testing add production item
+            item_step.barcode.set_text(u'333')
+            self.activate(item_step.barcode)
+            self.click(item_step.add_sellable_button)
+            # For production item, we should not add its components to the list
+            self.assertEquals(len(list(item_step.slave.klist)), 3)

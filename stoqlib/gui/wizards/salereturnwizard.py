@@ -245,7 +245,16 @@ class SaleReturnItemsStep(SellableItemStep):
     def get_saved_items(self):
         return self.model.returned_items
 
-    def get_order_item(self, sellable, price, quantity, batch=None):
+    def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
+        if parent:
+            if parent.sellable.product.is_package:
+                component_quantity = self.get_component_quantity(parent, sellable)
+                quantity = parent.quantity * component_quantity
+                price = decimal.Decimal('0')
+            else:
+                # Do not add the components if its not a package product
+                return
+
         if batch is not None:
             batch = StorableBatch.get_or_create(
                 self.store,
