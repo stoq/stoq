@@ -244,7 +244,7 @@ class PluginManager(object):
                                               plugin_name=plugin_name).one()
                     if existing_egg is not None:
                         existing_egg.egg_content = f.read()
-                        existing_egg.md5sum = md5sum
+                        existing_egg.egg_md5sum = md5sum
                     else:
                         PluginEgg(
                             store=store,
