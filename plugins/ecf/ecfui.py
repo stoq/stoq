@@ -703,7 +703,13 @@ class ECFUI(object):
         return coupon.close(sale)
 
     def _on_coupon__cancel(self, coupon):
-        coupon.cancel()
+        if coupon.closed:
+            # In this case, the Sale and TillEntries will be rolled back by
+            # fiscalprinter. We only need to cancel the last coupon on the ecf
+            if not self._printer.cancel_last_coupon():
+                info(_("Coupon cancellation failed..."))
+        else:
+            coupon.cancel()
 
     def _on_coupon__get_coo(self, coupon):
         return coupon.get_coo()

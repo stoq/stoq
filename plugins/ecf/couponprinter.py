@@ -278,6 +278,7 @@ class Coupon(object):
     """
 
     def __init__(self, coupon, printer, driver):
+        self.closed = False
         self._coupon = coupon
         self._printer = printer
         self._driver = driver
@@ -439,6 +440,7 @@ class Coupon(object):
         message += ' - www.stoq.com.br'
         self._create_fiscal_sale_data(sale)
         coupon_id = self._driver.close(message)
+        self.closed = True
         return coupon_id
 
     def _create_fiscal_sale_data(self, sale):

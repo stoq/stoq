@@ -46,7 +46,7 @@ from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
-from stoqlib.exceptions import DeviceError, TillError, SellError, ReportError
+from stoqlib.exceptions import DeviceError, TillError, ReportError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import (TillOpeningEditor,
                                             TillClosingEditor,
@@ -471,6 +471,7 @@ class FiscalCoupon(gobject.GObject):
                 return False
 
         self._coo = self.emit('get-coo')
+        self.cancelled = False
         self.totalized = False
         self.coupon_closed = False
         self.payments_setup = False
@@ -517,38 +518,39 @@ class FiscalCoupon(gobject.GObject):
         if sale.client and not self.is_customer_identified():
             self.identify_customer(sale.client.person)
 
-        if not self.totalize(sale):
-            store.rollback(name=savepoint, close=False)
-            return False
-
-        if not self.setup_payments(sale):
-            store.rollback(name=savepoint, close=False)
-            return False
-
-        if not self.close(sale, store):
-            store.rollback(name=savepoint, close=False)
-            return False
-
-        # FIXME: This used to be done inside sale.confirm. Maybe it would be
-        # better to do a proper error handling
-        till = Till.get_current(store)
-        assert till
-
         try:
+            if not self.totalize(sale):
+                store.rollback(name=savepoint, close=False)
+                return False
+
+            if not self.setup_payments(sale):
+                store.rollback(name=savepoint, close=False)
+                return False
+
+            if not self.close(sale, store):
+                store.rollback(name=savepoint, close=False)
+                return False
+
+            if not self.print_receipts(sale):
+                store.rollback(name=savepoint, close=False)
+                return False
+
+            # FIXME: This used to be done inside sale.confirm. Maybe it would
+            # be better to do a proper error handling
+            till = Till.get_current(store)
+            assert till
             sale.confirm(till=till)
-        except SellError as err:
-            warning(str(err))
+
+            # Only finish the transaction after everything passed above.
+            store.confirm(model)
+        except Exception as e:
+            warning(_("An error happened while trying to confirm the sale. "
+                      "Cancelling the coupon now..."), str(e))
+            self.cancel()
             store.rollback(name=savepoint, close=False)
             return False
-
-        if not self.print_receipts(sale):
-            warning(_("The sale was cancelled"))
-            sale.cancel(force=True)
 
         print_cheques_for_payment_group(store, sale.group)
-
-        # Only finish the transaction after everything passed above.
-        store.confirm(model)
 
         # Try to print only after the transaction is commited, to prevent
         # losing data if something fails while printing
@@ -659,10 +661,14 @@ class FiscalCoupon(gobject.GObject):
                 _flush_interface()
 
     def cancel(self):
+        if self.cancelled:
+            return True
+
         log.info('Canceling coupon')
         while True:
             try:
                 self.emit('cancel')
+                self.cancelled = True
                 break
             except (DriverError, DeviceError) as details:
                 log.info("Error canceling coupon: %s" % str(details))

@@ -1036,7 +1036,8 @@ class PosApp(ShellApp):
             if not ordered:
                 # FIXME: Move to TEF plugin
                 manager = get_plugin_manager()
-                if manager.is_active('tef') or cancel_clear:
+                if (manager.is_active('tef') or cancel_clear or
+                        self._coupon.cancelled):
                     self._cancel_order(show_confirmation=False)
                 elif not self._current_store:
                     # Just do that if a store was created above and
