@@ -25,6 +25,14 @@ net Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`server` Module
+--------------------
+
+.. automodule:: stoqlib.net.server
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`stoqlink` Module
 ----------------------
 

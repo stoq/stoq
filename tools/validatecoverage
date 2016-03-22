@@ -320,6 +320,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/migration/parameter.py', 27.27),
     ('stoqlib/net/calendarevents.py', 16.2),
     ('stoqlib/net/gtk2reactor.py', 25.7),
+    ('stoqlib/net/server.py', 24),
     ('stoqlib/net/socketutils.py', 25.),
     ('stoqlib/net/stoqlink.py', 28.21),
     ('stoqlib/net/webserver.py', 39.39),
