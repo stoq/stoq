@@ -48,6 +48,7 @@ from stoqlib.database.settings import db_settings
 from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import DatabaseError, LoginError
 from stoqlib.lib.decorators import public
+from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.net.socketutils import get_hostname
@@ -617,8 +618,15 @@ class StoqlibStore(Store):
         This name will appear when selecting from pg_stat_activity, for instance,
         and will allow to better debug the queries (specially when there is a deadlock)
         """
-        self.execute("SET application_name = 'stoq - %s - %s'" %
-                     (get_hostname(), os.getpid()))
+        try:
+            appinfo = get_utility(IAppInfo)
+        except Exception:
+            appname = 'stoq'
+        else:
+            appname = appinfo.get('name')
+
+        self.execute("SET application_name = '%s - %s - %s'" % (
+            (appname.lower(), get_hostname(), os.getpid())))
 
     def _check_obsolete(self):
         if self.obsolete:
