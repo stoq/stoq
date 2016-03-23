@@ -349,8 +349,11 @@ class StoqCommandHandler:
 
     def cmd_updateschema(self, options):
         """Update the database schema"""
+        from stoqlib.api import api
         from stoqlib.database.migration import StoqlibSchemaMigration
         from stoqlib.lib.environment import is_developer_mode
+        from stoqlib.net.server import ServerProxy
+        from twisted.internet import reactor
 
         self._read_config(options, check_schema=False, load_plugins=False,
                           register_station=False)
@@ -364,8 +367,29 @@ class StoqCommandHandler:
         else:
             backup = options.disable_backup
 
-        if not migration.update(backup=backup):
-            return 1
+        @api.async
+        def migrate(retval):
+            server = ServerProxy()
+            running = yield server.check_running()
+            if running:
+                yield server.call('pause_tasks')
+
+            try:
+                retval[0] = migration.update(backup=backup)
+            finally:
+                # The schema was upgraded. If it was running before,
+                # restart it so it can load the new code
+                if running:
+                    yield server.call('restart')
+
+                if reactor.running:
+                    reactor.stop()
+
+        retval = [False]
+        reactor.callWhenRunning(migrate, retval)
+        reactor.run()
+
+        return 0 if retval[0] else 1
 
     def opt_clone(self, parser, group):
         group.add_option('', '--dry',
