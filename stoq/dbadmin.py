@@ -375,7 +375,7 @@ class StoqCommandHandler:
                 yield server.call('pause_tasks')
 
             try:
-                retval[0] = migration.update(backup=backup)
+                retval[0] = yield migration.update_async(backup=backup)
             finally:
                 # The schema was upgraded. If it was running before,
                 # restart it so it can load the new code
