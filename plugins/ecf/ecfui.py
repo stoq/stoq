@@ -406,6 +406,9 @@ class ECFUI(object):
 
         self._validate_printer()
 
+    def _undo_returned_sale(self, sale):
+        log.info('Undoing a returned_sale of the sale(%r)' % (sale, ))
+
     def _coupon_create(self, fiscalcoupon, sale):
         # External sales are an exception to the general rule and should not
         # generate an ecf.
@@ -611,8 +614,11 @@ class ECFUI(object):
 
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:
-            self._confirm_sale(sale)
-            self._set_last_sale(sale, sale.store)
+            if old_status == Sale.STATUS_RETURNED:
+                self._undo_returned_sale(sale)
+            else:
+                self._confirm_sale(sale)
+                self._set_last_sale(sale, sale.store)
 
     def _on_SaleAvoidCancel(self, sale):
         if self._is_ecf_last_sale(sale):
