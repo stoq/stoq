@@ -84,7 +84,6 @@ class ShellBootstrap(object):
         self._setup_debug_options()
         self._check_locale()
         self._setup_autoreload()
-        self._setup_stoq_link()
 
     def _setup_gobject(self):
         if not self._initial:
@@ -131,17 +130,6 @@ class ShellBootstrap(object):
 
         from stoqlib.lib.autoreload import install_autoreload
         install_autoreload()
-
-    def _setup_stoq_link(self):
-        from stoqlib.domain.events import SaleStatusChangedEvent
-        from stoqlib.lib.webservice import WebService
-        self._api = WebService()
-        SaleStatusChangedEvent.connect(self._update_stoq_link)
-
-    def _update_stoq_link(self, sale, old_status):
-        if sale.status != sale.STATUS_CONFIRMED:
-            return
-        self._api.link_update(sale.store)
 
     def _prepare_logfiles(self):
         from stoqlib.lib.osutils import get_application_dir

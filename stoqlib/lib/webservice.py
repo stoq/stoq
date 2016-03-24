@@ -48,7 +48,6 @@ from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_product_key
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
-from stoqlib.net.stoqlink import collect_link_statistics
 
 log = logging.getLogger(__name__)
 
@@ -122,8 +121,6 @@ class StringProducer(object):
 
 class WebService(object):
     API_SERVER = os.environ.get('STOQ_API_HOST', 'http://api.stoq.com.br')
-
-    send_link_data = None
 
     #
     #   Private API
@@ -260,38 +257,6 @@ class WebService(object):
             'product_key': get_product_key(),
         }
         return self._do_request('GET', 'tefrequest.json', **params)
-
-    def link_update(self, store):
-        # Setup a callback (just in case we need it)
-        def callback(response=False):
-            """Send data to Stoq Server if the client is using Stoq Link"""
-            if not response:
-                # On falsy responses we will ignore the next send data
-                WebService.send_link_data = False
-                return
-            # On non falsy responses we will send the next data right away
-            WebService.send_link_data = True
-            params = {
-                'hash': key,
-                'data': collect_link_statistics(store)
-            }
-            return self._do_request('POST', 'api/lite/data', **params)
-
-        key = sysparam.get_string('USER_HASH')
-        if WebService.send_link_data is False:
-            # Don't even try to send data if the user is not using Stoq Link
-            return None
-        elif WebService.send_link_data:
-            # If the instance is using stoq link lite, we may send data
-            return callback(True)
-
-        # If we dont know if the instance is using Stoq Link, we should ask
-        # our server, and then send data in case it is using it.
-        params = {
-            'hash': key,
-            'callback': callback,
-        }
-        return self._do_request('GET', 'api/lite/using', **params)
 
     def feedback(self, screen, email, feedback):
         default_store = get_default_store()

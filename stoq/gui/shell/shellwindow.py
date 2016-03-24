@@ -425,11 +425,6 @@ class ShellWindow(GladeDelegate):
         # Check version
         self._version_checker = VersionChecker(self.store, self)
         self._version_checker.check_new_version()
-        if not api.sysparam.get_bool('ONLINE_SERVICES'):
-            return
-        # Check Stoq Link usage
-        webapi = WebService()
-        webapi.link_update(self.store)
 
     def _display_changelog_message(self):
         msg = _("Welcome to Stoq version %s!") % stoq.version

@@ -33,14 +33,6 @@ net Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`stoqlink` Module
-----------------------
-
-.. automodule:: stoqlib.net.stoqlink
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`webserver` Module
 -----------------------
 
