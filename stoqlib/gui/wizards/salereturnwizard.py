@@ -128,10 +128,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
         wizard_model = self.wizard.model
         if wizard_model:
             # We are replacing the model. Remove old one
-            for item in wizard_model.returned_items:
-                item.delete(item.id, store=item.store)
-            wizard_model.delete(wizard_model.id,
-                                store=wizard_model.store)
+            wizard_model.remove()
 
         sale_view = self.slave.results.get_selected()
         # FIXME: Selecting a sale and then clicking on unknown_sale_check
@@ -200,6 +197,7 @@ class SaleReturnItemsStep(SellableItemStep):
         self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
         self.slave.klist.connect('cell-editing-started',
                                  self._on_klist__cell_editing_started)
+        self.slave.klist.set_cell_data_func(self._on_receiving_order__cell_data_func)
         self.force_validation()
 
     def next_step(self):
@@ -268,6 +266,7 @@ class SaleReturnItemsStep(SellableItemStep):
             sellable=sellable,
             batch=batch,
             returned_sale=self.model,
+            parent_item=parent
         )
         _adjust_returned_sale_item(item)
         return item
@@ -313,15 +312,25 @@ class SaleReturnItemsStep(SellableItemStep):
             # Changing quantity from anything to 0 will uncheck will_return
             # Changing quantity from 0 to anything will check will_return
             obj.will_return = bool(obj.quantity)
+            for child in obj.children_items:
+                child.quantity = obj.quantity * child.get_component_quantity(obj)
+                child.will_return = bool(child.quantity)
         elif attr == 'will_return':
             # Unchecking will_return will make quantity goes to 0
             if not obj.will_return:
                 obj.quantity = 0
+                for child in obj.children_items:
+                    child.quantity = 0
+                    child.will_return = bool(child.quantity)
             else:
                 obj.quantity = obj.max_quantity
+                for child in obj.children_items:
+                    child.quantity = obj.max_quantity * child.get_component_quantity(obj)
+                    child.will_return = bool(child.quantity)
 
         self.summary.update_total()
         self.force_validation()
+        self.slave.klist.queue_draw()
 
     def _on_klist__cell_editing_started(self, klist, obj, attr,
                                         renderer, editable):
@@ -329,6 +338,17 @@ class SaleReturnItemsStep(SellableItemStep):
             adjustment = editable.get_adjustment()
             # Don't let the user return more than was bought
             adjustment.set_upper(obj.max_quantity)
+
+    def _on_receiving_order__cell_data_func(self, column, renderer, obj, text):
+        renderer.set_property('sensitive', not obj.parent_item)
+        if column.attribute == 'will_return':
+            renderer.set_property('activatable', not obj.parent_item)
+
+        if column.attribute == 'quantity':
+            renderer.set_property('editable', not obj.parent_item)
+            renderer.set_property('editable-set', not obj.parent_item)
+
+        return text
 
 
 class SaleReturnInvoiceStep(WizardEditorStep):

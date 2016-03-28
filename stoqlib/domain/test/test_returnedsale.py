@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2016 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -521,6 +521,20 @@ class TestReturnedSaleItem(DomainTest):
         self.assertEquals(sale_item.quantity_decreased, 1)
         # And there should be 9 itens in stock
         self.assertEquals(storable.get_balance_for_branch(sale_item.sale.branch), 9)
+
+    def test_get_component_quantity(self):
+        package = self.create_product(description=u"Package", is_package=True)
+        component = self.create_product(description=u"Component", stock=2)
+        self.create_product_component(product=package, component=component)
+        sale_item = self.create_sale_item(sellable=package.sellable)
+        child_item = self.create_sale_item(sellable=component.sellable,
+                                           parent_item=sale_item)
+
+        r_item = self.create_returned_sale_item(sale_item=sale_item)
+        r_child_item = self.create_returned_sale_item(sale_item=child_item,
+                                                      parent_item=r_item)
+
+        self.assertEquals(r_child_item.get_component_quantity(r_item), 1)
 
     # NF-e operations
 

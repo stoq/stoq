@@ -1624,12 +1624,12 @@ class Sale(Domain):
             branch=get_current_branch(store),
             responsible=current_user,
         )
-        for sale_item in self.get_items():
+        for sale_item in self.get_items(with_children=False):
             if sale_item.is_totally_returned():
                 # Exclude quantities already returned from this one
                 continue
 
-            ReturnedSaleItem(
+            r_item = ReturnedSaleItem(
                 store=store,
                 sale_item=sale_item,
                 returned_sale=returned_sale,
@@ -1640,6 +1640,14 @@ class Sale(Domain):
                 # value either greater or lower than the expected value.
                 price=sale_item.price_with_discount
             )
+            for child in sale_item.children_items:
+                ReturnedSaleItem(store=store,
+                                 sale_item=child,
+                                 returned_sale=returned_sale,
+                                 quantity=child.quantity_decreased,
+                                 batch=child.batch,
+                                 price=child.price_with_discount,
+                                 parent_item=r_item)
         return returned_sale
 
     def create_commission(self, payment):
@@ -1997,11 +2005,13 @@ class SaleComment(Domain):
 class ReturnedSaleItemsView(Viewable):
     branch = Branch
     returned_sale = ReturnedSale
+    sellable = Sellable
 
     # returned and original sale item
     id = ReturnedSaleItem.id
     quantity = ReturnedSaleItem.quantity
     price = ReturnedSaleItem.price
+    parent_item_id = ReturnedSaleItem.parent_item_id
 
     # returned and original sale
     _sale_id = Sale.id
@@ -2041,13 +2051,33 @@ class ReturnedSaleItemsView(Viewable):
         return self.store.get(Sale, self._new_sale_id)
 
     #
-    #  Classmethods
+    # Class methods
     #
 
     @classmethod
     def find_by_sale(cls, store, sale):
         return store.find(cls, _sale_id=sale.id).order_by(ReturnedSale.return_date)
 
+    @classmethod
+    def find_parent_items(cls, store, sale):
+        query = And(cls.returned_sale.sale_id == sale.id,
+                    Eq(cls.parent_item_id, None))
+        return store.find(cls, query)
+
+    #
+    # Public API
+    #
+
+    def get_children(self):
+        return self.store.find(ReturnedSaleItemsView,
+                               ReturnedSaleItemsView.parent_item_id == self.id)
+
+    def is_package(self):
+        if self.sellable.product is None:
+            # Services
+            return False
+        product = self.store.get(Product, self.sellable.product.id)
+        return product.is_package
 
 _SaleItemSummary = Select(columns=[SaleItem.sale_id,
                                    Alias(Sum(InvoiceItemIpi.v_ipi), 'v_ipi'),

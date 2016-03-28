@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2015 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2015-2016 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -78,10 +78,13 @@ class ReturnedSaleDialog(BaseEditor):
 
     def _setup_widgets(self):
         self._setup_status()
-        self.undo_button.set_sensitive(self.model.returned_sale.can_undo())
+        returned_sale = self.model.returned_sale
+        self.undo_button.set_sensitive(returned_sale.can_undo())
 
         self.returned_items_list.set_columns(self._get_returned_items_columns())
-        self.returned_items_list.add_list(self.model.returned_sale.returned_items)
+        for r_item in returned_sale.returned_items:
+            self.returned_items_list.append(r_item.parent_item, r_item)
+
         self._update_reason()
 
     def _get_returned_items_columns(self):

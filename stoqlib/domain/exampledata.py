@@ -517,7 +517,8 @@ class ExampleCreator(object):
                          sellable=sale_item.sellable)
         return r_sale
 
-    def create_returned_sale_item(self, returned_sale=None, sale_item=None):
+    def create_returned_sale_item(self, returned_sale=None, sale_item=None,
+                                  parent_item=None):
         from stoqlib.domain.returnedsale import ReturnedSaleItem
         sale_item = sale_item or self.create_sale_item()
         returned_sale = returned_sale or self.create_returned_sale()
@@ -526,7 +527,8 @@ class ExampleCreator(object):
                                 price=100,
                                 sale_item=sale_item,
                                 returned_sale=returned_sale,
-                                sellable=sale_item.sellable)
+                                sellable=sale_item.sellable,
+                                parent_item=parent_item)
 
     def create_sale_item(self, sale=None, product=True, quantity=1,
                          sellable=None, parent_item=None):

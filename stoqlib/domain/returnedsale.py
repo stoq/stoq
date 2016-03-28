@@ -29,7 +29,7 @@ import collections
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from storm.expr import And, Join
+from storm.expr import And, Join, Eq
 from zope.interface import implementer
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
@@ -116,6 +116,11 @@ class ReturnedSaleItem(Domain):
     cofins_info = Reference(cofins_info_id, 'InvoiceItemCofins.id')
 
     item_discount = Decimal('0')
+
+    parent_item_id = IdCol()
+    parent_item = Reference(parent_item_id, 'ReturnedSaleItem.id')
+
+    children_items = ReferenceSet('id', 'ReturnedSaleItem.parent_item_id')
 
     def __init__(self, store=None, **kwargs):
         # TODO: Add batch logic here. (get if from sale_item or check if was
@@ -219,6 +224,11 @@ class ReturnedSaleItem(Domain):
                                     self.id, batch=self.batch)
         if self.sale_item:
             self.sale_item.quantity_decreased += self.quantity
+
+    def get_component_quantity(self, parent):
+        for component in parent.sellable.product.get_components():
+            if self.sellable.product == component.component:
+                return component.quantity
 
 
 @implementer(IContainer)
@@ -588,7 +598,9 @@ class ReturnedSale(Domain):
     def remove(self):
         """Remove this return and it's items from the database"""
         # XXX: Why do we remove this object from the database
-        for item in self.get_items():
+        # We must remove children_items before we remove its parent_item
+        for item in self.returned_items.find(Eq(ReturnedSaleItem.parent_item_id, None)):
+            [self.remove_item(child) for child in getattr(item, 'children_items')]
             self.remove_item(item)
         self.store.remove(self)
 

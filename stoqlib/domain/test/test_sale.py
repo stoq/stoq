@@ -688,6 +688,17 @@ class TestSale(DomainTest):
         self.assertEqual(storable.get_balance_for_branch(sale.branch),
                          balance_before_confirm)
 
+    def test_create_sale_return_adapter_with_package(self):
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component', stock=2)
+        sale = self.create_sale()
+        sale_item = self.create_sale_item(sale=sale, sellable=package.sellable)
+        self.create_sale_item(sale=sale, sellable=component.sellable,
+                              parent_item=sale_item)
+
+        r_sale = sale.create_sale_return_adapter()
+        self.assertEquals(len(list(r_sale.returned_items)), 2)
+
     def test_total_return_paid(self):
         sale = self.create_sale()
         self.failIf(sale.can_return())

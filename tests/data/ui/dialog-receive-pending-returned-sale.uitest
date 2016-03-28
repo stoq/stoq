@@ -21,7 +21,7 @@ GtkVBox(details_vbox):
     ProxyLabel(receiving_responsible):
   GtkNotebook(notebook1, expand=True, fill=True):
     GtkVBox(products_vbox):
-      ObjectList(returned_items_list, expand=True, fill=True):
+      ObjectTree(returned_items_list, expand=True, fill=True):
         column: title='Product Code'
         column: title='Description', expand
         column: title='Qty returned'

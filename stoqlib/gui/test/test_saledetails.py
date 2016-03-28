@@ -120,6 +120,8 @@ class TestSaleDetails(GUITest):
         sale.add_sellable(component1.sellable, quantity=1, parent=parent)
         sale.add_sellable(component2.sellable, quantity=1, parent=parent)
 
+        sale.create_sale_return_adapter()
+
         model = self.store.find(SaleView, id=sale.id).one()
         dialog = SaleDetailsDialog(self.store, model)
         self.assertEquals(len(list(dialog.items_list)), 3)

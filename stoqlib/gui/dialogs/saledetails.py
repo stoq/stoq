@@ -186,30 +186,33 @@ class SaleDetailsDialog(BaseEditor):
             ]
             notes.append('\n'.join(trade_notes))
 
-        returned_items = list(ReturnedSaleItemsView.find_by_sale(self.store,
-                                                                 self.sale_order))
-        if returned_items:
-            self.returned_items_list.add_list(returned_items)
-            seen_set = set()
-            for item in returned_items:
-                if item.invoice_number in seen_set:
-                    continue
+        returned_items = ReturnedSaleItemsView.find_parent_items(self.store,
+                                                                 self.sale_order)
+        seen_set = set()
+        for item in returned_items:
+            self.returned_items_list.append(None, item)
+            if not item.is_package():
+                continue
+            for child in item.get_children():
+                self.returned_items_list.append(item, child)
+            if item.invoice_number in seen_set:
+                continue
 
-                fmt = _("Itens returned on %s")
-                return_notes = ['* %s' % (
-                    fmt % (get_full_date(item.return_date)))]
-                if item.new_sale:
-                    fmt = _("Traded for sale: %s")
-                    return_notes.append(fmt % (item.new_sale.identifier))
+            fmt = _("Itens returned on %s")
+            return_notes = ['* %s' % (
+                fmt % (get_full_date(item.return_date)))]
+            if item.new_sale:
+                fmt = _("Traded for sale: %s")
+                return_notes.append(fmt % (item.new_sale.identifier))
 
-                return_notes.extend([
-                    _("Invoice number: %s") % item.invoice_number,
-                    _("Reason: %s") % item.reason,
-                ])
+            return_notes.extend([
+                _("Invoice number: %s") % item.invoice_number,
+                _("Reason: %s") % item.reason,
+            ])
 
-                notes.append('\n'.join(return_notes))
-                seen_set.add(item.invoice_number)
-        else:
+            notes.append('\n'.join(return_notes))
+            seen_set.add(item.invoice_number)
+        if len(list(self.returned_items_list)) == 0:
             page_no = self.details_notebook.page_num(self.returned_items_vbox)
             self.details_notebook.remove_page(page_no)
 

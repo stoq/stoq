@@ -48,7 +48,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                 ProxyLabel(total_lbl): '<span >$193.00</span>'
             GtkVBox(returned_items_vbox):
               GtkVBox(vbox4, expand=True, fill=True):
-                ObjectList(returned_items_list, expand=True, fill=True):
+                ObjectTree(returned_items_list, expand=True, fill=True):
                   column: title='Date'
                   column: title='Invoice #'
                   column: title='Code', hidden

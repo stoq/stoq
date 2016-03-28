@@ -86,6 +86,11 @@ class ReceivingOrderItem(Domain):
 
     receiving_order = Reference(receiving_order_id, 'ReceivingOrder.id')
 
+    parent_item_id = IdCol()
+    parent_item = Reference(parent_item_id, 'ReceivingOrderItem.id')
+
+    children_items = ReferenceSet('id', 'ReceivingOrderItem.parent_item_id')
+
     #
     # Properties
     #
