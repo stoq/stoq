@@ -1,5 +1,14 @@
 -- Make product, service and storable use the same id as sellable
 
+-- TODO: We should provide a way for plugins to execute "pre-migration"
+-- actions, like this one. Without it this patch would fail for people
+-- using the magento plugin.
+DROP RULE IF EXISTS magento_on_update ON product;
+DROP RULE IF EXISTS magento_on_update ON service;
+DROP RULE IF EXISTS magento_on_update ON storable;
+DROP RULE IF EXISTS magento_on_update ON product_stock_item;
+DROP RULE IF EXISTS magento_on_insert ON product_stock_item;
+
 UPDATE parameter_data SET field_value = service.sellable_id::text
   FROM service
   WHERE parameter_data.field_name = 'DELIVERY_SERVICE' AND
