@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-24 14:51-0300\n"
+"POT-Creation-Date: 2016-03-24 17:53-0300\n"
 "PO-Revision-Date: 2016-03-24 17:51+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Polish (http://www.transifex.com/async/stoq/language/pl/)\n"
@@ -8603,14 +8603,14 @@ msgstr ""
 msgid "This will reopen the order. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/shell/bootstrap.py:120
+#: ../stoq/gui/shell/bootstrap.py:119
 #, python-format
 msgid ""
 "Could not set locale to %s. Make sure that you have the packages for this "
 "locale installed."
 msgstr ""
 
-#: ../stoq/gui/shell/bootstrap.py:412
+#: ../stoq/gui/shell/bootstrap.py:400
 msgid "There was an error quering the database"
 msgstr ""
 
@@ -8841,7 +8841,7 @@ msgstr ""
 msgid "About Stoq"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:372 ../stoq/gui/shell/shellwindow.py:1047
+#: ../stoq/gui/shell/shellwindow.py:372 ../stoq/gui/shell/shellwindow.py:1042
 msgid "Enable production mode"
 msgstr ""
 
@@ -8870,64 +8870,64 @@ msgstr ""
 msgid "Check the calendar"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:435
+#: ../stoq/gui/shell/shellwindow.py:430
 #, python-format
 msgid "Welcome to Stoq version %s!"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:437
+#: ../stoq/gui/shell/shellwindow.py:432
 msgid "See what's new"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:445
+#: ../stoq/gui/shell/shellwindow.py:440
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under development,\n"
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:521
+#: ../stoq/gui/shell/shellwindow.py:516
 #, python-format
 msgid "Release date: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:645
+#: ../stoq/gui/shell/shellwindow.py:640
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:840
+#: ../stoq/gui/shell/shellwindow.py:835
 msgid "Show help for this application"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:857
+#: ../stoq/gui/shell/shellwindow.py:852
 msgid "Debug"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:858
+#: ../stoq/gui/shell/shellwindow.py:853
 msgid "Introspect slaves"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:859
+#: ../stoq/gui/shell/shellwindow.py:854
 msgid "Remove settings cache"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1044
+#: ../stoq/gui/shell/shellwindow.py:1039
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1047
+#: ../stoq/gui/shell/shellwindow.py:1042
 msgid "Continue testing"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1196
+#: ../stoq/gui/shell/shellwindow.py:1191
 msgid "Learn More..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1197
+#: ../stoq/gui/shell/shellwindow.py:1192
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""

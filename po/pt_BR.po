@@ -10,14 +10,14 @@
 # Marciel Leal <marcielmanoel15@gmail.com>, 2015
 # Rafael Neri <rafepel@gmail.com>, 2014
 # romaia <romaia@async.com.br>, 2014-2015
-# Thiago Bellini Ribeiro <hackedbellini@gmail.com>, 2014-2015
+# Thiago Bellini Ribeiro <hackedbellini@gmail.com>, 2014-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-24 14:51-0300\n"
-"PO-Revision-Date: 2016-03-24 17:51+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2016-03-24 17:53-0300\n"
+"PO-Revision-Date: 2016-03-28 17:23+0000\n"
+"Last-Translator: Thiago Bellini Ribeiro <hackedbellini@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1288,7 +1288,7 @@ msgstr "_Ajustar"
 
 #: ../data/glade/InventoryAdjustmentEditor.ui.h:7
 msgid "Adjust All"
-msgstr ""
+msgstr "Ajustar todos"
 
 #: ../data/glade/InventoryCountTypeStep.ui.h:1
 msgid "What kind of counting will you do?"
@@ -1304,7 +1304,7 @@ msgstr "Contagem assistida"
 
 #: ../data/glade/InventoryCountTypeStep.ui.h:4
 msgid "Import external count"
-msgstr ""
+msgstr "Importar contagem externa"
 
 #: ../data/glade/InventoryDetailsDialog.ui.h:1
 msgid "Inventory Number:"
@@ -1362,7 +1362,7 @@ msgstr "Itens"
 
 #: ../data/glade/InventoryDetailsDialog.ui.h:9
 msgid "Export"
-msgstr ""
+msgstr "Exportar"
 
 #: ../data/glade/InventoryOpenEditor.ui.h:1
 msgid "User:"
@@ -1903,7 +1903,7 @@ msgstr "Uso interno"
 
 #: ../data/glade/ProductInformationSlave.ui.h:12
 msgid "When checked, this product will not be available for selling"
-msgstr "Quando selecionado, esse produto não estará disponível para venda "
+msgstr "Quando selecionado, este produto não estará disponível para venda "
 
 #: ../data/glade/ProductInformationSlave.ui.h:13
 msgid "<b>General Details</b>"
@@ -2017,11 +2017,11 @@ msgstr "Classe IPI:"
 
 #: ../data/glade/ProductTaxSlave.ui.h:3
 msgid "PIS Class:"
-msgstr ""
+msgstr "Classe PIS:"
 
 #: ../data/glade/ProductTaxSlave.ui.h:4
 msgid "COFINS Class:"
-msgstr ""
+msgstr "Classe COFINS:"
 
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:2
 msgid "Tax:"
@@ -2809,7 +2809,7 @@ msgstr "Produtos"
 #: ../data/glade/StockDecreaseItemSlave.ui.h:4
 #: ../data/glade/TransferItemSlave.ui.h:4
 msgid "Original cost:"
-msgstr "Custo Original:"
+msgstr "Custo original:"
 
 #: ../data/glade/StockTransferInitialStep.ui.h:1
 msgid "Comment:"
@@ -3098,7 +3098,7 @@ msgstr "Editar categoria"
 
 #: ../data/glade/WorkOrderEditor.ui.h:13
 msgid "Supplier order:"
-msgstr ""
+msgstr "Pedido de fornecedor:"
 
 #: ../data/glade/WorkOrderEditor.ui.h:14
 msgid "Opening"
@@ -5211,7 +5211,7 @@ msgstr "Esta é a última venda na ECF. Devolva usando o menu ECF - Cancelar úl
 
 #: ../plugins/ecf/ecfui.py:710
 msgid "Coupon cancellation failed..."
-msgstr ""
+msgstr "O cancelamento do cupom falhou..."
 
 #. Only display the coupon number if the nfe is not active.
 #: ../plugins/ecf/ecfui.py:762
@@ -7149,11 +7149,11 @@ msgstr "Cancela o inventário selecionado"
 
 #: ../stoq/gui/inventory.py:92
 msgid "Export for external counting..."
-msgstr ""
+msgstr "Exportar para contagem externa..."
 
 #: ../stoq/gui/inventory.py:94
 msgid "Export the list of products for external counting"
-msgstr ""
+msgstr "Exporta a lista de produtos para contagem externa"
 
 #: ../stoq/gui/inventory.py:96
 msgid "Print product listing..."
@@ -7244,7 +7244,7 @@ msgstr "Não cancelar"
 
 #: ../stoq/gui/inventory.py:238
 msgid "Save products file"
-msgstr ""
+msgstr "Salvar arquivo de produtos"
 
 #: ../stoq/gui/inventory.py:239 ../stoqlib/reporting/product.py:101
 #: ../stoqlib/reporting/product.py:121 ../stoqlib/reporting/product.py:147
@@ -8508,7 +8508,7 @@ msgstr "Filial de execução"
 
 #: ../stoq/gui/services.py:395
 msgid "Supplier Order #"
-msgstr ""
+msgstr "Pedido de fornecedor #"
 
 #: ../stoq/gui/services.py:540
 msgid "Not delivered"
@@ -8610,14 +8610,14 @@ msgstr "Isso vai desfazer a rejeição da ordem. Você tem certeza?"
 msgid "This will reopen the order. Are you sure?"
 msgstr "Isso vai reabrir a ordem. Você tem certeza?"
 
-#: ../stoq/gui/shell/bootstrap.py:120
+#: ../stoq/gui/shell/bootstrap.py:119
 #, python-format
 msgid ""
 "Could not set locale to %s. Make sure that you have the packages for this "
 "locale installed."
 msgstr "Não foi possível setar a localização para %s. Tenha certeza de ter instalado os pacotes para esta localização."
 
-#: ../stoq/gui/shell/bootstrap.py:412
+#: ../stoq/gui/shell/bootstrap.py:400
 msgid "There was an error quering the database"
 msgstr "Ocorreu um erro ao realizar uma consulta na base de dados"
 
@@ -8848,7 +8848,7 @@ msgstr "Computador: %s"
 msgid "About Stoq"
 msgstr "Sobre o Stoq"
 
-#: ../stoq/gui/shell/shellwindow.py:372 ../stoq/gui/shell/shellwindow.py:1047
+#: ../stoq/gui/shell/shellwindow.py:372 ../stoq/gui/shell/shellwindow.py:1042
 msgid "Enable production mode"
 msgstr "Habilitar modo de produção"
 
@@ -8877,64 +8877,64 @@ msgstr "Existem %s clientes fazendo aniversário hoje!"
 msgid "Check the calendar"
 msgstr "Ver no calendário"
 
-#: ../stoq/gui/shell/shellwindow.py:435
+#: ../stoq/gui/shell/shellwindow.py:430
 #, python-format
 msgid "Welcome to Stoq version %s!"
 msgstr "Bem-vindo(a) à versão %s do Stoq!"
 
-#: ../stoq/gui/shell/shellwindow.py:437
+#: ../stoq/gui/shell/shellwindow.py:432
 msgid "See what's new"
 msgstr "Veja as novidades"
 
-#: ../stoq/gui/shell/shellwindow.py:445
+#: ../stoq/gui/shell/shellwindow.py:440
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under development,\n"
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr "Você está usando uma <b>versão instável</b> do Stoq que está em desenvolvimento,\nesteja ciente de que esta versão pode se comportar incorretamente, travar ou mesmo corromper os seus dados\n<b>Não utilize em produção.</b>"
 
-#: ../stoq/gui/shell/shellwindow.py:521
+#: ../stoq/gui/shell/shellwindow.py:516
 #, python-format
 msgid "Release date: %s"
 msgstr "Data de lançamento: %s"
 
-#: ../stoq/gui/shell/shellwindow.py:645
+#: ../stoq/gui/shell/shellwindow.py:640
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr "Esse usuário não tem credencial \npara o aplicativo %s"
 
-#: ../stoq/gui/shell/shellwindow.py:840
+#: ../stoq/gui/shell/shellwindow.py:835
 msgid "Show help for this application"
 msgstr "Mostrar ajuda para este aplicativo"
 
-#: ../stoq/gui/shell/shellwindow.py:857
+#: ../stoq/gui/shell/shellwindow.py:852
 msgid "Debug"
 msgstr "Debug"
 
-#: ../stoq/gui/shell/shellwindow.py:858
+#: ../stoq/gui/shell/shellwindow.py:853
 msgid "Introspect slaves"
 msgstr "Introspectar slave"
 
-#: ../stoq/gui/shell/shellwindow.py:859
+#: ../stoq/gui/shell/shellwindow.py:854
 msgid "Remove settings cache"
 msgstr "Remover cache de preferências"
 
-#: ../stoq/gui/shell/shellwindow.py:1044
+#: ../stoq/gui/shell/shellwindow.py:1039
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr "Isto irá habilitar o modo de produção e finalizar a demonstração. Você tem certeza?"
 
-#: ../stoq/gui/shell/shellwindow.py:1047
+#: ../stoq/gui/shell/shellwindow.py:1042
 msgid "Continue testing"
 msgstr "Continuar testando"
 
-#: ../stoq/gui/shell/shellwindow.py:1196
+#: ../stoq/gui/shell/shellwindow.py:1191
 msgid "Learn More..."
 msgstr "Saiba mais..."
 
-#: ../stoq/gui/shell/shellwindow.py:1197
+#: ../stoq/gui/shell/shellwindow.py:1192
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>Está disponível uma nova versão do Stoq (%s)</b>"
@@ -9079,7 +9079,7 @@ msgstr "Produto"
 
 #: ../stoq/gui/stock.py:135
 msgid "Print labels..."
-msgstr ""
+msgstr "Imprimir etiquetas..."
 
 #: ../stoq/gui/stock.py:136
 msgid "History..."
@@ -10086,7 +10086,7 @@ msgstr "Produto com grade"
 
 #: ../stoqlib/domain/product.py:214
 msgid "Package product"
-msgstr ""
+msgstr "Produto pacote"
 
 #: ../stoqlib/domain/product.py:897 ../stoqlib/reporting/purchase.py:62
 #: ../stoqlib/reporting/purchase.py:88
@@ -11515,7 +11515,7 @@ msgstr "Ativar"
 msgid ""
 "The plugin %s was successfully activated. Please, restart all Stoq instances"
 " connected to this installation."
-msgstr ""
+msgstr "O plugin %s foi ativado com sucesso. Por favor, reinicie todas as instancias do Stoq conectadas à esta instalação."
 
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:136
 msgid ""
@@ -11978,7 +11978,7 @@ msgstr "Detalhes da transferência"
 
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:86
 msgid "Cancel date:"
-msgstr ""
+msgstr "Data de cancelamento:"
 
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:114
 msgid "Total Cost"
@@ -11990,11 +11990,11 @@ msgstr "Receber a ordem?"
 
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:143
 msgid "Cancel the order?"
-msgstr ""
+msgstr "Cancelar o pedido?"
 
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:143
 msgid "Cancel transfer"
-msgstr ""
+msgstr "Cancelar transferência"
 
 #: ../stoqlib/gui/dialogs/workordercategorydialog.py:60
 msgid "Work order categories"
@@ -12328,7 +12328,7 @@ msgstr "Descartar ajustes"
 
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:178
 msgid "Automatic adjustment"
-msgstr ""
+msgstr "Ajuste automático"
 
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:194
 #: ../stoqlib/gui/slaves/receivingslave.py:207
@@ -12416,7 +12416,7 @@ msgstr "IPI"
 
 #: ../stoqlib/gui/editors/invoiceitemeditor.py:82
 msgid "COFINS"
-msgstr ""
+msgstr "COFINS"
 
 #: ../stoqlib/gui/editors/loanitemeditor.py:42
 msgid "Loan Item"
@@ -12818,7 +12818,7 @@ msgstr "A quantidade do componente deve ser maior que zero."
 
 #: ../stoqlib/gui/editors/producteditor.py:388
 msgid "Pack content"
-msgstr ""
+msgstr "Conteúdo do pacote"
 
 #: ../stoqlib/gui/editors/producteditor.py:476
 msgid "Cost must be greater than the sum of the components."
@@ -12973,7 +12973,7 @@ msgstr "O valor de venda não pode ser maior que %s."
 msgid ""
 "One or more components for this package doesn't have enough of stock to "
 "reserve"
-msgstr ""
+msgstr "Um ou mais componentes deste pacote não possui estoque suficiente para a reserva"
 
 #: ../stoqlib/gui/editors/saleeditor.py:396
 msgid "Salesperson change"
@@ -13047,7 +13047,7 @@ msgstr "Reabrir serviço"
 #: ../stoqlib/gui/editors/sellableeditor.py:318
 #, python-format
 msgid "Currently on sale for %s"
-msgstr ""
+msgstr "Atualmente em promoção por %s"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:424
 msgid "No units"
@@ -13469,7 +13469,7 @@ msgstr "Não confirmar"
 msgid ""
 "An error happened while trying to confirm the sale. Cancelling the coupon "
 "now..."
-msgstr ""
+msgstr "Um erro aconteceu ao tentar confirmar a venda. Cancelando o cupom agora..."
 
 #: ../stoqlib/gui/fiscalprinter.py:578
 msgid "Do you want to print the booklets for this sale?"
@@ -14461,7 +14461,7 @@ msgstr "Recebimento pendente"
 #: ../stoqlib/gui/search/transfersearch.py:140
 #: ../stoqlib/gui/search/transfersearch.py:174
 msgid "Finish Date"
-msgstr ""
+msgstr "Data de finalização"
 
 #: ../stoqlib/gui/search/transfersearch.py:162
 msgid "Transfer Item Search"
@@ -14866,11 +14866,11 @@ msgstr "A data definida deve ser uma data futura."
 
 #: ../stoqlib/gui/slaves/taxslave.py:694
 msgid "The PIS aliquot must be between 0 and 100"
-msgstr ""
+msgstr "A alíquota do PIS deve estar entre 0 e 100"
 
 #: ../stoqlib/gui/slaves/taxslave.py:890
 msgid "The COFINS aliquot must be between 0 and 100"
-msgstr ""
+msgstr "A alíquota do COFINS deve estar entre 0 e 100"
 
 #: ../stoqlib/gui/slaves/tillslave.py:65 ../stoqlib/gui/slaves/tillslave.py:72
 msgid "Value cannot be zero or less than zero"
@@ -15526,27 +15526,27 @@ msgstr "'%s' não é uma operação válida..."
 
 #: ../stoqlib/gui/widgets/queryentry.py:298
 msgid "Loading items..."
-msgstr ""
+msgstr "Carregando itens..."
 
 #: ../stoqlib/gui/widgets/queryentry.py:299
 msgid "Create a new item with that name"
-msgstr ""
+msgstr "Criar um novo item com este nome"
 
 #: ../stoqlib/gui/widgets/queryentry.py:300
 msgid "Create a new item"
-msgstr ""
+msgstr "Criar um novo item"
 
 #: ../stoqlib/gui/widgets/queryentry.py:301
 msgid "Edit the selected item"
-msgstr ""
+msgstr "Editar o item selecionado"
 
 #: ../stoqlib/gui/widgets/queryentry.py:532
 msgid "Loading clients..."
-msgstr ""
+msgstr "Carregando clientes..."
 
 #: ../stoqlib/gui/widgets/queryentry.py:533
 msgid "Create a new client with this name..."
-msgstr ""
+msgstr "Criar um novo cliente com este nome..."
 
 #: ../stoqlib/gui/widgets/queryentry.py:534
 #: ../stoqlib/gui/widgets/searchentry.py:259
@@ -15555,7 +15555,7 @@ msgstr "Criar um novo cliente"
 
 #: ../stoqlib/gui/widgets/queryentry.py:570
 msgid "Birth date"
-msgstr ""
+msgstr "Data de nascimento"
 
 #: ../stoqlib/gui/widgets/searchentry.py:43
 msgid "Create"
@@ -15614,7 +15614,7 @@ msgstr "O lote '%s' não existe"
 
 #: ../stoqlib/gui/wizards/inventorywizard.py:126
 msgid "It was not possible to import inventory count. Check file format"
-msgstr ""
+msgstr "Não foi possível importar a contagem do inventário. Verifique o formato do arquivo"
 
 #: ../stoqlib/gui/wizards/inventorywizard.py:377
 msgid "Inventory product counting"
@@ -15784,7 +15784,7 @@ msgstr "Recebimento de cotação"
 msgid ""
 "The identifier for this purchase will be defined when it is synchronized to "
 "the detination branch"
-msgstr ""
+msgstr "O identificador desta compra será definido quando a mesma for sincronizada para a filial destino"
 
 #: ../stoqlib/gui/wizards/purchasewizard.py:192
 msgid "Open date must be set to today or a future date"
@@ -15861,7 +15861,7 @@ msgstr "Assistente de renegociação de parcelas"
 
 #: ../stoqlib/gui/wizards/salequotewizard.py:169
 msgid "The client is not solvent"
-msgstr ""
+msgstr "O cliente não está solvente"
 
 #: ../stoqlib/gui/wizards/salequotewizard.py:193
 msgid "The expire date must be after the sale open date"
@@ -17721,11 +17721,11 @@ msgstr "%d compras"
 
 #: ../stoqlib/net/server.py:118
 msgid "Stoq server not found"
-msgstr ""
+msgstr "Servidor do Stoq não encontrado"
 
 #: ../stoqlib/net/server.py:137
 msgid "Server not responding to pings"
-msgstr ""
+msgstr "Servidor não está respondendo a pings"
 
 #: ../stoqlib/reporting/boleto.py:826
 msgid "Could not print Bill Report"
