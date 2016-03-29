@@ -317,7 +317,7 @@ class StockApp(ShellApp):
         else:
             self._update_edit_image()
 
-        self.set_sensitive([self.EditProduct], bool(item))
+        self.set_sensitive([self.EditProduct, self.PrintLabels], bool(item))
         self.set_sensitive([self.ProductStockHistory],
                            bool(item) and is_main_branch)
         # We need more than one branch to be able to do transfers
