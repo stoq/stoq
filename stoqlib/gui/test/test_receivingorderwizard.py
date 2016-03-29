@@ -51,7 +51,13 @@ class TestReceivingOrderWizard(GUITest):
         order.open_date = localdatetime(2012, 10, 9)
         order.expected_receival_date = localdatetime(2012, 9, 25)
         sellable = self.create_sellable()
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component', stock=2)
+        self.create_product_component(product=package, component=component)
+
         order.add_item(sellable, 1)
+        parent = order.add_item(package.sellable, 1)
+        order.add_item(component.sellable, 1, parent=parent)
         order.status = PurchaseOrder.ORDER_PENDING
         order.confirm()
         wizard = ReceivingOrderWizard(self.store)

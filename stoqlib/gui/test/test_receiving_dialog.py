@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012-2016 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -36,6 +36,26 @@ class TestReceivingDialog(GUITest):
         dialog = ReceivingOrderDetailsDialog(self.store, order)
         dialog.invoice_slave.identifier.set_text('333')
         self.check_dialog(dialog, 'dialog-receiving-order-details-show')
+
+    def test_show_package_product(self):
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'component', stock=2)
+        self.create_product_component(product=package, component=component)
+        purchase = self.create_purchase_order()
+
+        parent = purchase.add_item(package.sellable)
+        child = purchase.add_item(component.sellable, parent=parent)
+        receiving = self.create_receiving_order(purchase_order=purchase)
+        receiving_item = self.create_receiving_order_item(receiving_order=receiving,
+                                                          purchase_item=parent,
+                                                          quantity=1)
+        self.create_receiving_order_item(receiving_order=receiving,
+                                         purchase_item=child,
+                                         quantity=1,
+                                         parent_item=receiving_item)
+        dialog = ReceivingOrderDetailsDialog(self.store, receiving)
+        dialog.invoice_slave.identifier.set_text('333')
+        self.check_dialog(dialog, 'dialog-receiving-order-package-details-show')
 
     @mock.patch('stoqlib.gui.utils.printing.warning')
     @mock.patch('stoqlib.gui.dialogs.receivingdialog.run_dialog')

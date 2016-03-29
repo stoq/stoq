@@ -55,7 +55,7 @@ _ = stoqlib_gettext
 
 
 class _TemporaryReceivingItem(object):
-    def __init__(self, item):
+    def __init__(self, item, parent_item=None):
         self.purchase_item = item
         self.code = item.sellable.code
         self.barcode = item.sellable.barcode
@@ -70,6 +70,12 @@ class _TemporaryReceivingItem(object):
         self.batches = {}
         if not self.is_batch:
             self.quantity = self.remaining_quantity
+
+        self.parent_item = parent_item
+        self.children_items = []
+        for child in item.children_items:
+            self.children_items.append(_TemporaryReceivingItem(child,
+                                                               parent_item=self))
 
     @property
     def total(self):
@@ -265,14 +271,19 @@ class ReceivingOrderItemStep(BaseWizardStep):
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100)])
-        self.purchase_items.add_list(self._get_pending_items())
+        # We must clear the ObjectTree before
+        self.purchase_items.clear()
+        for item in self._get_pending_items(with_children=False):
+            self.purchase_items.append(None, item)
+            for child in item.children_items:
+                self.purchase_items.append(item, child)
 
         self.purchase_items.set_cell_data_func(
             self._on_purchase_items__cell_data_func)
 
-    def _get_pending_items(self):
+    def _get_pending_items(self, with_children=True):
         for purchase_view in self.purchases:
-            for item in purchase_view.purchase.get_pending_items():
+            for item in purchase_view.purchase.get_pending_items(with_children=with_children):
                 yield _TemporaryReceivingItem(item)
 
     def _get_total_received(self):
@@ -298,6 +309,9 @@ class ReceivingOrderItemStep(BaseWizardStep):
 
     def _create_receiving_items(self):
         for item in self.purchase_items:
+            if item.parent_item:
+                # Make sure we are adding parent_item first
+                continue
             if item.is_batch:
                 for batch, quantity in item.batches.items():
                     self.model.add_purchase_item(
@@ -305,8 +319,12 @@ class ReceivingOrderItemStep(BaseWizardStep):
                         quantity=quantity,
                         batch_number=batch)
             elif item.quantity > 0:
-                self.model.add_purchase_item(item.purchase_item,
-                                             item.quantity)
+                parent_item = self.model.add_purchase_item(item.purchase_item,
+                                                           item.quantity)
+                for child in item.children_items:
+                    self.model.add_purchase_item(child.purchase_item,
+                                                 quantity=child.quantity,
+                                                 parent_item=parent_item)
 
     def _edit_item(self, item):
         retval = run_dialog(BatchIncreaseSelectionDialog, self.wizard,
@@ -330,12 +348,14 @@ class ReceivingOrderItemStep(BaseWizardStep):
     #
 
     def _on_purchase_items__cell_data_func(self, column, renderer, obj, text):
+        renderer.set_property('sensitive', not obj.purchase_item.parent_item)
         if not isinstance(renderer, gtk.CellRendererText):
             return text
 
         if column.attribute == 'quantity':
-            renderer.set_property('editable-set', not obj.is_batch)
-            renderer.set_property('editable', not obj.is_batch)
+            editable = not obj.is_batch and obj.purchase_item.parent_item
+            renderer.set_property('editable-set', not editable)
+            renderer.set_property('editable', not editable)
 
         renderer.set_property('foreground', 'red')
         renderer.set_property('foreground-set', obj.need_adjust_batch)
@@ -343,6 +363,8 @@ class ReceivingOrderItemStep(BaseWizardStep):
         return text
 
     def on_purchase_items__cell_edited(self, purchase_items, obj, attr):
+        for child in obj.children_items:
+            child.quantity = obj.quantity * child.remaining_quantity
         self._update_view()
 
     def on_purchase_items__cell_editing_started(self, purchase_items, obj,
@@ -356,6 +378,8 @@ class ReceivingOrderItemStep(BaseWizardStep):
         self.edit_btn.set_sensitive(bool(item and item.is_batch))
 
     def on_purchase_items__row_activated(self, purchase_items, item):
+        if not bool(item and item.is_batch):
+            return
         self._edit_item(item)
 
     def on_edit_btn__clicked(self, button):

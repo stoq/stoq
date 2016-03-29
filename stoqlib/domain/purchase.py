@@ -243,8 +243,15 @@ class PurchaseOrder(Domain):
     # IContainer Implementation
     #
 
-    def get_items(self):
-        return self.store.find(PurchaseItem, order=self)
+    def get_items(self, with_children=True):
+        """Get the items of the purchase order
+
+        :param with_children: indicate if we should fetch children_items or not
+        """
+        query = PurchaseItem.order == self
+        if not with_children:
+            query = And(query, Eq(PurchaseItem.parent_item_id, None))
+        return self.store.find(PurchaseItem, query)
 
     def remove_item(self, item):
         if item.order is not self:
@@ -543,11 +550,11 @@ class PurchaseOrder(Domain):
         """
         return self.purchase_total - self.received_total
 
-    def get_pending_items(self):
+    def get_pending_items(self, with_children=True):
         """
         Returns a sequence of all items which we haven't received yet.
         """
-        return self.get_items().find(
+        return self.get_items(with_children=with_children).find(
             PurchaseItem.quantity_received < PurchaseItem.quantity)
 
     def get_partially_received_items(self):

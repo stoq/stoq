@@ -854,7 +854,8 @@ class ExampleCreator(object):
         return receiving
 
     def create_receiving_order_item(self, receiving_order=None, sellable=None,
-                                    purchase_item=None, quantity=8):
+                                    purchase_item=None, quantity=8,
+                                    parent_item=None):
         from stoqlib.domain.receiving import ReceivingOrderItem
         from stoqlib.domain.product import Storable
         if receiving_order is None:
@@ -870,7 +871,8 @@ class ExampleCreator(object):
                                   quantity=quantity, cost=125,
                                   purchase_item=purchase_item,
                                   sellable=sellable,
-                                  receiving_order=receiving_order)
+                                  receiving_order=receiving_order,
+                                  parent_item=parent_item)
 
     def create_fiscal_book_entry(self, entry_type=None, icms_value=0,
                                  iss_value=0, ipi_value=0,

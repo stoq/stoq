@@ -16,7 +16,7 @@
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <object class="ObjectList" id="purchase_items">
+              <object class="ObjectTree" id="purchase_items">
                 <property name="visible">True</property>
               </object>
               <packing>

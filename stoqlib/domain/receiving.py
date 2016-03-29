@@ -29,7 +29,7 @@ from decimal import Decimal
 import collections
 
 from kiwi.currency import currency
-from storm.expr import And
+from storm.expr import And, Eq
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import (PriceCol, QuantityCol, IntCol,
@@ -274,7 +274,8 @@ class ReceivingOrder(Domain):
         return PurchaseReceivingMap(store=self.store, purchase=order,
                                     receiving=self)
 
-    def add_purchase_item(self, item, quantity=None, batch_number=None):
+    def add_purchase_item(self, item, quantity=None, batch_number=None,
+                          parent_item=None):
         """Add a |purchaseitem| on this receiving order
 
         :param item: the |purchaseitem|
@@ -315,7 +316,8 @@ class ReceivingOrder(Domain):
             quantity=quantity,
             cost=item.cost,
             purchase_item=item,
-            receiving_order=self)
+            receiving_order=self,
+            parent_item=parent_item)
 
     def update_payments(self, create_freight_payment=False):
         """Updates the payment value of all payments realated to this
@@ -369,9 +371,12 @@ class ReceivingOrder(Domain):
         payment.set_pending()
         return payment
 
-    def get_items(self):
+    def get_items(self, with_children=True):
         store = self.store
-        return store.find(ReceivingOrderItem, receiving_order=self)
+        query = ReceivingOrderItem.receiving_order == self
+        if not with_children:
+            query = And(query, Eq(ReceivingOrderItem.parent_item_id, None))
+        return store.find(ReceivingOrderItem, query)
 
     def remove_items(self):
         for item in self.get_items():

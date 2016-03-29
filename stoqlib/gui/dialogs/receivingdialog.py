@@ -30,8 +30,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel
 
 from stoqlib.api import api
-from stoqlib.domain.receiving import (ReceivingOrderItem,
-                                      ReceivingOrder)
+from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
@@ -64,9 +63,13 @@ class ReceivingOrderDetailsDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_product_columns())
-        products = self.store.find(ReceivingOrderItem,
-                                   receiving_order_id=self.model.id)
-        self.product_list.add_list(list(products))
+        products = self.model.get_items(with_children=False)
+        # XXX Just a precaution
+        self.product_list.clear()
+        for product in products:
+            self.product_list.append(None, product)
+            for child in product.children_items:
+                self.product_list.append(product, child)
 
         value_format = '<b>%s</b>'
         total_label = value_format % api.escape(_("Total:"))

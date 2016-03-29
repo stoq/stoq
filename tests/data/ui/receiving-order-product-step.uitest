@@ -6,7 +6,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingOrderItemStep is attached
         GtkAlignment(step.toplevel):
           GtkVBox(step.vbox1):
-            ObjectList(step.purchase_items, expand=True, fill=True):
+            ObjectTree(step.purchase_items, expand=True, fill=True):
               column: title='Code', hidden
               column: title='Barcode', hidden
               column: title='Description', expand
@@ -17,10 +17,12 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
               column: title='Cost'
               column: title='Total'
               row: u'', u'', u'Description', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
+              row: u'', u'', u'Package', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
+                row: u'', u'', u'Component', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
             GtkHBox(step.hbox1, fill=True):
               GtkButton(step.edit_btn): 'gtk-edit', insensitive
               GtkLabel(step.label1, expand=True, fill=True): 'Total Received:'
-              ProxyLabel(step.total_received, fill=True): '<span >$125.00</span>'
+              ProxyLabel(step.total_received, fill=True): '<span >$375.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

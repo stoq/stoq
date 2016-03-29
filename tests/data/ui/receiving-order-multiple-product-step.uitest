@@ -6,7 +6,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingOrderItemStep is attached
         GtkAlignment(step.toplevel):
           GtkVBox(step.vbox1):
-            ObjectList(step.purchase_items, expand=True, fill=True):
+            ObjectTree(step.purchase_items, expand=True, fill=True):
               column: title='Code', hidden
               column: title='Barcode', hidden
               column: title='Description', expand
