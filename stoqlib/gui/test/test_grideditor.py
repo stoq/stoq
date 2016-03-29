@@ -25,6 +25,7 @@
 import gtk
 import mock
 
+from stoqlib.domain.product import GridOption
 from stoqlib.gui.editors.grideditor import (GridGroupEditor,
                                             GridAttributeEditor,
                                             GridOptionEditor,
@@ -62,7 +63,8 @@ class TestGridAttributeEditor(GUITest):
         editor = GridAttributeEditor(self.store, model=model)
         self.check_editor(editor, 'editor-grid-attribute-edit-inactive')
 
-    def test_edit_attribute(self):
+    @mock.patch('stoqlib.gui.editors.grideditor.warning')
+    def test_edit_attribute(self, warning):
         group1 = self.create_attribute_group(description=u'group1')
         group2 = self.create_attribute_group(description=u'group2')
         attribute = self.create_grid_attribute(attribute_group=group1)
@@ -70,12 +72,16 @@ class TestGridAttributeEditor(GUITest):
 
         # checking the values of the widgets
         self.assertEquals(editor.description.read(), u'grid attribute 1')
-        self.assertEquals(editor.group_combo.get_selected(), group1)
+        self.assertEquals(editor.group.get_selected(), group1)
 
-        editor.group_combo.select_item_by_data(group2)
+        editor.group.select_item_by_data(group2)
         editor.description.update("attribute1")
 
-        self.assertEquals(editor.group_combo.read(), group2)
+        self.click(editor.main_dialog.ok_button)
+        warning.assert_called_once_with("You need to add at least one option")
+
+        GridOption(store=self.store, attribute=attribute)
+        self.assertEquals(editor.group.read(), group2)
         # changing the selected group and confirming the editor
         self.click(editor.main_dialog.ok_button)
 

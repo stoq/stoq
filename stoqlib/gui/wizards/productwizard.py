@@ -26,7 +26,7 @@
 import gtk
 
 from stoqlib.api import api
-from stoqlib.domain.product import Product, GridGroup
+from stoqlib.domain.product import Product
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.editors.producteditor import ProductEditor
@@ -47,13 +47,6 @@ class ProductTypeStep(BaseWizardStep):
             return ProductAttributeEditorStep(self.wizard.store, self.wizard, previous=self)
         else:
             return ProductEditorStep(store=self.wizard.store, wizard=self.wizard, previous=self)
-
-    def validate_step(self):
-        if (self.wizard.product_type == Product.TYPE_GRID and
-                not GridGroup.has_group(self.wizard.store)):
-            warning(_("You need to register an attribute group first"))
-            return False
-        return True
 
     #
     #  Callbacks

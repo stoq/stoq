@@ -254,6 +254,8 @@ rst_epilog = """
     :class:`employee <stoqlib.domain.person.Employee>`
 .. |employees| replace::
     :class:`employees <stoqlib.domain.person.Employee>`
+.. |gridgroup| replace::
+    :class:`grid group <stoqlib.domain.product.GridGroup>`
 .. |individual| replace::
     :class:`individual <stoqlib.domain.person.Individual>`
 .. |inventory| replace::

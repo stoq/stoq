@@ -752,6 +752,7 @@ class Product(Domain):
         self._emitted_store_list = emitted_store_list
 
 
+@implementer(IDescribable)
 class GridGroup(Domain):
     """Attributes Group for product grid"""
 
@@ -764,6 +765,13 @@ class GridGroup(Domain):
     is_active = BoolCol(allow_none=False, default=True)
 
     attributes = ReferenceSet('id', 'GridAttribute.group_id')
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.description
 
     #
     # Classmethods

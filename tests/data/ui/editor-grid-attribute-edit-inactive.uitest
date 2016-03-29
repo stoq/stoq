@@ -5,13 +5,20 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "grid attribute 1"', hid
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave GridAttributeEditor is attached
         GtkVBox(toplevel):
-          GtkTable(attribute_elements, fill=True):
-            GtkLabel(label2): 'Attribute group:'
-            ProxyComboBox(group_combo):
-              item: 'grid group 1', selected
-            GtkLabel(label1): 'Attribute name:'
-            ProxyEntry(description): 'grid attribute 1'
-            ProxyCheckButton(active_check_box): 'Is active', active
+          GtkEventBox(): slave BasicForm is attached
+            GtkAlignment(toplevel):
+              GtkTable():
+                ProxyLabel(group_lbl): 'Attribute group:'
+                ProxyComboBox(group):
+                  item: 'grid group 1', selected
+                GtkHBox():
+                  GtkButton(group_add_button):
+                  GtkButton(group_edit_button):
+                ProxyLabel(description_lbl): 'Attribute name:'
+                ProxyEntry(description): 'grid attribute 1'
+                GtkHBox():
+                ProxyCheckButton(is_active): 'Is active', active
+                GtkHBox():
           GtkEventBox(options_holder, expand=True, fill=True): slave _GridOptionsSlave is attached
             kiwi+ui+listdialog+ListContainer(listcontainer):
               ObjectList(expand=True, fill=True):

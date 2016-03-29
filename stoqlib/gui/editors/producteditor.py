@@ -41,6 +41,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
 from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant)
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.lib.decorators import cached_property
@@ -315,6 +316,15 @@ class ProductEditor(SellableEditor):
     # Private
     #
 
+    def _add_infobar(self, message, message_type):
+        infobar = MessageBar(message, message_type)
+        infobar.show()
+
+        self.main_box.pack_start(infobar, False, False, 0)
+        self.main_box.reorder_child(infobar, 0)
+
+        return infobar
+
     def _add_extra_tabs(self):
         for tabname, tabslave in self.get_extra_tabs():
             self.add_extra_tab(tabname, tabslave)
@@ -351,8 +361,16 @@ class ProductEditor(SellableEditor):
         super(ProductEditor, self).setup_proxies()
 
         self.add_proxy(self.model, self.product_widgets)
+
         if self.model.parent is not None:
             self._disable_child_widgets()
+            msg = (_("Some properties of this product have been disabled for "
+                     "editing as that should be done on the parent product."))
+            self._add_infobar(msg, gtk.MESSAGE_INFO)
+        elif self.model.product_type == Product.TYPE_GRID:
+            msg = (_("This is just a skeleton product responsible for "
+                     "creating grid products. Create those on the 'Grid' tab"))
+            self._add_infobar(msg, gtk.MESSAGE_INFO)
 
     def get_extra_tabs(self):
         from stoqlib.gui.slaves.productslave import (ProductTaxSlave,

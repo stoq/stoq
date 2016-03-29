@@ -23,6 +23,7 @@
 ##
 """ Slaves for products """
 
+import collections
 from decimal import Decimal
 
 import gtk
@@ -45,11 +46,14 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.gui.editors.baseeditor import (BaseEditorSlave,
                                             BaseRelationshipEditorSlave)
+from stoqlib.gui.editors.grideditor import GridAttributeEditor
 from stoqlib.gui.editors.producteditor import (TemporaryProductComponent,
                                                ProductComponentEditor,
                                                QualityTestEditor,
                                                ProductSupplierEditor,
                                                ProductPackageComponentEditor)
+from stoqlib.gui.fields import GridGroupField
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import quantize, MAX_INT
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import info, yesno, warning
@@ -62,16 +66,23 @@ _ = stoqlib_gettext
 class ProductAttributeSlave(BaseEditorSlave):
     gladefile = 'ProductAttributeSlave'
     model_type = object
-    proxy_widgets = ['attribute_group_combo']
+
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            attribute_group=GridGroupField(_('Attribute group'), mandatory=True),
+        )
+
+    def __init__(self, store, model=None, visual_mode=False, edit_mode=None):
+        self._widgets = {}
+        self._create_attribute_box = None
+        super(ProductAttributeSlave, self).__init__(
+            store, model=model, visual_mode=visual_mode, edit_mode=edit_mode)
 
     def _setup_widgets(self):
-        self._widgets = {}
         group = GridGroup.get_active_groups(self.store)
-        self.attribute_group_combo.prefill(api.for_combo(group,
-                                                         attr='description',
-                                                         empty=_("Select a group")))
-        self.attribute_group_combo.connect('changed',
-                                           self._on_attribute_group_combo_selection__changed)
+        self.attribute_group.prefill(
+            api.for_combo(group, attr='description', empty=_("Select a group")))
 
     def _add_attribute(self, attr):
         if not attr.is_active:
@@ -79,7 +90,7 @@ class ProductAttributeSlave(BaseEditorSlave):
             return
         widget = gtk.CheckButton(label=attr.description)
         widget.set_sensitive(attr.has_active_options())
-        self.vbox1.pack_start(widget, expand=False)
+        self.main_box.pack_start(widget, expand=False)
         widget.show()
         self._widgets[widget] = attr
 
@@ -93,20 +104,48 @@ class ProductAttributeSlave(BaseEditorSlave):
                 active_check_box.append(value)
         return active_check_box
 
+    def _refresh_attributes(self):
+        if self._create_attribute_box is not None:
+            self.main_box.remove(self._create_attribute_box)
+            self._create_attribute_box.destroy()
+
+        for check_box in self._widgets.keys():
+            self.main_box.remove(check_box)
+            check_box.destroy()
+
+        # After we destroy the check buttons we should reset the list of widgets
+        self._widgets = {}
+        group = self.attribute_group.get_selected()
+        if not group:
+            return
+
+        for attr in group.attributes:
+            self._add_attribute(attr)
+
+        self._create_attribute_box = gtk.HBox()
+        btn = gtk.Button(_("Add a new attribute"))
+        btn.connect('clicked', self._on_add_new_attribute_btn__clicked)
+        self._create_attribute_box.pack_start(btn, expand=False)
+        self._create_attribute_box.pack_start(gtk.Label(), expand=True)
+        self._create_attribute_box.show_all()
+        self.main_box.pack_start(self._create_attribute_box, expand=False)
+
     #
     # Kiwi Callbacks
     #
 
-    def _on_attribute_group_combo_selection__changed(self, widget):
-        for check_box in self._widgets.keys():
-            check_box.destroy()
-        # After we destroy the check buttons we should reset the list of widgets
-        self._widgets = {}
-        group = self.attribute_group_combo.get_selected()
-        if not group:
-            return
-        for attr in group.attributes:
-            self._add_attribute(attr)
+    def on_attribute_group__content_changed(self, widget):
+        self._refresh_attributes()
+
+    def _on_add_new_attribute_btn__clicked(self, btn):
+        group = self.attribute_group.get_selected()
+        with api.new_store() as store:
+            retval = run_dialog(GridAttributeEditor,
+                                parent=None, store=store,
+                                group=store.fetch(group))
+
+        if retval:
+            self._refresh_attributes()
 
 
 class ProductGridSlave(BaseEditorSlave):

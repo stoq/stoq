@@ -23,14 +23,19 @@
 ##
 """ Grid configuration editor implementation."""
 
-import gtk
+import collections
 
+import gtk
 from kiwi.ui.objectlist import Column
+from kiwi.ui.forms import TextField, BoolField
 
 from stoqlib.api import api
 from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.domain.product import GridGroup, GridAttribute, GridOption
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.fields import GridGroupField
+from stoqlib.lib.decorators import cached_property
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -66,15 +71,25 @@ class GridAttributeEditor(BaseEditor):
     model_type = GridAttribute
     gladefile = 'GridAttributeEditor'
     size = (400, 350)
-    proxy_widgets = ['description', 'group_combo', 'active_check_box']
 
-    def __init__(self, store, model=None, visual_mode=False):
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            group=GridGroupField(_('Attribute group'), proxy=True, mandatory=True),
+            description=TextField(_('Attribute name'), proxy=True, mandatory=True),
+            is_active=BoolField(_('Is active'), proxy=True),
+        )
+
+    def __init__(self, store, model=None, visual_mode=False, group=None):
+        self._group = group
+
         BaseEditor.__init__(self, store, model, visual_mode)
         # Only let the user edit if its a new attribute
         if model:
             self.set_description(model.description)
 
-        self.active_check_box.set_property('sensitive', bool(model))
+        self.fields['group'].set_sensitive(not self._group)
+        self.fields['is_active'].set_sensitive(bool(model))
 
     #
     # BaseEditor Hooks
@@ -85,7 +100,7 @@ class GridAttributeEditor(BaseEditor):
         self.attach_slave('options_holder', slave)
 
     def create_model(self, store):
-        group = GridGroup.get_active_groups(store).any()
+        group = self._group or GridGroup.get_active_groups(store).any()
         return GridAttribute(store=self.store, description=u'', group=group)
 
     def setup_proxies(self):
@@ -95,8 +110,16 @@ class GridAttributeEditor(BaseEditor):
         if not self.model.group.is_active:
             groups.append(self.model.group)
 
-        self.group_combo.prefill(api.for_combo(groups, attr='description'))
+        self.fields['group'].prefill(
+            api.for_combo(groups, attr='description'), self.model.group)
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def validate_confirm(self):
+        if self.store.find(GridOption, attribute=self.model).is_empty():
+            warning(_("You need to add at least one option"))
+            return False
+
+        return True
 
 
 class GridOptionEditor(BaseEditor):

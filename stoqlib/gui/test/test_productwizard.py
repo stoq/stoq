@@ -36,15 +36,6 @@ from stoqlib.gui.wizards.productwizard import ProductCreateWizard
 
 
 class TestProducCreateWizard(GUITest):
-    @mock.patch('stoqlib.gui.wizards.productwizard.warning')
-    def test_create_without_group(self, warning):
-        wizard = ProductCreateWizard(self.store)
-        type_step = wizard.get_current_step()
-        type_step.grid.set_active(True)
-        self.click(wizard.next_button)
-        warning.assert_called_once_with("You need to register an attribute group first")
-        # Checking that are still on the same step after the warning
-        self.assertEquals(wizard.get_current_step(), type_step)
 
     def test_create_inactive_group(self):
         inactive_group = self.create_attribute_group()
@@ -55,7 +46,7 @@ class TestProducCreateWizard(GUITest):
         self.click(wizard.next_button)
         attribute_step = wizard.get_current_step()
 
-        groups = attribute_step.slave.attribute_group_combo
+        groups = attribute_step.slave.attribute_group
         for combo_model in groups.get_model_items():
             # The inactive group should not be shown on combo
             self.assertNotEquals(combo_model, inactive_group.description)
@@ -78,7 +69,7 @@ class TestProducCreateWizard(GUITest):
 
         warning.reset_mock()
         # Selecting a group but it doesnt have a GridAttribute
-        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        attribute_step.slave.attribute_group.select_item_by_data(attribute_group)
         self.click(wizard.next_button)
         warning.assert_called_once_with("You should select an attribute first")
 
@@ -93,7 +84,7 @@ class TestProducCreateWizard(GUITest):
         self.click(wizard.next_button)
 
         attribute_step = wizard.get_current_step()
-        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        attribute_step.slave.attribute_group.select_item_by_data(attribute_group)
         # Inactive attributes should not be shown
         self.assertEquals(attribute_step.slave._widgets, {})
 
@@ -111,7 +102,7 @@ class TestProducCreateWizard(GUITest):
         self.click(wizard.next_button)
         warning.reset_mock()
         # Selecting a group with a GridAttribute
-        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        attribute_step.slave.attribute_group.select_item_by_data(attribute_group)
         self.click(wizard.next_button)
         warning.assert_called_once_with("You should select an attribute first")
 
@@ -129,7 +120,7 @@ class TestProducCreateWizard(GUITest):
         self.click(wizard.next_button)
         warning.reset_mock()
         # Selecting a group with a GridAttribute
-        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        attribute_step.slave.attribute_group.select_item_by_data(attribute_group)
         self.click(wizard.next_button)
         warning.assert_called_once_with("You should select an attribute first")
 
@@ -152,7 +143,7 @@ class TestProducCreateWizard(GUITest):
         self.click(wizard.next_button)
 
         attribute_step = wizard.get_current_step()
-        attribute_step.slave.attribute_group_combo.select_item_by_data(attribute_group)
+        attribute_step.slave.attribute_group.select_item_by_data(attribute_group)
         for check_box in attribute_step.slave._widgets.keys():
             self.assertEquals(check_box.get_sensitive(), False)
 
@@ -179,10 +170,10 @@ class TestProducCreateWizard(GUITest):
         # ProductAttributeEditorStep
         attribute_step = wizard.get_current_step()
         # Testing simulating combo selection change to cover everything
-        attribute_step.slave.attribute_group_combo.select(attribute_group)
-        attribute_step.slave.attribute_group_combo.select(None)
+        attribute_step.slave.attribute_group.select(attribute_group)
+        attribute_step.slave.attribute_group.select(None)
         # Selecting the attribute_group on the combo
-        attribute_step.slave.attribute_group_combo.select(attribute_group)
+        attribute_step.slave.attribute_group.select(attribute_group)
         # Set to active all grid_attributes for that group
         for attribute in attribute_step.slave._widgets.keys():
             self.assertEquals(attribute.get_sensitive(), True)

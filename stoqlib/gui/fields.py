@@ -351,6 +351,29 @@ class CfopField(DomainChoiceField):
                           visual_mode=not self.can_edit)
 
 
+class GridGroupField(DomainChoiceField):
+    """A domain choice field for selecting a |gridgroup|
+
+    More information about this class on :class:`DomainChoiceField`
+    """
+
+    # Field
+
+    def populate(self, gridgroup):
+        from stoqlib.domain.product import GridGroup
+        store = get_store_for_field(self)
+        self.prefill(api.for_combo(store.find(GridGroup)), gridgroup)
+
+        self.add_button.set_tooltip_text(_("Add a new grid group"))
+        self.edit_button.set_tooltip_text(_("Edit the grid group"))
+
+    def run_dialog(self, store, gridgroup):
+        from stoqlib.gui.editors.grideditor import GridGroupEditor
+        from stoqlib.gui.base.dialogs import run_dialog
+        return run_dialog(GridGroupEditor, None, store, gridgroup,
+                          visual_mode=not self.can_edit)
+
+
 class AttachmentField(Field):
     """This field allows attaching files to models.
 
