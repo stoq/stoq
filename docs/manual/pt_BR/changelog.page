@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 1.9
+      Novidades da versão 1.11
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -27,48 +27,33 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 1.9</title>
+    <title>Novidades da versão 1.11</title>
     <p>
-      Data do lançamento: 2014-11-17
+      Data do lançamento: 2016-03-29
     </p>
 
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>Ao tentar cancelar um editor ou wizard depois de realizar modificações, o stoq irá confirmar antes de descartar as mudanças.</p></item>
-        <item><p>Nova opção para mesclar pessoas duplicadas no sistema.</p></item>
-        <item><p>Agora é possível cadastrar produtos similares com mais facilidade.</p></item>
-        <item><p>Nova opção na barra de tarefas para facilitar a troca de aplicativos.</p></item>
-        <item><p>Novo campo para selecionar clientes, permitindo buscar com mais agilidade.</p></item>
-        <item><p>Novas opções para cancelar e finalizar ordens de produção em aberto.</p></item>
-        <item><p>Novos campos para nota fiscal e observações nas transferências.</p></item>
-        <item><p>Mostrando somente os CFOPs corretos em operações de entrada e saída.</p></item>
-        <item><p>Administradores podem resetar senha de outros usuários.</p></item>
-        <item><p>Novo campo para indificar a quantidade em ordens de serviços.</p></item>
+        <item><p>Novo tipo de produto: Grade. Um produto que combina atributos para gerar outros produtos. E.g. Uma "Camiseta" com atributos "Cor" e "Tamanho" pode gerar produtos "Camiseta Vermelha P", "Camiseta Amarela G", etc</p></item>
+        <item><p>Novo tipo de produto: Pacote. Um pacote combina vários produtos em um só, permitindo a compra e a venda dos mesmos como se fossem uma unidade</p></item>
+        <item><p>Adição das classes de imposto PIS e COFINS</p></item>
+        <item><p>Melhorias na seleção de clientes através de sugestões na caixa de texto, pesquisáveis por vários atributos como nome, cpf, rg, telefone, etc</p></item>
+        <item><p>Nova widget que permite a filtragem de ordens de serviço selecionando múltiplas categorias</p></item>
+        <item><p>Ao importar um extrato OFX, a conta será vinculada com a transação existente se o código foi informado no pagamento</p></item>
+        <item><p>É mais obvio no editor de produtos que o mesmo está com um preço promocional</p></item>
+        <item><p>Um inventário pode ser exportado para uma contagem externa, podendo este ser reimportado depois para o preenchimento automático dos dados</p></item>
+        <item><p>Nova opção de exportar um inventário para uma planilha</p></item>
+        <item><p>O gerente agora pode permitir um desconto maior do que o permitido para o usuário no Ponto de Vendas</p></item>
+        <item><p>Se o cliente informou o documento para emissão de nota fiscal eletrônica, este é reutilizado no possível cadastro do mesmo, evitando ter que pedir a mesma informação duas vezes</p></item>
+        <item><p>É possível imprimir etiquetas no aplicativo Estoque</p></item>
+        <item><p>Vendas podem receber um desconto de 100% (um erro acontecia anteriormente nesse caso)</p></item>
+        <item><p>Filiais podem fazer compras para outras filiais em modo sincronizado</p></item>
+        <item><p>Agora transferências podem ser canceladas</p></item>
+        <item><p>Atualização das tabelas IBPT</p></item>
+        <item><p>Várias outras correções e melhorias</p></item>
       </list>
     </section>
-
-    <section>
-      <title>Novos parâmetros para</title>
-      <list>
-        <item><p>Indicar se uma troca deve ser utilizada como deconto ou pagamento</p></item>
-        <item><p>Restringir a operação de cancelamento de cupom fiscal.</p></item>
-        <item><p>Indicar o comportamento do vendedor padrão da venda: Se deve ser o usuário atual ou se é obrigatório indicar qual é o vendedor.</p></item>
-      </list>
-    </section>
-
-    <section>
-      <title>Novos relatórios</title>
-      <list>
-        <item><p>Quantidade de marcas por filial</p></item>
-        <item><p>Clientes com vendas por período</p></item>
-        <item><p>Clientes com crédito disponível</p></item>
-        <item><p>Itens vendidos por cliente</p></item>
-        <item><p>Itens vendidos por médico</p></item>
-      </list>
-    </section>
-
-
 
   </section>
     <section>
@@ -77,9 +62,9 @@
         Agradecemos a todos que contribuíram para este lançamento acontecer:
       </p>
       <p>
-        Christian Robottom Reis, Gabriel Gerga, Jean Lucas Monteiro Lima,
-        Luis Oishi, Matheus Steck, Nihey Luz Takizawa, Ronaldo Maia e Thiago
-        Bellini.
+        Cainã D'Ajuda, Christian Robottom Reis, Eduardo Tadahiro Nishizuka,
+        Felipe Henrique Bellotti Nehmi, Flavia Fernanda Rocha Moraes,
+        Gabriel Gerga, Luis Oishi, Nihey Luz Takizawa, Ronaldo Maia e Thiago Bellini.
       </p>
 
       <p>
@@ -143,8 +128,8 @@
         <em>Português (pt)</em>: Rafael Neri, Ronaldo Maia e Tiago Silva.
       </p>
       <p>
-        <em>Português brasileiro (pt_BR)</em>: Bruno Rafael Garcia,
-        Gabriel Gerga, Hriostat, Johan Dahlin, millemiglia, Rafael Neri,
+        <em>Português brasileiro (pt_BR)</em>: andrelcmarinho, Bruno Rafael Garcia,
+        Gabriel Gerga, Hriostat, Johan Dahlin, Marciel Leal, millemiglia, Rafael Neri,
         Ronaldo Maia, Silvio Rangel, Thiago Bellini e ruysabino.
       </p>
       <p>

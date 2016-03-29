@@ -1,3 +1,63 @@
+stoq (1.11~rc1) trusty; urgency=low
+
+  * 1.11 Release candidate 1
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Tue, 29 Mar 2016 17:31:00 -0300
+
+stoq (1.10.4) trusty; urgency=medium
+
+  * 1.10.4 Bugfix release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Thu, 24 Mar 2016 15:00:54 -0300
+
+stoq (1.10.3) trusty; urgency=medium
+
+  * 1.10.3 Bugfix release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Fri, 22 Jan 2016 17:35:26 -0200
+
+stoq (1.10.2) trusty; urgency=low
+
+  * 1.10.2 Bugfix release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Tue, 01 Dec 2015 17:04:43 -0200
+
+stoq (1.10.1) trusty; urgency=low
+
+  * 1.10.1 Bugfix release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Thu, 12 Nov 2015 17:08:06 -0200
+
+stoq (1.10) trusty; urgency=low
+
+  * 1.10 Final release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Fri, 06 Nov 2015 16:07:07 -0200
+
+stoq (1.10~rc4) trusty; urgency=low
+
+  * 1.10 Release candidate 4
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Tue, 27 Oct 2015 15:35:13 -0200
+
+stoq (1.10~rc3) trusty; urgency=low
+
+  * 1.10 Release candidate 3
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Tue, 20 Oct 2015 17:41:39 -0200
+
+stoq (1.10~rc2) trusty; urgency=low
+
+  * 1.10 Release candidate 2
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Wed, 07 Oct 2015 17:31:35 -0300
+
+stoq (1.10~rc1) trusty; urgency=low
+
+  * 1.10 Release candidate 1
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Mon, 21 Sep 2015 12:47:04 -0300
+
 stoq (1.9~rc2) precise; urgency=low
 
   * 1.9 Release candidate 2
