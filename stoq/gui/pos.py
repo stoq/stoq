@@ -967,6 +967,8 @@ class PosApp(ShellApp):
             sale.client = self._suggested_client
 
         for fake_sale_item in self.sale_items:
+            if fake_sale_item.parent_item:
+                continue
             sale_item = sale.add_sellable(
                 store.fetch(fake_sale_item.sellable),
                 price=fake_sale_item.price, quantity=fake_sale_item.quantity,
@@ -974,7 +976,13 @@ class PosApp(ShellApp):
                 batch=store.fetch(fake_sale_item.batch))
             sale_item.notes = fake_sale_item.notes
             sale_item.estimated_fix_date = fake_sale_item.estimated_fix_date
-
+            for child_fake in fake_sale_item.children_items:
+                sale.add_sellable(store.fetch(child_fake.sellable),
+                                  price=child_fake.price,
+                                  quantity=child_fake.quantity,
+                                  quantity_decreased=child_fake.quantity_decreased,
+                                  batch=store.fetch(child_fake.batch),
+                                  parent=sale_item)
             if delivery and fake_sale_item.deliver:
                 delivery.add_item(sale_item)
             elif delivery and fake_sale_item == self._delivery_item:
