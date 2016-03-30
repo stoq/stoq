@@ -1,5 +1,13 @@
 -- Make product, service and storable use the same id as sellable
 
+-- Disable update_te for this patch as it is going to be applied to all
+-- databases, and all databases will have the same final result
+CREATE OR REPLACE FUNCTION update_te(te_id bigint) RETURNS void AS $$
+BEGIN
+        --UPDATE transaction_entry SET te_time = STATEMENT_TIMESTAMP(), dirty = true WHERE id = $1;
+END;
+$$ LANGUAGE plpgsql;
+
 -- TODO: We should provide a way for plugins to execute "pre-migration"
 -- actions, like this one. Without it this patch would fail for people
 -- using the magento plugin.
@@ -34,3 +42,10 @@ ALTER TABLE product
 
 ALTER TABLE storable
     ADD CONSTRAINT "storable_id_fkey" FOREIGN KEY (id) REFERENCES product(id) ON UPDATE CASCADE;
+
+-- Recreate the trigger
+CREATE OR REPLACE FUNCTION update_te(te_id bigint) RETURNS void AS $$
+BEGIN
+        UPDATE transaction_entry SET te_time = STATEMENT_TIMESTAMP(), dirty = true WHERE id = $1;
+END;
+$$ LANGUAGE plpgsql;
