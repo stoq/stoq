@@ -54,6 +54,29 @@ class TestSaleQuoteItemEditor(GUITest):
             editor.item_slave.sale.set_label('23456')
             self.check_editor(editor, 'editor-salequoteitem-show-nfe')
 
+    @mock.patch('stoqlib.gui.editors.invoiceitemeditor.get_plugin_manager')
+    def test_create_taxes(self, get_plugin_manager):
+        manager = mock.Mock()
+        manager.is_active.return_value = True
+        get_plugin_manager.return_value = manager
+
+        sale = self.create_sale()
+        storable = self.create_storable(branch=sale.branch, stock=20)
+        sale_item = sale.add_sellable(storable.product.sellable)
+
+        # Mimic an item with missing taxes
+        sale_item.icms_info = None
+        sale_item.ipi_info = None
+        sale_item.pis_info = None
+        sale_item.cofins_info = None
+
+        SaleQuoteItemEditor(self.store, sale_item)
+        # Make sure the editor created the missing taxes
+        self.assertIsNotNone(sale_item.icms_info)
+        self.assertIsNotNone(sale_item.pis_info)
+        self.assertIsNotNone(sale_item.ipi_info)
+        self.assertIsNotNone(sale_item.cofins_info)
+
 
 class TestSaleQuoteItemSlave(GUITest):
     def test_show_param_allow_higher_sale_price(self):

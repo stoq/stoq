@@ -931,11 +931,11 @@ class NFeProduct(BaseNFeXMLGroup):
             nfe_ipi = NFeIPI(invoice_ipi)
             nfe_tax.append(nfe_ipi)
 
-        if operation_item.pis_info.cst:
+        if operation_item.pis_info and operation_item.pis_info.cst:
             nfe_pis = NFePIS(operation_item)
             nfe_tax.append(nfe_pis)
 
-        if operation_item.cofins_info.cst:
+        if operation_item.cofins_info and operation_item.cofins_info.cst:
             nfe_cofins = NFeCOFINS(operation_item)
             nfe_tax.append(nfe_cofins)
 

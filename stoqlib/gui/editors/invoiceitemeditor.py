@@ -26,6 +26,10 @@
 
 import gtk
 
+from stoqlib.domain.taxes import (InvoiceItemCofins,
+                                  InvoiceItemIcms,
+                                  InvoiceItemPis,
+                                  InvoiceItemIpi)
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.taxslave import (InvoiceItemCofinsSlave,
                                          InvoiceItemIcmsSlave,
@@ -61,6 +65,23 @@ class InvoiceItemEditor(BaseEditor):
 
     def _setup_taxes(self):
         if self.nfe_is_active:
+            # FIXME: This is needed due to a lack of migration when pis/cofins
+            # taxes were added. Probably icms/ipi shouldn't need to be here
+            # but, well, better safe than sorry. Maybe we should consider
+            # migrating the missing taxes in the future.
+            if self.model.icms_info is None:
+                self.model.icms_info = InvoiceItemIcms(store=self.store)
+                self.model.icms_info.set_item_tax(self.model)
+            if self.model.ipi_info is None:
+                self.model.ipi_info = InvoiceItemIpi(store=self.store)
+                self.model.ipi_info.set_item_tax(self.model)
+            if self.model.pis_info is None:
+                self.model.pis_info = InvoiceItemPis(store=self.store)
+                self.model.pis_info.set_item_tax(self.model)
+            if self.model.cofins_info is None:
+                self.model.cofins_info = InvoiceItemCofins(store=self.store)
+                self.model.cofins_info.set_item_tax(self.model)
+
             self.icms_slave = InvoiceItemIcmsSlave(self.store,
                                                    self.model.icms_info,
                                                    self.model)

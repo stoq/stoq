@@ -495,10 +495,14 @@ class SaleItem(Domain):
         return 0
 
     def update_tax_values(self):
-        self.icms_info.update_values(self)
-        self.ipi_info.update_values(self)
-        self.pis_info.update_values(self)
-        self.cofins_info.update_values(self)
+        if self.icms_info:
+            self.icms_info.update_values(self)
+        if self.ipi_info:
+            self.ipi_info.update_values(self)
+        if self.pis_info:
+            self.pis_info.update_values(self)
+        if self.cofins_info:
+            self.cofins_info.update_values(self)
 
     def has_children(self):
         return self.children_items.count() > 0
