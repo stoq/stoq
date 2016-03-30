@@ -709,6 +709,11 @@ class InvoiceItemPisSlave(BasePISSlave, InvoiceItemMixin):
         self.invoice_item = invoice_item
         BasePISSlave.__init__(self, store, model)
 
+    def create_model(self, store):
+        model = InvoiceItemPis(store=store)
+        self.invoice_item.pis_info = model
+        return model
+
     #
     # Public API
     #
@@ -897,6 +902,11 @@ class InvoiceItemCofinsSlave(BaseCOFINSSlave, InvoiceItemMixin):
     def __init__(self, store, model, invoice_item):
         self.invoice_item = invoice_item
         BaseCOFINSSlave.__init__(self, store, model)
+
+    def create_model(self, store):
+        model = InvoiceItemCofins(store=store)
+        self.invoice_item.cofins_info = model
+        return model
 
     #
     # Public API
