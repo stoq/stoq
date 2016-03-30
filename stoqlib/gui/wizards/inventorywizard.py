@@ -212,7 +212,7 @@ class InventoryCountItemStep(SellableItemStep):
 
         self.force_validation()
 
-    def get_order_item(self, sellable, cost, quantity, batch=None):
+    def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
         if sellable not in self._inventory_sellables:
             return
 
