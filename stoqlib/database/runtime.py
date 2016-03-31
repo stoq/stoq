@@ -623,7 +623,7 @@ class StoqlibStore(Store):
         except Exception:
             appname = 'stoq'
         else:
-            appname = appinfo.get('name')
+            appname = appinfo.get('name') or 'stoq'
 
         self.execute("SET application_name = '%s - %s - %s'" % (
             (appname.lower(), get_hostname(), os.getpid())))
