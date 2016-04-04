@@ -367,8 +367,8 @@ class TestReport(ReportTest):
         sale.confirm_date = date
 
         # After calling sale.group.pay(), we need to fix the paid_date
-        card_data1.payment.paid_date = date
-        card_data2.payment.paid_date = date
+        card_data1.payment.open_date = date
+        card_data2.payment.open_date = date
 
         # create lonely input payment
         payer = self.create_client()
@@ -383,7 +383,7 @@ class TestReport(ReportTest):
         payment_lonely_input.set_pending()
         payment_lonely_input.pay()
         payment_lonely_input.identifier = 1001
-        payment_lonely_input.paid_date = date
+        payment_lonely_input.open_date = date
 
         # create purchase payment
         drawee = self.create_supplier()
@@ -400,7 +400,7 @@ class TestReport(ReportTest):
         payment.set_pending()
         payment.pay()
         payment.identifier = 1002
-        payment.paid_date = date
+        payment.open_date = date
 
         # Create a returned sale
         sale = self.create_sale(branch=branch)
@@ -413,13 +413,13 @@ class TestReport(ReportTest):
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
         sale.return_date = date
-        payment.paid_date = date
+        payment.open_date = date
 
         payment = returned_sale.group.get_items()[1]
         payment.branch = branch
         payment.identifier = 1003
         payment.pay()
-        payment.paid_date = date
+        payment.open_date = date
 
         # create lonely output payment
         group = self.create_payment_group()
@@ -427,7 +427,7 @@ class TestReport(ReportTest):
         payment = method.create_payment(Payment.TYPE_OUT, group, branch, Decimal(100))
         payment.branch = branch
         payment.identifier = 1004
-        payment.paid_date = date
+        payment.open_date = date
         payment.status = Payment.STATUS_PAID
 
         # create lonely input payment on a second branch
@@ -444,7 +444,7 @@ class TestReport(ReportTest):
         payment_lonely_input.set_pending()
         payment_lonely_input.pay()
         payment_lonely_input.identifier = 1005
-        payment_lonely_input.paid_date = date
+        payment_lonely_input.open_date = date
 
         # Run the dialog the precedes the report
         data = TillDailyMovementDialog(self.store)
