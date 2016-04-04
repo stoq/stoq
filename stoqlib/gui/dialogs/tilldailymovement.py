@@ -195,8 +195,9 @@ class TillDailyMovementDialog(BaseEditor):
                                 'out_subtotal', 'out_credit', 'out_total'))
 
     def _generate_dailymovement_data(self, store):
-        query = And(Payment.status == Payment.STATUS_PAID,
-                    self._get_query(Payment.paid_date, Payment.branch))
+        query = And(Payment.status.is_in([Payment.STATUS_PENDING,
+                                          Payment.STATUS_PAID]),
+                    self._get_query(Payment.open_date, Payment.branch))
 
         # Keys are the sale objects, and values are lists with all payments
         self.sales = collections.OrderedDict()
