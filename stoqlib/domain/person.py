@@ -2093,7 +2093,7 @@ class EmployeeView(Viewable):
     tables = [
         Employee,
         Join(Person, Person.id == Employee.person_id),
-        Join(EmployeeRole, Employee.role_id == EmployeeRole.id),
+        LeftJoin(EmployeeRole, Employee.role_id == EmployeeRole.id),
     ]
 
     clause = Eq(Person.merged_with_id, None)
