@@ -31,7 +31,7 @@ import gobject
 import gtk
 from kiwi.ui.dialogs import selectfile
 from kiwi.ui.entry import ENTRY_MODE_DATA
-from kiwi.ui.forms import ChoiceField, Field
+from kiwi.ui.forms import TextField, ChoiceField, Field
 import pango
 
 from stoqlib.api import api
@@ -322,6 +322,48 @@ class PersonField(DomainChoiceField):
         store = get_store_for_field(self)
         facet = store.get(self.person_type, facet_id)
         self._run_editor(facet)
+
+
+class PersonQueryField(TextField):
+
+    default_overrides = dict(has_add_button=True)
+
+    #: This is the type of person we will display in this field, it
+    #: must be a class referencing a :py:class:`stoqlib.domain.person.Person`
+    person_type = gobject.property(type=object)
+
+    widget_data_type = object
+
+    def attach(self):
+        assert self.editable
+
+        from stoqlib.domain.person import Client, Supplier
+        from stoqlib.gui.widgets.queryentry import (ClientEntryGadget,
+                                                    SupplierEntryGadget)
+        gadgets = {
+            Client: ClientEntryGadget,
+            Supplier: SupplierEntryGadget,
+        }
+        gadget = gadgets.get(self.person_type)
+        if gadgets is None:  # pragma no cover
+            raise NotImplementedError(self.person_type)
+
+        self.gadget = gadget(
+            entry=self.widget,
+            store=get_store_for_field(self),
+            parent=self.toplevel,
+            edit_button=self.add_button)
+
+    def populate(self, obj):
+        self.set_value(obj)
+
+    def set_value(self, obj):
+        self.gadget.set_value(obj)
+
+    def add_button_clicked(self, button):
+        # The gadget will take care of the callback. We just need to override
+        # this to avoid a NotImplementedError
+        pass
 
 
 class CfopField(DomainChoiceField):

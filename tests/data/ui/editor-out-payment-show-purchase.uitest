@@ -28,13 +28,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): '1/1 Money for order 12345'
               GtkHBox():
-              ProxyLabel(person_id_lbl): 'Recipient:'
-              ProxyComboEntry(person_id): insensitive
-                item: 'Cia de Roupas S\xc3\xa3o Carlos (Cia de Roupas S\xc3\xa3o Carlos)'
-                item: 'Company Name (Supplier)'
+              ProxyLabel(person_lbl): 'Recipient:'
+              ProxyEntry(person): '', insensitive
               GtkHBox():
-                GtkButton(person_id_add_button): insensitive
-                GtkButton(person_id_edit_button): insensitive
+                GtkButton(person_add_button): insensitive
               ProxyLabel(value_lbl): 'Value:'
               ProxyEntry(value): '0.00', insensitive
               GtkHBox():

@@ -1212,6 +1212,12 @@ class TestSupplierView(DomainTest):
     def test_get_description(self):
         supplier = self.create_supplier()
         view = self.store.find(SupplierView, id=supplier.id).one()
+        self.assertEquals(view.get_description(), u'Supplier (Company Name)')
+
+        # With no fancy_name, get_description should fallback
+        # to the person's name alone
+        supplier.person.company.fancy_name = u""
+        view = self.store.find(SupplierView, id=supplier.id).one()
         self.assertEquals(view.get_description(), u'Supplier')
 
     def test_get_status_string(self):

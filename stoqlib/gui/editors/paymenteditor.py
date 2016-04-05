@@ -48,7 +48,8 @@ from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.fields import (AttachmentField, PaymentCategoryField,
-                                PersonField, PaymentMethodField)
+                                PersonField, PaymentMethodField,
+                                PersonQueryField)
 from stoqlib.lib.dateutils import (get_interval_type_items,
                                    interval_type_as_relativedelta,
                                    localtoday)
@@ -80,7 +81,7 @@ class _PaymentEditor(BaseEditor):
                                       proxy=True, mandatory=True, separate=True),
             account=ChoiceField(self.account_label),
             description=TextField(_('Description'), proxy=True, mandatory=True),
-            person_id=PersonField(person_type=self.person_type, proxy=True),
+            person=PersonQueryField(person_type=self.person_type, proxy=True),
             value=PriceField(_('Value'), proxy=True, mandatory=True),
             due_date=DateField(_('Due date'), proxy=True, mandatory=True),
             category=PaymentCategoryField(_('Category'),
@@ -160,12 +161,8 @@ class _PaymentEditor(BaseEditor):
 
     def on_confirm(self):
         self.model.base_value = self.model.value
-        facet_id = self.person_id.get_selected_data()
-        if (facet_id is not None and facet_id is not ValueUnset and
-                # FIXME: PersonField should never let get_selected_data()
-                #        return anything different from None and the model.
-                facet_id != ""):
-            facet = self.store.get(self.person_type, facet_id)
+        facet = self.person.read()
+        if facet and facet is not ValueUnset:
             setattr(self.model.group,
                     self.person_attribute,
                     facet.person)
@@ -184,7 +181,7 @@ class _PaymentEditor(BaseEditor):
     # Private
 
     def _setup_widgets(self):
-        self.person_id_lbl.set_label(self._person_label)
+        self.person_lbl.set_label(self._person_label)
         if self.model.group.sale:
             label = _("Sale details")
         elif self.model.group.purchase:
@@ -199,7 +196,7 @@ class _PaymentEditor(BaseEditor):
 
         self.end_date.set_sensitive(False)
         if self.edit_mode:
-            for field_name in ['value', 'due_date', 'person_id',
+            for field_name in ['value', 'due_date', 'person',
                                'repeat', 'end_date', 'branch_id', 'method']:
                 field = self.fields[field_name]
                 field.can_add = False
@@ -210,7 +207,7 @@ class _PaymentEditor(BaseEditor):
         if person:
             store = person.store
             facet = store.find(self.person_type, person=person).one()
-            self.person_id.select(facet.id)
+            self.fields['person'].set_value(facet)
 
     def _show_order_dialog(self):
         group = self.model.group
@@ -261,10 +258,8 @@ class _PaymentEditor(BaseEditor):
     def _validate_person(self):
         payment_type = self.payment_type
         method = self.method.get_selected()
-        if method.operation.require_person(payment_type):
-            self.person_id.set_property('mandatory', True)
-        else:
-            self.person_id.set_property('mandatory', False)
+        self.person.set_property('mandatory',
+                                 method.operation.require_person(payment_type))
 
     #
     # Kiwi Callbacks
@@ -297,7 +292,7 @@ class _PaymentEditor(BaseEditor):
         self._show_order_dialog()
 
     def on_method__content_changed(self, method):
-        self.person_id.validate(force=True)
+        self.person.validate(force=True)
         self._validate_person()
 
 
@@ -321,7 +316,7 @@ class InPaymentEditor(_PaymentEditor):
             return ValidationError(e)
 
     def on_value__changed(self, value):
-        self.person_id.validate(force=True)
+        self.person.validate(force=True)
 
 
 class OutPaymentEditor(_PaymentEditor):
