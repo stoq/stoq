@@ -2124,13 +2124,29 @@ class SupplierView(Viewable):
 
     supplier = Supplier
 
+    # Supplier
     id = Supplier.id
+    status = Supplier.status
+
+    # Person
     person_id = Person.id
     name = Person.name
     phone_number = Person.phone_number
+    mobile_number = Person.mobile_number
+
+    # Company
     fancy_name = Company.fancy_name
     cnpj = Company.cnpj
-    status = Supplier.status
+
+    # Individual
+    cpf = Individual.cpf
+    birth_date = Individual.birth_date
+    rg_number = Individual.rg_number
+
+    # Address
+    street = Address.street
+    streetnumber = Address.streetnumber
+    district = Address.district
 
     tables = [
         Supplier,
@@ -2138,6 +2154,11 @@ class SupplierView(Viewable):
              Person.id == Supplier.person_id),
         LeftJoin(Company,
                  Person.id == Company.person_id),
+        LeftJoin(Individual,
+                 Person.id == Individual.person_id),
+        LeftJoin(Address,
+                 And(Address.person_id == Person.id,
+                     Eq(Address.is_main_address, True))),
     ]
 
     clause = Eq(Person.merged_with_id, None)
@@ -2147,7 +2168,10 @@ class SupplierView(Viewable):
     #
 
     def get_description(self):
-        return self.name
+        if self.fancy_name:
+            return "%s (%s)" % (self.name, self.fancy_name)
+        else:
+            return self.name
 
     #
     # Public API

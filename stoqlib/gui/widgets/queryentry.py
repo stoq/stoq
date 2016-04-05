@@ -32,10 +32,10 @@ from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import QueryExecuter
-from stoqlib.domain.person import Client, ClientView
+from stoqlib.domain.person import Client, ClientView, Supplier, SupplierView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.personeditor import ClientEditor
-from stoqlib.gui.search.personsearch import ClientSearch
+from stoqlib.gui.editors.personeditor import ClientEditor, SupplierEditor
+from stoqlib.gui.search.personsearch import ClientSearch, SupplierSearch
 from stoqlib.gui.search.searchfilters import StringSearchFilter
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -305,7 +305,7 @@ class QueryEntryGadget(object):
     SEARCH_COLUMNS = None
 
     def __init__(self, entry, store, initial_value=None,
-                 parent=None, run_editor=None):
+                 parent=None, run_editor=None, edit_button=None):
         """
         :param entry: The entry that we should modify
         :param store: The store that will be used for database queries
@@ -315,11 +315,11 @@ class QueryEntryGadget(object):
         """
         super(QueryEntryGadget, self).__init__()
 
-        self._current_obj = None
         self._parent = parent
         self._on_run_editor = run_editor
         self.entry = entry
         self.entry.set_mode(ENTRY_MODE_DATA)
+        self.edit_button = edit_button
         self.store = store
 
         # The filter that will be used. This is not really in the interface.
@@ -378,9 +378,9 @@ class QueryEntryGadget(object):
     #
 
     def _setup(self):
-        self._replace_widget()
-
-        self.edit_button = self._add_button(gtk.STOCK_NEW)
+        if self.edit_button is None:
+            self._replace_widget()
+            self.edit_button = self._add_button(gtk.STOCK_NEW)
         self.edit_button.connect('clicked', self._on_edit_button__clicked)
 
         self.entry.connect('activate', self._on_entry__activate)
@@ -527,54 +527,45 @@ class QueryEntryGadget(object):
             self.set_value(obj, force=True)
 
 
-class ClientEntryGadget(QueryEntryGadget):
+class PersonEntryGadget(QueryEntryGadget):
 
-    LOADING_ITEMS_TEXT = _('Loading clients...')
-    NEW_ITEM_TEXT = _('Create a new client with this name...')
-    NEW_ITEM_TOOLTIP = _('Create a new client')
-    EDIT_ITEM_TOOLTIP = _('Edit the selected client')
-    ITEM_EDITOR = ClientEditor
-    SEARCH_CLASS = ClientSearch
-    SEARCH_SPEC = ClientView
-    SEARCH_COLUMNS = [ClientView.name, ClientView.fancy_name,
-                      ClientView.phone_number, ClientView.mobile_number,
-                      ClientView.cpf, ClientView.rg_number]
+    PERSON_TYPE = None
 
     def __init__(self, entry, store, initial_value=None,
-                 parent=None, run_editor=None):
+                 parent=None, run_editor=None, edit_button=None):
         country = api.sysparam.get_string('COUNTRY_SUGGESTED')
         self._company_l10n = api.get_l10n_field('company_document', country)
         self._person_l10n = api.get_l10n_field('person_document', country)
 
-        super(ClientEntryGadget, self).__init__(
+        super(PersonEntryGadget, self).__init__(
             entry, store, initial_value=initial_value,
-            parent=parent, run_editor=run_editor)
+            parent=parent, run_editor=run_editor, edit_button=edit_button)
 
     #
     #  QueryEntryGadget
     #
 
     def get_object_from_item(self, item):
-        return item and self.store.find(Client, id=item.id).one()
+        return item and self.store.find(self.PERSON_TYPE, id=item.id).one()
 
-    def describe_item(self, client_view):
+    def describe_item(self, person_view):
         details = []
-        birth_date = (client_view.birth_date and
-                      client_view.birth_date.strftime('%x'))
+        birth_date = (person_view.birth_date and
+                      person_view.birth_date.strftime('%x'))
         for label, value in [
-                (_("Phone"), client_view.phone_number),
-                (_("Mobile"), client_view.mobile_number),
-                (self._person_l10n.label, client_view.cpf),
-                (self._company_l10n.label, client_view.cnpj),
-                (_("RG"), client_view.rg_number),
+                (_("Phone"), person_view.phone_number),
+                (_("Mobile"), person_view.mobile_number),
+                (self._person_l10n.label, person_view.cpf),
+                (self._company_l10n.label, person_view.cnpj),
+                (_("RG"), person_view.rg_number),
                 (_("Birth date"), birth_date),
-                (_("Category"), client_view.client_category),
-                (_("Address"), format_address(client_view))]:
+                (_("Category"), getattr(person_view, 'client_category', None)),
+                (_("Address"), format_address(person_view))]:
             if not value:
                 continue
             details.append('%s: %s' % (label, api.escape(value)))
 
-        name = "<big>%s</big>" % (api.escape(client_view.name), )
+        name = "<big>%s</big>" % (api.escape(person_view.get_description()), )
         if details:
             short = name + '\n<span size="small">%s</span>' % (
                 api.escape(', '.join(details[:1])))
@@ -585,3 +576,33 @@ class ClientEntryGadget(QueryEntryGadget):
             complete = name
 
         return short, complete
+
+
+class ClientEntryGadget(PersonEntryGadget):
+
+    LOADING_ITEMS_TEXT = _('Loading clients...')
+    NEW_ITEM_TEXT = _('Create a new client with this name...')
+    NEW_ITEM_TOOLTIP = _('Create a new client')
+    EDIT_ITEM_TOOLTIP = _('Edit the selected client')
+    ITEM_EDITOR = ClientEditor
+    PERSON_TYPE = Client
+    SEARCH_CLASS = ClientSearch
+    SEARCH_SPEC = ClientView
+    SEARCH_COLUMNS = [ClientView.name, ClientView.fancy_name,
+                      ClientView.phone_number, ClientView.mobile_number,
+                      ClientView.cpf, ClientView.rg_number]
+
+
+class SupplierEntryGadget(PersonEntryGadget):
+
+    LOADING_ITEMS_TEXT = _('Loading suppliers...')
+    NEW_ITEM_TEXT = _('Create a new supplier with this name...')
+    NEW_ITEM_TOOLTIP = _('Create a new supplier')
+    EDIT_ITEM_TOOLTIP = _('Edit the selected supplier')
+    ITEM_EDITOR = SupplierEditor
+    PERSON_TYPE = Supplier
+    SEARCH_CLASS = SupplierSearch
+    SEARCH_SPEC = SupplierView
+    SEARCH_COLUMNS = [SupplierView.name, SupplierView.fancy_name,
+                      SupplierView.phone_number, SupplierView.mobile_number,
+                      SupplierView.cpf, SupplierView.rg_number]

@@ -30,15 +30,10 @@ GtkDialog(main_dialog.toplevel): title='Add payment', hidden
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): '', mandatory
               GtkHBox():
-              ProxyLabel(person_id_lbl): 'Payer:'
-              ProxyComboEntry(person_id):
-                item: 'Alessandra Almeida Itaber\xc3\xa1'
-                item: 'Franciso Elisio de Lima Junior'
-                item: 'Luis Sergio da Silva Marin'
-                item: 'Vitalina Claudino'
+              ProxyLabel(person_lbl): 'Payer:'
+              ProxyEntry(person): ''
               GtkHBox():
-                GtkButton(person_id_add_button):
-                GtkButton(person_id_edit_button): insensitive
+                GtkButton(person_add_button):
               ProxyLabel(value_lbl): 'Value:'
               ProxyEntry(value): '0.00', mandatory
               GtkHBox():
