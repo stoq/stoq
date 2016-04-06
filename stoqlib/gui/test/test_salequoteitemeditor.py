@@ -306,12 +306,12 @@ class TestSaleClientEditor(GUITest):
         sale.status = sale.STATUS_CONFIRMED
         editor = SaleClientEditor(self.store, model=sale)
 
-        self.assertEquals(editor.status.get_text(),
+        self.assertEquals(editor.status_str.get_text(),
                           (u"Confirmed" or u"Ordered"))
-        self.assertFalse(editor.salesperson_combo.get_sensitive())
+        self.assertFalse(editor.salesperson_id.get_sensitive())
         self.assertEquals(zoidberg, editor.model.client)
 
-        editor.client.select_item_by_data(bender.id)
+        editor.fields['client'].set_value(bender)
         self.click(editor.main_dialog.ok_button)
         self.assertEquals(bender, sale.client)
 
@@ -330,11 +330,10 @@ class TestSalesPersonEditor(GUITest):
 
         editor = SalesPersonEditor(self.store, model=sale)
         self.check_editor(editor, 'editor-salesperson-edit')
-        self.assertEquals(editor.salesperson_combo.get_selected(), salesperson1)
-        self.assertFalse(editor.client_box.get_property('visible'))
-        self.assertFalse(editor.client_lbl.get_property('visible'))
+        self.assertEquals(editor.salesperson_id.get_selected(), salesperson1.id)
+        self.assertFalse(editor.client.get_property('visible'))
 
-        editor.salesperson_combo.select_item_by_data(salesperson2)
+        editor.salesperson_id.select_item_by_data(salesperson2.id)
         self.click(editor.main_dialog.ok_button)
         self.assertEquals(sale.salesperson, salesperson2)
 

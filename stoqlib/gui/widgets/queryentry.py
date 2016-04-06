@@ -362,10 +362,11 @@ class QueryEntryGadget(object):
         self.edit_button.set_sensitive(can_edit)
         self.entry.set_property('editable', can_edit)
 
-    def update_edit_button(self, stock, tooltip):
+    def update_edit_button(self, stock, tooltip=None):
         image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
         self.edit_button.set_image(image)
-        self.edit_button.set_tooltip_text(tooltip)
+        if tooltip is not None:
+            self.edit_button.set_tooltip_text(tooltip)
 
     def get_object_from_item(self, item):
         return item
