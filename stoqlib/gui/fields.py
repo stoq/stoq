@@ -23,6 +23,7 @@
 ##
 ##
 
+import datetime
 import os
 import tempfile
 
@@ -298,9 +299,11 @@ class PersonField(DomainChoiceField):
         self.prefill(items, person_id)
 
     def run_dialog(self, store, person):
-        from stoqlib.domain.person import Branch, Client, Supplier, Transporter
+        from stoqlib.domain.person import (Branch, Client, Supplier,
+                                           Transporter, SalesPerson)
         from stoqlib.gui.editors.personeditor import (BranchEditor,
                                                       ClientEditor,
+                                                      EmployeeEditor,
                                                       SupplierEditor,
                                                       TransporterEditor)
         editors = {
@@ -308,10 +311,16 @@ class PersonField(DomainChoiceField):
             Client: ClientEditor,
             Supplier: SupplierEditor,
             Transporter: TransporterEditor,
+            SalesPerson: EmployeeEditor,
         }
         editor = editors.get(self.person_type)
         if editor is None:  # pragma no cover
             raise NotImplementedError(self.person_type)
+
+        # FIXME: Salesperson is edited on EmployeeEditor, so we need to get
+        # that facet for the editor
+        if isinstance(person, SalesPerson):
+            person = person.person.employee
 
         from stoqlib.gui.wizards.personwizard import run_person_role_dialog
         return run_person_role_dialog(editor, self.toplevel, store, person,
@@ -538,3 +547,10 @@ class AttachmentField(Field):
         app_info = gio.app_info_get_default_for_type(
             self.attachment.mimetype, False)
         app_info.launch([gfile])
+
+
+class DateTextField(TextField):
+
+    # FIXME: Maybe we should change kiwi to transform widget_data_type in a
+    # gobject property so we can inform it at creation time
+    widget_data_type = datetime.date

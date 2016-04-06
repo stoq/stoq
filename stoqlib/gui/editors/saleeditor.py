@@ -23,10 +23,13 @@
 ##
 """ Sale editors """
 
+import collections
+
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
+from kiwi.ui.forms import TextField
 
 from stoqlib.api import api
 from stoqlib.domain.event import Event
@@ -36,11 +39,10 @@ from stoqlib.domain.sale import Sale, SaleItem, SaleToken
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
-from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.invoiceitemeditor import InvoiceItemEditor
+from stoqlib.gui.fields import PersonField, PersonQueryField, DateTextField
 from stoqlib.gui.widgets.calculator import CalculatorPopup
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import quantize, QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -338,66 +340,50 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         self.price.validate(force=True)
 
 
-class SaleClientEditor(BaseEditor):
-    gladefile = 'SaleDetailsEditor'
+class _BaseSalePersonChangeEditor(BaseEditor):
     model_type = Sale
     model_name = _('Sale')
-    proxy_widgets = ['client', 'identifier', 'salesperson_combo', 'status', 'open_date']
 
-    def setup_proxies(self):
-        self._fill_clients_combo()
-        self._fill_salesperson_combo()
-        self._setup_widgets()
-        self.add_proxy(self.model, self.proxy_widgets)
-
-    def toogle_client_details(self):
-        client = self.model.client
-        if client is not None:
-            if client.status == Client.STATUS_SOLVENT:
-                self.info_image.set_from_stock(gtk.STOCK_INFO,
-                                               gtk.ICON_SIZE_MENU)
-            else:
-                self.info_image.set_from_stock(gtk.STOCK_DIALOG_WARNING,
-                                               gtk.ICON_SIZE_MENU)
-        self.client_details.set_sensitive(bool(client))
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            identifier=TextField(_("Sale #"), proxy=True, editable=False),
+            open_date=DateTextField(_("Open date"), proxy=True, editable=False),
+            status_str=TextField(_("Status"), proxy=True, editable=False),
+            salesperson_id=PersonField(_("Salesperson"), proxy=True,
+                                       can_add=False, can_edit=False,
+                                       person_type=SalesPerson),
+            client=PersonQueryField(_("Client"), proxy=True,
+                                    person_type=Client),
+        )
 
     def on_confirm(self):
         self.model.group.payer = self.model.client and self.model.client.person
 
-    def _setup_widgets(self):
-        self.salesperson_combo.set_sensitive(False)
 
-    def _fill_clients_combo(self):
-        items = Client.get_active_items(self.store)
-        self.client.prefill(items)
-        self.client.set_sensitive(len(self.client.get_model()))
+class SaleClientEditor(_BaseSalePersonChangeEditor):
 
-    def _fill_salesperson_combo(self):
-        salespersons = SalesPerson.get_active_salespersons(self.store)
-        self.salesperson_combo.prefill(salespersons)
+    def setup_proxies(self):
+        self.fields['salesperson_id'].set_sensitive(False)
 
-    def on_client__changed(self, widget):
-        self.toogle_client_details()
-
-    def on_create_client__clicked(self, button):
-        with api.new_store() as store:
-            client = run_person_role_dialog(ClientEditor, self, store, None)
-
-        if store.committed:
-            self._fill_clients_combo()
-            self.client.select(client.id)
-
-    def on_client_details__clicked(self, button):
-        client = self.model.client
-        run_dialog(ClientDetailsDialog, self, self.store, client)
+    def on_client__content_changed(self, widget):
+        client = widget.read()
+        if client is not None and client.status != Client.STATUS_SOLVENT:
+            self.fields['client'].gadget.update_edit_button(
+                gtk.STOCK_DIALOG_WARNING)
 
 
-class SalesPersonEditor(SaleClientEditor):
+class SalesPersonEditor(_BaseSalePersonChangeEditor):
     title = _('Salesperson change')
 
-    def _setup_widgets(self):
-        self.client_lbl.hide()
-        self.client_box.hide()
+    def setup_proxies(self):
+        field = self.fields['client']
+        # TODO: Maybe kiwi should have an api to hide the whole field, just
+        # like it has a set_sensitive on the field
+        for widget in [field.widget, field.label_widget,
+                       field.add_button, field.edit_button, field.delete_button]:
+            if widget:
+                widget.hide()
 
 
 class SaleTokenEditor(BaseEditor):

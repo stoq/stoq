@@ -3,35 +3,36 @@ GtkDialog(main_dialog.toplevel): title='Salesperson change', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SalesPersonEditor is attached
-        GtkVBox(toplevel):
-          GtkTable(table1, fill=True):
-            GtkHBox(hbox1):
-              GtkLabel(label1, expand=True, fill=True): '<b>Sale Number:</b>'
-              ProxyLabel(identifier, expand=True, fill=True): '<span >01337</span>'
-              GtkLabel(label5, expand=True, fill=True): 'Open Date:'
-              ProxyLabel(open_date, expand=True, fill=True): '<span >YYYY-MM-DD</span>'
-            GtkLabel(label3): 'Status:'
-            ProxyLabel(status): '<span >Confirmed</span>'
-            GtkLabel(label4): 'Salesperson:'
-            ProxyComboEntry(salesperson_combo):
-              item: 'Administrator'
-              item: 'Cleusa Blanc Ferreira Norbiato'
-              item: 'Deivis Alexandre Junior'
-              item: 'First sales person', selected
-              item: 'Maria Aparecida Ardana'
-              item: 'Osvaldo Denadai Marin'
-              item: 'SalesPerson'
-              item: 'Second sales person'
-            ProxyLabel(client_lbl): 'Client:', hidden
-            GtkHBox(client_box): hidden
-              ProxyComboEntry(client, expand=True, fill=True):
-                item: 'Alessandra Almeida Itaber\xc3\xa1'
-                item: 'Franciso Elisio de Lima Junior'
-                item: 'Luis Sergio da Silva Marin'
-                item: 'Vitalina Claudino'
-              GtkButton(create_client, fill=True):
-              GtkButton(client_details, fill=True):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6):
+        GtkEventBox(): slave BasicForm is attached
+          GtkAlignment(toplevel):
+            GtkTable():
+              ProxyLabel(identifier_lbl): 'Sale #:'
+              ProxyLabel(identifier): '<span >01337</span>'
+              GtkHBox():
+              ProxyLabel(open_date_lbl): 'Open date:'
+              ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
+              GtkHBox():
+              ProxyLabel(status_str_lbl): 'Status:'
+              ProxyLabel(status_str): '<span >Confirmed</span>'
+              GtkHBox():
+              ProxyLabel(salesperson_id_lbl): 'Salesperson:'
+              ProxyComboEntry(salesperson_id):
+                item: 'Administrator'
+                item: 'Cleusa Blanc Ferreira Norbiato'
+                item: 'Deivis Alexandre Junior'
+                item: 'First sales person', selected
+                item: 'Maria Aparecida Ardana'
+                item: 'Osvaldo Denadai Marin'
+                item: 'SalesPerson'
+                item: 'Second sales person'
+              GtkHBox():
+                GtkButton(salesperson_id_add_button): insensitive
+                GtkButton(salesperson_id_edit_button):
+              ProxyLabel(client_lbl): 'Client:', hidden
+              ProxyEntry(client): '', hidden
+              GtkHBox():
+                GtkButton(client_add_button): hidden
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
