@@ -282,6 +282,8 @@ class ExampleCreator(object):
         from stoqlib.domain.product import ProductStockItem
         if storable is None:
             storable = self.create_storable()
+        # FIXME: This should not be possible to create directly anymore. remove
+        # this and add a python assert that this wont happen
         return ProductStockItem(stock_cost=stock_cost,
                                 quantity=quantity,
                                 branch=get_current_branch(store=self.store),
@@ -298,6 +300,9 @@ class ExampleCreator(object):
         if trans_type is None:
             trans_type = StockTransactionHistory.TYPE_SELL
         return StockTransactionHistory(product_stock_item=product_stock_item,
+                                       branch=product_stock_item.branch,
+                                       storable=product_stock_item.storable,
+                                       batch=product_stock_item.batch,
                                        responsible=get_current_user(store=self.store),
                                        stock_cost=stock_cost,
                                        quantity=quantity,
