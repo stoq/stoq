@@ -28,7 +28,7 @@
 
 import datetime
 
-
+from stoqlib.domain.transfer import TransferOrder
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.report import HTMLReport, ObjectListReport
 
@@ -49,11 +49,12 @@ class TransferOrderReceipt(HTMLReport):
         HTMLReport.__init__(self, filename)
 
     def get_namespace(self):
+        is_cancelled = self.order.status == TransferOrder.STATUS_CANCELLED
         total = 0
         for item in self.order.get_items():
             total += item.quantity
         return dict(subtitle="Transfer number: %s" % (self.order.identifier, ),
-                    order=self.order, total=total)
+                    order=self.order, total=total, is_cancelled=is_cancelled)
 
     def adjust_for_test(self):
         date = datetime.date(2012, 01, 01)

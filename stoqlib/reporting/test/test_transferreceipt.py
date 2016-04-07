@@ -44,6 +44,19 @@ class TestTransferReceipt(ReportTest):
         order.receive(self.create_employee())
         self._diff_expected(TransferOrderReceipt, 'transfer-receipt', order)
 
+    def test_transfer_receipt_cancelled(self):
+        source_branch = self.create_branch(name=u'Stoq Roupas')
+        destination_branch = self.create_branch(name=u'Stoq Sapatos')
+        order = self.create_transfer_order(source_branch=source_branch,
+                                           dest_branch=destination_branch)
+        for i in range(5):
+            self.create_transfer_order_item(order)
+
+        order.send()
+        order.cancel(self.create_employee())
+        self._diff_expected(TransferOrderReceipt,
+                            'transfer-receipt-cancelled', order)
+
 
 class TestTransferReport(ReportTest):
     """Transfer Report tests"""
