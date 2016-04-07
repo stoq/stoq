@@ -20,14 +20,19 @@
       <tbody>
         <tr>
           <td>${_("Invoice number")}:</td>
-          <td>${ order.invoice_number}</td>
+          <td>${ order.invoice_number if order.invoice_number else _("N/A") }</td>
+          <td>${_("Status")}:</td>
+          <td>${ order.status_str}</td>
         </tr>
         <tr>
           <td>${_("Open date")}:</td>
           <td>${ order.open_date.strftime('%x')}</td>
-          % if order.receival_date:
-            <td>${_("Receival")}:</td>
-            <td>${ order.receival_date.strftime('%x')}</td>
+          % if is_cancelled:
+            <td>${ _("Cancel date") }:</td>
+            <td>${ order.cancel_date.strftime('%x') }</td>
+          % else:
+            <td>${ _("Receival") }:</td>
+            <td>${ order.receival_date.strftime('%x') if order.receival_date else _("Not received yet") }</td>
           % endif
         </tr>
         <tr>
@@ -40,11 +45,11 @@
           <td>${ _("Responsible") }:</td>
           <td>${ order.source_responsible.person.name }</td>
           <td>${ _("Responsible") }:</td>
-          <td>
-            % if order.destination_responsible:
-              ${ order.destination_responsible.person.name }
-            % endif
-          </td>
+          % if is_cancelled:
+            <td>${ order.cancel_responsible.person.name }</td>
+          % else:
+            <td>${ order.destination_responsible.person.name if order.destination_responsible else _("N/A") }</td>
+          % endif
         </tr>
       </tbody>
     </table>
