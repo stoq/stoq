@@ -64,14 +64,17 @@ _default_store = None
 _stores = weakref.WeakSet()
 
 
-def autoreload_object(obj):
+def autoreload_object(obj, obj_store=False):
     """Autoreload object in any other existing store.
 
     This will go through every open store and see if the object is alive in the
     store. If it is, it will be marked for autoreload the next time its used.
+
+    :param obj_store: if we should also autoreload the current store
+        of the object
     """
     for store in _stores:
-        if Store.of(obj) is store:
+        if not obj_store and Store.of(obj) is store:
             continue
 
         alive = store._alive.get((obj.__class__, (obj.id,)))

@@ -94,7 +94,7 @@ from stoqlib.database.expr import (Field, TransactionTimestamp,
 from stoqlib.database.properties import (BoolCol, DateTimeCol, DecimalCol,
                                          EnumCol, IdCol, IntCol, PercentCol,
                                          PriceCol, QuantityCol, UnicodeCol)
-from stoqlib.database.runtime import get_current_user
+from stoqlib.database.runtime import get_current_user, autoreload_object
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
@@ -1086,17 +1086,6 @@ class ProductStockItem(Domain):
     #: The |batch| that the storable is in.
     batch = Reference(batch_id, 'StorableBatch.id')
 
-    def update_cost(self, new_quantity, new_cost):
-        """Update the stock_item according to new quantity and cost.
-
-        :param new_quantity: The new quantity added to stock.
-        :param new_cost: The cost of one unit of the added stock.
-        """
-        total_cost = self.quantity * self.stock_cost
-        total_cost += new_quantity * new_cost
-        total_items = self.quantity + new_quantity
-        self.stock_cost = total_cost / total_items
-
 
 class Storable(Domain):
     '''Storable represents the stock of a |product|.
@@ -1181,29 +1170,25 @@ class Storable(Domain):
             raise ValueError(u"branch cannot be None")
 
         stock_item = self.get_stock_item(branch, batch)
-        # If the stock_item is missing create a new one
-        if stock_item is None:
-            store = self.store
-            stock_item = ProductStockItem(store=store, storable=self,
-                                          batch=batch, branch=store.fetch(branch))
+        old_quantity = stock_item.quantity if stock_item else 0
 
-        # Unit cost must be updated here as
-        # 1) we need the stock item which might not exist
-        # 2) it needs to be updated before we change the quantity of the
-        #    stock item
-        if unit_cost is not None:
-            stock_item.update_cost(quantity, unit_cost)
+        stock_transaction = StockTransactionHistory(
+            store=self.store,
+            storable=self,
+            branch=branch,
+            batch=batch,
+            quantity=quantity,
+            unit_cost=unit_cost,
+            responsible=get_current_user(self.store),
+            type=type,
+            object_id=object_id)
 
-        old_quantity = stock_item.quantity
-        stock_item.quantity += quantity
-
-        StockTransactionHistory(product_stock_item=stock_item,
-                                quantity=quantity,
-                                stock_cost=stock_item.stock_cost,
-                                responsible=get_current_user(self.store),
-                                type=type,
-                                object_id=object_id,
-                                store=self.store)
+        # Flush the store so the trigger that updates the ProductStockItem
+        # will run and reload it after
+        self.store.flush()
+        autoreload_object(stock_transaction, obj_store=True)
+        stock_item = stock_transaction.product_stock_item
+        autoreload_object(stock_item, obj_store=True)
 
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)
@@ -1238,16 +1223,22 @@ class Storable(Domain):
                 _('Quantity to sell is greater than the available stock.'))
 
         old_quantity = stock_item.quantity
-        stock_item.quantity -= quantity
-
         stock_transaction = StockTransactionHistory(
-            product_stock_item=stock_item,
+            store=self.store,
+            storable=self,
+            branch=branch,
+            batch=batch,
             quantity=-quantity,
-            stock_cost=stock_item.stock_cost,
+            unit_cost=stock_item.stock_cost,
             responsible=get_current_user(self.store),
             type=type,
-            object_id=object_id,
-            store=self.store)
+            object_id=object_id)
+
+        # Flush the store so the trigger that updates the ProductStockItem
+        # will run and reload it after
+        self.store.flush()
+        autoreload_object(stock_transaction, obj_store=True)
+        autoreload_object(stock_item, obj_store=True)
 
         if cost_center is not None:
             cost_center.add_stock_transaction(stock_transaction)
@@ -1542,6 +1533,17 @@ class StockTransactionHistory(Domain):
 
     #: the |productstockitem| used in the transaction
     product_stock_item = Reference(product_stock_item_id, 'ProductStockItem.id')
+
+    branch_id = IdCol()
+    branch = Reference(branch_id, 'Branch.id')
+
+    storable_id = IdCol()
+    storable = Reference(storable_id, 'Storable.id')
+
+    batch_id = IdCol()
+    batch = Reference(batch_id, 'StorableBatch.id')
+
+    unit_cost = PriceCol(default=None)
 
     #: the stock cost of the transaction on the time it was made
     stock_cost = PriceCol()
