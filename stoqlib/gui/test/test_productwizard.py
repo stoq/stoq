@@ -231,8 +231,10 @@ class TestProducCreateWizard(GUITest):
 
         package_slave.component_combo.select_item_by_position(0)
         selected = package_slave.component_combo.get_selected()
-        temp = TemporaryProductComponent(product=package_slave._product,
-                                         component=selected)
+        temp = TemporaryProductComponent(package_slave.store,
+                                         product=package_slave._product,
+                                         component=selected,
+                                         price=10)
         # After select a component add button will be sensitive
         self.assertSensitive(package_slave, ['add_button'])
         # And the other remain not sensitive
@@ -248,6 +250,7 @@ class TestProducCreateWizard(GUITest):
         self.assertTrue(hasattr(args[3], 'component'))
         self.assertTrue(hasattr(args[3], 'quantity'))
         self.assertTrue(hasattr(args[3], 'design_reference'))
+        self.assertTrue(hasattr(args[3], 'price'))
 
     @mock.patch('stoqlib.gui.wizards.productwizard.yesno')
     def test_create_product_alike(self, yesno):

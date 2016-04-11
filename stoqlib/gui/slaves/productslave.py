@@ -533,10 +533,13 @@ class ProductComponentSlave(BaseEditorSlave):
 
     def _get_components(self, product):
         for component in self.store.find(ProductComponent, product=product):
-            yield TemporaryProductComponent(product=component.product,
-                                            component=component.component,
-                                            quantity=component.quantity,
-                                            design_reference=component.design_reference)
+            yield TemporaryProductComponent(
+                self.store,
+                product=component.product,
+                component=component.component,
+                quantity=component.quantity,
+                design_reference=component.design_reference,
+                price=component.price)
 
     def _add_to_component_tree(self, component=None):
         parent = None
@@ -565,6 +568,7 @@ class ProductComponentSlave(BaseEditorSlave):
             update = False
             component = self.component_combo.get_selected_data()
             product_component = TemporaryProductComponent(
+                self.store,
                 product=self._product, component=component)
             # If we try to add a component which is already in tree,
             # just edit it
@@ -644,7 +648,7 @@ class ProductComponentSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self._product, self.proxy_widgets)
 
     def create_model(self, store):
-        return TemporaryProductComponent(product=self._product)
+        return TemporaryProductComponent(self.store, product=self._product)
 
     def on_confirm(self):
         for component in self._remove_component_list:
@@ -652,6 +656,7 @@ class ProductComponentSlave(BaseEditorSlave):
 
         for component in self.component_tree:
             component.add_or_update_product_component(self.store)
+        self._product.update_sellable_price()
 
     def validate_confirm(self):
         if not len(self.component_tree) > 0:
@@ -727,6 +732,8 @@ class ProductPackageSlave(ProductComponentSlave):
                            data_type=str, expand=True),
                     Column('category', title=_(u'Category'), data_type=str),
                     Column('total_production_cost', title=_(u'Total'),
+                           format_func=get_formatted_cost, data_type=currency),
+                    Column('price', title=_(u'Price'),
                            format_func=get_formatted_cost, data_type=currency)]
 
 
