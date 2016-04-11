@@ -397,12 +397,13 @@ class ExampleCreator(object):
         return ProductManufacturer(store=self.store, name=name, code=code)
 
     def create_product_component(self, product=None, component=None,
-                                 component_quantity=1, storable=False):
+                                 component_quantity=1, price=0, storable=False):
         from stoqlib.domain.product import ProductComponent
-        return ProductComponent(product=product or self.create_product(storable=storable),
+        return ProductComponent(store=self.store,
+                                product=product or self.create_product(storable=storable),
                                 component=component or self.create_product(storable=storable),
                                 quantity=component_quantity,
-                                store=self.store)
+                                price=price)
 
     def create_sellable(self, price=None, product=True,
                         description=u'Description', code=u'', storable=False):

@@ -729,6 +729,15 @@ class Product(Domain):
 
         return target
 
+    def update_sellable_price(self):
+        """Update the sellable price
+
+        Summarize the |product_component| price to set the package price
+        """
+        if not self.is_package:
+            return
+        self.sellable.price = sum(child.price * child.quantity
+                                  for child in self.get_components())
     #
     # Domain
     #
@@ -1685,6 +1694,8 @@ class ProductComponent(Domain):
     component_id = IdCol()
     component = Reference(component_id, 'Product.id')
     design_reference = UnicodeCol(default=u'')
+    #: The price to be used on |sale_item|
+    price = PriceCol()
 
 
 @implementer(IDescribable)

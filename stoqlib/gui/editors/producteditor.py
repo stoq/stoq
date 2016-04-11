@@ -58,8 +58,8 @@ _ = stoqlib_gettext
 #
 
 class TemporaryProductComponent(object):
-    def __init__(self, product=None, component=None, quantity=Decimal(1),
-                 design_reference=u''):
+    def __init__(self, store, product=None, component=None, quantity=Decimal(1),
+                 design_reference=u'', price=Decimal(0)):
         self.product = product
         self.component = component
         self.quantity = quantity
@@ -75,6 +75,10 @@ class TemporaryProductComponent(object):
             self.category = sellable.get_category_description()
             self.unit = sellable.unit_description
             self.production_cost = self.component.get_production_cost()
+            product_component = self._get_product_component(store)
+            self.price = product_component.price if product_component else price
+        else:
+            self.price = price
 
     def _get_product_component(self, store):
         return store.find(ProductComponent,
@@ -85,7 +89,8 @@ class TemporaryProductComponent(object):
     #
 
     def get_total_production_cost(self):
-        return quantize(self.production_cost * self.quantity)
+        cost = self.price or self.production_cost
+        return quantize(cost * self.quantity)
 
     def delete_product_component(self, store):
         component = self._get_product_component(store)
@@ -100,13 +105,15 @@ class TemporaryProductComponent(object):
             # updating
             component.quantity = self.quantity
             component.design_reference = self.design_reference
+            component.price = self.price
         else:
             # adding
             ProductComponent(product=self.product,
                              component=self.component,
                              quantity=self.quantity,
                              design_reference=self.design_reference,
-                             store=store)
+                             store=store,
+                             price=self.price)
 
 #
 #   Quality Test Editor & Slave
@@ -244,11 +251,13 @@ class ProductSupplierEditor(BaseEditor):
 
 class ProductComponentEditor(BaseEditor):
     gladefile = 'ProductComponentEditor'
-    proxy_widgets = ['quantity', 'design_reference']
+    proxy_widgets = ['quantity', 'design_reference', 'price']
     title = _(u'Product Component')
     model_type = TemporaryProductComponent
 
     def _setup_widgets(self):
+        self.price.hide()
+        self.price_lbl.hide()
         self.component_description.set_text(self.model.description)
         self.quantity.set_adjustment(
             gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
@@ -281,10 +290,22 @@ class ProductComponentEditor(BaseEditor):
 
 
 class ProductPackageComponentEditor(ProductComponentEditor):
+    confirm_widgets = ['price']
+
     def setup_proxies(self):
         super(ProductPackageComponentEditor, self).setup_proxies()
         self.design_reference.hide()
         self.design_reference_lbl.hide()
+        self.price.show()
+        self.price_lbl.show()
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_price__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(_("The price must be greater than zero."))
 
 
 class ProductEditor(SellableEditor):
@@ -370,6 +391,15 @@ class ProductEditor(SellableEditor):
         elif self.model.product_type == Product.TYPE_GRID:
             msg = (_("This is just a skeleton product responsible for "
                      "creating grid products. Create those on the 'Grid' tab"))
+            self._add_infobar(msg, gtk.MESSAGE_INFO)
+        if self.model.product_type == Product.TYPE_PACKAGE:
+            # We are building its sale price on Pack content tab, so disable
+            # this the widget and set a simbolic value
+            self.price.set_property('sensitive', False)
+            # FIXME Disable promotional price for now
+            self.sale_price_button.set_property('sensitive', False)
+            msg = (_("The price of this product consists of the sum of "
+                     "its components price on 'Pack content' tab"))
             self._add_infobar(msg, gtk.MESSAGE_INFO)
 
     def get_extra_tabs(self):

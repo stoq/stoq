@@ -672,6 +672,22 @@ class TestProduct(DomainTest):
                 self.assertEquals(getattr(prod_suppliers[i], prop),
                                   getattr(new_prod_suppliers[i], prop))
 
+    def test_update_sellable_price(self):
+        package = self.create_product(description=u'Package', is_package=True)
+        component1 = self.create_product(description=u'Component', stock=2)
+        component2 = self.create_product(description=u'Component 2', stock=2)
+        self.create_product_component(product=package, component=component1,
+                                      component_quantity=2, price=Decimal('5'))
+        self.create_product_component(product=package, component=component2,
+                                      component_quantity=1, price=Decimal('10'))
+        package.update_sellable_price()
+        self.assertEquals(package.sellable.price, 20)
+
+        # Try to update children
+        component1.update_sellable_price()
+        # 10 is the default price created
+        self.assertEquals(component1.sellable.price, 10)
+
 
 class TestGridGroup(DomainTest):
 
