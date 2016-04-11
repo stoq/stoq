@@ -493,7 +493,12 @@ class FinishPurchaseStep(WizardEditorStep):
                                  PurchaseOrder.ORDER_CONSIGNED]:
             self.model.confirm()
 
+        temporary_identifier = None
+        if self.wizard.is_for_another_branch():
+            temporary_identifier = ReceivingOrder.get_temporary_identifier(self.store)
+
         receiving_model = ReceivingOrder(
+            identifier=temporary_identifier,
             responsible=api.get_current_user(self.store),
             supplier=self.model.supplier,
             branch=self.model.branch,
@@ -540,7 +545,7 @@ class FinishPurchaseStep(WizardEditorStep):
         self._set_receival_date_suggestion()
 
         # If the purchase is for another branch, we should not allow receiving
-        if self.model.has_batch_item() or self.wizard.is_for_another_branch():
+        if self.model.has_batch_item():
             self.receive_now.hide()
 
         self.register_validate_function(self.wizard.refresh_next)
