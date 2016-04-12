@@ -1,0 +1,150 @@
+
+<html>
+  <head>
+    
+  <title>Transfer Receipt</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <link rel="stylesheet" href="transfer/transfer.css" type="text/css" />
+  
+  <style>
+    @page {
+      @bottom-left {
+        content: "Stoq Retail Management"
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages)
+      }
+      @top-left {
+        content: "Transfer Receipt"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+  </head>
+  <body>
+    
+
+
+
+
+
+
+
+<div class="page">
+
+  
+  <header>
+    <div id="title">
+      <h1>Transfer Receipt</h1>
+      <span class="subtitle">Transfer number: 00050</span>
+      <div class="logo">
+        <img src="logo.png"/>
+      </div>
+    </div>
+  </header>
+
+
+  <section>
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>Invoice number:</td>
+          <td>N/A</td>
+          <td>Status:</td>
+          <td>Cancelled</td>
+        </tr>
+        <tr>
+          <td>Open date:</td>
+          <td>01/01/12</td>
+            <td>Cancel date:</td>
+            <td>06/30/16</td>
+        </tr>
+        <tr>
+          <td>Source:</td>
+          <td>Stoq Roupas shop</td>
+          <td>Destination:</td>
+          <td>Stoq Sapatos shop</td>
+        </tr>
+        <tr>
+          <td>Responsible:</td>
+          <td>Ipswich</td>
+          <td>Responsible:</td>
+            <td>SalesPerson</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <td>#</td>
+          <td>Description</td>
+          <td>Quantity</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody class="list">
+          <tr>
+            <td></td>
+            <td>Description</td>
+            <td>5.000</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Description</td>
+            <td>5.000</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Description</td>
+            <td>5.000</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Description</td>
+            <td>5.000</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Description</td>
+            <td>5.000</td>
+          </tr>
+        <tr class="summary">
+          <td colspan="3">Total: 25.000</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                       if there is not enough space -->
+    <span class="signature">Ipswich</span>
+      <span class="signature">Bolton</span>
+  </section>
+</div> <!-- end div.page -->
+
+  </body>
+</html>
+
+
