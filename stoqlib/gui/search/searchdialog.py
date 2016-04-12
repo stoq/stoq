@@ -492,6 +492,8 @@ class SearchDialog(BasicDialog):
 
     def _on_export_csv_button__clicked(self, widget):
         if not self.unlimited_results:
+            # FIXME: This is making the filters set by the user be respected
+            # when exporting the results.
             executer = self.search.get_query_executer()
             data = executer.search(limit=-1)
         else:
