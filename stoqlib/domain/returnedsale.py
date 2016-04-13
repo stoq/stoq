@@ -219,8 +219,7 @@ class ReturnedSaleItem(Domain):
         storable = self.sellable.product_storable
         if storable:
             storable.decrease_stock(self.quantity, self.returned_sale.branch,
-                                    # FIXME: Create a new type
-                                    StockTransactionHistory.TYPE_RETURNED_SALE,
+                                    StockTransactionHistory.TYPE_UNDO_RETURNED_SALE,
                                     self.id, batch=self.batch)
         if self.sale_item:
             self.sale_item.quantity_decreased += self.quantity

@@ -33,7 +33,8 @@ from stoqlib.lib.dateutils import localtoday
 
 class TestCostCenterDialog(GUITest):
     def test_show(self):
-        stock_transaction = self.create_stock_transaction_history()
+        stock_transaction = self.create_stock_transaction_history(
+            trans_type=StockTransactionHistory.TYPE_SELL)
         entry = self.create_cost_center_entry(stock_transaction=stock_transaction)
         cost_center = entry.cost_center
         sale_item = self.create_sale_item()

@@ -25,15 +25,17 @@
 __tests__ = 'stoqlib/domain/costcenter.py'
 
 from stoqlib.domain.costcenter import CostCenter, CostCenterEntry
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestCostCenter(DomainTest):
     def test_add_transaction(self):
         cost_center = self.create_cost_center()
-        stock_item = self.create_product_stock_item(quantity=1)
+        initial_trans = self.create_stock_transaction_history(quantity=1)
         stock_trans = self.create_stock_transaction_history(
-            product_stock_item=stock_item, quantity=-1)
+            branch=initial_trans.branch, storable=initial_trans.storable,
+            trans_type=StockTransactionHistory.TYPE_SELL, quantity=-1)
 
         entry = self.store.find(CostCenterEntry, stock_transaction=stock_trans)
         self.assertEquals(len(list(entry)), 0)
@@ -75,9 +77,12 @@ class TestCostCenter(DomainTest):
                           [cost_center_entry3])
 
     def test_get_stock_transaction_entries(self):
-        stock_trans1 = self.create_stock_transaction_history()
-        stock_trans2 = self.create_stock_transaction_history()
-        stock_trans3 = self.create_stock_transaction_history()
+        stock_trans1 = self.create_stock_transaction_history(
+            trans_type=StockTransactionHistory.TYPE_SELL)
+        stock_trans2 = self.create_stock_transaction_history(
+            trans_type=StockTransactionHistory.TYPE_SELL)
+        stock_trans3 = self.create_stock_transaction_history(
+            trans_type=StockTransactionHistory.TYPE_SELL)
 
         cost_center_entry1 = self.create_cost_center_entry(
             stock_transaction=stock_trans1)

@@ -1095,6 +1095,13 @@ class ProductStockItem(Domain):
     #: The |batch| that the storable is in.
     batch = Reference(batch_id, 'StorableBatch.id')
 
+    @property
+    def transactions(self):
+        return self.store.find(StockTransactionHistory,
+                               storable=self.storable,
+                               branch=self.branch,
+                               batch=self.batch)
+
 
 class Storable(Domain):
     '''Storable represents the stock of a |product|.
@@ -1191,13 +1198,7 @@ class Storable(Domain):
             responsible=get_current_user(self.store),
             type=type,
             object_id=object_id)
-
-        # Flush the store so the trigger that updates the ProductStockItem
-        # will run and reload it after
-        self.store.flush()
-        autoreload_object(stock_transaction, obj_store=True)
         stock_item = stock_transaction.product_stock_item
-        autoreload_object(stock_item, obj_store=True)
 
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)
@@ -1243,12 +1244,6 @@ class Storable(Domain):
             type=type,
             object_id=object_id)
 
-        # Flush the store so the trigger that updates the ProductStockItem
-        # will run and reload it after
-        self.store.flush()
-        autoreload_object(stock_transaction, obj_store=True)
-        autoreload_object(stock_item, obj_store=True)
-
         if cost_center is not None:
             cost_center.add_stock_transaction(stock_transaction)
 
@@ -1282,6 +1277,25 @@ class Storable(Domain):
         self.increase_stock(quantity, branch,
                             StockTransactionHistory.TYPE_INITIAL,
                             object_id=None, unit_cost=unit_cost, batch=batch)
+
+    def update_stock_cost(self, stock_cost, branch, batch=None):
+        """Update the stock cost
+
+        :param stock_cost: The new stock cost
+        :param branch: The branch where the stock cost will be updated
+        :param batch: The batch of the storable
+            self.is_batch is ``True``
+        """
+        StockTransactionHistory(
+            store=self.store,
+            storable=self,
+            branch=branch,
+            batch=batch,
+            quantity=0,
+            unit_cost=stock_cost,
+            responsible=get_current_user(self.store),
+            type=StockTransactionHistory.TYPE_UPDATE_STOCK_COST,
+            object_id=None)
 
     def get_total_balance(self):
         """Return the stock balance for the |product| in all |branches|
@@ -1454,6 +1468,9 @@ class StockTransactionHistory(Domain):
     #: the transaction is a return of a sale
     TYPE_RETURNED_SALE = u'returned-sale'
 
+    #: the transaction is an undo of a returned sale
+    TYPE_UNDO_RETURNED_SALE = u'undo-returned-sale'
+
     #: the transaction is the cancellation of a sale
     TYPE_CANCELED_SALE = u'cancelled-sale'
 
@@ -1510,6 +1527,16 @@ class StockTransactionHistory(Domain):
     #: the transaction is a reserved product from a sale
     TYPE_SALE_RESERVED = u'sale-reserved'
 
+    #: the transaction is a reserved product from a sale
+    TYPE_SALE_RETURN_TO_STOCK = u'sale-return-to-stock'
+
+    #: the transaction is a manual adjust done on the database
+    TYPE_MANUAL_ADJUST = u'manual-adjust'
+
+    #: the transaction is an adjustment on the stock cost with no update
+    #: on the stock itself
+    TYPE_UPDATE_STOCK_COST = u'update-stock-cost'
+
     types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
              TYPE_LOANED: _(u'Loaned for loan %s'),
@@ -1520,6 +1547,7 @@ class StockTransactionHistory(Domain):
                                          u'production %s'),
              TYPE_RECEIVED_PURCHASE: _(u'Received for receiving order %s'),
              TYPE_RETURNED_SALE: _(u'Returned sale %s'),
+             TYPE_UNDO_RETURNED_SALE: _(u'Undone the returned sale %s'),
              TYPE_CANCELED_SALE: _(u'Returned from canceled sale %s'),
              TYPE_SELL: _(u'Sold in sale %s'),
              TYPE_STOCK_DECREASE: _(u'Product removal for stock decrease %s'),
@@ -1533,20 +1561,19 @@ class StockTransactionHistory(Domain):
              TYPE_WORK_ORDER_USED: _(u'Used on work order %s.'),
              TYPE_WORK_ORDER_RETURN_TO_STOCK: _(u'Returned to stock on work order %s.'),
              TYPE_SALE_RESERVED: _(u'Reserved for sale %s.'),
+             TYPE_SALE_RETURN_TO_STOCK: _(u'Reserved quantity for sale %s '
+                                          u'returned to stock.'),
+             TYPE_MANUAL_ADJUST: _(u'Quantity manually adjusted'),
+             TYPE_UPDATE_STOCK_COST: _(u'Stock cost updated with no change on the stock'),
              }
 
     #: the date and time the transaction was made
     date = DateTimeCol(default_factory=localnow)
 
-    product_stock_item_id = IdCol()
-
-    #: the |productstockitem| used in the transaction
-    product_stock_item = Reference(product_stock_item_id, 'ProductStockItem.id')
-
-    branch_id = IdCol()
+    branch_id = IdCol(allow_none=False)
     branch = Reference(branch_id, 'Branch.id')
 
-    storable_id = IdCol()
+    storable_id = IdCol(allow_none=False)
     storable = Reference(storable_id, 'Storable.id')
 
     batch_id = IdCol()
@@ -1576,14 +1603,41 @@ class StockTransactionHistory(Domain):
     def total(self):
         return currency(abs(self.stock_cost * self.quantity))
 
+    @property
+    def product_stock_item(self):
+        return self.storable.get_stock_item(self.branch, self.batch)
+
+    def __init__(self, **kwargs):
+        # In some situations, storm would create the object without passing the
+        # id of those reference objects, making the trigger fail to execute.
+        # batch is the only one that we check differently because it is
+        # not mandatory
+        if 'branch_id' not in kwargs:
+            kwargs['branch_id'] = kwargs.pop('branch').id
+        if 'storable_id' not in kwargs:
+            kwargs['storable_id'] = kwargs.pop('storable').id
+        if 'batch' in kwargs:
+            batch = kwargs.pop('batch')
+            kwargs['batch_id'] = batch and batch.id
+
+        super(StockTransactionHistory, self).__init__(**kwargs)
+
+        # Flush the store so the trigger that updates the ProductStockItem
+        # will run and reload it after
+        self.store.flush()
+        autoreload_object(self, obj_store=True)
+        autoreload_object(self.product_stock_item, obj_store=True)
+
     def get_object(self):
-        if self.type in [self.TYPE_INITIAL, self.TYPE_IMPORTED]:
+        if self.type in [self.TYPE_INITIAL, self.TYPE_IMPORTED,
+                         self.TYPE_UPDATE_STOCK_COST, self.TYPE_MANUAL_ADJUST]:
             return None
         elif self.type in [self.TYPE_SELL, self.TYPE_CANCELED_SALE,
                            self.TYPE_SALE_RESERVED]:
             from stoqlib.domain.sale import SaleItem
             return self.store.get(SaleItem, self.object_id)
-        elif self.type == self.TYPE_RETURNED_SALE:
+        elif self.type in [self.TYPE_RETURNED_SALE,
+                           self.TYPE_UNDO_RETURNED_SALE]:
             from stoqlib.domain.returnedsale import ReturnedSaleItem
             return self.store.get(ReturnedSaleItem, self.object_id)
         elif self.type == self.TYPE_PRODUCTION_PRODUCED:
@@ -1670,7 +1724,8 @@ class StockTransactionHistory(Domain):
         """ Based on the type of the transaction, returns the string
         description
         """
-        if self.type in [self.TYPE_INITIAL, self.TYPE_IMPORTED]:
+        if self.type in [self.TYPE_INITIAL, self.TYPE_IMPORTED,
+                         self.TYPE_MANUAL_ADJUST, self.TYPE_UPDATE_STOCK_COST]:
             return self.types[self.type]
 
         object_parent = self.get_object_parent()

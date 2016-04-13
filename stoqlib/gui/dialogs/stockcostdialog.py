@@ -43,6 +43,7 @@ class _TemporaryItem(object):
         self.obj = item
         self.code = item.code
         self.description = item.description
+        self.old_stock_cost = item.stock_cost
         self.stock_cost = item.stock_cost
 
 
@@ -79,16 +80,6 @@ class StockCostDialog(BaseEditor):
                        data_type=currency, format_func=get_formatted_cost,
                        editable=True)]
 
-    def _validate_confirm(self, item, store):
-        if (item.stock_cost is not ValueUnset and
-            item.stock_cost > 0):
-            storable = item.obj.product.storable
-            # TODO: add batch information here. Should we edit the the cost of
-            # each batch individually, or one cost for all the batches?
-            stock_item = store.fetch(storable.get_stock_item(self._branch, None))
-            stock_item.stock_cost = item.stock_cost
-            self.retval.append(item.obj.product.sellable)
-
     #
     # BaseEditorSlave
     #
@@ -102,12 +93,18 @@ class StockCostDialog(BaseEditor):
 
     def on_confirm(self):
         self.retval = []
-        store = api.new_store()
-        for item in self._storables:
-            self._validate_confirm(item, store)
-
-        store.confirm(True)
-        store.close()
+        with api.new_store() as store:
+            for item in self._storables:
+                if (item.stock_cost is ValueUnset or
+                        item.stock_cost == item.old_stock_cost or
+                        item.stock_cost == 0):
+                    continue
+                storable = store.fetch(item.obj.product.storable)
+                # TODO: add batch information here. Should we edit the the cost of
+                # each batch individually, or one cost for all the batches?
+                storable.update_stock_cost(item.stock_cost,
+                                           self.store.fetch(self._branch))
+                self.retval.append(item.obj.product.sellable)
 
     #
     # Callbacks

@@ -279,35 +279,28 @@ class ExampleCreator(object):
 
     def create_product_stock_item(self, stock_cost=0, quantity=0,
                                   branch=None, storable=None):
-        from stoqlib.domain.product import ProductStockItem
-        if storable is None:
-            storable = self.create_storable()
-        # FIXME: This should not be possible to create directly anymore. remove
-        # this and add a python assert that this wont happen
-        return ProductStockItem(stock_cost=stock_cost,
-                                quantity=quantity,
-                                branch=get_current_branch(store=self.store),
-                                storable=storable,
-                                store=self.store)
+        sth = self.create_stock_transaction_history(
+            storable=storable, branch=branch, quantity=quantity,
+            stock_cost=stock_cost)
+        return sth.product_stock_item
 
-    def create_stock_transaction_history(self, product_stock_item=None,
-                                         stock_cost=0,
-                                         quantity=0,
+    def create_stock_transaction_history(self, storable=None, branch=None,
+                                         batch=None, stock_cost=0, quantity=0,
                                          trans_type=None):
         from stoqlib.domain.product import StockTransactionHistory
-        if product_stock_item is None:
-            product_stock_item = self.create_product_stock_item()
-        if trans_type is None:
-            trans_type = StockTransactionHistory.TYPE_SELL
-        return StockTransactionHistory(product_stock_item=product_stock_item,
-                                       branch=product_stock_item.branch,
-                                       storable=product_stock_item.storable,
-                                       batch=product_stock_item.batch,
-                                       responsible=get_current_user(store=self.store),
-                                       stock_cost=stock_cost,
-                                       quantity=quantity,
-                                       type=trans_type,
-                                       store=self.store)
+        trans_type = trans_type or StockTransactionHistory.TYPE_INITIAL
+        branch = branch or get_current_branch(store=self.store)
+        storable = storable or self.create_storable()
+        sth = StockTransactionHistory(
+            branch=branch,
+            storable=storable,
+            batch=batch,
+            responsible=get_current_user(store=self.store),
+            unit_cost=stock_cost,
+            quantity=quantity,
+            type=trans_type,
+            store=self.store)
+        return sth
 
     def create_product_supplier_info(self, supplier=None, product=None):
         from stoqlib.domain.product import ProductSupplierInfo

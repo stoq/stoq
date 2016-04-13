@@ -139,23 +139,23 @@ class TestProductSearch(GUITest):
         self.clean_domain([StockTransactionHistory, ProductSupplierInfo,
                            ProductStockItem, Storable, Product])
 
-        branches = self.store.find(Branch)
+        branches = list(self.store.find(Branch))
 
         product = self.create_product()
         storable = self.create_storable(product=product)
-        ProductStockItem(quantity=1, branch=branches[0], storable=storable,
-                         store=self.store)
-        ProductStockItem(quantity=2, branch=branches[1], storable=storable,
-                         store=self.store)
+        self.create_product_stock_item(
+            storable=storable, branch=branches[0], quantity=1)
+        self.create_product_stock_item(
+            storable=storable, branch=branches[1], quantity=2)
         product.sellable.code = u'1'
         product.sellable.description = u'Luvas'
 
         product = self.create_product()
         storable = self.create_storable(product=product)
-        ProductStockItem(quantity=3, branch=branches[0], storable=storable,
-                         store=self.store)
-        ProductStockItem(quantity=4, branch=branches[1], storable=storable,
-                         store=self.store)
+        self.create_product_stock_item(
+            storable=storable, branch=branches[0], quantity=3)
+        self.create_product_stock_item(
+            storable=storable, branch=branches[1], quantity=4)
         product.sellable.code = u'2'
         product.sellable.description = u'Botas'
         product.sellable.status = Sellable.STATUS_CLOSED
@@ -285,15 +285,15 @@ class TestProductsSoldSearch(GUITest):
 
         product = self.create_product()
         storable = Storable(store=self.store, product=product)
-        ProductStockItem(storable=storable, branch=branch, quantity=5,
-                         store=self.store)
+        self.create_product_stock_item(
+            storable=storable, branch=branch, quantity=5)
         product.sellable.code = u'1'
         product.sellable.description = u'Luvas'
 
         product2 = self.create_product()
         storable2 = Storable(store=self.store, product=product2)
-        ProductStockItem(storable=storable2, branch=branch, quantity=5,
-                         store=self.store)
+        self.create_product_stock_item(
+            storable=storable2, branch=branch, quantity=5)
         product2.sellable.code = u'2'
         product2.sellable.description = u'Botas'
 
@@ -438,16 +438,16 @@ class TestProductBrandSearch(GUITest):
 
         product = self.create_product()
         storable = Storable(store=self.store, product=product)
-        ProductStockItem(store=self.store, storable=storable,
-                         branch=branch, quantity=2)
+        self.create_product_stock_item(
+            storable=storable, branch=branch, quantity=2)
         product.brand = u''
         product.sellable.code = u'1'
         product.sellable.description = u'Luvas'
 
         product2 = self.create_product()
         storable2 = Storable(store=self.store, product=product2)
-        ProductStockItem(store=self.store, storable=storable2,
-                         branch=branch, quantity=4)
+        self.create_product_stock_item(
+            storable=storable2, branch=branch, quantity=4)
         product2.brand = u'brand'
         product.sellable.code = u'2'
         product.sellable.description = u'Botas'
@@ -497,16 +497,16 @@ class TestProductClosedStockSearch(GUITest):
 
         product = self.create_product()
         storable = Storable(store=self.store, product=product)
-        ProductStockItem(store=self.store, storable=storable,
-                         branch=branch, quantity=2)
+        self.create_product_stock_item(
+            storable=storable, branch=branch, quantity=2)
         product.sellable.code = u'1'
         product.sellable.description = u'Luvas'
         product.sellable.status = Sellable.STATUS_CLOSED
 
         product = self.create_product()
         storable = Storable(store=self.store, product=product)
-        ProductStockItem(store=self.store, storable=storable,
-                         branch=branch, quantity=4)
+        self.create_product_stock_item(
+            storable=storable, branch=branch, quantity=4)
         product.sellable.code = u'2'
         product.sellable.description = u'Botas'
         product.sellable.status = Sellable.STATUS_CLOSED

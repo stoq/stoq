@@ -419,8 +419,7 @@ class TestProductionMaterial(DomainTest):
         self.assertEqual(material.allocated, 20)
 
         for i in storable.get_stock_items():
-            for transaction_history in self.store.find(StockTransactionHistory,
-                                                       product_stock_item=i):
+            for transaction_history in i.transactions:
                 self.store.remove(transaction_history)
             self.store.remove(i)
         self.store.remove(storable)
