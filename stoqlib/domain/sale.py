@@ -380,7 +380,7 @@ class SaleItem(Domain):
         storable = self.sellable.product_storable
         if storable:
             storable.increase_stock(quantity, self.sale.branch,
-                                    StockTransactionHistory.TYPE_SALE_RESERVED,
+                                    StockTransactionHistory.TYPE_SALE_RETURN_TO_STOCK,
                                     self.id, batch=self.batch)
         self.quantity_decreased -= quantity
 

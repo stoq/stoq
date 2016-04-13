@@ -26,7 +26,6 @@ import datetime
 
 from stoqlib.api import api
 from stoqlib.domain.person import Branch
-from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.test.uitestutils import GUITest
@@ -43,10 +42,8 @@ class TestPurchasedItemsSearch(GUITest):
         item.order.open_date = datetime.datetime(2012, 1, 1)
         item.order.status = PurchaseOrder.ORDER_CONFIRMED
         storable = self.create_storable(item.sellable.product)
-        ProductStockItem(quantity=item.quantity,
-                         branch=branch,
-                         storable=storable,
-                         store=self.store)
+        self.create_product_stock_item(
+            storable=storable, branch=branch, quantity=item.quantity)
 
         branch = self.store.find(Branch, Branch.id != branch.id).any()
         order = self.create_purchase_order(branch=branch)
@@ -57,10 +54,8 @@ class TestPurchasedItemsSearch(GUITest):
         item.order.open_date = datetime.datetime(2012, 2, 2)
         item.order.status = PurchaseOrder.ORDER_CONFIRMED
         storable = self.create_storable(item.sellable.product)
-        ProductStockItem(quantity=item.quantity,
-                         branch=branch,
-                         storable=storable,
-                         store=self.store)
+        self.create_product_stock_item(
+            storable=storable, branch=branch, quantity=item.quantity)
 
         search = PurchasedItemsSearch(self.store)
 

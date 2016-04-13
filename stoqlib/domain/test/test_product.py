@@ -1260,6 +1260,19 @@ class TestStorable(DomainTest):
 
         self.assertFalse(cost_center.get_stock_transaction_entries().is_empty())
 
+    def test_update_stock_cost(self):
+        stock_item = self.create_product_stock_item(quantity=10, stock_cost=50)
+        self.assertEqual(stock_item.quantity, 10)
+        self.assertEqual(stock_item.stock_cost, 50)
+
+        stock_item.storable.update_stock_cost(100, stock_item.branch)
+        self.assertEqual(stock_item.stock_cost, 100)
+        self.assertEqual(stock_item.quantity, 10)
+        self.assertEqual(
+            set((sth.type, sth.stock_cost) for sth in stock_item.transactions),
+            set([(StockTransactionHistory.TYPE_INITIAL, 50),
+                 (StockTransactionHistory.TYPE_UPDATE_STOCK_COST, 100)]))
+
 
 class TestStorableBatch(DomainTest):
     def test_get_description(self):
@@ -1377,16 +1390,9 @@ class TestStockTransactionHistory(DomainTest):
         self.branch = get_current_branch(self.store)
 
     def test_total(self):
-        storable = self.create_storable()
-        stock_item = self.create_product_stock_item(quantity=15,
-                                                    stock_cost=100,
-                                                    storable=storable)
-
-        history = StockTransactionHistory(product_stock_item=stock_item,
-                                          stock_cost=stock_item.stock_cost,
-                                          quantity=stock_item.quantity,
-                                          type=StockTransactionHistory.TYPE_IMPORTED,
-                                          store=self.store)
+        history = self.create_stock_transaction_history(
+            quantity=15, stock_cost=100,
+            trans_type=StockTransactionHistory.TYPE_IMPORTED)
 
         self.assertEquals(history.total, 1500)
 
@@ -1424,15 +1430,11 @@ class TestStockTransactionHistory(DomainTest):
 
     def test_imported(self):
         storable = self.create_storable()
-        stock_item = self.create_product_stock_item(quantity=15,
-                                                    storable=storable)
 
         # patch-04-09 creates this for us
-        history = StockTransactionHistory(product_stock_item=stock_item,
-                                          stock_cost=stock_item.stock_cost,
-                                          quantity=stock_item.quantity,
-                                          type=StockTransactionHistory.TYPE_IMPORTED,
-                                          store=self.store)
+        history = self.create_stock_transaction_history(
+            quantity=15, storable=storable,
+            trans_type=StockTransactionHistory.TYPE_IMPORTED)
 
         self.assertEquals(history.get_description(),
                           u'Imported from previous version')
@@ -1442,9 +1444,7 @@ class TestStockTransactionHistory(DomainTest):
     def _check_stock_history(self, product, quantity, item, parent, type,
                              description=''):
         stock_item = product.storable.get_stock_item(self.branch, None)
-        transactions = self.store.find(
-            StockTransactionHistory,
-            product_stock_item=stock_item).order_by(StockTransactionHistory.date)
+        transactions = stock_item.transactions.order_by(StockTransactionHistory.date)
         transaction = transactions.last()
         self.assertEquals(transaction.quantity, quantity)
         self.assertEquals(transaction.type, type)

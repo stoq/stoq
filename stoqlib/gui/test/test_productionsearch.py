@@ -31,7 +31,7 @@ from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
                                                  ProductionHistorySearch)
 from stoqlib.domain.person import Branch
-from stoqlib.domain.product import ProductStockItem, ProductHistory
+from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.search.searchfilters import DateSearchFilter
@@ -46,10 +46,10 @@ class TestProductionProductSearch(GUITest):
 
         product = self.create_product()
         storable = self.create_storable(product=product)
-        ProductStockItem(quantity=1, branch=branches[0], storable=storable,
-                         store=self.store)
-        ProductStockItem(quantity=2, branch=branches[1], storable=storable,
-                         store=self.store)
+        self.create_product_stock_item(
+            storable=storable, branch=branches[0], quantity=1)
+        self.create_product_stock_item(
+            storable=storable, branch=branches[1], quantity=2)
         product.sellable.code = u'65432'
         product.sellable.description = u'Camiseta'
         product.is_composed = True
@@ -57,10 +57,10 @@ class TestProductionProductSearch(GUITest):
 
         product = self.create_product()
         storable = self.create_storable(product=product)
-        ProductStockItem(quantity=3, branch=branches[0], storable=storable,
-                         store=self.store)
-        ProductStockItem(quantity=4, branch=branches[1], storable=storable,
-                         store=self.store)
+        self.create_product_stock_item(
+            storable=storable, branch=branches[0], quantity=3)
+        self.create_product_stock_item(
+            storable=storable, branch=branches[1], quantity=4)
         product.sellable.code = u'54321'
         product.sellable.description = u'Luva'
         product.sellable.status = Sellable.STATUS_CLOSED

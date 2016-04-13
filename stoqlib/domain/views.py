@@ -1509,11 +1509,7 @@ class CostCenterEntryStockView(Viewable):
              CostCenterEntry.stock_transaction_id == StockTransactionHistory.id),
         Join(LoginUser, StockTransactionHistory.responsible_id == LoginUser.id),
         Join(Person, LoginUser.person_id == Person.id),
-        Join(ProductStockItem,
-             StockTransactionHistory.product_stock_item_id == ProductStockItem.id),
-        Join(Storable, ProductStockItem.storable_id == Storable.id),
-        Join(Product, Storable.id == Product.id),
-        Join(Sellable, Product.id == Sellable.id),
+        Join(Sellable, StockTransactionHistory.storable_id == Sellable.id),
 
         # possible sale item and stock decrease item
         LeftJoin(SaleItem, SaleItem.id == StockTransactionHistory.object_id),
