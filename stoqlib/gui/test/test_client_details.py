@@ -51,9 +51,13 @@ class TestClientDetails(GUITest):
         sale.open_date = today
 
         # Product
-        self.create_sale_item(sale, product=True)
+        sellable = self.create_sellable(description=u'Normal',
+                                        storable=True, price=100)
+        sale.add_sellable(sellable)
         # Service
-        item = self.create_sale_item(sale, product=False)
+        sellable2 = self.create_sellable(description=u'Service', product=False,
+                                         price=100)
+        item = sale.add_sellable(sellable2)
         item.estimated_fix_date = today
         # Payments
         payment = self.add_payments(sale, date=today)[0]
@@ -98,7 +102,9 @@ class TestClientDetails(GUITest):
         sale.confirm()
 
         sale2 = self.create_sale(client=client)
-        self.create_returned_sale(sale2)
+        item = self.create_sale_item(sale2, product=True)
+        returned_sale = self.create_returned_sale(sale2)
+        self.create_returned_sale_item(returned_sale, item)
 
         self.create_workorder(client=client)
         dialog = ClientDetailsDialog(self.store, client)

@@ -42,6 +42,42 @@ class TestReturnedSaleDialog(GUITest):
         dialog = ReturnedSaleDialog(self.store, model)
         self.check_dialog(dialog, 'dialog-receive-pending-returned-sale')
 
+    def test_show_with_package_product(self):
+        sale = self.create_sale()
+        sale.identifier = 666
+        package = self.create_product(description=u'Package', is_package=True)
+        comp = self.create_product(description=u'Component 1', stock=5,
+                                   storable=True)
+        comp2 = self.create_product(description=u'Component 2', stock=5,
+                                    storable=True)
+        p_comp = self.create_product_component(product=package,
+                                               component=comp,
+                                               component_quantity=2,
+                                               price=2)
+        p_comp2 = self.create_product_component(product=package,
+                                                component=comp2,
+                                                component_quantity=2,
+                                                price=5)
+        item = sale.add_sellable(package.sellable, quantity=1, price=0)
+        sale.add_sellable(comp.sellable,
+                          quantity=item.quantity * p_comp.quantity,
+                          price=p_comp.price,
+                          parent=item)
+        sale.add_sellable(comp2.sellable,
+                          quantity=item.quantity * p_comp2.quantity,
+                          price=p_comp2.price,
+                          parent=item)
+
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+        r_sale = self.create_returned_sale(sale)
+        r_sale.identifier = 666
+
+        model = self.store.find(ReturnedSalesView).one()
+        dialog = ReturnedSaleDialog(self.store, model)
+        self.check_dialog(dialog, 'dialog-returned-sale-with-package')
+
     def test_show_undone(self):
         rsale = self.create_returned_sale()
         rsale.sale.identifier = 336

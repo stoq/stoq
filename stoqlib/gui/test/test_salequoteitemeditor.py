@@ -169,7 +169,7 @@ class TestSaleQuoteItemSlave(GUITest):
         self.assertEquals(unicode(slave.reserved.emit('validate', 3)),
                           "One or more components for this package doesn't have "
                           "enough of stock to reserve")
-        self.assertSensitive(slave, ['reserved', 'quantity', 'price'])
+        self.assertSensitive(slave, ['reserved', 'quantity'])
         slave.reserved.update(1)
         self.click(editor.main_dialog.ok_button)
 

@@ -113,9 +113,11 @@ class OpticalItemStep(WorkOrderQuoteItemStep):
 
     def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
         if parent:
-            component_quantity = self.get_component_quantity(parent, sellable)
+            component = self.get_component(parent, sellable)
+            price = component.price
+            quantity = parent.quantity * component.quantity
+        elif sellable.product.is_package:
             price = Decimal('0')
-            quantity = parent.quantity * component_quantity
         sale_item = super(OpticalItemStep, self).get_order_item(
             sellable, price, quantity, batch=batch, parent=parent)
         self._setup_patient(sale_item)

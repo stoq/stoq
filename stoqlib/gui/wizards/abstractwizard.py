@@ -186,6 +186,7 @@ class SellableItemSlave(BaseEditorSlave):
                         add_result(parent)
                     if result not in self.slave.klist:
                         self.slave.klist.append(parent, result)
+                    self.slave.klist.expand(result)
                 add_result(item)
             else:
                 self.slave.klist.append(None, item)
@@ -246,6 +247,7 @@ class SellableItemSlave(BaseEditorSlave):
             for child in self.proxy.model.children:
                 if parent is None:
                     self.add_sellable(child, parent=item)
+                    self.slave.klist.expand(item)
 
         self.update_total()
 
@@ -860,8 +862,8 @@ class SellableItemStep(SellableItemSlave, WizardStep):
         self.slave.save_columns()
         return True
 
-    def get_component_quantity(self, parent, sellable):
+    def get_component(self, parent, sellable):
         product = parent.sellable.product
         for component in product.get_components():
             if component.component.sellable == sellable:
-                return component.quantity
+                return component

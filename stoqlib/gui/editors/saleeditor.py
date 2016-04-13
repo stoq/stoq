@@ -88,6 +88,11 @@ class SaleQuoteItemSlave(BaseEditorSlave):
             self._set_not_editable()
             self.reserved.set_sensitive(False)
 
+        sellable = model.sellable
+        if sellable.product and sellable.product.is_package:
+            # Do not allow the user to edit the price of the package
+            self.price.set_sensitive(False)
+
     def _setup_widgets(self):
         self._calc = CalculatorPopup(self.price, CalculatorPopup.MODE_SUB)
 
@@ -162,8 +167,8 @@ class SaleQuoteItemSlave(BaseEditorSlave):
     def _maybe_update_children_quantity(self):
         qty = self.model.quantity
         for child in self.model.children_items:
-            child_quantity = child.get_component_quantity(self.model)
-            child.quantity = qty * child_quantity
+            component = child.get_component(self.model)
+            child.quantity = qty * component.quantity
 
     def _maybe_reserve_products(self):
         if not self._can_reserve():
@@ -178,7 +183,8 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         diff = to_reserve - decreased
 
         for sale_item in self.model.children_items:
-            component_qty = sale_item.get_component_quantity(self.model) * diff
+            component = sale_item.get_component(self.model)
+            component_qty = component.quantity * diff
             if diff > 0:
                 sale_item.reserve(component_qty)
             elif diff < 0:
@@ -318,10 +324,10 @@ class SaleQuoteItemSlave(BaseEditorSlave):
                 return ValidationError('Not enough stock to reserve.')
         else:
             for child in self.model.children_items:
-                component_qty = child.get_component_quantity(self.model)
+                component = child.get_component(self.model)
                 storable = child.sellable.product_storable
                 decreased = child.quantity_decreased
-                to_reserve = (value * component_qty) - decreased
+                to_reserve = (value * component.quantity) - decreased
                 if to_reserve <= 0:
                     return
                 # XXX Should I keep child.batch here? Since batch is not

@@ -1,0 +1,38 @@
+dialog: ReturnedSaleDialog
+GtkVBox(details_vbox):
+  GtkTable(table1, fill=True):
+    GtkLabel(label4): 'Returned Sale:'
+    ProxyLabel(identifier): '<span >00666</span>'
+    ProxyLabel(kiwilabel7): 'Invoice number:'
+    ProxyLabel(invoice_number): '<span ></span>'
+    GtkLabel(label1): 'Sale:'
+    ProxyLabel(sale_identifier): '<span >00666</span>'
+    ProxyLabel(kiwilabel4): 'Status:'
+    GtkHBox(hbox2):
+      ProxyLabel(status_str, fill=True): '<span >Pending</span>'
+      GtkButton(receive_button, fill=True): 'Receive'
+    GtkLabel(label3): 'Returned date:'
+    ProxyLabel(returned_date): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(kiwilabel2): 'Confirm date:'
+    ProxyLabel(receiving_date):
+    ProxyLabel(kiwilabel5): 'Received By:'
+    ProxyLabel(responsible_name): '<span >Administrator</span>'
+    ProxyLabel(kiwilabel1): 'Confirmed By:'
+    ProxyLabel(receiving_responsible):
+  GtkNotebook(notebook1, expand=True, fill=True):
+    GtkVBox(products_vbox):
+      ObjectTree(returned_items_list, expand=True, fill=True):
+        column: title='Product Code'
+        column: title='Description', expand
+        column: title='Qty returned'
+        column: title='Price'
+        column: title='Total'
+        row: u'', u'Package', Decimal('1.000'), <currency $ 0>, Decimal('0.000')
+          row: u'', u'Component 1', Decimal('2.000'), <currency $2>, Decimal('4.000')
+          row: u'', u'Component 2', Decimal('2.000'), <currency $5>, Decimal('10.000')
+    GtkHBox(hbox1):
+      GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+        ProxyTextView(reason): invalid
+  GtkHButtonBox(hbuttonbox1, fill=True):
+    GtkButton(undo_button): 'Undo Returned Sale', insensitive
+    GtkButton(print_button): 'gtk-print'
