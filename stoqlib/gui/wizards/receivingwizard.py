@@ -130,14 +130,15 @@ class PurchaseSelectionStep(BaseWizardStep):
 
         # Dont let the user receive purchases from other branches when working
         # in synchronized mode
-        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+        if (api.sysparam.get_bool('SYNCHRONIZED_MODE') and not
+                api.can_see_all_branches()):
             branch = api.get_current_branch(self.store)
             query = And(query,
                         PurchaseOrderView.branch_id == branch.id)
         return query
 
     def _get_columns(self):
-        return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
+        return [IdentifierColumn('identifier', title=_('Purchase #'), sorted=True),
                 SearchColumn('open_date', title=_('Date Started'),
                              data_type=datetime.date, width=100),
                 SearchColumn('expected_receival_date', data_type=datetime.date,
@@ -295,11 +296,18 @@ class ReceivingOrderItemStep(BaseWizardStep):
         supplier_id = self.purchases[0].supplier_id
         branch_id = self.purchases[0].branch_id
 
+        # If the receiving is for another branch, we need a temporary identifier
+        temporary_identifier = None
+        if (api.sysparam.get_bool('SYNCHRONIZED_MODE') and
+                api.get_current_branch(self.store).id != branch_id):
+            temporary_identifier = ReceivingOrder.get_temporary_identifier(self.store)
+
         # We cannot create the model in the wizard since we haven't
         # selected a PurchaseOrder yet which ReceivingOrder depends on
         # Create the order here since this is the first place where we
         # actually have a purchase selected
         self.wizard.model = self.model = ReceivingOrder(
+            identifier=temporary_identifier,
             responsible=api.get_current_user(self.store),
             supplier=supplier_id, invoice_number=None,
             branch=branch_id, store=self.store)
