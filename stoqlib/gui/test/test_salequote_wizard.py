@@ -141,7 +141,7 @@ class TestSaleQuoteWizard(GUITest):
         product.sellable.barcode = u'666'
         component = self.create_product(stock=2, description=u'Component1')
         self.create_product_component(product=product, component=component,
-                                      component_quantity=2)
+                                      component_quantity=2, price=5)
 
         wizard = SaleQuoteWizard(self.store)
         self.click(wizard.next_button)

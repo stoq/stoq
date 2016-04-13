@@ -433,14 +433,14 @@ class ExampleCreator(object):
                                 category=parent,
                                 store=self.store)
 
-    def create_sale(self, branch=None, client=None, sale_token=None):
+    def create_sale(self, branch=None, client=None, sale_token=None,
+                    salesperson=None):
         from stoqlib.domain.sale import Sale, SaleToken
         from stoqlib.domain.till import Till
         till = Till.get_current(self.store)
         if till is None:
             till = self.create_till()
             till.open_till()
-        salesperson = self.create_sales_person()
         group = self.create_payment_group()
         if client:
             group.payer = client.person
@@ -448,15 +448,15 @@ class ExampleCreator(object):
         if sale_token:
             sale_token.status = SaleToken.STATUS_OCCUPIED
 
-        sale = Sale(coupon_id=0,
+        sale = Sale(store=self.store,
+                    coupon_id=0,
                     open_date=TransactionTimestamp(),
-                    salesperson=salesperson,
+                    salesperson=salesperson or self.create_sales_person(),
                     branch=branch or get_current_branch(self.store),
                     cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
                     group=group,
                     client=client,
-                    sale_token=sale_token,
-                    store=self.store)
+                    sale_token=sale_token)
         return sale
 
     def create_sale_token(self, code=u''):

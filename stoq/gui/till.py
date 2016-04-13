@@ -338,10 +338,16 @@ class TillApp(ShellApp):
     def _add_sale_items(self, sale, coupon):
         subtotal = 0
         for sale_item in sale.get_items(with_children=False):
-            coupon.add_item(sale_item)
+            sellable = sale_item.sellable
+            if (sellable.service or
+                    (sellable.product and not sellable.product.is_package)):
+                # Do not add the package item itself on the coupon
+                coupon.add_item(sale_item)
+                subtotal += sale_item.price * sale_item.quantity
+
             for child in sale_item.children_items:
                 coupon.add_item(child)
-            subtotal += sale_item.price * sale_item.quantity
+                subtotal += child.price * child.quantity
         return subtotal
 
     def _update_total(self):

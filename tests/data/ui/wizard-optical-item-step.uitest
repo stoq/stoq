@@ -41,8 +41,8 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                   row: u'', u'12345678', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
                   row: u'', u'12345679', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
                   row: u'', u'12345681', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: u'', u'666', u'Package', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                    row: u'', u'', u'Component', u'Patient', Decimal('1.000'), <currency $100>, <currency $ 0>, 0, <currency $ 0>
+                  row: u'', u'666', u'Package', u'Patient', Decimal('1.000'), <currency $10>, <currency $ 0>, 0, <currency $ 0>
+                    row: u'', u'', u'Component', u'Patient', Decimal('5.000'), <currency $10>, <currency $2>, Decimal('80.0'), <currency $10>
                 GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$50.00</b>'
@@ -138,20 +138,20 @@ model: SaleItem<7>
   completion_date: None
   estimated_fix_date: datetime.today()
   notes: None
-  price: <currency $10>
+  price: <currency $ 0>
   quantity: Decimal('1.000')
   quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>
 
 model: SaleItem<8>
-  average_cost: <currency $ 0>
-  base_price: <currency $100>
+  average_cost: <currency $10>
+  base_price: <currency $10>
   completion_date: None
   estimated_fix_date: datetime.today()
   notes: None
   parent_item_id: SaleItem<7>
-  price: <currency $ 0>
-  quantity: Decimal('1.000')
-  quantity_decreased: Decimal('0.000')
+  price: <currency $2>
+  quantity: Decimal('5.000')
+  quantity_decreased: Decimal('5.000')
   sale_id: Sale<1>
 

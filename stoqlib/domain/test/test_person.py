@@ -498,12 +498,12 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_get_client_products(self):
         client = self.create_client(name=u'Client Test')
         self.assertIsNone(client.get_client_products().one())
-        sale = self.create_sale()
-        item = self.create_sale_item(sale=sale)
-        sale.add_sellable(sellable=item.sellable)
-        sale.client = client
-        client_name = client.get_client_products().one().client_name
-        self.assertEquals(client_name, u'Client Test')
+        sale = self.create_sale(client=client)
+        sellable = self.create_sellable(description=u'Product')
+        sale.add_sellable(sellable=sellable)
+        sold_product_view = client.get_client_products().one()
+        self.assertEquals(sold_product_view.description, u'Product')
+        self.assertEquals(sold_product_view.client_name, u'Client Test')
 
     def test_get_client_payments(self):
         client = self.create_client()

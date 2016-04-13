@@ -52,13 +52,19 @@ class TestSaleReturnWizard(GUITest):
     def test_sale_return_items_step(self, info):
         sale = self.create_sale()
         package = self.create_product(description=u'Package', is_package=True)
-        component = self.create_product(description=u'Component', stock=3)
-        self.create_product_component(product=package, component=component)
+        component = self.create_product(description=u'Component', stock=5,
+                                        storable=True)
+        p_comp = self.create_product_component(product=package, component=component,
+                                               component_quantity=5, price=2)
 
         self.add_product(sale, code=u'1234')
         self.add_product(sale, quantity=2, code=u'5678')
         package_item = sale.add_sellable(package.sellable)
-        sale.add_sellable(component.sellable, parent=package_item, price=0)
+        package_qty = package_item.quantity
+        sale.add_sellable(component.sellable,
+                          quantity=package_qty * p_comp.quantity,
+                          price=package_qty * p_comp.price,
+                          parent=package_item)
         self.add_payments(sale)
         sale.order()
         sale.confirm()
@@ -108,6 +114,37 @@ class TestSaleReturnWizard(GUITest):
             step.force_validation()
             self.assertNotSensitive(wizard, ['next_button'])
             _reset_objectlist(objecttree)
+
+        _reset_objectlist(objecttree)
+        # None of the siblings are being returned, so the parent will be
+        # unchecked
+        for item in objecttree:
+            if item.parent_item:
+                item.quantity = 0
+                objecttree.emit('cell-edited', item, 'quantity')
+                self.assertFalse(item.parent_item.will_return)
+
+        _reset_objectlist(objecttree)
+        # Return all siblings, so return its parent as well
+        for item in objecttree:
+            if item.parent_item:
+                item.quantity = 5
+                objecttree.emit('cell-edited', item, 'quantity')
+                self.assertTrue(item.parent_item.will_return)
+
+        _reset_objectlist(objecttree)
+        for item in objecttree:
+            if item.parent_item:
+                item.will_return = True
+                objecttree.emit('cell-edited', item, 'will_return')
+                self.assertTrue(item.parent_item.will_return)
+
+        _reset_objectlist(objecttree)
+        for item in objecttree:
+            if item.parent_item:
+                item.will_return = False
+                objecttree.emit('cell-edited', item, 'will_return')
+                self.assertFalse(item.parent_item.will_return)
 
     def test_sale_return_invoice_step(self):
         main_branch = get_current_branch(self.store)

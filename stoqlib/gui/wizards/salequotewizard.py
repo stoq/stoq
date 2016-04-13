@@ -305,6 +305,7 @@ class SaleQuoteItemStep(SellableItemStep):
                 new_price=new_price)
 
         SellableItemStep.add_sellable(self, sellable, parent=parent)
+        self.update_total()
 
     def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
         """
@@ -315,12 +316,17 @@ class SaleQuoteItemStep(SellableItemStep):
         :param parent: |sale_item|'s parent_item if exists
         """
         if parent:
-            component_quantity = self.get_component_quantity(parent, sellable)
-            quantity = parent.quantity * component_quantity
-            price = Decimal('0')
+            component = self.get_component(parent, sellable)
+            quantity = parent.quantity * component.quantity
+            price = component.price
+        else:
+            if sellable.product and sellable.product.is_package:
+                # XXX Sending package products with price 0 (zero)
+                price = Decimal(0)
 
-        item = self.model.add_sellable(sellable, quantity, price, batch=batch,
-                                       parent=parent)
+        item = self.model.add_sellable(sellable, quantity=quantity,
+                                       price=price,
+                                       batch=batch, parent=parent)
         # Save temporarily the stock quantity and lead_time so we can show a
         # warning if there is not enough quantity for the sale.
         if not parent:

@@ -990,8 +990,9 @@ class Client(Domain):
         tied with the current client
         """
         from stoqlib.domain.sale import ReturnedSaleView
-        returned_sale_view = self.store.find(ReturnedSaleView,
-                                             ReturnedSaleView.client_id == self.id)
+        query = And(ReturnedSaleView.client_id == self.id,
+                    Eq(ReturnedSaleView.returned_item.parent_item_id, None))
+        returned_sale_view = self.store.find(ReturnedSaleView, query)
         return returned_sale_view.order_by(ReturnedSaleView.return_date)
 
     def get_client_services(self):
@@ -1012,12 +1013,16 @@ class Client(Domain):
         return self.store.find(WorkOrderView,
                                WorkOrderView.client.id == self.id)
 
-    def get_client_products(self):
+    def get_client_products(self, with_children=True):
         """Returns a list of products from SoldProductsView with products
         sold to the client
         """
         from stoqlib.domain.sale import SoldProductsView
-        return self.store.find(SoldProductsView, client_id=self.id)
+        query = SoldProductsView.client_id == self.id
+        if not with_children:
+            query = And(query,
+                        Eq(SoldProductsView.sale_item.parent_item_id, None))
+        return self.store.find(SoldProductsView, query)
 
     def get_client_payments(self):
         """Returns a list of payment from InPaymentView with client's payments

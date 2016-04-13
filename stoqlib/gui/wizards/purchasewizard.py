@@ -265,10 +265,11 @@ class PurchaseItemStep(SellableItemStep):
                                                 supplier=self.model.supplier,
                                                 store=self.store)
         if parent:
-            component_quantity = self.get_component_quantity(parent, sellable)
-            quantity = quantity * component_quantity
-            cost = Decimal('0')
+            component = self.get_component(parent, sellable)
+            quantity = quantity * component.quantity
         else:
+            if sellable.product.is_package:
+                cost = Decimal('0')
             supplier_info.base_cost = cost
 
         item = self.model.add_item(sellable, quantity, parent=parent)

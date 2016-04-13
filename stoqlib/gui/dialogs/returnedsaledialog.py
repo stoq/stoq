@@ -27,9 +27,10 @@
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
+from storm.expr import Eq
 
 from stoqlib.api import api
-from stoqlib.domain.returnedsale import ReturnedSale
+from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.views import ReturnedSalesView
 from stoqlib.exceptions import StockError
 from stoqlib.gui.base.dialogs import run_dialog
@@ -82,8 +83,11 @@ class ReturnedSaleDialog(BaseEditor):
         self.undo_button.set_sensitive(returned_sale.can_undo())
 
         self.returned_items_list.set_columns(self._get_returned_items_columns())
-        for r_item in returned_sale.returned_items:
-            self.returned_items_list.append(r_item.parent_item, r_item)
+        r_items = returned_sale.returned_items
+        for r_item in r_items.find(Eq(ReturnedSaleItem.parent_item_id, None)):
+            self.returned_items_list.append(None, r_item)
+            for child in r_item.children_items:
+                self.returned_items_list.append(r_item, child)
 
         self._update_reason()
 

@@ -533,6 +533,49 @@ class TestReturnedSaleItem(DomainTest):
             decimal.Decimal(1), branch, StockTransactionHistory.TYPE_RETURNED_SALE,
             item.id, batch=item.batch)
 
+    def test_return_with_component(self):
+        sale = self.create_sale()
+        normal = self.create_product(description=u'Normal', storable=True,
+                                     stock=3)
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component',
+                                        storable=True,
+                                        stock=5)
+        component2 = self.create_product(description=u'Component 2',
+                                         storable=True,
+                                         stock=1)
+        p_comp = self.create_product_component(product=package,
+                                               component=component,
+                                               component_quantity=5,
+                                               price=2)
+        p_comp2 = self.create_product_component(product=package,
+                                                component=component2,
+                                                component_quantity=1,
+                                                price=5)
+        parent_item = sale.add_sellable(package.sellable, price=0)
+        sale.add_sellable(normal.sellable,
+                          quantity=1)
+        sale.add_sellable(component.sellable,
+                          price=p_comp.price,
+                          parent=parent_item,
+                          quantity=p_comp.quantity * parent_item.quantity)
+        sale.add_sellable(component2.sellable,
+                          price=p_comp2.price,
+                          parent=parent_item,
+                          quantity=p_comp2.quantity * parent_item.quantity)
+
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+        r_sale = sale.create_sale_return_adapter()
+        for item in r_sale.returned_items:
+            for child in item.children_items:
+                # Do not return the children of a package product
+                child.quantity = 0
+                item.quantity = 0
+        r_sale.return_()
+        self.assertEquals(len(list(r_sale.returned_items)), 1)
+
     def test_undo(self):
         sellable = self.create_sellable(product=True, storable=True)
         sale_item = self.create_sale_item(sellable=sellable)

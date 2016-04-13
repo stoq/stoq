@@ -225,6 +225,26 @@ class ReturnedSaleItem(Domain):
         if self.sale_item:
             self.sale_item.quantity_decreased += self.quantity
 
+    def maybe_remove(self):
+        """Will eventualy remove the object from database"""
+        for child in self.children_items:
+            # Make sure to remove children before remove itself
+            if child.can_remove():
+                self.store.remove(child)
+        if self.can_remove():
+            self.store.remove(self)
+
+    def can_remove(self):
+        """Check if the ReturnedSaleItem can be removed from database
+
+        If the item is a package, check if all of its children are being
+        returned
+        """
+        product = self.sellable.product
+        if product and product.is_package and not bool(self.quantity):
+            return not any(bool(child.quantity) for child in self.children_items)
+        return not bool(self.quantity)
+
     def get_component_quantity(self, parent):
         for component in parent.sellable.product.get_components():
             if self.sellable.product == component.component:
@@ -703,11 +723,9 @@ class ReturnedSale(Domain):
         return Decimal(self.returned_total / self.sale.total_amount)
 
     def _clean_not_used_items(self):
-        store = self.store
-        for item in self.returned_items:
-            if not item.quantity:
-                # Removed items not marked for return
-                item.delete(item.id, store=store)
+        query = Eq(ReturnedSaleItem.parent_item_id, None)
+        for item in self.returned_items.find(query):
+            item.maybe_remove()
 
     def _revert_fiscal_entry(self):
         entry = self.store.find(FiscalBookEntry,

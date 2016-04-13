@@ -28,22 +28,20 @@ import datetime
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
+from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel, ObjectTree
 from kiwi.ui.gadgets import render_pixbuf
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Client
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
+from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
-
-from kiwi.ui.objectlist import ObjectList
-from stoqlib.gui.base.dialogs import run_dialog
 
 
 _ = stoqlib_gettext
@@ -61,8 +59,8 @@ class DetailsTab(gtk.VBox):
         self.set_spacing(6)
         self.set_border_width(6)
 
-        self.klist = ObjectList(self.get_columns())
-        self.klist.add_list(self.populate())
+        self.klist = ObjectTree(self.get_columns())
+        self.populate()
 
         self.pack_start(self.klist)
         self.klist.show()
@@ -197,7 +195,8 @@ class SalesTab(DetailsTab):
                        data_type=currency, width=100)]
 
     def populate(self):
-        return self.model.get_client_sales()
+        for obj in self.model.get_client_sales():
+            self.klist.append(None, obj)
 
     def get_details_dialog_class(self):
         from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -231,11 +230,20 @@ class ReturnedSalesTab(DetailsTab):
                        searchable=True, data_type=str),
                 Column("reason", title=_("Reason"), searchable=False,
                        expand=True, data_type=str),
+                Column("price", title=_("Price"), data_type=currency),
+                Column("quantity", title=_("Qty"), data_type=str),
                 Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
                        data_type=currency, width=100)]
 
     def populate(self):
-        return self.model.get_client_returned_sales()
+        for item in self.model.get_client_returned_sales():
+            self.klist.append(None, item)
+            sellable = item.returned_item.sellable
+            if (sellable.service or
+                    (sellable.product and not sellable.product.is_package)):
+                continue
+            for child in item.get_children_items():
+                self.klist.append(item, child)
 
     def get_details_model(self, model):
         from stoqlib.domain.sale import Sale, SaleView
@@ -252,20 +260,25 @@ class ProductsTab(DetailsTab):
 
     def get_columns(self):
         return [Column("code", title=_("Code"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
+                       width=120, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
                 Column("quantity", title=_("Total quantity"),
                        data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
-                Column("last_date", title=_("Lastest purchase"),
+                Column("sale_date", title=_("Sale date"),
                        data_type=datetime.date, width=150),
-                Column("avg_value", title=_("Avg. value"), width=100,
+                Column("value", title=_("Value"), width=100,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT),
                 Column("total_value", title=_("Total value"), width=100,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
 
     def populate(self):
-        return self.model.get_client_products()
+        for item in self.model.get_client_products(with_children=False):
+            self.klist.append(None, item)
+            if item.sale_item.sellable.product.is_composed:
+                continue
+            for child in item.get_children_items():
+                self.klist.append(item, child)
 
 
 class ServicesTab(DetailsTab):
@@ -282,7 +295,8 @@ class ServicesTab(DetailsTab):
                        width=150, data_type=datetime.date)]
 
     def populate(self):
-        return self.model.get_client_services()
+        for obj in self.model.get_client_services():
+            self.klist.append(None, obj)
 
 
 class WorkOrdersTab(DetailsTab):
@@ -309,7 +323,8 @@ class WorkOrdersTab(DetailsTab):
                        data_type=currency, width=100)]
 
     def populate(self):
-        return self.model.get_client_work_orders()
+        for obj in self.model.get_client_work_orders():
+            self.klist.append(None, obj)
 
     def get_details_model(self, model):
         return model.work_order
@@ -353,7 +368,8 @@ class PaymentsTab(DetailsTab):
                        justify=gtk.JUSTIFY_RIGHT, data_type=str)]
 
     def populate(self):
-        return self.model.get_client_payments()
+        for obj in self.model.get_client_payments():
+            self.klist.append(None, obj)
 
     def get_details_model(self, model):
         return model.payment
@@ -398,7 +414,8 @@ class CreditAccountsTab(DetailsTab):
                               data_func=lambda p: not p.is_outpayment())]
 
     def populate(self):
-        return self.model.get_credit_transactions()
+        for obj in self.model.get_credit_transactions():
+            self.klist.append(None, obj)
 
 
 class CallsTab(DetailsTab):
@@ -414,7 +431,8 @@ class CallsTab(DetailsTab):
                        data_type=str, width=100, expand=True)]
 
     def populate(self):
-        return self.model.person.calls
+        for obj in self.model.person.calls:
+            self.klist.append(None, obj)
 
 
 class ClientDetailsDialog(BaseEditor):

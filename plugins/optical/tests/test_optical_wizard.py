@@ -86,12 +86,15 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         sellable4.barcode = u'12345681'
         self.create_storable(product=sellable4.product)
 
-        sellable5 = self.create_sellable(description=u'Package')
+        product = self.create_product(description=u'Package', is_package=True)
+        sellable5 = product.sellable
         sellable5.barcode = u'666'
-        sellable6 = self.create_sellable(description=u'Component', price=100,
-                                         storable=True)
-        self.create_product_component(product=sellable5.product,
-                                      component=sellable6.product)
+        product2 = self.create_product(description=u'Component', stock=5,
+                                       storable=True)
+        self.create_product_component(product=product,
+                                      component=product2,
+                                      component_quantity=5,
+                                      price=2)
         wizard = OpticalSaleQuoteWizard(self.store)
 
         # First Step

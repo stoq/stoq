@@ -449,9 +449,15 @@ class SaleItem(Domain):
         :param decimal.Decimal discount: the discount to be applied
             as a percentage, e.g. 10.0, 22.5
         """
-        discount_value = quantize(self.base_price * discount / 100)
-        # The value cannot be <= 0
-        self.price = max(self.base_price - discount_value, Decimal('0.01'))
+        if self.parent_item:
+            component = self.get_component(self.parent_item)
+            discount_value = quantize(component.price * discount / 100)
+            base_price = component.price
+        else:
+            discount_value = quantize(self.base_price * discount / 100)
+            base_price = self.base_price
+
+        self.price = max(base_price - discount_value, Decimal('0.01'))
 
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price
@@ -507,15 +513,16 @@ class SaleItem(Domain):
     def has_children(self):
         return self.children_items.count() > 0
 
-    def get_component_quantity(self, parent):
+    def get_component(self, parent):
         """Get the quantity of a component.
 
         :param parent: the |sale_item| parent_item of self
-        :returns: the quantity of the component
+        :returns: the |product_component|
         """
         for component in parent.sellable.product.get_components():
             if self.sellable.product == component.component:
-                return component.quantity
+                return component
+        return None
 
 
 @implementer(IContainer)
@@ -1298,10 +1305,13 @@ class Sale(Domain):
             as a percentage, e.g. 10.0, 22.5
         """
         new_total = currency(0)
-        # We should not set the discount for the components of a package
-        items = [item for item in self.get_items(with_children=False)]
-
-        for item in items:
+        items = []
+        for item in self.get_items():
+            sellable = item.sellable
+            if sellable.product and sellable.product.is_package:
+                # We should not set discount for package_products
+                continue
+            items.append(item)
             item.set_discount(discount)
             new_total += item.price * item.quantity
 
@@ -1310,8 +1320,9 @@ class Sale(Domain):
         # differ. Find that difference and apply it to a sale item. The sale
         # item that will be used for this rounding is the first one that the
         # quantity can divide the diff.
-        discount_value = quantize((self.get_sale_base_subtotal() * discount) / 100)
-        diff = new_total - self.get_sale_base_subtotal() + discount_value
+        sale_base_subtotal = self.get_sale_base_subtotal()
+        discount_value = quantize((sale_base_subtotal * discount) / 100)
+        diff = new_total - sale_base_subtotal + discount_value
 
         if diff:
             # The value cannot be <= 0
@@ -1354,8 +1365,8 @@ class Sale(Domain):
         :returns: subtotal
         """
         total = 0
-        for i in self.get_items():
-            total += i.get_total()
+        for sale_item in self.get_items():
+            total += sale_item.get_total()
 
         return currency(total)
 
@@ -1367,7 +1378,18 @@ class Sale(Domain):
 
         :returns: the base subtotal
         """
-        subtotal = self.get_items().sum(SaleItem.quantity * SaleItem.base_price)
+        items = self.get_items()
+        subtotal = 0
+        for item in items:
+            sellable = item.sellable
+            if sellable.product and sellable.product.is_package:
+                # We should not sum package_product
+                continue
+            if item.parent_item:
+                component = item.get_component(item.parent_item)
+                subtotal += item.quantity * component.price
+            else:
+                subtotal += item.quantity * item.base_price
         return currency(subtotal)
 
     def get_items_total_quantity(self):
@@ -2310,101 +2332,74 @@ class SaleCommentsView(Viewable):
 class ReturnedSaleView(Viewable):
     """Stores general informatios about returned sales."""
 
-    #: alias for Branch Person Object
     Person_Branch = ClassAlias(Person, 'person_branch')
-
-    #: alias for Client Person Object
     Person_Client = ClassAlias(Person, 'person_client')
-
-    #: alias for Sales Person Sales Object
     Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
-
-    #: alias for Login User Person Object
     Person_LoginUser = ClassAlias(Person, 'person_login_user')
 
-    #: the |sale|
     sale = Sale
-
-    #: the |client|
     client = Client
-
     branch = Branch
-
-    #: the |returnedsale|
     returned_sale = ReturnedSale
+    returned_item = ReturnedSaleItem
 
-    #: the id of the returned_sale table
-    id = ReturnedSale.id
-
-    #: a unique numeric identifer for the returned sale
-    identifier = ReturnedSale.identifier
-
-    #: the identifier as a string
-    identifier_str = Cast(ReturnedSale.identifier, 'text')
-
-    #: invoice of the returned sale
-    invoice_number = ReturnedSale.invoice_number
-
-    #: date of the return product
-    return_date = ReturnedSale.return_date
-
-    #: reason to return the sale
-    reason = ReturnedSale.reason
-
-    #: person_id of the responsible for return the sale
-    responsible_id = ReturnedSale.responsible_id
-
-    #: id of the sales branch
-    branch_id = ReturnedSale.branch_id
-
-    #: id of the new sale, if exist, an exchange of product or something else
-    new_sale_id = ReturnedSale.new_sale_id
-
-    #: Sale id
+    # Sale
     sale_id = Sale.id
 
-    #: value of the total of returned sale
-    total = Sum(ReturnedSaleItem.price * ReturnedSaleItem.quantity)
+    # Returned Sale
+    id = ReturnedSaleItem.id
+    identifier = ReturnedSale.identifier
+    identifier_str = Cast(ReturnedSale.identifier, 'text')
+    invoice_number = ReturnedSale.invoice_number
+    return_date = ReturnedSale.return_date
+    reason = ReturnedSale.reason
+    responsible_id = ReturnedSale.responsible_id
+    branch_id = ReturnedSale.branch_id
+    new_sale_id = ReturnedSale.new_sale_id
 
-    #: Client id
-    client_id = Client.id
+    # Returned Sale Item
+    price = ReturnedSaleItem.price
+    quantity = ReturnedSaleItem.quantity
+    total = ReturnedSaleItem.price * ReturnedSaleItem.quantity
 
-    #: Name of Sales Person Sales
+    # Sellable
+    product_name = Sellable.description
+
+    # Person
     salesperson_name = Person_SalesPerson.name
-
-    #: Name of Client Person
     client_name = Person_Client.name
-
-    #: Name of Branch Person
-    branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
-
-    # Name of Responsible for Returned Sale
     responsible_name = Person_LoginUser.name
 
-    # Tables Queries
+    # Branch
+    branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
+
+    # Client
+    client_id = Client.id
+
     tables = [
         ReturnedSale,
         Join(Sale, Sale.id == ReturnedSale.sale_id),
-        LeftJoin(ReturnedSaleItem,
-                 ReturnedSaleItem.returned_sale_id == ReturnedSale.id),
-        LeftJoin(Sellable, Sellable.id == ReturnedSaleItem.sellable_id),
-        LeftJoin(Branch, ReturnedSale.branch_id == Branch.id),
+        Join(ReturnedSaleItem,
+             ReturnedSaleItem.returned_sale_id == ReturnedSale.id),
+        Join(Sellable, Sellable.id == ReturnedSaleItem.sellable_id),
+
+        Join(Branch, ReturnedSale.branch_id == Branch.id),
+        Join(Person_Branch, Branch.person_id == Person_Branch.id),
+        Join(Company, Company.person_id == Person_Branch.id),
+        Join(SalesPerson, Sale.salesperson_id == SalesPerson.id),
+        Join(Person_SalesPerson,
+             SalesPerson.person_id == Person_SalesPerson.id),
+        Join(LoginUser, LoginUser.id == ReturnedSale.responsible_id),
+        Join(Person_LoginUser, Person_LoginUser.id == LoginUser.person_id),
         LeftJoin(Client, Sale.client_id == Client.id),
-        LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
-        LeftJoin(LoginUser, LoginUser.id == ReturnedSale.responsible_id),
-        LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
-        LeftJoin(Company, Company.person_id == Person_Branch.id),
         LeftJoin(Person_Client, Client.person_id == Person_Client.id),
-        LeftJoin(Person_SalesPerson,
-                 SalesPerson.person_id == Person_SalesPerson.id),
-        LeftJoin(Person_LoginUser, Person_LoginUser.id == LoginUser.person_id)
     ]
 
-    group_by = [id, sale_id, Sellable.id, client_id, branch_id, branch_name,
-                salesperson_name, client_name, LoginUser.id,
-                Person_LoginUser.name, branch]
-    #: Name of Sellable product
-    product_name = Sellable.description
+    def get_children_items(self):
+        query = And(ReturnedSaleView.client_id == self.client_id,
+                    ReturnedSaleItem.id.is_in([child.id
+                                               for child in self.returned_item.children_items]))
+        return self.store.find(ReturnedSaleView, query)
 
 
 class SalePaymentMethodView(SaleView):
@@ -2432,11 +2427,17 @@ class SalePaymentMethodView(SaleView):
 class SoldSellableView(Viewable):
     Person_Client = ClassAlias(Person, 'person_client')
     Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
+    sale_item = SaleItem
 
+    # Sellable
     id = Sellable.id
     code = Sellable.code
     description = Sellable.description
 
+    # SaleItem
+    sale_item_id = SaleItem.id
+
+    # Client
     client_id = Sale.client_id
     client_name = Person_Client.name
 
@@ -2444,7 +2445,7 @@ class SoldSellableView(Viewable):
     total_quantity = Sum(SaleItem.quantity)
     subtotal = Sum(SaleItem.quantity * SaleItem.price)
 
-    group_by = [id, code, description, client_id, client_name]
+    group_by = [id, code, description, client_id, client_name, sale_item]
 
     tables = [
         Sellable,
@@ -2469,15 +2470,22 @@ class SoldServicesView(SoldSellableView):
 
 
 class SoldProductsView(SoldSellableView):
-    # Aggregates
-    last_date = Max(Sale.open_date)
-    avg_value = Avg(SaleItem.price)
-    quantity = Sum(SaleItem.quantity)
-    total_value = Sum(SaleItem.quantity * SaleItem.price)
+
+    value = SaleItem.price
+    quantity = SaleItem.quantity
+    total_value = SaleItem.quantity * SaleItem.price
+    sale_date = Sale.open_date
 
     tables = SoldSellableView.tables[:]
     tables.append(Join(Product, Sellable.id == Product.id))
 
+    group_by = SoldSellableView.group_by[:]
+    group_by.append(sale_date)
+
+    def get_children_items(self):
+        query = And(SoldProductsView.client_id == self.client_id,
+                    SaleItem.id.is_in([child.id for child in self.sale_item.children_items]))
+        return self.store.find(SoldProductsView, query)
 
 # FIXME: This needs some more work, as currently, this viewable is:
 #        * Not filtering the paiments correctly given a date.

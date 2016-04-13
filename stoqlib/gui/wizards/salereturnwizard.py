@@ -30,6 +30,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError, converter
 from kiwi.ui.objectlist import Column
+from storm.expr import Ne
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_user, get_current_branch
@@ -197,7 +198,6 @@ class SaleReturnItemsStep(SellableItemStep):
         self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
         self.slave.klist.connect('cell-editing-started',
                                  self._on_klist__cell_editing_started)
-        self.slave.klist.set_cell_data_func(self._on_receiving_order__cell_data_func)
         self.force_validation()
 
     def next_step(self):
@@ -241,14 +241,14 @@ class SaleReturnItemsStep(SellableItemStep):
         return columns
 
     def get_saved_items(self):
-        return self.model.returned_items
+        return self.model.returned_items.find(Ne(ReturnedSaleItem.quantity, 0))
 
     def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
         if parent:
             if parent.sellable.product.is_package:
-                component_quantity = self.get_component_quantity(parent, sellable)
-                quantity = parent.quantity * component_quantity
-                price = decimal.Decimal('0')
+                component = self.get_component(parent, sellable)
+                quantity = parent.quantity * component.quantity
+                price = component.price
             else:
                 # Do not add the components if its not a package product
                 return
@@ -309,24 +309,27 @@ class SaleReturnItemsStep(SellableItemStep):
 
     def _on_klist__cell_edited(self, klist, obj, attr):
         if attr == 'quantity':
-            # Changing quantity from anything to 0 will uncheck will_return
-            # Changing quantity from 0 to anything will check will_return
             obj.will_return = bool(obj.quantity)
-            for child in obj.children_items:
-                child.quantity = obj.quantity * child.get_component_quantity(obj)
-                child.will_return = bool(child.quantity)
         elif attr == 'will_return':
-            # Unchecking will_return will make quantity goes to 0
-            if not obj.will_return:
-                obj.quantity = 0
-                for child in obj.children_items:
-                    child.quantity = 0
-                    child.will_return = bool(child.quantity)
-            else:
-                obj.quantity = obj.max_quantity
-                for child in obj.children_items:
-                    child.quantity = obj.max_quantity * child.get_component_quantity(obj)
-                    child.will_return = bool(child.quantity)
+            obj.quantity = obj.max_quantity * int(obj.will_return)
+
+        parent = obj.parent_item
+        if parent:
+            quantity = parent.max_quantity
+            for sibling in parent.children_items:
+                component = self.get_component(parent, sibling.sellable)
+                # The quantity for the parent is the minimum quantity possible
+                # between all siblings
+                quantity = min(quantity,
+                               int(sibling.quantity / component.quantity))
+            parent.quantity = decimal.Decimal(quantity)
+            parent.will_return = bool(parent.quantity)
+
+        for child in obj.children_items:
+            component = self.get_component(obj, child.sellable)
+            child.quantity = min(obj.quantity * component.quantity,
+                                 child.max_quantity)
+            child.will_return = bool(child.quantity)
 
         self.summary.update_total()
         self.force_validation()
@@ -338,17 +341,6 @@ class SaleReturnItemsStep(SellableItemStep):
             adjustment = editable.get_adjustment()
             # Don't let the user return more than was bought
             adjustment.set_upper(obj.max_quantity)
-
-    def _on_receiving_order__cell_data_func(self, column, renderer, obj, text):
-        renderer.set_property('sensitive', not obj.parent_item)
-        if column.attribute == 'will_return':
-            renderer.set_property('activatable', not obj.parent_item)
-
-        if column.attribute == 'quantity':
-            renderer.set_property('editable', not obj.parent_item)
-            renderer.set_property('editable-set', not obj.parent_item)
-
-        return text
 
 
 class SaleReturnInvoiceStep(WizardEditorStep):

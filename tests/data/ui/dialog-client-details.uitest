@@ -16,7 +16,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               GtkButton(further_details_button, fill=True): 'Further Details'
           GtkNotebook(details_notebook, expand=True, fill=True):
             GtkVBox():
-              ObjectList(expand=True, fill=True):
+              ObjectTree(expand=True, fill=True):
                 column: title='Sale #'
                 column: title='Invoice #'
                 column: title='Date'
@@ -31,7 +31,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 GtkButton(expand=True, fill=True): 'Sale details', insensitive
                 GtkButton(expand=True, fill=True): 'Return sale', insensitive
             GtkVBox():
-              ObjectList(expand=True, fill=True):
+              ObjectTree(expand=True, fill=True):
                 column: title='Returned #'
                 column: title='Invoice #'
                 column: title='Return Date'
@@ -39,24 +39,26 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Salesperson', hidden
                 column: title='Responsible'
                 column: title='Reason', expand
+                column: title='Price'
+                column: title='Qty'
                 column: title='Total'
             GtkVBox():
-              ObjectList(expand=True, fill=True):
+              ObjectTree(expand=True, fill=True):
                 column: title='Code'
                 column: title='Description', expand
                 column: title='Total quantity'
-                column: title='Lastest purchase'
-                column: title='Avg. value'
+                column: title='Sale date'
+                column: title='Value'
                 column: title='Total value'
-                row: u'', u'Description', Decimal('1.000'), datetime.today(), Decimal('100.0000000000000000'), Decimal('100.00000')
+                row: u'', u'Normal', Decimal('1.000'), datetime.today(), <currency $100>, Decimal('100.00000')
             GtkVBox():
-              ObjectList(expand=True, fill=True):
+              ObjectTree(expand=True, fill=True):
                 column: title='Code'
                 column: title='Description', expand
                 column: title='Estimated fix date'
-                row: u'', u'Description', datetime.today()
+                row: u'', u'Service', datetime.today()
             GtkVBox():
-              ObjectList(expand=True, fill=True):
+              ObjectTree(expand=True, fill=True):
                 column: title='WO #'
                 column: title='Equipment', expand
                 column: title='Equipment'
@@ -66,7 +68,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Finish date'
                 column: title='Total'
             GtkVBox():
-              ObjectList(expand=True, fill=True):
+              ObjectTree(expand=True, fill=True):
                 column: title='Payment #'
                 column: title='Type'
                 column: title='Description', expand
@@ -79,7 +81,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               GtkHButtonBox(pack-end):
                 GtkButton(expand=True, fill=True): 'Payment details', insensitive
             GtkVBox():
-              ObjectList(expand=True, fill=True):
+              ObjectTree(expand=True, fill=True):
                 column: title='Payment #'
                 column: title='Date'
                 column: title='Description', expand
@@ -88,7 +90,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Balance:</b>'
                 GtkLabel(): '<b>$ 0.00</b>'
             GtkVBox():
-              ObjectList(expand=True, fill=True):
+              ObjectTree(expand=True, fill=True):
                 column: title='Date'
                 column: title='Description', expand
                 column: title='Attendant', expand

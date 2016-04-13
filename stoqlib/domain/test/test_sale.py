@@ -30,6 +30,7 @@ from decimal import Decimal
 from kiwi.currency import currency
 import mock
 from nose.exc import SkipTest
+from storm.expr import And, Eq, Ne
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
@@ -42,6 +43,7 @@ from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.product import Storable, StockTransactionHistory
 from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
+                                 ReturnedSaleView,
                                  ReturnedSaleItemsView, SaleItem,
                                  SaleView, SalesPersonSalesView,
                                  ClientsWithSaleView, SaleToken)
@@ -160,7 +162,8 @@ class TestSale(DomainTest):
         package = self.create_product(description=u'Package', is_package=True)
         component = self.create_product(description=u'Component', stock=2)
         self.create_product_component(product=package, component=component)
-        sale.add_sellable(package.sellable, quantity=1)
+        parent = sale.add_sellable(package.sellable, quantity=1)
+        sale.add_sellable(component.sellable, quantity=1, parent=parent)
 
         items = sale.get_items(with_children=False)
         self.assertEquals(items.count(), 1)
@@ -301,7 +304,7 @@ class TestSale(DomainTest):
         self.create_sale_item(parent_item=parent)
         self.assertTrue(parent.has_children())
 
-    def test_get_component_quantity(self):
+    def test_get_component(self):
         package = self.create_product(is_package=True)
         component = self.create_product(stock=2)
         self.create_product_component(product=package, component=component,
@@ -309,8 +312,14 @@ class TestSale(DomainTest):
         sale_item = self.create_sale_item(sellable=package.sellable)
         child = self.create_sale_item(sellable=component.sellable,
                                       parent_item=sale_item)
-        self.assertEquals(child.get_component_quantity(sale_item), 2)
+        self.assertEquals(child.get_component(sale_item).quantity, 2)
         self.assertEquals(child.parent_item, sale_item)
+
+    def test_get_component_returning_none(self):
+        product = self.create_product(storable=True, stock=5)
+        sale = self.create_sale()
+        sale_item = sale.add_sellable(sellable=product.sellable)
+        self.assertTrue(sale_item.get_component(sale_item) is None)
 
     def test_order(self):
         sale = self.create_sale()
@@ -1658,6 +1667,23 @@ class TestSale(DomainTest):
         item.base_price = Decimal(999)
         sale.set_items_discount(20)
 
+    def test_set_items_discount_with_package(self):
+        sale = self.create_sale()
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component', stock=2,
+                                        storable=True)
+        p_comp = self.create_product_component(product=package, component=component,
+                                               price=2, component_quantity=5)
+        parent = sale.add_sellable(package.sellable, price=0, quantity=1)
+        sale.add_sellable(component.sellable,
+                          quantity=parent.quantity * p_comp.quantity,
+                          price=p_comp.price,
+                          parent=parent)
+
+        # Applying 20% discount
+        sale.set_items_discount(currency('20'))
+        self.assertEquals(sale.get_sale_subtotal(), currency('8'))
+
     def test_set_items_discount_with_negative_diff(self):
         sale = self.create_sale()
         sellable1 = self.create_sellable(price=currency('10'))
@@ -2422,6 +2448,45 @@ class TestSalePaymentMethodView(DomainTest):
         res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         self.assertEquals(res.count(), 1)
         self.assertTrue(sale_two_inst in [r.sale for r in res])
+
+
+class TestReturnedSaleView(DomainTest):
+    def test_get_children_items(self):
+        branch = self.create_branch()
+        client = self.create_client()
+        salesperson = self.create_sales_person()
+        sale = self.create_sale(branch=branch, client=client,
+                                salesperson=salesperson)
+        package = self.create_product(description=u'Package', is_package=True)
+        component = self.create_product(description=u'Component', stock=4,
+                                        storable=True)
+        p_component = self.create_product_component(product=package,
+                                                    component=component,
+                                                    component_quantity=3,
+                                                    price=5)
+        parent_item = sale.add_sellable(package.sellable, quantity=1, price=0)
+        child_qty = parent_item.quantity * p_component.quantity
+        child_price = parent_item.quantity * p_component.price
+        sale.add_sellable(component.sellable, quantity=child_qty,
+                          price=child_price,
+                          parent=parent_item)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+
+        r_sale = sale.create_sale_return_adapter()
+        child_item = r_sale.returned_items.find(Ne(ReturnedSaleItem.parent_item_id,
+                                                   None)).one()
+
+        query = And(Eq(ReturnedSaleView.returned_item.parent_item_id, None),
+                    Eq(ReturnedSaleView.client_id, client.id))
+        view = self.store.find(ReturnedSaleView, query).one()
+        for child in view.get_children_items():
+            self.assertEquals(child.quantity, 3)
+            self.assertEquals(child.returned_sale, r_sale)
+            self.assertEquals(child.sale, sale)
+            self.assertEquals(child.client, client)
+            self.assertEquals(child.returned_item, child_item)
 
 
 class TestReturnedSaleItemsView(DomainTest):
