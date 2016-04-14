@@ -121,6 +121,7 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         self.cfop.prefill(api.for_combo(cfop_items))
 
         self._update_total()
+        self.reserved.get_adjustment().set_upper(self.quantity_model.quantity)
 
     def setup_proxies(self):
         self._setup_widgets()

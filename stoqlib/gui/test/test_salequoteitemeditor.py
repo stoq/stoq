@@ -140,8 +140,14 @@ class TestSaleQuoteItemSlave(GUITest):
 
         editor = SaleQuoteItemEditor(self.store, sale_item)
         slave = editor.item_slave
+        upper = slave.reserved.get_adjustment().get_upper()
+        self.assertEquals(upper, 1)
         self.assertEquals(unicode(slave.reserved.emit('validate', 2)),
                           "Not enough stock to reserve.")
+
+        slave.quantity.update(3)
+        upper = slave.reserved.get_adjustment().get_upper()
+        self.assertEquals(upper, 3)
 
     def test_reserve_service(self):
         service = self.create_service(description=u'Service')
