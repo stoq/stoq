@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-13 18:28-0300\n"
-"PO-Revision-Date: 2016-04-13 16:31+0000\n"
+"POT-Creation-Date: 2016-04-15 15:40-0300\n"
+"PO-Revision-Date: 2016-04-15 18:41+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -3318,7 +3318,7 @@ msgstr "Forma"
 #: ../stoqlib/gui/dialogs/saledetails.py:297
 #: ../stoqlib/gui/dialogs/sellabledialog.py:42
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:135
-#: ../stoqlib/gui/dialogs/stockcostdialog.py:76
+#: ../stoqlib/gui/dialogs/stockcostdialog.py:77
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:90
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:105
 #: ../stoqlib/gui/dialogs/supplierdetails.py:127
@@ -3653,7 +3653,7 @@ msgstr "Data de emissão"
 #: ../data/template/optical/prescription.html:7 ../stoq/gui/sales.py:195
 #: ../stoq/gui/till.py:94 ../stoqlib/domain/event.py:78
 #: ../stoqlib/gui/dialogs/clientdetails.py:143
-#: ../stoqlib/gui/editors/saleeditor.py:345 ../stoqlib/lib/invoice.py:326
+#: ../stoqlib/gui/editors/saleeditor.py:346 ../stoqlib/lib/invoice.py:326
 #: ../stoqlib/lib/invoice.py:513 ../stoqlib/lib/invoice.py:523
 #: ../stoqlib/lib/invoice.py:544 ../stoqlib/lib/invoice.py:555
 #: ../stoqlib/lib/invoice.py:572 ../stoqlib/lib/parameters.py:450
@@ -3760,7 +3760,7 @@ msgstr "Operações de crédito"
 #: ../stoqlib/gui/dialogs/saledetails.py:259
 #: ../stoqlib/gui/dialogs/saledetails.py:295
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:129
-#: ../stoqlib/gui/dialogs/stockcostdialog.py:74
+#: ../stoqlib/gui/dialogs/stockcostdialog.py:75
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:103
 #: ../stoqlib/gui/dialogs/supplierdetails.py:125
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:106
@@ -3845,7 +3845,7 @@ msgstr "Responsável"
 #: ../stoqlib/gui/editors/deliveryeditor.py:106
 #: ../stoqlib/gui/editors/deliveryeditor.py:244
 #: ../stoqlib/gui/editors/personeditor.py:55
-#: ../stoqlib/gui/editors/saleeditor.py:356
+#: ../stoqlib/gui/editors/saleeditor.py:357
 #: ../stoqlib/gui/editors/workordereditor.py:395
 #: ../stoqlib/gui/search/callsearch.py:175
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:90
@@ -4144,7 +4144,7 @@ msgstr "Desc"
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:86
 #: ../stoqlib/gui/dialogs/productstockdetails.py:201
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:110
-#: ../stoqlib/gui/editors/saleeditor.py:350
+#: ../stoqlib/gui/editors/saleeditor.py:351
 #: ../stoqlib/gui/editors/workordereditor.py:384
 #: ../stoqlib/gui/search/commissionsearch.py:130
 #: ../stoqlib/gui/search/deliverysearch.py:80
@@ -4228,7 +4228,7 @@ msgstr "Bal. real"
 #: ../stoqlib/gui/dialogs/supplierdetails.py:119
 #: ../stoqlib/gui/dialogs/supplierdetails.py:143
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:127
-#: ../stoqlib/gui/editors/saleeditor.py:352
+#: ../stoqlib/gui/editors/saleeditor.py:353
 #: ../stoqlib/gui/editors/workordereditor.py:385
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:83
 #: ../stoqlib/gui/search/deliverysearch.py:82
@@ -4671,7 +4671,7 @@ msgstr "N/A"
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:91
 #: ../stoqlib/gui/dialogs/productstockdetails.py:276
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:141
-#: ../stoqlib/gui/editors/saleeditor.py:351
+#: ../stoqlib/gui/editors/saleeditor.py:352
 #: ../stoqlib/gui/editors/workordereditor.py:398
 #: ../stoqlib/gui/search/deliverysearch.py:93
 #: ../stoqlib/gui/search/loansearch.py:74
@@ -7814,7 +7814,7 @@ msgstr "Produção #"
 #: ../stoq/gui/production.py:181 ../stoq/gui/services.py:97
 #: ../stoq/gui/services.py:548 ../stoqlib/domain/inventory.py:248
 #: ../stoqlib/domain/payment/payment.py:142 ../stoqlib/domain/production.py:82
-#: ../stoqlib/domain/purchase.py:200 ../stoqlib/domain/returnedsale.py:268
+#: ../stoqlib/domain/purchase.py:200 ../stoqlib/domain/returnedsale.py:267
 #: ../stoqlib/domain/sale.py:735 ../stoqlib/domain/transfer.py:223
 #: ../stoqlib/domain/workorder.py:596
 #: ../stoqlib/gui/search/transfersearch.py:112
@@ -8319,7 +8319,7 @@ msgstr "Data de expiração"
 #: ../stoqlib/domain/profile.py:99 ../stoqlib/domain/test/test_profile.py:51
 #: ../stoqlib/gui/dialogs/clientdetails.py:192
 #: ../stoqlib/gui/dialogs/clientdetails.py:228
-#: ../stoqlib/gui/editors/saleeditor.py:353
+#: ../stoqlib/gui/editors/saleeditor.py:354
 #: ../stoqlib/gui/editors/workordereditor.py:396
 #: ../stoqlib/gui/search/commissionsearch.py:131
 #: ../stoqlib/gui/search/salesearch.py:95
@@ -8524,7 +8524,7 @@ msgid "Not delivered"
 msgstr "Não entregue"
 
 #: ../stoq/gui/services.py:544 ../stoqlib/domain/purchase.py:197
-#: ../stoqlib/domain/returnedsale.py:266 ../stoqlib/domain/till.py:87
+#: ../stoqlib/domain/returnedsale.py:265 ../stoqlib/domain/till.py:87
 #: ../stoqlib/domain/transfer.py:220
 msgid "Pending"
 msgstr "Pendente"
@@ -9886,7 +9886,7 @@ msgstr "Revisão"
 
 #: ../stoqlib/domain/payment/payment.py:141
 #: ../stoqlib/domain/payment/renegotiation.py:60
-#: ../stoqlib/domain/purchase.py:198 ../stoqlib/domain/returnedsale.py:267
+#: ../stoqlib/domain/purchase.py:198 ../stoqlib/domain/returnedsale.py:266
 #: ../stoqlib/domain/sale.py:734 ../stoqlib/domain/stockdecrease.py:209
 msgid "Confirmed"
 msgstr "Confirmado"
@@ -10103,112 +10103,130 @@ msgstr "Produto pacote"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../stoqlib/domain/product.py:1177 ../stoqlib/domain/product.py:1225
+#: ../stoqlib/domain/product.py:1184 ../stoqlib/domain/product.py:1226
 msgid "quantity must be a positive number"
 msgstr "quantidade deve ser um número positivo"
 
-#: ../stoqlib/domain/product.py:1232
+#: ../stoqlib/domain/product.py:1233
 msgid "Quantity to sell is greater than the available stock."
 msgstr "A quantidade a ser vendida é maior que a disponível em estoque."
 
-#: ../stoqlib/domain/product.py:1513
+#: ../stoqlib/domain/product.py:1540
 #, python-format
 msgid "Adjustment for inventory %s"
 msgstr "Ajuste para inventário %s"
 
-#: ../stoqlib/domain/product.py:1514
+#: ../stoqlib/domain/product.py:1541
 #, python-format
 msgid "Returned from loan %s"
 msgstr "Retornado do empréstimo %s"
 
-#: ../stoqlib/domain/product.py:1515
+#: ../stoqlib/domain/product.py:1542
 #, python-format
 msgid "Loaned for loan %s"
 msgstr "Emprestado no empréstimo %s"
 
-#: ../stoqlib/domain/product.py:1516
+#: ../stoqlib/domain/product.py:1543
 #, python-format
 msgid "Allocated for production %s"
 msgstr "Alocado para a produção %s"
 
-#: ../stoqlib/domain/product.py:1517 ../stoqlib/domain/product.py:1518
+#: ../stoqlib/domain/product.py:1544 ../stoqlib/domain/product.py:1545
 #, python-format
 msgid "Produced in production %s"
 msgstr "Produzido na produção %s"
 
-#: ../stoqlib/domain/product.py:1519
+#: ../stoqlib/domain/product.py:1546
 #, python-format
 msgid "Returned remaining from production %s"
 msgstr "Devolvido o restante da produção %s"
 
-#: ../stoqlib/domain/product.py:1521
+#: ../stoqlib/domain/product.py:1548
 #, python-format
 msgid "Received for receiving order %s"
 msgstr "Recebido na ordem de recebimento %s"
 
-#: ../stoqlib/domain/product.py:1522
+#: ../stoqlib/domain/product.py:1549
 #, python-format
 msgid "Returned sale %s"
 msgstr "Devolução %s"
 
-#: ../stoqlib/domain/product.py:1523
+#: ../stoqlib/domain/product.py:1550
+#, python-format
+msgid "Undone the returned sale %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1551
 #, python-format
 msgid "Returned from canceled sale %s"
 msgstr "Devolvido na venda cancelada %s"
 
-#: ../stoqlib/domain/product.py:1524
+#: ../stoqlib/domain/product.py:1552
 #, python-format
 msgid "Sold in sale %s"
 msgstr "Vendido na venda %s"
 
-#: ../stoqlib/domain/product.py:1525
+#: ../stoqlib/domain/product.py:1553
 #, python-format
 msgid "Product removal for stock decrease %s"
 msgstr "Produto removido para saída manual %s"
 
-#: ../stoqlib/domain/product.py:1526
+#: ../stoqlib/domain/product.py:1554
 #, python-format
 msgid "Transfered from branch in transfer order %s"
 msgstr "Transferido de filial na transferência %s"
 
-#: ../stoqlib/domain/product.py:1528
+#: ../stoqlib/domain/product.py:1556
 #, python-format
 msgid "Transfered to this branch in transfer order %s"
 msgstr "Transferido para esta filial na transferência %s"
 
-#: ../stoqlib/domain/product.py:1530
+#: ../stoqlib/domain/product.py:1558
 msgid "Registred initial stock"
 msgstr "Estoque inicial registrado"
 
-#: ../stoqlib/domain/product.py:1531
+#: ../stoqlib/domain/product.py:1559
 msgid "Imported from previous version"
 msgstr "Importado de versão anterior"
 
-#: ../stoqlib/domain/product.py:1532
+#: ../stoqlib/domain/product.py:1560
 #, python-format
 msgid "Consigned product returned %s."
 msgstr "Produto consignado devolvido %s."
 
-#: ../stoqlib/domain/product.py:1533
+#: ../stoqlib/domain/product.py:1561
 #, python-format
 msgid "Used on work order %s."
 msgstr "Utilizado na ordem de serviço %s."
 
-#: ../stoqlib/domain/product.py:1534
+#: ../stoqlib/domain/product.py:1562
 #, python-format
 msgid "Returned to stock on work order %s."
 msgstr "Retornado para o estoque na ordem de serviço %s."
 
-#: ../stoqlib/domain/product.py:1535
+#: ../stoqlib/domain/product.py:1563
 #, python-format
 msgid "Reserved for sale %s."
 msgstr "Reservado para a venda %s"
 
-#: ../stoqlib/domain/product.py:1715
+#: ../stoqlib/domain/product.py:1564
+#, python-format
+msgid "Reserved quantity for sale %s returned to stock."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1566
+msgid "Quantity manually adjusted"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1567
+msgid "Stock cost updated with no change on the stock"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1770
 msgid "Boolean"
 msgstr "Boleano"
 
-#: ../stoqlib/domain/product.py:1716
+#: ../stoqlib/domain/product.py:1771
 msgid "Decimal"
 msgstr "Decimal"
 
@@ -10365,22 +10383,22 @@ msgid "Freight for receiving %s"
 msgstr "Frete para o recebimento %s"
 
 #. TODO: Save the operation nature in new returned_sale table field.
-#: ../stoqlib/domain/returnedsale.py:475 ../stoqlib/reporting/salereturn.py:36
+#: ../stoqlib/domain/returnedsale.py:474 ../stoqlib/reporting/salereturn.py:36
 msgid "Sale Return"
 msgstr "Devolução"
 
-#: ../stoqlib/domain/returnedsale.py:538
+#: ../stoqlib/domain/returnedsale.py:537
 #: ../stoqlib/gui/wizards/salewizard.py:237
 #, python-format
 msgid "%s returned for sale %s"
 msgstr "%s devolvido pela venda %s"
 
-#: ../stoqlib/domain/returnedsale.py:579
+#: ../stoqlib/domain/returnedsale.py:578
 #, python-format
 msgid "Traded items for sale %s"
 msgstr "Itens trocados para venda %s"
 
-#: ../stoqlib/domain/returnedsale.py:634
+#: ../stoqlib/domain/returnedsale.py:633
 #, python-format
 msgid "%s return undone for sale %s"
 msgstr "%s devolução desfeita pela venda %s"
@@ -10871,7 +10889,7 @@ msgid "The quantity cannot be 0"
 msgstr "A quantidade não pode ser 0"
 
 #: ../stoqlib/gui/dialogs/batchselectiondialog.py:484
-#: ../stoqlib/gui/editors/saleeditor.py:240
+#: ../stoqlib/gui/editors/saleeditor.py:241
 #: ../stoqlib/gui/wizards/abstractwizard.py:773
 #, python-format
 msgid "This product unit (%s) does not support fractions."
@@ -11893,16 +11911,16 @@ msgstr "Iniciar produção"
 msgid "_Start Production"
 msgstr "Inici_ar produção"
 
-#: ../stoqlib/gui/dialogs/stockcostdialog.py:53
+#: ../stoqlib/gui/dialogs/stockcostdialog.py:54
 msgid "Product - Stock Cost"
 msgstr "Produto - Custo do estoque"
 
-#: ../stoqlib/gui/dialogs/stockcostdialog.py:66
+#: ../stoqlib/gui/dialogs/stockcostdialog.py:67
 #, python-format
 msgid "Fixing stock cost for products in <b>%s</b>"
 msgstr "Ajustando o custo de estoque para produtos em <b>%s</b>"
 
-#: ../stoqlib/gui/dialogs/stockcostdialog.py:78
+#: ../stoqlib/gui/dialogs/stockcostdialog.py:79
 msgid "Stock Cost"
 msgstr "Custo do estoque"
 
@@ -12447,12 +12465,12 @@ msgstr "Item emprestado"
 
 #: ../stoqlib/gui/editors/loanitemeditor.py:111
 #: ../stoqlib/gui/editors/producteditor.py:308
-#: ../stoqlib/gui/editors/saleeditor.py:270
+#: ../stoqlib/gui/editors/saleeditor.py:271
 msgid "The price must be greater than zero."
 msgstr "O valor deve ser maior que zero"
 
 #: ../stoqlib/gui/editors/loanitemeditor.py:119
-#: ../stoqlib/gui/editors/saleeditor.py:291
+#: ../stoqlib/gui/editors/saleeditor.py:292
 #: ../stoqlib/gui/slaves/workorderslave.py:189
 #: ../stoqlib/gui/wizards/abstractwizard.py:815
 #, python-format
@@ -12983,7 +13001,7 @@ msgid "The cost should be greater than zero."
 msgstr "O custo deve ser maior que zero"
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:128
-#: ../stoqlib/gui/editors/saleeditor.py:236
+#: ../stoqlib/gui/editors/saleeditor.py:237
 #: ../stoqlib/gui/editors/transfereditor.py:90
 msgid "The quantity should be greater than zero."
 msgstr "A quantidade deve ser maior que zero."
@@ -13005,27 +13023,27 @@ msgstr "Quantidade devolvida inválida"
 msgid "Sale Quote Item"
 msgstr "Item de cotação"
 
-#: ../stoqlib/gui/editors/saleeditor.py:274
+#: ../stoqlib/gui/editors/saleeditor.py:275
 #: ../stoqlib/gui/wizards/abstractwizard.py:803
 #, python-format
 msgid "The sell price cannot be greater than %s."
 msgstr "O valor de venda não pode ser maior que %s."
 
-#: ../stoqlib/gui/editors/saleeditor.py:330
+#: ../stoqlib/gui/editors/saleeditor.py:331
 msgid ""
 "One or more components for this package doesn't have enough of stock to "
 "reserve"
 msgstr "Um ou mais componentes deste pacote não possui estoque suficiente para a reserva"
 
-#: ../stoqlib/gui/editors/saleeditor.py:377
+#: ../stoqlib/gui/editors/saleeditor.py:378
 msgid "Salesperson change"
 msgstr "Alterar vendedor"
 
-#: ../stoqlib/gui/editors/saleeditor.py:392
+#: ../stoqlib/gui/editors/saleeditor.py:393
 msgid "Sale token"
 msgstr "Token da venda"
 
-#: ../stoqlib/gui/editors/saleeditor.py:409
+#: ../stoqlib/gui/editors/saleeditor.py:410
 msgid "Code already in use"
 msgstr "Código já está sendo usado"
 
