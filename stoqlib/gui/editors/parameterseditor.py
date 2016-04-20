@@ -53,19 +53,20 @@ class SystemParameterEditor(BaseEditor):
     model_type = ParameterData
     help_section = 'param'
 
-    def __init__(self, store, model):
-        if not model:
+    def __init__(self, store, param_detail):
+        if not param_detail:
             raise ValueError("This editor can't be called without a model")
         # By default, if the user sets a value to None (e.g. selecting nothing
         # on a comboentry) we block it's update. Change this to False if the
         # param itself can accept None.
         self._block_none_value = True
         self.sensitive = True
-        if model.field_name in ['DEMO_MODE', 'LOCAL_BRANCH',
+        if param_detail.key in ['DEMO_MODE', 'LOCAL_BRANCH',
                                 'SYNCHRONIZED_MODE', 'USER_HASH']:
             self.sensitive = False
 
-        self._parameter_details = sysparam.get_detail_by_name(model.field_name)
+        self.detail = param_detail
+        model = self._get_model(store, param_detail)
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
@@ -73,10 +74,23 @@ class SystemParameterEditor(BaseEditor):
     # Helper methods
     #
 
+    def _get_model(self, store, detail):
+        model = store.find(ParameterData, field_name=detail.key).one()
+        if not model:
+            value = sysparam.get(detail.key)
+            if detail.type is bool:
+                value = int(value)
+            if value is not None:
+                value = unicode(value)
+            model = ParameterData(store=store,
+                                  field_name=detail.key,
+                                  field_value=value)
+        return model
+
     def _setup_widgets(self):
         self.parameter_name.set_underline(True)
         self.parameter_desc.set_size("small")
-        self.parameter_group.set_label(_(self.model.get_group()))
+        self.parameter_group.set_label(self.detail.group)
 
     def _setup_entry_slave(self, box=None):
         widget = ProxyEntry()
@@ -246,16 +260,14 @@ class SystemParameterEditor(BaseEditor):
     #
 
     def get_title(self, model):
-        return _("Edit '%s' Parameter") % self._parameter_details.short_desc
+        return _("Edit '%s' Parameter") % self.detail.short_desc
 
     def setup_proxies(self):
-        self.add_proxy(self._parameter_details,
+        self.add_proxy(self.detail,
                        SystemParameterEditor.proxy_widgets)
         self.proxy = self.add_proxy(self.model)
 
     def setup_slaves(self):
-        self._slave = None
-        self.detail = sysparam.get_detail_by_name(self.model.field_name)
         field_type = self.detail.get_parameter_type()
         if issubclass(field_type, Image):
             self._setup_image_slave()

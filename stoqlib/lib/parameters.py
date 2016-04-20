@@ -63,7 +63,7 @@ def _credit_limit_salary_changed(new_value, store):
 class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
                  initial=None, options=None, combo_data=None, range=None,
-                 multiline=False, validator=None, onupgrade=None,
+                 multiline=False, validator=None,
                  change_callback=None, editor=None, wrap=True, allow_none=False):
         self.key = key
         self.group = group
@@ -76,9 +76,6 @@ class ParameterDetails(object):
         self.range = range
         self.multiline = multiline
         self.validator = validator
-        if onupgrade is None:
-            onupgrade = initial
-        self.onupgrade = onupgrade
         self.change_callback = change_callback
         self.editor = editor
         self.wrap = wrap
@@ -397,7 +394,7 @@ _details = [
         _(u'Sales'),
         _(u'Max discount for sales'),
         _(u'The max discount for salesperson in a sale'),
-        Decimal, initial=5, range=(0, 100),
+        Decimal, initial=Decimal(5), range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -547,7 +544,7 @@ _details = [
         _(u'Default ICMS to be applied on all the products of a sale. ') + u' ' +
         _(u'This is a percentage value and must be between 0 and 100.') + u' ' +
         _(u'E.g: 18, which means 18% of tax.'),
-        Decimal, initial=18, range=(0, 100),
+        Decimal, initial=Decimal(18), range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -557,7 +554,7 @@ _details = [
         _(u'Default ISS to be applied on all the services of a sale. ') + u' ' +
         _(u'This is a percentage value and must be between 0 and 100.') + u' ' +
         _(u'E.g: 12, which means 12% of tax.'),
-        Decimal, initial=18, range=(0, 100),
+        Decimal, initial=Decimal(18), range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -568,7 +565,7 @@ _details = [
         u' ' +
         _(u'This is a percentage value and must be between 0 and 100.') + u' ' +
         _(u'E.g: 16, which means 16% of tax.'),
-        Decimal, initial=18, range=(0, 100),
+        Decimal, initial=Decimal(18), range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -587,7 +584,7 @@ _details = [
         _(u"This is used to calculate the client's credit limit according"
           u"to the client's salary. If this percent is changed it will "
           u"automatically recalculate the credit limit for all clients."),
-        Decimal, initial=0, range=(0, 100),
+        Decimal, initial=Decimal(0), range=(0, 100),
         validator=ParameterDetails.validate_percentage,
         change_callback=_credit_limit_salary_changed),
 
@@ -733,7 +730,7 @@ _details = [
         _(u'Online services'),
         _(u'If online services such as upgrade notifications, automatic crash reports '
           u'should be enabled.'),
-        bool, initial=True, onupgrade=u''),
+        bool, initial=True),
 
     ParameterDetails(
         u'BILL_INSTRUCTIONS',
@@ -759,7 +756,7 @@ _details = [
         _(u'The aliquot to calculate the daily interest on the bill. '
           u'See "Bill instructions" parameter for more information on how '
           u'this is used'),
-        Decimal, initial=0, range=(0, 100),
+        Decimal, initial=Decimal(0), range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -769,7 +766,7 @@ _details = [
         _(u'The aliquot to calculate the penalty on the bill. '
           u'See "Bill instructions" parameter for more information on how '
           u'this is used'),
-        Decimal, initial=0, range=(0, 100),
+        Decimal, initial=Decimal(0), range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -779,7 +776,7 @@ _details = [
         _(u'The aliquot to calculate the discount on the bill. '
           u'See "Bill instructions" parameter for more information on how '
           u'this is used'),
-        Decimal, initial=0, range=(0, 100),
+        Decimal, initial=Decimal(0), range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -949,13 +946,7 @@ class ParameterAccess(object):
         return self._values_cache
 
     def _create_default_values(self, store):
-        # Create default values for parameters that take objects
-        self.set_object_default(store, "CUSTOM_LOGO_FOR_REPORTS", None)
-        self.set_object_default(store, "LOCAL_BRANCH", None, is_editable=False)
-        self.set_object_default(store, "MAIN_COMPANY", None)
-        self.set_object_default(store, "SUGGESTED_SUPPLIER", None)
-        self.set_object_default(store, "SUGGESTED_UNIT", None)
-
+        """Create default values for parameters that take objects"""
         self._set_default_method_default(store)
 
         self._set_cfop_default(store,
@@ -992,16 +983,18 @@ class ParameterAccess(object):
             return
         data = self.get_object(store, param_name)
         if not data:
-            data = CfopData(code=code, description=description,
-                            store=store)
+            # There is no unique code constraint in the cfop_data table!
+            data = store.find(CfopData, code=code).any()
+            if data is None:
+                data = CfopData(code=code, description=description,
+                                store=store)
             self.set_object(store, param_name, data)
 
     def _set_sales_person_role_default(self, store):
         if self.has_object("DEFAULT_SALESPERSON_ROLE"):
             return
         from stoqlib.domain.person import EmployeeRole
-        role = EmployeeRole(name=_(u'Salesperson'),
-                            store=store)
+        role = EmployeeRole.get_or_create(store, name=_(u'Salesperson'))
         self.set_object(store, "DEFAULT_SALESPERSON_ROLE", role,
                         is_editable=False)
 
@@ -1020,10 +1013,11 @@ class ParameterAccess(object):
                                              SellableTaxConstant)
         from stoqlib.domain.service import Service
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, store)
-        sellable = Sellable(store=store,
-                            description=_(u'Delivery'))
+        sellable = store.find(Sellable, description=_(u'Delivery')).any()
+        if not sellable:
+            sellable = Sellable(store=store, description=_(u'Delivery'))
         sellable.tax_constant = tax_constant
-        service = Service(sellable=sellable, store=store)
+        service = sellable.service or Service(sellable=sellable, store=store)
         self.set_object(store, "DELIVERY_SERVICE", service)
 
     def _verify_detail(self, field_name, expected_type=None):
@@ -1038,14 +1032,12 @@ class ParameterAccess(object):
         return detail
 
     def _set_param_internal(self, store, param_name, value, expected_type):
-        param = store.find(ParameterData, field_name=unicode(param_name)).one()
-        if param is None:
-            raise ValueError("param_name %s is not a valid parameter" % (
-                param_name, ))
+        self._verify_detail(param_name, expected_type)
+        param = ParameterData.get_or_create(store, field_name=unicode(param_name))
 
         if value is not None and not type(value) is expected_type:
-            raise TypeError("%s must be a decimal, not %r" % (
-                param_name, type(value).__name__))
+            raise TypeError("%s must be a %s, not %r" % (
+                param_name, expected_type, type(value).__name__))
 
         # bool are represented as 1/0
         if expected_type is bool:
@@ -1091,15 +1083,6 @@ class ParameterAccess(object):
         """Clears the internal cache so it can be rebuilt on next access"""
         self._values_cache = None
 
-    def check_parameter_presence(self):
-        """
-        Check so the number of installed parameters are equal to
-        the number of available ones
-
-        :returns: ``True`` if they're up to date, ``False`` otherwise
-        """
-        return len(self._values) == len(self._details)
-
     def ensure_system_parameters(self, store, update=False):
         """
         :param update: ``True`` if we're upgrading a database,
@@ -1114,17 +1097,27 @@ class ParameterAccess(object):
         if update:
             self.clear_cache()
         self._remove_unused_parameters(store)
-
-        for detail in self._details.values():
-            if update and detail.key in self._values:
-                continue
-
-            if update:
-                default = detail.onupgrade
-            else:
-                default = detail.initial
-            self._set_default_value(store, detail, default)
         self._create_default_values(store)
+
+    def get(self, param_name, expected_type=None, store=None):
+        detail = self._verify_detail(param_name, expected_type)
+        value = self._values.get(param_name)
+        if value is None:
+            # initial value is already of the correct type
+            return detail.initial
+
+        if expected_type is bool:
+            return value == u'1'
+        elif expected_type in (Decimal, int):
+            try:
+                return expected_type(value)
+            except ValueError:
+                return expected_type(detail.initial)
+        elif isinstance(expected_type, basestring):
+            field_type = detail.get_parameter_type()
+            return store.get(field_type, unicode(value))
+
+        return value
 
     def set_bool(self, store, param_name, value):
         """
@@ -1135,7 +1128,6 @@ class ParameterAccess(object):
         :param value: the value to set
         :type value: bool
         """
-        self._verify_detail(param_name, bool)
         self._set_param_internal(store, param_name, value, bool)
 
     def get_bool(self, param_name):
@@ -1146,11 +1138,7 @@ class ParameterAccess(object):
         :returns: the database value
         :rtype: bool
         """
-        detail = self._verify_detail(param_name, bool)
-        value = self._values.get(param_name)
-        if value is None:
-            return detail.initial
-        return value == u'1'
+        return self.get(param_name, bool)
 
     def set_decimal(self, store, param_name, value):
         """
@@ -1161,7 +1149,6 @@ class ParameterAccess(object):
         :param value: the value to set
         :type value: decimal.Decimal
         """
-        self._verify_detail(param_name, Decimal)
         self._set_param_internal(store, param_name, value, Decimal)
 
     def get_decimal(self, param_name):
@@ -1172,15 +1159,7 @@ class ParameterAccess(object):
         :returns: the database value
         :rtype: decimal.Decimal
         """
-        detail = self._verify_detail(param_name, Decimal)
-        value = self._values.get(param_name)
-        if value is None:
-            return detail.initial
-
-        try:
-            return Decimal(value)
-        except ValueError:
-            return detail.initial
+        return self.get(param_name, Decimal)
 
     def set_int(self, store, param_name, value):
         """
@@ -1191,7 +1170,6 @@ class ParameterAccess(object):
         :param value: the value to set
         :type value: int
         """
-        self._verify_detail(param_name, int)
         self._set_param_internal(store, param_name, value, int)
 
     def get_int(self, param_name):
@@ -1202,15 +1180,7 @@ class ParameterAccess(object):
         :returns: the database value
         :rtype: int
         """
-        detail = self._verify_detail(param_name, int)
-        value = self._values.get(param_name)
-        if value is None:
-            return detail.initial
-
-        try:
-            return int(value)
-        except ValueError:
-            return detail.initial
+        return self.get(param_name, int)
 
     def set_string(self, store, param_name, value):
         """
@@ -1221,7 +1191,6 @@ class ParameterAccess(object):
         :param value: the value to set
         :type value: unicode
         """
-        self._verify_detail(param_name, unicode)
         self._set_param_internal(store, param_name, value, unicode)
 
     def get_string(self, param_name):
@@ -1232,12 +1201,7 @@ class ParameterAccess(object):
         :returns: the database value
         :rtype: unicode
         """
-        detail = self._verify_detail(param_name, unicode)
-        value = self._values.get(param_name)
-        if value is None:
-            return detail.initial
-
-        return value
+        return self.get(param_name, unicode)
 
     def set_object(self, store, param_name, value, is_editable=True):
         """
@@ -1255,7 +1219,7 @@ class ParameterAccess(object):
 
         field_type = detail.get_parameter_type()
         if (value is not None and
-            not isinstance(value, field_type)):
+                not isinstance(value, field_type)):
             raise TypeError("%s must be a %s instance, not %r" % (
                 param_name, field_type.__name__,
                 type(value).__name__))
@@ -1266,21 +1230,6 @@ class ParameterAccess(object):
         param.field_value = value
         param.is_editable = is_editable
         self._values[param_name] = value
-
-    def set_object_default(self, store, param_name, value, is_editable=True):
-        """
-        Updates the default value for a database object. This works like
-        .set_object() but only updates if it doesn't have a value set.
-
-        :param store: a database store
-        :param param_name: the parameter name
-        :param value: the value to set
-        :type value: a domain object
-        :param is_editable: if the parameter can be modified interactivly
-        """
-        if self.has_object(param_name):
-            return
-        self.set_object(store, param_name, value, is_editable=is_editable)
 
     def get_object(self, store, param_name):
         """
@@ -1294,12 +1243,7 @@ class ParameterAccess(object):
         :returns: the object
         """
         detail = self._verify_detail(param_name)
-        value = self._values.get(param_name)
-        if value is None:
-            return detail.initial
-
-        field_type = detail.get_parameter_type()
-        return store.get(field_type, unicode(value))
+        return self.get(param_name, detail.type, store)
 
     def get_object_id(self, param_name):
         """
@@ -1308,8 +1252,7 @@ class ParameterAccess(object):
         :param param_name: the parameter name
         :returns: the object id
         """
-        self._verify_detail(param_name)
-        return self._values.get(param_name)
+        return self.get(param_name)
 
     def has_object(self, param_name):
         """
@@ -1317,8 +1260,7 @@ class ParameterAccess(object):
 
         :param param_name: the parameter name
         """
-        self._verify_detail(param_name)
-        value = self._values.get(param_name)
+        value = self.get(param_name)
         return value is not None
 
     def compare_object(self, param_name, other_object):
@@ -1329,8 +1271,7 @@ class ParameterAccess(object):
         :param param_name: the parameter name
         :param other_object: object to compare
         """
-        self._verify_detail(param_name)
-        object_id = self._values.get(param_name)
+        object_id = self.get(param_name)
         if object_id is None and other_object is None:
             return True
         if other_object is None:
@@ -1351,6 +1292,9 @@ class ParameterAccess(object):
         :type value: unicode
         """
         self._values[param_name] = value
+
+    def get_details(self):
+        return self._details.values()
 
     def get_detail_by_name(self, param_name):
         """

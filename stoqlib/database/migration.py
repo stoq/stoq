@@ -62,6 +62,7 @@ class Patch(object):
     :attribute filename: patch filename
     :attribute level: database level
     """
+
     def __init__(self, filename, migration):
         """
         Create a new Patch object.
@@ -350,16 +351,6 @@ class StoqlibSchemaMigration(SchemaMigration):
         super(StoqlibSchemaMigration, self).__init__()
         self._backup = None
 
-    def check_uptodate(self):
-        retval = super(StoqlibSchemaMigration, self).check_uptodate()
-
-        # If the database already needs upgrading, dont check the parameters
-        # presence (since they may need an upgrade as well)
-        if retval and not sysparam.check_parameter_presence():
-            return False
-
-        return retval
-
     def _check_database(self):
         try:
             log.info("Locking database")
@@ -525,6 +516,7 @@ class PluginSchemaMigration(SchemaMigration):
     """This is a SchemaMigration class which is suitable for use within
     a plugin
     """
+
     def __init__(self, plugin_name, resource_domain, resource, patterns):
         """
         Create a new PluginSchemaMigration object.

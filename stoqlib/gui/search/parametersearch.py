@@ -32,7 +32,6 @@ from zope.interface import providedBy
 from stoqlib.api import api
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
-from stoqlib.domain.parameter import ParameterData
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext, dgettext
@@ -52,12 +51,11 @@ class ParameterSearch(BaseEditor):
 
     def __init__(self, store):
         BaseEditor.__init__(self, store, model=object())
-        self._parameters = []
+        self._parameters = sysparam.get_details()
         self._setup_widgets()
 
     def _setup_widgets(self):
         self.results.set_columns(self._get_columns())
-        self._parameters = self.store.find(ParameterData)
         self._reset_results()
         self.edit_button.set_sensitive(False)
         # Hiding the button to avoid confusion about discarding the changes
@@ -70,52 +68,41 @@ class ParameterSearch(BaseEditor):
     def _get_columns(self):
         return [Column('group', title=_('Group'), data_type=str, width=100,
                        sorted=True),
-                Column('short_description', title=_('Parameter'),
+                Column('short_desc', title=_('Parameter'),
                        data_type=str, expand=True),
                 AccessorColumn('field_value', title=_('Current value'),
                                accessor=self._get_parameter_value,
                                data_type=str, width=200)]
 
-    def _get_parameter_value(self, obj):
+    def _get_parameter_value(self, detail):
         """Given a ParameterData object, returns a string representation of
         its current value.
         """
-        detail = sysparam.get_detail_by_name(obj.field_name)
-        if detail.type == unicode:
-            data = sysparam.get_string(obj.field_name)
-        elif detail.type == bool:
-            data = sysparam.get_bool(obj.field_name)
-        elif detail.type == int:
-            data = sysparam.get_int(obj.field_name)
-        elif detail.type == decimal.Decimal:
-            data = sysparam.get_decimal(obj.field_name)
-        elif isinstance(detail.type, basestring):
-            data = sysparam.get_object(self.store, obj.field_name)
-        else:
-            raise NotImplementedError(detail.type)
-
+        data = sysparam.get(detail.key, detail.type, self.store)
         if isinstance(data, Domain):
             if not (IDescribable in providedBy(data)):
                 raise TypeError(u"Parameter `%s' must implement IDescribable "
-                                "interface." % obj.field_name)
+                                "interface." % detail.key)
             return data.get_description()
         elif detail.options:
-            return detail.options[int(obj.field_value)]
+            return detail.options[int(data)]
         elif isinstance(data, bool):
             return [_(u"No"), _(u"Yes")][data]
         elif isinstance(data, decimal.Decimal):
             return quantize(data)
-        elif obj.field_name == u'COUNTRY_SUGGESTED':
+        elif detail.key == u'COUNTRY_SUGGESTED':
             return dgettext("iso_3166", data)
         elif isinstance(data, unicode):
             # FIXME: workaround to handle locale specific data
             return _(data)
+
+        if data is None:
+            return ''
         return unicode(data)
 
     def _edit_item(self, item):
         store = api.new_store()
-        parameter = store.fetch(item)
-        retval = run_dialog(SystemParameterEditor, self, store, parameter)
+        retval = run_dialog(SystemParameterEditor, self, store, item)
         if store.confirm(retval):
             self.results.update(item)
         store.close()
@@ -131,8 +118,8 @@ class ParameterSearch(BaseEditor):
             return
 
         for param in self._parameters:
-            group = strip_accents(param.get_group()).lower()
-            desc = strip_accents(param.get_short_description()).lower()
+            group = strip_accents(param.group).lower()
+            desc = strip_accents(param.short_desc).lower()
 
             group_matches = all(i in group for i in query)
             desc_matches = all(i in desc for i in query)
