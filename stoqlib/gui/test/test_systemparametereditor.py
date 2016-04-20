@@ -23,20 +23,22 @@
 ##
 
 
-from stoqlib.domain.parameter import ParameterData
 from stoqlib.gui.editors.parameterseditor import SystemParameterEditor
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.parameters import sysparam
 
 
 class TestSystemParameterEditor(GUITest):
     def test_create(self):
         parameter_data = self.create_parameter_data()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(parameter_data.field_name)
+        editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-show')
 
     def test_confirm(self):
         parameter_data = self.create_parameter_data()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(parameter_data.field_name)
+        editor = SystemParameterEditor(self.store, detail)
 
         parameter_data.field_value = None
         self.assertFalse(editor.validate_confirm())
@@ -48,64 +50,54 @@ class TestSystemParameterEditor(GUITest):
                           [editor.retval])
 
     def test_entry(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'CITY_SUGGESTED').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'CITY_SUGGESTED')
+        editor = SystemParameterEditor(self.store, detail)
         editor._entry.update('any city')
         self.check_editor(editor, 'editor-systemparameter-entry')
 
     def test_entry_insensitive(self):
         with self.sysparam(USER_HASH=u'45b27f4258024de58d2308753fcfff21'):
-            parameter_data = self.store.find(ParameterData,
-                                             field_name=u'USER_HASH').one()
-            editor = SystemParameterEditor(self.store, parameter_data)
+            detail = sysparam.get_detail_by_name(u'USER_HASH')
+            editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-entry-insensitive')
 
     def test_combo_entry(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'COUNTRY_SUGGESTED').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'COUNTRY_SUGGESTED')
+        editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-combo-entry')
 
     def test_spin_entry(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'MAX_SEARCH_RESULTS').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'MAX_SEARCH_RESULTS')
+        editor = SystemParameterEditor(self.store, detail)
         editor._entry.update(456)
         self.check_editor(editor, 'editor-systemparameter-spin-entry')
 
     def test_text_view_entry(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'NFE_FISCO_INFORMATION').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'NFE_FISCO_INFORMATION')
+        editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-text-view-entry')
 
     def test_unwrapped_text_view_entry(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'ADDITIONAL_INFORMATION_ON_COUPON').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'ADDITIONAL_INFORMATION_ON_COUPON')
+        editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-unwrapped-text-view-entry')
 
     def test_image(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'CUSTOM_LOGO_FOR_REPORTS').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'CUSTOM_LOGO_FOR_REPORTS')
+        editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-image')
 
     def test_radio(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'DISABLE_COOKIES').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'DISABLE_COOKIES')
+        editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-radio')
 
     def test_options_combo(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'NFE_DANFE_ORIENTATION').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'NFE_DANFE_ORIENTATION')
+        editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-options-combo')
 
     def test_filechooser(self):
-        parameter_data = self.store.find(ParameterData,
-                                         field_name=u'CAT52_DEST_DIR').one()
-        editor = SystemParameterEditor(self.store, parameter_data)
+        detail = sysparam.get_detail_by_name(u'CAT52_DEST_DIR')
+        editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-file-chooser')
