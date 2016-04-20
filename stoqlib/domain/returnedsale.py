@@ -32,6 +32,7 @@ from storm.references import Reference, ReferenceSet
 from storm.expr import And, Join, Eq
 from zope.interface import implementer
 
+from stoqlib.api import api
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
@@ -579,8 +580,6 @@ class ReturnedSale(Domain):
             self.new_sale.identifier, )
         value = self.returned_total
 
-        self._return_items()
-
         value_as_discount = sysparam.get_bool('USE_TRADE_AS_DISCOUNT')
         if value_as_discount:
             self.new_sale.discount_value = self.returned_total
@@ -591,8 +590,16 @@ class ReturnedSale(Domain):
             payment.pay()
             self._revert_fiscal_entry()
 
+        login_user = api.get_current_user(self.store)
+
         if self.sale:
             self.sale.return_(self)
+            if self.sale.branch == self.branch:
+                self.confirm(login_user)
+        else:
+            # When trade items without a registered sale, confirm the
+            # new returned sale.
+            self.confirm(login_user)
 
     def remove(self):
         """Remove this return and it's items from the database"""
