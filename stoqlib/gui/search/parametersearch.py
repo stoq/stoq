@@ -33,6 +33,7 @@ from stoqlib.api import api
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext, dgettext
 from stoqlib.gui.base.columns import AccessorColumn
@@ -102,6 +103,8 @@ class ParameterSearch(BaseEditor):
             return detail.options[int(obj.field_value)]
         elif isinstance(data, bool):
             return [_(u"No"), _(u"Yes")][data]
+        elif isinstance(data, decimal.Decimal):
+            return quantize(data)
         elif obj.field_name == u'COUNTRY_SUGGESTED':
             return dgettext("iso_3166", data)
         elif isinstance(data, unicode):

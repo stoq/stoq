@@ -31,7 +31,7 @@ GtkDialog(toplevel): title='Stock Transfer', hidden
                   column: title='Transfer'
                   column: title='Total'
                   column: title='Cost'
-                  row: u'', u'Product to transfer', None, Decimal('1.000'), Decimal('125.000'), <currency $125>
+                  row: u'', u'Product to transfer', Decimal('10.000'), Decimal('1.000'), Decimal('9.000'), <currency $125>
               GtkHBox(hbox1, fill=True):
                 GtkHBox(button_box):
                   GtkButton(add_button): hidden

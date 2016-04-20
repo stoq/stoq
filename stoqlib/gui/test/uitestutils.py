@@ -31,7 +31,6 @@ import traceback
 
 import gobject
 import gtk
-from kiwi.accessor import kgetattr
 from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.ui.views import SignalProxyObject, SlaveView
@@ -191,9 +190,9 @@ class GUIDumper(object):
             props.append('insensitive')
 
         if (widget.get_sensitive() and
-            widget.get_visible() and
-            not widget.get_can_focus() and
-            self._is_interactive_widget(widget)):
+                widget.get_visible() and
+                not widget.get_can_focus() and
+                self._is_interactive_widget(widget)):
             props.append('unfocusable')
             fmt = "%s %s is not focusable"
             self.failures.append(fmt % (gobject.type_name(widget),
@@ -202,8 +201,8 @@ class GUIDumper(object):
 
         if IValidatableProxyWidget.providedBy(widget):
             if (not widget.is_valid() and
-                widget.get_sensitive() and
-                widget.get_visible()):
+                    widget.get_sensitive() and
+                    widget.get_visible()):
                 if widget.mandatory:
                     props.append('mandatory')
                 else:
@@ -259,7 +258,7 @@ class GUIDumper(object):
 
     def _dump_label(self, label, indent):
         if (isinstance(label, gtk.AccelLabel) and
-            isinstance(label.get_parent(), gtk.MenuItem)):
+                isinstance(label.get_parent(), gtk.MenuItem)):
             return
 
         props = []
@@ -277,26 +276,26 @@ class GUIDumper(object):
     def _dump_menu_item(self, menuitem, indent):
         # GtkUIManager creates plenty of invisible separators
         if (isinstance(menuitem, gtk.SeparatorMenuItem) and
-            not menuitem.get_visible()):
+                not menuitem.get_visible()):
             return
 
         # GtkUIManager creates empty items at the end of lists
         if (type(menuitem) == gtk.MenuItem and
-            not menuitem.get_visible() and
-            not menuitem.get_sensitive() and
-            menuitem.get_label() == 'Empty'):
+                not menuitem.get_visible() and
+                not menuitem.get_sensitive() and
+                menuitem.get_label() == 'Empty'):
             return
 
         # Skip tearoff menus
         if (isinstance(menuitem, gtk.TearoffMenuItem) and
-            not menuitem.get_visible()):
+                not menuitem.get_visible()):
             return
 
         props = []
         label = menuitem.get_label()
         if (isinstance(menuitem, gtk.ImageMenuItem) and
-            menuitem.get_use_stock()):
-            props.append('stock=%r' % (label, ))
+                menuitem.get_use_stock()):
+                props.append('stock=%r' % (label, ))
         elif label:
             props.append(repr(label))
 
@@ -306,7 +305,7 @@ class GUIDumper(object):
     def _dump_tool_item(self, toolitem, indent):
         # GtkUIManager creates plenty of invisible separators
         if (isinstance(toolitem, gtk.SeparatorToolItem) and
-            not toolitem.get_visible()):
+                not toolitem.get_visible()):
             return
 
         props = []
@@ -353,7 +352,7 @@ class GUIDumper(object):
         selected = combo.get_selected_label()
         labels = combo.get_model_strings()
         if (labels and labels[0] == 'Afghanistan' and
-            sorted(labels) == sorted(countries)):
+                sorted(labels) == sorted(countries)):
             labels = [selected,
                       '... %d more countries ...' % (len(countries) - 1)]
 
@@ -380,7 +379,7 @@ class GUIDumper(object):
         def append_row(row, extra_indent=0):
             inst = row[0]
             cols = []
-            cols = [repr(kgetattr(inst, col.attribute, None)) for
+            cols = [repr(col.get_attribute(inst, col.attribute, None)) for
                     col in objectlist.get_columns()]
             extra.append("%srow: %s" % (
                 ' ' * extra_indent, ', '.join(cols)))
