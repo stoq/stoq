@@ -51,6 +51,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
             GtkImageMenuItem(): 'Sales'
             GtkImageMenuItem(): 'Services'
             GtkImageMenuItem(): 'Stock'
+            GtkImageMenuItem(): 'Stoq.Link'
             GtkImageMenuItem(): 'Till'
       GtkSeparatorToolItem():
       GtkMenuToolButton(): 'New'
@@ -90,6 +91,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
 <small>Perform services like maintenance, installation or repair.</small>, stock: stoq-services
               markup: <b>Stock</b>
 <small>Stock management, receive products and transfer them between branches.</small>
+              markup: <b>Stoq.Link</b>
+<small>Manage your company from the cloud with Stoq.link.</small>
               markup: <b>Till</b>
 <small>Control tills and their workflow.</small>
         GtkVBox(application_box, expand=True, fill=True): hidden

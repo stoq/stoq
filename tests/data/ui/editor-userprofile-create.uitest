@@ -20,10 +20,10 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                     ProxyCheckButton(financial, expand=True, fill=True, padding=6): 'Financial'
                     GtkImage():
                   GtkHBox(fill=True):
-                    ProxyCheckButton(sales, expand=True, fill=True, padding=6): 'Sales'
+                    ProxyCheckButton(pos, expand=True, fill=True, padding=6): 'Point of Sales'
                     GtkImage():
                   GtkHBox(fill=True):
-                    ProxyCheckButton(pos, expand=True, fill=True, padding=6): 'Point of Sales'
+                    ProxyCheckButton(sales, expand=True, fill=True, padding=6): 'Sales'
                     GtkImage():
                   GtkHBox(fill=True):
                     ProxyCheckButton(payable, expand=True, fill=True, padding=6): 'Accounts Payable'

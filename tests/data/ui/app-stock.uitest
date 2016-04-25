@@ -82,6 +82,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
             GtkImageMenuItem(): 'Sales'
             GtkImageMenuItem(): 'Services'
             GtkImageMenuItem(): 'Stock', hidden
+            GtkImageMenuItem(): 'Stoq.Link'
             GtkImageMenuItem(): 'Till'
       GtkSeparatorToolItem():
       GtkMenuToolButton(): 'New'

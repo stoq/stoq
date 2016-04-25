@@ -41,6 +41,8 @@ _APPLICATIONS = {
                    N_(u"Control accounts and financial transactions.")),
     u'inventory': (N_(u"Inventory"),
                    N_(u"Audit and adjust the product stock.")),
+    u'link': (N_(u"Stoq.Link"),
+              N_(u"Manage your company from the cloud with Stoq.link.")),
     u'services': (N_(u"Services"),
                   N_(u"Perform services like maintenance, installation or repair.")),
     u'payable': (N_(u"Accounts Payable"),
@@ -80,13 +82,14 @@ def get_application_icon(appname):
         STOQ_ADMIN_APP, STOQ_CALENDAR_APP, STOQ_CALC, STOQ_INVENTORY_APP,
         STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
         STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_SERVICES,
-        STOQ_STOCK_APP, STOQ_TILL_APP)
+        STOQ_STOCK_APP, STOQ_TILL_APP, STOQ_LINK)
 
     return {u'admin': STOQ_ADMIN_APP,
             u'calendar': STOQ_CALENDAR_APP,
             u'financial': STOQ_CALC,
             u'inventory': STOQ_INVENTORY_APP,
             u'launcher': STOQ_STOCK_APP,
+            u'link': STOQ_LINK,
             u'services': STOQ_SERVICES,
             u'payable': STOQ_PAYABLE_APP,
             u'pos': STOQ_POS_APP,
