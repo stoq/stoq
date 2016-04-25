@@ -23,10 +23,7 @@
 ##
 ##
 
-from decimal import Decimal
-
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
 
 from stoqlib.api import api
 from stoqlib.database.admin import create_main_branch
@@ -50,12 +47,9 @@ class BranchDialog(BaseEditor):
     person_widgets = ('name',
                       'phone_number',
                       'fax_number')
-    tax_widgets = ('icms',
-                   'iss',
-                   'substitution_icms')
     company_widgets = ('cnpj',
                        'state_registry')
-    proxy_widgets = person_widgets + tax_widgets + company_widgets
+    proxy_widgets = person_widgets + company_widgets
     model_type = Person
 
     def __init__(self, store, model=None):
@@ -65,15 +59,6 @@ class BranchDialog(BaseEditor):
         self._setup_widgets()
 
     def _update_system_parameters(self, person):
-        icms = self.tax_proxy.model.icms
-        sysparam.set_decimal(self.store, 'ICMS_TAX', icms)
-
-        iss = self.tax_proxy.model.iss
-        sysparam.set_decimal(self.store, 'ISS_TAX', iss)
-
-        substitution = self.tax_proxy.model.substitution_icms
-        sysparam.set_decimal(self.store, 'SUBSTITUTION_TAX', substitution)
-
         address = person.get_main_address()
         if not address:
             raise StoqlibError("You should have an address defined at "
@@ -112,14 +97,6 @@ class BranchDialog(BaseEditor):
         widgets = self.person_widgets
         self.person_proxy = self.add_proxy(self.model, widgets)
 
-        widgets = self.tax_widgets
-        iss = Decimal(sysparam.get_decimal('ISS_TAX'))
-        icms = Decimal(sysparam.get_decimal('ICMS_TAX'))
-        substitution = Decimal(sysparam.get_decimal('SUBSTITUTION_TAX'))
-        model = Settable(iss=iss, icms=icms,
-                         substitution_icms=substitution)
-        self.tax_proxy = self.add_proxy(model, widgets)
-
         widgets = self.company_widgets
         model = self.model.company
         if not model is None:
@@ -131,26 +108,6 @@ class BranchDialog(BaseEditor):
     #
     # Kiwi Callbacks
     #
-
-    def on_icms__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ICMS can not be greater than 100"))
-        if value < 0:
-            return ValidationError(_("ICMS can not be less than 0"))
-
-    def on_iss__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ISS can not be greater than 100"))
-        if value < 0:
-            return ValidationError(_("ISS can not be less than 0"))
-
-    def on_substitution_icms__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ICMS Substitution can not be greater "
-                                     "than 100"))
-        if value < 0:
-            return ValidationError(_("ICMS Substitution can not be "
-                                     "less than 0"))
 
     def on_cnpj__validate(self, widget, value):
         if not self.document_l10n.validate(value):

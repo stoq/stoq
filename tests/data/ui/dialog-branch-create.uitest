@@ -18,18 +18,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
             ProxyEntry(state_registry): '982737266222'
             GtkLabel(label10): 'Fax:'
             ProxyEntry(fax_number): '32118271'
-            GtkLabel(label1): 'ICMS:'
-            GtkHBox(hbox3):
-              ProxyEntry(icms, expand=True, fill=True): '18.0'
-              GtkLabel(label11, fill=True): '%'
-            GtkLabel(label5): 'ISS:'
-            GtkHBox(hbox2):
-              ProxyEntry(iss, expand=True, fill=True): '18.0'
-              GtkLabel(label6, fill=True): '%'
-            GtkLabel(label3): 'Substitution ICMS:'
-            GtkHBox(hbox1):
-              ProxyEntry(substitution_icms, expand=True, fill=True): '18.0'
-              GtkLabel(label4, fill=True): '%'
           GtkFrame(frame1, fill=True):
             GtkEventBox(address_holder): slave AddressSlave is attached
               GtkTable(table2):

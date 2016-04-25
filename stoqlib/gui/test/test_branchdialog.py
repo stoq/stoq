@@ -56,33 +56,3 @@ class TestBranchDialog(GUITest):
 
         editor.cnpj.set_text('00.000.000/0000-00')
         self.assertSensitive(editor.main_dialog, ['ok_button'])
-
-        # ICMS
-        editor.icms.set_text('101')
-        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
-        editor.icms.set_text('-1')
-        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
-        editor.icms.set_text('0')
-        self.assertSensitive(editor.main_dialog, ['ok_button'])
-        editor.icms.set_text('100')
-        self.assertSensitive(editor.main_dialog, ['ok_button'])
-
-        # ISS
-        editor.iss.set_text('101')
-        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
-        editor.iss.set_text('-1')
-        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
-        editor.iss.set_text('0')
-        self.assertSensitive(editor.main_dialog, ['ok_button'])
-        editor.iss.set_text('100')
-        self.assertSensitive(editor.main_dialog, ['ok_button'])
-
-        # Substitution
-        editor.substitution_icms.set_text('101')
-        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
-        editor.substitution_icms.set_text('-1')
-        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
-        editor.substitution_icms.set_text('0')
-        self.assertSensitive(editor.main_dialog, ['ok_button'])
-        editor.substitution_icms.set_text('100')
-        self.assertSensitive(editor.main_dialog, ['ok_button'])
