@@ -67,7 +67,7 @@ def validate_phone_number(phone_number):
     digits = len(phone_number)
     if digits == 11:
         return phone_number[:1] == '0'
-    return digits in range(7, 11)
+    return digits in range(7, 12)
 
 #
 # Adress validators

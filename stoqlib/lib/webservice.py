@@ -146,7 +146,6 @@ class WebService(object):
         if method == 'GET':
             # FIXME: Get rid of this
             if document in ['bugreport.json',
-                            'tefrequest.json',
                             'version.json']:
                 url += '?q=' + urllib.quote(json.dumps(params))
             else:
@@ -248,7 +247,7 @@ class WebService(object):
 
         return self._do_request('POST', 'v2/bugreport.json', **params)
 
-    def tef_request(self, name, email, phone):
+    def link_registration(self, name, email, phone):
         params = {
             'hash': sysparam.get_string('USER_HASH'),
             'name': name,
@@ -256,7 +255,7 @@ class WebService(object):
             'phone': phone,
             'product_key': get_product_key(),
         }
-        return self._do_request('GET', 'tefrequest.json', **params)
+        return self._do_request('POST', 'api/auth/register', **params)
 
     def feedback(self, screen, email, feedback):
         default_store = get_default_store()
