@@ -72,6 +72,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
             GtkImageMenuItem(): 'Sales'
             GtkImageMenuItem(): 'Services'
             GtkImageMenuItem(): 'Stock'
+            GtkImageMenuItem(): 'Stoq.Link'
             GtkImageMenuItem(): 'Till'
       GtkSeparatorToolItem():
       GtkMenuToolButton(): 'New'

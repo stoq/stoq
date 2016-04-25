@@ -894,7 +894,7 @@ class ShellWindow(GladeDelegate):
         self.hide()
 
     def switch_application(self, app_name, **params):
-        self.hide_app(empty=True)
+        params['hide'] = True
         self.run_application(app_name, **params)
 
     def run_application(self, app_name, **params):
@@ -908,6 +908,17 @@ class ShellWindow(GladeDelegate):
           access to open the application
         :rtype: ShellApp
         """
+        # FIXME: Maybe we should really have an app that would be responsible
+        # for doing administration tasks related to stoqlink here? Right now
+        # we are only going to open the stoq.link url
+        if app_name == 'link':
+            toplevel = self.get_toplevel()
+            open_browser('http://stoq.link', toplevel.get_screen())
+            return
+
+        if params.pop('hide', False):
+            self.hide_app(empty=True)
+
         shell_app = self._load_shell_app(app_name)
         if shell_app is None:
             return None

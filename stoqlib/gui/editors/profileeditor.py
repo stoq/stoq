@@ -66,6 +66,10 @@ class UserProfileEditor(BaseEditor):
 
         apps = get_utility(IApplicationDescriptions)
         for name, full_name, icon_name, description in apps.get_descriptions():
+            # Virtual apps should not be selected here
+            if name in ProfileSettings.virtual_apps:
+                continue
+
             # Create the user interface for each application which is
             # a HBox, a CheckButton and an Image
             box = gtk.HBox()
