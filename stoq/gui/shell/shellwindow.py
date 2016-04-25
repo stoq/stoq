@@ -334,6 +334,10 @@ class ShellWindow(GladeDelegate):
         if stoq.stoq_version > actual_version:
             api.user_settings.set('last-version-check', None)
             self._display_changelog_message()
+            # Display the changelog message only once. Most users will never
+            # click on the "See what's new" button, and that will affect its
+            # visual identity.
+            api.user_settings.set('actual-version', stoq.stoq_version)
 
         self._check_information()
 
@@ -961,7 +965,6 @@ class ShellWindow(GladeDelegate):
     def _on_show_changelog__clicked(self, button):
         show_section('changelog')
         self._changelog_bar.hide()
-        api.user_settings.set('actual-version', stoq.stoq_version)
 
     def _on_check_calendar__clicked(self, button):
         self.switch_application(u'calendar')
