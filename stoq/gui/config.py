@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
+
 """First time installation wizard for Stoq
 
 Stoq Configuration dialogs
@@ -31,18 +32,16 @@ Current flow of the database steps:
   * :obj:`WelcomeStep`
   * :obj:`DatabaseLocationStep`
 
-    * :obj:`DatabaseSettingsStep` (iff network database)
+    * :obj:`DatabaseSettingsStep` (if network database)
 
       * :obj:`PostgresAdminPasswordStep`
       * :obj:`FinishInstallationStep` (if an installed database was found)
 
   * :obj:`InstallationModeStep`
   * :obj:`PluginStep`
-
-    * :obj:`TefStep` (if tef was activated)
-
   * :obj:`StoqAdminPasswordStep`
   * :obj:`CreateDatabaseStep`
+  * :obj:`LinkStep`
   * :obj:`FinishInstallationStep`
 """
 
@@ -78,12 +77,11 @@ from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.gui.widgets.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig
-from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.osutils import get_product_key, read_registry_key
 from stoqlib.lib.pgpass import write_pg_pass
-from stoqlib.lib.validators import validate_email
+from stoqlib.lib.validators import validate_email, validate_phone_number
 from stoqlib.lib.webservice import WebService
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.net.socketutils import get_hostname
@@ -301,8 +299,6 @@ class PluginStep(BaseWizardStep):
         if platform.system() == 'Windows':
             self.enable_ecf.set_active(False)
             self.enable_ecf.set_sensitive(False)
-            self.enable_tef.set_active(False)
-            self.enable_tef.set_sensitive(False)
 
     def next_step(self):
         if self.enable_ecf.get_active():
@@ -310,19 +306,15 @@ class PluginStep(BaseWizardStep):
         if self.enable_nfe.get_active():
             self.wizard.plugins.append('nfe')
 
-        if self.enable_tef.get_active() and not self.wizard.tef_request_done:
-            return TefStep(self.wizard, self)
         return StoqAdminPasswordStep(self.wizard, self)
 
 
-class TefStep(WizardEditorStep):
-    """Since we are going to sell the TEF funcionality, we cant enable the
-    plugin right away. Just ask for some user information and we will
-    contact.
-    """
-    gladefile = 'TefStep'
+class LinkStep(WizardEditorStep):
+    """Stoq link registration step"""
+
+    gladefile = 'LinkStep'
     model_type = Settable
-    proxy_widgets = ('name', 'email', 'phone')
+    proxy_widgets = ['name', 'email', 'phone']
 
     def __init__(self, wizard, previous):
         model = Settable(name='', email='', phone='')
@@ -344,15 +336,15 @@ class TefStep(WizardEditorStep):
         reactor.runUntilCurrent()
 
         self.send_progress.pulse()
-        return not self.wizard.tef_request_done
+        return not self.wizard.link_request_done
 
     def _cancel_request(self):
-        if not self.wizard.tef_request_done:
+        if not self.wizard.link_request_done:
             self._show_error()
         return False
 
     def _show_error(self):
-        self.wizard.tef_request_done = True
+        self.wizard.link_request_done = True
         self.send_progress.hide()
         self.send_error_label.show()
         self.wizard.next_button.set_sensitive(True)
@@ -367,16 +359,16 @@ class TefStep(WizardEditorStep):
         self.name.grab_focus()
 
     def setup_proxies(self):
-        self.add_proxy(self.model, TefStep.proxy_widgets)
+        self.add_proxy(self.model, self.proxy_widgets)
 
     def next_step(self):
         # We already sent the details, but may still be on the same step.
-        if self.wizard.tef_request_done:
-            return StoqAdminPasswordStep(self.wizard, self.previous)
+        if self.wizard.link_request_done:
+            return FinishInstallationStep(self.wizard)
 
         webapi = WebService()
-        response = webapi.tef_request(self.model.name, self.model.email,
-                                      self.model.phone)
+        response = webapi.link_registration(
+            self.model.name, self.model.email, self.model.phone)
         response.addCallback(self._on_response_done)
         response.addErrback(self._on_response_error)
 
@@ -403,11 +395,17 @@ class TefStep(WizardEditorStep):
     #
 
     def on_email__validate(self, widget, value):
+        if not value:
+            return
+
         if not validate_email(value):
             return ValidationError(_('%s is not a valid email') % value)
 
     def on_phone__validate(self, widget, value):
-        if len(raw_phone_number(value)) != 10:
+        if not value:
+            return
+
+        if not validate_phone_number(value):
             return ValidationError(_('%s is not a valid phone') % value)
 
     def on_phone__activate(self, widget):
@@ -415,12 +413,12 @@ class TefStep(WizardEditorStep):
             self.wizard.go_to_next()
 
     def _on_response_done(self, details):
-        if details['response'] != 'success':
+        if details['message'] != 'client_instance_created':
             self._show_error()
             return
 
-        if not self.wizard.tef_request_done:
-            self.wizard.tef_request_done = True
+        if not self.wizard.link_request_done:
+            self.wizard.link_request_done = True
             self.wizard.go_to_next()
 
     def _on_response_error(self, err):
@@ -620,7 +618,7 @@ class CreateDatabaseStep(BaseWizardStep):
         self._maybe_create_database()
 
     def next_step(self):
-        return FinishInstallationStep(self.wizard)
+        return LinkStep(self.wizard, self)
 
     def _maybe_create_database(self):
         logger.info('_maybe_create_database (db_is_local=%s, enable_production=%s)'
@@ -838,13 +836,13 @@ class FinishInstallationStep(BaseWizardStep):
 class FirstTimeConfigWizard(BaseWizard):
     title = _("Stoq - Installation")
     size = (580, 380)
-    tef_request_done = False
 
     def __init__(self, options, config=None):
         if not config:
             config = StoqConfig()
-        self.settings = config.get_settings()
 
+        self.settings = config.get_settings()
+        self.link_request_done = False
         self.create_examples = False
         self.config = config
         self.enable_production = False

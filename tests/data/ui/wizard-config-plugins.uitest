@@ -10,7 +10,6 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
           GtkLabel(step.label1, fill=True): 'Once a plugin is activated it will not be possible to disable it.\n\nSelect the plugins you want to enable:'
           GtkVBox(step.vbox2, fill=True):
             ProxyCheckButton(step.enable_ecf, fill=True): 'ECF (Fiscal printer support)', active
-            ProxyCheckButton(step.enable_tef, fill=True): 'TEF (Credit card support)', active
             ProxyCheckButton(step.enable_nfe, fill=True): 'NF-e (Eletronic Invoices)'
             GtkLabel(step.label80, fill=True, padding=6): 'If you just want to test Stoq it is recommended to select no plugin.'
           GtkLabel(step.label4, expand=True, fill=True):

@@ -3,12 +3,12 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
-      GtkEventBox(slave_area, expand=True, fill=True): slave TefStep is attached
+      GtkEventBox(slave_area, expand=True, fill=True): slave LinkStep is attached
         GtkVBox(step.toplevel):
-          GtkLabel(step.label2, fill=True): '<b>TEF Plugin</b>'
+          GtkLabel(step.label2, fill=True): '<b>Stoq.Link registration</b>'
           GtkHSeparator(step.hseparator1, fill=True):
           GtkVBox(step.tef_info_vbox):
-            GtkLabel(step.label3, fill=True): 'Enabling TEF requires installing additional software.\n\nPlease fill in your details and will contact you within two business days:'
+            GtkLabel(step.label3, fill=True): 'Stoq meets the cloud with Stoq.link. Connect your installation now and discover a lot of new and awesome features waiting for you.\n\nPlease fill in your details to receive instructions on how to create an account.'
             GtkTable(step.details_table):
               GtkLabel(step.label4): 'Name:'
               ProxyEntry(step.name): 'Name'

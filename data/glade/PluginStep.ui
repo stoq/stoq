@@ -4,17 +4,20 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="PluginStep">
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">&lt;b&gt;Plugins&lt;/b&gt;</property>
             <property name="use_markup">True</property>
@@ -28,6 +31,7 @@
         <child>
           <object class="GtkHSeparator" id="hseparator1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -38,6 +42,7 @@
         <child>
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Once a plugin is activated it will not be possible to disable it.
 
@@ -53,6 +58,7 @@ Select the plugins you want to enable:</property>
         <child>
           <object class="GtkVBox" id="vbox2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="ProxyCheckButton" id="enable_ecf">
@@ -73,23 +79,6 @@ Select the plugins you want to enable:</property>
               </packing>
             </child>
             <child>
-              <object class="ProxyCheckButton" id="enable_tef">
-                <property name="label" translatable="yes">TEF (Credit card support)</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
-                <property name="active">True</property>
-                <property name="draw_indicator">True</property>
-                <property name="data_type">bool</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
               <object class="ProxyCheckButton" id="enable_nfe">
                 <property name="label" translatable="yes">NF-e (Eletronic Invoices)</property>
                 <property name="visible">True</property>
@@ -103,12 +92,13 @@ Select the plugins you want to enable:</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label80">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">If you just want to test Stoq it is recommended to select no plugin.</property>
               </object>
@@ -116,7 +106,7 @@ Select the plugins you want to enable:</property>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">6</property>
-                <property name="position">3</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -129,6 +119,7 @@ Select the plugins you want to enable:</property>
         <child>
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -139,6 +130,7 @@ Select the plugins you want to enable:</property>
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Select the plugins you would like to enable and then click &lt;b&gt;Forward&lt;/b&gt; to continue.</property>
             <property name="use_markup">True</property>

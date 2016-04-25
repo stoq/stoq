@@ -3,20 +3,23 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="TefStep">
+  <object class="GtkWindow" id="LinkStep">
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">&lt;b&gt;TEF Plugin&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;Stoq.Link registration&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
           <packing>
@@ -28,6 +31,7 @@
         <child>
           <object class="GtkHSeparator" id="hseparator1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -38,15 +42,18 @@
         <child>
           <object class="GtkVBox" id="tef_info_vbox">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
-                <property name="label" translatable="yes">Enabling TEF requires installing additional software.
+                <property name="yalign">0.47999998927116394</property>
+                <property name="label" translatable="yes">Stoq meets the cloud with Stoq.link. Connect your installation now and discover a lot of new and awesome features waiting for you.
 
-Please fill in your details and will contact you within two business days:</property>
-                <property name="max_width_chars">50</property>
+Please fill in your details to receive instructions on how to create an account.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -57,6 +64,7 @@ Please fill in your details and will contact you within two business days:</prop
             <child>
               <object class="GtkTable" id="details_table">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="n_rows">3</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">5</property>
@@ -64,6 +72,7 @@ Please fill in your details and will contact you within two business days:</prop
                 <child>
                   <object class="GtkLabel" id="label4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Name:</property>
                   </object>
@@ -74,6 +83,7 @@ Please fill in your details and will contact you within two business days:</prop
                 <child>
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Email:</property>
                   </object>
@@ -86,6 +96,7 @@ Please fill in your details and will contact you within two business days:</prop
                 <child>
                   <object class="GtkLabel" id="label6">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Phone:</property>
                   </object>
@@ -98,6 +109,7 @@ Please fill in your details and will contact you within two business days:</prop
                 <child>
                   <object class="GtkHBox" id="hbox1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="ProxyEntry" id="phone">
                         <property name="visible">True</property>
@@ -109,7 +121,6 @@ Please fill in your details and will contact you within two business days:</prop
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
                         <property name="data_type">unicode</property>
-                        <property name="mandatory">True</property>
                         <property name="model_attribute">phone</property>
                       </object>
                       <packing>
@@ -121,6 +132,7 @@ Please fill in your details and will contact you within two business days:</prop
                     <child>
                       <object class="GtkLabel" id="label1">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -148,7 +160,6 @@ Please fill in your details and will contact you within two business days:</prop
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">unicode</property>
-                    <property name="mandatory">True</property>
                     <property name="model_attribute">name</property>
                   </object>
                   <packing>
@@ -168,7 +179,6 @@ Please fill in your details and will contact you within two business days:</prop
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">unicode</property>
-                    <property name="mandatory">True</property>
                     <property name="model_attribute">email</property>
                   </object>
                   <packing>
@@ -196,6 +206,7 @@ Please fill in your details and will contact you within two business days:</prop
         <child>
           <object class="GtkProgressBar" id="send_progress">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="text" translatable="yes">Enviando Dados...</property>
           </object>
           <packing>
@@ -207,6 +218,7 @@ Please fill in your details and will contact you within two business days:</prop
         <child>
           <object class="GtkLabel" id="send_error_label">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">An error ocurred sending your details. Please &lt;a href="http://www.stoq.com.br/contato"&gt;contact us&lt;/a&gt;.</property>
             <property name="use_markup">True</property>
@@ -220,6 +232,7 @@ Please fill in your details and will contact you within two business days:</prop
         <child>
           <object class="GtkLabel" id="label8">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -230,6 +243,7 @@ Please fill in your details and will contact you within two business days:</prop
         <child>
           <object class="GtkLabel" id="label7">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Fill in the form above and then click &lt;b&gt;Forward&lt;/b&gt; to continue.</property>
             <property name="use_markup">True</property>

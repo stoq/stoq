@@ -106,14 +106,6 @@ class TestFirstTimeConfigWizard(GUITest):
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
-        step.name.update(u'Name')
-        step.email.update(u'example@example.com')
-        step.phone.update(u'1212341234')
-        wizard.tef_request_done = True
-        self.check_wizard(wizard, u'wizard-config-tef')
-        self.click(wizard.next_button)
-
-        step = wizard.get_current_step()
         step.password_slave.password.update(u'foobar')
         step.password_slave.confirm_password.update(u'foobar')
         self.check_wizard(wizard, u'wizard-config-admin-password')
@@ -165,6 +157,14 @@ class TestFirstTimeConfigWizard(GUITest):
 
         step.process_view.emit(u'finished', 0)
         create_default_profile_settings.assert_called_once_with()
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.name.update(u'Name')
+        step.email.update(u'example@example.com')
+        step.phone.update(u'1212341234')
+        wizard.link_request_done = True
+        self.check_wizard(wizard, u'wizard-config-link')
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, u'wizard-config-done')
@@ -225,14 +225,6 @@ class TestFirstTimeConfigWizard(GUITest):
         # Plugins
         self.click(wizard.next_button)
 
-        # TEF
-        step = wizard.get_current_step()
-        step.name.update(u'Name')
-        step.email.update(u'example@example.com')
-        step.phone.update(u'1212341234')
-        wizard.tef_request_done = True
-        self.click(wizard.next_button)
-
         # AdminPassword
         step = wizard.get_current_step()
         step.password_slave.password.update(u'foobar')
@@ -256,6 +248,14 @@ class TestFirstTimeConfigWizard(GUITest):
             u"Create database", u"Don't create")
 
         create_default_profile_settings.assert_called_once_with()
+        self.click(wizard.next_button)
+
+        # Link
+        step = wizard.get_current_step()
+        step.name.update(u'Name')
+        step.email.update(u'example@example.com')
+        step.phone.update(u'1212341234')
+        wizard.link_request_done = True
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, u'wizard-config-done')
