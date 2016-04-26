@@ -9,14 +9,6 @@ utils Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`aptpackageinstaller` Module
----------------------------------
-
-.. automodule:: stoqlib.gui.utils.aptpackageinstaller
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`databaseform` Module
 --------------------------
 
