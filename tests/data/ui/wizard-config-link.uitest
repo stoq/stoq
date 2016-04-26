@@ -18,6 +18,7 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
               GtkHBox(step.hbox1):
                 ProxyEntry(step.phone, fill=True): '1212341234'
                 GtkLabel(step.label1, expand=True, fill=True):
+              ProxyCheckButton(step.register_later): 'I want to register later'
           GtkProgressBar(step.send_progress, fill=True): hidden
           GtkLabel(step.send_error_label, fill=True): 'An error ocurred sending your details. Please <a href="http://www.stoq.com.br/contato">contact us</a>.', hidden
           GtkLabel(step.label8, expand=True, fill=True):
