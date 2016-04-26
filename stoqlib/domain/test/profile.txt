@@ -48,8 +48,8 @@ Check if everything was properly saved into database.
 How about adding permission information for a new application ?
 There is an approach to deal with this requirement.
 
-    >>> profile.add_application_reference(u'warehouse',
-    ...                                   has_permission=True)
+    >>> ps = profile.add_application_reference(u'warehouse',
+    ...                                        has_permission=True)
 
 Is everything properly saved ?
 
@@ -87,8 +87,8 @@ update_profile_applications functions. See usage for classmethod
 create_profile_template:
 
     >>> profile_name = u'Boss'
-    >>> boss_profile = UserProfile.create_profile_template(store, profile_name,
-    ...                                                    has_full_permission=True)
+    >>> ps = boss_profile = UserProfile.create_profile_template(store, profile_name,
+    ...                                                         has_full_permission=True)
 
 Our profile is for a boss an that's why we have sent
 has_full_permission=True argument for this method which defaults to False.
@@ -102,7 +102,7 @@ Now we have created profiles why not checking  permissions for a certain
 application ? We know that bosses must be allowed to access everything so,
 does our boss_profile have permission for application 'test_application'?
 
-    >>> boss_profile.add_application_reference(u'test_application', True)
+    >>> ps = boss_profile.add_application_reference(u'test_application', True)
     >>> boss_profile.check_app_permission(u'test_application')
     True
 

@@ -91,3 +91,31 @@ class TestProfileSettings(DomainTest):
         self.failUnless(setting.has_permission)
         ProfileSettings.set_permission(self.store, profile, u'app', False)
         self.failIf(setting.has_permission)
+
+    def test_get_permissions(self):
+        profile = UserProfile(store=self.store, name=u'boss')
+        profile.add_application_reference(u'app1', False)
+        profile.add_application_reference(u'app2', True)
+        profile.add_application_reference(u'app3', False)
+
+        self.assertEqual(profile.get_permissions(),
+                         {'app1': False,
+                          'app2': True,
+                          'app3': False,
+                          'link': False})
+
+        admin_ps = profile.add_application_reference(u'admin', False)
+        self.assertEqual(profile.get_permissions(),
+                         {'app1': False,
+                          'app2': True,
+                          'app3': False,
+                          'admin': False,
+                          'link': False})
+
+        admin_ps.has_permission = True
+        self.assertEqual(profile.get_permissions(),
+                         {'app1': False,
+                          'app2': True,
+                          'app3': False,
+                          'admin': True,
+                          'link': True})
