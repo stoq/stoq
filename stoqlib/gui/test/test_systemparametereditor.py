@@ -25,7 +25,7 @@
 
 from stoqlib.gui.editors.parameterseditor import SystemParameterEditor
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam, ParameterDetails
 
 
 class TestSystemParameterEditor(GUITest):
@@ -73,14 +73,18 @@ class TestSystemParameterEditor(GUITest):
         self.check_editor(editor, 'editor-systemparameter-spin-entry')
 
     def test_text_view_entry(self):
-        detail = sysparam.get_detail_by_name(u'NFE_FISCO_INFORMATION')
+        detail = sysparam.get_detail_by_name(u'BOOKLET_INSTRUCTIONS')
         editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-text-view-entry')
 
     def test_unwrapped_text_view_entry(self):
-        detail = sysparam.get_detail_by_name(u'ADDITIONAL_INFORMATION_ON_COUPON')
+        detail = ParameterDetails(u'FOO', 'section', 'short_desc', 'long_desc',
+                                  unicode, multiline=True, initial=u'bar',
+                                  wrap=False)
+        sysparam.register_param(detail)
         editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-unwrapped-text-view-entry')
+        sysparam._details.pop('FOO')
 
     def test_image(self):
         detail = sysparam.get_detail_by_name(u'CUSTOM_LOGO_FOR_REPORTS')
@@ -93,11 +97,14 @@ class TestSystemParameterEditor(GUITest):
         self.check_editor(editor, 'editor-systemparameter-radio')
 
     def test_options_combo(self):
-        detail = sysparam.get_detail_by_name(u'NFE_DANFE_ORIENTATION')
+        detail = sysparam.get_detail_by_name(u'SCALE_BARCODE_FORMAT')
         editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-options-combo')
 
     def test_filechooser(self):
-        detail = sysparam.get_detail_by_name(u'CAT52_DEST_DIR')
+        detail = ParameterDetails(u'FOO', 'section', 'short_desc', 'long_desc',
+                                  unicode, editor='directory-chooser')
+        sysparam.register_param(detail)
         editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-file-chooser')
+        sysparam._details.pop('FOO')

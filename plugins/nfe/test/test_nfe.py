@@ -41,10 +41,16 @@ from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib.unittestutils import get_tests_datadir
 
+from nfe.nfeui import NFeUI
 from nfe.nfegenerator import NFeGenerator, NFeIdentification
 
 
 class TestNfeGenerator(DomainTest):
+    @classmethod
+    def setUpClass(cls):
+        DomainTest.setUpClass()
+        cls._ui = NFeUI()
+
     def _test_generated_files(self, new_client=None):
         due_date = datetime.datetime(2011, 10, 24, 0, 0, 0, 0)
         sale = self._create_sale(1666, due_date=due_date)

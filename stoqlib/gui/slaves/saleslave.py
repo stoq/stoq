@@ -333,10 +333,9 @@ def cancel_sale(sale):
 def return_sale(parent, sale, store):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
 
-    cancel_last_coupon = sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON')
     # A plugin (e.g. ECF) can avoid the cancelation of a sale
     # because it wants it to be cancelled using another way
-    if cancel_last_coupon and SaleAvoidCancelEvent.emit(sale):
+    if SaleAvoidCancelEvent.emit(sale):
         return
 
     if sale.can_return():

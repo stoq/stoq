@@ -515,10 +515,9 @@ class SalesApp(ShellApp):
 
     def on_SalesCancel__activate(self, action):
         sale_view = self.results.get_selected()
-        can_cancel = api.sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON')
         # A plugin (e.g. ECF) can avoid the cancelation of a sale
         # because it wants it to be cancelled using another way
-        if can_cancel and SaleAvoidCancelEvent.emit(sale_view.sale):
+        if SaleAvoidCancelEvent.emit(sale_view.sale):
             return
 
         store = api.new_store()

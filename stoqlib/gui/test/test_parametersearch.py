@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.gui.search.parametersearch import ParameterSearch
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam, ParameterDetails
 
 
 class TestParameterSearch(GUITest):
@@ -89,11 +89,16 @@ class TestParameterSearch(GUITest):
         self.assertEquals(value, u'4 Digits Code with Price')
 
     def test_get_parameter_data_path_parameter(self):
+        parameter = ParameterDetails(u'FOO', 'section', 'short_desc',
+                                     'long_desc', unicode,
+                                     initial=u'~/.stoq/cat52',
+                                     editor='directory-chooser')
+        sysparam.register_param(parameter)
         search = ParameterSearch(self.store)
 
-        parameter = sysparam.get_detail_by_name(u'CAT52_DEST_DIR')
         value = search._get_parameter_value(parameter)
         self.assertEquals(value, u'~/.stoq/cat52')
+        sysparam._details.pop('FOO')
 
     def test_get_parameter_data_bool(self):
         search = ParameterSearch(self.store)
