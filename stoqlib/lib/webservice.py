@@ -209,6 +209,46 @@ class WebService(object):
                            parsed.port or 80, downloader)
         return downloader.deferred
 
+    def _get_usage_stats(self, store):
+        from stoqlib.domain.sale import Sale
+        from stoqlib.domain.purchase import PurchaseOrder
+        from stoqlib.domain.workorder import WorkOrder
+        from stoqlib.domain.production import ProductionOrder
+        from stoqlib.domain.product import Sellable
+        from stoqlib.domain.person import Client, Employee, LoginUser, Branch
+        stats = {
+            'sale_count': Sale,
+            'purchase_count': PurchaseOrder,
+            'work_order_count': WorkOrder,
+            'production_count': ProductionOrder,
+            'sellable_count': Sellable,
+            'client_count': Client,
+            'user_count': Employee,
+            'employeee_count': LoginUser,
+            'branch_count': Branch,
+        }
+        return {key: store.find(value).count() for key, value in stats.items()}
+
+    def _get_company_details(self, store):
+        person = sysparam.get_object(store, 'MAIN_COMPANY').person
+        company = person.company
+        address = person.address
+        return {
+            # Details
+            'stoq_name': person.name,
+            'stoq_fancy_name': company.fancy_name,
+            'stoq_phone_number': person.phone_number,
+            'stoq_email ': person.email,
+            'stoq_street ': address.street,
+            'stoq_number ': address.streetnumber,
+            'stoq_district ': address.district,
+            'stoq_complement ': address.complement,
+            'stoq_postal_code ': address.postal_code,
+            'stoq_city ': address.city_location.city,
+            'stoq_state ': address.city_location.state,
+            'stoq_country ': address.city_location.country,
+        }
+
     #
     #   Public API
     #
@@ -230,6 +270,8 @@ class WebService(object):
             'uname': platform.uname(),
             'version': app_version,
         }
+        params.update(self._get_company_details(store))
+        params.update(self._get_usage_stats(store))
         return self._do_request('GET', 'version.json', **params)
 
     def bug_report(self, report):
