@@ -1,3 +1,9 @@
+stoq (1.11~rc4) trusty; urgency=low
+
+  * 1.11 Release candidate 4
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Tue, 26 Apr 2016 17:39:21 -0300
+
 stoq (1.11~rc3) trusty; urgency=low
 
   * 1.11 Release candidate 3
