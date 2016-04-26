@@ -316,10 +316,10 @@ class LinkStep(WizardEditorStep):
 
     gladefile = 'LinkStep'
     model_type = Settable
-    proxy_widgets = ['name', 'email', 'phone']
+    proxy_widgets = ['name', 'email', 'phone', 'register_later']
 
     def __init__(self, wizard, previous):
-        model = Settable(name='', email='', phone='')
+        model = Settable(name='', email='', phone='', register_later=False)
         WizardEditorStep.__init__(self, None, wizard, model, previous)
         self._setup_widgets()
 
@@ -351,14 +351,19 @@ class LinkStep(WizardEditorStep):
         self.send_error_label.show()
         self.wizard.next_button.set_sensitive(True)
 
+    def _update_widgets(self):
+        for widget in [self.email, self.name]:
+            widget.set_property('mandatory', not self.model.register_later)
+        self.force_validation()
+
     #
     #   WizardStep
     #
 
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
         self.name.grab_focus()
+        self._update_widgets()
 
     def setup_proxies(self):
         self.add_proxy(self.model, self.proxy_widgets)
@@ -395,6 +400,9 @@ class LinkStep(WizardEditorStep):
     #
     #   Callbacks
     #
+
+    def on_register_later__toggled(self, widget):
+        self._update_widgets()
 
     def on_email__validate(self, widget, value):
         if not value:
