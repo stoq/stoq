@@ -54,7 +54,7 @@ from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 CouponCreatedEvent, EditorCreateEvent)
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.message import info, warning, yesno
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam, ParameterDetails
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -69,6 +69,45 @@ from ecf.paulistainvoicedialog import PaulistaInvoiceDialog
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
 
+params = [
+    # Some fiscal printers can print up to 8 rows and 70 characters each row.
+    # But we want to write an documentation to make sure it will work
+    # on every fiscal printer
+    ParameterDetails(
+        u'ADDITIONAL_INFORMATION_ON_COUPON',
+        _(u'ECF'),
+        _(u'Additional information on fiscal coupon'),
+        _(u'This will be printed in the promotional message area of the fiscal coupon\n'
+          u'IMPORTANT NOTE:\n'
+          u'This template cannot have more than 2 line, and each line more '
+          u'than 50 characters, and you have to break it manually using the characters '
+          u'"\\n" or (enter key) or the fiscal printer may not print it correctly.'),
+        unicode, multiline=True, initial=u'', wrap=False),
+
+    ParameterDetails(
+        u'ENABLE_DOCUMENT_ON_INVOICE',
+        _(u'ECF'),
+        _(u'Enable document on invoice'),
+        _(u'Once this parameter is set, we will confirm the client document '
+          u'when  registering a fiscal coupon.'),
+        bool, initial=False),
+
+    ParameterDetails(
+        u'ALLOW_CANCEL_LAST_COUPON',
+        _(u'ECF'),
+        _(u'Allow to cancel the last fiscal coupon'),
+        _(u'When set to false, the user will not be able to cancel the last coupon, '
+          u'only return it.'),
+        bool, initial=True),
+
+    ParameterDetails(
+        u'CAT52_DEST_DIR',
+        _(u'ECF'),
+        _(u'Cat 52 destination directory'),
+        _(u'Where the file generated after a Z-reduction should be saved.'),
+        unicode, initial=u'~/.stoq/cat52', editor='directory-chooser'),
+]
+
 
 class ECFUI(object):
     def __init__(self):
@@ -79,6 +118,28 @@ class ECFUI(object):
         # applications should still be accessible without a printer
         self._printer = None
 
+        self._setup_params()
+        self._setup_events()
+
+        self._till_summarize_action = gtk.Action(
+            'Summary', _('Summary'), None, None)
+        self._till_summarize_action.connect(
+            'activate', self._on_TillSummary__activate)
+
+        add_bindings([
+            ('plugin.ecf.read_memory', '<Primary>F9'),
+            ('plugin.ecf.summarize', '<Primary>F11'),
+        ])
+
+    #
+    # Private
+    #
+
+    def _setup_params(self):
+        for detail in params:
+            sysparam.register_param(detail)
+
+    def _setup_events(self):
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
         SaleAvoidCancelEvent.connect(self._on_SaleAvoidCancel)
         TillOpenEvent.connect(self._on_TillOpen)
@@ -95,20 +156,6 @@ class ECFUI(object):
         HasPendingReduceZ.connect(self._on_HasPendingReduceZ)
         HasOpenCouponEvent.connect(self._on_HasOpenCouponEvent)
         EditorCreateEvent.connect(self._on_EditorCreateEvent)
-
-        self._till_summarize_action = gtk.Action(
-            'Summary', _('Summary'), None, None)
-        self._till_summarize_action.connect(
-            'activate', self._on_TillSummary__activate)
-
-        add_bindings([
-            ('plugin.ecf.read_memory', '<Primary>F9'),
-            ('plugin.ecf.summarize', '<Primary>F11'),
-        ])
-
-    #
-    # Private
-    #
 
     def _create_printer(self):
         if self._printer:
@@ -421,18 +468,18 @@ class ECFUI(object):
         coupon = self._printer.create_coupon(fiscalcoupon)
         assert coupon
         for signal, callback in [
-            ('open', self._on_coupon__open),
-            ('identify-customer', self._on_coupon__identify_customer),
-            ('customer-identified', self._on_coupon__customer_identified),
-            ('add-item', self._on_coupon__add_item),
-            ('remove-item', self._on_coupon__remove_item),
-            ('add-payments', self._on_coupon__add_payments),
-            ('totalize', self._on_coupon__totalize),
-            ('close', self._on_coupon__close),
-            ('cancel', self._on_coupon__cancel),
-            ('get-coo', self._on_coupon__get_coo),
-            ('get-supports-duplicate-receipt', self._on_coupon__get_supports_duplicate),
-            ('print-payment-receipt', self._on_coupon__print_payment_receipt)]:
+                ('open', self._on_coupon__open),
+                ('identify-customer', self._on_coupon__identify_customer),
+                ('customer-identified', self._on_coupon__customer_identified),
+                ('add-item', self._on_coupon__add_item),
+                ('remove-item', self._on_coupon__remove_item),
+                ('add-payments', self._on_coupon__add_payments),
+                ('totalize', self._on_coupon__totalize),
+                ('close', self._on_coupon__close),
+                ('cancel', self._on_coupon__cancel),
+                ('get-coo', self._on_coupon__get_coo),
+                ('get-supports-duplicate-receipt', self._on_coupon__get_supports_duplicate),
+                ('print-payment-receipt', self._on_coupon__print_payment_receipt)]:
             fiscalcoupon.connect_object(signal, callback, coupon)
         return coupon
 
@@ -484,7 +531,7 @@ class ECFUI(object):
                     -value, _(u"Cash in: last cash out cancelled"))
                 self._set_last_till_entry(till_entry, store)
             info(_("Document was cancelled"))
-        except:
+        except Exception:
             info(_("Cancelling failed, nothing to cancel"))
             return
 
@@ -621,6 +668,8 @@ class ECFUI(object):
                 self._set_last_sale(sale, sale.store)
 
     def _on_SaleAvoidCancel(self, sale):
+        if not sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON'):
+            return False
         if self._is_ecf_last_sale(sale):
             info(_("That is last sale in ECF. Return using the menu "
                    "ECF - Cancel Last Document"))

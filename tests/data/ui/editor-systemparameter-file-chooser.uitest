@@ -1,20 +1,20 @@
 editor: SystemParameterEditor
-GtkDialog(main_dialog.toplevel): title="Edit 'Cat 52 destination directory' Parameter", hidden
+GtkDialog(main_dialog.toplevel): title="Edit 'short_desc' Parameter", hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SystemParameterEditor is attached
         GtkTable(table1):
           GtkLabel(label1): 'Group:'
-          ProxyLabel(parameter_group): 'General'
+          ProxyLabel(parameter_group): 'section'
           GtkLabel(label2): 'Parameter Name:'
           GtkVBox(vbox1):
-            ProxyLabel(parameter_name, fill=True): '<span underline="single">Cat 52 destination directory</span>'
-            ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">Where the file generated after a Z-reduction should be saved.</span>'
+            ProxyLabel(parameter_name, fill=True): '<span underline="single">short_desc</span>'
+            ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">long_desc</span>'
           GtkLabel(label3): 'Current Value:'
           GtkAlignment(container):
             GtkHBox():
-              ProxyEntry(_entry, expand=True, fill=True): '~/.stoq/cat52'
+              ProxyEntry(_entry, expand=True, fill=True): ''
               GtkFileChooserButton(fill=True):
                 GtkButton(expand=True, fill=True): hidden
                 GtkComboBox(expand=True, fill=True):

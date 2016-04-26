@@ -1,16 +1,16 @@
 editor: SystemParameterEditor
-GtkDialog(main_dialog.toplevel): title="Edit 'Additional Information for the Fisco' Parameter", hidden
+GtkDialog(main_dialog.toplevel): title="Edit 'Booklet instructions ' Parameter", hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SystemParameterEditor is attached
         GtkTable(table1):
           GtkLabel(label1): 'Group:'
-          ProxyLabel(parameter_group): 'NF-e'
+          ProxyLabel(parameter_group): 'Sales'
           GtkLabel(label2): 'Parameter Name:'
           GtkVBox(vbox1):
-            ProxyLabel(parameter_name, fill=True): '<span underline="single">Additional Information for the Fisco</span>'
-            ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">Additional information to add to the NF-e for the Fisco</span>'
+            ProxyLabel(parameter_name, fill=True): '<span underline="single">Booklet instructions </span>'
+            ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">When printing booklets, include the first 4 lines of these on it. This usually includes instructions on how to pay the booklet and the validity and the terms.</span>'
           GtkLabel(label3): 'Current Value:'
           GtkAlignment(container):
             GtkScrolledWindow():

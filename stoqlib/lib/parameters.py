@@ -252,14 +252,6 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
-        u'ENABLE_DOCUMENT_ON_INVOICE',
-        _(u'ECF'),
-        _(u'Enable document on invoice'),
-        _(u'Once this parameter is set, we will confirm the client document '
-          u'when  registering a fiscal coupon.'),
-        bool, initial=False),
-
-    ParameterDetails(
         u'DEFAULT_PAYMENT_METHOD',
         _(u'Sales'),
         _(u'Default payment method selected'),
@@ -616,13 +608,6 @@ _details = [
         unicode, initial=u"", editor='file-chooser'),
 
     ParameterDetails(
-        u'CAT52_DEST_DIR',
-        _(u'General'),
-        _(u'Cat 52 destination directory'),
-        _(u'Where the file generated after a Z-reduction should be saved.'),
-        unicode, initial=u'~/.stoq/cat52', editor='directory-chooser'),
-
-    ParameterDetails(
         u'COST_PRECISION_DIGITS',
         _(u'General'),
         _(u'Number of digits to use for product cost'),
@@ -640,33 +625,6 @@ _details = [
           u' configuration to see the best option.'),
         int, initial=0,
         options=BarcodeInfo.options),
-
-    ParameterDetails(
-        u'NFE_SERIAL_NUMBER',
-        _(u'NF-e'),
-        _(u'Fiscal document serial number'),
-        _(u'Fiscal document serial number. Fill with 0 if the NF-e have no '
-          u'series. This parameter only has effect if the nfe plugin is enabled.'),
-        int, initial=1),
-
-    ParameterDetails(
-        u'NFE_DANFE_ORIENTATION',
-        _(u'NF-e'),
-        _(u'Danfe printing orientation'),
-        _(u'Orientation to use for printing danfe. Portrait or Landscape'),
-        int, initial=0,
-        options={0: _(u'Portrait'),
-                 1: _(u'Landscape')}),
-
-    ParameterDetails(
-        u'NFE_FISCO_INFORMATION',
-        _(u'NF-e'),
-        _(u'Additional Information for the Fisco'),
-        _(u'Additional information to add to the NF-e for the Fisco'), unicode,
-        initial=(u'Documento emitido por ME ou EPP optante pelo SIMPLES '
-                 u'NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de '
-                 u'ISS. Conforme Lei Complementar 123 de 14/12/2006.'),
-        multiline=True),
 
     ParameterDetails(
         u'BANKS_ACCOUNT',
@@ -876,34 +834,12 @@ _details = [
         int, initial=0),
 
     ParameterDetails(
-        u'ALLOW_CANCEL_LAST_COUPON',
-        _(u'ECF'),
-        _(u'Allow to cancel the last fiscal coupon'),
-        _(u'When set to false, the user will not be able to cancel the last coupon, '
-          u'only return it.'),
-        bool, initial=True),
-
-    ParameterDetails(
         u'UPDATE_PRODUCTS_COST_ON_PURCHASE',
         _(u'Purchase'),
         _(u'Automatic update of products cost when making a new purchase.'),
         _(u'When a new purchase is made, it\'s products cost are set to '
           u'the purchase\'s items cost.'),
         bool, initial=False),
-
-    # Some fiscal printers can print up to 8 rows and 70 characters each row.
-    # But we want to write an documentation to make sure it will work
-    # on every fiscal printer
-    ParameterDetails(
-        u'ADDITIONAL_INFORMATION_ON_COUPON',
-        _(u'ECF'),
-        _(u'Additional information on fiscal coupon'),
-        _(u'This will be printed in the promotional message area of the fiscal coupon\n'
-          u'IMPORTANT NOTE:\n'
-          u'This template cannot have more than 2 line, and each line more '
-          u'than 50 characters, and you have to break it manually using the characters '
-          u'"\\n" or (enter key) or the fiscal printer may not print it correctly.'),
-        unicode, multiline=True, initial=u'', wrap=False),
 
     ParameterDetails(
         u'BIRTHDAY_NOTIFICATION',
@@ -932,7 +868,9 @@ class ParameterAccess(object):
 
     def __init__(self):
         # Mapping of details, name -> ParameterDetail
-        self._details = dict((detail.key, detail) for detail in _details)
+        self._details = {}
+        for detail in _details:
+            self.register_param(detail)
 
         self._values_cache = None
 
@@ -1079,6 +1017,9 @@ class ParameterAccess(object):
     # Public API
     #
 
+    def register_param(self, detail):
+        self._details[detail.key] = detail
+
     def clear_cache(self):
         """Clears the internal cache so it can be rebuilt on next access"""
         self._values_cache = None
@@ -1096,7 +1037,6 @@ class ParameterAccess(object):
         # will differ from database.
         if update:
             self.clear_cache()
-        self._remove_unused_parameters(store)
         self._create_default_values(store)
 
     def get(self, param_name, expected_type=None, store=None):

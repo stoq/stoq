@@ -35,6 +35,7 @@ from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
                                 StockDecreaseWizardFinishEvent)
 from stoqlib.api import api
 from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.parameters import sysparam, ParameterDetails
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -43,16 +44,40 @@ from nfe.nfegenerator import NFeGenerator
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
 
+params = [
+    ParameterDetails(
+        u'NFE_SERIAL_NUMBER',
+        _(u'NF-e'),
+        _(u'Fiscal document serial number'),
+        _(u'Fiscal document serial number. Fill with 0 if the NF-e have no '
+          u'series. This parameter only has effect if the nfe plugin is enabled.'),
+        int, initial=1),
+
+    ParameterDetails(
+        u'NFE_DANFE_ORIENTATION',
+        _(u'NF-e'),
+        _(u'Danfe printing orientation'),
+        _(u'Orientation to use for printing danfe. Portrait or Landscape'),
+        int, initial=0,
+        options={0: _(u'Portrait'),
+                 1: _(u'Landscape')}),
+
+    ParameterDetails(
+        u'NFE_FISCO_INFORMATION',
+        _(u'NF-e'),
+        _(u'Additional Information for the Fisco'),
+        _(u'Additional information to add to the NF-e for the Fisco'), unicode,
+        initial=(u'Documento emitido por ME ou EPP optante pelo SIMPLES '
+                 u'NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de '
+                 u'ISS. Conforme Lei Complementar 123 de 14/12/2006.'),
+        multiline=True),
+]
+
 
 class NFeUI(object):
     def __init__(self):
-        SaleReturnWizardFinishEvent.connect(self._on_SaleReturnWizardFinish)
-        SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
-        StockDecreaseWizardFinishEvent.connect(self._on_StockDecreaseWizardFinish)
-        StockTransferWizardFinishEvent.connect(self._on_StockTransferWizardFinish)
-        # TODO: Before enable the the NF-e generation. Save the invoice data,
-        # in Invoice table (for each operation below).
-#        NewLoanWizardFinishEvent.connect(self._on_NewLoanWizardFinish)
+        self._setup_params()
+        self._setup_events()
 
         pm = PermissionManager.get_permission_manager()
         pm.set('InvoiceLayout', pm.PERM_HIDDEN)
@@ -66,6 +91,19 @@ class NFeUI(object):
     #
     # Private
     #
+
+    def _setup_params(self):
+        for detail in params:
+            sysparam.register_param(detail)
+
+    def _setup_events(self):
+        SaleReturnWizardFinishEvent.connect(self._on_SaleReturnWizardFinish)
+        SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
+        StockDecreaseWizardFinishEvent.connect(self._on_StockDecreaseWizardFinish)
+        StockTransferWizardFinishEvent.connect(self._on_StockTransferWizardFinish)
+        # TODO: Before enable the the NF-e generation. Save the invoice data,
+        # in Invoice table (for each operation below).
+        #NewLoanWizardFinishEvent.connect(self._on_NewLoanWizardFinish)
 
     def _get_save_location(self, operation_dir):
         stoq_dir = get_application_dir()
