@@ -913,7 +913,7 @@ class ShellWindow(GladeDelegate):
         # we are only going to open the stoq.link url
         if app_name == 'link':
             toplevel = self.get_toplevel()
-            open_browser('http://stoq.link', toplevel.get_screen())
+            open_browser('http://stoq.link?source=stoq', toplevel.get_screen())
             return
 
         if params.pop('hide', False):
@@ -940,10 +940,7 @@ class ShellWindow(GladeDelegate):
     def get_available_applications(self):
         user = api.get_current_user(self.store)
 
-        permissions = {}
-        for settings in user.profile.profile_settings:
-            permissions[settings.app_dir_name] = settings.has_permission
-
+        permissions = user.profile.get_permissions()
         descriptions = get_utility(IApplicationDescriptions).get_descriptions()
 
         available_applications = []

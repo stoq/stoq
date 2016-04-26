@@ -132,15 +132,25 @@ class UserProfile(Domain):
         return profile
 
     def add_application_reference(self, app_name, has_permission=False):
-        store = self.store
-        ProfileSettings(store=store, app_dir_name=app_name,
-                        has_permission=has_permission, user_profile=self)
+        return ProfileSettings(
+            store=self.store,
+            app_dir_name=app_name,
+            has_permission=has_permission,
+            user_profile=self)
 
     def check_app_permission(self, app_name):
         """Check if the user has permission to use an application
         :param app_name: name of application to check
         """
         return ProfileSettings.get_permission(self.store, self, app_name)
+
+    def get_permissions(self):
+        apps = {setting.app_dir_name: setting.has_permission
+                for setting in self.profile_settings}
+        for virtual_app, references in ProfileSettings.virtual_apps.iteritems():
+            apps[virtual_app] = any(apps.get(r, False) for r in references)
+
+        return apps
 
 
 def update_profile_applications(store, profile=None):
