@@ -45,8 +45,10 @@ Current flow of the database steps:
   * :obj:`FinishInstallationStep`
 """
 
+import imp
 import logging
 import platform
+import subprocess
 import sys
 
 import glib
@@ -524,9 +526,7 @@ class InstallPostgresStep(BaseWizardStep):
     def __init__(self, wizard, previous):
         self.done = False
         BaseWizardStep.__init__(self, wizard, previous)
-        self._setup_widgets()
 
-    def _setup_widgets(self):
         forward_label = '<b>%s</b>' % (_("Forward"), )
 
         if self._can_install():
@@ -546,25 +546,10 @@ class InstallPostgresStep(BaseWizardStep):
                 forward_label, )
         self.label.set_markup(label)
 
-    def _can_install(self):
-        from stoqlib.gui.utils.aptpackageinstaller import has_apt
-        return has_apt
-
-    def _install_postgres(self):
-        from stoqlib.gui.utils.aptpackageinstaller import AptPackageInstaller
-        self.wizard.disable_back()
-        self.wizard.disable_next()
-        apti = AptPackageInstaller(parent=self.wizard.get_toplevel())
-        apti.install('postgresql', 'postgresql-contrib', 'stoq-server')
-        apti.connect('done', self._on_apt_install__done)
-        apti.connect('auth-failed', self._on_apt_install__auth_failed)
-
-        self.label.set_markup(
-            _("Please wait while the package installation is completing."))
-
     #
     #   WizardStep
     #
+
     def next_step(self):
         if self.done or test_local_database():
             return CreateDatabaseStep(self.wizard, self)
@@ -577,31 +562,53 @@ class InstallPostgresStep(BaseWizardStep):
         return self
 
     #
-    #   Callbacks
+    #  Private
     #
 
-    def _on_apt_install__done(self, apt, err):
-        if error is not None:
+    def _can_install(self):
+        # We cannot import gtk3widgets here as gtk3 will raise an error if
+        # gtk2 is already imported on the system
+        try:
+            aptdaemon = imp.find_module('aptdaemon')
+            imp.find_module('gtk3widgets', [aptdaemon[1]])
+        except ImportError:
+            return False
+
+        return True
+
+    def _install_postgres(self):
+        self.wizard.disable_back()
+        self.wizard.disable_next()
+        self.label.set_markup(
+            _("Please wait while the package installation is completing."))
+
+        packageinstaller = library.get_resource_filename(
+            'stoq', 'scripts', 'packageinstaller.py')
+        p = subprocess.Popen(
+            [sys.executable, packageinstaller,
+             'postgresql', 'postgresql-contrib', 'stoq-server'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+
+        self.wizard.enable_back()
+        if p.returncode == 0:
+            self.done = True
+            self.wizard.enable_next()
+            self.label.set_markup(
+                _("Postgresql installation succeeded. You may now proceed "
+                  "to the next step by clicking the <b>Forward</b> button"))
+        elif p.returncode == 11:
+            self.wizard.enable_next()
+            self.label.set_markup(
+                _("Authorization failed, try again or connect to "
+                  "another database"))
+        else:
             warning(_("Something went wrong while trying to install "
                       "the PostgreSQL server."))
             self.label.set_markup(
                 _("Sorry, something went wrong while installing PostgreSQL, "
                   "try again manually or go back and configure Stoq to connect "
                   "to another."))
-            self.wizard.enable_back()
-        else:
-            self.done = True
-            # FIXME: Update label and enable_back/next instead
-            #        of doing it automatically for the user,
-            #        to tell him that postgres installation succeeded.
-            self.wizard.go_to_next()
-
-    def _on_apt_install__auth_failed(self, apt):
-        self.wizard.enable_back()
-        self.wizard.enable_next()
-        self.label.set_markup(
-            _("Authorization failed, try again or connect to "
-              "another database"))
 
 
 class CreateDatabaseStep(BaseWizardStep):

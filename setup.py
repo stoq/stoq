@@ -100,6 +100,7 @@ data_files = [
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.jpg')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.gif')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.bmp')),
+    ('$datadir/scripts', listfiles('data', 'scripts', '*.py')),
     ('$datadir/scripts', listfiles('data', 'scripts', '*.sh')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
     ('$datadir/sql', listfiles('data', 'sql', '*.py')),

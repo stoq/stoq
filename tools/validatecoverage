@@ -212,7 +212,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/templates/companytemplate.py', 83.33),
     ('stoqlib/gui/templates/individualtemplate.py', 88.89),
     ('stoqlib/gui/templates/persontemplate.py', 89.41),
-    ('stoqlib/gui/utils/aptpackageinstaller.py', 29),
     ('stoqlib/gui/utils/databaseform.py', 90.48),
     ('stoqlib/gui/utils/help.py', 31.25),
     ('stoqlib/gui/utils/idle.py', 25.00),
