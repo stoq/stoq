@@ -312,7 +312,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/lib/unittestutils.py', 72.73),
     ('stoqlib/lib/uptime.py', 88.89),
     ('stoqlib/lib/validators.py', 88.57),
-    ('stoqlib/lib/webservice.py', 35.54),
+    ('stoqlib/lib/webservice.py', 33.54),
     ('stoqlib/migration/domainv1.py', 43),
     ('stoqlib/migration/domainv2.py', 42),
     ('stoqlib/migration/domainv3.py', 39),
