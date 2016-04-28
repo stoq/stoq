@@ -23,23 +23,8 @@ GtkDialog(toplevel): title='Client Search', hidden
                     item: 'Contains Exactly'
                     item: 'Identical to'
                     item: 'Does Not Contain'
-                  HintedEntry(search_entry, padding=6): ''
+                  HintedEntry(search_entry, padding=6): 'dum'
                 GtkButton(search_button): 'gtk-find'
-              DateSearchFilter():
-                GtkLabel(): 'Birthday:'
-                ProxyComboBox(padding=6):
-                  item: 'Any'
-                  item: 'Today'
-                  item: 'Yesterday'
-                  item: 'Last week'
-                  item: 'Last month'
-                  item: 'Custom day'
-                  item: 'Custom interval', selected
-                GtkLabel(): 'From:'
-                ProxyDateEntry(padding=6): datetime.date(1987, 10, 1), invalid
-                GtkLabel(): 'To:'
-                ProxyDateEntry(padding=6): datetime.date(1987, 10, 31), invalid
-                GtkButton(): 'gtk-remove'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Name', expand
             column: title='Category', hidden
@@ -52,7 +37,7 @@ GtkDialog(toplevel): title='Client Search', hidden
             column: title='Birth Date', hidden
             column: title='Fancy Name', hidden
             column: title='Email', hidden
-            row: u'Junio C. Hamano', None, u'', u'', u'', None, u'', u'', datetime.datetime(1972, 10, 15, 0, 0), None, u''
+            row: u'Agatha Christie', None, u'', u'', None, u'', None, None, None, u'Dummy shop', u''
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):

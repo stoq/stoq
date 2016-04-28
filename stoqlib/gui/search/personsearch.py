@@ -168,7 +168,8 @@ class ClientSearch(BasePersonSearch):
     search_spec = ClientView
     search_label = _('matching:')
     text_field_columns = [ClientView.name, ClientView.cpf, ClientView.rg_number,
-                          ClientView.phone_number, ClientView.mobile_number]
+                          ClientView.phone_number, ClientView.mobile_number,
+                          ClientView.fancy_name, ClientView.email]
 
     def __init__(self, store, birth_date=None, **kwargs):
         self._birth_date = birth_date
@@ -218,7 +219,11 @@ class ClientSearch(BasePersonSearch):
                 SearchColumn('rg_number', _('RG'), str, width=120),
                 SearchColumn('birth_date', _('Birth Date'), datetime.date,
                              visible=False, search_func=self.birthday_search,
-                             search_label=_('Birthday'))]
+                             search_label=_('Birthday')),
+                SearchColumn('fancy_name', _('Fancy Name'), data_type=str,
+                             width=150, visible=False),
+                SearchColumn('email', _('Email'), data_type=str,
+                             width=150, visible=False)]
 
     def get_editor_model(self, client_view):
         return client_view.client

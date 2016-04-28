@@ -2013,6 +2013,7 @@ class ClientView(Viewable):
     person_id = Person.id
     phone_number = Person.phone_number
     mobile_number = Person.mobile_number
+    email = Person.email
 
     # Company
     fancy_name = Company.fancy_name

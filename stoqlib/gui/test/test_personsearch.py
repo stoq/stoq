@@ -85,6 +85,8 @@ class TestPersonSearch(GUITest):
         client.person.individual.birth_date = datetime.date(1989, 3, 4)
         client = self.create_client(u'Junio C. Hamano')
         client.person.individual.birth_date = datetime.date(1972, 10, 15)
+        client = self.create_client(name=u'Mary Jordan')
+        client.person.email = u'm.jordan@mail'
 
         search = ClientSearch(self.store)
 
@@ -94,6 +96,10 @@ class TestPersonSearch(GUITest):
         search.set_searchbar_search_string(u'ham')
         search.search.refresh()
         self.check_search(search, 'client-string-filter')
+
+        search.set_searchbar_search_string(u'Jordan')
+        search.search.refresh()
+        self.check_search(search, 'client-email-string-filter')
 
         column = search.search.get_column_by_attribute('birth_date')
         search_title = column.get_search_label() + ':'
@@ -115,6 +121,20 @@ class TestPersonSearch(GUITest):
         birthday_filter.end_date.update(datetime.date(1987, 10, 31))
         search.search.refresh()
         self.check_search(search, 'client-birthday-interval-filter')
+
+    def test_client_as_company(self):
+        self.clean_domain([Commission, SaleItem, Sale, Client])
+
+        person = self.create_person(name=u'Agatha Christie')
+
+        self.create_client(person=person)
+        self.create_company(person=person)
+
+        search = ClientSearch(self.store)
+
+        search.set_searchbar_search_string(u'dum')
+        search.search.refresh()
+        self.check_search(search, 'client-company-string-filter')
 
     def test_transporter_search(self):
         self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
