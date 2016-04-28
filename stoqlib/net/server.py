@@ -113,7 +113,19 @@ class ServerProxy(object):
                              "LIMIT 1")
                     params = [u'stoqserver%', unicode(db_settings.dbname)]
                     res = store.execute(query, params=params).get_one()
-                address = res and res[0]
+                if res is not None and res[0] is not None:
+                    address = res[0]
+                elif res is not None:
+                    # If the client_addr is NULL, then stoqserver is connected
+                    # using the unix socket, which means that he is in the same
+                    # ip as postgresql
+                    address = db_settings.address
+                    if not address:
+                        # We are also on unix socket, so use localhost
+                        address = 'localhost'
+                else:
+                    address = None
+
             if not address:
                 raise ServerError(_("Stoq server not found"))
 
