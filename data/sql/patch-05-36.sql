@@ -1,9 +1,9 @@
 -- Cannot alter types inside transactions :(
 commit;
-ALTER TYPE stock_transaction_history_type ADD VALUE 'manual-adjust';
-ALTER TYPE stock_transaction_history_type ADD VALUE 'update-stock-cost';
-ALTER TYPE stock_transaction_history_type ADD VALUE 'sale-return-to-stock';
-ALTER TYPE stock_transaction_history_type ADD VALUE 'undo-returned-sale';
+ALTER TYPE stock_transaction_history_type ADD VALUE IF NOT EXISTS 'manual-adjust';
+ALTER TYPE stock_transaction_history_type ADD VALUE IF NOT EXISTS 'update-stock-cost';
+ALTER TYPE stock_transaction_history_type ADD VALUE IF NOT EXISTS 'sale-return-to-stock';
+ALTER TYPE stock_transaction_history_type ADD VALUE IF NOT EXISTS 'undo-returned-sale';
 begin;
 
 
@@ -163,6 +163,10 @@ FROM (
     SELECT id, stock_cost as cost FROM transfer_order_item
 ) AS obj
 WHERE sth.object_id = obj.id;
+
+-- Drop not null from stock_transaction_history so the query bellow works.
+-- We will be dropping the column after that.
+ALTER TABLE stock_transaction_history ALTER COLUMN product_stock_item_id DROP NOT NULL;
 
 -- Adjust any difference between psi.quantity and sum(sth.quantity)
 INSERT INTO stock_transaction_history
