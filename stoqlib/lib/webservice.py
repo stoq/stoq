@@ -45,6 +45,7 @@ from zope.interface import implementer
 from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.osutils import get_product_key
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
@@ -259,6 +260,18 @@ class WebService(object):
         :param app_version: application version
         :returns: a deferred with the version_string as a parameter
         """
+        try:
+            bdist_type = library.bdist_type
+        except Exception:
+            bdist_type = None
+
+        if os.path.exists(os.path.join('etc', 'init.d', 'stoq-bootstrap')):
+            source = 'livecd'
+        elif bdist_type in ['egg', 'wheel']:
+            source = 'pypi'
+        else:
+            source = 'ppa'
+
         params = {
             'hash': sysparam.get_string('USER_HASH'),
             'demo': sysparam.get_bool('DEMO_MODE'),
@@ -269,6 +282,7 @@ class WebService(object):
             'time': datetime.datetime.today().isoformat(),
             'uname': platform.uname(),
             'version': app_version,
+            'source': source,
         }
         params.update(self._get_company_details(store))
         params.update(self._get_usage_stats(store))
