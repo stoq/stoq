@@ -885,6 +885,7 @@ class ParameterAccess(object):
 
     def _create_default_values(self, store):
         """Create default values for parameters that take objects"""
+        self._set_default_value(store, u'USER_HASH')
         self._set_default_method_default(store)
 
         self._set_cfop_default(store,
@@ -982,7 +983,17 @@ class ParameterAccess(object):
             value = int(value)
         self._values[param_name] = param.field_value = unicode(value)
 
-    def _set_default_value(self, store, detail, value):
+    def _set_default_value(self, store, param_name):
+        """Sets the default initial value for a param in the database
+
+        If the param is not present in the ParameterData table, it will be
+        created with the default initial value.
+        """
+        if self._values.get(param_name, None) is not None:
+            return
+
+        detail = self.get_detail_by_name(param_name)
+        value = detail.initial
         if value is None:
             return
 
@@ -991,16 +1002,12 @@ class ParameterAccess(object):
         if value is not None:
             value = unicode(value)
 
-        param_name = detail.key
-        data = self._values.get(param_name)
-        if data is None:
-            data = ParameterData(store=store,
-                                 field_name=param_name,
-                                 field_value=value,
-                                 is_editable=True)
-            self._values[param_name] = data.field_value
-
-        data.field_value = value
+        data = ParameterData(store=store,
+                             field_name=param_name,
+                             field_value=value,
+                             is_editable=True)
+        self._values[param_name] = data.field_value
+        return data.field_value
 
     def _remove_unused_parameters(self, store):
         """
@@ -1043,6 +1050,13 @@ class ParameterAccess(object):
         detail = self._verify_detail(param_name, expected_type)
         value = self._values.get(param_name)
         if value is None:
+            # This parameter should be created on read and not on edit.
+            if param_name == 'USER_HASH':
+                from stoqlib.database.runtime import new_store
+                new_store = new_store()
+                value = self._set_default_value(new_store, u'USER_HASH')
+                new_store.commit()
+                return value
             # initial value is already of the correct type
             return detail.initial
 
