@@ -239,15 +239,15 @@ class WebService(object):
             'stoq_name': person.name,
             'stoq_fancy_name': company.fancy_name,
             'stoq_phone_number': person.phone_number,
-            'stoq_email ': person.email,
-            'stoq_street ': address.street,
-            'stoq_number ': address.streetnumber,
-            'stoq_district ': address.district,
-            'stoq_complement ': address.complement,
-            'stoq_postal_code ': address.postal_code,
-            'stoq_city ': address.city_location.city,
-            'stoq_state ': address.city_location.state,
-            'stoq_country ': address.city_location.country,
+            'stoq_email': person.email,
+            'stoq_street': address.street,
+            'stoq_number': address.streetnumber,
+            'stoq_district': address.district,
+            'stoq_complement': address.complement,
+            'stoq_postal_code': address.postal_code,
+            'stoq_city': address.city_location.city,
+            'stoq_state': address.city_location.state,
+            'stoq_country': address.city_location.country,
         }
 
     #
@@ -269,6 +269,8 @@ class WebService(object):
             source = 'livecd'
         elif bdist_type in ['egg', 'wheel']:
             source = 'pypi'
+        elif is_developer_mode():
+            source = 'devel'
         else:
             source = 'ppa'
 
