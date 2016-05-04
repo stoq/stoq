@@ -98,7 +98,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHBox(search_box):
                 GtkHBox(item_hbox, fill=True):
                   GtkLabel(label2, expand=True, fill=True): 'Barcode:'
-                  GtkEntry(barcode, expand=True, fill=True): ''
+                  ProxyEntry(barcode, expand=True, fill=True): '', invalid
                   ProxyLabel(kiwilabel2, expand=True, fill=True): 'Quantity:'
                   ProxySpinButton(quantity, expand=True, fill=True): '1.000'
                   GtkHButtonBox(item_button_box, expand=True, fill=True):

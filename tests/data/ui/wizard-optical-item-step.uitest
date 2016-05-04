@@ -11,7 +11,7 @@ GtkDialog(toplevel): title='Sale with work order', hidden
           GtkTable(step.item_table, fill=True):
             GtkHBox(step.hbox2):
               ProxyLabel(step.item_lbl, fill=True): 'Item:'
-              GtkEntry(step.barcode, fill=True): '666'
+              ProxyEntry(step.barcode, fill=True): '666', invalid
               GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
             ProxySpinButton(step.quantity): '0', insensitive

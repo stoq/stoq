@@ -84,7 +84,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     GtkTable(item_table, fill=True): hidden
                       GtkHBox(hbox2):
                         ProxyLabel(item_lbl, fill=True): 'Item:'
-                        GtkEntry(barcode, fill=True): ''
+                        ProxyEntry(barcode, fill=True): '', invalid
                         GtkButton(product_button):
                       ProxyLabel(kiwilabel2): 'Quantity:'
                       ProxySpinButton(quantity): '0.000', insensitive
