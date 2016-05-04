@@ -37,7 +37,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="barcode">
+                  <object class="ProxyEntry" id="barcode">
                     <property name="visible">True</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
