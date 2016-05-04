@@ -222,7 +222,8 @@ class PluginManager(object):
         __import__(os.path.basename(plugin_desc.dirname), globals(), locals(),
                    [plugin_desc.entry])
 
-        assert plugin_desc.name in self._plugins
+        assert plugin_desc.name in self._plugins, (plugin_desc.name,
+                                                   self._plugins)
 
     #
     # Public API
