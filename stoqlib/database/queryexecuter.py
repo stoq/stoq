@@ -223,6 +223,10 @@ class AsyncQueryOperation(gobject.GObject):
         self._statement = None
         self._parameters = None
 
+    #
+    #  Public API
+    #
+
     def execute(self, async_conn):
         """Executes a query within an asyncronous psycopg2 connection
         """
@@ -253,7 +257,7 @@ class AsyncQueryOperation(gobject.GObject):
             return
 
         self.status = self.STATUS_FINISHED
-        glib.idle_add(self.emit, 'finish')
+        glib.idle_add(self._on_finish)
 
     def get_result(self):
         """Get operation result.
@@ -275,6 +279,15 @@ class AsyncQueryOperation(gobject.GObject):
     def cancel(self):
         """Cancel the operation scheduling"""
         self.status = self.STATUS_CANCELLED
+
+    #
+    #  Private
+    #
+
+    def _on_finish(self):
+        if self.status == self.STATUS_CANCELLED:
+            return
+        self.emit('finish')
 
 gobject.type_register(AsyncQueryOperation)
 
