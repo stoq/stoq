@@ -169,8 +169,8 @@ def collect_traceback(tb, output=True, submit=False):
             ('http://89169350b0c0434895e315aa6490341a:'
              '0f5dce716eb5497fbf75c52fe873b3e8@sentry.stoq.com.br/4'))
         sentry_args = {}
-        if 'app_version' in sentry_args:
-            sentry_args['release'] = sentry_args['app_version']
+        if 'app_version' in extra:
+            sentry_args['release'] = extra['app_version']
         client = raven.Client(sentry_url, **sentry_args)
 
         # Don't sent logs to sentry
