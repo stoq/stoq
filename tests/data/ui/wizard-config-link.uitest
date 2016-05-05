@@ -10,15 +10,14 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
           GtkVBox(step.tef_info_vbox):
             GtkLabel(step.label3, fill=True): 'Stoq meets the cloud with Stoq.link. Connect your installation now and discover a lot of new and awesome features waiting for you.\n\nPlease fill in your details to receive instructions on how to create an account.'
             GtkTable(step.details_table):
+              ProxyCheckButton(step.register_now): 'Register to Stoq.link now', active
+              GtkLabel(step.label1):
               GtkLabel(step.label4): 'Name:'
               ProxyEntry(step.name): 'Name'
               GtkLabel(step.label5): 'Email:'
               ProxyEntry(step.email): 'example@example.com'
               GtkLabel(step.label6): 'Phone:'
-              GtkHBox(step.hbox1):
-                ProxyEntry(step.phone, fill=True): '1212341234'
-                GtkLabel(step.label1, expand=True, fill=True):
-              ProxyCheckButton(step.register_later): 'I want to register later'
+              ProxyEntry(step.phone): '1212341234'
           GtkProgressBar(step.send_progress, fill=True): hidden
           GtkLabel(step.send_error_label, fill=True): 'An error ocurred sending your details. Please <a href="http://www.stoq.com.br/contato">contact us</a>.', hidden
           GtkLabel(step.label8, expand=True, fill=True):
