@@ -194,6 +194,7 @@
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Custom</property>
+                        <property name="ellipsize">end</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -282,6 +283,7 @@
                     <property name="visible">True</property>
                     <child>
                       <object class="ProxyComboBox" id="category">
+                        <property name="width_request">200</property>
                         <property name="visible">True</property>
                         <property name="data_type">object</property>
                         <property name="model_attribute">category</property>
