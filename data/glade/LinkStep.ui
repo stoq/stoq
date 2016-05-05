@@ -66,7 +66,7 @@ Please fill in your details to receive instructions on how to create an account.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="n_rows">4</property>
-                <property name="n_columns">2</property>
+                <property name="n_columns">3</property>
                 <property name="column_spacing">5</property>
                 <property name="row_spacing">5</property>
                 <child>
@@ -77,6 +77,8 @@ Please fill in your details to receive instructions on how to create an account.
                     <property name="label" translatable="yes">Name:</property>
                   </object>
                   <packing>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                     <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
@@ -88,8 +90,8 @@ Please fill in your details to receive instructions on how to create an account.
                     <property name="label" translatable="yes">Email:</property>
                   </object>
                   <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
                     <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
@@ -101,51 +103,8 @@ Please fill in your details to receive instructions on how to create an account.
                     <property name="label" translatable="yes">Phone:</property>
                   </object>
                   <packing>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkHBox" id="hbox1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="ProxyEntry" id="phone">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="width_chars">20</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
-                        <property name="model_attribute">phone</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
+                    <property name="top_attach">3</property>
+                    <property name="bottom_attach">4</property>
                     <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
@@ -165,6 +124,8 @@ Please fill in your details to receive instructions on how to create an account.
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                     <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
@@ -184,24 +145,43 @@ Please fill in your details to receive instructions on how to create an account.
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
                     <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <object class="ProxyCheckButton" id="register_later">
-                    <property name="label" translatable="yes">I want to register later</property>
+                  <object class="ProxyCheckButton" id="register_now">
+                    <property name="label" translatable="yes">Register to Stoq.link now</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_action_appearance">False</property>
+                    <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                     <property name="data_type">bool</property>
-                    <property name="model_attribute">register_later</property>
+                    <property name="model_attribute">register_now</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyEntry" id="phone">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="width_chars">20</property>
+                    <property name="truncate_multiline">True</property>
+                    <property name="invisible_char_set">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">True</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">unicode</property>
+                    <property name="model_attribute">phone</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -209,6 +189,28 @@ Please fill in your details to receive instructions on how to create an account.
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
                     <property name="x_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
                   </packing>
                 </child>
               </object>

@@ -316,10 +316,10 @@ class LinkStep(WizardEditorStep):
 
     gladefile = 'LinkStep'
     model_type = Settable
-    proxy_widgets = ['name', 'email', 'phone', 'register_later']
+    proxy_widgets = ['name', 'email', 'phone', 'register_now']
 
     def __init__(self, wizard, previous):
-        model = Settable(name='', email='', phone='', register_later=False)
+        model = Settable(name='', email='', phone='', register_now=True)
         WizardEditorStep.__init__(self, None, wizard, model, previous)
         self._setup_widgets()
 
@@ -353,7 +353,7 @@ class LinkStep(WizardEditorStep):
 
     def _update_widgets(self):
         for widget in [self.email, self.name]:
-            widget.set_property('mandatory', not self.model.register_later)
+            widget.set_property('mandatory', self.model.register_now)
         self.force_validation()
 
     #
@@ -370,7 +370,9 @@ class LinkStep(WizardEditorStep):
 
     def next_step(self):
         # We already sent the details, but may still be on the same step.
-        if self.wizard.link_request_done:
+        # Also, if the user didn't choose to "register now", respect his
+        # decision
+        if not self.model.register_now or self.wizard.link_request_done:
             return FinishInstallationStep(self.wizard)
 
         webapi = WebService()
@@ -401,7 +403,7 @@ class LinkStep(WizardEditorStep):
     #   Callbacks
     #
 
-    def on_register_later__toggled(self, widget):
+    def on_register_now__toggled(self, widget):
         self._update_widgets()
 
     def on_email__validate(self, widget, value):
