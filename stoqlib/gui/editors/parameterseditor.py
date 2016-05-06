@@ -61,6 +61,8 @@ class SystemParameterEditor(BaseEditor):
         # param itself can accept None.
         self._block_none_value = True
         self.sensitive = True
+        # TODO: After we migrate those parameters to set is_editable
+        # to False we can probably remove this if
         if param_detail.key in ['DEMO_MODE', 'LOCAL_BRANCH',
                                 'SYNCHRONIZED_MODE', 'USER_HASH']:
             self.sensitive = False

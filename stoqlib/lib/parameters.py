@@ -64,7 +64,8 @@ class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
                  initial=None, options=None, combo_data=None, range=None,
                  multiline=False, validator=None,
-                 change_callback=None, editor=None, wrap=True, allow_none=False):
+                 change_callback=None, editor=None, wrap=True,
+                 allow_none=False, is_editable=True):
         self.key = key
         self.group = group
         self.short_desc = short_desc
@@ -80,6 +81,7 @@ class ParameterDetails(object):
         self.editor = editor
         self.wrap = wrap
         self.allow_none = allow_none
+        self.is_editable = is_editable
 
     #
     #  Public API
@@ -652,7 +654,7 @@ _details = [
         _(u'General'),
         _(u'Demonstration mode'),
         _(u'If Stoq is used in a demonstration mode'),
-        bool, initial=False),
+        bool, initial=False, is_editable=False),
 
     ParameterDetails(
         u'BLOCK_INCOMPLETE_PURCHASE_PAYMENTS',
@@ -764,7 +766,7 @@ _details = [
         _(u'Current branch for this database'),
         _(u'When operating with synchronized databases, this parameter will be '
           u'used to restrict the data that will be sent to this database.'),
-        u'person.Branch'),
+        u'person.Branch', is_editable=False),
 
     ParameterDetails(
         u'SYNCHRONIZED_MODE',
@@ -774,7 +776,7 @@ _details = [
           u'databases. When using synchronized databases, some operations with '
           u'branches different than the current one will be restriced.'),
         bool,
-        initial=False),
+        initial=False, is_editable=False),
 
     ParameterDetails(
         u'PRINT_PROMISSORY_NOTES_ON_BOOKLETS',
@@ -934,8 +936,7 @@ class ParameterAccess(object):
             return
         from stoqlib.domain.person import EmployeeRole
         role = EmployeeRole.get_or_create(store, name=_(u'Salesperson'))
-        self.set_object(store, "DEFAULT_SALESPERSON_ROLE", role,
-                        is_editable=False)
+        self.set_object(store, "DEFAULT_SALESPERSON_ROLE", role)
 
     def _set_product_tax_constant_default(self, store):
         if self.has_object("DEFAULT_PRODUCT_TAX_CONSTANT"):
@@ -1005,7 +1006,7 @@ class ParameterAccess(object):
         data = ParameterData(store=store,
                              field_name=param_name,
                              field_value=value,
-                             is_editable=True)
+                             is_editable=detail.is_editable)
         self._values[param_name] = data.field_value
         return data.field_value
 
@@ -1157,7 +1158,7 @@ class ParameterAccess(object):
         """
         return self.get(param_name, unicode)
 
-    def set_object(self, store, param_name, value, is_editable=True):
+    def set_object(self, store, param_name, value):
         """
         Updates a database object.
 
@@ -1165,7 +1166,6 @@ class ParameterAccess(object):
         :param param_name: the parameter name
         :param value: the value to set
         :type value: a domain object
-        :param is_editable: if the parameter can be modified interactivly
         """
         detail = self._details.get(param_name)
         if detail is None:
@@ -1182,7 +1182,7 @@ class ParameterAccess(object):
         if value is not None:
             value = unicode(value.id)
         param.field_value = value
-        param.is_editable = is_editable
+        param.is_editable = detail.is_editable
         self._values[param_name] = value
 
     def get_object(self, store, param_name):

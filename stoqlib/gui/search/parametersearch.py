@@ -51,7 +51,9 @@ class ParameterSearch(BaseEditor):
 
     def __init__(self, store):
         BaseEditor.__init__(self, store, model=object())
-        self._parameters = sysparam.get_details()
+        # FIXME: Maybe we should use the is_editable from the database in the
+        # future?
+        self._parameters = [d for d in sysparam.get_details() if d.is_editable]
         self._setup_widgets()
 
     def _setup_widgets(self):
