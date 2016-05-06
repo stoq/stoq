@@ -8,7 +8,7 @@ GtkDialog(toplevel): title='New Production', hidden
           GtkTable(step.item_table, fill=True):
             GtkHBox(step.hbox2):
               ProxyLabel(step.item_lbl, fill=True): '<span >Services:</span>'
-              ProxyEntry(step.barcode, fill=True): '', invalid
+              ProxyEntry(step.barcode, fill=True): '66', invalid
               GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
             ProxySpinButton(step.quantity): '0', insensitive

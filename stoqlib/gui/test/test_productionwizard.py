@@ -82,6 +82,7 @@ class TestProductionWizard(GUITest):
 
     def test_production_with_service(self):
         service = self.create_service()
+        service.sellable.barcode = u'66'
         product_component = self.create_product_component()
         wizard = ProductionWizard(store=self.store)
 

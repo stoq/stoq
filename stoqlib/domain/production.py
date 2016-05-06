@@ -308,6 +308,10 @@ class ProductionItem(Domain):
     def unit_description(self):
         return self.product.sellable.unit_description
 
+    @property
+    def sellable(self):
+        return self.product.sellable
+
     #
     # Private API
     #
@@ -615,6 +619,10 @@ class ProductionService(Domain):
     @property
     def unit_description(self):
         return self.service.sellable.unit_description
+
+    @property
+    def sellable(self):
+        return self.service.sellable
 
 
 class ProductionProducedItem(Domain):
