@@ -217,6 +217,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
 class SaleQuoteItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
+    change_remove_btn_sensitive = True
     model_type = Sale
     item_table = SaleItem
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
@@ -485,8 +486,9 @@ class SaleQuoteItemStep(SellableItemStep):
         self.discount_btn.set_sensitive(has_rows)
 
     def _on_klist__selection_changed(self, klist, selected):
-        can_remove = all(item.parent_item is None for item in selected)
-        self.slave.delete_button.set_sensitive(can_remove)
+        if self.change_remove_btn_sensitive:
+            can_remove = all(item.parent_item is None for item in selected)
+            self.slave.delete_button.set_sensitive(can_remove)
 
     def on_discount_btn__clicked(self, button):
         rv = run_dialog(DiscountEditor, self.parent, self.store, self.model,

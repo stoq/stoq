@@ -244,8 +244,9 @@ class SellableItemSlave(BaseEditorSlave):
             else:
                 self.slave.klist.append(parent, item)
 
-            for child in self.proxy.model.children:
-                if parent is None:
+            product = item.sellable.product
+            if product and product.is_package and parent is None:
+                for child in self.proxy.model.children:
                     self.add_sellable(child, parent=item)
                     self.slave.klist.expand(item)
 

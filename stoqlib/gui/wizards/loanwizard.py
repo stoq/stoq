@@ -185,6 +185,7 @@ class StartNewLoanStep(WizardEditorStep):
 
 class LoanItemStep(SaleQuoteItemStep):
     """ Wizard step for loan items selection """
+    change_remove_btn_sensitive = False
     model_type = Loan
     item_table = LoanItem
     sellable_view = ProductWithStockBranchView
