@@ -642,6 +642,7 @@ class SoldItemView(Viewable):
 
     # Aggregate
     quantity = Sum(SaleItem.quantity)
+    total_sold = Sum(SaleItem.price * SaleItem.quantity)
     total_cost = Sum(SaleItem.quantity * SaleItem.average_cost)
 
     tables = [

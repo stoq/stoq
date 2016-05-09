@@ -45,7 +45,7 @@ from stoqlib.domain.views import (ProductQuantityView,
                                   ProductBatchView, ProductBrandStockView,
                                   ProductBrandByBranchView)
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.base.gtkadds import change_button_appearance
+from stoqlib.gui.base.gtkadds import change_button_appearance, set_bold
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
 from stoqlib.gui.search.searchcolumns import SearchColumn, QuantityColumn
@@ -319,8 +319,44 @@ class ProductsSoldSearch(ProductSearch):
                                hide_toolbar=hide_toolbar)
 
     #
-    #  ProductSearch
+    # Private API
     #
+
+    def _update_summary(self, klist):
+        quantity = total = 0
+        for obj in klist:
+            quantity += obj.quantity
+            total += obj.total_sold
+
+        self.quantity_label.set_label(_(u'Total quantity: %s') % format_quantity(quantity))
+        self.total_sold_label.set_label(_(u'Total sold: %s') % get_formatted_cost(total))
+
+    #
+    # ProductSearch
+    #
+
+    def setup_widgets(self):
+        super(ProductSearch, self).setup_widgets()
+        hbox = gtk.HBox()
+        hbox.set_spacing(6)
+
+        self.vbox.pack_start(hbox, False, True)
+        self.vbox.reorder_child(hbox, 2)
+        self.vbox.set_spacing(6)
+
+        hbox.pack_start(gtk.Label(), True, True)
+
+        # Create two labels to show a summary for the search (kiwi's
+        # SummaryLabel supports only one column)
+        self.quantity_label = gtk.Label()
+        hbox.pack_start(self.quantity_label, False, False)
+
+        self.total_sold_label = gtk.Label()
+        hbox.pack_start(self.total_sold_label, False, False)
+        hbox.show_all()
+
+        set_bold(self.quantity_label)
+        set_bold(self.total_sold_label)
 
     def create_filters(self):
         self.date_filter = DateSearchFilter(_('Date:'))
@@ -334,7 +370,16 @@ class ProductsSoldSearch(ProductSearch):
                        data_type=str, expand=True),
                 QuantityColumn('quantity', title=_('Sold')),
                 Column('average_cost', title=_('Avg. Cost'),
-                       data_type=currency), ]
+                       data_type=currency),
+                Column('total_sold', title=_('Total sold'),
+                       data_type=currency)]
+
+    #
+    # Callbacks
+    #
+
+    def on_search__search_completed(self, search, result_view, states):
+        self._update_summary(result_view)
 
 
 class ProductStockSearch(ProductSearch):

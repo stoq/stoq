@@ -42,6 +42,11 @@ GtkDialog(toplevel): title='Products Sold Search', hidden
             column: title='Description', expand
             column: title='Sold'
             column: title='Avg. Cost'
+            column: title='Total sold'
+      GtkHBox(fill=True):
+        GtkLabel(expand=True, fill=True):
+        GtkLabel(quantity_label): 'Total quantity: 0'
+        GtkLabel(total_sold_label): 'Total sold: $ 0.00'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden
