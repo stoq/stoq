@@ -317,6 +317,7 @@ class QueryEntryGadget(object):
 
         self._parent = parent
         self._on_run_editor = run_editor
+        self._can_edit = False
         self.entry = entry
         self.entry.set_mode(ENTRY_MODE_DATA)
         self.edit_button = edit_button
@@ -358,9 +359,11 @@ class QueryEntryGadget(object):
         self.entry.update(obj)
         self.entry.set_text(value)
 
+        self._update_widgets()
+
     def set_editable(self, can_edit):
-        self.edit_button.set_sensitive(can_edit)
         self.entry.set_property('editable', can_edit)
+        self._update_widgets()
 
     def update_edit_button(self, stock, tooltip=None):
         image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
@@ -392,6 +395,10 @@ class QueryEntryGadget(object):
         self._popup = _QueryEntryPopup(self)
         self._popup.connect('item-selected', self._on_popup__item_selected)
         self._popup.connect('create-item', self._on_popup__create_item)
+
+    def _update_widgets(self):
+        self._can_edit = self.entry.get_editable() and self.entry.get_sensitive()
+        self.edit_button.set_sensitive(bool(self._can_edit or self._current_obj))
 
     def _add_button(self, stock):
         image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
@@ -449,11 +456,13 @@ class QueryEntryGadget(object):
             model = store.fetch(model)
             if self._on_run_editor is not None:
                 retval = self._on_run_editor(store, model,
-                                             description=description)
+                                             description=description,
+                                             visual_mode=not self._can_edit)
             else:
                 rd = run_person_role_dialog if self._is_person else run_dialog
                 retval = rd(self.ITEM_EDITOR, self._parent, store, model,
-                            description=description)
+                            description=description,
+                            visual_mode=not self._can_edit)
 
         if store.committed:
             return self.store.fetch(retval)
@@ -505,8 +514,7 @@ class QueryEntryGadget(object):
         self._popup.confirm()
 
     def _on_entry_sensitive(self, entry, pspec):
-        can_edit = entry.get_editable() and entry.get_sensitive()
-        self.edit_button.set_sensitive(can_edit)
+        self._update_widgets()
 
     def _on_popup__item_selected(self, popup, item, fallback_to_search):
         self.set_value(self.get_object_from_item(item))

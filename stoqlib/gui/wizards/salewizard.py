@@ -557,10 +557,12 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             run_editor=self._run_client_editor)
         marker('Filled clients')
 
-    def _run_client_editor(self, store, model, description=None):
+    def _run_client_editor(self, store, model, description=None,
+                           visual_mode=False):
         return run_person_role_dialog(ClientEditor, self.wizard, store, model,
                                       document=self.wizard._current_document,
-                                      description=description)
+                                      description=description,
+                                      visual_mode=visual_mode)
 
     def _fill_transporter_combo(self):
         marker('Filling transporters')
