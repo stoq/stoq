@@ -31,6 +31,9 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
                   column: title='Quantity'
                   column: title='Unit'
                   row: u'', u'Description', u'', Decimal('1.000'), u''
+                GtkHBox(step.summary, fill=True):
+                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total quantity:</b>'
+                  GtkLabel(): '<b>1</b>'
               GtkHBox(hbox1, fill=True):
                 GtkHBox(button_box):
                   GtkButton(add_button): hidden

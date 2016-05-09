@@ -174,8 +174,8 @@ class DecreaseItemStep(SellableItemStep):
     model_type = StockDecrease
     item_table = StockDecreaseItem
     sellable_view = ProductWithStockBranchView
-    summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
-    summary_label_column = None
+    summary_label_text = "<b>%s</b>" % api.escape(_('Total quantity:'))
+    summary_label_column = 'quantity'
     sellable_editable = False
     validate_stock = True
     batch_selection_dialog = BatchDecreaseSelectionDialog
