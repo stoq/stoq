@@ -30,7 +30,6 @@ from decimal import Decimal
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ObjectList, SummaryLabel
-from storm.expr import And, Ne
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import InventoryItemsView
@@ -38,7 +37,7 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.product import StorableBatchView
 from stoqlib.domain.sale import ReturnedSaleItemsView
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.transfer import TransferOrderItem
+from stoqlib.domain.transfer import TransferItemView
 from stoqlib.domain.views import (ReceivingItemView, SaleItemsView,
                                   LoanItemView, StockDecreaseItemsView)
 from stoqlib.lib.formatters import get_formatted_cost, format_quantity
@@ -116,10 +115,7 @@ class ProductStockHistoryDialog(BaseEditor):
             items = items.find(Branch.id == current_branch.id)
         self.sales_list.add_list(list(items))
 
-        items = self.store.find(
-            TransferOrderItem,
-            And(Ne(TransferOrderItem.transfer_order_id, None),
-                TransferOrderItem.sellable_id == self.model.id))
+        items = TransferItemView.find_by_branch(self.store, self.model, current_branch)
         self.transfer_list.add_list(list(items))
 
         items = self.store.find(LoanItemView, sellable_id=self.model.id)
@@ -159,7 +155,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.sales_vbox.pack_start(sales_summary_label, False)
 
         transfer_summary_label = SummaryLabel(klist=self.transfer_list,
-                                              column='quantity',
+                                              column='item_quantity',
                                               label=total_label,
                                               value_format=value_format)
         transfer_summary_label.show()
@@ -217,20 +213,23 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_transfer_columns(self):
         return [IdentifierColumn("transfer_order.identifier", title=_('Transfer #'),
                                  sorted=True),
-                Column('batch.batch_number', title=_('Batch'), data_type=str,
+                Column('batch_number', title=_('Batch'), data_type=str,
                        visible=self._is_batch),
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("transfer_order.open_date",
                        title=_("Date Created"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT),
+                Column("transfer_order.source_branch_name",
+                       title=_("Source"), expand=True,
+                       data_type=str),
                 Column("transfer_order.destination_branch_name",
                        title=_("Destination"), expand=True,
                        data_type=str),
                 Column("transfer_order.source_responsible_name",
                        title=_("Responsible"), expand=True,
                        data_type=str),
-                Column("quantity", title=_("Transfered"),
+                Column("item_quantity", title=_("Transfered"),
                        data_type=Decimal)]
 
     def _get_loan_columns(self):

@@ -28,7 +28,7 @@
 from decimal import Decimal
 
 from kiwi.currency import currency
-from storm.expr import Join, LeftJoin, Sum, Cast, Coalesce, And
+from storm.expr import Join, LeftJoin, Sum, Cast, Coalesce, And, Or
 from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implementer
@@ -45,6 +45,7 @@ from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch, Company
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
@@ -510,8 +511,22 @@ class TransferItemView(BaseTransferView):
     item_quantity = TransferOrderItem.quantity
     item_description = Sellable.description
 
+    sellable_id = Sellable.id
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+    batch_date = StorableBatch.create_date
+
     group_by = BaseTransferView.group_by[:]
-    group_by.extend([TransferOrderItem, Sellable])
+    group_by.extend([TransferOrderItem, Sellable, batch_number, batch_date])
 
     tables = BaseTransferView.tables[:]
-    tables.append(Join(Sellable, Sellable.id == TransferOrderItem.sellable_id))
+    tables.extend([
+        Join(Sellable, Sellable.id == TransferOrderItem.sellable_id),
+        LeftJoin(StorableBatch, StorableBatch.id == TransferOrderItem.batch_id)
+    ])
+
+    @classmethod
+    def find_by_branch(cls, store, sellable, branch):
+        query = (cls.sellable_id == sellable.id,
+                 Or(cls.source_branch_id == branch.id,
+                    cls.destination_branch_id == branch.id))
+        return store.find(cls, query)
