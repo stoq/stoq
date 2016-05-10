@@ -41,6 +41,7 @@ class TestProductStockHistoryDialog(GUITest):
         date = datetime.date(2012, 1, 1)
         today = datetime.date.today()
         branch = get_current_branch(self.store)
+        branch2 = self.create_branch(name=u"Branch2")
         user = get_current_user(self.store)
         storable = self.create_storable(is_batch=True)
         product = storable.product
@@ -74,23 +75,32 @@ class TestProductStockHistoryDialog(GUITest):
         sale.confirm()
 
         # Transfer from branch to another
-        transfer = self.create_transfer_order(source_branch=branch)
-        transfer.open_date = date
-        transfer.identifier = 55
-        self.create_transfer_order_item(transfer, 2, product.sellable,
+        transfer1 = self.create_transfer_order(source_branch=branch)
+        transfer1.open_date = date
+        transfer1.identifier = 55
+        self.create_transfer_order_item(transfer1, 2, product.sellable,
                                         batch=batch)
-        transfer.send()
-        transfer.receive(self.create_employee())
+        transfer1.send()
+        transfer1.receive(self.create_employee())
 
         # Transfer from another to branch
-        transfer = self.create_transfer_order(source_branch=transfer.destination_branch,
-                                              dest_branch=branch)
-        transfer.open_date = date
-        transfer.identifier = 66
-        self.create_transfer_order_item(transfer, 1, product.sellable,
+        transfer2 = self.create_transfer_order(source_branch=transfer1.destination_branch,
+                                               dest_branch=branch)
+        transfer2.open_date = date
+        transfer2.identifier = 66
+        self.create_transfer_order_item(transfer2, 1, product.sellable,
                                         batch=batch)
-        transfer.send()
-        transfer.receive(self.create_employee())
+        transfer2.send()
+        transfer2.receive(self.create_employee())
+
+        # Transfer without the current branch
+        transfer3 = self.create_transfer_order(source_branch=transfer2.source_branch,
+                                               dest_branch=branch2)
+        transfer3.identifier = 67
+        self.create_transfer_order_item(transfer3, 1, product.sellable,
+                                        batch=batch)
+        transfer3.send()
+        transfer3.receive(self.create_employee())
 
         # Loan
         loan = self.create_loan(branch)
@@ -107,6 +117,13 @@ class TestProductStockHistoryDialog(GUITest):
         decrease.confirm()
 
         dialog = ProductStockHistoryDialog(self.store, product.sellable, branch)
+        # Show only the transfers where the current branch was used
+        transfer_list = dialog.transfer_list
+        self.assertEqual(len(transfer_list), 2)
+        for transfer in transfer_list:
+            self.assertTrue(branch.id in [transfer.source_branch_id,
+                                          transfer.destination_branch_id])
+
         self.check_editor(dialog, 'dialog-product-stock-history')
 
 

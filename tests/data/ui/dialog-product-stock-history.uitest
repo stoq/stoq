@@ -48,11 +48,12 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 column: title='Batch'
                 column: title='Batch Date', hidden
                 column: title='Date Created'
+                column: title='Source', expand
                 column: title='Destination', expand
                 column: title='Responsible', expand
                 column: title='Transfered'
-                row: 55, u'1', None, datetime.datetime(2012, 1, 1, 0, 0), u'Dest shop', u'Ipswich', Decimal('2.000')
-                row: 66, u'1', None, datetime.datetime(2012, 1, 1, 0, 0), u'Moda Stoq', u'Ipswich', Decimal('1.000')
+                row: 55, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), u'Moda Stoq', u'Dest shop', u'Ipswich', Decimal('2.000')
+                row: 66, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), u'Dest shop', u'Moda Stoq', u'Ipswich', Decimal('1.000')
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>3.0</b>'
