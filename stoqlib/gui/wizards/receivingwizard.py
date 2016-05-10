@@ -361,9 +361,9 @@ class ReceivingOrderItemStep(BaseWizardStep):
             return text
 
         if column.attribute == 'quantity':
-            editable = not obj.is_batch and obj.purchase_item.parent_item
-            renderer.set_property('editable-set', not editable)
-            renderer.set_property('editable', not editable)
+            editable = not (obj.is_batch or obj.purchase_item.parent_item)
+            renderer.set_property('editable-set', editable)
+            renderer.set_property('editable', editable)
 
         renderer.set_property('foreground', 'red')
         renderer.set_property('foreground-set', obj.need_adjust_batch)
