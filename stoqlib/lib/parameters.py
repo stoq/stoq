@@ -1146,7 +1146,7 @@ class ParameterAccess(object):
         :param value: the value to set
         :type value: unicode
         """
-        self._set_param_internal(store, param_name, value, unicode)
+        self._set_param_internal(store, param_name, unicode(value or ''), unicode)
 
     def get_string(self, param_name):
         """
