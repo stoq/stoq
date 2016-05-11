@@ -1302,6 +1302,29 @@ class TestStorableBatch(DomainTest):
         self.assertFalse(StorableBatch.is_batch_number_available(
             self.store, u'321', exclude_storable=storable))
 
+    def test_get_max_batch_number(self):
+        storable = self.create_storable(is_batch=True)
+
+        self.create_storable_batch(storable=storable, batch_number=u'123')
+        self.assertEqual(
+            StorableBatch.get_max_batch_number(self.store), u'123')
+
+        self.create_storable_batch(storable=storable, batch_number=u'AB123')
+        self.assertEqual(
+            StorableBatch.get_max_batch_number(self.store), u'AB123')
+
+        self.create_storable_batch(storable=storable, batch_number=u'AB123-AC')
+        self.assertEqual(
+            StorableBatch.get_max_batch_number(self.store), u'AB123')
+
+        self.create_storable_batch(storable=storable, batch_number=u'AB123-AC-DC')
+        self.assertEqual(
+            StorableBatch.get_max_batch_number(self.store), u'AB123')
+
+        self.create_storable_batch(storable=storable, batch_number=u'AB456')
+        self.assertEqual(
+            StorableBatch.get_max_batch_number(self.store), u'AB456')
+
     def test_get_balance_batch(self):
         storable = self.create_storable(is_batch=True)
         branch = self.create_branch()

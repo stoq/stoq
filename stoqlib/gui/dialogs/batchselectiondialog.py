@@ -619,8 +619,7 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
     #
 
     def _get_next_batch_number(self):
-        max_db = StorableBatch.get_max_value(self.store,
-                                             StorableBatch.batch_number)
+        max_db = StorableBatch.get_max_batch_number(self.store)
         max_used = max_value_for(self._get_used_batches() | set([max_db]))
         if not api.sysparam.get_bool('SYNCHRONIZED_MODE'):
             return next_value_for(max_used)
@@ -635,6 +634,7 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
             # '123-AB'
             max_used = max_used_list[0]
         else:
+            # TODO: Maybe we should allow only one dash in the batch number
             # '123-456-AB'
             max_used = ''.join(max_used_list[:-1])
 

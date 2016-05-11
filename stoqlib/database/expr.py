@@ -127,6 +127,13 @@ class LPad(NamedFunc):
     name = "LPAD"
 
 
+class SplitPart(NamedFunc):
+    """Split string on delimiter and return the given field"""
+    # http://www.postgresql.org/docs/8.4/static/functions-string.html
+    __slots__ = ()
+    name = "split_part"
+
+
 class ArrayAgg(NamedFunc):
     __slots__ = ()
     name = "array_agg"

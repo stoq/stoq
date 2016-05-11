@@ -90,7 +90,8 @@ from storm.expr import (And, Eq, LeftJoin, Alias, Sum, Coalesce, Select, Join, C
 from zope.interface import implementer
 
 from stoqlib.database.expr import (Field, TransactionTimestamp,
-                                   ArrayAgg, Contains, IsContainedBy)
+                                   ArrayAgg, Contains, IsContainedBy,
+                                   SplitPart)
 from stoqlib.database.properties import (BoolCol, DateTimeCol, DecimalCol,
                                          EnumCol, IdCol, IntCol, PercentCol,
                                          PriceCol, QuantityCol, UnicodeCol)
@@ -1430,6 +1431,11 @@ class StorableBatch(Domain):
             query = And(query, cls.storable_id != exclude_storable.id)
 
         return store.find(cls, query).is_empty()
+
+    @classmethod
+    def get_max_batch_number(cls, store):
+        attr = SplitPart(cls.batch_number, u'-', 1)
+        return StorableBatch.get_max_value(store, attr, validate_attr=False)
 
     #
     #  Public API
