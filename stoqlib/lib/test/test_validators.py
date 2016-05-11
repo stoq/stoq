@@ -30,10 +30,38 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.validators import (validate_cpf, validate_cnpj,
                                     validate_area_code, validate_int,
                                     validate_decimal, validate_directory,
-                                    validate_percentage, validate_cfop)
+                                    validate_percentage, validate_cfop,
+                                    validate_phone_number)
 
 
 class TestValidators(DomainTest):
+
+    def test_validate_phone_number(self):
+        for phone_number in [
+                # 7 digits number
+                '1234567', '123-4567', '123 4567',
+                # 7 digits number with area code
+                '161234567', '(16) 1234-567',
+                # 7 digits number with area code and leading 0
+                '0161234567', '(16) 1234-567', '(016) 1234-567',
+                # 8 digits number
+                '12345678', '1234-5678', '1234 5678',
+                # 8 digits number with area code
+                '1612345678', '(16) 1234-5678',
+                # 8 digits number with area code and leading 0
+                '01612345678', '(016) 12345678', '(016) 1234-5678',
+                # 9 digits number
+                '912345678', '9123 45678', '9123-45678',
+                # 9 digits number with area code
+                '16912345678', '(16) 9123-45678',
+                # 9 digits number with area code and leading 0
+                '016912345678', '(016) 912345678', '(016) 91234-5678']:
+            self.assertTrue(validate_phone_number(phone_number),
+                            msg="%s did not pass" % (phone_number, ))
+
+        for phone_number in ['123456', '(16) 1234', '161234567890']:
+            self.assertFalse(validate_phone_number(phone_number),
+                             msg="%s did pass while it shouldn't" % (phone_number, ))
 
     def test_validate_c_p_f(self):
         self.failUnless(validate_cpf('95524361503'))
