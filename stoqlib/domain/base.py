@@ -411,7 +411,7 @@ class Domain(ORMObject):
             yield value
 
     @classmethod
-    def get_max_value(cls, store, attr):
+    def get_max_value(cls, store, attr, validate_attr=True):
         """Get the maximum value for a given attr
 
         On text columns, trying to find the max value for them using MAX()
@@ -426,7 +426,8 @@ class Domain(ORMObject):
         :param attr: the attribute to find the max value for
         :returns: the maximum value for the attr
         """
-        cls.validate_attr(attr, expected_type=UnicodeCol)
+        if validate_attr:
+            cls.validate_attr(attr, expected_type=UnicodeCol)
 
         max_length = Alias(
             Select(columns=[Alias(Max(CharLength(attr)), 'max_length')],
