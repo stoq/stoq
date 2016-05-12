@@ -984,7 +984,7 @@ class ParameterAccess(object):
             value = int(value)
 
         param.field_value = unicode(value)
-        self.set_value_generic(param_name, param.field_name)
+        self.set_value_generic(param_name, param.field_value)
 
     def _set_default_value(self, store, param_name):
         """Sets the default initial value for a param in the database
