@@ -77,11 +77,12 @@ from stoqlib.gui.base.wizards import (BaseWizard, WizardEditorStep,
                                       WizardStep)
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.utils.logo import render_logo_pixbuf
+from stoqlib.gui.utils.openbrowser import open_browser
 from stoqlib.gui.widgets.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error, warning, yesno
-from stoqlib.lib.osutils import get_product_key, read_registry_key
+from stoqlib.lib.osutils import read_registry_key
 from stoqlib.lib.pgpass import write_pg_pass
 from stoqlib.lib.validators import validate_email, validate_phone_number
 from stoqlib.lib.webservice import WebService
@@ -90,7 +91,6 @@ from stoqlib.net.socketutils import get_hostname
 from twisted.internet import reactor
 
 from stoq.gui.update import SchemaUpdateWizard
-from stoq.gui.shell.shell import PRIVACY_STRING
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup
 
@@ -328,6 +328,10 @@ class LinkStep(WizardEditorStep):
     #
 
     def _setup_widgets(self):
+        self.image.set_from_file(
+            library.get_resource_filename('stoq', 'pixmaps', 'link_step.png'))
+        self.image_eventbox.add_events(gtk.gdk.BUTTON_PRESS_MASK |
+                                       gtk.gdk.POINTER_MOTION_MASK)
         self.send_progress.hide()
         self.send_error_label.hide()
 
@@ -355,6 +359,10 @@ class LinkStep(WizardEditorStep):
         for widget in [self.email, self.name]:
             widget.set_property('mandatory', self.model.register_now)
         self.force_validation()
+
+    def _inside_button(self, event):
+        x, y = event.get_coords()
+        return 115 < x < 280 and 290 < y < 315
 
     #
     #   WizardStep
@@ -389,7 +397,6 @@ class LinkStep(WizardEditorStep):
         self.send_progress.show()
         self.send_progress.set_text(_('Sending...'))
         self.send_progress.set_pulse_step(0.05)
-        self.details_table.set_sensitive(False)
         self.wizard.next_button.set_sensitive(False)
         glib.timeout_add(50, self._pulse)
 
@@ -403,7 +410,20 @@ class LinkStep(WizardEditorStep):
     #   Callbacks
     #
 
+    def on_image_eventbox__motion_notify_event(self, widget, event):
+        w = widget.get_window()
+        if self._inside_button(event):
+            cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
+        else:
+            cursor = w.get_parent().get_property('cursor')
+        w.set_cursor(cursor)
+
+    def on_image_eventbox__button_press_event(self, widget, event):
+        if self._inside_button(event):
+            open_browser('http://stoq.link?source=stoqwizard', self.wizard)
+
     def on_register_now__toggled(self, widget):
+        self.wizard.enable_online_services = widget.get_active()
         self._update_widgets()
 
     def on_email__validate(self, widget, value):
@@ -813,37 +833,13 @@ class FinishInstallationStep(BaseWizardStep):
         # self._cancel will be a callback for the quit button
         self.wizard.cancel = self._cancel
         self.wizard.next_button.set_label(_(u'Run Stoq'))
-        self.online_services.set_active(self.wizard.enable_online_services)
-
         self.wizard.next_button.grab_focus()
-
-        if self.wizard.has_installed_db:
-            self.online_services.hide()
-            self.online_info.hide()
-
-        # If you have a ProductKey you are required to enable online
-        # services
-        if get_product_key():
-            self.online_services.hide()
-            self.online_info.hide()
-            self.online_services.set_active(True)
 
     def _cancel(self):
         # This is the last step, so we will finish the installation
         # before we quit
         self.wizard.finish(run=False)
 
-    def on_online_services__toggled(self, check):
-        self.wizard.enable_online_services = check.get_active()
-
-    def on_online_info__clicked(self, button):
-        dialog = gtk.MessageDialog(parent=None, flags=0,
-                                   type=gtk.MESSAGE_INFO,
-                                   buttons=gtk.BUTTONS_OK,
-                                   message_format=_("Online services"))
-        dialog.format_secondary_markup(PRIVACY_STRING)
-        dialog.run()
-        dialog.destroy()
 
 #
 # Main wizard
@@ -852,7 +848,7 @@ class FinishInstallationStep(BaseWizardStep):
 
 class FirstTimeConfigWizard(BaseWizard):
     title = _("Stoq - Installation")
-    size = (580, 380)
+    size = (711, 400)  # 16:9 proportion
 
     def __init__(self, options, config=None):
         if not config:
