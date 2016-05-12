@@ -982,7 +982,9 @@ class ParameterAccess(object):
         # bool are represented as 1/0
         if expected_type is bool:
             value = int(value)
-        self._values[param_name] = param.field_value = unicode(value)
+
+        param.field_value = unicode(value)
+        self.set_value_generic(param_name, param.field_name)
 
     def _set_default_value(self, store, param_name):
         """Sets the default initial value for a param in the database
@@ -1245,6 +1247,14 @@ class ParameterAccess(object):
         :param value: value
         :type value: unicode
         """
+        # FIXME: Find a better way of doing this after we integrate stoq.link
+        # better with Stoq.
+        if param_name == 'ONLINE_SERVICES':
+            from stoqlib.net.server import ServerProxy
+            p = ServerProxy()
+            d = p.check_running()
+            d.addCallback(lambda running: running and p.call('restart'))
+
         self._values[param_name] = value
 
     def get_details(self):
