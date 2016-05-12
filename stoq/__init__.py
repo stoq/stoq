@@ -37,10 +37,10 @@ minor_version = 11
 micro_version = 0
 
 #: extra version, rc1, rc2, etc goes here.
-extra_version = 'rc9'
+extra_version = 'rc10'
 
 #: the date the software was released
-release_date = (2016, 5, 10)
+release_date = (2016, 5, 12)
 
 #: if this is a stable release
 stable = True
