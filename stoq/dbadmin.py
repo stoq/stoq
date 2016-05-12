@@ -512,7 +512,7 @@ class StoqCommandHandler:
         self._read_config(options, register_station=False)
         from stoqlib.importers import importer
         importer = importer.get_by_type(options.type)
-        importer.feed_file(options.filename)
+        importer.feed_file(options.import_filename)
         importer.process()
 
     def opt_import(self, parser, group):
@@ -523,7 +523,7 @@ class StoqCommandHandler:
         group.add_option('', '--import-filename',
                          action="store",
                          help="Filename to import",
-                         dest="filename")
+                         dest="import_filename")
 
     def cmd_console(self, options):
         """Drop to a Stoq python console"""
