@@ -9,11 +9,6 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
           GtkHSeparator(step.hseparator1, fill=True):
           GtkAlignment(step.alignment1, fill=True):
             ProxyLabel(step.kiwilabel2): 'Stoq was successfully installed in your system!\n\nRemember to check out the manual in each application, it\'s normal to feel a little bit lost in the beginning if you never used Stoq before. The manual is also <a href="http://doc.stoq.com.br/manual/">available online</a>.\n\nIf you\'re having trouble with the installation, need help importing your database from another application or would like to customize Stoq, don\'t hesitate to <a href="http://www.stoq.com.br/contato">contact us</a>.'
-          GtkHBox(step.hbox1):
-            GtkCheckButton(step.online_services, expand=True, fill=True): 'Enable online services', active
-            GtkHButtonBox(step.hbuttonbox1, expand=True, fill=True):
-              GtkButton(step.online_info, expand=True, fill=True): 'More information...'
-          GtkLabel(step.label3, expand=True, fill=True):
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
