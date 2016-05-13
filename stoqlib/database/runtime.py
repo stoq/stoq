@@ -248,9 +248,9 @@ class StoqlibStore(Store):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if exc_type is None:
-            self.committed = self.confirm(commit=self.retval)
-            self.close()
+        rv = self.retval if exc_type is None else False
+        self.committed = self.confirm(commit=rv)
+        self.close()
 
     def _set_dirty(self, obj_info):
         # Store calls _set_dirty when any object inside it gets modified.

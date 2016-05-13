@@ -24,6 +24,8 @@
 
 """Tests for module :class:`stoqlib.database.runtime`"""
 
+import mock
+
 from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.properties import UnicodeCol
 from stoqlib.database.runtime import new_store
@@ -85,6 +87,51 @@ class StoqlibStoreTest(DomainTest):
         self.store.execute(''.join((WillBeCommitted.SQL_DROP,
                                     WillBeCommitted.SQL_CREATE)))
         self.store.commit()
+
+    def test_context_manager(self):
+        # Normal store with retval = True (default)
+        with new_store() as store:
+            store.confirm = mock.Mock()
+            store.close = mock.Mock()
+
+        self.assertCalledOnceWith(store.confirm, commit=True)
+        self.assertCalledOnceWith(store.close)
+
+        # Normal store with retval = False
+        with new_store() as store:
+            store.confirm = mock.Mock()
+            store.close = mock.Mock()
+            store.retval = False
+
+        self.assertCalledOnceWith(store.confirm, commit=False)
+        self.assertCalledOnceWith(store.close)
+
+        # An exception handled inside the context manager should not
+        # impact on the result The store should be committed
+        with new_store() as store:
+            store.confirm = mock.Mock()
+            store.close = mock.Mock()
+            try:
+                raise ValueError
+            except Exception:
+                pass
+
+        self.assertCalledOnceWith(store.confirm, commit=True)
+        self.assertCalledOnceWith(store.close)
+
+        # An exception handled outside (or not handled, but we can't not
+        # handle it on tests) should impact on the result.
+        # The store should rollback and close.
+        try:
+            with new_store() as store:
+                store.confirm = mock.Mock()
+                store.close = mock.Mock()
+                raise ValueError
+        except Exception:
+            pass
+
+        self.assertCalledOnceWith(store.confirm, commit=False)
+        self.assertCalledOnceWith(store.close)
 
     def test_get_pending_count(self):
         store = new_store()

@@ -193,6 +193,12 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         self.store.rollback(close=False)
         self.clear()
 
+    def assertNotCalled(self, mocked):
+        self.assertEqual(mocked.call_count, 0)
+
+    def assertCalledOnceWith(self, mocked, *args, **kwargs):
+        mocked.assert_called_once_with(*args, **kwargs)
+
     def get_oficial_plugins_names(self):
         """Get official plugins names
 
