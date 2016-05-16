@@ -35,6 +35,7 @@ import time
 import urllib
 
 from storm.database import create_database
+from storm.databases.postgres import make_dsn
 from storm.uri import URI
 
 from stoqlib.database.exceptions import OperationalError, SQLError
@@ -342,13 +343,23 @@ class DatabaseSettings(object):
 
     # Public API
 
-    def get_store_dsn(self, filter_password=False):
+    def get_store_uri(self, filter_password=False):
         """Returns a uri representing the current database settings.
         It's used by the orm to connect to a database.
         :param filter_password: if the password should be filtered out
         :returns: a string like postgresql://username@localhost/dbname
         """
         return self._build_dsn(self.dbname, filter_password=filter_password)
+
+    def get_store_dsn(self):
+        """Get a dsn that can be used to connect to the database
+
+        Unlike :meth:`.get_store_uri`, this is supported by all PostgreSQL
+        versions when used by `psycopg2.connect`.
+
+        :returns: a string like "dbname=stoq host=localhost port=5432"
+        """
+        return make_dsn(self._create_uri(self.dbname))
 
     def create_store(self):
         """Creates a store using the provided default settings.

@@ -64,22 +64,29 @@ class DatabaseSettingsTest(DomainTest):
     def test_get_store_dsn(self):
         settings = DatabaseSettings(address='address',
                                     username='username')
-        self.assertEquals(settings.get_store_dsn(),
+        self.assertEquals(settings.get_store_uri(),
                           'postgres://username@address:5432/stoq')
+        self.assertEquals(settings.get_store_dsn(),
+                          'dbname=stoq host=address port=5432 user=username')
 
     def test_get_store_dsn_password(self):
         settings = DatabaseSettings(address='address',
                                     username='username',
                                     password='password')
-        self.assertEquals(settings.get_store_dsn(),
+        self.assertEquals(settings.get_store_uri(),
                           'postgres://username:password@address:5432/stoq')
+        self.assertEquals(
+            settings.get_store_dsn(),
+            'dbname=stoq host=address port=5432 user=username password=password')
 
     def test_get_store_dsn_port(self):
         settings = DatabaseSettings(address='address',
                                     username='username',
                                     port='12345')
-        self.assertEquals(settings.get_store_dsn(),
+        self.assertEquals(settings.get_store_uri(),
                           'postgres://username@address:12345/stoq')
+        self.assertEquals(settings.get_store_dsn(),
+                          'dbname=stoq host=address port=12345 user=username')
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore')
     @mock.patch('stoqlib.database.settings.create_database')

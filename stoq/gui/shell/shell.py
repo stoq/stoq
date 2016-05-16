@@ -106,7 +106,7 @@ class ShellDatabaseConnection(object):
     def _try_connect(self):
         from stoqlib.lib.message import error
         try:
-            store_dsn = self._config.get_settings().get_store_dsn()
+            store_uri = self._config.get_settings().get_store_uri()
         except:
             type, value, trace = sys.exc_info()
             error(_("Could not open the database config file"),
@@ -132,7 +132,7 @@ class ShellDatabaseConnection(object):
         except (StoqlibError, PostgreSQLError) as e:
             log.debug('Connection failed.')
             error(_('Could not connect to the database'),
-                  'error=%s uri=%s' % (str(e), store_dsn))
+                  'error=%s uri=%s' % (str(e), store_uri))
         except DatabaseError:
             log.debug('Connection failed. Tring to setup .pgpass')
             # This is probably a missing password configuration. Setup the
@@ -151,7 +151,7 @@ class ShellDatabaseConnection(object):
             except DatabaseError as e:
                 log.debug('Connection failed again.')
                 error(_('Could not connect to the database'),
-                      'error=%s uri=%s' % (str(e), store_dsn))
+                      'error=%s uri=%s' % (str(e), store_uri))
 
     def _post_connect(self):
         self._check_schema_migration()
