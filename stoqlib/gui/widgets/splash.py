@@ -37,7 +37,7 @@ from kiwi.ui.pixbufutils import pixbuf_from_string
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.translation import stoqlib_gettext
 
-WIDTH = 400
+WIDTH = 462
 HEIGHT = 260
 BORDER = 8  # This includes shadow out border from GtkFrame
 _WINDOW_TIMEOUT = 100  # How often we should check if there are
@@ -117,15 +117,15 @@ class SplashScreen(gtk.Window):
         cr.paint()
 
         # Draw version
-        cr.set_source_rgb(.8, .8, .8)
+        cr.set_source_rgb(1, 1, 1)
         pcr = pangocairo.CairoContext(cr)
         layout = pcr.create_layout()
         layout.set_alignment(pango.ALIGN_CENTER)
-        layout.set_font_description(pango.FontDescription("Sans 12"))
+        layout.set_font_description(pango.FontDescription("Sans 10"))
         layout.set_markup(self._get_label())
         pcr.update_layout(layout)
         w, h = layout.get_pixel_size()
-        cr.move_to((WIDTH - w) / 2, (HEIGHT / 2) + h)
+        cr.move_to((WIDTH - w) / 1.09, (HEIGHT / 2) + h)
         pcr.show_layout(layout)
 
     def show(self):

@@ -26,15 +26,15 @@ from kiwi.environ import environ
 from kiwi.ui.pixbufutils import pixbuf_from_string
 
 sizes = {
-    'config': (91, 32),
-    'login': (206, 60),
-    'about': (170, 60),
-    'pos': (91, 32),
-    'update': (170, 60),
+    'config': (100, 32),
+    'login': (188, 60),
+    'about': (188, 60),
+    'pos': (100, 32),
+    'update': (188, 60),
 }
 
 
 def render_logo_pixbuf(size):
-    width, height = sizes.get(size, (91, 32))
+    width, height = sizes.get(size, (100, 32))
     logo = environ.get_resource_string('stoq', 'pixmaps', 'stoq_logo.svg')
     return pixbuf_from_string(logo, 'svg', width=width, height=height)
