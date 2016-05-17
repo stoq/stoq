@@ -30,6 +30,7 @@ import mock
 
 from stoqlib.database.settings import DatabaseSettings, get_database_version
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.exceptions import DatabaseError
 
 
 class _FakeResults(object):
@@ -68,6 +69,24 @@ class DatabaseSettingsTest(DomainTest):
                           'postgres://username@address:5432/stoq')
         self.assertEquals(settings.get_store_dsn(),
                           'dbname=stoq host=address port=5432 user=username')
+
+    @mock.patch('stoqlib.database.settings.test_local_database')
+    def test_get_store_dsn_no_host(self, tld):
+        settings = DatabaseSettings(address='address',
+                                    username='username')
+        # Force address to be empty, just like when we connect using
+        # the unix socket
+        settings.address = ''
+
+        tld.return_value = None
+        with self.assertRaisesRegexp(
+                DatabaseError,
+                "Could not find a database server on this computer"):
+            settings.get_store_dsn()
+
+        tld.return_value = ('<unix_socket>', 1234)
+        self.assertEquals(settings.get_store_dsn(),
+                          'dbname=stoq host=<unix_socket> port=1234 user=username')
 
     def test_get_store_dsn_password(self):
         settings = DatabaseSettings(address='address',

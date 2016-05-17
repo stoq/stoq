@@ -315,19 +315,21 @@ class DatabaseSettings(object):
         dsn = self._build_dsn(dbname, filter_password=False)
         uri = URI(dsn)
         uri.options['isolation'] = 'read-committed'
+
+        if uri.host == "":
+            pair = test_local_database()
+            if pair is None:
+                raise DatabaseError(
+                    _("Could not find a database server on this computer"))
+            uri.host = pair[0]
+            uri.port = int(pair[1])
+
         return uri
 
     def _get_store_internal(self, dbname):
         from stoqlib.database.runtime import StoqlibStore
         uri = self._create_uri(dbname)
         try:
-            if uri.host == "":
-                pair = test_local_database()
-                if pair is None:
-                    raise DatabaseError(
-                        _("Could not find a database server on this computer"))
-                uri.host = pair[0]
-                uri.port = int(pair[1])
             self._log_connect(uri)
             store = StoqlibStore(create_database(uri))
         except OperationalError as e:
