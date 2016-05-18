@@ -1,0 +1,22 @@
+editor: PinDialog
+GtkDialog(main_dialog.toplevel): title='Connect to Stoq.link', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave PinDialog is attached
+        GtkVBox(toplevel):
+          GtkLabel(label1, fill=True): 'This will connect your Stoq installation to <a href="http://stoq.link?source=stoqpin">Stoq.Link</a>.\nEnter the <b>PIN</b> received from it bellow:'
+          GtkHBox(hbox1, fill=True):
+            GtkLabel(label2, expand=True, fill=True):
+            ProxyEntry(pin, fill=True): '', mandatory
+            GtkSpinner(spinner, fill=True): hidden
+            GtkLabel(label3, expand=True, fill=True):
+          GtkLabel(reply_lbl, fill=True):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

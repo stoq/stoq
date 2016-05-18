@@ -241,6 +241,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`pindialog` Module
+-----------------------
+
+.. automodule:: stoqlib.gui.dialogs.pindialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`pluginsdialog` Module
 ---------------------------
 

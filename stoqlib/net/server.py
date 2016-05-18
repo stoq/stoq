@@ -45,7 +45,7 @@ class ServerError(Exception):
     def __str__(self):
         message = super(ServerError, self).__str__()
         if self.fault_code is not None:
-            message = "%s: %s" % (self.fault_code, )
+            message = "%s: %s" % (self.fault_code, message)
 
         return message
 

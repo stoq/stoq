@@ -29,6 +29,9 @@
         <menuitem action="NewUser"/>
       </placeholder>
     </menu>
+    <placeholder name="FileMenuPH">
+      <menuitem action="StoqLinkConnect"/>
+    </placeholder>
   </menu>
   <menu action="SearchMenu">
     <placeholder action="SearchMenuPH">

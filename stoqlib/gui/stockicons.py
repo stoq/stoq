@@ -31,6 +31,7 @@ STOQ_CALENDAR_MONTH = "stoq-calendar-month"
 STOQ_CALENDAR_TODAY = "stoq-calendar-today"
 STOQ_CALENDAR_WEEK = "stoq-calendar-week"
 STOQ_CLIENTS = "stoq-clients"
+STOQ_CONNECT = "stoq-connect"
 STOQ_EDIT = "stoq-edit"
 STOQ_FEEDBACK = "stoq-feedback"
 STOQ_DELIVERY = "stoq-delivery"
@@ -117,6 +118,9 @@ icon_info = [
     (STOQ_LINK,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-link-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-link-48x48.png"}),
+    (STOQ_CONNECT,
+     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-connect-24x24.png",
+      GTK_ICON_SIZE_DIALOG: "stoq-connect-48x48.png"}),
     (STOQ_KEYBOARD,
      {GTK_ICON_SIZE_DIALOG: "stoq-keyboard-48x48.svg"}),
     (STOQ_MONEY,

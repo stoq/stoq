@@ -39,6 +39,7 @@ from stoqlib.gui.dialogs.invoicedialog import (InvoiceLayoutDialog,
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.dialogs.personmergedialog import PersonMergeDialog
+from stoqlib.gui.dialogs.pindialog import PinDialog
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.dialogs.sellabledialog import SellableTaxConstantsDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
@@ -66,7 +67,7 @@ from stoqlib.gui.stockicons import (
     STOQ_CALC, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
     STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_HR, STOQ_MONEY,
     STOQ_PAYABLE_APP, STOQ_PLUGIN, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
-    STOQ_USER_PROFILES, STOQ_USERS, STOQ_PRODUCTS, STOQ_SERVICES)
+    STOQ_USER_PROFILES, STOQ_USERS, STOQ_PRODUCTS, STOQ_SERVICES, STOQ_CONNECT)
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.decorators import public
@@ -121,6 +122,7 @@ class Tasks(object):
             (_('Transporters'), 'transporters', STOQ_DELIVERY),
             (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
             (_('Users'), 'users', STOQ_HR),
+            (_('Connect to Stoq.Link'), 'stoq_link_connect', STOQ_CONNECT),
         ]
 
         for label, name, pixbuf in locale_sorted(
@@ -297,6 +299,9 @@ class Tasks(object):
     def _open_token(self):
         self._open_sale_token()
 
+    def _open_stoq_link_connect(self):
+        self.app.run_dialog(PinDialog, self.app.store)
+
 
 class AdminApp(ShellApp):
 
@@ -328,6 +333,7 @@ class AdminApp(ShellApp):
         'ConfigureInvoices': 'invoice_layouts',
         'ConfigureInvoicePrinters': 'invoice_printers',
         'ConfigurePlugins': 'plugins',
+        'StoqLinkConnect': 'stoq_link_connect',
     }
 
     action_permissions = {
@@ -392,6 +398,8 @@ class AdminApp(ShellApp):
              group.get('config_parameters')),
             ("NewUser", None, _("User..."), '',
              _("Create a new user")),
+            ("StoqLinkConnect", None, _("Connect to Stoq.Link..."), '',
+             _("Connect this Stoq installation to Stoq.Link")),
         ]
         self.admin_ui = self.add_ui_actions('', actions,
                                             filename='admin.xml')

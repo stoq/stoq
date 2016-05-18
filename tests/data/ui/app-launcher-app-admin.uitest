@@ -10,6 +10,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Connect to Stoq.Link...'
+          GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Print...', hidden, insensitive
           GtkImageMenuItem(): 'Export to spreadsheet...', hidden, insensitive
           GtkImageMenuItem(): 'Change password...', hidden
@@ -105,6 +107,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
               text: Client Categories, stock: stoq-clients
               text: Clients, stock: stoq-clients
               text: Computers, stock: stoq-system
+              text: Connect to Stoq.Link, stock: stoq-connect
               text: Devices, stock: stoq-devices
               text: Employees, stock: stoq-admin-app
               text: Events, stock: gtk-dialog-warning
