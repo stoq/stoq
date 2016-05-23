@@ -35,7 +35,6 @@ import time
 import urllib
 
 from storm.database import create_database
-from storm.databases.postgres import make_dsn
 from storm.uri import URI
 
 from stoqlib.database.exceptions import OperationalError, SQLError
@@ -361,6 +360,7 @@ class DatabaseSettings(object):
 
         :returns: a string like "dbname=stoq host=localhost port=5432"
         """
+        from storm.databases.postgres import make_dsn
         return make_dsn(self._create_uri(self.dbname))
 
     def create_store(self):
