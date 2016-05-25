@@ -80,6 +80,7 @@ class MedicSalesSearch(SearchDialog):
     size = (800, 450)
     search_spec = MedicSoldItemsView
     fast_iter = True
+    unlimited_results = True
 
     #
     # SearchDialog Hooks
