@@ -42,6 +42,7 @@ try:
 except ImportError:
     has_raven = False
 
+import stoq
 from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.interfaces import IAppInfo
@@ -168,10 +169,7 @@ def collect_traceback(tb, output=True, submit=False):
             'STOQ_SENTRY_URL',
             ('http://89169350b0c0434895e315aa6490341a:'
              '0f5dce716eb5497fbf75c52fe873b3e8@sentry.stoq.com.br/4'))
-        sentry_args = {}
-        if 'app_version' in sentry_args:
-            sentry_args['release'] = sentry_args['app_version']
-        client = raven.Client(sentry_url, **sentry_args)
+        client = raven.Client(sentry_url, release=stoq.version)
 
         # Don't sent logs to sentry
         if 'log' in extra:
