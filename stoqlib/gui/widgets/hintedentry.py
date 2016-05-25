@@ -24,16 +24,17 @@
 
 import gobject
 import gtk
+from kiwi.ui.entry import KiwiEntry
 
 # Ported from evolution
 # Replace with GtkEntry::placeholder-text in Gtk 3.2
 
 
-class HintedEntry(gtk.Entry):
+class HintedEntry(KiwiEntry):
     __gtype_name__ = 'HintedEntry'
 
     def __init__(self):
-        gtk.Entry.__init__(self)
+        super(HintedEntry, self).__init__()
         self._hint_shown = False
         self._hint = None
 
@@ -49,38 +50,38 @@ class HintedEntry(gtk.Entry):
             self.show_text(text)
 
     def get_text(self):
-        text = ""
-        if not self._hint_shown:
-            text = gtk.Entry.get_text(self)
-        return text
+        if self._hint_shown:
+            return ""
+        return super(HintedEntry, self).get_text()
 
     def show_hint(self):
         self._hint_shown = True
-        gtk.Entry.set_text(self, self._hint)
+        super(HintedEntry, self).set_text(self._hint)
         self.modify_text(gtk.STATE_NORMAL,
                          self.get_style().text[gtk.STATE_INSENSITIVE])
 
     def show_text(self, text):
         self._hint_shown = False
-        gtk.Entry.set_text(self, text)
+        super(HintedEntry, self).set_text(text)
         self.modify_text(gtk.STATE_NORMAL, None)
 
     def do_grab_focus(self):
-        chain = gtk.Entry
         if self._hint_shown:
-            chain = gtk.Entry.__base__
-        chain.do_grab_focus(self)
+            # Why do we have to do_grab_focus from gtk.Widget here?
+            return gtk.Widget.do_grab_focus(self)
+        else:
+            return KiwiEntry.do_grab_focus(self)
 
     def do_focus_in_event(self, event):
         if self._hint_shown:
             self.show_text("")
-        return gtk.Entry.do_focus_in_event(self, event)
+        return KiwiEntry.do_focus_in_event(self, event)
 
     def do_focus_out_event(self, event):
         text = self.get_text()
         if not text:
             self.show_hint()
-        return gtk.Entry.do_focus_out_event(self, event)
+        return KiwiEntry.do_focus_out_event(self, event)
 
 
 gobject.type_register(HintedEntry)
