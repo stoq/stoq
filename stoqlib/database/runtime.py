@@ -107,6 +107,8 @@ class StoqlibResultSet(ResultSet):
         self._tables = viewable.tables
         if viewable.group_by:
             self.group_by(*viewable.group_by)
+        if viewable.having:
+            self.having(viewable.having)
 
     def _load_viewable(self, values):
         """Converts the result of this result set into an instance of the

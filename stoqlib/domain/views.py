@@ -26,7 +26,7 @@
 
 from kiwi.currency import currency
 from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
-                        Alias, Count, Cast, Ne)
+                        Alias, Count, Cast, Ne, JoinExpr)
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import (Case, Distinct, Field, NullIf,
@@ -61,21 +61,6 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
 from stoqlib.lib.decorators import cached_property
-
-
-# Use a subselect to count the number of items, because that takes a lot less
-# time (since it doesn't have a huge GROUP BY clause).
-# Note that there are two subselects possible. The first should be used when the
-# viewable is queried without the branch and the second when it is queried with
-# the branch.
-_StockSummary = Alias(Select(
-    columns=[ProductStockItem.storable_id,
-             Alias(None, 'branch_id'),
-             Alias(Sum(ProductStockItem.quantity), 'stock'),
-             Alias(Sum(ProductStockItem.quantity *
-                       ProductStockItem.stock_cost), 'total_stock_cost')],
-    tables=[ProductStockItem],
-    group_by=[ProductStockItem.storable_id]), '_stock_summary')
 
 # This subselect will be used to filter by branch, so it should include all
 # possible (branch, storable) combinations so that all storables appear in the
@@ -116,6 +101,10 @@ class ProductFullStockView(Viewable):
     :cvar stock: the stock of the product
      """
 
+    # We need to store the Branch.id for the get_parent method, but we don't
+    # want it on the result as it would break the aggregation.
+    _branch_id = None
+
     sellable = Sellable
     product = Product
 
@@ -142,24 +131,24 @@ class ProductFullStockView(Viewable):
     brand = Product.brand
     ncm = Product.ncm
 
+    # Storable
+    storable_id = Storable.id
+
     manufacturer = ProductManufacturer.name
     tax_description = SellableTaxConstant.description
     category_description = SellableCategory.description
     unit = SellableUnit.description
 
     # Aggregates
-    total_stock_cost = Coalesce(Field('_stock_summary', 'total_stock_cost'), 0)
-    stock = Coalesce(Field('_stock_summary', 'stock'), 0)
-    branch_id = Field('_stock_summary', 'branch_id')
+    total_stock_cost = Coalesce(Sum(ProductStockItem.quantity *
+                                    ProductStockItem.stock_cost), 0)
+    stock = Coalesce(Sum(ProductStockItem.quantity), 0)
 
     tables = [
-        # Keep this first 4 joins in this order, so find_by_branch may change it.
         Sellable,
         Join(Product, Product.id == Sellable.id),
         LeftJoin(Storable, Storable.id == Product.id),
-        LeftJoin(_StockSummary,
-                 Field('_stock_summary', 'storable_id') == Storable.id),
-
+        LeftJoin(ProductStockItem, ProductStockItem.storable_id == Storable.id),
         LeftJoin(SellableTaxConstant,
                  SellableTaxConstant.id == Sellable.tax_constant_id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
@@ -169,22 +158,27 @@ class ProductFullStockView(Viewable):
     ]
 
     clause = Sellable.status != Sellable.STATUS_CLOSED
+    group_by = [id, product_id, storable_id, category_description,
+                manufacturer, tax_description, unit]
 
     def __eq__(self, other):
+        hvs = self.highjacked.values()
         # Viewable's __eq__ would only consider equal objects of the same
         # class, but the HighjackedViewable is an exception to the rule!
-        if (other.__class__ in [
-                self.__class__, getattr(self, '_highjacked_viewable', None)] or
-            self.__class__ in [
-                other.__class__, getattr(other, '_highjacked_viewable', None)]):
+        if (other.__class__ in [self.__class__] + hvs or
+                self.__class__ in [other.__class__] + hvs):
             return self.id == other.id
 
         return super(ProductFullStockView, self).__eq__(other)
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(Count(Distinct(Sellable.id)),
-                                          Sum(Field('_stock_summary', 'stock')))
+        expr = sresults.get_select_expr(Alias(cls.id, 'id'),
+                                        Alias(cls.stock, 'stock'))
+        select = Select(
+            columns=[Count(Distinct(Field('_sub', 'id'))),
+                     Sum(Field('_sub', 'stock'))],
+            tables=[Alias(expr, '_sub')])
         return ('count', 'sum'), select
 
     @classmethod
@@ -192,38 +186,35 @@ class ProductFullStockView(Viewable):
         if branch is None:
             return store.find(cls)
 
-        # When we need to filter on the branch, we also need to add the branch
-        # column on the ProductStockItem subselect, so the filter works. We cant
-        # keep the branch_id on the main subselect, since that will cause the
-        # results to be duplicate when not filtering by branch (probably the
-        # most common case). So, we need all of this workaround
-
-        # Make sure that the join we are replacing is the correct one.
-        assert cls.tables[3].right == _StockSummary
-
         # Highjack the class being queried, since we need to add the branch
-        # on the ProductStockItem subselect to filter it later
+        # on the ProductStockItem join to filter it.
         # Make sure to create it only once or else Viewable would fail to
         # compare both objects as their class would be different.
-        if '_highjacked_viewable' not in cls.__dict__:
+        hv = cls.highjacked.get(branch.id, None)
+        if hv is None:
             tables = cls.tables[:]
-            tables[3] = LeftJoin(_StockBranchSummary,
-                                 Field('_stock_summary',
-                                       'storable_id') == Storable.id)
-            cls._highjacked_viewable = type(
+            for i, table in enumerate(tables):
+                if not isinstance(table, JoinExpr):
+                    continue
+                if table.right is ProductStockItem:
+                    tables[i] = LeftJoin(
+                        ProductStockItem,
+                        And(ProductStockItem.storable_id == Storable.id,
+                            ProductStockItem.branch_id == branch.id))
+                    break
+            else:  # pragma nocoverage
+                raise AssertionError("Did not find ProductStockItem join")
+
+            hv = type(
                 "Highjacked%s" % (cls.__name__, ),
                 (cls, ),
-                dict(tables=tables))
+                dict(tables=tables, _branch_id=branch.id))
 
+            cls.highjacked[branch.id] = hv
             # Make sure we will not create a highjack highjacked view
-            cls._highjacked_viewable._highjacked_viewable = (
-                cls._highjacked_viewable)
+            hv.highjacked[branch.id] = hv
 
-        # Also show products that were never purchased.
-        query = Or(Field('_stock_summary', 'branch_id') == branch.id,
-                   Eq(Field('_stock_summary', 'branch_id'), None))
-
-        return store.find(cls._highjacked_viewable, query)
+        return store.find(hv)
 
     def get_product_and_category_description(self):
         """Returns the product and the category description in one string.
@@ -241,7 +232,7 @@ class ProductFullStockView(Viewable):
         if not self.parent_id:
             return None
 
-        branch = self.branch_id and self.store.get(Branch, self.branch_id)
+        branch = self._branch_id and self.store.get(Branch, self._branch_id)
         res = self.find_by_branch(self.store, branch)
         return res.find(Product.id == self.parent_id).one()
 
@@ -302,10 +293,7 @@ class ProductWithStockView(ProductFullStockView):
     :cvar stock: the stock of the product
      """
 
-    clause = And(
-        ProductFullStockView.clause,
-        ProductFullStockView.stock > 0,
-    )
+    having = ProductFullStockView.stock > 0
 
 
 class ProductWithStockBranchView(ProductFullStockView):
@@ -316,17 +304,16 @@ class ProductWithStockBranchView(ProductFullStockView):
     filter, otherwise, the results may be duplicated (once for each branch in
     the database)
     """
+    branch_id = ProductStockItem.branch_id
     minimum_quantity = Storable.minimum_quantity
     maximum_quantity = Storable.maximum_quantity
-    branch_id = Field('_stock_summary', 'branch_id')
-    storable_id = Field('_stock_summary', 'storable_id')
-
-    tables = ProductFullStockView.tables[:]
-    tables[3] = LeftJoin(_StockBranchSummary, storable_id == Storable.id)
 
     clause = And(ProductFullStockView.clause,
                  Eq(Product.is_grid, False),
                  Eq(Product.is_package, False))
+
+    group_by = ProductFullStockView.group_by[:]
+    group_by.append(branch_id)
 
 
 # This subselect should query only from PurchaseItem, otherwise, more one
@@ -363,6 +350,9 @@ class ProductFullStockItemView(ProductFullStockView):
 
     clause = And(ProductFullStockView.clause,
                  Eq(Product.is_grid, False))
+
+    group_by = ProductFullStockView.group_by[:]
+    group_by.append(to_receive_quantity)
 
 
 class ProductFullStockItemSupplierView(ProductFullStockItemView):

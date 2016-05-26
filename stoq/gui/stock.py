@@ -267,7 +267,8 @@ class StockApp(ShellApp):
                              data_type=str, visible=False),
                 SearchColumn('location', title=_("Location"), data_type=str,
                              width=100, visible=False),
-                QuantityColumn('stock', title=_('Quantity'), width=100),
+                QuantityColumn('stock', title=_('Quantity'), width=100,
+                               use_having=True),
                 SearchColumn('has_image', title=_('Picture'),
                              data_type=bool, width=80),
                 ]
