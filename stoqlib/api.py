@@ -31,7 +31,6 @@ having to import their symbols.
 import operator
 import sys
 
-import glib
 from kiwi.component import get_utility
 from twisted.internet.defer import inlineCallbacks, returnValue
 
@@ -212,6 +211,7 @@ class StoqAPI(object):
     def escape(self, string):
         """Escapes the text and makes it suitable for use with a
         PangoMarkup, usually via Label.set_markup()"""
+        import glib
         if string is None:
             string = ''
         return unicode(glib.markup_escape_text(string))
