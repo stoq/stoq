@@ -156,6 +156,9 @@ class Viewable(ClassInittableObject):
     #: store.find()
     clause = None
 
+    #: If not ``None``, this will be used to filter the query using HAVING
+    having = None
+
     #: This is a list of column names that should not be selected, but should
     #: still be possible to filter by.
     hidden_columns = []
@@ -218,6 +221,11 @@ class Viewable(ClassInittableObject):
 
         cls.cls_spec = tuple(cls_spec)
         cls.cls_attributes = attributes
+
+        # We store highjacked classes in this dict. Highjacked viewables
+        # are the ones that we create programatically changing one or another
+        # attribute (e.g. a join). See ProductFullStockView for more details
+        cls.highjacked = {}
 
     @classmethod
     def extend_viewable(cls, new_attrs, new_joins=None):

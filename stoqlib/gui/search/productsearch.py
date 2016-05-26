@@ -230,7 +230,7 @@ class ProductSearch(SellableSearch):
             cols.append(SearchColumn('price', title=_('Price'),
                                      data_type=currency, width=90))
 
-        cols.append(QuantityColumn('stock', title=_('Stock')))
+        cols.append(QuantityColumn('stock', title=_('Stock'), use_having=True))
         return cols
 
     def executer_query(self, store):
@@ -429,7 +429,7 @@ class ProductStockSearch(ProductSearch):
                 QuantityColumn('maximum_quantity', title=_('Maximum'),
                                visible=False),
                 QuantityColumn('minimum_quantity', title=_('Minimum')),
-                QuantityColumn('stock', title=_('In Stock')),
+                QuantityColumn('stock', title=_('In Stock'), use_having=True),
                 QuantityColumn('to_receive_quantity', title=_('To Receive')),
                 ColoredColumn('difference', title=_('Difference'), color='red',
                               format_func=format_quantity, data_type=Decimal,

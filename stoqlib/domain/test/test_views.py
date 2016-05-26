@@ -339,7 +339,7 @@ class TestProductFullStockView(DomainTest):
             # Total stock = (10 * 10) + (20 * 5) = 200
             self.store.execute(postresults[1]).get_one(), (30, 200))
 
-        sresults = sresults.find(ProductFullStockView.stock > 5)
+        sresults.having(ProductFullStockView.stock > 5)
         postresults = ProductFullStockView.post_search_callback(sresults)
         self.assertEqual(postresults[0], ('count', 'sum'))
         self.assertEqual(
@@ -483,17 +483,18 @@ class TestProductFullStockView(DomainTest):
         branch = self.create_branch()
         self.create_product(branch=branch, stock=1)
 
-        res = self.store.find(ProductFullStockView)
-        res_by_branch = ProductFullStockView.find_by_branch(self.store, branch)
+        res = self.store.find(ProductFullStockView).one()
+        res_by_branch = ProductFullStockView.find_by_branch(
+            self.store, branch).one()
 
-        self.assertEqual(res[0], res_by_branch[0])
-        self.assertEqual(res_by_branch[0], res[0])
+        self.assertEqual(res, res_by_branch)
+        self.assertEqual(res_by_branch, res)
 
         product = self.create_product()
         other_viewable = self.store.find(
             ProductFullStockView, Sellable.id == product.sellable.id).one()
-        self.assertNotEqual(res[0], other_viewable)
-        self.assertNotEqual(res[0], object())
+        self.assertNotEqual(res, other_viewable)
+        self.assertNotEqual(res, object())
 
     def test_get_parent(self):
         parent = self.create_product()
