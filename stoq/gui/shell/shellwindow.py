@@ -1183,7 +1183,7 @@ class ShellWindow(GladeDelegate):
 
 
 class VersionChecker(object):
-    DAYS_BETWEEN_CHECKS = 7
+    DAYS_BETWEEN_CHECKS = 1
 
     #
     #   Private API
