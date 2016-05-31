@@ -310,7 +310,15 @@ class TillApp(ShellApp):
             if coupon.confirm(sale, store, subtotal=subtotal):
                 workorders = WorkOrder.find_by_sale(store, sale)
                 for order in workorders:
-                    order.close()
+                    # at this poing, orders could be either FINISHED or
+                    # DELIVERED (closed). If it is finished, we should close it
+                    # (mark delivered) ...
+                    if order.can_close():
+                        order.close()
+                    else:
+                        # ... but if it didn't need closing, it should already
+                        # be delivered.
+                        assert order.is_finished()
                 store.commit()
                 self.refresh()
             else:
@@ -525,7 +533,7 @@ class TillApp(ShellApp):
         # If there are unfinished workorders associated with the sale, we
         # cannot print the coupon yet. Instead lets just create the payments.
         workorders = WorkOrder.find_by_sale(self.store, selected.sale)
-        if not all(wo.can_close() for wo in workorders):
+        if not all(wo.can_close() or wo.is_finished() for wo in workorders):
             self._create_sale_payments(selected)
         else:
             self._confirm_order(selected)
