@@ -86,8 +86,8 @@ class IdentifierCol(Int):
 
     variable_class = _IdentifierVariable
 
-    def __init__(self):
-        super(IdentifierCol, self).__init__(default=AutoReload)
+    def __init__(self, primary=False):
+        super(IdentifierCol, self).__init__(default=AutoReload, primary=primary)
 
     def __get__(self, obj, cls=None):
         # This will get the column definition or the variable
