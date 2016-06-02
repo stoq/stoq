@@ -129,7 +129,7 @@ class WebService(object):
 
     def _get_version(self):
         import stoq
-        return stoq.version_str
+        return stoq.version
 
     def _get_headers(self):
         user_agent = 'Stoq'
