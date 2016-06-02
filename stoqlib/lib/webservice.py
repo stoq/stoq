@@ -128,8 +128,8 @@ class WebService(object):
     #
 
     def _get_version(self):
-        app_info = get_utility(IAppInfo, None)
-        return app_info.get('version') if app_info is not None else 'Unknown'
+        import stoq
+        return stoq.version_str
 
     def _get_headers(self):
         user_agent = 'Stoq'
