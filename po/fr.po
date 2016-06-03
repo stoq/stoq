@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-12 18:19-0300\n"
-"PO-Revision-Date: 2016-05-12 19:57+0000\n"
+"POT-Creation-Date: 2016-06-02 16:32-0300\n"
+"PO-Revision-Date: 2016-06-02 17:20+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: French (http://www.transifex.com/async/stoq/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -1776,6 +1776,12 @@ msgstr ""
 msgid "A new company"
 msgstr ""
 
+#: ../data/glade/PinDialog.ui.h:1
+msgid ""
+"This will connect your Stoq installation to <a href=\"http://stoq.link?source=stoqpin\">Stoq.Link</a>.\n"
+"Enter the <b>PIN</b> received from it bellow:"
+msgstr ""
+
 #: ../data/glade/PluginStep.ui.h:1
 msgid "<b>Plugins</b>"
 msgstr ""
@@ -2100,7 +2106,7 @@ msgid "Produced Items"
 msgstr ""
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:13 ../data/glade/services.ui.h:1
-#: ../stoq/gui/admin.py:117 ../stoq/gui/sales.py:217
+#: ../stoq/gui/admin.py:118 ../stoq/gui/sales.py:217
 #: ../stoq/gui/services.py:160 ../stoq/lib/applist.py:46
 #: ../stoqlib/gui/dialogs/clientdetails.py:285
 msgid "Services"
@@ -2433,7 +2439,7 @@ msgstr ""
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:9
 #: ../data/glade/TransferOrderDetails.ui.h:2 ../stoq/gui/receivable.py:141
-#: ../stoq/gui/stock.py:155 ../stoq/gui/stock.py:380
+#: ../stoq/gui/stock.py:155 ../stoq/gui/stock.py:381
 #: ../stoqlib/domain/account.py:152
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:129
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:131
@@ -2781,7 +2787,7 @@ msgstr ""
 
 #: ../data/glade/StockDecreaseDetails.ui.h:8
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
-#: ../data/glade/TransferOrderDetails.ui.h:10 ../stoq/gui/admin.py:115
+#: ../data/glade/TransferOrderDetails.ui.h:10 ../stoq/gui/admin.py:116
 #: ../stoq/gui/purchase.py:169 ../stoq/gui/sales.py:216
 #: ../stoqlib/gui/dialogs/clientdetails.py:258
 #: ../stoqlib/lib/parameters.py:164
@@ -4020,7 +4026,7 @@ msgid "Total"
 msgstr ""
 
 #: ../data/template/loan/loan.html:71 ../stoq/gui/pos.py:419
-#: ../stoq/gui/till.py:355 ../stoqlib/gui/search/salesearch.py:258
+#: ../stoq/gui/till.py:363 ../stoqlib/gui/search/salesearch.py:258
 #: ../stoqlib/gui/search/salesearch.py:416
 #, c-format, python-format
 msgid "Total: %s"
@@ -4829,7 +4835,7 @@ msgstr ""
 #: ../stoq/gui/payable.py:391 ../stoq/gui/production.py:217
 #: ../stoq/gui/purchase.py:426 ../stoq/gui/receivable.py:240
 #: ../stoq/gui/sales.py:420 ../stoq/gui/services.py:481
-#: ../stoq/gui/till.py:263 ../stoqlib/api.py:209
+#: ../stoq/gui/till.py:263 ../stoqlib/api.py:208
 #: ../stoqlib/gui/search/deliverysearch.py:61
 #: ../stoqlib/gui/search/deliverysearch.py:70
 #: ../stoqlib/gui/search/loansearch.py:66
@@ -6290,11 +6296,11 @@ msgstr ""
 msgid "All payments"
 msgstr ""
 
-#: ../stoq/gui/admin.py:100
+#: ../stoq/gui/admin.py:101
 msgid "Branches"
 msgstr ""
 
-#: ../stoq/gui/admin.py:101 ../stoqlib/gui/editors/fiscaleditor.py:44
+#: ../stoq/gui/admin.py:102 ../stoqlib/gui/editors/fiscaleditor.py:44
 #: ../stoqlib/gui/editors/fiscaleditor.py:50
 #: ../stoqlib/gui/search/fiscalsearch.py:71
 #: ../stoqlib/gui/search/fiscalsearch.py:122
@@ -6302,228 +6308,240 @@ msgstr ""
 msgid "C.F.O.P."
 msgstr ""
 
-#: ../stoq/gui/admin.py:102
+#: ../stoq/gui/admin.py:103
 msgid "Client Categories"
 msgstr ""
 
-#: ../stoq/gui/admin.py:103 ../stoq/gui/sales.py:215
+#: ../stoq/gui/admin.py:104 ../stoq/gui/sales.py:215
 msgid "Clients"
 msgstr ""
 
-#: ../stoq/gui/admin.py:104
+#: ../stoq/gui/admin.py:105
 msgid "Computers"
 msgstr ""
 
-#: ../stoq/gui/admin.py:105
+#: ../stoq/gui/admin.py:106
 msgid "Devices"
 msgstr ""
 
-#: ../stoq/gui/admin.py:106
+#: ../stoq/gui/admin.py:107
 msgid "Employees"
 msgstr ""
 
-#: ../stoq/gui/admin.py:107
+#: ../stoq/gui/admin.py:108
 msgid "Events"
 msgstr ""
 
-#: ../stoq/gui/admin.py:108
+#: ../stoq/gui/admin.py:109
 msgid "Fiscal Books"
 msgstr ""
 
-#: ../stoq/gui/admin.py:109
+#: ../stoq/gui/admin.py:110
 msgid "Forms"
 msgstr ""
 
-#: ../stoq/gui/admin.py:110 ../stoqlib/gui/dialogs/invoicedialog.py:81
+#: ../stoq/gui/admin.py:111 ../stoqlib/gui/dialogs/invoicedialog.py:81
 #: ../stoqlib/gui/editors/invoiceeditor.py:232
 msgid "Invoice Printers"
 msgstr ""
 
-#: ../stoq/gui/admin.py:111
+#: ../stoq/gui/admin.py:112
 msgid "Parameters"
 msgstr ""
 
-#: ../stoq/gui/admin.py:112
+#: ../stoq/gui/admin.py:113
 msgid "Payment Categories"
 msgstr ""
 
-#: ../stoq/gui/admin.py:113
+#: ../stoq/gui/admin.py:114
 msgid "Payment Methods"
 msgstr ""
 
-#: ../stoq/gui/admin.py:114
+#: ../stoq/gui/admin.py:115
 msgid "Plugins"
 msgstr ""
 
-#: ../stoq/gui/admin.py:116
+#: ../stoq/gui/admin.py:117
 msgid "Roles"
 msgstr ""
 
-#: ../stoq/gui/admin.py:118 ../stoqlib/gui/dialogs/sellabledialog.py:73
+#: ../stoq/gui/admin.py:119 ../stoqlib/gui/dialogs/sellabledialog.py:73
 #: ../stoqlib/gui/editors/producteditor.py:417
 #: ../stoqlib/gui/editors/producteditor.py:547
 msgid "Taxes"
 msgstr ""
 
-#: ../stoq/gui/admin.py:119 ../stoq/gui/purchase.py:170
+#: ../stoq/gui/admin.py:120 ../stoq/gui/purchase.py:170
 #: ../stoqlib/gui/editors/producteditor.py:414
 msgid "Suppliers"
 msgstr ""
 
-#: ../stoq/gui/admin.py:120
+#: ../stoq/gui/admin.py:121
 msgid "Tax Classes"
 msgstr ""
 
-#: ../stoq/gui/admin.py:121
+#: ../stoq/gui/admin.py:122
 msgid "Transporters"
 msgstr ""
 
-#: ../stoq/gui/admin.py:122
+#: ../stoq/gui/admin.py:123
 msgid "User Profiles"
 msgstr ""
 
-#: ../stoq/gui/admin.py:123
+#: ../stoq/gui/admin.py:124
 msgid "Users"
 msgstr ""
 
-#: ../stoq/gui/admin.py:215
+#: ../stoq/gui/admin.py:125
+msgid "Connect to Stoq.Link"
+msgstr ""
+
+#: ../stoq/gui/admin.py:217
 msgid ""
 "You must create at least one invoice layout before adding an invoice printer"
 msgstr ""
 
-#: ../stoq/gui/admin.py:261
+#: ../stoq/gui/admin.py:263
 msgid ""
 "You must define a manager to this branch before you can create a sintegra "
 "archive"
 msgstr ""
 
-#: ../stoq/gui/admin.py:303 ../stoq/lib/applist.py:34
+#: ../stoq/gui/admin.py:308 ../stoq/lib/applist.py:34
 msgid "Administrative"
 msgstr ""
 
-#: ../stoq/gui/admin.py:346
+#: ../stoq/gui/admin.py:352
 msgid "Roles..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:348
+#: ../stoq/gui/admin.py:354
 msgid "Employees..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:350
+#: ../stoq/gui/admin.py:356
 msgid "Events..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:352
+#: ../stoq/gui/admin.py:358
 msgid "Cost Centers..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:354
+#: ../stoq/gui/admin.py:360
 msgid "Duplicated Persons..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:356
+#: ../stoq/gui/admin.py:362
 msgid "C.F.O.P..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:358
+#: ../stoq/gui/admin.py:364
 msgid "Fiscal books..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:360
+#: ../stoq/gui/admin.py:366
 msgid "Profiles..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:362
+#: ../stoq/gui/admin.py:368
 msgid "Users..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:364
+#: ../stoq/gui/admin.py:370
 msgid "Branches..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:366
+#: ../stoq/gui/admin.py:372
 msgid "Computers..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:368
+#: ../stoq/gui/admin.py:374
 msgid "Tax Classes..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:369
+#: ../stoq/gui/admin.py:375
 msgid "_Configure"
 msgstr ""
 
-#: ../stoq/gui/admin.py:370
+#: ../stoq/gui/admin.py:376
 msgid "Devices..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:372
+#: ../stoq/gui/admin.py:378
 msgid "Attribute Group..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:373
+#: ../stoq/gui/admin.py:379
 msgid "Grid Attribute..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:374
+#: ../stoq/gui/admin.py:380
 msgid "Payment methods..."
 msgstr ""
 
 #. Search
-#: ../stoq/gui/admin.py:376 ../stoq/gui/payable.py:119
+#: ../stoq/gui/admin.py:382 ../stoq/gui/payable.py:119
 #: ../stoq/gui/receivable.py:127
 msgid "Payment categories..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:378
+#: ../stoq/gui/admin.py:384
 msgid "Client categories..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:380
+#: ../stoq/gui/admin.py:386
 msgid "Invoices..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:382
+#: ../stoq/gui/admin.py:388
 msgid "Invoice printers..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:384
+#: ../stoq/gui/admin.py:390
 msgid "Sintegra..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:386
+#: ../stoq/gui/admin.py:392
 msgid "Plugins..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:387
+#: ../stoq/gui/admin.py:393
 msgid "Forms..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:388
+#: ../stoq/gui/admin.py:394
 msgid "Taxes..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:390
+#: ../stoq/gui/admin.py:396
 msgid "Sale tokens..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:391
+#: ../stoq/gui/admin.py:397
 msgid "Parameters..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:393
+#: ../stoq/gui/admin.py:399
 msgid "User..."
 msgstr ""
 
-#: ../stoq/gui/admin.py:394 ../stoq/gui/admin.py:427
+#: ../stoq/gui/admin.py:400 ../stoq/gui/admin.py:435
 msgid "Create a new user"
 msgstr ""
 
-#: ../stoq/gui/admin.py:398
+#: ../stoq/gui/admin.py:401
+msgid "Connect to Stoq.Link..."
+msgstr ""
+
+#: ../stoq/gui/admin.py:402
+msgid "Connect this Stoq installation to Stoq.Link"
+msgstr ""
+
+#: ../stoq/gui/admin.py:406
 msgid "Admin help"
 msgstr ""
 
-#: ../stoq/gui/admin.py:429 ../stoqlib/gui/utils/keybindings.py:84
+#: ../stoq/gui/admin.py:437 ../stoqlib/gui/utils/keybindings.py:84
 msgid "Search for users"
 msgstr ""
 
@@ -6936,7 +6954,7 @@ msgstr ""
 msgid "Change settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:791 ../stoq/gui/pos.py:1150 ../stoq/gui/till.py:333
+#: ../stoq/gui/config.py:791 ../stoq/gui/pos.py:1150 ../stoq/gui/till.py:341
 #: ../stoqlib/gui/fiscalprinter.py:631 ../stoqlib/gui/fiscalprinter.py:674
 #: ../stoqlib/gui/fiscalprinter.py:694 ../stoqlib/gui/fiscalprinter.py:723
 #: ../stoqlib/gui/fiscalprinter.py:749
@@ -7596,15 +7614,15 @@ msgstr ""
 msgid "POS operations requires a connected fiscal printer."
 msgstr ""
 
-#: ../stoq/gui/pos.py:607 ../stoq/gui/till.py:487
+#: ../stoq/gui/pos.py:607 ../stoq/gui/till.py:495
 msgid "Till closed"
 msgstr ""
 
-#: ../stoq/gui/pos.py:610 ../stoq/gui/till.py:498
+#: ../stoq/gui/pos.py:610 ../stoq/gui/till.py:506
 msgid "Open till"
 msgstr ""
 
-#: ../stoq/gui/pos.py:612 ../stoq/gui/till.py:503
+#: ../stoq/gui/pos.py:612 ../stoq/gui/till.py:511
 msgid "Till blocked"
 msgstr ""
 
@@ -8797,7 +8815,7 @@ msgstr ""
 msgid "Export to spreadsheet..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:175 ../stoqlib/database/runtime.py:696
+#: ../stoq/gui/shell/shellwindow.py:175 ../stoqlib/database/runtime.py:698
 msgid "Quit"
 msgstr ""
 
@@ -9193,31 +9211,31 @@ msgstr ""
 msgid "Show by:"
 msgstr ""
 
-#: ../stoq/gui/stock.py:271
+#: ../stoq/gui/stock.py:272
 msgid "Picture"
-msgstr ""
-
-#: ../stoq/gui/stock.py:376 ../stoq/gui/stock.py:411
-#, python-format
-msgid "You have %s incoming transfer"
 msgstr ""
 
 #: ../stoq/gui/stock.py:377 ../stoq/gui/stock.py:412
 #, python-format
-msgid "You have %s incoming transfers"
+msgid "You have %s incoming transfer"
 msgstr ""
 
-#: ../stoq/gui/stock.py:392 ../stoq/gui/stock.py:430
+#: ../stoq/gui/stock.py:378 ../stoq/gui/stock.py:413
 #, python-format
-msgid "You have %s returned sale to receive"
+msgid "You have %s incoming transfers"
 msgstr ""
 
 #: ../stoq/gui/stock.py:393 ../stoq/gui/stock.py:431
 #, python-format
+msgid "You have %s returned sale to receive"
+msgstr ""
+
+#: ../stoq/gui/stock.py:394 ../stoq/gui/stock.py:432
+#, python-format
 msgid "You have %s returned sales to receive"
 msgstr ""
 
-#: ../stoq/gui/stock.py:396
+#: ../stoq/gui/stock.py:397
 msgid "Returned sale"
 msgstr ""
 
@@ -9323,26 +9341,26 @@ msgstr ""
 msgid "Confirm quote"
 msgstr ""
 
-#: ../stoq/gui/till.py:330
+#: ../stoq/gui/till.py:338
 msgid ""
 "Failed to open the fiscal coupon.\n"
 "Until it is opened, it's not possible to confirm the sale. Do you want to try again?"
 msgstr ""
 
-#: ../stoq/gui/till.py:333
+#: ../stoq/gui/till.py:341
 msgid "Cancel coupon"
 msgstr ""
 
-#: ../stoq/gui/till.py:360 ../stoqlib/gui/search/commissionsearch.py:75
+#: ../stoq/gui/till.py:368 ../stoqlib/gui/search/commissionsearch.py:75
 #, python-format
 msgid "Total payments: %s"
 msgstr ""
 
-#: ../stoq/gui/till.py:466
+#: ../stoq/gui/till.py:474
 msgid "Till operations requires a connected fiscal printer"
 msgstr ""
 
-#: ../stoq/gui/till.py:511
+#: ../stoq/gui/till.py:519
 #, python-format
 msgid "Till opened on %s"
 msgstr ""
@@ -9639,7 +9657,7 @@ msgstr ""
 msgid "You need to call setup() before checking the database schema."
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:690
+#: ../stoqlib/database/runtime.py:692
 #, python-format
 msgid ""
 "The computer '%s' is not registered to the Stoq server at %s.\n"
@@ -9647,41 +9665,41 @@ msgid ""
 "Do you want to register it (requires administrator access) ?"
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:696
+#: ../stoqlib/database/runtime.py:698
 msgid "Register computer"
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:707
+#: ../stoqlib/database/runtime.py:709
 msgid "Must login as 'admin'"
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:737
+#: ../stoqlib/database/runtime.py:739
 #, python-format
 msgid "The computer <u>%s</u> is not active in Stoq"
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:739
+#: ../stoqlib/database/runtime.py:741
 msgid ""
 "To solve this, open the administrator application and re-activate this "
 "computer."
 msgstr ""
 
-#: ../stoqlib/database/settings.py:327
+#: ../stoqlib/database/settings.py:322
 msgid "Could not find a database server on this computer"
 msgstr ""
 
-#: ../stoqlib/database/settings.py:338
+#: ../stoqlib/database/settings.py:340
 #, python-format
 msgid ""
 "Could not connect to %s database. The error message is '%s'. Please fix the "
 "connection settings you have set and try again."
 msgstr ""
 
-#: ../stoqlib/database/settings.py:804
+#: ../stoqlib/database/settings.py:817
 msgid "Problem with PostgreSQL version"
 msgstr ""
 
-#: ../stoqlib/database/settings.py:805
+#: ../stoqlib/database/settings.py:818
 #, python-format
 msgid ""
 "The version of the PostgreSQL database server (%s) and the postgres client "
@@ -11551,6 +11569,33 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/personmergedialog.py:323
 msgid "Don't merge"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/pindialog.py:41
+msgid "Connect to Stoq.link"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/pindialog.py:85
+msgid "Setting up the connection. This may take a while..."
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/pindialog.py:98
+msgid "An error happened when trying to register to Stoq.Link"
+msgstr ""
+
+#. If no exception happened, that mens that the registration
+#. has succeeded.
+#. XXX: Better text here
+#: ../stoqlib/gui/dialogs/pindialog.py:105
+msgid ""
+"Stoq.Link registration successful! You may manage your installation from "
+"there now"
+msgstr ""
+
+#. TODO: Maybe we should add a link pointing to instructions
+#. on how to get and install the stoq-server package?
+#: ../stoqlib/gui/dialogs/pindialog.py:112
+msgid "Could not find an instance of Stoq Server running."
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:68
