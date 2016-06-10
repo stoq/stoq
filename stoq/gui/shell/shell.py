@@ -137,16 +137,15 @@ class ShellDatabaseConnection(object):
             log.debug('Connection failed. Tring to setup .pgpass')
             # This is probably a missing password configuration. Setup the
             # pgpass file and try again.
-            password = self._get_password()
-            if not password:
-                # There is no password stored in data file. Abort
-                raise
-
-            from stoqlib.database.settings import db_settings
-            write_pg_pass(db_settings.dbname, db_settings.address,
-                          db_settings.port, db_settings.username, password)
-            # Now that there is a pg_pass file, try to connect again
             try:
+                password = self._get_password()
+                if not password:
+                    # There is no password stored in data file. Abort
+                    raise
+                from stoqlib.database.settings import db_settings
+                write_pg_pass(db_settings.dbname, db_settings.address,
+                              db_settings.port, db_settings.username, password)
+                # Now that there is a pg_pass file, try to connect again
                 get_default_store()
             except DatabaseError as e:
                 log.debug('Connection failed again.')
