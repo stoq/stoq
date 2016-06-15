@@ -70,7 +70,7 @@ def load_taxes_csv():
     state = address.city_location.state
 
     # Change the version according to the updates of IBPT tables.
-    version = '16.1.A'
+    version = '16.2.A'
     filename = environ.get_resource_filename('stoq', 'csv', 'ibpt_tables',
                                              'TabelaIBPTax%s%s.csv'
                                              % (state, version))
