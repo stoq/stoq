@@ -90,7 +90,7 @@ class TestCalculateTaxForItem(DomainTest):
 
         msg = generate_ibpt_message(items)
         expected_msg = ("Trib aprox R$: 4.20 Federal e 18.00 Estadual\n"
-                        "Fonte: IBPT ca7gi3 ")
+                        "Fonte: IBPT Ar5Fr7 ")
         self.assertEquals(msg, expected_msg)
 
     def test_calculate_item(self):
