@@ -37,13 +37,15 @@ from zope.interface.interface import InterfaceClass
 import stoqlib
 
 
-def get_all_classes(root):
+def get_all_classes(root, basedir=None):
     """
     Gets a generator with classes.
+    :param basedir: The directory from where the packages are being imported.
     :returns: a generator.
     """
     # Convert to absolute path so it works within documentation tools
-    basedir = os.path.dirname(stoqlib.__path__[0])
+    if basedir is None:
+        basedir = os.path.dirname(stoqlib.__path__[0])
     root = os.path.join(basedir, root)
     for package in listpackages(root):
         # Remove absolute path
