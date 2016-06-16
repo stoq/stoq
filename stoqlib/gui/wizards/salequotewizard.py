@@ -440,8 +440,15 @@ class SaleQuoteItemStep(SellableItemStep):
     # WizardStep hooks
     #
 
+    def next_step(self):
+        if api.sysparam.get_bool('ALLOW_CREATE_PAYMENT_ON_SALE_QUOTE'):
+            return SaleQuotePaymentStep(self.store, self.wizard,
+                                        model=self.model, previous=self)
+        else:
+            return False
+
     def has_next_step(self):
-        return False
+        return api.sysparam.get_bool('ALLOW_CREATE_PAYMENT_ON_SALE_QUOTE')
 
     #
     # Private API

@@ -1,0 +1,39 @@
+wizard: StockTransferWizard
+GtkDialog(PluggableWizard): title='Stock Transfer', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave StockTransferFinishStep is attached
+        GtkVBox(step.toplevel):
+          GtkTable(step.table1, fill=True):
+            ProxyLabel(step.kiwilabel3): 'Sending branch:'
+            ProxyLabel(step.source_branch): '<span >Stoq Roupas e Acess\xc3\xb3rios Ltda</span>'
+            ProxyLabel(step.kiwilabel4): 'Receiving branch:'
+            ProxyComboBox(step.destination_branch):
+              item: 'Stoq Com\xc3\xa9rcio Ltda ME', selected
+            ProxyLabel(step.kiwilabel1): 'Open date:'
+            ProxyDateEntry(step.open_date): date.today()
+            ProxyLabel(step.kiwilabel2): 'Receival date:'
+            ProxyDateEntry(step.receival_date): date.today()
+            ProxyLabel(step.kiwilabel5): 'Sender:'
+            ProxyComboEntry(step.source_responsible): mandatory
+              item: 'Administrator'
+              item: 'Cleusa Blanc Ferreira Norbiato'
+              item: 'Deivis Alexandre Junior'
+              item: 'Maria Aparecida Ardana'
+              item: 'Osvaldo Denadai Marin'
+            ProxyLabel(step.kiwilabel6): 'Receiver:'
+            ProxyComboEntry(step.destination_responsible): mandatory
+              item: 'Administrator'
+              item: 'Cleusa Blanc Ferreira Norbiato'
+              item: 'Deivis Alexandre Junior'
+              item: 'Maria Aparecida Ardana'
+              item: 'Osvaldo Denadai Marin'
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish', insensitive
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

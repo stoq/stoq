@@ -52,57 +52,61 @@ class TestSaleQuoteWizard(GUITest):
         sellable = self.create_sellable()
         sellable.barcode = u'12345678'
 
-        wizard = SaleQuoteWizard(self.store)
+        with self.sysparam(ALLOW_CREATE_PAYMENT_ON_SALE_QUOTE=True):
+            wizard = SaleQuoteWizard(self.store)
 
-        step = wizard.get_current_step()
-        step.client_gadget.set_value(client)
+            step = wizard.get_current_step()
+            step.client_gadget.set_value(client)
 
-        self.click(step.notes_button)
-        self.assertEquals(run_dialog.call_count, 1)
-        args, kwargs = run_dialog.call_args
-        editor, parent, store, model, notes = args
-        self.assertEquals(editor, NoteEditor)
-        self.assertEquals(parent, wizard)
-        self.assertTrue(store is not None)
-        self.assertEquals(set(wizard.model.comments), set([model]))
-        self.assertEquals(notes, 'comment')
-        self.assertEquals(kwargs['title'], "Additional Information")
+            self.click(step.notes_button)
+            self.assertEquals(run_dialog.call_count, 1)
+            args, kwargs = run_dialog.call_args
+            editor, parent, store, model, notes = args
+            self.assertEquals(editor, NoteEditor)
+            self.assertEquals(parent, wizard)
+            self.assertTrue(store is not None)
+            self.assertEquals(set(wizard.model.comments), set([model]))
+            self.assertEquals(notes, 'comment')
+            self.assertEquals(kwargs['title'], "Additional Information")
 
-        self.check_wizard(wizard, 'wizard-sale-quote-start-sale-quote-step')
-        self.click(wizard.next_button)
+            self.check_wizard(wizard, 'wizard-sale-quote-start-sale-quote-step')
+            self.click(wizard.next_button)
 
-        step = wizard.get_current_step()
-        self.assertNotSensitive(wizard, ['next_button'])
-        step.barcode.set_text(sellable.barcode)
-        step.sellable_selected(sellable)
-        step.quantity.update(2)
+            step = wizard.get_current_step()
+            self.assertNotSensitive(wizard, ['next_button'])
+            step.barcode.set_text(sellable.barcode)
+            step.sellable_selected(sellable)
+            step.quantity.update(2)
 
-        # Make sure that we cannot add an item with a value greater than the allowed.
-        with self.sysparam(ALLOW_HIGHER_SALE_PRICE=False):
-            step.cost.update(11)
-            self.assertNotSensitive(step, ['add_sellable_button'])
+            # Make sure that we cannot add an item with a value greater than the allowed.
+            with self.sysparam(ALLOW_HIGHER_SALE_PRICE=False):
+                step.cost.update(11)
+                self.assertNotSensitive(step, ['add_sellable_button'])
 
-            step.cost.update(10)
-            self.assertSensitive(step, ['add_sellable_button'])
+                step.cost.update(10)
+                self.assertSensitive(step, ['add_sellable_button'])
 
-        self.click(step.add_sellable_button)
-        self.assertSensitive(wizard, ['next_button'])
-        sale = wizard.model
-        self.check_wizard(wizard, 'wizard-sale-quote-sale-quote-item-step',
-                          [sale, client] + list(sale.get_items()) + [sellable])
+            self.click(step.add_sellable_button)
+            self.assertSensitive(wizard, ['next_button'])
+            sale = wizard.model
+            self.check_wizard(wizard, 'wizard-sale-quote-sale-quote-item-step',
+                              [sale, client] + list(sale.get_items()) + [sellable])
 
-        module = 'stoqlib.gui.events.SaleQuoteWizardFinishEvent.emit'
-        with mock.patch(module) as emit:
-            with mock.patch.object(self.store, 'commit'):
-                self.click(wizard.next_button)
-            self.assertEquals(emit.call_count, 1)
-            args, kwargs = emit.call_args
-            self.assertTrue(isinstance(args[0], Sale))
+            self.click(wizard.next_button)
+            self.check_wizard(wizard, 'wizard-sale-quote-sale-payment-step')
 
-        self.assertEqual(wizard.model.payments.count(), 0)
-        yesno.assert_called_once_with(_('Would you like to print the quote '
-                                        'details now?'), gtk.RESPONSE_YES,
-                                      _("Print quote details"), _("Don't print"))
+            module = 'stoqlib.gui.events.SaleQuoteWizardFinishEvent.emit'
+            with mock.patch(module) as emit:
+                with mock.patch.object(self.store, 'commit'):
+                    self.click(wizard.next_button)
+                self.assertEquals(emit.call_count, 1)
+                args, kwargs = emit.call_args
+                self.assertTrue(isinstance(args[0], Sale))
+
+            self.assertEqual(wizard.model.payments.count(), 0)
+            yesno.assert_called_once_with(_('Would you like to print the quote '
+                                            'details now?'), gtk.RESPONSE_YES,
+                                          _("Print quote details"), _("Don't print"))
 
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
     def test_missing_items(self, run_dialog):

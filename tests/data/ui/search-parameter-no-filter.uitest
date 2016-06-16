@@ -62,6 +62,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Confirm sales in Till', u'No'
     row: u'Sales', u'Allow to cancel confirmed sales', u'No'
     row: u'Sales', u'Exclude cashier operations in Point of Sale', u'No'
+    row: u'Sales', u'Allow to add payment on sale quote', u'No'
     row: u'Sales', u'Bill penalty aliquot', Decimal('0.00')
     row: u'Sales', u'Default ICMS tax', Decimal('18.00')
     row: u'Sales', u'Commission Payment At Sale Confirmation', u'No'
@@ -74,7 +75,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Default tax constant for products', u'No tax'
     row: u'Sales', u'Bill interest aliquot', Decimal('0.00')
     row: u'Sales', u'Requires confirmation of quantity after barcode activation', u'No'
-    row: u'Sales', u'Set authorization number mandatory', u'Yes'
+    row: u'Sales', u'Set authorization number mandatory', u'No'
     row: u'Sales', u'Default ISS tax', Decimal('18.00')
     row: u'Sales', u'Printing of promissory notes on loans', u'No'
     row: u'Sales', u'Tolerance for a payment to be considered as a late payment.', u'0'

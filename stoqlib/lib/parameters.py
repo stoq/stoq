@@ -812,11 +812,19 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'ALLOW_CREATE_PAYMENT_ON_SALE_QUOTE',
+        _(u'Sales'),
+        _(u'Allow to add payment on sale quote'),
+        _(u'When enabled, the sale quote wizard will have an extra step to '
+          u'configure the payments for the sale.'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'MANDATORY_CARD_AUTH_NUMBER',
         _(u'Sales'),
         _(u'Set authorization number mandatory'),
         _(u'Set the authorization number on card payments as mandatory or not.'),
-        bool, initial=True),
+        bool, initial=False),
 
     ParameterDetails(
         u'DEFECT_DETECTED_TEMPLATE',
