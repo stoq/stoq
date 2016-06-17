@@ -147,7 +147,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/gui/editors/paymentmethodeditor.py', 89.13),
     ('stoqlib/gui/editors/personeditor.py', 96.32),
     ('stoqlib/gui/editors/preferenceseditor.py', 93.15),
-    ('stoqlib/gui/editors/producteditor.py', 77.03),
+    ('stoqlib/gui/editors/producteditor.py', 80.22),
     ('stoqlib/gui/editors/productioneditor.py', 70.2),
     ('stoqlib/gui/editors/profileeditor.py', 94.12),
     ('stoqlib/gui/editors/purchaseeditor.py', 87.8),

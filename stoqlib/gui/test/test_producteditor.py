@@ -26,12 +26,14 @@ import mock
 from storm.expr import Update
 
 from decimal import Decimal
-from stoqlib.domain.product import Product
 from stoqlib.domain.commission import CommissionSource
+from stoqlib.domain.inventory import Inventory
+from stoqlib.domain.product import Product, ProductStockItem
 from stoqlib.domain.sellable import SellableCategory, Sellable
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.editors.producteditor import (ProductEditor,
-                                               ProductionProductEditor)
+                                               ProductionProductEditor,
+                                               ProductStockQuantityEditor)
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.slaves.productslave import ProductComponentSlave
 from stoqlib.lib.parameters import sysparam
@@ -177,3 +179,63 @@ class TestProductComponentSlave(GUITest):
         component = self.create_product_component()
         slave = ProductComponentSlave(self.store, component.product)
         self.check_slave(slave, 'slave-production-component-show')
+
+
+class TestProductStockQuantityEditor(GUITest):
+
+    def test_initial_stock(self):
+        branch = get_current_branch(self.store)
+        product = self.create_product(branch=branch, storable=False)
+        product.manage_stock = False
+        editor = ProductStockQuantityEditor(self.store, product, branch)
+        self.check_editor(editor, 'editor-product-stock-quantity-initial-show')
+
+        # Update editor
+        editor.quantity.update(15)
+        editor.cost.update('3.45')
+
+        stock_items_before = self.store.find(ProductStockItem).count()
+
+        # Confirm
+        self.click(editor.main_dialog.ok_button)
+
+        # Check data
+        stock_items_after = self.store.find(ProductStockItem).count()
+        self.assertEquals(stock_items_after, stock_items_before + 1)
+
+        stock_item = product.storable.get_stock_item(branch, batch=None)
+        self.assertEquals(stock_item.quantity, 15)
+        self.assertEquals(stock_item.stock_cost, Decimal('3.45'))
+
+    def test_inventory(self):
+        branch = get_current_branch(self.store)
+        product = self.create_product(branch=branch, stock=10)
+        editor = ProductStockQuantityEditor(self.store, product, branch)
+        self.check_editor(editor, 'editor-product-stock-quantity-inventory-show')
+
+        # Update editor
+        editor.quantity.update(20)
+        editor.reason.update('test case')
+
+        inventories_before = self.store.find(Inventory).count()
+
+        # Confirm
+        self.click(editor.main_dialog.ok_button)
+
+        # Check data
+        inventories_after = self.store.find(Inventory).count()
+        self.assertEquals(inventories_after, inventories_before + 1)
+
+        stock_item = product.storable.get_stock_item(branch, batch=None)
+        self.assertEquals(stock_item.quantity, 20)
+
+        # Check Inventory
+        inventory = self.store.find(Inventory).order_by(Inventory.te_id).last()
+        # The inventory should have only one item
+        item = inventory.get_items().one()
+
+        self.assertEquals(item.recorded_quantity, 10)
+        self.assertEquals(item.counted_quantity, 20)
+        self.assertEquals(item.actual_quantity, 20)
+        self.assertEquals(item.is_adjusted, True)
+        self.assertEquals(inventory.status, Inventory.STATUS_CLOSED)

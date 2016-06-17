@@ -42,7 +42,8 @@ from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
-from stoqlib.gui.editors.producteditor import ProductStockEditor
+from stoqlib.gui.editors.producteditor import (ProductStockEditor,
+                                               ProductStockQuantityEditor)
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.returnedsalesearch import (PendingReturnedSaleSearch,
@@ -133,6 +134,7 @@ class StockApp(ShellApp):
             ("SearchPendingReturnedSales", None, _("Pending returned sales...")),
             ("ProductMenu", None, _("Product")),
             ("PrintLabels", None, _("Print labels...")),
+            ("ManageStock", None, _("Manage stock...")),
             ("ProductStockHistory", gtk.STOCK_INFO, _("History..."),
              group.get('history'),
              _('Show the stock history of the selected product')),
@@ -318,6 +320,9 @@ class StockApp(ShellApp):
         else:
             self._update_edit_image()
 
+        # Always let the user choose the manage stock option and do a proper
+        # check there (showing a warning if he can't)
+        self.set_sensitive([self.ManageStock], bool(item))
         self.set_sensitive([self.EditProduct, self.PrintLabels], bool(item))
         self.set_sensitive([self.ProductStockHistory],
                            bool(item) and is_main_branch)
@@ -458,6 +463,32 @@ class StockApp(ShellApp):
         sellable = selected.sellable
         self.run_dialog(ProductStockHistoryDialog, self.store, sellable,
                         branch=self.branch_filter.combo.get_selected())
+
+    def on_ManageStock__activate(self, action):
+        user = api.get_current_user(self.store)
+        if not user.profile.check_app_permission(u'inventory'):
+            return warning(_('Only users with access to the inventory app can'
+                             ' change the stock quantity'))
+
+        product = self.results.get_selected().product
+        if product.storable and product.storable.is_batch:
+            return warning(_("It's not possible to change the stock quantity of"
+                             " a batch product"))
+
+        branch = self.branch_filter.combo.get_selected()
+        if not branch:
+            return warning(_('You must select a branch first'))
+
+        if (api.sysparam.get_bool('SYNCHRONIZED_MODE')
+                and branch != api.get_current_branch(self.store)):
+            return warning(_('You can only change the stock of your current branch'))
+
+        with api.new_store() as store:
+            self.run_dialog(ProductStockQuantityEditor, store,
+                            store.fetch(product), branch=branch)
+
+        if store.committed:
+            self.refresh()
 
     def on_PrintLabels__activate(self, button):
         selected = self.results.get_selected()

@@ -67,6 +67,7 @@
       <menuitem action="ProductStockHistory"/>
       <menuitem action="EditProduct"/>
       <menuitem action="PrintLabels"/>
+      <menuitem action="ManageStock"/>
     </menu>
   </placeholder>
 </menubar>
@@ -74,6 +75,7 @@
   <menuitem action="ProductStockHistory"/>
   <menuitem action="EditProduct"/>
   <menuitem action="PrintLabels"/>
+  <menuitem action="ManageStock"/>
 </popup>
 <toolbar action="toolbar">
   <placeholder name="AppToolbarPH">

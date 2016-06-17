@@ -349,7 +349,7 @@ class Inventory(Domain):
 
         for item in self.inventory_items:
             if (item.actual_quantity is None or
-                item.recorded_quantity == item.actual_quantity):
+                    item.recorded_quantity == item.actual_quantity):
                 continue
 
             # FIXME: We are setting this here because, when generating a
@@ -498,8 +498,8 @@ class Inventory(Domain):
         """
         inventory = cls(store=store,
                         open_date=localnow(),
-                        branch=branch,
-                        responsible=responsible)
+                        branch_id=branch.id,
+                        responsible_id=responsible.id)
 
         for data in cls.get_sellables_for_inventory(store, branch, query):
             sellable, product, storable, batch, stock_item = data

@@ -29,11 +29,13 @@ from decimal import Decimal
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.ui.forms import TextField
+from kiwi.python import Settable
+from kiwi.ui.forms import TextField, NumericField, PriceField
 
 from stoqdrivers.enum import TaxType
 
 from stoqlib.api import api
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
                                     ProductQualityTest, Storable,
@@ -576,6 +578,7 @@ class ProductionProductEditor(ProductEditor):
 
 
 class ProductStockEditor(BaseEditor):
+    """This is a product editor limitted to editing physical stock information"""
     model_name = _('Product')
     model_type = Product
     gladefile = 'ProductStockEditor'
@@ -594,6 +597,92 @@ class ProductStockEditor(BaseEditor):
 
         # Make everything aligned by pytting notes_lbl on the same size group
         info_slave.left_labels_group.add_widget(details_slave.notes_lbl)
+
+
+class ProductStockQuantityEditor(BaseEditor):
+    """Editor for adjusting the stock quantity of a product
+
+    This editor will set the quantity of a product for a given branch. If the
+    product does not manage stock yet, a storable will be created first and the
+    initial stock be registred.
+
+    If the product is already a storable, an inventory will be created for just
+    this product (so that the original quantity is registred and can be
+    audited), and the quantity will be adjusted. A reason in this case is
+    mandatory
+    """
+    title = _('Adjust stock quantity')
+    model_name = _('Stock')
+    model_type = Settable
+
+    @cached_property()
+    def fields(self):
+        fields = collections.OrderedDict(
+            quantity=NumericField(_('Quantity'), proxy=True, mandatory=True),
+        )
+        # When creating an inventory, a reason is necessary
+        if self._stock_item:
+            fields['reason'] = TextField(_('Reason'), proxy=True, mandatory=True)
+        else:
+            # Inventories dont do anything with the cost yet. Maybe we should
+            # fix that
+            fields['cost'] = PriceField(_('Cost'), proxy=True, mandatory=True)
+        return fields
+
+    def __init__(self, store, model, branch):
+        self._branch = branch
+        assert self._branch
+        self._product = model
+        # model here is the product, but we will create a settable later
+        if model.storable:
+            # We dont support editing batch products yet.
+            assert not model.storable.is_batch
+            self._stock_item = model.storable.get_stock_item(branch, batch=None)
+        else:
+            self._stock_item = None
+
+        BaseEditor.__init__(self, store=store)
+
+    def create_model(self, store):
+        if self._stock_item:
+            return Settable(quantity=self._stock_item.quantity,
+                            cost=self._stock_item.stock_cost, reason=u'')
+        else:
+            return Settable(quantity=Decimal(0), cost=self._product.sellable.cost)
+
+    def _register_inventory(self):
+        query = Storable.id == self._product.id
+        inventory = Inventory.create_inventory(self.store, branch=self._branch,
+                                               responsible=api.get_current_user(self.store),
+                                               query=query)
+        # At this point, the inventory should have only one item.
+        item = inventory.get_items().one()
+        item.counted_quantity = item.actual_quantity = self.model.quantity
+        # item.product_cost = self.model.cost
+        item.reason = self.model.reason
+        item.adjust(invoice_number=None)
+        inventory.close()
+
+    def _register_initial_stock(self):
+        if not self._product.storable:
+            self._product.set_as_storable_product(self.model.quantity,
+                                                  self._branch, self.model.cost)
+        else:
+            self._product.storable.register_initial_stock(self.model.quantity,
+                                                          self._branch,
+                                                          self.model.cost)
+
+    def on_confirm(self):
+        if not self._stock_item:
+            # If the item does not manage stock, we will make it a managed
+            # storable and register the initial stock
+            return self._register_initial_stock()
+        else:
+            # If the product already manages stock, this will be an easy way for
+            # the user to fix the actual quantity (like a mini inventory).
+            # XXX: Make sure that the user has access to the inventory app
+            # before calling this.
+            return self._register_inventory()
 
 
 class ProductManufacturerEditor(BaseEditor):

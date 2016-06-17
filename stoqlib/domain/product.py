@@ -420,7 +420,7 @@ class Product(Domain):
     #  Public API
     #
 
-    def set_as_storable_product(self, quantity=0):
+    def set_as_storable_product(self, quantity=0, branch=None, cost=None):
         """ Change a product without storable to a product with stock control.
 
         :param quantity: The current product quantity in stock.
@@ -428,13 +428,15 @@ class Product(Domain):
         assert self.product_type == self.TYPE_WITHOUT_STOCK
         # FIXME: On first time, only creating a common product.
         # After, also choose between create a consigned or a product with batch control
-        from stoqlib.database.runtime import get_current_branch
-        branch = get_current_branch(store=self.store)
         storable = Storable(product=self, store=self.store)
+
+        if not branch:
+            from stoqlib.database.runtime import get_current_branch
+            branch = get_current_branch(store=self.store)
 
         # TODO: Instead of register an initial stock, we must consider the product history.
         # Calculating the current quantity based on stock transaction history.
-        storable.register_initial_stock(quantity, branch, self.sellable.cost)
+        storable.register_initial_stock(quantity, branch, cost or self.sellable.cost)
         self.manage_stock = True
 
     def has_quality_tests(self):
