@@ -177,6 +177,15 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`masseditordialog` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.dialogs.masseditordialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 :mod:`missingitemsdialog` Module
 --------------------------------
 
@@ -358,14 +367,6 @@ dialogs Package
 ---------------------------
 
 .. automodule:: stoqlib.gui.dialogs.sellableimage
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`sellablepricedialog` Module
----------------------------------
-
-.. automodule:: stoqlib.gui.dialogs.sellablepricedialog
     :members:
     :undoc-members:
     :show-inheritance:

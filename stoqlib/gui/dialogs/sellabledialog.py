@@ -22,15 +22,24 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
-
+from storm.expr import LeftJoin
 from stoqdrivers.enum import TaxType
 
-from stoqlib.domain.sellable import Sellable, SellableTaxConstant
+from stoqlib.api import api
+from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
+                                     SellableCategory, SellableTaxConstant)
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantEditor
+from stoqlib.gui.dialogs.masseditordialog import (Field, MassEditorSearch,
+                                                  AccessorField)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import info
+from stoqlib.database.viewable import Viewable
+from stoqlib.domain.service import Service
+from stoqlib.domain.product import Product, Storable
+from stoqlib.domain.person import ClientCategory
 
 _ = stoqlib_gettext
 
@@ -71,3 +80,90 @@ class SellableTaxConstantsDialog(ModelListDialog):
     list_slave_class = _SellableTaxConstantsListSlave
     size = (500, 300)
     title = _("Taxes")
+
+
+class CategoryPriceField(Field):
+    title = _(u"Price Change Dialog")
+
+    def __init__(self, category):
+        super(CategoryPriceField, self).__init__(data_type=currency)
+        # A cache for existing ClientCategoryPrices so that we don't have to
+        # query all the time.
+        self._cache = {}
+        self.category = category
+        self.label = _('{category} Price').format(category=category.get_description())
+
+    def _get_category_info(self, sellable):
+        if sellable.id in self._cache:
+            return self._cache[sellable.id]
+
+        self._cache[sellable.id] = sellable.get_category_price_info(self.category)
+        return self._cache[sellable.id]
+
+    def get_value(self, item):
+        info = self._get_category_info(item.sellable)
+        if info:
+            return info.price
+
+    def save_value(self, item):
+        value = self.new_values[item]
+        info = self._get_category_info(item.sellable)
+        if not info:
+            info = ClientCategoryPrice(sellable_id=item.sellable.id,
+                                       category=self.category,
+                                       price=value,
+                                       store=item.store)
+        else:
+            info.price = value
+
+
+class SellableView(Viewable):
+    sellable = Sellable
+    product = Product
+    storable = Storable
+    service = Service
+    category = SellableCategory
+
+    id = Sellable.id
+
+    tables = [
+        Sellable,
+        LeftJoin(Service, Sellable.id == Service.id),
+        LeftJoin(Product, Sellable.id == Product.id),
+        LeftJoin(Storable, Sellable.id == Storable.id),
+        LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id)
+    ]
+
+
+class SellableMassEditorDialog(MassEditorSearch):
+
+    search_spec = SellableView
+
+    default_fields = [
+        AccessorField(_('Code'), 'sellable', 'code', unicode, unique=True),
+        AccessorField(_('Barcode'), 'sellable', 'barcode', unicode, unique=True),
+        #ReferenceField(_('Category'), 'sellable_category', object),
+        AccessorField(_('Description'), 'sellable', 'description', unicode),
+        AccessorField(_('Cost'), 'sellable', 'cost', currency),
+        AccessorField(_('Default Price'), 'sellable', 'base_price', currency),
+    ]
+
+    def get_fields(self, store):
+        category_fields = []
+        self.categories = store.find(ClientCategory)
+        for cat in self.categories:
+            category_fields.append(CategoryPriceField(cat))
+
+        return self.default_fields + category_fields
+
+    def get_items(self, store):
+        return store.find(SellableView).order_by(Sellable.code)
+
+
+if __name__ == '__main__':
+    from stoqlib.gui.base.dialogs import run_dialog
+    ec = api.prepare_test()
+    retval = run_dialog(SellableMassEditorDialog, None, ec.store)
+    if retval:
+        ec.store.commit()
+    print('RETVAL', retval)

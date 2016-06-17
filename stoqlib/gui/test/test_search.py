@@ -261,6 +261,7 @@ class TestSearchGeneric(DomainTest):
     ignored_classes = [
         '_BaseBillCheckSearch',
         'SearchEditor',
+        'MassEditorSearch',
         'BasePersonSearch',
     ]
 

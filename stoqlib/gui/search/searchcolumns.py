@@ -78,7 +78,7 @@ class SearchColumn(Column):
     multiple_selection = gobject.property(type=bool, default=False)
 
     #: the search attribute to use when filtering by this column
-    search_attribute = gobject.property(type=str, default=None)
+    search_attribute = gobject.property(type=object, default=None)
 
     #: valid values to select when filtering by this column
     valid_values = gobject.property(type=object, default=None)

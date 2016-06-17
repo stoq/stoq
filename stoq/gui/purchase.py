@@ -34,7 +34,7 @@ from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
+from stoqlib.gui.dialogs.sellabledialog import SellableMassEditorDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.dialogs.manufacturerdialog import ProductManufacturerDialog
 from stoqlib.gui.search.categorysearch import SellableCategorySearch
@@ -545,7 +545,7 @@ class PurchaseApp(ShellApp):
             return
 
         with api.new_store() as store:
-            self.run_dialog(SellablePriceDialog, store)
+            self.run_dialog(SellableMassEditorDialog, store)
 
     # Toolitem
 

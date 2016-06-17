@@ -24,12 +24,13 @@
 
 import mock
 
-from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
+from stoqlib.gui.dialogs.masseditordialog import MultiplyOperation
+from stoqlib.gui.dialogs.sellabledialog import SellableMassEditorDialog
 from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellablePriceDialog(GUITest):
-    @mock.patch('stoqlib.gui.dialogs.sellablepricedialog.ProgressDialog.show')
+    @mock.patch('stoqlib.gui.dialogs.masseditordialog.ProgressDialog.show')
     def test_create(self, show):
         sellable = self.create_sellable()
         sellable.code = u'123'
@@ -41,21 +42,36 @@ class TestSellablePriceDialog(GUITest):
         p2 = self.create_client_category_price(sellable=sellable,
                                                category=category2)
 
-        editor = SellablePriceDialog(self.store)
-        self.check_editor(editor, 'dialog-sellable-price-create')
-        editor.category.select(category1)
-        editor.markup.set_text('10')
-        self.click(editor.apply)
+        search = SellableMassEditorDialog(self.store)
+        search.search.refresh()
+        self.check_search(search, 'sellable-price-create')
 
-        editor.category.select(category2)
-        editor.markup.set_text('50')
-        self.click(editor.apply)
+        cost_field = [f for f in search._fields if f.label == 'Cost'][0]
 
-        self.click(editor.main_dialog.ok_button)
+        # Select the field corresponding to category1
+        field = [f for f in search._fields
+                 if getattr(f, 'category', None) == category1][0]
+        search.mass_editor.field_combo.select(field)
+        # Now, select the multiply operation
+        search.mass_editor._editor.operations_combo.select(MultiplyOperation)
+        # multiply by cost field
+        search.mass_editor._editor._oper.combo.select(cost_field)
+        search.mass_editor._editor._oper.entry.set_text('1.1')  # 10%
+        self.click(search.mass_editor.apply_button)
+
+        # Now, select the second category
+        field = [f for f in search._fields
+                 if getattr(f, 'category', None) == category2][0]
+        search.mass_editor.field_combo.select(field)
+        search.mass_editor._editor._oper.combo.select(cost_field)
+        search.mass_editor._editor._oper.entry.set_text('1.5')  # 10%
+        self.click(search.mass_editor.apply_button)
+
+        self.click(search.ok_button)
 
         self.assertEquals(p1.price, 11)
         self.assertEquals(p2.price, 15)
 
     def test_cancel(self):
-        editor = SellablePriceDialog(self.store)
-        self.click(editor.main_dialog.cancel_button)
+        editor = SellableMassEditorDialog(self.store)
+        self.click(editor.cancel_button)
