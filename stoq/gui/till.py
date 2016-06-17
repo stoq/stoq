@@ -139,6 +139,8 @@ class TillApp(ShellApp):
             ("Details", gtk.STOCK_INFO, _("Details..."),
              group.get('sale_details'),
              _("Show details of the selected sale")),
+            ("Payment", gtk.STOCK_INFO, _("Edit payments..."), None,
+             _("Edit payments of the selected sale")),
         ]
 
         self.till_ui = self.add_ui_actions('', actions,
@@ -413,12 +415,15 @@ class TillApp(ShellApp):
             # sales
             can_return = (sale_view.can_return() or
                           sale_view.can_cancel())
+            can_edit_payment = sale_view.sale.can_edit()
         else:
+            can_edit_payment = False
             can_confirm = can_return = False
 
         self.set_sensitive([self.Details], bool(sale_view))
         self.set_sensitive([self.Confirm], can_confirm)
         self.set_sensitive([self.Return], can_return)
+        self.set_sensitive([self.Payment], can_edit_payment)
 
     def _check_selected(self):
         sale_view = self.results.get_selected()
@@ -469,7 +474,7 @@ class TillApp(ShellApp):
         # We dont have an ecf. Disable till related operations
         widgets = [self.TillOpen, self.TillClose, self.TillVerify, self.TillAddCash,
                    self.TillRemoveCash, self.SearchTillHistory, self.app_vbox,
-                   self.Confirm, self.Return, self.Details]
+                   self.Confirm, self.Return, self.Details, self.Payment]
         self.set_sensitive(widgets, has_ecf)
         text = _(u"Till operations requires a connected fiscal printer")
         self.small_status.set_text(text)
@@ -553,6 +558,9 @@ class TillApp(ShellApp):
 
     def on_Details__activate(self, action):
         self._run_details_dialog()
+
+    def on_Payment__activate(self, action):
+        self._create_sale_payments(self.results.get_selected())
 
     def on_Return__activate(self, action):
         self._return_sale()

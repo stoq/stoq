@@ -44,6 +44,8 @@
       <separator/>
       <menuitem action="Confirm"/>
       <menuitem action="Return"/>
+      <separator/>
+      <menuitem action="Payment"/>
     </menu>
   </placeholder>
   <menu action="SearchMenu">
@@ -65,6 +67,8 @@
   <separator/>
   <menuitem action="Confirm"/>
   <menuitem action="Return"/>
+  <separator/>
+  <menuitem action="Payment"/>
 </popup>
 <toolbar action="toolbar">
   <placeholder name="AppToolbarPH">

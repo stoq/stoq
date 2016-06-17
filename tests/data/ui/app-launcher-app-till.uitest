@@ -39,6 +39,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Confirm...', insensitive
           GtkImageMenuItem(): 'Return...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Edit payments...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Clients...'
@@ -160,3 +162,5 @@ GtkMenu(): hidden
   GtkSeparatorMenuItem():
   GtkImageMenuItem(): 'Confirm...', insensitive
   GtkImageMenuItem(): 'Return...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Edit payments...', insensitive
