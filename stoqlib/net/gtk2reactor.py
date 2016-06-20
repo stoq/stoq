@@ -340,7 +340,7 @@ class PortableGtkReactor(selectreactor.SelectReactor):
         self._simtag = glib.timeout_add(int(timeout * 1010), self.simulate)
 
 
-def install(useGtk=True):
+def default_install(useGtk=True):
     """
     Configure the twisted mainloop to be run inside the gtk mainloop.
 
@@ -353,7 +353,7 @@ def install(useGtk=True):
     return reactor
 
 
-def portableInstall(useGtk=True):
+def portable_install(useGtk=True):
     """
     Configure the twisted mainloop to be run inside the gtk mainloop.
     """
@@ -363,9 +363,10 @@ def portableInstall(useGtk=True):
     return reactor
 
 
-if runtime.platform.getType() != 'posix':
-    del install  # pyflakes
-    install = portableInstall
+if runtime.platform.getType() == 'posix':
+    install = default_install
+else:
+    install = portable_install
 
 
 __all__ = ['install']
