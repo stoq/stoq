@@ -443,9 +443,6 @@ class QueryEntryGadget(object):
 
     def _run_search(self):
         text = self.entry.get_text()
-        if not text:
-            return
-
         item = run_dialog(self.SEARCH_CLASS, self._parent, self.store,
                           double_click_confirm=True, initial_string=text)
         if item:
@@ -510,8 +507,11 @@ class QueryEntryGadget(object):
             self._popup.popdown()
 
     def _on_entry__activate(self, entry):
-        self._popup.popdown()
-        self._popup.confirm()
+        if self._popup.visible:
+            self._popup.popdown()
+            self._popup.confirm()
+        else:
+            self._run_search()
 
     def _on_entry_sensitive(self, entry, pspec):
         self._update_widgets()
