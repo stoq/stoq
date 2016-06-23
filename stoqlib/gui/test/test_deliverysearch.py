@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.sale import Delivery
+from stoqlib.domain.sale import Delivery, Sale
 from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
@@ -39,6 +39,7 @@ class TestDeliverySearch(GUITest):
         address = self.create_address()
         service_item = self.create_sale_item()
         service_item.sale.identifier = 10
+        service_item.sale.status = Sale.STATUS_CONFIRMED
         transporter = self.create_transporter(name=u'Hall')
         delivery = Delivery(transporter=transporter,
                             address=address,
@@ -49,6 +50,7 @@ class TestDeliverySearch(GUITest):
 
         service_item = self.create_sale_item()
         service_item.sale.identifier = 20
+        service_item.sale.status = Sale.STATUS_CONFIRMED
         transporter = self.create_transporter(name=u'Torvalds')
         delivery = Delivery(transporter=transporter,
                             address=address,

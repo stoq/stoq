@@ -114,23 +114,22 @@ class TestCreateDeliveryEditor(GUITest):
         editor = CreateDeliveryEditor(self.store, sale_items=sale_items)
 
         # No client
-        no_client = editor.client_id.get_selected_data()
-        self.assertEqual(no_client, None)
+        self.assertIsNone(editor.client.read())
         no_address = editor.address.get_selected_data()
         self.assertEqual(no_address, None)
         self.check_editor(editor, 'editor-createdelivery-noclient')
 
         # Select a client
-        editor.client_id.select(client1.id)
-        first_client = editor.client_id.get_selected_data()
-        self.assertEqual(first_client, client1.id)
+        editor.fields['client'].set_value(client1)
+        first_client = editor.client.read()
+        self.assertEqual(first_client, client1)
         first_address = editor.address.get_selected_data()
         self.assertEqual(first_address, address1)
         self.check_editor(editor, 'editor-createdelivery-client')
 
         # Change client
-        editor.client_id.select(client2.id)
-        new_client = editor.client_id.get_selected_data()
+        editor.fields['client'].set_value(client2)
+        new_client = editor.client.read()
         self.assertNotEquals(first_client, new_client)
         new_address = editor.address.get_selected_data()
         self.assertNotEquals(first_address, new_address)

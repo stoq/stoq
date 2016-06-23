@@ -1439,6 +1439,7 @@ class DeliveryView(Viewable):
 
     # Sale
     sale_identifier = Sale.identifier
+    sale_status = Sale.status
 
     # Address
     address_id = Delivery.address_id
@@ -1459,6 +1460,10 @@ class DeliveryView(Viewable):
     @property
     def status_str(self):
         return Delivery.statuses[self.status]
+
+    @property
+    def sale_status_str(self):
+        return Sale.statuses[self.sale_status]
 
     @property
     def address_str(self):

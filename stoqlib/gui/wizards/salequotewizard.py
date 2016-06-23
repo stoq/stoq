@@ -41,7 +41,7 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import ClientCategory, Client, SalesPerson
 from stoqlib.domain.product import ProductStockItem
-from stoqlib.domain.sale import Sale, SaleItem, SaleComment
+from stoqlib.domain.sale import Delivery, Sale, SaleItem, SaleComment
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.enums import ChangeSalespersonPolicy
@@ -56,6 +56,8 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.editors.deliveryeditor import (CreateDeliveryEditor,
+                                                CreateDeliveryModel)
 from stoqlib.gui.editors.discounteditor import DiscountEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
@@ -246,6 +248,23 @@ class SaleQuoteItemStep(SellableItemStep):
         self.cost_label.set_label(_('Price:'))
         self.cost.set_editable(True)
 
+        delivery = self._find_delivery()
+        if delivery is not None:
+            self._delivery_item = delivery.service_item
+            self._delivery = CreateDeliveryModel(
+                price=self._delivery_item.price, notes=self._delivery_item.notes,
+                transporter=delivery.transporter, address=delivery.address,
+                estimated_fix_date=self._delivery_item.estimated_fix_date)
+        else:
+            self._delivery = None
+            self._delivery_item = None
+
+        if isinstance(self.model, Sale):
+            self.delivery_btn = self.slave.add_extra_button(label=_("Add delivery"))
+            self.delivery_btn.set_sensitive(bool(len(self.slave.klist)))
+        else:
+            self.delivery_btn = None
+
         self.discount_btn = self.slave.add_extra_button(label=_("Apply discount"))
         self.discount_btn.set_sensitive(bool(len(self.slave.klist)))
         self.slave.klist.connect('has-rows', self._on_klist__has_rows)
@@ -349,6 +368,10 @@ class SaleQuoteItemStep(SellableItemStep):
             stock = storable.get_balance_for_branch(self.model.branch)
             item._stock_quantity = stock
 
+        # FIXME: deliver is used by the DeliveryEditor. Idealy we shouldn't
+        # have to add this here since it could lead to unpredicted errors
+        # in the future (e.g. someone could add a 'deliver' column on item)
+        item.deliver = False
         item.update_tax_values()
 
         return item
@@ -356,6 +379,10 @@ class SaleQuoteItemStep(SellableItemStep):
     def get_saved_items(self):
         items = self.model.get_items()
         for i in items:
+            # FIXME: deliver is used by the DeliveryEditor. Idealy we shouldn't
+            # have to add this here since it could lead to unpredicted errors
+            # in the future (e.g. someone could add a 'deliver' column on item)
+            i.deliver = bool(i.delivery)
             product = i.sellable.product
             if not product:
                 yield i
@@ -440,6 +467,25 @@ class SaleQuoteItemStep(SellableItemStep):
     # WizardStep hooks
     #
 
+    def validate_step(self):
+        delivery = self._find_delivery()
+        if self._delivery is not None and delivery is None:
+            delivery = Delivery(
+                store=self.store,
+                transporter=self._delivery.transporter,
+                address=self._delivery.address,
+                service_item=self._delivery_item)
+        elif self._delivery is None and delivery is not None:
+            # No need to remove the service_item. It was already removed
+            # by the AdditionListSlave
+            self.store.remove(delivery)
+            delivery = None
+
+        for item in self.slave.klist:
+            item.delivery = delivery if getattr(item, 'deliver', False) else None
+
+        return super(SaleQuoteItemStep, self).validate_step()
+
     def next_step(self):
         if api.sysparam.get_bool('ALLOW_CREATE_PAYMENT_ON_SALE_QUOTE'):
             return SaleQuotePaymentStep(self.store, self.wizard,
@@ -453,6 +499,16 @@ class SaleQuoteItemStep(SellableItemStep):
     #
     # Private API
     #
+
+    def _find_delivery(self):
+        if not isinstance(self.model, Sale):
+            return None
+
+        for item in self.model.get_items():
+            if item.delivery is not None:
+                return item.delivery
+
+        return None
 
     def _format_description(self, item, data):
         return format_sellable_description(item.sellable, item.batch)
@@ -475,9 +531,45 @@ class SaleQuoteItemStep(SellableItemStep):
         run_dialog(MyList, self.get_toplevel().get_toplevel(), columns,
                    list(self.missing.values()), title=_("Missing products"))
 
+    def _create_or_update_delivery(self):
+        delivery_service = sysparam.get_object(self.store, 'DELIVERY_SERVICE')
+        delivery_sellable = delivery_service.sellable
+
+        items = [item for item in self.slave.klist
+                 if item.sellable.product is not None]
+        if self._delivery is not None:
+            model = self._delivery
+        else:
+            model = CreateDeliveryModel(
+                price=delivery_sellable.price, client=self.model.client)
+
+        rv = run_dialog(
+            CreateDeliveryEditor, self.get_toplevel().get_toplevel(),
+            self.store, model, sale_items=items)
+        if not rv:
+            return
+
+        self._delivery = rv
+        if self._delivery_item:
+            self._delivery_item.price = self._delivery.price
+            self._delivery_item.notes = self._delivery.notes
+            self._delivery_item.estimated_fix_date = self._delivery.estimated_fix_date
+            self.slave.klist.update(self._delivery_item)
+        else:
+            self._delivery_item = self.get_order_item(
+                delivery_sellable, self._delivery.price, 1)
+            self.slave.klist.append(None, self._delivery_item)
+
     #
     # Callbacks
     #
+
+    def on_slave__before_edit_item(self, slave, item):
+        if item != self._delivery_item:
+            return False
+
+        self._create_or_update_delivery()
+        return self._delivery_item or False
 
     def on_slave__on_edit_item(self, slave, item):
         product = item.sellable.product
@@ -489,8 +581,16 @@ class SaleQuoteItemStep(SellableItemStep):
         stock = product.storable.get_balance_for_branch(self.model.branch)
         item._stock_quantity = stock
 
+    def on_slave__before_delete_items(self, klist, items):
+        for item in items:
+            if item == self._delivery_item:
+                self._delivery_item = None
+                self._delivery = None
+
     def _on_klist__has_rows(self, klist, has_rows):
         self.discount_btn.set_sensitive(has_rows)
+        if self.delivery_btn is not None:
+            self.delivery_btn.set_sensitive(has_rows)
 
     def _on_klist__selection_changed(self, klist, selected):
         if self.change_remove_btn_sensitive:
@@ -507,6 +607,9 @@ class SaleQuoteItemStep(SellableItemStep):
             self.slave.klist.update(item)
 
         self.update_total()
+
+    def on_delivery_btn__clicked(self, btn):
+        self._create_or_update_delivery()
 
 
 class SaleQuotePaymentStep(WizardEditorStep):

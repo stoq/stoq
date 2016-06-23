@@ -235,6 +235,7 @@ class AdditionListSlave(SearchSlave):
                'klist',
                'list_vbox',
                'edit_button')
+    gsignal('before-edit-item', object, retval=object)
     gsignal('on-edit-item', object)
     gsignal('on-add-item', object)
     gsignal('before-delete-items', object)
@@ -312,7 +313,9 @@ class AdditionListSlave(SearchSlave):
 
     def _edit_model(self, model=None, parent=None):
         edit_mode = model
-        result = self.run_editor(model)
+        result = self.emit('before-edit-item', model)
+        if result is None:
+            result = self.run_editor(model)
 
         if not result:
             return

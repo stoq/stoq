@@ -41,7 +41,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import SellableFullStockView
-from stoqlib.gui.editors.deliveryeditor import (_CreateDeliveryModel,
+from stoqlib.gui.editors.deliveryeditor import (CreateDeliveryModel,
                                                 CreateDeliveryEditor)
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor
@@ -641,7 +641,7 @@ class TestPos(BaseGUITest):
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     def test_create_delivery(self, run_dialog):
-        delivery = _CreateDeliveryModel(Decimal('150'))
+        delivery = CreateDeliveryModel(price=Decimal('150'))
         delivery.notes = u'notes about the delivery'
         delivery.client = self.create_client()
         delivery.transporter = self.create_transporter()

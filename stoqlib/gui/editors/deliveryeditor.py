@@ -36,7 +36,7 @@ from stoqlib.domain.sale import Delivery
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.fields import AddressField, PersonField
+from stoqlib.gui.fields import AddressField, PersonField, PersonQueryField
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.formatters import format_quantity
@@ -46,22 +46,23 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class _CreateDeliveryModel(object):
+class CreateDeliveryModel(object):
     _savepoint_attr = ['price', 'notes', 'client', 'transporter', 'address',
                        'estimated_fix_date']
 
-    def __init__(self, price=None):
+    def __init__(self, price=None, notes=None, client=None, transporter=None,
+                 address=None, estimated_fix_date=None, description=None):
         self.price = price
-        self.notes = None
-        self.client = None
-        self.transporter = None
-        self.address = None
-        self.estimated_fix_date = localtoday().date()
-        self.description = _(u'Delivery')
+        self.notes = notes
+        self.address = address or (client and client.person.address)
+        self.client = client or (address and address.person.client)
+        self.transporter = transporter
+        self.estimated_fix_date = estimated_fix_date or localtoday().date()
+        self.description = description or _(u'Delivery')
 
         self._savepoint = {}
 
-    # Since _CreateDeliveryModel is not a Domain, changes to it can't be
+    # Since CreateDeliveryModel is not a Domain, changes to it can't be
     # undone by a store.rollback(). Therefore, we must make the rollback
     # by hand.
 
@@ -86,7 +87,7 @@ class CreateDeliveryEditor(BaseEditor):
     """
 
     model_name = _('Delivery')
-    model_type = _CreateDeliveryModel
+    model_type = CreateDeliveryModel
     form_holder_name = 'forms'
     gladefile = 'CreateDeliveryEditor'
     title = _('New Delivery')
@@ -103,8 +104,8 @@ class CreateDeliveryEditor(BaseEditor):
         ))
 
         return collections.OrderedDict(
-            client_id=PersonField(_("Client"), proxy=True, mandatory=True,
-                                  person_type=Client),
+            client=PersonQueryField(_("Client"), proxy=True, mandatory=True,
+                                    person_type=Client),
             transporter_id=PersonField(_("Transporter"), proxy=True,
                                        person_type=Transporter,
                                        can_add=can_modify_transporter,
@@ -178,15 +179,11 @@ class CreateDeliveryEditor(BaseEditor):
             return ValidationError(
                 _("The Delivery cost must be a positive value."))
 
-    def on_client_id__content_changed(self, combo):
-        client_id = combo.get_selected_data()
-        if client_id:
-            client = self.store.get(Client, client_id)
-            self.fields['address'].set_from_client(client)
-        else:
-            client = None
-
-        self.model.client = client
+    def on_client__content_changed(self, entry):
+        client = entry.read()
+        if client is None:
+            return
+        self.fields['address'].set_from_client(client)
 
     def _on_items__cell_edited(self, items, item, attribute):
         self.force_validation()
@@ -197,7 +194,7 @@ class CreateDeliveryEditor(BaseEditor):
 
     def create_model(self, store):
         price = sysparam.get_object(store, 'DELIVERY_SERVICE').sellable.price
-        return _CreateDeliveryModel(price=price)
+        return CreateDeliveryModel(price=price)
 
     def setup_slaves(self):
         self.items = ObjectList(columns=self._get_sale_items_columns(),
