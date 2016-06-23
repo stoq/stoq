@@ -434,7 +434,6 @@ class TestConfirmSaleWizard(GUITest):
         self.assertEquals(
             unicode(step.client.emit('validate', sale.client)),
             u'It is not possible to sell for clients with late payments.')
-        step.client.activate()
         self.assertEquals(run_dialog.call_count, 0)
 
         self._select_method('check')
