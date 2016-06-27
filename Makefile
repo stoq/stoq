@@ -63,7 +63,7 @@ coverage: clean check-source-all
 	    --cover-inclusive \
 	    $(TEST_MODULES) && \
 	tools/validatecoverage coverage.xml && \
-	git show|tools/diff-coverage jenkins-test/stoq-$$VERSION/coverage.xml
+	git show|tools/diff-coverage coverage.xml
 
 jenkins: check-source-all
 	unset STOQLIB_TEST_QUICK && \
