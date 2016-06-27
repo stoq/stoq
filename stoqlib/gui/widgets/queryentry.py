@@ -300,9 +300,9 @@ class QueryEntryGadget(object):
     NEW_ITEM_TOOLTIP = _("Create a new item")
     EDIT_ITEM_TOOLTIP = _("Edit the selected item")
     ITEM_EDITOR = None
-    SEARCH_CLASS = None
-    SEARCH_SPEC = None
-    SEARCH_COLUMNS = None
+    search_class = None
+    search_spec = None
+    search_columns = None
 
     def __init__(self, entry, store, initial_value=None,
                  parent=None, run_editor=None, edit_button=None):
@@ -327,8 +327,8 @@ class QueryEntryGadget(object):
         # We will just use it to perform the search.
         self._filter = StringSearchFilter('')
         self._executer = QueryExecuter(self.store)
-        self._executer.set_search_spec(self.SEARCH_SPEC)
-        self._executer.set_filter_columns(self._filter, self.SEARCH_COLUMNS)
+        self._executer.set_search_spec(self.search_spec)
+        self._executer.set_filter_columns(self._filter, self.search_columns)
 
         self._last_operation = None
         self._source_id = None
@@ -443,7 +443,7 @@ class QueryEntryGadget(object):
 
     def _run_search(self):
         text = self.entry.get_text()
-        item = run_dialog(self.SEARCH_CLASS, self._parent, self.store,
+        item = run_dialog(self.search_class, self._parent, self.store,
                           double_click_confirm=True, initial_string=text)
         if item:
             self.set_value(self.get_object_from_item(item))
@@ -595,9 +595,9 @@ class ClientEntryGadget(PersonEntryGadget):
     EDIT_ITEM_TOOLTIP = _('Edit the selected client')
     ITEM_EDITOR = ClientEditor
     PERSON_TYPE = Client
-    SEARCH_CLASS = ClientSearch
-    SEARCH_SPEC = ClientView
-    SEARCH_COLUMNS = [ClientView.name, ClientView.fancy_name,
+    search_class = ClientSearch
+    search_spec = ClientView
+    search_columns = [ClientView.name, ClientView.fancy_name,
                       ClientView.phone_number, ClientView.mobile_number,
                       ClientView.cpf, ClientView.rg_number]
 
@@ -610,8 +610,8 @@ class SupplierEntryGadget(PersonEntryGadget):
     EDIT_ITEM_TOOLTIP = _('Edit the selected supplier')
     ITEM_EDITOR = SupplierEditor
     PERSON_TYPE = Supplier
-    SEARCH_CLASS = SupplierSearch
-    SEARCH_SPEC = SupplierView
-    SEARCH_COLUMNS = [SupplierView.name, SupplierView.fancy_name,
+    search_class = SupplierSearch
+    search_spec = SupplierView
+    search_columns = [SupplierView.name, SupplierView.fancy_name,
                       SupplierView.phone_number, SupplierView.mobile_number,
                       SupplierView.cpf, SupplierView.rg_number]
