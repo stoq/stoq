@@ -262,6 +262,9 @@ class ProductComponentEditor(BaseEditor):
         self.quantity.set_adjustment(
             gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
                            page_incr=10))
+        self.price.set_adjustment(
+            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
+                           page_incr=10))
         # set a default quantity value for new components
         if not self.model.quantity:
             self.quantity.set_value(1)

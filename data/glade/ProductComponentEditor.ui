@@ -22,6 +22,7 @@
           </object>
           <packing>
             <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
@@ -34,6 +35,7 @@
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
             <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
@@ -45,6 +47,7 @@
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
             <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
@@ -54,7 +57,6 @@
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
-            <property name="adjustment">adjustment1</property>
             <property name="digits">3</property>
             <property name="data_type">Decimal</property>
             <property name="model_attribute">quantity</property>
@@ -65,6 +67,7 @@
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
             <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
@@ -76,12 +79,13 @@
           <packing>
             <property name="top_attach">2</property>
             <property name="bottom_attach">3</property>
+            <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxyEntry" id="design_reference">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="invisible_char">•</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -95,6 +99,7 @@
             <property name="right_attach">2</property>
             <property name="top_attach">2</property>
             <property name="bottom_attach">3</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
@@ -107,12 +112,12 @@
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
             <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxySpinButton" id="price">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="invisible_char">•</property>
             <property name="xalign">1</property>
             <property name="truncate_multiline">True</property>
@@ -121,7 +126,6 @@
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
-            <property name="adjustment">adjustment1</property>
             <property name="digits">3</property>
             <property name="numeric">True</property>
             <property name="data_type">Decimal</property>
@@ -133,14 +137,10 @@
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
             <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
   </object>
 </interface>
