@@ -29,6 +29,32 @@ import optparse
 import sys
 
 
+def _run_async(func):
+    from twisted.internet import reactor
+    rv = [None]
+
+    def callback(retval=None):
+        rv[0] = retval
+        if reactor.running:
+            reactor.stop()
+
+    def errback(err):
+        if reactor.running:
+            reactor.stop()
+        raise err
+
+    # We need to run the func here because, if the deferred runs too fast,
+    # it would finish before we could call reactor.run, which would mean that
+    # the reactor.stop on the callbacks would happen too early.
+    def run():
+        d = func()
+        d.addCallbacks(callback=callback, errback=errback)
+
+    reactor.callWhenRunning(run)
+    reactor.run()
+    return rv[0]
+
+
 class StoqCommandHandler:
     def __init__(self, prog_name):
         self.prog_name = prog_name
@@ -144,8 +170,11 @@ class StoqCommandHandler:
                                    check_schema=False,
                                    load_plugins=False)
 
+        from stoqlib.api import api
         from stoqlib.database.admin import initialize_system
+        from stoqlib.database.runtime import set_default_store
         from stoqlib.database.settings import db_settings
+        from stoqlib.net.server import ServerProxy
         if options.dbname:
             db_settings.dbname = options.dbname
         if options.address:
@@ -157,29 +186,47 @@ class StoqCommandHandler:
         if options.password:
             db_settings.password = options.password
 
-        try:
-            initialize_system(password=unicode(options.password),
-                              force=options.force, empty=options.empty)
-        except ValueError as e:
-            # Database server is missing pg_trgm
-            if 'pg_trgm' in str(e):
-                return 31
-            else:
-                raise
+        @api.async
+        def init():
+            server = ServerProxy()
+            running = yield server.check_running()
+            if running:
+                yield server.call('pause_tasks')
+            # ServerProxy may have opened a store
+            set_default_store(None)
 
-        if options.create_examples or options.demo:
-            from stoqlib.importers.stoqlibexamples import create
-            create(utilities=True)
+            try:
+                initialize_system(password=unicode(options.password),
+                                  force=options.force, empty=options.empty)
+            except ValueError as e:
+                # Database server is missing pg_trgm
+                if 'pg_trgm' in str(e):
+                    api.asyncReturn(31)
+                else:
+                    raise
 
-        if options.register_station and not options.empty:
-            self._register_station()
+            if options.create_examples or options.demo:
+                from stoqlib.importers.stoqlibexamples import create
+                create(utilities=True)
 
-        if options.plugins:
-            self._enable_plugins(unicode(options.plugins).split(','))
+            if options.register_station and not options.empty:
+                self._register_station()
 
-        if options.demo:
-            self._enable_demo()
-        config.flush()
+            if options.plugins:
+                self._enable_plugins(unicode(options.plugins).split(','))
+
+            if options.demo:
+                self._enable_demo()
+
+            config.flush()
+
+            # The schema was upgraded. If it was running before,
+            # restart it so it can load the new code
+            if running:
+                yield server.call('restart')
+
+        retval = _run_async(init)
+        return 0 if retval is None else retval
 
     def opt_init(self, parser, group):
         group.add_option('-e', '--create-examples',
@@ -352,7 +399,6 @@ class StoqCommandHandler:
         from stoqlib.database.migration import StoqlibSchemaMigration
         from stoqlib.lib.environment import is_developer_mode
         from stoqlib.net.server import ServerProxy
-        from twisted.internet import reactor
 
         self._read_config(options, check_schema=False, load_plugins=False,
                           register_station=False)
@@ -367,28 +413,24 @@ class StoqCommandHandler:
             backup = options.disable_backup
 
         @api.async
-        def migrate(retval):
+        def migrate():
             server = ServerProxy()
             running = yield server.check_running()
             if running:
                 yield server.call('pause_tasks')
 
             try:
-                retval[0] = yield migration.update_async(backup=backup)
+                retval = yield migration.update_async(backup=backup)
             finally:
                 # The schema was upgraded. If it was running before,
                 # restart it so it can load the new code
                 if running:
                     yield server.call('restart')
 
-                if reactor.running:
-                    reactor.stop()
+            api.asyncReturn(retval)
 
-        retval = [False]
-        reactor.callWhenRunning(migrate, retval)
-        reactor.run()
-
-        return 0 if retval[0] else 1
+        retval = _run_async(migrate)
+        return 0 if retval else 1
 
     def opt_clone(self, parser, group):
         group.add_option('', '--dry',
