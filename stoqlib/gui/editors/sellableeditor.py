@@ -271,7 +271,7 @@ class SellableEditor(BaseEditor):
         self.add_extra_tab(_(u'Category Prices'), price_slave)
         self._setup_ui_forms()
         self._update_print_labels()
-        self._update_on_price_label()
+        self._update_price()
 
     def _add_demo_warning(self):
         fmt = _("This is a demostration mode of Stoq, you cannot "
@@ -313,7 +313,8 @@ class SellableEditor(BaseEditor):
         code = Sellable.get_max_value(self.store, Sellable.code)
         self.code.update(next_value_for(code))
 
-    def _update_on_price_label(self):
+    def _update_price(self):
+        self.sellable_proxy.update('base_price')
         if self._sellable.is_on_sale():
             text = _("Currently on sale for %s") % (
                 get_formatted_price(self._sellable.on_sale_price), )
@@ -368,7 +369,7 @@ class SellableEditor(BaseEditor):
                             self.get_toplevel().get_toplevel(),
                             self.store, sellable)
         if result:
-            self._update_on_price_label()
+            self._update_price()
         else:
             self.store.rollback_to_savepoint('before_run_editor_sellable_price')
 
