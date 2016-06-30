@@ -121,7 +121,7 @@ class SearchSlave(SlaveDelegate):
         self.menu = None
         self.result_view = None
         self._settings_key = 'search-columns-%s' % (
-            api.get_current_user(self.store).username, )
+            api.get_current_user(self.store).username.encode('utf-8'), )
         self.columns = self.restore_columns(columns)
 
         self.vbox = gtk.VBox()
