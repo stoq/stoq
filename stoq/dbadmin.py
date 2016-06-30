@@ -273,10 +273,9 @@ class StoqCommandHandler:
 
     def _enable_demo(self):
         from stoqlib.database.runtime import new_store
-        store = new_store()
-        store.execute("UPDATE parameter_data SET field_value = '1' WHERE field_name = 'DEMO_MODE';")
-        store.commit()
-        store.close()
+        with new_store() as store:
+            store.execute("INSERT INTO parameter_data (field_name, field_value) "
+                          "VALUES ('DEMO_MODE', '1');")
 
     def _enable_plugins(self, plugin_names):
         from stoqlib.lib.pluginmanager import (PluginError,
