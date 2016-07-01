@@ -35,7 +35,6 @@ import glib
 #        significant, it's good to maintain lazy loaded things during startup
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext as _
-from twisted.internet.defer import inlineCallbacks, succeed
 
 log = logging.getLogger(__name__)
 _shell = None
@@ -351,7 +350,6 @@ class Shell(object):
         except StoqlibError:
             pass
 
-    @inlineCallbacks
     def _terminate(self, restart=False, app=None):
         log.info("Terminating Stoq")
 
@@ -365,7 +363,11 @@ class Shell(object):
         stop_daemon()
 
         # Finally, go out of the reactor and show possible crash reports
-        yield self._quit_reactor_and_maybe_show_crashreports()
+        log.debug("Show some crash reports")
+        self._show_crash_reports()
+        log.debug("Stoq gtk.main")
+        import gtk
+        gtk.main_quit()
 
         if restart:
             from stoqlib.lib.process import Process
@@ -387,19 +389,13 @@ class Shell(object):
     def _show_crash_reports(self):
         from stoqlib.lib.crashreport import has_tracebacks
         if not has_tracebacks():
-            return succeed(None)
+            return
         if 'STOQ_DISABLE_CRASHREPORT' in os.environ:
-            return succeed(None)
+            return
+        import gtk
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-        return show_dialog()
-
-    @inlineCallbacks
-    def _quit_reactor_and_maybe_show_crashreports(self):
-        log.debug("Show some crash reports")
-        yield self._show_crash_reports()
-        log.debug("Shutdown reactor")
-        from twisted.internet import reactor
-        reactor.stop()
+        show_dialog(gtk.main_quit)
+        gtk.main()
 
     #
     # Public API
@@ -497,11 +493,11 @@ class Shell(object):
 
         self._maybe_schedule_idle_logout()
 
-        log.debug("Entering reactor")
+        log.debug("Entering main loop")
         self._bootstrap.entered_main = True
-        from twisted.internet import reactor
-        reactor.run()
-        log.info("Leaving reactor")
+        import gtk
+        gtk.main()
+        log.info("Leaving main loop")
 
     def quit(self, restart=False, app=None):
         """

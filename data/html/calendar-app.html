@@ -2,12 +2,12 @@
 <html>
 
 <head>
-  <link rel='stylesheet' type='text/css' href='/web/static/css/fullcalendar.css' />
-  <link rel='stylesheet' type='text/css' href='/web/static/css/jquery.qtip.min.css' />
-  <link rel='stylesheet' type='text/css' href='/web/static/css/calendar.css' />
-  <script type='text/javascript' src='/web/static/js/jquery.min.js'></script>
-  <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2.min.js'></script>
-  <script type='text/javascript' src='/web/static/js/jquery.qtip.min.js'></script>
+  <link rel='stylesheet' type='text/css' href='/static/css/fullcalendar.css' />
+  <link rel='stylesheet' type='text/css' href='/static/css/jquery.qtip.min.css' />
+  <link rel='stylesheet' type='text/css' href='/static/css/calendar.css' />
+  <script type='text/javascript' src='/static/js/jquery.min.js'></script>
+  <script type='text/javascript' src='/static/js/fullcalendar-1.5.2.min.js'></script>
+  <script type='text/javascript' src='/static/js/jquery.qtip.min.js'></script>
 
   <script>
   var timeout_id = 0;
@@ -28,7 +28,7 @@
           options.data = {};
         }
         $.ajax({
-            url: "/web/calendar-events.json",
+            url: "/calendar-events",
             dataType: 'json',
             data: calendar_options,
             success: function(events) {

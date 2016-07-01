@@ -24,25 +24,14 @@
 """ Web Service APIs """
 
 import datetime
-import json
 import logging
 import os
 import platform
-import sys
-import tempfile
-import urllib
-import urlparse
 
 from kiwi.component import get_utility
-from twisted.internet import reactor
-from twisted.internet.defer import succeed, Deferred
-from twisted.internet.protocol import Protocol
-from twisted.web.client import Agent, HTTPDownloader
-from twisted.web.http_headers import Headers
-from twisted.web.iweb import IBodyProducer
-from zope.interface import implementer
 
 from stoqlib.database.runtime import get_default_store
+from stoqlib.lib import asyncrequests
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.kiwilibrary import library
@@ -71,56 +60,8 @@ def get_main_cnpj(store):
     return data[0] if data else ''
 
 
-class JsonDownloader(Protocol):
-    def __init__(self, finished):
-        self.finished = finished
-        self.data = ''
-
-    def _try_show_html(self, data):
-        if not data:
-            return
-        if not '<html>' in data:
-            return
-        if not is_developer_mode():
-            return
-
-        from stoqlib.gui.widgets.webview import show_html
-        show_html(data)
-
-    def dataReceived(self, bytes):
-        self.data += bytes
-
-    def connectionLost(self, reason):
-        try:
-            data = json.loads(self.data)
-        except ValueError:
-            self._try_show_html(self.data)
-            log.info(self.data)
-            data = None
-        self.finished.callback(data)
-
-
-@implementer(IBodyProducer)
-class StringProducer(object):
-    def __init__(self, body):
-        self.body = body
-        self.length = len(body)
-
-    def startProducing(self, consumer):
-        consumer.write(self.body)
-        return succeed(None)
-
-    def pauseProducing(self):
-        pass
-
-    def stopProducing(self):
-        pass
-
-    def resumeProducing(self):
-        pass
-
-
 class WebService(object):
+
     API_SERVER = os.environ.get('STOQ_API_HOST', 'http://api.stoq.com.br')
 
     #
@@ -140,75 +81,16 @@ class WebService(object):
 
         return headers
 
-    def _do_request(self, method, document, callback=None, **params):
-        url = '%s/%s' % (self.API_SERVER, document)
-        headers = self._get_headers()
+    def _do_request(self, method, endpoint, **kwargs):
+        url = '%s/%s' % (self.API_SERVER, endpoint)
+        return asyncrequests.request(
+            method, url, headers=self._get_headers(), **kwargs)
 
-        if method == 'GET':
-            # FIXME: Get rid of this
-            if document in ['bugreport.json',
-                            'version.json']:
-                url += '?q=' + urllib.quote(json.dumps(params))
-            else:
-                url += '?' + urllib.urlencode(params)
-            producer = None
-        elif method == 'POST':
-            producer = StringProducer(urllib.urlencode(params))
-            headers['Content-Type'] = ['application/x-www-form-urlencoded']
-        else:
-            raise AssertionError(method)
+    def _get_request(self, endpoint, **kwargs):
+        return self._do_request('GET', endpoint, **kwargs)
 
-        log.info("Requsting %s %s %r" % (method, url, headers))
-
-        agent = Agent(reactor)
-        d = agent.request(method, url, Headers(headers), producer)
-
-        def dataReceived(response):
-            # Avoid displaying an error window while we don't update
-            # api.stoq.com.br with some new endpoints (or it is offline
-            # for some reason).
-            if response.code in [400, 401, 404, 500]:
-                log.warning("%s request to '%s' returned %s",
-                            method, url, response.code)
-                return
-
-            finished = Deferred()
-            response.deliverBody(JsonDownloader(finished))
-            return finished
-        d.addCallback(dataReceived)
-        if callback:
-            d.addCallback(callback)
-        return d
-
-    def _do_download_request(self, document, callback=None, errback=None,
-                             **params):
-        url = '%s/%s?%s' % (
-            self.API_SERVER, document, urllib.urlencode(params))
-        headers = self._get_headers()
-        file_ = tempfile.NamedTemporaryFile(delete=False)
-
-        downloader = HTTPDownloader(
-            url, file_.name, agent=headers['User-Agent'], headers=headers)
-
-        def errback_(error):
-            if errback is not None:
-                code = getattr(downloader, 'status', None)
-                errback(code, error)
-
-        def callback_(res):
-            if getattr(downloader, 'status', None) == '200' and callback:
-                callback(file_.name)
-
-            # Remove the temporary file after the callback has handled it
-            os.remove(file_.name)
-
-        downloader.deferred.addErrback(errback_)
-        downloader.deferred.addCallback(callback_)
-
-        parsed = urlparse.urlparse(url)
-        reactor.connectTCP(parsed.netloc.split(':')[0],
-                           parsed.port or 80, downloader)
-        return downloader.deferred
+    def _post_request(self, endpoint, **kwargs):
+        return self._do_request('POST', endpoint, **kwargs)
 
     def _get_usage_stats(self, store):
         from stoqlib.domain.sale import Sale
@@ -241,7 +123,7 @@ class WebService(object):
             'stoq_phone_number': person.phone_number,
             'stoq_email': person.email,
             'stoq_street': address.street,
-            'stoq_number': address.streetnumber,
+            'stoq_number': unicode(address.streetnumber or ''),
             'stoq_district': address.district,
             'stoq_complement': address.complement,
             'stoq_postal_code': address.postal_code,
@@ -254,11 +136,11 @@ class WebService(object):
     #   Public API
     #
 
-    def version(self, store, app_version):
+    def version(self, store, app_version, **kwargs):
         """Fetches the latest version
+
         :param store: a store
         :param app_version: application version
-        :returns: a deferred with the version_string as a parameter
         """
         try:
             bdist_type = library.bdist_type
@@ -275,37 +157,30 @@ class WebService(object):
             source = 'ppa'
 
         params = {
-            'hash': sysparam.get_string('USER_HASH'),
             'demo': sysparam.get_bool('DEMO_MODE'),
-            'dist': platform.dist(),
+            'dist': ' '.join(platform.dist()),
             'cnpj': get_main_cnpj(store),
-            'plugins': InstalledPlugin.get_plugin_names(store),
+            'plugins': ' '.join(InstalledPlugin.get_plugin_names(store)),
             'product_key': get_product_key(),
-            'time': datetime.datetime.today().isoformat(),
-            'uname': platform.uname(),
+            'uname': ' '.join(platform.uname()),
             'version': app_version,
             'source': source,
         }
         params.update(self._get_company_details(store))
         params.update(self._get_usage_stats(store))
-        return self._do_request('GET', 'version.json', **params)
 
-    def bug_report(self, report):
+        endpoint = 'api/stoq/v1/version/%s' % (sysparam.get_string('USER_HASH'), )
+        return self._do_request('POST', endpoint, json=params, **kwargs)
+
+    def bug_report(self, report, **kwargs):
         params = {
-            'hash': sysparam.get_string('USER_HASH'),
             'product_key': get_product_key(),
-            'report': json.dumps(report)
+            'report': report,
         }
-        if os.environ.get('STOQ_DISABLE_CRASHREPORT'):
-            d = Deferred()
-            sys.stderr.write(report)
-            d.callback({'report-url': '<not submitted>',
-                        'report': '<none>'})
-            return d
+        endpoint = 'api/stoq/v1/bugreport/%s' % (sysparam.get_string('USER_HASH'), )
+        return self._do_request('POST', endpoint, json=params, **kwargs)
 
-        return self._do_request('POST', 'v2/bugreport.json', **params)
-
-    def link_registration(self, name, email, phone):
+    def link_registration(self, name, email, phone, **kwargs):
         params = {
             'hash': sysparam.get_string('USER_HASH'),
             'name': name,
@@ -313,12 +188,11 @@ class WebService(object):
             'phone': phone,
             'product_key': get_product_key(),
         }
-        return self._do_request('POST', 'api/auth/register', **params)
+        return self._do_request('POST', 'api/stoq-link/user', data=params, **kwargs)
 
-    def feedback(self, screen, email, feedback):
+    def feedback(self, screen, email, feedback, **kwargs):
         default_store = get_default_store()
         params = {
-            'hash': sysparam.get_string('USER_HASH'),
             'cnpj': get_main_cnpj(default_store),
             'demo': sysparam.get_bool('DEMO_MODE'),
             'dist': ' '.join(platform.dist()),
@@ -331,26 +205,16 @@ class WebService(object):
             'uname': ' '.join(platform.uname()),
             'version': self._get_version(),
         }
-        return self._do_request('GET', 'feedback.json', **params)
 
-    def download_plugin(self, plugin_name, md5sum=None, callback=None):
+        endpoint = 'api/stoq/v1/feedback/%s' % (sysparam.get_string('USER_HASH'), )
+        return self._do_request('POST', endpoint, json=params, **kwargs)
+
+    def download_plugin(self, plugin_name, md5sum=None, **kwargs):
         params = {
             'hash': sysparam.get_string('USER_HASH'),
-            'plugin': plugin_name,
             'md5': md5sum or '',
             'version': self._get_version(),
         }
 
-        def errback(code, error):
-            if code == '204':
-                log.info("No update needed. The plugin is already up to date.")
-            else:
-                return_messages = {
-                    '400': "Plugin not available for this stoq version",
-                    '404': "Plugin does not exist",
-                    '405': "This instance has not acquired the specified plugin",
-                }
-                log.warning(return_messages.get(code, str(error)))
-
-        return self._do_download_request(
-            'api/eggs', callback=callback, errback=errback, **params)
+        endpoint = 'api/stoq-link/egg/%s' % (plugin_name, )
+        return self._do_request('GET', endpoint, params=params, **kwargs)

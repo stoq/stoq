@@ -25,8 +25,6 @@
 import datetime
 import json
 
-from twisted.web.resource import Resource
-
 from stoqlib.api import api
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.person import ClientCallsView
@@ -50,7 +48,8 @@ def _color_to_rgb(c, alpha):
         int(c[4:], 16), alpha)
 
 
-class CalendarEvents(Resource):
+class CalendarEvents(object):
+
     def render_GET(self, resource):
         start = datetime.date.fromtimestamp(float(resource.args['start'][0]))
         end = datetime.date.fromtimestamp(float(resource.args['end'][0]))

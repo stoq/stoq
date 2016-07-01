@@ -40,9 +40,10 @@ log = logging.getLogger(__name__)
 
 class ShellBootstrap(object):
     """Bootstraps the Stoq application, it's responsible for:
+
     - Setting up log files
     - Checking dependencies
-    - Setting up libraries (gobject, gtk, kiwi, twisted)
+    - Setting up libraries (gobject, gtk, kiwi)
     - Checking version
     - Locale
     - User settings and keybindings
@@ -73,7 +74,6 @@ class ShellBootstrap(object):
         self._setup_gtk()
         self._setup_kiwi()
         self._show_splash()
-        self._setup_twisted()
         self._setup_psycopg()
         self._check_version_policy()
         self._setup_ui_dialogs()
@@ -247,17 +247,6 @@ class ShellBootstrap(object):
         from stoqlib.gui.widgets.splash import show_splash
         show_splash()
 
-    def _setup_twisted(self, raise_=True):
-        # FIXME: figure out why twisted is already loaded
-        # assert not 'twisted' in sys.modules
-        from stoqlib.net import gtk2reactor
-        from twisted.internet.error import ReactorAlreadyInstalledError
-        try:
-            gtk2reactor.install()
-        except ReactorAlreadyInstalledError:
-            if self._initial and raise_:
-                raise
-
     def _setup_psycopg(self):
         # This will only be required when we use uuid.UUID instances
         # for UUIDCol
@@ -385,13 +374,6 @@ class ShellBootstrap(object):
         pdb.pm()
 
     def _write_exception_hook(self, exctype, value, tb):
-        # NOTE: This exception hook depends on gtk, kiwi, twisted being present
-        #       In the future we might want it to run without some of these
-        #       dependencies, so we can crash reports that happens really
-        #       really early on for users with weird environments.
-        if not self.entered_main:
-            self._setup_twisted(raise_=False)
-
         try:
             from psycopg2 import OperationalError
             if exctype == OperationalError:
@@ -433,11 +415,10 @@ class ShellBootstrap(object):
         if self.entered_main:
             return
 
+        import gtk
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-        d = show_dialog()
-        from twisted.internet import reactor
-        d.addCallback(lambda *x: reactor.stop())
-        reactor.run()
+        show_dialog(callback=gtk.main_quit)
+        gtk.main()
         raise SystemExit
 
 

@@ -31,6 +31,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.threadutils import schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.webservice import WebService
 
@@ -74,10 +75,10 @@ class FeedbackDialog(BaseEditor):
             return False
 
         webapi = WebService()
-        d = webapi.feedback(self.application_screen,
-                            self.model.email,
-                            self.model.feedback)
-        d.addCallback(self._on_feedback_reply)
+        webapi.feedback(self.application_screen,
+                        self.model.email,
+                        self.model.feedback,
+                        callback=self._on_feedback_reply)
         self.disable_ok()
         return False
 
@@ -88,7 +89,7 @@ class FeedbackDialog(BaseEditor):
         log.info("Feedback details: %s" % (details, ))
         api.user_settings.set('feedback-email', self.model.email)
         self.retval = self.model
-        self.main_dialog.close()
+        schedule_in_main_thread(self.main_dialog.close)
 
     #
     # Callbacks

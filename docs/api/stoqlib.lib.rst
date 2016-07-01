@@ -17,6 +17,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`asyncrequests` Module
+---------------------------
+
+.. automodule:: stoqlib.lib.asyncrequests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`appinfo` Module
 ---------------------
 

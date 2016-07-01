@@ -49,6 +49,8 @@ from stoqlib.gui.widgets.webview import WebView
 from stoqlib.lib import dateutils
 from stoqlib.lib.daemonutils import start_daemon
 from stoqlib.lib.defaults import get_weekday_start
+from stoqlib.lib.threadutils import (threadit,
+                                     schedule_in_main_thread)
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 from stoq.gui.shell.shellapp import ShellApp
@@ -214,7 +216,7 @@ class CalendarView(WebView):
         self._daemon_uri = uri
 
     def load(self):
-        self._load_daemon_path('web/static/calendar-app.html')
+        self._load_daemon_path('static/calendar-app.html')
 
     def go_prev(self):
         self._calendar_run('prev')
@@ -262,16 +264,13 @@ class CalendarApp(ShellApp):
         self.date_label = gtk.Label('')
         self._calendar = CalendarView(self)
         ShellApp.__init__(self, window, store=store)
-        self._setup_daemon()
+        threadit(self._setup_daemon)
 
-    @api.async
     def _setup_daemon(self):
-        daemon = yield start_daemon()
-        self._calendar.set_daemon_uri(daemon.base_uri)
-
-        proxy = daemon.get_client()
-        yield proxy.callRemote('start_webservice')
-        self._calendar.load()
+        daemon = start_daemon()
+        assert daemon.running
+        self._calendar.set_daemon_uri(daemon.server_uri)
+        schedule_in_main_thread(self._calendar.load)
 
     #
     # ShellApp overrides

@@ -1215,10 +1215,14 @@ class VersionChecker(object):
     def _download_details(self):
         log.debug('Downloading new version information')
         webapi = WebService()
-        response = webapi.version(self.store, stoq.version)
-        response.addCallback(self._on_response_done)
+        webapi.version(self.store, stoq.version,
+                       callback=self._on_response_done)
 
-    def _on_response_done(self, details):
+    def _on_response_done(self, response):
+        if response.status_code != 200:
+            return
+
+        details = response.json()
         self._check_details(details['version'])
         api.user_settings.set('last-version-check',
                               datetime.date.today().strftime('%Y-%m-%d'))

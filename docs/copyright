@@ -37,8 +37,6 @@ External dependencies:
   License: MIT
 * python-dateutil <http://labix.org/python-dateutil>
   License: PSFL
-* Twisted <http://www.twistedmatrix.com/>
-  License: PSFL, MIT
 * iso-codes <http://pkg-isocodes.alioth.debian.org/>
   License: LGPLv2.1+
 * psycopg2 <http://www.initd.org/psycopg/>
@@ -106,9 +104,6 @@ Contains code derived from:
 * jqplot: <http://www.jqplot.com/>
   License: MIT/GPLv2
   Files: data/html/js/jqplot*
-* Twisted: <http://www.twistedmatrix.com/>
-  License: MIT
-  Files: stoqlib/net/gtk2reactor.py
 * PythonDecoratorLibrary: <http://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties>
   License: MIT
   Files stoqlib/lib/decorators.py

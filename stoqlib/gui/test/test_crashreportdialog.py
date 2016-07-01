@@ -28,5 +28,5 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 class TestCrashReportDialog(GUITest):
     def test_show(self):
-        dialog = CrashReportDialog(None)
+        dialog = CrashReportDialog(None, lambda: None)
         self.check_dialog(dialog._dialog, 'dialog-crash-report')

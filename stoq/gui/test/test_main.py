@@ -75,20 +75,13 @@ class TestMain(unittest.TestCase):
     def test_shell_bootstrap(self):
         options = mock.Mock()
         bootstrap = ShellBootstrap(options=options, initial=True)
-        mocks = []
-        for func in [
-                # Those two fail as testsuit already setup them
-                '_setup_gobject',
-                '_setup_twisted']:
-            mocked = mock.patch.object(bootstrap, func, new=lambda: None)
-            mocks.append(mocked)
-            mocked.start()
-
+        # This will fail since testsuit already setup it
+        mocked = mock.patch.object(bootstrap, '_setup_gobject', new=lambda: None)
+        mocked.start()
         try:
             bootstrap.bootstrap()
         finally:
-            for mocked in mocks:
-                mocked.stop()
+            mocked.stop()
 
     @mock.patch('stoq.gui.shell.bootstrap.boot_shell')
     def test_main(self, boot_shell):

@@ -9,14 +9,6 @@ net Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`gtk2reactor` Module
--------------------------
-
-.. automodule:: stoqlib.net.gtk2reactor
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`socketutils` Module
 -------------------------
 
@@ -40,12 +32,3 @@ net Package
     :members:
     :undoc-members:
     :show-inheritance:
-
-:mod:`xmlrpcservice` Module
----------------------------
-
-.. automodule:: stoqlib.net.xmlrpcservice
-    :members:
-    :undoc-members:
-    :show-inheritance:
-

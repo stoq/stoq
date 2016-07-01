@@ -27,8 +27,6 @@
 import socket
 import xmlrpclib
 
-from twisted.web.xmlrpc import Proxy
-
 from stoqlib.api import api
 from stoqlib.database.settings import db_settings
 from stoqlib.lib.configparser import get_config
@@ -53,14 +51,16 @@ class ServerError(Exception):
 class ServerProxy(object):
     """Proxy to communicate with a Stoq Server instance"""
 
-    def __init__(self):
+    DEFAULT_TIMEOUT = 30
+
+    def __init__(self, timeout=DEFAULT_TIMEOUT):
+        self._timeout = timeout
         self._proxy = None
 
     #
     #  Public API
     #
 
-    @api.async
     def call(self, method, *args):
         """Call a remote method on stoq server.
 
@@ -70,16 +70,13 @@ class ServerProxy(object):
         :raises: :exc:`ServerError` in case of errors
         """
         try:
-            proxy = yield self._get_proxy()
-            retval = yield proxy.callRemote(method, *args)
+            proxy = self._get_proxy()
+            return getattr(proxy, method)(*args)
         except xmlrpclib.Fault as e:
             raise ServerError(e.faultString, e.faultCode)
         except socket.error as e:
             raise ServerError(str(e))
 
-        api.asyncReturn(retval)
-
-    @api.async
     def check_running(self):
         """Call a remote method on stoq server.
 
@@ -89,17 +86,16 @@ class ServerProxy(object):
         :raises: :exc:`ServerError` in case of errors
         """
         try:
-            proxy = yield self._get_proxy()
+            proxy = self._get_proxy()
         except Exception:
-            api.asyncReturn(False)
+            proxy = None
 
-        api.asyncReturn(bool(proxy))
+        return proxy is not None
 
     #
     #  Private
     #
 
-    @api.async
     def _get_proxy(self):
         if self._proxy is None:
             config = get_config()
@@ -132,38 +128,30 @@ class ServerProxy(object):
             port = config.get('General', 'serverport') or 6970
             url = 'http://%s:%s/XMLRPC' % (address, port)
 
-            self._proxy = Proxy(url)
+            default_timeout = socket.getdefaulttimeout()
+            socket.setdefaulttimeout(self._timeout)
+            self._proxy = xmlrpclib.ServerProxy(url, allow_none=True)
+            socket.setdefaulttimeout(default_timeout)
 
         try:
-            yield self._check_proxy(self._proxy)
-        except Exception:
+            retval = self._proxy.ping()
+        except (Exception, AttributeError):
             self._proxy = None
             raise
 
-        api.asyncReturn(self._proxy)
-
-    @api.async
-    def _check_proxy(self, proxy):
-        retval = yield proxy.callRemote('ping')
         if not retval:
             raise ServerError(_("Server not responding to pings"))
 
+        return self._proxy
+
 
 if __name__ == '__main__':
-    from twisted.internet import reactor
-
     api.prepare_test()
     proxy = ServerProxy()
 
-    @api.async
-    def ping():
-        try:
-            retval = yield proxy.call('ping')
-        except ServerError as e:
-            print "error: %s" % (e, )
-        else:
-            print retval
-        reactor.stop()
-
-    reactor.callWhenRunning(ping)
-    reactor.run()
+    try:
+        retval = proxy.call('ping')
+    except ServerError as e:
+        print "error: %s" % (e, )
+    else:
+        print retval

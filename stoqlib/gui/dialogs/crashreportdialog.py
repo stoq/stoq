@@ -23,19 +23,9 @@
 ##
 """ Crash report dialog """
 
-# When running this file we need to explicitly say that we want to use
-# the gtk2reactor, otherwise the poll reactor will be installed when
-# t.i.reactor is first accessed/used.
-if __name__ == '__main__':  # pragma: no cover
-    from stoqlib.net import gtk2reactor
-    gtk2reactor.install()
-
-import os
-
 import gtk
 from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
-from twisted.internet import defer, reactor
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import get_current_toplevel
@@ -52,7 +42,7 @@ _N_TRIES = 3
 
 
 class CrashReportDialog(object):
-    def __init__(self, parent):
+    def __init__(self, parent, callback):
         self._parent = parent
         self._report_submitter = ReportSubmitter()
         self._report_submitter.connect('submitted',
@@ -61,7 +51,7 @@ class CrashReportDialog(object):
                                        self._on_report__failed)
         self._create_dialog()
         self.submitted = False
-        self.deferred = defer.Deferred()
+        self._callback = callback
 
     def _create_dialog(self):
         app_info = get_utility(IAppInfo, None)
@@ -215,12 +205,12 @@ class CrashReportDialog(object):
 
     def _destroy(self):
         self._dialog.destroy()
-        self.deferred.callback(None)
+        if self._callback is not None:
+            self._callback()
 
     def run(self):
         self._dialog.connect('response', self._on_dialog__response)
         self._dialog.show_all()
-        return self.deferred
 
     def _on_report__failed(self, response, failure):
         self._show_error()
@@ -235,19 +225,15 @@ class CrashReportDialog(object):
         self.submitted = True
 
 
-def show_dialog(interactive=True):
+def show_dialog(callback=None):
     """Show a crash report dialog
     """
     parent = get_current_toplevel()
-    crd = CrashReportDialog(parent)
+    crd = CrashReportDialog(parent, callback=callback)
     return crd.run()
 
 
 if __name__ == '__main__':   # pragma: no cover
     ec = api.prepare_test()
-    d = show_dialog()
-
-    def cb(*args):
-        os._exit(0)
-    d.addCallback(cb)
-    reactor.run()
+    show_dialog(callback=gtk.main_quit)
+    gtk.main()

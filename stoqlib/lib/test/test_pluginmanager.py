@@ -186,23 +186,70 @@ class TestPluginManager(DomainTest):
 
     @mock.patch('stoqlib.lib.webservice.WebService.download_plugin')
     @mock.patch('stoqlib.lib.pluginmanager.new_store')
-    def test_download_plugin(self, new_store, download_plugin):
+    def test_download_plugin_error(self, new_store, download_plugin):
         new_store.return_value = self.store
-
-        self._manager.download_plugin(u'foo')
-        args, kwargs = download_plugin.call_args
-        plugin_name = args[0]
-        callback = kwargs['callback']
-        self.assertEqual(plugin_name, u'foo')
 
         with contextlib.nested(
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close'),
-                mock.patch.object(self._manager, '_reload')):
-            with tempfile.NamedTemporaryFile() as f:
-                f.write('foo bar baz')
-                f.flush()
-                callback(f.name)
+                mock.patch.object(self._manager, '_reload')) as (commit, close, r):
+            response = mock.Mock()
+            response.status_code = 400
+            res = mock.Mock()
+            res.get_response.return_value = response
+            download_plugin.return_value = res
+            self.assertEqual(
+                self._manager.download_plugin(u'foo'),
+                (False, 'The instance has no active paid subscription'))
+            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None)
+
+            self.assertNotCalled(commit)
+            self.assertNotCalled(r)
+
+    @mock.patch('stoqlib.lib.webservice.WebService.download_plugin')
+    @mock.patch('stoqlib.lib.pluginmanager.new_store')
+    def test_download_plugin_no_update_needed(self, new_store, download_plugin):
+        new_store.return_value = self.store
+
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self._manager, '_reload')) as (commit, close, r):
+            response = mock.Mock()
+            response.status_code = 204
+            res = mock.Mock()
+            res.get_response.return_value = response
+            download_plugin.return_value = res
+            self.assertEqual(
+                self._manager.download_plugin(u'foo'),
+                (True, 'No update needed. The plugin is already up to date.'))
+            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None)
+
+            self.assertNotCalled(commit)
+            self.assertNotCalled(r)
+
+    @mock.patch('stoqlib.lib.webservice.WebService.download_plugin')
+    @mock.patch('stoqlib.lib.pluginmanager.new_store')
+    def test_download_plugin_success(self, new_store, download_plugin):
+        new_store.return_value = self.store
+
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self._manager, '_reload')) as (commit, close, r):
+            response = mock.Mock()
+            response.status_code = 200
+            response.content = 'foo bar baz'
+            res = mock.Mock()
+            res.get_response.return_value = response
+            download_plugin.return_value = res
+            self.assertEqual(
+                self._manager.download_plugin(u'foo'),
+                (True, 'Plugin download successful'))
+            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None)
+
+            self.assertCalledOnceWith(commit)
+            self.assertCalledOnceWith(r)
 
         plugin_egg = self.store.find(PluginEgg, plugin_name=u'foo').one()
         self.assertEqual(plugin_egg.egg_content, 'foo bar baz')

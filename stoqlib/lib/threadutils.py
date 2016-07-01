@@ -25,6 +25,7 @@
 """ Utilities to work with threading """
 
 import ctypes
+import threading
 
 import glib
 
@@ -51,6 +52,14 @@ def terminate_thread(thread):
         # and you should call it again with exc=NULL to revert the effect"""
         ctypes.pythonapi.PyThreadState_SetAsyncExc(thread.ident, None)
         raise SystemError("PyThreadState_SetAsyncExc failed")
+
+
+def threadit(func, *args, **kwargs):
+    """Run func on a separated thread"""
+    t = threading.Thread(target=func, args=args, kwargs=kwargs)
+    t.daemon = True
+    t.start()
+    return t
 
 
 def schedule_in_main_thread(func, *args):

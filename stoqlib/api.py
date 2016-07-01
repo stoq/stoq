@@ -32,7 +32,6 @@ import operator
 import sys
 
 from kiwi.component import get_utility
-from twisted.internet.defer import inlineCallbacks, returnValue
 
 from stoqlib.database.runtime import (new_store,
                                       get_default_store)
@@ -79,34 +78,6 @@ class StoqAPI(object):
 
     def is_developer_mode(self):
         return is_developer_mode()
-
-    @property
-    def async(self):
-        """Async API for dialog, it's built on-top of
-        twisted.It is meant to be used in the following way::
-
-          @api.async
-          def _run_a_dialog(self):
-              model = yield run_dialog(SomeDialog, parent, store)
-
-        If the function returns a value, you need to use
-        :py:func:`~stoqlib.api.StoqAPI.asyncReturn`, eg::
-
-          api.asyncReturn(model)
-
-        :returns: a generator
-        """
-
-        return inlineCallbacks
-
-    def asyncReturn(self, value=None):
-        """An async API that also returns a value,
-        see :py:func:`~stoqlib.api.StoqAPI.async` for more information.
-
-        :param value: the return value, defaults to None
-        :returns: a twisted deferred
-        """
-        return returnValue(value)
 
     def get_l10n_field(self, field_name, country=None):
         return get_l10n_field(field_name, country=country)

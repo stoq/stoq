@@ -23,6 +23,7 @@
 ##
 
 import glob
+import hashlib
 import logging
 import os
 import sys
@@ -41,6 +42,7 @@ from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error
 from stoqlib.lib.osutils import get_system_locale, get_application_dir
 from stoqlib.lib.settings import get_settings
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 log = logging.getLogger(__name__)
 
@@ -237,33 +239,53 @@ class PluginManager(object):
         """
         from stoqlib.lib.webservice import WebService
 
-        def callback(filename):
-            md5sum = unicode(md5sum_for_filename(filename))
-            with open(filename) as f:
-                with new_store() as store:
-                    existing_egg = store.find(PluginEgg,
-                                              plugin_name=plugin_name).one()
-                    if existing_egg is not None:
-                        existing_egg.egg_content = f.read()
-                        existing_egg.egg_md5sum = md5sum
-                    else:
-                        PluginEgg(
-                            store=store,
-                            plugin_name=plugin_name,
-                            egg_md5sum=md5sum,
-                            egg_content=f.read(),
-                        )
-
-            self._reload()
-
         default_store = get_default_store()
         existing_egg = default_store.find(PluginEgg,
                                           plugin_name=plugin_name).one()
         md5sum = existing_egg and existing_egg.egg_md5sum
-
         webapi = WebService()
-        return webapi.download_plugin(plugin_name, callback=callback,
-                                      md5sum=md5sum)
+        r = webapi.download_plugin(plugin_name, md5sum=md5sum)
+
+        try:
+            response = r.get_response()
+        except Exception as e:
+            return False, _("Failed to do the request: %s" % (e, ))
+
+        code = response.status_code
+        if code == 204:
+            msg = _("No update needed. The plugin is already up to date.")
+            log.info(msg)
+            return True, msg
+
+        if code != 200:
+            return_messages = {
+                400: _("Plugin not available for this stoq version"),
+                400: _("The instance has no active paid subscription"),
+                404: _("Plugin does not exist"),
+                405: _("This instance has not acquired the specified plugin"),
+            }
+            msg = return_messages.get(code, str(code))
+            log.warning(msg)
+            return False, msg
+
+        content = response.content
+        md5sum = unicode(hashlib.md5(content).hexdigest())
+        with new_store() as store:
+            existing_egg = store.find(PluginEgg,
+                                      plugin_name=plugin_name).one()
+            if existing_egg is not None:
+                existing_egg.egg_content = content
+                existing_egg.egg_md5sum = md5sum
+            else:
+                PluginEgg(
+                    store=store,
+                    plugin_name=plugin_name,
+                    egg_md5sum=md5sum,
+                    egg_content=content,
+                )
+
+        self._reload()
+        return True, _("Plugin download successful")
 
     def get_plugin(self, plugin_name):
         """Returns a plugin by it's name

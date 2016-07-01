@@ -36,9 +36,7 @@ import traceback
 
 from kiwi.environ import environ
 
-from stoqlib.api import api
-from stoqlib.database.runtime import (get_default_store,
-                                      new_store)
+from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.database.settings import db_settings, check_extensions
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
@@ -407,13 +405,12 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         os.unlink(self._backup)
 
-    @api.async
-    def update_async(self, plugins=True, backup=True):
+    def update(self, plugins=True, backup=True, check_database=True):
         log.info("Upgrading database (plugins=%r, backup=%r)" % (
             plugins, backup))
 
-        if not self._check_database():
-            api.asyncReturn(False)
+        if check_database and not self._check_database():
+            return False
 
         if backup:
             self._backup_database()
@@ -424,22 +421,9 @@ class StoqlibSchemaMigration(SchemaMigration):
             manager = get_plugin_manager()
             for egg_plugin in manager.egg_plugins_names:
                 try:
-                    yield manager.download_plugin(egg_plugin)
+                    manager.download_plugin(egg_plugin)
                 except Exception:
                     pass
-
-        api.asyncReturn(
-            self.update(plugins=plugins, backup=False, check_database=False))
-
-    def update(self, plugins=True, backup=True, check_database=True):
-        log.info("Upgrading database (plugins=%r, backup=%r)" % (
-            plugins, backup))
-
-        if check_database and not self._check_database():
-            return False
-
-        if backup:
-            self._backup_database()
 
         # We have to wrap a try/except statement inside a try/finally to
         # support python previous to 2.5 version.

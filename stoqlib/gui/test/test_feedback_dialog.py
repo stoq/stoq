@@ -40,4 +40,5 @@ class TestFeedabackDialog(GUITest):
         self.click(dialog.main_dialog.ok_button)
         self.check_dialog(dialog, 'dialog-feedback-confirm')
 
-        feedback.assert_called_once_with(None, 'foo@bar.com', 'feedback')
+        self.assertCalledOnceWith(feedback, None, 'foo@bar.com', 'feedback',
+                                  callback=dialog._on_feedback_reply)

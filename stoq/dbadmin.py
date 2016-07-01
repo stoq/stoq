@@ -29,32 +29,6 @@ import optparse
 import sys
 
 
-def _run_async(func):
-    from twisted.internet import reactor
-    rv = [None]
-
-    def callback(retval=None):
-        rv[0] = retval
-        if reactor.running:
-            reactor.stop()
-
-    def errback(err):
-        if reactor.running:
-            reactor.stop()
-        raise err
-
-    # We need to run the func here because, if the deferred runs too fast,
-    # it would finish before we could call reactor.run, which would mean that
-    # the reactor.stop on the callbacks would happen too early.
-    def run():
-        d = func()
-        d.addCallbacks(callback=callback, errback=errback)
-
-    reactor.callWhenRunning(run)
-    reactor.run()
-    return rv[0]
-
-
 class StoqCommandHandler:
     def __init__(self, prog_name):
         self.prog_name = prog_name
@@ -170,7 +144,6 @@ class StoqCommandHandler:
                                    check_schema=False,
                                    load_plugins=False)
 
-        from stoqlib.api import api
         from stoqlib.database.admin import initialize_system
         from stoqlib.database.runtime import set_default_store
         from stoqlib.database.settings import db_settings
@@ -186,47 +159,44 @@ class StoqCommandHandler:
         if options.password:
             db_settings.password = options.password
 
-        @api.async
-        def init():
-            server = ServerProxy()
-            running = yield server.check_running()
-            if running:
-                yield server.call('pause_tasks')
-            # ServerProxy may have opened a store
-            set_default_store(None)
+        server = ServerProxy()
+        running = server.check_running()
+        if running:
+            server.call('pause_tasks')
+        # ServerProxy may have opened a store
+        set_default_store(None)
 
-            try:
-                initialize_system(password=unicode(options.password),
-                                  force=options.force, empty=options.empty)
-            except ValueError as e:
-                # Database server is missing pg_trgm
-                if 'pg_trgm' in str(e):
-                    api.asyncReturn(31)
-                else:
-                    raise
+        try:
+            initialize_system(password=unicode(options.password),
+                              force=options.force, empty=options.empty)
+        except ValueError as e:
+            # Database server is missing pg_trgm
+            if 'pg_trgm' in str(e):
+                return 31
+            else:
+                raise
 
-            if options.create_examples or options.demo:
-                from stoqlib.importers.stoqlibexamples import create
-                create(utilities=True)
+        if options.create_examples or options.demo:
+            from stoqlib.importers.stoqlibexamples import create
+            create(utilities=True)
 
-            if options.register_station and not options.empty:
-                self._register_station()
+        if options.register_station and not options.empty:
+            self._register_station()
 
-            if options.plugins:
-                self._enable_plugins(unicode(options.plugins).split(','))
+        if options.plugins:
+            self._enable_plugins(unicode(options.plugins).split(','))
 
-            if options.demo:
-                self._enable_demo()
+        if options.demo:
+            self._enable_demo()
 
-            config.flush()
+        config.flush()
 
-            # The schema was upgraded. If it was running before,
-            # restart it so it can load the new code
-            if running:
-                yield server.call('restart')
+        # The schema was upgraded. If it was running before,
+        # restart it so it can load the new code
+        if running:
+            server.call('restart')
 
-        retval = _run_async(init)
-        return 0 if retval is None else retval
+        return 0
 
     def opt_init(self, parser, group):
         group.add_option('-e', '--create-examples',
@@ -288,7 +258,7 @@ class StoqCommandHandler:
                 return
 
             if plugin_name not in manager.available_plugins_names:
-                self._run_task(manager.download_plugin(plugin_name))
+                manager.download_plugin(plugin_name)
 
             try:
                 manager.install_plugin(plugin_name)
@@ -318,17 +288,6 @@ class StoqCommandHandler:
         root = logging.getLogger()
         root.setLevel(logging.WARNING)
         root.addHandler(ch)
-
-    def _run_task(self, deferred):
-        from twisted.internet import reactor
-
-        def stop_reactor(*args):
-            if reactor.running:
-                reactor.stop()
-
-        deferred.addCallback(stop_reactor)
-        deferred.addErrback(stop_reactor)
-        reactor.run()
 
     def _register_station(self):
         # Register the current computer as a branch station
@@ -395,7 +354,6 @@ class StoqCommandHandler:
 
     def cmd_updateschema(self, options):
         """Update the database schema"""
-        from stoqlib.api import api
         from stoqlib.database.migration import StoqlibSchemaMigration
         from stoqlib.lib.environment import is_developer_mode
         from stoqlib.net.server import ServerProxy
@@ -412,24 +370,19 @@ class StoqCommandHandler:
         else:
             backup = options.disable_backup
 
-        @api.async
-        def migrate():
-            server = ServerProxy()
-            running = yield server.check_running()
+        server = ServerProxy()
+        running = server.check_running()
+        if running:
+            server.call('pause_tasks')
+
+        try:
+            retval = migration.update(backup=backup)
+        finally:
+            # The schema was upgraded. If it was running before,
+            # restart it so it can load the new code
             if running:
-                yield server.call('pause_tasks')
+                server.call('restart')
 
-            try:
-                retval = yield migration.update_async(backup=backup)
-            finally:
-                # The schema was upgraded. If it was running before,
-                # restart it so it can load the new code
-                if running:
-                    yield server.call('restart')
-
-            api.asyncReturn(retval)
-
-        retval = _run_async(migrate)
         return 0 if retval else 1
 
     def opt_clone(self, parser, group):
@@ -485,14 +438,11 @@ class StoqCommandHandler:
         self._provide_app_info()
         self._setup_logging()
 
-        from twisted.internet.defer import DeferredList
         from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
 
-        deferred_list = [
+        for egg_plugin in manager.egg_plugins_names:
             manager.download_plugin(egg_plugin)
-            for egg_plugin in manager.egg_plugins_names]
-        self._run_task(DeferredList(deferred_list))
 
     def cmd_generate_sintegra(self, options, filename, month):
         """Generate a sintegra file"""
@@ -521,32 +471,6 @@ class StoqCommandHandler:
                          action='store',
                          help='Execute SQL command',
                          dest='command')
-
-    def cmd_serve(self, options):
-        """Serve a Stoq XMLRPC server"""
-        from twisted.internet import reactor
-        from stoqlib.lib.daemonutils import DaemonManager
-
-        print('* Starting XMLRPC server...')
-
-        self._read_config(options, register_station=False)
-        port = options.serverport and int(options.serverport)
-        dm = DaemonManager(port=port)
-
-        def on_server_running(daemon_manager):
-            uri = daemon_manager.base_uri
-            print('The XMLRPC server is running on ' + uri)
-
-        defer = dm.start()
-        defer.addCallback(on_server_running)
-
-        reactor.run()
-
-    def opt_serve(self, parser, group):
-        group.add_option('', '--serverport',
-                         action='store',
-                         help='Port to serve the server',
-                         dest='serverport')
 
     def cmd_import(self, options):
         """Import data into Stoq"""

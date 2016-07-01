@@ -84,11 +84,11 @@ from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.osutils import read_registry_key
 from stoqlib.lib.pgpass import write_pg_pass
+from stoqlib.lib.threadutils import schedule_in_main_thread
 from stoqlib.lib.validators import validate_email, validate_phone_number
 from stoqlib.lib.webservice import WebService
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.net.socketutils import get_hostname
-from twisted.internet import reactor
 
 from stoq.gui.update import SchemaUpdateWizard
 from stoq.lib.options import get_option_parser
@@ -336,13 +336,12 @@ class LinkStep(WizardEditorStep):
         self.send_error_label.hide()
 
     def _pulse(self):
-        # FIXME: This is a hack, remove it when we can avoid
-        #        calling dialog.run()
-        reactor.doIteration(0.1)
-        reactor.runUntilCurrent()
-
         self.send_progress.pulse()
-        return not self.wizard.link_request_done
+        if self.wizard.link_request_done:
+            self.send_progress.set_fraction(1.0)
+            self.send_progress.set_text(_("Done!"))
+            return False
+        return True
 
     def _cancel_request(self):
         if not self.wizard.link_request_done:
@@ -384,15 +383,10 @@ class LinkStep(WizardEditorStep):
             return FinishInstallationStep(self.wizard)
 
         webapi = WebService()
-        response = webapi.link_registration(
-            self.model.name, self.model.email, self.model.phone)
-        response.addCallback(self._on_response_done)
-        response.addErrback(self._on_response_error)
-
-        # FIXME: This is a hack, remove it when we can avoid
-        #        calling dialog.run()
-        if not reactor.running:
-            reactor.run()
+        webapi.link_registration(
+            self.model.name, self.model.email, self.model.phone,
+            callback=lambda r: schedule_in_main_thread(self._on_response_done, r),
+            errback=lambda e: schedule_in_main_thread(self._on_response_error, e))
 
         self.send_progress.show()
         self.send_progress.set_text(_('Sending...'))
@@ -444,14 +438,19 @@ class LinkStep(WizardEditorStep):
         if self.wizard.next_button.get_sensitive():
             self.wizard.go_to_next()
 
-    def _on_response_done(self, details):
+    def _on_response_done(self, response):
+        if response.status_code != 200:
+            self._show_error()
+            return
+
+        details = response.json()
         if details['message'] != 'client_instance_created':
             self._show_error()
             return
 
         if not self.wizard.link_request_done:
             self.wizard.link_request_done = True
-            self.wizard.go_to_next()
+            self.wizard.next_button.set_sensitive(True)
 
     def _on_response_error(self, err):
         self._show_error()
@@ -1071,9 +1070,3 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config.flush()
 
         self.close()
-
-        # This wizard is shown with run_dialog, that creates a new main loop,
-        # but we may have created another main loop when calling reactor.run()
-        # above. Make sure to leave only one main loop running after the wizard.
-        if reactor.running:
-            reactor.prepare_restart()

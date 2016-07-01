@@ -26,9 +26,9 @@ import logging
 
 from kiwi.python import Settable
 
-from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import warning, info
+from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.net.server import ServerProxy, ServerError
 
@@ -58,14 +58,14 @@ class PinDialog(BaseEditor):
 
     def setup_proxies(self):
         self.add_proxy(self.model, self.proxy_widgets)
-        self._proxy = ServerProxy()
+        self._proxy = ServerProxy(timeout=60)
 
     def validate_confirm(self):
         if self._done:
             return True
 
         self._set_processing(True)
-        self._register_link()
+        threadit(self._register_link)
         return False
 
     def refresh_ok(self, validation_value):
@@ -87,28 +87,34 @@ class PinDialog(BaseEditor):
             self.reply_lbl.set_text("")
         self.spinner.set_visible(processing)
 
-    @api.async
+    def _set_error(self, msg, long_msg=None):
+        warning(msg, long_msg)
+        self._set_processing(False)
+
+    def _set_done(self):
+        # XXX: Better text here
+        info(_("Stoq.Link registration successful! You may "
+               "manage your installation from there now"))
+        self._done = True
+        self.confirm()
+        self._set_processing(False)
+
     def _register_link(self):
-        running = yield self._proxy.check_running()
+        running = self._proxy.check_running()
         if running:
             pin = self.pin.read()
             try:
                 rv = yield self._proxy.call('register_link', pin)
             except ServerError as e:
-                warning(_("An error happened when trying to register "
-                          "to Stoq.Link"), str(e))
+                msg = _("An error happened when trying to register to Stoq.Link")
+                schedule_in_main_thread(self._error, msg, str(e))
             else:
                 log.info("register_link succedded. Retval: %s", rv)
                 # If no exception happened, that mens that the registration
                 # has succeeded.
-                # XXX: Better text here
-                info(_("Stoq.Link registration successful! You may "
-                       "manage your installation from there now"))
-                self._done = True
-                self.confirm()
+                schedule_in_main_thread(self._set_done)
         else:
             # TODO: Maybe we should add a link pointing to instructions
             # on how to get and install the stoq-server package?
-            warning(_("Could not find an instance of Stoq Server running."))
-
-        self._set_processing(False)
+            msg = _("Could not find an instance of Stoq Server running.")
+            schedule_in_main_thread(self._error, msg)
