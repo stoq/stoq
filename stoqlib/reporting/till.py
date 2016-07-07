@@ -79,7 +79,6 @@ class TillDailyMovementReport(HTMLReport):
     def get_subtitle(self):
         """Returns a subtitle text
         """
-        print self.start_date
         if self.end_date:
             return _('Till movement on %s to %s') % (self.start_date.strftime('%x'),
                                                      self.end_date.strftime('%x'))
