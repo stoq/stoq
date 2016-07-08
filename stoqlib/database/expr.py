@@ -309,3 +309,45 @@ expr_compile.set_precedence(10, UnionAll)
 def is_sql_identifier(identifier):
     return (not expr_compile.is_reserved_word(identifier) and
             is_safe_token(identifier))
+
+
+class Over(ComparableExpr):
+    """Check if value is between start and end
+
+    Usage:
+
+    Over(attr, [partitions], [order by])
+
+    e.g.:
+
+    Considering the query:
+
+    SELECT sale.total_amount OVER (ORDER BY sale.confirm_date DESC) FROM sale;
+
+    The window function gets described as:
+
+    Over(Sale.total_amount, [], [Desc(Sale.confirm_date)])
+    """
+    __slots__ = ('attribute', 'partitions', 'orders')
+
+    def __init__(self, attribute, partitions=None, orders=None):
+        self.attribute = attribute
+        self.partitions = partitions
+        self.orders = orders
+
+
+@expr_compile.when(Over)
+def compile_over(compile, expr, state):
+
+    result = ' %s OVER (' % expr_compile(expr.attribute, state)
+
+    if expr.partitions:
+        partitions = ', '.join(expr_compile(i, state) for i in expr.partitions)
+        result += 'PARTITION BY %s ' % partitions
+
+    if expr.orders:
+        orders = ', '.join(expr_compile(i, state) for i in expr.orders)
+        result += 'ORDER BY %s ' % orders
+
+    result += ')'
+    return result

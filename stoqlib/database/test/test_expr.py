@@ -26,9 +26,9 @@
 
 import datetime
 
-from storm.expr import Cast
+from storm.expr import Cast, Sum
 
-from stoqlib.database.expr import Case, Between, GenerateSeries, Field
+from stoqlib.database.expr import Case, Between, GenerateSeries, Field, Over
 from stoqlib.domain.event import Event
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -113,3 +113,21 @@ class ViewableTest(DomainTest):
                     result=None, else_=False)
         data = list(self.store.using(series).find(case))
         self.assertEquals(data, [None, False, None, None, None, None])
+
+    def test_over(self):
+        series = GenerateSeries(0, 10, 1)
+
+        normal_values = Field('generate_series', 'generate_series')
+        over_nothing = Over(Sum(normal_values))
+        over_order_values = Over(Sum(normal_values), [], [normal_values])
+        over_partition_values = Over(Sum(normal_values), [normal_values])
+
+        data = list(self.store.using(series).find((normal_values,
+                                                  over_nothing,
+                                                  over_order_values,
+                                                  over_partition_values)))
+
+        self.assertEquals(len(data), 11)
+
+        self.assertEquals(data, [
+            (i, 55, sum(xrange(i + 1)), i) for i in xrange(11)])
