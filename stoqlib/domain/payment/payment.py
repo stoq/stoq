@@ -229,6 +229,8 @@ class Payment(Domain):
     #: |accounttransaction| for this payment
     transaction = Reference('id', 'AccountTransaction.payment_id', on_remote=True)
 
+    card_data = Reference('id', 'CreditCardData.payment_id', on_remote=True)
+
     #: indicates if a bill has been received. They are usually delivered by
     #: mail before the due date. This is not indicating whether the payment has
     #: been paid, just that the receiver has notified the payer somehow.
