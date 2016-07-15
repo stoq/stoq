@@ -309,8 +309,12 @@ class SellableEditor(BaseEditor):
         self._add_extra_button(label, None,
                                self._on_reopen_sellable_button__clicked)
 
-    def _update_default_sellable_code(self):
-        code = Sellable.get_max_value(self.store, Sellable.code)
+    def _update_default_sellable_code(self, category=None):
+        if category:
+            query = (Sellable.category_id == category.id)
+            code = Sellable.get_max_value(self.store, Sellable.code, query=query)
+        else:
+            code = Sellable.get_max_value(self.store, Sellable.code)
         self.code.update(next_value_for(code))
 
     def _update_price(self):
@@ -517,8 +521,17 @@ class SellableEditor(BaseEditor):
         self._sellable.set_available()
         self.confirm()
 
-    def on_category_combo__content_changed(self, category):
-        self.edit_category.set_sensitive(bool(category.get_selected()))
+    def on_category_combo__content_changed(self, combo):
+        # This is being called twice (because of a kiwi bug). Run this code only
+        # once.
+        category = combo.get_selected()
+        if category == self._sellable.category:
+            return
+        category_suggest = api.sysparam.get_object(self.store,
+                                                   'SUGGEST_PRODUCT_CODE_BASED_CATEGORY')
+        if not self.edit_mode and category_suggest:
+            self._update_default_sellable_code(category)
+        self.edit_category.set_sensitive(bool(category))
 
     def on_tax_constant__changed(self, combo):
         self._update_tax_value()

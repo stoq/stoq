@@ -167,6 +167,13 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'SUGGEST_PRODUCT_CODE_BASED_CATEGORY',
+        _(u'Products'),
+        _(u'Suggest product code based on the selected category'),
+        _(u'If the next product code should be based on the category selected or not'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'MAIN_COMPANY',
         _(u'General'),
         _(u'Primary company'),

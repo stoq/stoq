@@ -30,7 +30,7 @@ import logging
 import warnings
 
 from storm.exceptions import NotOneError
-from storm.expr import And, Alias, Like, Max, Select, Update
+from storm.expr import And, Alias, Like, Max, Select, Update, Undef
 from storm.info import get_cls_info, get_obj_info
 from storm.properties import Property
 from storm.references import Reference
@@ -411,7 +411,7 @@ class Domain(ORMObject):
             yield value
 
     @classmethod
-    def get_max_value(cls, store, attr, validate_attr=True):
+    def get_max_value(cls, store, attr, validate_attr=True, query=Undef):
         """Get the maximum value for a given attr
 
         On text columns, trying to find the max value for them using MAX()
@@ -431,7 +431,7 @@ class Domain(ORMObject):
 
         max_length = Alias(
             Select(columns=[Alias(Max(CharLength(attr)), 'max_length')],
-                   tables=[cls]),
+                   tables=[cls], where=query),
             '_max_length')
         # Using LPad with max_length will workaround most of the cases where
         # the string comparison fails. For example, the common case would
@@ -440,8 +440,11 @@ class Domain(ORMObject):
         # than '001' would be greater than '10' (that would be excluded from
         # the comparison). By doing lpad, '09' is lesser than '10' and '001'
         # is lesser than '010', working around those cases
-        max_batch = store.using(cls, max_length).find(cls).max(
-            LPad(attr, Field('_max_length', 'max_length'), u'0'))
+        if query is not Undef and query is not None:
+            data = store.using(cls, max_length).find(cls, query)
+        else:
+            data = store.using(cls, max_length).find(cls)
+        max_batch = data.max(LPad(attr, Field('_max_length', 'max_length'), u'0'))
 
         # Make the api consistent and return an ampty string instead of None
         # if there's no batch registered on the database

@@ -175,6 +175,16 @@ class TestSelect(DomainTest):
         Ding(store=self.store, str_field=u'AB0010')
         self.assertEqual(Ding.get_max_value(self.store, Ding.str_field), u'AB0010')
 
+    def test_max_value_with_query(self):
+        Ding(store=self.store, str_field=u'1', int_field=1)
+        Ding(store=self.store, str_field=u'100', int_field=2)
+
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field,
+                                            query=(Ding.int_field == 1)), u'1')
+
+        self.assertEqual(Ding.get_max_value(self.store, Ding.str_field,
+                                            query=(Ding.int_field == 2)), u'100')
+
     def test_check_unique_value_exists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1')
         ding_2 = Ding(store=self.store, str_field=u'Ding_2')
