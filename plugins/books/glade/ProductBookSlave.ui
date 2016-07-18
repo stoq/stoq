@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
-<interface domain="stoqlib">
+<interface>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
     <property name="lower">0</property>
@@ -30,7 +30,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">Author:</property>
+            <property name="label" translatable="yes">Author:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -41,7 +41,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label3">
-            <property context="yes" name="label" translatable="yes">Series/Collection:</property>
+            <property name="label" translatable="yes">Series/Collection:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -54,7 +54,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label5">
-            <property context="yes" name="label" translatable="yes">Subject:</property>
+            <property name="label" translatable="yes">Subject:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -67,7 +67,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label7">
-            <property context="yes" name="label" translatable="yes">ISBN:</property>
+            <property name="label" translatable="yes">ISBN:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -80,7 +80,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label12">
-            <property context="yes" name="label" translatable="yes">Year:</property>
+            <property name="label" translatable="yes">Year:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -93,7 +93,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label10">
-            <property context="yes" name="label" translatable="yes">Decorative Finish:</property>
+            <property name="label" translatable="yes">Decorative Finish:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -106,7 +106,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label9">
-            <property context="yes" name="label" translatable="yes">Synopsis:</property>
+            <property name="label" translatable="yes">Synopsis:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
             <property name="yalign">0.0</property>
@@ -179,7 +179,7 @@
             <property name="data_type">int</property>
             <property name="is_focus">True</property>
             <property name="model_attribute">year</property>
-            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="text" translatable="yes">0</property>
             <property name="visible">True</property>
           </object>
           <packing>
@@ -232,7 +232,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label2">
-            <property context="yes" name="label" translatable="yes">Publisher:</property>
+            <property name="label" translatable="yes">Publisher:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -245,7 +245,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label4">
-            <property context="yes" name="label" translatable="yes">Edition:</property>
+            <property name="label" translatable="yes">Edition:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -260,7 +260,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label6">
-            <property context="yes" name="label" translatable="yes">Language:</property>
+            <property name="label" translatable="yes">Language:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -275,7 +275,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label8">
-            <property context="yes" name="label" translatable="yes">Pages:</property>
+            <property name="label" translatable="yes">Pages:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -290,7 +290,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label11">
-            <property context="yes" name="label" translatable="yes">Country:</property>
+            <property name="label" translatable="yes">Country:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -347,7 +347,7 @@
             <property name="adjustment">adjustment2</property>
             <property name="data_type">int</property>
             <property name="model_attribute">pages</property>
-            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="text" translatable="yes">0</property>
             <property name="visible">True</property>
           </object>
           <packing>

@@ -142,3 +142,6 @@ class ProductBookFullStockView(ProductFullStockView):
     ])
 
     clause = ProductFullStockView.clause
+
+    group_by = ProductFullStockView.group_by[:]
+    group_by.extend([Person.id, Book.id])
