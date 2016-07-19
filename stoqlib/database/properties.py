@@ -24,6 +24,7 @@
 import datetime
 import decimal
 import warnings
+from lxml import etree
 
 from kiwi.currency import currency
 
@@ -32,7 +33,7 @@ from storm.properties import SimpleProperty
 from storm.store import AutoReload
 from storm.variables import (DateVariable, DateTimeVariable,
                              DecimalVariable, IntVariable,
-                             Variable)
+                             Variable, EncodedValueVariable)
 
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 
@@ -170,6 +171,22 @@ class UUIDVariable(Variable):
 
 class UUIDCol(SimpleProperty):
     variable_class = UUIDVariable
+
+
+class XmlVariable(EncodedValueVariable):
+
+    def _loads(self, value):
+        return etree.fromstring(value)
+
+    def _dumps(self, value):
+        if value is None:
+            return None
+        return unicode(etree.tostring(value, encoding='unicode'))
+
+
+class XmlCol(SimpleProperty):
+    variable_class = XmlVariable
+
 
 # Columns, we're keeping the Col suffix to avoid clashes between
 # decimal.Decimal and storm.properties.Decimal
