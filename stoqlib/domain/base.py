@@ -389,7 +389,7 @@ class Domain(ORMObject):
         identifier once the order arives at the destination
         """
         lower_value = store.find(cls).min(cls.identifier)
-        return min(lower_value, 0) - 1
+        return min(lower_value or 0, 0) - 1
 
     @classmethod
     def find_distinct_values(cls, store, attr, exclude_empty=True):

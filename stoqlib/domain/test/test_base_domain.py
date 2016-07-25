@@ -267,9 +267,14 @@ class TestSelect(DomainTest):
                                               ('dung', 'ding_id')]))
 
     def test_get_temporary_identifier(self):
+        # When there is no object yet, it should return -1
+        self.clean_domain([Dung])
+        identifier = Dung.get_temporary_identifier(self.store)
+        self.assertEquals(identifier, -1)
+
+        # Now save that object, and the new temporary identifier should be -2
         dung = Dung(store=self.store)
-        dung.identifier = Dung.get_temporary_identifier(self.store)
-        self.assertEquals(dung.identifier, -1)
+        dung.identifier = identifier
 
         new_dung = Dung(store=self.store)
         new_dung.identifier = Dung.get_temporary_identifier(self.store)
