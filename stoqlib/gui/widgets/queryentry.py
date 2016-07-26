@@ -184,12 +184,12 @@ class _QueryEntryPopup(PopupWindow):
         self._treeview.realize()
         width = allocation.width
 
-        rows = len(self._treeview.get_model())
-        cell_area = self._treeview.get_background_area(
-            0, self._treeview.get_column(0))
-        cell_height = cell_area.height
+        cells_height = sum(
+            self._treeview.get_background_area(
+                path, self._treeview.get_column(0)).height
+            for path in xrange(len(self._treeview.get_model())))
         # Use half of the available screen space
-        height = min(max(cell_height * rows, cell_height), monitor.height / 2)
+        height = min(cells_height, monitor.height / 2)
         height += self.FRAME_PADDING[0] + self.FRAME_PADDING[1]
 
         hscroll = self._sw.get_hscrollbar()
