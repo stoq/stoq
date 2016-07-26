@@ -192,6 +192,11 @@ class _QueryEntryPopup(PopupWindow):
         height = min(max(cell_height * rows, cell_height), monitor.height / 2)
         height += self.FRAME_PADDING[0] + self.FRAME_PADDING[1]
 
+        hscroll = self._sw.get_hscrollbar()
+        if hscroll is not None and hscroll.get_visible():
+            hscroll_allocation = hscroll.get_allocation()
+            height += hscroll_allocation.height
+
         return width, height
 
     def popup(self):
