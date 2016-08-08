@@ -319,6 +319,12 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
         # Remove the workorder items first to avoid reference problems
         for item in items:
             wo_item = WorkOrderItem.get_from_sale_item(self.store, item)
+            # If the item's quantity_decreased changed in this step, the
+            # synchronization between the 2 that happens on self.validate_step
+            # would not have happened yet, meaning that order.remove_item
+            # would try to return a wrong quantity to the stock. Force the
+            # synchronization to avoid any problems like that
+            wo_item.quantity_decreased = item.quantity_decreased
             wo_item.order.remove_item(wo_item)
 
         super(WorkOrderQuoteItemStep, self).remove_items(items)
