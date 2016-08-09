@@ -153,6 +153,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
           GtkHBox():
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
+            GtkButton(): 'Checking status...'
+            GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
 

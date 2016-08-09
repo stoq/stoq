@@ -33,3 +33,11 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`status` Module
+--------------------
+
+.. automodule:: stoq.lib.status
+    :members:
+    :undoc-members:
+    :show-inheritance:
+

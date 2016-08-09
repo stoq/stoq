@@ -218,3 +218,7 @@ class WebService(object):
 
         endpoint = 'api/stoq-link/egg/%s' % (plugin_name, )
         return self._do_request('GET', endpoint, params=params, **kwargs)
+
+    def status(self, **kwargs):
+        endpoint = 'api/stoq/v1/status/%s' % (sysparam.get_string('USER_HASH'), )
+        return self._do_request('GET', endpoint, **kwargs)

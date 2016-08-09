@@ -257,6 +257,7 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     :param station_name:
     :param quick:
     """
+    os.environ['STOQ_TESTSUIT_RUNNING'] = '1'
 
     # This will only be required when we use uuid.UUID instances
     # for UUIDCol

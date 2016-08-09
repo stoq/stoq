@@ -61,6 +61,9 @@ STOQ_TAXES = "stoq-taxes"
 STOQ_TILL_APP = "stoq-till-app"
 STOQ_USERS = "stoq-users"
 STOQ_USER_PROFILES = "stoq-user-profiles"
+STOQ_STATUS_OK = "stoq-status-ok"
+STOQ_STATUS_WARNING = "stoq-status-warning"
+STOQ_STATUS_ERROR = "stoq-status-error"
 
 
 # Add aliases so we don't need to import gtk here
@@ -189,6 +192,18 @@ icon_info = [
      {GTK_ICON_SIZE_DIALOG: "stoq-devices-48x48.png"}),
     (STOQ_USER_PROFILES,
      {GTK_ICON_SIZE_DIALOG: "stoq-user-profiles-48x48.png"}),
+    (STOQ_STATUS_OK,
+     {GTK_ICON_SIZE_MENU: "stoq-status-ok-16x16.png",
+      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-ok-24x24.png",
+      GTK_ICON_SIZE_DND: "stoq-status-ok-32x32.png"}),
+    (STOQ_STATUS_WARNING,
+     {GTK_ICON_SIZE_MENU: "stoq-status-warning-16x16.png",
+      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-warning-24x24.png",
+      GTK_ICON_SIZE_DND: "stoq-status-warning-32x32.png"}),
+    (STOQ_STATUS_ERROR,
+     {GTK_ICON_SIZE_MENU: "stoq-status-error-16x16.png",
+      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-error-24x24.png",
+      GTK_ICON_SIZE_DND: "stoq-status-error-32x32.png"}),
 ]
 
 

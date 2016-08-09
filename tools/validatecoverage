@@ -62,6 +62,7 @@ EXCEPTIONS = OrderedDict((
     ('stoq/lib/generictreemodel.py', 38.71),
     ('stoq/lib/gicompat.py', 04.386),
     ('stoq/lib/startup.py', 51.95),
+    ('stoq/lib/status.py', 53.69),
     ('stoqlib/api.py', 76.53),
     ('stoqlib/database/admin.py', 22),
     ('stoqlib/database/debug.py', 19.05),

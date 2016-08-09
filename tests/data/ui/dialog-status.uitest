@@ -1,0 +1,19 @@
+dialog: StatusDialog
+GtkDialog(toplevel): title='System Status', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkScrolledWindow(expand=True, fill=True):
+        GtkViewport():
+          GtkAlignment():
+            GtkVBox():
+              GtkHBox(fill=True, padding=6):
+                GtkImage(fill=True):
+                GtkLabel(fill=True): 'Status not available...'
+              GtkHSeparator(fill=True):
+              GtkHBox(fill=True, padding=6):
+                GtkImage(fill=True):
+                GtkLabel(fill=True): 'Status not available...'
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+      GtkButton(_refresh_btn, expand=True, fill=True, padding=6): 'gtk-refresh'
