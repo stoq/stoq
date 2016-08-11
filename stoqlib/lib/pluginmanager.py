@@ -130,7 +130,7 @@ class PluginManager(object):
     def installed_plugins_names(self):
         """A list of names of all installed plugins"""
         default_store = get_default_store()
-        return [p.plugin_name for p in default_store.find(InstalledPlugin)]
+        return InstalledPlugin.get_plugin_names(default_store)
 
     @property
     def active_plugins_names(self):
@@ -350,6 +350,23 @@ class PluginManager(object):
         log.info("Activating plugin %s" % (plugin_name, ))
         plugin.activate()
         self._active_plugins[plugin_name] = plugin
+
+    def pre_install_plugin(self, plugin_name):
+        """Pre Install Plugin
+
+        Registers an intention to activate a plugin, that will require further
+        actions to enable when running stoq later, like downloading the
+        plugin from stoq.link.
+        """
+
+        if plugin_name in self.installed_plugins_names:
+            raise PluginError("Plugin %s is already enabled."
+                              % (plugin_name, ))
+
+        with new_store() as store:
+            InstalledPlugin(store=store,
+                            plugin_name=plugin_name,
+                            plugin_version=None)
 
     def install_plugin(self, plugin_name):
         """Install and enable a plugin

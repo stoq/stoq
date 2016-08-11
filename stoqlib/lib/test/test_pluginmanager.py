@@ -329,6 +329,10 @@ class TestPluginManager(DomainTest):
         self.assertFalse(self._manager.is_installed(ind_name))
         self.assertFalse(self._manager.is_installed(dep_name))
 
+        # Create a new plugin to be registered with no version
+        pre_plugin_name = u'_'
+        self._manager.pre_install_plugin(pre_plugin_name)
+
         # Install the dependent plugin, this should install both plugins
         self._manager.install_plugin(dep_name)
 

@@ -183,6 +183,9 @@ class StoqCommandHandler:
         if options.register_station and not options.empty:
             self._register_station()
 
+        if options.pre_plugins:
+            self._register_plugins(unicode(options.pre_plugins).split(','))
+
         if options.plugins:
             self._enable_plugins(unicode(options.plugins).split(','))
 
@@ -207,6 +210,9 @@ class StoqCommandHandler:
                          action='store_false',
                          default=True,
                          dest='register_station')
+        group.add_option('', '--register-plugins',
+                         action='store',
+                         dest='pre_plugins')
         group.add_option('', '--enable-plugins',
                          action='store',
                          dest='plugins')
@@ -265,6 +271,13 @@ class StoqCommandHandler:
             except PluginError as err:
                 print('ERROR: %s' % (str(err), ))
                 return
+
+    def _register_plugins(self, plugin_names):
+        from stoqlib.lib.pluginmanager import get_plugin_manager
+        manager = get_plugin_manager()
+
+        for name in plugin_names:
+            manager.pre_install_plugin(name)
 
     def _provide_app_info(self):
         # FIXME: The webservice need the IAppInfo provided to get the stoq

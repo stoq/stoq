@@ -25,6 +25,7 @@
 
 # pylint: enable=E1101
 
+from storm.expr import Ne
 from stoqlib.domain.base import Domain
 from stoqlib.database.properties import UnicodeCol, IntCol, BLOBCol
 
@@ -33,7 +34,9 @@ class InstalledPlugin(Domain):
     """This object represent an installed and activated plugin.
 
     :cvar plugin_name: name of the plugin
-    :cvar plugin_version: version of the plugin
+    :cvar plugin_version: version of the plugin, if the version is `None`,
+                          it means that the plugin still need to be enabled
+                          later.
     """
     __storm_table__ = 'installed_plugin'
 
@@ -46,7 +49,8 @@ class InstalledPlugin(Domain):
         :param store: a store
         :returns: list of strings
         """
-        return [p.plugin_name for p in store.find(cls)]
+        return [p.plugin_name for p in store.find(cls,
+                                                  Ne(cls.plugin_version, None))]
 
 
 class PluginEgg(Domain):

@@ -303,12 +303,21 @@ class PluginStep(BaseWizardStep):
             self.enable_ecf.set_sensitive(False)
 
     def next_step(self):
-        if self.enable_ecf.get_active():
-            self.wizard.plugins.append('ecf')
-        if self.enable_nfe.get_active():
-            self.wizard.plugins.append('nfe')
+        offline_plugins = ['ecf', 'nfe']
+        online_plugins = ['sat', 'nfce', 'magento', 'conector']
+        for name in offline_plugins:
+            if getattr(self, 'enable_' + name).get_active():
+                self.wizard.plugins.append(name)
+        for name in online_plugins:
+            if getattr(self, 'enable_' + name).get_active():
+                self.wizard.online_plugins.append(name)
+        self.wizard.enable_backup = self.enable_backup.get_active()
 
         return StoqAdminPasswordStep(self.wizard, self)
+
+    def on_enable_coupon__toggled(self, action):
+        is_active = self.enable_coupon.get_active()
+        self.radio_coupon.set_sensitive(is_active)
 
 
 class LinkStep(WizardEditorStep):
@@ -417,7 +426,12 @@ class LinkStep(WizardEditorStep):
             open_browser('http://stoq.link?source=stoqwizard', self.wizard)
 
     def on_register_now__toggled(self, widget):
-        self.wizard.enable_online_services = widget.get_active()
+        # If any of these plugins is enabled (backup or nfce or sat, or magento),
+        # the online services must be True
+        online_services = bool(self.wizard.online_plugins
+                               or self.wizard.enable_backup
+                               or widget.get_active())
+        self.wizard.enable_online_services = online_services
         self._update_widgets()
 
     def on_email__validate(self, widget, value):
@@ -722,6 +736,9 @@ class CreateDatabaseStep(BaseWizardStep):
         elif self.wizard.enable_production:
             args.append('--force')
 
+        if self.wizard.online_plugins:
+            args.append('--register-plugins')
+            args.append(','.join(self.wizard.online_plugins))
         if self.wizard.plugins:
             args.append('--enable-plugins')
             args.append(','.join(self.wizard.plugins))
@@ -860,6 +877,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.enable_production = False
         self.has_installed_db = False
         self.options = options
+        self.online_plugins = []
         self.plugins = []
         self.db_is_local = False
         self.enable_online_services = True

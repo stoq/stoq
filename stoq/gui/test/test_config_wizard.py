@@ -103,6 +103,13 @@ class TestFirstTimeConfigWizard(GUITest):
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, u'wizard-config-plugins')
+        step = wizard.get_current_step()
+        test_boxes = ['coupon', 'sat', 'nfce',
+                      'ecf', 'nfe', 'magento', 'backup', 'conector']
+        for name in test_boxes:
+            self.click(getattr(step, 'enable_' + name))
+            self.assertEquals(getattr(step, 'enable_' + name).get_active(),
+                              True)
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
@@ -113,14 +120,15 @@ class TestFirstTimeConfigWizard(GUITest):
 
         self.check_wizard(wizard, u'wizard-config-installing')
         execute_command.assert_called_once_with([
-            u'stoq', u'dbadmin', u'init',
-            u'--no-load-config', u'--no-register-station', u'-v',
-            u'--enable-plugins', u'ecf',
-            u'--create-dbuser',
-            u'-d', u'stoq',
-            u'-p', u'12345',
-            u'-u', u'username',
-            u'-w', u'password'])
+            'stoq', 'dbadmin', 'init',
+            '--no-load-config', '--no-register-station', '-v',
+            '--register-plugins', 'magento,conector',
+            '--enable-plugins', 'ecf,nfe',
+            '--create-dbuser',
+            '-d', 'stoq',
+            '-p', u'12345',
+            '-u', u'username',
+            '-w', u'password'])
         step = wizard.get_current_step()
         self.assertEquals(step.progressbar.get_text(),
                           u'Creating database...')
@@ -143,7 +151,7 @@ class TestFirstTimeConfigWizard(GUITest):
 
         step.process_view.emit(u'read-line', u'stoqlib.database.create PLUGIN')
         self.assertEquals(step.progressbar.get_text(),
-                          u'Activating plugins ...')
+                          'Activating plugins ... This may take some time.')
 
         yesno.return_value = False
         step.process_view.emit(u'finished', 30)
