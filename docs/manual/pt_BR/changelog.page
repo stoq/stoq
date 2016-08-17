@@ -27,31 +27,19 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 1.11</title>
+    <title>Novidades da versão 1.11.90</title>
     <p>
-      Data do lançamento: 2016-03-29
+      Data do lançamento: 2016-08-17
     </p>
 
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>Novo tipo de produto: Grade. Um produto que combina atributos para gerar outros produtos. E.g. Uma "Camiseta" com atributos "Cor" e "Tamanho" pode gerar produtos "Camiseta Vermelha P", "Camiseta Amarela G", etc</p></item>
-        <item><p>Novo tipo de produto: Pacote. Um pacote combina vários produtos em um só, permitindo a compra e a venda dos mesmos como se fossem uma unidade</p></item>
-        <item><p>Adição das classes de imposto PIS e COFINS</p></item>
-        <item><p>Melhorias na seleção de clientes através de sugestões na caixa de texto, pesquisáveis por vários atributos como nome, cpf, rg, telefone, etc</p></item>
-        <item><p>Nova widget que permite a filtragem de ordens de serviço selecionando múltiplas categorias</p></item>
-        <item><p>Ao importar um extrato OFX, a conta será vinculada com a transação existente se o código foi informado no pagamento</p></item>
-        <item><p>É mais obvio no editor de produtos que o mesmo está com um preço promocional</p></item>
-        <item><p>Um inventário pode ser exportado para uma contagem externa, podendo este ser reimportado depois para o preenchimento automático dos dados</p></item>
-        <item><p>Nova opção de exportar um inventário para uma planilha</p></item>
-        <item><p>O gerente agora pode permitir um desconto maior do que o permitido para o usuário no Ponto de Vendas</p></item>
-        <item><p>Se o cliente informou o documento para emissão de nota fiscal eletrônica, este é reutilizado no possível cadastro do mesmo, evitando ter que pedir a mesma informação duas vezes</p></item>
-        <item><p>É possível imprimir etiquetas no aplicativo Estoque</p></item>
-        <item><p>Vendas podem receber um desconto de 100% (um erro acontecia anteriormente nesse caso)</p></item>
-        <item><p>Filiais podem fazer compras para outras filiais em modo sincronizado</p></item>
-        <item><p>Agora transferências podem ser canceladas</p></item>
+        <item><p>Ao cadastrar novos produtos, é possível ter o código sugerido baseado nos códigos existentes da mesma categoria</p></item>
+        <item><p>Opção de adicionar/editar pagamentos no caixa sem confirmar a venda</p></item>
+        <item><p>Possibilidade de receber compras de outras filiais em modo sincronizado</p></item>
         <item><p>Atualização das tabelas IBPT</p></item>
-        <item><p>Várias outras correções e melhorias</p></item>
+        <item><p>Uma imensa quantidade de correções e melhorias de performance</p></item>
       </list>
     </section>
 
