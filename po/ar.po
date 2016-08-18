@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-04 02:10-0300\n"
+"POT-Creation-Date: 2016-08-17 02:10-0300\n"
 "PO-Revision-Date: 2016-08-04 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/async/stoq/language/ar/)\n"
@@ -333,7 +333,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salewizard.py:446
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:224
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:67
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:338
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:344
 #: ../stoqlib/reporting/product.py:128
 msgid "Quantity"
 msgstr ""
@@ -3020,7 +3020,7 @@ msgid ""
 msgstr ""
 
 #: ../data/glade/WorkOrderEditor.ui.h:1
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:374
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:380
 msgid "Work order:"
 msgstr ""
 
@@ -3355,7 +3355,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salewizard.py:442
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:219
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:176
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:332
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:338
 #: ../stoqlib/reporting/product.py:89 ../stoqlib/reporting/product.py:126
 #: ../stoqlib/reporting/service.py:46
 msgid "Description"
@@ -3674,7 +3674,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/saleslave.py:183
 #: ../stoqlib/gui/widgets/calculator.py:155
 #: ../stoqlib/gui/wizards/salequotewizard.py:408
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:342
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:348
 msgid "Discount"
 msgstr ""
 
@@ -3765,7 +3765,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salewizard.py:438
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:218
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:174
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:328
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:334
 #: ../stoqlib/reporting/product.py:88 ../stoqlib/reporting/product.py:125
 #: ../stoqlib/reporting/service.py:45
 msgid "Code"
@@ -4020,7 +4020,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salewizard.py:452
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:233
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:183
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:345
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:351
 #: ../stoqlib/reporting/financial.py:181 ../stoqlib/reporting/financial.py:241
 msgid "Total"
 msgstr ""
@@ -4482,7 +4482,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:375
 #: ../stoqlib/gui/wizards/salereturnwizard.py:215
 #: ../stoqlib/gui/wizards/salewizard.py:440
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:330
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:336
 msgid "Barcode"
 msgstr ""
 
@@ -16052,12 +16052,12 @@ msgid "ICMS BC"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/salequotewizard.py:406
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:340
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:346
 msgid "Original Price"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/salequotewizard.py:407
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:341
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:347
 msgid "Sale Price"
 msgstr ""
 
@@ -16231,7 +16231,7 @@ msgstr ""
 msgid "Removed from sale %s"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:440
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:446
 msgid "Sale with work order"
 msgstr ""
 

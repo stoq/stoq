@@ -15,9 +15,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-04 02:10-0300\n"
-"PO-Revision-Date: 2016-08-04 05:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2016-08-17 02:10-0300\n"
+"PO-Revision-Date: 2016-08-17 18:00+0000\n"
+"Last-Translator: Thiago Bellini Ribeiro <hackedbellini@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -340,7 +340,7 @@ msgstr "Lote"
 #: ../stoqlib/gui/wizards/salewizard.py:446
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:224
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:67
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:338
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:344
 #: ../stoqlib/reporting/product.py:128
 msgid "Quantity"
 msgstr "Quantidade"
@@ -1787,7 +1787,7 @@ msgstr "Uma nova pessoa jurídica"
 msgid ""
 "This will connect your Stoq installation to <a href=\"http://stoq.link?source=stoqpin\">Stoq.Link</a>.\n"
 "Enter the <b>PIN</b> received from it bellow:"
-msgstr ""
+msgstr "Isto vai conectar a sua instalação do Stoq ao <a href=\"http://stoq.link?source=stoqpin\">Stoq.Link</a>.\nDigite o <b>PIN</b> recebido dele abaixo:"
 
 #: ../data/glade/PluginStep.ui.h:1
 msgid "<b>Plugins</b>"
@@ -3027,7 +3027,7 @@ msgid ""
 msgstr "Obrigado por instalar o Stoq, você vai estar pronto para utilizá-lo em alguns minutos.\n\nEste assistente irá ajudá-lo a configurar o Stoq para criar um novo banco de dados ou conectar em um existente.\n\nSe você estiver tendo problemas com a instalação ou precisa de ajuda para importar o seus dados de outro aplicativo, não hesite em <a href=\"http://www.stoq.com.br/contato\">nos contactar</a>."
 
 #: ../data/glade/WorkOrderEditor.ui.h:1
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:374
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:380
 msgid "Work order:"
 msgstr "Ordem de serviço:"
 
@@ -3362,7 +3362,7 @@ msgstr "Forma"
 #: ../stoqlib/gui/wizards/salewizard.py:442
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:219
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:176
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:332
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:338
 #: ../stoqlib/reporting/product.py:89 ../stoqlib/reporting/product.py:126
 #: ../stoqlib/reporting/service.py:46
 msgid "Description"
@@ -3681,7 +3681,7 @@ msgstr "Juros"
 #: ../stoqlib/gui/slaves/saleslave.py:183
 #: ../stoqlib/gui/widgets/calculator.py:155
 #: ../stoqlib/gui/wizards/salequotewizard.py:408
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:342
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:348
 msgid "Discount"
 msgstr "Desconto"
 
@@ -3772,7 +3772,7 @@ msgstr "Operações de crédito"
 #: ../stoqlib/gui/wizards/salewizard.py:438
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:218
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:174
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:328
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:334
 #: ../stoqlib/reporting/product.py:88 ../stoqlib/reporting/product.py:125
 #: ../stoqlib/reporting/service.py:45
 msgid "Code"
@@ -4027,7 +4027,7 @@ msgstr "Preço"
 #: ../stoqlib/gui/wizards/salewizard.py:452
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:233
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:183
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:345
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:351
 #: ../stoqlib/reporting/financial.py:181 ../stoqlib/reporting/financial.py:241
 msgid "Total"
 msgstr "Total"
@@ -4489,7 +4489,7 @@ msgstr "Quantidade total"
 #: ../stoqlib/gui/wizards/salequotewizard.py:375
 #: ../stoqlib/gui/wizards/salereturnwizard.py:215
 #: ../stoqlib/gui/wizards/salewizard.py:440
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:330
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:336
 msgid "Barcode"
 msgstr "Código de barras"
 
@@ -6401,7 +6401,7 @@ msgstr "Usuários"
 
 #: ../stoq/gui/admin.py:125
 msgid "Connect to Stoq.Link"
-msgstr ""
+msgstr "Conectar ao Stoq.Link"
 
 #: ../stoq/gui/admin.py:217
 msgid ""
@@ -6538,11 +6538,11 @@ msgstr "Cria um novo usuário"
 
 #: ../stoq/gui/admin.py:401
 msgid "Connect to Stoq.Link..."
-msgstr ""
+msgstr "Conectar ao Stoq.Link..."
 
 #: ../stoq/gui/admin.py:402
 msgid "Connect this Stoq installation to Stoq.Link"
-msgstr ""
+msgstr "Conecte esta instalação do Stoq ao Stoq.Link"
 
 #: ../stoq/gui/admin.py:406
 msgid "Admin help"
@@ -6799,7 +6799,7 @@ msgstr "%s não é um nome válido de base de dados"
 
 #: ../stoq/gui/config.py:342
 msgid "Done!"
-msgstr ""
+msgstr "Feito!"
 
 #: ../stoq/gui/config.py:392 ../stoqlib/gui/dialogs/crashreportdialog.py:182
 msgid "Sending..."
@@ -9331,11 +9331,11 @@ msgstr "Devolve a venda selecionada, retornando o estoque e os pagamentos do cli
 
 #: ../stoq/gui/till.py:142
 msgid "Edit payments..."
-msgstr ""
+msgstr "Editar pagamentos..."
 
 #: ../stoq/gui/till.py:143
 msgid "Edit payments of the selected sale"
-msgstr ""
+msgstr "Editar os pagamentos das vendas selecionadas"
 
 #: ../stoq/gui/till.py:148
 msgid "Till help"
@@ -11592,28 +11592,28 @@ msgstr "Não combinar"
 
 #: ../stoqlib/gui/dialogs/pindialog.py:41
 msgid "Connect to Stoq.link"
-msgstr ""
+msgstr "Conectar ao Stoq.Link"
 
 #: ../stoqlib/gui/dialogs/pindialog.py:85
 msgid "Setting up the connection. This may take a while..."
-msgstr ""
+msgstr "Configurando a conexão. Isso pode levar um tempo..."
 
 #. XXX: Better text here
 #: ../stoqlib/gui/dialogs/pindialog.py:96
 msgid ""
 "Stoq.Link registration successful! You may manage your installation from "
 "there now"
-msgstr ""
+msgstr "Registro do Stoq.Link realizado com sucesso! Você pode gerenciar a sua instalação de lá agora"
 
 #: ../stoqlib/gui/dialogs/pindialog.py:109
 msgid "An error happened when trying to register to Stoq.Link"
-msgstr ""
+msgstr "Um erro aconteceu ao tentar se registrar no Stoq.Link"
 
 #. TODO: Maybe we should add a link pointing to instructions
 #. on how to get and install the stoq-server package?
 #: ../stoqlib/gui/dialogs/pindialog.py:119
 msgid "Could not find an instance of Stoq Server running."
-msgstr ""
+msgstr "Não foi possível encontrar uma instância do Stoq Server rodando."
 
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:68
 msgid "Plugin Manager"
@@ -16059,12 +16059,12 @@ msgid "ICMS BC"
 msgstr "ICMS BC"
 
 #: ../stoqlib/gui/wizards/salequotewizard.py:406
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:340
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:346
 msgid "Original Price"
 msgstr "Preço Original"
 
 #: ../stoqlib/gui/wizards/salequotewizard.py:407
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:341
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:347
 msgid "Sale Price"
 msgstr "Preço de venda"
 
@@ -16238,7 +16238,7 @@ msgstr "Essa ordem de serviço tem itens e não pode ser removida"
 msgid "Removed from sale %s"
 msgstr "Removido da venda %s"
 
-#: ../stoqlib/gui/wizards/workorderquotewizard.py:440
+#: ../stoqlib/gui/wizards/workorderquotewizard.py:446
 msgid "Sale with work order"
 msgstr "Venda com ordem de serviço"
 
@@ -16897,12 +16897,12 @@ msgstr "Desabilita a edição do campo código de produtos na aplicação compra
 
 #: ../stoqlib/lib/parameters.py:173
 msgid "Suggest product code based on the selected category"
-msgstr ""
+msgstr "Sugerir o código do produto baseado na categoria selecionada"
 
 #: ../stoqlib/lib/parameters.py:174
 msgid ""
 "If the next product code should be based on the category selected or not"
-msgstr ""
+msgstr "Se o código do produto deve ser baseado na categoria selecionada ou não"
 
 #: ../stoqlib/lib/parameters.py:180
 msgid "Primary company"
@@ -17673,13 +17673,13 @@ msgstr "Este parâmetro indica que o número do cheque nos pagamentos com cheque
 
 #: ../stoqlib/lib/parameters.py:825
 msgid "Allow to add payment on sale quote"
-msgstr ""
+msgstr "Permitir a adição de pagamentos em cotação de vendas"
 
 #: ../stoqlib/lib/parameters.py:826
 msgid ""
 "When enabled, the sale quote wizard will have an extra step to configure the"
 " payments for the sale."
-msgstr ""
+msgstr "Quando habilitado, o assistente de cotação de vendas terá um passo extra onde será possível configurar pagamentos na mesma."
 
 #: ../stoqlib/lib/parameters.py:833
 msgid "Set authorization number mandatory"
@@ -17746,31 +17746,31 @@ msgstr "É preciso pelo menos um valor"
 #: ../stoqlib/lib/pluginmanager.py:252
 #, python-format
 msgid "Failed to do the request: %s"
-msgstr ""
+msgstr "Falha em realizar a requisição: %s"
 
 #: ../stoqlib/lib/pluginmanager.py:256
 msgid "No update needed. The plugin is already up to date."
-msgstr ""
+msgstr "Nenhuma atualização necessária. Os plugins já estão atualizados."
 
 #: ../stoqlib/lib/pluginmanager.py:262
 msgid "Plugin not available for this stoq version"
-msgstr ""
+msgstr "O plugin não está disponível para esta versão do Stoq"
 
 #: ../stoqlib/lib/pluginmanager.py:263
 msgid "The instance has no active paid subscription"
-msgstr ""
+msgstr "A instância não tem uma assinatura paga ativa"
 
 #: ../stoqlib/lib/pluginmanager.py:264
 msgid "Plugin does not exist"
-msgstr ""
+msgstr "O plugin não existe"
 
 #: ../stoqlib/lib/pluginmanager.py:265
 msgid "This instance has not acquired the specified plugin"
-msgstr ""
+msgstr "A instância não adquiriu o plugin especificado"
 
 #: ../stoqlib/lib/pluginmanager.py:288
 msgid "Plugin download successful"
-msgstr ""
+msgstr "Plugin baixado com sucesso"
 
 #: ../stoqlib/lib/sintegragenerator.py:122
 #, python-format
