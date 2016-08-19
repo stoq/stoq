@@ -1,0 +1,20 @@
+editor: BackupSettingsEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Backup Configuration"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave BackupSettingsEditor is attached
+        GtkAlignment(toplevel):
+          GtkVBox(vbox1):
+            GtkLabel(label1, fill=True): 'This is the key used to encrypt your backup.\n<b>Be sure to write it somewhere safe!</b>'
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label2, fill=True): 'Backup key:'
+              ProxyEntry(key, expand=True, fill=True): '123456', mandatory
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

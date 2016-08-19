@@ -29,9 +29,12 @@ import threading
 import dateutil.parser
 import glib
 import gobject
+from kiwi.python import Settable
 from kiwi.utils import gsignal
 
 from stoqlib.api import api, safe_str
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.backupsettings import BackupSettingsEditor
 from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.webservice import WebService
@@ -67,8 +70,10 @@ class ResourceStatus(gobject.GObject):
         self.reason = None
         self.reason_long = None
 
-    def __cmp__(self, other):
-        return cmp(self.priority, other.priority)
+    def __eq__(self, other):
+        if type(self) != type(other):
+            return False
+        return self.name == other.name
 
     @property
     def status_str(self):
@@ -85,6 +90,10 @@ class ResourceStatus(gobject.GObject):
         """
         raise NotImplementedError
 
+    def get_actions(self):
+        """Get the actions that can be run for this resource"""
+        return []
+
     def refresh_and_notify(self):
         """Refresh the resource status and notify for changes"""
         old_status, old_reason = self.status, self.reason
@@ -96,9 +105,27 @@ class ResourceStatus(gobject.GObject):
                 self.emit, 'status-changed', self.status, self.reason)
 
 
+class ResourceStatusAction(object):
+
+    def __init__(self, resource, name, label, callback,
+                 threaded=True, admin_only=True):
+        self.resource = resource
+        self.name = name
+        self.label = label
+        self.callback = callback
+        self.threaded = threaded
+        self.admin_only = admin_only
+
+    def __eq__(self, other):
+        if type(self) != type(other):
+            return False
+        return (self.resource, self.name) == (other.resource, other.name)
+
+
 class ResourceStatusManager(gobject.GObject):
 
     gsignal('status-changed', int)
+    gsignal('action-finished', object, object)
 
     REFRESH_TIMEOUT = int(os.environ.get('STOQ_STATUS_REFRESH_TIMEOUT', 60))
     _instance = None
@@ -107,6 +134,7 @@ class ResourceStatusManager(gobject.GObject):
         super(ResourceStatusManager, self).__init__()
 
         self._lock = threading.Lock()
+        self.running_action = None
         self.resources = {}
         glib.timeout_add_seconds(self.REFRESH_TIMEOUT,
                                  self.refresh_and_notify)
@@ -126,21 +154,16 @@ class ResourceStatusManager(gobject.GObject):
     def status(self):
         """The general status of the resources"""
         if any(resource.status == ResourceStatus.STATUS_ERROR
-               for resource in self.resources.itervalues()):
+               for resource in self._iter_resources()):
             return ResourceStatus.STATUS_ERROR
         elif any(resource.status == ResourceStatus.STATUS_WARNING
-                 for resource in self.resources.itervalues()):
+                 for resource in self._iter_resources()):
             return ResourceStatus.STATUS_WARNING
         elif any(resource.status == ResourceStatus.STATUS_NA
-                 for resource in self.resources.itervalues()):
+                 for resource in self._iter_resources()):
             return ResourceStatus.STATUS_NA
         else:
             return ResourceStatus.STATUS_OK
-
-    @property
-    def statuses(self):
-        """A list of resources' (status, reason)"""
-        return [(r.status, r.reason) for r in self.resources.itervalues]
 
     def add_resource(self, resource):
         """Add a :class:`.ResourceStatus` on the manager"""
@@ -155,14 +178,27 @@ class ResourceStatusManager(gobject.GObject):
             return False
         return threadit(self._refresh_and_notify, force=force)
 
+    def handle_action(self, action):
+        """Ask the given resource to handle the given action"""
+        if action.threaded:
+            self.running_action = action
+            return threadit(self._handle_action, action)
+        else:
+            return self._handle_action(action)
+
     #
     #  Private
     #
 
-    def _refresh_and_notify(self, force=False):
+    def _iter_resources(self):
+        return sorted(self.resources.itervalues(), key=lambda r: r.priority)
+
+    def _refresh_and_notify(self, resources=None, force=False):
         with self._lock:
             old_status = self.status
-            for resource in self.resources.itervalues():
+
+            resources = resources or self._iter_resources()
+            for resource in resources:
                 resource.refresh_and_notify()
 
             status = self.status
@@ -170,6 +206,19 @@ class ResourceStatusManager(gobject.GObject):
                 # This is running on another so schedule the emit in the main one
                 schedule_in_main_thread(
                     self.emit, 'status-changed', status)
+
+    def _handle_action(self, action):
+        try:
+            with self._lock:
+                retval = action.callback()
+        except Exception as e:
+            retval = e
+        finally:
+            self.running_action = None
+            schedule_in_main_thread(self.emit, 'action-finished',
+                                    action, retval)
+
+        return retval
 
 
 def register(resource_class):
@@ -187,7 +236,7 @@ class _ServerStatus(ResourceStatus):
 
     def __init__(self):
         ResourceStatus.__init__(self)
-        self._proxy = ServerProxy()
+        self._server = ServerProxy()
 
     def refresh(self):
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
@@ -198,7 +247,7 @@ class _ServerStatus(ResourceStatus):
                                  'on the "Admin" app to solve this issue')
             return
 
-        if self._proxy.check_running():
+        if self._server.check_running():
             self.status = self.STATUS_OK
             self.reason = _("Online services data hub is running fine.")
             self.reason_long = None
@@ -221,6 +270,7 @@ class _BackupStatus(ResourceStatus):
     def __init__(self):
         ResourceStatus.__init__(self)
         self._webservice = WebService()
+        self._server = ServerProxy()
 
     def refresh(self):
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
@@ -266,3 +316,25 @@ class _BackupStatus(ResourceStatus):
             self.status = self.STATUS_WARNING
             self.reason = _("There's no backup data yet")
             self.reason_long = None
+
+    def get_actions(self):
+        if self.status != ResourceStatus.STATUS_NA:
+            yield ResourceStatusAction(
+                self, 'backup-now',
+                _("Backup now"), self._on_backup_now, threaded=True)
+            yield ResourceStatusAction(
+                self, 'configure',
+                _("Configure"), self._on_configure, threaded=False)
+
+    def _on_configure(self):
+        key = self._server.call('get_backup_key')
+
+        with api.new_store() as store:
+            rv = run_dialog(BackupSettingsEditor, None,
+                            store, Settable(key=key))
+
+        if rv:
+            key = self._server.call('set_backup_key', rv.key)
+
+    def _on_backup_now(self):
+        self._server.call('backup_database')

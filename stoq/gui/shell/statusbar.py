@@ -31,12 +31,15 @@ import gtk
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
+from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.stockicons import (STOQ_FEEDBACK,
                                     STOQ_STATUS_NA,
                                     STOQ_STATUS_OK,
                                     STOQ_STATUS_WARNING,
                                     STOQ_STATUS_ERROR)
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
+from stoqlib.lib.threadutils import terminate_thread
 from stoq.lib.status import ResourceStatus, ResourceStatusManager
 
 
@@ -73,6 +76,12 @@ class StatusDialog(BasicDialog):
         self._manager = ResourceStatusManager.get_instance()
         self._manager.connect('status-changed',
                               self._on_manager__status_changed)
+        self._manager.connect('action-finished',
+                              self._on_manager__action_finished)
+
+        with api.new_store() as store:
+            user = api.get_current_user(store)
+            self._is_admin = user.profile.check_app_permission(u'admin')
 
         self._widgets = {}
         self._setup_ui()
@@ -118,7 +127,10 @@ class StatusDialog(BasicDialog):
             lbl = gtk.Label()
             hbox.pack_start(lbl, False, True)
 
-            self._widgets[name] = (img, lbl)
+            buttonbox = gtk.HButtonBox()
+            hbox.pack_end(buttonbox, False, True)
+
+            self._widgets[name] = (img, lbl, buttonbox)
             vbox.pack_start(hbox, False, True, 6)
 
             if i < len(resources) - 1:
@@ -128,8 +140,11 @@ class StatusDialog(BasicDialog):
         self._update_ui()
 
     def _update_ui(self):
+        running_action = self._manager.running_action
+        self._refresh_btn.set_sensitive(running_action is None)
+
         for name, resource in self._manager.resources.iteritems():
-            img, lbl = self._widgets[name]
+            img, lbl, buttonbox = self._widgets[name]
 
             status_stock, _ignored = _status_mapper[resource.status]
             img.set_from_stock(status_stock, gtk.ICON_SIZE_LARGE_TOOLBAR)
@@ -145,7 +160,59 @@ class StatusDialog(BasicDialog):
             else:
                 text = _("Status not available...")
 
+            for child in buttonbox.get_children():
+                buttonbox.remove(child)
+            for action in resource.get_actions():
+                btn = gtk.Button(action.label)
+
+                if running_action is not None:
+                    btn.set_sensitive(False)
+
+                if action.admin_only and not self._is_admin:
+                    btn.set_sensitive(False)
+                    btn.set_tooltip_text(
+                        _("Only admins can execute this action"))
+
+                # If the action is the running action, add a spinner together
+                # with the label to indicate that it is running
+                if action == running_action:
+                    spinner = gtk.Spinner()
+                    hbox = gtk.HBox(spacing=6)
+                    child = btn.get_child()
+                    btn.remove(child)
+                    hbox.add(child)
+                    hbox.add(spinner)
+                    btn.add(hbox)
+                    spinner.start()
+                    hbox.show_all()
+
+                btn.show()
+                btn.connect('clicked', self._on_action_btn__clicked, action)
+                buttonbox.add(btn)
+
             lbl.set_markup(text)
+
+    def _handle_action(self, action):
+        retval = self._manager.handle_action(action)
+        if action.threaded:
+            thread = retval
+
+            msg = _('Executing "%s". This might take a while...') % (
+                action.label, )
+            progress_dialog = ProgressDialog(msg, pulse=True)
+            progress_dialog.start(wait=100)
+            progress_dialog.set_transient_for(self.get_toplevel())
+            progress_dialog.set_title(action.resource.label)
+            progress_dialog.connect(
+                'cancel', lambda d: terminate_thread(thread))
+
+            while thread.is_alive():
+                if gtk.events_pending():
+                    gtk.main_iteration(False)
+
+            progress_dialog.stop()
+
+        self._update_ui()
 
     #
     #  Callbacks
@@ -153,6 +220,15 @@ class StatusDialog(BasicDialog):
 
     def _on_manager__status_changed(self, manager, status):
         self._update_ui()
+
+    def _on_manager__action_finished(self, manager, action, retval):
+        if isinstance(retval, Exception):
+            warning(_('An error happened when executing "%s"') % (action.label, ),
+                    str(retval))
+        self._update_ui()
+
+    def _on_action_btn__clicked(self, btn, action):
+        self._handle_action(action)
 
     def _on_refresh_btn__clicked(self, btn):
         self._manager.refresh_and_notify()
@@ -204,8 +280,6 @@ class StatusButton(gtk.Button):
             tooltip = ''
 
         self.set_tooltip_text(tooltip)
-        if len(text) > self._MAX_LENGTH:
-            text = text[:self._MAX_LENGTH - 1] + u"\u2026"
 
         pixbuf = self.render_icon(status_stock, gtk.ICON_SIZE_MENU)
         self._image.set_from_pixbuf(pixbuf)

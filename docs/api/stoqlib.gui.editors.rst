@@ -33,6 +33,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`backupsettings` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.backupsettings
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`baseeditor` Module
 ------------------------
 
