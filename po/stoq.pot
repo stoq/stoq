@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-17 02:10-0300\n"
-"PO-Revision-Date: 2016-08-04 05:10+0000\n"
+"POT-Creation-Date: 2016-08-20 02:10-0300\n"
+"PO-Revision-Date: 2016-08-20 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (http://www.transifex.com/async/stoq/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -4629,7 +4629,8 @@ msgid "Invoice number"
 msgstr "Invoice number"
 
 #: ../data/template/transfer/transfer.html:23
-#: ../data/template/transfer/transfer.html:51 ../stoqlib/lib/formatters.py:168
+#: ../data/template/transfer/transfer.html:51
+#: ../stoq/gui/shell/statusbar.py:197 ../stoqlib/lib/formatters.py:168
 msgid "N/A"
 msgstr "N/A"
 
@@ -9017,7 +9018,31 @@ msgstr "Learn More..."
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>There is a new Stoq version available (%s)</b>"
 
-#: ../stoq/gui/shell/statusbar.py:80
+#: ../stoq/gui/shell/statusbar.py:46
+msgid "Checking status..."
+msgstr "Checking status..."
+
+#: ../stoq/gui/shell/statusbar.py:49
+msgid "Everything is running fine"
+msgstr "Everything is running fine"
+
+#: ../stoq/gui/shell/statusbar.py:52
+msgid "Some services are in a warning state"
+msgstr "Some services are in a warning state"
+
+#: ../stoq/gui/shell/statusbar.py:55
+msgid "Some services are in an error state"
+msgstr "Some services are in an error state"
+
+#: ../stoq/gui/shell/statusbar.py:61
+msgid "System Status"
+msgstr "System Status"
+
+#: ../stoq/gui/shell/statusbar.py:142
+msgid "Status not available..."
+msgstr "Status not available..."
+
+#: ../stoq/gui/shell/statusbar.py:293
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -9557,6 +9582,76 @@ msgid ""
 "Table 'system_table' does not exist.\n"
 "Consult your database administrator to solve this problem."
 msgstr "Table 'system_table' does not exist.\nConsult your database administrator to solve this problem."
+
+#: ../stoq/lib/status.py:51
+msgid "OK"
+msgstr "OK"
+
+#: ../stoq/lib/status.py:52
+msgid "WARNING"
+msgstr "WARNING"
+
+#: ../stoq/lib/status.py:53
+msgid "ERROR"
+msgstr "ERROR"
+
+#: ../stoq/lib/status.py:180
+msgid "Stoq server"
+msgstr "Stoq server"
+
+#: ../stoq/lib/status.py:190
+msgid ""
+"Stoq server not running because the parameter \"Online Services\" is "
+"disabled"
+msgstr "Stoq server not running because the parameter \"Online Services\" is disabled"
+
+#: ../stoq/lib/status.py:192 ../stoq/lib/status.py:223
+msgid ""
+"Enable the parameter \"Online Services\" on the \"Admin\" app to solve this "
+"issue"
+msgstr "Enable the parameter \"Online Services\" on the \"Admin\" app to solve this issue"
+
+#: ../stoq/lib/status.py:198
+msgid "Stoq server is alive and running"
+msgstr "Stoq server is alive and running"
+
+#: ../stoq/lib/status.py:202 ../stoqlib/net/server.py:126
+msgid "Stoq server not found"
+msgstr "Stoq server not found"
+
+#: ../stoq/lib/status.py:203
+msgid "Install and configure the stoq-server package to solve this issue."
+msgstr "Install and configure the stoq-server package to solve this issue."
+
+#: ../stoq/lib/status.py:211
+msgid "Backup"
+msgstr "Backup"
+
+#: ../stoq/lib/status.py:221
+msgid "Backups not running because the parameter \"Online Services\" is disabled"
+msgstr "Backups not running because the parameter \"Online Services\" is disabled"
+
+#: ../stoq/lib/status.py:232 ../stoq/lib/status.py:238
+msgid "Could not communicate with Stoq.link"
+msgstr "Could not communicate with Stoq.link"
+
+#: ../stoq/lib/status.py:249
+#, python-format
+msgid "Backup is late. Last backup date is %s"
+msgstr "Backup is late. Last backup date is %s"
+
+#: ../stoq/lib/status.py:251
+msgid "Check your Stoq Server logs to see if there's any problem with it"
+msgstr "Check your Stoq Server logs to see if there's any problem with it"
+
+#: ../stoq/lib/status.py:255
+#, python-format
+msgid "Backup is up-to-date. Last backup date is %s"
+msgstr "Backup is up-to-date. Last backup date is %s"
+
+#: ../stoq/lib/status.py:260
+msgid "There's no backup data yet"
+msgstr "There's no backup data yet"
 
 #: ../stoqlib/database/admin.py:75 ../stoqlib/database/admin.py:91
 #: ../stoqlib/database/admin.py:342
@@ -17858,10 +17953,6 @@ msgstr "%d purchase"
 #, python-format
 msgid "%d purchases"
 msgstr "%d purchases"
-
-#: ../stoqlib/net/server.py:126
-msgid "Stoq server not found"
-msgstr "Stoq server not found"
 
 #: ../stoqlib/net/server.py:143
 msgid "Server not responding to pings"
