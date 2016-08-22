@@ -197,17 +197,15 @@ class StatusButton(gtk.Button):
         status_stock, text = _status_mapper[status]
 
         if status is not None:
-            resources_str = '\n'.join(
+            tooltip = '\n'.join(
                 "[%s] %s: %s" % (r.status_str, r.label, r.reason or _("N/A"))
                 for r in self._manager.resources.itervalues())
-            tooltip = '%s:\n\n%s' % (text, resources_str)
         else:
-            tooltip = text
+            tooltip = ''
 
         self.set_tooltip_text(tooltip)
         if len(text) > self._MAX_LENGTH:
             text = text[:self._MAX_LENGTH - 1] + u"\u2026"
-        self.set_label(text)
 
         pixbuf = self.render_icon(status_stock, gtk.ICON_SIZE_MENU)
         self._image.set_from_pixbuf(pixbuf)
@@ -269,7 +267,7 @@ class ShellStatusbar(gtk.Statusbar):
         alignment = gtk.Alignment(0.0, 0.0, 1.0, 1.0)
         # FIXME: These looks good on Mac, might need to tweak
         # on Linux to look good
-        alignment.set_padding(2, 3, 5, 5)
+        alignment.set_padding(2, 3, 5, 0)
         self.message_area.pack_start(alignment, True, True)
         alignment.show()
 
@@ -281,16 +279,6 @@ class ShellStatusbar(gtk.Statusbar):
         self._text_label.set_alignment(0.0, 0.5)
         widget_area.pack_start(self._text_label, True, True)
         self._text_label.show()
-
-        vsep = gtk.VSeparator()
-        widget_area.pack_start(vsep, False, False, 0)
-        vsep.show()
-
-        self._status_button = StatusButton()
-        self._status_button.connect('clicked',
-                                    self._on_status_button__clicked)
-        widget_area.pack_start(self._status_button, False, False, 0)
-        self._status_button.show()
 
         vsep = gtk.VSeparator()
         widget_area.pack_start(vsep, False, False, 0)
@@ -311,6 +299,12 @@ class ShellStatusbar(gtk.Statusbar):
         vsep = gtk.VSeparator()
         widget_area.pack_start(vsep, False, False, 0)
         vsep.show()
+
+        self._status_button = StatusButton()
+        self._status_button.connect('clicked',
+                                    self._on_status_button__clicked)
+        widget_area.pack_start(self._status_button, False, False, 0)
+        self._status_button.show()
 
     def do_text_popped(self, ctx, text):
         self._text_label.set_label(text)

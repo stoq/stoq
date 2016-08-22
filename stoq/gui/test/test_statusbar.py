@@ -22,27 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoq.gui.shell.statusbar import StatusButton, StatusDialog
+from stoq.gui.shell.statusbar import StatusDialog
 from stoq.gui.test.baseguitest import BaseGUITest
-from stoq.lib.status import ResourceStatus, ResourceStatusManager
-
-
-class TestStatusButton(BaseGUITest):
-
-    def test_label(self):
-        btn = StatusButton()
-        self.assertEqual(btn.get_label(), "Checking status...")
-
-        manager = ResourceStatusManager.get_instance()
-        for status, text in [
-                (ResourceStatus.STATUS_OK,
-                 u"Everything is running fine"),
-                (ResourceStatus.STATUS_WARNING,
-                 u"Some services are in a warn\u2026"),
-                (ResourceStatus.STATUS_ERROR,
-                 u"Some services are in an err\u2026")]:
-            manager.emit('status-changed', status)
-            self.assertEqual(btn.get_label(), text)
 
 
 class TestStatusDialog(BaseGUITest):

@@ -140,10 +140,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
           GtkHBox():
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
-            GtkButton(): 'Checking status...'
-            GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
+            GtkButton():
         GtkHBox(_summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
           GtkLabel(): '<b>$8055.00</b>'

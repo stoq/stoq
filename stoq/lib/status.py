@@ -31,7 +31,7 @@ import glib
 import gobject
 from kiwi.utils import gsignal
 
-from stoqlib.api import api
+from stoqlib.api import api, safe_str
 from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.webservice import WebService
@@ -182,7 +182,7 @@ def register(resource_class):
 class _ServerStatus(ResourceStatus):
 
     name = "stoqserver"
-    label = _("Stoq server")
+    label = _("Online Services")
     priority = 99
 
     def __init__(self):
@@ -192,21 +192,23 @@ class _ServerStatus(ResourceStatus):
     def refresh(self):
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
             self.status = ResourceStatus.STATUS_NA
-            self.reason = _('Stoq server not running because the parameter '
-                            '"Online Services" is disabled')
+            self.reason = (_("Online services (Stoq.link integration, backup, "
+                             "etc) not enabled..."))
             self.reason_long = _('Enable the parameter "Online Services" '
                                  'on the "Admin" app to solve this issue')
             return
 
         if self._proxy.check_running():
             self.status = self.STATUS_OK
-            self.reason = _("Stoq server is alive and running")
+            self.reason = _("Online services data hub is running fine.")
             self.reason_long = None
         else:
             self.status = ResourceStatus.STATUS_ERROR
-            self.reason = _("Stoq server not found")
-            self.reason_long = _("Install and configure the stoq-server "
-                                 "package to solve this issue.")
+            self.reason = _("Online services data hub not found...")
+            package = '<a href="apt://stoq-server">stoq-server</a>'
+            self.reason_long = safe_str(
+                api.escape(_("Install and configure the %s package "
+                             "to solve this issue")) % (package, ))
 
 
 @register
@@ -223,7 +225,7 @@ class _BackupStatus(ResourceStatus):
     def refresh(self):
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
             self.status = ResourceStatus.STATUS_NA
-            self.reason = _('Backups not running because the parameter '
+            self.reason = _('Backup service not running because '
                             '"Online Services" is disabled')
             self.reason_long = _('Enable the parameter "Online Services" '
                                  'on the "Admin" app to solve this issue')

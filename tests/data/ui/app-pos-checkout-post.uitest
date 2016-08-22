@@ -143,10 +143,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkHBox():
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
-            GtkButton(): 'Checking status...'
-            GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
+            GtkButton():
 
 model: Sale<1>
   cancel_date: None

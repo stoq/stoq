@@ -48,6 +48,14 @@ from stoqlib.lib.translation import locale_sorted, stoqlib_gettext as _
 from stoqlib.l10n.l10n import get_l10n_field
 
 
+class safe_str(str):
+    pass
+
+
+class safe_unicode(unicode):
+    pass
+
+
 class StoqAPI(object):
     def get_default_store(self):
         return get_default_store()
@@ -185,6 +193,10 @@ class StoqAPI(object):
         import glib
         if string is None:
             string = ''
+
+        if isinstance(string, (safe_str, safe_unicode)):
+            return string
+
         return unicode(glib.markup_escape_text(string))
 
     def prepare_test(self):
