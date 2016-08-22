@@ -32,6 +32,7 @@ from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
 from stoqlib.gui.stockicons import (STOQ_FEEDBACK,
+                                    STOQ_STATUS_NA,
                                     STOQ_STATUS_OK,
                                     STOQ_STATUS_WARNING,
                                     STOQ_STATUS_ERROR)
@@ -44,6 +45,9 @@ _status_mapper = {
     None: (
         gtk.STOCK_REFRESH,
         _("Checking status...")),
+    ResourceStatus.STATUS_NA: (
+        STOQ_STATUS_NA,
+        _("Status not available")),
     ResourceStatus.STATUS_OK: (
         STOQ_STATUS_OK,
         _("Everything is running fine")),
@@ -208,7 +212,9 @@ class StatusButton(gtk.Button):
         pixbuf = self.render_icon(status_stock, gtk.ICON_SIZE_MENU)
         self._image.set_from_pixbuf(pixbuf)
 
-        if status not in [None, ResourceStatus.STATUS_OK]:
+        if status not in [None,
+                          ResourceStatus.STATUS_NA,
+                          ResourceStatus.STATUS_OK]:
             self._imgs.clear()
             self._imgs.append(pixbuf)
             width = pixbuf.get_width()

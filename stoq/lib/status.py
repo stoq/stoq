@@ -43,11 +43,13 @@ class ResourceStatus(gobject.GObject):
 
     gsignal('status-changed', int, str)
 
-    (STATUS_OK,
+    (STATUS_NA,
+     STATUS_OK,
      STATUS_WARNING,
-     STATUS_ERROR) = range(3)
+     STATUS_ERROR) = range(4)
 
     status_label = {
+        STATUS_NA: _("N/A"),
         STATUS_OK: _("OK"),
         STATUS_WARNING: _("WARNING"),
         STATUS_ERROR: _("ERROR"),
@@ -129,6 +131,9 @@ class ResourceStatusManager(gobject.GObject):
         elif any(resource.status == ResourceStatus.STATUS_WARNING
                  for resource in self.resources.itervalues()):
             return ResourceStatus.STATUS_WARNING
+        elif any(resource.status == ResourceStatus.STATUS_NA
+                 for resource in self.resources.itervalues()):
+            return ResourceStatus.STATUS_NA
         else:
             return ResourceStatus.STATUS_OK
 
@@ -186,7 +191,7 @@ class _ServerStatus(ResourceStatus):
 
     def refresh(self):
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
-            self.status = ResourceStatus.STATUS_WARNING
+            self.status = ResourceStatus.STATUS_NA
             self.reason = _('Stoq server not running because the parameter '
                             '"Online Services" is disabled')
             self.reason_long = _('Enable the parameter "Online Services" '
@@ -217,7 +222,7 @@ class _BackupStatus(ResourceStatus):
 
     def refresh(self):
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
-            self.status = ResourceStatus.STATUS_WARNING
+            self.status = ResourceStatus.STATUS_NA
             self.reason = _('Backups not running because the parameter '
                             '"Online Services" is disabled')
             self.reason_long = _('Enable the parameter "Online Services" '
