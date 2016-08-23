@@ -267,7 +267,7 @@ class PluginManager(object):
         if code != 200:
             return_messages = {
                 400: _("Plugin not available for this stoq version"),
-                400: _("The instance has no active paid subscription"),
+                401: _("The instance is not authorized to download the plugin"),
                 404: _("Plugin does not exist"),
                 405: _("This instance has not acquired the specified plugin"),
             }

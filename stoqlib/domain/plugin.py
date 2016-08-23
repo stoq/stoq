@@ -25,7 +25,7 @@
 
 # pylint: enable=E1101
 
-from storm.expr import Ne
+from storm.expr import Eq, Ne
 from stoqlib.domain.base import Domain
 from stoqlib.database.properties import UnicodeCol, IntCol, BLOBCol
 
@@ -79,6 +79,15 @@ class InstalledPlugin(Domain):
 
         # If none of the other cases were true, the plugin is already installed
         raise PluginError("Plugin %s is already installed." % (plugin_name, ))
+
+    @classmethod
+    def get_pre_plugin_names(cls, store):
+        """Returns a list of pre enabled plugin names
+        :param store: a store
+        :returns: names of the pre enabled plugins
+        """
+        query = Eq(cls.plugin_version, None)
+        return [p.plugin_name for p in store.find(cls, query)]
 
 
 class PluginEgg(Domain):

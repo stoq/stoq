@@ -50,6 +50,7 @@ from stoqlib.gui.utils.openbrowser import open_browser
 from stoqlib.lib.interfaces import IAppInfo, IApplicationDescriptions
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.permissions import PermissionManager
+from stoqlib.lib.pluginmanager import InstalledPlugin, get_plugin_manager
 from stoqlib.lib.translation import (stoqlib_gettext, stoqlib_ngettext,
                                      locale_sorted)
 from stoqlib.lib.webservice import WebService
@@ -326,6 +327,7 @@ class ShellWindow(GladeDelegate):
         self.hide_app(empty=True)
 
         self._check_demo_mode()
+        self._check_online_plugins()
         self._birthdays_bar = None
         self._check_client_birthdays()
         # json will restore tuples as lists. We need to convert them
@@ -366,6 +368,38 @@ class ShellWindow(GladeDelegate):
         window_group = gtk.WindowGroup()
         window_group.add_window(toplevel)
 
+    def _check_online_plugins(self):
+        # For each online plugin, try to download and install it.
+        # Otherwise warn him
+        online_plugins = InstalledPlugin.get_pre_plugin_names(self.store)
+        if not online_plugins:
+            return
+
+        successes = []
+        manager = get_plugin_manager()
+        for plugin_name in online_plugins:
+            success, msg = manager.download_plugin(plugin_name)
+            successes.append(success)
+            if success:
+                manager.install_plugin(self.store, plugin_name)
+                online_plugins.remove(plugin_name)
+
+        if all(successes):
+            return
+
+        # Title
+        title = _('You have pending plugins.')
+
+        # Description
+        url = 'https://stoq.link/?source=stoq-plugin-alert&amp;hash={}'.format(
+            api.sysparam.get_string('USER_HASH'))
+        desc = _(
+            'The following plugins need to be enabled: <b>{}</b>.\n\n'
+            'You can do it by registering on <a href="{}">Stoq.link</a>.'
+        ).format(', '.join(online_plugins), url)
+        msg = '<b>%s</b>\n%s' % (title, desc)
+        self.add_info_bar(gtk.MESSAGE_WARNING, msg)
+
     def _check_demo_mode(self):
         if not api.sysparam.get_bool('DEMO_MODE'):
             return
@@ -378,7 +412,7 @@ class ShellWindow(GladeDelegate):
         desc = (_("Some features are limited due to fiscal reasons. "
                   "Click on '%s' to remove the limitations and finish the demonstration.")
                 % button_label)
-        msg = '<b>%s</b>\n%s' % (title, desc)
+        msg = '<b>%s</b>\n%s' % (api.escape(title), api.escape(desc))
 
         button = gtk.Button(button_label)
         button.connect('clicked', self._on_enable_production__clicked)

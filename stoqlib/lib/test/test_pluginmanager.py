@@ -200,7 +200,7 @@ class TestPluginManager(DomainTest):
             download_plugin.return_value = res
             self.assertEqual(
                 self._manager.download_plugin(u'foo'),
-                (False, 'The instance has no active paid subscription'))
+                (False, 'Plugin not available for this stoq version'))
             self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None)
 
             self.assertNotCalled(commit)
