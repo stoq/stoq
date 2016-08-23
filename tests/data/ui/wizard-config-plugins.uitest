@@ -9,26 +9,26 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
           GtkHSeparator(step.hseparator1, fill=True):
           GtkLabel(step.label1, fill=True): 'Once a plugin is activated it will not be possible to disable it.'
           GtkVBox(step.vbox2, fill=True):
+            GtkLabel(step.label80, expand=True, fill=True): 'If you just want to test Stoq it is recommended to select no plugin.'
             GtkHBox(step.hbox1, expand=True, fill=True, padding=6):
               GtkLabel(step.label9, fill=True): '<b>Fiscal</b>'
               GtkHSeparator(step.hseparator2, expand=True, fill=True):
-            ProxyCheckButton(step.enable_coupon, expand=True, fill=True): 'Habilitar emiss\xc3\xa3o de Cupom Fiscal'
-            GtkVBox(step.vbox3, expand=True, fill=True):
-              GtkLabel(step.label5, expand=True, fill=True): 'Qual tecnologia para emiss\xc3\xa3o de Cupom Fiscal seu estado utiliza?'
-              GtkHBox(step.radio_coupon, expand=True, fill=True): insensitive
-                ProxyRadioButton(step.enable_sat, expand=True, fill=True): 'S@T Fiscal', active
-                ProxyRadioButton(step.enable_ecf, expand=True, fill=True): 'ECF'
-                ProxyRadioButton(step.enable_nfce, expand=True, fill=True): 'NFC-e'
-            ProxyCheckButton(step.enable_nfe, fill=True): 'Habilitar emiss\xc3\xa3o de Nota Fiscal (NF-e)'
-            GtkLabel(step.label80, expand=True, fill=True): 'If you just want to test Stoq it is recommended to select no plugin.'
+            ProxyCheckButton(step.enable_nfe, fill=True): 'Enable electronic invoice (NF-e)'
+            ProxyCheckButton(step.enable_coupon, expand=True, fill=True): 'Enable fiscal coupon'
+            GtkAlignment(step.alignment1, expand=True, fill=True):
+              GtkVBox(step.coupon_box): insensitive
+                GtkLabel(step.label5, expand=True, fill=True): 'Which fiscal coupon technology is used in your state?'
+                GtkHBox(step.radio_coupon, expand=True, fill=True):
+                  ProxyRadioButton(step.enable_sat, expand=True, fill=True): 'S@T Fiscal', active
+                  ProxyRadioButton(step.enable_ecf, expand=True, fill=True): 'ECF'
+                  ProxyRadioButton(step.enable_nfce, expand=True, fill=True): 'NFC-e'
           GtkHBox(step.hbox4, fill=True, padding=6):
             GtkLabel(step.L): '<b>Online</b>'
             GtkHSeparator(step.hseparator3, expand=True, fill=True):
           GtkHBox(step.hbox5, fill=True):
-            GtkCheckButton(step.enable_magento, expand=True, fill=True): 'Magento'
-            GtkCheckButton(step.enable_backup, expand=True, fill=True): 'Backup'
-            GtkCheckButton(step.enable_conector, expand=True, fill=True): 'Integra\xc3\xa7\xc3\xa3o Multi Loja'
-          GtkLabel(step.label3, fill=True, padding=6): 'Select the plugins you would like to enable and then click <b>Forward</b> to continue.'
+            GtkCheckButton(step.enable_backup, expand=True, fill=True): 'Cloud backup'
+            GtkCheckButton(step.enable_conector, expand=True, fill=True): 'Multi branch integration'
+            GtkCheckButton(step.enable_magento, expand=True, fill=True): 'E-commerce integration'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

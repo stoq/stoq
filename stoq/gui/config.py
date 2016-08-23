@@ -317,7 +317,7 @@ class PluginStep(BaseWizardStep):
 
     def on_enable_coupon__toggled(self, action):
         is_active = self.enable_coupon.get_active()
-        self.radio_coupon.set_sensitive(is_active)
+        self.coupon_box.set_sensitive(is_active)
 
 
 class LinkStep(WizardEditorStep):
