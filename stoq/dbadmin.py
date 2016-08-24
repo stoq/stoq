@@ -273,11 +273,13 @@ class StoqCommandHandler:
                 return
 
     def _register_plugins(self, plugin_names):
+        from stoqlib.database.runtime import new_store
         from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
 
-        for name in plugin_names:
-            manager.pre_install_plugin(name)
+        with new_store() as store:
+            for name in plugin_names:
+                manager.pre_install_plugin(store, name)
 
     def _provide_app_info(self):
         # FIXME: The webservice need the IAppInfo provided to get the stoq

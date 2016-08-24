@@ -331,7 +331,7 @@ class TestPluginManager(DomainTest):
 
         # Create a new plugin to be registered with no version
         pre_plugin_name = u'_'
-        self._manager.pre_install_plugin(pre_plugin_name)
+        self._manager.pre_install_plugin(self.store, pre_plugin_name)
 
         # Install the dependent plugin, this should install both plugins
         self._manager.install_plugin(dep_name)

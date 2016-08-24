@@ -351,7 +351,7 @@ class PluginManager(object):
         plugin.activate()
         self._active_plugins[plugin_name] = plugin
 
-    def pre_install_plugin(self, plugin_name):
+    def pre_install_plugin(self, store, plugin_name):
         """Pre Install Plugin
 
         Registers an intention to activate a plugin, that will require further
@@ -363,10 +363,9 @@ class PluginManager(object):
             raise PluginError("Plugin %s is already enabled."
                               % (plugin_name, ))
 
-        with new_store() as store:
-            InstalledPlugin(store=store,
-                            plugin_name=plugin_name,
-                            plugin_version=None)
+        InstalledPlugin(store=store,
+                        plugin_name=plugin_name,
+                        plugin_version=None)
 
     def install_plugin(self, plugin_name):
         """Install and enable a plugin
