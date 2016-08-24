@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-20 02:10-0300\n"
-"PO-Revision-Date: 2016-08-20 05:10+0000\n"
+"POT-Creation-Date: 2016-08-23 02:10-0300\n"
+"PO-Revision-Date: 2016-08-23 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Hungarian (http://www.transifex.com/async/stoq/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -4631,7 +4631,8 @@ msgstr ""
 
 #: ../data/template/transfer/transfer.html:23
 #: ../data/template/transfer/transfer.html:51
-#: ../stoq/gui/shell/statusbar.py:197 ../stoqlib/lib/formatters.py:168
+#: ../stoq/gui/shell/statusbar.py:201 ../stoq/lib/status.py:52
+#: ../stoqlib/lib/formatters.py:168
 msgid "N/A"
 msgstr ""
 
@@ -9019,31 +9020,35 @@ msgstr ""
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:46
+#: ../stoq/gui/shell/statusbar.py:47
 msgid "Checking status..."
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:49
+#: ../stoq/gui/shell/statusbar.py:50
+msgid "Status not available"
+msgstr ""
+
+#: ../stoq/gui/shell/statusbar.py:53
 msgid "Everything is running fine"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:52
+#: ../stoq/gui/shell/statusbar.py:56
 msgid "Some services are in a warning state"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:55
+#: ../stoq/gui/shell/statusbar.py:59
 msgid "Some services are in an error state"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:61
+#: ../stoq/gui/shell/statusbar.py:65
 msgid "System Status"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:142
+#: ../stoq/gui/shell/statusbar.py:146
 msgid "Status not available..."
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:293
+#: ../stoq/gui/shell/statusbar.py:299
 msgid "Feedback"
 msgstr ""
 
@@ -9584,73 +9589,73 @@ msgid ""
 "Consult your database administrator to solve this problem."
 msgstr ""
 
-#: ../stoq/lib/status.py:51
+#: ../stoq/lib/status.py:53
 msgid "OK"
 msgstr ""
 
-#: ../stoq/lib/status.py:52
+#: ../stoq/lib/status.py:54
 msgid "WARNING"
 msgstr ""
 
-#: ../stoq/lib/status.py:53
+#: ../stoq/lib/status.py:55
 msgid "ERROR"
 msgstr ""
 
-#: ../stoq/lib/status.py:180
+#: ../stoq/lib/status.py:185
 msgid "Stoq server"
 msgstr ""
 
-#: ../stoq/lib/status.py:190
+#: ../stoq/lib/status.py:195
 msgid ""
 "Stoq server not running because the parameter \"Online Services\" is "
 "disabled"
 msgstr ""
 
-#: ../stoq/lib/status.py:192 ../stoq/lib/status.py:223
+#: ../stoq/lib/status.py:197 ../stoq/lib/status.py:228
 msgid ""
 "Enable the parameter \"Online Services\" on the \"Admin\" app to solve this "
 "issue"
 msgstr ""
 
-#: ../stoq/lib/status.py:198
+#: ../stoq/lib/status.py:203
 msgid "Stoq server is alive and running"
 msgstr ""
 
-#: ../stoq/lib/status.py:202 ../stoqlib/net/server.py:126
+#: ../stoq/lib/status.py:207 ../stoqlib/net/server.py:126
 msgid "Stoq server not found"
 msgstr ""
 
-#: ../stoq/lib/status.py:203
+#: ../stoq/lib/status.py:208
 msgid "Install and configure the stoq-server package to solve this issue."
 msgstr ""
 
-#: ../stoq/lib/status.py:211
+#: ../stoq/lib/status.py:216
 msgid "Backup"
 msgstr ""
 
-#: ../stoq/lib/status.py:221
+#: ../stoq/lib/status.py:226
 msgid "Backups not running because the parameter \"Online Services\" is disabled"
 msgstr ""
 
-#: ../stoq/lib/status.py:232 ../stoq/lib/status.py:238
+#: ../stoq/lib/status.py:237 ../stoq/lib/status.py:243
 msgid "Could not communicate with Stoq.link"
 msgstr ""
 
-#: ../stoq/lib/status.py:249
+#: ../stoq/lib/status.py:254
 #, python-format
 msgid "Backup is late. Last backup date is %s"
 msgstr ""
 
-#: ../stoq/lib/status.py:251
+#: ../stoq/lib/status.py:256
 msgid "Check your Stoq Server logs to see if there's any problem with it"
 msgstr ""
 
-#: ../stoq/lib/status.py:255
+#: ../stoq/lib/status.py:260
 #, python-format
 msgid "Backup is up-to-date. Last backup date is %s"
 msgstr ""
 
-#: ../stoq/lib/status.py:260
+#: ../stoq/lib/status.py:265
 msgid "There's no backup data yet"
 msgstr ""
 
