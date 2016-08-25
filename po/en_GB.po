@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-23 02:10-0300\n"
-"PO-Revision-Date: 2016-08-23 05:10+0000\n"
+"POT-Creation-Date: 2016-08-25 02:10-0300\n"
+"PO-Revision-Date: 2016-08-24 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/async/stoq/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
@@ -714,7 +714,7 @@ msgstr "Sales"
 msgid "Stock Decreases"
 msgstr ""
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:734
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:751
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -1787,25 +1787,61 @@ msgid "<b>Plugins</b>"
 msgstr "<b>Plugins</b>"
 
 #: ../data/glade/PluginStep.ui.h:2
-msgid ""
-"Once a plugin is activated it will not be possible to disable it.\n"
-"\n"
-"Select the plugins you want to enable:"
-msgstr "Once a plugin is activated it will not be possible to disable it.\n\nSelect the plugins you want to enable:"
+msgid "Once a plugin is activated it will not be possible to disable it."
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:3
+msgid "<b>Fiscal</b>"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:4
+msgid "Habilitar emissão de Cupom Fiscal"
+msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:5
-msgid "ECF (Fiscal printer support)"
-msgstr "ECF (Fiscal printer support)"
+msgid "Qual tecnologia para emissão de Cupom Fiscal seu estado utiliza?"
+msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:6
-msgid "NF-e (Eletronic Invoices)"
-msgstr "NF-e (Eletronic Invoices)"
+msgid "S@T Fiscal"
+msgstr ""
 
-#: ../data/glade/PluginStep.ui.h:7
+#: ../data/glade/PluginStep.ui.h:7 ../plugins/ecf/ecfui.py:78
+#: ../plugins/ecf/ecfui.py:89 ../plugins/ecf/ecfui.py:97
+#: ../plugins/ecf/ecfui.py:105 ../plugins/ecf/ecfui.py:234
+#: ../plugins/ecf/ecfui.py:258
+msgid "ECF"
+msgstr "ECF"
+
+#: ../data/glade/PluginStep.ui.h:8
+msgid "NFC-e"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:9
+msgid "Habilitar emissão de Nota Fiscal (NF-e)"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:10
 msgid "If you just want to test Stoq it is recommended to select no plugin."
 msgstr "If you just want to test Stoq it is recommended to select no plugin."
 
-#: ../data/glade/PluginStep.ui.h:8
+#: ../data/glade/PluginStep.ui.h:11
+msgid "<b>Online</b>"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:12
+msgid "Magento"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:13 ../stoq/lib/status.py:216
+msgid "Backup"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:14
+msgid "Integração Multi Loja"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:15
 msgid ""
 "Select the plugins you would like to enable and then click <b>Forward</b> to"
 " continue."
@@ -5053,12 +5089,6 @@ msgstr "Cant edit a virtual printer"
 msgid "Fiscal Printers"
 msgstr "Fiscal Printers"
 
-#: ../plugins/ecf/ecfui.py:78 ../plugins/ecf/ecfui.py:89
-#: ../plugins/ecf/ecfui.py:97 ../plugins/ecf/ecfui.py:105
-#: ../plugins/ecf/ecfui.py:234 ../plugins/ecf/ecfui.py:258
-msgid "ECF"
-msgstr "ECF"
-
 #: ../plugins/ecf/ecfui.py:79
 msgid "Additional information on fiscal coupon"
 msgstr ""
@@ -6659,7 +6689,7 @@ msgstr "Back"
 msgid "Go back"
 msgstr "Go back"
 
-#: ../stoq/gui/calendar.py:294 ../stoq/gui/config.py:559
+#: ../stoq/gui/calendar.py:294 ../stoq/gui/config.py:573
 msgid "Forward"
 msgstr "Forward"
 
@@ -6792,44 +6822,44 @@ msgstr "Trust"
 msgid "%s is not a valid database name"
 msgstr ""
 
-#: ../stoq/gui/config.py:342
+#: ../stoq/gui/config.py:351
 msgid "Done!"
 msgstr ""
 
-#: ../stoq/gui/config.py:392 ../stoqlib/gui/dialogs/crashreportdialog.py:182
+#: ../stoq/gui/config.py:401 ../stoqlib/gui/dialogs/crashreportdialog.py:182
 msgid "Sending..."
 msgstr "Sending..."
 
-#: ../stoq/gui/config.py:428
+#: ../stoq/gui/config.py:442
 #, python-format
 msgid "%s is not a valid email"
 msgstr "%s is not a valid email"
 
-#: ../stoq/gui/config.py:435
+#: ../stoq/gui/config.py:449
 #, python-format
 msgid "%s is not a valid phone"
 msgstr "%s is not a valid phone"
 
-#: ../stoq/gui/config.py:488
+#: ../stoq/gui/config.py:502
 msgid "PostgresSQL 'postgres' password"
 msgstr "PostgresSQL 'postgres' password"
 
-#: ../stoq/gui/config.py:491
+#: ../stoq/gui/config.py:505
 msgid "PostgreSQL password"
 msgstr "PostgreSQL password"
 
-#: ../stoq/gui/config.py:494
+#: ../stoq/gui/config.py:508
 msgid ""
 "To be able to create a new Stoq database you need to enter the password of the <b>postgres</b> user for the PostgreSQL database we're installing to.\n"
 "\n"
 "This is the same password you were asked when you installed PostgreSQL on this computer."
 msgstr "To be able to create a new Stoq database you need to enter the password of the <b>postgres</b> user for the PostgreSQL database we're installing to.\n\nThis is the same password you were asked when you installed PostgreSQL on this computer."
 
-#: ../stoq/gui/config.py:516 ../stoq/gui/config.py:519
+#: ../stoq/gui/config.py:530 ../stoq/gui/config.py:533
 msgid "Administrator account"
 msgstr "Administrator account"
 
-#: ../stoq/gui/config.py:522
+#: ../stoq/gui/config.py:536
 #, python-format
 msgid ""
 "I'm adding a user account called <b>%s</b> which will have administrator privilegies.\n"
@@ -6837,114 +6867,114 @@ msgid ""
 "To be able to create other users you need to login with this user in the admin application and create them."
 msgstr "I'm adding a user account called <b>%s</b> which will have administrator privilegies.\n\nTo be able to create other users you need to login with this user in the admin application and create them."
 
-#: ../stoq/gui/config.py:564
+#: ../stoq/gui/config.py:578
 msgid ""
 "The installation guide will now install the packages for you using apt, it "
 "may ask you for your password to continue."
 msgstr "The installation guide will now install the packages for you using apt, it may ask you for your password to continue."
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:568
+#: ../stoq/gui/config.py:582
 #, python-format
 msgid "Click %s to begin installing the PostgreSQL server."
 msgstr "Click %s to begin installing the PostgreSQL server."
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:573
+#: ../stoq/gui/config.py:587
 #, python-format
 msgid ""
 "Click %s to continue when you have installed PostgreSQL server on this "
 "computer."
 msgstr "Click %s to continue when you have installed PostgreSQL server on this computer."
 
-#: ../stoq/gui/config.py:589
+#: ../stoq/gui/config.py:603
 msgid "You need to install PostgreSQL before moving forward"
 msgstr "You need to install PostgreSQL before moving forward"
 
-#: ../stoq/gui/config.py:612
+#: ../stoq/gui/config.py:626
 msgid "Please wait while the package installation is completing."
 msgstr "Please wait while the package installation is completing."
 
-#: ../stoq/gui/config.py:627
+#: ../stoq/gui/config.py:641
 msgid ""
 "Postgresql installation succeeded. You may now proceed to the next step by "
 "clicking the <b>Forward</b> button"
 msgstr ""
 
-#: ../stoq/gui/config.py:632
+#: ../stoq/gui/config.py:646
 msgid "Authorization failed, try again or connect to another database"
 msgstr "Authorization failed, try again or connect to another database"
 
-#: ../stoq/gui/config.py:635
+#: ../stoq/gui/config.py:649
 msgid "Something went wrong while trying to install the PostgreSQL server."
 msgstr "Something went wrong while trying to install the PostgreSQL server."
 
-#: ../stoq/gui/config.py:638
+#: ../stoq/gui/config.py:652
 msgid ""
 "Sorry, something went wrong while installing PostgreSQL, try again manually "
 "or go back and configure Stoq to connect to another."
 msgstr "Sorry, something went wrong while installing PostgreSQL, try again manually or go back and configure Stoq to connect to another."
 
-#: ../stoq/gui/config.py:678
+#: ../stoq/gui/config.py:692
 #, python-format
 msgid "Stoq requires PostgresSQL 9.1 or later, but %s found"
 msgstr ""
 
-#: ../stoq/gui/config.py:685
+#: ../stoq/gui/config.py:699
 msgid ""
 "Missing PostgreSQL extension on the server, please install postgresql-"
 "contrib on it"
 msgstr ""
 
-#: ../stoq/gui/config.py:692
+#: ../stoq/gui/config.py:706
 #, python-format
 msgid ""
 "The specified database '%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
 
-#: ../stoq/gui/config.py:694
+#: ../stoq/gui/config.py:708
 msgid "Create database"
 msgstr "Create database"
 
-#: ../stoq/gui/config.py:694
+#: ../stoq/gui/config.py:708
 msgid "Don't create"
 msgstr "Don't create"
 
-#: ../stoq/gui/config.py:737
+#: ../stoq/gui/config.py:754
 msgid "Creating database..."
 msgstr "Creating database..."
 
-#: ../stoq/gui/config.py:742
+#: ../stoq/gui/config.py:759
 msgid "Please wait while the database is being created."
 msgstr "Please wait while the database is being created."
 
-#: ../stoq/gui/config.py:752
+#: ../stoq/gui/config.py:769
 msgid "Creating base schema..."
 msgstr "Creating base schema..."
 
-#: ../stoq/gui/config.py:756
+#: ../stoq/gui/config.py:773
 msgid "Creating schema, applying patches..."
 msgstr "Creating schema, applying patches..."
 
-#: ../stoq/gui/config.py:761
+#: ../stoq/gui/config.py:778
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr "Creating schema, applying patch %d ..."
 
-#: ../stoq/gui/config.py:763
+#: ../stoq/gui/config.py:780
 msgid "Creating additional database objects ..."
 msgstr "Creating additional database objects ..."
 
-#: ../stoq/gui/config.py:766
+#: ../stoq/gui/config.py:783
 msgid "Creating examples ..."
 msgstr "Creating examples ..."
 
-#: ../stoq/gui/config.py:769
+#: ../stoq/gui/config.py:786
 msgid "Activating plugins ..."
 msgstr "Activating plugins ..."
 
-#: ../stoq/gui/config.py:771
+#: ../stoq/gui/config.py:788
 msgid "This may take some time."
 msgstr "This may take some time."
 
@@ -6952,61 +6982,61 @@ msgstr "This may take some time."
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:788
+#: ../stoq/gui/config.py:805
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr "Something went wrong while trying to create the database. Try again?"
 
-#: ../stoq/gui/config.py:790
+#: ../stoq/gui/config.py:807
 msgid "Change settings"
 msgstr "Change settings"
 
-#: ../stoq/gui/config.py:790 ../stoq/gui/pos.py:1150 ../stoq/gui/till.py:343
+#: ../stoq/gui/config.py:807 ../stoq/gui/pos.py:1150 ../stoq/gui/till.py:343
 #: ../stoqlib/gui/fiscalprinter.py:631 ../stoqlib/gui/fiscalprinter.py:674
 #: ../stoqlib/gui/fiscalprinter.py:694 ../stoqlib/gui/fiscalprinter.py:723
 #: ../stoqlib/gui/fiscalprinter.py:749
 msgid "Try again"
 msgstr "Try again"
 
-#: ../stoq/gui/config.py:797
+#: ../stoq/gui/config.py:814
 msgid ""
 "Your database is missing the postgresql-contrib package. Install it and try "
 "again"
 msgstr ""
 
-#: ../stoq/gui/config.py:802
+#: ../stoq/gui/config.py:819
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr "Something went wrong while trying to create the Stoq database"
 
-#: ../stoq/gui/config.py:808
+#: ../stoq/gui/config.py:825
 msgid "Done."
 msgstr "Done."
 
-#: ../stoq/gui/config.py:812
+#: ../stoq/gui/config.py:829
 msgid "Installation successful, click <b>Forward</b> to continue."
 msgstr "Installation successful, click <b>Forward</b> to continue."
 
-#: ../stoq/gui/config.py:834
+#: ../stoq/gui/config.py:851
 msgid "Run Stoq"
 msgstr "Run Stoq"
 
-#: ../stoq/gui/config.py:849
+#: ../stoq/gui/config.py:866
 msgid "Stoq - Installation"
 msgstr "Stoq - Installation"
 
-#: ../stoq/gui/config.py:970
+#: ../stoq/gui/config.py:988
 msgid "It was not possible to connect to the database."
 msgstr "It was not possible to connect to the database."
 
-#: ../stoq/gui/config.py:971
+#: ../stoq/gui/config.py:989
 msgid "Check the server configuration and try again."
 msgstr "Check the server configuration and try again."
 
-#: ../stoq/gui/config.py:990
+#: ../stoq/gui/config.py:1008
 #, python-brace-format
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr "Database {dbname} at {address}:{port} is not a Stoq database."
 
-#: ../stoq/gui/config.py:996
+#: ../stoq/gui/config.py:1014
 #, python-brace-format
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
@@ -7014,7 +7044,7 @@ msgid ""
 "corrupted, please select another one."
 msgstr "Stoq was able to succesfully connect to the database {dbname} at the database server {address}, however it is not a Stoq database or it was corrupted, please select another one."
 
-#: ../stoq/gui/config.py:1022 ../stoq/gui/shell/shell.py:171
+#: ../stoq/gui/config.py:1040 ../stoq/gui/shell/shell.py:171
 msgid "The database version differs from your installed version."
 msgstr ""
 
@@ -9627,10 +9657,6 @@ msgstr ""
 
 #: ../stoq/lib/status.py:208
 msgid "Install and configure the stoq-server package to solve this issue."
-msgstr ""
-
-#: ../stoq/lib/status.py:216
-msgid "Backup"
 msgstr ""
 
 #: ../stoq/lib/status.py:226
