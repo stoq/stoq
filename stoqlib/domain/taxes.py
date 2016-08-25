@@ -438,6 +438,10 @@ class InvoiceItemPis(BasePIS):
         # because the taxpayer is exempt.
         if self.cst in [4, 5, 6, 7, 8, 9]:
             return
+        # When the branch is Simples Nacional (CRT 1 or 2) and the pis is 99,
+        # the values should be empty
+        if self.cst == 99 and invoice_item.parent.branch.crt in [1, 2]:
+            return
         cost = self._get_item_cost(invoice_item)
         self.v_bc = invoice_item.quantity * (invoice_item.price - cost)
         if self.p_pis is not None:
@@ -487,6 +491,10 @@ class InvoiceItemCofins(BaseCOFINS):
         # When the CST is contained in the list the calculation is not performed
         # because the taxpayer is exempt.
         if self.cst in [4, 5, 6, 7, 8, 9]:
+            return
+        # When the branch is Simples Nacional (CRT 1 or 2) and the cofins is 99,
+        # the values should be empty
+        if self.cst == 99 and invoice_item.parent.branch.crt in [1, 2]:
             return
         cost = self._get_item_cost(invoice_item)
         self.v_bc = invoice_item.quantity * (invoice_item.price - cost)

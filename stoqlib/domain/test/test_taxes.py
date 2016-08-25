@@ -370,6 +370,16 @@ class TestInvoiceItemPis(DomainTest):
         self.assertEquals(sale_item_pis.calculo, InvoiceItemPis.CALC_PERCENTAGE)
         self.assertEquals(sale_item_pis.v_pis, 1)
 
+    def test_pis_simples(self):
+        sale_item_pis = self.create_invoice_item_pis(cst=99)
+        sale_item = self._get_sale_item(sale_item_pis, 1, 10)
+        sale_item_pis.set_initial_values(sale_item)
+
+        self.assertEquals(sale_item_pis.cst, 99)
+        self.assertEquals(sale_item_pis.p_pis, None)
+        self.assertEquals(sale_item_pis.v_bc, None)
+        self.assertEquals(sale_item_pis.v_pis, 0)
+
 
 class TestInvoiceItemCofins(DomainTest):
     def _get_sale_item(self, sale_item_cofins=None, quantity=1, price=10):
@@ -403,3 +413,13 @@ class TestInvoiceItemCofins(DomainTest):
         self.assertEquals(sale_item_cofins.v_bc, 10)
         self.assertEquals(sale_item_cofins.calculo, InvoiceItemCofins.CALC_PERCENTAGE)
         self.assertEquals(sale_item_cofins.v_cofins, 2)
+
+    def test_pis_simples(self):
+        sale_item_cofins = self.create_invoice_item_cofins(cst=99)
+        sale_item = self._get_sale_item(sale_item_cofins, 1, 10)
+        sale_item_cofins.set_initial_values(sale_item)
+
+        self.assertEquals(sale_item_cofins.cst, 99)
+        self.assertEquals(sale_item_cofins.p_cofins, None)
+        self.assertEquals(sale_item_cofins.v_bc, None)
+        self.assertEquals(sale_item_cofins.v_cofins, 0)

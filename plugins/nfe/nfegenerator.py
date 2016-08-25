@@ -476,6 +476,8 @@ class BaseNFeXMLGroup(object):
         return date.replace(tzinfo=tzlocal(), microsecond=0).isoformat()
 
     def format_value(self, value, precision=2):
+        if value is None:
+            return ''
         _format = Decimal('10e-%d' % precision)
         return value.quantize(_format)
 
