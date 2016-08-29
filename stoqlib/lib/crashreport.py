@@ -177,7 +177,7 @@ def collect_traceback(tb, output=True, submit=False):
 
         sentry_url = os.environ.get(
             'STOQ_SENTRY_URL',
-            ('http://89169350b0c0434895e315aa6490341a:'
+            ('https://89169350b0c0434895e315aa6490341a:'
              '0f5dce716eb5497fbf75c52fe873b3e8@sentry.stoq.com.br/4'))
         client = raven.Client(sentry_url, release=stoq.version)
 
