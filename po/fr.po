@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-25 02:10-0300\n"
-"PO-Revision-Date: 2016-08-24 05:10+0000\n"
+"POT-Creation-Date: 2016-08-28 02:10-0300\n"
+"PO-Revision-Date: 2016-08-26 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: French (http://www.transifex.com/async/stoq/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -1791,38 +1791,38 @@ msgid "Once a plugin is activated it will not be possible to disable it."
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:3
-msgid "<b>Fiscal</b>"
+msgid "If you just want to test Stoq it is recommended to select no plugin."
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:4
-msgid "Habilitar emissão de Cupom Fiscal"
+msgid "<b>Fiscal</b>"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:5
-msgid "Qual tecnologia para emissão de Cupom Fiscal seu estado utiliza?"
+msgid "Enable electronic invoice (NF-e)"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:6
+msgid "Enable fiscal coupon"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:7
+msgid "Which fiscal coupon technology is used in your state?"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:8
 msgid "S@T Fiscal"
 msgstr ""
 
-#: ../data/glade/PluginStep.ui.h:7 ../plugins/ecf/ecfui.py:78
+#: ../data/glade/PluginStep.ui.h:9 ../plugins/ecf/ecfui.py:78
 #: ../plugins/ecf/ecfui.py:89 ../plugins/ecf/ecfui.py:97
 #: ../plugins/ecf/ecfui.py:105 ../plugins/ecf/ecfui.py:234
 #: ../plugins/ecf/ecfui.py:258
 msgid "ECF"
 msgstr ""
 
-#: ../data/glade/PluginStep.ui.h:8
-msgid "NFC-e"
-msgstr ""
-
-#: ../data/glade/PluginStep.ui.h:9
-msgid "Habilitar emissão de Nota Fiscal (NF-e)"
-msgstr ""
-
 #: ../data/glade/PluginStep.ui.h:10
-msgid "If you just want to test Stoq it is recommended to select no plugin."
+msgid "NFC-e"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:11
@@ -1830,21 +1830,28 @@ msgid "<b>Online</b>"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:12
-msgid "Magento"
+msgid "Cloud backup"
 msgstr ""
 
-#: ../data/glade/PluginStep.ui.h:13 ../stoq/lib/status.py:216
-msgid "Backup"
+#: ../data/glade/PluginStep.ui.h:13
+msgid "Keep all your data safe in the cloud, with zero-knowledge backups."
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:14
-msgid "Integração Multi Loja"
+msgid "Multi branch integration"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:15
 msgid ""
-"Select the plugins you would like to enable and then click <b>Forward</b> to"
-" continue."
+"Manage multiple branches, track all of them in one place, in real-time."
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:16
+msgid "E-commerce integration"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:17
+msgid "Manage your online store directly from Stoq."
 msgstr ""
 
 #: ../data/glade/PreferencesEditor.ui.h:1
@@ -4873,7 +4880,7 @@ msgstr ""
 #: ../stoq/gui/payable.py:391 ../stoq/gui/production.py:217
 #: ../stoq/gui/purchase.py:426 ../stoq/gui/receivable.py:240
 #: ../stoq/gui/sales.py:420 ../stoq/gui/services.py:481
-#: ../stoq/gui/till.py:265 ../stoqlib/api.py:179
+#: ../stoq/gui/till.py:265 ../stoqlib/api.py:187
 #: ../stoqlib/gui/search/deliverysearch.py:61
 #: ../stoqlib/gui/search/deliverysearch.py:70
 #: ../stoqlib/gui/search/loansearch.py:66
@@ -9078,7 +9085,7 @@ msgstr ""
 msgid "Status not available..."
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:299
+#: ../stoq/gui/shell/statusbar.py:287
 msgid "Feedback"
 msgstr ""
 
@@ -9632,56 +9639,59 @@ msgid "ERROR"
 msgstr ""
 
 #: ../stoq/lib/status.py:185
-msgid "Stoq server"
+msgid "Online Services"
 msgstr ""
 
 #: ../stoq/lib/status.py:195
-msgid ""
-"Stoq server not running because the parameter \"Online Services\" is "
-"disabled"
+msgid "Online services (Stoq.link integration, backup, etc) not enabled..."
 msgstr ""
 
-#: ../stoq/lib/status.py:197 ../stoq/lib/status.py:228
+#: ../stoq/lib/status.py:197 ../stoq/lib/status.py:230
 msgid ""
 "Enable the parameter \"Online Services\" on the \"Admin\" app to solve this "
 "issue"
 msgstr ""
 
 #: ../stoq/lib/status.py:203
-msgid "Stoq server is alive and running"
+msgid "Online services data hub is running fine."
 msgstr ""
 
-#: ../stoq/lib/status.py:207 ../stoqlib/net/server.py:126
-msgid "Stoq server not found"
+#: ../stoq/lib/status.py:207
+msgid "Online services data hub not found..."
 msgstr ""
 
-#: ../stoq/lib/status.py:208
-msgid "Install and configure the stoq-server package to solve this issue."
+#: ../stoq/lib/status.py:210
+#, python-format
+msgid "Install and configure the %s package to solve this issue"
 msgstr ""
 
-#: ../stoq/lib/status.py:226
-msgid "Backups not running because the parameter \"Online Services\" is disabled"
+#: ../stoq/lib/status.py:218
+msgid "Backup"
 msgstr ""
 
-#: ../stoq/lib/status.py:237 ../stoq/lib/status.py:243
+#: ../stoq/lib/status.py:228
+msgid "Backup service not running because \"Online Services\" is disabled"
+msgstr ""
+
+#: ../stoq/lib/status.py:239 ../stoq/lib/status.py:245
 msgid "Could not communicate with Stoq.link"
 msgstr ""
 
-#: ../stoq/lib/status.py:254
+#: ../stoq/lib/status.py:256
 #, python-format
 msgid "Backup is late. Last backup date is %s"
 msgstr ""
 
-#: ../stoq/lib/status.py:256
+#: ../stoq/lib/status.py:258
 msgid "Check your Stoq Server logs to see if there's any problem with it"
 msgstr ""
 
-#: ../stoq/lib/status.py:260
+#: ../stoq/lib/status.py:262
 #, python-format
 msgid "Backup is up-to-date. Last backup date is %s"
 msgstr ""
 
-#: ../stoq/lib/status.py:265
+#: ../stoq/lib/status.py:267
 msgid "There's no backup data yet"
 msgstr ""
 
@@ -17984,6 +17994,10 @@ msgstr ""
 #: ../stoqlib/net/calendarevents.py:341
 #, python-format
 msgid "%d purchases"
+msgstr ""
+
+#: ../stoqlib/net/server.py:126
+msgid "Stoq server not found"
 msgstr ""
 
 #: ../stoqlib/net/server.py:143
