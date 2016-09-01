@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-28 02:10-0300\n"
-"PO-Revision-Date: 2016-08-26 05:10+0000\n"
+"POT-Creation-Date: 2016-08-31 02:10-0300\n"
+"PO-Revision-Date: 2016-08-31 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (Australia) (http://www.transifex.com/async/stoq/language/en_AU/)\n"
 "MIME-Version: 1.0\n"
@@ -200,6 +200,16 @@ msgstr "Country:"
 #: ../data/glade/AdminPasswordStep.ui.h:1
 msgid "Enter the password and then click <b>Forward</b> to continue."
 msgstr "Enter the password and then click <b>Forward</b> to continue."
+
+#: ../data/glade/BackupConfigurationEditor.ui.h:1
+msgid ""
+"This is the key used to encrypt your backup.\n"
+"<b>Be sure to write it somewhere safe!</b>"
+msgstr ""
+
+#: ../data/glade/BackupConfigurationEditor.ui.h:3
+msgid "Backup key:"
+msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:1
 #: ../data/glade/BasePaymentMethodSlave.ui.h:4
@@ -4674,7 +4684,7 @@ msgstr "Invoice number"
 
 #: ../data/template/transfer/transfer.html:23
 #: ../data/template/transfer/transfer.html:51
-#: ../stoq/gui/shell/statusbar.py:201 ../stoq/lib/status.py:52
+#: ../stoq/gui/shell/statusbar.py:277 ../stoq/lib/status.py:55
 #: ../stoqlib/lib/formatters.py:168
 msgid "N/A"
 msgstr "N/A"
@@ -9057,35 +9067,49 @@ msgstr "Learn More..."
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>There is a new Stoq version available (%s)</b>"
 
-#: ../stoq/gui/shell/statusbar.py:47
+#: ../stoq/gui/shell/statusbar.py:50
 msgid "Checking status..."
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:50
+#: ../stoq/gui/shell/statusbar.py:53
 msgid "Status not available"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:53
+#: ../stoq/gui/shell/statusbar.py:56
 msgid "Everything is running fine"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:56
+#: ../stoq/gui/shell/statusbar.py:59
 msgid "Some services are in a warning state"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:59
+#: ../stoq/gui/shell/statusbar.py:62
 msgid "Some services are in an error state"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:65
+#: ../stoq/gui/shell/statusbar.py:68
 msgid "System Status"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:146
+#: ../stoq/gui/shell/statusbar.py:161
 msgid "Status not available..."
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:287
+#: ../stoq/gui/shell/statusbar.py:174
+msgid "Only admins can execute this action"
+msgstr ""
+
+#: ../stoq/gui/shell/statusbar.py:200
+#, python-format
+msgid "Executing \"%s\". This might take a while..."
+msgstr ""
+
+#: ../stoq/gui/shell/statusbar.py:226
+#, python-format
+msgid "An error happened when executing \"%s\""
+msgstr ""
+
+#: ../stoq/gui/shell/statusbar.py:361
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -9626,73 +9650,81 @@ msgid ""
 "Consult your database administrator to solve this problem."
 msgstr "Table 'system_table' does not exist.\nConsult your database administrator to solve this problem."
 
-#: ../stoq/lib/status.py:53
+#: ../stoq/lib/status.py:56
 msgid "OK"
 msgstr ""
 
-#: ../stoq/lib/status.py:54
+#: ../stoq/lib/status.py:57
 msgid "WARNING"
 msgstr ""
 
-#: ../stoq/lib/status.py:55
+#: ../stoq/lib/status.py:58
 msgid "ERROR"
 msgstr ""
 
-#: ../stoq/lib/status.py:185
+#: ../stoq/lib/status.py:234
 msgid "Online Services"
 msgstr ""
 
-#: ../stoq/lib/status.py:195
+#: ../stoq/lib/status.py:244
 msgid "Online services (Stoq.link integration, backup, etc) not enabled..."
 msgstr ""
 
-#: ../stoq/lib/status.py:197 ../stoq/lib/status.py:230
+#: ../stoq/lib/status.py:246 ../stoq/lib/status.py:280
 msgid ""
 "Enable the parameter \"Online Services\" on the \"Admin\" app to solve this "
 "issue"
 msgstr ""
 
-#: ../stoq/lib/status.py:203
+#: ../stoq/lib/status.py:252
 msgid "Online services data hub is running fine."
 msgstr ""
 
-#: ../stoq/lib/status.py:207
+#: ../stoq/lib/status.py:256
 msgid "Online services data hub not found..."
 msgstr ""
 
-#: ../stoq/lib/status.py:210
+#: ../stoq/lib/status.py:259
 #, python-format
 msgid "Install and configure the %s package to solve this issue"
 msgstr ""
 
-#: ../stoq/lib/status.py:218
+#: ../stoq/lib/status.py:267
 msgid "Backup"
 msgstr ""
 
-#: ../stoq/lib/status.py:228
+#: ../stoq/lib/status.py:278
 msgid "Backup service not running because \"Online Services\" is disabled"
 msgstr ""
 
-#: ../stoq/lib/status.py:239 ../stoq/lib/status.py:245
+#: ../stoq/lib/status.py:289 ../stoq/lib/status.py:295
 msgid "Could not communicate with Stoq.link"
 msgstr ""
 
-#: ../stoq/lib/status.py:256
+#: ../stoq/lib/status.py:306
 #, python-format
 msgid "Backup is late. Last backup date is %s"
 msgstr ""
 
-#: ../stoq/lib/status.py:258
+#: ../stoq/lib/status.py:308
 msgid "Check your Stoq Server logs to see if there's any problem with it"
 msgstr ""
 
-#: ../stoq/lib/status.py:262
+#: ../stoq/lib/status.py:312
 #, python-format
 msgid "Backup is up-to-date. Last backup date is %s"
 msgstr ""
 
-#: ../stoq/lib/status.py:267
+#: ../stoq/lib/status.py:317
 msgid "There's no backup data yet"
+msgstr ""
+
+#: ../stoq/lib/status.py:324
+msgid "Backup now"
+msgstr ""
+
+#: ../stoq/lib/status.py:327
+msgid "Configure"
 msgstr ""
 
 #: ../stoqlib/database/admin.py:75 ../stoqlib/database/admin.py:91
@@ -12283,6 +12315,30 @@ msgstr "Description must be filled in"
 msgid "Value must be greater than zero"
 msgstr "Value must be greater than zero"
 
+#: ../stoqlib/gui/editors/backupsettings.py:35
+msgid "Backup Configuration"
+msgstr ""
+
+#: ../stoqlib/gui/editors/backupsettings.py:47
+msgid ""
+"Changing the backup key will make any backup done with the previous key "
+"unrecoverable. Are you sure?"
+msgstr ""
+
+#: ../stoqlib/gui/editors/backupsettings.py:49
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:90
+#: ../stoqlib/gui/slaves/imageslaveslave.py:102
+msgid "Change"
+msgstr "Change"
+
+#: ../stoqlib/gui/editors/backupsettings.py:49
+msgid "Keep old key"
+msgstr ""
+
+#: ../stoqlib/gui/editors/backupsettings.py:65
+msgid "The backup key needs to have at least 10 characters"
+msgstr ""
+
 #: ../stoqlib/gui/editors/baseeditor.py:371
 #, python-format
 msgid "Details of %s"
@@ -12727,11 +12783,6 @@ msgid ""
 "Changing the payment type will remove this category from %s payments. Are "
 "you sure?"
 msgstr ""
-
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:90
-#: ../stoqlib/gui/slaves/imageslaveslave.py:102
-msgid "Change"
-msgstr "Change"
 
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:90
 msgid "Don't change"
