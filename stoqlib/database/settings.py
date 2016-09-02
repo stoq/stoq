@@ -652,7 +652,7 @@ class DatabaseSettings(object):
             args.append(self.dbname)
 
             print('Connecting to %s' % (
-                self.get_store_dsn(filter_password=True), ))
+                self.get_store_uri(filter_password=True), ))
             proc = Process(args)
             proc.wait()
         else:
