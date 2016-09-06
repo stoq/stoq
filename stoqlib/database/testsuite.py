@@ -236,7 +236,8 @@ def _enable_plugins():
         if not manager.is_installed(plugin):
             # STOQLIB_TEST_QUICK won't let dropdb on testdb run. Just a
             # precaution to avoid trying to install it again
-            manager.install_plugin(plugin)
+            with new_store() as store:
+                manager.install_plugin(store, plugin)
 
         else:
             # Make sure that the plugin is imported so sys.path is properly

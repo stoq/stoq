@@ -52,6 +52,34 @@ class InstalledPlugin(Domain):
         return [p.plugin_name for p in store.find(cls,
                                                   Ne(cls.plugin_version, None))]
 
+    @classmethod
+    def create(cls, store, plugin_name):
+        """Add a valid InstalledPlugin into the database
+
+        This method sets plugin_version to 0 if a there is a Pre-Installed
+        Plugin on the database, or creates a InstalledPlugin with
+        plugin_version set to 0 if None is available.
+        """
+        from stoqlib.lib.pluginmanager import PluginError
+
+        # First, try to find a plugin with the given name
+        plugin = store.find(cls, plugin_name=plugin_name).one()
+
+        # If no plugin was found, just create it and return it
+        if plugin is None:
+            return cls(store=store,
+                       plugin_name=plugin_name,
+                       plugin_version=0)
+
+        # If the plugin was found and its plugin_version is None it is a
+        # pre-installed plugin, so just set its plugin_version to 0
+        if plugin.plugin_version is None:
+            plugin.plugin_version = 0
+            return plugin
+
+        # If none of the other cases were true, the plugin is already installed
+        raise PluginError("Plugin %s is already installed." % (plugin_name, ))
+
 
 class PluginEgg(Domain):
     """A cache for plugins eggs"""

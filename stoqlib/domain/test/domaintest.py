@@ -199,6 +199,9 @@ class DomainTest(unittest.TestCase, ExampleCreator):
     def assertCalledOnceWith(self, mocked, *args, **kwargs):
         mocked.assert_called_once_with(*args, **kwargs)
 
+    def assertHasCalls(self, mocked, *args, **kwargs):
+        mocked.assert_has_calls(*args, **kwargs)
+
     def get_oficial_plugins_names(self):
         """Get official plugins names
 

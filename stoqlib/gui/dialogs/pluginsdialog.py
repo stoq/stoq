@@ -30,7 +30,7 @@ import gtk
 from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.api import api
-from stoqlib.database.runtime import get_default_store
+from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.stockicons import STOQ_PLUGIN
 from stoqlib.lib.translation import stoqlib_gettext
@@ -122,7 +122,8 @@ class PluginManagerDialog(BasicDialog):
         # activating the plugin. See bug 5272
         default_store = get_default_store()
         default_store.commit()
-        self._manager.install_plugin(plugin_name)
+        with new_store() as store:
+            self._manager.install_plugin(store, plugin_name)
         self._manager.activate_plugin(plugin_name)
 
         info(_("The plugin %s was successfully activated. Please, restart all "

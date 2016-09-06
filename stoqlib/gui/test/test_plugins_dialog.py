@@ -26,6 +26,7 @@
 import mock
 import gtk
 
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -53,7 +54,9 @@ class TestPluginManagerDialog(GUITest):
         with mock.patch.object(dialog._manager, 'install_plugin') as install:
             with mock.patch.object(dialog._manager, 'activate_plugin') as activate:
                 self.click(dialog.ok_button)
-                install.assert_called_once_with(dialog.klist[0].name)
+                called_store = install.call_args[0][0]
+                self.assertIsInstance(called_store, StoqlibStore)
+                install.assert_called_once_with(called_store, dialog.klist[0].name)
                 activate.assert_called_once_with(dialog.klist[0].name)
 
         yesno.assert_called_once_with('Are you sure you want activate this '

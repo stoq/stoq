@@ -254,6 +254,7 @@ class StoqCommandHandler:
                           "VALUES ('DEMO_MODE', '1');")
 
     def _enable_plugins(self, plugin_names):
+        from stoqlib.database.runtime import new_store
         from stoqlib.lib.pluginmanager import (PluginError,
                                                get_plugin_manager)
         manager = get_plugin_manager()
@@ -267,7 +268,8 @@ class StoqCommandHandler:
                 manager.download_plugin(plugin_name)
 
             try:
-                manager.install_plugin(plugin_name)
+                with new_store() as store:
+                    manager.install_plugin(store, plugin_name)
             except PluginError as err:
                 print('ERROR: %s' % (str(err), ))
                 return

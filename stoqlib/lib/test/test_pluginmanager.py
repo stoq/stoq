@@ -320,21 +320,32 @@ class TestPluginManager(DomainTest):
 
         # Both the dependend and independent plugins should not be
         # installed yet.
-        self.assertFalse(ind_name in self._manager.installed_plugins_names)
-        self.assertFalse(dep_name in self._manager.installed_plugins_names)
+        self.assertFalse(
+            ind_name in self._manager.get_installed_plugins_names(self.store))
+        self.assertFalse(
+            dep_name in self._manager.get_installed_plugins_names(self.store))
 
         self.assertFalse(ind_plugin.had_migration_gotten)
         self.assertFalse(dep_plugin.had_migration_gotten)
 
-        self.assertFalse(self._manager.is_installed(ind_name))
-        self.assertFalse(self._manager.is_installed(dep_name))
+        self.assertFalse(
+            self._manager.is_installed(ind_name, store=self.store))
+        self.assertFalse(
+            self._manager.is_installed(dep_name, store=self.store))
 
         # Create a new plugin to be registered with no version
-        pre_plugin_name = u'_'
-        self._manager.pre_install_plugin(self.store, pre_plugin_name)
+        self._manager.pre_install_plugin(self.store, dep_name)
 
-        # Install the dependent plugin, this should install both plugins
-        self._manager.install_plugin(dep_name)
+        # Install the dependent plugin, this should install both plugins.
+        # This will also test whether or not a pre installed plugin can be
+        # installed on a later moment.
+        with mock.patch.object(self.store, 'commit'):
+            self._manager.install_plugin(self.store, dep_name)
+            # Commit should be executed 2 times, one for the dependency, and
+            # one for the plugin that we actually want to install
+            self.assertEquals(self.store.commit.call_count, 2)
+            self.assertHasCalls(self.store.commit,
+                                [mock.call(close=False)] * 2)
 
         # So it is checked if both plugins were installed
         self._check_plugin_installed(ind_plugin, True)
@@ -345,8 +356,10 @@ class TestPluginManager(DomainTest):
         self.assertFalse(dep_plugin.was_activated)
 
         # Test if both plugins are installed
-        self.assertTrue(ind_name in self._manager.installed_plugins_names)
-        self.assertTrue(dep_name in self._manager.installed_plugins_names)
+        self.assertTrue(
+            ind_name in self._manager.get_installed_plugins_names(self.store))
+        self.assertTrue(
+            dep_name in self._manager.get_installed_plugins_names(self.store))
 
         ind_plugin.reset()
         dep_plugin.reset()
@@ -431,11 +444,13 @@ class TestPluginManager(DomainTest):
         self.assertEquals(self._manager.is_active(plugin.name), status)
 
     def _check_plugin_installed(self, plugin, status):
-        contained = plugin.name in self._manager.installed_plugins_names
+        installed_names = self._manager.get_installed_plugins_names(self.store)
+        contained = plugin.name in installed_names
         self.assertEquals(contained, status)
 
         self.assertEquals(plugin.had_migration_gotten, status)
-        self.assertEquals(self._manager.is_installed(plugin.name), status)
+        self.assertEquals(
+            self._manager.is_installed(plugin.name, self.store), status)
 
     def _register_test_plugin(self):
         # Workaround to register _TestPlugin since it is not really a plugin.

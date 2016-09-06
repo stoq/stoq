@@ -111,6 +111,10 @@ class PluginManager(object):
     def __init__(self):
         self._reload()
 
+    def get_installed_plugins_names(self, store=None):
+        """A list of names of all installed plugins"""
+        return InstalledPlugin.get_plugin_names(store or get_default_store())
+
     #
     # Properties
     #
@@ -128,9 +132,12 @@ class PluginManager(object):
 
     @property
     def installed_plugins_names(self):
-        """A list of names of all installed plugins"""
-        default_store = get_default_store()
-        return InstalledPlugin.get_plugin_names(default_store)
+        """A list of names of all installed plugins as a getter
+
+        This getter should be avoided, and should be replaced by
+        get_installed_plugins_names(). A more generic implementation of this.
+        """
+        return self.get_installed_plugins_names()
 
     @property
     def active_plugins_names(self):
@@ -367,7 +374,7 @@ class PluginManager(object):
                         plugin_name=plugin_name,
                         plugin_version=None)
 
-    def install_plugin(self, plugin_name):
+    def install_plugin(self, store, plugin_name):
         """Install and enable a plugin
 
         @important: Calling this makes a plugin installed, but, it's
@@ -386,13 +393,28 @@ class PluginManager(object):
         dependencies = self._plugin_descriptions[plugin_name].dependencies
         for dependency in dependencies:
             if not self.is_installed(dependency):
-                self.install_plugin(dependency)
+                self.install_plugin(store, dependency)
 
-        store = new_store()
-        InstalledPlugin(store=store,
-                        plugin_name=plugin_name,
-                        plugin_version=0)
-        store.commit(close=True)
+        InstalledPlugin.create(store, plugin_name)
+        # FIXME: We should not be doing this commit here, but by not doing so,
+        # ```
+        # migration = plugin.get_migration()
+        # ```
+        # Would not find any plugin (as it uses the default store), to allow
+        # `plugin.get_migration()` to accept a custom store, we would have to
+        # change all the plugins `get_migration` method.
+        #
+        # An alternate solution to this would be to manually set the correct
+        # plugin for `migration`:
+        #
+        # migration._plugin = store.find(InstalledPlugin,
+        #                                plugin_name=plugin_name).one()
+        #
+        # Along with passing the store to `migration.apply_all_patches()`
+        #
+        # But it will be dirty and will probably be removed once the definitive
+        # solution (change `plugin.get_migration()`) is implemented
+        store.commit(close=False)
 
         migration = plugin.get_migration()
         if migration:
@@ -441,12 +463,12 @@ class PluginManager(object):
         """
         return plugin_name in self.active_plugins_names
 
-    def is_installed(self, plugin_name):
+    def is_installed(self, plugin_name, store=False):
         """Returns if a plugin with a certain name is installed or not
 
         :returns: True if the given plugin name is active, False otherwise.
         """
-        return plugin_name in self.installed_plugins_names
+        return plugin_name in self.get_installed_plugins_names(store)
 
 
 def register_plugin(plugin_class):
