@@ -180,6 +180,40 @@ class TestProduct(DomainTest):
         self.sellable.cost = 50
         self.assertEqual(self.product.get_production_cost(), self.sellable.cost)
 
+    def test_update_production_cost(self):
+        # This is the base component
+        self.product.sellable.cost = 10
+
+        # This is an intermediate product, that uses the component above
+        inter_product = self.create_product()
+        inter_product.sellable.cost = 1
+        component = ProductComponent(product=inter_product, quantity=1,
+                                     component=self.product,
+                                     store=self.store)
+
+        # And this is another product that uses the intermediate product.
+        other_product = self.create_product()
+        other_product.sellable.cost = 1
+        ProductComponent(product=other_product, quantity=10,
+                         component=inter_product, store=self.store)
+
+        self.assertEquals(inter_product.sellable.cost, 1)
+        inter_product.update_production_cost()
+        self.assertEquals(inter_product.sellable.cost, 10)
+        self.assertEquals(other_product.sellable.cost, 100)
+
+        component.quantity = 2
+        inter_product.update_production_cost()
+        self.assertEquals(inter_product.sellable.cost, 20)
+
+        self.assertEquals(other_product.sellable.cost, 200)
+
+        # Test indirect update with parameter
+        with self.sysparam(UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE=True):
+            self.product.sellable.cost = 15
+            self.assertEquals(inter_product.sellable.cost, 30)
+            self.assertEquals(other_product.sellable.cost, 300)
+
     def test_is_composed_by(self):
         component = self.create_product()
         self.assertEqual(self.product.is_composed_by(component), False)

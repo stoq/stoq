@@ -126,8 +126,17 @@ class Domain(ORMObject):
 
     def _listen_to_events(self):
         event = get_obj_info(self).event
+        event.hook('changed', self._on_object_changed)
         event.hook('before-removed', self._on_object_before_removed)
         event.hook('before-commited', self._on_object_before_commited)
+
+    def _on_object_changed(self, obj_info, variable, old_value, value, from_db):
+        # Only call the hook if the value is coming from python, and is a valid
+        # value (not auto reload) and the value actually changed.
+        if from_db or value is AutoReload or old_value == value:
+            return
+
+        self.on_object_changed(variable.column.name, old_value, value)
 
     def _on_object_before_removed(self, obj_info):
         # If the obj was created and them removed, nothing needs to be done.
@@ -208,6 +217,16 @@ class Domain(ORMObject):
         Note that modifying *self* doesn't make sense since it will soon be
         removed from the database.
         """
+
+    def on_object_changed(self, attr, old_value, value):
+        """Hook for when an attribute of this object changes.
+
+        This is called when any property of the object has the value changed.
+        This will only be called when the value is known (ie, not AutoReload)
+        and the value comes from python, not from the database, and the value
+        has actually changed from the previous value.
+        """
+        pass
 
     def clone(self):
         """Get a persistent copy of an existent object. Remember that we can

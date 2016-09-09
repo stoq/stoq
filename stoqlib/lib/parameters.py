@@ -860,6 +860,15 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE',
+        _(u'Production'),
+        _(u'Automatic update the cost of a production product'),
+        _(u'When the list of components is updated or the cost of a component '
+          'is updated, the cost of a production product will be automatically '
+          'updated'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'BIRTHDAY_NOTIFICATION',
         _(u'General'),
         _(u'Client birthday notification'),

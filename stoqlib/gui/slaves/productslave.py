@@ -32,6 +32,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column, SummaryLabel
 from kiwi.ui.widgets.combo import ProxyComboBox
+from kiwi.utils import gsignal
 from storm.expr import Eq, And
 
 from stoqlib.api import api
@@ -436,10 +437,14 @@ class ProductComponentSlave(BaseEditorSlave):
     gladefile = 'ProductComponentSlave'
     model_type = TemporaryProductComponent
     proxy_widgets = ['production_time']
+    gsignal('cost-updated', object)
 
     def __init__(self, store, product=None, visual_mode=False):
         self._product = product
         self._remove_component_list = []
+        # Temporary component value to prevent emmiting the signal when not
+        # necessary
+        self._previous_value = product.sellable.cost if product else 0
         BaseEditorSlave.__init__(self, store, model=None, visual_mode=visual_mode)
         self._setup_widgets()
 
@@ -518,6 +523,9 @@ class ProductComponentSlave(BaseEditorSlave):
         # FIXME: This is wrong. Summary label already calculates the total. We
         # are duplicating this.
         value = self.get_component_cost()
+        if self._previous_value != value:
+            self._previous_value = value
+            self.emit('cost-updated', value)
         self.component_label.set_value(get_formatted_cost(value))
 
         if not self._validate_components():

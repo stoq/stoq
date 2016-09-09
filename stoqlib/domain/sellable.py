@@ -405,10 +405,9 @@ class Sellable(Domain):
     #: status the sellable is in
     status = EnumCol(allow_none=False, default=STATUS_AVAILABLE)
 
-    # FIXME: This is only used for purchase orders without suppliers,
-    #        Perhaps we should update this as we purchase the product
     #: cost of the sellable, this is not tied to a specific |supplier|,
-    #: which may have a different cost.
+    #: which may have a different cost. This can also be the production cost of
+    #: manufactured item by the company.
     cost = PriceCol(default=0)
 
     #: price of sellable, how much the |client| paid.
@@ -857,6 +856,11 @@ class Sellable(Domain):
     def on_update(self):
         obj = self.product or self.service
         obj.on_update()
+
+    def on_object_changed(self, attr, old_value, value):
+        if (attr == 'cost' and self.product and
+                sysparam.get_bool('UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE')):
+            self.product.update_production_cost(value)
 
     #
     # Classmethods

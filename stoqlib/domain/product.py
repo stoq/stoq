@@ -605,11 +605,34 @@ class Product(Domain):
         return self.get_components().count() > 0
 
     def get_production_cost(self):
-        """ Return the production cost of one unit of the product.
+        """Return the production cost of one unit of the product.
 
         :returns: the production cost
         """
         return self.sellable.cost
+
+    def update_production_cost(self, cost=None):
+        """Update the production cost of this product and its parents
+
+        This will update the production cost of this product, and of all the
+        products that use this as a component.
+
+        :param cost: When provided, the components cost will not be calculated.
+        """
+        # First calculate our new cost if it was not provided
+        if not cost:
+            cost = sum(c.component.sellable.cost * c.quantity
+                       for c in self.get_components())
+
+        assert cost > 0
+        if self.sellable.cost != cost:
+            self.sellable.cost = cost
+
+        # Then trigger the changes up to the products that use our self as a
+        # component
+        parents = self.store.find(ProductComponent, component=self)
+        for component in parents:
+            component.product.update_production_cost()
 
     def is_supplied_by(self, supplier):
         """If this product is supplied by the given |supplier|, returns the

@@ -551,11 +551,22 @@ class ProductionProductEditor(ProductEditor):
                 (_(u'Quality'), quality_slave),
                 ]
 
+    def setup_widgets(self):
+        super(ProductionProductEditor, self).setup_widgets()
+        self.cost.set_sensitive(not sysparam.get_bool('UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE'))
+
     def validate_confirm(self):
         if not self._is_valid_cost(self.cost.read()):
             info(self._cost_msg)
             return False
         return True
+
+    def on_component_slave__cost_updated(self, slave, cost):
+        if sysparam.get_bool('UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE'):
+            # We have to update the sellable directly since kiwi won't do it for
+            # us, since the widget is insensitive
+            self.model.sellable.cost = cost
+            self.sellable_proxy.update('cost')
 
     def on_cost__validate(self, widget, value):
         if value <= 0:
