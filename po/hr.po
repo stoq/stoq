@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-31 02:10-0300\n"
-"PO-Revision-Date: 2016-08-31 05:10+0000\n"
+"POT-Creation-Date: 2016-09-10 02:10-0300\n"
+"PO-Revision-Date: 2016-09-10 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Croatian (http://www.transifex.com/async/stoq/language/hr/)\n"
 "MIME-Version: 1.0\n"
@@ -328,8 +328,8 @@ msgstr ""
 #: ../stoqlib/gui/search/salesearch.py:275
 #: ../stoqlib/gui/search/salesearch.py:367
 #: ../stoqlib/gui/search/transfersearch.py:178
-#: ../stoqlib/gui/slaves/productslave.py:449
-#: ../stoqlib/gui/slaves/productslave.py:728
+#: ../stoqlib/gui/slaves/productslave.py:454
+#: ../stoqlib/gui/slaves/productslave.py:736
 #: ../stoqlib/gui/slaves/workorderslave.py:78
 #: ../stoqlib/gui/slaves/workorderslave.py:266
 #: ../stoqlib/gui/wizards/inventorywizard.py:295
@@ -1495,7 +1495,7 @@ msgstr ""
 #: ../stoqlib/gui/search/salesearch.py:118
 #: ../stoqlib/gui/search/salesearch.py:302
 #: ../stoqlib/gui/search/salespersonsearch.py:71
-#: ../stoqlib/gui/slaves/productslave.py:476
+#: ../stoqlib/gui/slaves/productslave.py:481
 #: ../stoqlib/gui/slaves/workorderslave.py:221
 #: ../stoqlib/gui/widgets/lazyobjectlist.py:399
 #: ../stoqlib/gui/wizards/productionwizard.py:127
@@ -3386,10 +3386,10 @@ msgstr ""
 #: ../stoqlib/gui/slaves/paymentslave.py:254
 #: ../stoqlib/gui/slaves/paymentslave.py:1305
 #: ../stoqlib/gui/slaves/productionslave.py:187
-#: ../stoqlib/gui/slaves/productslave.py:187
-#: ../stoqlib/gui/slaves/productslave.py:452
-#: ../stoqlib/gui/slaves/productslave.py:731
-#: ../stoqlib/gui/slaves/productslave.py:744
+#: ../stoqlib/gui/slaves/productslave.py:188
+#: ../stoqlib/gui/slaves/productslave.py:457
+#: ../stoqlib/gui/slaves/productslave.py:739
+#: ../stoqlib/gui/slaves/productslave.py:752
 #: ../stoqlib/gui/slaves/workorderslave.py:261
 #: ../stoqlib/gui/wizards/consignmentwizard.py:147
 #: ../stoqlib/gui/wizards/inventorywizard.py:292
@@ -3582,7 +3582,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:400
 #: ../stoqlib/gui/editors/personeditor.py:200
-#: ../stoqlib/gui/editors/producteditor.py:596
+#: ../stoqlib/gui/editors/producteditor.py:607
 #: ../stoqlib/gui/editors/sellableeditor.py:77
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:51
 #: ../stoqlib/gui/search/costcentersearch.py:51
@@ -3786,7 +3786,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:106
 #: ../stoqlib/gui/editors/deliveryeditor.py:153
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:103
-#: ../stoqlib/gui/editors/producteditor.py:597
+#: ../stoqlib/gui/editors/producteditor.py:608
 #: ../stoqlib/gui/search/consignmentsearch.py:52
 #: ../stoqlib/gui/search/loansearch.py:78
 #: ../stoqlib/gui/search/productsearch.py:205
@@ -3801,9 +3801,9 @@ msgstr ""
 #: ../stoqlib/gui/search/sellablesearch.py:344
 #: ../stoqlib/gui/search/servicesearch.py:89
 #: ../stoqlib/gui/slaves/productionslave.py:184
-#: ../stoqlib/gui/slaves/productslave.py:189
-#: ../stoqlib/gui/slaves/productslave.py:447
-#: ../stoqlib/gui/slaves/productslave.py:726
+#: ../stoqlib/gui/slaves/productslave.py:190
+#: ../stoqlib/gui/slaves/productslave.py:452
+#: ../stoqlib/gui/slaves/productslave.py:734
 #: ../stoqlib/gui/slaves/workorderslave.py:257
 #: ../stoqlib/gui/widgets/accounttree.py:74
 #: ../stoqlib/gui/wizards/consignmentwizard.py:146
@@ -3969,8 +3969,8 @@ msgstr ""
 #: ../stoqlib/gui/search/sellablesearch.py:152
 #: ../stoqlib/gui/search/sellablesearch.py:357
 #: ../stoqlib/gui/slaves/productionslave.py:185
-#: ../stoqlib/gui/slaves/productslave.py:454
-#: ../stoqlib/gui/slaves/productslave.py:733
+#: ../stoqlib/gui/slaves/productslave.py:459
+#: ../stoqlib/gui/slaves/productslave.py:741
 #: ../stoqlib/gui/slaves/sellableslave.py:86
 #: ../stoqlib/gui/slaves/sellableslave.py:105
 #: ../stoqlib/gui/widgets/queryentry.py:576
@@ -4020,7 +4020,7 @@ msgstr ""
 #: ../stoqlib/gui/search/sellablesearch.py:163
 #: ../stoqlib/gui/search/sellablesearch.py:355
 #: ../stoqlib/gui/search/servicesearch.py:101
-#: ../stoqlib/gui/slaves/productslave.py:736
+#: ../stoqlib/gui/slaves/productslave.py:744
 #: ../stoqlib/gui/slaves/sellableslave.py:107
 #: ../stoqlib/gui/slaves/workorderslave.py:77
 #: ../stoqlib/gui/slaves/workorderslave.py:264
@@ -4061,8 +4061,8 @@ msgstr ""
 #: ../stoqlib/gui/search/salesearch.py:321
 #: ../stoqlib/gui/search/salesearch.py:372
 #: ../stoqlib/gui/search/workordersearch.py:75
-#: ../stoqlib/gui/slaves/productslave.py:459
-#: ../stoqlib/gui/slaves/productslave.py:734
+#: ../stoqlib/gui/slaves/productslave.py:464
+#: ../stoqlib/gui/slaves/productslave.py:742
 #: ../stoqlib/gui/slaves/workorderslave.py:270
 #: ../stoqlib/gui/widgets/accounttree.py:85
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:89
@@ -4403,7 +4403,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:112
 #: ../stoqlib/gui/search/productsearch.py:227
 #: ../stoqlib/gui/search/servicesearch.py:97
-#: ../stoqlib/gui/slaves/productslave.py:815
+#: ../stoqlib/gui/slaves/productslave.py:823
 #: ../stoqlib/gui/wizards/consignmentwizard.py:155
 #: ../stoqlib/gui/wizards/productionwizard.py:190
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:88
@@ -4581,8 +4581,8 @@ msgstr ""
 #: ../stoqlib/gui/editors/accounteditor.py:353
 #: ../stoqlib/gui/editors/personeditor.py:230
 #: ../stoqlib/gui/search/receivingsearch.py:71
-#: ../stoqlib/gui/slaves/productslave.py:785
-#: ../stoqlib/gui/slaves/productslave.py:808
+#: ../stoqlib/gui/slaves/productslave.py:793
+#: ../stoqlib/gui/slaves/productslave.py:816
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:195
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:353
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:470
@@ -4812,7 +4812,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:382
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:386
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:390
-#: ../stoqlib/gui/slaves/productslave.py:351
+#: ../stoqlib/gui/slaves/productslave.py:352
 msgid "The value must be positive."
 msgstr ""
 
@@ -5000,8 +5000,8 @@ msgstr ""
 #: ../stoqlib/gui/search/productionsearch.py:101
 #: ../stoqlib/gui/search/productsearch.py:219
 #: ../stoqlib/gui/slaves/productionslave.py:189
-#: ../stoqlib/gui/slaves/productslave.py:451
-#: ../stoqlib/gui/slaves/productslave.py:730
+#: ../stoqlib/gui/slaves/productslave.py:456
+#: ../stoqlib/gui/slaves/productslave.py:738
 #: ../stoqlib/gui/wizards/productionwizard.py:188
 #: ../stoqlib/gui/wizards/productionwizard.py:262
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:86
@@ -6015,7 +6015,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:110
 #: ../stoqlib/gui/dialogs/manufacturerdialog.py:42
 #: ../stoqlib/gui/dialogs/saledetails.py:263
-#: ../stoqlib/gui/editors/producteditor.py:589
+#: ../stoqlib/gui/editors/producteditor.py:600
 #: ../stoqlib/gui/search/productsearch.py:213
 #: ../stoqlib/gui/search/productsearch.py:422
 #: ../stoqlib/gui/search/productsearch.py:499
@@ -7804,6 +7804,7 @@ msgstr ""
 #. Production
 #: ../stoq/gui/production.py:56 ../stoq/gui/production.py:81
 #: ../stoq/lib/applist.py:53 ../stoqlib/gui/dialogs/startproduction.py:35
+#: ../stoqlib/lib/parameters.py:864
 msgid "Production"
 msgstr ""
 
@@ -8439,7 +8440,7 @@ msgstr ""
 #: ../stoqlib/gui/search/commissionsearch.py:131
 #: ../stoqlib/gui/search/salesearch.py:95
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:129
-#: ../stoqlib/lib/parameters.py:954 ../stoqlib/net/calendarevents.py:162
+#: ../stoqlib/lib/parameters.py:963 ../stoqlib/net/calendarevents.py:162
 msgid "Salesperson"
 msgstr ""
 
@@ -9232,7 +9233,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:72
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:208
 #: ../stoqlib/gui/editors/producteditor.py:315
-#: ../stoqlib/gui/editors/producteditor.py:568
+#: ../stoqlib/gui/editors/producteditor.py:579
 #: ../stoqlib/gui/search/personsearch.py:394
 #: ../stoqlib/gui/search/productsearch.py:116
 #: ../stoqlib/gui/search/salesearch.py:269
@@ -10351,136 +10352,136 @@ msgstr ""
 msgid "Package product"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:915 ../stoqlib/reporting/purchase.py:62
+#: ../stoqlib/domain/product.py:938 ../stoqlib/reporting/purchase.py:62
 #: ../stoqlib/reporting/purchase.py:88
 #, python-format
 msgid "%s (%s)"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1185 ../stoqlib/domain/product.py:1227
+#: ../stoqlib/domain/product.py:1208 ../stoqlib/domain/product.py:1250
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1234
+#: ../stoqlib/domain/product.py:1257
 msgid "Quantity to sell is greater than the available stock."
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1546
-#, python-format
-msgid "Adjustment for inventory %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1547
-#, python-format
-msgid "Returned from loan %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1548
-#, python-format
-msgid "Loaned for loan %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1549
-#, python-format
-msgid "Allocated for production %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1550 ../stoqlib/domain/product.py:1551
-#, python-format
-msgid "Produced in production %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1552
-#, python-format
-msgid "Returned remaining from production %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1554
-#, python-format
-msgid "Received for receiving order %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1555
-#, python-format
-msgid "Returned sale %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1556
-#, python-format
-msgid "Undone the returned sale %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1557
-#, python-format
-msgid "Returned from canceled sale %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1558
-#, python-format
-msgid "Sold in sale %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1559
-#, python-format
-msgid "Product removal for stock decrease %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1560
-#, python-format
-msgid "Transfered from branch in transfer order %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1562
-#, python-format
-msgid "Transfered to this branch in transfer order %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1564
-msgid "Registred initial stock"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1565
-msgid "Imported from previous version"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1566
-#, python-format
-msgid "Consigned product returned %s."
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1567
-#, python-format
-msgid "Used on work order %s."
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1568
-#, python-format
-msgid "Returned to stock on work order %s."
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1569
 #, python-format
-msgid "Reserved for sale %s."
+msgid "Adjustment for inventory %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1570
 #, python-format
-msgid "Reserved quantity for sale %s returned to stock."
+msgid "Returned from loan %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1571
+#, python-format
+msgid "Loaned for loan %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1572
+#, python-format
+msgid "Allocated for production %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1573 ../stoqlib/domain/product.py:1574
+#, python-format
+msgid "Produced in production %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1575
+#, python-format
+msgid "Returned remaining from production %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1577
+#, python-format
+msgid "Received for receiving order %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1578
+#, python-format
+msgid "Returned sale %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1579
+#, python-format
+msgid "Undone the returned sale %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1580
+#, python-format
+msgid "Returned from canceled sale %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1581
+#, python-format
+msgid "Sold in sale %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1582
+#, python-format
+msgid "Product removal for stock decrease %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1583
+#, python-format
+msgid "Transfered from branch in transfer order %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1585
+#, python-format
+msgid "Transfered to this branch in transfer order %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1587
+msgid "Registred initial stock"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1588
+msgid "Imported from previous version"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1589
+#, python-format
+msgid "Consigned product returned %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1590
+#, python-format
+msgid "Used on work order %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1591
+#, python-format
+msgid "Returned to stock on work order %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1592
+#, python-format
+msgid "Reserved for sale %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1593
+#, python-format
+msgid "Reserved quantity for sale %s returned to stock."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1595
 msgid "Quantity manually adjusted"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1573
+#: ../stoqlib/domain/product.py:1596
 msgid "Stock cost updated with no change on the stock"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1776
+#: ../stoqlib/domain/product.py:1799
 msgid "Boolean"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1777
+#: ../stoqlib/domain/product.py:1800
 msgid "Decimal"
 msgstr ""
 
@@ -10807,7 +10808,7 @@ msgid "The sellable barcode %r already exists"
 msgstr ""
 
 #. Translators: ICMS tax rate credit = Alíquota de crédito do ICMS
-#: ../stoqlib/domain/sellable.py:747
+#: ../stoqlib/domain/sellable.py:746
 #, python-format
 msgid ""
 "You cannot sell this item before updating the 'ICMS tax rate credit' field on '%s' Tax Class.\n"
@@ -11278,7 +11279,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:62
 #: ../stoqlib/gui/search/eventsearch.py:55
 #: ../stoqlib/gui/search/taxclasssearch.py:58
-#: ../stoqlib/gui/slaves/productslave.py:746
+#: ../stoqlib/gui/slaves/productslave.py:754
 msgid "Type"
 msgstr ""
 
@@ -11988,7 +11989,7 @@ msgid "Undo reason"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:95
-#: ../stoqlib/gui/slaves/productslave.py:810
+#: ../stoqlib/gui/slaves/productslave.py:818
 msgid "Product Code"
 msgstr ""
 
@@ -12429,7 +12430,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/deliveryeditor.py:60
 #: ../stoqlib/gui/editors/deliveryeditor.py:88
 #: ../stoqlib/gui/editors/deliveryeditor.py:230
-#: ../stoqlib/lib/parameters.py:972 ../stoqlib/lib/parameters.py:974
+#: ../stoqlib/lib/parameters.py:981 ../stoqlib/lib/parameters.py:983
 msgid "Delivery"
 msgstr ""
 
@@ -12572,7 +12573,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/grideditor.py:78
 #: ../stoqlib/gui/search/gridsearch.py:53
-#: ../stoqlib/gui/slaves/productslave.py:73
+#: ../stoqlib/gui/slaves/productslave.py:74
 msgid "Attribute group"
 msgstr ""
 
@@ -13022,7 +13023,7 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:622 ../stoqlib/lib/parameters.py:662
 #: ../stoqlib/lib/parameters.py:697 ../stoqlib/lib/parameters.py:773
 #: ../stoqlib/lib/parameters.py:781 ../stoqlib/lib/parameters.py:847
-#: ../stoqlib/lib/parameters.py:864 ../stoqlib/lib/parameters.py:872
+#: ../stoqlib/lib/parameters.py:873 ../stoqlib/lib/parameters.py:881
 msgid "General"
 msgstr ""
 
@@ -13097,7 +13098,7 @@ msgid "Product Supplier"
 msgstr ""
 
 #: ../stoqlib/gui/editors/producteditor.py:194
-#: ../stoqlib/gui/slaves/productslave.py:244
+#: ../stoqlib/gui/slaves/productslave.py:245
 msgid "Unit(s)"
 msgstr ""
 
@@ -13161,20 +13162,20 @@ msgstr ""
 msgid "Quality"
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:562
+#: ../stoqlib/gui/editors/producteditor.py:573
 msgid "Cost cannot be zero or negative."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:613
+#: ../stoqlib/gui/editors/producteditor.py:624
 msgid "The manufacturer should have a name."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:617
+#: ../stoqlib/gui/editors/producteditor.py:628
 #, python-format
 msgid "The manufacturer '%s' already exists."
 msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:622
+#: ../stoqlib/gui/editors/producteditor.py:633
 #, python-format
 msgid "The code '%s' already exists"
 msgstr ""
@@ -15046,102 +15047,102 @@ msgstr ""
 msgid "There already is a serial number in the range %d - %d"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:85
+#: ../stoqlib/gui/slaves/productslave.py:86
 msgid "Select a group"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:126
+#: ../stoqlib/gui/slaves/productslave.py:127
 msgid "Add a new attribute"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:183
+#: ../stoqlib/gui/slaves/productslave.py:184
 msgid "Select an option"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:222
+#: ../stoqlib/gui/slaves/productslave.py:223
 msgid "You should fill the description first"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:367
+#: ../stoqlib/gui/slaves/productslave.py:368
 msgid "NCM must have 8 digits."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:371
+#: ../stoqlib/gui/slaves/productslave.py:372
 msgid "EX TIPI must have 2 or 3 digits."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:375
+#: ../stoqlib/gui/slaves/productslave.py:376
 msgid "Gênero must have 2 digits."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:379
+#: ../stoqlib/gui/slaves/productslave.py:380
 msgid "Minimum value must be a positive value."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:383
+#: ../stoqlib/gui/slaves/productslave.py:384
 msgid "Minimum must be lower than the maximum value."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:390
+#: ../stoqlib/gui/slaves/productslave.py:391
 msgid "Maximum value must be a positive value."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:394
+#: ../stoqlib/gui/slaves/productslave.py:395
 msgid "Maximum must be greater than the minimum value."
 msgstr ""
 
 #. Translators: Ref. is for Reference (as in design reference)
-#: ../stoqlib/gui/slaves/productslave.py:456
+#: ../stoqlib/gui/slaves/productslave.py:461
 msgid "Ref."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:457
+#: ../stoqlib/gui/slaves/productslave.py:462
 msgid "Production Cost"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:528
+#: ../stoqlib/gui/slaves/productslave.py:536
 msgid "This product is being produced. Can't change components."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:584
+#: ../stoqlib/gui/slaves/productslave.py:592
 #, python-format
 msgid "You can not add this product as component, since %s is composed by %s"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:628
+#: ../stoqlib/gui/slaves/productslave.py:636
 #, python-format
 msgid "This will remove the component \"%s\". Are you sure?"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:631
+#: ../stoqlib/gui/slaves/productslave.py:639
 msgid "Remove component"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:632
+#: ../stoqlib/gui/slaves/productslave.py:640
 msgid "Keep component"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:663
+#: ../stoqlib/gui/slaves/productslave.py:671
 msgid "There is no component in this product."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:747
+#: ../stoqlib/gui/slaves/productslave.py:755
 msgid "Success Value"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:775
+#: ../stoqlib/gui/slaves/productslave.py:783
 msgid "You can not remove this test, since it's already been used."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:812
+#: ../stoqlib/gui/slaves/productslave.py:820
 msgid "Lead time"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:813
+#: ../stoqlib/gui/slaves/productslave.py:821
 msgid "Minimum Purchase"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/productslave.py:824
+#: ../stoqlib/gui/slaves/productslave.py:832
 #, python-format
 msgid "%s is already supplied by %s"
 msgstr ""
@@ -17900,18 +17901,28 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:865
-msgid "Client birthday notification"
+msgid "Automatic update the cost of a production product"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:866
-msgid "Notify about clients birthdays on the current day."
-msgstr ""
-
-#: ../stoqlib/lib/parameters.py:873
-msgid "User hash"
+msgid ""
+"When the list of components is updated or the cost of a component is "
+"updated, the cost of a production product will be automatically updated"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:874
+msgid "Client birthday notification"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:875
+msgid "Notify about clients birthdays on the current day."
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:882
+msgid "User hash"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:883
 msgid ""
 "This hash value is used for integration and communication with stoq api and "
 "stoq link. It will be added on ping requests, tef requests and feedbacks "
