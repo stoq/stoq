@@ -51,6 +51,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.workorder import WorkOrder
+from stoqlib.enums import ClientRelativeLocation
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localdate, localdatetime, localtoday
 from stoqlib.lib.formatters import format_quantity
@@ -1840,6 +1841,35 @@ class TestSale(DomainTest):
         SaleIsExternalEvent.connect(callback)
         self.assertTrue(sale.is_external())
         SaleIsExternalEvent.disconnect(callback)
+
+    def test_get_client_relative_location(self):
+        client = self.create_client()
+        same_location = self.create_city_location(city=u'São Carlos', state=u'SP',
+                                                  country=u'Brazil')
+        self.create_address(person=client.person, city_location=same_location)
+        sale = self.create_sale(client=client)
+        self.assertEquals(sale.get_client_relative_location(),
+                          ClientRelativeLocation.SAME_STATE)
+
+        client2 = self.create_client()
+        other_location = self.create_city_location(city=u'Porto Alegre',
+                                                   state=u'RS',
+                                                   country=u'Brazil')
+        self.create_address(person=client2.person, city_location=other_location)
+        sale2 = self.create_sale(client=client2)
+        self.assertEquals(sale2.get_client_relative_location(),
+                          ClientRelativeLocation.OTHER_STATE)
+
+        client3 = self.create_client()
+        other_country_location = self.create_city_location()
+        self.create_address(person=client3.person, city_location=other_country_location)
+        sale3 = self.create_sale(client=client3)
+        self.assertEquals(sale3.get_client_relative_location(),
+                          ClientRelativeLocation.OTHER_COUNTRY)
+
+        sale4 = self.create_sale()
+        self.assertEquals(sale4.get_client_relative_location(),
+                          ClientRelativeLocation.SAME_STATE)
 
 
 class TestSaleToken(DomainTest):
