@@ -54,6 +54,7 @@ model: SaleItem<3>
 
 model: Product<4>
   brand: u''
+  cest: None
   consignment: False
   depth: Decimal('0')
   ex_tipi: None

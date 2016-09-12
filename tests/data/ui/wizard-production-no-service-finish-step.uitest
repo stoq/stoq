@@ -48,6 +48,7 @@ model: ProductComponent<2>
 
 model: Product<3>
   brand: u''
+  cest: None
   consignment: False
   depth: Decimal('0')
   ex_tipi: None
@@ -70,6 +71,7 @@ model: Product<3>
 
 model: Product<4>
   brand: u''
+  cest: None
   consignment: False
   depth: Decimal('0')
   ex_tipi: None
