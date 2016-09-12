@@ -282,6 +282,9 @@ class Product(Domain):
     #: Brazil specific: NFE: nomenclature comon do mercuosol
     ncm = UnicodeCol(default=None)
 
+    #: Brazil specific. NFE. Código Especificador da Substituição Tributária
+    cest = UnicodeCol(default=None)
+
     #: NFE: see ncm
     ex_tipi = UnicodeCol(default=None)
 
