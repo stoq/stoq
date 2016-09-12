@@ -413,6 +413,12 @@ class Sellable(Domain):
     #: price of sellable, how much the |client| paid.
     base_price = PriceCol(default=0)
 
+    #: the last time the cost was updated
+    cost_last_updated = DateTimeCol(default_factory=localnow)
+
+    #: the last time the price was updated
+    price_last_updated = DateTimeCol(default_factory=localnow)
+
     #: full description of sellable
     description = UnicodeCol(default=u'')
 
@@ -858,9 +864,13 @@ class Sellable(Domain):
         obj.on_update()
 
     def on_object_changed(self, attr, old_value, value):
-        if (attr == 'cost' and self.product and
-                sysparam.get_bool('UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE')):
-            self.product.update_production_cost(value)
+        if attr == 'cost':
+            self.cost_last_updated = localnow()
+            if (self.product and
+                    sysparam.get_bool('UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE')):
+                self.product.update_production_cost(value)
+        elif attr == 'base_price':
+            self.price_last_updated = localnow()
 
     #
     # Classmethods
