@@ -145,7 +145,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
+        GtkButton(pack-end):
 
 model: Sale<1>
   cancel_date: None

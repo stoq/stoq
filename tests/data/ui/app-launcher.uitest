@@ -107,4 +107,4 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
+        GtkButton(pack-end):

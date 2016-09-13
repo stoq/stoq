@@ -169,10 +169,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
         GtkHBox():
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
           GtkLabel():
+        GtkButton(pack-end):
 
 popup: ServicesSelection
 GtkMenu(): hidden

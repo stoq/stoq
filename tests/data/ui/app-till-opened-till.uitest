@@ -155,7 +155,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
+        GtkButton(pack-end):
 
 popup: TillSelection
 GtkMenu(popup): hidden

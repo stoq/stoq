@@ -573,7 +573,7 @@ class ShellWindow(GladeDelegate):
 
     def _empty_message_area(self):
         area = self.statusbar.message_area
-        for child in area.get_children()[1:]:
+        for child in area.get_children()[1:-1]:
             child.destroy()
 
     def _shutdown_application(self, restart=False, force=False):

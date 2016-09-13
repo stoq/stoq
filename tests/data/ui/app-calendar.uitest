@@ -114,4 +114,4 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
+        GtkButton(pack-end):

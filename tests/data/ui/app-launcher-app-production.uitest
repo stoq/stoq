@@ -135,7 +135,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
+        GtkButton(pack-end):
 
 popup: ProductionSelection
 GtkMenu(): hidden

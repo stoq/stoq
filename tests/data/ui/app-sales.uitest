@@ -182,10 +182,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
         GtkHBox(_summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
           GtkLabel(): '<b>$2015.00</b>'
+        GtkButton(pack-end):
 
 popup: SaleSelection
 GtkMenu(popup): hidden

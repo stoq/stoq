@@ -183,7 +183,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
+        GtkButton(pack-end):
 
 popup: TransactionSelection
 GtkMenu(trans_popup): hidden

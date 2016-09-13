@@ -165,10 +165,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-            GtkButton():
         GtkHBox():
           GtkLabel(expand=True, fill=True, padding=6): '<b>Stock Total:</b>'
           GtkLabel(): '<b>31.0</b>'
+        GtkButton(pack-end):
 
 popup: StockSelection
 GtkMenu(): hidden

@@ -377,7 +377,7 @@ class ShellStatusbar(gtk.Statusbar):
         self._status_button = StatusButton()
         self._status_button.connect('clicked',
                                     self._on_status_button__clicked)
-        widget_area.pack_start(self._status_button, False, False, 0)
+        self.message_area.pack_end(self._status_button, False, False, 0)
         self._status_button.show()
 
     def do_text_popped(self, ctx, text):
