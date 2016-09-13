@@ -77,7 +77,7 @@ class WebService(object):
         app_info = get_utility(IAppInfo, None)
         if app_info:
             user_agent += ' %s' % (app_info.get('version'), )
-        headers = {'User-Agent': [user_agent]}
+        headers = {'User-Agent': user_agent}
 
         return headers
 
