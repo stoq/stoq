@@ -38,7 +38,7 @@ from stoqlib.gui.editors.backupsettings import BackupSettingsEditor
 from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.webservice import WebService
-from stoqlib.net.server import ServerProxy
+from stoqlib.net.server import ServerProxy, ServerError
 
 
 class ResourceStatus(gobject.GObject):
@@ -280,6 +280,18 @@ class _BackupStatus(ResourceStatus):
             self.reason_long = _('Enable the parameter "Online Services" '
                                  'on the "Admin" app to solve this issue')
             return
+
+        try:
+            key = self._server.call('get_backup_key')
+        except ServerError:
+            pass
+        else:
+            if not key:
+                self.status = self.STATUS_WARNING
+                self.reason = _("Backup key not configured")
+                self.reason_long = _('Click on "Configure" button to '
+                                     'configure the backup key')
+                return
 
         request = self._webservice.status()
         try:
