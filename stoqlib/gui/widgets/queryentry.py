@@ -34,6 +34,8 @@ from stoqlib.api import api
 from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.person import Client, ClientView, Supplier, SupplierView
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor, SupplierEditor
 from stoqlib.gui.search.personsearch import ClientSearch, SupplierSearch
 from stoqlib.gui.search.searchfilters import StringSearchFilter
@@ -304,13 +306,16 @@ class QueryEntryGadget(object):
     NEW_ITEM_TEXT = _("Create a new item with that name")
     NEW_ITEM_TOOLTIP = _("Create a new item")
     EDIT_ITEM_TOOLTIP = _("Edit the selected item")
-    ITEM_EDITOR = None
+    INFO_ITEM_TOOLTIP = _("See info about the selected item")
+    item_editor = None
+    item_info_dialog = ClientEditor
     search_class = None
     search_spec = None
     search_columns = None
 
     def __init__(self, entry, store, initial_value=None,
-                 parent=None, run_editor=None, edit_button=None):
+                 parent=None, run_editor=None,
+                 edit_button=None, info_button=None):
         """
         :param entry: The entry that we should modify
         :param store: The store that will be used for database queries
@@ -326,6 +331,7 @@ class QueryEntryGadget(object):
         self.entry = entry
         self.entry.set_mode(ENTRY_MODE_DATA)
         self.edit_button = edit_button
+        self.info_button = info_button
         self.store = store
 
         # The filter that will be used. This is not really in the interface.
@@ -337,7 +343,7 @@ class QueryEntryGadget(object):
 
         self._last_operation = None
         self._source_id = None
-        self._is_person = issubclass(self.ITEM_EDITOR, BasePersonRoleEditor)
+        self._is_person = issubclass(self.item_editor, BasePersonRoleEditor)
 
         self._setup()
         self.set_value(initial_value, force=True)
@@ -354,7 +360,7 @@ class QueryEntryGadget(object):
         if obj is not None:
             value = obj.get_description()
             self.entry.prefill([(value, obj)])
-            self.update_edit_button(gtk.STOCK_INFO, self.EDIT_ITEM_TOOLTIP)
+            self.update_edit_button(gtk.STOCK_EDIT, self.EDIT_ITEM_TOOLTIP)
         else:
             value = ''
             self.entry.prefill([])
@@ -387,10 +393,16 @@ class QueryEntryGadget(object):
     #
 
     def _setup(self):
-        if self.edit_button is None:
+        if self.edit_button is None or self.info_button is None:
             self._replace_widget()
+
+        if self.edit_button is None:
             self.edit_button = self._add_button(gtk.STOCK_NEW)
         self.edit_button.connect('clicked', self._on_edit_button__clicked)
+
+        if self.info_button is None:
+            self.info_button = self._add_button(gtk.STOCK_INFO)
+        self.info_button.connect('clicked', self._on_info_button__clicked)
 
         self.entry.connect('activate', self._on_entry__activate)
         self.entry.connect('changed', self._on_entry__changed)
@@ -404,6 +416,7 @@ class QueryEntryGadget(object):
     def _update_widgets(self):
         self._can_edit = self.entry.get_editable() and self.entry.get_sensitive()
         self.edit_button.set_sensitive(bool(self._can_edit or self._current_obj))
+        self.info_button.set_sensitive(bool(self._current_obj))
 
     def _add_button(self, stock):
         image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
@@ -462,7 +475,7 @@ class QueryEntryGadget(object):
                                              visual_mode=not self._can_edit)
             else:
                 rd = run_person_role_dialog if self._is_person else run_dialog
-                retval = rd(self.ITEM_EDITOR, self._parent, store, model,
+                retval = rd(self.item_editor, self._parent, store, model,
                             description=description,
                             visual_mode=not self._can_edit)
 
@@ -540,27 +553,35 @@ class QueryEntryGadget(object):
         if obj:
             self.set_value(obj, force=True)
 
+    def _on_info_button__clicked(self, entry):
+        obj = self.entry.read()
+        with api.new_store() as store:
+            run_dialog(self.item_info_dialog, self._parent,
+                       store, store.fetch(obj))
+
 
 class PersonEntryGadget(QueryEntryGadget):
 
-    PERSON_TYPE = None
+    person_type = None
 
     def __init__(self, entry, store, initial_value=None,
-                 parent=None, run_editor=None, edit_button=None):
+                 parent=None, run_editor=None,
+                 edit_button=None, info_button=None):
         country = api.sysparam.get_string('COUNTRY_SUGGESTED')
         self._company_l10n = api.get_l10n_field('company_document', country)
         self._person_l10n = api.get_l10n_field('person_document', country)
 
         super(PersonEntryGadget, self).__init__(
             entry, store, initial_value=initial_value,
-            parent=parent, run_editor=run_editor, edit_button=edit_button)
+            parent=parent, run_editor=run_editor,
+            edit_button=edit_button, info_button=info_button)
 
     #
     #  QueryEntryGadget
     #
 
     def get_object_from_item(self, item):
-        return item and self.store.find(self.PERSON_TYPE, id=item.id).one()
+        return item and self.store.find(self.person_type, id=item.id).one()
 
     def describe_item(self, person_view):
         details = []
@@ -598,8 +619,10 @@ class ClientEntryGadget(PersonEntryGadget):
     NEW_ITEM_TEXT = _('Create a new client with this name...')
     NEW_ITEM_TOOLTIP = _('Create a new client')
     EDIT_ITEM_TOOLTIP = _('Edit the selected client')
-    ITEM_EDITOR = ClientEditor
-    PERSON_TYPE = Client
+    INFO_ITEM_TOOLTIP = _('See info about the selected client')
+    item_editor = ClientEditor
+    item_info_dialog = ClientDetailsDialog
+    person_type = Client
     search_class = ClientSearch
     search_spec = ClientView
     search_columns = [ClientView.name, ClientView.fancy_name,
@@ -613,8 +636,10 @@ class SupplierEntryGadget(PersonEntryGadget):
     NEW_ITEM_TEXT = _('Create a new supplier with this name...')
     NEW_ITEM_TOOLTIP = _('Create a new supplier')
     EDIT_ITEM_TOOLTIP = _('Edit the selected supplier')
-    ITEM_EDITOR = SupplierEditor
-    PERSON_TYPE = Supplier
+    INFO_ITEM_TOOLTIP = _('See info about the selected supplier')
+    item_editor = SupplierEditor
+    item_info_dialog = SupplierDetailsDialog
+    person_type = Supplier
     search_class = SupplierSearch
     search_spec = SupplierView
     search_columns = [SupplierView.name, SupplierView.fancy_name,

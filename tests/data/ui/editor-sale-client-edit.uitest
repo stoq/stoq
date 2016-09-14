@@ -31,6 +31,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale"', hidden
               ProxyEntry(client): 'Bender'
               GtkHBox():
                 GtkButton(client_add_button):
+                GtkButton(client_edit_button):
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

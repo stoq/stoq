@@ -19,6 +19,7 @@ GtkDialog(toplevel): title='New Loan Wizard', hidden
             GtkHBox():
               ProxyEntry(step.client, expand=True, fill=True): 'Client'
               GtkButton():
+              GtkButton():
             GtkLabel(step.expire_label): 'Expire'
             ProxyDateEntry(step.expire_date): date.today()
             GtkLabel(step.transporter_lbl): 'Removed By:'
