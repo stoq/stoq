@@ -29,5 +29,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 class TestPinDialog(GUITest):
 
     def test_create(self):
-        dialog = PinDialog(self.store)
-        self.check_editor(dialog, 'dialog-pin-create')
+        with self.sysparam(USER_HASH='8e0c75ef763144eb9c0f39a8efa01452'):
+            dialog = PinDialog(self.store)
+            self.check_editor(dialog, 'dialog-pin-create')

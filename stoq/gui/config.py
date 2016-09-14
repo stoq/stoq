@@ -423,7 +423,9 @@ class LinkStep(WizardEditorStep):
 
     def on_image_eventbox__button_press_event(self, widget, event):
         if self._inside_button(event):
-            open_browser('http://stoq.link?source=stoqwizard', self.wizard)
+            url = 'https://stoq.link?source=stoqwizard&hash={}'
+            user_hash = api.sysparam.get_string('USER_HASH')
+            open_browser(url.format(user_hash), self.wizard)
 
     def on_register_now__toggled(self, widget):
         # If any of these plugins is enabled (backup or nfce or sat, or magento),

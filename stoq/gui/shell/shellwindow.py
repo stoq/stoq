@@ -913,7 +913,9 @@ class ShellWindow(GladeDelegate):
         # we are only going to open the stoq.link url
         if app_name == 'link':
             toplevel = self.get_toplevel()
-            open_browser('http://stoq.link?source=stoq', toplevel.get_screen())
+            user_hash = api.sysparam.get_string('USER_HASH')
+            url = 'https://stoq.link?source=stoq&hash={}'.format(user_hash)
+            open_browser(url, toplevel.get_screen())
             return
 
         if params.pop('hide', False):

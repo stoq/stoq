@@ -26,6 +26,7 @@ import logging
 
 from kiwi.python import Settable
 
+from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import warning, info
 from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
@@ -45,6 +46,7 @@ class PinDialog(BaseEditor):
 
     def __init__(self, store):
         super(PinDialog, self).__init__(store)
+        self._setup_widgets()
         self._processing = False
         self._done = False
         self._set_processing(False)
@@ -75,6 +77,13 @@ class PinDialog(BaseEditor):
     #
     #   Private
     #
+
+    def _setup_widgets(self):
+        user_hash = api.sysparam.get_string('USER_HASH')
+        url = "https://stoq.link?source=stoqpin&amp;hash={}".format(user_hash)
+        self.stoq_link_url_label.set_markup(
+            _('This will connect your Stoq installation to <a href="{}">Stoq.Link</a>.\n'
+              'Enter the <b>PIN</b> received from it bellow:').format(url))
 
     def _set_processing(self, processing):
         self._processing = processing
