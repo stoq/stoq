@@ -33,6 +33,7 @@ GtkDialog(main_dialog.toplevel): title='Salesperson change', hidden
               ProxyEntry(client): '', hidden
               GtkHBox():
                 GtkButton(client_add_button): hidden
+                GtkButton(client_edit_button): hidden, insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

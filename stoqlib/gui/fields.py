@@ -335,7 +335,10 @@ class PersonField(DomainChoiceField):
 
 class PersonQueryField(TextField):
 
-    default_overrides = dict(has_add_button=True)
+    default_overrides = dict(
+        has_add_button=True,
+        has_edit_button=True,
+    )
 
     #: This is the type of person we will display in this field, it
     #: must be a class referencing a :py:class:`stoqlib.domain.person.Person`
@@ -361,7 +364,12 @@ class PersonQueryField(TextField):
             entry=self.widget,
             store=get_store_for_field(self),
             parent=self.toplevel,
-            edit_button=self.add_button)
+            edit_button=self.add_button,
+            info_button=self.edit_button)
+
+        # Update edit button to be a info button
+        self.edit_button.set_image(
+            gtk.image_new_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU))
 
     def populate(self, obj):
         self.set_value(obj)
@@ -370,6 +378,11 @@ class PersonQueryField(TextField):
         self.gadget.set_value(obj)
 
     def add_button_clicked(self, button):
+        # The gadget will take care of the callback. We just need to override
+        # this to avoid a NotImplementedError
+        pass
+
+    def edit_button_clicked(self, button):
         # The gadget will take care of the callback. We just need to override
         # this to avoid a NotImplementedError
         pass
