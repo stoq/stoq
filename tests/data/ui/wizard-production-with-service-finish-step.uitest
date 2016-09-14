@@ -68,6 +68,7 @@ model: Product<4>
   production_time: 1
   weight: Decimal('0')
   width: Decimal('0')
+  yield_quantity: Decimal('1.000')
 
 model: Product<5>
   brand: u''
@@ -89,6 +90,7 @@ model: Product<5>
   production_time: 1
   weight: Decimal('0')
   width: Decimal('0')
+  yield_quantity: Decimal('1.000')
 
 model: ProductionItem<6>
   lost: Decimal('0.000')

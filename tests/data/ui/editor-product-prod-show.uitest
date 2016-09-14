@@ -159,6 +159,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                   GtkLabel(label2, fill=True): 'Production time:'
                   ProxySpinButton(production_time, fill=True): '1'
                   GtkLabel(label3, expand=True, fill=True): 'days'
+                  GtkLabel(yield_label, expand=True, fill=True): 'Yields:'
+                  ProxySpinButton(yield_quantity, fill=True): '1.000'
                 GtkHSeparator(hseparator1, fill=True):
                 GtkVBox(vbox2, fill=True):
                   GtkHBox(hbox1, expand=True, fill=True):

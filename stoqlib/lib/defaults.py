@@ -140,7 +140,7 @@ def _split_parts(a):
     for i in range(len(parts)):
         try:
             parts[i] = int(parts[i])
-        except:
+        except Exception:
             pass
     return parts
 
@@ -155,10 +155,9 @@ def sort_sellable_code(a, b):
 
 DECIMAL_PRECISION = 2
 QUANTITY_PRECISION = 3
-_format = Decimal('10e-%d' % DECIMAL_PRECISION)
 
 
-def quantize(dec):
+def quantize(dec, precision=DECIMAL_PRECISION):
     """Quantities a decimal according to the current settings.
     if DECIMAL_PRECISION is set to two then everything but
     the last two decimals will be removed
@@ -169,4 +168,5 @@ def quantize(dec):
     >>> quantize(Decimal("10.678"))
     Decimal('10.68')
     """
+    _format = Decimal('10e-%d' % precision)
     return dec.quantize(_format)

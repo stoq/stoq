@@ -72,4 +72,5 @@ model: Product<4>
   production_time: 1
   weight: Decimal('0')
   width: Decimal('0')
+  yield_quantity: Decimal('1.000')
 

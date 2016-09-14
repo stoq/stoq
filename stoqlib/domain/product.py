@@ -334,8 +334,13 @@ class Product(Domain):
     #: This means this product can be bought but cannot be sold
     internal_use = BoolCol(default=False)
 
-    # Indicates if the product is a of TYPE_PACKAGE
+    #: Indicates if the product is a of TYPE_PACKAGE
     is_package = BoolCol(default=False)
+
+    #: If this is a composed product, this indicates how much the production
+    #: process yields of this product. For instance, certain recipe could yield
+    #: 2.5Kgs of some food.
+    yield_quantity = QuantityCol(default=1)
 
     def __init__(self, **kwargs):
         assert 'sellable' in kwargs

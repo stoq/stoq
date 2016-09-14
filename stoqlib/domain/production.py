@@ -358,6 +358,8 @@ class ProductionItem(Domain):
             # We have some quality tests to assure. Register it for later
             assert produced_by
             assert len(serials) == quantity
+            # We only support yield quantity > 1 when there are no tests
+            assert self.product.yield_quantity == 1
 
         self.store.savepoint(u'before_produce')
 
@@ -384,7 +386,9 @@ class ProductionItem(Domain):
             # There are no quality tests for this product. Increase stock
             # right now.
             storable = self.product.storable
-            storable.increase_stock(quantity, self.order.branch,
+            # A production process may yield more than one unit of this product
+            yield_quantity = quantity * self.product.yield_quantity
+            storable.increase_stock(yield_quantity, self.order.branch,
                                     StockTransactionHistory.TYPE_PRODUCTION_PRODUCED,
                                     self.id)
         self.produced += quantity

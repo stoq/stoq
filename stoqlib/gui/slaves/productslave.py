@@ -436,7 +436,7 @@ class ProductTaxSlave(BaseEditorSlave):
 class ProductComponentSlave(BaseEditorSlave):
     gladefile = 'ProductComponentSlave'
     model_type = TemporaryProductComponent
-    proxy_widgets = ['production_time']
+    proxy_widgets = ['production_time', 'yield_quantity']
     gsignal('cost-updated', object)
 
     def __init__(self, store, product=None, visual_mode=False):
@@ -446,7 +446,6 @@ class ProductComponentSlave(BaseEditorSlave):
         # necessary
         self._previous_value = product.sellable.cost if product else 0
         BaseEditorSlave.__init__(self, store, model=None, visual_mode=visual_mode)
-        self._setup_widgets()
 
     def _get_columns(self):
         return [Column('code', title=_(u'Code'), data_type=int,
@@ -472,6 +471,9 @@ class ProductComponentSlave(BaseEditorSlave):
             self.component_combo.prefill(component_list)
         else:
             self.sort_components_check.set_sensitive(False)
+
+        self.yield_quantity.set_adjustment(
+            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
 
         self.component_tree.set_columns(self._get_columns())
         self._populate_component_tree()
@@ -520,8 +522,6 @@ class ProductComponentSlave(BaseEditorSlave):
         self.edit_button.set_sensitive(has_selected)
         self.remove_button.set_sensitive(has_selected)
 
-        # FIXME: This is wrong. Summary label already calculates the total. We
-        # are duplicating this.
         value = self.get_component_cost()
         if self._previous_value != value:
             self._previous_value = value
@@ -653,6 +653,7 @@ class ProductComponentSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.proxy = self.add_proxy(self._product, self.proxy_widgets)
 
     def create_model(self, store):
@@ -678,11 +679,19 @@ class ProductComponentSlave(BaseEditorSlave):
             if self.component_tree.get_parent(component):
                 continue
             value += component.get_total_production_cost()
-        return quantize(value)
+        value = value / self._product.yield_quantity
+        return quantize(value, precision=sysparam.get_int('COST_PRECISION_DIGITS'))
 
     #
     # Kiwi Callbacks
     #
+
+    def on_yield_quantity__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(_(u'The value must be positive.'))
+
+    def after_yield_quantity__changed(self, widget):
+        self._update_widgets()
 
     def on_component_combo__content_changed(self, widget):
         self._update_widgets()
