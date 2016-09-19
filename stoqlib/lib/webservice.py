@@ -265,7 +265,8 @@ class WebService(object):
         except Exception:
             bdist_type = None
 
-        if os.path.exists(os.path.join('etc', 'init.d', 'stoq-bootstrap')):
+        # We should use absolute paths when looking for /etc
+        if os.path.exists(os.path.join(os.sep, 'etc', 'init.d', 'stoq-bootstrap')):
             source = 'livecd'
         elif bdist_type in ['egg', 'wheel']:
             source = 'pypi'
