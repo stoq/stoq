@@ -12,6 +12,7 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
                 ProxyEntry(client): 'Client02'
                 GtkHBox():
                   GtkButton(client_add_button):
+                  GtkButton(client_edit_button):
                 ProxyLabel(price_lbl): 'Delivery cost:'
                 ProxyEntry(price): '0.00'
                 GtkHBox():
