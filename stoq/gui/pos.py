@@ -96,6 +96,10 @@ class TemporarySaleItem(object):
         self.unit = sellable.unit_description
         self.code = sellable.code
         self.can_remove = can_remove
+        if sellable.product:
+            self.location = sellable.product.location
+        else:
+            self.location = ''
 
         if price is None:
             price = sellable.price
@@ -313,6 +317,8 @@ class PosApp(ShellApp):
                 Column('full_description',
                        title=_('Description'), data_type=str, expand=True,
                        searchable=True, ellipsize=pango.ELLIPSIZE_END),
+                Column('location', title=_('Location'), data_type=str,
+                       visible=False),
                 Column('price', title=_('Price'), data_type=currency,
                        width=110, justify=gtk.JUSTIFY_RIGHT),
                 Column('quantity_unit', title=_('Quantity'), data_type=unicode,

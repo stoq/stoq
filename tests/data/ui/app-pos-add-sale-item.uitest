@@ -112,10 +112,11 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               ObjectTree(sale_items):
                 column: title='Reference'
                 column: title='Description', expand
+                column: title='Location', hidden
                 column: title='Price'
                 column: title='Quantity'
                 column: title='Total'
-                row: u'', u'Description', <currency $10>, u'1 ', Decimal('10.00')
+                row: u'', u'Description', u'', <currency $10>, u'1 ', Decimal('10.00')
               GtkVBox(details_box):
                 ProxyLabel(details_lbl, fill=True): '<b>Description</b>\n1 x $10.00'
                 GtkAspectFrame(aspectframe1):

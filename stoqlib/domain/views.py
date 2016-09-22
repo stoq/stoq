@@ -482,6 +482,7 @@ class SellableFullStockView(Viewable):
 
     product_id = Product.id
     model = Product.model
+    location = Product.location
 
     unit = SellableUnit.description
     manufacturer = ProductManufacturer.name

@@ -22,13 +22,14 @@ GtkDialog(toplevel): title='Item search', hidden
             column: title='Barcode'
             column: title='Category'
             column: title='Description', expand
+            column: title='Location', hidden
             column: title='Manufacturer', hidden
             column: title='Model', hidden
             column: title='Price'
-            row: u'11', u'1598587594264', None, u'Ajuste Roupa', None, None, <currency $50>
-            row: u'13', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', None, None, <currency $150>
-            row: u'12', u'3569587451214', None, u'Lavagem Roupa', None, None, <currency $35>
-            row: u'14', u'1569854136511', None, u'Lavagem a Seco', None, None, <currency $55>
+            row: u'11', u'1598587594264', None, u'Ajuste Roupa', None, None, None, <currency $50>
+            row: u'13', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', None, None, None, <currency $150>
+            row: u'12', u'3569587451214', None, u'Lavagem Roupa', None, None, None, <currency $35>
+            row: u'14', u'1569854136511', None, u'Lavagem a Seco', None, None, None, <currency $55>
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden

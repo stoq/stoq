@@ -112,6 +112,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               ObjectTree(sale_items):
                 column: title='Reference'
                 column: title='Description', expand
+                column: title='Location', hidden
                 column: title='Price'
                 column: title='Quantity'
                 column: title='Total'

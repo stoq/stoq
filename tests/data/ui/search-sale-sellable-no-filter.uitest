@@ -21,26 +21,27 @@ GtkDialog(toplevel): title='Item search', hidden
             column: title='Code'
             column: title='Barcode', hidden
             column: title='Description', expand
+            column: title='Location', hidden
             column: title='Manufacturer', hidden
             column: title='Model', hidden
             column: title='Price'
             column: title='Category', hidden
             column: title='Stock'
-            row: u'', u'', u'Description', None, u'', Decimal('10.00'), None, Decimal('0')
-            row: u'01', u'2368694135945', u'Bermuda Sarja', None, u'', Decimal('149.00'), u'Bermudas Sarja', Decimal('3.000')
-            row: u'02', u'6234564656756', u'Shorts com Costuras', None, u'', Decimal('198.00'), u'Bermudas Shorts', Decimal('3.000')
-            row: u'03', u'6985413595971', u'Camiseta Tinturada Xcuba Comp', None, u'', Decimal('89.00'), u'Tinturada', Decimal('3.000')
-            row: u'04', u'2692149835416', u'Chinelo de Dedo', None, u'', Decimal('79.00'), u'Chinelos', Decimal('3.000')
-            row: u'05', u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', Decimal('189.00'), u'Cal\xe7as Jeans', Decimal('3.000')
-            row: u'06', u'8596458216412', u'Cal\xe7a Brigilda', None, u'', Decimal('438.00'), u'Cal\xe7as Poliester', Decimal('3.000')
-            row: u'07', u'9586249534513', u'Casaco Vilan', None, u'', Decimal('503.00'), u'Algod\xe3o', Decimal('3.000')
-            row: u'08', u'7826592136954', u'Blusa Frente-\xdanica com Pregas', None, u'', Decimal('220.00'), u'Blusas Algod\xe3o', Decimal('3.000')
-            row: u'09', u'5892458629421', u'Blusa Balon\xea com Bordado nas Costas', None, u'', Decimal('150.00'), u'Blusas Poliester', Decimal('3.000')
-            row: u'10', u'1598756984265', u'Vestido Vadalena', None, u'', Decimal('383.00'), u'Viscose', Decimal('4.000')
-            row: u'11', u'1598587594264', u'Ajuste Roupa', None, None, Decimal('50.00'), None, Decimal('0')
-            row: u'12', u'3569587451214', u'Lavagem Roupa', None, None, Decimal('35.00'), None, Decimal('0')
-            row: u'13', u'1568749622849', u'Confec\xe7\xe3o Personalizada', None, None, Decimal('150.00'), None, Decimal('0')
-            row: u'14', u'1569854136511', u'Lavagem a Seco', None, None, Decimal('55.00'), None, Decimal('0')
+            row: u'', u'', u'Description', u'', None, u'', Decimal('10.00'), None, Decimal('0')
+            row: u'01', u'2368694135945', u'Bermuda Sarja', u'', None, u'', Decimal('149.00'), u'Bermudas Sarja', Decimal('3.000')
+            row: u'02', u'6234564656756', u'Shorts com Costuras', u'', None, u'', Decimal('198.00'), u'Bermudas Shorts', Decimal('3.000')
+            row: u'03', u'6985413595971', u'Camiseta Tinturada Xcuba Comp', u'', None, u'', Decimal('89.00'), u'Tinturada', Decimal('3.000')
+            row: u'04', u'2692149835416', u'Chinelo de Dedo', u'', None, u'', Decimal('79.00'), u'Chinelos', Decimal('3.000')
+            row: u'05', u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', u'', None, u'', Decimal('189.00'), u'Cal\xe7as Jeans', Decimal('3.000')
+            row: u'06', u'8596458216412', u'Cal\xe7a Brigilda', u'', None, u'', Decimal('438.00'), u'Cal\xe7as Poliester', Decimal('3.000')
+            row: u'07', u'9586249534513', u'Casaco Vilan', u'', None, u'', Decimal('503.00'), u'Algod\xe3o', Decimal('3.000')
+            row: u'08', u'7826592136954', u'Blusa Frente-\xdanica com Pregas', u'', None, u'', Decimal('220.00'), u'Blusas Algod\xe3o', Decimal('3.000')
+            row: u'09', u'5892458629421', u'Blusa Balon\xea com Bordado nas Costas', u'', None, u'', Decimal('150.00'), u'Blusas Poliester', Decimal('3.000')
+            row: u'10', u'1598756984265', u'Vestido Vadalena', u'', None, u'', Decimal('383.00'), u'Viscose', Decimal('4.000')
+            row: u'11', u'1598587594264', u'Ajuste Roupa', None, None, None, Decimal('50.00'), None, Decimal('0')
+            row: u'12', u'3569587451214', u'Lavagem Roupa', None, None, None, Decimal('35.00'), None, Decimal('0')
+            row: u'13', u'1568749622849', u'Confec\xe7\xe3o Personalizada', None, None, None, Decimal('150.00'), None, Decimal('0')
+            row: u'14', u'1569854136511', u'Lavagem a Seco', None, None, None, Decimal('55.00'), None, Decimal('0')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden
