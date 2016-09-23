@@ -628,6 +628,7 @@ class Product(Domain):
         if not cost:
             cost = sum(c.component.sellable.cost * c.quantity
                        for c in self.get_components())
+            cost /= self.yield_quantity
 
         assert cost > 0
         if self.sellable.cost != cost:

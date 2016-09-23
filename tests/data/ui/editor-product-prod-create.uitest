@@ -48,7 +48,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                 ProxyEntry(description): '', mandatory
                 ProxyLabel(label4): 'Cost ($CURRENCY):'
                 GtkHBox(cost_hbox):
-                  ProxySpinButton(cost, fill=True): '0.00', invalid
+                  ProxySpinButton(cost, fill=True): '0.00', insensitive
                 GtkLabel(label9): 'Tributary Situation:'
                 GtkHBox(tax_hbox):
                   ProxyComboBox(tax_constant, fill=True):

@@ -866,7 +866,7 @@ _details = [
         _(u'When the list of components is updated or the cost of a component '
           'is updated, the cost of a production product will be automatically '
           'updated'),
-        bool, initial=False),
+        bool, initial=True),
 
     ParameterDetails(
         u'BIRTHDAY_NOTIFICATION',
