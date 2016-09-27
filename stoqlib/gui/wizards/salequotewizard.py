@@ -566,10 +566,10 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def on_slave__before_edit_item(self, slave, item):
         if item != self._delivery_item:
-            return False
+            return
 
         self._create_or_update_delivery()
-        return self._delivery_item or False
+        return self._delivery_item
 
     def on_slave__on_edit_item(self, slave, item):
         product = item.sellable.product
