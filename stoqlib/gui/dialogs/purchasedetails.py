@@ -42,7 +42,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.search.searchcolumns import IdentifierColumn
+from stoqlib.gui.search.searchcolumns import IdentifierColumn, QuantityColumn
 from stoqlib.gui.utils.printing import print_labels, print_report
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
@@ -179,8 +179,7 @@ class PurchaseDetailsDialog(BaseEditor):
         return [Column('description', title=_('Description'), data_type=str,
                        expand=True, searchable=True,
                        ellipsize=pango.ELLIPSIZE_END),
-                Column('quantity_as_string', title=_('Qty'), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
+                QuantityColumn('quantity', title=_('Qty')),
                 Column('cost', title=_('Cost'), data_type=currency,
                        format_func=get_formatted_cost),
                 Column('total', title=_('Total'), data_type=currency)]
@@ -189,11 +188,12 @@ class PurchaseDetailsDialog(BaseEditor):
         return [Column('description', title=_('Description'), data_type=str,
                        expand=True, searchable=True,
                        ellipsize=pango.ELLIPSIZE_END),
-                Column('quantity_received_as_string', title=_('Qty Received'),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                QuantityColumn('quantity_received', title=_('Qty Received')),
                 Column('cost', title=_('Cost'), data_type=currency,
                        format_func=get_formatted_cost),
-                Column('total_received', title=_('Total'), data_type=currency)]
+                Column('total_received', title=_('Total'), data_type=currency),
+                QuantityColumn('current_stock', title=_('Current Stock')),
+                ]
 
     def _get_payments_columns(self):
         return [IdentifierColumn('identifier', title=_('Payment #')),

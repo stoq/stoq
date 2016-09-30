@@ -145,21 +145,18 @@ class QuantityColumn(SearchColumn):
         quantity = getattr(obj, self.attribute) or 0
         quantity_str = format_quantity(quantity)
 
-        # The object must have a sellable and a product for this to work
-        # properly. If not, just return the quantity. Dont use
-        # sellable.product here to avoid to many queries
         sellable = getattr(obj, 'sellable', None)
         product = getattr(obj, 'product', None)
-        if not sellable or not product:
-            return quantity_str
 
         # If the product does not manage stock and the quantity is 0, show an
         # infinite symbol istead
-        if not product.manage_stock and not quantity:
+        if product and not product.manage_stock and not quantity:
             return u"\u221E"
 
-        if sellable.unit:
+        if sellable and sellable.unit:
             unit_desc = obj.sellable.unit.description
+        elif hasattr(obj, 'unit'):
+            unit_desc = obj.unit or ''
         else:
             unit_desc = ''
 

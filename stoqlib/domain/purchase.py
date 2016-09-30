@@ -46,7 +46,8 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.product import StockTransactionHistory, Storable
+from stoqlib.domain.product import (StockTransactionHistory, Storable,
+                                    ProductStockItem)
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.domain.person import (Person, Branch, Company, Supplier,
                                    Transporter, LoginUser)
@@ -744,9 +745,10 @@ class PurchaseItemView(Viewable):
     total = PurchaseItem.cost * PurchaseItem.quantity
     total_received = PurchaseItem.cost * PurchaseItem.quantity_received
     total_sold = PurchaseItem.cost * PurchaseItem.quantity_sold
+    current_stock = Sum(ProductStockItem.quantity)
 
     purchase_id = PurchaseOrder.id
-    sellable = Sellable.id
+    sellable_id = Sellable.id
     code = Sellable.code
     description = Sellable.description
     unit = SellableUnit.description
@@ -756,17 +758,12 @@ class PurchaseItemView(Viewable):
         Join(PurchaseOrder, PurchaseOrder.id == PurchaseItem.order_id),
         Join(Sellable, Sellable.id == PurchaseItem.sellable_id),
         LeftJoin(SellableUnit, SellableUnit.id == Sellable.unit_id),
+        LeftJoin(ProductStockItem,
+                 And(ProductStockItem.storable_id == PurchaseItem.sellable_id,
+                     ProductStockItem.branch_id == PurchaseOrder.branch_id))
     ]
 
-    @property
-    def quantity_as_string(self):
-        return u"%s %s" % (format_quantity(self.quantity),
-                           self.unit or u"")
-
-    @property
-    def quantity_received_as_string(self):
-        return u"%s %s" % (format_quantity(self.quantity_received),
-                           self.unit or u"")
+    group_by = [PurchaseItem.id, Sellable.id, PurchaseOrder.id, SellableUnit.id]
 
     @classmethod
     def find_by_purchase(cls, store, purchase):
