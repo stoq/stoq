@@ -40,6 +40,7 @@ from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.person import Transporter
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.domain.sellable import Sellable
@@ -962,11 +963,12 @@ class PosApp(ShellApp):
 
         if self._delivery:
             sale.client = store.fetch(self._delivery.client)
-            sale.storeporter = store.fetch(self._delivery.transporter)
+            if hasattr(self._delivery, 'transporter_id'):
+                sale.transporter = store.get(Transporter, self._delivery.transporter_id)
             delivery = Delivery(
                 store=store,
                 address=store.fetch(self._delivery.address),
-                transporter=store.fetch(self._delivery.transporter),
+                transporter=sale.transporter,
             )
         else:
             delivery = None
