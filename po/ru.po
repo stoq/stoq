@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-29 02:10-0300\n"
-"PO-Revision-Date: 2016-09-29 05:10+0000\n"
+"POT-Creation-Date: 2016-10-03 02:10-0300\n"
+"PO-Revision-Date: 2016-10-01 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Russian (http://www.transifex.com/async/stoq/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -3323,7 +3323,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:138
 #: ../stoqlib/gui/dialogs/productstockdetails.py:246
 #: ../stoqlib/gui/dialogs/purchasedetails.py:179
-#: ../stoqlib/gui/dialogs/purchasedetails.py:189
+#: ../stoqlib/gui/dialogs/purchasedetails.py:188
 #: ../stoqlib/gui/dialogs/purchasedetails.py:200
 #: ../stoqlib/gui/dialogs/quotedialog.py:91
 #: ../stoqlib/gui/dialogs/receivingdialog.py:91
@@ -4045,8 +4045,8 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:66
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:97
 #: ../stoqlib/gui/dialogs/purchasedetails.py:140
-#: ../stoqlib/gui/dialogs/purchasedetails.py:186
-#: ../stoqlib/gui/dialogs/purchasedetails.py:196
+#: ../stoqlib/gui/dialogs/purchasedetails.py:185
+#: ../stoqlib/gui/dialogs/purchasedetails.py:194
 #: ../stoqlib/gui/dialogs/receivingdialog.py:99
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:143
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:101
@@ -4395,8 +4395,8 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/inventorydetails.py:100
 #: ../stoqlib/gui/dialogs/productstockdetails.py:193
 #: ../stoqlib/gui/dialogs/productstockdetails.py:283
-#: ../stoqlib/gui/dialogs/purchasedetails.py:184
-#: ../stoqlib/gui/dialogs/purchasedetails.py:194
+#: ../stoqlib/gui/dialogs/purchasedetails.py:183
+#: ../stoqlib/gui/dialogs/purchasedetails.py:192
 #: ../stoqlib/gui/dialogs/quotedialog.py:95
 #: ../stoqlib/gui/dialogs/receivingdialog.py:96
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:137
@@ -7341,7 +7341,7 @@ msgstr ""
 
 #: ../stoq/gui/inventory.py:165 ../stoq/gui/production.py:179
 #: ../stoqlib/domain/inventory.py:247 ../stoqlib/domain/loan.py:246
-#: ../stoqlib/domain/production.py:81 ../stoqlib/domain/purchase.py:201
+#: ../stoqlib/domain/production.py:81 ../stoqlib/domain/purchase.py:202
 #: ../stoqlib/domain/sellable.py:394 ../stoqlib/domain/till.py:89
 msgid "Closed"
 msgstr ""
@@ -7933,7 +7933,7 @@ msgstr ""
 #: ../stoq/gui/production.py:181 ../stoq/gui/services.py:97
 #: ../stoq/gui/services.py:548 ../stoqlib/domain/inventory.py:248
 #: ../stoqlib/domain/payment/payment.py:142 ../stoqlib/domain/production.py:82
-#: ../stoqlib/domain/purchase.py:200 ../stoqlib/domain/returnedsale.py:288
+#: ../stoqlib/domain/purchase.py:201 ../stoqlib/domain/returnedsale.py:288
 #: ../stoqlib/domain/sale.py:743 ../stoqlib/domain/transfer.py:224
 #: ../stoqlib/domain/workorder.py:596
 #: ../stoqlib/gui/search/transfersearch.py:112
@@ -8642,7 +8642,7 @@ msgstr ""
 msgid "Not delivered"
 msgstr ""
 
-#: ../stoq/gui/services.py:544 ../stoqlib/domain/purchase.py:197
+#: ../stoq/gui/services.py:544 ../stoqlib/domain/purchase.py:198
 #: ../stoqlib/domain/returnedsale.py:286 ../stoqlib/domain/till.py:87
 #: ../stoqlib/domain/transfer.py:221
 msgid "Pending"
@@ -10164,7 +10164,7 @@ msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:141
 #: ../stoqlib/domain/payment/renegotiation.py:60
-#: ../stoqlib/domain/purchase.py:198 ../stoqlib/domain/returnedsale.py:287
+#: ../stoqlib/domain/purchase.py:199 ../stoqlib/domain/returnedsale.py:287
 #: ../stoqlib/domain/sale.py:742 ../stoqlib/domain/stockdecrease.py:209
 msgid "Confirmed"
 msgstr ""
@@ -10544,96 +10544,96 @@ msgstr ""
 msgid "Can not consume this quantity."
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:196 ../stoqlib/domain/sale.py:740
+#: ../stoqlib/domain/purchase.py:197 ../stoqlib/domain/sale.py:740
 msgid "Quoting"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:199
+#: ../stoqlib/domain/purchase.py:200
 #: ../stoqlib/gui/search/consignmentsearch.py:58
 #: ../stoqlib/gui/wizards/consignmentwizard.py:149
 msgid "Consigned"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:207
+#: ../stoqlib/domain/purchase.py:208
 msgid "FOB"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:208
+#: ../stoqlib/domain/purchase.py:209
 msgid "CIF"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:258
+#: ../stoqlib/domain/purchase.py:259
 msgid ""
 "Argument item must have an order attribute associated with the current "
 "purchase instance"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:346
+#: ../stoqlib/domain/purchase.py:347
 #, python-format
 msgid "%s Money Returned for Purchase %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:399
+#: ../stoqlib/domain/purchase.py:400
 #, python-format
 msgid ""
 "Invalid order status, it should be ORDER_PENDING or ORDER_CONSIGNED, got %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:416
+#: ../stoqlib/domain/purchase.py:417
 #, python-format
 msgid "Order %s, total value %2.2f, supplier '%s' is now confirmed"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:424
+#: ../stoqlib/domain/purchase.py:425
 #, python-format
 msgid "Invalid order status, it should be ORDER_PENDING, got %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:434
+#: ../stoqlib/domain/purchase.py:435
 #, python-format
 msgid "Invalid status, it should be confirmed got %s instead"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:439
+#: ../stoqlib/domain/purchase.py:440
 #, python-format
 msgid "Order %s, total value %2.2f, supplier '%s' is now closed"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:457
+#: ../stoqlib/domain/purchase.py:458
 msgid "This item is not pending, hence cannot be received"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:461
+#: ../stoqlib/domain/purchase.py:462
 #, python-format
 msgid ""
 "The quantity that you want to receive is greater than the total quantity of "
 "this item %r"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:472
+#: ../stoqlib/domain/purchase.py:473
 #, python-format
 msgid "There is no purchase item for sellable %r"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:496
+#: ../stoqlib/domain/purchase.py:497
 #, python-format
 msgid "Invalid freight_type, got %d"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:531
+#: ../stoqlib/domain/purchase.py:532
 msgid "Purchase total can not be lesser than zero"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:615
+#: ../stoqlib/domain/purchase.py:616
 #, python-format
 msgid "Got an unexpected status value: %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:682
+#: ../stoqlib/domain/purchase.py:683
 msgid "You can not remove an item which does not belong to this group."
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:703
+#: ../stoqlib/domain/purchase.py:704
 #: ../stoqlib/domain/test/test_purchase.py:610
 #, python-format
 msgid "quote number %s"
@@ -11965,9 +11965,13 @@ msgstr ""
 msgid "Purchase Details"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/purchasedetails.py:192
+#: ../stoqlib/gui/dialogs/purchasedetails.py:191
 #: ../stoqlib/gui/wizards/receivingwizard.py:152
 msgid "Qty Received"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/purchasedetails.py:195
+msgid "Current Stock"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:80
