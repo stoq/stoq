@@ -310,6 +310,10 @@ class PluginStep(BaseWizardStep):
                 self.wizard.plugins.append(name)
         for name in online_plugins:
             if getattr(self, 'enable_' + name).get_active():
+                # Since the enable_sat is always ticked, we need to check if
+                # the enable_coupon is also ticked
+                if name == 'sat' and not self.enable_coupon.get_active():
+                    continue
                 self.wizard.online_plugins.append(name)
         self.wizard.enable_backup = self.enable_backup.get_active()
 
