@@ -73,6 +73,8 @@ External dependencies:
   License: LGPLv3+
 * Storm <http://storm.canonical.com>
   License: LGPLv2.1+
+* PyInotify <https://github.com/seb-m/pyinotify/wiki>
+  License: MIT
 
 Contains code derived from:
 

@@ -47,6 +47,7 @@ PSQL_REQUIRED = (8, 4)
 PSYCOPG_REQUIRED = (2, 0, 9)
 PYGTK_REQUIRED = (2, 20, 0)
 PYGTKWEBKIT_REQUIRED = (1, 1, 7)
+PYINOTIFY_REQUIRED = (0, 9, 2)
 PYOBJC_REQUIRED = (2, 3)
 PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
@@ -104,6 +105,9 @@ class DependencyChecker(object):
         # FIXME: makes sense to allow Stoq to run with all of these disabled.
         self._check_pyserial(PYSERIAL_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
+
+        # Misc
+        self._check_pyinotify(PYINOTIFY_REQUIRED)
 
     def _error(self, title, msg):
         if self.text_mode:
@@ -240,6 +244,15 @@ class DependencyChecker(object):
         except ImportError:
             self._missing(project='ZopeInterface',
                           url='http://www.zope.org/Products/ZopeInterface',
+                          version=version)
+
+    def _check_pyinotify(self, version):
+        try:
+            import pyinotify
+            pyinotify  # pylint: disable=W0104
+        except ImportError:
+            self._missing(project='PyInotify',
+                          url='https://github.com/seb-m/pyinotify/wiki',
                           version=version)
 
     def _check_psql(self, version):
