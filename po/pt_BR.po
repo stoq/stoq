@@ -15,9 +15,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-03 02:10-0300\n"
-"PO-Revision-Date: 2016-10-01 05:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2016-10-20 02:10-0200\n"
+"PO-Revision-Date: 2016-10-20 19:19+0000\n"
+"Last-Translator: Thiago Bellini Ribeiro <hackedbellini@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3144,12 +3144,12 @@ msgstr "Data de abertura:"
 msgid "Defect reported by client:"
 msgstr "Defeito informado pelo cliente:"
 
-#. TRANSLATORS: Package in this context means 'Malote' in pt_BR
+#. TRANSLATORS: Package in this context means
 #: ../data/glade/WorkOrderPackageReceiveOrdersStep.ui.h:2
 msgid "Package:"
 msgstr "Pacote:"
 
-#. TRANSLATORS: Package in this context means 'Malote' in pt_BR
+#. TRANSLATORS: Package in this context means
 #: ../data/glade/WorkOrderPackageReceiveSelectionStep.ui.h:2
 msgid "Select the package you would like to receive:"
 msgstr "Selecione o pacote que você gostaria de receber:"
@@ -5565,7 +5565,7 @@ msgid "What cleaning product did you use?"
 msgstr "Qual produto de assepsia usava?"
 
 #. pt_BR: Anamnese
-#. Translate as 'Anamnese'
+#. Translate as
 #. TRANSLATORS: Traduzir como 'Anamnese'
 #: ../plugins/optical/glade/PatientHistory.ui.h:42
 #: ../plugins/optical/glade/PatientHistoryDialog.ui.h:3
@@ -8990,14 +8990,14 @@ msgstr "Sobre o Stoq"
 #. Title
 #: ../stoq/gui/shell/shellwindow.py:391
 msgid "You have pending plugins."
-msgstr ""
+msgstr "Você possui plugins pendentes."
 
 #: ../stoq/gui/shell/shellwindow.py:397
 msgid ""
 "The following plugins need to be enabled: <b>{}</b>.\n"
 "\n"
 "You can do it by registering on <a href=\"{}\">Stoq.link</a>."
-msgstr ""
+msgstr "Os seguintes plugins precisam ser habilitados: <b>{}</b>.\n\nVocê pode fazer isso se registrando em <a href=\"{}\">Stoq.link</a>."
 
 #: ../stoq/gui/shell/shellwindow.py:410 ../stoq/gui/shell/shellwindow.py:1089
 msgid "Enable production mode"
@@ -11979,7 +11979,7 @@ msgstr "Qtde recebida"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:195
 msgid "Current Stock"
-msgstr ""
+msgstr "Estoque atual"
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:80
 msgid "Quote Filling"
@@ -18014,7 +18014,7 @@ msgstr "O plugin não está disponível para esta versão do Stoq"
 
 #: ../stoqlib/lib/pluginmanager.py:270
 msgid "The instance is not authorized to download the plugin"
-msgstr ""
+msgstr "A instância não está autorizada a baixar o plugin"
 
 #: ../stoqlib/lib/pluginmanager.py:271
 msgid "Plugin does not exist"
