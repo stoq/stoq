@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-03 02:10-0300\n"
+"POT-Creation-Date: 2016-10-20 02:10-0200\n"
 "PO-Revision-Date: 2016-10-01 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Bosnian (http://www.transifex.com/async/stoq/language/bs/)\n"
@@ -3137,12 +3137,12 @@ msgstr ""
 msgid "Defect reported by client:"
 msgstr ""
 
-#. TRANSLATORS: Package in this context means 'Malote' in pt_BR
+#. TRANSLATORS: Package in this context means
 #: ../data/glade/WorkOrderPackageReceiveOrdersStep.ui.h:2
 msgid "Package:"
 msgstr ""
 
-#. TRANSLATORS: Package in this context means 'Malote' in pt_BR
+#. TRANSLATORS: Package in this context means
 #: ../data/glade/WorkOrderPackageReceiveSelectionStep.ui.h:2
 msgid "Select the package you would like to receive:"
 msgstr ""
@@ -5558,7 +5558,7 @@ msgid "What cleaning product did you use?"
 msgstr ""
 
 #. pt_BR: Anamnese
-#. Translate as 'Anamnese'
+#. Translate as
 #. TRANSLATORS: Traduzir como 'Anamnese'
 #: ../plugins/optical/glade/PatientHistory.ui.h:42
 #: ../plugins/optical/glade/PatientHistoryDialog.ui.h:3
