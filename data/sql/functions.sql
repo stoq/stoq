@@ -60,8 +60,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent;
 
 CREATE OR REPLACE FUNCTION stoq_normalize_string(input_string text) RETURNS text AS $$
 BEGIN
-  input_string := LOWER(input_string);
-  return unaccent(input_string);
+  return LOWER(unaccent(input_string));
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 

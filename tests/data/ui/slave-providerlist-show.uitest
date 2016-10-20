@@ -10,8 +10,8 @@ kiwi+ui+listdialog+ListContainer(listcontainer):
     row: u'HIPERCARD', 1
     row: u'PAGGO', 1
     row: u'REDECARD', 1
-    row: u'Velec', 1
     row: u'VISANET', 1
+    row: u'Velec', 1
   GtkVBox(fill=True, padding=6):
     GtkButton(fill=True): 'gtk-add'
     GtkButton(fill=True): 'gtk-remove', insensitive

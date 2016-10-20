@@ -34,12 +34,14 @@ class TestPurchaseFinishWizard(GUITest):
     def test_confirm_overpaid(self):
         purchase = self.create_purchase_order()
 
-        purchase.add_item(self.create_sellable(), 1)
-        purchase.add_item(self.create_sellable(), 5)
+        purchase.add_item(self.create_sellable(description=u'Prod 1'), 1)
+        purchase.add_item(self.create_sellable(description=u'Prod 2'), 5)
         purchase.status = PurchaseOrder.ORDER_CONFIRMED
 
         wizard = PurchaseFinishWizard(self.store, purchase)
 
+        step = wizard.get_current_step()
+        step.product_list.sort_by_attribute('description')
         self.check_wizard(wizard,
                           'wizard-purchase-finish-product-list-step-overpaid')
         self.click(wizard.next_button)
@@ -55,8 +57,8 @@ class TestPurchaseFinishWizard(GUITest):
         purchase = self.create_purchase_order()
 
         purchase.status = PurchaseOrder.ORDER_CONFIRMED
-        purchase.add_item(self.create_sellable(), 1)
-        purchase.add_item(self.create_sellable(), 5)
+        purchase.add_item(self.create_sellable(description=u'Prod 1'), 1)
+        purchase.add_item(self.create_sellable(description=u'Prod 2'), 5)
         for item in list(purchase.get_items()):
             item.quantity_received = 1
         self.add_payments(purchase)
@@ -66,6 +68,8 @@ class TestPurchaseFinishWizard(GUITest):
 
         wizard = PurchaseFinishWizard(self.store, purchase)
 
+        step = wizard.get_current_step()
+        step.product_list.sort_by_attribute('description')
         self.check_wizard(wizard,
                           'wizard-purchase-finish-product-list-step-underpaid')
         self.click(wizard.next_button)

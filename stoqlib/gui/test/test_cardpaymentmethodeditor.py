@@ -233,6 +233,7 @@ class TestProviderListSlave(GUITest):
     def test_show(self):
         self.create_credit_provider()
         slave = ProviderListSlave(store=self.store, reuse_store=True)
+        slave.listcontainer.list.sort_by_attribute('short_name')
         self.check_slave(slave, 'slave-providerlist-show')
 
     @mock.patch('stoqlib.gui.editors.paymentmethodeditor.info')
