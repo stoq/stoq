@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave StartStockDecreaseStep is attached
-        GtkTable(step.toplevel):
+        GtkTable(step.table1):
           GtkLabel(step.label1): 'Date:'
           ProxyDateEntry(step.confirm_date): date.today(), insensitive
           GtkLabel(step.label5): 'Cfop:'
@@ -38,8 +38,7 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
             item: 'Deivis Alexandre Junior'
             item: 'Maria Aparecida Ardana'
             item: 'Osvaldo Denadai Marin'
-          GtkLabel(step.label7): 'Invoice number:'
-          ProxyEntry(step.invoice_number): '1004'
+          GtkEventBox(step.invoice_number_holder):
           GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
           ProxyComboBox(step.cost_center): hidden
           ProxyCheckButton(step.create_payments): 'Create payments', active

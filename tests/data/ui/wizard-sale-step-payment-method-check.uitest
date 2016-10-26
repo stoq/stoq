@@ -77,10 +77,12 @@ model: PaymentGroup<2>
 
 model: Invoice<3>
   cnf: None
-  invoice_number: 1004
+  invoice_number: None
   invoice_type: u'out'
   key: None
+  mode: None
   operation_nature: None
+  series: None
 
 model: Payment<4>
   base_value: <currency $10>

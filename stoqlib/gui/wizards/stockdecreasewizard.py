@@ -28,13 +28,12 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq
 
 from stoqlib.api import api
 from stoqlib.domain.costcenter import CostCenter
-from stoqlib.domain.fiscal import CfopData, Invoice
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Branch, Employee, Person
@@ -53,7 +52,7 @@ from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialo
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.editors.stockdecreaseeditor import StockDecreaseItemEditor
-from stoqlib.gui.events import StockDecreaseWizardFinishEvent
+from stoqlib.gui.events import StockDecreaseWizardFinishEvent, InvoiceSetupEvent
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.salewizard import PaymentMethodStep
@@ -70,7 +69,7 @@ _ = stoqlib_gettext
 class StartStockDecreaseStep(WizardEditorStep):
     gladefile = 'StartStockDecreaseStep'
     model_type = StockDecrease
-    stock_decrease_widgets = [
+    proxy_widgets = [
         'confirm_date',
         'branch',
         'reason',
@@ -78,8 +77,6 @@ class StartStockDecreaseStep(WizardEditorStep):
         'cfop',
         'cost_center',
         'person']
-    invoice_widgets = ['invoice_number']
-    proxy_widgets = stock_decrease_widgets + invoice_widgets
 
     def _fill_employee_combo(self):
         employess = self.store.find(Employee)
@@ -123,12 +120,7 @@ class StartStockDecreaseStep(WizardEditorStep):
 
         manager = get_plugin_manager()
         nfe_is_active = manager.is_active('nfe')
-        self.invoice_number.set_property('mandatory', nfe_is_active)
         self.person.set_property('mandatory', nfe_is_active)
-
-        if not self.model.invoice.invoice_number:
-            new_invoice_number = Invoice.get_next_invoice_number(self.store)
-            self.model.invoice.invoice_number = new_invoice_number
 
         if not sysparam.get_bool('CREATE_PAYMENTS_ON_STOCK_DECREASE'):
             self.create_payments.hide()
@@ -154,23 +146,7 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.stock_decrease_proxy = self.add_proxy(self.model,
-                                                   self.stock_decrease_widgets)
-        self.invoice_proxy = self.add_proxy(self.model.invoice,
-                                            self.invoice_widgets)
-
-    #
-    # Callbacks
-    #
-    def on_invoice_number__validate(self, widget, value):
-        if not 0 < value <= 999999999:
-            return ValidationError(
-                _(u"Invoice number must be between 1 and 999999999"))
-
-        invoice = self.model.invoice
-        branch = self.model.branch
-        if invoice.check_unique_invoice_number_by_branch(value, branch):
-            return ValidationError(_(u"Invoice number already used."))
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
 
 class DecreaseItemStep(SellableItemStep):
@@ -319,6 +295,12 @@ class StockDecreaseWizard(BaseWizard):
         if missing:
             run_dialog(MissingItemsDialog, self, self.model, missing)
             return False
+
+        invoice_ok = InvoiceSetupEvent.emit()
+        if invoice_ok is False:
+            # If there is any problem with the invoice, the event will display an error
+            # message and the dialog is kept open so the user can fix whatever is wrong.
+            return
 
         self.retval = self.model
         self.model.confirm()

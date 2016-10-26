@@ -172,11 +172,12 @@ class TestReturnedSale(DomainTest):
                              store=self.store)
         self.assertEquals(rsale.total_amount_abs, currency(0))
 
-    def test_add_item(self):
+    def test_add_item(self, branch=None):
         sale_item = self.create_sale_item()
+        branch = branch or self.create_branch()
         item = ReturnedSaleItem(store=self.store,
                                 sale_item=sale_item)
-        rsale = ReturnedSale(store=self.store)
+        rsale = ReturnedSale(store=self.store, branch=branch)
         rsale.add_item(item)
 
     def test_return_with_credit(self):

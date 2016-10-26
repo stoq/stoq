@@ -171,7 +171,9 @@ model: Invoice<3>
   invoice_number: None
   invoice_type: u'out'
   key: None
+  mode: None
   operation_nature: u'Sale'
+  series: None
 
 model: Payment<4>
   base_value: <currency $383>

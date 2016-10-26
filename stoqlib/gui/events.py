@@ -365,3 +365,17 @@ class ClientSaleValidationEvent(Event):
      :param person: The person
         <stoqlib.domain.person.Person> object to extract the street number.
     """
+
+
+@public(since="1.12.0")
+class InvoiceSetupEvent(Event):
+    """
+     This event is triggered before an operation wizard commit to check
+     and/or setup the invoice data. If the return value is False, the commit is not
+     done, and the wizard should let the user fix the mistakes or do a rollback.
+     If it's True, the wizard can go on with the commit. If the event is not caught
+     or the callsite returns None, the wizard can go on with the commit too.
+
+     :rtype: bool or NoneType
+     :returns: A bool value representing the validity of the invoice data or None
+    """

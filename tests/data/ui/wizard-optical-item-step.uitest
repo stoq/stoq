@@ -93,7 +93,9 @@ model: Invoice<3>
   invoice_number: None
   invoice_type: u'out'
   key: None
+  mode: None
   operation_nature: u'Sale'
+  series: None
 
 model: SaleItem<4>
   average_cost: <currency $125>

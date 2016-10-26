@@ -72,7 +72,6 @@ class SaleImporter(CSVImporter):
                     cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
                     group=group,
                     store=store)
-        sale.invoice.invoice_number = int(data.coupon_id)
 
         total_price = 0
         for product in self.parse_multi(Product, data.product_list, store):

@@ -4,7 +4,7 @@ GtkVBox(details_vbox):
     ProxyLabel(kiwilabel4): 'Identifier:'
     ProxyLabel(identifier): '<span >08888</span>'
     ProxyLabel(invoice_number_lbl): 'Invoice number:'
-    ProxyLabel(invoice_number): '<span >1337</span>'
+    ProxyLabel(invoice_number): '<span ></span>'
     ProxyLabel(kiwilabel1): 'Date:'
     ProxyLabel(confirm_date): '<span >YYYY-MM-DD</span>'
     ProxyLabel(kiwilabel3): 'Branch:'

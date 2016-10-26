@@ -262,6 +262,9 @@ class PluggableWizard(GladeDelegate):
     def get_current_step(self):
         return self._current
 
+    def go_to_step(self, step):
+        self._change_step(step)
+
 
 class BaseWizardStep(WizardStep, GladeSlaveDelegate):
     """A wizard step base class definition"""
@@ -339,6 +342,14 @@ class BaseWizard(PluggableWizard, RunnableView):
                         "lost. Are you sure?"), gtk.RESPONSE_NO,
                       _("Cancel"), _("Don't cancel"))):
             return True
+
+        # Call cancel for every wizard step, since a cancel callback can
+        # exist for them or their slaves
+        step = self.get_current_step()
+        while step is not None:
+            if hasattr(step, 'cancel'):
+                step.cancel()
+            step = step.previous_step()
 
         logger.info('Canceling wizard: %s' % self.__class__.__name__)
         PluggableWizard.cancel(self)

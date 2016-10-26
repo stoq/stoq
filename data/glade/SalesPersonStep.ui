@@ -4,6 +4,7 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="SalesPersonStep">
+    <property name="can_focus">True</property>
     <property name="border_width">6</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
@@ -11,11 +12,13 @@
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">True</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkTable" id="data_table">
             <property name="visible">True</property>
+            <property name="can_focus">True</property>
             <property name="n_rows">4</property>
             <property name="n_columns">7</property>
             <property name="column_spacing">6</property>
@@ -23,6 +26,7 @@
             <child>
               <object class="ProxyLabel" id="salesperson_lbl">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Salesperson:</property>
                 <property name="data_type">unicode</property>
@@ -66,6 +70,7 @@
                 <child>
                   <object class="GtkImage" id="image2">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Add a new transporter</property>
                     <property name="stock">gtk-add</property>
                     <property name="icon-size">1</property>
@@ -82,50 +87,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="invoice_number_label">
+              <object class="GtkLabel" id="expire_label">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Invoice Number:</property>
-              </object>
-              <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxySpinButton" id="invoice_number">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="invisible_char">•</property>
-                <property name="xalign">1</property>
-                <property name="invisible_char_set">True</property>
-                <property name="progress_pulse_step">1</property>
-                <property name="primary_icon_activatable">True</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-                <property name="adjustment">adjustment1</property>
-                <property name="numeric">True</property>
-                <property name="data_type">int</property>
-                <property name="mandatory">True</property>
-                <property name="model_attribute">invoice_number</property>
+                <property name="label" translatable="yes">Expire:</property>
               </object>
               <packing>
                 <property name="left_attach">5</property>
                 <property name="right_attach">6</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_padding">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="expire_label">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Expire</property>
-              </object>
-              <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
                 <property name="x_options">GTK_FILL</property>
@@ -139,8 +108,8 @@
                 <property name="model_attribute">expire_date</property>
               </object>
               <packing>
-                <property name="left_attach">5</property>
-                <property name="right_attach">6</property>
+                <property name="left_attach">6</property>
+                <property name="right_attach">7</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
                 <property name="x_options">GTK_FILL</property>
@@ -148,9 +117,10 @@
             </child>
             <child>
               <object class="ProxyComboEntry" id="salesperson">
-                <property name="mandatory">True</property>
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="data_type">object</property>
+                <property name="mandatory">True</property>
                 <property name="model_attribute">salesperson</property>
               </object>
               <packing>
@@ -161,6 +131,7 @@
             <child>
               <object class="ProxyComboEntry" id="transporter">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="data_type">object</property>
                 <property name="model_attribute">transporter</property>
               </object>
@@ -180,11 +151,13 @@
               <packing>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyComboEntry" id="cfop">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="data_type">object</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">cfop</property>
@@ -206,6 +179,7 @@
                 <child>
                   <object class="GtkImage" id="image3">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Add a new C.F.O.P.</property>
                     <property name="stock">gtk-add</property>
                     <property name="icon-size">1</property>
@@ -228,10 +202,11 @@
                 <property name="label" translatable="yes">Client Category:</property>
               </object>
               <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
+                <property name="left_attach">5</property>
+                <property name="right_attach">6</property>
                 <property name="top_attach">2</property>
                 <property name="bottom_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -241,10 +216,11 @@
                 <property name="label" translatable="yes">Cost Center:</property>
               </object>
               <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
+                <property name="left_attach">5</property>
+                <property name="right_attach">6</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -255,8 +231,8 @@
                 <property name="model_attribute">client_category</property>
               </object>
               <packing>
-                <property name="left_attach">5</property>
-                <property name="right_attach">6</property>
+                <property name="left_attach">6</property>
+                <property name="right_attach">7</property>
                 <property name="top_attach">2</property>
                 <property name="bottom_attach">3</property>
               </packing>
@@ -264,12 +240,13 @@
             <child>
               <object class="ProxyComboBox" id="cost_center">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="data_type">object</property>
                 <property name="model_attribute">cost_center</property>
               </object>
               <packing>
-                <property name="left_attach">5</property>
-                <property name="right_attach">6</property>
+                <property name="left_attach">6</property>
+                <property name="right_attach">7</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
               </packing>
@@ -291,6 +268,21 @@
                 <property name="right_attach">4</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEventBox" id="invoice_number_holder">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">5</property>
+                <property name="right_attach">7</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options"/>
               </packing>
             </child>
             <child>
@@ -337,9 +329,11 @@
         <child>
           <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
+            <property name="can_focus">True</property>
             <child>
               <object class="GtkTable" id="summary_table">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="n_rows">3</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
@@ -347,6 +341,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel3">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">Subtotal:</property>
                     <property name="data_type">unicode</property>
@@ -356,6 +351,7 @@
                 <child>
                   <object class="ProxyLabel" id="subtotal_lbl">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">0.00</property>
                     <property name="justify">right</property>
@@ -370,6 +366,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel5">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">Total:</property>
                     <property name="data_type">unicode</property>
@@ -383,6 +380,7 @@
                 <child>
                   <object class="ProxyLabel" id="total_lbl">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">0.00</property>
                     <property name="justify">right</property>
@@ -400,6 +398,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel1">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">Already paid:</property>
                     <property name="data_type">unicode</property>
@@ -413,6 +412,7 @@
                 <child>
                   <object class="ProxyLabel" id="total_paid_lbl">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">0.00</property>
                     <property name="justify">right</property>
@@ -436,6 +436,7 @@
             <child>
               <object class="GtkHButtonBox" id="hbuttonbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <child>
                   <object class="GtkButton" id="observations_button">
                     <property name="label" translatable="yes">Observations...</property>
@@ -480,10 +481,12 @@
         <child>
           <object class="GtkHBox" id="total_box">
             <property name="visible">True</property>
+            <property name="can_focus">True</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkEventBox" id="cash_change_holder">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -499,6 +502,7 @@
                 <child>
                   <object class="GtkEventBox" id="discount_surcharge_slave">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                   </object>
                 </child>
                 <child type="label">
@@ -524,6 +528,7 @@
         <child>
           <object class="GtkEventBox" id="select_method_holder">
             <property name="visible">True</property>
+            <property name="can_focus">True</property>
           </object>
           <packing>
             <property name="expand">False</property>

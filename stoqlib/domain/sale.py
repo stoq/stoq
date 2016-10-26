@@ -858,7 +858,6 @@ class Sale(Domain):
         # Branch needs to be set before cfop, which triggers an
         # implicit flush.
         self.branch = kw.pop('branch', None)
-        self.invoice.branch = self.branch
         if not 'cfop' in kw:
             self.cfop = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 

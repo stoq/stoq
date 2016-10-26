@@ -702,7 +702,6 @@ class ExampleCreator(object):
             reason=reason,
             group=group,
             store=self.store)
-        stock_decrease.invoice.invoice_number = 1337
         return stock_decrease
 
     def create_city_location(self, city=None, state=None, country=None):

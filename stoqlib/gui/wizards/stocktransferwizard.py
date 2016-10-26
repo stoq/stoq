@@ -27,12 +27,10 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from storm.expr import And
 
 from stoqlib.api import api
-from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
@@ -44,7 +42,7 @@ from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialo
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.editors.transfereditor import TransferItemEditor
-from stoqlib.gui.events import StockTransferWizardFinishEvent
+from stoqlib.gui.events import StockTransferWizardFinishEvent, InvoiceSetupEvent
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.formatters import format_sellable_description
@@ -63,12 +61,10 @@ _ = stoqlib_gettext
 class StockTransferInitialStep(WizardEditorStep):
     gladefile = 'StockTransferInitialStep'
     model_type = TransferOrder
-    transfer_widgets = ['open_date',
-                        'destination_branch',
-                        'source_responsible',
-                        'comments']
-    invoice_widgets = ['invoice_number']
-    proxy_widgets = transfer_widgets + invoice_widgets
+    proxy_widgets = ['open_date',
+                     'destination_branch',
+                     'source_responsible',
+                     'comments']
 
     def __init__(self, wizard, store, model):
         self.branch = api.get_current_branch(store)
@@ -78,9 +74,7 @@ class StockTransferInitialStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.transfer_proxy = self.add_proxy(self.wizard.model, self.transfer_widgets)
-        self.invoice_proxy = self.add_proxy(self.wizard.model.invoice,
-                                            self.invoice_widgets)
+        self.proxy = self.add_proxy(self.wizard.model, self.proxy_widgets)
         # Force the user to select a branch, avoiding transfering to the wrong
         # branch by mistake
         self.destination_branch.update(None)
@@ -92,12 +86,6 @@ class StockTransferInitialStep(WizardEditorStep):
 
         employees = self.store.find(Employee)
         self.source_responsible.prefill(api.for_person_combo(employees))
-
-        self.invoice_number.set_property('mandatory', self._nfe_is_active)
-
-        if not self.model.invoice.invoice_number:
-            new_invoice_number = Invoice.get_next_invoice_number(self.store)
-            self.model.invoice.invoice_number = new_invoice_number
 
     def _validate_destination_branch(self):
         if not self._nfe_is_active:
@@ -127,16 +115,6 @@ class StockTransferInitialStep(WizardEditorStep):
 
     def validate_step(self):
         return self._validate_destination_branch()
-
-    def on_invoice_number__validate(self, widget, value):
-        if not 0 < value <= 999999999:
-            return ValidationError(
-                _("Invoice number must be between 1 and 999999999"))
-
-        invoice = self.model.invoice
-        branch = self.model.branch
-        if invoice.check_unique_invoice_number_by_branch(value, branch):
-            return ValidationError(_(u'Invoice number already used.'))
 
 
 class StockTransferItemStep(SellableItemStep):
@@ -271,8 +249,13 @@ class StockTransferWizard(BaseWizard):
             run_dialog(MissingItemsDialog, self, self.model, missing)
             return False
 
-        self.model.send()
+        invoice_ok = InvoiceSetupEvent.emit()
+        if invoice_ok is False:
+            # If there is any problem with the invoice, the event will display an error
+            # message and the dialog is kept open so the user can fix whatever is wrong.
+            return
 
+        self.model.send()
         self.retval = self.model
         self.close()
 

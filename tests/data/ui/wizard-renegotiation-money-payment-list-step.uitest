@@ -107,5 +107,7 @@ model: Invoice<5>
   invoice_number: None
   invoice_type: u'out'
   key: None
+  mode: None
   operation_nature: None
+  series: None
 

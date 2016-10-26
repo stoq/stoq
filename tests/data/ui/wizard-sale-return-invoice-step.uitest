@@ -11,8 +11,7 @@ GtkDialog(toplevel): title='Return Sale Order', hidden
                 GtkTable(step.table2, expand=True, fill=True):
                   GtkLabel(step.label3): 'Responsible:'
                   ProxyLabel(step.responsible): '<span >Administrator</span>'
-                  GtkLabel(step.label1): 'Invoice Number:'
-                  ProxyEntry(step.invoice_number): '1004'
+                  GtkEventBox(step.invoice_number_holder):
                   ProxyLabel(step.sale_total_lbl): 'Sale total:'
                   ProxyLabel(step.sale_total): '<span >$30.00</span>'
                   ProxyLabel(step.paid_total_lbl): 'Already paid:'

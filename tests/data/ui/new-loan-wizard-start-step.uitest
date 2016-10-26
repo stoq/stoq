@@ -13,14 +13,13 @@ GtkDialog(toplevel): title='New Loan Wizard', hidden
               item: 'Deivis Alexandre Junior'
               item: 'Maria Aparecida Ardana'
               item: 'Osvaldo Denadai Marin'
-            GtkLabel(step.invoice_number_label): 'Invoice Number:'
-            ProxySpinButton(step.invoice_number): '1004'
+            GtkEventBox(step.invoice_number_holder):
             GtkLabel(step.label1): 'Client:'
             GtkHBox():
               ProxyEntry(step.client, expand=True, fill=True): 'Client'
               GtkButton():
               GtkButton():
-            GtkLabel(step.expire_label): 'Expire'
+            GtkLabel(step.expire_label): 'Expire:'
             ProxyDateEntry(step.expire_date): date.today()
             GtkLabel(step.transporter_lbl): 'Removed By:'
             ProxyEntry(step.removed_by): ''

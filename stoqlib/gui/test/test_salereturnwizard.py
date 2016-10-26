@@ -25,7 +25,6 @@
 import mock
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.fiscal import Invoice
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salereturnwizard import (SaleReturnWizard,
                                                   SaleTradeWizard)
@@ -171,26 +170,6 @@ class TestSaleReturnWizard(GUITest):
         # XXX: changed because invoice_number is no longer mandatory
         self.assertSensitive(wizard, ['next_button'])
 
-        step.invoice_number.update(0)
-        self.assertInvalid(step, ['invoice_number'])
-        step.invoice_number.update(1000000000)
-        self.assertInvalid(step, ['invoice_number'])
-        self.assertNotSensitive(wizard, ['next_button'])
-
-        # Check if the invoice number already exists in Invoice table
-        invoice = Invoice(invoice_type=Invoice.TYPE_OUT, branch=main_branch)
-        invoice.invoice_number = 123
-        step.invoice_number.update(123)
-        self.assertInvalid(step, ['invoice_number'])
-        self.assertNotSensitive(wizard, ['next_button'])
-
-        step.invoice_number.update(1)
-        self.assertValid(step, ['invoice_number'])
-        invoice.branch = self.create_branch()
-        step.invoice_number.update(123)
-        self.assertValid(step, ['invoice_number'])
-        self.assertSensitive(wizard, ['next_button'])
-
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
     def test_sale_return_payment_step_not_paid(self, info):
         sale = self.create_sale()
@@ -328,8 +307,6 @@ class TestSaleTradeWizard(GUITest):
         # Go to details step
         self.click(wizard.next_button)
         step = wizard.get_current_step()
-        self.assertNotSensitive(wizard, ['next_button'])
-        step.invoice_number.update(41235)
         self.assertNotSensitive(wizard, ['next_button'])
         step.reason.update('Just because')
         self.assertSensitive(wizard, ['next_button'])

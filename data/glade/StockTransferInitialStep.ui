@@ -4,14 +4,17 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="StockTransferInitialStep">
+    <property name="can_focus">True</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">True</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
+            <property name="can_focus">True</property>
             <property name="border_width">6</property>
             <property name="n_rows">5</property>
             <property name="n_columns">4</property>
@@ -43,6 +46,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel6">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Comment:</property>
               </object>
@@ -53,39 +57,9 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyLabel" id="kiwilabel2">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Invoice number:</property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">3</property>
-                <property name="y_options">GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyEntry" id="invoice_number">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="invisible_char">•</property>
-                <property name="xalign">1</property>
-                <property name="invisible_char_set">True</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">int</property>
-                <property name="model_attribute">invoice_number</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-                <property name="y_options">GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Open date:</property>
                 <property name="model_attribute">kiwilabel1</property>
@@ -98,6 +72,7 @@
             <child>
               <object class="ProxyLabel" id="open_date">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
                 <property name="data_type">date</property>
@@ -112,6 +87,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel4">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Receiving branch:</property>
                 <property name="model_attribute">kiwilabel4</property>
@@ -128,6 +104,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Sending branch:</property>
                 <property name="model_attribute">kiwilabel3</property>
@@ -142,6 +119,7 @@
             <child>
               <object class="ProxyLabel" id="source_branch">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
                 <property name="data_type">unicode</property>
@@ -158,6 +136,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel5">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Sender:</property>
                 <property name="model_attribute">kiwilabel5</property>
@@ -172,6 +151,7 @@
             <child>
               <object class="ProxyComboEntry" id="source_responsible">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="spacing">2</property>
                 <property name="data_type">object</property>
                 <property name="mandatory">True</property>
@@ -188,6 +168,7 @@
             <child>
               <object class="ProxyComboEntry" id="destination_branch">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="spacing">2</property>
                 <property name="data_type">object</property>
                 <property name="mandatory">True</property>
@@ -198,6 +179,21 @@
                 <property name="right_attach">4</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+                <property name="y_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEventBox" id="invoice_number_holder">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">4</property>
+                <property name="x_options">GTK_FILL</property>
                 <property name="y_options">GTK_FILL</property>
               </packing>
             </child>

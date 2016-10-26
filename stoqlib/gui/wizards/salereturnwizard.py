@@ -28,13 +28,12 @@ import decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.datatypes import ValidationError, converter
+from kiwi.datatypes import converter
 from kiwi.ui.objectlist import Column
 from storm.expr import Ne
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_user, get_current_branch
-from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
@@ -43,12 +42,12 @@ from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
 from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
-                                SaleTradeWizardFinishEvent)
+                                SaleTradeWizardFinishEvent,
+                                InvoiceSetupEvent)
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
@@ -346,7 +345,7 @@ class SaleReturnItemsStep(SellableItemStep):
 class SaleReturnInvoiceStep(WizardEditorStep):
     gladefile = 'SaleReturnInvoiceStep'
     model_type = ReturnedSale
-    returned_sale_widgets = [
+    proxy_widgets = [
         'responsible',
         'reason',
         'sale_total',
@@ -354,8 +353,6 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         'returned_total',
         'total_amount_abs',
     ]
-    invoice_widgets = ['invoice_number']
-    proxy_widgets = returned_sale_widgets + invoice_widgets
 
     #
     #  WizardEditorStep
@@ -382,24 +379,14 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         return self.model.total_amount > 0
 
     def setup_proxies(self):
-        manager = get_plugin_manager()
-        nfe_is_active = manager.is_active('nfe')
-        self.invoice_number.set_property('mandatory', nfe_is_active)
-
-        # Set an initial invoice number.
-        if not self.model.invoice.invoice_number:
-            new_invoice_number = Invoice.get_next_invoice_number(self.store)
-            self.model.invoice.invoice_number = new_invoice_number
-
-        self.returned_sale_proxy = self.add_proxy(self.model, self.returned_sale_widgets)
-        self.invoice_proxy = self.add_proxy(self.model.invoice, self.invoice_widgets)
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     #
     #  Private
     #
 
     def _update_widgets(self):
-        self.returned_sale_proxy.update('total_amount_abs')
+        self.proxy.update('total_amount_abs')
 
         if self.model.total_amount < 0:
             self.total_amount_lbl.set_text(_("Overpaid:"))
@@ -424,15 +411,6 @@ class SaleReturnInvoiceStep(WizardEditorStep):
     #
     #  Callbacks
     #
-
-    def on_invoice_number__validate(self, widget, value):
-        if not 0 < value <= 999999999:
-            return ValidationError(_("Invoice number must be between "
-                                     "1 and 999999999"))
-        invoice = self.model.invoice
-        branch = self.model.branch
-        if invoice.check_unique_invoice_number_by_branch(value, branch):
-            return ValidationError(_("Invoice number already exists."))
 
     def on_credit_checkbutton__toggled(self, widget):
         self.wizard.credit = self.credit_checkbutton.read()
@@ -520,6 +498,12 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
     #
 
     def finish(self):
+        invoice_ok = InvoiceSetupEvent.emit()
+        if invoice_ok is False:
+            # If there is any problem with the invoice, the event will display an error
+            # message and the dialog is kept open so the user can fix whatever is wrong.
+            return
+
         for payment in self.model.group.payments:
             if payment.is_preview():
                 # Set payments created on SaleReturnPaymentStep as pending

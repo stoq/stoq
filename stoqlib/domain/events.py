@@ -436,3 +436,14 @@ class HasOpenCouponEvent(Event):
     """
     This event is emitted to check for opened coupon.
     """
+
+
+#
+# Fiscal events
+#
+
+@public(since="1.12.0")
+class InvoiceGetModeEvent(Event):
+    """
+    This event is emitted when a |invoice| is created to get the current mode
+    """

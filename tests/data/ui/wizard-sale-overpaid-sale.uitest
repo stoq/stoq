@@ -14,14 +14,13 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
               item: 'Maria Aparecida Ardana'
               item: 'Osvaldo Denadai Marin'
               item: 'SalesPerson', selected
-            GtkLabel(step.invoice_number_label): 'Invoice Number:'
-            ProxySpinButton(step.invoice_number): '1004'
+            GtkEventBox(step.invoice_number_holder):
             GtkLabel(step.label1): 'Client:'
             GtkHBox():
               ProxyEntry(step.client, expand=True, fill=True): ''
               GtkButton():
               GtkButton(): insensitive
-            GtkLabel(step.expire_label): 'Expire', hidden
+            GtkLabel(step.expire_label): 'Expire:', hidden
             ProxyDateEntry(step.expire_date): None, hidden
             GtkLabel(step.transporter_lbl): 'Transporter:'
             ProxyComboEntry(step.transporter):
@@ -116,7 +115,9 @@ model: Invoice<3>
   invoice_number: None
   invoice_type: u'out'
   key: None
+  mode: None
   operation_nature: None
+  series: None
 
 model: Payment<4>
   base_value: <currency $50>
