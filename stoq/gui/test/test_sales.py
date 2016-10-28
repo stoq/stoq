@@ -120,7 +120,7 @@ class TestSales(BaseGUITest):
         self.assertTrue(isinstance(invoice, SaleInvoice))
         self.assertEquals(printer, called_printer)
 
-        results[0].sale.invoice_number = None
+        results[0].sale.invoice.invoice_number = None
         InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
                      field_name=u'INVOICE_NUMBER',
                      store=self.store)

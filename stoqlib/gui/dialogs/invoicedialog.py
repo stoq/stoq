@@ -28,6 +28,7 @@ import gtk
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.invoice import InvoiceLayout, InvoicePrinter
+from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -85,7 +86,7 @@ class SaleInvoicePrinterDialog(BaseEditor):
     model_type = Sale
     model_name = _(u'Sale Invoice')
     gladefile = 'SaleInvoicePrinterDialog'
-    proxy_widgets = ('invoice_number', )
+    proxy_widgets = ['invoice_number']
     title = _(u'Sale Invoice Dialog')
     size = (250, 100)
 
@@ -97,14 +98,14 @@ class SaleInvoicePrinterDialog(BaseEditor):
     def _setup_widgets(self):
         self.main_dialog.ok_button.set_label(gtk.STOCK_PRINT)
 
-        if self.model.invoice_number is not None:
+        if self.model.invoice.invoice_number is not None:
             self.invoice_number.set_sensitive(False)
         else:
-            last_invoice_number = Sale.get_last_invoice_number(self.store) or 0
-            self.invoice_number.update(last_invoice_number + 1)
+            next_invoice_number = Invoice.get_next_invoice_number(self.store)
+            self.invoice_number.update(next_invoice_number)
 
     def setup_proxies(self):
-        self.add_proxy(self.model, SaleInvoicePrinterDialog.proxy_widgets)
+        self.add_proxy(self.model.invoice, SaleInvoicePrinterDialog.proxy_widgets)
 
     def on_confirm(self):
         invoice = SaleInvoice(self.model, self._printer.layout)

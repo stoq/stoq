@@ -82,9 +82,11 @@ _ = stoqlib_gettext
 class StartSaleQuoteStep(WizardEditorStep):
     gladefile = 'SalesPersonQuoteWizardStep'
     model_type = Sale
-    proxy_widgets = ['client', 'salesperson', 'expire_date',
-                     'operation_nature', 'client_category']
-    cfop_widgets = ('cfop', )
+    sale_widgets = ['client', 'salesperson', 'expire_date',
+                    'client_category']
+    invoice_widgets = ['operation_nature']
+    cfop_widgets = ['cfop']
+    proxy_widgets = sale_widgets + invoice_widgets + cfop_widgets
 
     def _setup_widgets(self):
         # Salesperson combo
@@ -152,8 +154,10 @@ class StartSaleQuoteStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    StartSaleQuoteStep.proxy_widgets)
+        self.sale_proxy = self.add_proxy(self.model,
+                                         StartSaleQuoteStep.sale_widgets)
+        self.invoice_proxy = self.add_proxy(self.model.invoice,
+                                            StartSaleQuoteStep.invoice_widgets)
         if sysparam.get_bool('ASK_SALES_CFOP'):
             self.add_proxy(self.model, StartSaleQuoteStep.cfop_widgets)
 
@@ -697,14 +701,15 @@ class SaleQuoteWizard(BaseWizard):
         user = api.get_current_user(store)
         salesperson = user.person.sales_person
 
-        return Sale(coupon_id=None,
+        sale = Sale(coupon_id=None,
                     status=Sale.STATUS_QUOTE,
                     salesperson=salesperson,
                     branch=api.get_current_branch(store),
                     group=PaymentGroup(store=store),
                     cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
-                    operation_nature=sysparam.get_string('DEFAULT_OPERATION_NATURE'),
                     store=store)
+        sale.invoice.operation_nature = sysparam.get_string('DEFAULT_OPERATION_NATURE')
+        return sale
 
     @public(since='1.8.0')
     def print_quote_details(self, quote, payments_created=False):

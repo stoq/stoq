@@ -31,9 +31,8 @@ model: Sale<2>
   confirm_date: None
   discount_value: <currency $ 0>
   expire_date: None
-  invoice_number: None
+  invoice_id: Invoice<5>
   open_date: datetime.today()
-  operation_nature: u''
   paid: False
   return_date: None
   service_invoice_number: None
@@ -73,4 +72,11 @@ model: Product<4>
   weight: Decimal('0')
   width: Decimal('0')
   yield_quantity: Decimal('1.000')
+
+model: Invoice<5>
+  cnf: None
+  invoice_number: None
+  invoice_type: u'out'
+  key: None
+  operation_nature: None
 

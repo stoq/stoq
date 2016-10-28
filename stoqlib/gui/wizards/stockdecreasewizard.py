@@ -70,14 +70,16 @@ _ = stoqlib_gettext
 class StartStockDecreaseStep(WizardEditorStep):
     gladefile = 'StartStockDecreaseStep'
     model_type = StockDecrease
-    proxy_widgets = ('confirm_date',
-                     'branch',
-                     'reason',
-                     'removed_by',
-                     'cfop',
-                     'cost_center',
-                     'person',
-                     'invoice_number')
+    stock_decrease_widgets = [
+        'confirm_date',
+        'branch',
+        'reason',
+        'removed_by',
+        'cfop',
+        'cost_center',
+        'person']
+    invoice_widgets = ['invoice_number']
+    proxy_widgets = stock_decrease_widgets + invoice_widgets
 
     def _fill_employee_combo(self):
         employess = self.store.find(Employee)
@@ -124,9 +126,9 @@ class StartStockDecreaseStep(WizardEditorStep):
         self.invoice_number.set_property('mandatory', nfe_is_active)
         self.person.set_property('mandatory', nfe_is_active)
 
-        if not self.model.invoice_number:
+        if not self.model.invoice.invoice_number:
             new_invoice_number = Invoice.get_next_invoice_number(self.store)
-            self.model.invoice_number = new_invoice_number
+            self.model.invoice.invoice_number = new_invoice_number
 
         if not sysparam.get_bool('CREATE_PAYMENTS_ON_STOCK_DECREASE'):
             self.create_payments.hide()
@@ -152,8 +154,10 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    self.proxy_widgets)
+        self.stock_decrease_proxy = self.add_proxy(self.model,
+                                                   self.stock_decrease_widgets)
+        self.invoice_proxy = self.add_proxy(self.model.invoice,
+                                            self.invoice_widgets)
 
     #
     # Callbacks

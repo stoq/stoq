@@ -145,7 +145,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
                 wo_item.quantity_decreased = 10
 
         self.check_wizard(wizard, 'wizard-optical-item-step',
-                          [sale, client] +
+                          [sale, client, sale.invoice] +
                           list(sale.get_items().order_by('te_id')))
 
         module = 'stoqlib.gui.events.SaleQuoteWizardFinishEvent.emit'

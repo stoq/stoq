@@ -73,9 +73,8 @@ model: Sale<1>
   confirm_date: None
   discount_value: <currency $ 0>
   expire_date: None
-  invoice_number: None
+  invoice_id: Invoice<3>
   open_date: datetime.today()
-  operation_nature: u'Sale'
   paid: False
   return_date: None
   service_invoice_number: None
@@ -89,16 +88,12 @@ model: Client<2>
   days_late: 0
   status: u'solvent'
 
-model: SaleItem<3>
-  average_cost: <currency $125>
-  base_price: <currency $10>
-  completion_date: None
-  estimated_fix_date: datetime.today()
-  notes: None
-  price: <currency $10>
-  quantity: Decimal('1.000')
-  quantity_decreased: Decimal('1.000')
-  sale_id: Sale<1>
+model: Invoice<3>
+  cnf: None
+  invoice_number: None
+  invoice_type: u'out'
+  key: None
+  operation_nature: u'Sale'
 
 model: SaleItem<4>
   average_cost: <currency $125>
@@ -108,7 +103,7 @@ model: SaleItem<4>
   notes: None
   price: <currency $10>
   quantity: Decimal('1.000')
-  quantity_decreased: Decimal('0.000')
+  quantity_decreased: Decimal('1.000')
   sale_id: Sale<1>
 
 model: SaleItem<5>
@@ -119,7 +114,7 @@ model: SaleItem<5>
   notes: None
   price: <currency $10>
   quantity: Decimal('1.000')
-  quantity_decreased: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>
 
 model: SaleItem<6>
@@ -130,10 +125,21 @@ model: SaleItem<6>
   notes: None
   price: <currency $10>
   quantity: Decimal('1.000')
-  quantity_decreased: Decimal('0.000')
+  quantity_decreased: Decimal('1.000')
   sale_id: Sale<1>
 
 model: SaleItem<7>
+  average_cost: <currency $125>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  quantity_decreased: Decimal('0.000')
+  sale_id: Sale<1>
+
+model: SaleItem<8>
   average_cost: <currency $125>
   base_price: <currency $10>
   completion_date: None
@@ -144,13 +150,13 @@ model: SaleItem<7>
   quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>
 
-model: SaleItem<8>
+model: SaleItem<9>
   average_cost: <currency $10>
   base_price: <currency $10>
   completion_date: None
   estimated_fix_date: datetime.today()
   notes: None
-  parent_item_id: SaleItem<7>
+  parent_item_id: SaleItem<8>
   price: <currency $2>
   quantity: Decimal('5.000')
   quantity_decreased: Decimal('5.000')

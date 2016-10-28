@@ -100,9 +100,8 @@ model: Sale<1>
   discount_value: <currency $ 0>
   expire_date: None
   group_id: PaymentGroup<2>
-  invoice_number: None
+  invoice_id: Invoice<3>
   open_date: datetime.today()
-  operation_nature: u''
   paid: False
   return_date: None
   service_invoice_number: None
@@ -112,7 +111,14 @@ model: Sale<1>
 
 model: PaymentGroup<2>
 
-model: Payment<3>
+model: Invoice<3>
+  cnf: None
+  invoice_number: None
+  invoice_type: u'out'
+  key: None
+  operation_nature: None
+
+model: Payment<4>
   base_value: <currency $50>
   bill_received: False
   cancel_date: None
@@ -130,7 +136,7 @@ model: Payment<3>
   status: u'paid'
   value: <currency $50>
 
-model: Payment<4>
+model: Payment<5>
   base_value: <currency $50>
   bill_received: False
   cancel_date: None
@@ -148,7 +154,7 @@ model: Payment<4>
   status: u'pending'
   value: <currency $50>
 
-model: Sellable<5>
+model: Sellable<6>
   barcode: u''
   base_price: <currency $100>
   code: u''
@@ -164,11 +170,11 @@ model: Sellable<5>
   price_last_updated: datetime.today()
   status: u'available'
 
-model: ProductStockItem<6>
+model: ProductStockItem<7>
   quantity: Decimal('100.000')
   stock_cost: <currency $ 0>
 
-model: SaleItem<7>
+model: SaleItem<8>
   average_cost: <currency $ 0>
   base_price: <currency $100>
   completion_date: None
@@ -178,5 +184,5 @@ model: SaleItem<7>
   quantity: Decimal('1.000')
   quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>
-  sellable_id: Sellable<5>
+  sellable_id: Sellable<6>
 

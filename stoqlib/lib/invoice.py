@@ -32,7 +32,7 @@ from kiwi.datatypes import ValidationError
 from stoqdrivers.enum import TaxType
 from stoqdrivers.escp import EscPPrinter
 
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.fiscal import Invoice
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
@@ -349,8 +349,7 @@ def validate_invoice_number(invoice_number, store):
         return ValidationError(
             _("Invoice number must be between 1 and 999999999"))
 
-    sale = store.find(Sale, invoice_number=invoice_number).one()
-    if sale is not None:
+    if not store.find(Invoice, invoice_number=invoice_number).is_empty():
         return ValidationError(_(u'Invoice number already used.'))
 
 
@@ -1118,7 +1117,7 @@ class InvoiceNumberField(InvoiceFieldDescription):
     length = 6
 
     def fetch(self, width, height):
-        return '%09d' % self.sale.invoice_number
+        return '%09d' % self.sale.invoice.invoice_number
 
 
 @_register_invoice_field

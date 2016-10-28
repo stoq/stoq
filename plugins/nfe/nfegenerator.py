@@ -231,7 +231,7 @@ class NFeGenerator(object):
         elif isinstance(self._order, ReturnedSale):
             tpnf = INVOICE_IN
 
-        nat_op = self._order.operation_nature or ''
+        nat_op = self._order.invoice.operation_nature or ''
 
         nfe_identification = NFeIdentification(cuf, branch_location, recipient_location,
                                                series, nnf, now,

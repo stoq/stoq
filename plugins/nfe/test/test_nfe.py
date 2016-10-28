@@ -156,7 +156,7 @@ class TestNfeGenerator(DomainTest):
 
     def _create_sale(self, invoice_number, due_date=None):
         sale = self.create_sale()
-        sale.invoice_number = invoice_number
+        sale.invoice.invoice_number = invoice_number
         sale.branch = get_current_branch(self.store)
         tax_types = cycle(['aliq', 'nt', 'outr'])
         # [0] - Description

@@ -346,15 +346,16 @@ class SaleReturnItemsStep(SellableItemStep):
 class SaleReturnInvoiceStep(WizardEditorStep):
     gladefile = 'SaleReturnInvoiceStep'
     model_type = ReturnedSale
-    proxy_widgets = [
+    returned_sale_widgets = [
         'responsible',
-        'invoice_number',
         'reason',
         'sale_total',
         'paid_total',
         'returned_total',
         'total_amount_abs',
     ]
+    invoice_widgets = ['invoice_number']
+    proxy_widgets = returned_sale_widgets + invoice_widgets
 
     #
     #  WizardEditorStep
@@ -386,18 +387,19 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         self.invoice_number.set_property('mandatory', nfe_is_active)
 
         # Set an initial invoice number.
-        if not self.model.invoice_number:
+        if not self.model.invoice.invoice_number:
             new_invoice_number = Invoice.get_next_invoice_number(self.store)
-            self.model.invoice_number = new_invoice_number
+            self.model.invoice.invoice_number = new_invoice_number
 
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.returned_sale_proxy = self.add_proxy(self.model, self.returned_sale_widgets)
+        self.invoice_proxy = self.add_proxy(self.model.invoice, self.invoice_widgets)
 
     #
     #  Private
     #
 
     def _update_widgets(self):
-        self.proxy.update('total_amount_abs')
+        self.returned_sale_proxy.update('total_amount_abs')
 
         if self.model.total_amount < 0:
             self.total_amount_lbl.set_text(_("Overpaid:"))

@@ -31,8 +31,8 @@ from kiwi.currency import currency
 from storm.references import Reference
 from zope.interface import implementer
 
-from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         PriceCol, QuantityCol, IdentifierCol,
+from stoqlib.database.properties import (UnicodeCol, DateTimeCol, PriceCol,
+                                         QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import Invoice
@@ -248,10 +248,6 @@ class StockDecrease(Domain):
 
     cfop = Reference(cfop_id, 'CfopData.id')
 
-    # FIXME: Duplicated from Invoice. Remove it
-    #: The invoice number of the stock decrease
-    invoice_number = IntCol()
-
     #: the payment group related to this stock decrease
     group_id = IdCol()
 
@@ -358,8 +354,7 @@ class StockDecrease(Domain):
 
         self.status = StockDecrease.STATUS_CONFIRMED
 
-        # Save the invoice number, operation_nature and branch in Invoice Table
-        self.invoice.invoice_number = self.invoice_number
+        # Save the operation_nature and branch in Invoice Table
         self.invoice.operation_nature = self.operation_nature
         self.invoice.branch = branch
 

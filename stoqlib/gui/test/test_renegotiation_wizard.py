@@ -46,7 +46,8 @@ class TestPaymentRenegotiationWizard(GUITest):
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, 'wizard-renegotiation-money-payment-list-step',
-                          [wizard.model, payment.group, payment, sale])
+                          [wizard.model, payment.group, payment, sale,
+                           sale.invoice])
 
     def test_store_credit(self):
         client = self.create_client()

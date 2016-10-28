@@ -263,13 +263,8 @@ class Invoice(Domain):
         :param store: a store
         :returns: an integer representing the last sale invoice number
         """
-        from stoqlib.domain.sale import Sale
         current_branch = get_current_branch(store)
         last = store.find(cls, branch=current_branch).max(cls.invoice_number)
-        # If the Invoice table is empty. Get the last invoice number saved
-        # in Sale table.
-        if last is None:
-            last = store.find(Sale, branch=current_branch).max(Sale.invoice_number)
         return last or 0
 
     def save_nfe_info(self, cnf, key):

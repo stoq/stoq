@@ -510,12 +510,12 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     """
     gladefile = 'SalesPersonStep'
     model_type = Sale
-    proxy_widgets = ('salesperson',
-                     'client',
-                     'transporter',
-                     'cost_center')
-
-    invoice_widgets = ('invoice_number', )
+    sale_widgets = ['salesperson',
+                    'client',
+                    'transporter',
+                    'cost_center']
+    invoice_widgets = ['invoice_number']
+    proxy_widgets = sale_widgets + invoice_widgets
     cfop_widgets = ('cfop', )
 
     def __init__(self, wizard, store, model, payment_group,
@@ -658,11 +658,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.invoice_number.set_adjustment(
             gtk.Adjustment(lower=1, upper=999999999, step_incr=1))
 
-        if not self.model.invoice_number:
+        if not self.model.invoice.invoice_number:
             new_invoice_number = Invoice.get_next_invoice_number(self.store)
             self.invoice_model.invoice_number = new_invoice_number
         else:
-            new_invoice_number = self.model.invoice_number
+            new_invoice_number = self.model.invoice.invoice_number
             self.invoice_model.invoice_number = new_invoice_number
             self.invoice_number.set_sensitive(False)
 
@@ -724,8 +724,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def setup_proxies(self):
         marker('Setting up proxies')
         self.setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    SalesPersonStep.proxy_widgets)
+        self.sale_proxy = self.add_proxy(self.model,
+                                         self.sale_widgets)
         self.invoice_proxy = self.add_proxy(self.invoice_model,
                                             self.invoice_widgets)
         if self.model.client:
@@ -948,7 +948,7 @@ class ConfirmSaleWizard(BaseWizard):
         while True:
             try:
                 self.store.savepoint('before_set_invoice_number')
-                self.model.invoice_number = invoice_number
+                self.model.invoice.invoice_number = invoice_number
                 # We need to flush the database here, or a possible collision
                 # of invoice_number will only be detected later on, when the
                 # execution flow is not in the try-except anymore.

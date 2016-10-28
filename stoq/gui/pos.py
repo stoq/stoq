@@ -958,8 +958,8 @@ class PosApp(ShellApp):
                     salesperson=salesperson,
                     group=group,
                     cfop_id=cfop_id,
-                    coupon_id=None,
-                    operation_nature=nature)
+                    coupon_id=None)
+        sale.invoice.operation_nature = nature
 
         if self._delivery:
             sale.client = store.fetch(self._delivery.client)

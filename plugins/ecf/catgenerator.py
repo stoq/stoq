@@ -203,7 +203,7 @@ class StoqlibCATGenerator(object):
                 continue
 
             # Sales cancelled right after being made dont have an invoice number
-            if returned_sales[0].invoice_number is not None:
+            if returned_sales[0].invoice.invoice_number is not None:
                 continue
 
             for payment in sale.payments:

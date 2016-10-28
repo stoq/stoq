@@ -20,7 +20,7 @@
       <tbody>
         <tr>
           <td>${_("Invoice number")}:</td>
-          <td>${ order.invoice_number if order.invoice_number else _("N/A") }</td>
+          <td>${ order.invoice.invoice_number if order.invoice.invoice_number else _("N/A") }</td>
           <td>${_("Status")}:</td>
           <td>${ order.status_str}</td>
         </tr>

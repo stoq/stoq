@@ -181,7 +181,7 @@ class SaleDetailsDialog(BaseEditor):
                 '* %s' % _("Items traded for this sale"),
                 _("Date: %s") % get_full_date(returned_sale.return_date),
                 _("Traded sale: %s") % traded_sale,
-                _("Invoice number: %s") % returned_sale.invoice_number,
+                _("Invoice number: %s") % returned_sale.invoice.invoice_number,
                 _("Reason: %s") % returned_sale.reason,
             ]
             notes.append('\n'.join(trade_notes))

@@ -67,12 +67,12 @@ class SaleImporter(CSVImporter):
         sale = Sale(client=client,
                     open_date=self.parse_date(data.open_date),
                     coupon_id=int(data.coupon_id),
-                    invoice_number=int(data.coupon_id),
                     salesperson=salesperson,
                     branch=branch,
                     cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
                     group=group,
                     store=store)
+        sale.invoice.invoice_number = int(data.coupon_id)
 
         total_price = 0
         for product in self.parse_multi(Product, data.product_list, store):

@@ -90,7 +90,7 @@ class TestSaleQuoteWizard(GUITest):
             self.assertSensitive(wizard, ['next_button'])
             sale = wizard.model
             self.check_wizard(wizard, 'wizard-sale-quote-sale-quote-item-step',
-                              [sale, client] + list(sale.get_items()) + [sellable])
+                              [sale, client, sale.invoice] + list(sale.get_items()) + [sellable])
 
             self.click(wizard.next_button)
             self.check_wizard(wizard, 'wizard-sale-quote-sale-payment-step')

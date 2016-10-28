@@ -62,7 +62,7 @@ class TestMissingItemsDialog(GUITest):
 
         storable = dialog.retval[0].storable
         self.check_dialog(dialog, 'test-confirm-sale-missing-dialog-confirm',
-                          [storable, sale, sale_item, product])
+                          [storable, sale, sale_item, product, sale.invoice])
 
     @mock.patch('stoqlib.gui.dialogs.missingitemsdialog.info')
     @mock.patch('stoqlib.gui.dialogs.missingitemsdialog.api.new_store')

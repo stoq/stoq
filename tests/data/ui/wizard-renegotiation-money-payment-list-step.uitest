@@ -93,13 +93,19 @@ model: Sale<4>
   discount_value: <currency $ 0>
   expire_date: None
   group_id: PaymentGroup<2>
-  invoice_number: None
+  invoice_id: Invoice<5>
   open_date: datetime.today()
-  operation_nature: u''
   paid: False
   return_date: None
   service_invoice_number: None
   status: u'renegotiated'
   surcharge_value: <currency $ 0>
   total_amount: <currency $ 0>
+
+model: Invoice<5>
+  cnf: None
+  invoice_number: None
+  invoice_type: u'out'
+  key: None
+  operation_nature: None
 

@@ -54,15 +54,16 @@ class TransferOrderDetailsDialog(BaseEditor):
     model_type = TransferOrder
     report_class = TransferOrderReceipt
     gladefile = "TransferOrderDetails"
-    proxy_widgets = ('open_date',
-                     'receival_date',
-                     'close_date_lbl',
-                     'source_branch_name',
-                     'destination_branch_name',
-                     'source_responsible_name',
-                     'destination_responsible_name',
-                     'invoice_number',
-                     'comments')
+    transfer_widgets = ['open_date',
+                        'receival_date',
+                        'close_date_lbl',
+                        'source_branch_name',
+                        'destination_branch_name',
+                        'source_responsible_name',
+                        'destination_responsible_name',
+                        'comments']
+    invoice_widgets = ['invoice_number']
+    proxy_widgets = transfer_widgets + invoice_widgets
 
     def __init__(self, store, model):
         BaseEditor.__init__(self, store, model)
@@ -123,7 +124,8 @@ class TransferOrderDetailsDialog(BaseEditor):
             self.receival_date.set_property('model-attribute', 'cancel_date')
         elif self.model.status == TransferOrder.STATUS_RECEIVED:
             self.receival_date.set_property('model-attribute', 'receival_date')
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.transfer_proxy = self.add_proxy(self.model, self.transfer_widgets)
+        self.invoice_proxy = self.add_proxy(self.model.invoice, self.invoice_widgets)
 
     def on_receive_button__clicked(self, event):
         assert self.model.status == self.model.STATUS_SENT
@@ -134,8 +136,8 @@ class TransferOrderDetailsDialog(BaseEditor):
             self.model.receive(responsible)
             self.store.commit(close=False)
             self.receival_date.set_property('model-attribute', 'receival_date')
-            self.proxy.update_many(['destination_responsible_name',
-                                    'receival_date'])
+            self.transfer_proxy.update_many(['destination_responsible_name',
+                                             'receival_date'])
 
         self._setup_status()
 
@@ -146,8 +148,8 @@ class TransferOrderDetailsDialog(BaseEditor):
             self.model.cancel(responsible)
             self.store.commit(close=False)
             self.receival_date.set_property('model-attribute', 'cancel_date')
-            self.proxy.update_many(['destination_responsible_name',
-                                    'receival_date'])
+            self.transfer_proxy.update_many(['destination_responsible_name',
+                                             'receival_date'])
         self.setup_proxies()
         self._setup_status()
     #

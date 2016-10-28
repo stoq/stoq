@@ -274,7 +274,8 @@ class DomainTest(unittest.TestCase, ExampleCreator):
 
     def collect_sale_models(self, sale):
         models = [sale,
-                  sale.group]
+                  sale.group,
+                  sale.invoice]
         models.extend(sale.payments)
         branch = get_current_branch(self.store)
         for item in sorted(sale.get_items(),

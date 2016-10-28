@@ -692,16 +692,18 @@ class ExampleCreator(object):
 
         employee = self.create_employee()
         cfop = self.create_cfop_data()
-        return StockDecrease(responsible=user or get_current_user(self.store),
-                             removed_by=employee,
-                             branch=branch or get_current_branch(self.store),
-                             person=destination or self.create_person(),
-                             status=StockDecrease.STATUS_INITIAL,
-                             cfop=cfop,
-                             reason=reason,
-                             invoice_number=1337,
-                             group=group,
-                             store=self.store)
+        stock_decrease = StockDecrease(
+            responsible=user or get_current_user(self.store),
+            removed_by=employee,
+            branch=branch or get_current_branch(self.store),
+            person=destination or self.create_person(),
+            status=StockDecrease.STATUS_INITIAL,
+            cfop=cfop,
+            reason=reason,
+            group=group,
+            store=self.store)
+        stock_decrease.invoice.invoice_number = 1337
+        return stock_decrease
 
     def create_city_location(self, city=None, state=None, country=None):
         from stoqlib.domain.address import CityLocation

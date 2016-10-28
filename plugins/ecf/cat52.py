@@ -333,7 +333,7 @@ class CATFile(object):
         if sale.return_date:
             # Sales returned right after being emitted in the ECF dont have an
             # invoice number, and they should not get this far.
-            invoice_number = returned_sale.invoice_number
+            invoice_number = returned_sale.invoice.invoice_number
             assert invoice_number is None, invoice_number
             returned = 'S'
             returned_value = payment.value

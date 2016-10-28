@@ -100,9 +100,8 @@ model: Sale<1>
   discount_value: <currency $ 0>
   expire_date: None
   group_id: PaymentGroup<2>
-  invoice_number: 1004
+  invoice_id: Invoice<3>
   open_date: datetime.today()
-  operation_nature: u''
   paid: False
   return_date: None
   service_invoice_number: None
@@ -112,7 +111,14 @@ model: Sale<1>
 
 model: PaymentGroup<2>
 
-model: Sellable<3>
+model: Invoice<3>
+  cnf: None
+  invoice_number: 1004
+  invoice_type: u'out'
+  key: None
+  operation_nature: None
+
+model: Sellable<4>
   barcode: u''
   base_price: <currency $10>
   code: u''
@@ -128,11 +134,11 @@ model: Sellable<3>
   price_last_updated: datetime.today()
   status: u'available'
 
-model: ProductStockItem<4>
+model: ProductStockItem<5>
   quantity: Decimal('100.000')
   stock_cost: <currency $ 0>
 
-model: SaleItem<5>
+model: SaleItem<6>
   average_cost: <currency $ 0>
   base_price: <currency $10>
   completion_date: None
@@ -142,5 +148,5 @@ model: SaleItem<5>
   quantity: Decimal('1.000')
   quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>
-  sellable_id: Sellable<3>
+  sellable_id: Sellable<4>
 

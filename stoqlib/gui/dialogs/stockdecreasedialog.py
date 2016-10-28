@@ -49,14 +49,15 @@ class StockDecreaseDetailsDialog(BaseEditor):
     model_type = StockDecrease
     report_class = StockDecreaseReceipt
     gladefile = "StockDecreaseDetails"
-    proxy_widgets = ('identifier',
-                     'confirm_date',
-                     'branch_name',
-                     'responsible_name',
-                     'removed_by_name',
-                     'cfop_description',
-                     'reason',
-                     'invoice_number')
+    decrease_widgets = ['identifier',
+                        'confirm_date',
+                        'branch_name',
+                        'responsible_name',
+                        'removed_by_name',
+                        'cfop_description',
+                        'reason']
+    invoice_widgets = ['invoice_number']
+    proxy_widgets = decrease_widgets + invoice_widgets
 
     def __init__(self, store, model):
         BaseEditor.__init__(self, store, model)
@@ -119,7 +120,8 @@ class StockDecreaseDetailsDialog(BaseEditor):
     #
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.decrease_proxy = self.add_proxy(self.model, self.decrease_widgets)
+        self.invoice_proxy = self.add_proxy(self.model.invoice, self.invoice_widgets)
 
     #
     # Callbacks

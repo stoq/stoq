@@ -72,9 +72,8 @@ model: Sale<1>
   confirm_date: None
   discount_value: <currency $ 0>
   expire_date: None
-  invoice_number: None
+  invoice_id: Invoice<3>
   open_date: datetime.today()
-  operation_nature: u'Sale'
   paid: False
   return_date: None
   service_invoice_number: None
@@ -88,7 +87,14 @@ model: Client<2>
   days_late: 0
   status: u'solvent'
 
-model: SaleItem<3>
+model: Invoice<3>
+  cnf: None
+  invoice_number: None
+  invoice_type: u'out'
+  key: None
+  operation_nature: u'Sale'
+
+model: SaleItem<4>
   average_cost: <currency $125>
   base_price: <currency $10>
   completion_date: None
@@ -98,9 +104,9 @@ model: SaleItem<3>
   quantity: Decimal('2.000')
   quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>
-  sellable_id: Sellable<4>
+  sellable_id: Sellable<5>
 
-model: Sellable<4>
+model: Sellable<5>
   barcode: u'12345678'
   base_price: <currency $10>
   code: u''

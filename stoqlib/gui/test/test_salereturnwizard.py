@@ -202,7 +202,7 @@ class TestSaleReturnWizard(GUITest):
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.reason = u'reason'
-        returned_sale.invoice_number = 1
+        returned_sale.invoice.invoice_number = 1
         list(returned_sale.returned_items)[0].quantity = 1
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
@@ -233,7 +233,7 @@ class TestSaleReturnWizard(GUITest):
         payments[0].pay()
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.reason = u'reason'
-        returned_sale.invoice_number = 1
+        returned_sale.invoice.invoice_number = 1
         list(returned_sale.returned_items)[0].quantity = 1
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
@@ -260,7 +260,7 @@ class TestSaleReturnWizard(GUITest):
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.invoice_number = 123456
+        returned_sale.invoice.invoice_number = 123456
         returned_sale.reason = u"Reason"
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
@@ -284,7 +284,7 @@ class TestSaleReturnWizard(GUITest):
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.invoice_number = 123456
+        returned_sale.invoice.invoice_number = 123456
         returned_sale.reason = u"Reason"
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)

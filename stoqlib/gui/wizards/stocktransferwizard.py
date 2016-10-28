@@ -63,11 +63,12 @@ _ = stoqlib_gettext
 class StockTransferInitialStep(WizardEditorStep):
     gladefile = 'StockTransferInitialStep'
     model_type = TransferOrder
-    proxy_widgets = ['open_date',
-                     'destination_branch',
-                     'source_responsible',
-                     'invoice_number',
-                     'comments']
+    transfer_widgets = ['open_date',
+                        'destination_branch',
+                        'source_responsible',
+                        'comments']
+    invoice_widgets = ['invoice_number']
+    proxy_widgets = transfer_widgets + invoice_widgets
 
     def __init__(self, wizard, store, model):
         self.branch = api.get_current_branch(store)
@@ -77,7 +78,9 @@ class StockTransferInitialStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.wizard.model, self.proxy_widgets)
+        self.transfer_proxy = self.add_proxy(self.wizard.model, self.transfer_widgets)
+        self.invoice_proxy = self.add_proxy(self.wizard.model.invoice,
+                                            self.invoice_widgets)
         # Force the user to select a branch, avoiding transfering to the wrong
         # branch by mistake
         self.destination_branch.update(None)
@@ -92,10 +95,9 @@ class StockTransferInitialStep(WizardEditorStep):
 
         self.invoice_number.set_property('mandatory', self._nfe_is_active)
 
-        # Set an initial invoice number to TransferOrder and Invoice
-        if not self.model.invoice_number:
+        if not self.model.invoice.invoice_number:
             new_invoice_number = Invoice.get_next_invoice_number(self.store)
-            self.model.invoice_number = new_invoice_number
+            self.model.invoice.invoice_number = new_invoice_number
 
     def _validate_destination_branch(self):
         if not self._nfe_is_active:

@@ -35,7 +35,7 @@ from zope.interface import implementer
 
 from stoqlib.database.expr import NullIf
 from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
-                                         IntCol, PriceCol, QuantityCol,
+                                         PriceCol, QuantityCol,
                                          UnicodeCol, EnumCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
@@ -244,9 +244,6 @@ class TransferOrder(Domain):
     #: The |employee| responsible for cancel the transfer
     cancel_responsible = Reference(cancel_responsible_id, 'Employee.id')
 
-    #: The invoice number of the transfer
-    invoice_number = IntCol()
-
     #: Comments of a transfer
     comments = UnicodeCol()
 
@@ -389,8 +386,7 @@ class TransferOrder(Domain):
         for item in self.get_items():
             item.send()
 
-        # Save invoice number, operation_nature and branch in Invoice table.
-        self.invoice.invoice_number = self.invoice_number
+        # Save the operation nature and branch in Invoice table.
         self.invoice.operation_nature = self.operation_nature
         self.invoice.branch = self.branch
 

@@ -872,7 +872,7 @@ class BillReport(object):
 
         sale = payment.group.sale
         if sale:
-            invoice_number = sale.invoice_number
+            invoice_number = sale.invoice.invoice_number
         else:
             invoice_number = payment.identifier
 

@@ -33,7 +33,7 @@ from storm.expr import And, Join, Eq
 from zope.interface import implementer
 
 from stoqlib.api import api
-from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
+from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_branch
@@ -305,10 +305,6 @@ class ReturnedSale(Domain):
     # When this returned sale was undone
     undo_date = DateTimeCol(default=None)
 
-    # FIXME: Duplicated from Invoice. Remove it
-    #: the invoice number for this returning
-    invoice_number = IntCol(default=None)
-
     #: the reason why this return was made
     reason = UnicodeCol(default=u'')
 
@@ -572,8 +568,7 @@ class ReturnedSale(Domain):
 
         self.sale.return_(self)
 
-        # Save invoice number, operation_nature and branch in Invoice table.
-        self.invoice.invoice_number = self.invoice_number
+        # Save operation_nature and branch in Invoice table.
         self.invoice.operation_nature = self.operation_nature
         self.invoice.branch = self.branch
 
@@ -738,7 +733,7 @@ class ReturnedSale(Domain):
         # we should be reverting the exact tax for each returned item.
         returned_percentage = self._get_returned_percentage()
         entry.reverse_entry(
-            self.invoice_number,
+            self.invoice.invoice_number,
             icms_value=entry.icms_value * returned_percentage,
             iss_value=entry.iss_value * returned_percentage,
             ipi_value=entry.ipi_value * returned_percentage)

@@ -384,7 +384,7 @@ class SalesApp(ShellApp):
         assert printer.layout
 
         invoice = SaleInvoice(sale, printer.layout)
-        if not invoice.has_invoice_number() or sale.invoice_number:
+        if not invoice.has_invoice_number() or sale.invoice.invoice_number:
             print_sale_invoice(invoice, printer)
         else:
             store = api.new_store()

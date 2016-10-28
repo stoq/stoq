@@ -36,7 +36,7 @@ from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.costcenter import CostCenterEntry
-from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.fiscal import CfopData, Invoice
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, Supplier, Company, LoginUser,
                                    Branch, Client, Employee, Transporter,
@@ -1206,7 +1206,7 @@ class ReturnedSalesView(Viewable):
     identifier_str = Cast(ReturnedSale.identifier, 'text')
     return_date = ReturnedSale.return_date
     reason = ReturnedSale.reason
-    invoice_number = ReturnedSale.invoice_number
+    invoice_number = Invoice.invoice_number
     receiving_date = ReturnedSale.confirm_date
     receiving_responsible = ReturnedSale.confirm_responsible_id
     status = ReturnedSale.status
@@ -1226,6 +1226,7 @@ class ReturnedSalesView(Viewable):
         Join(Branch, Branch.id == ReturnedSale.branch_id),
         Join(PersonBranch, PersonBranch.id == Branch.person_id),
         Join(Company, Company.person_id == PersonBranch.id),
+        LeftJoin(Invoice, Invoice.id == ReturnedSale.invoice_id),
         LeftJoin(Client, Client.id == Sale.client_id),
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
     ]
