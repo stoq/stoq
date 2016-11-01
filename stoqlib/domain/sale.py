@@ -1720,6 +1720,13 @@ class Sale(Domain):
             return first_comment.comment
         return u''
 
+    def get_delivery_item(self):
+        delivery_service_id = sysparam.get_object_id('DELIVERY_SERVICE')
+        for item in self.get_items():
+            if item.sellable.id == delivery_service_id:
+                return item
+        return None
+
     #
     # Properties
     #
