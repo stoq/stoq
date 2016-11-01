@@ -1871,6 +1871,16 @@ class TestSale(DomainTest):
         self.assertEquals(sale4.get_client_relative_location(),
                           ClientRelativeLocation.SAME_STATE)
 
+    def test_get_delivery_item(self):
+        sale = self.create_sale()
+        prod = self.create_product()
+        delivery_service = self.create_service()
+        sale.add_sellable(prod.sellable)
+        with self.sysparam(DELIVERY_SERVICE=delivery_service):
+            self.assertIsNone(sale.get_delivery_item())
+            delivery_item = sale.add_sellable(delivery_service.sellable)
+            self.assertEquals(sale.get_delivery_item(), delivery_item)
+
 
 class TestSaleToken(DomainTest):
     def test_status_change(self):
