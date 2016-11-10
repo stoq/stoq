@@ -257,11 +257,6 @@ class TestLoan(DomainTest):
         loan = self.create_loan(client=client)
         self.assertEquals(loan.recipient, client.person)
 
-    def test_invoice_number(self):
-        # FIXME: Check using the invoice number saved in new database table.
-        loan = self.create_loan()
-        self.assertEquals(loan.invoice_number, 1)
-
     def test_operation_nature(self):
         # FIXME: Check using the operation_nature that will be saved in new field.
         loan = self.create_loan()

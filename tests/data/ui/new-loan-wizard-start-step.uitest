@@ -13,8 +13,8 @@ GtkDialog(toplevel): title='New Loan Wizard', hidden
               item: 'Deivis Alexandre Junior'
               item: 'Maria Aparecida Ardana'
               item: 'Osvaldo Denadai Marin'
-            GtkLabel(step.invoice_number_label): 'Invoice Number:', hidden
-            ProxySpinButton(step.invoice_number): '', hidden
+            GtkLabel(step.invoice_number_label): 'Invoice Number:'
+            ProxySpinButton(step.invoice_number): '1004'
             GtkLabel(step.label1): 'Client:'
             GtkHBox():
               ProxyEntry(step.client, expand=True, fill=True): 'Client'

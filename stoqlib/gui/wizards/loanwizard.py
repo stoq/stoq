@@ -36,6 +36,7 @@ from kiwi.ui.objectlist import Column
 from storm.expr import And, Or, Eq
 
 from stoqlib.api import api
+from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.person import LoginUser, ClientCategory
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
@@ -77,17 +78,15 @@ _ = stoqlib_gettext
 class StartNewLoanStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Loan
-    proxy_widgets = ['client', 'salesperson', 'expire_date',
-                     'client_category']
+    loan_widgets = ['client', 'salesperson', 'expire_date',
+                    'client_category']
+    invoice_widgets = ['invoice_number']
+    proxy_widgets = loan_widgets + invoice_widgets
 
     def _setup_widgets(self):
         # Hide total and subtotal
         self.summary_table.hide()
         self.total_box.hide()
-
-        # Hide invoice number details
-        self.invoice_number_label.hide()
-        self.invoice_number.hide()
 
         # Hide cost center combobox
         self.cost_center_lbl.hide()
@@ -121,6 +120,10 @@ class StartNewLoanStep(WizardEditorStep):
             self.proxy_widgets.append('removed_by')
         self.removed_by.show()
         self._replace_widget(self.transporter, self.removed_by)
+
+        if not self.model.invoice.invoice_number:
+            new_invoice_number = Invoice.get_next_invoice_number(self.store)
+            self.model.invoice.invoice_number = new_invoice_number
 
     def _setup_clients_widget(self):
         self.client.mandatory = True
@@ -160,8 +163,10 @@ class StartNewLoanStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    StartNewLoanStep.proxy_widgets)
+        self.loan_proxy = self.add_proxy(self.model,
+                                         StartNewLoanStep.proxy_widgets)
+        self.invoice_proxy = self.add_proxy(self.model.invoice,
+                                            StartNewLoanStep.invoice_widgets)
 
     #
     #   Callbacks
@@ -181,6 +186,16 @@ class StartNewLoanStep(WizardEditorStep):
     def on_observations_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
                    title=_("Additional Information"))
+
+    def on_invoice_number__validate(self, widget, value):
+        if not 0 < value <= 999999999:
+            return ValidationError(
+                _(u"Invoice number must be between 1 and 999999999"))
+
+        invoice = self.model.invoice
+        branch = self.model.branch
+        if invoice.check_unique_invoice_number_by_branch(value, branch):
+            return ValidationError(_(u"Invoice number already used."))
 
 
 class LoanItemStep(SaleQuoteItemStep):
@@ -471,6 +486,7 @@ class NewLoanWizard(BaseWizard):
             run_dialog(MissingItemsDialog, self, self.model, missing)
             return False
 
+        self.model.confirm()
         self.model.sync_stock()
         self.retval = self.model
         self.close()
