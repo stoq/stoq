@@ -2245,26 +2245,21 @@ class TestSaleItem(DomainTest):
         sale_item = self.create_sale_item(sale)
         self.assertEquals(sale_item.parent, sale)
 
-    def test_nfe_cfop_code(self):
+    def test_cfop_code(self):
         item = self.create_sale_item()
         client = self.create_client()
         self.create_address(person=client.person)
         item.sale.client = client
         item.sale.coupon_id = 912839712
 
-        # Test if branch address isn't the same of client
-        self.assertEquals(item.nfe_cfop_code, u'6929')
-
-        # Test if branch address is the same of client
-        item.sale.branch.person = client.person
-        self.assertEquals(item.nfe_cfop_code, u'5929')
+        self.assertEquals(item.cfop_code, u'5929')
 
         # Test without sale coupon
         item.sale.coupon_id = None
-        cfop_code = item.nfe_cfop_code
+        cfop_code = item.cfop_code
 
         item.cfop = None
-        self.assertEquals(item.nfe_cfop_code, cfop_code)
+        self.assertEquals(item.cfop_code, cfop_code)
 
     def test_item_discount(self):
         item = self.create_sale_item()

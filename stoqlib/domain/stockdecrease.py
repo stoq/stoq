@@ -149,7 +149,7 @@ class StockDecreaseItem(Domain):
         return self.cost
 
     @property
-    def nfe_cfop_code(self):
+    def cfop_code(self):
         cfop = self.stock_decrease.cfop.code
         return cfop.replace('.', '')
 

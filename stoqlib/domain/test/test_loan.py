@@ -409,14 +409,6 @@ class TestLoanItem(DomainTest):
         self.assertEquals(loan_item.icms_info, None)
         self.assertEquals(loan_item.ipi_info, None)
 
-    def test_nfe_cfop_code(self):
+    def test_cfop_code(self):
         loan_item = self.create_loan_item()
-        client = self.create_client()
-        loan_item.loan.client = client
-        self.create_address(person=client.person)
-
-        # Branch address isn't the same of client
-        self.assertEquals(loan_item.nfe_cfop_code, u'6917')
-        # Branch address is the same of client
-        loan_item.loan.branch.person = client.person
-        self.assertEquals(loan_item.nfe_cfop_code, u'5917')
+        self.assertEquals(loan_item.cfop_code, u'5917')

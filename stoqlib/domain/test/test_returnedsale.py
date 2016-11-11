@@ -402,7 +402,12 @@ class TestReturnedSale(DomainTest):
         returned_sale = self.create_returned_sale(sale2)
         self.assertEquals(returned_sale.recipient, client.person)
 
-    def test_nfe_cfop_code(self):
+        # without a sale (only new sale)
+        returned_sale = self.create_trade()
+        returned_sale.new_sale.client = client
+        self.assertEquals(returned_sale.recipient, client.person)
+
+    def test_cfop_code(self):
         # FIXME: Check using the operation_nature that will be saved in new field.
         returned_sale = self.create_returned_sale()
         self.assertEquals(returned_sale.operation_nature, u'Sale Return')
@@ -632,15 +637,10 @@ class TestReturnedSaleItem(DomainTest):
         returned_item = self.create_returned_sale_item(returned_sale)
         self.assertEquals(returned_item.parent, returned_sale)
 
-    def test_nfe_cfop_code(self):
+    def test_cfop_code(self):
         client = self.create_client()
-        self.create_address(person=client.person)
 
         sale = self.create_sale(client=client)
         returned_sale = self.create_returned_sale(sale)
         returned_sale_item = self.create_returned_sale_item(returned_sale)
-        # Branch address isn't the same of client
-        self.assertEquals(returned_sale_item.nfe_cfop_code, u'2202')
-        #Branch address is the same of client
-        returned_sale.branch.person = client.person
-        self.assertEquals(returned_sale_item.nfe_cfop_code, u'1202')
+        self.assertEquals(returned_sale_item.cfop_code, u'1202')
