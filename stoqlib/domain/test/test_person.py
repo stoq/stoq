@@ -58,7 +58,7 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.enums import LatePaymentPolicy
+from stoqlib.enums import LatePaymentPolicy, RelativeLocation
 from stoqlib.exceptions import SellError, LoginError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
 from stoqlib.database.runtime import get_current_branch
@@ -220,6 +220,31 @@ class TestPerson(DomainTest):
         company.cnpj = u'57.310.832/0001-21'
         self.assertEquals(person.get_by_document(self.store, company.cnpj),
                           company.person)
+
+    def test_get_relative_location(self):
+        sao_carlos = self.create_city_location(city=u'São Carlos', state=u'SP',
+                                               country=u'Brazil')
+        porto_alegre = self.create_city_location(city=u'Porto Alegre',
+                                                 state=u'RS', country=u'Brazil')
+        germany = self.create_city_location(country=u'Germany')
+
+        other = self.create_person()
+        self.create_address(person=other, city_location=sao_carlos)
+
+        p1 = self.create_person()
+        self.create_address(person=p1, city_location=sao_carlos)
+        self.assertEquals(p1.get_relative_location(other),
+                          RelativeLocation.SAME_STATE)
+
+        p2 = self.create_person()
+        self.create_address(person=p2, city_location=porto_alegre)
+        self.assertEquals(p2.get_relative_location(other),
+                          RelativeLocation.OTHER_STATE)
+
+        p3 = self.create_person()
+        self.create_address(person=p3, city_location=germany)
+        self.assertEquals(p3.get_relative_location(other),
+                          RelativeLocation.OTHER_COUNTRY)
 
 
 class _PersonFacetTest(object):

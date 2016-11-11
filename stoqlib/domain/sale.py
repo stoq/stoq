@@ -72,7 +72,6 @@ from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import check_tax_info_presence, InvoiceItemIpi
-from stoqlib.enums import ClientRelativeLocation
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
@@ -938,22 +937,6 @@ class Sale(Domain):
         # (note: this is not the serial number)
         return Settable(number=u'',
                         coo=self.coupon_id)
-
-    def get_client_relative_location(self):
-        if self.client:
-            issuer_location = self.branch.person.get_main_address().city_location
-            client_location = self.client.person.get_main_address().city_location
-
-            if issuer_location.state == client_location.state:
-                return ClientRelativeLocation.SAME_STATE
-            if issuer_location.country != client_location.country:
-                return ClientRelativeLocation.OTHER_COUNTRY
-            else:
-                return ClientRelativeLocation.OTHER_STATE
-        else:
-            # If there is no client, presume its internal operation (between the
-            # same State)
-            return ClientRelativeLocation.SAME_STATE
 
     # Status
 

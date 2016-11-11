@@ -82,7 +82,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.profile import UserProfile
-from stoqlib.enums import LatePaymentPolicy
+from stoqlib.enums import LatePaymentPolicy, RelativeLocation
 from stoqlib.exceptions import DatabaseInconsistency, LoginError, SellError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.formatters import raw_phone_number, format_phone_number
@@ -495,6 +495,17 @@ class Person(Domain):
             return self.company.cnpj
         elif self.individual:
             return self.individual.cpf
+
+    def get_relative_location(self, other):
+        my_location = self.get_main_address().city_location
+        other_location = other.get_main_address().city_location
+
+        if other_location.state == my_location.state:
+            return RelativeLocation.SAME_STATE
+        if other_location.country != my_location.country:
+            return RelativeLocation.OTHER_COUNTRY
+        else:
+            return RelativeLocation.OTHER_STATE
 
     def has_individual_or_company_facets(self):
         return self.individual or self.company

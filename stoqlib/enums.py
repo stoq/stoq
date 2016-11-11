@@ -107,13 +107,12 @@ class SearchFilterPosition(enum):
      BOTTOM) = range(2)
 
 
-class ClientRelativeLocation(enum):
+class RelativeLocation(enum):
     """
-    An enum used to indicate the relative location between the client and issuer
+    An enum used to indicate the relative location between two persons
 
     This enum is used by stoq-plugin-nfe
     We must maintain these values otherwise it will break the plugin
-
     """
     (SAME_STATE,
      OTHER_STATE,
