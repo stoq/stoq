@@ -175,19 +175,8 @@ class ReturnedSaleItem(Domain):
         return self.returned_sale
 
     @property
-    def nfe_cfop_code(self):
-        sale = self.returned_sale.sale
-        client_address = sale.client.person.get_main_address()
-        branch_address = sale.branch.person.get_main_address()
-
-        same_state = True
-        if branch_address.city_location.state != client_address.city_location.state:
-            same_state = False
-
-        if same_state:
-            return u'1202'
-        else:
-            return u'2202'
+    def cfop_code(self):
+        return u'1202'
 
     #
     #  Public API
@@ -481,8 +470,10 @@ class ReturnedSale(Domain):
 
     @property
     def recipient(self):
-        if self.sale.client:
+        if self.sale and self.sale.client:
             return self.sale.client.person
+        elif self.new_sale and self.new_sale.client:
+            return self.new_sale.client.person
         return None
 
     @property

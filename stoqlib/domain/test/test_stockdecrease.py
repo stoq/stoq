@@ -253,8 +253,8 @@ class TestStockDecreaseItem(DomainTest):
         decrease_item.cost = 100
         self.assertEquals(decrease_item.price, decrease_item.cost)
 
-    def test_nfe_cfop_code(self):
+    def test_cfop_code(self):
         decrease = self.create_stock_decrease()
         decrease_item = self.create_stock_decrease_item(decrease)
         cfop = decrease.cfop.code.replace('.', '')
-        self.assertEquals(decrease_item.nfe_cfop_code, cfop)
+        self.assertEquals(decrease_item.cfop_code, cfop)

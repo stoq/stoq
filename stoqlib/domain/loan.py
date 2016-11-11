@@ -144,18 +144,8 @@ class LoanItem(Domain):
         return None
 
     @property
-    def nfe_cfop_code(self):
-        client_address = self.loan.client.person.get_main_address()
-        our_address = self.loan.branch.person.get_main_address()
-
-        same_state = True
-        if (our_address.city_location.state != client_address.city_location.state):
-            same_state = False
-
-        if same_state:
-            return u'5917'
-        else:
-            return u'6917'
+    def cfop_code(self):
+        return u'5917'
 
     def sync_stock(self):
         """Synchronizes the stock, increasing/decreasing it accordingly.

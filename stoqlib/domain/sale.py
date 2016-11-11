@@ -275,29 +275,16 @@ class SaleItem(Domain):
         return self.sale
 
     @property
-    def nfe_cfop_code(self):
+    def cfop_code(self):
         """Returns the cfop code to be used on the NF-e
 
         If the sale was also printed on a ECF, then the cfop should be:
           * 5.929: if sold to a |Client| in the same state or
-          * 6-929: if sold to a |Client| in a different state.
 
         :returns: the cfop code
         """
         if self.sale.coupon_id:
-            # find out if the client is in the same state as we are.
-            client_address = self.sale.client.person.get_main_address()
-            our_address = self.sale.branch.person.get_main_address()
-
-            same_state = True
-            if (our_address.city_location.state !=
-                    client_address.city_location.state):
-                same_state = False
-
-            if same_state:
-                return u'5929'
-            else:
-                return u'6929'
+            return u'5929'
 
         if self.cfop:
             return self.cfop.code.replace(u'.', u'')

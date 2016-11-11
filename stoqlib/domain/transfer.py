@@ -137,21 +137,8 @@ class TransferOrderItem(Domain):
         return self.stock_cost
 
     @property
-    def nfe_cfop_code(self):
-        source_branch = self.transfer_order.source_branch
-        source_address = source_branch.person.get_main_address()
-
-        destination_branch = self.transfer_order.destination_branch
-        destination_address = destination_branch.person.get_main_address()
-
-        same_state = True
-        if (source_address.city_location.state != destination_address.city_location.state):
-            same_state = False
-
-        if same_state:
-            return u'5152'
-        else:
-            return u'6152'
+    def cfop_code(self):
+        return u'5152'
 
     #
     # Public API

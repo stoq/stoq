@@ -321,7 +321,7 @@ class NFeGenerator(object):
 
             nfe_item.add_product_details(sellable.code,
                                          sellable.get_description(),
-                                         operation_item.nfe_cfop_code,
+                                         operation_item.cfop_code,
                                          operation_item.quantity,
                                          operation_item.price,
                                          sellable.unit_description,

@@ -426,7 +426,7 @@ class SaleQuoteItemStep(SellableItemStep):
         manager = get_plugin_manager()
         show_invoice_columns = manager.is_active('nfe') and not manager.is_active('ecf')
         columns.extend([
-            Column('nfe_cfop_code', title=_('CFOP'), data_type=str,
+            Column('cfop_code', title=_('CFOP'), data_type=str,
                    visible=show_invoice_columns),
             Column('icms_info.v_bc', title=_('ICMS BC'), data_type=currency,
                    visible=show_invoice_columns),

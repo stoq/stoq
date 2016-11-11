@@ -470,16 +470,16 @@ class ExampleCreator(object):
         return SaleComment(store=self.store, sale=sale, comment=comment,
                            author=user or get_current_user(self.store))
 
-    def create_trade(self, trade_value=100):
+    def create_trade(self, trade_value=100, branch=None, sellable=None):
         from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
-        branch = get_current_branch(self.store)
+        branch = branch or get_current_branch(self.store)
         returned_sale = ReturnedSale(store=self.store,
                                      responsible=get_current_user(self.store),
                                      branch=branch)
         ReturnedSaleItem(store=self.store,
                          quantity=1,
                          price=trade_value,
-                         sellable=self.create_sellable(),
+                         sellable=sellable or self.create_sellable(),
                          returned_sale=returned_sale)
 
         new_sale = self.create_sale()

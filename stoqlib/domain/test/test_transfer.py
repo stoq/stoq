@@ -59,7 +59,7 @@ class TestTransferOrderItem(DomainTest):
         transfer_item = self.create_transfer_order_item(stock_cost=50)
         self.assertEquals(transfer_item.price, transfer_item.stock_cost)
 
-    def test_nfe_cfop_code(self):
+    def test_cfop_code(self):
         order = self.create_transfer_order()
         transfer_item = self.create_transfer_order_item(order)
         source = order.source_branch
@@ -70,13 +70,7 @@ class TestTransferOrderItem(DomainTest):
         # Source branch address is the same of destination branch
         source.person.address.city_location = location
         destination.person.address.city_location = location
-        self.assertEquals(transfer_item.nfe_cfop_code, u'5152')
-
-        # Source branch address isn't the same of destination branch
-        location = self.create_city_location(city='Salvador',
-                                             state='BA', country='Brazil')
-        destination.person.address.city_location = location
-        self.assertEquals(transfer_item.nfe_cfop_code, u'6152')
+        self.assertEquals(transfer_item.cfop_code, u'5152')
 
 
 class TestTransferOrder(DomainTest):
