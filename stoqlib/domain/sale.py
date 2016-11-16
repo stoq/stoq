@@ -2128,6 +2128,9 @@ class SaleView(Viewable):
     #: The branch this sale was sold
     branch = Branch
 
+    #: The |invoice| of the view
+    invoice = Invoice
+
     #: the id of the sale table
     id = Sale.id
 
@@ -2210,6 +2213,7 @@ class SaleView(Viewable):
         LeftJoin(Branch, Sale.branch_id == Branch.id),
         LeftJoin(Client, Sale.client_id == Client.id),
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
+        LeftJoin(Invoice, Sale.invoice_id == Invoice.id),
 
         LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
         LeftJoin(Company, Company.person_id == Person_Branch.id),
