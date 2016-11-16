@@ -2111,6 +2111,9 @@ class SaleView(Viewable):
     #: The branch this sale was sold
     branch = Branch
 
+    #: The |invoice| of the view
+    invoice = Invoice
+
     #: the id of the sale table
     id = Sale.id
 

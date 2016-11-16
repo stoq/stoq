@@ -90,8 +90,7 @@ class SaleDetailsDialog(BaseEditor):
                      'identifier',
                      'subtotal_lbl',
                      'surcharge_lbl',
-                     'discount_lbl',
-                     'invoice_number', )
+                     'discount_lbl')
     payment_widgets = ('total_discount',
                        'total_interest',
                        'total_penalty',
@@ -106,6 +105,17 @@ class SaleDetailsDialog(BaseEditor):
         """
         BaseEditor.__init__(self, store, model,
                             visual_mode=visual_mode)
+
+    def add_tab(self, slave, name):
+        """Add a new tab on the notebook
+
+        :param slave: the slave we are attaching to the new tab
+        :param name: the name of the tab
+        """
+        event_box = gtk.EventBox()
+        self.details_notebook.insert_page(event_box, gtk.Label(name))
+        self.attach_slave(name, slave, event_box)
+        event_box.show()
 
     def _setup_columns(self):
         self.items_list.set_columns(self._get_items_columns())
