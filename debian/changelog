@@ -1,6 +1,12 @@
-stoq (1.12~rc1) trusty; urgency=medium
+stoq (1.12) trusty; urgency=medium
 
   * 1.12 release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Mon, 21 Nov 2016 18:12:29 -0200
+
+stoq (1.12~rc1) trusty; urgency=medium
+
+  * 1.12 Release candidate 1
 
  -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Thu, 20 Oct 2016 17:09:25 -0200
 
