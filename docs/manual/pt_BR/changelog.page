@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 1.11
+      Novidades da versão 1.12.90
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -27,22 +27,15 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 1.11.92</title>
+    <title>Novidades da versão 1.12.90</title>
     <p>
-      Data do lançamento: 2016-09-14
+      Data do lançamento: 2016-11-22
     </p>
 
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>Ao cadastrar novos produtos, é possível ter o código sugerido baseado nos códigos existentes da mesma categoria</p></item>
-        <item><p>Entregas podem ser adicionadas em cotações de vendas</p></item>
-        <item><p>Opção de adicionar/editar pagamentos no caixa sem confirmar a venda</p></item>
-        <item><p>Possibilidade de receber compras de outras filiais em modo sincronizado</p></item>
-        <item><p>Agora é possível filtrar clientes por seu nome fantasia quando os mesmos são empresas</p></item>
-        <item><p>Adição de um botão de estado para indicar se as funcionalidades online (backup, sincronização, etc) estão funcionando corretamente</p></item>
-        <item><p>Atualização das tabelas IBPT</p></item>
-        <item><p>Uma imensa quantidade de correções e melhorias de performance</p></item>
+        <item><p>TBA</p></item>
       </list>
     </section>
 
