@@ -35,6 +35,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, PriceCol,
                                          QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.payment.payment import Payment
@@ -352,6 +353,7 @@ class StockDecrease(Domain):
                 ProductHistory.add_decreased_item(store, branch, item)
             item.decrease(branch)
 
+        old_status = self.status
         self.status = StockDecrease.STATUS_CONFIRMED
 
         # Save the operation_nature and branch in Invoice Table
@@ -360,6 +362,8 @@ class StockDecrease(Domain):
 
         if self.group:
             self.group.confirm()
+
+        StockOperationConfirmedEvent.emit(self, old_status)
 
     #
     # Accessors

@@ -44,6 +44,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, PriceCol,
                                          QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.product import StockTransactionHistory
@@ -558,3 +559,7 @@ class Loan(Domain):
         # Save the operation nature and branch in Invoice table.
         self.invoice.operation_nature = self.operation_nature
         self.invoice.branch = self.branch
+        # Since there is no status change here and the event requires
+        # the parameter, we use None
+        old_status = None
+        StockOperationConfirmedEvent.emit(self, old_status)

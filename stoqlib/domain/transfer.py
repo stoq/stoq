@@ -40,6 +40,7 @@ from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch, Company
@@ -377,7 +378,9 @@ class TransferOrder(Domain):
         self.invoice.operation_nature = self.operation_nature
         self.invoice.branch = self.branch
 
+        old_status = self.status
         self.status = self.STATUS_SENT
+        StockOperationConfirmedEvent.emit(self, old_status)
 
     def receive(self, responsible, receival_date=None):
         """Confirms the receiving of the transfer order.

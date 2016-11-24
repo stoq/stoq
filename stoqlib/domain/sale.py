@@ -58,7 +58,8 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    SaleItemBeforeDecreaseStockEvent,
                                    SaleItemBeforeIncreaseStockEvent,
                                    SaleItemAfterSetBatchesEvent,
-                                   DeliveryStatusChangedEvent)
+                                   DeliveryStatusChangedEvent,
+                                   StockOperationConfirmedEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry, Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.payment.payment import Payment
@@ -1101,6 +1102,7 @@ class Sale(Domain):
             if method.operation.pay_on_sale_confirm():
                 self.group.pay_method_payments(method.method_name)
 
+        old_status = self.status
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
         if self.sale_token:
@@ -1120,6 +1122,8 @@ class Sale(Domain):
                     sale_number=self.identifier,
                     total_value=self.get_total_sale_amount())
             Event.log(self.store, Event.TYPE_SALE, msg)
+
+        StockOperationConfirmedEvent.emit(self, old_status)
 
     def set_paid(self):
         """Mark the sale as paid

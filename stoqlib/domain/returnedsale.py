@@ -38,6 +38,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
                                          IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice, FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer, IInvoiceItem, IInvoice
 from stoqlib.domain.payment.method import PaymentMethod
@@ -623,9 +624,11 @@ class ReturnedSale(Domain):
         """
         assert self.status == self.STATUS_PENDING
         self._return_items()
+        old_status = self.status
         self.status = self.STATUS_CONFIRMED
         self.confirm_responsible = login_user
         self.confirm_date = localnow()
+        StockOperationConfirmedEvent.emit(self, old_status)
 
     def undo(self, reason):
         """Undo this returned sale.

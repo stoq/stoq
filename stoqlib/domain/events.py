@@ -447,3 +447,19 @@ class InvoiceGetModeEvent(Event):
     """
     This event is emitted when a |invoice| is created to get the current mode
     """
+
+
+#
+# Stock Events
+#
+
+@public(since="1.12.0")
+class StockOperationConfirmedEvent(Event):
+    """
+    This event is emitted when a stock operation is confirmed, such as sales,
+    transfers, stock decreases, loans and sale returns
+
+    :param model: the model whose stock operation was confirmed
+    :param old_status: the old status of the model if the confirmation
+        includes a status change
+    """
