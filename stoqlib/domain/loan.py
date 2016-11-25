@@ -47,6 +47,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.product import StockTransactionHistory
+from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import DECIMAL_PRECISION, quantize
@@ -106,13 +107,41 @@ class LoanItem(Domain):
     #: :class:`loan <Loan>` this item belongs to
     loan = Reference(loan_id, 'Loan.id')
 
+    icms_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemIcms` tax for *self*
+    icms_info = Reference(icms_info_id, 'InvoiceItemIcms.id')
+
+    ipi_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemIpi` tax for *self*
+    ipi_info = Reference(ipi_info_id, 'InvoiceItemIpi.id')
+
+    pis_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemPis` tax for *self*
+    pis_info = Reference(pis_info_id, 'InvoiceItemPis.id')
+
+    cofins_info_id = IdCol()
+
+    #: the :class:`stoqlib.domain.taxes.InvoiceItemCofins` tax for *self*
+    cofins_info = Reference(cofins_info_id, 'InvoiceItemCofins.id')
+
     def __init__(self, *args, **kwargs):
         # stores the total quantity that was loaned before synching stock
         self._original_quantity = 0
         # stores the loaned quantity that was returned before synching stock
         self._original_return_quantity = self.return_quantity
+        check_tax_info_presence(kwargs, kwargs.get('store'))
 
         super(LoanItem, self).__init__(*args, **kwargs)
+
+        product = self.sellable.product
+        if product:
+            self.ipi_info.set_item_tax(self)
+            self.icms_info.set_item_tax(self)
+            self.pis_info.set_item_tax(self)
+            self.cofins_info.set_item_tax(self)
 
     def __storm_loaded__(self):
         super(LoanItem, self).__storm_loaded__()
@@ -132,16 +161,14 @@ class LoanItem(Domain):
     #
 
     @property
-    def icms_info(self):
-        # FIXME: We must return the ICMS values, based on calculation between
-        # the ProductIcmsTemplate and the loan_item.
-        return None
+    def parent(self):
+        return self.loan
 
     @property
-    def ipi_info(self):
-        # FIXME: We must return the IPI values, based on calculation between
-        # the ProductIpiTemplate and the loan_item.
-        return None
+    def item_discount(self):
+        if self.price < self.base_price:
+            return self.base_price - self.price
+        return Decimal('0')
 
     @property
     def cfop_code(self):

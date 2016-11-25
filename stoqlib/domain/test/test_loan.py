@@ -32,7 +32,8 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan, LoanItem, _
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.taxes import (ProductTaxTemplate, ProductIcmsTemplate,
-                                  ProductIpiTemplate)
+                                  ProductIpiTemplate, ProductCofinsTemplate,
+                                  ProductPisTemplate)
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -385,7 +386,6 @@ class TestLoanItem(DomainTest):
     # NF-e operations
 
     def test_nfe_data(self):
-        # FIXME: Improve this test after fix the properties, icms_info and ipi_info.
         loan = self.create_loan()
         product = self.create_product()
         icms_tax_template = ProductTaxTemplate(store=self.store,
@@ -397,12 +397,30 @@ class TestLoanItem(DomainTest):
                                               tax_type=ProductTaxTemplate.TYPE_IPI)
         ipi_template = ProductIpiTemplate(store=self.store,
                                           product_tax_template=ipi_tax_template)
+
+        pis_tax_template = ProductTaxTemplate(store=self.store,
+                                              tax_type=ProductTaxTemplate.TYPE_PIS)
+        pis_template = ProductPisTemplate(store=self.store,
+                                          product_tax_template=pis_tax_template)
+
+        cofins_tax_template = ProductTaxTemplate(store=self.store,
+                                                 tax_type=ProductTaxTemplate.TYPE_COFINS)
+        cofins_template = ProductCofinsTemplate(store=self.store,
+                                                product_tax_template=cofins_tax_template)
         product.icms_template = icms_template
         product.ipi_template = ipi_template
+        product.pis_template = pis_template
+        product.cofins_template = cofins_template
 
         loan_item = loan.add_sellable(product.sellable)
-        self.assertEquals(loan_item.icms_info, None)
-        self.assertEquals(loan_item.ipi_info, None)
+        self.assertIsNotNone(loan_item.icms_info)
+        self.assertIsNotNone(loan_item.ipi_info)
+        self.assertIsNotNone(loan_item.pis_info)
+        self.assertIsNotNone(loan_item.cofins_info)
+
+        self.assertEquals(loan_item.item_discount, 0)
+        loan_item.price -= 2
+        self.assertEquals(loan_item.item_discount, 2)
 
     def test_cfop_code(self):
         loan_item = self.create_loan_item()
