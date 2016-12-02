@@ -165,11 +165,13 @@ class ResourceStatusManager(gobject.GObject):
         else:
             return ResourceStatus.STATUS_OK
 
-    def add_resource(self, resource):
+    def add_resource(self, resource, refresh=False):
         """Add a :class:`.ResourceStatus` on the manager"""
         assert resource.name not in self.resources
         assert isinstance(resource, ResourceStatus)
         self.resources[resource.name] = resource
+        if refresh:
+            self.refresh_and_notify()
 
     def refresh_and_notify(self, force=False):
         """Refresh the status and notify for changes"""
@@ -221,9 +223,9 @@ class ResourceStatusManager(gobject.GObject):
         return retval
 
 
-def register(resource_class):
+def register(resource_class, refresh=False):
     manager = ResourceStatusManager.get_instance()
-    manager.add_resource(resource_class())
+    manager.add_resource(resource_class(), refresh=refresh)
     return resource_class
 
 
