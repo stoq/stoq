@@ -265,8 +265,15 @@ class SaleListToolbar(GladeSlaveDelegate):
     def show_details(self, sale_view=None):
         if sale_view is None:
             sale_view = self.sales.get_selected()
-        run_dialog(SaleDetailsDialog, self.parent,
-                   self.store, sale_view)
+        with api.new_store() as store:
+            model = store.fetch(sale_view)
+            run_dialog(SaleDetailsDialog, self.parent, store, model)
+            # XXX: We are setting this manually because the nfce plugin might change
+            # the model. The infrastructure must be changed to consider this situation
+            store.retval = store.get_pending_count() > 0
+        # Update the search after the dialog is closed
+        if store.committed:
+            self.parent.search.search()
 
     def print_sale(self):
         print_report(SalesReport, self.sales, list(self.sales),

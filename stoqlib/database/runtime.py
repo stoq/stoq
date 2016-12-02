@@ -534,10 +534,12 @@ class StoqlibStore(Store):
         if obj is None:
             return None
 
-        if not isinstance(obj, ORMObject):
-            raise TypeError("obj must be a ORMObject, not %r" % (obj, ))
-
-        return self.get(type(obj), obj.id)
+        if isinstance(obj, Viewable):
+            return self.find(type(obj), id=obj.id).one()
+        elif isinstance(obj, ORMObject):
+            return self.get(type(obj), obj.id)
+        else:
+            raise TypeError("obj must be a ORMObject or a Viewable, not %r" % (obj, ))
 
     def remove(self, obj):
         """Remove an objet from the store

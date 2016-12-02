@@ -197,7 +197,10 @@ class TestSales(BaseGUITest):
         results = app.results
         results.select(results[0])
 
-        self.activate(app.Details)
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.activate(app.Details)
+
         run_dialog.assert_called_once_with(SaleDetailsDialog, app,
                                            self.store, results[0])
 
