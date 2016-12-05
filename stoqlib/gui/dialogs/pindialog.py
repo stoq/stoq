@@ -113,7 +113,7 @@ class PinDialog(BaseEditor):
         if running:
             pin = self.pin.read()
             try:
-                rv = yield self._proxy.call('register_link', pin)
+                rv = self._proxy.call('register_link', pin)
             except ServerError as e:
                 msg = _("An error happened when trying to register to Stoq.Link")
                 schedule_in_main_thread(self._error, msg, str(e))
