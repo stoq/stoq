@@ -1,3 +1,9 @@
+stoq (1.12.1) trusty; urgency=medium
+
+  * 1.12.1 Bugfix release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Mon, 05 Dec 2016 15:21:38 -0200
+
 stoq (1.12) trusty; urgency=medium
 
   * 1.12 release
