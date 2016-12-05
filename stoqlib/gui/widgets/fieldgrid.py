@@ -50,14 +50,18 @@ from kiwi.utils import gsignal
  FIELD_MOVEMENT_VERTICAL,
  FIELD_DELETION) = range(3)
 
-# _CURSOR_LEFT_SIDE = gdk.Cursor(gdk.LEFT_SIDE)
-_CURSOR_RIGHT_SIDE = gdk.Cursor(gdk.RIGHT_SIDE)
-# _CURSOR_TOP_SIDE = gdk.Cursor(gdk.TOP_SIDE)
-_CURSOR_BOTTOM_SIDE = gdk.Cursor(gdk.BOTTOM_SIDE)
-# _CURSOR_BOTTOM_LEFT = gdk.Cursor(gdk.BOTTOM_LEFT_CORNER)
-_CURSOR_BOTTOM_RIGHT = gdk.Cursor(gdk.BOTTOM_RIGHT_CORNER)
-# _CURSOR_TOP_LEFT = gdk.Cursor(gdk.TOP_LEFT_CORNER)
-# _CURSOR_TOP_RIGHT = gdk.Cursor(gdk.TOP_RIGHT_CORNER)
+_cursors = {}
+
+
+def _get_cursor(gdk_pos):
+    # Do a lazy initialization of those gdk.Cursor objects
+    # If we initialize them too early (e.g. in the module) they would
+    # break Stoq running on non graphical environments.
+    c = _cursors.get(gdk_pos, None)
+    if c is not None:
+        return c
+
+    return _cursors.setdefault(gdk_pos, gdk.Cursor(gdk_pos))
 
 
 class Range(object):
@@ -112,22 +116,22 @@ class FieldInfo(object):
 
         if x in Range(cx - 1, cx + 1):
             if intop:
-                return  # _CURSOR_TOP_LEFT
+                return  # _get_cursor(gdk.TOP_LEFT_CORNER)
             elif inbottom:
-                return  # _CURSOR_BOTTOM_LEFT
+                return  # _get_cursor(gdk.BOTTOM_LEFT_CORNER)
             else:
-                return  # _CURSOR_LEFT_SIDE
+                return  # _get_cursor(gdk.LEFT_SIDE)
         elif x in Range(cx + cw - 2, cx + cw + 1):
             if intop:
-                return  # _CURSOR_TOP_RIGHT
+                return  # _get_cursor(gdk.TOP_RIGHT_CORNER)
             elif inbottom:
-                return _CURSOR_BOTTOM_RIGHT
+                return _get_cursor(gdk.BOTTOM_RIGHT_CORNER)
             else:
-                return _CURSOR_RIGHT_SIDE
+                return _get_cursor(gdk.RIGHT_SIDE)
         elif intop:
-            return  # _CURSOR_TOP_SIDE
+            return  # _get_cursor(gdk.TOP_SIDE)
         elif inbottom:
-            return _CURSOR_BOTTOM_SIDE
+            return _get_cursor(gdk.BOTTOM_SIDE)
 
 
 class FieldGrid(gtk.Layout):
