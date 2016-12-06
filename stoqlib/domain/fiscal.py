@@ -46,6 +46,10 @@ from stoqlib.domain.person import Person
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
+from stoqlib.lib.translation import stoqlib_gettext
+
+
+_ = stoqlib_gettext
 
 
 @implementer(IDescribable)
@@ -239,6 +243,11 @@ class Invoice(Domain):
     MODES = {
         55: NFE_MODE,
         65: NFCE_MODE
+    }
+
+    MODE_NAMES = {
+        NFE_MODE: _('NF-e'),
+        NFCE_MODE: _('NFC-e')
     }
 
     #: the invoice number
