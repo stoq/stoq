@@ -9,7 +9,8 @@ DO $$DECLARE nfe_mode_exists INTEGER;
 BEGIN
   SELECT COUNT(1) INTO nfe_mode_exists FROM information_schema.columns WHERE table_name = 'nfe_data' AND column_name = 'nfe_mode';
   IF nfe_mode_exists >= 1 THEN
-    UPDATE invoice SET mode = nfe_data.nfe_mode FROM nfe_data WHERE nfe_data.invoice_id = invoice.id;
+    -- We need to double cast here since postgres dont allow us to set it directly.
+    UPDATE invoice SET mode = nfe_data.nfe_mode::text::invoice_mode FROM nfe_data WHERE nfe_data.invoice_id = invoice.id;
   END IF;
 END$$;
 
