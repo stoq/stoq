@@ -539,11 +539,6 @@ class PurchaseApp(ShellApp):
         self.run_dialog(ProductsSoldSearch, self.store)
 
     def on_ProductsPriceSearch__activate(self, action):
-        from stoqlib.domain.person import ClientCategory
-        if not self.store.find(ClientCategory).count():
-            warning(_("Can't use prices editor without client categories"))
-            return
-
         with api.new_store() as store:
             self.run_dialog(SellableMassEditorDialog, store)
 

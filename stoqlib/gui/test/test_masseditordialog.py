@@ -26,12 +26,14 @@ from decimal import Decimal
 import gtk
 import pango
 
-from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.gui.dialogs.masseditordialog import (MultiplyOperation,
                                                   AddOperation, DivideOperation,
                                                   SetValueOperation,
+                                                  SetObjectValueOperation,
                                                   ReplaceOperation,
                                                   MassEditorSearch,
+                                                  ReferenceField,
                                                   AccessorField, DecimalEditor)
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -41,7 +43,7 @@ class TestOperations(GUITest):
     def test_set_field(self):
         price_field = AccessorField('Test', None, 'base_price', Decimal)
         cost_field = AccessorField('Test', None, 'cost', Decimal)
-        operation = MultiplyOperation(price_field, [])
+        operation = MultiplyOperation(self.store, price_field, [])
         self.assertEqual(operation._field, price_field)
         operation.set_field(cost_field)
         self.assertEqual(operation._field, cost_field)
@@ -53,7 +55,7 @@ class TestOperations(GUITest):
 
         price_field = AccessorField('Test', None, 'base_price', Decimal)
         cost_field = AccessorField('Test', None, 'cost', Decimal)
-        operation = MultiplyOperation(price_field, [cost_field])
+        operation = MultiplyOperation(self.store, price_field, [cost_field])
         operation.combo.select(cost_field)
         operation.entry.set_text('3')
 
@@ -73,7 +75,7 @@ class TestOperations(GUITest):
 
         price_field = AccessorField('Test', None, 'base_price', Decimal)
         cost_field = AccessorField('Test', None, 'cost', Decimal)
-        operation = AddOperation(price_field, [cost_field])
+        operation = AddOperation(self.store, price_field, [cost_field])
         operation.combo.select(cost_field)
         operation.entry.set_text('3')
 
@@ -93,7 +95,7 @@ class TestOperations(GUITest):
 
         price_field = AccessorField('Test', None, 'base_price', Decimal)
         cost_field = AccessorField('Test', None, 'cost', Decimal)
-        operation = DivideOperation(price_field, [cost_field])
+        operation = DivideOperation(self.store, price_field, [cost_field])
         operation.combo.select(cost_field)
         operation.entry.set_text('4')
 
@@ -112,7 +114,7 @@ class TestOperations(GUITest):
         sellable.base_price = 1
 
         price_field = AccessorField('Test', None, 'base_price', Decimal)
-        operation = SetValueOperation(price_field, [])
+        operation = SetValueOperation(self.store, price_field, [])
         operation.entry.set_text('4')
 
         self.assertEqual(price_field.get_new_value(sellable), 1)
@@ -124,12 +126,27 @@ class TestOperations(GUITest):
         operation.apply_operation(sellable)
         self.assertEqual(price_field.get_new_value(sellable), 4)
 
+    def test_set_object(self):
+        sellable = self.create_sellable()
+        old_category = self.create_sellable_category()
+        new_category = self.create_sellable_category()
+        sellable.category = old_category
+
+        field = ReferenceField('Test', None, 'category', SellableCategory,
+                               'description')
+        operation = SetObjectValueOperation(self.store, field, [])
+        operation.combo.select(new_category)
+
+        self.assertEqual(field.get_new_value(sellable), old_category)
+        operation.apply_operation(sellable)
+        self.assertEqual(field.get_new_value(sellable), new_category)
+
     def test_replace(self):
         sellable = self.create_sellable()
         sellable.description = u'foo bar foo Foo'
 
         field = AccessorField('Test', None, 'description', Decimal)
-        operation = ReplaceOperation(field, [])
+        operation = ReplaceOperation(self.store, field, [])
         operation.one_entry.set_text('foo')
         operation.other_entry.set_text('XXX')
 
@@ -143,7 +160,7 @@ class TestEditors(GUITest):
     def test_set_field(self):
         price_field = AccessorField('Test', None, 'base_price', Decimal)
         cost_field = AccessorField('Test', None, 'cost', Decimal)
-        editor = DecimalEditor(price_field, [cost_field, price_field])
+        editor = DecimalEditor(self.store, price_field, [cost_field, price_field])
 
         self.assertEqual(editor._oper._field, price_field)
         editor.set_field(cost_field)
@@ -152,7 +169,7 @@ class TestEditors(GUITest):
     def test_change_operation(self):
         price_field = AccessorField('Test', None, 'base_price', Decimal)
         cost_field = AccessorField('Test', None, 'cost', Decimal)
-        editor = DecimalEditor(price_field, [cost_field, price_field])
+        editor = DecimalEditor(self.store, price_field, [cost_field, price_field])
 
         self.assertEqual(type(editor._oper), MultiplyOperation)
         editor.operations_combo.select(AddOperation)
@@ -249,10 +266,17 @@ class TestMassEditor(GUITest):
         self.assertEqual(search.mass_editor._editor, field_editor)
 
     def test_format_func(self):
-        field = AccessorField('Test', None, 'code', unicode)
         sellable = self.create_sellable(price=10)
         sellable.code = u'123'
+        sellable.category = self.create_sellable_category(u'Categoria')
 
+        field = AccessorField('Test', None, 'code', unicode)
         self.assertEqual(field.format_func(sellable), '123')
         sellable.code = None
+        self.assertEqual(field.format_func(sellable), '')
+
+        field = ReferenceField('Test', None, 'category', SellableCategory,
+                               'description')
+        self.assertEqual(field.format_func(sellable), 'Categoria')
+        sellable.category = None
         self.assertEqual(field.format_func(sellable), '')

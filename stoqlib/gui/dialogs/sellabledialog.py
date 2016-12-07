@@ -33,7 +33,7 @@ from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantEditor
 from stoqlib.gui.dialogs.masseditordialog import (Field, MassEditorSearch,
-                                                  AccessorField)
+                                                  AccessorField, ReferenceField)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import info
 from stoqlib.database.viewable import Viewable
@@ -142,7 +142,8 @@ class SellableMassEditorDialog(MassEditorSearch):
     default_fields = [
         AccessorField(_('Code'), 'sellable', 'code', unicode, unique=True),
         AccessorField(_('Barcode'), 'sellable', 'barcode', unicode, unique=True),
-        #ReferenceField(_('Category'), 'sellable_category', object),
+        ReferenceField(_('Category'), 'sellable', 'category',
+                       SellableCategory, 'description'),
         AccessorField(_('Description'), 'sellable', 'description', unicode),
         AccessorField(_('Cost'), 'sellable', 'cost', currency),
         AccessorField(_('Default Price'), 'sellable', 'base_price', currency),

@@ -69,7 +69,8 @@ class Operation(gtk.HBox):
     return a new value that will update a field in the objects.
     """
 
-    def __init__(self, field, other_fields):
+    def __init__(self, store, field, other_fields):
+        self._store = store
         self._field = field
         gtk.HBox.__init__(self, spacing=6)
         self.setup(other_fields)
@@ -96,14 +97,21 @@ class Operation(gtk.HBox):
         self.pack_start(entry, False, False)
         return entry
 
+    def add_combo(self, data=None):
+        """Add a combo for selecting an option"""
+        combo = ProxyComboBox()
+        self.pack_start(combo, False, False)
+        if data:
+            combo.prefill(data)
+        return combo
+
     def add_field_combo(self, fields):
         """Adds a combo for selecting another field.
 
         The other field should be used as a reference value for the operation.
         for instance: a value that should be multiplied by or added to.
         """
-        combo = ProxyComboBox()
-        self.pack_start(combo, False, False)
+        combo = self.add_combo()
         for f in fields:
             combo.append_item(f.label, f)
         return combo
@@ -212,6 +220,23 @@ class ReplaceOperation(Operation):
         return old_value.replace(self.one_entry.read(), self.other_entry.read())
 
 
+class SetObjectValueOperation(Operation):
+    """An operation that sets a field to a specifc value.
+
+    This works only for object values.
+    """
+
+    label = _('Set value to')
+
+    def setup(self, other_fields):
+        table = self._field._reference_class
+        data = self._store.find((self._field.get_search_spec(), table))
+        self.combo = self.add_combo([(_('Erase value'), None)] + list(data))
+
+    def get_new_value(self, item):
+        return self.combo.read()
+
+
 #
 #   Field Editors
 #
@@ -225,13 +250,15 @@ class Editor(gtk.HBox):
     operations = []
     data_type = None
 
-    def __init__(self, field, other_fields):
+    def __init__(self, store, field, other_fields):
         """
+        :param store: a storm store if its needed
         :param field: the field that is being edited
         :param other_fields: other fields available for math operations
         """
         assert len(self.operations)
 
+        self._store = store
         self._other_fields = other_fields
         self._oper = None
         self._field = field
@@ -254,7 +281,8 @@ class Editor(gtk.HBox):
             # Remove previous operation
             self.remove(self._oper)
 
-        self._oper = combo.get_selected()(self._field, self._other_fields)
+        self._oper = combo.get_selected()(self._store, self._field,
+                                          self._other_fields)
         self.pack_start(self._oper)
 
     def apply_operation(self, item):
@@ -277,6 +305,13 @@ class UnicodeEditor(Editor):
         SetValueOperation,
     ]
     data_type = unicode
+
+
+class ObjectEditor(Editor):
+    operations = [
+        SetObjectValueOperation,
+    ]
+    data_type = object
 
 
 #
@@ -346,7 +381,8 @@ class AccessorField(Field):
             return getattr(item, self.obj_name)
         return item
 
-    def _get_search_attr(self, spec):
+    def get_search_spec(self, spec):
+        """Get the spec for filtering by this field."""
         obj = self._get_obj(spec)
         return getattr(obj, self.attribute)
 
@@ -360,12 +396,42 @@ class AccessorField(Field):
         setattr(dest_obj, self.attribute, value)
 
     def get_column(self, spec):
-        # FIXME: SearchColumn expects str instead of unicode
-        data_type = {unicode: str}.get(self.data_type, self.data_type)
+        # SearchColumn expects str instead of unicode and objects are rendered
+        # as strings
+        data_type = {unicode: str, object: str}.get(self.data_type, self.data_type)
         return SearchColumn('id', title=self.label, data_type=data_type,
                             format_func=self.format_func,
-                            search_attribute=self._get_search_attr(spec),
+                            search_attribute=self.get_search_spec(spec),
                             format_func_data=self)
+
+
+class ReferenceField(AccessorField):
+    def __init__(self, label, obj_name, attribute, reference_class,
+                 reference_attr):
+        """A field that updates a reference to another object
+
+        :param label: The label to be displayed
+        :param obj_name: the name of the object that will be updated, or None if
+          the attribute will be accessed directly
+        :param attribute: the attribute of obj that will be updated.
+        :param reference_class: the type of the reference that will be updated.
+          This should be an Domain object
+        :param reference_attr: The attribute of the referenced class that will
+          be used for both rendering the column and filtering the results.
+        """
+        self._reference_class = reference_class
+        self._reference_attr = reference_attr
+        super(ReferenceField, self).__init__(label, obj_name, attribute,
+                                             data_type=object, unique=False)
+
+    def get_search_spec(self, spec=None):
+        return getattr(self._reference_class, self._reference_attr)
+
+    def format_func(self, item, data=None):
+        value = self.get_new_value(item)
+        if value is not None:
+            return getattr(value, self._reference_attr)
+        return ''
 
 
 class MassEditorWidget(gtk.HBox):
@@ -373,10 +439,11 @@ class MassEditorWidget(gtk.HBox):
         currency: DecimalEditor,
         Decimal: DecimalEditor,
         unicode: UnicodeEditor,
-        object: None,
+        object: ObjectEditor,
     }
 
     def __init__(self, store, fields, results):
+        self._store = store
         self._editor = None
         self._fields = fields
         self._results = results
@@ -397,7 +464,7 @@ class MassEditorWidget(gtk.HBox):
 
         other_fields = self._filter_fields(field.data_type)
         klass = self._editors[field.data_type]
-        self._editor = klass(field, other_fields)
+        self._editor = klass(self._store, field, other_fields)
         self.editor_placeholder.add(self._editor)
 
     def _setup_widgets(self):
@@ -499,7 +566,7 @@ class MassEditorSearch(SearchDialog):
         for field in self._fields:
             col = field.get_column(self.search_spec)
             columns.append(col)
-            if field.data_type is unicode:
+            if field.data_type is unicode and isinstance(col, SearchColumn):
                 text_columns.append(col.search_attribute)
 
         self.text_field_columns = text_columns
