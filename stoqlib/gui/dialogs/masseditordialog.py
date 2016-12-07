@@ -134,6 +134,10 @@ class Operation(gtk.HBox):
 
     def apply_operation(self, item):
         value = self.get_new_value(item)
+        # If the value is not valid, do not update the object
+        if callable(self._field.validator) and not self._field.validator(value):
+            return
+
         if value is not ValueUnset:
             self._field.set_new_value(item, value)
 
@@ -324,8 +328,9 @@ class Field(object):
     This class implements basic value caching/storage for the editor
     """
 
-    def __init__(self, data_type):
+    def __init__(self, data_type, validator=None):
         self.data_type = data_type
+        self.validator = validator
         self.new_values = {}
 
     def get_value(self, item):  # pragma nocover
@@ -360,7 +365,8 @@ class Field(object):
 
 class AccessorField(Field):
 
-    def __init__(self, label, obj_name, attribute, data_type, unique=False):
+    def __init__(self, label, obj_name, attribute, data_type, unique=False,
+                 validator=None):
         """A field that updates a value of another object
 
         :param obj_name: the name of the object that will be updated, or None if
@@ -368,8 +374,9 @@ class AccessorField(Field):
         :param attribute: the attribute of obj that will be updated.
         :param unique: If the field is unique, the user will not be able to set
           the field to an specific value. FIXME: not implemented yet
+        :param validator: A callable that should return True/False
         """
-        super(AccessorField, self).__init__(data_type)
+        super(AccessorField, self).__init__(data_type, validator=validator)
         self.label = label
         self.obj_name = obj_name
         self.attribute = attribute

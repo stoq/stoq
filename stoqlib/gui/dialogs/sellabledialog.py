@@ -85,8 +85,9 @@ class SellableTaxConstantsDialog(ModelListDialog):
 class CategoryPriceField(Field):
     title = _(u"Price Change Dialog")
 
-    def __init__(self, category):
-        super(CategoryPriceField, self).__init__(data_type=currency)
+    def __init__(self, category, validator):
+        super(CategoryPriceField, self).__init__(data_type=currency,
+                                                 validator=validator)
         # A cache for existing ClientCategoryPrices so that we don't have to
         # query all the time.
         self._cache = {}
@@ -135,6 +136,10 @@ class SellableView(Viewable):
     ]
 
 
+def validate_price(value):
+    return value > 0
+
+
 class SellableMassEditorDialog(MassEditorSearch):
 
     search_spec = SellableView
@@ -145,15 +150,18 @@ class SellableMassEditorDialog(MassEditorSearch):
         ReferenceField(_('Category'), 'sellable', 'category',
                        SellableCategory, 'description'),
         AccessorField(_('Description'), 'sellable', 'description', unicode),
-        AccessorField(_('Cost'), 'sellable', 'cost', currency),
-        AccessorField(_('Default Price'), 'sellable', 'base_price', currency),
+        AccessorField(_('Cost'), 'sellable', 'cost', currency,
+                      validator=validate_price),
+        AccessorField(_('Default Price'), 'sellable', 'base_price', currency,
+                      validator=validate_price),
     ]
 
     def get_fields(self, store):
         category_fields = []
         self.categories = store.find(ClientCategory)
         for cat in self.categories:
-            category_fields.append(CategoryPriceField(cat))
+            category_fields.append(CategoryPriceField(cat,
+                                                      validator=validate_price))
 
         return self.default_fields + category_fields
 
