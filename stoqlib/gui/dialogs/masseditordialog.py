@@ -38,6 +38,7 @@ for the update and set some parameters depending on those rules. For instance:
     - Set to    [   |v]
 """
 
+import datetime
 from decimal import Decimal
 
 import gtk
@@ -47,7 +48,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import converter
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.combo import ProxyComboBox
-from kiwi.ui.widgets.entry import ProxyEntry
+from kiwi.ui.widgets.entry import ProxyEntry, ProxyDateEntry
 
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.search.searchcolumns import SearchColumn
@@ -241,6 +242,23 @@ class SetObjectValueOperation(Operation):
         return self.combo.read()
 
 
+class SetDateValueOperation(Operation):
+    """An operation that sets a field to a specifc value.
+
+    This works only for object values.
+    """
+
+    label = _('Set value to')
+
+    def setup(self, other_fields):
+        self.entry = ProxyDateEntry()
+        self.pack_start(self.entry, False, False)
+        self.entry.show()
+
+    def get_new_value(self, item):
+        return self.entry.read()
+
+
 #
 #   Field Editors
 #
@@ -316,6 +334,13 @@ class ObjectEditor(Editor):
         SetObjectValueOperation,
     ]
     data_type = object
+
+
+class DateEditor(Editor):
+    operations = [
+        SetDateValueOperation,
+    ]
+    data_type = datetime.date
 
 
 #
@@ -446,6 +471,7 @@ class MassEditorWidget(gtk.HBox):
         currency: DecimalEditor,
         Decimal: DecimalEditor,
         unicode: UnicodeEditor,
+        datetime.date: DateEditor,
         object: ObjectEditor,
     }
 

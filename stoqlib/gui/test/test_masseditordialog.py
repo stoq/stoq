@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 from decimal import Decimal
 import gtk
 import pango
@@ -31,6 +32,7 @@ from stoqlib.gui.dialogs.masseditordialog import (MultiplyOperation,
                                                   AddOperation, DivideOperation,
                                                   SetValueOperation,
                                                   SetObjectValueOperation,
+                                                  SetDateValueOperation,
                                                   ReplaceOperation,
                                                   MassEditorSearch,
                                                   ReferenceField,
@@ -140,6 +142,20 @@ class TestOperations(GUITest):
         self.assertEqual(field.get_new_value(sellable), old_category)
         operation.apply_operation(sellable)
         self.assertEqual(field.get_new_value(sellable), new_category)
+
+    def test_set_date(self):
+        sellable = self.create_sellable()
+        old_date = datetime.date(2016, 1, 1)
+        new_date = datetime.date(2015, 2, 2)
+        sellable.on_sale_start_date = old_date
+
+        field = AccessorField('Test', None, 'on_sale_start_date', datetime.date)
+        operation = SetDateValueOperation(self.store, field, [])
+        operation.entry.update(new_date)
+
+        self.assertEqual(field.get_new_value(sellable).date(), old_date)
+        operation.apply_operation(sellable)
+        self.assertEqual(field.get_new_value(sellable), new_date)
 
     def test_replace(self):
         sellable = self.create_sellable()

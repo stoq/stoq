@@ -22,6 +22,7 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import LeftJoin
@@ -154,6 +155,12 @@ class SellableMassEditorDialog(MassEditorSearch):
                       validator=validate_price),
         AccessorField(_('Default Price'), 'sellable', 'base_price', currency,
                       validator=validate_price),
+        AccessorField(_('On Sale Price'), 'sellable', 'on_sale_price', currency,
+                      validator=validate_price),
+        AccessorField(_('On Sale Start Date'), 'sellable', 'on_sale_start_date',
+                      datetime.date),
+        AccessorField(_('On Sale End Date'), 'sellable', 'on_sale_end_date',
+                      datetime.date),
     ]
 
     def get_fields(self, store):
