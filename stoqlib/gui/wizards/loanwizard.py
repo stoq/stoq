@@ -389,7 +389,8 @@ class LoanItemSelectionStep(SellableItemStep):
     #  Callbacks
     #
 
-    def _on_klist__cell_edited(self, klist, obj, attr):
+    def _on_klist__cell_edited(self, klist, obj, column):
+        attr = column.attribute
         # FIXME: Even with the adjustment, the user still can type
         # values out of range with the keyboard. Maybe it's kiwi's fault
         if attr in ['sale_quantity', 'return_quantity']:

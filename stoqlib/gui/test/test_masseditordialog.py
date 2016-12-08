@@ -24,6 +24,7 @@
 
 import datetime
 from decimal import Decimal
+import mock
 import gtk
 import pango
 
@@ -296,3 +297,23 @@ class TestMassEditor(GUITest):
         self.assertEqual(field.format_func(sellable), 'Categoria')
         sellable.category = None
         self.assertEqual(field.format_func(sellable), '')
+
+    @mock.patch('stoqlib.gui.dialogs.masseditordialog.warning')
+    def test_confirm_invalid(self, warning):
+        price_field = AccessorField('Test', None, 'base_price', Decimal)
+        desc_field = AccessorField('Test', None, 'description', unicode)
+        sellable = self.create_sellable(price=10)
+        search = self._create_search([price_field, desc_field], [sellable])
+
+        sellable.non_existing_attr = -20
+        column = search.results.get_columns()[0]
+        search.results.emit('cell-edited', sellable, column)
+
+        # Force cell editing of unicode column that needs special treatment
+        column = search.results.get_columns()[1]
+        search.results.emit('cell-edited', sellable, column)
+
+        self.click(search.ok_button)
+        args, kwargs = warning.call_args
+        self.assertEqual(args[0],
+                         'There was an error saving one of the values')

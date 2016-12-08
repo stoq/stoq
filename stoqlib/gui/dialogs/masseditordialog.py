@@ -53,7 +53,7 @@ from kiwi.ui.widgets.entry import ProxyEntry, ProxyDateEntry
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.lib.message import marker
+from stoqlib.lib.message import marker, warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -353,9 +353,11 @@ class Field(object):
     This class implements basic value caching/storage for the editor
     """
 
-    def __init__(self, data_type, validator=None):
+    def __init__(self, data_type, validator=None, unique=False):
         self.data_type = data_type
         self.validator = validator
+        # FIXME: Use this
+        self.unique = unique
         self.new_values = {}
 
     def get_value(self, item):  # pragma nocover
@@ -376,7 +378,7 @@ class Field(object):
         return ''
 
     def set_new_value(self, item, value):
-        old_value = self.get_value(item)
+        old_value = self.get_new_value(item)
         if value == old_value:
             return
         self.new_values[item] = value
@@ -385,7 +387,7 @@ class Field(object):
         return self.new_values.get(item, self.get_value(item))
 
     def is_changed(self, item):
-        return item in self.new_values
+        return self.get_new_value(item) != self.get_value(item)
 
 
 class AccessorField(Field):
@@ -401,12 +403,11 @@ class AccessorField(Field):
           the field to an specific value. FIXME: not implemented yet
         :param validator: A callable that should return True/False
         """
-        super(AccessorField, self).__init__(data_type, validator=validator)
+        super(AccessorField, self).__init__(data_type, validator=validator,
+                                            unique=unique)
         self.label = label
         self.obj_name = obj_name
         self.attribute = attribute
-        # FIXME: Use this
-        self.unique = unique
 
     def _get_obj(self, item):
         if self.obj_name:
@@ -431,7 +432,16 @@ class AccessorField(Field):
         # SearchColumn expects str instead of unicode and objects are rendered
         # as strings
         data_type = {unicode: str, object: str}.get(self.data_type, self.data_type)
-        return SearchColumn('id', title=self.label, data_type=data_type,
+
+        # FIXME Dont let the user edit unique fields for now, since that needs
+        # better handling
+        editable = self.data_type in [unicode, int, Decimal, currency,
+                                      datetime.date] and not self.unique
+
+        # XXX: All columns use a non existing attr, but since we have a
+        # format_func, that will handle the correct value to display.
+        return SearchColumn('non_existing_attr', title=self.label,
+                            data_type=data_type, editable=editable,
                             format_func=self.format_func,
                             search_attribute=self.get_search_spec(spec),
                             format_func_data=self)
@@ -512,8 +522,11 @@ class MassEditorWidget(gtk.HBox):
         self.pack_start(self.apply_button, False, False)
 
         for field in self._fields:
+            # Don't let the user edit unique fields for now
+            if field.unique:
+                continue
             self.field_combo.append_item(field.label, field)
-        self.field_combo.select(self._fields[0])
+        self.field_combo.select_item_by_position(0)
 
     def _apply(self):
         marker('Updating values')
@@ -533,6 +546,9 @@ class MassEditorWidget(gtk.HBox):
             for i, item in enumerate(field.new_values):
                 field.save_value(item)
                 yield i, total
+            # Flush soon, so that any errors triggered by database constraints
+            # pop up.
+            self._store.flush()
 
         marker('Done saving data')
 
@@ -615,11 +631,18 @@ class MassEditorSearch(SearchDialog):
         d.start(wait=0)
         d.cancel.hide()
 
-        for i, total in self.mass_editor.confirm(self):
-            d.progressbar.set_text('%s/%s' % (i + 1, total))
-            d.progressbar.set_fraction((i + 1) / float(total))
-            while gtk.events_pending():
-                gtk.main_iteration(False)
+        try:
+            for i, total in self.mass_editor.confirm(self):
+                d.progressbar.set_text('%s/%s' % (i + 1, total))
+                d.progressbar.set_fraction((i + 1) / float(total))
+                while gtk.events_pending():
+                    gtk.main_iteration(False)
+        except Exception as e:
+            d.stop()
+            self.retval = False
+            warning(_('There was an error saving one of the values'), str(e))
+            self.close()
+            return
 
         d.stop()
         self.retval = True
@@ -633,7 +656,17 @@ class MassEditorSearch(SearchDialog):
         field = column.format_func_data
         is_changed = field.is_changed(item)
         renderer.set_property('weight-set', is_changed)
+        text = field.format_func(item)
         if is_changed:
-            text = field.format_func(item)
             renderer.set_property('weight', pango.WEIGHT_BOLD)
         return text
+
+    def _on_results__cell_edited(self, results, obj, column):
+        field = column.format_func_data
+        # Since the columns use a non existing attribute, we must get the value
+        # from there after the user has edited.
+        value = obj.non_existing_attr
+        # Kiwi is setting as string, not unicode
+        if field.data_type is unicode:
+            value = unicode(value)
+        field.set_new_value(obj, value)

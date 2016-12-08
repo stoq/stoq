@@ -345,8 +345,8 @@ class InventoryCountItemStep(SellableItemStep):
             self.slave.klist.update(item)
             self._update_view()
 
-    def _on_klist__cell_edited(self, klist, item, attr):
-        if attr == 'quantity':
+    def _on_klist__cell_edited(self, klist, item, column):
+        if column.attribute == 'quantity':
             item.changed = True
 
         self._update_view()

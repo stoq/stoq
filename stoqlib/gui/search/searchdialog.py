@@ -197,7 +197,7 @@ class SearchDialog(BasicDialog):
         # in the search list.
         selection_mode = selection_mode or self.selection_mode
         if (selection_mode != gtk.SELECTION_BROWSE and
-            selection_mode != gtk.SELECTION_MULTIPLE):
+                selection_mode != gtk.SELECTION_MULTIPLE):
             raise ValueError('Invalid selection mode %r' % selection_mode)
         return selection_mode
 
@@ -468,7 +468,7 @@ class SearchDialog(BasicDialog):
     def on_search__search_completed(self, search, results, states):
         self.search_completed(results, states)
 
-    def _on_results__cell_edited(self, results, obj, attr):
+    def _on_results__cell_edited(self, results, obj, column):
         """Override this method on child when it's needed to perform some
         tasks when editing a row.
         """

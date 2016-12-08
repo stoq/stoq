@@ -306,10 +306,10 @@ class SaleReturnItemsStep(SellableItemStep):
     #  Callbacks
     #
 
-    def _on_klist__cell_edited(self, klist, obj, attr):
-        if attr == 'quantity':
+    def _on_klist__cell_edited(self, klist, obj, column):
+        if column.attribute == 'quantity':
             obj.will_return = bool(obj.quantity)
-        elif attr == 'will_return':
+        elif column.attribute == 'will_return':
             obj.quantity = obj.max_quantity * int(obj.will_return)
 
         parent = obj.parent_item

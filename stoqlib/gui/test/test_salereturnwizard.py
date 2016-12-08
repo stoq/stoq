@@ -114,13 +114,15 @@ class TestSaleReturnWizard(GUITest):
             self.assertNotSensitive(wizard, ['next_button'])
             _reset_objectlist(objecttree)
 
+        quantity_col = objecttree.get_column_by_name('quantity')
+        will_return_col = objecttree.get_column_by_name('will_return')
         _reset_objectlist(objecttree)
         # None of the siblings are being returned, so the parent will be
         # unchecked
         for item in objecttree:
             if item.parent_item:
                 item.quantity = 0
-                objecttree.emit('cell-edited', item, 'quantity')
+                objecttree.emit('cell-edited', item, quantity_col)
                 self.assertFalse(item.parent_item.will_return)
 
         _reset_objectlist(objecttree)
@@ -128,21 +130,21 @@ class TestSaleReturnWizard(GUITest):
         for item in objecttree:
             if item.parent_item:
                 item.quantity = 5
-                objecttree.emit('cell-edited', item, 'quantity')
+                objecttree.emit('cell-edited', item, quantity_col)
                 self.assertTrue(item.parent_item.will_return)
 
         _reset_objectlist(objecttree)
         for item in objecttree:
             if item.parent_item:
                 item.will_return = True
-                objecttree.emit('cell-edited', item, 'will_return')
+                objecttree.emit('cell-edited', item, will_return_col)
                 self.assertTrue(item.parent_item.will_return)
 
         _reset_objectlist(objecttree)
         for item in objecttree:
             if item.parent_item:
                 item.will_return = False
-                objecttree.emit('cell-edited', item, 'will_return')
+                objecttree.emit('cell-edited', item, will_return_col)
                 self.assertFalse(item.parent_item.will_return)
 
     def test_sale_return_invoice_step(self):
