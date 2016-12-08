@@ -282,7 +282,10 @@ class Invoice(Domain):
         super(Invoice, self).__init__(**kw)
         # The mode and series are only set if the nfce plugin is active, since
         # the invoice_number will be also set by it.
-        if get_plugin_manager().is_active('nfce'):
+
+        plugin_manager = get_plugin_manager()
+        coupon_active = any(plugin_manager.is_active(plugin) for plugin in ['ecf', 'sat'])
+        if not coupon_active and plugin_manager.is_active('nfce'):
             mode = InvoiceGetModeEvent.emit()
             assert mode
             self.mode = mode

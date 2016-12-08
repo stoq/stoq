@@ -120,8 +120,9 @@ class TestIssBookEntry(DomainTest):
 
 class TestInvoice(DomainTest):
     def test_get_next_invoice_number(self):
-        with mock.patch('stoqlib.lib.pluginmanager.PluginManager.is_active') as patch:
-            patch.return_value = True
+        active_plugins = {'ecf': False, 'nfce': True, 'sat': False}
+        with mock.patch('stoqlib.lib.pluginmanager.PluginManager.is_active') as is_active:
+            is_active.side_effect = lambda name: active_plugins.get(name)
             module = 'stoqlib.domain.events.InvoiceGetModeEvent.emit'
             with mock.patch(module) as emit:
                 emit.return_value = Invoice.NFE_MODE
@@ -170,8 +171,9 @@ class TestInvoice(DomainTest):
                     self.assertEquals(next_invoice_number, 1236)
 
     def test_nfe_invoice(self):
-        with mock.patch('stoqlib.lib.pluginmanager.PluginManager.is_active') as patch:
-            patch.return_value = True
+        active_plugins = {'ecf': False, 'nfce': True, 'sat': False}
+        with mock.patch('stoqlib.lib.pluginmanager.PluginManager.is_active') as is_active:
+            is_active.side_effect = lambda name: active_plugins.get(name)
             module = 'stoqlib.domain.events.InvoiceGetModeEvent.emit'
             with mock.patch(module) as emit:
                 emit.return_value = Invoice.NFE_MODE
