@@ -159,6 +159,14 @@ class ParameterDetails(object):
             return ParameterDetails.validate_decimal
 
 
+DEFAULT_LOAN_NOTICE = _(
+    'I inform and sign up to receive the items in full '
+    'working order and I am aware of the responsability '
+    'that I have for returning them, as well as the '
+    'return of the amounts involved, in case of loss, '
+    'damage or any event that make the product unusable.')
+
+
 _details = [
     ParameterDetails(
         u'EDIT_CODE_PRODUCT',
@@ -797,11 +805,19 @@ _details = [
 
     ParameterDetails(
         u'PRINT_PROMISSORY_NOTE_ON_LOAN',
-        _(u'Sales'),
+        _(u'Loan'),
         _(u'Printing of promissory notes on loans'),
         _(u'This parameter indicates if Stoq should print a promissory note '
           u'when printing a loan receipt.'),
         bool, initial=False),
+
+    ParameterDetails(
+        u'LOAN_NOTICE',
+        _(u'Loan'),
+        _(u'Notice that will be added to the loan report'),
+        _(u'This notice will be added to the loan receipt and can be used to '
+          'warn the client that he is responsible for the items he is loaning'),
+        unicode, multiline=True, initial=DEFAULT_LOAN_NOTICE),
 
     ParameterDetails(
         u'PRINT_SALE_DETAILS_ON_POS',

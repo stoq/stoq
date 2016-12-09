@@ -95,6 +95,7 @@ class LoanReceipt(HTMLReport):
             loan=self.loan,
             print_promissory_note=print_promissory_note,
             promissory_data=promissory_data,
+            notice=api.sysparam.get_string('LOAN_NOTICE')
         )
 
     def adjust_for_test(self):

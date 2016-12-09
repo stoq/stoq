@@ -30,6 +30,8 @@ GtkVBox(toplevel):
     row: u'General', u"Client's credit limit automatic calculation", Decimal('0.00')
     row: u'General', u'Allow registration of new city locations', u'No'
     row: u'General', u'Online services', u'Yes'
+    row: u'Loan', u'Notice that will be added to the loan report', u'I inform and sign up to receive the items in full working order and I am aware of the responsability that I have for returning them, as well as the return of the amounts involved, in case of loss, damage or any event that make the product unusable.'
+    row: u'Loan', u'Printing of promissory notes on loans', u'No'
     row: u'Payments', u'Printing of promissory notes on booklets', u'Yes'
     row: u'Payments', u'Create payments for a stock decrease', u'No'
     row: u'Payments', u'Mandatory check number', u'No'
@@ -79,7 +81,6 @@ GtkVBox(toplevel):
     row: u'Sales', u'Requires confirmation of quantity after barcode activation', u'No'
     row: u'Sales', u'Set authorization number mandatory', u'No'
     row: u'Sales', u'Default ISS tax', Decimal('18.00')
-    row: u'Sales', u'Printing of promissory notes on loans', u'No'
     row: u'Sales', u'Tolerance for a payment to be considered as a late payment.', u'0'
     row: u'Sales', u'Return policy on sales', u"Client's choice"
     row: u'Sales', u'Scale barcode format', u'4 Digits Code with Price'
