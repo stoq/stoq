@@ -255,7 +255,20 @@ class StockTransferWizard(BaseWizard):
             # message and the dialog is kept open so the user can fix whatever is wrong.
             return
 
-        self.model.send()
+        # FIXME: If any issue happen at any point of the "send process",
+        # trying to issue it again would make some products have their stock
+        # decreased twice. Make sure we undo it first.
+        # The issue itself was related to missing stock. Why get_missing_items
+        # failed above?
+        self.store.savepoint('before_send_transfer')
+        try:
+            self.model.send()
+        except Exception as e:
+            warning(_("An error happened when trying to confirm the transfer"),
+                    str(e))
+            self.store.rollback_to_savepoint('before_send_transfer')
+            raise
+
         self.retval = self.model
         self.close()
 
