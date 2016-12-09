@@ -1,0 +1,8 @@
+slave: CouponNumberSlave
+GtkWindow(toplevel): title=None, hidden
+  GtkEventBox(): slave BasicForm is attached
+    GtkAlignment(toplevel):
+      GtkTable():
+        ProxyLabel(coupon_id_lbl): 'Coupon Number:'
+        ProxyLabel(coupon_id): '<span >0</span>'
+        GtkHBox():
