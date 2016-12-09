@@ -30,8 +30,10 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestSellablePriceDialog(GUITest):
+
+    @mock.patch('stoqlib.gui.dialogs.masseditordialog.yesno')
     @mock.patch('stoqlib.gui.dialogs.masseditordialog.ProgressDialog.show')
-    def test_create(self, show):
+    def test_create(self, show, yesno):
         sellable = self.create_sellable()
         sellable.code = u'123'
         sellable.cost = 10
@@ -67,6 +69,7 @@ class TestSellablePriceDialog(GUITest):
         search.mass_editor._editor._oper.entry.set_text('1.5')  # 10%
         self.click(search.mass_editor.apply_button)
 
+        yesno.return_value = True
         self.click(search.ok_button)
 
         self.assertEquals(p1.price, 11)

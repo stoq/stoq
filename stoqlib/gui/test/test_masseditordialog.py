@@ -298,8 +298,9 @@ class TestMassEditor(GUITest):
         sellable.category = None
         self.assertEqual(field.format_func(sellable), '')
 
+    @mock.patch('stoqlib.gui.dialogs.masseditordialog.yesno')
     @mock.patch('stoqlib.gui.dialogs.masseditordialog.warning')
-    def test_confirm_invalid(self, warning):
+    def test_confirm_invalid(self, warning, yesno):
         price_field = AccessorField('Test', None, 'base_price', Decimal)
         desc_field = AccessorField('Test', None, 'description', unicode)
         sellable = self.create_sellable(price=10)
@@ -313,7 +314,24 @@ class TestMassEditor(GUITest):
         column = search.results.get_columns()[1]
         search.results.emit('cell-edited', sellable, column)
 
+        # Dialog should still be open
+        yesno.return_value = False
         self.click(search.ok_button)
+
+        yesno.return_value = True
+        self.click(search.ok_button)
+
         args, kwargs = warning.call_args
         self.assertEqual(args[0],
                          'There was an error saving one of the values')
+
+    @mock.patch('stoqlib.gui.dialogs.masseditordialog.yesno')
+    @mock.patch('stoqlib.gui.dialogs.masseditordialog.warning')
+    def test_confirm_not_changed(self, warning, yesno):
+        price_field = AccessorField('Test', None, 'base_price', Decimal)
+        sellable = self.create_sellable(price=10)
+        search = self._create_search([price_field], [sellable])
+
+        self.click(search.ok_button)
+        self.assertEquals(yesno.call_count, 0)
+        self.assertEquals(warning.call_count, 0)

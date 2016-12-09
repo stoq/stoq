@@ -53,7 +53,7 @@ from kiwi.ui.widgets.entry import ProxyEntry, ProxyDateEntry
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
-from stoqlib.lib.message import marker, warning
+from stoqlib.lib.message import marker, warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -424,7 +424,11 @@ class AccessorField(Field):
         return getattr(obj, self.attribute)
 
     def save_value(self, item):
-        value = self.new_values[item]
+        try:
+            value = self.new_values[item]
+        except KeyError:
+            # The value wasn't changed. Ignore
+            return
         dest_obj = self._get_obj(item)
         setattr(dest_obj, self.attribute, value)
 
@@ -536,15 +540,28 @@ class MassEditorWidget(gtk.HBox):
         marker('Done updating values')
 
     #
+    # Public API
+    #
+
+    def get_changed_objects(self):
+        """Returns a set of all the changed objects"""
+        objs = set()
+        for field in self._fields:
+            objs.update(field.new_values.keys())
+        return objs
+
+    #
     # BaseEditorSlave
     #
 
     def confirm(self, dialog):
         marker('Saving data')
-        for i, field in enumerate(self._fields):
-            total = len(field.new_values)
-            for i, item in enumerate(field.new_values):
-                field.save_value(item)
+
+        objs = self.get_changed_objects()
+        total = len(objs)
+        for i, obj in enumerate(objs):
+            for field in self._fields:
+                field.save_value(obj)
                 yield i, total
             # Flush soon, so that any errors triggered by database constraints
             # pop up.
@@ -623,6 +640,20 @@ class MassEditorSearch(SearchDialog):
         return columns
 
     def confirm(self, retval=None):
+        total_products = len(self.mass_editor.get_changed_objects())
+        if total_products == 0:
+            self.retval = False
+            self.close()
+            return
+
+        retval = yesno(
+            _('This will update {} products. Are you sure?'.format(total_products)),
+            gtk.RESPONSE_NO, _('Apply changes'), _('Don\'t apply.'))
+        if not retval:
+            # Don't close the dialog. Let the user make more changes if he
+            # wants to or cancel the dialog.
+            return
+
         # FIXME: Is there a nicer way to display this progress?
         self.ok_button.set_sensitive(False)
         self.cancel_button.set_sensitive(False)
