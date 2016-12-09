@@ -1,0 +1,91 @@
+dialog: SaleDetailsDialog
+GtkVBox(toplevel):
+  GtkTable(table1, fill=True):
+    GtkLabel(label9): '<b>Sale Number:</b>'
+    ProxyLabel(identifier): '<span >01001</span>'
+    GtkEventBox(coupon_number_holder):
+      GtkEventBox(): slave BasicForm is attached
+        GtkAlignment(toplevel):
+          GtkTable():
+            ProxyLabel(coupon_id_lbl): 'Coupon Number:'
+            ProxyLabel(coupon_id): '<span >0</span>'
+            GtkHBox():
+    GtkLabel(label1): 'Open Date:'
+    ProxyLabel(open_date_lbl): '<span >YYYY-MM-DD</span>'
+    GtkLabel(label5): 'Client:'
+    GtkHBox(hbox1):
+      ProxyLabel(client_lbl, expand=True, fill=True): '<span ></span>'
+      GtkButton(details_button, fill=True): insensitive
+    GtkLabel(label6): 'Status:'
+    GtkHBox(hbox2):
+      ProxyLabel(status_lbl, expand=True, fill=True): '<span >Opened</span>'
+      GtkButton(status_details_button, fill=True): hidden
+    GtkLabel(label2): 'Salesperson:'
+    ProxyLabel(salesperson_lbl): '<span >SalesPerson</span>'
+  GtkNotebook(details_notebook, expand=True, fill=True):
+    GtkVBox(vbox):
+      GtkVBox(items_vbox, expand=True, fill=True):
+        ObjectTree(items_list, expand=True, fill=True):
+          column: title='Code'
+          column: title='Description', expand
+          column: title='Category', hidden
+          column: title='Manufacturer', hidden
+          column: title='Qty'
+          column: title='Base price', hidden
+          column: title='Sale price'
+          column: title='Discount', hidden
+          column: title='Total'
+      GtkTable(table2, fill=True):
+        GtkLabel(label4): 'Subtotal:'
+        ProxyLabel(subtotal_lbl): '<span >$ 0.00</span>'
+        GtkLabel(label8): 'Discount:'
+        ProxyLabel(discount_lbl): '<span >$ 0.00</span>'
+        GtkLabel(label7): 'Surcharge:'
+        ProxyLabel(surcharge_lbl): '<span >$ 0.00</span>'
+        GtkLabel(label3): 'Total:'
+        ProxyLabel(total_lbl): '<span >$ 0.00</span>'
+    GtkVBox(payments_vbox):
+      ObjectList(payments_list, expand=True, fill=True):
+        column: title='Payment #'
+        column: title='Type'
+        column: title='Description', expand
+        column: title='Due date'
+        column: title='Paid date'
+        column: title='Status'
+        column: title='Value'
+        column: title='Paid value'
+      GtkTable(table4, fill=True):
+        GtkLabel(label13): 'Discount:'
+        ProxyLabel(total_discount): '<span >$ 0.00</span>'
+        GtkLabel(label11): 'Penalty:'
+        ProxyLabel(total_penalty): '<span >$ 0.00</span>'
+        ProxyLabel(kiwilabel16): 'Total Paid:'
+        ProxyLabel(total_paid): '<span >$ 0.00</span>'
+        GtkLabel(label12): 'Interest:'
+        ProxyLabel(total_interest): '<span >$ 0.00</span>'
+        GtkLabel(label10): 'Total:'
+        ProxyLabel(total_value): '<span >$ 0.00</span>'
+    GtkVBox(vbox3):
+      ObjectList(payments_info_list, expand=True, fill=True):
+        column: title='When'
+        column: title='Payment', expand
+        column: title='Changed'
+        column: title='From'
+        column: title='To'
+        column: title='Reason', expand
+    GtkVBox(vbox2):
+      GtkVBox(vbox5, expand=True, fill=True):
+        ObjectList(comments_list, expand=True, fill=True):
+          column: title='Date'
+          column: title='Who', expand
+          column: title='Notes', expand
+        GtkHButtonBox(hbuttonbox2, fill=True):
+          GtkButton(comment_add): 'Add Comment'
+          GtkButton(comment_info): 'gtk-info', insensitive
+    GtkVBox(vbox6):
+      GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
+        ProxyTextView(notes): invalid
+  GtkHButtonBox(hbuttonbox1, fill=True):
+    GtkButton(print_booklets): 'Print booklets', hidden
+    GtkButton(print_bills): 'Print Bills', hidden
+    GtkButton(print_button): 'gtk-print'

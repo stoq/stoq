@@ -60,6 +60,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 from ecf.cat52 import MODEL_CODES
 from ecf.catgenerator import StoqlibCATGenerator
+from ecf.couponnumberslave import CouponNumberSlave
 from ecf.couponprinter import CouponPrinter
 from ecf.ecfdomain import ECFPrinter, FiscalSaleHistory
 from ecf.ecfprinterdialog import ECFListDialog
@@ -805,8 +806,8 @@ class ECFUI(object):
     def _on_EditorCreateEvent(self, editor, model, store, *args):
         from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
         manager = get_plugin_manager()
-        nfe_active = manager.is_active('nfe')
+        nfe_active = any(manager.is_active(plugin) for plugin in ['nfe', 'nfce'])
         if not nfe_active and isinstance(editor, SaleDetailsDialog):
             # Only display the coupon number if the nfe is not active.
-            editor.invoice_label.set_text(_('Coupon Number'))
-            editor.invoice_number.update(model.coupon_id)
+            editor.attach_slave('coupon_number_holder',
+                                CouponNumberSlave(editor.store, model))
