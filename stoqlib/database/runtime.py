@@ -474,8 +474,15 @@ class StoqlibStore(Store):
         if not self._committing:
             return
 
+        # We need to block implicit flushes here since if a lot of objects are
+        # updated at once, and those objects fetch other objects from the
+        # databas during the before-commited hook, the store.get call would
+        # trigger another flush and that would end up in an maximum recursion
+        # depth error.
+        self.block_implicit_flushes()
         for obj_info in self._cache.get_cached():
             obj_info.event.emit("before-commited")
+        self.unblock_implicit_flushes()
 
         # If objs got dirty when calling the hooks, flush again
         if self._dirty:
