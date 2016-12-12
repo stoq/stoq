@@ -241,26 +241,14 @@ class Viewable(ClassInittableObject):
         """
         # Create a new viewable as a subclass of the original viewable, that
         # inclues the new tables
-        tables = cls.tables + (new_joins or [])
-        new_table = type(cls.__name__ + 'Ext', (cls,), dict(tables=tables))
+        klass_dict = dict(
+            tables=cls.tables + (new_joins or []),
+            **new_attrs)
 
-        # Extend the new attributes
-        cls_attributes = cls.cls_attributes[:]
-        cls_spec = list(cls.cls_spec)
-        group_by = cls.group_by[:]
-
-        for key, value in new_attrs.items():
-            setattr(new_table, key, value)
-            cls_attributes.append(key)
-            cls_spec.append(value)
-            group_by.append(value)
-
-        new_table.cls_attributes = cls_attributes
-        new_table.cls_spec = tuple(cls_spec)
         if cls.group_by:
-            new_table.group_by = group_by
+            klass_dict['group_by'] = cls.group_by[:] + new_attrs.values()
 
-        return new_table
+        return type(cls.__name__ + 'Ext', (cls, ), klass_dict)
 
     @classmethod
     def has_join_with(cls, table):
