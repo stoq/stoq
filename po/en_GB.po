@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-11 02:10-0200\n"
+"POT-Creation-Date: 2016-12-14 02:10-0200\n"
 "PO-Revision-Date: 2016-12-10 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/async/stoq/language/en_GB/)\n"
@@ -1820,10 +1820,10 @@ msgstr ""
 msgid "S@T Fiscal"
 msgstr ""
 
-#: ../data/glade/PluginStep.ui.h:9 ../plugins/ecf/ecfui.py:78
-#: ../plugins/ecf/ecfui.py:89 ../plugins/ecf/ecfui.py:97
-#: ../plugins/ecf/ecfui.py:105 ../plugins/ecf/ecfui.py:234
-#: ../plugins/ecf/ecfui.py:258
+#: ../data/glade/PluginStep.ui.h:9 ../plugins/ecf/ecfui.py:79
+#: ../plugins/ecf/ecfui.py:90 ../plugins/ecf/ecfui.py:98
+#: ../plugins/ecf/ecfui.py:106 ../plugins/ecf/ecfui.py:235
+#: ../plugins/ecf/ecfui.py:259
 msgid "ECF"
 msgstr "ECF"
 
@@ -2989,8 +2989,8 @@ msgstr "Destination:"
 msgid "Receival date:"
 msgstr "Receival date:"
 
-#: ../data/glade/TransferOrderDetails.ui.h:9 ../plugins/ecf/ecfui.py:316
-#: ../plugins/ecf/ecfui.py:369 ../stoq/gui/inventory.py:107
+#: ../data/glade/TransferOrderDetails.ui.h:9 ../plugins/ecf/ecfui.py:317
+#: ../plugins/ecf/ecfui.py:370 ../stoq/gui/inventory.py:107
 #: ../stoq/gui/production.py:123 ../stoq/gui/purchase.py:172
 #: ../stoq/gui/sales.py:219 ../stoqlib/gui/base/wizards.py:343
 #: ../stoqlib/gui/editors/baseeditor.py:456
@@ -4915,6 +4915,10 @@ msgstr "Any"
 msgid "There must be a printer configured"
 msgstr "There must be a printer configured"
 
+#: ../plugins/ecf/couponnumberslave.py:28
+msgid "Coupon Number"
+msgstr ""
+
 #: ../plugins/ecf/couponprinter.py:113 ../plugins/ecf/couponprinter.py:124
 msgid "Could not cancel coupon"
 msgstr "Could not cancel coupon"
@@ -5025,7 +5029,7 @@ msgstr "This number must be positive and greater than 0"
 msgid "Fiscal Printer"
 msgstr "Fiscal Printer"
 
-#: ../plugins/ecf/ecfprinterdialog.py:131 ../plugins/ecf/ecfui.py:173
+#: ../plugins/ecf/ecfprinterdialog.py:131 ../plugins/ecf/ecfui.py:174
 msgid "Error opening serial port"
 msgstr ""
 
@@ -5093,190 +5097,185 @@ msgstr "Computer"
 msgid "Cant edit a virtual printer"
 msgstr "Cant edit a virtual printer"
 
-#: ../plugins/ecf/ecfprinterdialog.py:350 ../plugins/ecf/ecfui.py:210
+#: ../plugins/ecf/ecfprinterdialog.py:350 ../plugins/ecf/ecfui.py:211
 msgid "Fiscal Printers"
 msgstr "Fiscal Printers"
 
-#: ../plugins/ecf/ecfui.py:79
+#: ../plugins/ecf/ecfui.py:80
 msgid "Additional information on fiscal coupon"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:80
+#: ../plugins/ecf/ecfui.py:81
 msgid ""
 "This will be printed in the promotional message area of the fiscal coupon\n"
 "IMPORTANT NOTE:\n"
 "This template cannot have more than 2 line, and each line more than 50 characters, and you have to break it manually using the characters \"\\n\" or (enter key) or the fiscal printer may not print it correctly."
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:90
+#: ../plugins/ecf/ecfui.py:91
 msgid "Enable document on invoice"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:91
+#: ../plugins/ecf/ecfui.py:92
 msgid ""
 "Once this parameter is set, we will confirm the client document when  "
 "registering a fiscal coupon."
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:98
+#: ../plugins/ecf/ecfui.py:99
 msgid "Allow to cancel the last fiscal coupon"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:99
+#: ../plugins/ecf/ecfui.py:100
 msgid ""
 "When set to false, the user will not be able to cancel the last coupon, only"
 " return it."
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:106
+#: ../plugins/ecf/ecfui.py:107
 msgid "Cat 52 destination directory"
 msgstr "Cat 52 destination directory"
 
-#: ../plugins/ecf/ecfui.py:107
+#: ../plugins/ecf/ecfui.py:108
 msgid "Where the file generated after a Z-reduction should be saved."
 msgstr "Where the file generated after a Z-reduction should be saved."
 
-#: ../plugins/ecf/ecfui.py:125 ../stoqlib/reporting/financial.py:113
+#: ../plugins/ecf/ecfui.py:126 ../stoqlib/reporting/financial.py:113
 msgid "Summary"
 msgstr "Summary"
 
-#: ../plugins/ecf/ecfui.py:181
+#: ../plugins/ecf/ecfui.py:182
 msgid "This operation requires a connected fiscal printer"
 msgstr "This operation requires a connected fiscal printer"
 
-#: ../plugins/ecf/ecfui.py:185
+#: ../plugins/ecf/ecfui.py:186
 msgid "An error occurred during fiscal printer setup"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:191
+#: ../plugins/ecf/ecfui.py:192
 msgid "Fiscalprinters serial number is different!"
 msgstr "Fiscalprinters serial number is different!"
 
-#: ../plugins/ecf/ecfui.py:235
+#: ../plugins/ecf/ecfui.py:236
 msgid "Configure fiscal printer..."
 msgstr "Configure fiscal printer..."
 
-#: ../plugins/ecf/ecfui.py:259
+#: ../plugins/ecf/ecfui.py:260
 msgid "Read Memory"
 msgstr "Read Memory"
 
-#: ../plugins/ecf/ecfui.py:261 ../plugins/ecf/ecfui.py:514
+#: ../plugins/ecf/ecfui.py:262 ../plugins/ecf/ecfui.py:515
 msgid "Cancel Last Document"
 msgstr "Cancel Last Document"
 
-#: ../plugins/ecf/ecfui.py:287
+#: ../plugins/ecf/ecfui.py:288
 msgid "It was not possible to communicate with the printer"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:295
+#: ../plugins/ecf/ecfui.py:296
 msgid "The ECF has an open coupon. It will be canceled now."
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:313
+#: ../plugins/ecf/ecfui.py:314
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr "It's not possible to emit a read X for the configured printer.\nWould you like to ignore this error and continue?"
 
-#: ../plugins/ecf/ecfui.py:317 ../plugins/ecf/ecfui.py:370
+#: ../plugins/ecf/ecfui.py:318 ../plugins/ecf/ecfui.py:371
 msgid "Ignore"
 msgstr "Ignore"
 
-#: ../plugins/ecf/ecfui.py:318 ../plugins/ecf/ecfui.py:371
+#: ../plugins/ecf/ecfui.py:319 ../plugins/ecf/ecfui.py:372
 msgid "Try Again"
 msgstr "Try Again"
 
-#: ../plugins/ecf/ecfui.py:350
+#: ../plugins/ecf/ecfui.py:351
 msgid ""
 "You need to set some details about your ECF if you want to save the paulista"
 " invoice file. Go to the admin application and fill the required information"
 " for the ECF."
 msgstr "You need to set some details about your ECF if you want to save the paulista invoice file. Go to the admin application and fill the required information for the ECF."
 
-#: ../plugins/ecf/ecfui.py:354
+#: ../plugins/ecf/ecfui.py:355
 msgid "Cancel Close Till"
 msgstr "Cancel Close Till"
 
-#: ../plugins/ecf/ecfui.py:366
+#: ../plugins/ecf/ecfui.py:367
 msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr "It's not possible to emit a reduce Z for the configured printer.\nWould you like to ignore this error and continue?"
 
-#: ../plugins/ecf/ecfui.py:497
+#: ../plugins/ecf/ecfui.py:498
 msgid "There is no sale nor till entry to cancel"
 msgstr "There is no sale nor till entry to cancel"
 
-#: ../plugins/ecf/ecfui.py:501
+#: ../plugins/ecf/ecfui.py:502
 #, python-format
 msgid "Do you really want to cancel the sale number %s and value %.2f ?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:505
+#: ../plugins/ecf/ecfui.py:506
 #, python-format
 msgid ""
 "Do you really want to cancel the last cash added number %d and value %.2f ?"
 msgstr "Do you really want to cancel the last cash added number %d and value %.2f ?"
 
-#: ../plugins/ecf/ecfui.py:510
+#: ../plugins/ecf/ecfui.py:511
 #, python-format
 msgid ""
 "Do you really want to cancel the last cash removed number %d and value %.2f "
 "?"
 msgstr "Do you really want to cancel the last cash removed number %d and value %.2f ?"
 
-#: ../plugins/ecf/ecfui.py:515 ../stoqlib/gui/dialogs/pluginsdialog.py:141
+#: ../plugins/ecf/ecfui.py:516 ../stoqlib/gui/dialogs/pluginsdialog.py:141
 #: ../stoqlib/gui/fiscalprinter.py:172 ../stoqlib/gui/fiscalprinter.py:324
 msgid "Not now"
 msgstr "Not now"
 
 #. TRANSLATORS: cash out = sangria, cash in = suprimento
-#: ../plugins/ecf/ecfui.py:526
+#: ../plugins/ecf/ecfui.py:527
 msgid "Cash out: last cash in cancelled"
 msgstr ""
 
 #. TRANSLATORS: cash out = sangria, cash in = suprimento
-#: ../plugins/ecf/ecfui.py:531
+#: ../plugins/ecf/ecfui.py:532
 msgid "Cash in: last cash out cancelled"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:533 ../plugins/ecf/ecfui.py:551
+#: ../plugins/ecf/ecfui.py:534 ../plugins/ecf/ecfui.py:552
 msgid "Document was cancelled"
 msgstr "Document was cancelled"
 
-#: ../plugins/ecf/ecfui.py:535
+#: ../plugins/ecf/ecfui.py:536
 msgid "Cancelling failed, nothing to cancel"
 msgstr "Cancelling failed, nothing to cancel"
 
-#: ../plugins/ecf/ecfui.py:544
+#: ../plugins/ecf/ecfui.py:545
 msgid "Cancelling last document on ECF"
 msgstr ""
 
 #. TRANSLATORS: cash out = sangria
-#: ../plugins/ecf/ecfui.py:549
+#: ../plugins/ecf/ecfui.py:550
 msgid "Cash out: last sale cancelled"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:572
+#: ../plugins/ecf/ecfui.py:573
 msgid "You do not have this value on till."
 msgstr "You do not have this value on till."
 
-#: ../plugins/ecf/ecfui.py:577
+#: ../plugins/ecf/ecfui.py:578
 msgid "Cancelling sale failed, nothing to cancel"
 msgstr "Cancelling sale failed, nothing to cancel"
 
-#: ../plugins/ecf/ecfui.py:674
+#: ../plugins/ecf/ecfui.py:675
 msgid ""
 "That is last sale in ECF. Return using the menu ECF - Cancel Last Document"
 msgstr "That is last sale in ECF. Return using the menu ECF - Cancel Last Document"
 
-#: ../plugins/ecf/ecfui.py:759
+#: ../plugins/ecf/ecfui.py:760
 msgid "Coupon cancellation failed..."
-msgstr ""
-
-#. Only display the coupon number if the nfe is not active.
-#: ../plugins/ecf/ecfui.py:811
-msgid "Coupon Number"
 msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:1
