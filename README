@@ -22,7 +22,7 @@ Requirements
 
 Gtk+ >= 2.20
 Gudev >= 147
-Kiwi >= 1.12
+Kiwi >= 1.11
 Mako >= 0.2.5
 PostgresSQL >= 8.4
 PyGtk >= 2.20
