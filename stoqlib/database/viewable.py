@@ -214,8 +214,36 @@ class Viewable(ClassInittableObject):
                 if is_domain and value.__name__.endswith('Alias'):
                     continue
 
-                if (is_domain or isinstance(value, PropertyColumn) or
-                        isinstance(value, Expr)):
+                is_column = isinstance(value, PropertyColumn)
+                if is_column:
+                    vf = value.variable_factory
+                    # Storm suffers from a bug that, if a column defines
+                    # "allow_none=False", it will fail when it is retrieved
+                    # from the database as NULL. That is something very common
+                    # for viewables doing left joins and it should not fail.
+                    # To workaround that, lets create a copy of it and remove
+                    # the allow_none keyword from the property
+                    if not vf.keywords.get('allow_none', True):
+                        keywords = vf.keywords.copy()
+
+                        # We want to remove allow_none so it will assume its
+                        # default form (True). Also, validator_attribute should
+                        # be passed on the constructor and column will be
+                        # passed to variable_factory as "self" inside the
+                        # PropertyColumn.
+                        validator_attribute = keywords.pop('validator_attribute')
+                        for kw in ['allow_none', 'column']:
+                            keywords.pop(kw, None)
+
+                        # This is a copy of how the PropertyColumn is created
+                        # by Storm, passing exactly the same arguments. The
+                        # resulting object should be identical to the original
+                        value = PropertyColumn(
+                            value, value.cls, validator_attribute,
+                            value.name, value.primary, vf.func, keywords)
+                        setattr(cls, attr, value)
+
+                if is_domain or is_column or isinstance(value, Expr):
                     attributes.append(attr)
                     cls_spec.append(value)
 

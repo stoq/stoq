@@ -34,7 +34,7 @@ from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.method import CheckData
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
-from stoqlib.domain.person import Person, Client, Individual
+from stoqlib.domain.person import Person, Client, Individual, Supplier
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.test.domaintest import DomainTest
@@ -49,13 +49,19 @@ class ClientView(Viewable):
     person_name = Person.name
     total_sales = Sum(Sale.total_amount)
 
+    # This will be retrieved as None (because clients are not suppliers in the
+    # tests) and even though the column is defined as "allow_none=False"
+    # it should not fail in the selects bellow.
+    supplier_status = Supplier.status
+
     tables = [
         Client,
         LeftJoin(Person, Person.id == Client.person_id),
+        LeftJoin(Supplier, Person.id == Supplier.person_id),
         LeftJoin(Sale, Sale.client_id == Client.id),
     ]
 
-    group_by = [Person, Client, person_name]
+    group_by = [Person, Client, person_name, supplier_status]
 
 
 class ViewableTest(DomainTest):
@@ -162,3 +168,10 @@ class ViewableTest(DomainTest):
         self.assertTrue(ClientView.has_join_with(table=Client))
         self.assertTrue(ClientView.has_join_with(table=Sale))
         self.assertFalse(ClientView.has_join_with(table=Sellable))
+
+    def test_allow_none_still_on_original_class(self):
+        vf = ClientView.supplier_status.variable_factory
+        self.assertNotIn('allow_none', vf.keywords)
+
+        vf = Supplier.status.variable_factory
+        self.assertFalse(vf.keywords['allow_none'])
