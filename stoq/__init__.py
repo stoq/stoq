@@ -40,7 +40,7 @@ micro_version = 90
 extra_version = ''
 
 #: the date the software was released
-release_date = (2016, 11, 22)
+release_date = (2016, 12, 14)
 
 #: if this is a stable release
 stable = False
