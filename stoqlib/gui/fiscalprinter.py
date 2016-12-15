@@ -28,6 +28,7 @@ import datetime
 import logging
 import serial
 import sys
+import traceback
 
 import glib
 import gobject
@@ -560,6 +561,7 @@ class FiscalCoupon(gobject.GObject):
             # Only finish the transaction after everything passed above.
             store.confirm(model)
         except Exception as e:
+            traceback.print_exception(*sys.exc_info())
             warning(_("An error happened while trying to confirm the sale. "
                       "Cancelling the coupon now..."), str(e))
             self.cancel()
