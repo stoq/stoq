@@ -287,7 +287,7 @@ class Invoice(Domain):
         coupon_active = any(plugin_manager.is_active(plugin) for plugin in ['ecf', 'sat'])
         if not coupon_active and plugin_manager.is_active('nfce'):
             mode = InvoiceGetModeEvent.emit()
-            assert mode
+            #assert mode
             self.mode = mode
             # TODO Handle series number
             self.series = 1
@@ -330,6 +330,17 @@ class Invoice(Domain):
         We should have a database constraint for this, but since these three data
         isn't saved at once, the constraint would brake every time.
         """
+        # FIXME: The nfce plugin is responsible for generating those
+        # information now, but that broke our nfe plugin since it
+        # needs an invoice number. We should find a better way of handling
+        # this since we don't want to polute the nfe/nfce invoice number
+        # namespace.
+        pg = get_plugin_manager()
+        if pg.is_active('nfe') and not pg.is_active('nfce'):  # pragma nocoverage
+            return
+
+        # FIXME: We should not use assert in this kind of code since
+        # there's an optimization flag on python that removes all the asserts
         assert ((self.invoice_number and self.series and self.mode) or
                 (not self.invoice_number and not self.series and not self.mode))
 

@@ -36,6 +36,7 @@ from xml.sax.saxutils import escape
 
 from kiwi.python import strip_accents, Settable
 
+from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import NFeDanfeOrientation
@@ -217,6 +218,8 @@ class NFeGenerator(object):
         aamm = now.strftime('%y%m')
 
         invoice = self._order.invoice
+        if not invoice.invoice_number:
+            invoice.invoice_number = Invoice.get_next_invoice_number(self.store)
         nnf = invoice.invoice_number
         assert nnf
 
