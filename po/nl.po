@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-14 02:10-0200\n"
-"PO-Revision-Date: 2016-12-10 04:10+0000\n"
+"POT-Creation-Date: 2016-12-16 15:31-0200\n"
+"PO-Revision-Date: 2016-12-16 17:31+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Dutch (http://www.transifex.com/async/stoq/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -2555,7 +2555,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: ../data/glade/SaleDetailsDialog.ui.h:23 ../stoqlib/gui/fiscalprinter.py:579
+#: ../data/glade/SaleDetailsDialog.ui.h:23 ../stoqlib/gui/fiscalprinter.py:581
 msgid "Print booklets"
 msgstr ""
 
@@ -2965,7 +2965,7 @@ msgid "Till Out..."
 msgstr ""
 
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:2
-#: ../stoqlib/gui/fiscalprinter.py:474 ../stoqlib/gui/fiscalprinter.py:481
+#: ../stoqlib/gui/fiscalprinter.py:475 ../stoqlib/gui/fiscalprinter.py:482
 msgid "Resume"
 msgstr ""
 
@@ -5230,7 +5230,7 @@ msgid ""
 msgstr ""
 
 #: ../plugins/ecf/ecfui.py:516 ../stoqlib/gui/dialogs/pluginsdialog.py:141
-#: ../stoqlib/gui/fiscalprinter.py:172 ../stoqlib/gui/fiscalprinter.py:324
+#: ../stoqlib/gui/fiscalprinter.py:173 ../stoqlib/gui/fiscalprinter.py:325
 msgid "Not now"
 msgstr ""
 
@@ -5355,7 +5355,7 @@ msgstr ""
 msgid "The CNPJ is not valid."
 msgstr ""
 
-#: ../plugins/nfe/nfegenerator.py:196
+#: ../plugins/nfe/nfegenerator.py:197
 #, python-format
 msgid "The CNPJ of %s is not valid."
 msgstr ""
@@ -6271,7 +6271,7 @@ msgstr ""
 
 #: ../plugins/optical/opticalwizard.py:197
 #: ../plugins/optical/tests/test_optical_wizard.py:162
-#: ../stoqlib/gui/fiscalprinter.py:579 ../stoqlib/gui/fiscalprinter.py:587
+#: ../stoqlib/gui/fiscalprinter.py:581 ../stoqlib/gui/fiscalprinter.py:589
 #: ../stoqlib/gui/test/test_salequote_wizard.py:109
 #: ../stoqlib/gui/wizards/loanwizard.py:458
 #: ../stoqlib/gui/wizards/receivingwizard.py:458
@@ -6998,9 +6998,9 @@ msgid "Change settings"
 msgstr ""
 
 #: ../stoq/gui/config.py:813 ../stoq/gui/pos.py:1158 ../stoq/gui/till.py:343
-#: ../stoqlib/gui/fiscalprinter.py:631 ../stoqlib/gui/fiscalprinter.py:674
-#: ../stoqlib/gui/fiscalprinter.py:694 ../stoqlib/gui/fiscalprinter.py:723
-#: ../stoqlib/gui/fiscalprinter.py:749
+#: ../stoqlib/gui/fiscalprinter.py:633 ../stoqlib/gui/fiscalprinter.py:676
+#: ../stoqlib/gui/fiscalprinter.py:696 ../stoqlib/gui/fiscalprinter.py:725
+#: ../stoqlib/gui/fiscalprinter.py:751
 msgid "Try again"
 msgstr ""
 
@@ -10392,7 +10392,7 @@ msgid "quantity must be a positive number"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1265
-msgid "Quantity to sell is greater than the available stock."
+msgid "Quantity to decrease is greater than the available stock."
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1577
@@ -13835,131 +13835,131 @@ msgstr ""
 msgid "Select attachment"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:128
+#: ../stoqlib/gui/fiscalprinter.py:129
 msgid ""
 "You already have a till operation opened. Close the current Till and open "
 "another one."
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:169
+#: ../stoqlib/gui/fiscalprinter.py:170
 msgid ""
 "You can only close the till once per day. You won't be able to make any more sales today.\n"
 "\n"
 "Close the till?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:172 ../stoqlib/gui/fiscalprinter.py:324
+#: ../stoqlib/gui/fiscalprinter.py:173 ../stoqlib/gui/fiscalprinter.py:325
 msgid "Close Till"
 msgstr ""
 
 #. FIXME: Find a better description for the warning bellow.
-#: ../stoqlib/gui/fiscalprinter.py:251
+#: ../stoqlib/gui/fiscalprinter.py:252
 msgid ""
 "You are not allowed to sell in branches not created by the demonstration "
 "mode"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:258
+#: ../stoqlib/gui/fiscalprinter.py:259
 msgid "It wasn't possible to open the coupon"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:315
+#: ../stoqlib/gui/fiscalprinter.py:316
 msgid ""
 "You need to close the till from the previous day before creating a new order.\n"
 "\n"
 "Close the Till?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:318
+#: ../stoqlib/gui/fiscalprinter.py:319
 msgid ""
 "The till in Stoq is opened, but in ECF is closed.\n"
 "\n"
 "Close the till in Stoq?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:321
+#: ../stoqlib/gui/fiscalprinter.py:322
 msgid ""
 "The till in stoq is closed, but in ECF is opened.\n"
 "\n"
 "Close the till in ECF?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:472
+#: ../stoqlib/gui/fiscalprinter.py:473
 msgid ""
 "The fiscal printer has run out of paper.\n"
 "Add more paper before continuing."
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:474 ../stoqlib/gui/fiscalprinter.py:481
+#: ../stoqlib/gui/fiscalprinter.py:475 ../stoqlib/gui/fiscalprinter.py:482
 msgid "Confirm later"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:479
+#: ../stoqlib/gui/fiscalprinter.py:480
 msgid "The fiscal printer is offline, turn it on and try again"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:485
+#: ../stoqlib/gui/fiscalprinter.py:486
 msgid "It is not possible to emit the coupon"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:519
+#: ../stoqlib/gui/fiscalprinter.py:520
 #, python-format
 msgid ""
 "Payment value (%s) is greater than sale's total (%s). Do you want to confirm"
 " it anyway?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:522
+#: ../stoqlib/gui/fiscalprinter.py:523
 msgid "Confirm Sale"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:522
+#: ../stoqlib/gui/fiscalprinter.py:523
 msgid "Don't Confirm"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:563
+#: ../stoqlib/gui/fiscalprinter.py:565
 msgid ""
 "An error happened while trying to confirm the sale. Cancelling the coupon "
 "now..."
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:578
+#: ../stoqlib/gui/fiscalprinter.py:580
 msgid "Do you want to print the booklets for this sale?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:583
+#: ../stoqlib/gui/fiscalprinter.py:585
 msgid "Could not print booklets"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:586
+#: ../stoqlib/gui/fiscalprinter.py:588
 msgid "Do you want to print the bills for this sale?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:587
+#: ../stoqlib/gui/fiscalprinter.py:589
 msgid "Print bills"
 msgstr ""
 
 #. TRANSLATORS: bills here refers to "boletos" in pt_BR
-#: ../stoqlib/gui/fiscalprinter.py:592
+#: ../stoqlib/gui/fiscalprinter.py:594
 msgid "Could not print bills"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:628 ../stoqlib/gui/fiscalprinter.py:671
-#: ../stoqlib/gui/fiscalprinter.py:720 ../stoqlib/gui/fiscalprinter.py:746
+#: ../stoqlib/gui/fiscalprinter.py:630 ../stoqlib/gui/fiscalprinter.py:673
+#: ../stoqlib/gui/fiscalprinter.py:722 ../stoqlib/gui/fiscalprinter.py:748
 msgid "An error occurred while trying to print. Would you like to try again?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:631 ../stoqlib/gui/fiscalprinter.py:674
-#: ../stoqlib/gui/fiscalprinter.py:694 ../stoqlib/gui/fiscalprinter.py:723
-#: ../stoqlib/gui/fiscalprinter.py:749
+#: ../stoqlib/gui/fiscalprinter.py:633 ../stoqlib/gui/fiscalprinter.py:676
+#: ../stoqlib/gui/fiscalprinter.py:696 ../stoqlib/gui/fiscalprinter.py:725
+#: ../stoqlib/gui/fiscalprinter.py:751
 msgid "Don't try again"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:638
+#: ../stoqlib/gui/fiscalprinter.py:640
 msgid "It wasn't possible to cancel the last receipt"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:691
+#: ../stoqlib/gui/fiscalprinter.py:693
 msgid ""
 "An error occurred while trying to cancel the the coupon. Would you like to "
 "try again?"
@@ -16502,6 +16502,10 @@ msgstr ""
 
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:224
 msgid "Stock Transfer"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/stocktransferwizard.py:267
+msgid "An error happened when trying to confirm the transfer"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:66
