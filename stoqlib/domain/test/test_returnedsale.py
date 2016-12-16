@@ -595,7 +595,7 @@ class TestReturnedSaleItem(DomainTest):
         from stoqlib.exceptions import StockError
         with self.assertRaisesRegexp(
                 StockError,
-                "Quantity to sell is greater than the available stock."):
+                "Quantity to decrease is greater than the available stock."):
             returned_item.undo()
 
         # Lets increase the stock

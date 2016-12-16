@@ -1262,7 +1262,7 @@ class Storable(Domain):
         stock_item = self.get_stock_item(branch, batch)
         if stock_item is None or quantity > stock_item.quantity:
             raise StockError(
-                _('Quantity to sell is greater than the available stock.'))
+                _('Quantity to decrease is greater than the available stock.'))
 
         old_quantity = stock_item.quantity
         stock_transaction = StockTransactionHistory(

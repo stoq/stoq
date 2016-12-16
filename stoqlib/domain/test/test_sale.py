@@ -2190,7 +2190,7 @@ class TestSaleItem(DomainTest):
         # sale_item1 will still raise SellError because of the lack of stock
         with self.assertRaisesRegexp(
                 SellError,
-                "Quantity to sell is greater than the available stock."):
+                "Quantity to decrease is greater than the available stock."):
             sale_item1.sell(sale_item1.sale.branch)
         # This won't raise SellError since it won't decrease stock
         sale_item2.sell(sale_item2.sale.branch)

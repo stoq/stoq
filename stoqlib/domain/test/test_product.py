@@ -1277,7 +1277,7 @@ class TestStorable(DomainTest):
             storable.decrease_stock(100, branch,
                                     StockTransactionHistory.TYPE_INITIAL, None)
             self.assertEquals(str(exc),
-                              'Quantity to sell is greater than the available stock.')
+                              'Quantity to decrease is greater than the available stock.')
 
     def test_decrease_stock_cost_center(self):
         storable = self.create_storable()
