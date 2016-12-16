@@ -43,7 +43,7 @@ extra_version = ''
 release_date = (2016, 12, 14)
 
 #: if this is a stable release
-stable = False
+stable = True
 
 #: stoq version as a tuple
 stoq_version = (major_version, minor_version, micro_version)

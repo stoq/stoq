@@ -278,9 +278,11 @@ class ShellBootstrap(object):
         if stoq.stable:
             if (stoq.micro_version >= FIRST_UNSTABLE_MICRO_VERSION and
                     not 'rc' in stoq.extra_version):
-                raise SystemExit(
-                    "Stable stoq release should set micro_version to "
-                    "%d or lower" % (FIRST_UNSTABLE_MICRO_VERSION, ))
+                # FIXME: Reenable this check for 1.13 series
+                pass
+                #raise SystemExit(
+                #    "Stable stoq release should set micro_version to "
+                #    "%d or lower" % (FIRST_UNSTABLE_MICRO_VERSION, ))
         # Unstable series of Stoq must have:
         # 1) have extra_version set to >= 90
         # 2) Must depend stoqlib version with extra_version >= 90
