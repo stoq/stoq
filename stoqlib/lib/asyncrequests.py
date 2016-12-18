@@ -29,8 +29,11 @@ the same signature as it. The only difference is that the requests
 here are executed asynchronously on a separated thread.
 """
 
+import json
 import requests
 import threading
+
+_requests_version = requests.__version__.split('.')
 
 
 class AsyncRequest(threading.Thread):
@@ -67,6 +70,14 @@ class AsyncRequest(threading.Thread):
         """
         kwargs = self._kwargs.copy()
         kwargs.setdefault('timeout', self.DEFAULT_TIMEOUT)
+
+        # FIXME: json support was added in requests 2.5. For older versions,
+        # do the same as requests would do
+        if _requests_version < (2, 5) and 'json' in kwargs:
+            assert 'data' not in kwargs
+            kwargs['data'] = json.dumps(kwargs.pop('json'))
+            headers = kwargs.setdefault('headers', {})
+            headers['Content-type'] = 'application/json'
 
         try:
             self.retval = requests.request(self._method, self._url, **kwargs)
