@@ -108,6 +108,30 @@ class TestAsyncRequest(DomainTest):
         self.assertCalledOnceWith(errback, error)
         self.assertNotCalled(callback)
 
+    @mock.patch('stoqlib.lib.asyncrequests.requests.request')
+    def test_json_old_api(self, request):
+        # There's no way to mock the module property unless we mock
+        # mock the whole module
+        old_version = asyncrequests._requests_version
+        try:
+            asyncrequests._requests_version = (2, 2)
+            retval = object
+            request.return_value = retval
+
+            ar = asyncrequests.AsyncRequest('foo', 'bar', json={'baz': 'bin'})
+            ar.start()
+            ar.join()
+
+            self.assertCalledOnceWith(
+                request, 'foo', 'bar',
+                headers={'Content-type': 'application/json'},
+                data='{"baz": "bin"}',
+                timeout=5)
+            self.assertIs(ar.retval, retval)
+            self.assertIsNone(ar.error)
+        finally:
+            asyncrequests._requests_version = old_version
+
 
 class TestRequestsApi(DomainTest):
 
