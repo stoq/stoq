@@ -332,11 +332,11 @@ class Invoice(Domain):
         """
         # FIXME: The nfce plugin is responsible for generating those
         # information now, but that broke our nfe plugin since it
-        # needs an invoice number. We should find a better way of handling
-        # this since we don't want to polute the nfe/nfce invoice number
-        # namespace.
+        # needs an invoice number, but not the mode an the series.
+        # We should find a better way of handling this since we don't
+        # want to polute the nfe/nfce invoice number namespace.
         pg = get_plugin_manager()
-        if pg.is_active('nfe') and not pg.is_active('nfce'):  # pragma nocoverage
+        if pg.is_active('nfe'):  # pragma nocoverage
             return
 
         # FIXME: We should not use assert in this kind of code since
