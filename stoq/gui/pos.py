@@ -46,7 +46,9 @@ from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
-from stoqlib.gui.events import POSConfirmSaleEvent, CloseLoanWizardFinishEvent
+from stoqlib.gui.events import (POSConfirmSaleEvent,
+                                CloseLoanWizardFinishEvent,
+                                POSAddSellableEvent)
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.decorators import cached_property, public
 from stoqlib.lib.defaults import quantize
@@ -461,6 +463,8 @@ class PosApp(ShellApp):
             self._add_product_sellable(sellable, quantity, batch=batch)
         elif sellable.service:
             self._add_service_sellable(sellable, quantity)
+
+        POSAddSellableEvent.emit(sellable, quantity, batch)
 
     def _add_service_sellable(self, sellable, quantity):
         sale_item = TemporarySaleItem(sellable=sellable,

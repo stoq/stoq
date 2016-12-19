@@ -241,6 +241,18 @@ class POSConfirmSaleEvent(Event):
     """
 
 
+@public(since="1.13")
+class POSAddSellableEvent(Event):
+    """
+    This event is emitted when a sellable is added on the pos app.
+
+    :param sellable: The sellable `<stoqlib.domain.sellable.Sellable>` object
+      added to the sale
+    :param quantity: The quantity of the sellable added
+    :param batch: The batch of the sellable added
+    """
+
+
 #
 # Wizard Events
 #
