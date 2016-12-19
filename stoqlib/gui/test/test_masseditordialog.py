@@ -238,7 +238,9 @@ class TestMassEditor(GUITest):
 
         class FooEditor(MassEditorSearch):
             search_spec = Sellable
-            default_fields = fields
+
+            def get_fields(self, store):
+                return fields
 
             def get_items(self, store):
                 return data

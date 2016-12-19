@@ -145,32 +145,32 @@ class SellableMassEditorDialog(MassEditorSearch):
 
     search_spec = SellableView
 
-    default_fields = [
-        AccessorField(_('Code'), 'sellable', 'code', unicode, unique=True),
-        AccessorField(_('Barcode'), 'sellable', 'barcode', unicode, unique=True),
-        ReferenceField(_('Category'), 'sellable', 'category',
-                       SellableCategory, 'description'),
-        AccessorField(_('Description'), 'sellable', 'description', unicode),
-        AccessorField(_('Cost'), 'sellable', 'cost', currency,
-                      validator=validate_price),
-        AccessorField(_('Default Price'), 'sellable', 'base_price', currency,
-                      validator=validate_price),
-        AccessorField(_('On Sale Price'), 'sellable', 'on_sale_price', currency,
-                      validator=validate_price),
-        AccessorField(_('On Sale Start Date'), 'sellable', 'on_sale_start_date',
-                      datetime.date),
-        AccessorField(_('On Sale End Date'), 'sellable', 'on_sale_end_date',
-                      datetime.date),
-    ]
-
     def get_fields(self, store):
+        default_fields = [
+            AccessorField(_('Code'), 'sellable', 'code', unicode, unique=True),
+            AccessorField(_('Barcode'), 'sellable', 'barcode', unicode, unique=True),
+            ReferenceField(_('Category'), 'sellable', 'category',
+                           SellableCategory, 'description'),
+            AccessorField(_('Description'), 'sellable', 'description', unicode),
+            AccessorField(_('Cost'), 'sellable', 'cost', currency,
+                          validator=validate_price),
+            AccessorField(_('Default Price'), 'sellable', 'base_price', currency,
+                          validator=validate_price),
+            AccessorField(_('On Sale Price'), 'sellable', 'on_sale_price', currency,
+                          validator=validate_price),
+            AccessorField(_('On Sale Start Date'), 'sellable', 'on_sale_start_date',
+                          datetime.date),
+            AccessorField(_('On Sale End Date'), 'sellable', 'on_sale_end_date',
+                          datetime.date),
+        ]
+
         category_fields = []
         self.categories = store.find(ClientCategory)
         for cat in self.categories:
             category_fields.append(CategoryPriceField(cat,
                                                       validator=validate_price))
 
-        return self.default_fields + category_fields
+        return default_fields + category_fields
 
     def get_items(self, store):
         return store.find(SellableView).order_by(Sellable.code)

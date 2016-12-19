@@ -584,10 +584,6 @@ class MassEditorSearch(SearchDialog):
     size = (850, 450)
     unlimited_results = True
 
-    #: The fields that will be in the editor. If the editor needs more control
-    #: wether the field should appear or not, get_fields can be used.
-    default_fields = []
-
     def __init__(self, store):
         self._fields = self.get_fields(store)
         SearchDialog.__init__(self, store, hide_footer=False)
@@ -602,13 +598,13 @@ class MassEditorSearch(SearchDialog):
     # Public API
     #
 
-    def get_fields(self, store):
+    def get_fields(self, store):  # pragma nocover
         """Returns a list of fields for this mass editor
 
         Subclasses can override this if they want dynamic fields (that depend on
         a database state, for isntance)
         """
-        return self.default_fields
+        raise NotImplementedError()
 
     def get_items(self, store):  # pragma nocover
         """Get the list of objects that will be edited.
