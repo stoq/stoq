@@ -182,6 +182,7 @@ class _PaymentEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.person_lbl.set_label(self._person_label)
+        lonely_payment = False
         if self.model.group.sale:
             label = _("Sale details")
         elif self.model.group.purchase:
@@ -189,6 +190,7 @@ class _PaymentEditor(BaseEditor):
         elif self.model.group._renegotiation:
             label = _("Details")
         else:
+            lonely_payment = True
             label = _("Details")
         self.details_button = self.add_button(label)
         self.details_button.connect('clicked',
@@ -196,8 +198,13 @@ class _PaymentEditor(BaseEditor):
 
         self.end_date.set_sensitive(False)
         if self.edit_mode:
-            for field_name in ['value', 'due_date', 'person',
-                               'repeat', 'end_date', 'branch_id', 'method']:
+            uneditable_fields = ['value', 'due_date', 'person', 'repeat',
+                                 'end_date', 'branch_id', 'method']
+            # Let an unpaid lonely payment have the value edited
+            if lonely_payment and not self.model.is_paid():
+                uneditable_fields.remove('value')
+
+            for field_name in uneditable_fields:
                 field = self.fields[field_name]
                 field.can_add = False
                 field.can_edit = False
