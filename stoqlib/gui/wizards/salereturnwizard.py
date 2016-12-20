@@ -47,7 +47,8 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
 from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
                                 SaleTradeWizardFinishEvent,
-                                InvoiceSetupEvent)
+                                InvoiceSetupEvent,
+                                WizardAddSellableEvent)
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
@@ -268,6 +269,7 @@ class SaleReturnItemsStep(SellableItemStep):
             parent_item=parent
         )
         _adjust_returned_sale_item(item)
+        WizardAddSellableEvent.emit(self.wizard, item)
         return item
 
     def sellable_selected(self, sellable, batch=None):

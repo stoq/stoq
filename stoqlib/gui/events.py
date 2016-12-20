@@ -222,6 +222,17 @@ class WizardSellableItemStepEvent(Event):
     """
 
 
+@public(since="1.13")
+class WizardAddSellableEvent(Event):
+    """
+    This event is emitted when a sellable is added on a stock operation wizard,
+    such as sales, loans, transfers and decreases.
+
+    :param wizard: The wizard that is handling the operation.
+    :param item: The operation item added to the operation.
+    """
+
+
 #
 # POS Events
 #

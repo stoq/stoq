@@ -42,7 +42,8 @@ from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialo
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.editors.transfereditor import TransferItemEditor
-from stoqlib.gui.events import StockTransferWizardFinishEvent, InvoiceSetupEvent
+from stoqlib.gui.events import (StockTransferWizardFinishEvent, InvoiceSetupEvent,
+                                WizardAddSellableEvent)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.formatters import format_sellable_description
@@ -147,7 +148,9 @@ class StockTransferItemStep(SellableItemStep):
         return list(self.model.get_items())
 
     def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
-        return self.model.add_sellable(sellable, batch, quantity, cost)
+        item = self.model.add_sellable(sellable, batch, quantity, cost)
+        WizardAddSellableEvent.emit(self.wizard, item)
+        return item
 
     def get_columns(self):
         return [

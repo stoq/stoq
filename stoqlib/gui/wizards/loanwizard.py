@@ -56,7 +56,8 @@ from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
 from stoqlib.gui.events import (NewLoanWizardFinishEvent,
                                 CloseLoanWizardFinishEvent,
                                 LoanItemSelectionStepEvent,
-                                InvoiceSetupEvent)
+                                InvoiceSetupEvent,
+                                WizardAddSellableEvent)
 from stoqlib.gui.editors.loanitemeditor import LoanItemEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
@@ -204,6 +205,7 @@ class LoanItemStep(SaleQuoteItemStep):
     def get_order_item(self, sellable, price, quantity, batch=None, parent=None):
         item = self.model.add_sellable(sellable, quantity, price, batch=batch)
         item._stock_quantity = self.proxy.model.stock_quantity
+        WizardAddSellableEvent.emit(self.wizard, item)
         return item
 
     def has_next_step(self):

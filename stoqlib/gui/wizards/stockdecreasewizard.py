@@ -52,7 +52,8 @@ from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialo
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.editors.stockdecreaseeditor import StockDecreaseItemEditor
-from stoqlib.gui.events import StockDecreaseWizardFinishEvent, InvoiceSetupEvent
+from stoqlib.gui.events import (StockDecreaseWizardFinishEvent, InvoiceSetupEvent,
+                                WizardAddSellableEvent)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.salewizard import PaymentMethodStep
@@ -188,7 +189,9 @@ class DecreaseItemStep(SellableItemStep):
         return self.sellable_view, query
 
     def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
-        return self.model.add_sellable(sellable, cost, quantity, batch=batch)
+        item = self.model.add_sellable(sellable, cost, quantity, batch=batch)
+        WizardAddSellableEvent.emit(self.wizard, item)
+        return item
 
     def get_saved_items(self):
         return self.model.get_items()

@@ -61,7 +61,8 @@ from stoqlib.gui.editors.deliveryeditor import (CreateDeliveryEditor,
 from stoqlib.gui.editors.discounteditor import DiscountEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.events import SaleQuoteWizardFinishEvent, SaleQuoteFinishPrintEvent
+from stoqlib.gui.events import (SaleQuoteWizardFinishEvent, SaleQuoteFinishPrintEvent,
+                                WizardAddSellableEvent)
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
@@ -378,6 +379,7 @@ class SaleQuoteItemStep(SellableItemStep):
         item.deliver = False
         item.update_tax_values()
 
+        WizardAddSellableEvent.emit(self.wizard, item)
         return item
 
     def get_saved_items(self):
