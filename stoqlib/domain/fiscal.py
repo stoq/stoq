@@ -40,7 +40,6 @@ from stoqlib.database.properties import PriceCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
-from stoqlib.domain.events import InvoiceGetModeEvent
 from stoqlib.domain.interfaces import IDescribable, IReversal
 from stoqlib.domain.person import Person
 from stoqlib.lib.dateutils import localnow
@@ -280,17 +279,6 @@ class Invoice(Domain):
         if not 'branch' in kw:
             kw['branch'] = get_current_branch(kw.get('store'))
         super(Invoice, self).__init__(**kw)
-        # The mode and series are only set if the nfce plugin is active, since
-        # the invoice_number will be also set by it.
-
-        plugin_manager = get_plugin_manager()
-        coupon_active = any(plugin_manager.is_active(plugin) for plugin in ['ecf', 'sat'])
-        if not coupon_active and plugin_manager.is_active('nfce'):
-            mode = InvoiceGetModeEvent.emit()
-            #assert mode
-            self.mode = mode
-            # TODO Handle series number
-            self.series = 1
 
     @classmethod
     def get_next_invoice_number(cls, store, mode=None):

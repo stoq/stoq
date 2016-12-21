@@ -439,17 +439,6 @@ class HasOpenCouponEvent(Event):
 
 
 #
-# Fiscal events
-#
-
-@public(since="1.12.0")
-class InvoiceGetModeEvent(Event):
-    """
-    This event is emitted when a |invoice| is created to get the current mode
-    """
-
-
-#
 # Stock Events
 #
 
