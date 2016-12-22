@@ -56,6 +56,15 @@ else:
     if os.environ.get('LIBOVERLAY_SCROLLBAR') != '1':
         os.environ['LIBOVERLAY_SCROLLBAR'] = '0'
 
+    # FIXME: The gail module is misbehaving on xenial and making Stoq
+    # segfault on some ocasions, and since pygtk/gtk2 has been deprecated,
+    # this is not something that is going to be fixed. Disable it for
+    # now but we can reenable it once we migrate our codebase to gtk3
+    if 'gail' in os.environ.get('GTK_MODULES', ''):
+        mods = os.environ['GTK_MODULES'].split(':')
+        os.environ['GTK_MODULES'] = ':'.join(
+            m for m in mods if m not in ['gail', 'atk-bridge'])
+
     # Disable global menu for stoq, since it breakes the order and removal of
     # our dinamic menus
     os.environ['UBUNTU_MENUPROXY'] = '0'
