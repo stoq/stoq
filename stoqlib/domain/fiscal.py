@@ -236,6 +236,7 @@ class Invoice(Domain):
     TYPE_IN = u'in'
     TYPE_OUT = u'out'
 
+    LEGACY_MODE = u'legacy'
     NFE_MODE = u'nfe'
     NFCE_MODE = u'nfce'
 
