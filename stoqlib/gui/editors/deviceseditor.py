@@ -24,9 +24,8 @@
 ##
 """ Editors implementation for Stoq devices configuration"""
 
-from stoqdrivers.interfaces import IChequePrinter
-from stoqdrivers.printers.base import (get_supported_printers,
-                                       get_supported_printers_by_iface)
+from stoqdrivers.interfaces import INonFiscalPrinter
+from stoqdrivers.printers.base import get_supported_printers_by_iface
 from stoqdrivers.scales.base import get_supported_scales
 
 from stoqlib.api import api
@@ -34,6 +33,7 @@ from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.station import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
+from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -52,8 +52,8 @@ class DeviceSettingsEditor(BaseEditor):
     def __init__(self, store, model=None, station=None):
         if station is not None and not isinstance(station, BranchStation):
             raise TypeError("station should be a BranchStation")
+
         self._device_manager = DeviceManager()
-        self.printers_dict = get_supported_printers()
         self._branch_station = station
         # This attribute is set to True when setup_proxies is finished
         self._is_initialized = False
@@ -70,16 +70,19 @@ class DeviceSettingsEditor(BaseEditor):
             self.station.prefill([(self._branch_station.name,
                                    self._branch_station)])
             self.model.station = self._branch_station
-            self.station.set_sensitive(False)
             return
+
         self.station.prefill(
             [(station.name, station)
-             for station in self.store.find(BranchStation)])
+             for station in BranchStation.get_active_stations(self.store)])
 
     def setup_device_port_combo(self):
         items = [(_("Choose..."), None)]
         items.extend([(unicode(device.device_name), unicode(device.device_name))
                       for device in self._device_manager.get_serial_devices()])
+        if is_developer_mode():
+            # Include virtual port for virtual printer
+            items.append(('Virtual device', u'/dev/null'))
         self.device_combo.prefill(items)
 
     def setup_device_types_combo(self):
@@ -87,8 +90,10 @@ class DeviceSettingsEditor(BaseEditor):
         device_types = (
             # TODO: Reenable when we have cheque printers working.
             # DeviceSettings.CHEQUE_PRINTER_DEVICE,
+            DeviceSettings.NON_FISCAL_PRINTER_DEVICE,
             DeviceSettings.SCALE_DEVICE, )
-        items.extend([(self.model.get_device_type_name(t), t)
+
+        items.extend([(self.model.describe_device_type(t), t)
                       for t in device_types])
         self.type_combo.prefill(items)
 
@@ -102,8 +107,11 @@ class DeviceSettingsEditor(BaseEditor):
     def _get_supported_types(self):
         if self.model.type == DeviceSettings.SCALE_DEVICE:
             supported_types = get_supported_scales()
-        elif self.model.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
-            supported_types = get_supported_printers_by_iface(IChequePrinter)
+        #elif self.model.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
+        #    supported_types = get_supported_printers_by_iface(IChequePrinter)
+        elif self.model.type == DeviceSettings.NON_FISCAL_PRINTER_DEVICE:
+            supported_types = get_supported_printers_by_iface(INonFiscalPrinter,
+                                                              include_virtual=is_developer_mode())
         else:
             raise TypeError("The selected device type isn't supported")
         return supported_types
@@ -166,12 +174,12 @@ class DeviceSettingsEditor(BaseEditor):
             settings = DeviceSettings.get_by_station_and_type(
                 store=api.get_default_store(),
                 station=self.model.station.id,
-                type=self.model.type)
+                type=self.model.type).any()
             if settings:
                 self.station.set_invalid(
                     _(u"A %s already exists for station \"%s\"") % (
-                        self.model.get_device_type_name(),
-                        self.model.station.name))
+                        self.model.device_type_name,
+                        self.model.station_name))
                 return False
         return True
 

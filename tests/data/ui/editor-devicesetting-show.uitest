@@ -8,6 +8,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
           GtkLabel(label5): 'Device Type:'
           ProxyComboBox(type_combo):
             item: 'Choose...'
+            item: 'Non Fiscal Printer'
             item: 'Scale', selected
           GtkLabel(label10):
           GtkAlignment(alignment1):
@@ -23,8 +24,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
             item: 'Choose...', selected
             item: '/dev/ttyS0'
             item: '/dev/ttyS1'
+            item: 'Virtual device'
           GtkLabel(label9): 'Host:'
-          ProxyComboEntry(station): insensitive
+          ProxyComboEntry(station):
             item: 'station', selected
           ProxyCheckButton(is_active_button): 'Active', active
       GtkHBox(fill=True):

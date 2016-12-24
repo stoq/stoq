@@ -28,8 +28,9 @@ Domain classes related to stoqdrivers package.
 # pylint: enable=E1101
 
 from stoqdrivers.printers.cheque import ChequePrinter
+from stoqdrivers.printers.nonfiscal import NonFiscalPrinter
 from stoqdrivers.scales.scales import Scale
-from stoqdrivers.serialbase import SerialPort
+from stoqdrivers.serialbase import SerialPort, VirtualPort
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
@@ -39,7 +40,7 @@ from stoqlib.database.properties import (IntCol, BoolCol,
                                          IdCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IActive, IDescribable
+from stoqlib.domain.interfaces import IActive
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -47,7 +48,6 @@ _ = stoqlib_gettext
 
 
 @implementer(IActive)
-@implementer(IDescribable)
 class DeviceSettings(Domain):
 
     __storm_table__ = 'device_settings'
@@ -61,40 +61,53 @@ class DeviceSettings(Domain):
     is_active = BoolCol(default=True)
 
     (SCALE_DEVICE,
-     _UNUSED,
+     NON_FISCAL_PRINTER_DEVICE,
      CHEQUE_PRINTER_DEVICE) = range(1, 4)
 
     device_types = {SCALE_DEVICE: _(u'Scale'),
+                    NON_FISCAL_PRINTER_DEVICE: _(u'Non Fiscal Printer'),
                     CHEQUE_PRINTER_DEVICE: _(u'Cheque Printer')}
 
     #
     # Domain
     #
 
+    @property
+    def station_name(self):
+        return self.station.name
+
+    @property
+    def device_type_name(self):
+        return self.describe_device_type(self.type)
+
     def get_printer_description(self):
         return u"%s %s" % (self.brand.capitalize(), self.model)
 
-    def get_device_type_name(self, type=None):
-        return DeviceSettings.device_types[type or self.type]
+    def describe_device_type(self, type):
+        return DeviceSettings.device_types[type]
 
     # XXX: Maybe stoqdrivers can implement a generic way to do this?
     def get_interface(self):
         """ Based on the column values instantiate the stoqdrivers interface
         for the device itself.
         """
-        port = SerialPort(device=self.device_name)
+        if self.device_name == '/dev/null':
+            port = VirtualPort()
+        else:
+            port = SerialPort(device=self.device_name)
 
         if self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
             return ChequePrinter(brand=self.brand, model=self.model, port=port)
+        elif self.type == DeviceSettings.NON_FISCAL_PRINTER_DEVICE:
+            return NonFiscalPrinter(brand=self.brand, model=self.model,
+                                    port=port)
         elif self.type == DeviceSettings.SCALE_DEVICE:
             return Scale(brand=self.brand, model=self.model,
                          device=self.device_name)
+
         raise DatabaseInconsistency("The device type referred by this "
                                     "record (%r) is invalid, given %r."
                                     % (self, self.type))
-
-    def is_a_printer(self):
-        return self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE
 
     def is_valid(self):
         return (all((self.model, self.device_name, self.brand, self.station))
@@ -102,13 +115,18 @@ class DeviceSettings(Domain):
 
     @classmethod
     def get_by_station_and_type(cls, store, station, type):
-        """Fetch all settings for a specific station and type.
+        """Fetch the settings for a specific station and type.
+
+        Note that one station can have only one device of a given type.
+
+        XXX: Currently, is_active is not really used. All added devices are
+        active.
 
         :param store: a store
         :param station: a BranchStation instance
         :param type: device type
         """
-        return store.find(cls, station=station, type=type)
+        return store.find(cls, station=station, type=type).one()
 
     @classmethod
     def get_scale_settings(cls, store):
@@ -118,8 +136,7 @@ class DeviceSettings(Domain):
         :returns: a :class:`DeviceSettings` object or None if there is none
         """
         station = get_current_station(store)
-        return store.find(cls, station=station,
-                          type=cls.SCALE_DEVICE).one()
+        return cls.get_by_station_and_type(store, station, cls.SCALE_DEVICE)
 
     #
     # IActive implementation
@@ -136,11 +153,8 @@ class DeviceSettings(Domain):
             return _(u'Active')
         return _(u'Inactive')
 
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
+    @property
+    def description(self):
         return self.get_printer_description()
 
 

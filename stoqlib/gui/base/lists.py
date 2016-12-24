@@ -30,7 +30,6 @@ from kiwi.ui.listdialog import ListSlave
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog, BasicDialog
 from stoqlib.gui.base.wizards import BaseWizard
@@ -122,7 +121,7 @@ class ModelListSlave(ListSlave):
             retval = self.run_editor(store, model)
             store.confirm(retval)
             if retval:
-                retval = self.model_type.get(retval.id, store=self.store)
+                retval = self.store.get(self.model_type, retval.id)
             store.close()
         return retval
 
@@ -137,8 +136,11 @@ class ModelListSlave(ListSlave):
         return self._prepare_run_editor(None)
 
     def remove_item(self, item):
-        retval = self.listcontainer.default_remove(
-            IDescribable(item).get_description())
+        if hasattr(item, 'description'):
+            desc = item.description
+        else:
+            desc = item.get_description()
+        retval = self.listcontainer.default_remove(desc)
         if retval:
             # Remove the list before deleting it because it'll be late
             # afterwards, the object is invalid and SQLObject will complain

@@ -41,7 +41,7 @@ class DeviceSettingsListSlave(ModelListSlave):
                data_type=str, sorted=True, width=180),
         Column('description', title=_('Description'),
                data_type=str, expand=True),
-        Column('station.name', title=_('Computer'),
+        Column('station_name', title=_('Computer'),
                data_type=str, width=150, searchable=True),
         Column('is_active', title=_("Active"),
                data_type=bool, width=70)]
@@ -61,3 +61,13 @@ class DeviceSettingsDialog(ModelListDialog):
     list_slave_class = DeviceSettingsListSlave
     title = _('Device settings')
     size = (750, 300)
+
+
+if __name__ == '__main__':  # pragma: nocover
+    from stoqlib.gui.base.dialogs import run_dialog
+    from stoqlib.api import api
+    ec = api.prepare_test()
+    retval = run_dialog(DeviceSettingsDialog, None, ec.store)
+    if retval:
+        ec.store.commit()
+    print('RETVAL', retval)

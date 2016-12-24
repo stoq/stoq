@@ -35,6 +35,18 @@ class _Device(object):
 
 
 class TestDeviceSettingsEditor(GUITest):
+
+    def test_init_wrong_station(self):
+        station = object()
+        with self.assertRaises(TypeError):
+            DeviceSettingsEditor(self.store, station=station)
+
+    @mock.patch('stoqlib.domain.station.BranchStation.get_active_stations')
+    def test_init_without_station(self, get_active_stations):
+        get_active_stations.return_value = []
+        editor = DeviceSettingsEditor(self.store)
+        self.check_editor(editor, 'editor-devicesetting-without-station')
+
     @mock.patch('stoqlib.gui.editors.deviceseditor.DeviceManager.get_serial_devices')
     def test_create(self, get_serial_devices):
         get_serial_devices.return_value = [_Device('/dev/ttyS0'),
@@ -55,3 +67,22 @@ class TestDeviceSettingsEditor(GUITest):
         editor = DeviceSettingsEditor(self.store, model=settings,
                                       station=station)
         self.check_editor(editor, 'editor-devicesetting-show')
+
+    def test_get_supported_types(self):
+        editor = DeviceSettingsEditor(self.store)
+
+        # Scale type
+        editor.model.type = DeviceSettings.SCALE_DEVICE
+        types = editor._get_supported_types()
+        self.assertIn('toledo', types)
+
+        # Non fiscal type
+        editor.model.type = DeviceSettings.NON_FISCAL_PRINTER_DEVICE
+        types = editor._get_supported_types()
+        self.assertIn('epson', types)
+        self.assertIn('bematech', types)
+
+        # Unsupported
+        editor.model.type = None
+        with self.assertRaises(TypeError):
+            editor._get_supported_types()

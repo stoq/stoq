@@ -22,18 +22,23 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 import mock
-from stoqlib.domain.devices import DeviceSettings, _
 
+from stoqdrivers.serialbase import VirtualPort
+from stoqlib.domain.devices import DeviceSettings, _
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import DatabaseInconsistency
 
 
 class TestDeviceSettings(DomainTest):
-    def test_get_description(self):
+    def test_properties(self):
+        station = self.create_station()
         device = DeviceSettings(store=self.store, brand=u'Brand', model=u'XX',
-                                type=DeviceSettings.CHEQUE_PRINTER_DEVICE)
-        str = device.get_description()
-        self.assertEquals(str, u'Brand XX')
+                                type=DeviceSettings.CHEQUE_PRINTER_DEVICE,
+                                station=station)
+
+        self.assertEquals(device.description, u'Brand XX')
+        self.assertEquals(device.station_name, u'station')
+        self.assertEquals(device.device_type_name, u'Cheque Printer')
 
     @mock.patch('stoqlib.domain.devices.SerialPort')
     @mock.patch('stoqlib.domain.devices.ChequePrinter')
@@ -50,6 +55,7 @@ class TestDeviceSettings(DomainTest):
         ChequePrinter.assert_called_with(brand=device.brand,
                                          model=device.model,
                                          port=port)
+
         obj = object()
         device.type = DeviceSettings.SCALE_DEVICE
         Scale.return_value = obj
@@ -57,19 +63,19 @@ class TestDeviceSettings(DomainTest):
         ChequePrinter.assert_called_with(brand=device.brand,
                                          model=device.model,
                                          port=port)
-        device.type = DeviceSettings._UNUSED
+        device.type = None
         with self.assertRaises(DatabaseInconsistency) as error:
             device.get_interface()
         expected = "The device type referred by this record" \
-                   " (%r) is invalid, given 2." % device
+                   " (%r) is invalid, given None." % device
         self.assertEquals(str(error.exception), expected)
 
-    def test_is_a_printer(self):
-        device = DeviceSettings(store=self.store,
-                                type=DeviceSettings.CHEQUE_PRINTER_DEVICE)
-        self.assertEquals(device.is_a_printer(), True)
-        device.type = DeviceSettings.SCALE_DEVICE
-        self.assertEquals(device.is_a_printer(), False)
+    def test_get_interface_virtual(self):
+        device = DeviceSettings(store=self.store, brand=u'virtual',
+                                model=u'Simple', device_name=u'/dev/null',
+                                type=DeviceSettings.NON_FISCAL_PRINTER_DEVICE)
+        interface = device.get_interface()
+        self.assertIsInstance(interface._port, VirtualPort)
 
     def test_get_by_station_and_type(self):
         station = self.create_station()
@@ -79,7 +85,7 @@ class TestDeviceSettings(DomainTest):
         results = device.get_by_station_and_type(store=self.store,
                                                  station=station,
                                                  type=type)
-        self.assertEquals(results.count(), 1)
+        self.assertEquals(results, device)
 
     def test_inactivate(self):
         device = DeviceSettings(store=self.store)
