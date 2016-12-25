@@ -81,9 +81,17 @@ class ProgressDialog(GladeDelegate):
 
     def set_label(self, label):
         """Update the label of the dialog
+
         :param label: the new content of the label
         """
         self.label.set_label(label)
+
+    def set_text(self, text):
+        """Update the progress bar text
+
+        :param text: the text to set the progress bar to
+        """
+        self.progressbar.set_text(text)
 
     #
     # Private and callbacks
