@@ -915,12 +915,13 @@ class ExampleCreator(object):
         service = Service(sellable=sellable, store=self.store)
         return service
 
-    def create_bank_account(self, account=None):
+    def create_bank_account(self, account=None, bank_branch=u'2666-1',
+                            bank_account=u'20.666-1', bank_number=1):
         from stoqlib.domain.account import BankAccount
         return BankAccount(store=self.store,
-                           bank_branch=u'2666-1',
-                           bank_account=u'20.666-1',
-                           bank_number=1,
+                           bank_branch=bank_branch,
+                           bank_account=bank_account,
+                           bank_number=bank_number,
                            account=account or self.create_account())
 
     def create_credit_provider(self, short_name=u'Velec'):

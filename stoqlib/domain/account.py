@@ -114,6 +114,10 @@ class BankAccount(Domain):
         return self.store.find(BillOption,
                                bank_account=self)
 
+    def add_bill_option(self, name, value):
+        return BillOption(store=self.store, option=name, value=value,
+                          bank_account_id=self.id)
+
 
 @implementer(IDescribable)
 class Account(Domain):

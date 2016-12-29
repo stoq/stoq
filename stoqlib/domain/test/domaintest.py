@@ -25,6 +25,7 @@
 
 import contextlib
 import datetime
+from decimal import Decimal
 import os
 
 import mock
@@ -144,6 +145,7 @@ class ReadOnlyStore(StoqlibStore):
 
 class FakeNamespace(object):
     """Commonly used mock objects goes in here"""
+
     def __init__(self):
         self.api = mock.Mock()
         self.api.get_current_branch = get_current_branch
@@ -255,6 +257,9 @@ class DomainTest(unittest.TestCase, ExampleCreator):
             elif isinstance(value, basestring):
                 old_values[param] = sysparam.get_string(param)
                 sysparam.set_string(self.store, param, value)
+            elif isinstance(value, Decimal):
+                old_values[param] = sysparam.get_decimal(param)
+                sysparam.set_decimal(self.store, param, value)
             else:
                 raise NotImplementedError(type(value))
         try:
@@ -269,6 +274,8 @@ class DomainTest(unittest.TestCase, ExampleCreator):
                     sysparam.set_object(self.store, param, value)
                 elif isinstance(value, basestring):
                     sysparam.set_string(self.store, param, value)
+                elif isinstance(value, Decimal):
+                    sysparam.set_decimal(self.store, param, value)
                 else:
                     raise NotImplementedError(type(value))
 

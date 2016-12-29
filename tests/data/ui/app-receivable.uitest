@@ -11,6 +11,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Payment _flow history...'
+          GtkImageMenuItem(): 'Export bills...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Print...'
           GtkImageMenuItem(): 'Export to spreadsheet...'

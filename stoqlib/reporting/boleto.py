@@ -23,12 +23,9 @@
 # This is mostly lifted from
 # http://code.google.com/p/pyboleto licensed under MIT
 
-import datetime
 import sys
 import traceback
 
-from kiwi.currency import currency
-from kiwi.datatypes import converter
 from reportlab.graphics.barcode.common import I2of5
 from reportlab.lib import colors, pagesizes, utils
 from reportlab.lib.units import mm
@@ -38,7 +35,6 @@ from stoqlib.exceptions import ReportError
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.boleto import BoletoException, get_bank_info_by_number
 from stoqlib.lib.message import warning
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -96,9 +92,9 @@ class BoletoPDF(object):
         # Vertical Lines
         self.pdfCanvas.setLineWidth(1)
         self._verticalLine(self.widthCanhoto - (35 * mm),
-                          (linhaInicial + 0) * self.heightLine, self.heightLine)
+                           (linhaInicial + 0) * self.heightLine, self.heightLine)
         self._verticalLine(self.widthCanhoto - (35 * mm),
-                          (linhaInicial + 1) * self.heightLine, self.heightLine)
+                           (linhaInicial + 1) * self.heightLine, self.heightLine)
 
         self.pdfCanvas.setFont('Helvetica-Bold', 6)
         self.pdfCanvas.drawRightString(self.widthCanhoto,
@@ -130,8 +126,7 @@ class BoletoPDF(object):
         self.pdfCanvas.setFont('Helvetica', 9)
         heighFont = 9 + 1
 
-        valorDocumento = self._formataValorParaExibir(
-            boletoDados.valor_documento)
+        valorDocumento = self._format_value(boletoDados.payment.value)
 
         self.pdfCanvas.drawString(
             self.space,
@@ -141,7 +136,7 @@ class BoletoPDF(object):
         self.pdfCanvas.drawString(
             self.widthCanhoto - (35 * mm) + self.space,
             (((linhaInicial + 0) * self.heightLine)) + self.space,
-            boletoDados.data_vencimento.strftime('%d/%m/%Y'))
+            boletoDados.payment.due_date.strftime('%d/%m/%Y'))
         self.pdfCanvas.drawString(
             self.space,
             (((linhaInicial + 1) * self.heightLine)) + self.space,
@@ -178,14 +173,14 @@ class BoletoPDF(object):
                              linhaInicial * self.heightLine, self.width)
         # Endereço
         self._horizontalLine(0,
-                            (linhaInicial + 1) * self.heightLine, self.width)
+                             (linhaInicial + 1) * self.heightLine, self.width)
         # Sacado
         self._horizontalLine(0,
-                            (linhaInicial - 1) * self.heightLine, self.width)
+                             (linhaInicial - 1) * self.heightLine, self.width)
 
         self.pdfCanvas.setLineWidth(2)
         self._horizontalLine(0,
-                            (linhaInicial + 2) * self.heightLine, self.width)
+                             (linhaInicial + 2) * self.heightLine, self.width)
 
         # Vertical Lines
 
@@ -227,9 +222,9 @@ class BoletoPDF(object):
         # Head
         self.pdfCanvas.setLineWidth(2)
         self._verticalLine(40 * mm,
-                          (linhaInicial + 2) * self.heightLine, self.heightLine)
+                           (linhaInicial + 2) * self.heightLine, self.heightLine)
         self._verticalLine(60 * mm,
-                          (linhaInicial + 2) * self.heightLine, self.heightLine)
+                           (linhaInicial + 2) * self.heightLine, self.heightLine)
 
         if boletoDados.logo_image_path:
             self.pdfCanvas.drawImage(
@@ -320,7 +315,7 @@ class BoletoPDF(object):
         self.pdfCanvas.drawString(
             0 + self.space,
             (((linhaInicial + 1) * self.heightLine)) + self.space,
-            boletoDados.cedente[0])
+            boletoDados.branch.get_description())
         self.pdfCanvas.drawString(
             self.width - (35 * mm) - (30 * mm) - (40 * mm) + self.space,
             (((linhaInicial + 1) * self.heightLine)) + self.space,
@@ -328,33 +323,33 @@ class BoletoPDF(object):
         self.pdfCanvas.drawString(
             self.width - (35 * mm) - (30 * mm) + self.space,
             (((linhaInicial + 1) * self.heightLine)) + self.space,
-            boletoDados.data_documento.strftime('%d/%m/%Y'))
+            boletoDados.payment.open_date.strftime('%d/%m/%Y'))
         self.pdfCanvas.drawString(
             self.width - (35 * mm) + self.space,
             (((linhaInicial + 1) * self.heightLine)) + self.space,
-            boletoDados.data_vencimento.strftime('%d/%m/%Y'))
+            boletoDados.payment.due_date.strftime('%d/%m/%Y'))
 
         # Valores da linha Endereço
         # Endereço
+        address = boletoDados.branch.person.get_main_address()
         self.pdfCanvas.drawString(
             0 + self.space,
             (((linhaInicial + 0) * self.heightLine)) + self.space,
-            '{endereco}, {detalhe_end}'.format(endereco=boletoDados.cedente[1],
-                                               detalhe_end=boletoDados.cedente[2]))
+            '{}, {}'.format(address.get_address_string(),
+                            address.get_details_string()))
         # CNPJ
         self.pdfCanvas.drawString(
             self.width - (35 * mm) + self.space,
             (((linhaInicial + 0) * self.heightLine)) + self.space,
-            boletoDados.cedente[3])
+            boletoDados.branch.person.company.cnpj)
 
         # Valores da linha Sacado
-        valorDocumento = self._formataValorParaExibir(
-            boletoDados.valor_documento)
+        valorDocumento = self._format_value(boletoDados.payment.value)
 
         self.pdfCanvas.drawString(
             0 + self.space,
             (((linhaInicial - 1) * self.heightLine)) + self.space,
-            boletoDados.sacado[0])
+            boletoDados.payer.name[:80])
         self.pdfCanvas.drawString(
             self.width - (35 * mm) - (30 * mm) - (40 * mm) + self.space,
             (((linhaInicial - 1) * self.heightLine)) + self.space,
@@ -362,7 +357,7 @@ class BoletoPDF(object):
         self.pdfCanvas.drawString(
             self.width - (35 * mm) - (30 * mm) + self.space,
             (((linhaInicial - 1) * self.heightLine)) + self.space,
-            boletoDados.numero_documento)
+            str(boletoDados.payment.identifier))
         self.pdfCanvas.drawString(
             self.width - (35 * mm) + self.space,
             (((linhaInicial - 1) * self.heightLine)) + self.space,
@@ -425,18 +420,21 @@ class BoletoPDF(object):
 
         y += self.heightLine
         self.pdfCanvas.drawString(0, y + self.deltaTitle, 'Pagador')
-        sacado = boletoDados.sacado
 
         # Linha grossa dividindo o Sacado
         y += self.heightLine
         self.pdfCanvas.setLineWidth(2)
         self._horizontalLine(0, y, self.width)
+
+        address = boletoDados.payer.get_main_address()
         self.pdfCanvas.setFont('Helvetica', self.fontSizeValue)
-        for i in range(len(sacado)):
-            self.pdfCanvas.drawString(
-                15 * mm,
-                (y - 10) - (i * self.deltaFont),
-                sacado[i])
+        self.pdfCanvas.drawString(15 * mm, (y - 10),
+                                  boletoDados.payer.name[:80])
+        self.pdfCanvas.drawString(15 * mm, (y - 10) - (1 * self.deltaFont),
+                                  address.get_address_string()[:80])
+        self.pdfCanvas.drawString(15 * mm, (y - 10) - (2 * self.deltaFont),
+                                  address.get_details_string()[:80])
+
         self.pdfCanvas.setFont('Helvetica', self.fontSizeTitle)
 
         # Linha vertical limitando todos os campos da direita
@@ -542,13 +540,12 @@ class BoletoPDF(object):
             ((30 + 20 + 20) * mm) + self.space,
             y + self.space,
             boletoDados.quantidade)
-        valor = self._formataValorParaExibir(boletoDados.valor)
+        valor = self._format_value(boletoDados.valor)
         self.pdfCanvas.drawString(
             ((30 + 20 + 20 + 20 + 20) * mm) + self.space,
             y + self.space,
             valor)
-        valorDocumento = self._formataValorParaExibir(
-            boletoDados.valor_documento)
+        valorDocumento = self._format_value(boletoDados.payment.value)
         self.pdfCanvas.drawRightString(
             self.width - 2 * self.space,
             y + self.space,
@@ -591,11 +588,11 @@ class BoletoPDF(object):
         self.pdfCanvas.drawString(
             0,
             y + self.space,
-            boletoDados.data_documento.strftime('%d/%m/%Y'))
+            boletoDados.payment.open_date.strftime('%d/%m/%Y'))
         self.pdfCanvas.drawString(
             (30 * mm) + self.space,
             y + self.space,
-            boletoDados.numero_documento)
+            str(boletoDados.payment.identifier))
         self.pdfCanvas.drawString(
             ((30 + 40) * mm) + self.space,
             y + self.space,
@@ -624,7 +621,8 @@ class BoletoPDF(object):
             'Agência/Código Beneficiário')
 
         self.pdfCanvas.setFont('Helvetica', self.fontSizeValue)
-        self.pdfCanvas.drawString(0, y + self.space, boletoDados.cedente[0])
+        self.pdfCanvas.drawString(0, y + self.space,
+                                  boletoDados.branch.get_description())
         self.pdfCanvas.drawRightString(
             self.width - 2 * self.space,
             y + self.space,
@@ -651,7 +649,7 @@ class BoletoPDF(object):
         self.pdfCanvas.drawRightString(
             self.width - 2 * self.space,
             y + self.space,
-            boletoDados.data_vencimento.strftime('%d/%m/%Y'))
+            boletoDados.payment.due_date.strftime('%d/%m/%Y'))
         self.pdfCanvas.setFont('Helvetica', self.fontSizeTitle)
 
         # Linha grossa com primeiro campo logo tipo do banco
@@ -734,6 +732,19 @@ class BoletoPDF(object):
         self.boletos.append(data)
 
     def render(self):
+        try:
+            self._render_bill()
+        except (BoletoException, ValueError):
+            exc = sys.exc_info()
+            tb_str = ''.join(traceback.format_exception(*exc))
+            collect_traceback(exc, submit=True)
+            raise ReportError(tb_str)
+
+    #
+    #   Private API
+    #
+
+    def _render_bill(self):
         if self.format == self.FORMAT_BOLETO:
             for b in self.boletos:
                 self.drawBoleto(b)
@@ -745,10 +756,6 @@ class BoletoPDF(object):
                     args[1] = self.boletos[i + 1]
                 self.drawBoletoCarneDuplo(*args)
                 self.nextPage()
-
-    #
-    #   Private API
-    #
 
     def _horizontalLine(self, x, y, width):
         self.pdfCanvas.line(x, y, x + width, y)
@@ -762,9 +769,9 @@ class BoletoPDF(object):
     def _rightText(self, x, y, text):
         self.pdfCanvas.drawRightString(self.refX + x, self.refY + y, text)
 
-    def _formataValorParaExibir(self, nfloat):
-        if nfloat:
-            txt = nfloat
+    def _format_value(self, value):
+        if value is not None:
+            txt = "%.2f" % value
             txt = txt.replace('.', ',')
         else:
             txt = ""
@@ -794,29 +801,13 @@ class BoletoPDF(object):
         bc.drawOn(self.pdfCanvas, x, y)
 
 
-def _render_bill(bill):
-    try:
-        bill.render()
-    except (BoletoException, ValueError):
-        exc = sys.exc_info()
-        tb_str = ''.join(traceback.format_exception(*exc))
-        collect_traceback(exc, submit=True)
-        raise ReportError(tb_str)
-
-
 class BillReport(object):
-    def __init__(self, filename, payments, account=None, bank=None):
+    title = _('Bill')
+
+    def __init__(self, filename, payments):
         self._payments = payments
         self._filename = filename
-        self._account = account
-        self._bank = bank
         self._bill = self._get_bill()
-
-        self._payments_added = False
-        # Reports need a title when printing
-        self.title = _("Bill")
-
-        self.today = datetime.datetime.today()
 
     @classmethod
     def check_printable(cls, payments):
@@ -839,7 +830,7 @@ class BillReport(object):
 
         from stoqlib.domain.account import Account
         if (account.account_type != Account.TYPE_BANK or
-            not account.bank):
+                not account.bank):
             msg = _("Account '%s' must be a bank account.\n"
                     "You need to configure the bill payment method in "
                     "the admin application and try again") % account.description
@@ -867,126 +858,21 @@ class BillReport(object):
             self.print_as_landscape = True
         return BoletoPDF(self._filename, format)
 
-    def _get_instrucoes(self, payment):
-        instructions = []
-
-        sale = payment.group.sale
-        if sale:
-            invoice_number = sale.invoice.invoice_number
-        else:
-            invoice_number = payment.identifier
-
-        penalty = currency(
-            (sysparam.get_decimal('BILL_PENALTY') / 100) * payment.value)
-        interest = currency(
-            (sysparam.get_decimal('BILL_INTEREST') / 100) * payment.value)
-        discount = currency(
-            (sysparam.get_decimal('BILL_DISCOUNT') / 100) * payment.value)
-        data = sysparam.get_string('BILL_INSTRUCTIONS')
-        for line in data.split('\n')[:4]:
-            line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
-            line = line.replace('$PENALTY',
-                                converter.as_string(currency, penalty))
-            line = line.replace('$INTEREST',
-                                converter.as_string(currency, interest))
-            line = line.replace('$DISCOUNT',
-                                converter.as_string(currency, discount))
-            line = line.replace('$INVOICE_NUMBER', str(invoice_number))
-            instructions.append(line)
-
-        instructions.append('')
-        instructions.append('\n' + _('Stoq Retail Management') + ' - www.stoq.com.br')
-        return instructions
-
-    def _get_demonstrativo(self):
-        payment = self._payments[0]
-        demonstrativo = [payment.group.get_description().capitalize()]
-        sale = payment.group.sale
-        if sale:
-            for item in sale.get_items():
-                demonstrativo.append(' - %s' % item.get_description())
-        return demonstrativo
-
-    def _get_sacado(self):
-        payment = self._payments[0]
-        payer = payment.group.payer
-        address = payer.get_main_address()
-        return [payer.name,
-                address.get_address_string(),
-                address.get_details_string()]
-
-    def _get_cedente(self):
-        payment = self._payments[0]
-        parent = payment.group.get_parent()
-        if parent:
-            branch = parent.branch
-        else:
-            branch = sysparam.get_object(payment.store, 'MAIN_COMPANY')
-
-        address = branch.person.get_main_address()
-        return [branch.get_description(),
-                address.get_address_string(),
-                address.get_details_string(),
-                branch.person.company.cnpj]
-
-    def _get_account(self, payment):
-        if self._account:
-            return self._account
-
-        return payment.method.destination_account
-
-    def _get_bank(self, account):
-        if self._bank:
-            return self._bank
-
-        return account.bank
-
     def add_payments(self):
-        if self._payments_added:
+        if self._bill.boletos:
             return
+
         for p in self._payments:
             if p.method.method_name != 'bill':
                 continue
-            self._add_payment(p)
-        self._payments_added = True
-
-    def _add_payment(self, payment):
-        account = self._get_account(payment)
-        bank = self._get_bank(account)
-        kwargs = dict(
-            valor_documento=payment.value,
-            data_vencimento=payment.due_date.date(),
-            data_documento=payment.open_date.date(),
-            data_processamento=self.today,
-            # FIXME: Maybe we should add the branch id to this numbers
-            nosso_numero=str(int(payment.identifier)),
-            numero_documento=str(int(payment.identifier)),
-            sacado=self._get_sacado(),
-            cedente=self._get_cedente(),
-            demonstrativo=self._get_demonstrativo(),
-            instrucoes=self._get_instrucoes(payment),
-            agencia=bank.bank_branch,
-            conta=bank.bank_account,
-        )
-        for opt in bank.options:
-            kwargs[opt.option] = opt.value
-        _render_class = get_bank_info_by_number(
-            bank.bank_number)
-        data = _render_class(**kwargs)
-        self._bill.add_data(data)
-
-    def override_payment_id(self, payment_id):
-        for data in self._bill.boletos:
-            data.nosso_numero = str(payment_id)
-            data.numero_documento = str(payment_id)
-
-    def override_payment_description(self, description):
-        for data in self._bill.boletos:
-            data.demonstrativo = description
+            account = p.method.destination_account
+            _render_class = get_bank_info_by_number(account.bank.bank_number)
+            data = _render_class(p)
+            self._bill.add_data(data)
 
     def save(self):
         self.add_payments()
-        _render_bill(self._bill)
+        self._bill.render()
         self._bill.save()
 
 
@@ -997,5 +883,5 @@ class BillTestReport(object):
         self._bill.add_data(data)
 
     def save(self):
-        _render_bill(self._bill)
+        self._bill.render()
         self._bill.save()

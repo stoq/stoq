@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 ##
-## Copyright (C) 2011 Async Open Source
+## Copyright (C) 2011-2017 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -24,15 +24,21 @@
 """
 
 import datetime
-from decimal import Decimal
 import logging
 
 from kiwi.environ import environ
+from kiwi.currency import currency
+from kiwi.datatypes import converter
 
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.algorithms import (modulo10,
                                     modulo11,
                                     calculaDuploDigito)
+from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.cnab.bb import BBCnab
+from stoqlib.lib.cnab.caixa import CaixaCnab
+from stoqlib.lib.cnab.itau import ItauCnab
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -48,10 +54,9 @@ class BoletoException(Exception):
 
 
 def custom_property(name, num_length):
-    """
-        Function to create properties on boleto
+    """Function to create properties on boleto
 
-        It accepts a number with or without a DV and zerofills it
+    It accepts a number with or without a DV and zerofills it
     """
     internal_attr = '_%s' % name
 
@@ -61,11 +66,9 @@ def custom_property(name, num_length):
         if len(val) is 1:
             val[0] = str(val[0]).zfill(num_length)
             setattr(self, internal_attr, val[0])
-
         elif len(val) is 2:
             val[0] = str(val[0]).zfill(num_length)
             setattr(self, internal_attr, '-'.join(val))
-
         else:
             raise BoletoException(_('Wrong value format'))
 
@@ -78,52 +81,44 @@ def custom_property(name, num_length):
 
 
 class BankInfo(object):
+    """Base class for generating bill information
+
+    For each bank, a subclass of this should be created defining how the value
+    is formatted for the bill.
+    """
 
     aceite = 'N'
     especie = "R$"
     moeda = "9"
     local_pagamento = "Pagável em qualquer banco até o vencimento"
-    quantidade = ""
+
+    # This 2 values are usually empty in the printed bill
+    quantidade = None
+    valor = None
 
     # Override in base class
-
     description = None
+    bank_name = None
     bank_number = None
     options = {}
     logo = ''
 
     validate_field_func = None
-    validate_field_dv_10 = None
+    validate_field_dv = None
 
-    def __init__(self, **kwargs):
-        # Informações gerais
-        self.especie_documento = ""
-        self.instrucoes = []
+    nosso_numero = custom_property('nosso_numero', 13)
+    agencia = custom_property('agencia', 4)
+    conta = custom_property('conta', 7)
 
-        # Cedente (empresa - dados do banco)
-        self.agencia = ""
-        self.carteira = ""
-        self.cedente = ""
-        self.conta = ""
+    def __init__(self, payment):
+        self.payment = payment
+        self.payer = payment.group.payer
+        self.branch = payment.branch
+        self.bank = payment.method.destination_account.bank
+        self.data_processamento = localtoday()
 
-        # Sacado (cliente)
-        self.sacado_nome = ""
-        self.sacado_cidade = ""
-        self.sacado_uf = ""
-        self.sacado_endereco = ""
-        self.sacado_bairro = ""
-        self.sacado_cep = ""
-
-        # Pagamento
-        self.data_documento = ""
-        self.data_processamento = datetime.date.today()
-        self.data_vencimento = ""
-        self.demonstrativo = []
-        if (not 'numero_documento' in kwargs and
-            'nosso_numero' in kwargs):
-            kwargs['numero_documento'] = kwargs['nosso_numero']
-
-        for key, value in kwargs.items():
+        props = self.get_properties(payment)
+        for key, value in props.items():
             setattr(self, key, value)
 
         self.logo_image_path = ""
@@ -131,8 +126,75 @@ class BankInfo(object):
             self.logo_image_path = environ.get_resource_filename(
                 'stoq', 'pixmaps', self.logo)
 
+    def get_properties(self, payment):
+        """Get values necesary for bill emission.
+
+        This includes nosso numero, bank agency and bank account.
+
+        Also, any other custom options that the bank require will be present
+        here.
+        """
+        props = dict(
+            nosso_numero=str(int(payment.identifier)),
+            agencia=self.bank.bank_branch,
+            conta=self.bank.bank_account)
+        for opt in self.bank.options:
+            props[opt.option] = opt.value
+
+        return props
+
+    #
+    # Properties
+    #
+
     @property
-    def campo_livre(self):
+    def numero_documento(self):
+        payment = self.payment
+        sale = payment.group.sale
+        if sale:
+            return sale.invoice.invoice_number
+        else:
+            return payment.identifier
+
+    @property
+    def instrucoes(self):
+        instructions = []
+        payment = self.payment
+        penalty = currency(
+            (sysparam.get_decimal('BILL_PENALTY') / 100) * payment.value)
+        interest = currency(
+            (sysparam.get_decimal('BILL_INTEREST') / 100) * payment.value)
+        discount = currency(
+            (sysparam.get_decimal('BILL_DISCOUNT') / 100) * payment.value)
+        data = sysparam.get_string('BILL_INSTRUCTIONS')
+        for line in data.split('\n')[:4]:
+            line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
+            line = line.replace('$PENALTY',
+                                converter.as_string(currency, penalty))
+            line = line.replace('$INTEREST',
+                                converter.as_string(currency, interest))
+            line = line.replace('$DISCOUNT',
+                                converter.as_string(currency, discount))
+            line = line.replace('$INVOICE_NUMBER', str(self.numero_documento))
+            instructions.append(line)
+
+        # FIXME: Only add this if not a stoq.link subscriber
+        #instructions.append('')
+        #instructions.append('\n' + _('Stoq Retail Management') + ' - www.stoq.com.br')
+        return instructions
+
+    @property
+    def demonstrativo(self):
+        payment = self.payment
+        demonstrativo = [payment.group.get_description().capitalize()]
+        sale = payment.group.sale
+        if sale:
+            for item in sale.get_items():
+                demonstrativo.append(' - %s' % item.get_description())
+        return demonstrativo
+
+    @property
+    def campo_livre(self):  # pragma no cover
         raise NotImplementedError
 
     @property
@@ -142,7 +204,7 @@ class BankInfo(object):
             self.moeda,
             'X',
             self.fator_vencimento,
-            self.formata_valor(self.valor_documento, 10),
+            self.formata_valor(self.payment.value, 10),
             self.campo_livre
         )
 
@@ -155,12 +217,35 @@ class BankInfo(object):
         return num
 
     @property
-    def dv_nosso_numero(self):
+    def dv_nosso_numero(self):  # pragma no cover
         """Returns nosso número DV
 
-            It should be implemented by derived class
+        It should be implemented by derived class
         """
         raise NotImplementedError
+
+    @property
+    def dv_agencia(self):
+        if '-' in self.agencia:
+            return self.agencia.split('-')[1]
+        else:
+            return ''
+
+    @property
+    def dv_conta(self):
+        if '-' in self.conta:
+            return self.conta.split('-')[1]
+        else:
+            return ''
+
+    @property
+    def dv_agencia_conta(self):
+        """Verifier digit for agency and account
+
+        Some banks don't require this. The ones that does, should override this
+        method
+        """
+        return ''
 
     def calculate_dv_barcode(self, line):
         resto2 = modulo11(line, 9, 1)
@@ -171,97 +256,17 @@ class BankInfo(object):
         return dv
 
     def format_nosso_numero(self):
-        """
-            Return Formatted Nosso Número
+        """Return Formatted Nosso Número for bill printing
 
-            It should be implemented by derived class
+        It should be implemented by derived class
         """
         return self.nosso_numero
-
-    nosso_numero = custom_property('nosso_numero', 13)
-    agencia = custom_property('agencia', 4)
-    conta = custom_property('conta', 7)
-
-    @property
-    def valor(self):
-        try:
-            return "%.2f" % self._valor
-        except AttributeError:
-            pass
-
-    @valor.setter
-    def valor(self, val):
-        if type(val) is Decimal:
-            self._valor = val
-        else:
-            self._valor = Decimal(str(val), 2)
-
-    @property
-    def valor_documento(self):
-        try:
-            return "%.2f" % self._valor_documento
-        except AttributeError:
-            pass
-
-    @valor_documento.setter
-    def valor_documento(self, val):
-        if type(val) is Decimal:
-            self._valor_documento = val
-        else:
-            self._valor_documento = Decimal(str(val), 2)
-
-    @property
-    def instrucoes(self):
-        try:
-            return self._instrucoes
-        except AttributeError:
-            pass
-
-    @instrucoes.setter
-    def instrucoes(self, list_inst):
-        self._instrucoes = list_inst
-
-    @property
-    def demonstrativo(self):
-        try:
-            return self._demonstrativo
-        except AttributeError:
-            pass
-
-    @demonstrativo.setter
-    def demonstrativo(self, list_dem):
-        self._demonstrativo = list_dem
-
-    @property
-    def sacado(self):
-        if not hasattr(self, '_sacado'):
-            self.sacado = [
-                self.sacado_nome,
-                self.sacado_endereco,
-                '%s - %s - %s - %s' % (
-                    self.sacado_bairro,
-                    self.sacado_cidade,
-                    self.sacado_uf,
-                    self.sacado_cep
-                )
-            ]
-        return self._sacado
-
-    @sacado.setter
-    def sacado(self, list_sacado):
-        # Just get 3 lines
-        list_sacado = list_sacado[:3]
-        for i, line in enumerate(list_sacado):
-            # Just get the first 80 characters
-            list_sacado[i] = list_sacado[i][:80]
-        self._sacado = list_sacado
 
     @property
     def fator_vencimento(self):
         date_ref = datetime.date(2000, 7, 3)  # Fator = 1000
-        delta = self.data_vencimento - date_ref
-        fator = delta.days + 1000
-        return fator
+        delta = self.payment.due_date.date() - date_ref
+        return delta.days + 1000
 
     @property
     def agencia_conta(self):
@@ -278,12 +283,12 @@ class BankInfo(object):
         """Linha que o cliente pode utilizar para digitar se o código
             de barras não puder ser lido
 
-            Posição    Conteúdo
-            1 a 3    Número do banco
-            4        Código da Moeda - 9 para Real
-            5        Digito verificador do Código de Barras
-            6 a 19   Valor (12 inteiros e 2 decimais)
-            20 a 44  Campo Livre definido por cada banco
+        Posição    Conteúdo
+        1 a 3    Número do banco
+        4        Código da Moeda - 9 para Real
+        5        Digito verificador do Código de Barras
+        6 a 19   Valor (12 inteiros e 2 decimais)
+        20 a 44  Campo Livre definido por cada banco
         """
         linha = self.barcode
         assert linha, "Boleto doesn't have a barcode"
@@ -300,6 +305,29 @@ class BankInfo(object):
 
         return "%s %s %s %s %s" % (campo1, campo2, campo3, campo4, campo5)
 
+    #
+    # Class Methods
+    #
+
+    @classmethod
+    def get_cnab(cls, payments):
+        branch = payments[0].branch
+        bank = payments[0].method.destination_account.bank
+        info = cls(payments[0])
+
+        cnab = cls.cnab_class(branch, bank, info)
+        cnab.add_record(cnab.FileHeader)
+        cnab.add_record(cnab.BatchHeader)
+        for i, payment in enumerate(payments):
+            info = cls(payment)
+            cnab.add_record(cnab.RecordP, payment, info, registry_sequence=3 * i + 1)
+            cnab.add_record(cnab.RecordQ, payment, info, registry_sequence=3 * i + 2)
+            cnab.add_record(cnab.RecordR, payment, info, registry_sequence=3 * i + 3)
+
+        cnab.add_record(cnab.BatchTrailer)
+        cnab.add_record(cnab.FileTrailer)
+        return cnab.as_string()
+
     @classmethod
     def get_extra_options(cls):
         rv = []
@@ -309,7 +337,7 @@ class BankInfo(object):
         return rv
 
     @classmethod
-    def validate_field(cls, field, dv_10=None, func=None):
+    def validate_field(cls, field):
         if ' ' in field:
             raise BoletoException(_('The field cannot have spaces'))
         if '.' in field or ',' in field:
@@ -326,7 +354,7 @@ class BankInfo(object):
         except ValueError:
             raise BoletoException(_('Account needs to be a number'))
 
-        if dv and dv_10 is not None:
+        if dv and cls.validate_field_dv is not None:
             func = cls.validate_field_func
             if func == 'modulo11':
                 ret = modulo11(field)
@@ -335,7 +363,7 @@ class BankInfo(object):
             else:
                 ret = None
 
-            if dv.lower() in [dv_10]:
+            if dv.lower() in [cls.validate_field_dv]:
                 # FIXME: Is it correct that the rest of 0 is
                 #        the same as 10?
                 if ret == 0:
@@ -349,13 +377,14 @@ class BankInfo(object):
                     dv = int(dv)
                 except ValueError:
                     raise BoletoException(
-                        _('Verifier digit must be a number or %s') % dv_10)
+                        _('Verifier digit must be a number or %s') %
+                        cls.validate_field_dv)
 
                 if ret is not None and ret != dv:
                     raise BoletoException(_('Invalid verifier digit'))
 
     @classmethod
-    def validate_option(cls, option, value):
+    def validate_option(cls, option, value):  # pragma no cover
         pass
 
     @staticmethod
@@ -366,26 +395,17 @@ class BankInfo(object):
         return numero.zfill(tamanho)
 
     @staticmethod
-    def formata_texto(texto, tamanho):
-        if len(texto) > tamanho:
-            raise BoletoException(
-                _('Text length must be less than %s') % tamanho)
-        return texto.ljust(tamanho)
-
-    @staticmethod
-    def formata_valor(nfloat, tamanho):
-        try:
-            txt = nfloat.replace('.', '')
-            txt = BankInfo.formata_numero(txt, tamanho)
-            return txt
-        except AttributeError:
-            pass
+    def formata_valor(value, tamanho):
+        txt = "%.2f" % value
+        txt = txt.replace('.', '')
+        txt = BankInfo.formata_numero(txt, tamanho)
+        return txt
 
 _banks = []
 
 
 def register_bank(bank_class):
-    if not issubclass(bank_class, BankInfo):
+    if not issubclass(bank_class, BankInfo):  # pragma no cover
         raise TypeError
     assert not bank_class in _banks
     _banks.append(bank_class)
@@ -403,9 +423,6 @@ class BankBanrisul(BankInfo):
 
     nosso_numero = custom_property('nosso_numero', 8)
     conta = custom_property('conta', 6)
-
-    def __init__(self, **kwargs):
-        BankInfo.__init__(self, **kwargs)
 
     @property
     def campo_livre(self):
@@ -428,7 +445,12 @@ class BankBradesco(BankInfo):
                u'conta': BILL_OPTION_BANK_BRANCH}
 
     validate_field_func = 'modulo11'
-    validate_field_dv_10 = '0'
+    validate_field_dv = '0'
+
+    # Nosso numero (sem dv) sao 11 digitos
+    nosso_numero = custom_property('nosso_numero', 11)
+    agencia = custom_property('agencia', 4)
+    conta = custom_property('conta', 7)
 
     def format_nosso_numero(self):
         return "%s/%s-%s" % (
@@ -436,9 +458,6 @@ class BankBradesco(BankInfo):
             self.nosso_numero,
             self.dv_nosso_numero
         )
-
-    # Nosso numero (sem dv) sao 11 digitos
-    nosso_numero = custom_property('nosso_numero', 11)
 
     @property
     def dv_nosso_numero(self):
@@ -451,9 +470,6 @@ class BankBradesco(BankInfo):
         else:
             dv = digito
         return dv
-
-    agencia = custom_property('agencia', 4)
-    conta = custom_property('conta', 7)
 
     @property
     def campo_livre(self):
@@ -487,6 +503,7 @@ class BankBradesco(BankInfo):
 class BankBB(BankInfo):
     description = 'Banco do Brasil'
     bank_number = 1
+    bank_name = 'BANCO DO BRASIL'
     logo = 'logo_bb.gif'
     options = {u'convenio': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
@@ -494,13 +511,19 @@ class BankBB(BankInfo):
                u'especie_documento': BILL_OPTION_CUSTOM}
 
     validate_field_func = 'modulo11'
-    validate_field_dv_10 = 'x'
+    validate_field_dv = 'x'
 
-    def __init__(self, **kwargs):
-        if not 'carteira' in kwargs:
-            kwargs['carteira'] = '18'
+    agencia = custom_property('agencia', 4)
+    conta = custom_property('conta', 8)
+    cnab_class = BBCnab
 
-        convenio = kwargs.pop('convenio', None)
+    def get_properties(self, payment):
+        props = super(BankBB, self).get_properties(payment)
+
+        if not 'carteira' in props:
+            props['carteira'] = '18'
+
+        convenio = props.pop('convenio', None)
         if convenio:
             self.len_convenio = len(convenio)
             self.convenio = convenio
@@ -509,11 +532,11 @@ class BankBB(BankInfo):
             self.convenio = ''
 
         self.format_nnumero = 1
-        if 'format_nnumero' in kwargs:
-            self.format_nnumero = int(kwargs.pop('format_nnumero'))
-        kwargs['agencia'] = kwargs['agencia'].split('-')[0]
-        kwargs['conta'] = kwargs['conta'].split('-')[0]
-        super(BankBB, self).__init__(**kwargs)
+        if 'format_nnumero' in props:
+            self.format_nnumero = int(props.pop('format_nnumero'))
+        props['agencia'] = props['agencia'].split('-')[0]
+        props['conta'] = props['conta'].split('-')[0]
+        return props
 
     def format_nosso_numero(self):
         return "%s-%s" % (
@@ -564,9 +587,6 @@ class BankBB(BankInfo):
     def dv_nosso_numero(self):
         return modulo11(self.nosso_numero)
 
-    agencia = custom_property('agencia', 4)
-    conta = custom_property('conta', 8)
-
     @property
     def campo_livre(self):
         if self.len_convenio in (7, 8):
@@ -604,14 +624,20 @@ class BankBB(BankInfo):
 @register_bank
 class BankCaixa(BankInfo):
     description = 'Caixa Econômica Federal'
+    bank_name = 'CAIXA ECONOMICA FEDERAL'
     bank_number = 104
+    cnab_class = CaixaCnab
     logo = 'logo_bancocaixa.jpg'
     options = {u'carteira': BILL_OPTION_CUSTOM,
                u'especie_documento': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
+               u'codigo_beneficiario': BILL_OPTION_CUSTOM,
+               u'codigo_convenio': BILL_OPTION_CUSTOM,
                u'conta': BILL_OPTION_BANK_BRANCH}
 
     inicio_nosso_numero = '80'
+
+    conta = custom_property('conta', 11)
 
     # Nosso numero (sem dv) sao 10 digitos
     @property
@@ -634,8 +660,6 @@ class BankCaixa(BankInfo):
             dv = digito
         return dv
 
-    conta = custom_property('conta', 11)
-
     @property
     def campo_livre(self):
         return "%10s%4s%11s" % (self.nosso_numero,
@@ -646,7 +670,9 @@ class BankCaixa(BankInfo):
 @register_bank
 class BankItau(BankInfo):
     description = 'Banco Itaú'
+    bank_name = 'BANCO ITAU SA'
     bank_number = 341
+    cnab_class = ItauCnab
     logo = 'logo_itau.gif'
     options = {u'carteira': BILL_OPTION_CUSTOM,
                u'especie_documento': BILL_OPTION_CUSTOM,
@@ -672,12 +698,18 @@ class BankItau(BankInfo):
                              self.dac_nosso_numero)
 
     @property
+    def dv_agencia_conta(self):
+        agencia = self.agencia.split('-')[0]
+        conta = self.conta.split('-')[0]
+        return modulo10(agencia + conta)
+
+    @property
     def agencia_conta(self):
         agencia = self.agencia.split('-')[0]
         conta = self.conta.split('-')[0]
         return '%s / %s-%s' % (agencia,
                                conta,
-                               modulo10(agencia + conta))
+                               self.dv_agencia_conta)
 
     @property
     def campo_livre(self):
@@ -744,9 +776,7 @@ class BankSantander(BankInfo):
 
     nosso_numero = custom_property('nosso_numero', 7)
 
-    def __init__(self, **kwargs):
-        BankInfo.__init__(self, **kwargs)
-        self.carteira = '102'
+    carteira = '102'
 
     def format_nosso_numero(self):
         return "00000%s-%s" % (
@@ -774,4 +804,4 @@ def get_bank_info_by_number(number):
     for bank in _banks:
         if bank.bank_number == number:
             return bank
-    raise NotImplementedError(number)
+    raise NotImplementedError(number)  # pragma no cover

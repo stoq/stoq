@@ -31,6 +31,7 @@
     </menu>
     <placeholder name="FileMenuPH">
       <menuitem action="PaymentFlowHistory"/>
+      <menuitem action="ExportBills"/>
     </placeholder>
   </menu>
   <placeholder name="AppMenubarPH">

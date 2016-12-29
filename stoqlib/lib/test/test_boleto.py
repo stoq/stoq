@@ -23,6 +23,8 @@
 ##
 
 import datetime
+from decimal import Decimal
+import mock
 import os
 import tempfile
 
@@ -30,8 +32,8 @@ import unittest
 
 from stoqlib.api import api
 from stoqlib.lib.boleto import (
-    BankSantander, BankBanrisul, BankBB, BankBradesco,
-    BankCaixa, BankItau, BankReal, BoletoException)
+    BankSantander, BankBanrisul, BankBB, BankBradesco, custom_property,
+    BankCaixa, BankItau, BankReal, BoletoException, BankInfo, BILL_OPTION_CUSTOM)
 from stoqlib.domain.account import BankAccount, BillOption
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.test.domaintest import DomainTest
@@ -41,7 +43,7 @@ from stoqlib.reporting.boleto import BillReport
 from stoqlib.lib.unittestutils import get_tests_datadir
 
 
-class TestBank(DomainTest):
+class TestBillReport(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
         self._filename = tempfile.mktemp(prefix="stoqlib-test-boleto-",
@@ -82,24 +84,27 @@ class TestBank(DomainTest):
             open(fname, 'w').write(open(generated).read())
         return fname
 
-    def _create_bill_sale(self):
+    def _create_bill_sale(self, installments=1):
         sale = self.create_sale()
+        sale.identifier = 123
         self.add_product(sale)
         sale.order()
-        self.payment = self.add_payments(sale, method_type=u'bill',
-                                         date=datetime.datetime(2011, 5, 30))[0]
+        payments = self.add_payments(sale, method_type=u'bill',
+                                     date=datetime.datetime(2011, 5, 30),
+                                     installments=installments)
+        for i, payment in enumerate(payments, 400):
+            payment.identifier = i
         sale.client = self.create_client()
         address = self.create_address()
         address.person = sale.client.person
         sale.confirm()
         return sale
 
-    def _render_bill_to_html(self, sale):
+    @mock.patch('stoqlib.lib.boleto.localtoday')
+    def _render_bill_to_html(self, sale, localtoday):
+        localtoday.return_value = datetime.date(2011, 05, 30)
         report = BillReport(self._filename, list(sale.payments))
-        report.today = datetime.date(2011, 05, 30)
         report.add_payments()
-        report.override_payment_id(400)
-        report.override_payment_description([u'sale XXX', u'XXX - description'])
         report.save()
         self._pdf_html = tempfile.mktemp(prefix="stoqlib-test-boleto-",
                                          suffix=".pdf.html")
@@ -135,7 +140,8 @@ class TestBank(DomainTest):
         self._configure_boleto(u"104",
                                agency=u"1565",
                                account=u"414-3",
-                               especie_documento=u"DM")
+                               especie_documento=u"DM",
+                               carteira=u'')
 
         self._diff(sale, 'boleto-104')
 
@@ -169,17 +175,151 @@ class TestBank(DomainTest):
 
         self._diff(sale, 'boleto-356')
 
+    def test_carne(self):
+        sale = self._create_bill_sale(installments=2)
+        self._configure_boleto(u"001",
+                               account=u"5705853",
+                               agency=u"0531",
+                               carteira=u'06',
+                               especie_documento=u"DM")
 
-class TestBancoBanrisul(unittest.TestCase):
+        self._diff(sale, 'boleto-001-carne')
+
+
+class TestBank(BankInfo):
+    description = 'Test Bank'
+    bank_number = 99
+    foo = custom_property('foo', 8)
+
+    campo_livre = '0' * 25
+
+    options = dict(
+        opcao_teste=BILL_OPTION_CUSTOM,
+        segunda_opcao=BILL_OPTION_CUSTOM,
+    )
+
+
+class TestBankInfo(DomainTest):
+
     def setUp(self):
-        self.dados = BankBanrisul(
-            agencia=u'1102',
-            conta=u'9000150',
-            especie_documento=u'DM',
-            data_vencimento=datetime.date(2000, 7, 4),
-            valor_documento=550,
-            nosso_numero=u'22832563',
-        )
+        self.bank = self.create_bank_account(bank_branch=u'1102',
+                                             bank_account=u'9000150',)
+        payment = self.create_payment(value=Decimal('550'),
+                                      date=datetime.date(2000, 7, 4))
+        payment.identifier = 134
+        payment.method.destination_account.bank = self.bank
+        self.info = TestBank(payment)
+
+    def test_custom_property(self):
+        with self.assertRaises(BoletoException):
+            self.info.foo = '123-2-3'
+
+    def test_instrucoes(self):
+        inst = (u'Primeia linha da instrução\n$DATE\n$PENALTY foo $INTEREST\n'
+                ' $DISCOUNT e $INVOICE_NUMBER')
+        with self.sysparam(BILL_INSTRUCTIONS=inst,
+                           BILL_PENALTY=Decimal(11),
+                           BILL_INTEREST=Decimal('0.4'),
+                           BILL_DISCOUNT=Decimal('123.45')):
+            self.assertEquals(self.info.instrucoes,
+                              [u'Primeia linha da instru\xe7\xe3o',
+                               u'04/07/2000',
+                               u'$60.50 foo $2.20',
+                               u' $678.98 e 00134'])
+
+    def test_barcode(self):
+        self.assertEquals(len(self.info.barcode), 44)
+        with self.assertRaises(BoletoException):
+            self.info.campo_livre = '0' * 27
+            self.info.barcode
+
+    def test_formata_numero(self):
+        with self.assertRaises(BoletoException):
+            TestBank.formata_numero('123456', 3)
+
+        self.assertEquals(TestBank.formata_numero('123', 6), '000123')
+
+    def test_dv_agencia(self):
+        self.info.agencia = '123-4'
+        self.assertEquals(self.info.dv_agencia, '4')
+
+        self.info.agencia = '1'
+        self.assertEquals(self.info.dv_agencia, '')
+
+    def test_dv_conta(self):
+        self.info.conta = '123-9'
+        self.assertEquals(self.info.dv_conta, '9')
+
+        self.info.conta = '1'
+        self.assertEquals(self.info.dv_conta, '')
+
+    def test_get_extra_options(self):
+        self.assertEquals(BankInfo.get_extra_options(), [])
+        self.assertEquals(TestBank.get_extra_options(), ['opcao_teste',
+                                                         'segunda_opcao'])
+
+    def test_validate_field(self):
+        with self.assertRaisesRegexp(BoletoException, 'The field cannot have spaces'):
+            TestBank.validate_field('with spaces')
+
+        with self.assertRaisesRegexp(BoletoException,
+                                     'The field cannot have dots of commas'):
+            TestBank.validate_field('cant,have,commas')
+
+        with self.assertRaisesRegexp(BoletoException,
+                                     'The field cannot have dots of commas'):
+            TestBank.validate_field('cant.have.dots')
+
+        with self.assertRaisesRegexp(BoletoException, 'More than one hyphen found'):
+            TestBank.validate_field('only-one-hyphen-allowed')
+
+        with self.assertRaisesRegexp(BoletoException, 'Verifier digit cannot be empty'):
+            TestBank.validate_field('noverifiierdigit-')
+
+        with self.assertRaisesRegexp(BoletoException, 'Account needs to be a number'):
+            TestBank.validate_field('foobar')
+
+        TestBank.validate_field_dv = '0'
+        TestBank.validate_field_func = 'modulo11'
+        with self.assertRaisesRegexp(BoletoException, 'Invalid verifier digit'):
+            TestBank.validate_field('1234-5')
+        with self.assertRaisesRegexp(BoletoException,
+                                     'Verifier digit must be a number or 0'):
+            TestBank.validate_field('1234-y')
+
+        # Now a valid dv
+        TestBank.validate_field('1234-3')
+
+        TestBank.validate_field_func = 'modulo10'
+        with self.assertRaisesRegexp(BoletoException, 'Invalid verifier digit'):
+            TestBank.validate_field('1234-5')
+
+        # Now a valid dv for modulo 11
+        TestBank.validate_field('1234-4')
+
+        # Now with an X verifier digit
+        TestBank.validate_field_dv = 'x'
+        TestBank.validate_field_func = 'modulo11'
+        with self.assertRaisesRegexp(BoletoException, 'Invalid verifier digit'):
+            TestBank.validate_field('1234-x')
+        TestBank.validate_field('0295-X')
+
+        # Without a func, all digits are valid
+        TestBank.validate_field_func = None
+        TestBank.validate_field('0295-1')
+        TestBank.validate_field('0295-2')
+
+
+class TestBancoBanrisul(DomainTest):
+    def setUp(self):
+        payment = self.create_payment(value=Decimal('550'),
+                                      date=datetime.date(2000, 7, 4))
+        bank = self.create_bank_account(bank_branch=u'1102',
+                                        bank_account=u'9000150',)
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'nosso_numero', u'22832563')
+        payment.method.destination_account.bank = bank
+        self.dados = BankBanrisul(payment)
 
     def test_linha_digitavel(self):
         self.assertEqual(
@@ -206,18 +346,17 @@ class TestBancoBanrisul(unittest.TestCase):
             pass
 
 
-class TestBB(unittest.TestCase):
+class TestBB(DomainTest):
     def setUp(self):
-        d = BankBB(
-            data_vencimento=datetime.date(2011, 3, 8),
-            valor_documento=2952.95,
-            agencia=u'9999',
-            conta=u'99999',
-            especie_documento=u'DM',
-            convenio=u'7777777',
-            nosso_numero=u'87654',
-        )
-        self.dados = d
+        payment = self.create_payment(value=Decimal('2952.95'),
+                                      date=datetime.date(2011, 3, 8))
+        bank = self.create_bank_account(bank_branch=u'9999',
+                                        bank_account=u'99999',)
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'convenio', u'7777777')
+        bank.add_bill_option(u'nosso_numero', u'87654')
+        payment.method.destination_account.bank = bank
+        self.dados = BankBB(payment)
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
@@ -241,28 +380,29 @@ class TestBB(unittest.TestCase):
             self.dados.validate_field(v)
 
 
-class TestBancoBradesco(unittest.TestCase):
+class TestBancoBradesco(DomainTest):
     def setUp(self):
-        self.dados = BankBradesco(
-            carteira=u'06',
-            agencia=u'278-0',
-            conta=u'039232-4',
-            especie_documento=u'DM',
-            data_vencimento=datetime.date(2011, 2, 5),
-            valor_documento=8280.00,
-            nosso_numero=u'2125525',
-        )
+        payment = self.create_payment(value=Decimal('8280'),
+                                      date=datetime.date(2011, 2, 5))
+        bank = self.create_bank_account(bank_branch=u'278-0',
+                                        bank_account=u'039232-4',)
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'carteira', u'06')
+        bank.add_bill_option(u'nosso_numero', u'2125525')
+        payment.method.destination_account.bank = bank
+        self.dados = BankBradesco(payment)
 
-        self.dados2 = BankBradesco(
-            carteira=u'06',
-            agencia=u'1172',
-            conta=u'403005',
-            especie_documento=u'DM',
-            data_vencimento=datetime.date(2011, 3, 9),
-            valor_documento=2952.95,
-            nosso_numero=u'75896452',
-            numero_documento=u'75896452',
-        )
+        payment = self.create_payment(value=Decimal('2952.95'),
+                                      date=datetime.date(2011, 3, 9))
+        bank = self.create_bank_account(bank_branch=u'1172',
+                                        bank_account=u'403005',)
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'carteira', u'06')
+        bank.add_bill_option(u'nosso_numero', u'75896452')
+        account = self.create_account()
+        account.bank = bank
+        payment.method.destination_account = account
+        self.dados2 = BankBradesco(payment)
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
@@ -297,15 +437,25 @@ class TestBancoBradesco(unittest.TestCase):
         for v in valid:
             self.dados.validate_field(v)
 
+    def test_dv_nosso_numero(self):
+        self.dados.nosso_numero = '1236'
+        self.assertEquals(self.dados.dv_nosso_numero, 'P')
+
+        self.dados.nosso_numero = '1244'
+        self.assertEquals(self.dados.dv_nosso_numero, 0)
+
     def test_carteira(self):
-        x = BankBradesco(
-            carteira=u'9',
-            agencia=u'02752',
-            conta=u'14978-0',
-            data_vencimento=datetime.date(2011, 3, 9),
-            valor_documento=2952.95,
-            nosso_numero=u'75896452',
-            numero_documento=u'75896452')
+        payment = self.create_payment(value=Decimal('2952.95'),
+                                      date=datetime.date(2011, 3, 9))
+        bank = self.create_bank_account(bank_branch=u'02752',
+                                        bank_account=u'14978-0',)
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'carteira', u'9')
+        bank.add_bill_option(u'nosso_numero', u'75896452')
+        account = self.create_account()
+        account.bank = bank
+        payment.method.destination_account = account
+        x = BankBradesco(payment)
         self.assertEquals(
             x.barcode, '23793490100002952952752090007589645200149780')
 
@@ -317,17 +467,17 @@ class TestBancoBradesco(unittest.TestCase):
         self.assertRaises(BoletoException, x.validate_option, u'carteira', '100')
 
 
-class TestBancoCaixa(unittest.TestCase):
+class TestBancoCaixa(DomainTest):
     def setUp(self):
-        self.dados = BankCaixa(
-            carteira=u'SR',
-            agencia=u'1565',
-            conta=u'414-3',
-            especie_documento=u'DM',
-            data_vencimento=datetime.date(2011, 2, 5),
-            valor_documento=355.00,
-            nosso_numero=u'19525086',
-        )
+        payment = self.create_payment(value=Decimal('355'),
+                                      date=datetime.date(2011, 2, 5))
+        bank = self.create_bank_account(bank_branch=u'1565',
+                                        bank_account=u'414-3')
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'carteira', u'SR')
+        bank.add_bill_option(u'nosso_numero', u'19525086')
+        payment.method.destination_account.bank = bank
+        self.dados = BankCaixa(payment)
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
@@ -343,17 +493,17 @@ class TestBancoCaixa(unittest.TestCase):
                          )
 
 
-class TestBancoItau(unittest.TestCase):
+class TestBancoItau(DomainTest):
     def setUp(self):
-        self.dados = BankItau(
-            carteira=u'110',
-            conta=u'12345-7',
-            agencia=u'0057',
-            especie_documento=u'DM',
-            data_vencimento=datetime.date(2002, 5, 1),
-            valor_documento=123.45,
-            nosso_numero=u'12345678',
-        )
+        payment = self.create_payment(value=Decimal('123.45'),
+                                      date=datetime.date(2002, 5, 1))
+        bank = self.create_bank_account(bank_branch=u'0057',
+                                        bank_account=u'12345-7')
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'carteira', u'110')
+        bank.add_bill_option(u'nosso_numero', u'12345678')
+        payment.method.destination_account.bank = bank
+        self.dados = BankItau(payment)
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
@@ -366,17 +516,18 @@ class TestBancoItau(unittest.TestCase):
                          )
 
 
-class TestBancoReal(unittest.TestCase):
+class TestBancoReal(DomainTest):
     def setUp(self):
-        self.dados = BankReal(
-            carteira=u'06',
-            agencia=u'0531',
-            conta=u'5705853',
-            especie_documento=u'DM',
-            data_vencimento=datetime.date(2011, 2, 5),
-            valor_documento=355.00,
-            nosso_numero=u'123',
-        )
+        payment = self.create_payment(value=Decimal('355'),
+                                      date=datetime.date(2011, 2, 5))
+        bank = self.create_bank_account(bank_branch=u'0531',
+                                        bank_account=u'5705853',)
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'carteira', u'06')
+        bank.add_bill_option(u'nosso_numero', u'123')
+        payment.method.destination_account.bank = bank
+
+        self.dados = BankReal(payment)
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
@@ -389,16 +540,17 @@ class TestBancoReal(unittest.TestCase):
                          )
 
 
-class TestSantander(unittest.TestCase):
+class TestSantander(DomainTest):
     def setUp(self):
-        self.dados = BankSantander(
-            agencia=u'1333',
-            conta=u'0707077',
-            especie_documento=u'DM',
-            data_vencimento=datetime.date(2012, 1, 22),
-            valor_documento=2952.95,
-            nosso_numero=u'1234567',
-        )
+        payment = self.create_payment(value=Decimal('2952.95'),
+                                      date=datetime.date(2012, 1, 22))
+        bank = self.create_bank_account(bank_branch=u'1333',
+                                        bank_account=u'0707077',)
+        bank.add_bill_option(u'especie_documento', u'DM')
+        bank.add_bill_option(u'nosso_numero', u'1234567')
+        payment.method.destination_account.bank = bank
+
+        self.dados = BankSantander(payment)
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,

@@ -28,11 +28,16 @@ stoq/gui/receivable/receivable.py:
 """
 
 import datetime
+import logging
+import os
+import sys
+import traceback
 
 import pango
 import gtk
 from kiwi.currency import currency
 from kiwi.python import all
+from kiwi.ui.dialogs import save
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 
@@ -53,6 +58,7 @@ from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
+from stoqlib.lib.boleto import get_bank_info_by_number
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -60,6 +66,8 @@ from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.paymentsreceipt import InPaymentReceipt
 
 from stoq.gui.accounts import BaseAccountWindow, FilterItem
+
+log = logging.getLogger(__name__)
 
 
 class ReceivableApp(BaseAccountWindow):
@@ -89,6 +97,8 @@ class ReceivableApp(BaseAccountWindow):
             ('PaymentFlowHistory', None,
              _('Payment _flow history...'),
              group.get('payment_flow_history')),
+            ('ExportBills', None, _('Export bills...')),
+
 
             # Payment
             ('PaymentMenu', None, _('Payment')),
@@ -512,3 +522,26 @@ class ReceivableApp(BaseAccountWindow):
         report = view.operation.print_(payments)
         if report is not None:
             print_report(report, payments)
+
+    def on_ExportBills__activate(self, action):
+        payments = [v.payment for v in self.results.get_selected_rows()
+                    if v.method.method_name == 'bill']
+        if not payments:
+            warning(_('No bill payments were selected'))
+            return
+
+        filename = save(current_name='CNAB.txt', folder=os.path.expanduser('~/'))
+        if not filename:
+            return
+
+        bank_number = payments[0].method.destination_account.bank.bank_number
+        info = get_bank_info_by_number(bank_number)
+        try:
+            cnab = info.get_cnab(payments)
+        except Exception as e:
+            log.error(''.join(traceback.format_exception(*sys.exc_info())))
+            warning(_('An error ocurred while generating the CNAB'), str(e))
+            return
+
+        with open(filename, 'w') as fh:
+            fh.write(cnab)
