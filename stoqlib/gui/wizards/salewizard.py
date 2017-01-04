@@ -57,7 +57,7 @@ from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
 from stoqlib.gui.events import (ConfirmSaleWizardFinishEvent,
-                                ClientSaleValidationEvent,
+                                StockOperationPersonValidationEvent,
                                 InvoiceSetupEvent)
 from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
@@ -745,10 +745,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         except SellError as e:
             return ValidationError(e)
 
-        try:
-            ClientSaleValidationEvent.emit(client.person)
-        except Exception as e:
-            return ValidationError(e)
+        return StockOperationPersonValidationEvent.emit(client.person, type(client))
 
     def on_create_transporter__clicked(self, button):
         store = api.new_store()
@@ -796,6 +793,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         branch = self.model.branch
         if invoice.check_unique_invoice_number_by_branch(value, branch):
             return ValidationError(_(u'Invoice number already used.'))
+
+    def on_transporter__validate(self, widget, transporter):
+        return StockOperationPersonValidationEvent.emit(transporter.person,
+                                                        type(transporter))
 
 
 #

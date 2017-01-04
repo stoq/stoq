@@ -380,16 +380,6 @@ class SaleQuoteWizardFinishEvent(Event):
     """
 
 
-@public(since="1.10.0")
-class ClientSaleValidationEvent(Event):
-    """
-     This event is issued when the customer is selected in a sale wizard.
-
-     :param person: The person
-        <stoqlib.domain.person.Person> object to extract the street number.
-    """
-
-
 @public(since="1.12.0")
 class InvoiceSetupEvent(Event):
     """
@@ -401,4 +391,17 @@ class InvoiceSetupEvent(Event):
 
      :rtype: bool or NoneType
      :returns: A bool value representing the validity of the invoice data or None
+    """
+
+
+@public(since="1.13")
+class StockOperationPersonValidationEvent(Event):
+    """
+     This event is issued when a person is about to be associated to a stock operation.
+
+     :param person: The <stoqlib.domain.person.Person> of the model added to the operation.
+     :param person_type: The type of the model added, such as Client, Branch,
+       Transporter.
+    :rtype: <kiwy.datatypes.ValidationError>
+    :returns: A ValidationError if validation fails else None
     """

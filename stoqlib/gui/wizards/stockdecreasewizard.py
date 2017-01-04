@@ -53,7 +53,8 @@ from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.editors.stockdecreaseeditor import StockDecreaseItemEditor
 from stoqlib.gui.events import (StockDecreaseWizardFinishEvent, InvoiceSetupEvent,
-                                WizardAddSellableEvent)
+                                WizardAddSellableEvent,
+                                StockOperationPersonValidationEvent)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.salewizard import PaymentMethodStep
@@ -148,6 +149,17 @@ class StartStockDecreaseStep(WizardEditorStep):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    # Callbacks
+    #
+
+    def on_branch__validate(self, widget, branch):
+        return StockOperationPersonValidationEvent.emit(branch.person, type(branch))
+
+    def on_person__validate(self, widget, person_id):
+        person = self.store.get(Person, person_id)
+        return StockOperationPersonValidationEvent.emit(person, type(person))
 
 
 class DecreaseItemStep(SellableItemStep):

@@ -43,7 +43,8 @@ from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.editors.transfereditor import TransferItemEditor
 from stoqlib.gui.events import (StockTransferWizardFinishEvent, InvoiceSetupEvent,
-                                WizardAddSellableEvent)
+                                WizardAddSellableEvent,
+                                StockOperationPersonValidationEvent)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.formatters import format_sellable_description
@@ -116,6 +117,13 @@ class StockTransferInitialStep(WizardEditorStep):
 
     def validate_step(self):
         return self._validate_destination_branch()
+
+    #
+    # Callbacks
+    #
+
+    def on_destination_branch__validate(self, widget, branch):
+        return StockOperationPersonValidationEvent.emit(branch.person, type(branch))
 
 
 class StockTransferItemStep(SellableItemStep):

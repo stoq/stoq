@@ -36,6 +36,7 @@ from stoqlib.domain.sale import Delivery
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.events import StockOperationPersonValidationEvent
 from stoqlib.gui.fields import AddressField, PersonField, PersonQueryField
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.decorators import cached_property
@@ -184,6 +185,13 @@ class CreateDeliveryEditor(BaseEditor):
         if client is None:
             return
         self.fields['address'].set_from_client(client)
+
+    def on_transporter_id__validate(self, widget, transporter_id):
+        transporter = self.store.get(Transporter, transporter_id)
+        return StockOperationPersonValidationEvent.emit(transporter.person, type(transporter))
+
+    def on_client__validate(self, widget, client):
+        return StockOperationPersonValidationEvent.emit(client.person, type(client))
 
     def _on_items__cell_edited(self, items, item, attribute):
         self.force_validation()

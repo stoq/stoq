@@ -57,7 +57,8 @@ from stoqlib.gui.events import (NewLoanWizardFinishEvent,
                                 CloseLoanWizardFinishEvent,
                                 LoanItemSelectionStepEvent,
                                 InvoiceSetupEvent,
-                                WizardAddSellableEvent)
+                                WizardAddSellableEvent,
+                                StockOperationPersonValidationEvent)
 from stoqlib.gui.editors.loanitemeditor import LoanItemEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
@@ -178,6 +179,9 @@ class StartNewLoanStep(WizardEditorStep):
     def on_observations_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
                    title=_("Additional Information"))
+
+    def on_client__validate(self, widget, client):
+        return StockOperationPersonValidationEvent.emit(client.person, type(client))
 
 
 class LoanItemStep(SaleQuoteItemStep):

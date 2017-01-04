@@ -62,7 +62,7 @@ from stoqlib.gui.editors.discounteditor import DiscountEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.events import (SaleQuoteWizardFinishEvent, SaleQuoteFinishPrintEvent,
-                                WizardAddSellableEvent)
+                                WizardAddSellableEvent, StockOperationPersonValidationEvent)
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
@@ -220,6 +220,9 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.cfop.select_item_by_data(cfop)
         else:
             self.store.rollback_to_savepoint('before_run_editor_cfop')
+
+    def on_client__validate(self, widget, client):
+        return StockOperationPersonValidationEvent.emit(client.person, type(client))
 
 
 class SaleQuoteItemStep(SellableItemStep):
