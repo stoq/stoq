@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+#
+# Copyright (C) 2017 by Async Open Source
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+"""
+This is a special command that should be distributed with windows. Since
+stoq.exe is a gui program, it will not have proper stdout and stderr.
+
+This is a console command that will print correctly to stdout and err, so this
+should be used when running commands like dbadmin, that will print messages to
+the user in the console
+"""
+
+from ctypes import cdll
+import locale
+import os
+import sys
+
+# We're using py2exe:
+# - no need to check python version
+# - no need to setup python path
+# - no need to workaround setuptools
+# By default, when using py2exe, there is only one item in PYTHONPATH, and
+# thats the library.zip it created. We are also adding some eggs (including
+# stoq, kiwi and stoqdrivers), so make sure those are also in the path
+executable = os.path.realpath(os.path.abspath(sys.executable))
+root = os.path.dirname(executable)
+for name in os.listdir(root):
+    if not name.endswith('.egg'):
+        continue
+    sys.path.insert(0, os.path.join(root, name))
+
+
+def putenv(key, value):
+    os.environ[key] = value
+    cdll.msvcrt._putenv('%s=%s' % (key, value, ))
+
+locale.setlocale(locale.LC_ALL, '')
+putenv('LANGUAGE', 'pt_BR')
+
+logdir = os.path.join(os.environ['APPDATA'], 'stoq', "logs")
+if not os.path.exists(logdir):
+    os.makedirs(logdir)
+
+
+if len(sys.argv) > 1 and sys.argv[1] == 'dbadmin':
+    from stoq.dbadmin import main
+    sys.argv.pop(1)
+else:
+    from stoq.main import main
+
+try:
+    sys.exit(main(sys.argv))
+except KeyboardInterrupt:
+    raise SystemExit

@@ -74,13 +74,12 @@ def listplugins(plugins, exts):
 
 def list_templates():
     files = []
-    dir_prefix = '$datadir/'
+    dir_prefix = '$datadir'
     for root, _, _ in os.walk('data/template'):
         parts = root.split(os.sep)
-        files.append((dir_prefix + os.sep.join(parts[1:]),
-                     listfiles(*(parts + ['*html']))))
-        files.append((dir_prefix + os.sep.join(parts[1:]),
-                     listfiles(*(parts + ['*css']))))
+        prefix = os.path.join(dir_prefix, *parts[1:])
+        files.append((prefix, listfiles(*(parts + ['*html']))))
+        files.append((prefix, listfiles(*(parts + ['*css']))))
     return files
 
 packages = listpackages('stoq')

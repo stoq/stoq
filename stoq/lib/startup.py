@@ -53,6 +53,7 @@ def setup_path():
 
     paths = []
 
+    # FIXME. This needs some updating
     # PostgreSQL, we're only working with 8.4 for now
     key = r'Software\PostgreSQL\Installations\postgresql-8.4'
     base_dir = read_registry_key('HKLM', key, 'Base Directory')

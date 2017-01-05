@@ -25,7 +25,15 @@ if hasattr(sys, 'frozen'):
     # - no need to check python version
     # - no need to setup python path
     # - no need to workaround setuptools
-    pass
+    # By default, when using py2exe, there is only one item in PYTHONPATH, and
+    # thats the library.zip it created. We are also adding some eggs (including
+    # stoq, kiwi and stoqdrivers), so make sure those are also in the path
+    executable = os.path.realpath(os.path.abspath(sys.executable))
+    root = os.path.dirname(executable)
+    for name in os.listdir(root):
+        if not name.endswith('.egg'):
+            continue
+        sys.path.insert(0, os.path.join(root, name))
 else:
     # Required version of Python
     REQUIRED_VERSION = (2, 6)

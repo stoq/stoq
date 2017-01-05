@@ -586,7 +586,8 @@ class DatabaseSettings(object):
                 # Hide the console window
                 # For some reason XP doesn't like interacting with
                 # proceses via pipes
-                read_from_pipe = False
+                # FIXME: Looks like this can be removed now.
+                read_from_pipe = True
             else:
                 read_from_pipe = True
 

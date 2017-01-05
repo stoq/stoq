@@ -122,7 +122,7 @@ class CSVImporter(Importer):
             if self.lineno % self.items == 0:
                 t2 = time.time()
                 print('%s Imported %d entries in %2.2f sec total=%d' % (
-                    datetime.datetime.now().strftime('%T'), self.items,
+                    datetime.datetime.now().strftime('%H:%M:%S'), self.items,
                     t2 - t, self.lineno))
                 t = t2
 

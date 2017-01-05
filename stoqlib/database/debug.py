@@ -213,7 +213,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
             ' ' * header_size,
             self._colored(seconds, attrs=['bold']),
             self._colored(rows, attrs=['bold']),
-            self._colored(now.strftime('%F %T.%f'), attrs=['bold']))
+            self._colored(now.strftime('%F %H:%M:%S.%f'), attrs=['bold']))
 
         if statement.startswith('INSERT') and rows == 1:
             try:

@@ -125,7 +125,7 @@ class Importer(object):
 
         t2 = time.time()
         log.info('%s Imported %d entries in %2.2f sec' % (
-            datetime.datetime.now().strftime('%T'), n_items,
+            datetime.datetime.now().strftime('%H:%M:%S'), n_items,
             t2 - t1))
         create_log.info('IMPORTED-ITEMS:%d' % (imported_items, ))
 
