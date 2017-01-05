@@ -4,7 +4,7 @@
 <%block name="extra_meta">
   <style>
     % for i, col in enumerate(report.columns, 1):
-        table td:nth-child(${ i }) {
+        table td:nth-child(${ str(i) }) {
                 text-align: ${ col.get('align', 'left') };
         }
     % endfor
@@ -51,7 +51,7 @@
 
       % if summary:
       <tr class="summary">
-        <td colspan="${ len(report.columns) - len(summary) + 1  }">
+        <td colspan="${ str(len(report.columns) - len(summary) + 1)  }">
           ${ summary[0] }</td>
         % for c in summary[1:]:
             <td>${ c }</td>

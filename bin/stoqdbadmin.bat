@@ -1,1 +1,1 @@
-@C:\Python26\python.exe stoqdbadmin %*
+@C:\Python27\python.exe stoqdbadmin %*

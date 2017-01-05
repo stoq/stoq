@@ -20,6 +20,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import os
+import platform
+
 import weasyprint
 
 from kiwi.accessor import kgetattr
@@ -79,6 +82,10 @@ class HTMLReport(object):
 
     def render(self, stylesheet=None):
         template_dir = environ.get_resource_filename('stoq', 'template')
+        if platform.system() == 'Windows':
+            # FIXME: Figure out why this is breaking
+            # On windows, weasyprint is eating the last directory of the path
+            template_dir = os.path.join(template_dir, 'foobar')
         html = weasyprint.HTML(string=self.get_html(),
                                base_url=template_dir)
 

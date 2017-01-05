@@ -1,1 +1,1 @@
-@C:\Python26\python.exe stoq %*
+@C:\Python27\python.exe stoq %*

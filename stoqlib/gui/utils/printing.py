@@ -31,7 +31,6 @@ import threading
 import gio
 import gtk
 import pango
-import poppler
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.gui.events import PrintReportEvent
@@ -174,7 +173,7 @@ class PrintOperation(gtk.PrintOperation):
 
     def _on_operation_status_changed(self, operation):
         if (self._in_nested_main_loop and
-            self._is_rendering_finished()):
+                self._is_rendering_finished()):
             gtk.main_quit()
 
         if self.get_status() == gtk.PRINT_STATUS_FINISHED_ABORTED:
@@ -215,6 +214,7 @@ class PrintOperationPoppler(PrintOperation):
 
         self._report.save()
         uri = gio.File(path=self._report.filename).get_uri()
+        import poppler
         self._document = poppler.document_new_from_file(uri, password="")
 
     def render_done(self):

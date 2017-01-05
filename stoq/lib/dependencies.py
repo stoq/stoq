@@ -35,6 +35,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 # When changing something here, remember to update
 # the README and the debian control files
+# TODO: Add requests, weasyprint, lxml
 DATEUTIL_REQUIRED = (1, 4, 1)
 GTK_REQUIRED = (2, 20, 0)
 GUDEV_REQUIRED = (147, )
@@ -107,7 +108,9 @@ class DependencyChecker(object):
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
 
         # Misc
-        self._check_pyinotify(PYINOTIFY_REQUIRED)
+        # Inotify is not available on windows, and we dont really use it.
+        if platform.system() == 'Linux':
+            self._check_pyinotify(PYINOTIFY_REQUIRED)
 
     def _error(self, title, msg):
         if self.text_mode:
@@ -362,7 +365,7 @@ class DependencyChecker(object):
             return
 
         if (not hasattr(dateutil, "__version__") or
-            list(map(int, dateutil.__version__.split('.'))) < list(version)):
+                list(map(int, dateutil.__version__.split('.'))) < list(version)):
             self._too_old(project="Dateutil",
                           url='http://labix.org/python-dateutil/',
                           required=version,

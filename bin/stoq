@@ -96,7 +96,8 @@ if platform.system() == 'Windows':
             if e.errno != errno.EACCES:
                 raise
             fp = open(os.devnull, "w")
-        setattr(sys, name, fp)
+        if os.environ.get('STOQ_DEVELOPER_MODE') != '1':
+            setattr(sys, name, fp)
 
 if len(sys.argv) > 1 and sys.argv[1] == 'dbadmin':
     from stoq.dbadmin import main
