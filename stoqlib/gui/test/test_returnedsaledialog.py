@@ -25,11 +25,23 @@
 import gtk
 import mock
 
+from kiwi.ui.forms import TextField
+
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.views import PendingReturnedSalesView, ReturnedSalesView
 from stoqlib.gui.dialogs.returnedsaledialog import (ReturnedSaleDialog,
                                                     ReturnedSaleUndoDialog)
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.decorators import cached_property
+
+
+class _TestSlave(BaseEditorSlave):
+    model_type = object
+
+    @cached_property()
+    def fields(self):
+        return dict(field_name=TextField('Slave field'))
 
 
 class TestReturnedSaleDialog(GUITest):
@@ -134,6 +146,15 @@ class TestReturnedSaleDialog(GUITest):
 
         run_dialog.assert_called_once_with(ReturnedSaleUndoDialog, dialog,
                                            self.store, model.returned_sale)
+
+    def test_add_tab(self):
+        rsale = self.create_returned_sale()
+        rsale.sale.identifier = 336
+        rsale.identifier = 60
+        model = self.store.find(ReturnedSalesView).one()
+        dialog = ReturnedSaleDialog(self.store, model)
+        dialog.add_tab(_TestSlave(self.store, object()), u'Test Tab')
+        self.check_dialog(dialog, 'dialog-returned-sale-add-tab')
 
 
 class TestReturnedSaleUndoDialog(GUITest):

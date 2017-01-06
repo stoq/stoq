@@ -19,7 +19,7 @@ GtkVBox(details_vbox):
     ProxyLabel(source_responsible_name): '<span >Ipswich</span>'
     ProxyLabel(kiwilabel6): 'Responsible:'
     ProxyLabel(destination_responsible_name): '<span >Bolton</span>'
-  GtkNotebook(notebook1, expand=True, fill=True):
+  GtkNotebook(details_notebook, expand=True, fill=True):
     GtkVBox(products_vbox):
       ObjectList(product_list, expand=True, fill=True):
         column: title='Code'

@@ -25,12 +25,24 @@
 import gtk
 import mock
 
+from kiwi.ui.forms import TextField
+
 from stoqlib.api import api
 from stoqlib.domain.person import Branch
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdatetime
+from stoqlib.lib.decorators import cached_property
+
+
+class _TestSlave(BaseEditorSlave):
+    model_type = object
+
+    @cached_property()
+    def fields(self):
+        return dict(field_name=TextField('Slave field'))
 
 
 class TestTransferOrderDetailsDialog(GUITest):
@@ -115,3 +127,9 @@ class TestTransferOrderDetailsDialog(GUITest):
         dialog = TransferOrderDetailsDialog(self.store, order)
         # Destination branch should not cancel the transfer
         self.assertFalse(dialog.cancel_button.get_visible())
+
+    def test_add_tab(self):
+        order = self.create_transfer_order()
+        dialog = TransferOrderDetailsDialog(self.store, order)
+        dialog.add_tab(_TestSlave(self.store, object()), u'Test Tab')
+        self.check_dialog(dialog, 'dialog-transfer-order-add-tab')

@@ -2,15 +2,15 @@ dialog: TransferOrderDetailsDialog
 GtkVBox(details_vbox):
   GtkTable(table1, fill=True, padding=6):
     GtkLabel(label1): 'Status:'
-    GtkLabel(status): 'Received'
+    GtkLabel(status): 'Pending'
     GtkButton(receive_button): 'Receive', hidden
-    GtkButton(cancel_button): 'Cancel', hidden
+    GtkButton(cancel_button): 'Cancel'
     ProxyLabel(kiwilabel7): 'Invoice number:'
     ProxyLabel(invoice_number): '<span ></span>'
     ProxyLabel(kiwilabel1): 'Open date:'
     ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
-    ProxyLabel(close_date_lbl): 'Receival date:'
-    ProxyLabel(receival_date): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(close_date_lbl): '<span ></span>'
+    ProxyLabel(receival_date): '<span ></span>'
     ProxyLabel(kiwilabel3): 'Source:'
     ProxyLabel(source_branch_name): '<span >Source shop</span>'
     ProxyLabel(kiwilabel4): 'Destination:'
@@ -18,7 +18,7 @@ GtkVBox(details_vbox):
     ProxyLabel(kiwilabel5): 'Responsible:'
     ProxyLabel(source_responsible_name): '<span >Ipswich</span>'
     ProxyLabel(kiwilabel6): 'Responsible:'
-    ProxyLabel(destination_responsible_name): '<span >SalesPerson</span>'
+    ProxyLabel(destination_responsible_name): '<span >Bolton</span>'
   GtkNotebook(details_notebook, expand=True, fill=True):
     GtkVBox(products_vbox):
       ObjectList(product_list, expand=True, fill=True):
@@ -27,12 +27,18 @@ GtkVBox(details_vbox):
         column: title='Quantity'
         column: title='Cost'
         column: title='Total Cost'
-        row: u'', u'Description', Decimal('5.000'), <currency $125>, Decimal('625.000')
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-        GtkLabel(): '<b>$625.00</b>'
+        GtkLabel(): '<b>$ 0.00</b>'
     GtkHBox(hbox1):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(comments):
+    GtkEventBox():
+      GtkEventBox(): slave BasicForm is attached
+        GtkAlignment(toplevel):
+          GtkTable():
+            ProxyLabel(field_name_lbl): 'Slave field:'
+            ProxyEntry(field_name): ''
+            GtkHBox():
   GtkHButtonBox(hbuttonbox1, expand=True, fill=True):
     GtkButton(print_button): 'gtk-print'

@@ -63,6 +63,17 @@ class StockDecreaseDetailsDialog(BaseEditor):
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
+    def add_tab(self, slave, name):
+        """Add a new tab on the notebook
+
+        :param slave: the slave we are attaching to the new tab
+        :param name: the name of the tab
+        """
+        event_box = gtk.EventBox()
+        self.notebook.insert_page(event_box, gtk.Label(name))
+        self.attach_slave(name, slave, event_box)
+        event_box.show()
+
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_product_columns())
         # if the parameter is on we have to build the summary

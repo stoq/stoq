@@ -22,8 +22,20 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from kiwi.ui.forms import TextField
+
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
+from stoqlib.lib.decorators import cached_property
+
+
+class _TestSlave(BaseEditorSlave):
+    model_type = object
+
+    @cached_property()
+    def fields(self):
+        return dict(field_name=TextField('Slave field'))
 
 
 class TestLoanDetails(GUITest):
@@ -33,3 +45,9 @@ class TestLoanDetails(GUITest):
 
         dialog = LoanDetailsDialog(self.store, loan)
         self.check_dialog(dialog, 'dialog-loan-details-create')
+
+    def test_add_tab(self):
+        loan = self.create_loan()
+        dialog = LoanDetailsDialog(self.store, loan)
+        dialog.add_tab(_TestSlave(self.store, object()), u'Test Tab')
+        self.check_dialog(dialog, 'dialog-loan-details-add-tab')

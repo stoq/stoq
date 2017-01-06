@@ -112,6 +112,17 @@ class ReturnedSaleDialog(BaseEditor):
             self.undo_button.set_sensitive(False)
             self._update_reason()
 
+    def add_tab(self, slave, name):
+        """Add a new tab on the notebook
+
+        :param slave: the slave we are attaching to the new tab
+        :param name: the name of the tab
+        """
+        event_box = gtk.EventBox()
+        self.details_notebook.insert_page(event_box, gtk.Label(name))
+        self.attach_slave(name, slave, event_box)
+        event_box.show()
+
     #
     # BaseEditor Hooks
     #

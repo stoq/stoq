@@ -1,0 +1,36 @@
+dialog: StockDecreaseDetailsDialog
+GtkVBox(details_vbox):
+  GtkTable(table1, fill=True, padding=6):
+    ProxyLabel(kiwilabel4): 'Identifier:'
+    ProxyLabel(identifier): '<span >08888</span>'
+    ProxyLabel(invoice_number_lbl): 'Invoice number:'
+    ProxyLabel(invoice_number): '<span ></span>'
+    ProxyLabel(kiwilabel1): 'Date:'
+    ProxyLabel(confirm_date): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(kiwilabel3): 'Branch:'
+    ProxyLabel(branch_name): '<span >Moda Stoq</span>'
+    ProxyLabel(kiwilabel6): 'Removed By:'
+    ProxyLabel(removed_by_name): '<span >SalesPerson</span>'
+    ProxyLabel(kiwilabel5): 'Responsible:'
+    ProxyLabel(responsible_name): '<span >Administrator</span>'
+    ProxyLabel(kiwilabel2): 'Cfop:'
+    ProxyLabel(cfop_description): '<span >123 test</span>'
+  GtkNotebook(notebook, expand=True, fill=True):
+    GtkVBox(products_vbox):
+      ObjectList(product_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Batch'
+        column: title='Qty'
+    GtkHBox(hbox1):
+      GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+        ProxyTextView(reason):
+    GtkEventBox():
+      GtkEventBox(): slave BasicForm is attached
+        GtkAlignment(toplevel):
+          GtkTable():
+            ProxyLabel(field_name_lbl): 'Slave field:'
+            ProxyEntry(field_name): ''
+            GtkHBox():
+  GtkHButtonBox(hbuttonbox1, fill=True):
+    GtkButton(print_button): 'gtk-print'

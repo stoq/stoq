@@ -22,4 +22,10 @@ GtkVBox(details_vbox):
         column: title='Sold'
         column: title='Returned'
         column: title='Price'
-        row: u'', u'Description', Decimal('1.000'), Decimal('0.000'), Decimal('0.000'), <currency $10>
+    GtkEventBox():
+      GtkEventBox(): slave BasicForm is attached
+        GtkAlignment(toplevel):
+          GtkTable():
+            ProxyLabel(field_name_lbl): 'Slave field:'
+            ProxyEntry(field_name): ''
+            GtkHBox():

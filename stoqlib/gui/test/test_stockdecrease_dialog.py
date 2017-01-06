@@ -23,12 +23,24 @@
 ##
 import mock
 
+from kiwi.ui.forms import TextField
+
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.decorators import cached_property
 
 PaymentRenegotiation  # pylint: disable=W0104
+
+
+class _TestSlave(BaseEditorSlave):
+    model_type = object
+
+    @cached_property()
+    def fields(self):
+        return dict(field_name=TextField('Slave field'))
 
 
 class TestStockDecreaseDetailsDialog(GUITest):
@@ -59,3 +71,10 @@ class TestStockDecreaseDetailsDialog(GUITest):
             self.click(dialog.print_button)
             print_report.assert_called_once_with(dialog.report_class, dialog.model)
             self.check_dialog(dialog, 'stock-decrease-dialog-without-payments')
+
+    def test_add_tab(self):
+        stock_decrease = self.create_stock_decrease()
+        stock_decrease.identifier = 8888
+        dialog = StockDecreaseDetailsDialog(self.store, stock_decrease)
+        dialog.add_tab(_TestSlave(self.store, object()), u'Test Tab')
+        self.check_dialog(dialog, 'dialog-stock-decrease-add-tab')

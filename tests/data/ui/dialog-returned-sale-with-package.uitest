@@ -19,7 +19,7 @@ GtkVBox(details_vbox):
     ProxyLabel(responsible_name): '<span >Administrator</span>'
     ProxyLabel(kiwilabel1): 'Confirmed By:'
     ProxyLabel(receiving_responsible):
-  GtkNotebook(notebook1, expand=True, fill=True):
+  GtkNotebook(details_notebook, expand=True, fill=True):
     GtkVBox(products_vbox):
       ObjectTree(returned_items_list, expand=True, fill=True):
         column: title='Product Code'
