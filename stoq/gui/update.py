@@ -132,7 +132,9 @@ class UpdateSchemaStep(BaseWizardStep):
             if library.uninstalled:
                 args = ['stoq.bat']
             else:
-                args = ['stoq-cmd.exe']
+                # We should use stoq-cmd here, but the output is breaking
+                # the process view
+                args = ['stoq.exe']
         else:
             args = ['stoq']
 

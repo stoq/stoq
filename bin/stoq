@@ -34,6 +34,9 @@ if hasattr(sys, 'frozen'):
         if not name.endswith('.egg'):
             continue
         sys.path.insert(0, os.path.join(root, name))
+
+    # Also add it to the OS PATH, so that the libraries are correclty found.
+    os.environ['PATH'] = root + os.pathsep + os.environ['PATH']
 else:
     # Required version of Python
     REQUIRED_VERSION = (2, 6)

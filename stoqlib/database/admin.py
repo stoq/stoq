@@ -313,7 +313,7 @@ def create_database_functions():
     This will simply read data/sql/functions.sql and execute it
     """
     # We cant remove the file, otherwise it will fail on windows.
-    with tempfile.NamedTemporaryFile(suffix='stoqfunctions-', delete=False) as tmp_f:
+    with tempfile.NamedTemporaryFile(prefix='stoqfunctions-', delete=False) as tmp_f:
         functions = environ.get_resource_string('stoq', 'sql', 'functions.sql')
         tmp_f.write(render_template_string(functions))
         tmp_f.flush()

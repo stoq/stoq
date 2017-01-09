@@ -68,7 +68,7 @@ class ProcessView(gtk.ScrolledWindow):
             import fcntl
             fcntl.fcntl(fd, fcntl.F_SETFL, os.O_NONBLOCK)
         except ImportError:
-            return
+            pass
         source_id = glib.io_add_watch(fd, glib.IO_IN, self._io_watch)
         self._source_ids.append(source_id)
 
