@@ -22,7 +22,7 @@ Depends: ${misc:Depends}, ${python:Depends},
  python-mako (>= 0.2.5), python-gudev, python-poppler (>= 0.12.1), python-webkit (>= 1.1.7),
  librsvg2-common, python-xlwt (>= 0.7.2), iso-codes (>= 3.12.1-1),
  python-storm (>= 0.19), python-weasyprint (>= 0.15), python-requests (>= 0.8.2),
- python-pyinotify (>= 0.9.2), libxss1, ntp, python-viivakoodi, python-pykcss11,
+ python-pyinotify (>= 0.9.2), libxss1, ntp, python-viivakoodi, python-pykcs11,
  python-nss, libnss3-tools, libc6-i386 [amd64], libusb-1.0-0
 Recommends: python-raven, python-aptdaemon.gtk3widgets, libusb-1.0-0:i386 [amd64]
 Homepage: http://www.stoq.com.br/
