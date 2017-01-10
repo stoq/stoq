@@ -67,6 +67,7 @@ class SerialDevice(object):
     """An object representing a serial device
     :attribute device_name: the device name, /dev/ttyXXX
     """
+
     def __init__(self, device_name):
         """
         Create a new SerialDevice object.
@@ -80,6 +81,7 @@ class DeviceManager(object):
     It optionally uses HAL to probe the system
 
     """
+
     def __init__(self):
         self._hal_manager = None
         if dbus:
@@ -90,10 +92,14 @@ class DeviceManager(object):
 
     def _get_default_devices(self):
         if platform.system() == "Windows":
-            return [SerialDevice("COM1"),
-                    SerialDevice("COM2"),
-                    SerialDevice("COM3"),
-                    SerialDevice("COM4")]
+            # This could be something to run in all cases, since it appears to
+            # work for linux as well. This way this code could be a lot simpler.
+            # TODO: Test this on other versions of ubuntu
+            from serial.tools.list_ports import comports
+            ports = []
+            for port in comports():
+                ports.append(SerialDevice(port.device))
+            return ports
         else:
             return [SerialDevice('/dev/ttyS0'),
                     SerialDevice('/dev/ttyS1')]

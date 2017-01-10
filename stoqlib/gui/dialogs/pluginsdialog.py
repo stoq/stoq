@@ -24,8 +24,6 @@
 ##
 """ Dialogs for payment method management"""
 
-import platform
-
 import gtk
 from kiwi.ui.objectlist import ObjectList, Column
 
@@ -91,10 +89,6 @@ class PluginManagerDialog(BasicDialog):
         plugins = []
 
         for name in sorted(self._manager.available_plugins_names):
-            if platform.system() == 'Windows':
-                if name in ['ecf', 'tef']:
-                    continue
-
             desc = self._manager.get_description_by_name(name)
             plugins.append(_PluginModel(name, name in
                                         self._manager.installed_plugins_names,

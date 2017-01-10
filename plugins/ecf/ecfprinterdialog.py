@@ -181,6 +181,8 @@ class ECFEditor(BaseEditor):
 
     def _printer_status__reply(self, status, reply):
         self.progress_dialog.stop()
+        if not reply:
+            return
         if not self._populate_ecf_printer(status):
             return
 

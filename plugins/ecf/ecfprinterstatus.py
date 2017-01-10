@@ -24,6 +24,8 @@
 ##
 
 import os
+import platform
+
 # pyserial bug
 try:
     import fcntl
@@ -44,48 +46,47 @@ class ECFAsyncPrinterStatus(gobject.GObject):
     gsignal('reply', str)
     gsignal('timeout')
 
-    def __init__(self, device_name, printer_class=None, baudrate=9600,
-                 printer=None, delay=5):
+    def __init__(self, device_name, printer_class, baudrate=9600, delay=5):
         """
         @param device_name:
         @param printer_class:
         @param delay:
         """
-        if not printer and not printer_class:
-            raise TypeError
-
         gobject.GObject.__init__(self)
         self._reply = ''
         self._device_name = device_name
         self._delay = delay
-        self._baudrate = baudrate
+        self._port = self._create_port(baudrate)
+        self.printer = printer_class(self._port)
 
-        if printer_class:
-            port = self._create_port()
-            printer = printer_class(port)
+        if platform.system() != 'Windows':
+            self._timeout_id = glib.timeout_add(self._delay * 1000, self._on_timeout)
+            glib.io_add_watch(self._port, glib.IO_OUT, self._fd_watch_out)
+            glib.io_add_watch(self._port, glib.IO_IN, self._fd_watch_in)
         else:
-            port = printer.get_port()
-        self._port = port
-        self.printer = printer
+            self._timeout_id = glib.timeout_add(400, self._check_windows)
 
-        self._add_timeout()
-        if port is not None:
-            glib.io_add_watch(port, glib.IO_OUT, self._fd_watch_out)
-            glib.io_add_watch(port, glib.IO_IN, self._fd_watch_in)
+    def _check_windows(self):
+        try:
+            self._reply = self.printer.get_serial()
+        finally:
+            # Since we are trying to comminicate with a printer without being
+            # sure of the parameters the user set, something wrong might occour.
+            # What ever happens, we should remove the timeout and emit a reply.
+            self._remove_timeout()
+            self.emit('reply', self._reply)
 
-    def _create_port(self):
-        port = SerialPort(device=self._device_name, baudrate=self._baudrate)
-        port.nonblocking()
+    def _create_port(self, baudrate):
+        port = SerialPort(device=self._device_name, baudrate=baudrate)
+        port.writeTimeout = 5
+        if platform.system() != 'Windows':
+            port.nonblocking()
         return port
 
     def _remove_timeout(self):
         if self._timeout_id != -1:
             glib.source_remove(self._timeout_id)
             self._timeout_id = -1
-
-    def _add_timeout(self):
-        self._timeout_id = glib.timeout_add(self._delay * 1000,
-                                            self._on_timeout)
 
     def _fd_watch_out(self, port, condition):
         value = self.printer.query_status()
