@@ -463,6 +463,13 @@ class PluginManager(object):
         """
         return plugin_name in self.active_plugins_names
 
+    def is_any_active(self, plugin_names):
+        """Check if any of the plugin names are active.
+
+        :param plugin_names: a list of plugin names to check
+        """
+        return any(self.is_active(name) for name in plugin_names)
+
     def is_installed(self, plugin_name, store=False):
         """Returns if a plugin with a certain name is installed or not
 
