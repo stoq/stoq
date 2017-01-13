@@ -44,7 +44,8 @@ from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    GerencialReportCancelEvent,
                                    CheckECFStateEvent,
                                    HasPendingReduceZ, SaleAvoidCancelEvent,
-                                   HasOpenCouponEvent)
+                                   HasOpenCouponEvent,
+                                   ECFGetPrinterUserNumberEvent)
 from stoqlib.domain.person import Individual, Company
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.till import Till
@@ -157,6 +158,7 @@ class ECFUI(object):
         HasPendingReduceZ.connect(self._on_HasPendingReduceZ)
         HasOpenCouponEvent.connect(self._on_HasOpenCouponEvent)
         EditorCreateEvent.connect(self._on_EditorCreateEvent)
+        ECFGetPrinterUserNumberEvent.connect(self._on_ECFGetPrinterUserNumberEvent)
 
     def _create_printer(self):
         if self._printer:
@@ -700,6 +702,9 @@ class ECFUI(object):
 
     def _on_HasOpenCouponEvent(self):
         self._has_open_coupon()
+
+    def _on_ECFGetPrinterUserNumberEvent(self):
+        return self._get_last_document(self.default_store).user_number
 
     #
     # Callbacks

@@ -452,3 +452,12 @@ class StockOperationConfirmedEvent(Event):
     :param old_status: the old status of the model if the confirmation
         includes a status change
     """
+
+
+#
+# ECF Events
+#
+
+@public(since="1.13.0")
+class ECFGetPrinterUserNumberEvent(Event):
+    """ This event is emitted to get the active ECFPrinter user number. """

@@ -59,7 +59,8 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    SaleItemBeforeIncreaseStockEvent,
                                    SaleItemAfterSetBatchesEvent,
                                    DeliveryStatusChangedEvent,
-                                   StockOperationConfirmedEvent)
+                                   StockOperationConfirmedEvent,
+                                   ECFGetPrinterUserNumberEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry, Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.payment.payment import Payment
@@ -922,7 +923,8 @@ class Sale(Domain):
 
         # FIXME: we still dont have the number of the ecf stored in stoq
         # (note: this is not the serial number)
-        return Settable(number=u'',
+        number = ECFGetPrinterUserNumberEvent.emit() or u''
+        return Settable(number=number,
                         coo=self.coupon_id)
 
     # Status
