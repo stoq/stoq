@@ -284,7 +284,6 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/lib/crashreport.py', 66.15),
     ('stoqlib/lib/daemonutils.py', 40.28),
     ('stoqlib/lib/dateutils.py', 51.82),
-    ('stoqlib/lib/decorators.py', 92.68),
     ('stoqlib/lib/defaults.py', 48.21),
     ('stoqlib/lib/devicemanager.py', 48.53),
     ('stoqlib/lib/diffutils.py', 84.62),
