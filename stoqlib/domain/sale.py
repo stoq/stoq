@@ -921,8 +921,9 @@ class Sale(Domain):
         if not self.coupon_id:
             return None
 
-        # FIXME: we still dont have the number of the ecf stored in stoq
-        # (note: this is not the serial number)
+        # According to the "Cartilha do ECF Emissor de Cupom Fiscal - Perguntas e
+        # respostas, versão 3.2 - Abril 2016 da Sefaz de MG", the ECF serial number
+        # is the number attributed by the establishment/user
         number = ECFGetPrinterUserNumberEvent.emit() or u''
         return Settable(number=number,
                         coo=self.coupon_id)
