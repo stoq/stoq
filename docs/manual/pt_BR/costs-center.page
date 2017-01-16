@@ -10,7 +10,7 @@
       <link xref="costs-center-search" />...
     </desc>
 
-    <link type="guide" xref="app-admin" />
+    <link type="guide" />
     <!--FIXME: Add some seealso-->
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
