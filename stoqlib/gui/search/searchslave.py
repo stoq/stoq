@@ -440,7 +440,6 @@ class SearchSlave(SlaveDelegate):
                 filter.set_digits(2)
         elif data_type == str:
             if multiple_selection:
-                assert valid_values, "need valid_values for multiple_selection"
                 filter = MultiSearchFilter(title, valid_values)
             elif valid_values:
                 filter = ComboSearchFilter(title, valid_values)
