@@ -38,6 +38,10 @@ for the update and set some parameters depending on those rules. For instance:
     - Set to    [   |v]
 """
 
+import logging
+import sys
+import traceback
+
 import datetime
 from decimal import Decimal
 
@@ -57,6 +61,7 @@ from stoqlib.lib.message import marker, warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+log = logging.getLogger(__name__)
 
 
 #
@@ -353,9 +358,10 @@ class Field(object):
     This class implements basic value caching/storage for the editor
     """
 
-    def __init__(self, data_type, validator=None, unique=False):
+    def __init__(self, data_type, validator=None, unique=False, visible=True):
         self.data_type = data_type
         self.validator = validator
+        self.visible = visible
         # FIXME: Use this
         self.unique = unique
         self.new_values = {}
@@ -368,7 +374,8 @@ class Field(object):
 
     def get_column(self, spec):
         return Column('id', title=self.label, data_type=self.data_type,
-                      format_func=self.format_func, format_func_data=self)
+                      format_func=self.format_func, format_func_data=self,
+                      visible=self.visible)
 
     def format_func(self, item, data=None):
         value = self.get_new_value(item)
@@ -393,7 +400,7 @@ class Field(object):
 class AccessorField(Field):
 
     def __init__(self, label, obj_name, attribute, data_type, unique=False,
-                 validator=None):
+                 validator=None, visible=True):
         """A field that updates a value of another object
 
         :param obj_name: the name of the object that will be updated, or None if
@@ -402,9 +409,13 @@ class AccessorField(Field):
         :param unique: If the field is unique, the user will not be able to set
           the field to an specific value. FIXME: not implemented yet
         :param validator: A callable that should return True/False
+        :param visible: If the column will be visible by default or not
+        :param editable: If the field should be editable or not. Sometimes it is
+          usefull to have fields visible that are not editable, but can be
+          filterable
         """
         super(AccessorField, self).__init__(data_type, validator=validator,
-                                            unique=unique)
+                                            unique=unique, visible=visible)
         self.label = label
         self.obj_name = obj_name
         self.attribute = attribute
@@ -421,7 +432,7 @@ class AccessorField(Field):
 
     def get_value(self, item):
         obj = self._get_obj(item)
-        return getattr(obj, self.attribute)
+        return obj and getattr(obj, self.attribute)
 
     def save_value(self, item):
         try:
@@ -430,7 +441,8 @@ class AccessorField(Field):
             # The value wasn't changed. Ignore
             return
         dest_obj = self._get_obj(item)
-        setattr(dest_obj, self.attribute, value)
+        if dest_obj:
+            setattr(dest_obj, self.attribute, value)
 
     def get_column(self, spec):
         # SearchColumn expects str instead of unicode and objects are rendered
@@ -448,12 +460,12 @@ class AccessorField(Field):
                             data_type=data_type, editable=editable,
                             format_func=self.format_func,
                             search_attribute=self.get_search_spec(spec),
-                            format_func_data=self)
+                            format_func_data=self, visible=self.visible)
 
 
 class ReferenceField(AccessorField):
     def __init__(self, label, obj_name, attribute, reference_class,
-                 reference_attr):
+                 reference_attr, visible=True):
         """A field that updates a reference to another object
 
         :param label: The label to be displayed
@@ -468,7 +480,8 @@ class ReferenceField(AccessorField):
         self._reference_class = reference_class
         self._reference_attr = reference_attr
         super(ReferenceField, self).__init__(label, obj_name, attribute,
-                                             data_type=object, unique=False)
+                                             data_type=object, unique=False,
+                                             visible=visible)
 
     def get_search_spec(self, spec=None):
         return getattr(self._reference_class, self._reference_attr)
@@ -501,8 +514,10 @@ class MassEditorWidget(gtk.HBox):
         return [f for f in self._fields if f.data_type == data_type]
 
     def _setup_editor(self, field):
-        # Reuse editor if its possible
-        if self._editor and self._editor.data_type == field.data_type:
+        # Reuse editor if its possible (not when data_type is an object, since
+        # that requires changing the reference values)
+        if (self._editor and field.data_type is not object and
+                self._editor.data_type == field.data_type):
             self._editor.set_field(field)
             return
 
@@ -667,6 +682,7 @@ class MassEditorSearch(SearchDialog):
         except Exception as e:
             d.stop()
             self.retval = False
+            log.error(''.join(traceback.format_exception(*sys.exc_info())))
             warning(_('There was an error saving one of the values'), str(e))
             self.close()
             return

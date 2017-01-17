@@ -141,6 +141,9 @@ class SearchDialog(BasicDialog):
     #: be displayed
     unlimited_results = False
 
+    #: If the column settings should be saved or not.
+    save_columns = False
+
     def __init__(self, store, search_spec=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False,
                  initial_string=''):
@@ -204,10 +207,14 @@ class SearchDialog(BasicDialog):
     def _setup_search(self):
         self.columns = self.get_columns()
         SearchDialogSetupSearchEvent.emit(self)
+        if self.save_columns:
+            restore_name = self.__class__.__name__
+        else:
+            restore_name = None
         self.search = SearchSlave(
             self.columns,
             tree=self.tree,
-            restore_name=self.__class__.__name__,
+            restore_name=restore_name,
             store=self.store,
             search_spec=self.search_spec,
             fast_iter=self.fast_iter,
@@ -314,13 +321,15 @@ class SearchDialog(BasicDialog):
         if retval is None:
             retval = self.get_selection()
         self.retval = retval
-        self.search.save_columns()
+        if self.save_columns:
+            self.search.save_columns()
         # FIXME: This should chain up so the "confirm" signal gets emitted
         self.close()
 
     def cancel(self, *args):
         self.retval = []
-        self.search.save_columns()
+        if self.save_columns:
+            self.search.save_columns()
         # FIXME: This should chain up so the "cancel" signal gets emitted
         self.close()
 

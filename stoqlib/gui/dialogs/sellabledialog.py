@@ -30,7 +30,9 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.api import api
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
-                                     SellableCategory, SellableTaxConstant)
+                                     SellableUnit, SellableCategory,
+                                     SellableTaxConstant)
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantEditor
 from stoqlib.gui.dialogs.masseditordialog import (Field, MassEditorSearch,
@@ -39,7 +41,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import info
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.service import Service
-from stoqlib.domain.product import Product, Storable
+from stoqlib.domain.product import Product, Storable, ProductManufacturer
 from stoqlib.domain.person import ClientCategory
 
 _ = stoqlib_gettext
@@ -124,7 +126,6 @@ class SellableView(Viewable):
     product = Product
     storable = Storable
     service = Service
-    category = SellableCategory
 
     id = Sellable.id
 
@@ -146,12 +147,20 @@ class SellableMassEditorDialog(MassEditorSearch):
     search_spec = SellableView
 
     def get_fields(self, store):
+        # TODO: Add: status, max_discount
         default_fields = [
+            # Sellable fields
             AccessorField(_('Code'), 'sellable', 'code', unicode, unique=True),
             AccessorField(_('Barcode'), 'sellable', 'barcode', unicode, unique=True),
             ReferenceField(_('Category'), 'sellable', 'category',
                            SellableCategory, 'description'),
             AccessorField(_('Description'), 'sellable', 'description', unicode),
+            ReferenceField(_('Unit'), 'sellable', 'unit',
+                           SellableUnit, 'description', visible=False),
+            ReferenceField(_('C.F.O.P.'), 'sellable', 'default_sale_cfop',
+                           CfopData, 'description', visible=False),
+
+            # Sellable values
             AccessorField(_('Cost'), 'sellable', 'cost', currency,
                           validator=validate_price),
             AccessorField(_('Default Price'), 'sellable', 'base_price', currency,
@@ -162,6 +171,16 @@ class SellableMassEditorDialog(MassEditorSearch):
                           datetime.date),
             AccessorField(_('On Sale End Date'), 'sellable', 'on_sale_end_date',
                           datetime.date),
+
+            # Product Fields
+            AccessorField(_('NCM'), 'product', 'ncm', unicode, visible=False),
+            AccessorField(_('Location'), 'product', 'location', unicode, visible=False),
+            AccessorField(_('Brand'), 'product', 'brand', unicode, visible=False),
+            AccessorField(_('Family'), 'product', 'family', unicode, visible=False),
+            AccessorField(_('Model'), 'product', 'model', unicode, visible=False),
+
+            ReferenceField(_('Manufacturer'), 'product', 'manufacturer',
+                           ProductManufacturer, 'name', visible=False),
         ]
 
         category_fields = []
