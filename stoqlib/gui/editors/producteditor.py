@@ -30,7 +30,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
-from kiwi.ui.forms import TextField, NumericField, PriceField
+from kiwi.ui.forms import MultiLineField, NumericField, PriceField, TextField
 
 from stoqdrivers.enum import TaxType
 
@@ -617,12 +617,20 @@ class ProductStockQuantityEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
+        # Check if sellable's unit allow fraction to use decimal places
+        unit = self._product.sellable.unit
+        if unit and unit.allow_fraction:
+            quantity_digits = 3
+        else:
+            quantity_digits = 0
+
         fields = collections.OrderedDict(
-            quantity=NumericField(_('Quantity'), proxy=True, mandatory=True),
+            quantity=NumericField(_('Quantity'), proxy=True, mandatory=True,
+                                  digits=quantity_digits),
         )
         # When creating an inventory, a reason is necessary
         if self._stock_item:
-            fields['reason'] = TextField(_('Reason'), proxy=True, mandatory=True)
+            fields['reason'] = MultiLineField(_('Reason'), proxy=True, mandatory=True)
         else:
             # Inventories dont do anything with the cost yet. Maybe we should
             # fix that

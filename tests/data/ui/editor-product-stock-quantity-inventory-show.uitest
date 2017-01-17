@@ -11,7 +11,8 @@ GtkDialog(main_dialog.toplevel): title='Adjust stock quantity', hidden
               ProxySpinButton(quantity): '10'
               GtkHBox():
               ProxyLabel(reason_lbl): 'Reason:'
-              ProxyEntry(reason): '', mandatory
+              GtkScrolledWindow():
+                ProxyTextView(reason): mandatory
               GtkHBox():
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):

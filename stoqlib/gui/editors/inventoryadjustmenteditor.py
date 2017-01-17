@@ -29,7 +29,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import ValidationError
-from kiwi.ui.forms import TextField, NumericField, MultiLineField
+from kiwi.ui.forms import MultiLineField, NumericField, TextField
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.inventory import Inventory, InventoryItem
@@ -204,6 +204,13 @@ class InventoryItemAdjustmentEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
+        # Check if sellable's unit allow fraction to use decimal places
+        unit = self.model.product.sellable.unit
+        if unit and unit.allow_fraction:
+            quantity_digits = 3
+        else:
+            quantity_digits = 0
+
         return collections.OrderedDict(
             description=TextField(_("Product"), proxy=True, editable=False),
             recorded_quantity=TextField(_("Previous quantity"), proxy=True,
@@ -212,7 +219,7 @@ class InventoryItemAdjustmentEditor(BaseEditor):
                                        editable=False),
             difference=TextField(_("Difference"), proxy=True, editable=False),
             actual_quantity=NumericField(_("Actual quantity"), proxy=True,
-                                         mandatory=True),
+                                         mandatory=True, digits=quantity_digits),
             cfop_data=CfopField(_("C.F.O.P"), proxy=True),
             reason=MultiLineField(_("Reason"), proxy=True, mandatory=True),
         )
