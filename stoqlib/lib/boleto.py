@@ -35,8 +35,10 @@ from stoqlib.lib.algorithms import (modulo10,
                                     calculaDuploDigito)
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.cnab.bb import BBCnab
+from stoqlib.lib.cnab.bradesco import BradescoCnab
 from stoqlib.lib.cnab.caixa import CaixaCnab
 from stoqlib.lib.cnab.itau import ItauCnab
+from stoqlib.lib.cnab.santander import SantanderCnab
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -401,6 +403,7 @@ class BankInfo(object):
         txt = BankInfo.formata_numero(txt, tamanho)
         return txt
 
+
 _banks = []
 
 
@@ -436,11 +439,15 @@ class BankBanrisul(BankInfo):
 @register_bank
 class BankBradesco(BankInfo):
     description = 'Bradesco'
+    bank_name = 'BRADESCO'
+    cnab_class = BradescoCnab
     bank_number = 237
     logo = "logo_bancobradesco.jpg"
 
     options = {u'carteira': BILL_OPTION_CUSTOM,
                u'especie_documento': BILL_OPTION_CUSTOM,
+               u'convenio': BILL_OPTION_CUSTOM,
+               u'identificacao_produto': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}
 
@@ -760,10 +767,13 @@ class BankReal(BankInfo):
 @register_bank
 class BankSantander(BankInfo):
     description = 'Banco Santander'
+    bank_name = description
     bank_number = 33
+    cnab_class = SantanderCnab
     logo = 'logo_santander.jpg'
     options = {u'carteira': BILL_OPTION_CUSTOM,
                u'especie_documento': BILL_OPTION_CUSTOM,
+               u'codigo_transmissao': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}
 

@@ -61,7 +61,7 @@ class Field(object):
                 belongs to is asked for the value.
             3 - If the record does not have a value, then the default value is returned
         """
-        if self.name == 'cnab':
+        if self.name in ('cnab', '_'):
             return None
 
         if self.value is not None:
@@ -86,7 +86,7 @@ class Field(object):
         """Formats this field to its string representation"""
         value = self.get_value()
         # cnab fields are always None
-        if self.name != 'cnab':
+        if self.name not in ['cnab', '_']:
             assert value is not None, self.name
 
         if self.type is str:
@@ -125,11 +125,9 @@ class Record(object):
         # fields bellow
         self._fields = []
         field_map = {}
-        size = 0
         for field in self.fields:
             field.set_record(self)
             field_map[field.name] = field
-            size += field.size
             self._fields.append(field)
 
         # Replace fields
@@ -141,6 +139,8 @@ class Record(object):
                 self._fields.insert(pos, field)
                 field_map[field.name] = field
 
+        # Validate the size
+        size = sum(field.size for field in self._fields)
         assert size == self.size, (self, size)
 
         for key, value in kwargs.items():
