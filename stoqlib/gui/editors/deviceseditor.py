@@ -174,7 +174,7 @@ class DeviceSettingsEditor(BaseEditor):
             settings = DeviceSettings.get_by_station_and_type(
                 store=api.get_default_store(),
                 station=self.model.station.id,
-                type=self.model.type).any()
+                type=self.model.type)
             if settings:
                 self.station.set_invalid(
                     _(u"A %s already exists for station \"%s\"") % (
