@@ -193,8 +193,8 @@ class Cnab(object):
             company_document=raw_document,
             company_name=person.name,
             # now
-            date=now.strftime('%d%m%Y'),
-            time=now.strftime('%H%M'),
+            create_date=now.strftime('%d%m%Y'),
+            create_time=now.strftime('%H%M'),
             # account
             agency=bank_info.agencia.split('-')[0],
             agency_dv=bank_info.dv_agencia,

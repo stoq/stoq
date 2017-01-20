@@ -20,8 +20,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.lib.dateutils import localnow
-
 from stoqlib.lib.cnab.base import Field
 from stoqlib.lib.cnab.febraban import (FileHeader, BatchHeader, RecordP,
                                        FebrabanCnab)
@@ -40,8 +38,7 @@ class ItauBatchHeader(BatchHeader):
     @property
     def credit_date(self):
         # Itau requires a credit_date.
-        now = localnow()
-        return now.strftime('%d%m%Y')
+        return self.get_value('create_date')
 
 
 class ItauRecordP(RecordP):

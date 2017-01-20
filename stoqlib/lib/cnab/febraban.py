@@ -95,8 +95,8 @@ class FileHeader(Record):
 
         # File data
         Field('code', int, 1, CNAB_TYPE_REMESSA),
-        Field('date', int, 8),
-        Field('time', int, 6),
+        Field('create_date', int, 8),
+        Field('create_time', int, 6),
         Field('sequence', int, 6, 1),
         Field('file_version', int, 3),
         Field('density', int, 5, 0),
@@ -205,7 +205,7 @@ class RecordP(Record):
         Field('charging_agency_dv', int, 1, 0),
         Field('especie_titulo', int, 2, 2),  # 02 - duplicata mercantil
         Field('aceite', str, 1),  # A / N
-        Field('create_date', int, 8),
+        Field('open_date', int, 8),
 
         # 27 - 29 - Interest
         Field('interest_code', int, 1, 3),  # 3 = isento
@@ -234,7 +234,7 @@ class RecordP(Record):
             numero_documento=str(payment.identifier),
             due_date=payment.due_date.strftime('%d%m%Y'),
             value=payment.value,
-            create_date=payment.open_date.strftime('%d%m%Y'),
+            open_date=payment.open_date.strftime('%d%m%Y'),
             aceite=bank_info.aceite,
             nosso_numero=bank_info.nosso_numero,
         )
