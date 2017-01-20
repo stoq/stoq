@@ -463,6 +463,8 @@ class AttachmentField(Field):
 
     no_attachment_lbl = _('No attachment.')
 
+    attachment = gobject.property(type=object, default=None)
+
     def build_widget(self):
         button = gtk.Button()
         button.connect('clicked', self._on_open_button__clicked)
