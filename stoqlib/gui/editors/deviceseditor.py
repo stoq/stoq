@@ -25,7 +25,8 @@
 """ Editors implementation for Stoq devices configuration"""
 
 from stoqdrivers.interfaces import INonFiscalPrinter
-from stoqdrivers.printers.base import get_supported_printers_by_iface
+from stoqdrivers.printers.base import (get_baudrate_values,
+                                       get_supported_printers_by_iface)
 from stoqdrivers.scales.base import get_supported_scales
 
 from stoqlib.api import api
@@ -46,6 +47,7 @@ class DeviceSettingsEditor(BaseEditor):
                      'brand_combo',
                      'device_combo',
                      'model_combo',
+                     'baudrate',
                      'station',
                      'is_active_button')
 
@@ -101,6 +103,7 @@ class DeviceSettingsEditor(BaseEditor):
         self.setup_device_types_combo()
         self.setup_device_port_combo()
         self.setup_station_combo()
+        self.baudrate.prefill(get_baudrate_values())
         if not self.edit_mode:
             self.is_active_button.set_sensitive(False)
 
@@ -158,6 +161,7 @@ class DeviceSettingsEditor(BaseEditor):
     def create_model(self, store):
         return DeviceSettings(device_name=None,
                               station=api.get_current_station(store),
+                              baudrate=9600,
                               brand=None,
                               model=None,
                               type=None,

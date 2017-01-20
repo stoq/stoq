@@ -30,6 +30,14 @@ GtkDialog(main_dialog.toplevel): title='Add Device', hidden
           GtkLabel(label9): 'Host:'
           ProxyComboEntry(station):
             item: 'station', selected
+          GtkLabel(label1): 'Baudrate:'
+          ProxyComboBox(baudrate):
+            item: '4800'
+            item: '9600', selected
+            item: '19200'
+            item: '38400'
+            item: '57600'
+            item: '115200'
           ProxyCheckButton(is_active_button): 'Active', active, insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):

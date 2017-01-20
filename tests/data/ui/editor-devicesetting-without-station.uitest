@@ -1,5 +1,5 @@
 editor: DeviceSettingsEditor
-GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
+GtkDialog(main_dialog.toplevel): title='Add Device', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -7,16 +7,14 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
         GtkTable(table1):
           GtkLabel(label5): 'Device Type:'
           ProxyComboBox(type_combo):
-            item: 'Choose...'
+            item: 'Choose...', selected
             item: 'Non Fiscal Printer'
-            item: 'Scale', selected
+            item: 'Scale'
           GtkLabel(label10):
           GtkAlignment(alignment1):
             GtkHSeparator(hseparator1):
           GtkLabel(label6): 'Brand:'
-          ProxyComboBox(brand_combo):
-            item: 'Choose...', selected
-            item: 'Toledo'
+          ProxyComboBox(brand_combo): insensitive
           GtkLabel(label8): 'Model:'
           ProxyComboBox(model_combo): insensitive
           GtkLabel(label7): 'Port:'
@@ -26,8 +24,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
             item: '/dev/ttyS1'
             item: 'Virtual device'
           GtkLabel(label9): 'Host:'
-          ProxyComboEntry(station):
-            item: 'station', selected
+          ProxyComboEntry(station): mandatory
           GtkLabel(label1): 'Baudrate:'
           ProxyComboBox(baudrate):
             item: '4800'
@@ -36,7 +33,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
             item: '38400'
             item: '57600'
             item: '115200'
-          ProxyCheckButton(is_active_button): 'Active', active
+          ProxyCheckButton(is_active_button): 'Active', active, insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

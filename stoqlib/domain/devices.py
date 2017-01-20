@@ -52,12 +52,26 @@ class DeviceSettings(Domain):
 
     __storm_table__ = 'device_settings'
 
+    #: The type of this device (printer or scale)
     type = IntCol()
+
+    #: The brand (maker) of this device
     brand = UnicodeCol()
+
+    #: The model of the device
     model = UnicodeCol()
+
+    #: The device name on the computer (either /dev/ttySX or COMX - Linux/Windows)
     device_name = UnicodeCol()
+
+    #: The baudrate of the device
+    baudrate = IntCol(default=9600)
+
     station_id = IdCol()
+    #: The station this device is connected to.
     station = Reference(station_id, 'BranchStation.id')
+
+    #: Is this device is active or not
     is_active = BoolCol(default=True)
 
     (SCALE_DEVICE,
