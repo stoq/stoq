@@ -1,3 +1,9 @@
+stoq (1.12.93) trusty; urgency=low
+
+  * 1.12.93 release
+
+ -- Thiago Bellini Ribeiro <hackedbellini@async.com.br>  Mon, 23 Jan 2017 16:20:53 -0200
+
 stoq (1.12.92) trusty; urgency=low
 
   * 1.12.92 release
