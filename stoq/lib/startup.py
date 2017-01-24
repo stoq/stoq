@@ -117,11 +117,11 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     provide_utility(IApplicationDescriptions, ApplicationDescriptions(),
                     replace=True)
 
+    db_settings = config.get_settings()
     try:
         default_store = get_default_store()
     except DatabaseError as e:
         error(e.short, str(e.msg))
-    db_settings = config.get_settings()
 
     if register_station:
         db_settings.check_version(default_store)
