@@ -56,7 +56,7 @@ def get_application_dir(appname="stoq"):
     if _system == 'Linux':
         appdir = os.path.join(os.environ['HOME'], '.' + appname)
     elif _system == 'Windows':
-        appdir = os.path.join(os.environ['APPDATA'], appname)
+        appdir = os.path.join(os.environ['ALLUSERSPROFILE'], appname)
     elif _system == 'Darwin':
         appdir = os.path.join(os.environ['HOME'], 'Library',
                               'Application Support', 'Stoq')
