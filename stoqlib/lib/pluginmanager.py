@@ -157,11 +157,9 @@ class PluginManager(object):
         self._read_plugin_descriptions()
 
     def _create_eggs_cache(self):
-        log.info("Creating cache for plugins eggs")
-
         # $HOME/.stoq/plugins
-        default_store = get_default_store()
         path = os.path.join(get_application_dir(), 'plugins')
+        log.info("Creating cache for plugins eggs (path=%s)", path)
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -171,6 +169,7 @@ class PluginManager(object):
 
         # Now extract all eggs from the database and put it where stoq know
         # how to load them
+        default_store = get_default_store()
         for plugin_name, egg_md5sum in default_store.using(PluginEgg).find(
                 (PluginEgg.plugin_name, PluginEgg.egg_md5sum)):
             # A little optimization to avoid loading the egg in memory if we

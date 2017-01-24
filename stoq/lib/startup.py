@@ -117,14 +117,14 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     provide_utility(IApplicationDescriptions, ApplicationDescriptions(),
                     replace=True)
 
+    try:
+        default_store = get_default_store()
+    except DatabaseError as e:
+        error(e.short, str(e.msg))
+    db_settings = config.get_settings()
+
     if register_station:
-        try:
-            default_store = get_default_store()
-        except DatabaseError as e:
-            error(e.short, str(e.msg))
-
-        config.get_settings().check_version(default_store)
-
+        db_settings.check_version(default_store)
         if check_schema:
             migration = StoqlibSchemaMigration()
             migration.check()
@@ -140,7 +140,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         manager.activate_installed_plugins()
 
     if check_schema:
-        default_store = get_default_store()
         if not default_store.table_exists('system_table'):
             error(
                 _("Database schema error"),

@@ -111,6 +111,12 @@ class ServerProxy(object):
                     res = store.execute(query, params=params).get_one()
                 if res is not None and res[0] is not None:
                     address = res[0]
+                    # For now we only support ipv4
+                    if address == '::1':
+                        address = '127.0.0.1'
+                    # Is there a better way to detect ipv6?
+                    #if ':' in address:
+                    #    address = '[{}]'.format(address)
                 elif res is not None:
                     # If the client_addr is NULL, then stoqserver is connected
                     # using the unix socket, which means that he is in the same
