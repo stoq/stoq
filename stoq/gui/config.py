@@ -729,9 +729,7 @@ class CreateDatabaseStep(BaseWizardStep):
             if library.uninstalled:
                 args = ['stoq.bat']
             else:
-                # We should use stoq-cmd here, but the output is breaking
-                # the process view
-                args = ['stoq.exe']
+                args = ['stoq-cmd.exe']
         else:
             args = ['stoq']
 

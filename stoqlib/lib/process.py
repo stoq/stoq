@@ -24,6 +24,7 @@
 
 """Platform abstracted Process utilitites"""
 
+import os
 import platform
 import subprocess
 import sys
@@ -56,6 +57,11 @@ class Process(subprocess.Popen):
                     stdin = PIPE
         else:
             startupinfo = None
+
+        if env is None:
+            env = os.environ.copy()
+        # Make sure stdout/stderr will not be buffered
+        env['PYTHONUNBUFFERED'] = '1'
 
         subprocess.Popen.__init__(self, args, bufsize, executable, stdin=stdin,
                                   stdout=stdout, stderr=stderr, shell=shell, cwd=cwd,
