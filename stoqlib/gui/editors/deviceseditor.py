@@ -26,6 +26,7 @@
 
 from stoqdrivers.interfaces import INonFiscalPrinter
 from stoqdrivers.printers.base import (get_baudrate_values,
+                                       get_usb_printer_devices,
                                        get_supported_printers_by_iface)
 from stoqdrivers.scales.base import get_supported_scales
 
@@ -82,6 +83,8 @@ class DeviceSettingsEditor(BaseEditor):
         items = [(_("Choose..."), None)]
         items.extend([(unicode(device.device_name), unicode(device.device_name))
                       for device in self._device_manager.get_serial_devices()])
+        items.extend(self._get_usb_devices())
+
         if is_developer_mode():
             # Include virtual port for virtual printer
             items.append(('Virtual device', u'/dev/null'))
@@ -118,6 +121,24 @@ class DeviceSettingsEditor(BaseEditor):
         else:
             raise TypeError("The selected device type isn't supported")
         return supported_types
+
+    def _get_usb_devices(self):
+        try:
+            import usb.core
+        except ImportError:
+            return []
+
+        devices = []
+        for device in get_usb_printer_devices():
+            try:
+                devices.append((u'{} {}'.format(device.manufacturer, device.product),
+                                u'usb:{}:{}'.format(hex(device.idVendor),
+                                                    hex(device.idProduct))))
+            except usb.core.USBError:
+                # The user might not have access to some devices
+                continue
+
+        return devices
 
     def _get_supported_brands(self):
         return list(self._get_supported_types().keys())

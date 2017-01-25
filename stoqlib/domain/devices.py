@@ -106,15 +106,27 @@ class DeviceSettings(Domain):
         for the device itself.
         """
         if self.device_name == '/dev/null':
+            interface = 'serial'
             port = VirtualPort()
+            product_id = vendor_id = None
+        elif self.device_name.startswith('usb:'):
+            # USB device
+            interface, vendor_id, product_id = self.device_name.split(':')
+            vendor_id = int(vendor_id, 16)
+            product_id = int(product_id, 16)
+            port = None
         else:
+            # Serial device
+            interface = 'serial'
             port = SerialPort(device=self.device_name)
+            product_id = vendor_id = None
 
         if self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
             return ChequePrinter(brand=self.brand, model=self.model, port=port)
         elif self.type == DeviceSettings.NON_FISCAL_PRINTER_DEVICE:
             return NonFiscalPrinter(brand=self.brand, model=self.model,
-                                    port=port)
+                                    port=port, interface=interface,
+                                    product_id=product_id, vendor_id=vendor_id)
         elif self.type == DeviceSettings.SCALE_DEVICE:
             return Scale(brand=self.brand, model=self.model,
                          device=self.device_name)

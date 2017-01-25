@@ -47,6 +47,7 @@ class TestDeviceSettings(DomainTest):
         port = SerialPort()
         SerialPort.return_value = port
         device = DeviceSettings(store=self.store,
+                                device_name=u'/dev/ttyS0',
                                 type=DeviceSettings.CHEQUE_PRINTER_DEVICE)
 
         obj = object()
@@ -69,6 +70,19 @@ class TestDeviceSettings(DomainTest):
         expected = "The device type referred by this record" \
                    " (%r) is invalid, given None." % device
         self.assertEquals(str(error.exception), expected)
+
+    @mock.patch('stoqlib.domain.devices.NonFiscalPrinter')
+    def test_get_interface_usb(self, NonFiscalPrinter):
+        device = DeviceSettings(store=self.store,
+                                device_name=u'usb:0xa:0x1',
+                                type=DeviceSettings.NON_FISCAL_PRINTER_DEVICE)
+
+        obj = object()
+        NonFiscalPrinter.return_value = obj
+        self.assertIs(device.get_interface(), obj)
+        NonFiscalPrinter.assert_called_with(brand=None, model=None, port=None,
+                                            product_id=1, vendor_id=10,
+                                            interface='usb')
 
     def test_get_interface_virtual(self):
         device = DeviceSettings(store=self.store, brand=u'virtual',
