@@ -116,7 +116,7 @@ class PinDialog(BaseEditor):
                 rv = self._proxy.call('register_link', pin)
             except ServerError as e:
                 msg = _("An error happened when trying to register to Stoq.Link")
-                schedule_in_main_thread(self._error, msg, str(e))
+                schedule_in_main_thread(self._set_error, msg, str(e))
             else:
                 log.info("register_link succedded. Retval: %s", rv)
                 # If no exception happened, that mens that the registration
