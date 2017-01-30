@@ -116,7 +116,7 @@ def collect_report():
         extra = ' '.join(parts[1:])
         report_['psycopg_version'] = _fix_version(
             map(int, parts[0].split('.')) + [extra])
-    except:
+    except Exception:
         report_['psycopg_version'] = _fix_version(psycopg2.__version__)
 
     import reportlab
@@ -141,6 +141,7 @@ def collect_report():
         report_['postgresql_version'] = _fix_version(
             get_database_version(default_store))
         report_['demo'] = sysparam.get_bool('DEMO_MODE')
+        report_['hash'] = sysparam.get_string('USER_HASH')
         report_['cnpj'] = get_main_cnpj(default_store)
         report_['plugins'] = ', '.join(
             InstalledPlugin.get_plugin_names(default_store))
@@ -180,6 +181,9 @@ def collect_traceback(tb, output=True, submit=False):
             ('https://89169350b0c0434895e315aa6490341a:'
              '0f5dce716eb5497fbf75c52fe873b3e8@sentry.stoq.com.br/4'))
         client = raven.Client(sentry_url, release=stoq.version)
+        if hasattr(client, 'user_context'):
+            client.user_context({'id': extra.get('hash', None),
+                                 'username': extra.get('cnpj', None)})
 
         # Don't sent logs to sentry
         if 'log' in extra:
