@@ -39,7 +39,7 @@ import sys
 executable = os.path.realpath(os.path.abspath(sys.executable))
 root = os.path.dirname(executable)
 for name in os.listdir(root):
-    if not name.endswith('.egg'):
+    if not name.endswith(('.egg', '.whl')):
         continue
     sys.path.insert(0, os.path.join(root, name))
 
