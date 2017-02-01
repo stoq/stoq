@@ -24,6 +24,8 @@
 
 STOQ_ADMIN_APP = "stoq-admin-app"
 STOQ_BILLS = "stoq-bills"
+STOQ_BRANCHES = "stoq-branches"
+STOQ_BOOK = "stoq-book"
 STOQ_CALC = "stoq-calc"
 STOQ_CALENDAR_APP = "stoq-calendar-app"
 STOQ_CALENDAR_LIST = "stoq-calendar-list"
@@ -33,6 +35,8 @@ STOQ_CALENDAR_WEEK = "stoq-calendar-week"
 STOQ_CLIENTS = "stoq-clients"
 STOQ_CONNECT = "stoq-connect"
 STOQ_EDIT = "stoq-edit"
+STOQ_EMPLOYEE = "stoq-employee"
+STOQ_EMPLOYEE_CARD = "stoq-employee-card"
 STOQ_FEEDBACK = "stoq-feedback"
 STOQ_DELIVERY = "stoq-delivery"
 STOQ_DEVICES = "stoq-devices"
@@ -45,9 +49,14 @@ STOQ_KEYBOARD = "stoq-keyboard"
 STOQ_MONEY = "stoq-money"
 STOQ_MONEY_ADD = "stoq-money-add"
 STOQ_MONEY_REMOVE = "stoq-money-remove"
+STOQ_MOVEMENT_PRODUCT = "stoq-movement-product"
+STOQ_PARAMETERS = "stoq-parameters"
 STOQ_PAYABLE_APP = "stoq-payable-app"
+STOQ_PAYMENT_CATEGORY = "stoq-payment-category"
+STOQ_PAYMENT_TYPE = "stoq-payment-type"
 STOQ_PLUGIN = "stoq-plugin"
 STOQ_POS_APP = "stoq-pos-app"
+STOQ_PRINTER = "stoq-printer"
 STOQ_PRODUCTION_APP = "stoq-production-app"
 STOQ_PRODUCTS = "stoq-products"
 STOQ_PURCHASE_APP = "stoq-purchase-app"
@@ -57,7 +66,7 @@ STOQ_SERVICES = "stoq-services"
 STOQ_STOCK_APP = "stoq-stock-app"
 STOQ_SUPPLIERS = "stoq-suppliers"
 STOQ_SYSTEM = "stoq-system"
-STOQ_TAXES = "stoq-taxes"
+STOQ_TAX_TYPE = "stoq-tax-type"
 STOQ_TILL_APP = "stoq-till-app"
 STOQ_USERS = "stoq-users"
 STOQ_USER_PROFILES = "stoq-user-profiles"
@@ -84,6 +93,10 @@ icon_info = [
       GTK_ICON_SIZE_DIALOG: "stoq-admin-48x48.png"}),
     (STOQ_BILLS,
      {GTK_ICON_SIZE_DIALOG: "stoq-bills-48x48.png"}),
+    (STOQ_BRANCHES,
+     {GTK_ICON_SIZE_DIALOG: "stoq-branches-48x48.png"}),
+    (STOQ_BOOK,
+     {GTK_ICON_SIZE_DIALOG: "stoq-book-48x48.png"}),
     (STOQ_CALENDAR_APP,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-24x24.svg",
       GTK_ICON_SIZE_DIALOG: "stoq-calendar-48x48.svg"}),
@@ -107,6 +120,10 @@ icon_info = [
       GTK_ICON_SIZE_DIALOG: "stoq-delivery-48x48.png"}),
     (STOQ_EDIT,
      {GTK_ICON_SIZE_DIALOG: "stoq-edit-48x48.png"}),
+    (STOQ_EMPLOYEE,
+     {GTK_ICON_SIZE_DIALOG: "stoq-employee-48x48.png"}),
+    (STOQ_EMPLOYEE_CARD,
+     {GTK_ICON_SIZE_DIALOG: "stoq-employee-card-48x48.png"}),
     (STOQ_FEEDBACK,
      {GTK_ICON_SIZE_MENU: "stoq-feedback-16x16.png"}),
     (STOQ_FORMS,
@@ -136,8 +153,16 @@ icon_info = [
     (STOQ_MONEY_REMOVE,
      {GTK_ICON_SIZE_MENU: "stoq-money-remove-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-money-remove-24x24.png"}),
+    (STOQ_MOVEMENT_PRODUCT,
+     {GTK_ICON_SIZE_DIALOG: "stoq-movement-product-48x48.png"}),
+    (STOQ_PARAMETERS,
+     {GTK_ICON_SIZE_DIALOG: "stoq-parameters-48x48.png"}),
     (STOQ_PAYABLE_APP,
      {GTK_ICON_SIZE_DIALOG: "stoq-payable-app-48x48.png"}),
+    (STOQ_PAYMENT_CATEGORY,
+     {GTK_ICON_SIZE_DIALOG: "stoq-payment-category-48x48.png"}),
+    (STOQ_PAYMENT_TYPE,
+     {GTK_ICON_SIZE_DIALOG: "stoq-payment-type-48x48.png"}),
     (STOQ_PLUGIN,
      {GTK_ICON_SIZE_MENU: "stoq-plugin-16x16.png",
       GTK_ICON_SIZE_BUTTON: "stoq-plugin-22x22.png",
@@ -148,6 +173,8 @@ icon_info = [
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-pos-app-24x24.png",
       GTK_ICON_SIZE_DND: "stoq-pos-app-32x32.png",
       GTK_ICON_SIZE_DIALOG: "stoq-pos-app-48x48.png"}),
+    (STOQ_PRINTER,
+     {GTK_ICON_SIZE_DIALOG: "stoq-printer-48x48.png"}),
     (STOQ_PRODUCTION_APP,
      {GTK_ICON_SIZE_DIALOG: "stoq-production-app.png"}),
     (STOQ_PRODUCTS,
@@ -185,8 +212,8 @@ icon_info = [
     (STOQ_CALC,
      {GTK_ICON_SIZE_MENU: "stoq-calc-16x16.png",
       GTK_ICON_SIZE_DIALOG: "stoq-calc-48x48.png"}),
-    (STOQ_TAXES,
-     {GTK_ICON_SIZE_DIALOG: "stoq-taxes-48x48.png"}),
+    (STOQ_TAX_TYPE,
+     {GTK_ICON_SIZE_DIALOG: "stoq-tax-type-48x48.png"}),
     (STOQ_DOCUMENTS,
      {GTK_ICON_SIZE_DIALOG: "stoq-documents-48x48.png"}),
     (STOQ_DEVICES,
@@ -204,7 +231,8 @@ icon_info = [
     (STOQ_STATUS_WARNING,
      {GTK_ICON_SIZE_MENU: "stoq-status-warning-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-warning-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-status-warning-32x32.png"}),
+      GTK_ICON_SIZE_DND: "stoq-status-warning-32x32.png",
+      GTK_ICON_SIZE_DIALOG: "stoq-status-warning-48x48.png"}),
     (STOQ_STATUS_ERROR,
      {GTK_ICON_SIZE_MENU: "stoq-status-error-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-error-24x24.png",

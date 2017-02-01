@@ -68,15 +68,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
             GtkIconView(iconview):
               markup: <b>Accounts Payable</b>
-<small>Manage payment that needs to be paid.</small>, stock: stoq-payable-app
+<small>Manage payment that needs to be paid.</small>
               markup: <b>Accounts Receivable</b>
 <small>Manage payments that needs to be received.</small>
               markup: <b>Administrative</b>
-<small>Administer the branches, users, employees and configure system parameters.</small>, stock: stoq-admin-app
+<small>Administer the branches, users, employees and configure system parameters.</small>
               markup: <b>Calendar</b>
 <small>Shows payments, orders and other things that will happen in the future.</small>
               markup: <b>Financial</b>
-<small>Control accounts and financial transactions.</small>, stock: stoq-calc
+<small>Control accounts and financial transactions.</small>
               markup: <b>Inventory</b>
 <small>Audit and adjust the product stock.</small>
               markup: <b>Point of Sales</b>

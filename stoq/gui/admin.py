@@ -64,10 +64,16 @@ from stoqlib.gui.search.salesearch import SaleTokenSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
-    STOQ_CALC, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
-    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_HR, STOQ_MONEY,
-    STOQ_PAYABLE_APP, STOQ_PLUGIN, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
-    STOQ_USER_PROFILES, STOQ_USERS, STOQ_PRODUCTS, STOQ_SERVICES, STOQ_CONNECT)
+    STOQ_BOOK, STOQ_BRANCHES, STOQ_CLIENTS,
+    STOQ_CONNECT, STOQ_DEVICES, STOQ_DELIVERY,
+    STOQ_DOCUMENTS, STOQ_EMPLOYEE,
+    STOQ_EMPLOYEE_CARD, STOQ_FORMS, STOQ_HR,
+    STOQ_MOVEMENT_PRODUCT, STOQ_PARAMETERS,
+    STOQ_PAYMENT_CATEGORY, STOQ_PAYMENT_TYPE,
+    STOQ_PLUGIN, STOQ_PRINTER, STOQ_PRODUCTS,
+    STOQ_SERVICES, STOQ_STATUS_WARNING,
+    STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAX_TYPE,
+    STOQ_USER_PROFILES)
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.decorators import public
@@ -98,27 +104,27 @@ class Tasks(object):
 
     def add_defaults(self):
         items = [
-            (_('Branches'), 'branches', gtk.STOCK_HOME),
-            (_('C.F.O.P.'), 'cfop', STOQ_CALC),
+            (_('Branches'), 'branches', STOQ_BRANCHES),
+            (_('C.F.O.P.'), 'cfop', STOQ_MOVEMENT_PRODUCT),
             (_('Client Categories'), 'client_categories', STOQ_CLIENTS),
             (_('Clients'), 'clients', STOQ_CLIENTS),
             (_('Computers'), 'stations', STOQ_SYSTEM),
             (_('Devices'), 'devices', STOQ_DEVICES),
-            (_('Employees'), 'employees', STOQ_ADMIN_APP),
-            (_('Events'), 'events', gtk.STOCK_DIALOG_WARNING),
-            (_('Fiscal Books'), 'fiscal_books', STOQ_EDIT),
+            (_('Employees'), 'employees', STOQ_EMPLOYEE),
+            (_('Events'), 'events', STOQ_STATUS_WARNING),
+            (_('Fiscal Books'), 'fiscal_books', STOQ_BOOK),
             (_('Forms'), 'forms', STOQ_FORMS),
-            (_('Invoice Printers'), 'invoice_printers', gtk.STOCK_PRINT),
-            (_('Parameters'), 'parameters', gtk.STOCK_PREFERENCES),
-            (_('Payment Categories'), 'payment_categories', STOQ_PAYABLE_APP),
-            (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
+            (_('Invoice Printers'), 'invoice_printers', STOQ_PRINTER),
+            (_('Parameters'), 'parameters', STOQ_PARAMETERS),
+            (_('Payment Categories'), 'payment_categories', STOQ_PAYMENT_CATEGORY),
+            (_('Payment Methods'), 'payment_methods', STOQ_PAYMENT_TYPE),
             (_('Plugins'), 'plugins', STOQ_PLUGIN),
             (_('Products'), 'products', STOQ_PRODUCTS),
-            (_('Roles'), 'employee_roles', STOQ_USERS),
+            (_('Roles'), 'employee_roles', STOQ_EMPLOYEE_CARD),
             (_('Services'), 'services', STOQ_SERVICES),
-            (_('Taxes'), 'taxes', STOQ_TAXES),
+            (_('Taxes'), 'taxes', STOQ_DOCUMENTS),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
-            (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
+            (_('Tax Classes'), 'tax_templates', STOQ_TAX_TYPE),
             (_('Transporters'), 'transporters', STOQ_DELIVERY),
             (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
             (_('Users'), 'users', STOQ_HR),
