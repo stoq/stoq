@@ -194,9 +194,9 @@ class Viewable(ClassInittableObject):
         cls_spec = []
         attributes = []
 
-        # We can ignore the last two items, since they are the Viewable class
-        # and ``object``
-        for base in inspect.getmro(cls)[:-2]:
+        # We can ignore the last three items, since they are: the Viewable class
+        # kwi.ClassInitiableObject and ``object``
+        for base in inspect.getmro(cls)[:-3]:
             for attr, value in base.__dict__.items():
                 if attr == 'clause':
                     continue
@@ -243,7 +243,8 @@ class Viewable(ClassInittableObject):
                             value.name, value.primary, vf.func, keywords)
                         setattr(cls, attr, value)
 
-                if is_domain or is_column or isinstance(value, Expr):
+                if (attr not in attributes and (is_domain or is_column or
+                                                isinstance(value, Expr))):
                     attributes.append(attr)
                     cls_spec.append(value)
 
