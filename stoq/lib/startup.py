@@ -121,7 +121,11 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     try:
         default_store = get_default_store()
     except DatabaseError as e:
-        error(e.short, str(e.msg))
+        # Only raise an error if a database is actually required
+        if register_station or load_plugins or check_schema:
+            error(e.short, str(e.msg))
+        else:
+            default_store = None
 
     if register_station:
         db_settings.check_version(default_store)
