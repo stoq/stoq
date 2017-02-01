@@ -303,7 +303,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/lib/pgpass.py', 82.14),
     ('stoqlib/lib/pluginmanager.py', 95.41),
     ('stoqlib/lib/process.py', 37),
-    ('stoqlib/lib/settings.py', 56.41),
+    ('stoqlib/lib/settings.py', 51.26),
     ('stoqlib/lib/sintegra.py', 88.6),
     ('stoqlib/lib/sintegragenerator.py', 82.53),
     ('stoqlib/lib/threadutils.py', 29.41),

@@ -30,6 +30,7 @@ from decimal import Decimal
 import gtk
 from kiwi.ui.objectlist import Column
 
+from stoqlib.api import api
 from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.domain.views import StockDecreaseView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -59,8 +60,10 @@ class StockDecreaseSearch(SearchDialog):
         self._setup_widgets()
 
     def _show_details(self, item):
-        run_dialog(StockDecreaseDetailsDialog, self, self.store,
-                   item.stock_decrease)
+        with api.new_store() as store:
+            model = store.fetch(item.stock_decrease)
+            run_dialog(StockDecreaseDetailsDialog, self, store, model)
+            store.retval = store.get_pending_count() > 0
 
     def _setup_widgets(self):
         self.results.connect('row_activated', self.on_row_activated)

@@ -21,6 +21,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 import mock
 
 from stoqlib.api import api
@@ -137,13 +138,18 @@ class TestTransferOrderSearch(GUITest):
         search.status_filter.select(None)
         self.check_search(search, 'transfer-date-interval-filter')
 
+    @mock.patch('stoqlib.gui.search.transfersearch.api.new_store')
     @mock.patch('stoqlib.gui.search.searchdialog.print_report')
     @mock.patch('stoqlib.gui.search.transfersearch.run_dialog')
-    def test_buttons(self, run_dialog, print_report):
+    def test_buttons(self, run_dialog, print_report, new_store):
+        new_store.return_value = self.store
         self._create_domain()
         search = self._show_search()
 
-        search.results.emit('row_activated', search.results[0])
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as (commit, close):
+            search.results.emit('row_activated', search.results[0])
         run_dialog.assert_called_once_with(TransferOrderDetailsDialog, search,
                                            self.store,
                                            search.results[0].transfer_order)
@@ -156,7 +162,10 @@ class TestTransferOrderSearch(GUITest):
 
         run_dialog.reset_mock()
         self.assertSensitive(search._details_slave, ['details_button'])
-        self.click(search._details_slave.details_button)
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as (commit, close):
+            self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(TransferOrderDetailsDialog, search,
                                            self.store,
                                            search.results[0].transfer_order)

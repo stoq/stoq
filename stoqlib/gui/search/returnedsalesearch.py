@@ -25,6 +25,7 @@
 
 import datetime
 
+from stoqlib.api import api
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import (ReturnedSalesView, PendingReturnedSalesView,
@@ -62,7 +63,10 @@ class ReturnedSaleSearch(SearchDialog):
         self.update_widgets()
 
     def _show_details(self, item_view):
-        run_dialog(ReturnedSaleDialog, self, self.store, item_view)
+        with api.new_store() as store:
+            model = store.fetch(item_view)
+            run_dialog(ReturnedSaleDialog, self, store, model)
+            store.retval = store.get_pending_count() > 0
 
     def _get_status_values(self):
         items = [(value, key) for key, value in ReturnedSale.statuses.items()]
@@ -175,3 +179,9 @@ class ReturnedItemSearch(ReturnedSaleSearch):
                 SearchColumn('invoice_number', _('Invoice number'),
                              data_type=int, visible=False),
                 ]
+
+    def _show_details(self, item_view):
+        with api.new_store() as store:
+            model = store.fetch(item_view.returned_sale_view)
+            run_dialog(ReturnedSaleDialog, self, store, model)
+            store.retval = store.get_pending_count() > 0

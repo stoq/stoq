@@ -61,8 +61,10 @@ class TransferOrderSearch(SearchDialog):
 
     def _show_transfer_order_details(self, order_view):
         transfer_order = order_view.transfer_order
-        run_dialog(TransferOrderDetailsDialog, self, self.store,
-                   transfer_order)
+        with api.new_store() as store:
+            model = store.fetch(transfer_order)
+            run_dialog(TransferOrderDetailsDialog, self, store, model)
+            store.retval = store.get_pending_count() > 0
 
     def _setup_widgets(self):
         self.results.connect('row_activated', self.on_row_activated)

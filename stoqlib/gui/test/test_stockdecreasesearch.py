@@ -22,8 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 import datetime
-
 import mock
 
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
@@ -60,9 +60,11 @@ class TestStockDecreaseSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'stock-decrease-string-filter')
 
+    @mock.patch('stoqlib.gui.search.stockdecreasesearch.api.new_store')
     @mock.patch('stoqlib.gui.search.stockdecreasesearch.run_dialog')
     @mock.patch('stoqlib.gui.search.searchdialog.print_report')
-    def test_buttons(self, print_report, run_dialog):
+    def test_buttons(self, print_report, run_dialog, new_store):
+        new_store.return_value = self.store
         self._create_domain()
         search = self._show_search()
 
@@ -77,13 +79,19 @@ class TestStockDecreaseSearch(GUITest):
         self.assertNotSensitive(search._details_slave, ['details_button'])
         search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['details_button'])
-        self.click(search._details_slave.details_button)
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as (commit, close):
+            self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(StockDecreaseDetailsDialog,
                                            search, self.store,
                                            search.results[0].stock_decrease)
 
         run_dialog.reset_mock()
-        search.results.emit('row_activated', search.results[0])
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as (commit, close):
+            search.results.emit('row_activated', search.results[0])
         run_dialog.assert_called_once_with(StockDecreaseDetailsDialog,
                                            search, self.store,
                                            search.results[0].stock_decrease)

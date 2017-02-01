@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import contextlib
 import mock
 
 from stoqlib.gui.dialogs.returnedsaledialog import ReturnedSaleDialog
@@ -38,8 +39,10 @@ class TestReturnedSaleSearch(GUITest):
         self.assertNotSensitive(search._details_slave, ['details_button'])
         search.search.refresh()
 
+    @mock.patch('stoqlib.gui.search.returnedsalesearch.api.new_store')
     @mock.patch('stoqlib.gui.search.returnedsalesearch.run_dialog')
-    def test_show_details(self, run_dialog):
+    def test_show_details(self, run_dialog, new_store):
+        new_store.return_value = self.store
         sale = self.create_sale()
         product = self.create_product(stock=2)
         client = self.create_client()
@@ -49,7 +52,10 @@ class TestReturnedSaleSearch(GUITest):
         self.create_returned_sale(sale)
         search = ReturnedSaleSearch(self.store)
         search.search.refresh()
-        search.results.double_click(0)
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as (commit, close):
+            search.results.double_click(0)
         self.assertEquals(run_dialog.call_count, 1)
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
                                            search.results[0])
@@ -57,7 +63,10 @@ class TestReturnedSaleSearch(GUITest):
         run_dialog.reset_mock()
         search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['details_button'])
-        self.click(search._details_slave.details_button)
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as (commit, close):
+            self.click(search._details_slave.details_button)
         self.assertEquals(run_dialog.call_count, 1)
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
                                            search.results[0])
@@ -101,8 +110,10 @@ class TestReturnedItemSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'returned-item-search')
 
+    @mock.patch('stoqlib.gui.search.returnedsalesearch.api.new_store')
     @mock.patch('stoqlib.gui.search.returnedsalesearch.run_dialog')
-    def test_show_details(self, run_dialog):
+    def test_show_details(self, run_dialog, new_store):
+        new_store.return_value = self.store
         sale = self.create_sale()
         product = self.create_product(stock=2)
         client = self.create_client()
@@ -112,16 +123,24 @@ class TestReturnedItemSearch(GUITest):
         self.create_returned_sale(sale)
         search = ReturnedItemSearch(self.store)
         search.search.refresh()
-        search.results.double_click(0)
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as (commit, close):
+            search.results.double_click(0)
         self.assertEquals(run_dialog.call_count, 1)
+        item_view = search.results[0]
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
-                                           search.results[0])
+                                           item_view.returned_sale_view)
 
         # Testing click on details button
         run_dialog.reset_mock()
         search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['details_button'])
-        self.click(search._details_slave.details_button)
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')) as (commit, close):
+            self.click(search._details_slave.details_button)
         self.assertEquals(run_dialog.call_count, 1)
+        item_view = search.results[0]
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
-                                           search.results[0])
+                                           item_view.returned_sale_view)

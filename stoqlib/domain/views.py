@@ -1255,6 +1255,7 @@ class ReturnedItemView(ReturnedSalesView):
     id = ReturnedSaleItem.id
     item_description = Sellable.description
     item_quantity = ReturnedSaleItem.quantity
+    returned_sale_id = ReturnedSale.id
 
     tables = ReturnedSalesView.tables[:]
 
@@ -1262,6 +1263,11 @@ class ReturnedItemView(ReturnedSalesView):
                         ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
                    Join(Sellable, ReturnedSaleItem.sellable_id == Sellable.id),
                    LeftJoin(Product, Sellable.id == Product.id)])
+
+    @property
+    def returned_sale_view(self):
+        return self.store.find(ReturnedSalesView,
+                               id=self.returned_sale_id).one()
 
 
 class PendingReturnedSalesView(ReturnedSalesView):
