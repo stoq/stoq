@@ -1,0 +1,108 @@
+search: SellableMassEditorDialog
+GtkDialog(toplevel): title='', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
+        GtkVBox(vbox):
+          GtkHBox(fill=True, padding=6):
+            GtkVBox(filters_box, padding=6):
+              GtkHBox(hbox):
+                SearchFilter(_primary_filter):
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains All Words', selected
+                    item: 'Contains Exactly'
+                    item: 'Identical to'
+                    item: 'Does Not Contain'
+                  HintedEntry(search_entry, padding=6): ''
+                GtkButton(search_button): 'gtk-find'
+          GtkHBox(mass_editor):
+            GtkLabel(): 'Update'
+            ProxyComboBox():
+              item: 'Category', selected
+              item: 'Description'
+              item: 'Unit'
+              item: 'C.F.O.P.'
+              item: 'Cost'
+              item: 'Default Price'
+              item: 'On Sale Price'
+              item: 'On Sale Start Date'
+              item: 'On Sale End Date'
+              item: 'NCM'
+              item: 'Location'
+              item: 'Brand'
+              item: 'Family'
+              item: 'Model'
+              item: 'Manufacturer'
+              item: 'cat1 Price'
+              item: 'cat2 Price'
+            GtkEventBox():
+              GtkHBox():
+                ProxyComboBox(expand=True, fill=True):
+                  item: 'Set value to', selected
+                GtkHBox(expand=True, fill=True):
+                  ProxyComboBox():
+                    item: 'Erase value', selected
+                    item: 'Bermudas'
+                    item: 'Bermudas Sarja'
+                    item: 'Bermudas Shorts'
+                    item: 'Camisetas'
+                    item: 'Tinturada'
+                    item: 'Cal\xc3\xa7ados'
+                    item: 'Chinelos'
+                    item: 'Cal\xc3\xa7as'
+                    item: 'Cal\xc3\xa7as Jeans'
+                    item: 'Cal\xc3\xa7as Poliester'
+                    item: 'Casacos'
+                    item: 'Algod\xc3\xa3o'
+                    item: 'Blusas'
+                    item: 'Blusas Algod\xc3\xa3o'
+                    item: 'Blusas Poliester'
+                    item: 'Vestido'
+                    item: 'Viscose'
+            GtkButton(): 'gtk-apply'
+          SearchResultListView(result_view, expand=True, fill=True):
+            column: title='Code'
+            column: title='Barcode'
+            column: title='Category'
+            column: title='Description'
+            column: title='Unit', hidden
+            column: title='C.F.O.P.', hidden
+            column: title='Cost'
+            column: title='Default Price'
+            column: title='On Sale Price'
+            column: title='On Sale Start Date'
+            column: title='On Sale End Date'
+            column: title='NCM', hidden
+            column: title='Location', hidden
+            column: title='Brand', hidden
+            column: title='Family', hidden
+            column: title='Model', hidden
+            column: title='Manufacturer', hidden
+            column: title='cat1 Price'
+            column: title='cat2 Price'
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
