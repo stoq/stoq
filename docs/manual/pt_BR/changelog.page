@@ -27,15 +27,20 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 1.12.90</title>
+    <title>Novidades da versão 1.13</title>
     <p>
-      Data do lançamento: 2016-12-14
+      Data do lançamento: 2017-02-02
     </p>
 
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>TBA</p></item>
+        <item><p>Suporte à emissão de NFCe. Consulte <link href="www.stoq.link">stoq.link</link> para mais informações</p></item>
+        <item><p>O Stoq agora roda também no Windows. Baixe o instalador daqui: <link href="www.stoq.link">stoq.link</link></p></item>
+        <item><p>Suporte a impressoras não fiscais, utilizadas pelo S@T Fiscal e NFCe</p></item>
+        <item><p>Novo editor de produtos em massa, podendo este ser utilizado para alterar atributos de vários produtos de uma só vez</p></item>
+        <item><p>(Experimental) Geração de arquivo CNAB para suportar boletos registrados</p></item>
+        <item><p>Inumeras correções de bugs, tornando a utilização do programa mais estável</p></item>
       </list>
     </section>
 
