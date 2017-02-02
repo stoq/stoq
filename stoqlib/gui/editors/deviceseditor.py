@@ -88,6 +88,11 @@ class DeviceSettingsEditor(BaseEditor):
         if is_developer_mode():
             # Include virtual port for virtual printer
             items.append(('Virtual device', u'/dev/null'))
+
+        devices = [i[1] for i in items]
+        if self.model.device_name not in devices:
+            items.append(('Unkown device (%s)' % self.model.device_name,
+                          self.model.device_name))
         self.device_combo.prefill(items)
 
     def setup_device_types_combo(self):
