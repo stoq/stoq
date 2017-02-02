@@ -134,7 +134,6 @@ class ShellWindow(GladeDelegate):
                 'NSApplicationBlockTermination',
                 self._on_osx__block_termination)
             self._osx_app.set_use_quartz_accelerators(True)
-        api.user_settings.migrate()
         self._app_settings = api.user_settings.get('app-ui', {})
         self._create_shared_actions()
         if self.options.debug:

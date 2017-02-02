@@ -25,7 +25,6 @@
 import datetime
 import decimal
 import logging
-import os
 import warnings
 
 import gtk
@@ -51,7 +50,6 @@ from stoqlib.gui.search.searchresultview import (SearchResultListView,
                                                  SearchResultTreeView)
 from stoqlib.gui.widgets.lazyobjectlist import LazySummaryLabel
 from stoqlib.gui.widgets.searchfilterbutton import SearchFilterButton
-from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -174,19 +172,6 @@ class SearchSlave(SlaveDelegate):
         self.search_button.show()
 
         self.filters_box = filters_box
-
-    def _migrate_from_pickle(self):
-        username = api.get_current_user(self.store).username
-        filename = os.path.join(get_application_dir(), 'columns-%s' % username,
-                                self._restore_name + '.pickle')
-        log.info("Migrating columns from pickle: %s" % (filename, ))
-        try:
-            with open(filename) as fd:
-                import cPickle
-                return cPickle.load(fd)
-        except Exception, e:
-            log.info("Exception while migrating: %r" % (e, ))
-            return {}
 
     def _set_filter_position(self, search_filter, position):
         """
@@ -641,10 +626,7 @@ class SearchSlave(SlaveDelegate):
             return cols
 
         columns = api.user_settings.get(self._settings_key, {})
-        if columns:
-            saved = columns.get(self._restore_name, {})
-        else:
-            saved = self._migrate_from_pickle()
+        saved = columns.get(self._restore_name, {})
 
         cols_dict = {}
         for original_pos, col in enumerate(cols):

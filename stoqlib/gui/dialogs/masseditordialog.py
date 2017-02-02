@@ -598,6 +598,7 @@ class MassEditorWidget(gtk.HBox):
 class MassEditorSearch(SearchDialog):
     size = (850, 450)
     unlimited_results = True
+    save_columns = False
 
     def __init__(self, store):
         self._fields = self.get_fields(store)

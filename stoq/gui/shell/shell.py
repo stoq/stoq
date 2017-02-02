@@ -106,7 +106,7 @@ class ShellDatabaseConnection(object):
         from stoqlib.lib.message import error
         try:
             store_uri = self._config.get_settings().get_store_uri()
-        except:
+        except Exception:
             type, value, trace = sys.exc_info()
             error(_("Could not open the database config file"),
                   _("Invalid config file settings, got error '%s', "
@@ -188,7 +188,7 @@ class ShellDatabaseConnection(object):
 
         compaines = default_store.find(Company)
         if (compaines.count() == 0 or
-            not sysparam.has_object('MAIN_COMPANY')):
+                not sysparam.has_object('MAIN_COMPANY')):
             from stoqlib.gui.base.dialogs import run_dialog
             from stoqlib.gui.dialogs.branchdialog import BranchDialog
             if self._ran_wizard:
@@ -225,6 +225,7 @@ class Shell(object):
     - handles login
     - runs applications
     """
+
     def __init__(self, bootstrap, options, initial=True):
         global _shell
         _shell = self
@@ -303,7 +304,7 @@ class Shell(object):
         from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
         if (sysparam.get_bool('DEMO_MODE') and
-            manager.is_active(u'ecf')):
+                manager.is_active(u'ecf')):
             pos = shell_window.toplevel.get_position()
             if pos[0] < 220:
                 shell_window.toplevel.move(220, pos[1])

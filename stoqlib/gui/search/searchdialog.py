@@ -142,7 +142,7 @@ class SearchDialog(BasicDialog):
     unlimited_results = False
 
     #: If the column settings should be saved or not.
-    save_columns = False
+    save_columns = True
 
     def __init__(self, store, search_spec=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False,
