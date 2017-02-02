@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-24 02:10-0200\n"
+"POT-Creation-Date: 2017-02-02 02:10-0200\n"
 "PO-Revision-Date: 2017-01-20 04:11+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/async/stoq/language/hu_HU/)\n"
@@ -382,7 +382,7 @@ msgstr ""
 #: ../plugins/books/booksdomain.py:67 ../plugins/ecf/ecfdomain.py:216
 #: ../plugins/ecf/ecfprinterdialog.py:332
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:3
-#: ../stoqlib/domain/devices.py:167 ../stoqlib/domain/payment/method.py:123
+#: ../stoqlib/domain/devices.py:179 ../stoqlib/domain/payment/method.py:123
 #: ../stoqlib/domain/person.py:647 ../stoqlib/domain/person.py:758
 #: ../stoqlib/domain/person.py:1186 ../stoqlib/domain/person.py:1217
 #: ../stoqlib/domain/person.py:1377 ../stoqlib/domain/person.py:1430
@@ -390,7 +390,7 @@ msgstr ""
 #: ../stoqlib/domain/person.py:1644 ../stoqlib/domain/person.py:1795
 #: ../stoqlib/domain/person.py:1882 ../stoqlib/domain/person.py:2275
 #: ../stoqlib/domain/person.py:2326 ../stoqlib/domain/station.py:114
-#: ../stoqlib/domain/test/test_devices.py:104
+#: ../stoqlib/domain/test/test_devices.py:118
 #: ../stoqlib/domain/test/test_person.py:1117
 #: ../stoqlib/domain/test/test_person.py:1136
 #: ../stoqlib/gui/dialogs/devices.py:46
@@ -410,7 +410,7 @@ msgstr ""
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../data/glade/UserStatusSlave.ui.h:3 ../plugins/books/booksdomain.py:45
 #: ../plugins/books/booksdomain.py:68 ../plugins/ecf/ecfdomain.py:217
-#: ../stoqlib/domain/devices.py:168 ../stoqlib/domain/payment/method.py:124
+#: ../stoqlib/domain/devices.py:180 ../stoqlib/domain/payment/method.py:124
 #: ../stoqlib/domain/person.py:648 ../stoqlib/domain/person.py:759
 #: ../stoqlib/domain/person.py:869 ../stoqlib/domain/person.py:1187
 #: ../stoqlib/domain/person.py:1218 ../stoqlib/domain/person.py:1378
@@ -418,7 +418,7 @@ msgstr ""
 #: ../stoqlib/domain/person.py:1603 ../stoqlib/domain/person.py:1645
 #: ../stoqlib/domain/person.py:1796 ../stoqlib/domain/person.py:1883
 #: ../stoqlib/domain/person.py:2277 ../stoqlib/domain/person.py:2328
-#: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:106
+#: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:120
 #: ../stoqlib/domain/test/test_person.py:1073
 #: ../stoqlib/domain/test/test_person.py:1119
 #: ../stoqlib/domain/test/test_person.py:1138
@@ -723,7 +723,7 @@ msgstr ""
 msgid "Stock Decreases"
 msgstr ""
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:759
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:757
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -6955,40 +6955,40 @@ msgstr ""
 msgid "Don't create"
 msgstr ""
 
-#: ../stoq/gui/config.py:762
+#: ../stoq/gui/config.py:760
 msgid "Creating database..."
 msgstr ""
 
-#: ../stoq/gui/config.py:767
+#: ../stoq/gui/config.py:765
 msgid "Please wait while the database is being created."
 msgstr ""
 
-#: ../stoq/gui/config.py:777
+#: ../stoq/gui/config.py:775
 msgid "Creating base schema..."
 msgstr ""
 
-#: ../stoq/gui/config.py:781
+#: ../stoq/gui/config.py:779
 msgid "Creating schema, applying patches..."
 msgstr ""
 
-#: ../stoq/gui/config.py:786
+#: ../stoq/gui/config.py:784
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:788
+#: ../stoq/gui/config.py:786
 msgid "Creating additional database objects ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:791
+#: ../stoq/gui/config.py:789
 msgid "Creating examples ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:794
+#: ../stoq/gui/config.py:792
 msgid "Activating plugins ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:796
+#: ../stoq/gui/config.py:794
 msgid "This may take some time."
 msgstr ""
 
@@ -6996,61 +6996,61 @@ msgstr ""
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:813
+#: ../stoq/gui/config.py:811
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
 
-#: ../stoq/gui/config.py:815
+#: ../stoq/gui/config.py:813
 msgid "Change settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:815 ../stoq/gui/pos.py:1162 ../stoq/gui/till.py:343
+#: ../stoq/gui/config.py:813 ../stoq/gui/pos.py:1162 ../stoq/gui/till.py:343
 #: ../stoqlib/gui/fiscalprinter.py:633 ../stoqlib/gui/fiscalprinter.py:676
 #: ../stoqlib/gui/fiscalprinter.py:696 ../stoqlib/gui/fiscalprinter.py:725
 #: ../stoqlib/gui/fiscalprinter.py:751
 msgid "Try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:822
+#: ../stoq/gui/config.py:820
 msgid ""
 "Your database is missing the postgresql-contrib package. Install it and try "
 "again"
 msgstr ""
 
-#: ../stoq/gui/config.py:827
+#: ../stoq/gui/config.py:825
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr ""
 
-#: ../stoq/gui/config.py:833
+#: ../stoq/gui/config.py:831
 msgid "Done."
 msgstr ""
 
-#: ../stoq/gui/config.py:837
+#: ../stoq/gui/config.py:835
 msgid "Installation successful, click <b>Forward</b> to continue."
 msgstr ""
 
-#: ../stoq/gui/config.py:859
+#: ../stoq/gui/config.py:857
 msgid "Run Stoq"
 msgstr ""
 
-#: ../stoq/gui/config.py:874
+#: ../stoq/gui/config.py:872
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/config.py:996
+#: ../stoq/gui/config.py:994
 msgid "It was not possible to connect to the database."
 msgstr ""
 
-#: ../stoq/gui/config.py:997
+#: ../stoq/gui/config.py:995
 msgid "Check the server configuration and try again."
 msgstr ""
 
-#: ../stoq/gui/config.py:1016
+#: ../stoq/gui/config.py:1014
 #, python-brace-format
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
-#: ../stoq/gui/config.py:1022
+#: ../stoq/gui/config.py:1020
 #, python-brace-format
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
@@ -7058,7 +7058,7 @@ msgid ""
 "corrupted, please select another one."
 msgstr ""
 
-#: ../stoq/gui/config.py:1048 ../stoq/gui/shell/shell.py:171
+#: ../stoq/gui/config.py:1046 ../stoq/gui/shell/shell.py:171
 msgid "The database version differs from your installed version."
 msgstr ""
 
@@ -9548,15 +9548,15 @@ msgid ""
 "A backup database was created as <b>%s</b>"
 msgstr ""
 
-#: ../stoq/gui/update.py:144
+#: ../stoq/gui/update.py:142
 msgid "Applying database patches..."
 msgstr ""
 
-#: ../stoq/gui/update.py:155
+#: ../stoq/gui/update.py:153
 msgid "Done. Click 'Forward' to continue"
 msgstr ""
 
-#: ../stoq/gui/update.py:181
+#: ../stoq/gui/update.py:179
 msgid "Updating Stoq"
 msgstr ""
 
@@ -9681,11 +9681,11 @@ msgstr ""
 msgid "Incompatible dependency"
 msgstr ""
 
-#: ../stoq/lib/startup.py:146 ../stoqlib/database/migration.py:251
+#: ../stoq/lib/startup.py:149 ../stoqlib/database/migration.py:251
 msgid "Database schema error"
 msgstr ""
 
-#: ../stoq/lib/startup.py:147
+#: ../stoq/lib/startup.py:150
 msgid ""
 "Table 'system_table' does not exist.\n"
 "Consult your database administrator to solve this problem."
@@ -12635,23 +12635,23 @@ msgstr ""
 msgid "Products to deliver"
 msgstr ""
 
-#: ../stoqlib/gui/editors/deviceseditor.py:82
-#: ../stoqlib/gui/editors/deviceseditor.py:91
-#: ../stoqlib/gui/editors/deviceseditor.py:133
-#: ../stoqlib/gui/editors/deviceseditor.py:146
+#: ../stoqlib/gui/editors/deviceseditor.py:83
+#: ../stoqlib/gui/editors/deviceseditor.py:94
+#: ../stoqlib/gui/editors/deviceseditor.py:154
+#: ../stoqlib/gui/editors/deviceseditor.py:167
 msgid "Choose..."
 msgstr ""
 
-#: ../stoqlib/gui/editors/deviceseditor.py:172
+#: ../stoqlib/gui/editors/deviceseditor.py:193
 #, python-format
 msgid "Edit Device for %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/deviceseditor.py:174
+#: ../stoqlib/gui/editors/deviceseditor.py:195
 msgid "Add Device"
 msgstr ""
 
-#: ../stoqlib/gui/editors/deviceseditor.py:184
+#: ../stoqlib/gui/editors/deviceseditor.py:205
 #, python-format
 msgid "A %s already exists for station \"%s\""
 msgstr ""
@@ -18096,32 +18096,32 @@ msgstr ""
 msgid "Need at least one value"
 msgstr ""
 
-#: ../stoqlib/lib/pluginmanager.py:259
+#: ../stoqlib/lib/pluginmanager.py:258
 #, python-format
 msgid "Failed to do the request: %s"
 msgstr ""
 
-#: ../stoqlib/lib/pluginmanager.py:263
+#: ../stoqlib/lib/pluginmanager.py:262
 msgid "No update needed. The plugin is already up to date."
 msgstr ""
 
-#: ../stoqlib/lib/pluginmanager.py:269
+#: ../stoqlib/lib/pluginmanager.py:268
 msgid "Plugin not available for this stoq version"
 msgstr ""
 
-#: ../stoqlib/lib/pluginmanager.py:270
+#: ../stoqlib/lib/pluginmanager.py:269
 msgid "The instance is not authorized to download the plugin"
 msgstr ""
 
-#: ../stoqlib/lib/pluginmanager.py:271
+#: ../stoqlib/lib/pluginmanager.py:270
 msgid "Plugin does not exist"
 msgstr ""
 
-#: ../stoqlib/lib/pluginmanager.py:272
+#: ../stoqlib/lib/pluginmanager.py:271
 msgid "This instance has not acquired the specified plugin"
 msgstr ""
 
-#: ../stoqlib/lib/pluginmanager.py:295
+#: ../stoqlib/lib/pluginmanager.py:294
 msgid "Plugin download successful"
 msgstr ""
 
@@ -18220,11 +18220,11 @@ msgstr ""
 msgid "%d purchases"
 msgstr ""
 
-#: ../stoqlib/net/server.py:126
+#: ../stoqlib/net/server.py:132
 msgid "Stoq server not found"
 msgstr ""
 
-#: ../stoqlib/net/server.py:143
+#: ../stoqlib/net/server.py:149
 msgid "Server not responding to pings"
 msgstr ""
 
