@@ -80,6 +80,7 @@ else:
     # our dinamic menus
     os.environ['UBUNTU_MENUPROXY'] = '0'
 
+
 # We only support portuguese locale on Windows for now
 import platform
 if platform.system() == 'Windows':
@@ -100,17 +101,20 @@ if platform.system() == 'Windows':
     logdir = os.path.join(stoq_dir, 'logs')
     if not os.path.exists(logdir):
         os.makedirs(logdir)
+
     # http://www.py2exe.org/index.cgi/StderrLog
-    for name in ['stdout', 'stderr']:
-        filename = os.path.join(logdir, name + ".log")
-        try:
-            fp = open(filename, "w")
-        except IOError, e:
-            if e.errno != errno.EACCES:
-                raise
-            fp = open(os.devnull, "w")
-        if os.environ.get('STOQ_DEVELOPER_MODE') != '1':
-            setattr(sys, name, fp)
+    if sys.argv[0].startswith('stoq-cmd'):
+        for name in ['stdout', 'stderr']:
+            filename = os.path.join(logdir, name + ".log")
+            try:
+                fp = open(filename, "w")
+            except IOError, e:
+                if e.errno != errno.EACCES:
+                    raise
+                fp = open(os.devnull, "w")
+            if os.environ.get('STOQ_DEVELOPER_MODE') != '1':
+                setattr(sys, name, fp)
+
 
 if len(sys.argv) > 1 and sys.argv[1] == 'dbadmin':
     from stoq.dbadmin import main
