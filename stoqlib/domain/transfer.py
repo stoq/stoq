@@ -49,6 +49,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.lib.dateutils import localnow
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -139,6 +140,10 @@ class TransferOrderItem(Domain):
 
     @property
     def cfop_code(self):
+        # Transfers between distinct companies are fiscally considered a sale
+        if not self.transfer_order.is_between_same_company:
+            sale_cfop_data = sysparam.get_object(self.store, 'DEFAULT_SALES_CFOP')
+            return sale_cfop_data.code.replace(u'.', u'')
         return u'5152'
 
     #
@@ -314,6 +319,9 @@ class TransferOrder(Domain):
     @property
     def operation_nature(self):
         # TODO: Save the operation nature in new transfer_order table field
+        # Transfers between distinct companies are fiscally considered a sale
+        if not self.is_between_same_company:
+            return _(u"Sale")
         return _(u"Transfer")
 
     #
@@ -327,6 +335,10 @@ class TransferOrder(Domain):
     @property
     def status_str(self):
         return(self.statuses[self.status])
+
+    @property
+    def is_between_same_company(self):
+        return self.source_branch.is_from_same_company(self.destination_branch)
 
     def add_sellable(self, sellable, batch, quantity=1, cost=None):
         """Add the given |sellable| to this |transfer|.
