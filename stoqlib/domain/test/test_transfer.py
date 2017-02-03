@@ -60,6 +60,7 @@ class TestTransferOrderItem(DomainTest):
         self.assertEquals(transfer_item.price, transfer_item.stock_cost)
 
     def test_cfop_code(self):
+        # Test for transfers between branches of the same company
         order = self.create_transfer_order()
         transfer_item = self.create_transfer_order_item(order)
         source = order.source_branch
@@ -71,6 +72,19 @@ class TestTransferOrderItem(DomainTest):
         source.person.address.city_location = location
         destination.person.address.city_location = location
         self.assertEquals(transfer_item.cfop_code, u'5152')
+
+        # Test for transfers between distinct companies
+        source_branch = self.create_branch(u'Source', cnpj=u'32.046.355/0001-08')
+        order = self.create_transfer_order(source_branch=source_branch)
+        transfer_item = self.create_transfer_order_item(order)
+        source = order.source_branch
+        destination = order.destination_branch
+        # Source branch address is the same of destination branch
+        source.person.address.city_location = location
+        destination.person.address.city_location = location
+        sale_cfop = self.create_cfop_data(code=u'5.102')
+        with self.sysparam(DEFAULT_SALES_CFOP=sale_cfop):
+            self.assertEquals(transfer_item.cfop_code, u'5102')
 
 
 class TestTransferOrder(DomainTest):

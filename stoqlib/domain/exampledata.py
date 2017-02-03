@@ -158,7 +158,7 @@ class ExampleCreator(object):
         return Person(name=name, store=self.store)
 
     def create_branch(self, name=u'Dummy', phone_number=u'12345678',
-                      fax_number=u'87564321', person=None, crt=1):
+                      fax_number=u'87564321', person=None, crt=1, cnpj=None):
         from stoqlib.domain.person import Branch, Company, Person
         if person is None:
             person = Person(name=name, phone_number=phone_number,
@@ -166,7 +166,7 @@ class ExampleCreator(object):
             self.create_address(person=person)
             fancy_name = name + u' shop'
             Company(person=person, fancy_name=fancy_name,
-                    store=self.store)
+                    store=self.store, cnpj=cnpj)
         return Branch(person=person, store=self.store, crt=crt)
 
     def create_supplier(self, name=u'Supplier', fancy_name=u'Company Name',
@@ -1020,8 +1020,8 @@ class ExampleCreator(object):
 
     def create_transfer_order(self, source_branch=None, dest_branch=None):
         from stoqlib.domain.transfer import TransferOrder
-        source_branch = source_branch or self.create_branch(u"Source")
-        dest_branch = dest_branch or self.create_branch(u"Dest")
+        source_branch = source_branch or self.create_branch(u"Source", cnpj=u'71.732.180/0001-44')
+        dest_branch = dest_branch or self.create_branch(u"Dest", cnpj=u'71.732.180/0002-25')
         source_resp = self.create_employee(u"Ipswich")
         dest_resp = self.create_employee(u"Bolton")
         return TransferOrder(source_branch=source_branch,
