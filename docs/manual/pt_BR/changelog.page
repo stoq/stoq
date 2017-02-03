@@ -35,11 +35,27 @@
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>Suporte à emissão de NFCe. Consulte <link href="www.stoq.link">stoq.link</link> para mais informações</p></item>
-        <item><p>O Stoq agora roda também no Windows. Baixe o instalador daqui: <link href="www.stoq.link">stoq.link</link></p></item>
-        <item><p>Suporte a impressoras não fiscais, utilizadas pelo S@T Fiscal e NFCe</p></item>
+        <item><p>Suporte à emissão de NF-e NFC-e com certificados A1 e A3 diretamente do Stoq. Consulte
+            <link href="http://www.stoq.link?source=manual-changelog">stoq.link</link>
+            para mais informações</p></item>
+        <item><p>O Stoq agora roda também no Windows. Baixe o instalador
+            em nosso site: <link href="http://www.stoq.link?source=manual-changelog">stoq.link</link>
+            (essa versão ainda não suporta NF-e e NFC-e, mas suporta ECF e S@T)</p></item>
+        <item><p>Suporte a impressoras não fiscais, utilizadas pelo S@T Fiscal e NFC-e</p></item>
         <item><p>Novo editor de produtos em massa, podendo este ser utilizado para alterar atributos de vários produtos de uma só vez</p></item>
-        <item><p>(Experimental) Geração de arquivo CNAB para suportar boletos registrados</p></item>
+        <item><p>(Experimental) Geração de arquivo CNAB para suportar boletos registrados. Necessária válidação do arquivo junto ao banco</p></item>
+        <item><p>Adaptações ao layout do boleto gerado pelo Stoq de acordo com a exigência dos bancos</p></item>
+        <item><p>Melhor suporte para processos de produção de restaurantes e
+            similares, permitindo indicar a quantidade de rendimento de uma
+            receita produzida pela empresa</p></item>
+        <item><p>Opção para ajustar facilmente a quantidade em estoque de um
+            produto sem necessidade de abrir um inventário (somente para
+            usuários com autorização)</p></item>
+        <item><p>Opção para passar a controlar o estoque de um produto sem
+            controle de estoque. Essa funcionalidade irá facilitar a adoção do
+            sistema em empresas, permitindo que seja possível inciar o uso
+            do sistema sem depender de um inventário inicial completo, o que
+            pode ser extremamente complicado.</p></item>
         <item><p>Inumeras correções de bugs, tornando a utilização do programa mais estável</p></item>
       </list>
     </section>
