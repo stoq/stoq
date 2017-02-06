@@ -112,7 +112,7 @@ class DependencyChecker(object):
         if platform.system() == 'Linux':
             self._check_pyinotify(PYINOTIFY_REQUIRED)
 
-    def _error(self, title, msg):
+    def _error(self, title, msg, details=None):
         if self.text_mode:
             msg = msg.replace('<b>', '').replace('</b>', '')
             raise SystemExit("ERROR: %s\n\n%s" % (title, msg))
@@ -123,18 +123,20 @@ class DependencyChecker(object):
                                    type=gtk.MESSAGE_ERROR,
                                    buttons=gtk.BUTTONS_OK,
                                    message_format=title)
-        dialog.format_secondary_markup(msg)
+        dialog.set_markup(msg)
+        if details:
+            dialog.format_secondary_markup(details)
         dialog.run()
         raise SystemExit
 
-    def _missing(self, project, url=None, version=None):
+    def _missing(self, project, url=None, version=None, details=None):
         msg = _("<b>%s</b> could not be found on your system.\n"
                 "%s %s or higher is required for Stoq to run.\n\n"
                 "You can find a recent version of %s on it's homepage at\n%s") % (
             project, project, _tuple2str(version),
             project, url)
 
-        self._error(_("Missing dependency"), msg)
+        self._error(_("Missing dependency"), msg, details=details)
 
     def _too_old(self, project, url=None, required=None, found=None):
         msg = _("<b>%s</b> was found on your system, but it is\n"
@@ -399,10 +401,13 @@ class DependencyChecker(object):
         try:
             import weasyprint
             weasyprint  # pylint: disable=W0104
-        except ImportError:
+        except ImportError as e:
+            # Weasyprint might have missing dependencies. Display more details
+            # about the import error.
             self._missing(project='weasyprint',
                           url='http://weasyprint.org/',
-                          version=version)
+                          version=version,
+                          details=str(e))
             return
 
         if list(map(int, weasyprint.VERSION.split('.'))) < list(version):
