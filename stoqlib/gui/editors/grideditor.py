@@ -88,7 +88,7 @@ class GridAttributeEditor(BaseEditor):
         if model:
             self.set_description(model.description)
 
-        self.fields['group'].set_sensitive(not self._group)
+        self.fields['group'].set_sensitive(not bool(model) and not self._group)
         self.fields['is_active'].set_sensitive(bool(model))
 
     #

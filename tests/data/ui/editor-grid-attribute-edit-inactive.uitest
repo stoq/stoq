@@ -9,11 +9,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "grid attribute 1"', hid
             GtkAlignment(toplevel):
               GtkTable():
                 ProxyLabel(group_lbl): 'Attribute group:'
-                ProxyComboBox(group):
+                ProxyComboBox(group): insensitive
                   item: 'grid group 1', selected
                 GtkHBox():
-                  GtkButton(group_add_button):
-                  GtkButton(group_edit_button):
+                  GtkButton(group_add_button): insensitive
+                  GtkButton(group_edit_button): insensitive
                 ProxyLabel(description_lbl): 'Attribute name:'
                 ProxyEntry(description): 'grid attribute 1'
                 GtkHBox():
