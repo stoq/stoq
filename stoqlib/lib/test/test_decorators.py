@@ -83,6 +83,43 @@ class TestDecorators(unittest.TestCase):
         self.assertEquals(func('a'), 'a')
         self.assertEquals(self.call_count, 2)
 
+    def test_cached_function_keywords(self):
+        self.call_count = 0
+
+        @cached_function()
+        def func_with_kwargs(foo=1, bar=2):
+            self.call_count += 1
+            return (foo, bar)
+
+        self.assertEquals(func_with_kwargs(foo=1, bar=2), (1, 2))
+        self.assertEquals(self.call_count, 1)
+
+        # Changing the order of the kwargs should not change the call count
+        self.assertEquals(func_with_kwargs(bar=2, foo=1), (1, 2))
+        self.assertEquals(self.call_count, 1)
+
+        # Calling with positional arguments should also not change call count
+        self.assertEquals(func_with_kwargs(1, 2), (1, 2))
+        self.assertEquals(self.call_count, 1)
+
+        self.assertEquals(func_with_kwargs(1, bar=2), (1, 2))
+        self.assertEquals(self.call_count, 1)
+
+    def test_cached_function_variable(self):
+        self.call_count = 0
+
+        # Using different names on purpose (instead of the regular *args,
+        # **kwargs)
+        @cached_function()
+        def func_variable_args(*aaa, **kkk):
+            self.call_count += 1
+            return (len(aaa), len(kkk))
+
+        # It is not possible now to use cached_function with variable arguments
+        # functions
+        with self.assertRaises(TypeError):
+            self.assertEquals(func_variable_args(1, 2, 3, foo=1, bar=2), (3, 2))
+
     def test_cached_function_ttl(self):
         self.call_count = 0
 

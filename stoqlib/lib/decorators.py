@@ -5,6 +5,7 @@
 # http://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties
 #
 
+import inspect
 import time
 import functools
 import logging
@@ -84,14 +85,18 @@ class cached_function(object):
     def __call__(self, func):
         def wraps(*args, **kwargs):
             now = time.time()
+            # Use inspect.getcallargs so that we have all positional arguments
+            # with their respective names
+            args_dict = inspect.getcallargs(func, *args, **kwargs)
+            key = tuple(sorted(args_dict.items()))
             try:
-                value, last_update = self._cache[args]
+                value, last_update = self._cache[key]
                 if self.ttl > 0 and now - last_update > self.ttl:
                     raise AttributeError
                 return value
             except (KeyError, AttributeError):
                 value = func(*args, **kwargs)
-                self._cache[args] = (value, now)
+                self._cache[key] = (value, now)
                 return value
         return wraps
 
