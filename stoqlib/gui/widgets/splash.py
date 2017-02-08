@@ -125,7 +125,7 @@ class SplashScreen(gtk.Window):
         layout.set_markup(self._get_label())
         pcr.update_layout(layout)
         w, h = layout.get_pixel_size()
-        cr.move_to((WIDTH - w) / 1.09, (HEIGHT / 2) + h)
+        cr.move_to((WIDTH - w) / 1.05, (HEIGHT - h) / 1.05)
         pcr.show_layout(layout)
 
     def show(self):
