@@ -473,7 +473,11 @@ class Product(Domain):
         production. ``True`` otherwise.
         """
         if self.is_grid:
-            return self.can_remove_children()
+            # We could call self.can_remove_children(), but that triggers *a
+            # lot* of extra queries and we cant afford that when the object has
+            # a lot of children, so only let the user remove a grid products if
+            # all its children are removed first.
+            return self.children.count() == 0
 
         if self.storable and not self.storable.can_remove():
             return False
