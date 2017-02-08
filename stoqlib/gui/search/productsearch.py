@@ -81,6 +81,7 @@ class _ProductBrandResultTreeView(SearchResultTreeView):
             parent = self._cache.get(result.brand)
         else:
             parent = None
+
         if parent:
             self.add_result(parent)
         if not result in self:
@@ -103,6 +104,38 @@ class _ProductBrandResultTreeView(SearchResultTreeView):
                 yield obj[COL_MODEL]
             for child in obj.iterchildren():
                 yield child[COL_MODEL]
+
+
+class _ProductSearchResultTreeView(SearchResultTreeView):
+
+    # Overriding the method _add_results to avoid multiple consults to sql
+    def add_result(self, result):
+        if result.parent_id:
+            parent = self._cache.get(result.parent_id)
+            assert parent is not None
+        else:
+            parent = None
+
+        if parent:
+            self.add_result(parent)
+        if not result in self:
+            self.append(parent, result)
+            if parent:
+                self.expand(parent)
+
+    def search_completed(self, results):
+        results = list(results)
+        if results:
+            obj = results[0]
+            # Build a cache of parent produts to make the results load faster.
+            # Also, the parents will show up in the results even if they would
+            # normally not, but if one of its children shows up.
+            parents = obj.store.find(type(obj), Eq(Product.is_grid, True))
+            self._cache = {}
+            for item in parents:
+                self._cache[item.id] = item
+
+        super(_ProductSearchResultTreeView, self).search_completed(results)
 
 
 class ProductSearch(SellableSearch):
@@ -132,6 +165,7 @@ class ProductSearch(SellableSearch):
         # not setting 'tree = True' on the class definition as it has too many
         # subclasses for us to manually set to False on each one
         if self.__class__ is ProductSearch:
+            self.result_view_class = _ProductSearchResultTreeView
             self.tree = True
 
         self.hide_cost_column = hide_cost_column
