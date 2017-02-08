@@ -1218,13 +1218,14 @@ class Sale(Domain):
             item.cancel(branch)
 
         self.cancel_date = TransactionTimestamp()
-        self._set_sale_status(Sale.STATUS_CANCELLED)
         self.paid = False
 
         # Cancel payments
         for payment in self.payments:
             if payment.can_cancel():
                 payment.cancel()
+
+        self._set_sale_status(Sale.STATUS_CANCELLED)
 
     def return_(self, returned_sale):
         """Returns a sale
