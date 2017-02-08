@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.test.uitestutils import GUITest
 
@@ -65,3 +67,13 @@ class TestNoteEditor(GUITest):
         not_cancel_button = editor.main_dialog.cancel_button.get_label()
         self.assertEquals(cancel_sale_button, u"Cancel sale")
         self.assertEquals(not_cancel_button, u"Don't cancel")
+
+    @mock.patch('stoqlib.gui.editors.noteeditor.warning')
+    def test_warn_note_below_min_length(self, warning):
+        sale = self.create_sale()
+        sale_comment = self.create_sale_comment(sale, u'teste')
+        editor = NoteEditor(self.store, sale_comment, attr_name='comment',
+                            ok_button_label=u"Cancel sale",
+                            cancel_button_label=u"Don't cancel", min_length=10)
+        self.click(editor.main_dialog.ok_button)
+        warning.assert_called_once_with("The note must have at least 10 characters.")
