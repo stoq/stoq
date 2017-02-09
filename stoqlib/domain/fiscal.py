@@ -282,11 +282,11 @@ class Invoice(Domain):
         super(Invoice, self).__init__(**kw)
 
     @classmethod
-    def get_next_invoice_number(cls, store, mode=None):
-        return Invoice.get_last_invoice_number(store, mode) + 1
+    def get_next_invoice_number(cls, store, series, mode=None):
+        return Invoice.get_last_invoice_number(store, series, mode) + 1
 
     @classmethod
-    def get_last_invoice_number(cls, store, mode=None):
+    def get_last_invoice_number(cls, store, series, mode=None):
         """Returns the last invoice number. If there is not an invoice
         number used, the returned value will be zero.
 
@@ -294,7 +294,7 @@ class Invoice(Domain):
         :returns: an integer representing the last sale invoice number
         """
         current_branch = get_current_branch(store)
-        last = store.find(cls, branch=current_branch,
+        last = store.find(cls, branch=current_branch, series=series,
                           mode=mode).max(cls.invoice_number)
         return last or 0
 
