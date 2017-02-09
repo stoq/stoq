@@ -54,6 +54,7 @@ from stoqlib.lib.pluginmanager import InstalledPlugin, get_plugin_manager
 from stoqlib.lib.translation import (stoqlib_gettext, stoqlib_ngettext,
                                      locale_sorted)
 from stoqlib.lib.webservice import WebService
+from stoqlib.gui.stockicons import STOQ_LAUNCHER
 from stoqlib.gui.widgets.toolmenuaction import ToolMenuAction
 from stoq.gui.shell.statusbar import ShellStatusbar
 from stoq.lib.applist import get_application_icon, Application
@@ -155,7 +156,7 @@ class ShellWindow(GladeDelegate):
             ('FileMenu', None, _("_File")),
             ('FileMenuNew', None),
             ("NewMenu", None, _("New")),
-            ("HomeMenu", gtk.STOCK_HOME, _("Home"), None, _("Go back to launcher")),
+            ("HomeMenu", STOQ_LAUNCHER, _("Home"), None, _("Go back to launcher")),
 
             ('NewWindow', None, _("_Window"),
              group.get('new_window'),
@@ -224,7 +225,7 @@ class ShellWindow(GladeDelegate):
         self.add_tool_menu_actions([
             ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
             ("SearchToolItem", _("Search"), None, gtk.STOCK_FIND),
-            ("HomeToolItem", _("Home"), None, gtk.STOCK_HOME),
+            ("HomeToolItem", _("Home"), None, STOQ_LAUNCHER),
         ])
         self.NewToolItem.props.is_important = True
         self.SearchToolItem.props.is_important = True

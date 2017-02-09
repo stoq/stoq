@@ -43,6 +43,7 @@ STOQ_DEVICES = "stoq-devices"
 STOQ_DOCUMENTS = "stoq-documents"
 STOQ_HR = "stoq-hr"
 STOQ_INVENTORY_APP = "stoq-inventory-app"
+STOQ_LAUNCHER = "stoq-launcher"
 STOQ_LINK = "stoq-link"
 STOQ_FORMS = "stoq-forms"
 STOQ_KEYBOARD = "stoq-keyboard"
@@ -136,6 +137,8 @@ icon_info = [
     (STOQ_INVENTORY_APP,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-inventory-app-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-inventory-app-48x48.png"}),
+    (STOQ_LAUNCHER,
+     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-launcher-24x24.png"}),
     (STOQ_LINK,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-link-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-link-48x48.png"}),
