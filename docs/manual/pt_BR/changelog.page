@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 1.12.90
+      Novidades da versão 2.0
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -27,9 +27,9 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 1.13</title>
+    <title>Novidades da versão 2.0</title>
     <p>
-      Data do lançamento: 2017-02-02
+      Data do lançamento: 2017-02-09
     </p>
 
     <section>
