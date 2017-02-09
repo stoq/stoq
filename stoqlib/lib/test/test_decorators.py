@@ -83,6 +83,11 @@ class TestDecorators(unittest.TestCase):
         self.assertEquals(func('a'), 'a')
         self.assertEquals(self.call_count, 2)
 
+        # Calling a function with a unhashable type should raise a TypeError
+        # (this is a programming error really)
+        with self.assertRaises(TypeError):
+            func({})
+
     def test_cached_function_keywords(self):
         self.call_count = 0
 
@@ -115,10 +120,14 @@ class TestDecorators(unittest.TestCase):
             self.call_count += 1
             return (len(aaa), len(kkk))
 
-        # It is not possible now to use cached_function with variable arguments
-        # functions
-        with self.assertRaises(TypeError):
-            self.assertEquals(func_variable_args(1, 2, 3, foo=1, bar=2), (3, 2))
+        self.assertEquals(func_variable_args(1, 2, 3, foo=4, bar=5), (3, 2))
+        self.assertEquals(self.call_count, 1)
+
+        self.assertEquals(func_variable_args(1, 2, 3, bar=5, foo=4), (3, 2))
+        self.assertEquals(self.call_count, 1)
+
+        self.assertEquals(func_variable_args(1, 2, 4, foo=4, bar=5), (3, 2))
+        self.assertEquals(self.call_count, 2)
 
     def test_cached_function_ttl(self):
         self.call_count = 0
