@@ -124,23 +124,27 @@ class TestInvoice(DomainTest):
             is_active.return_value = True
             main_branch = get_current_branch(self.store)
             sale = self.create_sale(branch=main_branch)
+            sale.invoice.series = 1
             sale.invoice.invoice_number = 1234
             self.add_product(sale)
             self.add_payments(sale, u'money')
             sale.order()
             sale.confirm()
 
-            last_invoice_number = Invoice.get_last_invoice_number(self.store)
-            next_invoice_number = Invoice.get_next_invoice_number(self.store)
+            last_invoice_number = Invoice.get_last_invoice_number(self.store,
+                                                                  series=1)
+            next_invoice_number = Invoice.get_next_invoice_number(self.store,
+                                                                  series=1)
             self.assertEquals(last_invoice_number, 1234)
             self.assertEquals(next_invoice_number, 1235)
 
             # Creating a transfer order on same branch.
             transfer = self.create_transfer_order(source_branch=main_branch)
+            transfer.invoice.series = 1
             transfer.invoice.invoice_number = next_invoice_number
             self.create_transfer_order_item(transfer)
             transfer.send()
-            next_invoice_number = Invoice.get_next_invoice_number(self.store)
+            next_invoice_number = Invoice.get_next_invoice_number(self.store, series=1)
             self.assertEquals(transfer.invoice.invoice_number, 1235)
             self.assertEquals(next_invoice_number, 1236)
 
@@ -149,17 +153,19 @@ class TestInvoice(DomainTest):
                 new_branch = self.create_branch()
                 get_branch.return_value = new_branch
                 new_sale = self.create_sale(branch=new_branch)
+                new_sale.invoice.series = 1
                 new_sale.invoice.invoice_number = 1234
-                last_invoice_number = Invoice.get_last_invoice_number(self.store)
-                next_invoice_number = Invoice.get_next_invoice_number(self.store)
+                last_invoice_number = Invoice.get_last_invoice_number(self.store, series=1)
+                next_invoice_number = Invoice.get_next_invoice_number(self.store, series=1)
                 self.assertEquals(last_invoice_number, 1234)
                 self.assertEquals(next_invoice_number, 1235)
 
                 new_transfer = self.create_transfer_order(source_branch=new_branch)
+                new_transfer.invoice.series = 1
                 new_transfer.invoice.invoice_number = next_invoice_number
                 self.create_transfer_order_item(new_transfer)
                 new_transfer.send()
-                next_invoice_number = Invoice.get_next_invoice_number(self.store)
+                next_invoice_number = Invoice.get_next_invoice_number(self.store, series=1)
                 self.assertEquals(new_transfer.invoice.invoice_number, 1235)
                 self.assertEquals(next_invoice_number, 1236)
 

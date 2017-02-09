@@ -101,7 +101,10 @@ class SaleInvoicePrinterDialog(BaseEditor):
         if self.model.invoice.invoice_number is not None:
             self.invoice_number.set_sensitive(False)
         else:
-            next_invoice_number = Invoice.get_next_invoice_number(self.store)
+            # FIXME: This is for the old invoice printing infrastructure that is
+            # no longer used. Remove this code when possible
+            next_invoice_number = Invoice.get_next_invoice_number(self.store,
+                                                                  series=1)
             self.invoice_number.update(next_invoice_number)
 
     def setup_proxies(self):
