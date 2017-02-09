@@ -85,10 +85,18 @@ class cached_function(object):
     def __call__(self, func):
         def wraps(*args, **kwargs):
             now = time.time()
+
             # Use inspect.getcallargs so that we have all positional arguments
             # with their respective names
             args_dict = inspect.getcallargs(func, *args, **kwargs)
-            key = tuple(sorted(args_dict.items()))
+            if len(args_dict) == len(args) + len(kwargs):
+                # This means all args and kwargs were converted to the named
+                # arguments, and we can use it as a key.
+                key = tuple(sorted(args_dict.items()))
+            else:
+                # otherwise, just use them separately
+                key = (args, tuple(sorted(kwargs.items())))
+
             try:
                 value, last_update = self._cache[key]
                 if self.ttl > 0 and now - last_update > self.ttl:
