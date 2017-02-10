@@ -670,7 +670,7 @@ class ECFUI(object):
                 self._confirm_sale(sale)
                 self._set_last_sale(sale, sale.store)
 
-    def _on_SaleAvoidCancel(self, sale):
+    def _on_SaleAvoidCancel(self, sale, new_status):
         if not sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON'):
             return False
         if self._is_ecf_last_sale(sale):
