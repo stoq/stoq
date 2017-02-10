@@ -126,4 +126,6 @@ class PinDialog(BaseEditor):
             # TODO: Maybe we should add a link pointing to instructions
             # on how to get and install the stoq-server package?
             msg = _("Could not find an instance of Stoq Server running.")
-            schedule_in_main_thread(self._error, msg)
+            long_msg = _("Please install the stoq-server package in the same "
+                         "computer as the database and try again")
+            schedule_in_main_thread(self._set_error, msg, long_msg)
