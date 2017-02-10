@@ -262,7 +262,8 @@ class AccountEditor(BaseEditor):
                 entry.props.data_type = 'str'
                 entry.connect('validate', self._on_bank_option__validate,
                               bank_info, option)
-                self._add_widget("<i>%s</i>:" % (api.escape(option.capitalize()), ),
+                name = option.replace('_', ' ').capitalize()
+                self._add_widget("<i>%s</i>:" % api.escape(name),
                                  entry, options=True)
                 entry.show()
                 self._option_fields[option] = entry

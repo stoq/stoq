@@ -173,14 +173,6 @@ class Record(object):
 
 class Cnab(object):
 
-    #: Version of the file record. Subclasses must define this if they are
-    #: using the default febraban FileHeader record
-    file_version = None
-
-    #: Version of the batch record. Subclasses must define this if they are
-    #: using the default febraban BatchHeader record
-    batch_version = None
-
     def __init__(self, branch, bank, bank_info):
         self.bank_info = bank_info
         self.records = []

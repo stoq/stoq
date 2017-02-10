@@ -29,6 +29,7 @@ the fields available, or have different default values for the fields.
 from decimal import Decimal
 
 from stoqlib.lib.cnab.base import Record, Field, Cnab
+from stoqlib.lib.formatters import format_address
 
 
 REGISTER_FILE_HEADER = 0
@@ -208,14 +209,14 @@ class RecordP(Record):
         Field('open_date', int, 8),
 
         # 27 - 29 - Interest
-        Field('interest_code', int, 1, 3),  # 3 = isento
-        Field('interest_date', int, 8, 0),
-        Field('interest', Decimal, 13, 0),
+        Field('interest_code', int, 1, 1),  # 1 = valor por dia
+        Field('interest_date', int, 8, 0),  # 0 = data vencimento
+        Field('interest_value', Decimal, 13),  # valor monetário / dia
 
         # 30 - 32 - Discount
-        Field('discount_code', int, 1, 0),
-        Field('discount_date', int, 8, 0),
-        Field('discount', Decimal, 13, 0),
+        Field('discount_code', int, 1, 2),  # 2 = Percentual até data informada
+        Field('discount_date', int, 8),
+        Field('discount_percentage', Decimal, 13),
 
         Field('iof', Decimal, 13, 0),
         Field('abatimento', Decimal, 13, 0),
@@ -230,6 +231,11 @@ class RecordP(Record):
     ]
 
     def __init__(self, payment, bank_info, **kwargs):
+        # valor monetário do juros diário. Como não tem opção de informar o
+        # juros diário em percetual (somente mensal), precisamos infromar o
+        # valor fixo.
+        interest = bank_info.interest_percentage * payment.value
+
         kwargs.update(
             numero_documento=str(payment.identifier),
             due_date=payment.due_date.strftime('%d%m%Y'),
@@ -237,6 +243,9 @@ class RecordP(Record):
             open_date=payment.open_date.strftime('%d%m%Y'),
             aceite=bank_info.aceite,
             nosso_numero=bank_info.nosso_numero,
+            # Desconto até o vencimento
+            discount_date=payment.due_date.strftime('%d%m%Y'),
+            interest_value=interest
         )
         super(RecordP, self).__init__(**kwargs)
 
@@ -291,11 +300,12 @@ class RecordQ(Record):
         address = person.get_main_address()
 
         postal_code = address.postal_code or '-'
+        address_str = format_address(address, include_district=False)
         kwargs.update(
             payer_type=payer_type,
             payer_document=raw_doc,
             payer_name=person.name,
-            payer_address=address.get_address_string(),
+            payer_address=address_str,
             payer_district=address.district,
             payer_postal_code=postal_code.split('-')[0],
             payer_postal_code_complement=postal_code.split('-')[1],
@@ -330,10 +340,10 @@ class RecordR(Record):
         Field('discount3_date', int, 8, 0),
         Field('discount3', Decimal, 13, 0),
 
-        # 14 - 16 - Fine
-        Field('fine_code', int, 1, 0),
-        Field('fine_date', int, 8, 0),
-        Field('fine', Decimal, 13, 0),
+        # 14 - 16 - Penalty
+        Field('penalty_code', int, 1, 2),  # 2 = Percentual
+        Field('penalty_date', int, 8, 0),  # 0 = data vencimento
+        Field('penalty_percentage', Decimal, 13),
 
         Field('message_to_payer', str, 10, ''),
         Field('message3', str, 40, ''),
@@ -424,6 +434,27 @@ class FebrabanCnab(Cnab):
     RecordP = RecordP
     RecordQ = RecordQ
     RecordR = RecordR
+
+    #: Version of the file record. Subclasses must define this if they are
+    #: using the default febraban FileHeader record
+    file_version = None
+
+    #: Version of the batch record. Subclasses must define this if they are
+    #: using the default febraban BatchHeader record
+    batch_version = None
+
+    def setup(self, payments):
+        self.add_record(self.FileHeader)
+        self.add_record(self.BatchHeader)
+        info_class = self.bank_info.__class__
+        for i, payment in enumerate(payments):
+            info = info_class(payment)
+            self.add_record(self.RecordP, payment, info, registry_sequence=3 * i + 1)
+            self.add_record(self.RecordQ, payment, info, registry_sequence=3 * i + 2)
+            self.add_record(self.RecordR, payment, info, registry_sequence=3 * i + 3)
+
+        self.add_record(self.BatchTrailer)
+        self.add_record(self.FileTrailer)
 
     @property
     def total_records(self):

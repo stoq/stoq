@@ -23,6 +23,7 @@
 
 """
 
+import collections
 import datetime
 import logging
 
@@ -37,7 +38,7 @@ from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.cnab.bb import BBCnab
 from stoqlib.lib.cnab.bradesco import BradescoCnab
 from stoqlib.lib.cnab.caixa import CaixaCnab
-from stoqlib.lib.cnab.itau import ItauCnab
+from stoqlib.lib.cnab.itau400 import ItauCnab400
 from stoqlib.lib.cnab.santander import SantanderCnab
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -53,6 +54,23 @@ log = logging.getLogger(__name__)
 
 class BoletoException(Exception):
     pass
+
+
+def _validate_number(value, min_value=0, max_value=None):
+    if value == '':
+        raise BoletoException(_("Value cannot be empty"))
+
+    try:
+        value = int(value)
+    except ValueError:
+        raise BoletoException(_("Value must be a number"))
+
+    if min_value is not None and value < min_value:
+        raise BoletoException(
+            _("Value must be a number greater than {}").format(min_value))
+    if max_value is not None and value > max_value:
+        raise BoletoException(
+            _("Value must be a number lower than {}").format(max_value))
 
 
 def custom_property(name, num_length):
@@ -90,6 +108,7 @@ class BankInfo(object):
     """
 
     aceite = 'N'
+    especie_documento = 'DM'
     especie = "R$"
     moeda = "9"
     local_pagamento = "Pagável em qualquer banco até o vencimento"
@@ -159,24 +178,33 @@ class BankInfo(object):
             return payment.identifier
 
     @property
+    def penalty_percentage(self):
+        return sysparam.get_decimal('BILL_PENALTY') / 100
+
+    @property
+    def interest_percentage(self):
+        return sysparam.get_decimal('BILL_INTEREST') / 100
+
+    @property
+    def discount_percentage(self):
+        return sysparam.get_decimal('BILL_DISCOUNT') / 100
+
+    @property
     def instrucoes(self):
         instructions = []
         payment = self.payment
-        penalty = currency(
-            (sysparam.get_decimal('BILL_PENALTY') / 100) * payment.value)
-        interest = currency(
-            (sysparam.get_decimal('BILL_INTEREST') / 100) * payment.value)
-        discount = currency(
-            (sysparam.get_decimal('BILL_DISCOUNT') / 100) * payment.value)
+        # FIXME: Penalty and interest are also defined on the payment method. We
+        # should use that information instead. We could also add a discount
+        # information on the payment method.
+        penalty = currency(self.penalty_percentage * payment.value)
+        interest = currency(self.interest_percentage * payment.value)
+        discount = currency(self.discount_percentage * payment.value)
         data = sysparam.get_string('BILL_INSTRUCTIONS')
         for line in data.split('\n')[:4]:
             line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
-            line = line.replace('$PENALTY',
-                                converter.as_string(currency, penalty))
-            line = line.replace('$INTEREST',
-                                converter.as_string(currency, interest))
-            line = line.replace('$DISCOUNT',
-                                converter.as_string(currency, discount))
+            line = line.replace('$PENALTY', converter.as_string(currency, penalty))
+            line = line.replace('$INTEREST', converter.as_string(currency, interest))
+            line = line.replace('$DISCOUNT', converter.as_string(currency, discount))
             line = line.replace('$INVOICE_NUMBER', str(self.numero_documento))
             instructions.append(line)
 
@@ -318,16 +346,7 @@ class BankInfo(object):
         info = cls(payments[0])
 
         cnab = cls.cnab_class(branch, bank, info)
-        cnab.add_record(cnab.FileHeader)
-        cnab.add_record(cnab.BatchHeader)
-        for i, payment in enumerate(payments):
-            info = cls(payment)
-            cnab.add_record(cnab.RecordP, payment, info, registry_sequence=3 * i + 1)
-            cnab.add_record(cnab.RecordQ, payment, info, registry_sequence=3 * i + 2)
-            cnab.add_record(cnab.RecordR, payment, info, registry_sequence=3 * i + 3)
-
-        cnab.add_record(cnab.BatchTrailer)
-        cnab.add_record(cnab.FileTrailer)
+        cnab.setup(payments)
         return cnab.as_string()
 
     @classmethod
@@ -421,8 +440,7 @@ class BankBanrisul(BankInfo):
     bank_number = 41
     logo = 'logo_banrisul.jpg'
     options = {u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH,
-               u'especie_documento': BILL_OPTION_CUSTOM}
+               u'conta': BILL_OPTION_BANK_BRANCH}
 
     nosso_numero = custom_property('nosso_numero', 8)
     conta = custom_property('conta', 6)
@@ -445,7 +463,6 @@ class BankBradesco(BankInfo):
     logo = "logo_bancobradesco.jpg"
 
     options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'especie_documento': BILL_OPTION_CUSTOM,
                u'convenio': BILL_OPTION_CUSTOM,
                u'identificacao_produto': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
@@ -488,22 +505,7 @@ class BankBradesco(BankInfo):
     @classmethod
     def validate_option(cls, option, value):
         if option == 'carteira':
-            if value == '':
-                # TRANSLATORS: Do not translate 'Carteira'
-                raise BoletoException(_("Carteira cannot be empty"))
-            try:
-                value = int(value)
-            except ValueError:
-                # TRANSLATORS: Do not translate 'Carteira'
-                raise BoletoException(_("Carteira must be a number"))
-            if 0 > value:
-                raise BoletoException(
-                    # TRANSLATORS: Do not translate 'Carteira'
-                    _("Carteira must be a number between 0 and 99"))
-            if value > 99:
-                raise BoletoException(
-                    # TRANSLATORS: Do not translate 'Carteira'
-                    _("Carteira must be a number between 0 and 99"))
+            _validate_number(value, max_value=99)
 
 
 @register_bank
@@ -514,8 +516,7 @@ class BankBB(BankInfo):
     logo = 'logo_bb.gif'
     options = {u'convenio': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH,
-               u'especie_documento': BILL_OPTION_CUSTOM}
+               u'conta': BILL_OPTION_BANK_BRANCH}
 
     validate_field_func = 'modulo11'
     validate_field_dv = 'x'
@@ -613,14 +614,7 @@ class BankBB(BankInfo):
     @classmethod
     def validate_option(cls, option, value):
         if option == 'convenio':
-            if value == '':
-                # TRANSLATORS: Do not translate 'Convenio'
-                raise BoletoException(_('Convenio cannot be empty'))
-            try:
-                int(value)
-            except ValueError:
-                # TRANSLATORS: Do not translate 'Convenio'
-                raise BoletoException(_("Convenio must be a number"))
+            _validate_number(value)
             if len(value) not in [6, 7, 8]:
                 raise BoletoException(
                     # TRANSLATORS: Do not translate 'Convenio'
@@ -636,7 +630,6 @@ class BankCaixa(BankInfo):
     cnab_class = CaixaCnab
     logo = 'logo_bancocaixa.jpg'
     options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'especie_documento': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'codigo_beneficiario': BILL_OPTION_CUSTOM,
                u'codigo_convenio': BILL_OPTION_CUSTOM,
@@ -679,16 +672,27 @@ class BankItau(BankInfo):
     description = 'Banco Itaú'
     bank_name = 'BANCO ITAU SA'
     bank_number = 341
-    cnab_class = ItauCnab
+    cnab_class = ItauCnab400
     logo = 'logo_itau.gif'
-    options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'especie_documento': BILL_OPTION_CUSTOM,
-               u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+    options = collections.OrderedDict([
+        (u'agencia', BILL_OPTION_BANK_BRANCH),
+        (u'conta', BILL_OPTION_BANK_BRANCH),
+        (u'carteira', BILL_OPTION_CUSTOM),
+        (u'instrucao_1', BILL_OPTION_CUSTOM),
+        (u'instrucao_2', BILL_OPTION_CUSTOM),
+        (u'prazo', BILL_OPTION_CUSTOM),
+    ])
 
     nosso_numero = custom_property('nosso_numero', 8)
     agencia = custom_property('agencia', 4)
     conta = custom_property('conta', 5)
+
+    @classmethod
+    def validate_option(cls, option, value):
+        if option in ['instrucao_1', 'instrucao_2', 'prazo']:
+            _validate_number(value, max_value=99)
+        if option == 'carteira':
+            _validate_number(value, min_value=100, max_value=200)
 
     @property
     def dac_nosso_numero(self):
@@ -739,7 +743,6 @@ class BankReal(BankInfo):
     bank_number = 356
     logo = 'logo_bancoreal.jpg'
     options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'especie_documento': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}
 
@@ -772,7 +775,6 @@ class BankSantander(BankInfo):
     cnab_class = SantanderCnab
     logo = 'logo_santander.jpg'
     options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'especie_documento': BILL_OPTION_CUSTOM,
                u'codigo_transmissao': BILL_OPTION_CUSTOM,
                u'agencia': BILL_OPTION_BANK_BRANCH,
                u'conta': BILL_OPTION_BANK_BRANCH}

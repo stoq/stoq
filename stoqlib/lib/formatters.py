@@ -158,15 +158,20 @@ def format_postal_code(postal_code):
                       postal_code[5:8])
 
 
-def format_address(address):
+def format_address(address, include_district=True):
     """Format the given address to a string.
 
     This expects an |address|, but any object containing the following
     attributes would suffice: `street`, `streetnumber` and `district`
     """
-    if address.street and address.district:
+    if include_district:
+        district = address.district
+    else:
+        district = None
+
+    if address.street and district:
         number = address.streetnumber or _(u'N/A')
-        return u'%s %s, %s' % (address.street, number, address.district)
+        return u'%s %s, %s' % (address.street, number, district)
     elif address.street and address.streetnumber:
         return u'%s %s' % (address.street, address.streetnumber)
     elif address.street:

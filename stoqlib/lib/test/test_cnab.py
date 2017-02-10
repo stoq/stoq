@@ -23,14 +23,17 @@
 ##
 
 import datetime
+from decimal import Decimal
 import mock
 import os
 
 from stoqlib.lib.boleto import (BankInfo, custom_property, BILL_OPTION_CUSTOM,
-                                get_bank_info_by_number)
+                                get_bank_info_by_number, BankItau)
 from stoqlib.lib.cnab.base import Record, Field
 from stoqlib.lib.cnab.bb import BBCnab
 from stoqlib.lib.cnab.febraban import FebrabanCnab, RecordP, RecordQ, RecordR
+from stoqlib.lib.cnab.itau400 import ItauCnab400, ItauPaymentDetail
+from stoqlib.lib.cnab.itau import ItauBatchHeader, ItauCnab
 from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib.unittestutils import get_tests_datadir
 from stoqlib.domain.test.domaintest import DomainTest
@@ -73,10 +76,9 @@ class TestFebraban(DomainTest):
             record.as_string(),
             ('0990001300001P 0101102 000009000150 000000000001'
              '34       11 2200134          1407201200000000000'
-             '100000000002N14072012300000000000000000000000000'
-             '000000000000000000000000000000000000000000000000'
-             '000                         3000000090000000000 ')
-        )
+             '100000000002N14072012100000000000000000000000214'
+             '072012000000000000000000000000000000000000000000'
+             '000                         3000000090000000000 '))
 
     def test_record_q(self):
         # Company
@@ -86,8 +88,8 @@ class TestFebraban(DomainTest):
         self.assertEquals(
             record.as_string(),
             ('0990001300001Q 012000000000000000Dummy          '
-             '                         Mainstreet 138, Cidade '
-             'Araci            Cidade Araci   12345678Los Ange'
+             '                         Mainstreet 138         '
+             '                 Cidade Araci   12345678Los Ange'
              'les    Ca0000000000000000                       '
              '                 000                            '))
 
@@ -102,8 +104,8 @@ class TestFebraban(DomainTest):
         self.assertEquals(
             record.as_string(),
             ('0990001300001Q 011000000000000000individual     '
-             '                         Mainstreet 138, Cidade '
-             'Araci            Cidade Araci   12345678Los Ange'
+             '                         Mainstreet 138         '
+             '                 Cidade Araci   12345678Los Ange'
              'les    Ca0000000000000000                       '
              '                 000                            '))
 
@@ -114,10 +116,72 @@ class TestFebraban(DomainTest):
         self.assertEquals(
             record.as_string(),
             ('0990001300001R 010000000000000000000000000000000'
-             '00000000000000000000000000000000000000000       '
+             '00000000000000000200000000000000000000000       '
              '                                                '
              '                                                '
              '       0000000000000000 000000000000  0         '))
+
+
+class TestItau(DomainTest):
+
+    def setUp(self):
+        self.branch = self.create_branch()
+        self.bank = self.create_bank_account(bank_branch=u'1102',
+                                             bank_account=u'134',)
+        company = self.create_company()
+        self.create_address(person=company.person)
+        group = self.create_payment_group(payer=company.person)
+        self.payment = self.create_payment(date=datetime.date(2012, 7, 14),
+                                           group=group)
+        self.payment.identifier = 134
+        self.payment.method.destination_account.bank = self.bank
+        self.info = BankItau(self.payment)
+        self.bank.add_bill_option(u'carteira', u'109')
+        self.bank.add_bill_option(u'instrucao_1', u'1')
+        self.bank.add_bill_option(u'instrucao_2', u'20')
+        self.bank.add_bill_option(u'prazo', u'20')
+
+    def test_person_facets_400(self):
+        # Company
+        cnab = ItauCnab400(self.branch, self.bank, self.info)
+        record = ItauPaymentDetail(self.payment, self.info, registry_sequence=1)
+        record.set_cnab(cnab)
+        self.assertEquals(
+            record.as_string(),
+            ('10200000000000000110200001342    0000Test payment '
+             '            000001340000000000000109              '
+             '       I0100134     14071200000000010003410000001N'
+             '14071201200000000000000140712000000000000000000000'
+             '0000000000000000000200000000000000Dummy           '
+             '                        Mainstreet 138            '
+             '              Cidade Araci12345678Los Angeles    C'
+             'a                                  00000020 000001'))
+
+        # Individual
+        individual = self.create_individual()
+        self.create_address(person=individual.person)
+        group = self.create_payment_group(payer=individual.person)
+        payment = self.create_payment(date=datetime.date(2012, 7, 14),
+                                      group=group)
+        payment.identifier = 9143
+        record = ItauPaymentDetail(payment, self.info, registry_sequence=1)
+        record.set_cnab(cnab)
+        self.assertEquals(
+            record.as_string(),
+            ('10200000000000000110200001342    0000Test payment '
+             '            000001340000000000000109              '
+             '       I0109143     14071200000000010003410000001N'
+             '14071201200000000000000140712000000000000000000000'
+             '0000000000000000000100000000000000individual      '
+             '                        Mainstreet 138            '
+             '              Cidade Araci12345678Los Angeles    C'
+             'a                                  00000020 000001'))
+
+    def test_batch_header_240(self):
+        cnab = ItauCnab(self.branch, self.bank, self.info)
+        header = ItauBatchHeader()
+        header.set_cnab(cnab)
+        self.assertEquals(header.credit_date, cnab.get_value('create_date'))
 
 
 class FooRecord(Record):
@@ -220,7 +284,7 @@ class CnabTestMixin(object):
 
     def _create_payments(self):
         bank = self.create_bank_account(bank_branch=u'1102',
-                                        bank_account=u'9000150',)
+                                        bank_account=u'12345',)
         method = self.get_payment_method(u'bill')
         method.destination_account.bank = bank
         self.create_bill_options(bank)
@@ -251,7 +315,10 @@ class CnabTestMixin(object):
         localnow.return_value = datetime.datetime(2012, 4, 8, 12, 6)
         info = get_bank_info_by_number(self.bank_number)
         payments = self._create_payments()
-        cnab = info.get_cnab(payments)
+        with self.sysparam(BILL_PENALTY=Decimal(11),
+                           BILL_INTEREST=Decimal('0.4'),
+                           BILL_DISCOUNT=Decimal('123.45')):
+            cnab = info.get_cnab(payments)
         self._compare_files(cnab, 'cnab-%03d' % self.bank_number)
 
 
@@ -272,3 +339,6 @@ class TestItauCnab(CnabTestMixin, DomainTest):
 
     def create_bill_options(self, bank):
         bank.add_bill_option(u'carteira', u'109')
+        bank.add_bill_option(u'instrucao_1', u'80')
+        bank.add_bill_option(u'instrucao_2', u'8')
+        bank.add_bill_option(u'prazo', u'2')
