@@ -103,7 +103,7 @@ if platform.system() == 'Windows':
         os.makedirs(logdir)
 
     # http://www.py2exe.org/index.cgi/StderrLog
-    if sys.argv[0].startswith('stoq-cmd'):
+    if not sys.argv[0].startswith('stoq-cmd'):
         for name in ['stdout', 'stderr']:
             filename = os.path.join(logdir, name + ".log")
             try:
@@ -112,8 +112,7 @@ if platform.system() == 'Windows':
                 if e.errno != errno.EACCES:
                     raise
                 fp = open(os.devnull, "w")
-            if os.environ.get('STOQ_DEVELOPER_MODE') != '1':
-                setattr(sys, name, fp)
+            setattr(sys, name, fp)
 
 
 if len(sys.argv) > 1 and sys.argv[1] == 'dbadmin':
