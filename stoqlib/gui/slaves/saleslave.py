@@ -342,7 +342,7 @@ def return_sale(parent, sale, store):
 
     # A plugin (e.g. ECF) can avoid the cancelation of a sale
     # because it wants it to be cancelled using another way
-    if SaleAvoidCancelEvent.emit(sale):
+    if SaleAvoidCancelEvent.emit(sale, Sale.STATUS_RETURNED):
         return
 
     if sale.can_return():

@@ -517,7 +517,7 @@ class SalesApp(ShellApp):
         sale_view = self.results.get_selected()
         # A plugin (e.g. ECF) can avoid the cancelation of a sale
         # because it wants it to be cancelled using another way
-        if SaleAvoidCancelEvent.emit(sale_view.sale):
+        if SaleAvoidCancelEvent.emit(sale_view.sale, Sale.STATUS_CANCELLED):
             return
 
         store = api.new_store()

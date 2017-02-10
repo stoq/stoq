@@ -284,6 +284,8 @@ class SaleAvoidCancelEvent(Event):
     in ECF.
 
     :param sale: |sale| that will be compared.
+    :param new_status: Indicates what the new status of the sale would become.
+        This status can be Sale.STATUS_RETURNED and Sale.STATUS_CANCELLED
     :return: ``True`` if the cancellation should be avoided or
         ``False` otherwise
     """
