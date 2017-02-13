@@ -160,7 +160,7 @@ class ProductGridSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, store, model, visual_mode)
 
     def _setup_widgets(self):
-        self.attr_table.resize(len(self._attr_list), 2)
+        self.attr_table.resize((len(self._attr_list) / 3) + 1, 6)
         for pos, attribute in enumerate(self._attr_list):
             self._add_options(attribute, pos)
         self.add_product_button.set_sensitive(False)
@@ -169,12 +169,18 @@ class ProductGridSlave(BaseEditorSlave):
 
     def _add_options(self, attr, pos):
         combo = ProxyComboBox()
-        label = gtk.Label(attr.attribute.description)
+        label = gtk.Label(attr.attribute.description + u':')
+        label.set_alignment(xalign=1, yalign=0.5)
 
         # This dictionary is populated with the purpose of tests
         self._widgets[attr.attribute.description] = combo
-        self.attr_table.attach(label, 0, 1, pos, pos + 1, 0, 0, 0, 0)
-        self.attr_table.attach(combo, 1, 2, pos, pos + 1, 0, gtk.EXPAND | gtk.FILL, 0, 0)
+        # Use 3 labels per row
+        row_pos = pos / 3
+        col_pos = 2 * (pos % 3)
+        self.attr_table.attach(label, col_pos, col_pos + 1, row_pos, row_pos + 1,
+                               gtk.EXPAND | gtk.FILL, 0, 0, 0)
+        self.attr_table.attach(combo, col_pos + 1, col_pos + 2, row_pos, row_pos + 1,
+                               gtk.EXPAND | gtk.FILL, 0, 0, 0)
         self.attr_table.show_all()
         self._fill_options(combo, attr)
         combo.connect('changed', self._on_combo_selection__changed)
