@@ -66,7 +66,12 @@ class ParameterDetails(object):
                  initial=None, options=None, combo_data=None, range=None,
                  multiline=False, validator=None,
                  change_callback=None, editor=None, wrap=True,
-                 allow_none=False, is_editable=True):
+                 allow_none=False, is_editable=True, check_missing=None):
+        """
+        :param check_missing: A callable that should return True or False
+          indicating if the parameter is missing configuration. If missing, it
+          will be highlighted in the parameters search
+        """
         self.key = key
         self.group = group
         self.short_desc = short_desc
@@ -83,6 +88,7 @@ class ParameterDetails(object):
         self.wrap = wrap
         self.allow_none = allow_none
         self.is_editable = is_editable
+        self.check_missing = check_missing
 
     #
     #  Public API
