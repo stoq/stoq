@@ -25,8 +25,10 @@
 
 import decimal
 
+import gtk
 from kiwi.python import strip_accents
 from kiwi.ui.objectlist import Column
+import pango
 from zope.interface import providedBy
 
 from stoqlib.api import api
@@ -58,6 +60,7 @@ class ParameterSearch(BaseEditor):
 
     def _setup_widgets(self):
         self.results.set_columns(self._get_columns())
+        self.results.set_cell_data_func(self._on_results__cell_data_func)
         self._reset_results()
         self.edit_button.set_sensitive(False)
         # Hiding the button to avoid confusion about discarding the changes
@@ -153,3 +156,16 @@ class ParameterSearch(BaseEditor):
 
     def on_search_button__clicked(self, widget):
         self._filter_results(self.entry.get_text())
+
+    def _on_results__cell_data_func(self, column, renderer, obj, text):
+        if not isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        is_missing = obj.check_missing and obj.check_missing(obj)
+        renderer.set_property('weight-set', is_missing)
+        renderer.set_property('foreground-set', is_missing)
+        if is_missing:
+            renderer.set_property('weight', pango.WEIGHT_BOLD)
+            renderer.set_property('foreground', 'red')
+
+        return text
