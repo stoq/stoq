@@ -149,6 +149,8 @@ class TestProductSearch(GUITest):
             storable=storable, branch=branches[1], quantity=2)
         product.sellable.code = u'1'
         product.sellable.description = u'Luvas'
+        product.brand = u'Rawlings'
+        product.internal_use = True
 
         product = self.create_product()
         storable = self.create_storable(product=product)
@@ -159,6 +161,7 @@ class TestProductSearch(GUITest):
         product.sellable.code = u'2'
         product.sellable.description = u'Botas'
         product.sellable.status = Sellable.STATUS_CLOSED
+        product.brand = u'Timberland'
 
         search = ProductSearch(self.store)
 
@@ -370,12 +373,15 @@ class TestProductStockSearch(GUITest):
                  maximum_quantity=20)
         product.sellable.code = u'1'
         product.sellable.description = u'Luvas'
+        product.brand = u'Rawlings'
+        product.internal_use = True
 
         product2 = self.create_product()
         Storable(store=self.store, product=product2, minimum_quantity=4,
                  maximum_quantity=20)
         product2.sellable.code = u'2'
         product2.sellable.description = u'Botas'
+        product2.brand = u'Aventura'
 
         # Purchase
         order = self.create_purchase_order(branch=branch)

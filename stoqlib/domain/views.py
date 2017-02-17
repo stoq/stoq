@@ -130,6 +130,8 @@ class ProductFullStockView(Viewable):
     model = Product.model
     brand = Product.brand
     ncm = Product.ncm
+    internal_use = Product.internal_use
+    family = Product.family
 
     # Storable
     storable_id = Storable.id
@@ -255,6 +257,8 @@ class ProductFullWithClosedStockView(ProductFullStockView):
     """Stores information about products, showing the closed ones too.
     """
 
+    internal_use = Product.internal_use
+    family = Product.family
     clause = None
 
 
