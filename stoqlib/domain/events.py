@@ -290,6 +290,7 @@ class SaleAvoidCancelEvent(Event):
         ``False` otherwise
     """
 
+
 #
 # Payment related events
 #
@@ -453,6 +454,16 @@ class StockOperationConfirmedEvent(Event):
     :param model: the model whose stock operation was confirmed
     :param old_status: the old status of the model if the confirmation
         includes a status change
+    """
+
+
+@public(since="2.0")
+class StockOperationTryFiscalCancelEvent(Event):
+    """
+    This event is emitted to try to cancel a operation with sefaz.
+
+    :param operation: the operation to be tried to cancel
+    :return: ``True`` if the cancellation is successfull, `False` otherwise.
     """
 
 
