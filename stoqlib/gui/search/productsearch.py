@@ -190,6 +190,13 @@ class ProductSearch(SellableSearch):
         print_report(ProductPriceReport, list(self.results),
                      filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
+    #
+    #  Private
+    #
+
+    def _get_status_values(self):
+        return ([(_('Any'), None)] +
+                [(v, k) for k, v in Sellable.statuses.items()])
 
     #
     #  ProductSearch
@@ -252,7 +259,15 @@ class ProductSearch(SellableSearch):
                              visible=False),
                 Column('unit', title=_('Unit'), data_type=str, visible=False),
                 SearchColumn('location', title=_('Location'), data_type=str,
-                             visible=False)]
+                             visible=False),
+                SearchColumn('status', title=_('Status'), data_type=str,
+                             valid_values=self._get_status_values(), visible=False),
+                SearchColumn('brand', title=_('Brand'), data_type=str,
+                             visible=False),
+                SearchColumn('family', title=_('Family'), data_type=str,
+                             visible=False),
+                SearchColumn('internal_use', title=_('Is internal'),
+                             data_type=bool, visible=False)]
         # The price/cost columns must be controlled by hide_cost_column and
         # hide_price_column. Since the product search will be available across
         # the applications, it's important to restrict such columns depending
