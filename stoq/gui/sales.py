@@ -34,7 +34,7 @@ from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.database.expr import Date
-from stoqlib.domain.events import SaleAvoidCancelEvent
+from stoqlib.domain.events import SaleAvoidCancelEvent, StockOperationTryFiscalCancelEvent
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView, SaleComment
 from stoqlib.enums import SearchFilterPosition
@@ -544,6 +544,13 @@ class SalesApp(ShellApp):
 
         if not retval:
             store.rollback()
+            return
+
+        # Try to cancel the sale with sefaz. Don't cancel the sale if sefaz
+        # reject it.
+        if StockOperationTryFiscalCancelEvent.emit(sale) is False:
+            warning(_("The cancellation was not authorized by SEFAZ. You should "
+                      "do a sale return."))
             return
 
         sale.cancel()
