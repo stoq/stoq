@@ -23,6 +23,8 @@
 ##
 
 import datetime
+import decimal
+
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import LeftJoin
@@ -178,6 +180,10 @@ class SellableMassEditorDialog(MassEditorSearch):
             AccessorField(_('Brand'), 'product', 'brand', unicode, visible=False),
             AccessorField(_('Family'), 'product', 'family', unicode, visible=False),
             AccessorField(_('Model'), 'product', 'model', unicode, visible=False),
+            AccessorField(_('Width'), 'product', 'width', decimal.Decimal, visible=False),
+            AccessorField(_('Height'), 'product', 'height', decimal.Decimal, visible=False),
+            AccessorField(_('Depth'), 'product', 'depth', decimal.Decimal, visible=False),
+            AccessorField(_('Weight'), 'product', 'weight', decimal.Decimal, visible=False),
 
             ReferenceField(_('Manufacturer'), 'product', 'manufacturer',
                            ProductManufacturer, 'name', visible=False),

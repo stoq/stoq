@@ -188,7 +188,7 @@ class TestEditors(GUITest):
         cost_field = AccessorField('Test', None, 'cost', Decimal)
         editor = DecimalEditor(self.store, price_field, [cost_field, price_field])
 
-        self.assertEqual(type(editor._oper), MultiplyOperation)
+        self.assertEqual(type(editor._oper), SetValueOperation)
         editor.operations_combo.select(AddOperation)
         self.assertEqual(type(editor._oper), AddOperation)
 

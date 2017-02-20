@@ -318,10 +318,10 @@ class Editor(gtk.HBox):
 
 class DecimalEditor(Editor):
     operations = [
+        SetValueOperation,
+        AddOperation,
         MultiplyOperation,
         DivideOperation,
-        AddOperation,
-        SetValueOperation,
     ]
     data_type = Decimal
 
