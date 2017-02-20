@@ -25,12 +25,13 @@
 import atexit
 import glob
 import hashlib
+import io
 import logging
 import os
 import shutil
 import sys
 import tempfile
-from zipfile import ZipFile, is_zipfile
+from zipfile import ZipFile, BadZipfile, is_zipfile
 
 from kiwi.desktopparser import DesktopParser
 from kiwi.component import get_utility, provide_utility
@@ -264,21 +265,29 @@ class PluginManager(object):
             log.warning(msg)
             return False, msg
 
-        content = response.content
-        md5sum = unicode(hashlib.md5(content).hexdigest())
-        with new_store() as store:
-            existing_egg = store.find(PluginEgg,
-                                      plugin_name=plugin_name).one()
-            if existing_egg is not None:
-                existing_egg.egg_content = content
-                existing_egg.egg_md5sum = md5sum
-            else:
-                PluginEgg(
-                    store=store,
-                    plugin_name=plugin_name,
-                    egg_md5sum=md5sum,
-                    egg_content=content,
-                )
+        try:
+            with io.BytesIO() as f:
+                f.write(response.content)
+                with ZipFile(f) as egg:
+                    if egg.testzip() is not None:
+                        raise BadZipfile
+
+                md5sum = unicode(hashlib.md5(f.getvalue()).hexdigest())
+                with new_store() as store:
+                    existing_egg = store.find(PluginEgg,
+                                              plugin_name=plugin_name).one()
+                    if existing_egg is not None:
+                        existing_egg.egg_content = f.getvalue()
+                        existing_egg.egg_md5sum = md5sum
+                    else:
+                        PluginEgg(
+                            store=store,
+                            plugin_name=plugin_name,
+                            egg_md5sum=md5sum,
+                            egg_content=f.getvalue(),
+                        )
+        except BadZipfile:
+            return False, _("The downloaded plugin is corrupted")
 
         self._reload()
         return True, _("Plugin download successful")

@@ -265,7 +265,8 @@ class StoqCommandHandler:
                 return
 
             if plugin_name not in manager.available_plugins_names:
-                manager.download_plugin(plugin_name)
+                rv, text = manager.download_plugin(plugin_name)
+                print("{}: [{}] {}".format(plugin_name, rv, text))
 
             try:
                 with new_store() as store:
@@ -459,7 +460,8 @@ class StoqCommandHandler:
         manager = get_plugin_manager()
 
         for egg_plugin in manager.egg_plugins_names:
-            manager.download_plugin(egg_plugin)
+            rv, text = manager.download_plugin(egg_plugin)
+            print("{}: [{}] {}".format(egg_plugin, rv, text))
 
     def cmd_generate_sintegra(self, options, filename, month):
         """Generate a sintegra file"""
