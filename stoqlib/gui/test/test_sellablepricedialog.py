@@ -65,6 +65,8 @@ class TestSellablePriceDialog(GUITest):
         field = [f for f in search._fields
                  if getattr(f, 'category', None) == category2][0]
         search.mass_editor.field_combo.select(field)
+        # Select the multiply operation
+        search.mass_editor._editor.operations_combo.select_item_by_position(2)
         search.mass_editor._editor._oper.combo.select(cost_field)
         search.mass_editor._editor._oper.entry.set_text('1.5')  # 10%
         self.click(search.mass_editor.apply_button)
