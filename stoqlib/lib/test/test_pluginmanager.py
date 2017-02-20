@@ -28,6 +28,7 @@
 import contextlib
 import io
 import os
+import zipfile
 
 import mock
 from kiwi.python import Settable
@@ -216,7 +217,7 @@ class TestPluginManager(DomainTest):
 
     @mock.patch('stoqlib.lib.webservice.WebService.download_plugin')
     @mock.patch('stoqlib.lib.pluginmanager.new_store')
-    def test_download_plugin_success(self, new_store, download_plugin):
+    def test_download_plugin_corrupted(self, new_store, download_plugin):
         new_store.return_value = self.store
 
         with contextlib.nested(
@@ -231,6 +232,33 @@ class TestPluginManager(DomainTest):
             download_plugin.return_value = res
             self.assertEqual(
                 self._manager.download_plugin(u'foo'),
+                (False, 'The downloaded plugin is corrupted'))
+            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None)
+
+            self.assertNotCalled(commit)
+            self.assertNotCalled(r)
+
+    @mock.patch('stoqlib.lib.webservice.WebService.download_plugin')
+    @mock.patch('stoqlib.lib.pluginmanager.new_store')
+    def test_download_plugin_success(self, new_store, download_plugin):
+        new_store.return_value = self.store
+
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self._manager, '_reload')) as (commit, close, r):
+            response = mock.Mock()
+            response.status_code = 200
+            with io.BytesIO() as f:
+                with zipfile.ZipFile(f, 'w') as zf:
+                    zf.writestr('/foo/bar.egg', 'foo bar baz')
+                zip_content = f.getvalue()
+                response.content = zip_content
+            res = mock.Mock()
+            res.get_response.return_value = response
+            download_plugin.return_value = res
+            self.assertEqual(
+                self._manager.download_plugin(u'foo'),
                 (True, 'Plugin download successful'))
             self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None)
 
@@ -238,9 +266,7 @@ class TestPluginManager(DomainTest):
             self.assertCalledOnceWith(r)
 
         plugin_egg = self.store.find(PluginEgg, plugin_name=u'foo').one()
-        self.assertEqual(plugin_egg.egg_content, 'foo bar baz')
-        self.assertEqual(plugin_egg.egg_md5sum,
-                         u'ab07acbb1e496801937adfa772424bf7')
+        self.assertEqual(plugin_egg.egg_content, zip_content)
 
     def test_get_plugin_manager(self):
         # PluginManager should be a singleton
