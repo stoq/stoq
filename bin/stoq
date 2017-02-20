@@ -35,6 +35,10 @@ if hasattr(sys, 'frozen'):
             continue
         sys.path.insert(0, os.path.join(root, name))
 
+    # Allow .pyd files to be imported from egg files
+    import zipextimporter
+    zipextimporter.install()
+
     # Also add it to the OS PATH, so that the libraries are correclty found.
     os.environ['PATH'] = root + os.pathsep + os.environ['PATH']
 else:
