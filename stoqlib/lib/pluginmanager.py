@@ -22,11 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import atexit
 import glob
 import hashlib
 import logging
 import os
+import shutil
 import sys
+import tempfile
 from zipfile import ZipFile, is_zipfile
 
 from kiwi.desktopparser import DesktopParser
@@ -36,11 +39,10 @@ from zope.interface import implementer
 from stoqlib.database.exceptions import SQLError
 from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.domain.plugin import InstalledPlugin, PluginEgg
-from stoqlib.lib.fileutils import md5sum_for_filename
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error
-from stoqlib.lib.osutils import get_system_locale, get_application_dir
+from stoqlib.lib.osutils import get_system_locale
 from stoqlib.lib.settings import get_settings
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -109,6 +111,7 @@ class PluginManager(object):
     """
 
     def __init__(self):
+        self._eggs_cache = None
         self._reload()
 
     def get_installed_plugins_names(self, store=None):
@@ -157,35 +160,22 @@ class PluginManager(object):
         self._read_plugin_descriptions()
 
     def _create_eggs_cache(self):
-        # $HOME/.stoq/plugins
-        path = os.path.join(get_application_dir(), 'plugins')
-        log.info("Creating cache for plugins eggs (path=%s)", path)
-        if not os.path.exists(path):
-            os.makedirs(path)
-
-        existing_eggs = {
-            unicode(os.path.basename(f)[:-4]): md5sum_for_filename(f) for f in
-            glob.iglob(os.path.join(path, '*.egg'))}
+        self._eggs_cache = tempfile.mkdtemp(prefix='stoq', suffix='eggs')
+        log.info("Eggs cache created in %s", self._eggs_cache)
 
         # Now extract all eggs from the database and put it where stoq know
         # how to load them
         default_store = get_default_store()
-        for plugin_name, egg_md5sum in default_store.using(PluginEgg).find(
-                (PluginEgg.plugin_name, PluginEgg.egg_md5sum)):
-            # A little optimization to avoid loading the egg in memory if we
-            # already have a valid version cached.
-            if existing_eggs.get(plugin_name, u'') == egg_md5sum:
-                log.info("Plugin %r egg md5sum matches. Skipping it..." % (
-                    plugin_name, ))
-                continue
-
+        for plugin_egg in default_store.find(PluginEgg):
+            plugin_name = plugin_egg.plugin_name
             log.info("Creating egg cache for plugin %r" % (plugin_name, ))
-            egg_filename = '%s.egg' % (plugin_name, )
-            plugin_egg = default_store.find(
-                PluginEgg, plugin_name=plugin_name).one()
 
-            with open(os.path.join(path, egg_filename), 'wb') as f:
+            egg_filename = '{}.egg'.format(plugin_name)
+            with open(os.path.join(self._eggs_cache, egg_filename), 'wb') as f:
                 f.write(plugin_egg.egg_content)
+
+        atexit.register(
+            lambda: shutil.rmtree(self._eggs_cache, ignore_errors=True))
 
     def _get_external_plugins_paths(self):
         # This is the dir containing stoq/kiwi/stoqdrivers/etc
@@ -202,8 +192,8 @@ class PluginManager(object):
         # Development plugins on the same checkout
         paths = [os.path.join(library.get_root(), 'plugins')]
 
-        # Plugins on $HOME/.stoq/plugins
-        paths.append(os.path.join(get_application_dir(), 'plugins'))
+        # Plugins from PluginEgg
+        paths.append(self._eggs_cache)
 
         if library.get_resource_exists('stoq', 'plugins'):
             paths.append(library.get_resource_filename('stoq', 'plugins'))
