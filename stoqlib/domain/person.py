@@ -565,8 +565,7 @@ class Individual(Domain):
     STATUS_MARRIED = u'married'
     STATUS_DIVORCED = u'divorced'
     STATUS_WIDOWED = u'widowed'
-    # FIXME: Change to 'separated' after fix this typo in database.
-    STATUS_SEPARATED = u'separeted'
+    STATUS_SEPARATED = u'separated'
     STATUS_COHABITATION = u'cohabitation'
 
     marital_statuses = collections.OrderedDict([
@@ -582,7 +581,8 @@ class Individual(Domain):
     GENDER_FEMALE = u'female'
 
     genders = {GENDER_MALE: _(u'Male'),
-               GENDER_FEMALE: _(u'Female')}
+               GENDER_FEMALE: _(u'Female'),
+               None: _(u'None')}
 
     person_id = IdCol()
 
@@ -617,8 +617,8 @@ class Individual(Domain):
     #: Where the rg number was issued
     rg_expedition_local = UnicodeCol(default=u'')
 
-    #: male or female
-    gender = EnumCol(allow_none=False, default=GENDER_MALE)
+    #: unregistered/male/female
+    gender = EnumCol(default=None)
 
     #: the name of the spouse individual's partner in marriage
     spouse_name = UnicodeCol(default=u'')

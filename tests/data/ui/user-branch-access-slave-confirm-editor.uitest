@@ -103,8 +103,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "individual"', hidden
                           GtkTable(table2, fill=True):
                             GtkLabel(gender_lbl): 'Gender:'
                             GtkHBox(hbox1):
-                              GtkRadioButton(male_check, fill=True): 'Male', active
-                              GtkRadioButton(female_check, fill=True): 'Female'
+                              GtkRadioButton(unregistered_check, expand=True): 'Not set', active
+                              GtkRadioButton(male_check, expand=True): 'Male'
+                              GtkRadioButton(female_check, expand=True): 'Female'
                             GtkLabel(label1): 'Birth Date:'
                             ProxyDateEntry(birth_date): datetime.date(1970, 1, 1)
                             GtkLabel(occupation_lbl): 'Occupation:'

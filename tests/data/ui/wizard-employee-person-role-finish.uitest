@@ -99,8 +99,9 @@ GtkDialog(toplevel): title='New Employee', hidden
                       GtkTable(fill=True):
                         GtkLabel(): 'Gender:'
                         GtkHBox():
-                          GtkRadioButton(fill=True): 'Male', active
-                          GtkRadioButton(fill=True): 'Female'
+                          GtkRadioButton(expand=True): 'Not set', active
+                          GtkRadioButton(expand=True): 'Male'
+                          GtkRadioButton(expand=True): 'Female'
                         GtkLabel(): 'Birth Date:'
                         ProxyDateEntry(): None
                         GtkLabel(): 'Occupation:'

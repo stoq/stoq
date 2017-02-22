@@ -103,6 +103,9 @@ class _IndividualDetailsModel(AttributeForwarder):
     def is_female(self):
         return self.target.gender == Individual.GENDER_FEMALE
 
+    def is_none(self):
+        return self.target.gender is None
+
     def birth_location_changed(self):
         return (self.city != self.target.birth_location.city or
                 self.state != self.target.birth_location.state or
@@ -135,6 +138,7 @@ class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
     ]
 
     def _setup_widgets(self):
+        self.unregistered_check.set_active(self.model.is_none())
         self.male_check.set_active(self.model.is_male())
         self.female_check.set_active(self.model.is_female())
         self.marital_status.prefill(self.model.get_marital_statuses())
@@ -167,7 +171,9 @@ class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
         self.female_check.set_sensitive(False)
 
     def on_confirm(self):
-        if self.male_check.get_active():
+        if self.unregistered_check.get_active():
+            self.model.gender = None
+        elif self.male_check.get_active():
             self.model.gender = Individual.GENDER_MALE
         else:
             self.model.gender = Individual.GENDER_FEMALE
