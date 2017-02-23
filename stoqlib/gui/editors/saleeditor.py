@@ -110,7 +110,7 @@ class SaleQuoteItemSlave(BaseEditorSlave):
                                                  step_incr=1, page_incr=10))
 
         manager = get_plugin_manager()
-        self.nfe_is_active = manager.is_active('nfe')
+        self.nfe_is_active = manager.is_any_active(['nfe', 'nfce'])
 
         if not self.nfe_is_active:
             self.cfop_label.hide()

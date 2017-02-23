@@ -181,7 +181,7 @@ class DecreaseItemStep(SellableItemStep):
     def post_init(self):
         self.hide_add_button()
         manager = get_plugin_manager()
-        nfe_is_active = manager.is_active('nfe')
+        nfe_is_active = manager.is_any_active(['nfce', 'nfe'])
         if not self.wizard.create_payments and not nfe_is_active:
             self.cost_label.hide()
             self.cost.hide()
