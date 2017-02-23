@@ -87,7 +87,7 @@ class FormFieldEditor(BasicDialog):
             return text
 
         manager = get_plugin_manager()
-        if manager.is_active('nfe'):
+        if manager.is_any_active(['nfe', 'nfce']):
             is_editable = obj.field_name not in [u'street', u'district',
                                                  u'city', u'state',
                                                  u'country', u'street_number']

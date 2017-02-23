@@ -226,7 +226,7 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
             model = _AddressModel(model, store)
 
         plugin = get_plugin_manager()
-        self._nfe_active = plugin.is_active('nfe')
+        self._nfe_active = plugin.is_any_active(['nfe', 'nfce'])
 
         BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 

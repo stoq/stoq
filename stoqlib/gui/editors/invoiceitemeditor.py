@@ -46,7 +46,7 @@ class InvoiceItemEditor(BaseEditor):
 
     def __init__(self, store, model):
         manager = get_plugin_manager()
-        self.nfe_is_active = manager.is_active('nfe')
+        self.nfe_is_active = manager.is_any_active(['nfe', 'nfce'])
         self.proxy = None
         self.icms_slave = None
         self.ipi_slave = None
