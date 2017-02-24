@@ -353,11 +353,11 @@ class TillApp(ShellApp):
                     (sellable.product and not sellable.product.is_package)):
                 # Do not add the package item itself on the coupon
                 coupon.add_item(sale_item)
-                subtotal += sale_item.price * sale_item.quantity
+                subtotal += sale_item.get_total()
 
             for child in sale_item.children_items:
                 coupon.add_item(child)
-                subtotal += child.price * child.quantity
+                subtotal += child.get_total()
         return subtotal
 
     def _update_total(self):
