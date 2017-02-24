@@ -26,6 +26,9 @@
 
 import logging
 import optparse
+import os
+import platform
+import sys
 
 # To avoid kiwi dependency at startup
 log = logging.getLogger(__name__)
@@ -79,7 +82,20 @@ def get_shell(args):
     return args, shell
 
 
+def _windows_fixes():  # pragma: no cover
+    executable = os.path.realpath(os.path.abspath(sys.executable))
+    root = os.path.dirname(executable)
+
+    # Indicate the cert.pem location so requests can use it on verify
+    # From: http://stackoverflow.com/a/33334042
+    import requests
+    requests.utils.DEFAULT_CA_BUNDLE_PATH = os.path.join(root, 'cacert.pem')
+
+
 def main(args):
+    if platform.system() == 'Windows':  # pragma: no cover
+        _windows_fixes()
+
     args, shell = get_shell(args)
 
     action_name = None
