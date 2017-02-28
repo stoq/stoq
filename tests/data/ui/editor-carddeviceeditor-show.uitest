@@ -5,9 +5,16 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Card Device"', hidden
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave CardDeviceEditor is attached
         GtkVBox(toplevel):
-          GtkHBox(hbox1, fill=True):
-            GtkLabel(label4, fill=True): 'Description:'
-            ProxyEntry(description, expand=True, fill=True): 'Cielo'
+          GtkTable(table1, fill=True):
+            GtkLabel(label2): 'Description:'
+            ProxyEntry(description): 'Cielo'
+            GtkLabel(label4): 'Monthly cost:'
+            ProxyEntry(monthly_cost): ''
+            GtkLabel(label3): 'Supplier:'
+            GtkHBox():
+              ProxyEntry(supplier, expand=True, fill=True): 'Supplier'
+              GtkButton():
+              GtkButton():
           GtkFrame(frame1, expand=True, fill=True):
             GtkAlignment(alignment1):
               GtkEventBox(cost_holder): slave CardOperationCostListSlave is attached

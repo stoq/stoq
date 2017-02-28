@@ -30,14 +30,14 @@ from decimal import Decimal
 from stoqlib.domain.payment.card import (CreditCardData, CreditProvider,
                                          CardPaymentDevice, CardOperationCost)
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.gui.editors.paymentmethodeditor import CardDeviceEditor
-from stoqlib.gui.editors.paymentmethodeditor import CardDeviceListSlave
-from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostEditor
-from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostListSlave
-from stoqlib.gui.editors.paymentmethodeditor import CardPaymentDetailsEditor
-from stoqlib.gui.editors.paymentmethodeditor import CardPaymentMethodEditor
-from stoqlib.gui.editors.paymentmethodeditor import CreditProviderEditor
-from stoqlib.gui.editors.paymentmethodeditor import ProviderListSlave
+from stoqlib.gui.editors.paymentmethodeditor import (CardDeviceEditor,
+                                                     CardDeviceListSlave,
+                                                     CardOperationCostEditor,
+                                                     CardOperationCostListSlave,
+                                                     CardPaymentDetailsEditor,
+                                                     CardPaymentMethodEditor,
+                                                     CreditProviderEditor,
+                                                     ProviderListSlave)
 from stoqlib.gui.test.uitestutils import GUITest
 
 
@@ -48,6 +48,7 @@ class TestCardDeviceEditor(GUITest):
 
     def test_show(self):
         device = self.create_card_device()
+        device.supplier = self.create_supplier()
         editor = CardDeviceEditor(self.store, device)
         self.check_editor(editor, 'editor-carddeviceeditor-show')
 

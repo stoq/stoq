@@ -5,9 +5,16 @@ GtkDialog(main_dialog.toplevel): title='Add Card Device', hidden
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave CardDeviceEditor is attached
         GtkVBox(toplevel):
-          GtkHBox(hbox1, fill=True):
-            GtkLabel(label4, fill=True): 'Description:'
-            ProxyEntry(description, expand=True, fill=True): '', mandatory
+          GtkTable(table1, fill=True):
+            GtkLabel(label2): 'Description:'
+            ProxyEntry(description): ''
+            GtkLabel(label4): 'Monthly cost:'
+            ProxyEntry(monthly_cost): ''
+            GtkLabel(label3): 'Supplier:'
+            GtkHBox():
+              ProxyEntry(supplier, expand=True, fill=True): ''
+              GtkButton():
+              GtkButton(): insensitive
           GtkFrame(frame1, expand=True, fill=True):
             GtkAlignment(alignment1):
               GtkEventBox(cost_holder): slave CardOperationCostListSlave is attached
@@ -30,4 +37,4 @@ GtkDialog(main_dialog.toplevel): title='Add Card Device', hidden
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

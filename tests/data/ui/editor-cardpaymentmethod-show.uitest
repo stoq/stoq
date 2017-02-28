@@ -41,13 +41,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Payment Method"', hidde
                   column: title='Name', expand
                   column: title='Max Installments'
                   row: u'AMEX', 1
-                  row: u'BANRISUL', 1
-                  row: u'CERTIF', 1
-                  row: u'CREDISHOP', 1
-                  row: u'HIPERCARD', 1
-                  row: u'PAGGO', 1
-                  row: u'REDECARD', 1
-                  row: u'VISANET', 1
+                  row: u'MASTER', 1
+                  row: u'VISA', 1
                 GtkVBox(fill=True, padding=6):
                   GtkButton(fill=True): 'gtk-add'
                   GtkButton(fill=True): 'gtk-remove', insensitive
@@ -56,7 +51,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Payment Method"', hidde
               kiwi+ui+listdialog+ListContainer(listcontainer):
                 ObjectList(expand=True, fill=True):
                   column: title='Description', expand
-                  row: u'Default'
+                  column: title='Monthly cost', expand
+                  row: u'Default', None
                 GtkVBox(fill=True, padding=6):
                   GtkButton(fill=True): 'gtk-add'
                   GtkButton(fill=True): 'gtk-remove', insensitive

@@ -128,6 +128,10 @@ class CardPaymentDevice(Domain):
     #: user-defined description of the device, like "Mastercard reader"
     description = UnicodeCol()
 
+    #: The |supplier| id for this device
+    supplier_id = IdCol()
+    supplier = Reference(supplier_id, 'Supplier.id')
+
     def get_description(self):
         return self.description
 

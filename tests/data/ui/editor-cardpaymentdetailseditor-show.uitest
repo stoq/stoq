@@ -15,14 +15,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "CreditCardData"', hidde
               ProxyLabel(provider_lbl): 'Provider:'
               ProxyComboBox(provider):
                 item: 'AMEX'
-                item: 'BANRISUL'
-                item: 'CERTIF'
-                item: 'CREDISHOP'
-                item: 'HIPERCARD'
-                item: 'PAGGO'
-                item: 'REDECARD'
-                item: 'VISANET'
-                item: 'VISANET (1)', selected
+                item: 'MASTER'
+                item: 'VISA'
+                item: 'VISANET', selected
               GtkHBox():
               ProxyLabel(auth_lbl): 'Authorization:'
               ProxyEntry(auth): '', mandatory

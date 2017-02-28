@@ -65,9 +65,11 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
+from stoqlib.gui.widgets.queryentry import SupplierEntryGadget
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.formatters import get_formatted_percentage
 from stoqlib.lib.message import yesno, info
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -126,10 +128,31 @@ class CardDeviceEditor(BaseEditor):
     model_name = _('Card Device')
     gladefile = 'CardDeviceEditor'
     model_type = CardPaymentDevice
-    # TODO: Add monthly_cost, maybe use formfields
-    proxy_widgets = ['description']
+    # TODO: maybe use formfields
+    proxy_widgets = ['supplier', 'description', 'monthly_cost']
     confirm_widgets = ['description']
     size = (600, 300)
+
+    #
+    # Private API
+    #
+
+    def _setup_widgets(self):
+        plugin_manager = get_plugin_manager()
+        is_active = plugin_manager.is_active('nfce')
+        if is_active:
+            self.supplier.set_property('mandatory', True)
+
+    def _setup_supplier_gadget(self):
+        self.supplier_gadget = SupplierEntryGadget(
+            entry=self.supplier,
+            store=self.store,
+            initial_value=self.model.supplier,
+            parent=None)
+
+    #
+    # Public API
+    #
 
     def create_model(self, store):
         return CardPaymentDevice(store=store)
@@ -139,8 +162,21 @@ class CardDeviceEditor(BaseEditor):
                                            reuse_store=True)
         self.attach_slave('cost_holder', slave)
 
+    #
+    # BaseEditor
+    #
+
     def setup_proxies(self):
+        self._setup_widgets()
+        self._setup_supplier_gadget()
         self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    # Kiwi Callbacks
+    #
+    def on_monthly_cost__validate(self, widget, value):
+        if value < 0:
+            return ValidationError(_('Value cannot be zero or negative'))
 
 
 class _TemporaryOperationCost(object):
@@ -433,6 +469,8 @@ class CardDeviceListSlave(ModelListSlave):
     columns = [
         Column('description', title=_('Description'),
                data_type=str, expand=True),
+        Column('monthly_cost', title=_('Monthly cost'),
+               data_type=currency, expand=True)
     ]
 
     def populate(self):

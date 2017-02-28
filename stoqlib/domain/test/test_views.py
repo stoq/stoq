@@ -221,12 +221,14 @@ class TestInPaymentView(DomainTest):
 
 class TestCardPaymentView(DomainTest):
     def test_status_str(self):
-        payment = self.create_card_payment(payment_type=Payment.TYPE_IN)
+        payment = self.create_card_payment(provider_id=u'AMERICAN EXPRESS',
+                                           payment_type=Payment.TYPE_IN)
         result = self.store.find(CardPaymentView, id=payment.id).one()
         self.assertEquals(result.status_str, u'Preview')
 
     def test_renegotiation(self):
-        payment = self.create_card_payment(payment_type=Payment.TYPE_IN)
+        payment = self.create_card_payment(provider_id=u'AMERICAN EXPRESS',
+                                           payment_type=Payment.TYPE_IN)
         self.create_payment_renegotiation(group=payment.group)
         result = self.store.find(CardPaymentView, id=payment.id).one()
         self.assertEquals(result.renegotiation.client.person.name, u'Client')

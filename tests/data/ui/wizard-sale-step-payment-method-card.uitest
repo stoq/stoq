@@ -12,13 +12,8 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
                   GtkLabel(label5): 'Credit Provider:'
                   ProxyComboBox(credit_provider):
                     item: 'AMEX', selected
-                    item: 'BANRISUL'
-                    item: 'CERTIF'
-                    item: 'CREDISHOP'
-                    item: 'HIPERCARD'
-                    item: 'PAGGO'
-                    item: 'REDECARD'
-                    item: 'VISANET'
+                    item: 'MASTER'
+                    item: 'VISA'
                   GtkLabel(label6):
                   ProxyLabel(kiwilabel4): 'Card Device:'
                   GtkVBox(vbox3):

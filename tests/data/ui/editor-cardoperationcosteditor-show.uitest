@@ -8,13 +8,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Card Device Cost"', hid
           GtkLabel(label1): 'Provider:'
           ProxyComboBox(provider):
             item: 'AMEX'
-            item: 'BANRISUL'
-            item: 'CERTIF'
-            item: 'CREDISHOP'
-            item: 'HIPERCARD'
-            item: 'PAGGO'
-            item: 'REDECARD'
-            item: 'VISANET'
+            item: 'MASTER'
+            item: 'VISA'
             item: 'Velec', selected
           GtkLabel(label2): 'Type:'
           ProxyComboBox(card_type):

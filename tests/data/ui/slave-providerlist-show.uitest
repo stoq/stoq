@@ -4,13 +4,8 @@ kiwi+ui+listdialog+ListContainer(listcontainer):
     column: title='Name', expand
     column: title='Max Installments'
     row: u'AMEX', 1
-    row: u'BANRISUL', 1
-    row: u'CERTIF', 1
-    row: u'CREDISHOP', 1
-    row: u'HIPERCARD', 1
-    row: u'PAGGO', 1
-    row: u'REDECARD', 1
-    row: u'VISANET', 1
+    row: u'MASTER', 1
+    row: u'VISA', 1
     row: u'Velec', 1
   GtkVBox(fill=True, padding=6):
     GtkButton(fill=True): 'gtk-add'

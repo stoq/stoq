@@ -1483,6 +1483,7 @@ class TestPersonMerging(DomainTest):
             ' WHERE product_supplier_info.supplier_id = %s\)')
         expected_updates = [
             # Supplier
+            'UPDATE card_payment_device SET supplier_id=%s WHERE card_payment_device.supplier_id = %s',  # nopep8
             'UPDATE purchase_order SET supplier_id=%s WHERE purchase_order.supplier_id = %s',
             'UPDATE receiving_order SET supplier_id=%s WHERE receiving_order.supplier_id = %s',
         ]
