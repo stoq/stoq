@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-21 02:10-0300\n"
-"PO-Revision-Date: 2017-02-21 05:10+0000\n"
+"POT-Creation-Date: 2017-03-03 02:10-0300\n"
+"PO-Revision-Date: 2017-03-03 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -1167,31 +1167,35 @@ msgstr "Nome do pai:"
 msgid "Marital Status:"
 msgstr "Estado civil:"
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:6 ../stoqlib/domain/person.py:584
+#: ../data/glade/IndividualDetailsSlave.ui.h:6
+msgid "Not set"
+msgstr ""
+
+#: ../data/glade/IndividualDetailsSlave.ui.h:7 ../stoqlib/domain/person.py:583
 msgid "Male"
 msgstr "Masculino"
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:7 ../stoqlib/domain/person.py:585
+#: ../data/glade/IndividualDetailsSlave.ui.h:8 ../stoqlib/domain/person.py:584
 msgid "Female"
 msgstr "Feminino"
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:8
+#: ../data/glade/IndividualDetailsSlave.ui.h:9
 msgid "Birth Date:"
 msgstr "Data de nascimento:"
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:9
+#: ../data/glade/IndividualDetailsSlave.ui.h:10
 msgid "Spouse:"
 msgstr "Cônjuge:"
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:10
+#: ../data/glade/IndividualDetailsSlave.ui.h:11
 msgid "Birth City:"
 msgstr "Cidade natal:"
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:11
+#: ../data/glade/IndividualDetailsSlave.ui.h:12
 msgid "Birth State:"
 msgstr "Estado natal:"
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:12
+#: ../data/glade/IndividualDetailsSlave.ui.h:13
 msgid "Birth Country:"
 msgstr "País natal:"
 
@@ -2232,7 +2236,7 @@ msgstr "Alterações"
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:74
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:82
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:473
-#: ../stoqlib/gui/wizards/salequotewizard.py:529
+#: ../stoqlib/gui/wizards/salequotewizard.py:530
 msgid "Ordered"
 msgstr "Pedido"
 
@@ -3731,7 +3735,7 @@ msgstr "Juros"
 #: ../stoqlib/gui/slaves/saleslave.py:172
 #: ../stoqlib/gui/slaves/saleslave.py:183
 #: ../stoqlib/gui/widgets/calculator.py:155
-#: ../stoqlib/gui/wizards/salequotewizard.py:444
+#: ../stoqlib/gui/wizards/salequotewizard.py:445
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:348
 msgid "Discount"
 msgstr "Desconto"
@@ -4074,7 +4078,7 @@ msgstr "Preço"
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:89
 #: ../stoqlib/gui/wizards/purchasewizard.py:314
 #: ../stoqlib/gui/wizards/receivingwizard.py:274
-#: ../stoqlib/gui/wizards/salequotewizard.py:446
+#: ../stoqlib/gui/wizards/salequotewizard.py:447
 #: ../stoqlib/gui/wizards/salereturnwizard.py:237
 #: ../stoqlib/gui/wizards/salewizard.py:451
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:228
@@ -6139,7 +6143,7 @@ msgstr "Ordem de serviço: %s"
 msgid "Optic Details"
 msgstr "Detalhes óticos"
 
-#: ../plugins/optical/opticalslave.py:118
+#: ../plugins/optical/opticalslave.py:118 ../stoqlib/domain/person.py:585
 msgid "None"
 msgstr "Nenhum"
 
@@ -6276,14 +6280,14 @@ msgstr "Ordem de serviço para %s"
 #: ../plugins/optical/opticalwizard.py:194
 #: ../plugins/optical/tests/test_optical_wizard.py:160
 #: ../stoqlib/gui/test/test_salequote_wizard.py:107
-#: ../stoqlib/gui/wizards/salequotewizard.py:730
+#: ../stoqlib/gui/wizards/salequotewizard.py:731
 msgid "Would you like to print the quote details now?"
 msgstr "Você gostaria de imprimir os detalhes da cotação agora?"
 
 #: ../plugins/optical/opticalwizard.py:197
 #: ../plugins/optical/tests/test_optical_wizard.py:162
 #: ../stoqlib/gui/test/test_salequote_wizard.py:109
-#: ../stoqlib/gui/wizards/salequotewizard.py:734
+#: ../stoqlib/gui/wizards/salequotewizard.py:735
 msgid "Print quote details"
 msgstr "Imprimir detalhes da cotação"
 
@@ -6293,7 +6297,7 @@ msgstr "Imprimir detalhes da cotação"
 #: ../stoqlib/gui/test/test_salequote_wizard.py:109
 #: ../stoqlib/gui/wizards/loanwizard.py:464
 #: ../stoqlib/gui/wizards/receivingwizard.py:458
-#: ../stoqlib/gui/wizards/salequotewizard.py:734
+#: ../stoqlib/gui/wizards/salequotewizard.py:735
 #: ../stoqlib/gui/wizards/salereturnwizard.py:536
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:301
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:254
@@ -8397,7 +8401,7 @@ msgstr "Edita a venda selecionada, permitindo que você altere seus detalhes"
 msgid "Show details of the selected sale"
 msgstr "Mostra detalhes da venda selecionada"
 
-#: ../stoq/gui/sales.py:214 ../stoqlib/gui/wizards/salequotewizard.py:702
+#: ../stoq/gui/sales.py:214 ../stoqlib/gui/wizards/salequotewizard.py:703
 msgid "New Sale Quote"
 msgstr "Nova cotação"
 
@@ -9155,7 +9159,7 @@ msgstr "Sugestões"
 #: ../stoqlib/gui/search/consignmentsearch.py:56
 #: ../stoqlib/gui/search/productsearch.py:282
 #: ../stoqlib/gui/search/sellablesearch.py:363
-#: ../stoqlib/gui/wizards/salequotewizard.py:531
+#: ../stoqlib/gui/wizards/salequotewizard.py:532
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:170
 #: ../stoqlib/lib/parameters.py:550
 msgid "Stock"
@@ -9275,7 +9279,7 @@ msgstr "Devoluções pendentes..."
 #: ../stoqlib/gui/search/salesearch.py:269
 #: ../stoqlib/gui/search/salesearch.py:356
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:177
-#: ../stoqlib/gui/wizards/salequotewizard.py:527 ../stoqlib/lib/invoice.py:588
+#: ../stoqlib/gui/wizards/salequotewizard.py:528 ../stoqlib/lib/invoice.py:588
 #: ../stoqlib/lib/invoice.py:603 ../stoqlib/lib/invoice.py:619
 #: ../stoqlib/lib/invoice.py:632 ../stoqlib/lib/invoice.py:646
 #: ../stoqlib/lib/invoice.py:659 ../stoqlib/lib/invoice.py:672
@@ -10276,27 +10280,27 @@ msgstr "Incluído"
 msgid "Not included"
 msgstr "Não incluído"
 
-#: ../stoqlib/domain/person.py:573
+#: ../stoqlib/domain/person.py:572
 msgid "Single"
 msgstr "Solteiro(a)"
 
-#: ../stoqlib/domain/person.py:574
+#: ../stoqlib/domain/person.py:573
 msgid "Married"
 msgstr "Casado(a)"
 
-#: ../stoqlib/domain/person.py:575
+#: ../stoqlib/domain/person.py:574
 msgid "Divorced"
 msgstr "Divorciado(a)"
 
-#: ../stoqlib/domain/person.py:576
+#: ../stoqlib/domain/person.py:575
 msgid "Widowed"
 msgstr "Viúvo(a)"
 
-#: ../stoqlib/domain/person.py:577
+#: ../stoqlib/domain/person.py:576
 msgid "Separated"
 msgstr "Separado(a)"
 
-#: ../stoqlib/domain/person.py:578
+#: ../stoqlib/domain/person.py:577
 msgid "Cohabitation"
 msgstr "União estável"
 
@@ -12882,13 +12886,13 @@ msgstr "Impressora sem título"
 
 #: ../stoqlib/gui/editors/invoiceitemeditor.py:88
 #: ../stoqlib/gui/search/fiscalsearch.py:52
-#: ../stoqlib/gui/wizards/salequotewizard.py:438
+#: ../stoqlib/gui/wizards/salequotewizard.py:439
 msgid "ICMS"
 msgstr "ICMS"
 
 #: ../stoqlib/gui/editors/invoiceitemeditor.py:93
 #: ../stoqlib/gui/search/fiscalsearch.py:53
-#: ../stoqlib/gui/wizards/salequotewizard.py:440
+#: ../stoqlib/gui/wizards/salequotewizard.py:441
 msgid "IPI"
 msgstr "IPI"
 
@@ -14924,7 +14928,7 @@ msgid "Items removed"
 msgstr "Itens removidos"
 
 #: ../stoqlib/gui/search/stockdecreasesearch.py:97
-#: ../stoqlib/gui/wizards/salequotewizard.py:434
+#: ../stoqlib/gui/wizards/salequotewizard.py:435
 msgid "CFOP"
 msgstr "C.F.O.P."
 
@@ -15505,7 +15509,7 @@ msgstr "Uma empresa com este %s já existe"
 msgid "A person with this %s already exists"
 msgstr "Uma pessoa com este %s já existe"
 
-#: ../stoqlib/gui/templates/individualtemplate.py:186
+#: ../stoqlib/gui/templates/individualtemplate.py:192
 msgid "Birth date must be less than today"
 msgstr "A data de aniversário deve ser menor do que a data atual"
 
@@ -16425,33 +16429,33 @@ msgstr "Aplicar desconto"
 msgid "Not enough stock. Estimated time to obtain missing items: %d days."
 msgstr "Não há estoque suficiente. Tempo estimado para obter os itens que faltam: %d dias."
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:436
+#: ../stoqlib/gui/wizards/salequotewizard.py:437
 msgid "ICMS BC"
 msgstr "ICMS BC"
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:442
+#: ../stoqlib/gui/wizards/salequotewizard.py:443
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:346
 msgid "Original Price"
 msgstr "Preço Original"
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:443
+#: ../stoqlib/gui/wizards/salequotewizard.py:444
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:347
 msgid "Sale Price"
 msgstr "Preço de venda"
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:533
+#: ../stoqlib/gui/wizards/salequotewizard.py:534
 msgid "Lead Time"
 msgstr "Tempo de obtenção"
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:541
+#: ../stoqlib/gui/wizards/salequotewizard.py:542
 msgid "Missing products"
 msgstr "Produtos faltando"
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:703
+#: ../stoqlib/gui/wizards/salequotewizard.py:704
 msgid "Edit Sale Quote"
 msgstr "Editar cotação de venda"
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:727
+#: ../stoqlib/gui/wizards/salequotewizard.py:728
 msgid ""
 "The created payments can be found in the Accounts Receivable application and"
 " you can set them as paid there at any time."
