@@ -14,6 +14,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Close consigment...'
+          GtkImageMenuItem(): 'Export Filizola File...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Print...'
           GtkImageMenuItem(): 'Export to spreadsheet...'

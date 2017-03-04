@@ -34,6 +34,7 @@
     </menu>
     <placeholder name="FileMenuPH">
       <menuitem action="CloseInConsignment"/>
+      <menuitem action="ExportFilizola"/>
     </placeholder>
   </menu>
   <menu action="EditMenu">

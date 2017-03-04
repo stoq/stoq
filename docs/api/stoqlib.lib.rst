@@ -185,6 +185,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`filizola` Module
+----------------------
+
+.. automodule:: stoqlib.lib.filizola
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`formatters` Module
 ------------------------
 

@@ -30,6 +30,7 @@ import pango
 import gtk
 from kiwi.currency import currency
 from kiwi.python import all
+
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.enums import SearchFilterPosition
@@ -58,8 +59,9 @@ from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.lib.filizola import generate_filizola_file
 from stoqlib.lib.formatters import format_quantity
-from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.message import warning, yesno, info
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
 from stoqlib.reporting.purchase import PurchaseReport
@@ -106,6 +108,7 @@ class PurchaseApp(ShellApp):
              group.get('new_product'),
              _("Create a new product")),
             ("CloseInConsignment", None, _("Close consigment...")),
+            ("ExportFilizola", None, _("Export Filizola File...")),
 
             # Edit
             ("StockCost", None, _("_Stock cost...")),
@@ -485,6 +488,10 @@ class PurchaseApp(ShellApp):
 
     def on_Finish__activate(self, action):
         self._finish_order()
+
+    def on_ExportFilizola__activate(self, action):
+        dest = generate_filizola_file(self.store)
+        info(_('File saved in %s') % dest)
 
     # Order
 

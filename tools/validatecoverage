@@ -289,6 +289,7 @@ EXCEPTIONS = OrderedDict((
     ('stoqlib/lib/diffutils.py', 84.62),
     ('stoqlib/lib/distutils.py', 91.67),
     ('stoqlib/lib/environment.py', 85.71),
+    ('stoqlib/lib/filizola.py', 25.00),
     ('stoqlib/lib/formatters.py', 86.76),
     ('stoqlib/lib/interfaces.py', 86.15),
     ('stoqlib/lib/introspection.py', 93.94),
