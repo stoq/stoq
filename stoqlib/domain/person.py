@@ -1201,6 +1201,17 @@ class Supplier(Domain):
     is_active = BoolCol(default=True)
 
     #
+    # Properties
+    #
+
+    @property
+    def document(self):
+        if self.person.company:
+            return self.person.company.cnpj
+
+        return self.person.individual.cpf
+
+    #
     # IActive
     #
 

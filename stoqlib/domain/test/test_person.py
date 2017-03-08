@@ -832,6 +832,17 @@ class TestSupplier(_PersonFacetTest, DomainTest):
         supplier = self.create_supplier(name=u'Supplier Test')
         self.assertEquals(supplier.get_name(), u'Supplier Test')
 
+    def test_document_company(self):
+        supplier = self.create_supplier()
+        self.assertEquals(supplier.document, u'90.117.749/7654-80')
+
+    def test_document_individual(self):
+        person = self.create_person()
+        individual = self.create_individual(person)
+        individual.cpf = u'176.193.781-20'
+        supplier = self.create_supplier(person=person)
+        self.assertEquals(supplier.document, u'176.193.781-20')
+
     def test_get_active_suppliers(self):
         for supplier in Supplier.get_active_suppliers(self.store):
             self.assertEquals(supplier.status,
