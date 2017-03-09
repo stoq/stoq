@@ -132,7 +132,7 @@ def validate_cnpj(cnpj):
     """
     cnpj = ''.join(re.findall(r'\d', str(cnpj)))
 
-    if not cnpj or len(cnpj) < 14:
+    if not cnpj or len(cnpj) != 14:
         return False
 
     # FIXME: use modulo11 from algorithms.py

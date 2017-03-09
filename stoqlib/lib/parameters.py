@@ -44,7 +44,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_int,
                                     validate_decimal,
                                     validate_area_code,
-                                    validate_percentage)
+                                    validate_percentage,
+                                    validate_cnpj)
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -134,6 +135,11 @@ class ParameterDetails(object):
         if not validate_percentage(value):
             return ValidationError(_("'%s' is not a valid percentage.")
                                    % value)
+
+    @staticmethod
+    def validate_cnpj(value):
+        if not validate_cnpj(value):
+            return ValidationError(_("'%s' is not a valid CNPJ"))
 
     @staticmethod
     def validate_state(value):
