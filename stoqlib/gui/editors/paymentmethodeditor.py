@@ -336,8 +336,10 @@ class CreditProviderEditor(BaseEditor):
                                     CreditProviderEditor.proxy_widgets)
 
     def _setup_widgets(self):
-        """ Populate device widgets
-        """
+        """Populate device widgets and set some properties"""
+        # Let the user edit provider_id when creating a new one
+        self.provider_id.set_property('sensitive', not self.edit_mode)
+        self.provider_id.set_property('editable', not self.edit_mode)
         devices = CardPaymentDevice.get_devices(self.store)
         self.default_device.prefill(api.for_combo(devices,
                                                   empty=_(u"No device")))
