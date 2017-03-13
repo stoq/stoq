@@ -69,7 +69,7 @@ def generate_filizola_file(store):
         ))
 
     if platform.system() == 'Windows':
-        dest_dir = os.path.join('C:', 'Filizola')
+        dest_dir = os.path.join('C:\\', 'Filizola')
     else:
         # The software filizola provides is for windows, so on linux, it will
         # probably be running through wine (even though it didn't work properly
