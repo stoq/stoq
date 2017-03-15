@@ -5,6 +5,7 @@
 # Translators:
 # andrelcmarinho <andrelcmarinho@bol.com.br>, 2014
 # gerga <gerga@async.com.br>, 2015
+# Herbert Silver <herbertsilver@gmail.com>, 2017
 # Johan Dahlin <jdahlin@async.com.br>, 2005
 # luisoishi <luisoishi@async.com.br>, 2015
 # Marciel Leal <marcielmanoel15@gmail.com>, 2015
@@ -15,9 +16,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-11 02:10-0300\n"
-"PO-Revision-Date: 2017-03-10 05:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2017-03-14 02:10-0300\n"
+"PO-Revision-Date: 2017-03-14 17:29+0000\n"
+"Last-Translator: Herbert Silver <herbertsilver@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -503,7 +504,7 @@ msgstr "Fornecedor:"
 
 #: ../data/glade/CardDeviceEditor.ui.h:3
 msgid "Monthly cost:"
-msgstr ""
+msgstr "Custo mensal:"
 
 #: ../data/glade/CardDeviceEditor.ui.h:4
 msgid "<b>Operation Costs</b>"
@@ -1185,7 +1186,7 @@ msgstr "Estado civil:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:6
 msgid "Not set"
-msgstr ""
+msgstr "Não definido"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:7 ../stoqlib/domain/person.py:583
 msgid "Male"
@@ -1851,7 +1852,7 @@ msgstr "Qual tecnologia fiscal é utilizada em seu estado?"
 
 #: ../data/glade/PluginStep.ui.h:8
 msgid "S@T Fiscal"
-msgstr "S@AT Fiscal"
+msgstr "S@T Fiscal"
 
 #: ../data/glade/PluginStep.ui.h:9 ../plugins/ecf/ecfui.py:80
 #: ../plugins/ecf/ecfui.py:91 ../plugins/ecf/ecfui.py:99
@@ -8016,7 +8017,7 @@ msgstr "Fechar consignação..."
 
 #: ../stoq/gui/purchase.py:111
 msgid "Export Filizola File..."
-msgstr ""
+msgstr "Exportar Arquivo Filizola"
 
 #. Edit
 #: ../stoq/gui/purchase.py:114
@@ -8188,7 +8189,7 @@ msgstr "Os pedidos selecionados serão cancelados."
 #: ../stoq/gui/purchase.py:494
 #, python-format
 msgid "File saved in %s"
-msgstr ""
+msgstr "Arquivo salvo em %s"
 
 #. File
 #: ../stoq/gui/receivable.py:94
@@ -12943,7 +12944,7 @@ msgstr "Quantidade não disponível em estoque."
 #: ../stoqlib/gui/editors/noteeditor.py:130
 #, python-format
 msgid "The note must have at least %s characters."
-msgstr ""
+msgstr "A anotação deve ter ao menos %s caracteres"
 
 #: ../stoqlib/gui/editors/parameterseditor.py:168
 msgid "Cat 52 directory selection"
@@ -13049,7 +13050,7 @@ msgstr "Dispositivo de cartão"
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:179
 msgid "Value cannot be zero or negative"
-msgstr ""
+msgstr "O valor não pode ser zero ou negativo"
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:209
 msgid "Card Device Cost"
@@ -13114,7 +13115,7 @@ msgstr "Remover"
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:472
 msgid "Monthly cost"
-msgstr ""
+msgstr "Custo mensal"
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:483
 #, python-format
@@ -14509,7 +14510,7 @@ msgstr "Tabela de _preços"
 
 #: ../stoqlib/gui/search/productsearch.py:269
 msgid "Is internal"
-msgstr ""
+msgstr "É interno"
 
 #: ../stoqlib/gui/search/productsearch.py:304
 msgid "Product History Search"
@@ -16651,19 +16652,19 @@ msgstr "Código de 6 dígitos com Peso"
 
 #: ../stoqlib/lib/boleto.py:61
 msgid "Value cannot be empty"
-msgstr ""
+msgstr "O valor não pode ser vazio"
 
 #: ../stoqlib/lib/boleto.py:66
 msgid "Value must be a number"
-msgstr ""
+msgstr "O valor deve ser um número"
 
 #: ../stoqlib/lib/boleto.py:70
 msgid "Value must be a number greater than {}"
-msgstr ""
+msgstr "O valor deve ser um número maior que {}"
 
 #: ../stoqlib/lib/boleto.py:73
 msgid "Value must be a number lower than {}"
-msgstr ""
+msgstr "O valor deve ser um número menor que {}"
 
 #: ../stoqlib/lib/boleto.py:93
 msgid "Wrong value format"
@@ -17258,7 +17259,7 @@ msgstr "'%s' não é um percentual válido."
 #: ../stoqlib/lib/parameters.py:142
 #, python-format
 msgid "'%s' is not a valid CNPJ"
-msgstr ""
+msgstr "'%s' não é um CNPJ válido"
 
 #: ../stoqlib/lib/parameters.py:149 ../stoqlib/lib/parameters.py:158
 #, python-format
@@ -18176,7 +18177,7 @@ msgstr "A instância não adquiriu o plugin especificado"
 
 #: ../stoqlib/lib/pluginmanager.py:290
 msgid "The downloaded plugin is corrupted"
-msgstr ""
+msgstr "O plugin baixado está corrompido"
 
 #: ../stoqlib/lib/pluginmanager.py:293
 msgid "Plugin download successful"
