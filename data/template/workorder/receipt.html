@@ -47,6 +47,12 @@
 
   <%include file="workorder-items.html" />
 
+  <section id="notice">
+    <span>
+      ${ notice }
+    </span>
+  </section>
+
   <div class="signatures">
     <span class="signature">
       ${ report.workorder.client.get_description() }

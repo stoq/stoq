@@ -25,6 +25,7 @@
 
 """Work order reports implementation"""
 
+from stoqlib.api import api
 from stoqlib.reporting.report import ObjectListReport, HTMLReport
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -49,6 +50,11 @@ class _BaseWorkOrderReport(HTMLReport):
 
         super(_BaseWorkOrderReport, self).__init__(filename)
 
+    def get_namespace(self):
+        return dict(
+            notice=api.sysparam.get_string('WORK_ORDER_NOTICE')
+        )
+
 
 class WorkOrderQuoteReport(_BaseWorkOrderReport):
     template_filename = "workorder/quote.html"
@@ -59,7 +65,6 @@ class WorkOrderReceiptReport(_BaseWorkOrderReport):
 
 
 if __name__ == '__main__':  # pragma nocover
-    from stoqlib.api import api
     from stoqlib.domain.workorder import WorkOrder
     import sys
     creator = api.prepare_test()

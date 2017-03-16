@@ -871,6 +871,14 @@ _details = [
         unicode, multiline=True, initial=u""),
 
     ParameterDetails(
+        u'WORK_ORDER_NOTICE',
+        _(u'Work order'),
+        _(u'Notice that will be added to the work order report'),
+        _(u'This notice will be added to the work order receipt and can be used to '
+          'warn the client about warranties and limitations'),
+        unicode, multiline=True, initial=u''),
+
+    ParameterDetails(
         u'AUTOMATIC_LOGOUT',
         _(u'General'),
         _(u'Automatic logout after inactivity period'),

@@ -87,6 +87,7 @@ GtkVBox(toplevel):
     row: u'Smart lists', u'Load items intelligently from the database', u'Yes'
     row: u'Stock', u'Default C.F.O.P. for Stock Decreases', u'5.949 Outra sa\xedda de mercadoria ou presta\xe7\xe3o de servi\xe7o n\xe3o especificado'
     row: u'Till', u'Show total received payments of the day on till', u'No'
+    row: u'Work order', u'Notice that will be added to the work order report', u''
     row: u'Work order', u'Defect detected template for work orders', u''
   GtkHButtonBox(hbuttonbox1, fill=True):
     GtkButton(edit_button): 'gtk-edit', insensitive
