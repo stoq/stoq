@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-14 02:10-0300\n"
-"PO-Revision-Date: 2017-03-10 05:10+0000\n"
+"POT-Creation-Date: 2017-03-19 02:10-0300\n"
+"PO-Revision-Date: 2017-03-18 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (http://www.transifex.com/async/stoq/language/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -3008,7 +3008,7 @@ msgstr "Data de recebimento:"
 #: ../stoq/gui/production.py:123 ../stoq/gui/purchase.py:175
 #: ../stoq/gui/sales.py:220 ../stoqlib/gui/base/wizards.py:343
 #: ../stoqlib/gui/editors/baseeditor.py:456
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:456
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:458
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -3362,8 +3362,8 @@ msgstr "Forma"
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:105
 #: ../stoqlib/gui/editors/inventoryeditor.py:122
 #: ../stoqlib/gui/editors/paymenteditor.py:83
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:470
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:502
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:472
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:504
 #: ../stoqlib/gui/editors/shortcutseditor.py:140
 #: ../stoqlib/gui/editors/tilleditor.py:253
 #: ../stoqlib/gui/search/callsearch.py:112
@@ -3585,7 +3585,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/clientcategoryeditor.py:52
 #: ../stoqlib/gui/editors/costcentereditor.py:47
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:436
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:438
 #: ../stoqlib/gui/editors/personeditor.py:200
 #: ../stoqlib/gui/editors/producteditor.py:704
 #: ../stoqlib/gui/editors/sellableeditor.py:77
@@ -3636,12 +3636,12 @@ msgstr "Endereço"
 
 #: ../data/template/bikeshop/quote.html:65
 #: ../data/template/optical/optical.html:47
-#: ../data/template/workorder/quote.html:62
+#: ../data/template/workorder/quote.html:67
 msgid "Client signature"
 msgstr ""
 
 #: ../data/template/bikeshop/quote.html:69
-#: ../data/template/workorder/quote.html:66
+#: ../data/template/workorder/quote.html:71
 msgid "Responsible signature"
 msgstr ""
 
@@ -4145,7 +4145,8 @@ msgstr "Qtde"
 #: ../data/template/optical/workorderdetails.html:8
 #: ../plugins/optical/opticalreport.py:33 ../stoq/gui/calendar.py:289
 #: ../stoqlib/gui/editors/workordereditor.py:65
-#: ../stoqlib/lib/parameters.py:867 ../stoqlib/reporting/workorder.py:42
+#: ../stoqlib/lib/parameters.py:867 ../stoqlib/lib/parameters.py:875
+#: ../stoqlib/reporting/workorder.py:43
 msgid "Work order"
 msgstr ""
 
@@ -4603,7 +4604,7 @@ msgstr "Fornecedor"
 #: ../stoq/gui/purchase.py:76 ../stoq/lib/applist.py:55
 #: ../stoqlib/lib/invoice.py:334 ../stoqlib/lib/parameters.py:235
 #: ../stoqlib/lib/parameters.py:243 ../stoqlib/lib/parameters.py:548
-#: ../stoqlib/lib/parameters.py:884
+#: ../stoqlib/lib/parameters.py:892
 msgid "Purchase"
 msgstr "Compras"
 
@@ -4634,7 +4635,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:152
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:91
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:109
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:387
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:389
 msgid "Payment Method"
 msgstr "Forma de pagamento"
 
@@ -4817,9 +4818,9 @@ msgid "Book Details"
 msgstr "Detalhes do livro"
 
 #: ../plugins/books/booksslave.py:82
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:418
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:422
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:426
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:420
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:424
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:428
 #: ../stoqlib/gui/slaves/productslave.py:358
 #: ../stoqlib/gui/slaves/productslave.py:697
 msgid "The value must be positive."
@@ -7820,7 +7821,7 @@ msgstr "Quantidade deve ser um número positivo."
 #. Production
 #: ../stoq/gui/production.py:56 ../stoq/gui/production.py:81
 #: ../stoq/lib/applist.py:53 ../stoqlib/gui/dialogs/startproduction.py:35
-#: ../stoqlib/lib/parameters.py:892
+#: ../stoqlib/lib/parameters.py:900
 msgid "Production"
 msgstr "Produção"
 
@@ -8473,7 +8474,7 @@ msgstr "Data de expiração"
 #: ../stoqlib/gui/search/commissionsearch.py:131
 #: ../stoqlib/gui/search/salesearch.py:95
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:129
-#: ../stoqlib/lib/parameters.py:991 ../stoqlib/net/calendarevents.py:162
+#: ../stoqlib/lib/parameters.py:999 ../stoqlib/net/calendarevents.py:162
 msgid "Salesperson"
 msgstr "Vendedor"
 
@@ -10418,7 +10419,7 @@ msgid "By Sale Total"
 msgstr "Por total da venda"
 
 #: ../stoqlib/domain/product.py:176
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:506
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:508
 msgid "Days"
 msgstr "Dias"
 
@@ -12605,7 +12606,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/deliveryeditor.py:62
 #: ../stoqlib/gui/editors/deliveryeditor.py:90
 #: ../stoqlib/gui/editors/deliveryeditor.py:235
-#: ../stoqlib/lib/parameters.py:1009 ../stoqlib/lib/parameters.py:1011
+#: ../stoqlib/lib/parameters.py:1017 ../stoqlib/lib/parameters.py:1019
 msgid "Delivery"
 msgstr "Entrega"
 
@@ -13055,87 +13056,87 @@ msgstr ""
 msgid "The installments range is conflicting with another configuration"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:343
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:345
 msgid "No device"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:350
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:352
 msgid "The max installments must be greater than zero."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:366
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:368
 msgid "Device"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:368
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:370
 #: ../stoqlib/gui/search/paymentsearch.py:175
 msgid "Provider"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:370
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:372
 #: ../stoqlib/gui/search/paymentsearch.py:189
 msgid "Authorization"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:438
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:440
 msgid "Max Installments"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:447
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:449
 msgid ""
 "You can not remove this provider.\n"
 "It is being used in card device."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:451
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:453
 msgid ""
 "You can not remove this provider.\n"
 "You already have payments using this provider."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:455
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:457
 #, python-format
 msgid "Do you want remove %s?"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:456
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:488
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:458
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:490
 #: ../stoqlib/gui/editors/sellableeditor.py:291 ../stoqlib/gui/fields.py:523
 msgid "Remove"
 msgstr "Remover"
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:472
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:474
 msgid "Monthly cost"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:483
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:485
 #, python-format
 msgid ""
 "Can not remove this device.\n"
 "It is being used as default device in %s credit provider(s)."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:487
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:489
 msgid "Removing this device will also remove all related costs."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:488
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:490
 msgid "Keep device"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:504
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:506
 msgid "Installments"
 msgstr ""
 
 #. Translators: Fee is Taxa in pt_BR
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:508
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:510
 #: ../stoqlib/gui/search/paymentsearch.py:188
 #: ../stoqlib/reporting/payment.py:76
 msgid "Fee"
 msgstr "Taxa"
 
 #. Translators: Fare is Tarifa in pt_BR
-#: ../stoqlib/gui/editors/paymentmethodeditor.py:511
+#: ../stoqlib/gui/editors/paymentmethodeditor.py:513
 #: ../stoqlib/gui/search/paymentsearch.py:185
 msgid "Fare"
 msgstr ""
@@ -13206,8 +13207,8 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:623 ../stoqlib/lib/parameters.py:634
 #: ../stoqlib/lib/parameters.py:642 ../stoqlib/lib/parameters.py:682
 #: ../stoqlib/lib/parameters.py:717 ../stoqlib/lib/parameters.py:793
-#: ../stoqlib/lib/parameters.py:801 ../stoqlib/lib/parameters.py:875
-#: ../stoqlib/lib/parameters.py:901 ../stoqlib/lib/parameters.py:909
+#: ../stoqlib/lib/parameters.py:801 ../stoqlib/lib/parameters.py:883
+#: ../stoqlib/lib/parameters.py:909 ../stoqlib/lib/parameters.py:917
 msgid "General"
 msgstr "Geral"
 
@@ -18088,48 +18089,58 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:876
-msgid "Automatic logout after inactivity period"
+msgid "Notice that will be added to the work order report"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:877
+msgid ""
+"This notice will be added to the work order receipt and can be used to warn "
+"the client about warranties and limitations"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:884
+msgid "Automatic logout after inactivity period"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:885
 msgid ""
 "Set the maximum time in minutes for the user to remain idle, before being automatically logout. \n"
 "Set to zero to disable the funcionality. Requires restart to take effect."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:885
+#: ../stoqlib/lib/parameters.py:893
 msgid "Automatic update of products cost when making a new purchase."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:886
+#: ../stoqlib/lib/parameters.py:894
 msgid ""
 "When a new purchase is made, it's products cost are set to the purchase's "
 "items cost."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:893
+#: ../stoqlib/lib/parameters.py:901
 msgid "Automatic update the cost of a production product"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:894
+#: ../stoqlib/lib/parameters.py:902
 msgid ""
 "When the list of components is updated or the cost of a component is "
 "updated, the cost of a production product will be automatically updated"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:902
+#: ../stoqlib/lib/parameters.py:910
 msgid "Client birthday notification"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:903
+#: ../stoqlib/lib/parameters.py:911
 msgid "Notify about clients birthdays on the current day."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:910
+#: ../stoqlib/lib/parameters.py:918
 msgid "User hash"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:911
+#: ../stoqlib/lib/parameters.py:919
 msgid ""
 "This hash value is used for integration and communication with stoq api and "
 "stoq link. It will be added on ping requests, tef requests and feedbacks "
@@ -18477,7 +18488,7 @@ msgid "orders"
 msgstr "pedidos"
 
 #: ../stoqlib/reporting/production.py:42 ../stoqlib/reporting/purchase.py:39
-#: ../stoqlib/reporting/sale.py:86 ../stoqlib/reporting/workorder.py:37
+#: ../stoqlib/reporting/sale.py:86 ../stoqlib/reporting/workorder.py:38
 #, python-format
 msgid "with status <u>%s</u>"
 msgstr "com situação <u>%s</u>"
@@ -18723,19 +18734,19 @@ msgstr ""
 msgid "transfer items"
 msgstr ""
 
-#: ../stoqlib/reporting/workorder.py:35
+#: ../stoqlib/reporting/workorder.py:36
 msgid "Work orders report"
 msgstr ""
 
-#: ../stoqlib/reporting/workorder.py:36
+#: ../stoqlib/reporting/workorder.py:37
 msgid "work order"
 msgstr ""
 
-#: ../stoqlib/reporting/workorder.py:36
+#: ../stoqlib/reporting/workorder.py:37
 msgid "work orders"
 msgstr ""
 
-#: ../stoqlib/reporting/workorder.py:47
+#: ../stoqlib/reporting/workorder.py:48
 #, python-format
 msgid "Order number: %s"
 msgstr ""
