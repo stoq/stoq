@@ -4,7 +4,9 @@ GtkVBox(toplevel):
     GtkHBox(hbox2, fill=True):
       GtkLabel(label9, fill=True): 'Branch:'
       ProxyComboBox(branch, fill=True):
+        item: 'Any'
         item: 'Moda Stoq', selected
+        item: 'Stoq Elite Fashion'
       GtkButton(search_button, fill=True): 'gtk-find'
     GtkHBox(daterange_hbox, fill=True):
       DateSearchFilter(date_filter):

@@ -163,6 +163,9 @@ class StoqAPI(object):
         can_see = CanSeeAllBranches.emit()
         if can_see is not None:
             return can_see
+        user = self.get_current_user(self.get_default_store())
+        if user.profile.check_app_permission(u'admin'):
+            return True
         return not api.sysparam.get_bool('SYNCHRONIZED_MODE')
 
     def get_branches_for_filter(self, store, use_id=False):

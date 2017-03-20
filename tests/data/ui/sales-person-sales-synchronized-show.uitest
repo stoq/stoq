@@ -11,7 +11,10 @@ GtkDialog(toplevel): title='Salesperson Total Sales', hidden
                 ComboSearchFilter(branch_filter):
                   GtkLabel(): 'Branch:'
                   ProxyComboBox(padding=6):
+                    item: 'Any'
                     item: 'Moda Stoq', selected
+                    item: 'Stoq Elite Fashion'
+                    item: 'Dummy shop'
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
