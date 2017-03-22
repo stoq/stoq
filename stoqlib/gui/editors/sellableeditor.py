@@ -43,6 +43,7 @@ from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
+from stoqlib.gui.slaves.imageslaveslave import ImageGallerySlave
 from stoqlib.gui.utils.databaseform import DatabaseForm
 from stoqlib.gui.utils.printing import print_labels
 from stoqlib.lib.decorators import cached_property
@@ -266,6 +267,9 @@ class SellableEditor(BaseEditor):
                 self._add_close_button()
 
         self.set_main_tab_label(self.model_name)
+        image_gallery_slave = ImageGallerySlave(
+            self.store, self.model.sellable, self.visual_mode)
+        self.add_extra_tab(_(u'Images'), image_gallery_slave)
         price_slave = CategoryPriceSlave(self.store, self.model.sellable,
                                          self.visual_mode)
         self.add_extra_tab(_(u'Category Prices'), price_slave)

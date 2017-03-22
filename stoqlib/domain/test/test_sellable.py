@@ -31,6 +31,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.exceptions import SellableError, TaxError
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.image import Image
 from stoqlib.domain.product import Storable, StockTransactionHistory
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import (Sellable,
@@ -728,6 +729,9 @@ class TestSellable(DomainTest):
         # Remove category price and sellable
         sellable = self.create_sellable()
         Storable(product=sellable.product, store=self.store)
+        for i in range(10):
+            image = self.create_image()
+            image.sellable = sellable
 
         ClientCategoryPrice(sellable=sellable,
                             category=self.create_client_category(),
@@ -736,16 +740,21 @@ class TestSellable(DomainTest):
 
         total = self.store.find(ClientCategoryPrice, sellable=sellable.id).count()
         total_sellable = self.store.find(Sellable, id=sellable.id).count()
+        total_images = self.store.find(Image, sellable_id=sellable.id).count()
 
         self.assertEquals(total, 1)
         self.assertEquals(total_sellable, 1)
+        self.assertEquals(total_images, 10)
 
         sellable.remove()
         total = self.store.find(ClientCategoryPrice,
                                 sellable=sellable.id).count()
         total_sellable = self.store.find(Sellable, id=sellable.id).count()
+        total_images = self.store.find(Image, sellable_id=sellable.id).count()
+
         self.assertEquals(total, 0)
         self.assertEquals(total_sellable, 0)
+        self.assertEquals(total_images, 0)
 
     def test_category_price(self):
         sellable = self.create_sellable(price=100)

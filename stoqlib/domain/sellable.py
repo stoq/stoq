@@ -436,11 +436,6 @@ class Sellable(Domain):
     #: the |sellableunit|, quantities of this sellable are in this unit.
     unit = Reference(unit_id, 'SellableUnit.id')
 
-    image_id = IdCol(default=None)
-
-    #: the |image|, a picture representing the sellable
-    image = Reference(image_id, 'Image.id')
-
     category_id = IdCol(default=None)
 
     #: a reference to category table
@@ -474,6 +469,9 @@ class Sellable(Domain):
 
     #: When the promotional/special price ends
     on_sale_end_date = DateTimeCol(default=None)
+
+    #: This sellable's images
+    images = ReferenceSet('id', 'Image.sellable_id')
 
     def __init__(self, store=None,
                  category=None,
@@ -532,6 +530,14 @@ class Sellable(Domain):
         :rtype: unicode
         """
         return self.unit and self.unit.description or u""
+
+    @property
+    def image(self):
+        """This sellable's main image."""
+        # FIXME: Should we use .first() here? What will happen if there are
+        # more than one image with "is_main" flag set to True? There's no way
+        # to prevent that in the database
+        return self.images.find(is_main=True).one()
 
     @property
     def markup(self):
@@ -631,6 +637,7 @@ class Sellable(Domain):
         return super(Sellable, self).can_remove(
             skip=[('product', 'id'),
                   ('service', 'id'),
+                  ('image', 'sellable_id'),
                   ('client_category_price', 'sellable_id')])
 
     def can_close(self):
@@ -887,6 +894,9 @@ class Sellable(Domain):
         category_prices = self.get_category_prices()
         for category_price in category_prices:
             category_price.remove()
+
+        for image in self.images:
+            self.store.remove(image)
 
         if self.product:
             self.product.remove()

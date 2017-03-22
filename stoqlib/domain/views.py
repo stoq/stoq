@@ -37,6 +37,7 @@ from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.fiscal import CfopData, Invoice
+from stoqlib.domain.image import Image
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, Supplier, Company, LoginUser,
                                    Branch, Client, Employee, Transporter,
@@ -115,13 +116,11 @@ class ProductFullStockView(Viewable):
     status = Sellable.status
     cost = Sellable.cost
     description = Sellable.description
-    image_id = Sellable.image_id
     base_price = Sellable.base_price
     on_sale_price = Sellable.on_sale_price
     on_sale_start_date = Sellable.on_sale_start_date
     on_sale_end_date = Sellable.on_sale_end_date
     price = _price_search
-    has_image = Ne(Sellable.image_id, None)
 
     # Product
     product_id = Product.id
@@ -135,6 +134,10 @@ class ProductFullStockView(Viewable):
 
     # Storable
     storable_id = Storable.id
+
+    # Image
+    image_id = Image.id
+    has_image = Ne(Image.id, None)
 
     manufacturer = ProductManufacturer.name
     tax_description = SellableTaxConstant.description
@@ -157,11 +160,13 @@ class ProductFullStockView(Viewable):
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(ProductManufacturer,
                  Product.manufacturer_id == ProductManufacturer.id),
+        LeftJoin(Image,
+                 And(Sellable.id == Image.sellable_id, Eq(Image.is_main, True))),
     ]
 
     clause = Sellable.status != Sellable.STATUS_CLOSED
     group_by = [id, product_id, storable_id, category_description,
-                manufacturer, tax_description, unit]
+                manufacturer, tax_description, unit, image_id]
 
     def __eq__(self, other):
         hvs = self.highjacked.values()

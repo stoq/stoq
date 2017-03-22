@@ -77,12 +77,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                       GtkLabel(notes_lbl): 'Details:'
                       GtkScrolledWindow(scrolledwindow1):
                         ProxyTextView(notes):
-                      GtkVBox(vbox2):
-                        GtkEventBox(sellable_image_holder, expand=True, fill=True): slave ImageSlave is attached
-                          GtkHBox(toplevel):
-                            GtkEventBox(eventbox, expand=True, fill=True):
-                              GtkImage(image):
-                    GtkLabel(label1, fill=True): 'Right-click image for more options'
             GtkEventBox(): slave ProductInformationSlave is attached
               GtkAlignment(alignment2):
                 GtkVBox(vbox1):
@@ -136,6 +130,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                         GtkLabel(genero_lbl): 'G\xc3\xaanero:'
                         ProxyEntry(genero): ''
                     GtkLabel(label6): '<b>Mercosul Details</b>'
+            GtkEventBox(): slave ImageGallerySlave is attached
+              GtkAlignment(toplevel):
+                GtkScrolledWindow(sw):
+                  GtkViewport(viewport):
+                    GtkTable(images_table):
             GtkEventBox(): slave CategoryPriceSlave is attached
               GtkVBox(toplevel):
                 GtkHBox(hbox1, fill=True):

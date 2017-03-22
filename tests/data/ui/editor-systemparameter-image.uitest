@@ -14,9 +14,11 @@ GtkDialog(main_dialog.toplevel): title="Edit 'Custom logotype for reports' Param
           GtkLabel(label3): 'Current Value:'
           GtkAlignment(container):
             GtkEventBox(): slave ImageSlave is attached
-              GtkHBox(toplevel):
-                GtkEventBox(eventbox, expand=True, fill=True):
-                  GtkImage(image):
+              GtkAlignment(alignment1):
+                GtkEventBox(eventbox):
+                  GtkFixed(fixed):
+                    GtkImage(image):
+                    GtkImage(icon): hidden
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

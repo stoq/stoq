@@ -22,10 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import base64
+from decimal import Decimal
+
 import mock
 from storm.expr import Update
 
-from decimal import Decimal
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import Product, ProductStockItem
@@ -37,6 +39,13 @@ from stoqlib.gui.editors.producteditor import (ProductEditor,
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.slaves.productslave import ProductComponentSlave
 from stoqlib.lib.parameters import sysparam
+
+# A (1px, 1px) image
+_image = base64.b64decode("""
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBI
+WXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wEPEDYaIuf2wwAAABl0RVh0Q29tbWVudABDcmVhdGVk
+IHdpdGggR0lNUFeBDhcAAAANSURBVAjXY2BgYGAAAAAFAAFe8yo6AAAAAElFTkSuQmCC
+""")
 
 
 # TODO: Test product editor for products without storable
@@ -89,6 +98,10 @@ class TestProductEditor(GUITest):
 
     def test_show(self):
         product = self.create_product(storable=True)
+        image = self.create_image()
+        image.image = _image
+        image.sellable = product.sellable
+
         editor = ProductEditor(self.store, product)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-show')

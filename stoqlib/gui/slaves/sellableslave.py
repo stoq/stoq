@@ -33,7 +33,6 @@ from stoqlib.domain.sellable import ClientCategoryPrice, Sellable
 from stoqlib.gui.editors.baseeditor import (BaseRelationshipEditorSlave,
                                             BaseEditorSlave)
 from stoqlib.gui.editors.sellableeditor import CategoryPriceEditor
-from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
@@ -51,7 +50,6 @@ class SellableDetailsSlave(BaseEditorSlave):
     def __init__(self, store, model=None, db_form=None, visual_mode=False):
         self.db_form = db_form
         BaseEditorSlave.__init__(self, store, model, visual_mode)
-        self._setup_image_slave(model and model.image)
 
     #
     #  BaseEditorSlave hooks
@@ -60,24 +58,6 @@ class SellableDetailsSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     SellableDetailsSlave.proxy_widgets)
-
-    #
-    #  Private
-    #
-
-    def _setup_image_slave(self, image_model):
-        slave = ImageSlave(self.store, image_model, visual_mode=self.visual_mode)
-        slave.connect('image-changed', self._on_image_slave__image_changed)
-        self.attach_slave('sellable_image_holder', slave)
-
-    #
-    #  Callbacks
-    #
-
-    def _on_image_slave__image_changed(self, slave, image):
-        if image:
-            image.description = self.model.get_description()
-        self.model.image = image
 
 
 class CategoryPriceSlave(BaseRelationshipEditorSlave):

@@ -3,29 +3,49 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="ImageHolder">
-    <property name="default_width">1</property>
-    <property name="default_height">1</property>
+    <property name="can_focus">False</property>
     <child>
-      <object class="GtkHBox" id="hbox1">
+      <object class="GtkAlignment" id="alignment1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="top_padding">5</property>
+        <property name="bottom_padding">5</property>
+        <property name="left_padding">5</property>
+        <property name="right_padding">5</property>
         <child>
           <object class="GtkEventBox" id="eventbox">
             <property name="visible">True</property>
-            <property name="border_width">6</property>
+            <property name="can_focus">False</property>
+            <property name="visible_window">False</property>
             <child>
-              <object class="GtkImage" id="image">
-                <property name="width_request">64</property>
-                <property name="height_request">64</property>
+              <object class="GtkFixed" id="fixed">
                 <property name="visible">True</property>
-                <property name="xpad">6</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkImage" id="image">
+                    <property name="width_request">148</property>
+                    <property name="height_request">148</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImage" id="icon">
+                    <property name="width_request">16</property>
+                    <property name="height_request">16</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-about</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                  <packing>
+                    <property name="x">148</property>
+                    <property name="y">5</property>
+                  </packing>
+                </child>
               </object>
             </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
       </object>
     </child>

@@ -399,7 +399,8 @@ class PosApp(ShellApp):
 
         self.quantity.set_digits(3)
 
-        self._image_slave = SellableImageViewer(size=(175, 175))
+        self._image_slave = SellableImageViewer(size=(175, 175),
+                                                use_thumbnail=True)
         self.attach_slave('image_holder', self._image_slave)
         self.details_lbl.set_ellipsize(pango.ELLIPSIZE_END)
         self.extra_details_lbl.set_ellipsize(pango.ELLIPSIZE_END)

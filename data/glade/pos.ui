@@ -312,7 +312,7 @@
                             <property name="visible">True</property>
                             <property name="border_width">6</property>
                             <property name="label_xalign">0</property>
-                            <property name="shadow_type">etched-out</property>
+                            <property name="shadow_type">none</property>
                             <property name="obey_child">False</property>
                             <child>
                               <object class="GtkEventBox" id="image_holder">

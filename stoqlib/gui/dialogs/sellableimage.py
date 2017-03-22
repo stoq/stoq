@@ -26,7 +26,9 @@ import gtk
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.datatypes import converter
 
+from stoqlib.domain.image import Image
 from stoqlib.gui.base.dialogs import RunnableView
+from stoqlib.lib.imageutils import get_pixbuf, get_thumbnail
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 _pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
@@ -38,10 +40,11 @@ class SellableImageViewer(GladeDelegate, RunnableView):
     gladefile = "SellableImageViewer"
     position = (0, 0)
 
-    def __init__(self, size):
+    def __init__(self, size, use_thumbnail=False):
         """
         :param tuple size: the size for this viewer as (x, y)
         """
+        self._use_thumbnail = use_thumbnail
         self._size = size
 
         GladeDelegate.__init__(self)
@@ -59,13 +62,35 @@ class SellableImageViewer(GladeDelegate, RunnableView):
     def set_sellable(self, sellable):
         self.sellable = sellable
         if not self.sellable or not self.sellable.image:
-            self.image.set_from_stock(gtk.STOCK_DIALOG_ERROR,
+            self.image.set_from_stock(gtk.STOCK_MISSING_IMAGE,
                                       gtk.ICON_SIZE_DIALOG)
             return
 
-        pixbuf = _pixbuf_converter.from_string(sellable.image.image)
-        width, height = self._size
-        pixbuf = pixbuf.scale_simple(width, height, gtk.gdk.INTERP_BILINEAR)
+        if self._use_thumbnail:
+            size = (Image.THUMBNAIL_SIZE_WIDTH, Image.THUMBNAIL_SIZE_HEIGHT)
+
+            if not sellable.image.thumbnail:
+                # If image came without a thumbnail, generate one for it
+                # This should happen only once for each image
+                sellable.image.thumbnail = get_thumbnail(
+                    sellable.image.image, size)
+
+            pixbuf = get_pixbuf(sellable.image.thumbnail, size)
+        else:
+            pixbuf = _pixbuf_converter.from_string(sellable.image.image)
+            iw, ih = pixbuf.get_width(), pixbuf.get_height()
+            image_aspect = float(iw) / ih
+
+            width, height = self._size
+            window_aspect = float(width) / height
+
+            if image_aspect < window_aspect:
+                width = int(height * image_aspect)
+            else:
+                height = int(width / image_aspect)
+
+            pixbuf = pixbuf.scale_simple(width, height, gtk.gdk.INTERP_BILINEAR)
+
         self.image.set_from_pixbuf(pixbuf)
 
     #

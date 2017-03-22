@@ -225,6 +225,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`imageutils` Module
+------------------------
+
+.. automodule:: stoqlib.lib.imageutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`kiwilibrary` Module
 -------------------------
 

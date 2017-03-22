@@ -46,6 +46,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
+from stoqlib.gui.slaves.imageslaveslave import ImageGallerySlave
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import quantize, MAX_INT
 from stoqlib.lib.message import info
@@ -597,6 +598,13 @@ class ProductStockEditor(BaseEditor):
 
         # Make everything aligned by pytting notes_lbl on the same size group
         info_slave.left_labels_group.add_widget(details_slave.notes_lbl)
+
+        event_box = gtk.EventBox()
+        event_box.show()
+        image_gallery_slave = ImageGallerySlave(
+            self.store, self.model.sellable, self.visual_mode)
+        self.notebook.append_page(event_box, gtk.Label(_("Images")))
+        self.attach_slave('images', image_gallery_slave, event_box)
 
 
 class ProductStockQuantityEditor(BaseEditor):

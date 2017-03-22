@@ -28,9 +28,12 @@
 
 import base64
 
+from storm.references import Reference
 from zope.interface import implementer
 
-from stoqlib.database.properties import BLOBCol, UnicodeCol
+from stoqlib.database.expr import StatementTimestamp
+from stoqlib.database.properties import (IdCol, BLOBCol, UnicodeCol, BoolCol,
+                                         DateTimeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ImageCreateEvent, ImageEditEvent,
                                    ImageRemoveEvent)
@@ -52,7 +55,7 @@ class Image(Domain):
     __storm_table__ = 'image'
 
     (THUMBNAIL_SIZE_HEIGHT,
-     THUMBNAIL_SIZE_WIDTH) = (64, 64)
+     THUMBNAIL_SIZE_WIDTH) = (128, 128)
 
     #: the image itself in a bin format
     image = BLOBCol(default=None)
@@ -62,6 +65,27 @@ class Image(Domain):
 
     #: the image description
     description = UnicodeCol(default=u'')
+
+    #: The image filename
+    filename = UnicodeCol(default=u'')
+
+    #: The date that this image was uploaded to the database
+    create_date = DateTimeCol(default_factory=StatementTimestamp)
+
+    #: Some notes about the image
+    notes = UnicodeCol(default=u'')
+
+    #: If this is the main image. Only makes sense if :obj:`.sellable`
+    #: is not `None`
+    is_main = BoolCol(default=False)
+
+    #: If this image is only for internal use (i.e. it won't be synchronized
+    #: to any e-commerce website to be displayed publicly)
+    internal_use = BoolCol(default=False)
+
+    sellable_id = IdCol(default=None)
+    #: The |sellable| that this image belongs to
+    sellable = Reference(sellable_id, 'Sellable.id')
 
     #
     #  Public API
