@@ -40,6 +40,7 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import InvalidStatus, NeedReason
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
@@ -57,7 +58,6 @@ from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 from stoqlib.gui.widgets.kanbanview import KanbanView, KanbanViewColumn
 from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
-from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.message import yesno, info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.workorder import (WorkOrdersReport,
@@ -68,17 +68,54 @@ from stoq.gui.shell.shellapp import ShellApp
 _ = stoqlib_gettext
 
 
+reopen_question = _(u"This will reopen the order. Are you sure?")
+cancel_question = _(u"This will cancel the selected order. Any reserved items "
+                    u"will return to stock. Are you sure?")
+waiting_question = _(u"This will inform the order that we are waiting. "
+                     u"Are you sure?")
+
+
 @implementer(ISearchResultView)
 class WorkOrderResultKanbanView(KanbanView):
+    status_question_map = {
+        WorkOrder.STATUS_WORK_IN_PROGRESS: reopen_question,
+        WorkOrder.STATUS_CANCELLED: cancel_question,
+        WorkOrder.STATUS_WORK_WAITING: waiting_question,
+    }
+
+    need_reason = [
+        (WorkOrder.STATUS_WORK_FINISHED, WorkOrder.STATUS_WORK_WAITING),
+        (WorkOrder.STATUS_WORK_FINISHED, WorkOrder.STATUS_WORK_IN_PROGRESS),
+        (WorkOrder.STATUS_WORK_IN_PROGRESS, WorkOrder.STATUS_WORK_WAITING),
+    ]
+
+    def _ask_reason(self, work_order, new_status):
+        if (work_order.status, new_status) not in self.need_reason:
+            return None
+
+        msg_text = self.status_question_map[new_status]
+        rv = run_dialog(NoteEditor, None, work_order.store, model=Note(),
+                        message_text=msg_text, label_text=_(u"Reason"),
+                        mandatory=True)
+        if not rv:
+            # False means abort the status change
+            return False
+
+        return rv.notes
 
     def _change_status(self, work_order, new_status):
         with api.new_store() as store:
             if work_order.status == new_status:
                 return True
 
+            reason = self._ask_reason(work_order, new_status)
+            if reason is False:
+                store.retval = False
+                return
+
             work_order = store.fetch(work_order)
             try:
-                work_order.change_status(new_status)
+                work_order.change_status(new_status, reason)
             except InvalidStatus as e:
                 info(str(e))
                 store.retval = False
@@ -93,11 +130,16 @@ class WorkOrderResultKanbanView(KanbanView):
 
     def attach(self, search, columns):
         self.connect('item-dragged', self._on__item_dragged)
-        statuses = list(WorkOrder.statuses.values())
-        statuses.remove(_(u'Cancelled'))
-        statuses.remove(_(u'Delivered'))
-        for status_name in statuses:
-            column = KanbanViewColumn(title=status_name)
+        statuses = [
+            WorkOrder.STATUS_OPENED,
+            WorkOrder.STATUS_WORK_WAITING,
+            WorkOrder.STATUS_WORK_IN_PROGRESS,
+            WorkOrder.STATUS_WORK_FINISHED
+        ]
+
+        for status in statuses:
+            name = WorkOrder.statuses[status]
+            column = KanbanViewColumn(title=name, value=status)
             self.add_column(column)
         self.enable_editing()
 
@@ -114,10 +156,17 @@ class WorkOrderResultKanbanView(KanbanView):
             column = self.get_column_by_title(status_name)
             if column is None:
                 continue
+
+            if work_order_view.sellable:
+                description = '%s - %s' % (
+                    work_order_view.sellable,
+                    work_order_view.description)
+            else:
+                description = work_order_view.description
+
             # FIXME: Figure out a better way of rendering
-            work_order_view.markup = '<b>%s - %s</b>\n%s\n%s' % (
-                work_order_view.sellable,
-                work_order_view.description,
+            work_order_view.markup = '<b>%s</b>\n%s\n%s' % (
+                description,
                 unicode(api.escape(work_order_view.client_name)),
                 work_order_view.open_date.strftime('%x'))
 
@@ -132,13 +181,7 @@ class WorkOrderResultKanbanView(KanbanView):
     # Callbacks
 
     def _on__item_dragged(self, kanban, column, work_order_view):
-        for status, status_name in WorkOrder.statuses.items():
-            if status_name == column.title:
-                new_status = status
-                break
-        else:
-            raise AssertionError
-
+        new_status = column.value
         return self._change_status(work_order_view.work_order,
                                    new_status)
 
@@ -248,11 +291,7 @@ class ServicesApp(ShellApp):
         self.add_ui_actions('', radio_actions, 'RadioActions',
                             'radio')
 
-        if is_developer_mode():
-            self.ViewList.props.active = True
-        else:
-            self.ViewList.props.visible = False
-            self.ViewKanban.props.visible = False
+        self.ViewList.props.active = True
         self.Edit.set_short_label(_(u"Edit"))
         self.Finish.set_short_label(_(u"Finish"))
         self.Edit.props.is_important = True
@@ -605,9 +644,7 @@ class ServicesApp(ShellApp):
         self._update_view()
 
     def _cancel_order(self):
-        msg_text = _(u"This will cancel the selected order. Any reserved items "
-                     u"will return to stock. Are you sure?")
-        rv = self._run_notes_editor(msg_text=msg_text, mandatory=True)
+        rv = self._run_notes_editor(msg_text=cancel_question, mandatory=True)
         if not rv:
             return
 
@@ -645,9 +682,7 @@ class ServicesApp(ShellApp):
         self._update_view(select_item=selection)
 
     def _pause_order(self):
-        msg_text = _(u"This will inform the order that we are waiting. "
-                     u"Are you sure?")
-        rv = self._run_notes_editor(msg_text=msg_text, mandatory=True)
+        rv = self._run_notes_editor(msg_text=waiting_question, mandatory=True)
         if not rv:
             return
 
@@ -694,8 +729,7 @@ class ServicesApp(ShellApp):
         self._update_view(select_item=selection)
 
     def _reopen(self):
-        msg_text = _(u"This will reopen the order. Are you sure?")
-        rv = self._run_notes_editor(msg_text=msg_text, mandatory=True)
+        rv = self._run_notes_editor(msg_text=reopen_question, mandatory=True)
         if not rv:
             return
 

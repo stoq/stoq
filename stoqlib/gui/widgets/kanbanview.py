@@ -91,6 +91,7 @@ class CellRendererTextBox(gtk.CellRendererText):
                     cell_area.width + (self.SIZE * 2),
                     cell_area.height + (self.SIZE * 2))
 
+
 gobject.type_register(CellRendererTextBox)
 
 
@@ -100,8 +101,16 @@ class KanbanViewColumn(object):
     It just has a title and can be cleared via :attr:`.clear` and
     you can append an item via :attr:`.append_item`
     """
-    def __init__(self, title):
+
+    def __init__(self, title, value):
+        """
+        :param title: The title for this column
+        :param value: A value associated with this column. Can be used to
+          determine what should be done when an item is drag and droped into a
+          column
+        """
         self.title = title
+        self.value = value
         self.view = None
         self.object_list = None
 
@@ -228,7 +237,11 @@ class KanbanView(gtk.Frame):
             return None
         if self._selected_iter is not None:
             model = self._selected_treeview.get_model()
-            return model[self._selected_iter][0]
+            try:
+                return model[self._selected_iter][0]
+            except TypeError:
+                # Dont know why this happens
+                return None
 
     def render_item(self, column, renderer, item):
         """
@@ -406,7 +419,7 @@ class KanbanView(gtk.Frame):
             path, position = drop_info
             titer = model.get_iter(path)
             if (position == gtk.TREE_VIEW_DROP_BEFORE or
-                position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                    position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
                 titer = model.insert_before(titer, [item])
             else:
                 titer = model.insert_after(titer, [item])
@@ -418,6 +431,7 @@ class KanbanView(gtk.Frame):
 
         treeview.grab_focus()
         self._maybe_selection_changed(treeview, titer)
+
 
 gobject.type_register(KanbanView)
 
@@ -446,6 +460,7 @@ def main():
     win.show_all()
 
     gtk.main()
+
 
 if __name__ == '__main__':
     main()
