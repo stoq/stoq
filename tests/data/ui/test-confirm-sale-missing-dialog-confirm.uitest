@@ -27,6 +27,7 @@ model: Storable<1>
 
 model: Sale<2>
   cancel_date: None
+  cancel_reason: None
   close_date: None
   confirm_date: None
   discount_value: <currency $ 0>

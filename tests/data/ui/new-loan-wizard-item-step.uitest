@@ -65,6 +65,8 @@ GtkDialog(toplevel): title='New Loan Wizard', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: Loan<1>
+  cancel_date: None
+  cancel_reason: None
   close_date: None
   expire_date: datetime.today()
   notes: u''

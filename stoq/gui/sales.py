@@ -36,7 +36,7 @@ from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.domain.events import SaleAvoidCancelEvent, StockOperationTryFiscalCancelEvent
 from stoqlib.domain.invoice import InvoicePrinter
-from stoqlib.domain.sale import Sale, SaleView, SaleComment
+from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.editors.saleeditor import SaleClientEditor, SalesPersonEditor
@@ -524,8 +524,6 @@ class SalesApp(ShellApp):
         store = api.new_store()
         sale = store.fetch(sale_view.sale)
         msg_text = _(u"This will cancel the sale, Are you sure?")
-        model = SaleComment(store=store, sale=sale,
-                            author=api.get_current_user(store))
 
         # nfce plugin cancellation event requires a minimum length for the
         # cancellation reason note. We can't set this in the plugin because it's
@@ -536,7 +534,7 @@ class SalesApp(ShellApp):
             note_min_length = 0
 
         retval = self.run_dialog(
-            NoteEditor, store, model=model, attr_name='comment',
+            NoteEditor, store, model=sale, attr_name='cancel_reason',
             message_text=msg_text, label_text=_(u"Reason"),
             mandatory=True, ok_button_label=_(u"Cancel sale"),
             cancel_button_label=_(u"Don't cancel"),

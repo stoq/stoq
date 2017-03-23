@@ -1515,7 +1515,9 @@ class TestPersonMerging(DomainTest):
             'UPDATE calls SET attendant_id=%s WHERE calls.attendant_id = %s',
             'UPDATE client_salary_history SET user_id=%s WHERE client_salary_history.user_id = %s',
             'UPDATE credit_check_history SET user_id=%s WHERE credit_check_history.user_id = %s',  # nopep8
+            'UPDATE inventory SET cancel_responsible_id=%s WHERE inventory.cancel_responsible_id = %s',  # nopep8
             'UPDATE inventory SET responsible_id=%s WHERE inventory.responsible_id = %s',  # nopep8
+            'UPDATE loan SET cancel_responsible_id=%s WHERE loan.cancel_responsible_id = %s',  # nopep8
             'UPDATE loan SET responsible_id=%s WHERE loan.responsible_id = %s',  # nopep8
             'UPDATE payment_comment SET author_id=%s WHERE payment_comment.author_id = %s',  # nopep8
             'UPDATE payment_renegotiation SET responsible_id=%s WHERE payment_renegotiation.responsible_id = %s',  # nopep8
@@ -1526,7 +1528,9 @@ class TestPersonMerging(DomainTest):
             'UPDATE returned_sale SET confirm_responsible_id=%s WHERE returned_sale.confirm_responsible_id = %s',  # nopep8
             'UPDATE returned_sale SET responsible_id=%s WHERE returned_sale.responsible_id = %s',  # nopep8
             'UPDATE returned_sale SET undo_responsible_id=%s WHERE returned_sale.undo_responsible_id = %s',  # nopep8
+            'UPDATE sale SET cancel_responsible_id=%s WHERE sale.cancel_responsible_id = %s',  # nopep8
             'UPDATE sale_comment SET author_id=%s WHERE sale_comment.author_id = %s',  # nopep8
+            'UPDATE stock_decrease SET cancel_responsible_id=%s WHERE stock_decrease.cancel_responsible_id = %s',  # nopep8
             'UPDATE stock_decrease SET responsible_id=%s WHERE stock_decrease.responsible_id = %s',  # nopep8
             'UPDATE stock_transaction_history SET responsible_id=%s WHERE stock_transaction_history.responsible_id = %s',  # nopep8
             'UPDATE till SET responsible_close_id=%s WHERE till.responsible_close_id = %s',  # nopep8

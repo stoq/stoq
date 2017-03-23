@@ -32,6 +32,7 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.decorators import cached_property
@@ -91,8 +92,10 @@ class TestTransferOrderDetailsDialog(GUITest):
         self.assertEquals(order.status, order.STATUS_RECEIVED)
         self.assertEquals(order.cancel_date, None)
 
-    @mock.patch('stoqlib.gui.dialogs.transferorderdialog.yesno')
-    def test_cancel_order(self, yesno):
+    @mock.patch('stoqlib.gui.dialogs.transferorderdialog.run_dialog')
+    @mock.patch('stoqlib.gui.dialogs.transferorderdialog.get_plugin_manager')
+    def test_cancel_order_nfce_plugin_active(self, get_plugin_manager,
+                                             run_dialog):
         dest_branch = Branch.get_active_remote_branches(self.store)[0]
         source_branch = api.get_current_branch(self.store)
 
@@ -105,13 +108,55 @@ class TestTransferOrderDetailsDialog(GUITest):
 
         dialog = TransferOrderDetailsDialog(self.store, order)
         self.assertSensitive(dialog, ['cancel_button'])
-        yesno.retval = True
+        get_plugin_manager.is_active.return_value = True
+        run_dialog.return_value = True
         with mock.patch.object(self.store, 'commit'):
             self.click(dialog.cancel_button)
-            yesno.assert_called_once_with(u'Cancel the order?', gtk.RESPONSE_YES,
-                                          u'Cancel transfer', u"Don't cancel")
+            msg_text = u"This will cancel the transfer. Are you sure?"
+            run_dialog.assert_called_once_with(
+                NoteEditor, dialog, order.store,
+                model=order, attr_name='cancel_reason', message_text=msg_text,
+                label_text=u"Reason", mandatory=True,
+                ok_button_label=u"Cancel transfer",
+                cancel_button_label=u"Don't cancel",
+                min_length=15)
         self.assertEquals(order.status, TransferOrder.STATUS_CANCELLED)
         self.assertEquals(order.receival_date, None)
+
+    @mock.patch('stoqlib.gui.dialogs.transferorderdialog.run_dialog')
+    def test_dont_cancel_order(self, run_dialog):
+        order = self.create_transfer_order()
+        self.create_transfer_order_item(order=order)
+        order.identifier = 28474
+        order.open_date = localdatetime(2012, 2, 2)
+        order.send()
+        dialog = TransferOrderDetailsDialog(self.store, order)
+        self.assertSensitive(dialog, ['cancel_button'])
+        run_dialog.return_value = False
+        with mock.patch.object(self.store, 'commit'):
+            self.click(dialog.cancel_button)
+        self.assertEquals(order.status, TransferOrder.STATUS_SENT)
+
+    @mock.patch('stoqlib.gui.dialogs.transferorderdialog.run_dialog')
+    @mock.patch('stoqlib.gui.dialogs.transferorderdialog.warning')
+    def test_cancel_order_sefaz_rejected(self, warning, run_dialog):
+        order = self.create_transfer_order()
+        self.create_transfer_order_item(order=order)
+        order.identifier = 28474
+        order.open_date = localdatetime(2012, 2, 2)
+        order.send()
+        dialog = TransferOrderDetailsDialog(self.store, order)
+        self.assertSensitive(dialog, ['cancel_button'])
+        run_dialog.return_value = True
+        module = 'stoqlib.domain.events.StockOperationTryFiscalCancelEvent.emit'
+        with mock.patch(module) as emit:
+            with mock.patch.object(self.store, 'commit'):
+                emit.return_value = False
+                self.click(dialog.cancel_button)
+        self.assertEquals(order.status, TransferOrder.STATUS_SENT)
+        warning.assert_called_once_with(
+            "The cancellation was not authorized by SEFAZ. You should do a "
+            "reverse transfer.")
 
     def test_cancel_order_on_dest_branch(self):
         source_branch = Branch.get_active_remote_branches(self.store)[0]

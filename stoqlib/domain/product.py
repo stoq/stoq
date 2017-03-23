@@ -1524,6 +1524,9 @@ class StockTransactionHistory(Domain):
     #: the transaction is a loan
     TYPE_LOANED = u'loan'
 
+    #: the transaction is the cancellation of a loan
+    TYPE_CANCELLED_LOAN = u'cancelled-loan'
+
     #: the transaction is the allocation of a product to a production
     TYPE_PRODUCTION_ALLOCATED = u'production-allocated'
 
@@ -1536,14 +1539,22 @@ class StockTransactionHistory(Domain):
     #: the transaction is a stock decrease
     TYPE_STOCK_DECREASE = u'stock-decrease'
 
+    #: the transaction is the cancellation of a stock decrease
+    TYPE_CANCELLED_STOCK_DECREASE = u'cancelled-stock-decrease'
+
     #: the transaction is a transfer from a branch
     TYPE_TRANSFER_FROM = u'transfer-from'
 
     #: the transaction is a transfer to a branch
     TYPE_TRANSFER_TO = u'transfer-to'
 
+    TYPE_CANCELLED_TRANSFER = u'cancelled-transfer'
+
     #: the transaction is the adjustment of an inventory
     TYPE_INVENTORY_ADJUST = u'inventory-adjust'
+
+    #: the transaction is the cancellation of the adjustment of an inventory
+    TYPE_CANCELLED_INVENTORY_ADJUST = u'cancelled-inventory-adjust'
 
     #: the transaction is the production of a product that didn't enter
     #: stock right after its creation

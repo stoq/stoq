@@ -150,6 +150,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
 
 model: Sale<1>
   cancel_date: None
+  cancel_reason: None
   close_date: datetime.today()
   confirm_date: datetime.today()
   discount_value: <currency $ 0>

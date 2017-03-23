@@ -88,6 +88,7 @@ model: Payment<3>
 
 model: Sale<4>
   cancel_date: None
+  cancel_reason: None
   close_date: datetime.today()
   confirm_date: None
   discount_value: <currency $ 0>

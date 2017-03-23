@@ -29,10 +29,14 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel
 
 from stoqlib.api import api
+from stoqlib.domain.events import StockOperationTryFiscalCancelEvent
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.utils.printing import print_report
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, warning
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.transfer import TransferOrderReceipt
 
@@ -153,14 +157,37 @@ class TransferOrderDetailsDialog(BaseEditor):
         self._setup_status()
 
     def on_cancel_button__clicked(self, event):
-        if yesno(_(u'Cancel the order?'), gtk.RESPONSE_YES, _(u'Cancel transfer'),
-                 _(u"Don't cancel")):
-            responsible = api.get_current_user(self.store).person.employee
-            self.model.cancel(responsible)
-            self.store.commit(close=False)
-            self.receival_date.set_property('model-attribute', 'cancel_date')
-            self.transfer_proxy.update_many(['destination_responsible_name',
-                                             'receival_date'])
+        msg_text = _(u'This will cancel the transfer. Are you sure?')
+
+        # nfce plugin cancellation event requires a minimum length for the
+        # cancellation reason note. We can't set this in the plugin because it's
+        # not possible to identify unically this NoteEditor.
+        if get_plugin_manager().is_active('nfce'):
+            note_min_length = 15
+        else:
+            note_min_length = 0
+
+        if not run_dialog(NoteEditor, self, self.model.store, model=self.model,
+                          attr_name='cancel_reason', message_text=msg_text,
+                          label_text=_(u"Reason"), mandatory=True,
+                          ok_button_label=_(u"Cancel transfer"),
+                          cancel_button_label=_(u"Don't cancel"),
+                          min_length=note_min_length):
+            return
+
+        # Try to cancel the transfer fiscally with a fiscal plugin. If False is
+        # returned, the cancellation failed, so we don't proceed.
+        if StockOperationTryFiscalCancelEvent.emit(self.model) is False:
+            warning(_("The cancellation was not authorized by SEFAZ. You "
+                      "should do a reverse transfer."))
+            return
+
+        responsible = api.get_current_user(self.store).person.employee
+        self.model.cancel(responsible)
+        self.store.commit(close=False)
+        self.receival_date.set_property('model-attribute', 'cancel_date')
+        self.transfer_proxy.update_many(['destination_responsible_name',
+                                         'receival_date'])
         self.setup_proxies()
         self._setup_status()
     #

@@ -265,6 +265,12 @@ class Inventory(Domain):
     #: the date inventory process was closed
     close_date = DateTimeCol(default=None)
 
+    #: the date the inventory was cancelled
+    cancel_date = DateTimeCol(default=None)
+
+    #: the reason the inventory was cancelled
+    cancel_reason = UnicodeCol()
+
     responsible_id = IdCol(allow_none=False)
     #: the responsible for this inventory. At the moment, the
     #: |loginuser| that opened the inventory
@@ -273,6 +279,11 @@ class Inventory(Domain):
     branch_id = IdCol(allow_none=False)
     #: branch where the inventory process was done
     branch = Reference(branch_id, 'Branch.id')
+
+    cancel_responsible_id = IdCol()
+    #: The responsible for cancelling this inventory. At the moment, the
+    #: |loginuser| that cancelled the inventory
+    cancel_responsible = Reference(cancel_responsible_id, 'LoginUser.id')
 
     #: the |inventoryitems| of this inventory
     inventory_items = ReferenceSet('id', 'InventoryItem.inventory_id')

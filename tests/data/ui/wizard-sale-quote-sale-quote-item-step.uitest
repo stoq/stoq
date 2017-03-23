@@ -67,6 +67,7 @@ GtkDialog(toplevel): title='New Sale Quote', hidden
 
 model: Sale<1>
   cancel_date: None
+  cancel_reason: None
   client_id: Client<2>
   close_date: None
   confirm_date: None

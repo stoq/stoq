@@ -27,7 +27,7 @@ import datetime
 
 import mock
 from stoqlib.api import api
-from stoqlib.domain.sale import Sale, SaleComment, SaleView
+from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -328,8 +328,8 @@ class TestSales(BaseGUITest):
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args, (NoteEditor, self.store))
-                self.assertTrue(isinstance(kwargs['model'], SaleComment))
-                self.assertEquals(kwargs['attr_name'], 'comment')
+                self.assertTrue(isinstance(kwargs['model'], Sale))
+                self.assertEquals(kwargs['attr_name'], 'cancel_reason')
                 self.assertEquals(kwargs['message_text'], msg_text)
                 self.assertEquals(kwargs['label_text'], u"Reason")
                 self.assertEquals(kwargs['mandatory'], True)
@@ -365,8 +365,8 @@ class TestSales(BaseGUITest):
             msg_text = u"This will cancel the sale, Are you sure?"
             args, kwargs = run_dialog.call_args
             self.assertEquals(args, (NoteEditor, self.store))
-            self.assertTrue(isinstance(kwargs['model'], SaleComment))
-            self.assertEquals(kwargs['attr_name'], 'comment')
+            self.assertTrue(isinstance(kwargs['model'], Sale))
+            self.assertEquals(kwargs['attr_name'], 'cancel_reason')
             self.assertEquals(kwargs['message_text'], msg_text)
             self.assertEquals(kwargs['label_text'], u"Reason")
             self.assertEquals(kwargs['mandatory'], True)
@@ -403,8 +403,8 @@ class TestSales(BaseGUITest):
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args, (NoteEditor, self.store))
-                self.assertTrue(isinstance(kwargs['model'], SaleComment))
-                self.assertEquals(kwargs['attr_name'], 'comment')
+                self.assertTrue(isinstance(kwargs['model'], Sale))
+                self.assertEquals(kwargs['attr_name'], 'cancel_reason')
                 self.assertEquals(kwargs['message_text'], msg_text)
                 self.assertEquals(kwargs['label_text'], u"Reason")
                 self.assertEquals(kwargs['mandatory'], True)
@@ -440,8 +440,8 @@ class TestSales(BaseGUITest):
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args, (NoteEditor, self.store))
-                self.assertTrue(isinstance(kwargs['model'], SaleComment))
-                self.assertEquals(kwargs['attr_name'], 'comment')
+                self.assertTrue(isinstance(kwargs['model'], Sale))
+                self.assertEquals(kwargs['attr_name'], 'cancel_reason')
                 self.assertEquals(kwargs['message_text'], msg_text)
                 self.assertEquals(kwargs['label_text'], u"Reason")
                 self.assertEquals(kwargs['mandatory'], True)
