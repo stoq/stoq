@@ -46,7 +46,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
-from stoqlib.gui.slaves.imageslaveslave import ImageGallerySlave
+from stoqlib.gui.slaves.imageslave import ImageGallerySlave
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import quantize, MAX_INT
 from stoqlib.lib.message import info

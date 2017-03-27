@@ -43,7 +43,7 @@ from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
-from stoqlib.gui.slaves.imageslaveslave import ImageGallerySlave
+from stoqlib.gui.slaves.imageslave import ImageGallerySlave
 from stoqlib.gui.utils.databaseform import DatabaseForm
 from stoqlib.gui.utils.printing import print_labels
 from stoqlib.lib.decorators import cached_property

@@ -37,7 +37,7 @@ from stoqlib.domain.image import Image
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.gui.slaves.imageslaveslave import ImageSlave
+from stoqlib.gui.slaves.imageslave import ImageSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
