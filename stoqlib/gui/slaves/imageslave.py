@@ -39,6 +39,7 @@ from storm.expr import Desc
 from stoqlib.domain.image import Image
 from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.stockicons import STOQ_CHECK, STOQ_LOCKED
 from stoqlib.gui.utils.filters import get_filters_for_images
 from stoqlib.lib.imageutils import get_thumbnail, get_pixbuf
 from stoqlib.lib.translation import stoqlib_gettext
@@ -106,7 +107,7 @@ class ImageSlave(BaseEditorSlave):
         self._thumbnail = get_pixbuf(self.image_model.thumbnail, fill_image=size)
 
     def _setup_widgets(self):
-        self.set_main_item = gtk.ImageMenuItem(stock_id=gtk.STOCK_ABOUT)
+        self.set_main_item = gtk.ImageMenuItem(stock_id=STOQ_CHECK)
         self.set_main_item.set_label(_("Set as main image"))
         self.set_internal_item = gtk.CheckMenuItem(_("Internal use only"))
         self.view_item = gtk.MenuItem(_("View"))
@@ -157,10 +158,10 @@ class ImageSlave(BaseEditorSlave):
 
         self.icon.set_visible(is_main or internal_use)
         if is_main:
-            self.icon.set_from_stock(gtk.STOCK_ABOUT, gtk.ICON_SIZE_MENU)
+            self.icon.set_from_stock(STOQ_CHECK, gtk.ICON_SIZE_MENU)
             self.icon.set_tooltip_text(_("This is the main image"))
         elif internal_use:
-            self.icon.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
+            self.icon.set_from_stock(STOQ_LOCKED, gtk.ICON_SIZE_MENU)
             self.icon.set_tooltip_text(_("This is for internal use only"))
 
         self._updating_widgets = False

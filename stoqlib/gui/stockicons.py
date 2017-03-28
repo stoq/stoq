@@ -34,6 +34,7 @@ STOQ_CALENDAR_TODAY = "stoq-calendar-today"
 STOQ_CALENDAR_WEEK = "stoq-calendar-week"
 STOQ_CLIENTS = "stoq-clients"
 STOQ_CONNECT = "stoq-connect"
+STOQ_CHECK = "stoq-check"
 STOQ_EDIT = "stoq-edit"
 STOQ_EMPLOYEE = "stoq-employee"
 STOQ_EMPLOYEE_CARD = "stoq-employee-card"
@@ -45,6 +46,7 @@ STOQ_HR = "stoq-hr"
 STOQ_INVENTORY_APP = "stoq-inventory-app"
 STOQ_LAUNCHER = "stoq-launcher"
 STOQ_LINK = "stoq-link"
+STOQ_LOCKED = "stoq-locked"
 STOQ_FORMS = "stoq-forms"
 STOQ_KEYBOARD = "stoq-keyboard"
 STOQ_MONEY = "stoq-money"
@@ -69,6 +71,7 @@ STOQ_SUPPLIERS = "stoq-suppliers"
 STOQ_SYSTEM = "stoq-system"
 STOQ_TAX_TYPE = "stoq-tax-type"
 STOQ_TILL_APP = "stoq-till-app"
+STOQ_UNLOCKED = "stoq-unlocked"
 STOQ_USERS = "stoq-users"
 STOQ_USER_PROFILES = "stoq-user-profiles"
 STOQ_STATUS_NA = "stoq-status-na"
@@ -115,6 +118,8 @@ icon_info = [
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-week-24x24.png"}),
     (STOQ_CLIENTS,
      {GTK_ICON_SIZE_DIALOG: "stoq-clients-48x48.png"}),
+    (STOQ_CHECK,
+     {GTK_ICON_SIZE_MENU: "stoq-check-16x16.png"}),
     (STOQ_DELIVERY,
      {GTK_ICON_SIZE_MENU: "stoq-delivery-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-delivery-24x24.png",
@@ -142,6 +147,8 @@ icon_info = [
     (STOQ_LINK,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-link-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-link-48x48.png"}),
+    (STOQ_LOCKED,
+     {GTK_ICON_SIZE_MENU: "stoq-locked-16x16.png"}),
     (STOQ_CONNECT,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-connect-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-connect-48x48.png"}),
@@ -223,6 +230,8 @@ icon_info = [
      {GTK_ICON_SIZE_DIALOG: "stoq-devices-48x48.png"}),
     (STOQ_USER_PROFILES,
      {GTK_ICON_SIZE_DIALOG: "stoq-user-profiles-48x48.png"}),
+    (STOQ_UNLOCKED,
+     {GTK_ICON_SIZE_MENU: "stoq-unlocked-16x16.png"}),
     (STOQ_STATUS_NA,
      {GTK_ICON_SIZE_MENU: "stoq-status-na-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-na-24x24.png",
