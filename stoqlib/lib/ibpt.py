@@ -166,7 +166,7 @@ class IBPTGenerator(object):
         state_msg = "%0.2f Estadual" % state_tax
 
         final_msg = ("Trib aprox R$: {federal} e {state}\n"
-                     "Fonte: {source} {key} ")
+                     "Fonte: {source} {key}")
         return final_msg.format(federal=federal_msg, state=state_msg,
                                 source=source, key=key)
 
