@@ -59,34 +59,34 @@ class TestDeliveryEditor(GUITest):
         self.assertEqual(delivery.status, Delivery.STATUS_INITIAL)
         self.assertSensitive(editor,
                              ['transporter_id', 'address',
-                              'was_received_check', 'was_delivered_check'])
+                              'is_received_check', 'is_sent_check'])
         self.assertNotSensitive(editor,
-                                ['deliver_date', 'tracking_code',
+                                ['send_date', 'tracking_code',
                                  'receive_date'])
-        self.assertFalse(editor.was_delivered_check.get_active())
-        self.assertFalse(editor.was_received_check.get_active())
+        self.assertFalse(editor.is_sent_check.get_active())
+        self.assertFalse(editor.is_received_check.get_active())
 
         # Sent state. Should not be possible to change
         # transporter and address anymore
-        editor.was_delivered_check.set_active(True)
+        editor.is_sent_check.set_active(True)
         self.assertEqual(delivery.status, Delivery.STATUS_SENT)
         self.assertSensitive(editor,
-                             ['was_received_check', 'deliver_date', 'tracking_code',
-                              'was_received_check', 'was_delivered_check'])
+                             ['is_received_check', 'send_date', 'tracking_code',
+                              'is_received_check', 'is_sent_check'])
         self.assertNotSensitive(editor,
                                 ['transporter_id', 'address', 'receive_date'])
 
         # Received state. Like sent above, but in addition, should
-        # not be possible to unmark was_delivered_check
-        editor.was_received_check.set_active(True)
+        # not be possible to unmark is_sent_check
+        editor.is_received_check.set_active(True)
         self.assertEqual(delivery.status, Delivery.STATUS_RECEIVED)
         self.assertSensitive(editor,
-                             ['was_received_check', 'deliver_date',
+                             ['is_received_check', 'send_date',
                               'receive_date', 'tracking_code',
-                              'was_received_check'])
+                              'is_received_check'])
         self.assertNotSensitive(editor,
                                 ['transporter_id', 'address',
-                                 'was_delivered_check'])
+                                 'is_sent_check'])
 
 
 class TestCreateDeliveryEditor(GUITest):

@@ -43,7 +43,7 @@ from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.product import Storable, StockTransactionHistory
 from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
-                                 ReturnedSaleView,
+                                 ReturnedSaleView, Delivery,
                                  ReturnedSaleItemsView, SaleItem,
                                  SaleView, SalesPersonSalesView,
                                  ClientsWithSaleView, SaleToken)
@@ -2361,29 +2361,156 @@ class TestDelivery(DomainTest):
         delivery.service_item.sale.client = None
         self.assertEquals(delivery.client_str, u'')
 
+    def test_can_pick(self):
+        delivery = self.create_delivery()
+
+        for status in [Delivery.STATUS_PICKED,
+                       Delivery.STATUS_CANCELLED,
+                       Delivery.STATUS_PACKED,
+                       Delivery.STATUS_SENT,
+                       Delivery.STATUS_RECEIVED]:
+            delivery.status = status
+            self.assertFalse(delivery.can_pick(), status)
+
+        delivery.status = Delivery.STATUS_INITIAL
+        self.assertTrue(delivery.can_pick())
+
+    def test_can_pack(self):
+        delivery = self.create_delivery()
+
+        for status in [Delivery.STATUS_INITIAL,
+                       Delivery.STATUS_CANCELLED,
+                       Delivery.STATUS_PACKED,
+                       Delivery.STATUS_SENT,
+                       Delivery.STATUS_RECEIVED]:
+            delivery.status = status
+            self.assertFalse(delivery.can_pack(), status)
+
+        delivery.status = Delivery.STATUS_PICKED
+        self.assertTrue(delivery.can_pack())
+
+    def test_can_send(self):
+        delivery = self.create_delivery()
+
+        for status in [Delivery.STATUS_CANCELLED,
+                       Delivery.STATUS_SENT,
+                       Delivery.STATUS_RECEIVED]:
+            delivery.status = status
+            self.assertFalse(delivery.can_send(), status)
+
+        for status in [Delivery.STATUS_INITIAL,
+                       Delivery.STATUS_PICKED,
+                       Delivery.STATUS_PACKED]:
+            delivery.status = status
+            self.assertTrue(delivery.can_send(), status)
+
+    def test_can_receive(self):
+        delivery = self.create_delivery()
+
+        for status in [Delivery.STATUS_INITIAL,
+                       Delivery.STATUS_CANCELLED,
+                       Delivery.STATUS_PICKED,
+                       Delivery.STATUS_PACKED,
+                       Delivery.STATUS_RECEIVED]:
+            delivery.status = status
+            self.assertFalse(delivery.can_receive(), status)
+
+        delivery.status = Delivery.STATUS_SENT
+        self.assertTrue(delivery.can_receive())
+
+    def test_can_cancel(self):
+        delivery = self.create_delivery()
+
+        for status in [Delivery.STATUS_CANCELLED,
+                       Delivery.STATUS_RECEIVED,
+                       Delivery.STATUS_SENT]:
+            delivery.status = status
+            self.assertFalse(delivery.can_cancel(), status)
+
+        for status in [Delivery.STATUS_INITIAL,
+                       Delivery.STATUS_PICKED,
+                       Delivery.STATUS_PACKED]:
+            delivery.status = status
+            self.assertTrue(delivery.can_cancel(), status)
+
     @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
     def test_set_initial(self, emit):
         delivery = self.create_delivery()
         emit.return_value = None
+
+        delivery.status = Delivery.STATUS_SENT
         delivery.set_initial()
-        emit.assert_called_once_with(delivery, delivery.STATUS_INITIAL)
+        self.assertEqual(delivery.status, delivery.STATUS_INITIAL)
+        emit.assert_called_once_with(delivery, delivery.STATUS_SENT)
 
+    @mock.patch('stoqlib.domain.sale.TransactionTimestamp')
     @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
-    def test_set_sent(self, emit):
+    def test_pick(self, emit, TransactionTimestamp):
+        now = datetime.datetime(2017, 1, 1)
+        TransactionTimestamp.return_value = now
         delivery = self.create_delivery()
         emit.return_value = None
-        delivery.set_sent()
-        emit.assert_called_once_with(delivery, delivery.STATUS_INITIAL)
-        delivery.set_sent()
-        emit.assert_called_with(delivery, delivery.STATUS_SENT)
 
+        delivery.pick(self.create_user())
+        self.assertEqual(delivery.status, delivery.STATUS_PICKED)
+        self.assertEqual(delivery.pick_date, now)
+        emit.assert_called_once_with(delivery, delivery.STATUS_INITIAL)
+
+    @mock.patch('stoqlib.domain.sale.TransactionTimestamp')
     @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
-    def test_set_received(self, emit):
+    def test_pack(self, emit, TransactionTimestamp):
+        now = datetime.datetime(2017, 1, 1)
+        TransactionTimestamp.return_value = now
         delivery = self.create_delivery()
         emit.return_value = None
-        delivery.set_sent()
-        delivery.set_received()
-        emit.assert_called_with(delivery, delivery.STATUS_SENT)
+
+        delivery.status = delivery.STATUS_PICKED
+        delivery.pack(self.create_user())
+        self.assertEqual(delivery.status, delivery.STATUS_PACKED)
+        self.assertEqual(delivery.pack_date, now)
+        emit.assert_called_once_with(delivery, delivery.STATUS_PICKED)
+
+    @mock.patch('stoqlib.domain.sale.TransactionTimestamp')
+    @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
+    def test_send(self, emit, TransactionTimestamp):
+        now = datetime.datetime(2017, 1, 1)
+        TransactionTimestamp.return_value = now
+        delivery = self.create_delivery()
+        emit.return_value = None
+
+        delivery.status = delivery.STATUS_PACKED
+        delivery.send(self.create_user())
+        self.assertEqual(delivery.status, delivery.STATUS_SENT)
+        self.assertEqual(delivery.send_date, now)
+        emit.assert_called_once_with(delivery, delivery.STATUS_PACKED)
+
+    @mock.patch('stoqlib.domain.sale.TransactionTimestamp')
+    @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
+    def test_receive(self, emit, TransactionTimestamp):
+        now = datetime.datetime(2017, 1, 1)
+        TransactionTimestamp.return_value = now
+        delivery = self.create_delivery()
+        emit.return_value = None
+
+        delivery.status = delivery.STATUS_SENT
+        delivery.receive()
+        self.assertEqual(delivery.status, delivery.STATUS_RECEIVED)
+        self.assertEqual(delivery.receive_date, now)
+        emit.assert_called_once_with(delivery, delivery.STATUS_SENT)
+
+    @mock.patch('stoqlib.domain.sale.TransactionTimestamp')
+    @mock.patch('stoqlib.domain.sale.DeliveryStatusChangedEvent.emit')
+    def test_cancel(self, emit, TransactionTimestamp):
+        now = datetime.datetime(2017, 1, 1)
+        TransactionTimestamp.return_value = now
+        delivery = self.create_delivery()
+        emit.return_value = None
+
+        delivery.status = delivery.STATUS_INITIAL
+        delivery.cancel(self.create_user())
+        self.assertEqual(delivery.status, delivery.STATUS_CANCELLED)
+        self.assertEqual(delivery.cancel_date, now)
+        emit.assert_called_once_with(delivery, delivery.STATUS_INITIAL)
 
     def test_remove_item(self):
         delivery = self.create_delivery()

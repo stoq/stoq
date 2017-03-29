@@ -254,10 +254,10 @@ class DeliveryEditor(BaseEditor):
                                        can_edit=can_modify_transporter),
             address=AddressField(_("Address"), proxy=True, mandatory=True,
                                  colspan=2),
-            was_delivered_check=BoolField(_("Was sent to deliver?")),
-            deliver_date=DateField(_("Delivery date"), mandatory=True, proxy=True),
+            is_sent_check=BoolField(_("Was sent to deliver?")),
+            send_date=DateField(_("Send date"), mandatory=True, proxy=True),
             tracking_code=TextField(_("Tracking code"), proxy=True),
-            was_received_check=BoolField(_("Was received by client?")),
+            is_received_check=BoolField(_("Was received by client?")),
             receive_date=DateField(_("Receive date"), mandatory=True, proxy=True),
             empty=EmptyField(),
         )
@@ -290,19 +290,19 @@ class DeliveryEditor(BaseEditor):
     #
 
     def _setup_widgets(self):
-        for widget in (self.receive_date, self.deliver_date,
+        for widget in (self.receive_date, self.send_date,
                        self.tracking_code):
             widget.set_sensitive(False)
 
     def _update_status_widgets(self):
         if self.model.status == Delivery.STATUS_INITIAL:
-            for widget in (self.was_delivered_check, self.was_received_check):
+            for widget in [self.is_sent_check, self.is_received_check]:
                 widget.set_active(False)
         elif self.model.status == Delivery.STATUS_SENT:
-            self.was_delivered_check.set_active(True)
-            self.was_received_check.set_active(False)
+            self.is_sent_check.set_active(True)
+            self.is_received_check.set_active(False)
         elif self.model.status == Delivery.STATUS_RECEIVED:
-            for widget in (self.was_delivered_check, self.was_received_check):
+            for widget in [self.is_sent_check, self.is_received_check]:
                 widget.set_active(True)
         else:
             raise ValueError(_("Invalid status for %s") % (
@@ -320,34 +320,34 @@ class DeliveryEditor(BaseEditor):
     #  Callbacks
     #
 
-    def on_was_delivered_check__toggled(self, button):
+    def on_is_sent_check__toggled(self, button):
         active = button.get_active()
         # When delivered, don't let user change transporter or address
         self.transporter_id.set_sensitive(not active)
         self.address.set_sensitive(not active)
-        for widget in (self.deliver_date, self.tracking_code):
+        for widget in [self.send_date, self.tracking_code]:
             widget.set_sensitive(active)
 
-        if not self.model.deliver_date:
-            self.deliver_date.update(localtoday().date())
+        if not self.model.send_date:
+            self.send_date.update(localtoday().date())
 
         if self._configuring_proxies:
             # Do not change status above
             return
 
         if active:
-            self.model.set_sent()
+            self.model.send(api.get_current_user(self.store))
         else:
             self.model.set_initial()
 
-    def on_was_received_check__toggled(self, button):
+    def on_is_received_check__toggled(self, button):
         active = button.get_active()
         self.receive_date.set_sensitive(active)
         # If it was received, don't let the user unmark was_delivered_check
-        self.was_delivered_check.set_sensitive(not active)
+        self.is_sent_check.set_sensitive(not active)
 
-        if not self.was_delivered_check.get_active():
-            self.was_delivered_check.set_active(True)
+        if not self.is_sent_check.get_active():
+            self.is_sent_check.set_active(True)
 
         if not self.model.receive_date:
             self.receive_date.update(localtoday().date())
@@ -357,6 +357,9 @@ class DeliveryEditor(BaseEditor):
             return
 
         if active:
-            self.model.set_received()
+            self.model.receive()
         else:
-            self.model.set_sent()
+            # We have to change this status manually because set_sent won't
+            # allow us to change from RECEIVED to it. Also, it we would call
+            # set_sent it would overwrite the sent_date that we set previously
+            self.model.status = self.model.STATUS_SENT

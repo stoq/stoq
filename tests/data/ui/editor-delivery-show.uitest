@@ -24,12 +24,12 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
                   GtkHBox():
                     GtkButton(address_add_button): insensitive
                     GtkButton(address_edit_button): insensitive
-                  ProxyCheckButton(was_delivered_check): 'Was sent to deliver?'
+                  ProxyCheckButton(is_sent_check): 'Was sent to deliver?'
                   GtkHBox():
-                  ProxyCheckButton(was_received_check): 'Was received by client?'
+                  ProxyCheckButton(is_received_check): 'Was received by client?'
                   GtkHBox():
-                  ProxyLabel(deliver_date_lbl): 'Delivery date:'
-                  ProxyDateEntry(deliver_date): None, insensitive
+                  ProxyLabel(send_date_lbl): 'Send date:'
+                  ProxyDateEntry(send_date): None, insensitive
                   GtkHBox():
                   ProxyLabel(receive_date_lbl): 'Receive date:'
                   ProxyDateEntry(receive_date): None, insensitive

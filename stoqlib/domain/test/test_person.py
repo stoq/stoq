@@ -1515,6 +1515,10 @@ class TestPersonMerging(DomainTest):
             'UPDATE calls SET attendant_id=%s WHERE calls.attendant_id = %s',
             'UPDATE client_salary_history SET user_id=%s WHERE client_salary_history.user_id = %s',
             'UPDATE credit_check_history SET user_id=%s WHERE credit_check_history.user_id = %s',  # nopep8
+            'UPDATE delivery SET cancel_responsible_id=%s WHERE delivery.cancel_responsible_id = %s',  # nopep8
+            'UPDATE delivery SET pack_responsible_id=%s WHERE delivery.pack_responsible_id = %s',  # nopep8
+            'UPDATE delivery SET pick_responsible_id=%s WHERE delivery.pick_responsible_id = %s',  # nopep8
+            'UPDATE delivery SET send_responsible_id=%s WHERE delivery.send_responsible_id = %s',  # nopep8
             'UPDATE inventory SET cancel_responsible_id=%s WHERE inventory.cancel_responsible_id = %s',  # nopep8
             'UPDATE inventory SET responsible_id=%s WHERE inventory.responsible_id = %s',  # nopep8
             'UPDATE loan SET cancel_responsible_id=%s WHERE loan.cancel_responsible_id = %s',  # nopep8

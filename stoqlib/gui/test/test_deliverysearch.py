@@ -56,7 +56,7 @@ class TestDeliverySearch(GUITest):
                             address=address,
                             service_item=service_item,
                             open_date=localdate(2012, 2, 2).date(),
-                            deliver_date=localdate(2012, 3, 3).date(),
+                            send_date=localdate(2012, 3, 3).date(),
                             receive_date=localdate(2012, 4, 4).date(),
                             store=self.store)
         delivery.tracking_code = u'78'

@@ -1443,9 +1443,11 @@ class DeliveryView(Viewable):
     status = Delivery.status
     tracking_code = Delivery.tracking_code
     open_date = Delivery.open_date
-    deliver_date = Delivery.deliver_date
+    cancel_date = Delivery.cancel_date
+    send_date = Delivery.send_date
     receive_date = Delivery.receive_date
-
+    pick_date = Delivery.pick_date
+    pack_date = Delivery.pack_date
     identifier_str = Cast(Sale.identifier, 'text')
 
     # Transporter

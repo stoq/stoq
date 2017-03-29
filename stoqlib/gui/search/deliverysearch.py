@@ -104,7 +104,7 @@ class DeliverySearch(SearchEditor):
                              data_type=str),
                 SearchColumn('open_date', title=_('Open date'),
                              data_type=datetime.date, visible=False),
-                SearchColumn('deliver_date', title=_('Sent date'),
+                SearchColumn('send_date', title=_('Sent date'),
                              data_type=datetime.date, visible=False),
                 SearchColumn('receive_date', title=_('Received date'),
                              data_type=datetime.date, visible=False),

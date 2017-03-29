@@ -530,8 +530,17 @@ class Delivery(Domain):
 
     __storm_table__ = 'delivery'
 
-    #: The delivery was created
+    #: The delivery was created and is waiting to be picked
     STATUS_INITIAL = u'initial'
+
+    #: The delivery was cancelled
+    STATUS_CANCELLED = u'cancelled'
+
+    #: The delivery was picked and is waiting to be packed
+    STATUS_PICKED = u'picked'
+
+    #: The delivery was packed and is waiting to be packed
+    STATUS_PACKED = u'packed'
 
     #: sent to deliver
     STATUS_SENT = u'sent'
@@ -539,18 +548,49 @@ class Delivery(Domain):
     #: received by the |client|
     STATUS_RECEIVED = u'received'
 
+    #: CIF (Cost, Insurance and Freight): The freight is responsibility of
+    #: the receiver (i.e. the client)
+    FREIGHT_TYPE_CIF = u'cif'
+
+    #: CIF (Free on Board): The freight is responsibility of the sender
+    #: (i.e. the branch)
+    FREIGHT_TYPE_FOB = u'fob'
+
+    #: 3rd party: The freight is responsibility of a third party
+    FREIGHT_TYPE_3RDPARTY = u'3rdparty'
+
+    #: No freight: There's no freight
+    FREIGHT_TYPE_NONE = None
+
     statuses = {STATUS_INITIAL: _(u"Waiting"),
+                STATUS_CANCELLED: _(u"Cancelled"),
+                STATUS_PICKED: _(u"Picked"),
+                STATUS_PACKED: _(u"Packed"),
                 STATUS_SENT: _(u"Sent"),
                 STATUS_RECEIVED: _(u"Received")}
+
+    freights = {FREIGHT_TYPE_NONE: _(u"No freight"),
+                FREIGHT_TYPE_CIF: _(u"CIF"),
+                FREIGHT_TYPE_FOB: _(u"FOB"),
+                FREIGHT_TYPE_3RDPARTY: _(u"Third party")}
 
     #: the delivery status
     status = EnumCol(allow_none=False, default=STATUS_INITIAL)
 
     #: the date which the delivery was created
-    open_date = DateTimeCol(default=None)
+    open_date = DateTimeCol(default_factory=TransactionTimestamp)
+
+    #: The date that the delivery was cancelled
+    cancel_date = DateTimeCol(default=None)
+
+    #: The date that the delivery was picked
+    pick_date = DateTimeCol(default=None)
+
+    #: The date that the delivery was packed
+    pack_date = DateTimeCol(default=None)
 
     #: the date which the delivery sent to deliver
-    deliver_date = DateTimeCol(default=None)
+    send_date = DateTimeCol(default=None)
 
     #: the date which the delivery received by the |client|
     receive_date = DateTimeCol(default=None)
@@ -558,6 +598,15 @@ class Delivery(Domain):
     #: the delivery tracking code, a transporter specific identifier that
     #: can be used to look up the status of the delivery
     tracking_code = UnicodeCol(default=u'')
+
+    #: The type of the freight
+    freight_type = EnumCol(default=FREIGHT_TYPE_CIF)
+
+    #: The kind of the volumes
+    volumes_kind = UnicodeCol(default=u'')
+
+    #: The quantity of volumes in this freight
+    volumes_quantity = IntCol()
 
     address_id = IdCol(default=None)
 
@@ -577,11 +626,21 @@ class Delivery(Domain):
     #: the |saleitems| for the items to deliver
     delivery_items = ReferenceSet('id', 'SaleItem.delivery_id')
 
-    def __init__(self, store=None, **kwargs):
-        if not 'open_date' in kwargs:
-            kwargs['open_date'] = TransactionTimestamp()
+    cancel_responsible_id = IdCol(default=None)
+    #: The responsible for cancelling the products for delivery
+    cancel_responsible = Reference(cancel_responsible_id, 'LoginUser.id')
 
-        super(Delivery, self).__init__(store=store, **kwargs)
+    pick_responsible_id = IdCol(default=None)
+    #: The responsible for picking the products for delivery
+    pick_responsible = Reference(pick_responsible_id, 'LoginUser.id')
+
+    pack_responsible_id = IdCol(default=None)
+    #: The responsible for packing the products for delivery
+    pack_responsible = Reference(pack_responsible_id, 'LoginUser.id')
+
+    send_responsible_id = IdCol(default=None)
+    #: The responsible for delivering the products to the |transporter|
+    send_responsible = Reference(send_responsible_id, 'LoginUser.id')
 
     #
     #  Properties
@@ -608,14 +667,86 @@ class Delivery(Domain):
     #  Public API
     #
 
+    def can_cancel(self):
+        """Check if we can cancel the delivery.
+
+        Only initial, picked or packed deliveries can be cancelled.
+        """
+        return self.status in [self.STATUS_INITIAL,
+                               self.STATUS_PICKED,
+                               self.STATUS_PACKED]
+
+    def can_pick(self):
+        """Check if we can pick the delivery.
+
+        Only initial deliveries can be picked.
+        """
+        return self.status == self.STATUS_INITIAL
+
+    def can_pack(self):
+        """Check if we can pack the delivery.
+
+        Only picked deliveries can be packed.
+        """
+        return self.status == self.STATUS_PICKED
+
+    def can_send(self):
+        """Check if we can send the delivery.
+
+        Only packed deliveries can be sent.
+        """
+        # FIXME: In the future once pick & pack is implemented, should we only
+        # allow packed deliveries to be sent?
+        return self.status in [self.STATUS_INITIAL,
+                               self.STATUS_PICKED,
+                               self.STATUS_PACKED]
+
+    def can_receive(self):
+        """Check if we can receive the delivery.
+
+        Only sent deliveries can be received.
+        """
+        return self.status == self.STATUS_SENT
+
     def set_initial(self):
+        """Set the delivery in its initial state."""
+        # FIXME: This should be removed in the future once we implement
+        # the pick & pack structure
         self._set_delivery_status(self.STATUS_INITIAL)
 
-    def set_sent(self):
-        self._set_delivery_status(self.STATUS_SENT)
+    def cancel(self, responsible):
+        """Set the delivery as cancelled."""
+        assert self.can_cancel()
+        self.cancel_date = TransactionTimestamp()
+        self._set_delivery_status(self.STATUS_CANCELLED)
+        self.cancel_responsible = responsible
 
-    def set_received(self):
+    def pick(self, responsible):
+        """Set the delivery as picked."""
+        assert self.can_pick()
+        self._set_delivery_status(self.STATUS_PICKED)
+        self.pick_date = TransactionTimestamp()
+        self.pick_responsible = responsible
+
+    def pack(self, responsible):
+        """Set the delivery as packed."""
+        assert self.can_pack()
+        self._set_delivery_status(self.STATUS_PACKED)
+        self.pack_date = TransactionTimestamp()
+        self.pack_responsible = responsible
+
+    def send(self, responsible):
+        """Set the delivery as sent."""
+        assert self.can_send()
+        self._set_delivery_status(self.STATUS_SENT)
+        self.send_date = TransactionTimestamp()
+        self.send_responsible = responsible
+
+    def receive(self):
+        """Set the delivery as received."""
+        assert self.can_receive()
         self._set_delivery_status(self.STATUS_RECEIVED)
+        self.receive_date = TransactionTimestamp()
 
     #
     #  IContainer implementation

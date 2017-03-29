@@ -15,6 +15,9 @@ GtkDialog(toplevel): title='Delivery Search', hidden
                     item: 'Received', selected
                     item: 'Waiting'
                     item: 'Sent'
+                    item: 'Picked'
+                    item: 'Cancelled'
+                    item: 'Packed'
                 SearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
