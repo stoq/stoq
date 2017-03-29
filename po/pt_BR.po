@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-23 02:10-0300\n"
-"PO-Revision-Date: 2017-03-23 05:10+0000\n"
+"POT-Creation-Date: 2017-03-28 02:10-0300\n"
+"PO-Revision-Date: 2017-03-28 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -160,7 +160,7 @@ msgstr "E_xcluir"
 #: ../stoqlib/gui/editors/accounteditor.py:354
 #: ../stoqlib/gui/editors/paymenteditor.py:191
 #: ../stoqlib/gui/editors/paymenteditor.py:194
-#: ../stoqlib/gui/editors/producteditor.py:384
+#: ../stoqlib/gui/editors/producteditor.py:385
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:62
 #: ../stoqlib/gui/search/searcheditor.py:174
 #: ../stoqlib/gui/test/test_productsearch.py:102
@@ -330,7 +330,7 @@ msgstr "Lote"
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:122
 #: ../stoqlib/gui/editors/deliveryeditor.py:159
 #: ../stoqlib/gui/editors/deliveryeditor.py:315
-#: ../stoqlib/gui/editors/producteditor.py:628
+#: ../stoqlib/gui/editors/producteditor.py:636
 #: ../stoqlib/gui/search/loansearch.py:85
 #: ../stoqlib/gui/search/productsearch.py:598
 #: ../stoqlib/gui/search/productsearch.py:643
@@ -2020,6 +2020,28 @@ msgstr "<b>Detalhes do mercosul:</b>"
 msgid "<b>Extra</b>"
 msgstr "<b>Extra</b>"
 
+#: ../data/glade/ProductStockEditor.ui.h:2 ../stoq/gui/stock.py:135
+#: ../stoqlib/domain/uiform.py:159 ../stoqlib/gui/dialogs/clientdetails.py:225
+#: ../stoqlib/gui/dialogs/clientdetails.py:258
+#: ../stoqlib/gui/dialogs/costcenterdialog.py:60
+#: ../stoqlib/gui/dialogs/missingitemsdialog.py:72
+#: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:215
+#: ../stoqlib/gui/editors/producteditor.py:318
+#: ../stoqlib/gui/editors/producteditor.py:583
+#: ../stoqlib/gui/search/personsearch.py:399
+#: ../stoqlib/gui/search/productsearch.py:149
+#: ../stoqlib/gui/search/salesearch.py:269
+#: ../stoqlib/gui/search/salesearch.py:356
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:177
+#: ../stoqlib/gui/wizards/salequotewizard.py:528 ../stoqlib/lib/invoice.py:588
+#: ../stoqlib/lib/invoice.py:603 ../stoqlib/lib/invoice.py:619
+#: ../stoqlib/lib/invoice.py:632 ../stoqlib/lib/invoice.py:646
+#: ../stoqlib/lib/invoice.py:659 ../stoqlib/lib/invoice.py:672
+#: ../stoqlib/lib/invoice.py:685 ../stoqlib/lib/invoice.py:698
+#: ../stoqlib/lib/invoice.py:710
+msgid "Product"
+msgstr "Produto"
+
 #: ../data/glade/ProductStockHistoryDialog.ui.h:2
 msgid "Current Stock Balance:"
 msgstr "Saldo atual do estoque:"
@@ -2154,7 +2176,7 @@ msgid ""
 msgstr "O produto não é realmente seu. O fornecedor lhe empresta alguma quantidade e após um certo tempo a quantidade não vendida é devolvida e você paga pelos produtos que foram vendidos."
 
 #: ../data/glade/ProductTypeStep.ui.h:11
-#: ../stoqlib/gui/editors/producteditor.py:435
+#: ../stoqlib/gui/editors/producteditor.py:436
 msgid "Grid"
 msgstr "Grade"
 
@@ -2539,7 +2561,7 @@ msgstr "Itens devolvidos"
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:157
 #: ../stoqlib/gui/dialogs/saledetails.py:296
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:224
-#: ../stoqlib/gui/editors/producteditor.py:633
+#: ../stoqlib/gui/editors/producteditor.py:641
 #: ../stoqlib/gui/editors/workordereditor.py:282
 #: ../stoqlib/gui/search/stockdecreasesearch.py:99
 msgid "Reason"
@@ -2699,10 +2721,6 @@ msgstr "Pegar do pai"
 #: ../data/glade/SellableDetailsSlave.ui.h:1
 msgid "Details:"
 msgstr "Detalhes:"
-
-#: ../data/glade/SellableDetailsSlave.ui.h:2
-msgid "Right-click image for more options"
-msgstr "Clique com o botão direito para mais opções"
 
 #: ../data/glade/SellableEditor.ui.h:2 ../data/glade/pos.ui.h:2
 msgid "Barcode:"
@@ -3109,7 +3127,7 @@ msgid "Qty:"
 msgstr "Qtd:"
 
 #: ../data/glade/WorkOrderEditor.ui.h:11
-#: ../stoqlib/gui/editors/sellableeditor.py:439
+#: ../stoqlib/gui/editors/sellableeditor.py:443
 msgid "Add a new category"
 msgstr "Adiciona uma nova categoria"
 
@@ -3474,7 +3492,7 @@ msgstr "Vencimento"
 #: ../stoqlib/gui/dialogs/tillhistory.py:69
 #: ../stoqlib/gui/editors/crediteditor.py:54
 #: ../stoqlib/gui/editors/paymenteditor.py:85
-#: ../stoqlib/gui/editors/sellableeditor.py:78
+#: ../stoqlib/gui/editors/sellableeditor.py:79
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:129
 #: ../stoqlib/gui/search/paymentsearch.py:91
 #: ../stoqlib/gui/search/paymentsearch.py:184
@@ -3596,8 +3614,8 @@ msgstr "Custo estimado"
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:438
 #: ../stoqlib/gui/editors/personeditor.py:200
-#: ../stoqlib/gui/editors/producteditor.py:704
-#: ../stoqlib/gui/editors/sellableeditor.py:77
+#: ../stoqlib/gui/editors/producteditor.py:712
+#: ../stoqlib/gui/editors/sellableeditor.py:78
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:51
 #: ../stoqlib/gui/search/costcentersearch.py:51
 #: ../stoqlib/gui/search/personsearch.py:112
@@ -3802,7 +3820,7 @@ msgstr "Operações de crédito"
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:118
 #: ../stoqlib/gui/editors/deliveryeditor.py:155
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:103
-#: ../stoqlib/gui/editors/producteditor.py:705
+#: ../stoqlib/gui/editors/producteditor.py:713
 #: ../stoqlib/gui/search/consignmentsearch.py:52
 #: ../stoqlib/gui/search/loansearch.py:79
 #: ../stoqlib/gui/search/productsearch.py:246
@@ -3987,8 +4005,8 @@ msgstr "Data de expiração"
 #: ../stoqlib/gui/slaves/productionslave.py:185
 #: ../stoqlib/gui/slaves/productslave.py:464
 #: ../stoqlib/gui/slaves/productslave.py:756
-#: ../stoqlib/gui/slaves/sellableslave.py:86
-#: ../stoqlib/gui/slaves/sellableslave.py:105
+#: ../stoqlib/gui/slaves/sellableslave.py:66
+#: ../stoqlib/gui/slaves/sellableslave.py:85
 #: ../stoqlib/gui/widgets/queryentry.py:597
 #: ../stoqlib/gui/wizards/inventorywizard.py:294
 #: ../stoqlib/gui/wizards/productionwizard.py:182
@@ -4037,7 +4055,7 @@ msgstr "Item"
 #: ../stoqlib/gui/search/sellablesearch.py:359
 #: ../stoqlib/gui/search/servicesearch.py:101
 #: ../stoqlib/gui/slaves/productslave.py:759
-#: ../stoqlib/gui/slaves/sellableslave.py:107
+#: ../stoqlib/gui/slaves/sellableslave.py:87
 #: ../stoqlib/gui/slaves/workorderslave.py:77
 #: ../stoqlib/gui/slaves/workorderslave.py:264
 #: ../stoqlib/gui/wizards/loanwizard.py:358 ../stoqlib/reporting/product.py:90
@@ -4094,7 +4112,7 @@ msgstr "Preço"
 msgid "Total"
 msgstr "Total"
 
-#: ../data/template/loan/loan.html:71 ../stoq/gui/pos.py:428
+#: ../data/template/loan/loan.html:71 ../stoq/gui/pos.py:429
 #: ../stoq/gui/till.py:365 ../stoqlib/gui/search/salesearch.py:258
 #: ../stoqlib/gui/search/salesearch.py:416
 #, c-format, python-format
@@ -4102,7 +4120,7 @@ msgid "Total: %s"
 msgstr "Total: %s"
 
 #: ../data/template/optical/optical.html:21
-#: ../data/template/till/purchases.html:10 ../stoq/gui/pos.py:696
+#: ../data/template/till/purchases.html:10 ../stoq/gui/pos.py:697
 #: ../stoqlib/gui/dialogs/saledetails.py:320
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:131
 #: ../stoqlib/gui/editors/creditcheckhistoryeditor.py:55
@@ -4418,7 +4436,7 @@ msgstr "Itens do pedido de compra"
 #: ../stoqlib/gui/dialogs/sellabledialog.py:166
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:125
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:124
-#: ../stoqlib/gui/editors/producteditor.py:637
+#: ../stoqlib/gui/editors/producteditor.py:645
 #: ../stoqlib/gui/search/productsearch.py:276
 #: ../stoqlib/gui/search/servicesearch.py:97
 #: ../stoqlib/gui/slaves/productslave.py:838
@@ -5103,7 +5121,7 @@ msgstr "Não foi possível encontrar uma impressora %s conectada em %s"
 msgid "This printer is already known to the system"
 msgstr "Esta impressora já está instalada no sistema"
 
-#: ../plugins/ecf/ecfprinterdialog.py:329 ../stoq/gui/pos.py:705
+#: ../plugins/ecf/ecfprinterdialog.py:329 ../stoq/gui/pos.py:706
 #: ../stoq/gui/stock.py:268 ../stoqlib/gui/dialogs/initialstockdialog.py:112
 #: ../stoqlib/gui/dialogs/sellabledialog.py:182
 #: ../stoqlib/gui/search/productsearch.py:256
@@ -5915,7 +5933,7 @@ msgid "PD"
 msgstr "DNP"
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:17
-#: ../plugins/optical/opticalui.py:113 ../stoq/gui/pos.py:707
+#: ../plugins/optical/opticalui.py:113 ../stoq/gui/pos.py:708
 #: ../stoqlib/domain/uiform.py:137
 #: ../stoqlib/gui/dialogs/sellabledialog.py:184
 msgid "Height"
@@ -6028,13 +6046,13 @@ msgid "Confirm date"
 msgstr "Data de confirmação"
 
 #: ../plugins/optical/medicssearch.py:130 ../plugins/optical/opticalui.py:150
-#: ../stoq/gui/pos.py:702 ../stoq/gui/stock.py:264
+#: ../stoq/gui/pos.py:703 ../stoq/gui/stock.py:264
 #: ../stoqlib/domain/uiform.py:142
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:110
 #: ../stoqlib/gui/dialogs/manufacturerdialog.py:42
 #: ../stoqlib/gui/dialogs/saledetails.py:273
 #: ../stoqlib/gui/dialogs/sellabledialog.py:188
-#: ../stoqlib/gui/editors/producteditor.py:697
+#: ../stoqlib/gui/editors/producteditor.py:705
 #: ../stoqlib/gui/search/productsearch.py:254
 #: ../stoqlib/gui/search/productsearch.py:471
 #: ../stoqlib/gui/search/productsearch.py:548
@@ -6435,13 +6453,13 @@ msgid "Roles"
 msgstr "Cargos"
 
 #: ../stoq/gui/admin.py:125 ../stoqlib/gui/dialogs/sellabledialog.py:87
-#: ../stoqlib/gui/editors/producteditor.py:422
-#: ../stoqlib/gui/editors/producteditor.py:552
+#: ../stoqlib/gui/editors/producteditor.py:423
+#: ../stoqlib/gui/editors/producteditor.py:553
 msgid "Taxes"
 msgstr "Impostos"
 
 #: ../stoq/gui/admin.py:126 ../stoq/gui/purchase.py:173
-#: ../stoqlib/gui/editors/producteditor.py:419
+#: ../stoqlib/gui/editors/producteditor.py:420
 msgid "Suppliers"
 msgstr "Fornecedores"
 
@@ -7027,7 +7045,7 @@ msgstr "Algo deu errado ao tentar criar o banco de dados. Deseja tentar novament
 msgid "Change settings"
 msgstr "Editar configurações"
 
-#: ../stoq/gui/config.py:813 ../stoq/gui/pos.py:1162 ../stoq/gui/till.py:343
+#: ../stoq/gui/config.py:813 ../stoq/gui/pos.py:1163 ../stoq/gui/till.py:343
 #: ../stoqlib/gui/fiscalprinter.py:633 ../stoqlib/gui/fiscalprinter.py:676
 #: ../stoqlib/gui/fiscalprinter.py:696 ../stoqlib/gui/fiscalprinter.py:725
 #: ../stoqlib/gui/fiscalprinter.py:751
@@ -7178,7 +7196,7 @@ msgid "Edit"
 msgstr "Editar"
 
 #: ../stoq/gui/financial.py:375 ../stoq/gui/financial.py:376
-#: ../stoqlib/gui/editors/sellableeditor.py:479
+#: ../stoqlib/gui/editors/sellableeditor.py:483
 msgid "Delete"
 msgstr "Excluir"
 
@@ -7380,7 +7398,7 @@ msgstr "Você tem certeza que deseja cancelar este inventário?"
 msgid "Cancel inventory"
 msgstr "Cancelar inventário"
 
-#: ../stoq/gui/inventory.py:226 ../stoq/gui/pos.py:901 ../stoq/gui/pos.py:1354
+#: ../stoq/gui/inventory.py:226 ../stoq/gui/pos.py:902 ../stoq/gui/pos.py:1355
 #: ../stoq/gui/production.py:262 ../stoq/gui/purchase.py:416
 #: ../stoq/gui/sales.py:542 ../stoqlib/gui/base/wizards.py:343
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:157
@@ -7659,13 +7677,13 @@ msgid ""
 "You must finish the current sale before you change to another application."
 msgstr "Você deve finalizar a venda atual antes de alternar de aplicativo."
 
-#: ../stoq/gui/pos.py:301 ../stoq/gui/pos.py:312 ../stoq/gui/pos.py:1162
-#: ../stoq/gui/pos.py:1199 ../stoq/gui/sales.py:541
+#: ../stoq/gui/pos.py:301 ../stoq/gui/pos.py:312 ../stoq/gui/pos.py:1163
+#: ../stoq/gui/pos.py:1200 ../stoq/gui/sales.py:541
 #: ../stoqlib/gui/slaves/saleslave.py:334
 msgid "Cancel sale"
 msgstr "Cancelar a venda"
 
-#: ../stoq/gui/pos.py:301 ../stoq/gui/pos.py:312 ../stoq/gui/pos.py:1199
+#: ../stoq/gui/pos.py:301 ../stoq/gui/pos.py:312 ../stoq/gui/pos.py:1200
 msgid "Finish sale"
 msgstr "Terminar a venda"
 
@@ -7683,31 +7701,31 @@ msgstr "Referência"
 msgid "_Close"
 msgstr "Fe_char"
 
-#: ../stoq/gui/pos.py:609
+#: ../stoq/gui/pos.py:610
 msgid "POS operations requires a connected fiscal printer."
 msgstr "As operações do PDV requerem uma impressora fiscal conectada."
 
-#: ../stoq/gui/pos.py:618 ../stoq/gui/till.py:500
+#: ../stoq/gui/pos.py:619 ../stoq/gui/till.py:500
 msgid "Till closed"
 msgstr "Caixa fechado"
 
-#: ../stoq/gui/pos.py:621 ../stoq/gui/till.py:511
+#: ../stoq/gui/pos.py:622 ../stoq/gui/till.py:511
 msgid "Open till"
 msgstr "Abrir caixa"
 
-#: ../stoq/gui/pos.py:623 ../stoq/gui/till.py:516
+#: ../stoq/gui/pos.py:624 ../stoq/gui/till.py:516
 msgid "Till blocked"
 msgstr "Caixa bloqueado"
 
-#: ../stoq/gui/pos.py:625
+#: ../stoq/gui/pos.py:626
 msgid "Till open"
 msgstr "Caixa aberto"
 
-#: ../stoq/gui/pos.py:695 ../stoqlib/gui/dialogs/clientdetails.py:294
+#: ../stoq/gui/pos.py:696 ../stoqlib/gui/dialogs/clientdetails.py:294
 msgid "Estimated fix date"
 msgstr "Data estimada de resolução"
 
-#: ../stoq/gui/pos.py:703 ../stoq/gui/stock.py:266
+#: ../stoq/gui/pos.py:704 ../stoq/gui/stock.py:266
 #: ../stoqlib/gui/dialogs/sellabledialog.py:180
 #: ../stoqlib/gui/search/productsearch.py:265
 #: ../stoqlib/gui/search/productsearch.py:550
@@ -7716,114 +7734,114 @@ msgstr "Data estimada de resolução"
 msgid "Brand"
 msgstr "Marca"
 
-#: ../stoq/gui/pos.py:704 ../stoqlib/gui/dialogs/sellabledialog.py:181
+#: ../stoq/gui/pos.py:705 ../stoqlib/gui/dialogs/sellabledialog.py:181
 #: ../stoqlib/gui/search/productsearch.py:267
 msgid "Family"
 msgstr "Família"
 
-#: ../stoq/gui/pos.py:706 ../stoqlib/domain/uiform.py:136
+#: ../stoq/gui/pos.py:707 ../stoqlib/domain/uiform.py:136
 #: ../stoqlib/gui/dialogs/sellabledialog.py:183
 msgid "Width"
 msgstr "Largura"
 
-#: ../stoq/gui/pos.py:708 ../stoqlib/domain/uiform.py:138
+#: ../stoq/gui/pos.py:709 ../stoqlib/domain/uiform.py:138
 #: ../stoqlib/gui/dialogs/sellabledialog.py:185
 msgid "Depth"
 msgstr "Profundidade"
 
-#: ../stoq/gui/pos.py:709 ../stoqlib/domain/uiform.py:139
+#: ../stoq/gui/pos.py:710 ../stoqlib/domain/uiform.py:139
 #: ../stoqlib/gui/dialogs/sellabledialog.py:186
 msgid "Weight"
 msgstr "Peso"
 
-#: ../stoq/gui/pos.py:795
+#: ../stoq/gui/pos.py:796
 #, python-format
 msgid "The barcode '%s' does not exist. Searching for a product instead..."
 msgstr "O código de barras '%s' não existe. Pesquisando por um produto no lugar..."
 
-#: ../stoq/gui/pos.py:815
+#: ../stoq/gui/pos.py:816
 #, python-format
 msgid ""
 "You cannot sell fractions of this product. The '%s' unit does not allow that"
 msgstr "Você não pode vender frações deste produto. A unidade '%s' não permite isto."
 
-#: ../stoq/gui/pos.py:831
+#: ../stoq/gui/pos.py:832
 #, python-format
 msgid ""
 "You cannot sell more items of product %s. The available quantity is not "
 "enough."
 msgstr "Você não pode vender mais itens do produto %s. A quantidade disponível não é suficiente."
 
-#: ../stoq/gui/pos.py:900
+#: ../stoq/gui/pos.py:901
 msgid "This will cancel the current order. Are you sure?"
 msgstr "Isto irá cancelar o pedido atual. Você tem certeza?"
 
-#: ../stoq/gui/pos.py:901 ../stoq/gui/production.py:262
+#: ../stoq/gui/pos.py:902 ../stoq/gui/production.py:262
 #: ../stoq/gui/purchase.py:410
 msgid "Cancel order"
 msgstr "Cancelar ordem"
 
-#: ../stoq/gui/pos.py:1044
+#: ../stoq/gui/pos.py:1045
 msgid ""
 "Traded value is greater than the new sale's value. Please add more items or "
 "return it in Sales app, then make a new sale"
 msgstr "O valor da troca é maior que o valor da nova venda. Por favor, adicione mais itens ou faça uma devolução no aplicativo Vendas e então faça a nova venda"
 
-#: ../stoq/gui/pos.py:1051
+#: ../stoq/gui/pos.py:1052
 msgid ""
 "Traded value is equal to the new sale's value. Please add more items or "
 "return it in Sales app, then make a new sale"
 msgstr "O valor da troca é igual ao valor da nova venda. Por favor, adicione mais itens ou faça uma devolução no aplicativo Vendas e então faça a nova venda"
 
-#: ../stoq/gui/pos.py:1117
+#: ../stoq/gui/pos.py:1118
 msgid "Close the order?"
 msgstr "Fechar a ordem?"
 
-#: ../stoq/gui/pos.py:1117 ../stoq/gui/purchase.py:174 ../stoq/gui/till.py:150
+#: ../stoq/gui/pos.py:1118 ../stoq/gui/purchase.py:174 ../stoq/gui/till.py:150
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: ../stoq/gui/pos.py:1118 ../stoq/gui/purchase.py:383 ../stoq/gui/till.py:293
+#: ../stoq/gui/pos.py:1119 ../stoq/gui/purchase.py:383 ../stoq/gui/till.py:293
 msgid "Don't confirm"
 msgstr "Não confirmar"
 
-#: ../stoq/gui/pos.py:1141 ../stoq/gui/pos.py:1313 ../stoq/gui/pos.py:1354
+#: ../stoq/gui/pos.py:1142 ../stoq/gui/pos.py:1314 ../stoq/gui/pos.py:1355
 msgid "Cancel trade"
 msgstr "Cancelar troca"
 
-#: ../stoq/gui/pos.py:1144
+#: ../stoq/gui/pos.py:1145
 #, python-format
 msgid ""
 "There is a trade with value %s in progress...\n"
 "When checking out, it will be used as part of the payment."
 msgstr "Existe uma troca de valor %s em andamento...\nAo confirmar, ela será utilizada como parte do pagamento."
 
-#: ../stoq/gui/pos.py:1160
+#: ../stoq/gui/pos.py:1161
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be "
 "opened."
 msgstr "Não é possível iniciar uma nova venda se o cupom fiscal não puder ser aberto."
 
-#: ../stoq/gui/pos.py:1197
+#: ../stoq/gui/pos.py:1198
 msgid ""
 "You must finish or cancel the current sale before you can close the till."
 msgstr "Você deve terminar ou cancelar a venda atual antes de fechar o caixa."
 
-#: ../stoq/gui/pos.py:1311
+#: ../stoq/gui/pos.py:1312
 msgid ""
 "There is already a trade in progress... Do you want to cancel it and start a"
 " new one?"
 msgstr "Já existe uma troca em andamento... Você gostaria cancelá-la e iniciar uma nova?"
 
-#: ../stoq/gui/pos.py:1313
+#: ../stoq/gui/pos.py:1314
 msgid "Finish trade"
 msgstr "Terminar a troca"
 
-#: ../stoq/gui/pos.py:1353
+#: ../stoq/gui/pos.py:1354
 msgid "Do you really want to cancel the trade in progress?"
 msgstr "Você realmente deseja cancelar a troca em andamento?"
 
-#: ../stoq/gui/pos.py:1385
+#: ../stoq/gui/pos.py:1386
 msgid "Quantity must be a positive number"
 msgstr "Quantidade deve ser um número positivo."
 
@@ -9175,7 +9193,7 @@ msgstr "Sugestões"
 
 #: ../stoq/gui/stock.py:78 ../stoq/lib/applist.py:61
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:76
-#: ../stoqlib/gui/editors/producteditor.py:615
+#: ../stoqlib/gui/editors/producteditor.py:623
 #: ../stoqlib/gui/search/consignmentsearch.py:56
 #: ../stoqlib/gui/search/productsearch.py:282
 #: ../stoqlib/gui/search/sellablesearch.py:363
@@ -9285,28 +9303,6 @@ msgstr "Itens devolvidos..."
 #: ../stoq/gui/stock.py:134
 msgid "Pending returned sales..."
 msgstr "Devoluções pendentes..."
-
-#: ../stoq/gui/stock.py:135 ../stoqlib/domain/uiform.py:159
-#: ../stoqlib/gui/dialogs/clientdetails.py:225
-#: ../stoqlib/gui/dialogs/clientdetails.py:258
-#: ../stoqlib/gui/dialogs/costcenterdialog.py:60
-#: ../stoqlib/gui/dialogs/missingitemsdialog.py:72
-#: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:215
-#: ../stoqlib/gui/editors/producteditor.py:317
-#: ../stoqlib/gui/editors/producteditor.py:582
-#: ../stoqlib/gui/search/personsearch.py:399
-#: ../stoqlib/gui/search/productsearch.py:149
-#: ../stoqlib/gui/search/salesearch.py:269
-#: ../stoqlib/gui/search/salesearch.py:356
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:177
-#: ../stoqlib/gui/wizards/salequotewizard.py:528 ../stoqlib/lib/invoice.py:588
-#: ../stoqlib/lib/invoice.py:603 ../stoqlib/lib/invoice.py:619
-#: ../stoqlib/lib/invoice.py:632 ../stoqlib/lib/invoice.py:646
-#: ../stoqlib/lib/invoice.py:659 ../stoqlib/lib/invoice.py:672
-#: ../stoqlib/lib/invoice.py:685 ../stoqlib/lib/invoice.py:698
-#: ../stoqlib/lib/invoice.py:710
-msgid "Product"
-msgstr "Produto"
 
 #: ../stoq/gui/stock.py:136
 msgid "Print labels..."
@@ -10069,7 +10065,7 @@ msgid ""
 " changing the value from {original_price} to {new_price}."
 msgstr "venda {sale_number}: Usuário {user_name} autorizou {discount_value} de desconto alterando o valor de {original_price} para {new_price}."
 
-#: ../stoqlib/domain/image.py:80
+#: ../stoqlib/domain/image.py:104
 msgid "Stoq image"
 msgstr "Imagem do Stoq"
 
@@ -10900,7 +10896,7 @@ msgid "The sellable barcode %r already exists"
 msgstr "O código de barras %r já existe"
 
 #. Translators: ICMS tax rate credit = Alíquota de crédito do ICMS
-#: ../stoqlib/domain/sellable.py:752
+#: ../stoqlib/domain/sellable.py:759
 #, python-format
 msgid ""
 "You cannot sell this item before updating the 'ICMS tax rate credit' field on '%s' Tax Class.\n"
@@ -11640,7 +11636,7 @@ msgstr "Nota fiscal de venda"
 #: ../stoqlib/gui/dialogs/labeldialog.py:44
 #: ../stoqlib/gui/dialogs/purchasedetails.py:176
 #: ../stoqlib/gui/dialogs/receivingdialog.py:86
-#: ../stoqlib/gui/editors/sellableeditor.py:252
+#: ../stoqlib/gui/editors/sellableeditor.py:253
 #: ../stoqlib/gui/wizards/receivingwizard.py:458
 msgid "Print labels"
 msgstr "Imprimir etiquetas"
@@ -11713,7 +11709,7 @@ msgid "Erase value"
 msgstr "Apagar o valor"
 
 #: ../stoqlib/gui/dialogs/masseditordialog.py:606
-#: ../stoqlib/gui/slaves/imageslaveslave.py:105
+#: ../stoqlib/gui/slaves/imageslave.py:113
 msgid "Save"
 msgstr "Salvar"
 
@@ -12291,7 +12287,7 @@ msgstr "Fim da promoção"
 msgid "NCM"
 msgstr "NCM"
 
-#: ../stoqlib/gui/dialogs/sellableimage.py:36
+#: ../stoqlib/gui/dialogs/sellableimage.py:38
 msgid "Sellable Image Viewer"
 msgstr "Visualizador de imagens"
 
@@ -12517,7 +12513,6 @@ msgstr "Alterações na chave do backup vão fazer com que qualquer backup feito
 
 #: ../stoqlib/gui/editors/backupsettings.py:49
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:90
-#: ../stoqlib/gui/slaves/imageslaveslave.py:102
 msgid "Change"
 msgstr "Alterar"
 
@@ -12925,7 +12920,7 @@ msgid "Loan Item"
 msgstr "Item emprestado"
 
 #: ../stoqlib/gui/editors/loanitemeditor.py:111
-#: ../stoqlib/gui/editors/producteditor.py:313
+#: ../stoqlib/gui/editors/producteditor.py:314
 #: ../stoqlib/gui/editors/saleeditor.py:277
 msgid "The price must be greater than zero."
 msgstr "O valor deve ser maior que zero"
@@ -13114,7 +13109,8 @@ msgstr "Você quer remover %s?"
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:458
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:490
-#: ../stoqlib/gui/editors/sellableeditor.py:291 ../stoqlib/gui/fields.py:523
+#: ../stoqlib/gui/editors/sellableeditor.py:295 ../stoqlib/gui/fields.py:523
+#: ../stoqlib/gui/slaves/imageslave.py:114
 msgid "Remove"
 msgstr "Remover"
 
@@ -13282,102 +13278,107 @@ msgstr "Perguntar (padrão)"
 msgid "Save to disk"
 msgstr "Salvar no disco"
 
-#: ../stoqlib/gui/editors/producteditor.py:126
+#: ../stoqlib/gui/editors/producteditor.py:127
 msgid "Quality Test"
 msgstr "Teste de qualidade"
 
-#: ../stoqlib/gui/editors/producteditor.py:142
+#: ../stoqlib/gui/editors/producteditor.py:143
 #: ../stoqlib/gui/slaves/productionslave.py:297
 msgid "True"
 msgstr "Verdadeiro"
 
-#: ../stoqlib/gui/editors/producteditor.py:184
+#: ../stoqlib/gui/editors/producteditor.py:185
 msgid "Product Supplier"
 msgstr "Fornecedor de produtos"
 
-#: ../stoqlib/gui/editors/producteditor.py:196
+#: ../stoqlib/gui/editors/producteditor.py:197
 #: ../stoqlib/gui/slaves/productslave.py:251
 msgid "Unit(s)"
 msgstr "Unidade(s)"
 
-#: ../stoqlib/gui/editors/producteditor.py:223
+#: ../stoqlib/gui/editors/producteditor.py:224
 msgid "Minimum purchase must be greater than zero."
 msgstr "Mínimo para compras deve ser maior que zero."
 
-#: ../stoqlib/gui/editors/producteditor.py:228
+#: ../stoqlib/gui/editors/producteditor.py:229
 msgid "Value must be greater than zero."
 msgstr "Valor deve ser maior que zero."
 
-#: ../stoqlib/gui/editors/producteditor.py:232
+#: ../stoqlib/gui/editors/producteditor.py:233
 msgid "Lead time must be greater or equal one day"
 msgstr "Tempo de obtenção deve ser maior ou igual a um dia"
 
-#: ../stoqlib/gui/editors/producteditor.py:245
+#: ../stoqlib/gui/editors/producteditor.py:246
 #, python-format
 msgid "This code already exists for this supplier on product '%s'"
 msgstr "Este código já existe para este fornecedor no produto '%s'"
 
-#: ../stoqlib/gui/editors/producteditor.py:257
+#: ../stoqlib/gui/editors/producteditor.py:258
 msgid "Product Component"
 msgstr "Componente do produto"
 
 #. FIXME: value < upper bound
-#: ../stoqlib/gui/editors/producteditor.py:293
+#: ../stoqlib/gui/editors/producteditor.py:294
 msgid "The component quantity must be greater than zero."
 msgstr "A quantidade do componente deve ser maior que zero."
 
-#: ../stoqlib/gui/editors/producteditor.py:393
+#: ../stoqlib/gui/editors/producteditor.py:394
 msgid ""
 "Some properties of this product have been disabled for editing as that "
 "should be done on the parent product."
 msgstr "Algumas propriedades deste produto foram desabilitadas para edição pois devem ser realizadas no produto pai."
 
-#: ../stoqlib/gui/editors/producteditor.py:397
+#: ../stoqlib/gui/editors/producteditor.py:398
 msgid ""
 "This is just a skeleton product responsible for creating grid products. "
 "Create those on the 'Grid' tab"
 msgstr "Isto é apenas um produto esqueleto responsável para criação de grade de produtos. Crie os produtos na aba 'Grade'"
 
-#: ../stoqlib/gui/editors/producteditor.py:406
+#: ../stoqlib/gui/editors/producteditor.py:407
 msgid ""
 "The price of this product consists of the sum of its components price on "
 "'Pack content' tab"
 msgstr "O preço deste produto consiste da soma dos preços de seus componentes na aba 'Conteúdo do pacote'"
 
-#: ../stoqlib/gui/editors/producteditor.py:441
+#: ../stoqlib/gui/editors/producteditor.py:442
 msgid "Pack content"
 msgstr "Conteúdo do pacote"
 
-#: ../stoqlib/gui/editors/producteditor.py:529
+#: ../stoqlib/gui/editors/producteditor.py:530
 msgid "Cost must be greater than the sum of the components."
 msgstr "O custo deve ser maior que do que a soma dos componentes."
 
-#: ../stoqlib/gui/editors/producteditor.py:551
+#: ../stoqlib/gui/editors/producteditor.py:552
 msgid "Components"
 msgstr "Componentes"
 
-#: ../stoqlib/gui/editors/producteditor.py:553
+#: ../stoqlib/gui/editors/producteditor.py:554
 msgid "Quality"
 msgstr "Qualidade"
 
-#: ../stoqlib/gui/editors/producteditor.py:575
+#: ../stoqlib/gui/editors/producteditor.py:576
 msgid "Cost cannot be zero or negative."
 msgstr "Custo não pode ser zero ou negativo."
 
-#: ../stoqlib/gui/editors/producteditor.py:614
+#: ../stoqlib/gui/editors/producteditor.py:606
+#: ../stoqlib/gui/editors/sellableeditor.py:272
+msgid "Images"
+msgstr ""
+
+#: ../stoqlib/gui/editors/producteditor.py:622
 msgid "Adjust stock quantity"
 msgstr "Ajustar a quantidade de estoque"
 
-#: ../stoqlib/gui/editors/producteditor.py:721
+#: ../stoqlib/gui/editors/producteditor.py:729
 msgid "The manufacturer should have a name."
 msgstr "O fabricante deve ter um nome."
 
-#: ../stoqlib/gui/editors/producteditor.py:725
+#: ../stoqlib/gui/editors/producteditor.py:733
 #, python-format
 msgid "The manufacturer '%s' already exists."
 msgstr "O fabricante '%s' já existe."
 
-#: ../stoqlib/gui/editors/producteditor.py:730
+#: ../stoqlib/gui/editors/producteditor.py:738
 #, python-format
 msgid "The code '%s' already exists"
 msgstr "O código '%s' já existe"
@@ -13519,136 +13520,136 @@ msgstr "Token da venda"
 msgid "Code already in use"
 msgstr "Código já está sendo usado"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:72
+#: ../stoqlib/gui/editors/sellableeditor.py:73
 msgid "Taxes and Tax rates"
 msgstr "Impostos e taxa de impostos"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:106
+#: ../stoqlib/gui/editors/sellableeditor.py:107
 msgid "Price settings"
 msgstr "Ajustes de preço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:130
-#: ../stoqlib/gui/editors/sellableeditor.py:570
+#: ../stoqlib/gui/editors/sellableeditor.py:131
+#: ../stoqlib/gui/editors/sellableeditor.py:574
 msgid "Price cannot be zero or negative"
 msgstr "Preço não pode ser zero ou negativo."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:154
+#: ../stoqlib/gui/editors/sellableeditor.py:155
 msgid "Product Price"
 msgstr "Preço do produto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:166
+#: ../stoqlib/gui/editors/sellableeditor.py:167
 #, python-format
 msgid "Calculate Commission From: %s"
 msgstr "Calcular comissão de: %s"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:171
+#: ../stoqlib/gui/editors/sellableeditor.py:172
 msgid "Category Price"
 msgstr "Preço da categoria"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:217
+#: ../stoqlib/gui/editors/sellableeditor.py:218
 msgid "This unit type requires weighing"
 msgstr "Este tipo de unidade requer pesagem"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:271
+#: ../stoqlib/gui/editors/sellableeditor.py:275
 msgid "Category Prices"
 msgstr "Preços para categorias"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:277
+#: ../stoqlib/gui/editors/sellableeditor.py:281
 #, python-format
 msgid ""
 "This is a demostration mode of Stoq, you cannot create more than %d products.\n"
 "To avoid this limitation, enable production mode."
 msgstr "Este é o modo de demonstração do Stoq, você não pode criar mais que %d produtos.\nPara evitar essa limitação, habilite o modo de produção."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:296
+#: ../stoqlib/gui/editors/sellableeditor.py:300
 msgid "Close Product"
 msgstr "Fechar produto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:298
+#: ../stoqlib/gui/editors/sellableeditor.py:302
 msgid "Close Service"
 msgstr "Fechar serviço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:305
+#: ../stoqlib/gui/editors/sellableeditor.py:309
 msgid "Reopen Product"
 msgstr "Reabrir produto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:307
+#: ../stoqlib/gui/editors/sellableeditor.py:311
 msgid "Reopen Service"
 msgstr "Reabrir serviço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:323
+#: ../stoqlib/gui/editors/sellableeditor.py:327
 #, python-format
 msgid "Currently on sale for %s"
 msgstr "Atualmente em promoção por %s"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:429
+#: ../stoqlib/gui/editors/sellableeditor.py:433
 msgid "No units"
 msgstr "Sem unidades"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:440
+#: ../stoqlib/gui/editors/sellableeditor.py:444
 msgid "Edit the selected category"
 msgstr "Edita a categoria selecionada"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:477
+#: ../stoqlib/gui/editors/sellableeditor.py:481
 #, python-format
 msgid "This will delete '%s' from the database. Are you sure?"
 msgstr "Isto irá excluir '%s' do banco de dados. Você tem certeza?"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:479
+#: ../stoqlib/gui/editors/sellableeditor.py:483
 msgid "Keep"
 msgstr "Manter"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:485
+#: ../stoqlib/gui/editors/sellableeditor.py:489
 #, python-format
 msgid "It was not possible to remove '%s'"
 msgstr "Não foi possível remover '%s'"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:501
+#: ../stoqlib/gui/editors/sellableeditor.py:505
 #, python-format
 msgid ""
 "Do you really want to close '%s'?\n"
 "Please note that when it's closed, you won't be able to commercialize it anymore."
 msgstr "Você deseja realmente fechar '%s'?\nPor favor note que quando este estiver fechado, não será mais possível comercializá-lo."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:506
+#: ../stoqlib/gui/editors/sellableeditor.py:510
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:539
 msgid "Don't close"
 msgstr "Não fechar"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:514
+#: ../stoqlib/gui/editors/sellableeditor.py:518
 #, python-format
 msgid ""
 "Do you really want to reopen '%s'?\n"
 "Note that when it's opened, you will be able to commercialize it again."
 msgstr "Você deseja realmente reabrir '%s'?\nPor favor note que quando este estiver aberto, será possível comercializá-lo novamente."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:518
+#: ../stoqlib/gui/editors/sellableeditor.py:522
 msgid "Keep closed"
 msgstr "Manter fechado"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:553
+#: ../stoqlib/gui/editors/sellableeditor.py:557
 msgid "The code can not be empty."
 msgstr "O código não pode ser vazio."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:555
+#: ../stoqlib/gui/editors/sellableeditor.py:559
 #, python-format
 msgid "The code %s already exists."
 msgstr "O código %s já existe."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:561
+#: ../stoqlib/gui/editors/sellableeditor.py:565
 msgid "Barcode must have 14 digits or less."
 msgstr "O código de barras deve ter 14 dígitos ou menos."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:563
+#: ../stoqlib/gui/editors/sellableeditor.py:567
 #, python-format
 msgid "The barcode %s already exists"
 msgstr "O código de barras %s já existe!"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:565
+#: ../stoqlib/gui/editors/sellableeditor.py:569
 msgid "Cannot create new barcodes in demonstration mode"
 msgstr "Não é possível criar novos códigos de barra no modo de demonstração"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:574
+#: ../stoqlib/gui/editors/sellableeditor.py:578
 msgid "Cost cannot be zero or negative"
 msgstr "Custo não pode ser zero ou negativo."
 
@@ -15075,15 +15076,31 @@ msgstr "Iniciou em"
 msgid "Ended"
 msgstr "Saiu em"
 
-#: ../stoqlib/gui/slaves/imageslaveslave.py:103
+#: ../stoqlib/gui/slaves/imageslave.py:110
+msgid "Set as main image"
+msgstr ""
+
+#: ../stoqlib/gui/slaves/imageslave.py:111
+msgid "Internal use only"
+msgstr ""
+
+#: ../stoqlib/gui/slaves/imageslave.py:112
 msgid "View"
 msgstr "Visualizar"
 
-#: ../stoqlib/gui/slaves/imageslaveslave.py:104
-msgid "Erase"
-msgstr "Apagar"
+#: ../stoqlib/gui/slaves/imageslave.py:146
+msgid "Add a new image"
+msgstr ""
 
-#: ../stoqlib/gui/slaves/imageslaveslave.py:150
+#: ../stoqlib/gui/slaves/imageslave.py:161
+msgid "This is the main image"
+msgstr ""
+
+#: ../stoqlib/gui/slaves/imageslave.py:164
+msgid "This is for internal use only"
+msgstr ""
+
+#: ../stoqlib/gui/slaves/imageslave.py:187
 msgid "Select Image"
 msgstr "Selecione uma imagem"
 
@@ -15405,16 +15422,16 @@ msgid ""
 "Please edit the client document or change the sale client"
 msgstr "Não é possível aceitar a devolução de vendas de clientes sem documento. Por favor, edite o documento do cliente ou altere o cliente da venda"
 
-#: ../stoqlib/gui/slaves/sellableslave.py:109
+#: ../stoqlib/gui/slaves/sellableslave.py:89
 msgid "Markup"
 msgstr "Marcação"
 
-#: ../stoqlib/gui/slaves/sellableslave.py:118
+#: ../stoqlib/gui/slaves/sellableslave.py:98
 #, python-format
 msgid "%s already have a price for category %s"
 msgstr "%s já tem um preço para a categoria %s"
 
-#: ../stoqlib/gui/slaves/sellableslave.py:153
+#: ../stoqlib/gui/slaves/sellableslave.py:133
 msgid "Sale price can not be 0"
 msgstr "Preço de venda não pode ser 0"
 
