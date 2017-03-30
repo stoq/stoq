@@ -417,6 +417,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`xmlutils` Module
+----------------------
+
+.. automodule:: stoqlib.lib.xmlutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
