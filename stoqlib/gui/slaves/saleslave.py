@@ -329,10 +329,10 @@ class SaleListToolbar(GladeSlaveDelegate):
         self.print_sale()
 
 
-def cancel_sale(sale):
+def cancel_sale(sale, reason):
     msg = _('Do you really want to cancel this sale ?')
     if yesno(msg, gtk.RESPONSE_NO, _("Cancel sale"), _("Don't cancel sale")):
-        sale.cancel()
+        sale.cancel(reason)
         return True
     return False
 
@@ -356,7 +356,8 @@ def return_sale(parent, sale, store):
         returned_sale = sale.create_sale_return_adapter()
         retval = run_dialog(SaleReturnWizard, parent, store, returned_sale)
     elif sale.can_cancel():
-        retval = cancel_sale(sale)
+        reason = _('Sale cancelled due to client return.')
+        retval = cancel_sale(sale, reason)
     else:
         retval = False
 

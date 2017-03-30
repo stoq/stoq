@@ -40,6 +40,7 @@ from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
+from stoqlib.api import api
 from stoqlib.database.expr import (Concat, Date, Distinct, Field, NullIf,
                                    TransactionTimestamp)
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
@@ -1208,12 +1209,13 @@ class Sale(Domain):
         self._set_sale_status(Sale.STATUS_CONFIRMED)
         self.return_date = None
 
-    def cancel(self, force=False):
+    def cancel(self, reason, force=False):
         """Cancel the sale
 
         You can only cancel an ordered sale. This will also cancel
         all the payments related to it.
 
+        :param reason: A short text describing the cancellation reason.
         :param force: if ``True``, :meth:`.can_cancel` will not be asserted.
             Only use this if you really need to (for example, when canceling
             the last sale on the ecf)
@@ -1226,6 +1228,8 @@ class Sale(Domain):
             item.cancel(branch)
 
         self.cancel_date = TransactionTimestamp()
+        self.cancel_reason = reason
+        self.cancel_responsible = api.get_current_user(self.store)
         self.paid = False
 
         # Cancel payments

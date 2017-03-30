@@ -1042,7 +1042,7 @@ class TestSale(DomainTest):
         storable = sellable.product_storable
         inital_quantity = storable.get_balance_for_branch(sale.branch)
         sale.status = Sale.STATUS_QUOTE
-        sale.cancel()
+        sale.cancel(u"Test sale cancellation")
         can_cancel_emit.assert_called_once_with(sale)
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
         final_quantity = storable.get_balance_for_branch(sale.branch)
@@ -1055,7 +1055,7 @@ class TestSale(DomainTest):
         inital_quantity = storable.get_balance_for_branch(sale.branch)
         sale.order()
         with mock.patch.object(sale, 'can_cancel') as can_cancel:
-            sale.cancel(force=True)
+            sale.cancel(u"Test sale cancellation", force=True)
             self.assertEqual(can_cancel.call_count, 0)
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
         final_quantity = storable.get_balance_for_branch(sale.branch)
@@ -1070,7 +1070,7 @@ class TestSale(DomainTest):
 
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
             with mock.patch.object(work_order, 'cancel') as cancel:
-                sale.cancel()
+                sale.cancel(u"Test sale cancellation")
                 cancel.assert_called_once_with(
                     reason="The sale was cancelled",
                     ignore_sale=True)
@@ -1086,7 +1086,7 @@ class TestSale(DomainTest):
         sale.group.pay()
 
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
-            sale.cancel()
+            sale.cancel(u"Test sale cancellation")
             self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
             self.assertEquals(work_order.status, WorkOrder.STATUS_CANCELLED)
             for payment in sale.payments:
@@ -1120,7 +1120,7 @@ class TestSale(DomainTest):
             if item.sellable == sellable2:
                 item.quantity_decreased = 5
 
-        sale.cancel()
+        sale.cancel(u"Test sale cancellation")
 
         # Check that, in the end, everything was increased by 10,
         # that is the amount that was marked to be sold
@@ -1146,7 +1146,7 @@ class TestSale(DomainTest):
             self.assertEquals(initial_quantity - 1, after_confirmed_quantity)
 
             self.failUnless(sale.can_cancel())
-            sale.cancel()
+            sale.cancel(u"Test sale cancellation")
             self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
 
             final_quantity = storable.get_balance_for_branch(branch)
@@ -1169,7 +1169,7 @@ class TestSale(DomainTest):
             self.assertEquals(initial_quantity - 1, after_confirmed_quantity)
 
             self.failUnless(sale.can_cancel())
-            sale.cancel()
+            sale.cancel(u"Test sale cancellation")
             self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
 
         final_quantity = storable.get_balance_for_branch(branch)
@@ -1181,7 +1181,7 @@ class TestSale(DomainTest):
         storable = sellable.product_storable
         inital_quantity = storable.get_balance_for_branch(sale.branch)
         sale.status = Sale.STATUS_QUOTE
-        sale.cancel()
+        sale.cancel(u"Test sale cancellation")
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
         final_quantity = storable.get_balance_for_branch(sale.branch)
         self.assertEquals(inital_quantity, final_quantity)

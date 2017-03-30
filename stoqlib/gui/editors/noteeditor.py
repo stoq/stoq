@@ -50,6 +50,7 @@ class NoteEditor(BaseEditor):
     gladefile = "NoteSlave"
     proxy_widgets = ('notes', )
     size = (500, 200)
+    model_type = object
 
     def __init__(self, store, model, attr_name='notes', title=u'',
                  label_text=None, message_text=None, mandatory=False,
@@ -72,9 +73,6 @@ class NoteEditor(BaseEditor):
         :param visual_mode: if we are working on visual mode
         :param min_length: if we should consider a minimum note length
         """
-        assert model, (u"You must supply a valid model to this editor "
-                       "(%r)" % self)
-        self.model_type = type(model)
         self.title = title
         self.label_text = label_text
         self.message_text = message_text
@@ -83,7 +81,7 @@ class NoteEditor(BaseEditor):
         self.min_length = min_length
 
         # Keep this for a later rollback.
-        self.original_notes = getattr(model, attr_name)
+        self.original_notes = getattr(model, attr_name, u'')
 
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         self._setup_widgets()
@@ -113,6 +111,9 @@ class NoteEditor(BaseEditor):
     def setup_proxies(self):
         self.notes.set_property('model-attribute', self.attr_name)
         self.add_proxy(self.model, NoteEditor.proxy_widgets)
+
+    def create_model(self, store):
+        return Note()
 
     def get_title(self, *args):
         return self.title

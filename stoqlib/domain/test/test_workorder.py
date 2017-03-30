@@ -836,7 +836,7 @@ class TestWorkOrder(DomainTest):
                     mock.patch.object(work_order, 'cancel')) as (reopen, cancel):
                 work_order.approve()
                 work_order.finish()
-                sale.cancel()
+                sale.cancel(u"Test sale cancellation")
                 reopen.assert_called_once_with(
                     reason="Reopening work order to cancel the sale")
                 cancel.assert_called_with(reason="The sale was cancelled",

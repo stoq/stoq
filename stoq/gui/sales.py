@@ -534,9 +534,9 @@ class SalesApp(ShellApp):
             note_min_length = 0
 
         retval = self.run_dialog(
-            NoteEditor, store, model=sale, attr_name='cancel_reason',
-            message_text=msg_text, label_text=_(u"Reason"),
-            mandatory=True, ok_button_label=_(u"Cancel sale"),
+            NoteEditor, store, model=None, message_text=msg_text,
+            label_text=_(u"Reason"), mandatory=True,
+            ok_button_label=_(u"Cancel sale"),
             cancel_button_label=_(u"Don't cancel"),
             min_length=note_min_length)
 
@@ -551,7 +551,7 @@ class SalesApp(ShellApp):
                       "do a sale return."))
             return
 
-        sale.cancel()
+        sale.cancel(retval.notes)
         store.commit(close=True)
         self.refresh()
 

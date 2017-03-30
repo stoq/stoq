@@ -31,7 +31,7 @@ from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.saleeditor import SalesPersonEditor
 from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
@@ -328,8 +328,7 @@ class TestSales(BaseGUITest):
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args, (NoteEditor, self.store))
-                self.assertTrue(isinstance(kwargs['model'], Sale))
-                self.assertEquals(kwargs['attr_name'], 'cancel_reason')
+                self.assertEquals(kwargs['model'], None)
                 self.assertEquals(kwargs['message_text'], msg_text)
                 self.assertEquals(kwargs['label_text'], u"Reason")
                 self.assertEquals(kwargs['mandatory'], True)
@@ -359,14 +358,13 @@ class TestSales(BaseGUITest):
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close')) as context:
             run_dialog = context[0]
-            run_dialog.return_value = True
+            run_dialog.return_value = Note()
             self.activate(app.SalesCancel)
 
             msg_text = u"This will cancel the sale, Are you sure?"
             args, kwargs = run_dialog.call_args
             self.assertEquals(args, (NoteEditor, self.store))
-            self.assertTrue(isinstance(kwargs['model'], Sale))
-            self.assertEquals(kwargs['attr_name'], 'cancel_reason')
+            self.assertEquals(kwargs['model'], None)
             self.assertEquals(kwargs['message_text'], msg_text)
             self.assertEquals(kwargs['label_text'], u"Reason")
             self.assertEquals(kwargs['mandatory'], True)
@@ -397,14 +395,13 @@ class TestSales(BaseGUITest):
                     mock.patch.object(self.store, 'commit'),
                     mock.patch.object(self.store, 'close')) as context:
                 run_dialog = context[0]
-                run_dialog.return_value = True
+                run_dialog.return_value = Note()
                 self.activate(app.SalesCancel)
 
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args, (NoteEditor, self.store))
-                self.assertTrue(isinstance(kwargs['model'], Sale))
-                self.assertEquals(kwargs['attr_name'], 'cancel_reason')
+                self.assertEquals(kwargs['model'], None)
                 self.assertEquals(kwargs['message_text'], msg_text)
                 self.assertEquals(kwargs['label_text'], u"Reason")
                 self.assertEquals(kwargs['mandatory'], True)
@@ -434,14 +431,13 @@ class TestSales(BaseGUITest):
                     mock.patch.object(self.store, 'commit'),
                     mock.patch.object(self.store, 'close')) as context:
                 run_dialog = context[0]
-                run_dialog.return_value = True
+                run_dialog.return_value = Note()
                 self.activate(app.SalesCancel)
 
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args, (NoteEditor, self.store))
-                self.assertTrue(isinstance(kwargs['model'], Sale))
-                self.assertEquals(kwargs['attr_name'], 'cancel_reason')
+                self.assertEquals(kwargs['model'], None)
                 self.assertEquals(kwargs['message_text'], msg_text)
                 self.assertEquals(kwargs['label_text'], u"Reason")
                 self.assertEquals(kwargs['mandatory'], True)
