@@ -984,10 +984,10 @@ class ShellWindow(GladeDelegate):
         # sorting by app_full_name
         for name, full, icon, descr in locale_sorted(
                 descriptions, key=operator.itemgetter(1)):
-            # FIXME:
-            # if name in self._hidden_apps:
-            #    continue
-            # and name not in self._blocked_apps:
+            # FIXME: The delivery app is still experimental. Remove this
+            # once it is considered stable enough for our users
+            if name == 'delivery' and not api.is_developer_mode():
+                continue
             if permissions.get(name):
                 available_applications.append(
                     Application(name, full, icon, descr))

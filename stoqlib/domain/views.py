@@ -1433,10 +1433,18 @@ class AccountView(Viewable):
 
 
 class DeliveryView(Viewable):
-    PersonTransporter = ClassAlias(Person, 'person_transporter')
-    PersonClient = ClassAlias(Person, 'person_client')
+    # Aliases
+    TransporterPerson = ClassAlias(Person, 'person_transporter')
+    TransporterCompany = ClassAlias(Company, 'company_transporter')
+    ClientPerson = ClassAlias(Person, 'person_client')
+    ClientCompany = ClassAlias(Company, 'company_client')
+    BranchPerson = ClassAlias(Person, "person_branch")
+    BranchCompany = ClassAlias(Company, 'company_branch')
 
+    # Objects
     delivery = Delivery
+    branch = Branch
+    transporter = Transporter
 
     # Delivery
     id = Delivery.id
@@ -1450,30 +1458,44 @@ class DeliveryView(Viewable):
     pack_date = Delivery.pack_date
     identifier_str = Cast(Sale.identifier, 'text')
 
-    # Transporter
-    transporter_name = PersonTransporter.name
-
-    # Client
-    client_name = PersonClient.name
-
     # Sale
     sale_identifier = Sale.identifier
     sale_status = Sale.status
+    sale_total = Sale.total_amount
+
+    # Transporter
+    transporter_name = Coalesce(NullIf(TransporterCompany.fancy_name, u''),
+                                TransporterPerson.name)
+
+    # Client
+    client_name = Coalesce(NullIf(ClientCompany.fancy_name, u''),
+                           ClientPerson.name)
+
+    # Branch
+    branch_name = Coalesce(NullIf(BranchCompany.fancy_name, u''),
+                           BranchPerson.name)
 
     # Address
     address_id = Delivery.address_id
 
     tables = [
         Delivery,
-        LeftJoin(Transporter, Transporter.id == Delivery.transporter_id),
-        LeftJoin(PersonTransporter,
-                 PersonTransporter.id == Transporter.person_id),
         LeftJoin(SaleItem, SaleItem.id == Delivery.service_item_id),
         LeftJoin(Sale, Sale.id == SaleItem.sale_id),
+
+        LeftJoin(Transporter, Transporter.id == Delivery.transporter_id),
+        LeftJoin(TransporterPerson,
+                 TransporterPerson.id == Transporter.person_id),
+        LeftJoin(TransporterCompany,
+                 TransporterPerson.id == TransporterCompany.person_id),
+
+        LeftJoin(Branch, Branch.id == Sale.branch_id),
+        LeftJoin(BranchPerson, BranchPerson.id == Branch.person_id),
+        LeftJoin(BranchCompany, BranchPerson.id == BranchCompany.person_id),
+
         LeftJoin(Client, Client.id == Sale.client_id),
-        LeftJoin(PersonClient, PersonClient.id == Client.person_id),
-        # LeftJoin(Address,
-        #         Address.person_id == Client.person_id),
+        LeftJoin(ClientPerson, ClientPerson.id == Client.person_id),
+        LeftJoin(ClientCompany, ClientPerson.id == ClientCompany.person_id),
     ]
 
     @property
@@ -1487,6 +1509,13 @@ class DeliveryView(Viewable):
     @property
     def address_str(self):
         return self.store.get(Address, self.address_id).get_description()
+
+    @classmethod
+    def post_search_callback(cls, sresults):
+        # FIXME: We are using the count of the deliveries because we have
+        # nothing to sum here. Should we do something different?
+        select = sresults.get_select_expr(Count(1), Count(1))
+        return ('count', 'sum'), select
 
 
 class CostCenterEntryStockView(Viewable):

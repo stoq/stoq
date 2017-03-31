@@ -33,6 +33,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`delivery` Module
+----------------------
+
+.. automodule:: stoq.gui.delivery
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`financial` Module
 -----------------------
 

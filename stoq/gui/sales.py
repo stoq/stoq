@@ -61,7 +61,7 @@ from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SERVICES,
-                                    STOQ_CLIENTS, STOQ_DELIVERY)
+                                    STOQ_CLIENTS, STOQ_TRANSPORTER)
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
@@ -156,7 +156,7 @@ class SalesApp(ShellApp):
             ("SearchService", STOQ_SERVICES, _("Services..."),
              group.get("search_services"),
              _("Search for services")),
-            ("SearchDelivery", STOQ_DELIVERY, _("Deliveries..."),
+            ("SearchDelivery", STOQ_TRANSPORTER, _("Deliveries..."),
              group.get("search_deliveries"),
              _("Search for deliveries")),
             ("SearchClient", STOQ_CLIENTS, _("Clients..."),

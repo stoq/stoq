@@ -53,9 +53,9 @@ from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.stockicons import STOQ_CLIENTS
+from stoqlib.gui.utils.iconutils import get_workorder_state_icon
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
 from stoqlib.gui.widgets.kanbanview import KanbanView, KanbanViewColumn
 from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
 from stoqlib.lib.message import yesno, info

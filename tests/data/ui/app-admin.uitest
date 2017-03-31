@@ -75,6 +75,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
             GtkImageMenuItem(): 'Accounts Receivable'
             GtkImageMenuItem(): 'Administrative', hidden
             GtkImageMenuItem(): 'Calendar'
+            GtkImageMenuItem(): 'Delivery'
             GtkImageMenuItem(): 'Financial'
             GtkImageMenuItem(): 'Inventory'
             GtkImageMenuItem(): 'Point of Sales'
@@ -124,7 +125,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
               text: Suppliers, stock: stoq-suppliers
               text: Tax Classes, stock: stoq-tax-type
               text: Taxes, stock: stoq-documents
-              text: Transporters, stock: stoq-delivery
+              text: Transporters, stock: stoq-transporter
               text: User Profiles, stock: stoq-user-profiles
               text: Users, stock: stoq-hr
     ShellStatusbar():

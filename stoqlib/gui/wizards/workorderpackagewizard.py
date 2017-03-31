@@ -40,7 +40,7 @@ from stoqlib.gui.base.wizards import (BaseWizardStep, WizardEditorStep,
                                       BaseWizard)
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
-from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
+from stoqlib.gui.utils.iconutils import get_workorder_state_icon
 
 _ = stoqlib_gettext
 

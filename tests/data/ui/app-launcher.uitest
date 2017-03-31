@@ -43,6 +43,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
             GtkImageMenuItem(): 'Accounts Receivable'
             GtkImageMenuItem(): 'Administrative'
             GtkImageMenuItem(): 'Calendar'
+            GtkImageMenuItem(): 'Delivery'
             GtkImageMenuItem(): 'Financial'
             GtkImageMenuItem(): 'Inventory'
             GtkImageMenuItem(): 'Point of Sales'
@@ -75,6 +76,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
 <small>Administer the branches, users, employees and configure system parameters.</small>
               markup: <b>Calendar</b>
 <small>Shows payments, orders and other things that will happen in the future.</small>
+              markup: <b>Delivery</b>
+<small>Control your deliveries.</small>
               markup: <b>Financial</b>
 <small>Control accounts and financial transactions.</small>
               markup: <b>Inventory</b>

@@ -1,0 +1,77 @@
+<!-- -*- Mode: XML; coding: utf-8 -*- -->
+<!-- vi:si:et:sw=4:sts=4:ts=4 -->
+<!--
+## Copyright (C) 2017 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s): Stoq Team <stoq-devel@async.com.br>
+##
+-->
+
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH">
+      </placeholder>
+    </menu>
+    <placeholder name="FileMenuPH">
+    </placeholder>
+  </menu>
+  <menu action="SearchMenu">
+    <placeholder name="SearchMenuPH">
+      <menuitem action="Transpoters"/>
+      <menuitem action="Clients"/>
+      <menuitem action="Products"/>
+      <menuitem action="Services"/>
+    </placeholder>
+  </menu>
+  <menu action="ViewMenu">
+    <placeholder name="ViewMenuPH">
+    </placeholder>
+  </menu>
+  <placeholder name="AppMenubarPH">
+    <menu action="DeliveryMenu">
+      <menuitem action="Edit"/>
+      <separator/>
+      <menuitem action="Pick"/>
+      <menuitem action="Pack"/>
+      <menuitem action="Send"/>
+      <menuitem action="Receive"/>
+      <menuitem action="Cancel"/>
+    </menu>
+  </placeholder>
+</menubar>
+<popup name="DeliverySelection">
+  <placeholder name="ServicesSelectionPH">
+    <menuitem action="Edit"/>
+    <separator/>
+    <menuitem action="Pick"/>
+    <menuitem action="Pack"/>
+    <menuitem action="Send"/>
+    <menuitem action="Receive"/>
+    <menuitem action="Cancel"/>
+  </placeholder>
+</popup>
+<toolbar action="toolbar">
+  <placeholder name="AppToolbarPH">
+    <separator/>
+    <toolitem action="Edit"/>
+    <toolitem action="Send"/>
+    <toolitem action="Receive"/>
+    <toolitem action="Cancel"/>
+  </placeholder>
+</toolbar>

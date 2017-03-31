@@ -47,7 +47,7 @@ from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderQuoteSlave,
                                                WorkOrderExecutionSlave,
                                                WorkOrderHistorySlave)
-from stoqlib.gui.utils.workorderutils import get_workorder_state_icon
+from stoqlib.gui.utils.iconutils import get_workorder_state_icon
 from stoqlib.gui.widgets.queryentry import ClientEntryGadget
 from stoqlib.lib.message import warning
 from stoqlib.lib.permissions import PermissionManager

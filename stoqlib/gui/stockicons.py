@@ -40,6 +40,7 @@ STOQ_EMPLOYEE = "stoq-employee"
 STOQ_EMPLOYEE_CARD = "stoq-employee-card"
 STOQ_FEEDBACK = "stoq-feedback"
 STOQ_DELIVERY = "stoq-delivery"
+STOQ_TRANSPORTER = "stoq-transporter"
 STOQ_DEVICES = "stoq-devices"
 STOQ_DOCUMENTS = "stoq-documents"
 STOQ_HR = "stoq-hr"
@@ -120,10 +121,12 @@ icon_info = [
      {GTK_ICON_SIZE_DIALOG: "stoq-clients-48x48.png"}),
     (STOQ_CHECK,
      {GTK_ICON_SIZE_MENU: "stoq-check-16x16.png"}),
+    (STOQ_TRANSPORTER,
+     {GTK_ICON_SIZE_MENU: "stoq-transporter-16x16.png",
+      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-transporter-24x24.png",
+      GTK_ICON_SIZE_DIALOG: "stoq-transporter-48x48.png"}),
     (STOQ_DELIVERY,
-     {GTK_ICON_SIZE_MENU: "stoq-delivery-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-delivery-24x24.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-delivery-48x48.png"}),
+     {GTK_ICON_SIZE_DIALOG: "stoq-delivery-48x48.png"}),
     (STOQ_EDIT,
      {GTK_ICON_SIZE_DIALOG: "stoq-edit-48x48.png"}),
     (STOQ_EMPLOYEE,

@@ -25,7 +25,7 @@
 
 import gtk
 
-from stoqlib.gui.stockicons import STOQ_DELIVERY
+from stoqlib.gui.stockicons import STOQ_TRANSPORTER
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -42,10 +42,25 @@ def get_workorder_state_icon(work_order):
     """
     # This is ordered by priority
     if work_order.is_in_transport():
-        return STOQ_DELIVERY, _(u"In transport")
+        return STOQ_TRANSPORTER, _(u"In transport")
     elif work_order.is_rejected:
         return gtk.STOCK_DIALOG_WARNING, _(u"Rejected")
     elif work_order.is_approved():
         return gtk.STOCK_APPLY, _(u"Approved")
 
+    return (None, None)
+
+
+def get_delivery_state_icon(delivery):
+    """Get a stockicon for the delivery.
+
+    This icon can be used to display a visual hint that the |delivery|
+    is in some state together with a tooltip that can be used on that
+    icon when rendered.
+
+    :param delivery: a |delivery|
+    :returns: a tuple containing (stock_id, tooltip). Those 2 can
+        be ``None`` if the state is not threated here
+    """
+    # FIXME
     return (None, None)

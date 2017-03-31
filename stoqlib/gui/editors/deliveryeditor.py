@@ -343,7 +343,7 @@ class DeliveryEditor(BaseEditor):
     def on_is_received_check__toggled(self, button):
         active = button.get_active()
         self.receive_date.set_sensitive(active)
-        # If it was received, don't let the user unmark was_delivered_check
+        # If it was received, don't let the user unmark is_sent_check
         self.is_sent_check.set_sensitive(not active)
 
         if not self.is_sent_check.get_active():

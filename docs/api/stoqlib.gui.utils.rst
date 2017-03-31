@@ -33,6 +33,14 @@ utils Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`iconutils` Module
+-----------------------
+
+.. automodule:: stoqlib.gui.utils.workorderutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`idle` Module
 ------------------
 
@@ -93,14 +101,6 @@ utils Package
 ----------------------
 
 .. automodule:: stoqlib.gui.utils.printing
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`workorderutils` Module
-----------------------------
-
-.. automodule:: stoqlib.gui.utils.workorderutils
     :members:
     :undoc-members:
     :show-inheritance:

@@ -37,6 +37,8 @@ _APPLICATIONS = {
     u'calendar': (N_(u"Calendar"),
                   N_(u"Shows payments, orders and other things that will happen "
                      u"in the future.")),
+    u'delivery': (N_(u"Delivery"),
+                  N_(u"Control your deliveries.")),
     u'financial': (N_(u"Financial"),
                    N_(u"Control accounts and financial transactions.")),
     u'inventory': (N_(u"Inventory"),
@@ -82,10 +84,11 @@ def get_application_icon(appname):
         STOQ_ADMIN_APP, STOQ_CALC, STOQ_CALENDAR_APP,
         STOQ_INVENTORY_APP, STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
         STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_SERVICES,
-        STOQ_STOCK_APP, STOQ_TILL_APP, STOQ_LINK)
+        STOQ_STOCK_APP, STOQ_TILL_APP, STOQ_LINK, STOQ_DELIVERY)
 
     return {u'admin': STOQ_ADMIN_APP,
             u'calendar': STOQ_CALENDAR_APP,
+            u'delivery': STOQ_DELIVERY,
             u'financial': STOQ_CALC,
             u'inventory': STOQ_INVENTORY_APP,
             u'launcher': STOQ_STOCK_APP,

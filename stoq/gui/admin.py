@@ -65,7 +65,7 @@ from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
     STOQ_BOOK, STOQ_BRANCHES, STOQ_CLIENTS,
-    STOQ_CONNECT, STOQ_DEVICES, STOQ_DELIVERY,
+    STOQ_CONNECT, STOQ_DEVICES, STOQ_TRANSPORTER,
     STOQ_DOCUMENTS, STOQ_EMPLOYEE,
     STOQ_EMPLOYEE_CARD, STOQ_FORMS, STOQ_HR,
     STOQ_MOVEMENT_PRODUCT, STOQ_PARAMETERS,
@@ -125,7 +125,7 @@ class Tasks(object):
             (_('Taxes'), 'taxes', STOQ_DOCUMENTS),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
             (_('Tax Classes'), 'tax_templates', STOQ_TAX_TYPE),
-            (_('Transporters'), 'transporters', STOQ_DELIVERY),
+            (_('Transporters'), 'transporters', STOQ_TRANSPORTER),
             (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
             (_('Users'), 'users', STOQ_HR),
             (_('Connect to Stoq.Link'), 'stoq_link_connect', STOQ_CONNECT),

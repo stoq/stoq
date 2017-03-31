@@ -69,6 +69,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
                   GtkImageMenuItem(): 'Accounts Receivable'
                   GtkImageMenuItem(): 'Administrative'
                   GtkImageMenuItem(): 'Calendar', hidden
+                  GtkImageMenuItem(): 'Delivery'
                   GtkImageMenuItem(): 'Financial'
                   GtkImageMenuItem(): 'Inventory'
                   GtkImageMenuItem(): 'Point of Sales'
