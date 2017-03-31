@@ -62,7 +62,7 @@ coverage: clean check-source-all
 	    --cover-erase \
 	    --cover-inclusive \
 	    $(TEST_MODULES) && \
-	tools/validatecoverage coverage.xml && \
+	utils/validatecoverage.py coverage.xml && \
 	git show|tools/diff-coverage coverage.xml
 
 jenkins: check-source-all
@@ -81,7 +81,7 @@ jenkins: check-source-all
 	    --cover-inclusive \
 	    $(TEST_MODULES) && \
 	cd ../.. && \
-	tools/validatecoverage jenkins-test/stoq-$$VERSION/coverage.xml && \
+	utils/validatecoverage.py jenkins-test/stoq-$$VERSION/coverage.xml && \
 	git show|tools/diff-coverage jenkins-test/stoq-$$VERSION/coverage.xml
 
 include utils/utils.mk
