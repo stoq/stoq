@@ -235,7 +235,7 @@
  "stoqlib/gui/wizards/renegotiationwizard.py": 94.44,
  "stoqlib/gui/wizards/salequotewizard.py": 84.79,
  "stoqlib/gui/wizards/salereturnwizard.py": 93.84,
- "stoqlib/gui/wizards/salewizard.py": 74.06,
+ "stoqlib/gui/wizards/salewizard.py": 73,
  "stoqlib/gui/wizards/stockdecreasewizard.py": 92.00,
  "stoqlib/gui/wizards/stocktransferwizard.py": 89.03,
  "stoqlib/gui/wizards/workorderpackagewizard.py": 91.18,

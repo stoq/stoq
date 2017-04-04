@@ -39,7 +39,7 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import SalesPerson, Transporter
+from stoqlib.domain.person import SalesPerson, Transporter, Person, Client
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.enums import CreatePaymentStatus, ChangeSalespersonPolicy
 from stoqlib.exceptions import SellError, StoqlibError, PaymentMethodError
@@ -542,7 +542,29 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.cash_change_slave.update_total_sale_amount(to_pay)
         self.total_lbl.update(to_pay)
 
+    def _update_sale_client(self):
+        """Update the sale client based on the informed document
+
+        If the sale does not have a client yet, and the current_document (informed by
+        the ecf plugin) is set, and a person with the given document exists, that client
+        will be associated with this sale.
+        """
+        if self.model.client or not self.wizard._current_document:
+            return
+
+        person = Person.get_by_document(self.store,
+                                        unicode(self.wizard._current_document))
+        if not person:
+            return
+
+        if person.client:
+            self.model.client = person.client
+        else:
+            self.model.client = Client(store=self.store, person=person)
+
     def _setup_clients_widget(self):
+        self._update_sale_client()
+
         marker('Filling clients')
         self.client_gadget = ClientEntryGadget(
             entry=self.client,
