@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-01 02:10-0300\n"
-"PO-Revision-Date: 2017-04-01 05:10+0000\n"
+"POT-Creation-Date: 2017-04-04 02:10-0300\n"
+"PO-Revision-Date: 2017-04-04 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/async/stoq/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
@@ -18228,6 +18228,11 @@ msgstr "You need to have a CNPJ number set on Company %s"
 #, python-format
 msgid "You need to have a State Registry set on Company %s"
 msgstr "You need to have a State Registry set on Company %s"
+
+#: ../stoqlib/lib/xmlutils.py:103
+#, python-brace-format
+msgid "{number}) {field} is invalid"
+msgstr ""
 
 #: ../stoqlib/net/calendarevents.py:132
 #, python-brace-format

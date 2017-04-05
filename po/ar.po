@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-01 02:10-0300\n"
-"PO-Revision-Date: 2017-04-01 05:10+0000\n"
+"POT-Creation-Date: 2017-04-04 02:10-0300\n"
+"PO-Revision-Date: 2017-04-04 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/async/stoq/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -18227,6 +18227,11 @@ msgstr ""
 #: ../stoqlib/lib/sintegragenerator.py:136
 #, python-format
 msgid "You need to have a State Registry set on Company %s"
+msgstr ""
+
+#: ../stoqlib/lib/xmlutils.py:103
+#, python-brace-format
+msgid "{number}) {field} is invalid"
 msgstr ""
 
 #: ../stoqlib/net/calendarevents.py:132
