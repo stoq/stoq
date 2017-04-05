@@ -179,15 +179,15 @@ class BankInfo(object):
 
     @property
     def penalty_percentage(self):
-        return sysparam.get_decimal('BILL_PENALTY') / 100
+        return sysparam.get_decimal('BILL_PENALTY')
 
     @property
     def interest_percentage(self):
-        return sysparam.get_decimal('BILL_INTEREST') / 100
+        return sysparam.get_decimal('BILL_INTEREST')
 
     @property
     def discount_percentage(self):
-        return sysparam.get_decimal('BILL_DISCOUNT') / 100
+        return sysparam.get_decimal('BILL_DISCOUNT')
 
     @property
     def instrucoes(self):
@@ -196,9 +196,9 @@ class BankInfo(object):
         # FIXME: Penalty and interest are also defined on the payment method. We
         # should use that information instead. We could also add a discount
         # information on the payment method.
-        penalty = currency(self.penalty_percentage * payment.value)
-        interest = currency(self.interest_percentage * payment.value)
-        discount = currency(self.discount_percentage * payment.value)
+        penalty = currency(self.penalty_percentage / 100 * payment.value)
+        interest = currency(self.interest_percentage / 100 * payment.value)
+        discount = currency(self.discount_percentage / 100 * payment.value)
         data = sysparam.get_string('BILL_INSTRUCTIONS')
         for line in data.split('\n')[:4]:
             line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))

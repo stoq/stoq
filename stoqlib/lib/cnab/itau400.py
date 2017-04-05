@@ -20,6 +20,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from datetime import timedelta
 from decimal import Decimal
 
 from stoqlib.lib.cnab.base import Field, Record, Cnab
@@ -74,18 +75,18 @@ class ItauPaymentDetail(Record400):
         Field('bank_use', str, 21, ''),
         Field('codigo_carteira', str, 1),  # NOTA 5
         Field('codigo_ocorrencia', int, 2, 1),  # 01 == Remessa NOTA 6
-        Field('numero_documento', str, 10),
+        Field('numero_documento', int, 10),  # na verdade é str, mas eu quero alinhado a direita
         Field('due_date', int, 6),
         Field('value', Decimal, 11, decimals=2),
 
         Field('bank_number', int, 3),
         Field('charging_agency', int, 5, 0),
-        Field('especie_titulo', str, 2, '01'),  # 01 - Duplicata Mercantil
+        Field('especie_titulo', str, 2, '99'),  # 01 - Duplicata Mercantil / 99 - Diversos
         Field('aceite', str, 1),
         Field('open_date', int, 6),  # NOTA 31
         Field('instrucao_1', int, 2),  # NOTA 11
         Field('instrucao_2', int, 2),  # NOTA 11
-        Field('interest_percentage', Decimal, 11),  # Juros de 1 dia
+        Field('interest_value', Decimal, 11),  # Juros de 1 dia
 
         Field('discount_date', int, 6, 0),
         Field('discount_value', Decimal, 11, 0),
@@ -139,7 +140,8 @@ class ItauPaymentDetail(Record400):
         address = person.get_main_address()
         postal_code = address.postal_code.replace('-', '')
         address_str = format_address(address, include_district=False)
-        discount_value = bank_info.discount_percentage * payment.value
+        discount_value = bank_info.discount_percentage / 100 * payment.value
+        interest_value = bank_info.interest_percentage / 100 * payment.value
         kwargs.update(
             numero_documento=str(payment.identifier),
             due_date=payment.due_date.strftime('%d%m%y'),
@@ -157,10 +159,15 @@ class ItauPaymentDetail(Record400):
             payer_postal_code=postal_code.split('-')[0],
             payer_city=address.city_location.city,
             payer_state=address.city_location.state,
-            # Desconto até o pagamento
-            discount_date=payment.due_date.strftime('%d%m%y'),
-            discount_value=discount_value,
+            # Juros diário (em reaiso)
+            interest_value=interest_value
         )
+        if discount_value:
+            kwargs.update(
+                # Desconto até o pagamento
+                discount_date=payment.due_date.strftime('%d%m%y'),
+                discount_value=discount_value,
+            )
         super(ItauPaymentDetail, self).__init__(**kwargs)
 
     @property
@@ -174,14 +181,15 @@ class ItauPenaltyDetail(Record400):
         Field('registry_type', int, 1, 2),
         Field('penalty_code', str, 1, 2),  # 2 = valor percentual
         Field('penalty_date', int, 8),
-        Field('penalty_percentage', Decimal, 11),
+        Field('penalty_percentage', Decimal, 11),  # FIXME
         Field('_', str, 371, ''),
         Field('registry_sequence', int, 6)
     ]
 
     def __init__(self, payment, bank_info, **kwargs):
+        pdate = payment.due_date + timedelta(days=1)
         kwargs.update(
-            penalty_date=payment.due_date.strftime('%d%m%Y'),
+            penalty_date=pdate.strftime('%d%m%Y'),
         )
         super(ItauPenaltyDetail, self).__init__(**kwargs)
 

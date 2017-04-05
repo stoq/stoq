@@ -234,7 +234,7 @@ class RecordP(Record):
         # valor monetário do juros diário. Como não tem opção de informar o
         # juros diário em percetual (somente mensal), precisamos infromar o
         # valor fixo.
-        interest = bank_info.interest_percentage * payment.value
+        interest = bank_info.interest_percentage / 100 * payment.value
 
         kwargs.update(
             numero_documento=str(payment.identifier),
