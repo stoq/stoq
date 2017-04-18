@@ -1649,11 +1649,12 @@ class TestSale(DomainTest):
         self.assertEqual(sale_item1.price, currency('149'))
         sale_item2 = sale.add_sellable(self.store.find(Sellable, code=u'02').one())
         self.assertEqual(sale_item2.price, currency('198'))
+        # This summary is sligthly different due to IPI from the product
         self.assertEqual(sale.get_sale_subtotal(), currency('347'))
 
         # 10% discount
         sale.set_items_discount(Decimal('10'))
-        self.assertEqual(sale.get_sale_subtotal(), currency('312.3'))
+        self.assertEqual(sale.get_sale_subtotal(), currency('312.30'))
         self.assertEqual(sale_item1.price, currency('134.1'))
         self.assertEqual(sale_item2.price, currency('178.2'))
 

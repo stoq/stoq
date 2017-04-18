@@ -22,6 +22,9 @@ GtkDialog(toplevel): title='Tax Classes Search', hidden
             column: title='Type'
             row: u'Test ICMS Tax Template', u'ICMS'
             row: u'Test IPI Tax Template', u'IPI'
+            row: u'cofins', u'COFINS'
+            row: u'icms', u'ICMS'
+            row: u'pis', u'PIS'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):

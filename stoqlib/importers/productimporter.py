@@ -33,6 +33,10 @@ from stoqlib.domain.product import (Product, ProductSupplierInfo,
 from stoqlib.domain.sellable import (Sellable,
                                      SellableCategory,
                                      SellableUnit)
+from stoqlib.domain.taxes import (ProductIcmsTemplate,
+                                  ProductPisTemplate,
+                                  ProductCofinsTemplate,
+                                  ProductTaxTemplate)
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.lib.parameters import sysparam
 
@@ -47,7 +51,8 @@ class ProductImporter(CSVImporter):
               'commission',
               'commission2',
               'markup',
-              'markup2'
+              'markup2',
+              'ncm'
               ]
 
     optional_fields = [
@@ -76,6 +81,40 @@ class ProductImporter(CSVImporter):
         if obj is None:
             obj = table(store=store, **attributes)
         return obj
+
+    def _maybe_create_taxes(self, store):
+        icms_template = self._get_or_create(ProductTaxTemplate,
+                                            store,
+                                            name=u'icms',
+                                            tax_type=ProductTaxTemplate.TYPE_ICMS)
+        pis_template = self._get_or_create(ProductTaxTemplate,
+                                           store,
+                                           name=u'pis',
+                                           tax_type=ProductTaxTemplate.TYPE_PIS)
+        cofins_template = self._get_or_create(ProductTaxTemplate,
+                                              store,
+                                              name=u'cofins',
+                                              tax_type=ProductTaxTemplate.TYPE_COFINS)
+
+        taxes = {}
+        taxes['icms'] = self._get_or_create(ProductIcmsTemplate,
+                                            store,
+                                            product_tax_template=icms_template,
+                                            csosn=102,
+                                            orig=2)
+        taxes['pis'] = self._get_or_create(ProductPisTemplate,
+                                           store=store,
+                                           product_tax_template=pis_template,
+                                           cst=99,
+                                           calculo=ProductPisTemplate.CALC_PERCENTAGE,
+                                           p_pis=10)
+        taxes['cofins'] = self._get_or_create(ProductCofinsTemplate,
+                                              store=store,
+                                              product_tax_template=cofins_template,
+                                              cst=99,
+                                              calculo=ProductPisTemplate.CALC_PERCENTAGE,
+                                              p_cofins=10)
+        return taxes
 
     def process_one(self, data, fields, store):
         base_category = self._get_or_create(
@@ -112,7 +151,12 @@ class ProductImporter(CSVImporter):
             sellable.unit = store.fetch(self.units[data.unit])
         sellable.tax_constant_id = self.tax_constant_id
 
-        product = Product(sellable=sellable, store=store)
+        product = Product(store=store, sellable=sellable, ncm=data.ncm)
+
+        taxes = self._maybe_create_taxes(store)
+        product.icms_template = taxes['icms']
+        product.pis_template = taxes['pis']
+        product.cofins_template = taxes['cofins']
 
         supplier = store.fetch(self.supplier)
         ProductSupplierInfo(store=store,

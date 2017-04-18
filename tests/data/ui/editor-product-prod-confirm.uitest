@@ -202,15 +202,18 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                   GtkLabel(label1): 'ICMS Class:'
                   ProxyComboBox(icms_template):
                     item: None, selected
+                    item: 'icms'
                   GtkLabel(label2): 'IPI Class:'
                   ProxyComboBox(ipi_template):
                     item: None, selected
                   GtkLabel(label3): 'PIS Class:'
                   ProxyComboBox(pis_template):
                     item: None, selected
+                    item: 'pis'
                   GtkLabel(label4): 'COFINS Class:'
                   ProxyComboBox(cofins_template):
                     item: None, selected
+                    item: 'cofins'
             GtkEventBox(): slave ProductQualityTestSlave is attached
               kiwi+ui+listdialog+ListContainer(listcontainer):
                 ObjectList(expand=True, fill=True):

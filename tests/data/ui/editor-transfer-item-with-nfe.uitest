@@ -21,6 +21,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Transfer Item"', hidden
               GtkLabel(template_label): 'Template:'
               ProxyComboBox(template):
                 item: None, selected
+                item: 'icms'
               GtkLabel(cst_label): 'CST:'
               ProxyComboBox(cst): insensitive
                 item: None, selected
@@ -160,6 +161,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Transfer Item"', hidden
                 GtkLabel(template_label): 'Template:'
                 ProxyComboBox(template):
                   item: None, selected
+                  item: 'pis'
                 GtkLabel(cst_label): 'CST:'
                 ProxyComboBox(cst):
                   item: None, selected
@@ -208,6 +210,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Transfer Item"', hidden
                 GtkLabel(template_label): 'Template:'
                 ProxyComboBox(template):
                   item: None, selected
+                  item: 'cofins'
                 GtkLabel(cst_label): 'CST:'
                 ProxyComboBox(cst):
                   item: None, selected
