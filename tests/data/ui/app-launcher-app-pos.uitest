@@ -99,7 +99,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                   ProxySpinButton(expand=True, fill=True): '1.000', insensitive
                   GtkHButtonBox(expand=True, fill=True):
                     GtkButton(): insensitive
-                    GtkButton(): insensitive
+                    GtkButton():
+                GtkLabel(expand=True, fill=True):
                 GtkImage(fill=True, pack-end):
           GtkAlignment(fill=True):
             GtkHBox():
@@ -109,6 +110,14 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHSeparator(fill=True):
               ProxyLabel(expand=True, fill=True): '<span weight="bold" size="xx-large">Till closed</span>\n\n<span size="large"><a href="open-till">Open till</a></span>'
               GtkHSeparator(fill=True):
+            GtkHBox(expand=True, fill=True): hidden
+              GtkLabel(expand=True, fill=True):
+              GtkVBox(expand=True, fill=True):
+                GtkLabel(expand=True, fill=True):
+                GtkLabel(fill=True): 'Sale Token:'
+                ProxyEntry(fill=True): '', invalid
+                GtkEventBox(expand=True, fill=True):
+              GtkLabel(expand=True, fill=True):
             GtkHPaned(expand=True, fill=True): hidden
               ObjectTree(): insensitive
                 column: title='Reference'
@@ -131,6 +140,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHBox():
                 GtkVBox(fill=True):
                   GtkHButtonBox(fill=True):
+                    GtkButton(): hidden, insensitive
                     GtkButton(): insensitive
                     GtkButton(): insensitive
                     GtkButton(): insensitive

@@ -208,30 +208,42 @@ class TillApp(ShellApp):
     def create_filters(self):
         self.search.set_query(self._query_executer)
         self.set_text_field_columns(['client_name', 'salesperson_name',
-                                     'identifier_str'])
+                                     'identifier_str', 'token_code',
+                                     'token_name'])
         self.status_filter = ComboSearchFilter(_(u"Show orders"),
                                                self._get_status_values())
         self.add_filter(self.status_filter, position=SearchFilterPosition.TOP,
                         columns=['status'])
 
     def get_columns(self):
-        return [IdentifierColumn('identifier', title=_('Sale #'),
-                                 sorted=True),
-                Column('status_name', title=_(u'Status'), data_type=str,
-                       visible=True),
-                SearchColumn('open_date', title=_('Date Started'), width=110,
-                             data_type=date, justify=gtk.JUSTIFY_RIGHT),
-                SearchColumn('client_name', title=_('Client'),
-                             data_type=str, expand=True,
-                             ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('salesperson_name', title=_('Salesperson'),
-                             data_type=str, width=180,
-                             ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('total_quantity', title=_('Quantity'),
-                             data_type=decimal.Decimal, width=100,
-                             format_func=format_quantity),
-                SearchColumn('total', title=_('Total'), data_type=currency,
-                             width=100)]
+        columns = [
+            IdentifierColumn('identifier', title=_('Sale #'),
+                             sorted=True),
+            Column('status_name', title=_(u'Status'), data_type=str,
+                   visible=True),
+            SearchColumn('open_date', title=_('Date Started'), width=110,
+                         data_type=date, justify=gtk.JUSTIFY_RIGHT),
+        ]
+
+        if api.sysparam.get_bool('USE_SALE_TOKEN'):
+            columns.append(Column('token_str', title=_(u'Sale token'),
+                                  data_type=str, visible=True))
+
+        columns.extend([
+            SearchColumn('client_name', title=_('Client'),
+                         data_type=str, expand=True,
+                         ellipsize=pango.ELLIPSIZE_END),
+            SearchColumn('salesperson_name', title=_('Salesperson'),
+                         data_type=str, width=180,
+                         ellipsize=pango.ELLIPSIZE_END),
+            SearchColumn('total_quantity', title=_('Quantity'),
+                         data_type=decimal.Decimal, width=100,
+                         format_func=format_quantity),
+            SearchColumn('total', title=_('Total'), data_type=currency,
+                         width=100),
+        ])
+
+        return columns
 
     #
     # Private
@@ -307,7 +319,7 @@ class TillApp(ShellApp):
         if not coupon:
             store.close()
             return
-        subtotal = self._add_sale_items(sale, coupon)
+        subtotal = coupon.add_sale_items(sale)
         try:
             if coupon.confirm(sale, store, subtotal=subtotal):
                 workorders = WorkOrder.find_by_sale(store, sale)
@@ -344,21 +356,6 @@ class TillApp(ShellApp):
                     return None
 
         return coupon
-
-    def _add_sale_items(self, sale, coupon):
-        subtotal = 0
-        for sale_item in sale.get_items(with_children=False):
-            sellable = sale_item.sellable
-            if (sellable.service or
-                    (sellable.product and not sellable.product.is_package)):
-                # Do not add the package item itself on the coupon
-                coupon.add_item(sale_item)
-                subtotal += sale_item.get_total()
-
-            for child in sale_item.children_items:
-                coupon.add_item(child)
-                subtotal += child.get_total()
-        return subtotal
 
     def _update_total(self):
         balance = currency(self._get_till_balance())

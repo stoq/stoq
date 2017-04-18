@@ -64,6 +64,14 @@ class TestTill(BaseGUITest):
         app = self.create_app(TillApp, u'till')
         self.check_app(app, u'till-opened-till')
 
+    def test_initial_with_open_till_and_token(self):
+        till = self.create_till()
+        till.opening_date = localtoday()
+        till.status = Till.STATUS_OPEN
+        with self.sysparam(USE_SALE_TOKEN=True):
+            app = self.create_app(TillApp, u'till')
+            self.check_app(app, u'till-opened-till-with-token')
+
     def test_initial_with_closed_till(self):
         app = self.create_app(TillApp, u'till')
         self.check_app(app, u'till-closed-till')

@@ -36,7 +36,7 @@ from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.events import TillOpenEvent
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
@@ -78,6 +78,10 @@ class TestPos(BaseGUITest):
         with mock.patch('stoqlib.gui.fiscalprinter.run_dialog') as run_dialog:
             self.activate(pos.TillOpen)
             self._called_once_with_store(run_dialog, TillOpeningEditor, pos)
+
+    def _open_token(self, pos, token):
+        pos.sale_token.set_text(token.code)
+        self.activate(pos.sale_token)
 
     def _get_pos_with_open_till(self):
         app = self.create_app(PosApp, u'pos')
@@ -169,6 +173,132 @@ class TestPos(BaseGUITest):
         self._pos_open_till(pos)
 
         self.check_app(app, u'pos-till-open')
+
+    @mock.patch('stoq.gui.services.api.new_store')
+    def test_till_open_with_token(self, new_store):
+        new_store.return_value = self.store
+
+        with contextlib.nested(
+                self.sysparam(USE_SALE_TOKEN=True),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self.store, 'commit')):
+            pos = self.create_app(PosApp, u'pos')
+            self._pos_open_till(pos)
+
+            self.check_app(pos, u'pos-till-open-with-token')
+
+    @mock.patch('stoq.gui.services.api.new_store')
+    def test_open_token(self, new_store):
+        new_store.return_value = self.store
+
+        with contextlib.nested(
+                self.sysparam(USE_SALE_TOKEN=True),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self.store, 'commit')):
+            pos = self.create_app(PosApp, u'pos')
+            self._pos_open_till(pos)
+            token = self.create_sale_token(
+                u'foobar', branch=api.get_current_branch(self.store))
+            self._open_token(pos, token)
+
+            self.check_app(pos, u'pos-open-token')
+
+    @mock.patch('stoq.gui.services.api.new_store')
+    def test_open_token_with_sale(self, new_store):
+        new_store.return_value = self.store
+
+        with contextlib.nested(
+                self.sysparam(USE_SALE_TOKEN=True),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self.store, 'commit')):
+            pos = self.create_app(PosApp, u'pos')
+            self._pos_open_till(pos)
+
+            token = self.create_sale_token(
+                u'foobar', branch=api.get_current_branch(self.store))
+            sale = self.create_sale(sale_token=token)
+            self.add_product(sale, code=u'123456')
+
+            self._open_token(pos, token)
+
+            self.check_app(pos, u'pos-open-token-with-sale')
+
+    @mock.patch('stoq.gui.services.api.new_store')
+    def test_save_new_sale(self, new_store):
+        new_store.return_value = self.store
+
+        with contextlib.nested(
+                self.sysparam(USE_SALE_TOKEN=True),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self.store, 'commit')):
+            pos = self.create_app(PosApp, u'pos')
+            self._pos_open_till(pos)
+            token = self.create_sale_token(
+                u'foobar', branch=api.get_current_branch(self.store))
+            self._open_token(pos, token)
+
+            pos.barcode.set_text(u'1598756984265')
+            self.activate(pos.barcode)
+
+            _sale = []
+            original_create_sale = pos._create_sale
+
+            def _create_sale(*args, **kwargs):
+                sale = original_create_sale(*args, **kwargs)
+                _sale.append(sale)
+                return sale
+
+            with mock.patch.object(pos, '_create_sale') as create_sale:
+                create_sale.side_effect = _create_sale
+                self.click(pos.save_button)
+
+            sale = _sale[0]
+            self.assertEqual(sale.status, Sale.STATUS_ORDERED)
+            self.assertEqual(sale.current_sale_token, token)
+            items = list(sale.get_items())
+            self.assertEqual(len(items), 1)
+            self.assertEqual(items[0].sellable.barcode, u'1598756984265')
+
+    @mock.patch('stoq.gui.services.api.new_store')
+    def test_save_existing_sale(self, new_store):
+        new_store.return_value = self.store
+
+        with contextlib.nested(
+                self.sysparam(USE_SALE_TOKEN=True),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self.store, 'commit')):
+            pos = self.create_app(PosApp, u'pos')
+            self._pos_open_till(pos)
+
+            token = self.create_sale_token(
+                u'foobar', branch=api.get_current_branch(self.store))
+            sale = self.create_sale(sale_token=token)
+            sellable = self.add_product(sale, code=u'123456')
+            sellable.barcode = u'123456'
+            sale.status = Sale.STATUS_ORDERED
+            self._open_token(pos, token)
+
+            pos.barcode.set_text(u'1598756984265')
+            self.activate(pos.barcode)
+
+            _sale = []
+            original_create_sale = pos._create_sale
+
+            def _create_sale(*args, **kwargs):
+                sale = original_create_sale(*args, **kwargs)
+                _sale.append(sale)
+                return sale
+
+            with mock.patch.object(pos, '_create_sale') as create_sale:
+                create_sale.side_effect = _create_sale
+                self.click(pos.save_button)
+
+            sale = _sale[0]
+            self.assertEqual(sale.status, Sale.STATUS_ORDERED)
+            items = list(sale.get_items().order_by(SaleItem.te_id))
+            self.assertEqual(len(items), 2)
+            self.assertEqual(items[0].sellable.barcode, u'123456')
+            self.assertEqual(items[1].sellable.barcode, u'1598756984265')
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
     def test_checkout(self, confirm):

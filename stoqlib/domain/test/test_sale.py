@@ -355,6 +355,8 @@ class TestSale(DomainTest):
     def test_confirm_with_sale_token(self):
         token = self.create_sale_token(code=u'Token')
         sale = self.create_sale(sale_token=token)
+        self.assertEquals(token.status, SaleToken.STATUS_OCCUPIED)
+        self.assertIsNotNone(token.sale)
 
         self.add_product(sale)
         self.add_payments(sale, u'money')
@@ -363,6 +365,18 @@ class TestSale(DomainTest):
 
         sale.confirm()
         self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
+        self.assertIsNone(token.sale)
+
+    def test_cancel_with_sale_token(self):
+        token = self.create_sale_token(code=u'foobar')
+        sale = self.create_sale(sale_token=token)
+        self.assertEquals(token.status, SaleToken.STATUS_OCCUPIED)
+        self.assertIsNotNone(token.sale)
+
+        sale.status = Sale.STATUS_QUOTE
+        sale.cancel(u'reason')
+        self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
+        self.assertIsNone(token.sale)
 
     def test_confirm_money(self):
         sale = self.create_sale()
@@ -1854,9 +1868,22 @@ class TestSale(DomainTest):
 
 
 class TestSaleToken(DomainTest):
+    def test_status_str(self):
+        token = self.create_sale_token(code=u'foobar')
+        for status, status_str in [
+                (SaleToken.STATUS_AVAILABLE, 'Available'),
+                (SaleToken.STATUS_OCCUPIED, 'Occupied')]:
+            token.status = status
+            self.assertEqual(token.status_str, status_str, status)
+
+    def test_description(self):
+        token = self.create_sale_token(code=u'foo')
+        token.name = u'bar'
+        self.assertEqual(token.description, '[foo] bar')
+
     def test_status_change(self):
         token = self.create_sale_token(code=u'token')
-        token.open_token()
+        token.open_token(self.create_sale())
         self.assertEquals(token.status, SaleToken.STATUS_OCCUPIED)
         token.close_token()
         self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
@@ -2647,6 +2674,14 @@ class TestReturnedSaleItemsView(DomainTest):
 
 
 class TestSaleView(DomainTest):
+    def test_token_str(self):
+        token = self.create_sale_token(code=u'foo')
+        token.name = u'bar'
+        sale = self.create_sale(sale_token=token)
+
+        sale_view = self.store.find(SaleView, id=sale.id).one()
+        self.assertEqual(sale_view.token_str, '[foo] bar')
+
     def test_post_search_callback(self):
         sale = self.create_sale()
         sale.identifier = 1138

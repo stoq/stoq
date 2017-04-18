@@ -39,7 +39,8 @@ from stoqlib.domain.sale import (Sale,
                                  SaleView,
                                  SalePaymentMethodView,
                                  SoldItemsByClient,
-                                 SaleToken)
+                                 SaleToken,
+                                 SaleTokenView)
 from stoqlib.domain.person import Branch
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import SoldItemsByBranchView, UnconfirmedSaleItemsView
@@ -438,10 +439,13 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
 
 class SaleTokenSearch(SearchEditor):
     title = _(u'Sale Token Search')
-    size = (500, 400)
-    search_spec = SaleToken
+    size = (600, 500)
+    search_spec = SaleTokenView
     editor_class = SaleTokenEditor
-    text_field_columns = [SaleToken.code]
+    text_field_columns = [SaleTokenView.name,
+                          SaleTokenView.code,
+                          SaleTokenView.client_name,
+                          SaleTokenView.branch_name]
 
     def __init__(self, store, search_str=None, hide_toolbar=False,
                  hide_footer=False):
@@ -451,6 +455,20 @@ class SaleTokenSearch(SearchEditor):
                               hide_footer=hide_footer)
 
     def get_columns(self):
-        return [SearchColumn('code', title=_('Code'), data_type=str,
-                             sorted=True, expand=True),
-                Column('status_str', title=_('Status'), data_type=str)]
+        status_values = ([(_('Any'), None)] +
+                         [(v, k) for k, v in SaleToken.statuses.items()])
+        return [
+            SearchColumn('name', title=_('Name'), data_type=str,
+                         sorted=True, expand=True),
+            SearchColumn('code', title=_('Code'), data_type=str),
+            SearchColumn('branch_name', title=_('Branch'), data_type=str,
+                         visible=False),
+            SearchColumn('client_name', title=_('Client'), data_type=str,
+                         expand=True),
+            SearchColumn('status_str', title=_('Status'), data_type=str,
+                         search_attribute='status',
+                         valid_values=status_values),
+        ]
+
+    def get_editor_model(self, model):
+        return model.sale_token

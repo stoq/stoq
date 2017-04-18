@@ -42,7 +42,7 @@ from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Transporter
 from stoqlib.domain.product import StorableBatch
-from stoqlib.domain.sale import Sale, Delivery
+from stoqlib.domain.sale import Delivery, Sale, SaleToken
 from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
@@ -59,10 +59,10 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
-from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
-from stoqlib.gui.editors.deliveryeditor import CreateDeliveryEditor
+from stoqlib.gui.editors.deliveryeditor import (CreateDeliveryEditor,
+                                                CreateDeliveryModel)
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.deliverysearch import DeliverySearch
@@ -89,7 +89,8 @@ log = logging.getLogger(__name__)
 class TemporarySaleItem(object):
     def __init__(self, sellable, quantity, price=None,
                  notes=None, can_remove=True, quantity_decreased=0, batch=None,
-                 parent_item=None):
+                 parent_item=None, estimated_fix_date=None, deliver=False,
+                 original_sale_item=None):
         # Use only 3 decimal places for the quantity
         self.quantity = Decimal('%.3f' % quantity)
         self.quantity_decreased = quantity_decreased
@@ -108,11 +109,30 @@ class TemporarySaleItem(object):
             price = sellable.price
         self.base_price = sellable.base_price
         self.price = price
-        self.deliver = False
-        self.estimated_fix_date = None
+        self.deliver = deliver
+        self.estimated_fix_date = estimated_fix_date
         self.notes = notes
         self.parent_item = parent_item
+        self.original_sale_item = original_sale_item
         self.children_items = []
+
+    @classmethod
+    def from_sale_item(cls, item):
+        # FIXME: can_remove is set to False so one cannot remove
+        # any items addeded previously in the sale. This makes
+        # sense but it should be possible to remove the item if the
+        # user (or the manager) really wants to.
+        return cls(
+            sellable=item.sellable,
+            quantity=item.quantity,
+            quantity_decreased=item.quantity_decreased,
+            price=item.price,
+            batch=item.batch,
+            parent_item=item.parent_item,
+            estimated_fix_date=item.estimated_fix_date,
+            deliver=bool(item.delivery),
+            original_sale_item=item,
+            can_remove=False)
 
     @property
     def full_description(self):
@@ -151,6 +171,8 @@ class PosApp(ShellApp):
         self._current_store = None
         self._trade = None
         self._trade_infobar = None
+        self._token = None
+        self._till_open = False
 
         # The sellable and batch selected, in case the parameter
         # CONFIRM_QTY_ON_BARCODE_ACTIVATE is used.
@@ -236,7 +258,8 @@ class PosApp(ShellApp):
 
         # Setting up the toolbar area
         self.toolbar_vbox.set_focus_chain([self.toolbar_button_box])
-        self.toolbar_button_box.set_focus_chain([self.checkout_button,
+        self.toolbar_button_box.set_focus_chain([self.save_button,
+                                                 self.checkout_button,
                                                  self.delivery_button,
                                                  self.edit_item_button,
                                                  self.remove_item_button])
@@ -255,6 +278,9 @@ class PosApp(ShellApp):
         # Admin app doesn't have anything to print/export
         for widget in (self.window.Print, self.window.ExportSpreadSheet):
             widget.set_visible(False)
+
+        self._confirm_sales_on_till = (sysparam.get_bool('CONFIRM_SALES_ON_TILL') or
+                                       sysparam.get_bool('USE_SALE_TOKEN'))
 
         # Hides or shows sellable description
         self._confirm_quantity = sysparam.get_bool('CONFIRM_QTY_ON_BARCODE_ACTIVATE')
@@ -290,7 +316,10 @@ class PosApp(ShellApp):
         CloseLoanWizardFinishEvent.disconnect(self._on_CloseLoanWizardFinishEvent)
 
     def setup_focus(self):
-        self.barcode.grab_focus()
+        if sysparam.get_bool('USE_SALE_TOKEN') and self._token is None:
+            self.sale_token.grab_focus()
+        else:
+            self.barcode.grab_focus()
 
     def can_change_application(self):
         # Block POS application if we are in the middle of a sale.
@@ -376,18 +405,15 @@ class PosApp(ShellApp):
         for widget in [self.TillOpen, self.TillClose, self.TillVerify]:
             widget.set_visible(not sysparam.get_bool('POS_SEPARATE_CASHIER'))
 
-        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
-            confirm_label = _("_Close")
-        else:
-            confirm_label = _("_Checkout")
-        button_set_image_with_label(self.checkout_button,
-                                    gtk.STOCK_APPLY, confirm_label)
+        self.save_button.set_visible(self._confirm_sales_on_till)
+        self.checkout_button.set_visible(
+            not sysparam.get_bool('CONFIRM_SALES_ON_TILL'))
 
     def _setup_widgets(self):
         self._inventory_widgets = [self.barcode, self.quantity,
                                    self.sale_items, self.advanced_search,
-                                   self.checkout_button, self.NewTrade,
-                                   self.LoanClose, self.WorkOrderClose]
+                                   self.save_button, self.checkout_button,
+                                   self.NewTrade, self.LoanClose, self.WorkOrderClose]
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
@@ -620,10 +646,14 @@ class PosApp(ShellApp):
             if not blocked:
                 text += '\n\n<span size="large"><a href="open-till">%s</a></span>' % (
                     api.escape(_('Open till')))
+            self._till_open = False
         elif blocked:
             text = large(_("Till blocked"))
+            self._till_open = False
         else:
             text = large(_("Till open"))
+            self._till_open = True
+
         self.till_status_label.set_use_markup(True)
         self.till_status_label.set_justify(gtk.JUSTIFY_CENTER)
         self.till_status_label.set_markup(text)
@@ -636,12 +666,18 @@ class PosApp(ShellApp):
                            not closed or blocked)
 
         self._set_sale_sensitive(not closed and not blocked)
+        self._update_widgets()
 
     def _update_widgets(self):
         has_sale_items = len(self.sale_items) >= 1
-        self.set_sensitive((self.checkout_button, self.remove_item_button,
-                            self.NewDelivery,
-                            self.ConfirmOrder), has_sale_items)
+        need_items_widgets = [
+            self.save_button,
+            self.checkout_button,
+            self.remove_item_button,
+            self.NewDelivery,
+            self.ConfirmOrder,
+        ]
+        self.set_sensitive(need_items_widgets, has_sale_items)
         # We can cancel an order whenever we have a coupon opened.
         self.set_sensitive([self.CancelOrder, self.DetailsViewer],
                            self._sale_started)
@@ -669,9 +705,21 @@ class PosApp(ShellApp):
                       sale_item.parent_item is None)
         self.set_sensitive([self.remove_item_button], can_remove)
 
-        self.set_sensitive((self.checkout_button,
-                            self.ConfirmOrder), has_products or has_services)
-        self.till_status_box.set_visible(not self._sale_started)
+        if sysparam.get_bool('USE_SALE_TOKEN'):
+            has_token = bool(self._token)
+            self.list_header_hbox.set_visible(has_token)
+            self.token_box.set_visible(self._till_open and not self._token)
+            self.till_status_box.set_visible(
+                not self._till_open or (has_token and not self._sale_started))
+
+            token_text = self._token.description if self._token else ''
+            self.token_lbl.set_text(token_text)
+            self.token_lbl.set_tooltip_text(token_text)
+        else:
+            self.list_header_hbox.set_visible(True)
+            self.token_box.set_visible(False)
+            self.till_status_box.set_visible(not self._sale_started)
+
         self.sale_items_pane.set_visible(self._sale_started)
 
         self._update_totals()
@@ -854,6 +902,8 @@ class PosApp(ShellApp):
     def _clear_order(self):
         log.info("Clearing order")
         self._sale_started = False
+        self._token = None
+        self.sale_token.set_text('')
         self.sale_items.clear()
 
         widgets = [self.search_box, self.list_vbox, self.CancelOrder,
@@ -871,6 +921,11 @@ class PosApp(ShellApp):
         if self._current_store and not self._current_store.obsolete:
             self._current_store.rollback(close=True)
         self._current_store = None
+
+        if sysparam.get_bool('USE_SALE_TOKEN'):
+            self._set_sale_sensitive(bool(self._token))
+
+        self.setup_focus()
 
     def _clear_trade(self, remove=False):
         if self._trade and remove:
@@ -903,7 +958,7 @@ class PosApp(ShellApp):
                 return False
 
         log.info("Cancelling coupon")
-        if not sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
+        if not self._confirm_sales_on_till:
             if self._coupon:
                 self._coupon.cancel()
         self._coupon = None
@@ -931,7 +986,7 @@ class PosApp(ShellApp):
                                self._delivery,
                                sale_items=self._get_deliverable_items())
 
-    def _add_delivery_item(self, delivery, delivery_sellable):
+    def _add_delivery_item(self, delivery, delivery_sellable, can_remove=True):
         for sale_item in self.sale_items:
             if sale_item.sellable == delivery_sellable:
                 sale_item.price = delivery.price
@@ -944,14 +999,20 @@ class PosApp(ShellApp):
             self._delivery_item = TemporarySaleItem(sellable=delivery_sellable,
                                                     quantity=1,
                                                     notes=delivery.notes,
-                                                    price=delivery.price)
+                                                    price=delivery.price,
+                                                    can_remove=can_remove)
             self._delivery_item.estimated_fix_date = delivery.estimated_fix_date
             new_item = True
 
         self._update_added_item(self._delivery_item,
                                 new_item=new_item)
 
+        return self._delivery_item
+
     def _create_sale(self, store):
+        if self._token and self._token.sale:
+            return self._adjust_sale(store, store.fetch(self._token.sale))
+
         user = api.get_current_user(store)
         branch = api.get_current_branch(store)
         salesperson = user.person.sales_person
@@ -964,9 +1025,18 @@ class PosApp(ShellApp):
                     group=group,
                     cfop_id=cfop_id,
                     coupon_id=None)
+        if self._token is not None:
+            token = store.fetch(self._token)
+            token.open_token(sale)
         sale.invoice.operation_nature = nature
 
-        if self._delivery:
+        return self._adjust_sale(store, sale)
+
+    def _adjust_sale(self, store, sale):
+        if self._delivery and self._delivery.original_delivery:
+            delivery = store.fetch(self._delivery.original_delivery)
+            sale.client = store.fetch(self._delivery.client)
+        elif self._delivery:
             sale.client = store.fetch(self._delivery.client)
             if hasattr(self._delivery, 'transporter_id'):
                 sale.transporter = store.get(Transporter, self._delivery.transporter_id)
@@ -985,26 +1055,74 @@ class PosApp(ShellApp):
         for fake_sale_item in self.sale_items:
             if fake_sale_item.parent_item:
                 continue
-            sale_item = sale.add_sellable(
-                store.fetch(fake_sale_item.sellable),
-                price=fake_sale_item.price, quantity=fake_sale_item.quantity,
-                quantity_decreased=fake_sale_item.quantity_decreased,
-                batch=store.fetch(fake_sale_item.batch))
+
+            if fake_sale_item.original_sale_item:
+                sale_item = store.fetch(fake_sale_item.original_sale_item)
+            else:
+                sale_item = sale.add_sellable(
+                    store.fetch(fake_sale_item.sellable),
+                    price=fake_sale_item.price, quantity=fake_sale_item.quantity,
+                    quantity_decreased=fake_sale_item.quantity_decreased,
+                    batch=store.fetch(fake_sale_item.batch))
+
+                for child_fake in fake_sale_item.children_items:
+                    sale.add_sellable(store.fetch(child_fake.sellable),
+                                      price=child_fake.price,
+                                      quantity=child_fake.quantity,
+                                      quantity_decreased=child_fake.quantity_decreased,
+                                      batch=store.fetch(child_fake.batch),
+                                      parent=sale_item)
+
             sale_item.notes = fake_sale_item.notes
             sale_item.estimated_fix_date = fake_sale_item.estimated_fix_date
-            for child_fake in fake_sale_item.children_items:
-                sale.add_sellable(store.fetch(child_fake.sellable),
-                                  price=child_fake.price,
-                                  quantity=child_fake.quantity,
-                                  quantity_decreased=child_fake.quantity_decreased,
-                                  batch=store.fetch(child_fake.batch),
-                                  parent=sale_item)
+
+            storable = sale_item.sellable.product_storable
+            if sysparam.get_bool('USE_SALE_TOKEN') and storable:
+                diff = sale_item.quantity - sale_item.quantity_decreased
+                if diff:
+                    sale_item.reserve(diff)
+
             if delivery and fake_sale_item.deliver:
                 delivery.add_item(sale_item)
             elif delivery and fake_sale_item == self._delivery_item:
                 delivery.service_item = sale_item
+            else:
+                sale_item.delivery = None
 
         return sale
+
+    def _set_token(self, token_code):
+        branch = api.get_current_branch(self.store)
+        self._token = self.store.find(SaleToken,
+                                      code=unicode(token_code),
+                                      branch=branch).one()
+        if self._token is None:
+            warning(_("There's no token registered with the "
+                      "code \"{}\"".format(token_code)))
+            return
+
+        if self._token and self._token.sale:
+            sale = self._token.sale
+
+            # We need to iterate twice here because we need the delivery
+            # to find the delivery_item after
+            for item in sale.get_items():
+                if item.delivery is not None:
+                    self._delivery = CreateDeliveryModel.from_delivery(item.delivery)
+                    break
+            else:
+                self._delivery = None
+
+            for item in sale.get_items():
+                if self._delivery and item == self._delivery.original_delivery.service_item:
+                    delivery_item = self._add_delivery_item(
+                        self._delivery, item.sellable, can_remove=False)
+                    delivery_item.original_sale_item = item
+                else:
+                    self.add_sale_item(TemporarySaleItem.from_sale_item(item))
+
+        self._update_widgets()
+        self._set_sale_sensitive(bool(self._token))
 
     def _set_selected_sellable(self, sellable, batch=None):
         """Saves the selected sellable for adding later.
@@ -1019,11 +1137,11 @@ class PosApp(ShellApp):
         self._update_buttons()
 
     @public(since="1.5.0")
-    def checkout(self, cancel_clear=False):
-        """Initiates the sale wizard to confirm sale.
+    def checkout(self, cancel_clear=False, save_only=False):
+        """Initiate the sale checkout process.
 
-        :param cancel_clear: If cancel_clear is true, the sale will be cancelled
-          if the checkout is cancelled.
+        :param cancel_clear: If we should cancel the sale if the checkout
+            is cancelled.
         """
         assert len(self.sale_items) >= 1
 
@@ -1063,21 +1181,26 @@ class PosApp(ShellApp):
         else:
             sale = self._create_sale(store)
 
-        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
-            sale.order()
+        if save_only:
+            if sale.status != Sale.STATUS_ORDERED:
+                sale.order()
             store.commit()
         else:
-            assert self._coupon
+            if sysparam.get_bool('USE_SALE_TOKEN'):
+                coupon = self._open_coupon()
+                coupon.add_sale_items(sale)
+            else:
+                coupon = self._coupon
+                assert coupon
 
-            ordered = self._coupon.confirm(sale, store, savepoint,
-                                           subtotal=self._get_subtotal())
+            ordered = coupon.confirm(sale, store, savepoint,
+                                     subtotal=self._get_subtotal())
             # Dont call store.confirm() here, since coupon.confirm()
             # above already did it
             if not ordered:
                 # FIXME: Move to TEF plugin
                 manager = get_plugin_manager()
-                if (manager.is_active('tef') or cancel_clear or
-                        self._coupon.cancelled):
+                if manager.is_active('tef') or cancel_clear or coupon.cancelled:
                     self._cancel_order(show_confirmation=False)
                 elif not self._current_store:
                     # Just do that if a store was created above and
@@ -1108,7 +1231,7 @@ class PosApp(ShellApp):
         self._check_delivery_removed(sale_item)
         self._select_first_item()
         self._update_widgets()
-        self.barcode.grab_focus()
+        self.setup_focus()
 
     def _checkout_or_add_item(self):
         # This is called when the user activates the barcode field.
@@ -1116,13 +1239,12 @@ class PosApp(ShellApp):
         if search_str == '':
             # The user pressed enter with an empty string. Maybe start checkout
             checkout = True
-            need_confirmation = sysparam.get_bool('CONFIRM_SALES_ON_TILL')
-            if (need_confirmation and not
-                    yesno(_('Close the order?'), gtk.RESPONSE_NO, _('Confirm'),
-                          _("Don't confirm"))):
+            if (self._confirm_sales_on_till and not
+                    yesno(_('Save the order?'), gtk.RESPONSE_NO, _('Save'),
+                          _("Don't save"))):
                 checkout = False
             if len(self.sale_items) >= 1 and checkout:
-                self.checkout()
+                self.checkout(save_only=self._confirm_sales_on_till)
         else:
             # The user typed something. Try to add the sellable.
             # In case there was an already selected sellable, we should reset
@@ -1178,7 +1300,7 @@ class PosApp(ShellApp):
         See :class:`stoqlib.gui.fiscalprinter.FiscalCoupon` for more information
         """
         self._sale_started = True
-        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
+        if self._confirm_sales_on_till:
             return
 
         if self._coupon is None:
@@ -1190,7 +1312,7 @@ class PosApp(ShellApp):
         return self._coupon.add_item(sale_item)
 
     def _coupon_remove_item(self, sale_item):
-        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
+        if self._confirm_sales_on_till:
             return
 
         assert self._coupon
@@ -1373,6 +1495,9 @@ class PosApp(ShellApp):
         marker("enter pressed")
         self._checkout_or_add_item()
 
+    def on_sale_token__activate(self, entry):
+        self._set_token(entry.get_text())
+
     def after_barcode__changed(self, editable):
         self._update_buttons()
 
@@ -1399,6 +1524,9 @@ class PosApp(ShellApp):
 
     def on_checkout_button__clicked(self, button):
         self.checkout()
+
+    def on_save_button__clicked(self, button):
+        self.checkout(save_only=True)
 
     def on_edit_item_button__clicked(self, button):
         item = self.sale_items.get_selected()

@@ -99,7 +99,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                   ProxySpinButton(quantity, expand=True, fill=True): '1.000', insensitive
                   GtkHButtonBox(item_button_box, expand=True, fill=True):
                     GtkButton(add_button): insensitive
-                    GtkButton(advanced_search): insensitive
+                    GtkButton(advanced_search):
+                GtkLabel(token_lbl, expand=True, fill=True):
                 GtkImage(stoq_logo, fill=True, pack-end):
           GtkAlignment(sellable_align, fill=True):
             GtkHBox(hbox1):
@@ -109,6 +110,14 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHSeparator(hseparator1, fill=True):
               ProxyLabel(till_status_label, expand=True, fill=True): '<span weight="bold" size="xx-large">Till closed</span>\n\n<span size="large"><a href="open-till">Open till</a></span>'
               GtkHSeparator(hseparator2, fill=True):
+            GtkHBox(token_box, expand=True, fill=True): hidden
+              GtkLabel(label4, expand=True, fill=True):
+              GtkVBox(vbox6, expand=True, fill=True):
+                GtkLabel(label10, expand=True, fill=True):
+                GtkLabel(label9, fill=True): 'Sale Token:'
+                ProxyEntry(sale_token, fill=True): '', invalid
+                GtkEventBox(tokens_holder, expand=True, fill=True):
+              GtkLabel(label7, expand=True, fill=True):
             GtkHPaned(sale_items_pane, expand=True, fill=True): hidden
               ObjectTree(sale_items): insensitive
                 column: title='Reference'
@@ -131,6 +140,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHBox(footer_hbox):
                 GtkVBox(toolbar_vbox, fill=True):
                   GtkHButtonBox(toolbar_button_box, fill=True):
+                    GtkButton(save_button): hidden, insensitive
                     GtkButton(checkout_button): insensitive
                     GtkButton(delivery_button): insensitive
                     GtkButton(edit_item_button): insensitive

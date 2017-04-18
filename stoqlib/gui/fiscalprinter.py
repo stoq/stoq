@@ -595,6 +595,22 @@ class FiscalCoupon(gobject.GObject):
 
         return True
 
+    def add_sale_items(self, sale):
+        subtotal = 0
+        for sale_item in sale.get_items(with_children=False):
+            sellable = sale_item.sellable
+            if (sellable.service or
+                    (sellable.product and not sellable.product.is_package)):
+                # Do not add the package item in the coupon
+                self.add_item(sale_item)
+                subtotal += sale_item.get_total()
+
+            for child in sale_item.children_items:
+                self.add_item(child)
+                subtotal += child.get_total()
+
+        return subtotal
+
     def print_receipts(self, sale):
         # supports_duplicate = self.emit('get-supports-duplicate-receipt')
         # Vamos sempre imprimir sempre de uma vez, para simplificar

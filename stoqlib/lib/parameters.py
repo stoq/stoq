@@ -282,6 +282,15 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'USE_SALE_TOKEN',
+        _(u'Sales'),
+        _(u'Use tokens to control sales'),
+        _(u'A token is a phisical object that will be attached to a sale '
+          u'during its lifetime. For example, it can be a bar table, a '
+          u'hotel room, a real token in a convenience store and so on. '),
+        bool, initial=False),
+
+    ParameterDetails(
         u'DEFAULT_PAYMENT_METHOD',
         _(u'Sales'),
         _(u'Default payment method selected'),

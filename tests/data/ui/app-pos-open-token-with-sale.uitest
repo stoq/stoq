@@ -29,7 +29,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkCheckMenuItem(): 'Details viewer', insensitive
+          GtkCheckMenuItem(): 'Details viewer'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Toolbar', hidden
           GtkCheckMenuItem(): '_Statusbar'
@@ -37,10 +37,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Order'
         GtkMenu(): hidden
-          GtkImageMenuItem(): 'Confirm...', insensitive
-          GtkImageMenuItem(): 'Cancel...', insensitive
+          GtkImageMenuItem(): 'Confirm...'
+          GtkImageMenuItem(): 'Cancel...'
           GtkSeparatorMenuItem():
-          GtkImageMenuItem(): 'Create delivery...', insensitive
+          GtkImageMenuItem(): 'Create delivery...'
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Sales...'
@@ -86,11 +86,6 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkMenu(): hidden
       GtkToolButton(): 'Print', hidden, insensitive
       GtkToolButton(): 'Quit', hidden
-    GtkInfoBar(_trade_infobar):
-      GtkHBox(expand=True, fill=True):
-        GtkLabel(expand=True, fill=True): 'There is a trade with value $198.00 in progress...\nWhen checking out, it will be used as part of the payment.'
-      GtkVButtonBox(fill=True):
-        GtkButton(pack-end): 'Cancel trade'
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(pos_vbox, expand=True, fill=True):
@@ -105,13 +100,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                   GtkHButtonBox(item_button_box, expand=True, fill=True):
                     GtkButton(add_button): insensitive
                     GtkButton(advanced_search):
-                GtkLabel(token_lbl, expand=True, fill=True):
+                GtkLabel(token_lbl, expand=True, fill=True): '[foobar] None'
                 GtkImage(stoq_logo, fill=True, pack-end):
           GtkAlignment(sellable_align, fill=True):
             GtkHBox(hbox1):
               ProxyLabel(sellable_description, expand=True, fill=True): hidden
           GtkVBox(list_vbox, expand=True, fill=True):
-            GtkVBox(till_status_box, expand=True, fill=True):
+            GtkVBox(till_status_box, expand=True, fill=True): hidden
               GtkHSeparator(hseparator1, fill=True):
               ProxyLabel(till_status_label, expand=True, fill=True): '<span weight="bold" size="xx-large">Till open</span>'
               GtkHSeparator(hseparator2, fill=True):
@@ -120,10 +115,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkVBox(vbox6, expand=True, fill=True):
                 GtkLabel(label10, expand=True, fill=True):
                 GtkLabel(label9, fill=True): 'Sale Token:'
-                ProxyEntry(sale_token, fill=True): '', invalid
+                ProxyEntry(sale_token, fill=True): 'foobar', invalid
                 GtkEventBox(tokens_holder, expand=True, fill=True):
               GtkLabel(label7, expand=True, fill=True):
-            GtkHPaned(sale_items_pane, expand=True, fill=True): hidden
+            GtkHPaned(sale_items_pane, expand=True, fill=True):
               ObjectTree(sale_items):
                 column: title='Reference'
                 column: title='Description', expand
@@ -131,8 +126,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                 column: title='Price'
                 column: title='Quantity'
                 column: title='Total'
+                row: u'123456', u'Description', u'', <currency $10>, u'1 ', Decimal('10.00')
               GtkVBox(details_box):
-                ProxyLabel(details_lbl, fill=True):
+                ProxyLabel(details_lbl, fill=True): '<b>Description</b>\n1 x $10.00'
                 GtkAspectFrame(aspectframe1):
                   GtkEventBox(image_holder):
                     GtkEventBox(eventbox1):
@@ -145,12 +141,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkHBox(footer_hbox):
                 GtkVBox(toolbar_vbox, fill=True):
                   GtkHButtonBox(toolbar_button_box, fill=True):
-                    GtkButton(save_button): hidden, insensitive
-                    GtkButton(checkout_button): insensitive
-                    GtkButton(delivery_button): insensitive
+                    GtkButton(save_button):
+                    GtkButton(checkout_button):
+                    GtkButton(delivery_button):
                     GtkButton(edit_item_button): insensitive
                     GtkButton(remove_item_button): insensitive
-                ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
+                ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $10.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

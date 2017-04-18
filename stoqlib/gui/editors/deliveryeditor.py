@@ -55,7 +55,8 @@ class CreateDeliveryModel(object):
 
     def __init__(self, price=None, notes=None, client=None, transporter=None,
                  address=None, estimated_fix_date=None, description=None,
-                 freight_type=None, volumes_kind=None, volumes_quantity=1):
+                 freight_type=None, volumes_kind=None, volumes_quantity=1,
+                 original_delivery=None):
         self.price = price
         self.notes = notes
         self.address = address or (client and client.person.address)
@@ -66,8 +67,23 @@ class CreateDeliveryModel(object):
         self.freight_type = freight_type or Delivery.FREIGHT_TYPE_CIF
         self.volumes_kind = volumes_kind or _(u'Volumes')
         self.volumes_quantity = volumes_quantity
+        self.original_delivery = original_delivery
 
         self._savepoint = {}
+
+    @classmethod
+    def from_delivery(cls, delivery):
+        service_item = delivery.service_item
+        return cls(
+            price=service_item.price,
+            notes=service_item.notes,
+            transporter=delivery.transporter,
+            address=delivery.address,
+            estimated_fix_date=service_item.estimated_fix_date,
+            freight_type=delivery.freight_type,
+            volumes_kind=delivery.volumes_kind,
+            volumes_quantity=delivery.volumes_quantity,
+            original_delivery=delivery)
 
     # Since CreateDeliveryModel is not a Domain, changes to it can't be
     # undone by a store.rollback(). Therefore, we must make the rollback

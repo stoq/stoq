@@ -1248,8 +1248,8 @@ class Sale(Domain):
         old_status = self.status
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
-        if self.sale_token:
-            self.sale_token.close_token()
+        if self.current_sale_token:
+            self.current_sale_token.close_token()
 
         # do not log money payments twice
         if not self.only_paid_with_money():
@@ -1367,6 +1367,9 @@ class Sale(Domain):
         for payment in self.payments:
             if payment.can_cancel():
                 payment.cancel()
+
+        if self.current_sale_token:
+            self.current_sale_token.close_token()
 
         self._set_sale_status(Sale.STATUS_CANCELLED)
 
@@ -1838,6 +1841,11 @@ class Sale(Domain):
         return self.get_status_name(self.status)
 
     @property
+    def current_sale_token(self):
+        """The current token attached to this sale."""
+        return self.store.find(SaleToken, sale=self).one()
+
+    @property
     def products(self):
         """All |saleitems| of this sale containing a |product|.
 
@@ -2087,43 +2095,92 @@ class SaleToken(Domain):
     #: the code that used to identify the token
     code = UnicodeCol()
 
-    #
-    # Class methods
-    #
+    #: The name of the token
+    name = UnicodeCol()
 
-    @classmethod
-    def get_status_name(cls, status):
-        return cls.statuses[status]
+    sale_id = IdCol()
+    #: The |sale| that this token is attached to
+    sale = Reference(sale_id, 'Sale.id')
 
-    #
-    # Properties
-    #
+    branch_id = IdCol()
+    #: The |branch| that this token belongs
+    branch = Reference(branch_id, 'Branch.id')
 
     @property
     def status_str(self):
-        return self.get_status_name(self.status)
+        return self.statuses[self.status]
+
+    @property
+    def description(self):
+        return "[{}] {}".format(self.code, self.name)
 
     #
     # Public API
     #
 
-    def open_token(self):
-        assert self._can_open()
+    def open_token(self, sale):
+        assert self.can_open()
+        self.sale = sale
+        sale.sale_token = self
         self.status = SaleToken.STATUS_OCCUPIED
 
     def close_token(self):
-        assert self._can_close()
+        assert self.can_close()
+        self.sale = None
         self.status = SaleToken.STATUS_AVAILABLE
 
-    #
-    # Private API
-    #
-
-    def _can_open(self):
+    def can_open(self):
         return self.status == SaleToken.STATUS_AVAILABLE
 
-    def _can_close(self):
+    def can_close(self):
         return self.status == SaleToken.STATUS_OCCUPIED
+
+
+class SaleTokenView(Viewable):
+    """Sale token view."""
+
+    ClientPerson = ClassAlias(Person, 'client_person')
+    ClientCompany = ClassAlias(Company, 'client_company')
+    BranchPerson = ClassAlias(Person, 'branch_person')
+    BranchCompany = ClassAlias(Company, 'branch_company')
+
+    sale_token = SaleToken
+    sale = Sale
+    client = Client
+    branch = Branch
+
+    id = SaleToken.id
+    name = SaleToken.name
+    code = SaleToken.code
+    status = SaleToken.status
+
+    client_id = Client.id
+    client_name = Coalesce(NullIf(ClientCompany.fancy_name, u''), ClientPerson.name)
+    branch_id = Branch.id
+    branch_name = Coalesce(NullIf(BranchCompany.fancy_name, u''), BranchPerson.name)
+    sale_identifier = Sale.identifier
+    sale_identifier_str = Cast(Sale.identifier, 'text')
+
+    tables = [
+        SaleToken,
+
+        # Sale
+        LeftJoin(Sale, SaleToken.sale_id == Sale.id),
+
+        # Client
+        LeftJoin(Client, Sale.client_id == Client.id),
+        LeftJoin(ClientPerson, Client.person_id == ClientPerson.id),
+        LeftJoin(ClientCompany, ClientCompany.person_id == ClientPerson.id),
+
+        # Branch
+        LeftJoin(Branch, SaleToken.branch_id == Branch.id),
+        LeftJoin(BranchPerson, Branch.person_id == BranchPerson.id),
+        LeftJoin(BranchCompany, BranchCompany.person_id == BranchPerson.id),
+    ]
+
+    @property
+    def status_str(self):
+        return SaleToken.statuses[self.status]
 
 
 class SaleComment(Domain):
@@ -2264,6 +2321,9 @@ class SaleView(Viewable):
     #: The |invoice| of the view
     invoice = Invoice
 
+    #: The token referencing this sale
+    token = SaleToken
+
     #: the id of the sale table
     id = Sale.id
 
@@ -2272,6 +2332,12 @@ class SaleView(Viewable):
 
     #: unique numeric identifier for the sale, text representation
     identifier_str = Cast(Sale.identifier, 'text')
+
+    #: The code of the current token holding the sale
+    token_code = SaleToken.code
+
+    #: The name of the current token holding the sale
+    token_name = SaleToken.name
 
     #: the sale invoice number
     invoice_number = Invoice.invoice_number
@@ -2352,6 +2418,8 @@ class SaleView(Viewable):
         LeftJoin(Company, Company.person_id == Person_Branch.id),
         LeftJoin(Person_Client, Client.person_id == Person_Client.id),
         LeftJoin(Person_SalesPerson, SalesPerson.person_id == Person_SalesPerson.id),
+
+        LeftJoin(SaleToken, SaleToken.sale_id == Sale.id),
     ]
 
     @classmethod
@@ -2373,6 +2441,10 @@ class SaleView(Viewable):
     #
     # Properties
     #
+
+    @property
+    def token_str(self):
+        return self.token.description if self.token else ''
 
     @property
     def returned_sales(self):

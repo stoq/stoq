@@ -34,7 +34,7 @@ from kiwi.ui.forms import TextField
 from stoqlib.api import api
 from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.person import Client, SalesPerson
+from stoqlib.domain.person import Branch, Client, SalesPerson
 from stoqlib.domain.sale import Sale, SaleItem, SaleToken
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
@@ -394,11 +394,18 @@ class SalesPersonEditor(_BaseSalePersonChangeEditor):
 
 
 class SaleTokenEditor(BaseEditor):
-    gladefile = 'SaleToken'
     model_type = SaleToken
     model_name = _('Sale token')
-    proxy_widgets = ['code']
     confirm_widgets = ['code']
+
+    @cached_property()
+    def fields(self):
+        return collections.OrderedDict(
+            name=TextField(_('Name'), proxy=True, mandatory=True),
+            code=TextField(_('Code'), proxy=True, mandatory=True),
+            branch_id=PersonField(_('Branch'), proxy=True, person_type=Branch,
+                                  can_add=False, can_edit=False, mandatory=True),
+        )
 
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode)
@@ -409,8 +416,12 @@ class SaleTokenEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model, SaleTokenEditor.proxy_widgets)
 
     def create_model(self, store):
-        return SaleToken(store=self.store, code=u'')
+        return SaleToken(store=self.store,
+                         code=u'',
+                         name=u'',
+                         branch=api.get_current_branch(self.store))
 
     def on_code__validate(self, widget, value):
+        # FIXME: Consider the branch in this check
         if self.model.check_unique_value_exists(self.model_type.code, value):
             return ValidationError(_("Code already in use"))

@@ -363,4 +363,5 @@ class TestSaleTokenEditor(GUITest):
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
 
         editor.code.set_text(u'sale token 2')
+        editor.name.set_text(u'sale token 2')
         self.assertSensitive(editor.main_dialog, ['ok_button'])

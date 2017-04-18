@@ -1,0 +1,169 @@
+app: TillApp
+GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Cash addition...'
+              GtkImageMenuItem(): 'Cash removal...'
+              GtkImageMenuItem(): 'Payment receival...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Open till...', insensitive
+          GtkImageMenuItem(): 'Verify till...'
+          GtkImageMenuItem(): 'Close till...'
+          GtkImageMenuItem(): 'Till daily movement...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Sale'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Details...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Confirm...', insensitive
+          GtkImageMenuItem(): 'Return...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Edit payments...', insensitive
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Clients...'
+          GtkImageMenuItem(): 'Sales...'
+          GtkImageMenuItem(): 'Sold items by branch...'
+          GtkImageMenuItem(): 'Card payments...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Closed till search...'
+          GtkImageMenuItem(): 'Till entry history...'
+          GtkImageMenuItem(): 'Fiscal till operations...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Till help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'Home'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Accounts Payable'
+            GtkImageMenuItem(): 'Accounts Receivable'
+            GtkImageMenuItem(): 'Administrative'
+            GtkImageMenuItem(): 'Calendar'
+            GtkImageMenuItem(): 'Delivery'
+            GtkImageMenuItem(): 'Financial'
+            GtkImageMenuItem(): 'Inventory'
+            GtkImageMenuItem(): 'Point of Sales'
+            GtkImageMenuItem(): 'Production'
+            GtkImageMenuItem(): 'Purchase'
+            GtkImageMenuItem(): 'Sales'
+            GtkImageMenuItem(): 'Services'
+            GtkImageMenuItem(): 'Stock'
+            GtkImageMenuItem(): 'Stoq.Link'
+            GtkImageMenuItem(): 'Till', hidden
+      GtkSeparatorToolItem():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Cash addition'
+            GtkImageMenuItem(): 'Cash removal'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Fiscal till operations'
+            GtkImageMenuItem(): 'Clients'
+            GtkImageMenuItem(): 'Sales'
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Quit', hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Confirm', insensitive
+      GtkToolButton(): 'Return', insensitive
+      GtkToolButton(): 'Details', insensitive
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkVBox(app_vbox, expand=True, fill=True):
+          GtkVBox(large_status, expand=True, fill=True): hidden
+            GtkHSeparator(hseparator1, fill=True):
+            ProxyLabel(status_link, expand=True, fill=True):
+            GtkHSeparator(hseparator2, fill=True):
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
+            GtkVBox(vbox):
+              GtkHBox(fill=True, padding=6):
+                GtkVBox(filters_box, padding=6):
+                  GtkHBox(hbox):
+                    ComboSearchFilter(status_filter):
+                      GtkLabel(): 'Show orders'
+                      ProxyComboBox(padding=6):
+                        item: 'Any', selected
+                        item: 'Opened'
+                        item: 'Quoting'
+                        item: 'Ordered'
+                        item: 'Confirmed'
+                        item: 'Cancelled'
+                        item: 'Returned'
+                        item: 'Renegotiated'
+                    SearchFilter(_primary_filter):
+                      GtkLabel(): 'Search:'
+                      ProxyComboBox(padding=6): hidden
+                        item: 'Contains All Words', selected
+                        item: 'Contains Exactly'
+                        item: 'Identical to'
+                        item: 'Does Not Contain'
+                      HintedEntry(search_entry, padding=6): ''
+                    GtkButton(search_button): 'gtk-find'
+              SearchResultListView(result_view, expand=True, fill=True):
+                column: title='Sale #'
+                column: title='Status'
+                column: title='Date Started'
+                column: title='Sale token'
+                column: title='Client', expand
+                column: title='Salesperson'
+                column: title='Quantity'
+                column: title='Total'
+          GtkVBox(list_vbox):
+            GtkAlignment(alignment1):
+              GtkHBox(footer_hbox):
+                ProxyLabel(small_status, expand=True, fill=True): '<span size="xx-large" weight="bold">Till opened on YYYY-MM-DD</span>'
+                GtkVBox(vbox1, expand=True, fill=True):
+                  ProxyLabel(total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
+                  ProxyLabel(total_payment_label, expand=True, fill=True): hidden
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+        GtkButton(pack-end):
+
+popup: TillSelection
+GtkMenu(popup): hidden
+  GtkImageMenuItem(): 'Details...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Confirm...', insensitive
+  GtkImageMenuItem(): 'Return...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Edit payments...', insensitive

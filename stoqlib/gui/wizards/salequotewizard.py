@@ -259,10 +259,7 @@ class SaleQuoteItemStep(SellableItemStep):
         delivery = self._find_delivery()
         if delivery is not None:
             self._delivery_item = delivery.service_item
-            self._delivery = CreateDeliveryModel(
-                price=self._delivery_item.price, notes=self._delivery_item.notes,
-                transporter=delivery.transporter, address=delivery.address,
-                estimated_fix_date=self._delivery_item.estimated_fix_date)
+            self._delivery = CreateDeliveryModel.from_delivery(delivery)
         else:
             self._delivery = None
             self._delivery_item = None

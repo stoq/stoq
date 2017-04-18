@@ -33,6 +33,7 @@ from kiwi.utils import gsignal
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.person import Client, ClientView, Supplier, SupplierView
+from stoqlib.domain.sale import SaleToken, SaleTokenView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
@@ -47,6 +48,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 _NEW_ITEM_MARKER = object()
 _LOADING_ITEM_MARKER = object()
+_NO_ITENS_MARKER = object()
 (COL_ITEM,
  COL_MARKUP,
  COL_TOOLTIP,
@@ -62,7 +64,8 @@ class _QueryEntryPopup(PopupWindow):
     PROPAGATE_KEY_PRESS = True
     GRAB_WINDOW = False
 
-    def __init__(self, entry_gadget):
+    def __init__(self, entry_gadget, has_new_item=True):
+        self._has_new_item = has_new_item
         self.loading = False
         self.entry_gadget = entry_gadget
         super(_QueryEntryPopup, self).__init__(entry_gadget.entry)
@@ -98,8 +101,15 @@ class _QueryEntryPopup(PopupWindow):
         if len(self._model):
             self._selection.select_path(self._model[0].path)
 
-        self._model.append(
-            (_NEW_ITEM_MARKER, self.entry_gadget.NEW_ITEM_TEXT, None, False, 0))
+        if self._has_new_item:
+            self._model.append(
+                (_NEW_ITEM_MARKER, self.entry_gadget.NEW_ITEM_TEXT,
+                 None, False, 0))
+        elif not len(self._model):
+            self._model.append(
+                (_NO_ITENS_MARKER, self.entry_gadget.NO_ITEMS_FOUND_TEXT,
+                 None, False, 0))
+
         glib.idle_add(self._resize)
 
     def scroll(self, relative=None, absolute=None):
@@ -240,7 +250,7 @@ class _QueryEntryPopup(PopupWindow):
         return self.loading
 
     def _select_item(self, item, fallback_to_search=False):
-        if item is _LOADING_ITEM_MARKER:
+        if item in [_LOADING_ITEM_MARKER, _NO_ITENS_MARKER]:
             pass
         elif item is _NEW_ITEM_MARKER:
             self.popdown()
@@ -307,6 +317,9 @@ class QueryEntryGadget(object):
     NEW_ITEM_TOOLTIP = _("Create a new item")
     EDIT_ITEM_TOOLTIP = _("Edit the selected item")
     INFO_ITEM_TOOLTIP = _("See info about the selected item")
+    NO_ITEMS_FOUND_TEXT = _("No items found")
+    advanced_search = True
+    selection_only = False
     item_editor = None
     item_info_dialog = ClientEditor
     search_class = None
@@ -315,7 +328,8 @@ class QueryEntryGadget(object):
 
     def __init__(self, entry, store, initial_value=None,
                  parent=None, run_editor=None,
-                 edit_button=None, info_button=None):
+                 edit_button=None, info_button=None,
+                 search_clause=None):
         """
         :param entry: The entry that we should modify
         :param store: The store that will be used for database queries
@@ -328,6 +342,7 @@ class QueryEntryGadget(object):
         self._parent = parent
         self._on_run_editor = run_editor
         self._can_edit = False
+        self._search_clause = search_clause
         self.entry = entry
         self.entry.set_mode(ENTRY_MODE_DATA)
         self.edit_button = edit_button
@@ -343,7 +358,6 @@ class QueryEntryGadget(object):
 
         self._last_operation = None
         self._source_id = None
-        self._is_person = issubclass(self.item_editor, BasePersonRoleEditor)
 
         self._setup()
         self.set_value(initial_value, force=True)
@@ -358,7 +372,10 @@ class QueryEntryGadget(object):
 
         obj = self.store.fetch(obj)
         if obj is not None:
-            value = obj.get_description()
+            if hasattr(obj, 'description'):
+                value = obj.description
+            else:
+                value = obj.get_description()
             self.entry.prefill([(value, obj)])
             self.update_edit_button(gtk.STOCK_EDIT, self.EDIT_ITEM_TOOLTIP)
         else:
@@ -377,6 +394,9 @@ class QueryEntryGadget(object):
         self._update_widgets()
 
     def update_edit_button(self, stock, tooltip=None):
+        if self.edit_button is None:
+            return
+
         image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
         self.edit_button.set_image(image)
         if tooltip is not None:
@@ -393,30 +413,34 @@ class QueryEntryGadget(object):
     #
 
     def _setup(self):
-        if self.edit_button is None or self.info_button is None:
-            self._replace_widget()
+        if not self.selection_only:
+            if self.edit_button is None or self.info_button is None:
+                self._replace_widget()
 
-        if self.edit_button is None:
-            self.edit_button = self._add_button(gtk.STOCK_NEW)
-        self.edit_button.connect('clicked', self._on_edit_button__clicked)
+            if self.edit_button is None:
+                self.edit_button = self._add_button(gtk.STOCK_NEW)
+            self.edit_button.connect('clicked', self._on_edit_button__clicked)
 
-        if self.info_button is None:
-            self.info_button = self._add_button(gtk.STOCK_INFO)
-        self.info_button.connect('clicked', self._on_info_button__clicked)
+            if self.info_button is None:
+                self.info_button = self._add_button(gtk.STOCK_INFO)
+            self.info_button.connect('clicked', self._on_info_button__clicked)
 
         self.entry.connect('activate', self._on_entry__activate)
         self.entry.connect('changed', self._on_entry__changed)
         self.entry.connect('notify::sensitive', self._on_entry_sensitive)
         self.entry.connect('key-press-event', self._on_entry__key_press_event)
 
-        self._popup = _QueryEntryPopup(self)
+        self._popup = _QueryEntryPopup(
+            self, has_new_item=not self.selection_only)
         self._popup.connect('item-selected', self._on_popup__item_selected)
         self._popup.connect('create-item', self._on_popup__create_item)
 
     def _update_widgets(self):
         self._can_edit = self.entry.get_editable() and self.entry.get_sensitive()
-        self.edit_button.set_sensitive(bool(self._can_edit or self._current_obj))
-        self.info_button.set_sensitive(bool(self._current_obj))
+        if self.edit_button is not None:
+            self.edit_button.set_sensitive(bool(self._can_edit or self._current_obj))
+        if self.info_button is not None:
+            self.info_button.set_sensitive(bool(self._current_obj))
 
     def _add_button(self, stock):
         image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
@@ -449,7 +473,10 @@ class QueryEntryGadget(object):
     def _find_items(self, text):
         self._filter.set_state(text)
         state = self._filter.get_state()
-        return self._executer.search_async([state], limit=10)
+        resultset = self._executer.search([state])
+        if self._search_clause:
+            resultset = resultset.find(self._search_clause)
+        return self._executer.search_async(resultset=resultset, limit=10)
 
     def _dispatch(self, value):
         self._source_id = None
@@ -460,6 +487,9 @@ class QueryEntryGadget(object):
             'finish', lambda o: self._popup.add_items(o.get_result()))
 
     def _run_search(self):
+        if not self.advanced_search:
+            return
+
         text = self.entry.get_text()
         item = run_dialog(self.search_class, self._parent, self.store,
                           double_click_confirm=True, initial_string=text)
@@ -474,7 +504,10 @@ class QueryEntryGadget(object):
                                              description=description,
                                              visual_mode=not self._can_edit)
             else:
-                rd = run_person_role_dialog if self._is_person else run_dialog
+                if issubclass(self.item_editor, BasePersonRoleEditor):
+                    rd = run_person_role_dialog
+                else:
+                    rd = run_dialog
                 retval = rd(self.item_editor, self._parent, store, model,
                             description=description,
                             visual_mode=not self._can_edit)
@@ -645,3 +678,46 @@ class SupplierEntryGadget(PersonEntryGadget):
     search_columns = [SupplierView.name, SupplierView.fancy_name,
                       SupplierView.phone_number, SupplierView.mobile_number,
                       SupplierView.cpf, SupplierView.rg_number]
+
+
+class SaleTokenEntryGadget(QueryEntryGadget):
+
+    LOADING_ITEMS_TEXT = _('Loading tokens...')
+    NO_ITEMS_FOUND_TEXT = _("No tokens found... Register some in the admin app")
+    advanced_search = False
+    selection_only = True
+    search_spec = SaleTokenView
+    search_columns = [SaleTokenView.code,
+                      SaleTokenView.name,
+                      SaleTokenView.client_name]
+
+    #
+    #  QueryEntryGadget
+    #
+
+    def get_object_from_item(self, item):
+        return item and self.store.find(SaleToken, id=item.id).one()
+
+    def describe_item(self, sale_token_view):
+        details = []
+        for label, value in [
+                (_("Status"), sale_token_view.status_str),
+                (_("Sale"), sale_token_view.sale_identifier_str),
+                (_("Client"), sale_token_view.client_name)]:
+            if not value:
+                continue
+            details.append('{}: {}'.format(label, api.escape(value)))
+
+        name = "<big>{}</big>".format(
+            api.escape(sale_token_view.sale_token.description))
+
+        if details:
+            short = name + '\n<span size="small">{}</span>'.format(
+                api.escape(', '.join(details[:1])))
+            complete = name + '\n<span size="small">{}</span>'.format(
+                api.escape('\n'.join(details)))
+        else:
+            short = name
+            complete = name
+
+        return short, complete

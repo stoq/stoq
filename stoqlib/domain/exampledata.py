@@ -435,7 +435,7 @@ class ExampleCreator(object):
 
     def create_sale(self, branch=None, client=None, sale_token=None,
                     salesperson=None):
-        from stoqlib.domain.sale import Sale, SaleToken
+        from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
         till = Till.get_current(self.store)
         if till is None:
@@ -444,9 +444,6 @@ class ExampleCreator(object):
         group = self.create_payment_group()
         if client:
             group.payer = client.person
-
-        if sale_token:
-            sale_token.status = SaleToken.STATUS_OCCUPIED
 
         sale = Sale(store=self.store,
                     coupon_id=0,
@@ -457,11 +454,16 @@ class ExampleCreator(object):
                     group=group,
                     client=client,
                     sale_token=sale_token)
+
+        if sale_token:
+            sale_token.open_token(sale)
+
         return sale
 
-    def create_sale_token(self, code=u''):
+    def create_sale_token(self, code=u'', branch=None):
         from stoqlib.domain.sale import SaleToken
         return SaleToken(store=self.store,
+                         branch=branch or self.create_branch(),
                          status=SaleToken.STATUS_AVAILABLE,
                          code=code)
 
