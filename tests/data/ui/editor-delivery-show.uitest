@@ -12,6 +12,13 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
                   ProxyLabel(client_str_lbl): 'Client:'
                   ProxyLabel(client_str): '<span ></span>'
                   GtkHBox():
+                  ProxyLabel(freight_type_lbl): 'Freight type:'
+                  ProxyComboBox(freight_type):
+                    item: 'Third party'
+                    item: 'No freight'
+                    item: 'FOB'
+                    item: 'CIF', selected
+                  GtkHBox():
                   ProxyLabel(transporter_id_lbl): 'Transporter:'
                   ProxyComboEntry(transporter_id):
                     item: 'John', selected
@@ -19,11 +26,17 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
                   GtkHBox():
                     GtkButton(transporter_id_add_button):
                     GtkButton(transporter_id_edit_button):
+                  ProxyLabel(volumes_kind_lbl): 'Volumes kind:'
+                  ProxyEntry(volumes_kind): ''
+                  GtkHBox():
                   ProxyLabel(address_lbl): 'Address:'
                   ProxyComboEntry(address): mandatory
                   GtkHBox():
                     GtkButton(address_add_button): insensitive
                     GtkButton(address_edit_button): insensitive
+                  ProxyLabel(volumes_quantity_lbl): 'Volumes quantity:'
+                  ProxyEntry(volumes_quantity): ''
+                  GtkHBox():
                   ProxyCheckButton(is_sent_check): 'Was sent to deliver?'
                   GtkHBox():
                   ProxyCheckButton(is_received_check): 'Was received by client?'

@@ -30,6 +30,19 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
                 GtkHBox():
                   GtkButton(address_add_button): insensitive
                   GtkButton(address_edit_button): insensitive
+                ProxyLabel(volumes_kind_lbl): 'Volumes kind:'
+                ProxyEntry(volumes_kind): 'Volumes'
+                GtkHBox():
+                ProxyLabel(freight_type_lbl): 'Freight type:'
+                ProxyComboBox(freight_type):
+                  item: 'Third party'
+                  item: 'No freight'
+                  item: 'FOB'
+                  item: 'CIF', selected
+                GtkHBox():
+                ProxyLabel(volumes_quantity_lbl): 'Volumes quantity:'
+                ProxyEntry(volumes_quantity): '1'
+                GtkHBox():
           GtkHSeparator(hseparator1, fill=True):
           GtkLabel(label3, fill=True): 'Products to Deliver:'
           GtkEventBox(addition_list_holder, expand=True, fill=True):

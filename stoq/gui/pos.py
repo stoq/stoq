@@ -974,6 +974,9 @@ class PosApp(ShellApp):
                 store=store,
                 address=store.fetch(self._delivery.address),
                 transporter=sale.transporter,
+                freight_type=self._delivery.freight_type,
+                volumes_kind=self._delivery.volumes_kind,
+                volumes_quantity=self._delivery.volumes_quantity,
             )
         else:
             delivery = None

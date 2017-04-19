@@ -27,7 +27,8 @@ import collections
 import decimal
 
 from kiwi.datatypes import ValidationError
-from kiwi.ui.forms import PriceField, DateField, TextField, BoolField, EmptyField
+from kiwi.ui.forms import (PriceField, DateField, TextField, BoolField,
+                           IntegerField, ChoiceField, EmptyField)
 from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqlib.api import api
@@ -49,10 +50,12 @@ _ = stoqlib_gettext
 
 class CreateDeliveryModel(object):
     _savepoint_attr = ['price', 'notes', 'client', 'transporter', 'address',
-                       'estimated_fix_date']
+                       'estimated_fix_date', 'freight_type', 'volumes_kind',
+                       'volumes_quantity']
 
     def __init__(self, price=None, notes=None, client=None, transporter=None,
-                 address=None, estimated_fix_date=None, description=None):
+                 address=None, estimated_fix_date=None, description=None,
+                 freight_type=None, volumes_kind=None, volumes_quantity=1):
         self.price = price
         self.notes = notes
         self.address = address or (client and client.person.address)
@@ -60,6 +63,9 @@ class CreateDeliveryModel(object):
         self.transporter = transporter
         self.estimated_fix_date = estimated_fix_date or localtoday().date()
         self.description = description or _(u'Delivery')
+        self.freight_type = freight_type or Delivery.FREIGHT_TYPE_CIF
+        self.volumes_kind = volumes_kind or _(u'Volumes')
+        self.volumes_quantity = volumes_quantity
 
         self._savepoint = {}
 
@@ -103,6 +109,7 @@ class CreateDeliveryEditor(BaseEditor):
             user.profile.check_app_permission(u'admin'),
             user.profile.check_app_permission(u'purchase'),
         ))
+        freight_types = [(v, k) for k, v in Delivery.freights.items()]
 
         return collections.OrderedDict(
             client=PersonQueryField(_("Client"), proxy=True, mandatory=True,
@@ -112,8 +119,12 @@ class CreateDeliveryEditor(BaseEditor):
                                        can_add=can_modify_transporter,
                                        can_edit=can_modify_transporter),
             address=AddressField(_("Address"), proxy=True, mandatory=True),
+            freight_type=ChoiceField(_("Freight type"), proxy=True,
+                                     values=freight_types),
             price=PriceField(_("Delivery cost"), proxy=True),
             estimated_fix_date=DateField(_("Estimated delivery date"), proxy=True),
+            volumes_kind=TextField(_("Volumes kind"), proxy=True),
+            volumes_quantity=IntegerField(_("Volumes quantity"), proxy=True),
         )
 
     def __init__(self, store, model=None, sale_items=None):
@@ -230,7 +241,7 @@ class DeliveryEditor(BaseEditor):
 
     title = _("Delivery editor")
     gladefile = 'DeliveryEditor'
-    size = (-1, 400)
+    size = (700, 500)
     model_type = Delivery
     model_name = _('Delivery')
     form_holder_name = 'forms'
@@ -244,19 +255,23 @@ class DeliveryEditor(BaseEditor):
             user.profile.check_app_permission(u'admin'),
             user.profile.check_app_permission(u'purchase'),
         ))
+        freight_types = [(v, k) for k, v in Delivery.freights.items()]
 
         return collections.OrderedDict(
-            client_str=TextField(_("Client"), proxy=True, editable=False,
-                                 colspan=2),
+            client_str=TextField(_("Client"), proxy=True, editable=False),
             transporter_id=PersonField(_("Transporter"), proxy=True,
-                                       person_type=Transporter, colspan=2,
+                                       person_type=Transporter,
                                        can_add=can_modify_transporter,
                                        can_edit=can_modify_transporter),
-            address=AddressField(_("Address"), proxy=True, mandatory=True,
-                                 colspan=2),
+            address=AddressField(_("Address"), proxy=True, mandatory=True),
             is_sent_check=BoolField(_("Was sent to deliver?")),
             send_date=DateField(_("Send date"), mandatory=True, proxy=True),
             tracking_code=TextField(_("Tracking code"), proxy=True),
+
+            freight_type=ChoiceField(_("Freight type"), proxy=True,
+                                     values=freight_types),
+            volumes_kind=TextField(_("Volumes kind"), proxy=True),
+            volumes_quantity=IntegerField(_("Volumes quantity"), proxy=True),
             is_received_check=BoolField(_("Was received by client?")),
             receive_date=DateField(_("Receive date"), mandatory=True, proxy=True),
             empty=EmptyField(),
