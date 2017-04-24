@@ -41,8 +41,11 @@ class TestDeviceSettingsEditor(GUITest):
         with self.assertRaises(TypeError):
             DeviceSettingsEditor(self.store, station=station)
 
+    @mock.patch('stoqlib.gui.editors.deviceseditor.DeviceManager.get_serial_devices')
     @mock.patch('stoqlib.domain.station.BranchStation.get_active_stations')
-    def test_init_without_station(self, get_active_stations):
+    def test_init_without_station(self, get_active_stations, get_serial_devices):
+        get_serial_devices.return_value = [_Device('/dev/ttyS0'),
+                                           _Device('/dev/ttyS1')]
         get_active_stations.return_value = []
         editor = DeviceSettingsEditor(self.store)
         self.check_editor(editor, 'editor-devicesetting-without-station')
