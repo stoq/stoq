@@ -109,22 +109,19 @@ class ServerProxy(object):
                              "LIMIT 1")
                     params = [u'stoqserver%', unicode(db_settings.dbname)]
                     res = store.execute(query, params=params).get_one()
-                if res is not None and res[0] is not None:
-                    address = res[0]
-                    # For now we only support ipv4
-                    if address == '::1':
-                        address = '127.0.0.1'
-                    # Is there a better way to detect ipv6?
-                    #if ':' in address:
-                    #    address = '[{}]'.format(address)
-                elif res is not None:
-                    # If the client_addr is NULL, then stoqserver is connected
-                    # using the unix socket, which means that he is in the same
-                    # ip as postgresql
-                    address = db_settings.address
-                    if not address:
-                        # We are also on unix socket, so use localhost
-                        address = 'localhost'
+
+                if res:
+                    # When stoqserver is located in another machine
+                    if res[0] not in ['127.0.0.1', '::1']:
+                        address = res[0]
+                    else:
+                        # XXX: For now we only support ipv4
+                        # XXX: If the client_addr is NULL, then stoqserver is
+                        # connected using the unix socket, which means that he
+                        # is in the same ip as the postgresql
+                        address = db_settings.address
+                        if not address:
+                            address = 'localhost'
                 else:
                     address = None
 
