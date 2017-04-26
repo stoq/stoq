@@ -305,12 +305,18 @@ class Invoice(Domain):
         self.key = key
 
     def check_unique_invoice_number_by_branch(self, invoice_number, branch,
-                                              mode):
+                                              mode, series=None):
         """Check if the invoice_number is used in determined branch
+
+        :param invoice_number: the invoice number we want to check
+        :param branch: the |branch| of the invoice
+        :param mode: one of the Invoice.mode
+        :param series: the series of the invoice
         """
         queries = {Invoice.invoice_number: invoice_number,
                    Invoice.branch_id: branch.id,
-                   Invoice.mode: mode}
+                   Invoice.mode: mode,
+                   Invoice.series: series}
         return self.check_unique_tuple_exists(queries)
 
     def check_invoice_info_consistency(self):

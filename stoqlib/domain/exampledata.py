@@ -625,6 +625,13 @@ class ExampleCreator(object):
                                      cst=cst, p_cofins=p_cofins,
                                      calculo=calculo)
 
+    def create_invoice(self, invoice_type=None):
+        from stoqlib.domain.fiscal import Invoice
+        if not invoice_type:
+            invoice_type = Invoice.TYPE_OUT
+        return Invoice(store=self.store,
+                       invoice_type=invoice_type)
+
     def create_invoice_item_icms(self):
         from stoqlib.domain.taxes import InvoiceItemIcms
         return InvoiceItemIcms(store=self.store)

@@ -182,3 +182,21 @@ class TestInvoice(DomainTest):
         sale.invoice.on_create()
         sale.invoice.invoice_number = 2
         sale.invoice.on_update()
+
+    def test_check_unique_invoice_by_branch(self):
+        branch = self.create_branch()
+        current_mode = Invoice.NFE_MODE
+        invoice = self.create_invoice()
+        invoice_exists = invoice.check_unique_invoice_number_by_branch(
+            1, branch, current_mode, 1)
+        self.assertFalse(invoice_exists)
+
+        invoice.branch = branch
+        invoice.series = 1
+        invoice.mode = current_mode
+        invoice.invoice_number = 1
+
+        invoice2 = self.create_invoice(Invoice.TYPE_OUT)
+        after = invoice2.check_unique_invoice_number_by_branch(
+            1, branch, current_mode, 1)
+        self.assertEquals(invoice, after)
