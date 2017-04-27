@@ -164,7 +164,7 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
         new_button.set_relief(Gtk.ReliefStyle.NONE)
         new_button.show()
         new_button.connect('clicked', self._on_new_work_order__clicked)
-        self.work_orders_nb.set_action_widget(new_button, Gtk.PACK_END)
+        self.work_orders_nb.set_action_widget(new_button, Gtk.PackType.END)
         self.new_tab_button = new_button
 
         saved_orders = list(WorkOrder.find_by_sale(self.store, self.model))
@@ -377,7 +377,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
         self.item_vbox.reorder_child(self._work_orders_hbox, 0)
         self._work_orders_hbox.show()
 
-        label = Gtk.Label(_("Work order:"))
+        label = Gtk.Label(label=_("Work order:"))
         self._work_orders_hbox.pack_start(label, False, True, 0)
 
         data = []
@@ -404,7 +404,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
 
     def _add_work_order_radio(self, desc, workorder):
         radio = Gtk.RadioButton(group=self._radio_group, label=desc)
-        radio.set_data('workorder', workorder)
+        radio._workorder = workorder
         radio.connect('toggled', self._on_work_order_radio__toggled)
 
         if self._radio_group is None:
@@ -424,7 +424,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
     def _on_work_order_radio__toggled(self, radio):
         if not radio.get_active():
             return
-        self._selected_workorder = radio.get_data('workorder')
+        self._selected_workorder = radio._workorder
 
 
 class WorkOrderQuoteWizard(SaleQuoteWizard):

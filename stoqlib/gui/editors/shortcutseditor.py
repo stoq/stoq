@@ -56,7 +56,7 @@ class ShortcutColumn(Column):
     def create_renderer(self, model):
         renderer = Gtk.CellRendererAccel()
         renderer.props.editable = True
-        renderer.props.accel_mode = Gtk.CELL_RENDERER_ACCEL_MODE_OTHER
+        renderer.props.accel_mode = Gtk.CellRendererAccelMode.OTHER
         renderer.connect('accel-edited', self._on_accel_edited)
         renderer.connect('accel-cleared', self._on_accel_cleared)
         return renderer, 'text'
@@ -112,7 +112,7 @@ class ShortcutsEditor(BasicDialog):
         self.shortcuts.show()
 
         self._label = Gtk.Label(
-            _("You need to restart Stoq for the changes to take effect"))
+            label=_("You need to restart Stoq for the changes to take effect"))
         box.pack_start(self._label, False, False, 6)
 
         box.show()

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from gi.repository import Glib
+from gi.repository import GLib
 import pyinotify
 
 from stoqlib.lib.distutils import get_all_source_files
@@ -57,4 +57,4 @@ def install_autoreload():
     files = list(get_all_source_files())
     wm.add_watch(files, pyinotify.IN_CLOSE_WRITE)
 
-    Glib.timeout_add(200, _autoreload_timeout, notifier)
+    GLib.timeout_add(200, _autoreload_timeout, notifier)

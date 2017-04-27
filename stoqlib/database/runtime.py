@@ -704,7 +704,7 @@ def _register_branch_station(caller_store, station_name):
                 u"(requires administrator access) ?")
         if not yesno(fmt % (station_name,
                             db_settings.address),
-                     Gtk.RESPONSE_YES, _(u"Register computer"), _(u"Quit")):
+                     Gtk.ResponseType.YES, _(u"Register computer"), _(u"Quit")):
             raise SystemExit
 
         from stoqlib.gui.utils.login import LoginHelper

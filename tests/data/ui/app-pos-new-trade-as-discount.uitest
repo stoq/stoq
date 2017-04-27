@@ -86,11 +86,14 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkMenu(): hidden
       GtkToolButton(): 'Print', hidden, insensitive
       GtkToolButton(): 'Quit', hidden
-    GtkInfoBar(_trade_infobar):
-      GtkBox(orientation=horizontal, expand=True, fill=True):
-        GtkLabel(expand=True, fill=True): 'There is a trade with value $198.00 in progress...\nWhen checking out, it will be used as part of the payment.'
-      GtkButtonBox(orientation=vertical, fill=True):
-        GtkButton(pack-end): 'Cancel trade'
+    stoqlib+gui+base+messagebar+MessageBar(_trade_infobar):
+      GtkRevealer(fill=True):
+        GtkBox(orientation=horizontal):
+          GtkBox(orientation=horizontal, expand=True, fill=True):
+            GtkLabel(fill=True): 'There is a trade with value $198.00 in progress...\nWhen checking out, it will be used as part of the payment.'
+          GtkButtonBox(orientation=horizontal, fill=True):
+            GtkButton(pack-end): 'Cancel trade'
+          GtkButton(fill=True): hidden
     GtkBox(orientation=vertical, expand=True, fill=True):
       GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
         GtkBox(pos_vbox, orientation=vertical, expand=True, fill=True):
@@ -154,8 +157,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
-          GtkLabel(expand=True, fill=True):
-      GtkBox(orientation=horizontal, expand=True, fill=True):
+          GtkLabel(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkAlignment(expand=True, fill=True):
           GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'

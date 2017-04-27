@@ -77,7 +77,7 @@ class Operation(Gtk.HBox):
     def __init__(self, store, field, other_fields):
         self._store = store
         self._field = field
-        Gtk.HBox.__init__(self, spacing=6)
+        super(Operation, self).__init__(spacing=6)
         self.setup(other_fields)
         self.show_all()
 
@@ -87,7 +87,7 @@ class Operation(Gtk.HBox):
     def add_label(self, label):
         """Add a label to self
         """
-        label = Gtk.Label(label)
+        label = Gtk.Label(label=label)
         self.pack_start(label, False, False, 0)
         return label
 
@@ -288,7 +288,7 @@ class Editor(Gtk.HBox):
         self._other_fields = other_fields
         self._oper = None
         self._field = field
-        Gtk.HBox.__init__(self, spacing=6)
+        super(Editor, self).__init__(spacing=6)
         self.operations_combo = ProxyComboBox()
         self.pack_start(self.operations_combo, True, True, 0)
         self.operations_combo.connect('changed', self._on_operation_changed)
@@ -506,7 +506,7 @@ class MassEditorWidget(Gtk.HBox):
         self._editor = None
         self._fields = fields
         self._results = results
-        Gtk.HBox.__init__(self, spacing=6)
+        super(MassEditorWidget, self).__init__(spacing=6)
         self._setup_widgets()
 
     def _filter_fields(self, data_type):
@@ -679,7 +679,7 @@ class MassEditorSearch(SearchDialog):
                 d.progressbar.set_text('%s/%s' % (i + 1, total))
                 d.progressbar.set_fraction((i + 1) / float(total))
                 while Gtk.events_pending():
-                    Gtk.main_iteration(False)
+                    Gtk.main_iteration_do(False)
         except Exception as e:
             d.stop()
             self.retval = False

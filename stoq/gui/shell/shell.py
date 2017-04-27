@@ -29,7 +29,7 @@ import logging
 import os
 import sys
 
-from gi.repository import Glib
+from gi.repository import GLib
 
 # FIXME: We can import whatever we want here, but don't import anything
 #        significant, it's good to maintain lazy loaded things during startup
@@ -316,7 +316,7 @@ class Shell(object):
         # If user defined 0 minutes, ignore automatic logout.
         if minutes != 0:
             seconds = minutes * 60
-            Glib.timeout_add_seconds(5, self._verify_idle_logout, seconds)
+            GLib.timeout_add_seconds(5, self._verify_idle_logout, seconds)
 
     def _verify_idle_logout(self, seconds):
         # This is called once every 10 seconds

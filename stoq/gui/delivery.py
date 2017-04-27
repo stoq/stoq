@@ -26,7 +26,7 @@
 
 import datetime
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, GdkPixbuf, Pango
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
@@ -206,7 +206,7 @@ class DeliveryApp(ShellApp):
             SearchColumn('client_name', title=_(u'Client'),
                          data_type=str, expand=True),
             Column('flag_icon', title=_(u'Status (Description)'),
-                   column='client_name', data_type=Gdk.Pixbuf,
+                   column='client_name', data_type=GdkPixbuf.Pixbuf,
                    format_func=self._format_state_icon, format_func_data=True),
             SearchColumn('branch_name', title=_(u'Branch'),
                          data_type=str, visible=False),
@@ -376,7 +376,8 @@ class DeliveryApp(ShellApp):
         return text
 
     def on_search__result_item_popup_menu(self, search, item, event):
-        self.popup.popup(None, None, None, event.button, event.time)
+        self.popup.popup(None, None, None, None,
+                         event.button.button, event.time)
 
     def on_search__result_selection_changed(self, search):
         self._update_list_aware_view()

@@ -16,8 +16,8 @@ GtkDialog(toplevel): title='', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): ''
-                GtkButton(search_button): 'gtk-find'
-          GtkBox(mass_editor, orientation=horizontal):
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
+          stoqlib+gui+dialogs+masseditordialog+MassEditorWidget(mass_editor):
             GtkLabel(): 'Update'
             ProxyComboBox():
               item: 'Category', selected
@@ -42,10 +42,10 @@ GtkDialog(toplevel): title='', hidden
               item: 'cat1 Price'
               item: 'cat2 Price'
             GtkEventBox():
-              GtkBox(orientation=horizontal):
+              stoqlib+gui+dialogs+masseditordialog+ObjectEditor():
                 ProxyComboBox(expand=True, fill=True):
                   item: 'Set value to', selected
-                GtkBox(orientation=horizontal, expand=True, fill=True):
+                stoqlib+gui+dialogs+masseditordialog+SetObjectValueOperation(expand=True, fill=True):
                   ProxyComboBox():
                     item: 'Erase value', selected
                     item: 'Bermudas'
@@ -111,6 +111,7 @@ GtkDialog(toplevel): title='', hidden
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

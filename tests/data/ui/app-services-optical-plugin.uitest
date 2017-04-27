@@ -136,12 +136,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
                     StringSearchFilter(_primary_filter):
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden
-                        item: 'Contains All Words', selected
+                        item: 'Contains All Words'
                         item: 'Contains Exactly'
                         item: 'Identical to'
-                        item: 'Does Not Contain'
+                        item: 'Does Not Contain', selected
                       HintedEntry(search_entry, padding=6): ''
-                    GtkButton(search_button): 'gtk-find'
+                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               SearchResultListView(result_view, expand=True, fill=True):
                 column: title='WO #'
                 column: title='Sale #', hidden
@@ -166,8 +166,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
-          GtkLabel(expand=True, fill=True):
-      GtkBox(orientation=horizontal, expand=True, fill=True):
+          GtkLabel(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkAlignment(expand=True, fill=True):
           GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'

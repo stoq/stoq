@@ -31,10 +31,10 @@ class NotebookCloseButton(Gtk.Button):
     __gtype_name__ = 'NotebookCloseButton'
 
     def __init__(self):
-        Gtk.Button.__init__(self)
-        self.set_relief(Gtk.ReliefStyle.NONE)
+        super(NotebookCloseButton, self).__init__()
 
-        image = Gtk.image_new_from_stock(Gtk.STOCK_CLOSE, Gtk.IconSize.MENU)
+        self.set_relief(Gtk.ReliefStyle.NONE)
+        image = Gtk.Image.new_from_stock(Gtk.STOCK_CLOSE, Gtk.IconSize.MENU)
         self.add(image)
 
 

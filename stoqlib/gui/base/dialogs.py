@@ -50,7 +50,7 @@ log = logging.getLogger(__name__)
 #
 
 
-class RunnableView:
+class RunnableView(object):
     """A mixin class for any View or GladeDelegate that offers run/close"""
     retval = None
 

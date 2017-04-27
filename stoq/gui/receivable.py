@@ -33,7 +33,7 @@ import os
 import sys
 import traceback
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, GdkPixbuf, Pango
 from kiwi.currency import currency
 from kiwi.python import all
 from kiwi.ui.dialogs import save
@@ -184,7 +184,7 @@ class ReceivableApp(BaseAccountWindow):
                              data_type=str, ellipsize=Pango.EllipsizeMode.END,
                              expand=True, pack_end=True),
                 Column('color', title=_('Description'), width=20,
-                       data_type=Gdk.Pixbuf, format_func=render_pixbuf,
+                       data_type=GdkPixbuf.Pixbuf, format_func=render_pixbuf,
                        column='description'),
                 Column('comments_number', title=_(u'Comments'),
                        visible=False),
@@ -433,7 +433,8 @@ class ReceivableApp(BaseAccountWindow):
         self._update_widgets()
 
     def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, event.button, event.time)
+        self.popup.popup(None, None, None, None,
+                         event.button.button, event.time)
 
     def on_Details__activate(self, button):
         selected = self.results.get_selected_rows()[0]

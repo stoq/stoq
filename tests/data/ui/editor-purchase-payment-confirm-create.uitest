@@ -1,10 +1,13 @@
 editor: PurchasePaymentConfirmSlave
 GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
   GtkBox(main_dialog._main_vbox, orientation=vertical):
-    GtkInfoBar(main_dialog._message_bar):
-      GtkBox(orientation=horizontal, expand=True, fill=True):
-        GtkLabel(expand=True, fill=True): 'Note that this operation will not generate a till entry for the money payment(s). \nIf you are removing money from the till, do a cash removal in the Till application too.'
-      GtkButtonBox(orientation=vertical, fill=True):
+    stoqlib+gui+base+messagebar+MessageBar(main_dialog._message_bar):
+      GtkRevealer(fill=True):
+        GtkBox(orientation=horizontal):
+          GtkBox(orientation=horizontal, expand=True, fill=True):
+            GtkLabel(fill=True): 'Note that this operation will not generate a till entry for the money payment(s). \nIf you are removing money from the till, do a cash removal in the Till application too.'
+          GtkButtonBox(orientation=horizontal, fill=True):
+          GtkButton(fill=True): hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave PurchasePaymentConfirmSlave is attached
@@ -69,7 +72,6 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
                 GtkFileChooserButton(attachment_chooser):
                   GtkButton(expand=True, fill=True):
                   GtkComboBox(expand=True, fill=True): hidden
-                    GtkCellView():
                 GtkLabel(cost_center_lbl): 'Cost Center:', hidden
                 ProxyComboBox(cost_center): hidden
               GtkExpander(expander): hidden
@@ -91,7 +93,8 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
-      GtkButton(main_dialog.help_button, padding=6): 'gtk-help'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+        GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

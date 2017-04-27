@@ -25,7 +25,7 @@
 
 import datetime
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, GdkPixbuf
 
 from storm.expr import In
 from kiwi.ui.gadgets import render_pixbuf
@@ -157,7 +157,7 @@ class WorkOrderEditor(BaseEditor):
         :param slave: the slave that will be attached to the new tab
         """
         event_box = Gtk.EventBox()
-        self.slaves_notebook.append_page(event_box, Gtk.Label(tab_label))
+        self.slaves_notebook.append_page(event_box, Gtk.Label(label=tab_label))
         self.attach_slave(tab_label, slave, event_box)
         event_box.show()
 
@@ -392,10 +392,10 @@ class WorkOrderPackageSendEditor(BaseEditor):
             Column('equipment', _(u"Equipment (Description)"), data_type=str,
                    expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment'),
-                   column='equipment', data_type=Gdk.Pixbuf,
+                   column='equipment', data_type=GdkPixbuf.Pixbuf,
                    format_func=render_pixbuf),
             Column('flag_icon', title=_(u'Equipment'), column='equipment',
-                   data_type=Gdk.Pixbuf, format_func_data=True,
+                   data_type=GdkPixbuf.Pixbuf, format_func_data=True,
                    format_func=self._format_state_icon),
             Column('branch_name', _(u"Branch"), data_type=str, visible=False),
             Column('client_name', _(u"Client"), data_type=str),

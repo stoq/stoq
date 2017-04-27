@@ -18,7 +18,7 @@ GtkDialog(toplevel): title='Close Loan Wizard', hidden
                         item: 'Identical to'
                         item: 'Does Not Contain'
                       HintedEntry(search_entry, padding=6): ''
-                    GtkButton(search_button): 'gtk-find'
+                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               SearchResultListView(result_view, expand=True, fill=True):
                 column: title='Loan #'
                 column: title='Responsible', expand
@@ -34,5 +34,6 @@ GtkDialog(toplevel): title='Close Loan Wizard', hidden
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-          GtkButton(help_button): 'gtk-help'
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+          GtkButton(help_button, expand=True, fill=True): 'gtk-help'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

@@ -133,7 +133,7 @@ class TestProductSearch(GUITest):
         print_report.assert_called_once_with(
             ProductPriceReport, list(search.results),
             filters=search.search.get_search_filters(),
-            branch_name=search.branch_filter.combo.get_active_text())
+            branch_name=search.branch_filter.combo.get_selected_label())
 
     def test_search(self):
         self.clean_domain([StockTransactionHistory, ProductSupplierInfo,

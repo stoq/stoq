@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Supplier Search', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): 'eri'
-                GtkButton(search_button): 'gtk-find'
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Name', expand
             column: title='Phone Number'
@@ -27,8 +27,8 @@ GtkDialog(toplevel): title='Supplier Search', hidden
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):
             GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-              GtkButton(new_button):
-              GtkButton(edit_button): insensitive
+              GtkButton(new_button, expand=True, fill=True):
+              GtkButton(edit_button, expand=True, fill=True): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
@@ -37,8 +37,9 @@ GtkDialog(toplevel): title='Supplier Search', hidden
             GtkBox(hbox1, orientation=horizontal, fill=True):
               GtkLabel(label3, expand=True, fill=True):
               GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-                GtkButton(details_button): insensitive
-                GtkButton(print_button): 'gtk-print', hidden
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+                GtkButton(details_button, expand=True, fill=True): insensitive
+                GtkButton(print_button, expand=True, fill=True): 'gtk-print', hidden
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

@@ -25,7 +25,7 @@
 
 import datetime
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, GdkPixbuf
 from kiwi.ui.objectlist import Column
 from kiwi.ui.gadgets import render_pixbuf
 
@@ -120,10 +120,10 @@ class WorkOrderPackageReceiveOrdersStep(WizardEditorStep):
             Column('equipment', _(u"Equipment (Description)"), data_type=str,
                    expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment'),
-                   column='equipment', data_type=Gdk.Pixbuf,
+                   column='equipment', data_type=GdkPixbuf.Pixbuf,
                    format_func=render_pixbuf),
             Column('flag_icon', title=_(u'Equipment'), column='equipment',
-                   data_type=Gdk.Pixbuf, format_func_data=True,
+                   data_type=GdkPixbuf.Pixbuf, format_func_data=True,
                    format_func=self._format_state_icon),
             Column('client_name', _(u"Client"), data_type=str),
             Column('salesperson_name', _(u"Salesperson"), data_type=str,

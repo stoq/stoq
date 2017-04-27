@@ -33,12 +33,9 @@
             <property name="spacing">6</property>
             <property name="visible">True</property>
             <child>
-              <object class="ProxyButton" id="edit_button">
-                <property name="data_type">unicode</property>
+              <object class="GtkButton" id="edit_button">
                 <property name="label">gtk-edit</property>
-                <property name="model_attribute">edit_button</property>
                 <property name="use_stock">True</property>
-                <property name="use_underline">False</property>
                 <property name="visible">True</property>
               </object>
               <packing>

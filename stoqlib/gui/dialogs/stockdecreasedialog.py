@@ -69,7 +69,7 @@ class StockDecreaseDetailsDialog(BaseEditor):
         :param name: the name of the tab
         """
         event_box = Gtk.EventBox()
-        self.notebook.insert_page(event_box, Gtk.Label(name))
+        self.notebook.insert_page(event_box, Gtk.Label(label=name), -1)
         self.attach_slave(name, slave, event_box)
         event_box.show()
 

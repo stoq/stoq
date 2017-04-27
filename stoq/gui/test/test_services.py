@@ -50,7 +50,7 @@ class TestServices(BaseGUITest):
             wo.open_date = datetime.datetime(2013, 1, 1)
 
         app = self.create_app(ServicesApp, u'services')
-        self.assertEqual(len(app.results), 2)
+        self.assertEqual(len(app.search.results), 2)
 
         self.check_app(app, u'services')
 
@@ -65,7 +65,7 @@ class TestServices(BaseGUITest):
         api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(ServicesApp, u'services')
 
-        olist = app.results
+        olist = app.search.results
         olist.select(olist[0])
 
         # Initial status for the order is Opened
@@ -99,7 +99,7 @@ class TestServices(BaseGUITest):
         api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(ServicesApp, u'services')
 
-        olist = app.results
+        olist = app.search.results
         olist.select(olist[0])
 
         # Initial status for the order is Opened
@@ -136,7 +136,7 @@ class TestServices(BaseGUITest):
         api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(ServicesApp, u'services')
 
-        olist = app.results
+        olist = app.search.results
         olist.select(olist[0])
 
         workorder.add_sellable(self.create_sellable())
@@ -178,7 +178,7 @@ class TestServices(BaseGUITest):
         api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(ServicesApp, u'services')
 
-        olist = app.results
+        olist = app.search.results
         olist.select(olist[0])
 
         workorder.add_sellable(self.create_sellable())
@@ -250,7 +250,7 @@ class TestServices(BaseGUITest):
         workorder.status = WorkOrder.STATUS_WORK_FINISHED
 
         app = self.create_app(ServicesApp, u'services')
-        results = app.results
+        results = app.search.results
         results.select(results[0])
         self.activate(app.PrintReceipt)
         print_report.assert_called_once_with(WorkOrderReceiptReport,
@@ -263,7 +263,7 @@ class TestServices(BaseGUITest):
         workorder.status = WorkOrder.STATUS_WORK_FINISHED
 
         app = self.create_app(ServicesApp, u'services')
-        results = app.results
+        results = app.search.results
         results.select(results[0])
         self.activate(app.PrintQuote)
         print_report.assert_called_once_with(WorkOrderQuoteReport,

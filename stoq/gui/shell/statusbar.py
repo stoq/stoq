@@ -24,7 +24,7 @@
 
 
 import collections
-from gi.repository import Gtk, GObject, Glib, Gdk
+from gi.repository import Gtk, GObject, GLib, GdkPixbuf
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
@@ -109,7 +109,7 @@ class StatusDialog(BasicDialog):
         viewport.set_shadow_type(Gtk.ShadowType.NONE)
         sw.add(viewport)
 
-        alignment = Gtk.Alignment(0.0, 0.0, 1.0, 1.0)
+        alignment = Gtk.Alignment.new(0.0, 0.0, 1.0, 1.0)
         alignment.set_padding(6, 6, 6, 6)
         viewport.add(alignment)
 
@@ -207,7 +207,7 @@ class StatusDialog(BasicDialog):
 
             while thread.is_alive():
                 if Gtk.events_pending():
-                    Gtk.main_iteration(False)
+                    Gtk.main_iteration_do(False)
 
             progress_dialog.stop()
 
@@ -267,7 +267,7 @@ class StatusButton(Gtk.Button):
 
     def _update_status(self, status):
         if self._blink_id is not None:
-            Glib.source_remove(self._blink_id)
+            GLib.source_remove(self._blink_id)
             self._blink_id = None
 
         status_stock, text = _status_mapper[status]
@@ -296,12 +296,12 @@ class StatusButton(Gtk.Button):
             # the ilusion that the icon is "blinking"
             # TODO: Make the blink transition by adding more pixbufs
             # that transitions in tranparency
-            empty = Gdk.Pixbuf(Gdk.COLORSPACE_RGB,
-                               True, 8, width, height)
+            empty = GdkPixbuf.Pixbuf.new(
+                GdkPixbuf.Colorspace.RGB, True, 8, width, height)
             empty.fill(0x00000000)
             self._imgs.append(empty)
 
-            self._blink_id = Glib.timeout_add(self._BLINK_RATE,
+            self._blink_id = GLib.timeout_add(self._BLINK_RATE,
                                               self._blink_icon)
 
     #
@@ -319,7 +319,8 @@ class ShellStatusbar(Gtk.Statusbar):
     __gtype_name__ = 'ShellStatusbar'
 
     def __init__(self, window):
-        Gtk.Statusbar.__init__(self)
+        super(ShellStatusbar, self).__init__()
+
         self._disable_border()
         self.message_area = self._create_message_area()
         self._create_default_widgets()
@@ -341,7 +342,7 @@ class ShellStatusbar(Gtk.Statusbar):
         return area
 
     def _create_default_widgets(self):
-        alignment = Gtk.Alignment(0.0, 0.0, 1.0, 1.0)
+        alignment = Gtk.Alignment.new(0.0, 0.0, 1.0, 1.0)
         # FIXME: These looks good on Mac, might need to tweak
         # on Linux to look good
         alignment.set_padding(2, 3, 5, 0)
@@ -353,6 +354,7 @@ class ShellStatusbar(Gtk.Statusbar):
         widget_area.show()
 
         self._text_label = Gtk.Label()
+        self._text_label.set_hexpand(True)
         self._text_label.set_alignment(0.0, 0.5)
         widget_area.pack_start(self._text_label, True, True, 0)
         self._text_label.show()

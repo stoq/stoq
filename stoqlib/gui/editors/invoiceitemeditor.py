@@ -106,5 +106,5 @@ class InvoiceItemEditor(BaseEditor):
         event_box = Gtk.EventBox()
         event_box.set_border_width(6)
         event_box.show()
-        self.tabs.append_page(event_box, Gtk.Label(name))
+        self.tabs.append_page(event_box, Gtk.Label(label=name))
         self.attach_slave(name, slave, event_box)

@@ -52,7 +52,7 @@ class TestInvoiceLayoutEditor(GUITest):
         editor.grid.select_field(field_info)
         self.assertEquals(editor.text.read(), u'free text')
         # We have to do this to emmit __changed signal
-        editor.text.insert_text(u'new ')
+        editor.text.insert_text(u'new ', 0)
         self.assertEquals(editor.text.read(), u'new free text')
 
         ## Testing clicking on the grid but not on a widget

@@ -19,7 +19,7 @@ GtkDialog(toplevel): title='New Production', hidden
                 column: title='To Make'
                 row: u'', u'', u'Description', u'', Decimal('1.000000'), Decimal('0'), Decimal('1.000000'), Decimal('0.000')
               GtkBox(hbox1, orientation=horizontal):
-                ProxyButton(edit_button): 'gtk-edit', insensitive
+                GtkButton(edit_button): 'gtk-edit', insensitive
                 ProxyCheckButton(start_production_check, expand=True, fill=True): 'Start Production even if there are missing components'
       ProxyLabel(notification_lbl, fill=True):
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
@@ -28,7 +28,8 @@ GtkDialog(toplevel): title='New Production', hidden
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: ProductionOrder<1>
   cancel_date: None

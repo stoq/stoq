@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Calls Search', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): ''
-                GtkButton(search_button): 'gtk-find'
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               DateSearchFilter(date_filter):
                 GtkLabel(): 'Date:'
                 ProxyComboBox(padding=6):
@@ -42,14 +42,15 @@ GtkDialog(toplevel): title='Calls Search', hidden
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):
             GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-              GtkButton(new_button):
-              GtkButton(edit_button): insensitive
+              GtkButton(new_button, expand=True, fill=True):
+              GtkButton(edit_button, expand=True, fill=True): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
-      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'
-      GtkButton(print_button, padding=6): 'Print'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+        GtkButton(csv_button, padding=6): 'Export to spreadsheet...'
+        GtkButton(print_button, padding=6): 'Print'

@@ -30,7 +30,7 @@ class MessageBar(Gtk.InfoBar):
     def __init__(self, message, message_type=None):
         if message_type is None:
             message_type = Gtk.MessageType.INFO
-        self.label = Gtk.Label(message)
+        self.label = Gtk.Label(label=message)
         self.label.set_use_markup(True)
         self.label.set_line_wrap(True)
         self.label.set_width_chars(100)
@@ -38,7 +38,8 @@ class MessageBar(Gtk.InfoBar):
         self.label.set_padding(12, 0)
         self.label.show()
 
-        Gtk.InfoBar.__init__(self)
+        super(MessageBar, self).__init__()
+
         self.get_content_area().add(self.label)
         self.set_message_type(message_type)
 

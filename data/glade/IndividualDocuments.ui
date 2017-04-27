@@ -1,49 +1,51 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <!--*- mode: xml -*-->
 <interface>
+  <requires lib="gtk+" version="3.0"/>
+  <requires lib="kiwiwidgets" version="0.0"/>
   <object class="GtkWindow" id="IndividualDocuments">
-    <property name="role"/>
     <property name="title" translatable="yes">client_id_slave</property>
     <child>
       <object class="GtkTable" id="table2">
-        <property name="column_spacing">5</property>
-        <property name="n_columns">4</property>
-        <property name="n_rows">2</property>
-        <property name="row_spacing">5</property>
         <property name="visible">True</property>
+        <property name="n_rows">2</property>
+        <property name="n_columns">4</property>
+        <property name="column_spacing">5</property>
+        <property name="row_spacing">5</property>
         <child>
           <object class="GtkLabel" id="cpf_lbl">
-            <property name="label" translatable="yes">CPF:</property>
             <property name="visible">True</property>
-            <property name="xalign">1.0</property>
             <property name="xpad">2</property>
-            <property name="yalign">0.47999999</property>
+            <property name="label" translatable="yes">CPF:</property>
+            <property name="xalign">1</property>
+            <property name="yalign">0.47999998927116394</property>
           </object>
           <packing>
-            <property name="x_options">fill</property>
+            <property name="x_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="rg_expedition_local_lbl">
-            <property name="justify">right</property>
+            <property name="visible">True</property>
+            <property name="xpad">2</property>
             <property name="label" translatable="yes">RG Expedition
 Local:</property>
-            <property name="visible">True</property>
+            <property name="justify">right</property>
             <property name="wrap">True</property>
-            <property name="xalign">1.0</property>
-            <property name="xpad">2</property>
+            <property name="xalign">1</property>
           </object>
           <packing>
-            <property name="bottom_attach">2</property>
             <property name="top_attach">1</property>
-            <property name="x_options">fill</property>
+            <property name="bottom_attach">2</property>
+            <property name="x_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxyEntry" id="cpf">
+            <property name="visible">True</property>
             <property name="data_type">unicode</property>
             <property name="model_attribute">cpf</property>
-            <property name="visible">True</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -52,52 +54,52 @@ Local:</property>
         </child>
         <child>
           <object class="ProxyEntry" id="rg_expedition_local">
+            <property name="visible">True</property>
             <property name="data_type">unicode</property>
             <property name="model_attribute">rg_expedition_local</property>
-            <property name="visible">True</property>
           </object>
           <packing>
-            <property name="bottom_attach">2</property>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
             <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="rg_number_lbl">
-            <property name="label" translatable="yes">RG Number:</property>
             <property name="visible">True</property>
-            <property name="xalign">1.0</property>
             <property name="xpad">2</property>
+            <property name="label" translatable="yes">RG Number:</property>
+            <property name="xalign">1</property>
           </object>
           <packing>
             <property name="left_attach">2</property>
             <property name="right_attach">3</property>
-            <property name="x_options">fill</property>
+            <property name="x_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="rg_expedition_date_lbl">
-            <property name="justify">right</property>
+            <property name="visible">True</property>
+            <property name="xpad">2</property>
             <property name="label" translatable="yes">RG Expedition
 Date:</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-            <property name="xpad">2</property>
+            <property name="justify">right</property>
+            <property name="xalign">1</property>
           </object>
           <packing>
-            <property name="bottom_attach">2</property>
             <property name="left_attach">2</property>
             <property name="right_attach">3</property>
             <property name="top_attach">1</property>
-            <property name="x_options">fill</property>
+            <property name="bottom_attach">2</property>
+            <property name="x_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxyEntry" id="rg_number">
+            <property name="visible">True</property>
             <property name="data_type">unicode</property>
             <property name="model_attribute">rg_number</property>
-            <property name="visible">True</property>
           </object>
           <packing>
             <property name="left_attach">3</property>
@@ -106,15 +108,15 @@ Date:</property>
         </child>
         <child>
           <object class="ProxyDateEntry" id="rg_expedition_date">
+            <property name="visible">True</property>
             <property name="data_type">date</property>
             <property name="model_attribute">rg_expedition_date</property>
-            <property name="visible">True</property>
           </object>
           <packing>
-            <property name="bottom_attach">2</property>
             <property name="left_attach">3</property>
             <property name="right_attach">4</property>
             <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
           </packing>
         </child>
       </object>

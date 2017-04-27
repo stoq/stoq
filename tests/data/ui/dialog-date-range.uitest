@@ -23,6 +23,7 @@ GtkDialog(toplevel): title='Select a date range', hidden
         ProxyDateEntry(padding=6): date.today(), insensitive
         GtkLabel(): 'To:', insensitive
         ProxyDateEntry(padding=6): date.today(), insensitive
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

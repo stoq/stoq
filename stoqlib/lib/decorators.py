@@ -170,7 +170,7 @@ def threaded(original):
         # interface responsive (a nice progress dialog should be displayed)
         while t.is_alive():
             if Gtk.events_pending():
-                Gtk.main_iteration(False)
+                Gtk.main_iteration_do(False)
 
         try:
             retval = q.get_nowait()

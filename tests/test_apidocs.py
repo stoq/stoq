@@ -113,11 +113,6 @@ class TestAPIDoc(unittest.TestCase):
             # Skip test modules
             if module.startswith('test_'):
                 continue
-            # Skip a couple of external modules
-            if module in [
-                'generictreemodel',
-                'gicompat']:
-                continue
             self.errors.append('%s: %s module is missing' % (
                 rst_filename, module))
 

@@ -29,7 +29,7 @@
 import datetime
 import os
 
-from gi.repository import Glib, Gio
+from gi.repository import GLib, Gio
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
@@ -380,10 +380,10 @@ class _PaymentConfirmSlave(BaseEditor):
             # the database.
             label = (self.attachment_chooser.
                      get_children()[0].get_children()[0].get_children()[1])
-            # We need to use Glib.idle_add() so the label.set_label() will be
+            # We need to use GLib.idle_add() so the label.set_label() will be
             # run once gtk main loop is done drawing the button (so it won't
             # overwrite to label back to '(None)').
-            Glib.idle_add(label.set_label, name)
+            GLib.idle_add(label.set_label, name)
 
         for ffilter in get_filters_for_attachment():
             self.attachment_chooser.add_filter(ffilter)

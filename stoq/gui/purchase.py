@@ -455,7 +455,8 @@ class PurchaseApp(ShellApp):
     #
 
     def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, event.button, event.time)
+        self.popup.popup(None, None, None, None,
+                         event.button.button, event.time)
 
     def on_results__row_activated(self, klist, purchase_order_view):
         self._run_details_dialog()

@@ -96,6 +96,7 @@ class ProgressbarDialog(BasicDialog):
         self.set_ok_label(_("Done"))
 
         self.progressbar = Gtk.ProgressBar()
+        self.progressbar.set_show_text(True)
         self.vbox.pack_start(self.progressbar, False, False, 0)
         self.progressbar.show()
 

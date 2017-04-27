@@ -10,5 +10,5 @@ GtkBox(toplevel, orientation=vertical):
     row: True, 333, u'production', u'SalesPerson', datetime.today()
   GtkBox(hbox1, orientation=horizontal):
     GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-      GtkButton(select_all): 'gtk-select-all', insensitive
-      GtkButton(unselect_all): '_Unselect All'
+      GtkButton(select_all, expand=True, fill=True): 'gtk-select-all', insensitive
+      GtkButton(unselect_all, expand=True, fill=True): '_Unselect All'

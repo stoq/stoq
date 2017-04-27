@@ -27,7 +27,7 @@
 
 import platform
 
-from gi.repository import Gtk, Glib
+from gi.repository import Gtk, GLib
 from kiwi.utils import gsignal
 
 from stoqlib.lib.process import Process, PIPE
@@ -42,7 +42,8 @@ class ProcessView(Gtk.ScrolledWindow):
     gsignal('finished', object)
 
     def __init__(self):
-        Gtk.ScrolledWindow.__init__(self)
+        super(ProcessView, self).__init__()
+
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
@@ -96,7 +97,7 @@ class ProcessView(Gtk.ScrolledWindow):
             threadit(self._watch_fd, self.proc.stderr)
 
         # We could probably listen to SIGCHLD here instead
-        Glib.timeout_add(CHILD_TIMEOUT, self._check_child_finished)
+        GLib.timeout_add(CHILD_TIMEOUT, self._check_child_finished)
 
     def feed(self, line):
         tbuffer = self._textview.get_buffer()

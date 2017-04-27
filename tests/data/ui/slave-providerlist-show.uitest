@@ -8,6 +8,6 @@ ListContainer(listcontainer):
     row: u'VISA', 1
     row: u'Velec', 1
   GtkBox(orientation=vertical, fill=True, padding=6):
-    GtkButton(): 'gtk-add'
-    GtkButton(): 'gtk-remove', insensitive
-    GtkButton(): 'gtk-edit', insensitive
+    GtkButton(fill=True): 'gtk-add'
+    GtkButton(fill=True): 'gtk-remove', insensitive
+    GtkButton(fill=True): 'gtk-edit', insensitive

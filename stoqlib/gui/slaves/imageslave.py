@@ -29,7 +29,7 @@ import math
 import os
 import tempfile
 
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import Gtk, GdkPixbuf, Gio
 from kiwi.datatypes import converter
 from kiwi.ui.dialogs import save, selectfile
 from kiwi.utils import gsignal
@@ -44,7 +44,7 @@ from stoqlib.lib.imageutils import get_thumbnail, get_pixbuf
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-_pixbuf_converter = converter.get_converter(Gdk.Pixbuf)
+_pixbuf_converter = converter.get_converter(GdkPixbuf.Pixbuf)
 
 
 class ImageSlave(BaseEditorSlave):
@@ -106,7 +106,7 @@ class ImageSlave(BaseEditorSlave):
         self._thumbnail = get_pixbuf(self.image_model.thumbnail, fill_image=size)
 
     def _setup_widgets(self):
-        self.set_main_item = Gtk.ImageMenuItem(stock_id=STOQ_CHECK)
+        self.set_main_item = Gtk.ImageMenuItem.new_from_stock(STOQ_CHECK, None)
         self.set_main_item.set_label(_("Set as main image"))
         self.set_internal_item = Gtk.CheckMenuItem(_("Internal use only"))
         self.view_item = Gtk.MenuItem(_("View"))
@@ -172,14 +172,14 @@ class ImageSlave(BaseEditorSlave):
                 filename = f.name
 
         pb = _pixbuf_converter.from_string(self.image_model.image)
-        pb.save(filename, "png")
+        pb.savev(filename, "png", [], [])
 
         return filename
 
     def _view_image(self):
         filename = self._save_image()
 
-        gfile = Gio.File(path=filename)
+        gfile = Gio.File.new_for_path(filename)
         self._app_info.launch([gfile])
 
     def _edit_image(self):
@@ -194,7 +194,7 @@ class ImageSlave(BaseEditorSlave):
             self.image_model = Image(store=self.store,
                                      sellable=self._sellable)
 
-        pb = Gdk.pixbuf_new_from_file(filename)
+        pb = GdkPixbuf.Pixbuf.new_from_file(filename)
         self.image_model.image = _pixbuf_converter.as_string(pb)
         self.image_model.filename = unicode(os.path.basename(filename))
 
@@ -266,7 +266,7 @@ class ImageSlave(BaseEditorSlave):
 
         if event.button in [1, 3]:
             if self.image_model is not None:
-                self.popmenu.popup(None, None, None, event.button, event.time)
+                self.popmenu.popup(None, None, None, None, event.button, event.time)
             else:
                 self._edit_image()
 

@@ -22,7 +22,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): ''
-                GtkButton(search_button): 'gtk-find'
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               ComboSearchFilter(payment_filter):
                 GtkLabel(): 'Payment Method:'
                 ProxyComboBox(padding=6):
@@ -54,13 +54,14 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SaleListToolbar is attached
           GtkAlignment(alignment1):
             GtkButtonBox(hbuttonbox1, orientation=horizontal):
-              GtkButton(return_sale_button): insensitive
-              GtkButton(edit_button): insensitive
-              GtkButton(details_button): insensitive
-              GtkButton(print_button):
+              GtkButton(return_sale_button, expand=True, fill=True): insensitive
+              GtkButton(edit_button, expand=True, fill=True): insensitive
+              GtkButton(details_button, expand=True, fill=True): insensitive
+              GtkButton(print_button, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

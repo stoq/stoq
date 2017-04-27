@@ -189,7 +189,7 @@ class ProductSearch(SellableSearch):
     def on_print_price_button_clicked(self, button):
         print_report(ProductPriceReport, list(self.results),
                      filters=self.search.get_search_filters(),
-                     branch_name=self.branch_filter.combo.get_active_text())
+                     branch_name=self.branch_filter.combo.get_selected_label())
     #
     #  Private
     #

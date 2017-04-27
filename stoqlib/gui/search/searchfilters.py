@@ -80,14 +80,15 @@ class SearchFilter(Gtk.HBox):
     """
 
     #: the label of this filter
-    label = GObject.property(type=str, flags=(GObject.PARAM_READWRITE))
+    label = GObject.Property(type=str, flags=(GObject.PARAM_READWRITE))
 
     gsignal('changed')
     gsignal('removed')
     __gtype_name__ = 'SearchFilter'
 
     def __init__(self, label=''):
-        Gtk.HBox.__init__(self)
+        super(SearchFilter, self).__init__()
+
         self.props.label = label
         self._label = label
         self._remove_button = None
@@ -162,7 +163,7 @@ class DateSearchFilter(SearchFilter):
         """
         self._options = {}
         SearchFilter.__init__(self, label=label)
-        self.title_label = Gtk.Label(label)
+        self.title_label = Gtk.Label(label=label)
         self.pack_start(self.title_label, False, False, 0)
         self.title_label.show()
 
@@ -173,7 +174,7 @@ class DateSearchFilter(SearchFilter):
         self.pack_start(self.mode, False, False, 6)
         self.mode.show()
 
-        self.from_label = Gtk.Label(_("From:"))
+        self.from_label = Gtk.Label(label=_("From:"))
         self.pack_start(self.from_label, False, False, 0)
         self.from_label.show()
 
@@ -183,7 +184,7 @@ class DateSearchFilter(SearchFilter):
         self.pack_start(self.start_date, False, False, 6)
         self.start_date.show()
 
-        self.to_label = Gtk.Label(_("To:"))
+        self.to_label = Gtk.Label(label=_("To:"))
         self.pack_start(self.to_label, False, False, 0)
         self.to_label.show()
 
@@ -472,7 +473,7 @@ class ComboSearchFilter(SearchFilter):
         """
         self._block_updates = False
         SearchFilter.__init__(self, label=label)
-        label = Gtk.Label(label)
+        label = Gtk.Label(label=label)
         self.pack_start(label, False, False, 0)
         label.show()
         self.title_label = label
@@ -666,7 +667,7 @@ class StringSearchFilter(SearchFilter):
         """
         self._container = container
         SearchFilter.__init__(self, label=label)
-        self.title_label = Gtk.Label(label)
+        self.title_label = Gtk.Label(label=label)
         self.pack_start(self.title_label, False, False, 0)
         self.title_label.show()
 
@@ -698,14 +699,16 @@ class StringSearchFilter(SearchFilter):
         self.pack_start(self.entry, False, False, 6)
         self.entry.show()
 
-        for option in (ContainsAll, ContainsExactly, DoesNotContain, IdenticalTo):
+        for option in [ContainsAll,
+                       ContainsExactly,
+                       IdenticalTo,
+                       DoesNotContain]:
             self._add_option(option)
         self.mode.select_item_by_position(0)
 
-    def _add_option(self, option_type, position=-2):
+    def _add_option(self, option_type):
         option = option_type()
-        num = abs(position)
-        self.mode.insert_item(num, option.name, option_type)
+        self.mode.append_item(option.name, option_type)
         self._options[option_type] = option
 
     #
@@ -740,7 +743,7 @@ class StringSearchFilter(SearchFilter):
             if (not self._container or not hasattr(self._container, 'menu') or
                 not self._container.menu):
                 return
-            self._container.menu.popup(None, None,
+            self._container.menu.popup(None, None, None,
                                        self._position_filter_menu, 0, event.time)
 
     #
@@ -801,7 +804,7 @@ class NumberSearchFilter(SearchFilter):
         self._options = {}
 
         SearchFilter.__init__(self, label=label)
-        self.title_label = Gtk.Label(label)
+        self.title_label = Gtk.Label(label=label)
         self.title_label.set_alignment(1.0, 0.5)
         self.pack_start(self.title_label, False, False, 0)
         self.title_label.show()
@@ -818,7 +821,7 @@ class NumberSearchFilter(SearchFilter):
         self.start.show()
         self.start.connect_after('activate', self._on_entry__activate)
 
-        self.and_label = Gtk.Label(_("And"))
+        self.and_label = Gtk.Label(label=_("And"))
         self.pack_start(self.and_label, False, False, 0)
         self.and_label.show()
 
@@ -942,7 +945,7 @@ class MultiSearchFilter(SearchFilter):
     def __init__(self, label, items):
         super(MultiSearchFilter, self).__init__(label=label)
 
-        self._title_label = Gtk.Label(label)
+        self._title_label = Gtk.Label(label=label)
         self.pack_start(self._title_label, False, False, 0)
 
         self._combo = ProxyMultiCombo(width=400)

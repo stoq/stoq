@@ -98,15 +98,13 @@ class GUIDumper(object):
             return []
 
         props = []
-        if GObject.type_name(widget).endswith('Box'):
-            # FIXME: In gtk3 this can be tested for Gtk.Orientable
-            # and get the orientation from the property
-            if isinstance(widget, Gtk.ButtonBox):
-                props.append('orientation={}'.format(
-                    'horizontal' if isinstance(widget, Gtk.HButtonBox) else 'vertical'))
-            elif isinstance(widget, Gtk.Box):
-                props.append('orientation={}'.format(
-                    'horizontal' if isinstance(widget, Gtk.HBox) else 'vertical'))
+        if (GObject.type_name(widget).endswith('Box') and
+                isinstance(widget, Gtk.Orientable)):
+            orientation = {
+                Gtk.Orientation.HORIZONTAL: 'horizontal',
+                Gtk.Orientation.VERTICAL: 'vertical',
+            }[widget.get_orientation()]
+            props.append('orientation={}'.format(orientation))
 
         parent = widget.props.parent
         if not parent:
@@ -121,7 +119,7 @@ class GUIDumper(object):
                 props.append('fill=%r' % (bool(fill), ))
             if padding != 0:
                 props.append('padding=%d' % (padding, ))
-            if pack_type == Gtk.PACK_END:
+            if pack_type == Gtk.PackType.END:
                 props.append('pack-end')
         return props
 

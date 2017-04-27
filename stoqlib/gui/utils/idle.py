@@ -33,7 +33,7 @@ import ctypes
 import ctypes.util
 import platform
 
-from gi.repository import Gtk, Gdk, Glib
+from gi.repository import Gtk, Gdk, GLib, GIRepository
 
 
 class LASTINPUTINFO(ctypes.Structure):
@@ -55,7 +55,13 @@ class XScreenSaverInfo(ctypes.Structure):
 class IdleXScreenSaver(object):
     def __init__(self):
         self.xss = self._get_library('Xss')
-        self.gdk_ = self._get_library('gdk-x11-2.0')
+
+        # FIXME: We could use gi.repository.GdkX11 here but then we would
+        # not be able to pass the python objects to xss.
+        repo = GIRepository.Repository.get_default()
+        # This is probably libgdk-3.so
+        gdk_path = repo.get_shared_library('GdkX11').split(',')[0]
+        self.gdk_ = ctypes.cdll.LoadLibrary(gdk_path)
 
         self.gdk_.gdk_display_get_default.restype = ctypes.c_void_p
         # GDK_DISPLAY_XDISPLAY expands to gdk_x11_display_get_xdisplay
@@ -112,16 +118,16 @@ class IdleXScreenSaver(object):
 class IdleEventHandler(object):
     def __init__(self):
         Gdk.event_handler_set(self._filter_callback)
-        Glib.timeout_add_seconds(1, self._increase_idle)
+        GLib.timeout_add_seconds(1, self._increase_idle)
         self._idle = 0
 
     def _filter_callback(self, event):
         if event.type in [Gdk.EventType.BUTTON_PRESS,
-                          Gdk.BUTTON_RELEASE,
-                          Gdk.KEY_PRESS,
-                          Gdk.KEY_RELEASE,
-                          Gdk.MOTION_NOTIFY,
-                          Gdk.SCROLL]:
+                          Gdk.EventType.BUTTON_RELEASE,
+                          Gdk.EventType.KEY_PRESS,
+                          Gdk.EventType.KEY_RELEASE,
+                          Gdk.EventType.MOTION_NOTIFY,
+                          Gdk.EventType.SCROLL]:
             self._idle = 0
         Gtk.main_do_event(event)
 

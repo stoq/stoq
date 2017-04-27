@@ -25,6 +25,7 @@ import platform
 
 import weasyprint
 
+from gi.repository import GdkPixbuf
 from kiwi.accessor import kgetattr
 from kiwi.environ import environ
 
@@ -246,7 +247,7 @@ class ObjectListReport(TableReport):
         TableReport.__init__(self, filename, data, *args, **kwargs)
 
     def get_columns(self):
-        from gi.repository import Gtk, Gdk
+        from gi.repository import Gtk
         alignments = {
             Gtk.Justification.LEFT: 'left',
             Gtk.Justification.RIGHT: 'right',
@@ -259,7 +260,7 @@ class ObjectListReport(TableReport):
         for c in self._objectlist.get_columns():
             if not c.treeview_column.get_visible():
                 continue
-            if c.data_type == Gdk.Pixbuf:
+            if c.data_type == GdkPixbuf.Pixbuf:
                 continue
 
             self._columns.append(c)

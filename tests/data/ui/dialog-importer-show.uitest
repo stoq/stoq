@@ -15,6 +15,7 @@ GtkDialog(toplevel): title='Importer Dialog', hidden
         stoqlib+gui+widgets+processview+ProcessView(process_view):
           GtkTextView():
         GtkLabel(): 'Details...'
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

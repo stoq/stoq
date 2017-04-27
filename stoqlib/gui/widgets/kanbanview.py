@@ -49,11 +49,11 @@ class CellRendererTextBox(Gtk.CellRendererText):
 
     #: the magin color of the renderer, this the part to the left of it,
     #: indicating a category color
-    margin_color = GObject.property(type=str)
+    margin_color = GObject.Property(type=str)
 
     def do_render(self, drawable, widget, background_area, cell_area,
                   expose_area, flags):
-        if flags & Gtk.CELL_RENDERER_SELECTED:
+        if flags & Gtk.CellRendererState.SELECTED:
             state = Gtk.StateType.SELECTED
         else:
             state = Gtk.StateType.NORMAL

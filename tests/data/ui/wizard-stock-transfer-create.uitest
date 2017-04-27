@@ -31,4 +31,5 @@ GtkDialog(toplevel): title='Stock Transfer', hidden
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

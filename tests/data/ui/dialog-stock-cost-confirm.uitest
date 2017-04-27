@@ -18,6 +18,6 @@ GtkBox(toplevel, orientation=vertical):
         row: u'09', u'Blusa Balon\xea com Bordado nas Costas', Decimal('99.00000000')
         row: u'10', u'Vestido Vadalena', Decimal('199.00000000')
       GtkBox(orientation=vertical, fill=True):
-        GtkButton(): 'gtk-add', hidden
-        GtkButton(): 'gtk-remove', hidden
-        GtkButton(): 'gtk-edit', hidden
+        GtkButton(fill=True): 'gtk-add', hidden
+        GtkButton(fill=True): 'gtk-remove', hidden
+        GtkButton(fill=True): 'gtk-edit', hidden

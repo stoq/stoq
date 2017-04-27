@@ -27,7 +27,7 @@
 import platform
 import sys
 
-from gi.repository import Gtk, Glib
+from gi.repository import Gtk, GLib
 
 from stoqlib.api import api
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
@@ -72,7 +72,7 @@ class UpdateSchemaStep(BaseWizardStep):
         self.process_view.connect('finished', self._on_processview__finished)
         self.expander.add(self.process_view)
         self._launch_stoqdbadmin()
-        Glib.timeout_add(50, self._on_timeout_add)
+        GLib.timeout_add(50, self._on_timeout_add)
 
     def has_next_step(self):
         return False

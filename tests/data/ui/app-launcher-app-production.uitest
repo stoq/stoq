@@ -116,7 +116,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                         item: 'Identical to'
                         item: 'Does Not Contain'
                       HintedEntry(padding=6): ''
-                    GtkButton(): 'gtk-find'
+                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
                 column: title='Production #'
                 column: title='Status', hidden
@@ -128,8 +128,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
-          GtkLabel(expand=True, fill=True):
-      GtkBox(orientation=horizontal, expand=True, fill=True):
+          GtkLabel(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkAlignment(expand=True, fill=True):
           GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'

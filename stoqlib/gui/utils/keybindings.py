@@ -24,7 +24,6 @@
 
 import platform
 
-from gi.repository import Gtk
 from kiwi.component import get_utility
 
 from stoqlib.lib.interfaces import IApplicationDescriptions
@@ -471,9 +470,6 @@ class KeyBindingCategory(object):
         self.label = label
 
 
-_pre_gtk_2_24_9 = Gtk.gtk_version < (2, 24, 9)
-
-
 class KeyBindingGroup(object):
     def __init__(self, bindings):
         self._bindings = bindings
@@ -482,8 +478,6 @@ class KeyBindingGroup(object):
         if not name in self._bindings:
             raise AttributeError(name)
         binding = self._bindings[name]
-        if _pre_gtk_2_24_9:
-            binding = binding.replace('<Primary>', '<Control>')
         if platform.system() == 'Darwin':
             binding = binding.replace('<Alt>', '<Control>')
         return binding

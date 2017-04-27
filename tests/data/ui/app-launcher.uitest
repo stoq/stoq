@@ -102,8 +102,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
-          GtkLabel(expand=True, fill=True):
-      GtkBox(orientation=horizontal, expand=True, fill=True):
+          GtkLabel(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkAlignment(expand=True, fill=True):
           GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <requires lib="gtk+" version="2.24"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="InventoryAdjustmentEditor">
     <property name="default_width">440</property>
@@ -19,12 +19,6 @@
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
             <property name="row_spacing">6</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="visible">True</property>
@@ -88,7 +82,6 @@
                 <child>
                   <object class="ProxyEntry" id="invoice_number">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -165,6 +158,12 @@
                 <property name="bottom_attach">2</property>
               </packing>
             </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -189,13 +188,11 @@
             <property name="homogeneous">True</property>
             <property name="layout_style">start</property>
             <child>
-              <object class="ProxyButton" id="adjust_button">
+              <object class="GtkButton" id="adjust_button">
                 <property name="label" translatable="yes">_Adjust</property>
                 <property name="visible">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_underline">True</property>
-                <property name="data_type">unicode</property>
-                <property name="model_attribute">adjust_button</property>
+                <property name="use_action_appearance">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -207,8 +204,8 @@
               <object class="GtkButton" id="adjust_all_button">
                 <property name="label" translatable="yes">Adjust All</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>

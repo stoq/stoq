@@ -2,7 +2,6 @@
 <!--*- mode: xml -*-->
 <interface>
   <object class="GtkWindow" id="SellableImageViewer">
-    <property name="allow_shrink">True</property>
     <property name="default_height">250</property>
     <property name="default_width">350</property>
     <property name="destroy_with_parent">True</property>

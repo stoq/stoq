@@ -53,9 +53,8 @@ class LauncherApp(ShellApp):
         self.iconview.set_pixbuf_column(COL_PIXBUF)
         if hasattr(self.iconview, "set_item_orientation"):
             self.iconview.set_item_orientation(Gtk.Orientation.HORIZONTAL)
-        self.iconview.set_item_width(300)
         self.iconview.set_selection_mode(Gtk.SelectionMode.BROWSE)
-        self.iconview.set_spacing(10)
+        self.iconview.set_item_padding(10)
 
         for app in self.window.get_available_applications():
             pixbuf = self.get_toplevel().render_icon(app.icon, Gtk.IconSize.DIALOG)

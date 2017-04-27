@@ -103,7 +103,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
         :param position: the position the tab will be attached
         """
         event_box = Gtk.EventBox()
-        self.person_notebook.append_page(event_box, Gtk.Label(tab_label))
+        self.person_notebook.append_page(event_box, Gtk.Label(label=tab_label))
         self.attach_slave(tab_label, slave, event_box)
         event_box.show()
 

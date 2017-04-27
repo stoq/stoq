@@ -149,10 +149,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Franciso Elisio de Lima
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
-      GtkButton(main_dialog.help_button, padding=6): 'gtk-help'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+        GtkButton(main_dialog.help_button, padding=6): 'gtk-help'
 dialog: AddressAdditionDialog
 GtkDialog(toplevel): title='Additional Addresses', hidden
   GtkBox(_main_vbox, orientation=vertical):
@@ -166,17 +167,18 @@ GtkDialog(toplevel): title='Additional Addresses', hidden
               column: title='City'
               column: title='State'
             GtkBox(orientation=vertical, fill=True, padding=6):
-              GtkButton(): 'gtk-add'
-              GtkButton(): 'gtk-remove', insensitive
-              GtkButton(): 'gtk-edit', insensitive
+              GtkButton(fill=True): 'gtk-add'
+              GtkButton(fill=True): 'gtk-remove', insensitive
+              GtkButton(fill=True): 'gtk-edit', insensitive
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
 dialog: AddressEditor
 GtkBox(toplevel, orientation=vertical):
   GtkEventBox(main_holder, expand=True, fill=True): slave AddressSlave is attached

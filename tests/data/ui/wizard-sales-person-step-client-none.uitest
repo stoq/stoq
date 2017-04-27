@@ -89,5 +89,6 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-          GtkButton(help_button): 'gtk-help'
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+          GtkButton(help_button, expand=True, fill=True): 'gtk-help'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

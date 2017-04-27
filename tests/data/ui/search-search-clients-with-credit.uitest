@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Clients with Credit', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): ''
-                GtkButton(search_button): 'gtk-find'
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Client', expand
             column: title='Email', hidden
@@ -38,9 +38,10 @@ GtkDialog(toplevel): title='Clients with Credit', hidden
             GtkBox(hbox1, orientation=horizontal, fill=True):
               GtkLabel(label3, expand=True, fill=True):
               GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-                GtkButton(details_button): insensitive
-                GtkButton(print_button): 'gtk-print', hidden
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
-      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'
+                GtkButton(details_button, expand=True, fill=True): insensitive
+                GtkButton(print_button, expand=True, fill=True): 'gtk-print', hidden
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+        GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

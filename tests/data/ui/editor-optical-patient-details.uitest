@@ -17,9 +17,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                     column: title='Responsible', expand
                     row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
                   GtkBox(orientation=vertical, fill=True, padding=6):
-                    GtkButton(): 'gtk-add'
-                    GtkButton(): 'gtk-remove', hidden, insensitive
-                    GtkButton(): 'gtk-edit', insensitive
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
             GtkBox(vbox3, orientation=vertical):
               GtkEventBox(measures_holder, expand=True, fill=True): slave OpticalPatientMeasuresListSlave is attached
                 ListContainer(listcontainer):
@@ -28,9 +28,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                     column: title='Responsible', expand
                     row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
                   GtkBox(orientation=vertical, fill=True, padding=6):
-                    GtkButton(): 'gtk-add'
-                    GtkButton(): 'gtk-remove', hidden, insensitive
-                    GtkButton(): 'gtk-edit', insensitive
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
             GtkBox(vbox4, orientation=vertical):
               GtkEventBox(tests_holder, expand=True, fill=True): slave OpticalPatientTestListSlave is attached
                 ListContainer(listcontainer):
@@ -39,9 +39,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                     column: title='Responsible', expand
                     row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
                   GtkBox(orientation=vertical, fill=True, padding=6):
-                    GtkButton(): 'gtk-add'
-                    GtkButton(): 'gtk-remove', hidden, insensitive
-                    GtkButton(): 'gtk-edit', insensitive
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
             GtkBox(vbox5, orientation=vertical):
               GtkEventBox(visual_acuity_holder, expand=True, fill=True): slave OpticalPatientVisualAcuityListSlave is attached
                 ListContainer(listcontainer):
@@ -50,14 +50,15 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                     column: title='Responsible', expand
                     row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
                   GtkBox(orientation=vertical, fill=True, padding=6):
-                    GtkButton(): 'gtk-add'
-                    GtkButton(): 'gtk-remove', hidden, insensitive
-                    GtkButton(): 'gtk-edit', insensitive
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

@@ -56,13 +56,15 @@ class HintedEntry(KiwiEntry):
     def show_hint(self):
         self._hint_shown = True
         super(HintedEntry, self).set_text(self._hint)
-        self.modify_text(Gtk.StateType.NORMAL,
-                         self.get_style().text[Gtk.StateType.INSENSITIVE])
+        sc = self.get_style_context()
+        self.override_color(
+            Gtk.StateType.NORMAL,
+            sc.get_color(Gtk.StateFlags.INSENSITIVE))
 
     def show_text(self, text):
         self._hint_shown = False
         super(HintedEntry, self).set_text(text)
-        self.modify_text(Gtk.StateType.NORMAL, None)
+        self.override_color(Gtk.StateType.NORMAL, None)
 
     def do_grab_focus(self):
         if self._hint_shown:

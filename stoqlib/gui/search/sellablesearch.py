@@ -255,7 +255,8 @@ class SellableSearch(SearchEditor):
             self._close_image_viewer()
 
     def on_results__right_click(self, klist, row, event):
-        self.popup.popup(None, None, None, event.button, event.time)
+        self.popup.popup(None, None, None, None,
+                         event.button.button, event.time)
 
     def on_results__selection_changed(self, klist, row):
         self._update_image_viewer()

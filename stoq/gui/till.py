@@ -550,7 +550,8 @@ class TillApp(ShellApp):
         self._update_total()
 
     def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, event.button, event.time)
+        self.popup.popup(None, None, None, None,
+                         event.button.button, event.time)
 
     def on_Details__activate(self, action):
         self._run_details_dialog()

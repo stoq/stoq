@@ -107,7 +107,9 @@ class ProductAttributeSlave(BaseEditorSlave):
 
     def _refresh_attributes(self):
         if self._create_attribute_box is not None:
-            self.main_box.remove(self._create_attribute_box)
+            parent = self._create_attribute_box.get_parent()
+            if parent is not None:
+                parent.remove(self._create_attribute_box)
             self._create_attribute_box.destroy()
 
         for check_box in self._widgets.keys():
@@ -170,7 +172,7 @@ class ProductGridSlave(BaseEditorSlave):
 
     def _add_options(self, attr, pos):
         combo = ProxyComboBox()
-        label = Gtk.Label(attr.attribute.description + u':')
+        label = Gtk.Label(label=attr.attribute.description + u':')
         label.set_alignment(xalign=1, yalign=0.5)
 
         # This dictionary is populated with the purpose of tests
@@ -179,9 +181,9 @@ class ProductGridSlave(BaseEditorSlave):
         row_pos = pos / 3
         col_pos = 2 * (pos % 3)
         self.attr_table.attach(label, col_pos, col_pos + 1, row_pos, row_pos + 1,
-                               Gtk.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
+                               Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
         self.attr_table.attach(combo, col_pos + 1, col_pos + 2, row_pos, row_pos + 1,
-                               Gtk.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
+                               Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
         self.attr_table.show_all()
         self._fill_options(combo, attr)
         combo.connect('changed', self._on_combo_selection__changed)
@@ -447,6 +449,7 @@ class ProductComponentSlave(BaseEditorSlave):
     gsignal('cost-updated', object)
 
     def __init__(self, store, product=None, visual_mode=False):
+        self._setting_proxies = False
         self._product = product
         self._remove_component_list = []
         # Temporary component value to prevent emmiting the signal when not
@@ -660,8 +663,10 @@ class ProductComponentSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
+        self._setting_proxies = True
         self._setup_widgets()
         self.proxy = self.add_proxy(self._product, self.proxy_widgets)
+        self._setting_proxies = False
 
     def create_model(self, store):
         return TemporaryProductComponent(self.store, product=self._product)
@@ -698,6 +703,8 @@ class ProductComponentSlave(BaseEditorSlave):
             return ValidationError(_(u'The value must be positive.'))
 
     def after_yield_quantity__changed(self, widget):
+        if self._setting_proxies:
+            return
         self._update_widgets()
 
     def on_component_combo__content_changed(self, widget):

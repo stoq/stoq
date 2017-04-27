@@ -79,7 +79,7 @@ class SpreadSheetExporter:
 
     def _open_application(self, mime_type, filename):
         app_info = Gio.app_info_get_default_for_type(mime_type, False)
-        gfile = Gio.File(path=filename)
+        gfile = Gio.File.new_for_path(filename)
         app_info.launch([gfile])
 
     def _save(self, temp):

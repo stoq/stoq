@@ -123,7 +123,7 @@ class TransactionPage(object):
         self.result_view.set_cell_data_func(self._on_result_view__cell_data_func)
         tree_view = self.search.result_view.get_treeview()
         tree_view.set_rules_hint(True)
-        tree_view.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+        tree_view.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
 
     def _add_date_filter(self):
         self.date_filter = DateSearchFilter(_('Date:'))
@@ -534,9 +534,9 @@ class FinancialApp(ShellApp):
 
     def _create_tab_label(self, title, pixbuf, account_view_id=None, page=None):
         hbox = Gtk.HBox()
-        image = Gtk.image_new_from_pixbuf(pixbuf)
+        image = Gtk.Image.new_from_pixbuf(pixbuf)
         hbox.pack_start(image, False, False, 0)
-        label = Gtk.Label(title)
+        label = Gtk.Label(label=title)
         hbox.pack_start(label, True, False, 0)
         if account_view_id:
             button = NotebookCloseButton()
@@ -784,7 +784,8 @@ class FinancialApp(ShellApp):
         self._update_actions()
 
     def on_accounts__right_click(self, results, result, event):
-        self.acc_popup.popup(None, None, None, event.button, event.time)
+        self.acc_popup.popup(None, None, None, None,
+                             event.button.button, event.time)
 
     def on_Edit__activate(self, button):
         if self._is_accounts_tab():
@@ -803,7 +804,8 @@ class FinancialApp(ShellApp):
         self._update_actions()
 
     def _on_search__result_item_popup_menu(self, search, result, event):
-        self.trans_popup.popup(None, None, None, event.button, event.time)
+        self.trans_popup.popup(None, None, None, None,
+                               event.button.button, event.time)
 
     # Toolbar
 

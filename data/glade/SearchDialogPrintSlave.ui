@@ -2,7 +2,6 @@
 <!--*- mode: xml -*-->
 <interface>
   <object class="GtkWindow" id="SearchDialogPrintSlave">
-    <property name="allow_grow">False</property>
     <property name="default_height">250</property>
     <property name="default_width">440</property>
     <property name="gravity">east</property>

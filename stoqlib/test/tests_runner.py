@@ -180,8 +180,10 @@ class Stoq(Plugin):
         os.environ['LANG'] = 'C'
         os.environ['LANGUAGE'] = 'C'
 
-        from kiwi import compat
-        sys.modules['gi'] = compat
+        # Set the default encoding to utf-8 just like pygtk used to do.
+        # Maybe this will not be necessary in python3
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
 
         # If we import tests.base before Cover.setup() in the coverage plugin
         # is called the statistics will skip the modules imported by tests.base

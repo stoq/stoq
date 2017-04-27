@@ -76,14 +76,14 @@ class DomainChoiceField(ChoiceField):
     default_overrides = dict(has_add_button=True, has_edit_button=True)
 
     #: If we have the permission to add new object of this kind
-    can_add = GObject.property(type=bool, default=True)
+    can_add = GObject.Property(type=bool, default=True)
 
     #: If we have the permission to edit the currently selected object
-    can_edit = GObject.property(type=bool, default=True)
+    can_edit = GObject.Property(type=bool, default=True)
 
     #: If we have the permission to view the details of the currently
     #: selected object
-    can_view = GObject.property(type=bool, default=True)
+    can_view = GObject.Property(type=bool, default=True)
 
     #: If we are using the ids to pupulate the field instead of domain
     #: objects. This changes what gets send as argument on :meth:`.populate`
@@ -166,7 +166,7 @@ class AddressField(DomainChoiceField):
     default_overrides.update(use_entry=True)
 
     #: The person the address belongs to, must be a :py:class:`stoqlib.domain.person.Person`
-    person = GObject.property(type=object, default=None)
+    person = GObject.Property(type=object, default=None)
 
     # Field
 
@@ -209,12 +209,12 @@ class PaymentMethodField(ChoiceField):
     #: The type of the payment used to get creatable methods.
     #: See :meth:`stoqlib.lib.interfaces.IPaymentOperation.creatable`
     #: for more information
-    payment_type = GObject.property(type=object, default=None)
+    payment_type = GObject.Property(type=object, default=None)
 
     #: If this is being created separated from a |sale| / |purchase|
     #: See :meth:`stoqlib.lib.interfaces.IPaymentOperation.creatable`
     #: for more information
-    separate = GObject.property(type=bool, default=True)
+    separate = GObject.Property(type=bool, default=True)
 
     # Field
 
@@ -236,7 +236,7 @@ class PaymentCategoryField(DomainChoiceField):
     #: This is the type of payment category we will display in this field, it
     #: it should either be PaymentCategory.TYPE_PAYABLE or
     #: PaymentCategory.TYPE_RECEIVABLE
-    category_type = GObject.property(type=object, default=None)
+    category_type = GObject.Property(type=object, default=None)
 
     # Field
 
@@ -265,7 +265,7 @@ class PersonField(DomainChoiceField):
 
     #: This is the type of person we will display in this field, it
     #: must be a class referencing a :py:class:`stoqlib.domain.person.Person`
-    person_type = GObject.property(type=object)
+    person_type = GObject.Property(type=object)
 
     # Field
 
@@ -339,7 +339,7 @@ class PersonQueryField(TextField):
 
     #: This is the type of person we will display in this field, it
     #: must be a class referencing a :py:class:`stoqlib.domain.person.Person`
-    person_type = GObject.property(type=object)
+    person_type = GObject.Property(type=object)
 
     widget_data_type = object
 
@@ -366,7 +366,7 @@ class PersonQueryField(TextField):
 
         # Update edit button to be a info button
         self.edit_button.set_image(
-            Gtk.image_new_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.MENU))
+            Gtk.Image.new_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.MENU))
 
     def populate(self, obj):
         self.set_value(obj)
@@ -460,7 +460,7 @@ class AttachmentField(Field):
 
     no_attachment_lbl = _('No attachment.')
 
-    attachment = GObject.property(type=object, default=None)
+    attachment = GObject.Property(type=object, default=None)
 
     def build_widget(self):
         button = Gtk.Button()
@@ -469,7 +469,7 @@ class AttachmentField(Field):
         box = Gtk.HBox(False, 4)
         button.add(box)
 
-        self._label = Gtk.Label(self.no_attachment_lbl)
+        self._label = Gtk.Label(label=self.no_attachment_lbl)
         self._label.set_ellipsize(Pango.EllipsizeMode.END)
         self._label.set_alignment(0.5, 0.5)
         box.pack_start(self._label, True, True, 0)
@@ -555,7 +555,7 @@ class AttachmentField(Field):
             filename = f.name
             f.write(self.attachment.blob)
 
-        gfile = Gio.File(path=filename)
+        gfile = Gio.File.new_for_path(filename)
         app_info = Gio.app_info_get_default_for_type(
             self.attachment.mimetype, False)
         app_info.launch([gfile])

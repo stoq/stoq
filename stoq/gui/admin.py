@@ -26,7 +26,7 @@
 import logging
 import operator
 
-from gi.repository import Gtk, Glib
+from gi.repository import Gtk, GLib
 
 from stoqlib.api import api
 from stoqlib.domain.invoice import InvoiceLayout
@@ -96,7 +96,7 @@ class Tasks(object):
     def __init__(self, app):
         self.app = app
 
-        self.theme = Gtk.icon_theme_get_default()
+        self.theme = Gtk.IconTheme.get_default()
 
     def set_model(self, model):
         self.model = model
@@ -147,7 +147,7 @@ class Tasks(object):
             stock_id = pixbuf
             try:
                 pixbuf = self.theme.load_icon(pixbuf, 32, 0)
-            except Glib.GError:
+            except GLib.GError:
                 pixbuf = self.app.get_toplevel().render_icon(pixbuf, Gtk.IconSize.DIALOG)
             if pixbuf is not None:
                 pixbuf.stock_id = stock_id

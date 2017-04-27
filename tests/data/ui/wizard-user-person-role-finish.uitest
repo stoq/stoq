@@ -154,10 +154,10 @@ GtkDialog(toplevel): title='New User', hidden
                         GtkBox(orientation=vertical, expand=True, fill=True, padding=6):
                           ObjectList(expand=True, fill=True):
                             column: title='Branch Name', expand
-                          GtkBox(orientation=horizontal):
-                            GtkButton(): 'gtk-add', hidden
-                            GtkButton(): 'gtk-remove', insensitive
-                            GtkButton(): 'gtk-edit', hidden, insensitive
+                          GtkBox(orientation=horizontal, fill=True):
+                            GtkButton(fill=True): 'gtk-add', hidden
+                            GtkButton(fill=True): 'gtk-remove', insensitive
+                            GtkButton(fill=True): 'gtk-edit', hidden, insensitive
       ProxyLabel(notification_lbl, fill=True):
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
@@ -165,8 +165,9 @@ GtkDialog(toplevel): title='New User', hidden
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-          GtkButton(help_button): 'gtk-help'
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+          GtkButton(help_button, expand=True, fill=True): 'gtk-help'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: LoginUser<1>
   is_active: True

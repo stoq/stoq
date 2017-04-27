@@ -138,13 +138,15 @@ class BaseEditorSlave(GladeSlaveDelegate):
                 widget.set_editable(False)
                 # Second, make sure they don't look like they're editable,
                 # copy over the insentive style
-                style = widget.get_style()
-                widget.modify_text(
-                    Gtk.StateType.NORMAL, style.text[Gtk.StateType.INSENSITIVE])
-                widget.modify_base(
-                    Gtk.StateType.NORMAL, style.base[Gtk.StateType.INSENSITIVE])
+                sc = widget.get_style_context()
+                widget.override_color(
+                    Gtk.StateType.NORMAL,
+                    sc.get_color(Gtk.StateFlags.INSENSITIVE))
+                widget.override_background_color(
+                    Gtk.StateType.NORMAL,
+                    sc.get_background_color(Gtk.StateFlags.INSENSITIVE))
             else:
-                widget.set_sensitive(False)
+                    widget.set_sensitive(False)
 
         if self.fields:
             for field in self.fields.values():

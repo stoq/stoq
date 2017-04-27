@@ -197,7 +197,7 @@ class AccountEditor(BaseEditor):
             Gtk.AttachOptions.FILL, 0, 0, 0)
         self.table.attach(
             widget, 1, 2, n_rows, n_rows + 1,
-            Gtk.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
+            Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
         if options:
             self._bank_option_widgets.extend([l, widget])
         else:

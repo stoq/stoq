@@ -22,7 +22,7 @@ GtkDialog(toplevel): title='Returned Sale Item Search', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): ''
-                GtkButton(search_button): 'gtk-find'
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Returned #'
             column: title='Status'
@@ -43,8 +43,9 @@ GtkDialog(toplevel): title='Returned Sale Item Search', hidden
             GtkBox(hbox1, orientation=horizontal, fill=True):
               GtkLabel(label3, expand=True, fill=True):
               GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-                GtkButton(details_button): insensitive
-                GtkButton(print_button): 'gtk-print', insensitive
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+                GtkButton(details_button, expand=True, fill=True): insensitive
+                GtkButton(print_button, expand=True, fill=True): 'gtk-print', insensitive
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

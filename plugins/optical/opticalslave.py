@@ -307,11 +307,11 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         making it easier for him to change the value
         (just like if he was navigating using the tab key)
         """
-        if event.type == Gdk.FOCUS_CHANGE:
+        if event.type == Gdk.EventType.FOCUS_CHANGE:
             # Create a flag to control the focus change between widgets
             self._focus_change = True
 
-        elif event.type == Gdk.BUTTON_RELEASE:  # pragma: nocover
+        elif event.type == Gdk.EventType.BUTTON_RELEASE:  # pragma: nocover
             if self._focus_change:
                 # Select all text on entry box
                 widget.select_region(0, -1)

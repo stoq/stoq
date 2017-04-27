@@ -37,10 +37,10 @@ def change_button_appearance(button, icon=None, text=None):
 
 
 def set_bold(widget):
-    bold = Pango.AttrWeight(Pango.Weight.HEAVY, 0, -1)
-    attrs = Pango.AttrList()
-    attrs.insert(bold)
-    widget.set_property('attributes', attrs)
+    pc = widget.create_pango_context()
+    fd = pc.get_font_description()
+    fd.set_weight(Pango.Weight.HEAVY)
+    widget.override_font(fd)
 
 
 def button_set_image_with_label(button, stock_id, text):
@@ -54,12 +54,12 @@ def button_set_image_with_label(button, stock_id, text):
     if button.get_child():
         button.remove(button.get_child())
 
-    align = Gtk.Alignment(0.5, 0.5, 1.0, 1.0)
+    align = Gtk.Alignment.new(0.5, 0.5, 1.0, 1.0)
     box = Gtk.VBox()
     align.add(box)
     image = Gtk.Image()
     image.set_from_stock(stock_id, Gtk.IconSize.LARGE_TOOLBAR)
-    label = Gtk.Label(text)
+    label = Gtk.Label(label=text)
     if '_' in text:
         label.set_use_underline(True)
 

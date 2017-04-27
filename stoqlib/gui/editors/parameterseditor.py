@@ -100,11 +100,13 @@ class SystemParameterEditor(BaseEditor):
         # while keeping them selectable
         widget.set_editable(self.sensitive)
         if not self.sensitive:
-            style = widget.get_style()
-            widget.modify_text(
-                Gtk.StateType.NORMAL, style.text[Gtk.StateType.INSENSITIVE])
-            widget.modify_base(
-                Gtk.StateType.NORMAL, style.base[Gtk.StateType.INSENSITIVE])
+            sc = widget.get_style_context()
+            widget.override_color(
+                Gtk.StateType.NORMAL,
+                sc.get_color(Gtk.StateFlags.INSENSITIVE))
+            widget.override_background_color(
+                Gtk.StateType.NORMAL,
+                sc.get_background_color(Gtk.StateFlags.INSENSITIVE))
         widget.data_type = unicode
         widget.model_attribute = "field_value"
         self.proxy.add_widget("field_value", widget)
@@ -231,12 +233,11 @@ class SystemParameterEditor(BaseEditor):
         yes_widget = Gtk.RadioButton()
         yes_widget.set_label(_("Yes"))
         yes_widget.connect("toggled", self._on_yes_radio__toggled)
-        group = yes_widget.get_group()[0]
         box.pack_start(yes_widget, True, True, 0)
         yes_widget.show()
         no_widget = Gtk.RadioButton()
         no_widget.set_label(_("No"))
-        no_widget.set_group(group)
+        no_widget.join_group(yes_widget)
         box.pack_start(no_widget, True, True, 0)
         no_widget.show()
         self.container.add(box)

@@ -78,7 +78,7 @@ class ProductStockHistoryDialog(BaseEditor):
         olist = ObjectList()
         box.pack_start(olist, True, True, 0)
         olist.show()
-        self.history_notebook.append_page(box, Gtk.Label(name))
+        self.history_notebook.append_page(box, Gtk.Label(label=name))
         return olist
 
     def _add_batches_tab(self):

@@ -63,15 +63,17 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                   GtkEventBox(print_holder, expand=True, fill=True):
                   GtkEventBox(notice, fill=True):
                   GtkEventBox(details_holder, padding=6, pack-end):
-              GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-                GtkButton(padding=6): 'Reset defaults'
-                GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-                GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden
+              GtkBox(orientation=horizontal, fill=True, pack-end):
+                GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+                  GtkButton(padding=6): 'Reset defaults'
+                  GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+                  GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+        GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

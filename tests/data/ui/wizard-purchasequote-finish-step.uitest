@@ -13,9 +13,9 @@ GtkDialog(toplevel): title='New Quote', hidden
             row: True, u'Supplier', u'1/1'
           GtkBox(step.hbox1, orientation=horizontal, fill=True):
             GtkButtonBox(step.hbuttonbox1, orientation=horizontal, fill=True):
-              GtkButton(step.print_button): 'gtk-print'
-              GtkButton(step.view_products_button): '_View Products'
-              GtkButton(step.missing_products_button): '_Missing Products'
+              GtkButton(step.print_button, fill=True): 'gtk-print'
+              GtkButton(step.view_products_button, fill=True): '_View Products'
+              GtkButton(step.missing_products_button, fill=True): '_Missing Products'
             ProxyCheckButton(step.include_all_products, fill=True): 'Include all products in quotes', active
       ProxyLabel(notification_lbl, fill=True):
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
@@ -24,7 +24,8 @@ GtkDialog(toplevel): title='New Quote', hidden
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: PurchaseOrder<1>
   confirm_date: None

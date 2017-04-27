@@ -63,7 +63,7 @@ class MissingItemsDialog(SimpleListDialog):
                                   header_text=msg)
 
         if self._is_sale_quote:
-            label = Gtk.Label(_('Do you want to order the sale instead?'))
+            label = Gtk.Label(label=_('Do you want to order the sale instead?'))
             self.notice.add(label)
             label.show()
             self.set_ok_label(_('Order sale'))

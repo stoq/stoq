@@ -29,10 +29,10 @@ import operator
 import platform
 
 try:
-    import gudev
-    gudev  # pylint: disable=W0104
+    from gi.repository import GUdev
+    GUdev  # pylint: disable=W0104
 except ImportError:
-    gudev = None
+    GUdev = None
 
 try:
     import dbus
@@ -111,7 +111,7 @@ class DeviceManager(object):
         return devices
 
     def _get_gudev_devices(self):
-        client = gudev.Client(["tty", 'usb-serial'])
+        client = GUdev.Client.new(["tty", 'usb-serial'])
         devices = []
 
         # usb serial devices
@@ -132,7 +132,7 @@ class DeviceManager(object):
         """Get a list of serial devices available on the system
         :returns: a list of :class:`SerialDevice`
         """
-        if gudev:
+        if GUdev:
             devices = self._get_gudev_devices()
         elif self._hal_manager:
             devices = self._get_hal_devices()

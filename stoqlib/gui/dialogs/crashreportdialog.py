@@ -101,22 +101,22 @@ class CrashReportDialog(object):
         view = Gtk.TextView()
         view.set_wrap_mode(Gtk.WrapMode.WORD)
         view.set_accepts_tab(False)
-        view_style = view.get_style()
+        sc = view.get_style_context()
 
         def focus_in(view, event):
             if self._comments_buffer.props.text != _DEFAULT_COMMENT:
                 return
             self._comments_buffer.set_text("")
-            view.modify_text(
-                Gtk.StateType.NORMAL, view_style.text[Gtk.StateType.NORMAL])
+            view.override_color(
+                Gtk.StateType.NORMAL, sc.get_color(Gtk.StateFlags.NORMAL))
         view.connect('focus-in-event', focus_in)
 
         def focus_out(view, event):
             if self._comments_buffer.props.text:
                 return
             self._comments_buffer.set_text(_DEFAULT_COMMENT)
-            view.modify_text(
-                Gtk.StateType.NORMAL, view_style.text[Gtk.StateType.INSENSITIVE])
+            view.override_color(
+                Gtk.StateType.NORMAL, sc.get_color(Gtk.StateFlags.INSENSITIVE))
 
         view.connect('focus-out-event', focus_out)
         view.set_size_request(-1, 100)
@@ -126,8 +126,8 @@ class CrashReportDialog(object):
         self._comments_buffer.insert_with_tags_by_name(
             self._comments_buffer.get_iter_at_offset(0), _DEFAULT_COMMENT,
             'highlight')
-        view.modify_text(
-            Gtk.StateType.NORMAL, view_style.text[Gtk.StateType.INSENSITIVE])
+        view.override_color(
+            Gtk.StateType.NORMAL, sc.get_color(Gtk.StateFlags.INSENSITIVE))
         view.show()
         self._comments_view = view
 
@@ -165,13 +165,13 @@ class CrashReportDialog(object):
             if data.get('report-url'):
                 label = Gtk.LinkButton(data['report-url'], message)
             else:
-                label = Gtk.Label(message)
+                label = Gtk.Label(label=message)
             self._dialog.vbox.pack_start(label, True, True, 0)
             label.show()
         self._finish()
 
     def _show_error(self):
-        label = Gtk.Label(_("Failed to submit bugreport"))
+        label = Gtk.Label(label=_("Failed to submit bugreport"))
         self._dialog.vbox.pack_start(label, True, True, 0)
         label.show()
         self._finish()

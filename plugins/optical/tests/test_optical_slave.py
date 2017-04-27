@@ -88,7 +88,7 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         workorder = self.create_workorder()
         slave = WorkOrderOpticalSlave(self.store, workorder)
 
-        e = Gdk.Event(type=Gdk.FOCUS_CHANGE)
+        e = Gdk.Event.new(type=Gdk.EventType.FOCUS_CHANGE)
         slave.le_near_pd.send_focus_change(e)
 
     def test_notes_button(self):

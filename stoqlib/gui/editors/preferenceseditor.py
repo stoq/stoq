@@ -98,7 +98,7 @@ class PreferencesEditor(BaseEditor):
         event_box = Gtk.EventBox()
         event_box.set_border_width(6)
         self.preferences_notebook.append_page(event_box,
-                                              Gtk.Label(tab_name))
+                                              Gtk.Label(label=tab_name))
 
         slave = slave_class(*args, **kwargs)
         if isinstance(slave, BaseEditorSlave):
@@ -137,7 +137,7 @@ class PreferencesEditor(BaseEditor):
         self.preferences_notebook.set_show_tabs(True)
         self.preferences_notebook.set_show_border(True)
         self.preferences_notebook.set_tab_label(self.general_tab,
-                                                Gtk.Label(_('General')))
+                                                Gtk.Label(label=_('General')))
         # Hide cancel button as the model isn't on a db store and
         # therefore there's nothing to rollback.
         self.main_dialog.cancel_button.hide()

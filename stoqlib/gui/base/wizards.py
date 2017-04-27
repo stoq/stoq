@@ -39,7 +39,7 @@ _ = stoqlib_gettext
 logger = logging.getLogger(__name__)
 
 
-class WizardStep:
+class WizardStep(object):
     """ This class must be inherited by the steps """
     def __init__(self, previous=None, header=None):
         self.previous = previous

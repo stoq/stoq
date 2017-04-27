@@ -22,7 +22,7 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   HintedEntry(search_entry, padding=6): 'bot'
-                GtkButton(search_button): 'gtk-find'
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               DateSearchFilter(date_filter):
                 GtkLabel(): 'Date:'
                 ProxyComboBox(padding=6):
@@ -59,9 +59,10 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
             GtkBox(hbox1, orientation=horizontal, fill=True):
               GtkLabel(label3, expand=True, fill=True):
               GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-                GtkButton(details_button): hidden
-                GtkButton(print_button): 'gtk-print', insensitive
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
-      GtkButton(csv_button, padding=6): 'Export to spreadsheet...', insensitive
+                GtkButton(details_button, expand=True, fill=True): hidden
+                GtkButton(print_button, expand=True, fill=True): 'gtk-print', insensitive
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+        GtkButton(csv_button, padding=6): 'Export to spreadsheet...', insensitive

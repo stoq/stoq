@@ -27,7 +27,7 @@
 import datetime
 import urllib
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, GdkPixbuf, Pango
 from kiwi.currency import currency
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
@@ -290,7 +290,6 @@ class ServicesApp(ShellApp):
         self.add_ui_actions('', radio_actions, 'RadioActions',
                             'radio')
 
-        self.ViewList.props.active = True
         self.Edit.set_short_label(_(u"Edit"))
         self.Finish.set_short_label(_(u"Finish"))
         self.Edit.props.is_important = True
@@ -311,6 +310,7 @@ class ServicesApp(ShellApp):
             self.Services,
             self.Categories,
         ])
+        self.ViewList.props.active = True
 
         self.search.set_summary_label(
             column='total',
@@ -417,10 +417,10 @@ class ServicesApp(ShellApp):
             Column('equipment', title=_(u'Equipment (Description)'),
                    data_type=str, expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment (Description)'),
-                   column='equipment', data_type=Gdk.Pixbuf,
+                   column='equipment', data_type=GdkPixbuf.Pixbuf,
                    format_func=render_pixbuf),
             Column('flag_icon', title=_(u'Equipment (Description)'),
-                   column='equipment', data_type=Gdk.Pixbuf,
+                   column='equipment', data_type=GdkPixbuf.Pixbuf,
                    format_func=self._format_state_icon, format_func_data=True),
             SearchColumn('client_name', title=_(u'Client'),
                          data_type=str),
@@ -802,7 +802,8 @@ class ServicesApp(ShellApp):
         return text
 
     def on_search__result_item_popup_menu(self, search, item, event):
-        self.popup.popup(None, None, None, event.button, event.time)
+        self.popup.popup(None, None, None, None,
+                         event.button.button, event.time)
 
     def on_search__result_item_activated(self, search, item):
         if self.Edit.get_sensitive():

@@ -29,7 +29,7 @@ import platform
 import os
 import operator
 
-from gi.repository import Gtk, Glib, Gdk
+from gi.repository import Gtk, GLib, Gdk
 from kiwi.component import get_utility
 from kiwi.environ import environ
 from kiwi.ui.delegates import GladeDelegate
@@ -449,7 +449,7 @@ class ShellWindow(GladeDelegate):
 
             self._birthdays_bar = self.add_info_bar(
                 Gtk.MessageType.INFO,
-                "<b>%s</b>" % (Glib.markup_escape_text(msg), ),
+                "<b>%s</b>" % (GLib.markup_escape_text(msg), ),
                 action_widget=button)
 
     def _check_information(self):
@@ -485,7 +485,7 @@ class ShellWindow(GladeDelegate):
         # Do not save the size of the window when we are in fullscreen
         window = self.get_toplevel()
         window = window.get_window()
-        if window.get_state() & Gdk.WINDOW_STATE_FULLSCREEN:
+        if window.get_state() & Gdk.WindowState.FULLSCREEN:
             return
         d = api.user_settings.get('launcher-geometry', {})
         d['width'] = str(self._width)
@@ -506,8 +506,12 @@ class ShellWindow(GladeDelegate):
         # Setup the default window size, for smaller sizes use
         # 75% of the height or 600px if it's higher than 800px
         if height == -1:
-            screen = Gdk.screen_get_default()
+            screen = Gdk.Screen.get_default()
             height = min(int(screen.get_height() * 0.75), 600)
+        if width == -1:
+            screen = Gdk.Screen.get_default()
+            width = min(int(screen.get_width() * 0.75), 1200)
+
         toplevel = self.get_toplevel()
         toplevel.set_default_size(width, height)
         if x != -1 and y != -1:
@@ -698,7 +702,7 @@ class ShellWindow(GladeDelegate):
     def show_app(self, app, app_window, **params):
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
-                                               Gtk.PACK_START)
+                                               Gtk.PackType.START)
         # Default action settings for applications
         self.Print.set_visible(True)
         self.Print.set_sensitive(False)
@@ -839,7 +843,7 @@ class ShellWindow(GladeDelegate):
                 action.set_visible(False)
                 # Disable keyboard shortcut
                 path = action.get_accel_path()
-                Gtk.accel_map_change_entry(path, 0, 0, True)
+                Gtk.AccelMap.change_entry(path, 0, 0, True)
 
         return ui_id
 
@@ -1164,7 +1168,7 @@ class ShellWindow(GladeDelegate):
             return
         is_active = action.get_active()
         window = window.get_window()
-        is_fullscreen = window.get_state() & Gdk.WINDOW_STATE_FULLSCREEN
+        is_fullscreen = window.get_state() & Gdk.WindowState.FULLSCREEN
         if is_active != is_fullscreen:
             if is_active:
                 window.fullscreen()

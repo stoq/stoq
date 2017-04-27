@@ -82,7 +82,7 @@ class UserProfileEditor(BaseEditor):
             button.show()
             box.pack_start(button, True, True, 6)
 
-            image = Gtk.image_new_from_stock(icon_name, Gtk.IconSize.MENU)
+            image = Gtk.Image.new_from_stock(icon_name, Gtk.IconSize.MENU)
             box.pack_start(image, False, False, 0)
             image.show()
 
@@ -100,7 +100,7 @@ class UserProfileEditor(BaseEditor):
 
         # Scroll to the bottom of the scrolled window
         vadj = self.scrolled_window.get_vadjustment()
-        vadj.set_value(vadj.upper)
+        vadj.set_value(vadj.get_upper())
 
     #
     # Kiwi handlers

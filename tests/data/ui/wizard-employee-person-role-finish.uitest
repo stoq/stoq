@@ -64,7 +64,7 @@ GtkDialog(toplevel): title='New Employee', hidden
                         item: 'Secret\xc3\xa1rio'
                         item: 'System Administrator'
                       GtkButtonBox(orientation=horizontal):
-                        GtkButton(): 'A_dd/Edit Role...'
+                        GtkButton(expand=True, fill=True): 'A_dd/Edit Role...'
                       ProxyLabel(): 'Salary ($CURRENCY):'
                       ProxyEntry(): '555.00'
                       GtkBox(orientation=horizontal):
@@ -201,7 +201,8 @@ GtkDialog(toplevel): title='New Employee', hidden
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: Employee<1>
   admission_date: None

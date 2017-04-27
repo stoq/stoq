@@ -55,7 +55,7 @@ class TestMain(unittest.TestCase):
         # If a dependency is missing, avoid showing an error message
         # or else jenkins will hang
         mocked = mock.patch('stoq.lib.dependencies.DependencyChecker._error',
-                            new=lambda *args: None)
+                            new=lambda *args, **kwargs: None)
         self._mocks.append(mocked)
 
         for mocked in self._mocks:

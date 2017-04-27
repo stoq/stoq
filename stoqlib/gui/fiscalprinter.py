@@ -30,7 +30,7 @@ import serial
 import sys
 import traceback
 
-from gi.repository import Gtk, Glib, GObject
+from gi.repository import Gtk, GLib, GObject
 from kiwi.utils import gsignal
 from stoqdrivers.exceptions import (DriverError, CouponOpenError,
                                     OutofPaperError, PrinterOfflineError)
@@ -281,7 +281,7 @@ class FiscalPrinterHelper(GObject.GObject):
         delta = midnight - now
 
         # Call check_till at the first seconds of the next day.
-        self._midnight_check_id = Glib.timeout_add_seconds(
+        self._midnight_check_id = GLib.timeout_add_seconds(
             delta.seconds, self.check_till, True)
 
     def _till_status_changed(self, closed, blocked):
@@ -343,7 +343,7 @@ class FiscalPrinterHelper(GObject.GObject):
             self.emit('ecf-changed', False)
 
         if reset_midnight_check:
-            Glib.source_remove(self._midnight_check_id)
+            GLib.source_remove(self._midnight_check_id)
             self._midnight_check_id = None
             self.setup_midnight_check()
 

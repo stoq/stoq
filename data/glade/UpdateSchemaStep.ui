@@ -34,6 +34,7 @@
           <object class="GtkProgressBar" id="progressbar">
             <property name="visible">True</property>
             <property name="pulse-step">0.01</property>
+            <property name="show-text">True</property>
           </object>
           <packing>
             <property name="expand">False</property>

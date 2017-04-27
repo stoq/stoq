@@ -25,7 +25,7 @@
 
 import logging
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, GdkPixbuf, Pango
 from kiwi.datatypes import converter
 
 from stoqlib.api import api
@@ -79,7 +79,7 @@ class StockApp(ShellApp):
     search_spec = ProductFullStockView
     search_labels = _('Matching:')
     report_table = SimpleProductReport
-    pixbuf_converter = converter.get_converter(Gdk.Pixbuf)
+    pixbuf_converter = converter.get_converter(GdkPixbuf.Pixbuf)
 
     #
     # Application
@@ -347,7 +347,7 @@ class StockApp(ShellApp):
         # FIXME: get this icon size from settings
         icon_size = 24
         pixbuf = pixbuf.scale_simple(icon_size, icon_size,
-                                     Gdk.INTERP_BILINEAR)
+                                     GdkPixbuf.InterpType.BILINEAR)
         self.image.set_from_pixbuf(pixbuf)
 
     def _update_filter_slave(self, slave):
@@ -455,7 +455,8 @@ class StockApp(ShellApp):
         self._update_widgets()
 
     def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, event.button, event.time)
+        self.popup.popup(None, None, None, None,
+                         event.button.button, event.time)
 
     def on_ProductStockHistory__activate(self, button):
         selected = self.results.get_selected()

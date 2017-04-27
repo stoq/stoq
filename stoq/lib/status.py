@@ -27,8 +27,7 @@ import os
 import threading
 
 import dateutil.parser
-from gi.repository import Glib
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 from kiwi.python import Settable
 from kiwi.utils import gsignal
 
@@ -136,7 +135,7 @@ class ResourceStatusManager(GObject.GObject):
         self._lock = threading.Lock()
         self.running_action = None
         self.resources = {}
-        Glib.timeout_add_seconds(self.REFRESH_TIMEOUT,
+        GLib.timeout_add_seconds(self.REFRESH_TIMEOUT,
                                  self.refresh_and_notify)
 
     #

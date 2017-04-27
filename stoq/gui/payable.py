@@ -29,7 +29,7 @@ stoq/gui/payable/payable.py:
 
 import datetime
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Pango, Gtk, GdkPixbuf
 from kiwi.currency import currency
 from kiwi.python import all
 from kiwi.ui.objectlist import Column
@@ -168,7 +168,7 @@ class PayableApp(BaseAccountWindow):
                              data_type=str, ellipsize=Pango.EllipsizeMode.END,
                              expand=True, pack_end=True),
                 Column('color', title=_('Description'), width=20,
-                       data_type=Gdk.Pixbuf, format_func=render_pixbuf,
+                       data_type=GdkPixbuf.Pixbuf, format_func=render_pixbuf,
                        column='description'),
                 Column('comments_number', title=_(u'Comments'),
                        visible=False),
@@ -411,7 +411,8 @@ class PayableApp(BaseAccountWindow):
             self.show_details(payable_view)
 
     def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, event.button, event.time)
+        self.popup.popup(None, None, None, None,
+                         event.button.button, event.time)
 
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()

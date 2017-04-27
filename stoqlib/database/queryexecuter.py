@@ -28,7 +28,7 @@ import re
 import threading
 import Queue
 
-from gi.repository import Glib, GObject
+from gi.repository import GLib, GObject
 from kiwi.python import Settable
 from kiwi.utils import gsignal
 from storm import Undef
@@ -256,7 +256,7 @@ class AsyncQueryOperation(GObject.GObject):
             return
 
         self.status = self.STATUS_FINISHED
-        Glib.idle_add(self._on_finish)
+        GLib.idle_add(self._on_finish)
 
     def get_result(self):
         """Get operation result.
@@ -385,7 +385,7 @@ class QueryExecuter(object):
 
         Create a loop for testing
 
-        >>> loop = Glib.MainLoop()
+        >>> loop = GLib.MainLoop()
         >>> sig_id = operation.connect('finish', finished, loop)
         >>> loop.run()
 

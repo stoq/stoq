@@ -83,7 +83,7 @@ class TestCalculatorPopup(GUITest):
         entry.set_text('150')
         calc = CalculatorPopup(entry, CalculatorPopup.MODE_SUB)
 
-        event = Gdk.Event(Gdk.EventType.BUTTON_PRESS)
+        event = Gdk.Event.new(Gdk.EventType.BUTTON_PRESS)
         event.window = Gdk.get_default_root_window()
 
         with mock.patch.object(calc, 'popup') as popup:
@@ -102,10 +102,10 @@ class TestCalculatorPopup(GUITest):
                 mock.patch.object(calc, '_maybe_apply_new_value'),
                 mock.patch.object(calc, 'popdown')) as (manv, popdown):
             # Those keys should try to apply the value
-            for keyval in [Gtk.keysyms.Return,
-                           Gtk.keysyms.KP_Enter,
-                           Gtk.keysyms.Tab]:
-                event = Gdk.Event(Gdk.KEY_PRESS)
+            for keyval in [Gdk.KEY_Return,
+                           Gdk.KEY_KP_Enter,
+                           Gdk.KEY_Tab]:
+                event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
                 event.keyval = keyval
                 event.window = Gdk.get_default_root_window()
                 calc.emit('key-press-event', event)
@@ -116,9 +116,9 @@ class TestCalculatorPopup(GUITest):
                 manv.reset_mock()
                 popdown.reset_mock()
 
-            event = Gdk.Event(Gdk.KEY_PRESS)
+            event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
             # Escape should popdown the popup
-            event.keyval = Gtk.keysyms.Escape
+            event.keyval = Gdk.KEY_Escape
             event.window = Gdk.get_default_root_window()
             calc.emit('key-press-event', event)
 
@@ -127,9 +127,9 @@ class TestCalculatorPopup(GUITest):
             manv.reset_mock()
             popdown.reset_mock()
 
-            event = Gdk.Event(Gdk.KEY_PRESS)
+            event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
             # Any other should not do anything
-            event.keyval = Gtk.keysyms.A
+            event.keyval = Gdk.KEY_A
             event.window = Gdk.get_default_root_window()
             calc.emit('key-press-event', event)
 
@@ -145,8 +145,8 @@ class TestCalculatorPopup(GUITest):
         # calc.popup will not work here, so call validate_popup directly
         calc.validate_popup()
         calc._entry.set_text('10%')
-        event = Gdk.Event(Gdk.KEY_PRESS)
-        event.keyval = Gtk.keysyms.Return
+        event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+        event.keyval = Gdk.KEY_Return
         event.window = Gdk.get_default_root_window()
         calc.emit('key-press-event', event)
         calc.emit('key-press-event', event)

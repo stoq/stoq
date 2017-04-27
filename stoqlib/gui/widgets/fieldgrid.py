@@ -31,8 +31,7 @@
 
 import pickle
 
-from gi.repository import Gtk, Gdk, Glib, GObject, Pango
-from gtk import keysyms
+from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 
 from kiwi.python import clamp
 from kiwi.utils import gsignal
@@ -57,7 +56,7 @@ def _get_cursor(gdk_pos):
     if c is not None:
         return c
 
-    return _cursors.setdefault(gdk_pos, Gdk.Cursor(gdk_pos))
+    return _cursors.setdefault(gdk_pos, Gdk.Cursor.new(gdk_pos))
 
 
 class Range(object):
@@ -84,14 +83,15 @@ class FieldInfo(object):
 
     def update_label(self, text):
         fmt = '<span letter_spacing="3072">%s</span>'
-        self.widget.set_markup(fmt % (Glib.markup_escape_text(text), ))
+        self.widget.set_markup(fmt % (GLib.markup_escape_text(text), ))
 
     def allocate(self, width, height):
-        req_width, req_height = self.widget.size_request()
-        self.widget.size_allocate(((self.x * width) - 1,
-                                   (self.y * height) - 1,
-                                   (self.width * width) + 2,
-                                   (self.height * height) + 3))
+        rect = Gdk.Rectangle()
+        rect.x = (self.x * width) - 1
+        rect.y = (self.y * height) - 1
+        rect.width = (self.width * width) + 2
+        rect.height = (self.height * height) + 3
+        self.widget.size_allocate(rect)
 
     def find_at(self, x, y):
         wx, wy, ww, wh = self.widget.allocation
@@ -141,18 +141,19 @@ class FieldGrid(Gtk.Layout):
     """
 
     gsignal('selection-changed', object,
-            flags=GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION)
+            flags=GObject.SignalFlags.RUN_LAST | GObject.SignalFlags.ACTION)
     gsignal('field-added', object)
     gsignal('field-removed', object)
 
     def __init__(self, font, width, height):
-        Gtk.Layout.__init__(self)
+        super(FieldGrid, self).__init__()
+
         self.set_can_focus(True)
         self.drag_dest_set(
             Gtk.DestDefaults.ALL,
-            [('OBJECTLIST_ROW', 0, 10),
-             ('text/uri-list', 0, 11),
-             ('_NETSCAPE_URL', 0, 12)],
+            [Gtk.TargetEntry.new('OBJECTLIST_ROW', 0, 10),
+             Gtk.TargetEntry.new('text/uri-list', 0, 11),
+             Gtk.TargetEntry.new('_NETSCAPE_URL', 0, 12)],
             Gdk.DragAction.LINK | Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
 
         self.font = Pango.FontDescription(font)
@@ -328,31 +329,32 @@ class FieldGrid(Gtk.Layout):
     def do_realize(self):
         Gtk.Layout.do_realize(self)
         # Use the same Gdk.window (from Gtk.Layout) to capture these events.
-        self.window.set_events(self.get_events() |
-                               Gdk.EventMask.BUTTON_PRESS_MASK |
-                               Gdk.EventMask.BUTTON_RELEASE_MASK |
-                               Gdk.EventMask.KEY_PRESS_MASK |
-                               Gdk.EventMask.KEY_RELEASE_MASK |
-                               Gdk.EventMask.ENTER_NOTIFY_MASK |
-                               Gdk.EventMask.LEAVE_NOTIFY_MASK |
-                               Gdk.EventMask.POINTER_MOTION_MASK)
+        window = self.get_window()
+        window.set_events(self.get_events() |
+                          Gdk.EventMask.BUTTON_PRESS_MASK |
+                          Gdk.EventMask.BUTTON_RELEASE_MASK |
+                          Gdk.EventMask.KEY_PRESS_MASK |
+                          Gdk.EventMask.KEY_RELEASE_MASK |
+                          Gdk.EventMask.ENTER_NOTIFY_MASK |
+                          Gdk.EventMask.LEAVE_NOTIFY_MASK |
+                          Gdk.EventMask.POINTER_MOTION_MASK)
 
         self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse('white'))
-        gc = Gdk.GC(self.window,
+        gc = Gdk.GC(window,
                     line_style=Gdk.LINE_ON_OFF_DASH,
                     line_width=2)
         gc.set_rgb_fg_color(Gdk.color_parse('blue'))
         self._selection_gc = gc
 
-        gc = Gdk.GC(self.window)
+        gc = Gdk.GC(window)
         gc.set_rgb_fg_color(Gdk.color_parse('grey80'))
         self._grid_gc = gc
 
-        gc = Gdk.GC(self.window)
+        gc = Gdk.GC(window)
         gc.set_rgb_fg_color(Gdk.color_parse('black'))
         self._border_gc = gc
 
-        gc = Gdk.GC(self.window)
+        gc = Gdk.GC(window)
         gc.set_rgb_fg_color(Gdk.color_parse('grey40'))
         self._field_border_gc = gc
 
@@ -448,15 +450,15 @@ class FieldGrid(Gtk.Layout):
         if self._moving_field:
             return
 
-        if event.keyval == keysyms.Up:
+        if event.keyval == Gdk.KEY_Up:
             self._move_field(FIELD_MOVEMENT_VERTICAL, -1)
-        elif event.keyval == keysyms.Down:
+        elif event.keyval == Gdk.KEY_Down:
             self._move_field(FIELD_MOVEMENT_VERTICAL, 1)
-        elif event.keyval == keysyms.Left:
+        elif event.keyval == Gdk.KEY_Left:
             self._move_field(FIELD_MOVEMENT_HORIZONTAL, -1)
-        elif event.keyval == keysyms.Right:
+        elif event.keyval == Gdk.KEY_Right:
             self._move_field(FIELD_MOVEMENT_HORIZONTAL, 1)
-        elif event.keyval == keysyms.Delete:
+        elif event.keyval == Gdk.KEY_Delete:
             self._remove_selected_field()
 
         if Gtk.Layout.do_key_press_event(self, event):

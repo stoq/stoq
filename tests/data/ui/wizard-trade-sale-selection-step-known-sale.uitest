@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Trade Sale Order', hidden
                               item: 'Identical to'
                               item: 'Does Not Contain'
                             HintedEntry(search_entry, padding=6): ''
-                          GtkButton(search_button): 'gtk-find'
+                          stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
                         ComboSearchFilter():
                           GtkLabel(): 'Show sales with status'
                           ProxyComboBox(padding=6):
@@ -59,11 +59,12 @@ GtkDialog(toplevel): title='Trade Sale Order', hidden
                       GtkBox(hbox1, orientation=horizontal, fill=True):
                         GtkLabel(label3, expand=True, fill=True):
                         GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-                          GtkButton(details_button):
-                          GtkButton(print_button): 'gtk-print', hidden
-              GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-                GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-                GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
+                          GtkButton(details_button, expand=True, fill=True):
+                          GtkButton(print_button, expand=True, fill=True): 'gtk-print', hidden
+              GtkBox(orientation=horizontal, fill=True, pack-end):
+                GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+                  GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
+                  GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
           GtkCheckButton(step.unknown_sale_check, fill=True): 'The sale is not listed here', hidden
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
@@ -72,5 +73,6 @@ GtkDialog(toplevel): title='Trade Sale Order', hidden
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
-          GtkButton(help_button): 'gtk-help'
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+          GtkButton(help_button, expand=True, fill=True): 'gtk-help'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

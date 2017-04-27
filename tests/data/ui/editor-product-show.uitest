@@ -148,10 +148,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                         column: title='Category', expand
                         column: title='Price'
                         column: title='Markup'
-                      GtkBox(orientation=horizontal):
-                        GtkButton(): 'gtk-add', hidden
-                        GtkButton(): 'gtk-remove', insensitive
-                        GtkButton(): 'gtk-edit', insensitive
+                      GtkBox(orientation=horizontal, fill=True):
+                        GtkButton(fill=True): 'gtk-add', hidden
+                        GtkButton(fill=True): 'gtk-remove', insensitive
+                        GtkButton(fill=True): 'gtk-edit', insensitive
             GtkEventBox(): slave ProductSupplierSlave is attached
               GtkBox(toplevel, orientation=vertical):
                 GtkBox(hbox1, orientation=horizontal, fill=True):
@@ -170,10 +170,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                         column: title='Minimum Purchase'
                         column: title='Cost'
                         row: u'Supplier', u'', u'1 Day', Decimal('1.000'), <currency $ 0>
-                      GtkBox(orientation=horizontal):
-                        GtkButton(): 'gtk-add', hidden
-                        GtkButton(): 'gtk-remove', insensitive
-                        GtkButton(): 'gtk-edit', insensitive
+                      GtkBox(orientation=horizontal, fill=True):
+                        GtkButton(fill=True): 'gtk-add', hidden
+                        GtkButton(fill=True): 'gtk-remove', insensitive
+                        GtkButton(fill=True): 'gtk-edit', insensitive
             GtkEventBox(): slave ProductTaxSlave is attached
               GtkAlignment(toplevel):
                 GtkTable(table1):
@@ -197,9 +197,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(): 'gtk-delete'
-      GtkButton(_print_labels_btn): 'gtk-print', insensitive
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
-      GtkButton(main_dialog.help_button, padding=6): 'gtk-help'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(): 'gtk-delete'
+        GtkButton(_print_labels_btn): 'gtk-print', insensitive
+        GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+        GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

@@ -65,25 +65,25 @@ class SearchColumn(Column):
     """
 
     #: overrides the function that generates the query to process the search
-    search_func = GObject.property(type=object, default=None)
+    search_func = GObject.Property(type=object, default=None)
 
     #: names the search interface differently from the column
-    search_label = GObject.property(type=object, default=None)
+    search_label = GObject.Property(type=object, default=None)
 
     #: use the query on the *having* part instead of the *where*'s on
-    use_having = GObject.property(type=bool, default=False)
+    use_having = GObject.Property(type=bool, default=False)
 
     #: if we should allow filtering by multiple values
-    multiple_selection = GObject.property(type=bool, default=False)
+    multiple_selection = GObject.Property(type=bool, default=False)
 
     #: the search attribute to use when filtering by this column
-    search_attribute = GObject.property(type=object, default=None)
+    search_attribute = GObject.Property(type=object, default=None)
 
     #: valid values to select when filtering by this column
-    valid_values = GObject.property(type=object, default=None)
+    valid_values = GObject.Property(type=object, default=None)
 
     #: long title to use in this column
-    long_title = GObject.property(type=str, default=None)
+    long_title = GObject.Property(type=str, default=None)
 
     def __init__(self, attribute, title=None, data_type=None, **kwargs):
         kwargs.setdefault('search_attribute', attribute)

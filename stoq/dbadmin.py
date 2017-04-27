@@ -547,6 +547,11 @@ def main(args):
     cmd = args[0]
     args = args[1:]
 
+    # FIXME: Set the default encoding to utf-8 just like pygtk used to do.
+    # This probably will not be necessary in python3
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
     # import library or else externals won't be on sys.path
     from stoqlib.lib.kiwilibrary import library
     library  # pylint: disable=W0104

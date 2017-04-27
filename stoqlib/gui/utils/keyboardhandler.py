@@ -28,8 +28,7 @@ This module allows you to install a callback which will be called
 for all toplevel windows
 """
 
-from gi.repository import Gtk
-from kiwi.ui.test.recorder import add_emission_hook
+from gi.repository import Gtk, GObject
 
 
 class _KeyboardHandler(object):
@@ -44,13 +43,9 @@ class _KeyboardHandler(object):
         return True
 
     def add_hook(self, keyval, callback):
-        # Nothing to do if we can't add emission hooks
-        if not add_emission_hook:
-            return
-
         if not self._hooks:
-            add_emission_hook(Gtk.Window, 'key-press-event',
-                              self._on_window_key_press_event)
+            GObject.add_emission_hook(Gtk.Window, 'key-press-event',
+                                      self._on_window_key_press_event)
 
         self._hooks[keyval] = callback
 

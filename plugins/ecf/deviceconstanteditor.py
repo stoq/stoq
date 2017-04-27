@@ -194,7 +194,7 @@ class DeviceConstantsDialog(BasicDialog):
         self.klist.get_treeview().set_headers_visible(False)
         self.klist.connect('selection-changed',
                            self._on_klist__selection_changed)
-        hbox.pack_start(self.klist)
+        hbox.pack_start(self.klist, True, True, 0)
         hbox.show()
 
         for name, ctype in [(_(u'Units'), DeviceConstant.TYPE_UNIT),
@@ -206,7 +206,7 @@ class DeviceConstantsDialog(BasicDialog):
         self._constant_slave = _DeviceConstantsList(self.store, self.printer)
         self._constant_slave.switch(DeviceConstant.TYPE_UNIT)
 
-        hbox.pack_start(self._constant_slave.get_toplevel())
+        hbox.pack_start(self._constant_slave.get_toplevel(), True, True, 0)
 
         # FIXME: redesign BasicDialog
         self.main.remove(self.main_label)

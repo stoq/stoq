@@ -41,8 +41,8 @@ except ImportError:
 class PackageInstaller(GObject.GObject):
 
     __gsignals__ = {
-        'auth-failed': (GObject.SIGNAL_RUN_LAST, None, ()),
-        'done': (GObject.SIGNAL_RUN_LAST, None, (object, )),
+        'auth-failed': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'done': (GObject.SignalFlags.RUN_LAST, None, (object, )),
     }
 
     def __init__(self):

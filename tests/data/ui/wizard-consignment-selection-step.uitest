@@ -18,7 +18,7 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
                         item: 'Identical to'
                         item: 'Does Not Contain'
                       HintedEntry(search_entry, padding=6): ''
-                    GtkButton(search_button): 'gtk-find'
+                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               SearchResultListView(result_view, expand=True, fill=True):
                 column: title='Purchase #'
                 column: title='Date Started'
@@ -37,4 +37,5 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

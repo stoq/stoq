@@ -19,6 +19,6 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Unit Cost'
         row: u'100', u'0000000', u'', u'desc', None, None, 0, <currency $15>
       GtkBox(orientation=vertical, fill=True):
-        GtkButton(): 'gtk-add', hidden
-        GtkButton(): 'gtk-remove', hidden, insensitive
-        GtkButton(): 'gtk-edit', hidden, insensitive
+        GtkButton(fill=True): 'gtk-add', hidden
+        GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+        GtkButton(fill=True): 'gtk-edit', hidden, insensitive

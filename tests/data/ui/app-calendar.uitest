@@ -102,13 +102,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
             GtkToggleToolButton(): 'Week'
             GtkToggleToolButton(): 'Day'
           GtkLabel(date_label, padding=6):
-        GtkScrolledWindow(_calendar, expand=True, fill=True):
+        stoq+gui+calendar+CalendarView(_calendar, expand=True, fill=True):
           WebKitWebView():
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
-          GtkLabel(expand=True, fill=True):
-      GtkBox(orientation=horizontal, expand=True, fill=True):
+          GtkLabel(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkAlignment(expand=True, fill=True):
           GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'

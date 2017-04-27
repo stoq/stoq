@@ -59,8 +59,8 @@ class WelcomeDialog(BasicDialog):
         sw.show()
 
         if platform.system() != 'Windows':
-            import webkit
-            self._view = webkit.WebView()
+            from gi.repository import WebKit
+            self._view = WebKit.WebView()
             self._view.connect(
                 'navigation-policy-decision-requested',
                 self._on_view__navigation_policy_decision_requested)

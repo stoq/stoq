@@ -51,7 +51,7 @@ import platform
 import subprocess
 import sys
 
-from gi.repository import Gtk, Glib, Gdk
+from gi.repository import Gtk, GLib, Gdk
 from kiwi.component import provide_utility
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -342,7 +342,7 @@ class LinkStep(WizardEditorStep):
     def _setup_widgets(self):
         self.image.set_from_file(
             library.get_resource_filename('stoq', 'pixmaps', 'link_step.png'))
-        self.image_eventbox.add_events(Gdk.EventType.BUTTON_PRESS_MASK |
+        self.image_eventbox.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
                                        Gdk.EventMask.POINTER_MOTION_MASK)
         self.send_progress.hide()
         self.send_error_label.hide()
@@ -404,10 +404,10 @@ class LinkStep(WizardEditorStep):
         self.send_progress.set_text(_('Sending...'))
         self.send_progress.set_pulse_step(0.05)
         self.wizard.next_button.set_sensitive(False)
-        Glib.timeout_add(50, self._pulse)
+        GLib.timeout_add(50, self._pulse)
 
         # Cancel the request after 30 seconds without a reply
-        Glib.timeout_add(30000, self._cancel_request)
+        GLib.timeout_add(30000, self._cancel_request)
 
         # Stay on the same step while sending the details
         return self
@@ -419,7 +419,7 @@ class LinkStep(WizardEditorStep):
     def on_image_eventbox__motion_notify_event(self, widget, event):
         w = widget.get_window()
         if self._inside_button(event):
-            cursor = Gdk.Cursor(Gdk.HAND2)
+            cursor = Gdk.Cursor.new(Gdk.HAND2)
         else:
             cursor = w.get_parent().get_property('cursor')
         w.set_cursor(cursor)

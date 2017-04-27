@@ -80,8 +80,8 @@ class CalendarView(WebView):
         self._loaded = True
         view = self.get_view()
         view.connect('size-allocate', self._on_view__size_allocate)
-        x, y, width, height = view.get_allocation()
-        self._update_calendar_size(width, height)
+        rect = view.get_allocation()
+        self._update_calendar_size(rect.width, rect.height)
 
     def _startup(self):
         options = {}
@@ -139,7 +139,7 @@ class CalendarView(WebView):
 
         options['firstDay'] = firstday
         options['isRTL'] = (
-            Gtk.widget_get_default_direction() == Gtk.TextDirection.RTL)
+            Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL)
         options['data'] = self._show_events
         options['loading_msg'] = _('Loading calendar content, please wait...')
         self.js_function_call('startup', options)
@@ -193,8 +193,7 @@ class CalendarView(WebView):
         self._load_finished()
 
     def _on_view__size_allocate(self, widget, req):
-        x, y, width, height = req
-        self._update_calendar_size(width, height)
+        self._update_calendar_size(req.width, req.height)
 
     #
     # WebView
@@ -261,7 +260,7 @@ class CalendarApp(ShellApp):
     def __init__(self, window, store=None):
         # Create this here because CalendarView will update it.
         # It will only be shown on create_ui though
-        self.date_label = Gtk.Label('')
+        self.date_label = Gtk.Label(label='')
         self._calendar = CalendarView(self)
         ShellApp.__init__(self, window, store=store)
         threadit(self._setup_daemon)

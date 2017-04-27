@@ -7,6 +7,6 @@ ListContainer(listcontainer):
     row: u'Default', None
     row: u'Santander', None
   GtkBox(orientation=vertical, fill=True, padding=6):
-    GtkButton(): 'gtk-add'
-    GtkButton(): 'gtk-remove', insensitive
-    GtkButton(): 'gtk-edit', insensitive
+    GtkButton(fill=True): 'gtk-add'
+    GtkButton(fill=True): 'gtk-remove', insensitive
+    GtkButton(fill=True): 'gtk-edit', insensitive

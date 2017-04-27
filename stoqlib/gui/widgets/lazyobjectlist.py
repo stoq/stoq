@@ -22,7 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 #
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib
+from pygtkcompat.generictreemodel import GenericTreeModel
 
 from kiwi.datatypes import number
 from kiwi.ui.objectlist import empty_marker, ListLabel
@@ -59,8 +60,7 @@ class LazyObjectModelRow(object):
         return self.item
 
 
-# FIXME: Port to Gtk.TreeModel so it works under gi
-class LazyObjectModel(Gtk.GenericTreeModel, Gtk.TreeSortable):
+class LazyObjectModel(GenericTreeModel, Gtk.TreeSortable):
 
     __gtype_name__ = 'LazyObjectModel'
 
@@ -173,6 +173,8 @@ class LazyObjectModel(Gtk.GenericTreeModel, Gtk.TreeSortable):
     def __getitem__(self, key):
         if isinstance(key, Gtk.TreeIter):
             index = self.get_user_data(key)
+        elif isinstance(key, Gtk.TreePath):
+            index = self.get_user_data(self.get_iter(key))
         elif isinstance(key, (basestring, int)):
             index = int(key)
         elif isinstance(key, tuple):
@@ -187,16 +189,9 @@ class LazyObjectModel(Gtk.GenericTreeModel, Gtk.TreeSortable):
 
     # GtkTreeSortable
 
-    if Gtk.gtk_version >= (3, 0):
-        @debug
-        def do_get_sort_column_id(self):
-            return (self._sort_order >= 0, self._sort_column_id, self._sort_order)
-    else:
-        # FIXME: Remove when done with gtk2
-        @debug
-        def do_get_sort_column_id_gtk2(self):
-            return (self._sort_column_id, self._sort_order)
-        do_get_sort_column_id = do_get_sort_column_id_gtk2
+    @debug
+    def do_get_sort_column_id(self):
+        return (self._sort_order >= 0, self._sort_column_id, self._sort_order)
 
     @debug
     def do_set_sort_column_id(self, sort_column_id, sort_order):
@@ -213,8 +208,9 @@ class LazyObjectModel(Gtk.GenericTreeModel, Gtk.TreeSortable):
         self._load_result_set(self._result)
         self.sort_column_changed()
 
+    # FIXME: If we set this to do_set_sort_func it segfaults. Why?
     @debug
-    def do_set_sort_func(self, sort_column_id, sort_func, user_data=None):
+    def set_sort_func(self, sort_column_id, sort_func, user_data=None):
         pass
 
     @debug
@@ -384,7 +380,7 @@ class LazyObjectListUpdater(object):
             return False
 
         timeout = {}
-        timeout['source_id'] = Gtk.timeout_add(
+        timeout['source_id'] = GLib.timeout_add(
             self.SCROLL_TIMEOUT, timeout_func, timeout)
         self._timeout_queue.append(timeout)
 

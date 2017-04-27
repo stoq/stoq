@@ -23,7 +23,7 @@
 ##
 ##
 
-from gi.repository import Gtk, Gdk, Glib
+from gi.repository import Gtk, Gdk, GLib
 from kiwi.ui.cellrenderer import ComboDetailsCellRenderer
 from kiwi.ui.entry import ENTRY_MODE_DATA
 from kiwi.ui.popup import PopupWindow
@@ -85,7 +85,7 @@ class _QueryEntryPopup(PopupWindow):
             self._model.append(
                 (_LOADING_ITEM_MARKER, self.entry_gadget.LOADING_ITEMS_TEXT,
                  None, True, 0))
-            Glib.timeout_add(100, self._pulse_spinner_col)
+            GLib.timeout_add(100, self._pulse_spinner_col)
         else:
             self._treeview.remove_column(self._spinner_column)
 
@@ -109,7 +109,7 @@ class _QueryEntryPopup(PopupWindow):
                 (_NO_ITENS_MARKER, self.entry_gadget.NO_ITEMS_FOUND_TEXT,
                  None, False, 0))
 
-        Glib.idle_add(self._resize)
+        GLib.idle_add(self._resize)
 
     def scroll(self, relative=None, absolute=None):
         model, titer = self._selection.get_selected()
@@ -146,7 +146,7 @@ class _QueryEntryPopup(PopupWindow):
         # By default the PopupWindow will call confirm for both Return and
         # KP_Enter, but also for Tab and Space. We want to fallback to search
         # in those specific cases
-        if keyval in [Gtk.keysyms.Return, Gtk.keysyms.KP_Enter]:
+        if keyval in [Gdk.KEY_Return, Gdk.KEY_KP_Enter]:
             self.confirm(fallback_to_search=True)
             return True
 
@@ -168,8 +168,6 @@ class _QueryEntryPopup(PopupWindow):
         self._treeview.add_events(
             Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.KEY_PRESS_MASK)
 
-        self._treeview.modify_base(Gtk.StateType.ACTIVE,
-                                   self._get_selection_color())
         self._treeview.set_tooltip_column(COL_TOOLTIP)
         self._treeview.set_enable_search(False)
 
@@ -197,7 +195,7 @@ class _QueryEntryPopup(PopupWindow):
 
         cells_height = sum(
             self._treeview.get_background_area(
-                path, self._treeview.get_column(0)).height
+                Gtk.TreePath(path), self._treeview.get_column(0)).height
             for path in xrange(len(self._treeview.get_model())))
         # Use half of the available screen space
         height = min(cells_height, monitor.height / 2)
@@ -214,8 +212,9 @@ class _QueryEntryPopup(PopupWindow):
         self.set_loading(True)
         super(_QueryEntryPopup, self).popup()
         self._treeview.set_size_request(-1, -1)
-        self.widget.grab_focus()
-        self.widget.select_region(len(self.widget.get_text()), -1)
+        self.attached_widget.grab_focus()
+        self.attached_widget.select_region(
+            len(self.attached_widget.get_text()), -1)
 
     def popdown(self):
         super(_QueryEntryPopup, self).popdown()
@@ -256,16 +255,6 @@ class _QueryEntryPopup(PopupWindow):
             self.emit('create-item')
         else:
             self.emit('item-selected', item, fallback_to_search)
-
-    def _get_selection_color(self):
-        settings = Gtk.settings_get_default()
-        for line in settings.props.gtk_color_scheme.split('\n'):
-            if not line:
-                continue
-            key, value = line.split(' ')
-            if key == 'selected_bg_color:':
-                return Gdk.color_parse(value)
-        return self.widget.style.base[Gtk.StateType.SELECTED]
 
     def _select_path_for_event(self, event):
         path = self._treeview.get_path_at_pos(int(event.x), int(event.y))
@@ -393,10 +382,7 @@ class QueryEntryGadget(object):
         self._update_widgets()
 
     def update_edit_button(self, stock, tooltip=None):
-        if self.edit_button is None:
-            return
-
-        image = Gtk.image_new_from_stock(stock, Gtk.IconSize.MENU)
+        image = Gtk.Image.new_from_stock(stock, Gtk.IconSize.MENU)
         self.edit_button.set_image(image)
         if tooltip is not None:
             self.edit_button.set_tooltip_text(tooltip)
@@ -416,13 +402,13 @@ class QueryEntryGadget(object):
             if self.edit_button is None or self.info_button is None:
                 self._replace_widget()
 
-            if self.edit_button is None:
-                self.edit_button = self._add_button(Gtk.STOCK_NEW)
-            self.edit_button.connect('clicked', self._on_edit_button__clicked)
+        if self.edit_button is None:
+            self.edit_button = self._add_button(Gtk.STOCK_NEW)
+        self.edit_button.connect('clicked', self._on_edit_button__clicked)
 
-            if self.info_button is None:
-                self.info_button = self._add_button(Gtk.STOCK_INFO)
-            self.info_button.connect('clicked', self._on_info_button__clicked)
+        if self.info_button is None:
+            self.info_button = self._add_button(Gtk.STOCK_INFO)
+        self.info_button.connect('clicked', self._on_info_button__clicked)
 
         self.entry.connect('activate', self._on_entry__activate)
         self.entry.connect('changed', self._on_entry__changed)
@@ -442,7 +428,7 @@ class QueryEntryGadget(object):
             self.info_button.set_sensitive(bool(self._current_obj))
 
     def _add_button(self, stock):
-        image = Gtk.image_new_from_stock(stock, Gtk.IconSize.MENU)
+        image = Gtk.Image.new_from_stock(stock, Gtk.IconSize.MENU)
         button = Gtk.Button()
         button.set_relief(Gtk.ReliefStyle.NONE)
         button.set_image(image)
@@ -454,11 +440,11 @@ class QueryEntryGadget(object):
         # This will remove the entry, add a hbox in the entry old position, and
         # reattach the entry to this box. The box will then be used to add two
         # new buttons (one for searching, other for editing/adding new objects
-        container = self.entry.parent
+        container = self.entry.props.parent
 
         # stolen from gazpacho code (widgets/base/base.py):
         props = {}
-        for pspec in Gtk.container_class_list_child_properties(container):
+        for pspec in container.__class__.list_child_properties():
             props[pspec.name] = container.child_get_property(self.entry, pspec.name)
 
         self.box = Gtk.HBox()
@@ -520,19 +506,19 @@ class QueryEntryGadget(object):
 
     def _on_entry__key_press_event(self, window, event):
         keyval = event.keyval
-        if keyval == Gtk.keysyms.Up or keyval == Gtk.keysyms.KP_Up:
+        if keyval == Gdk.KEY_Up or keyval == Gdk.KEY_KP_Up:
             self._popup.scroll(relative=-1)
             return True
-        elif keyval == Gtk.keysyms.Down or keyval == Gtk.keysyms.KP_Down:
+        elif keyval == Gdk.KEY_Down or keyval == Gdk.KEY_KP_Down:
             self._popup.scroll(relative=+1)
             return True
-        elif keyval == Gtk.keysyms.Page_Up:
+        elif keyval == Gdk.KEY_Page_Up:
             self._popup.scroll(relative=-14)
             return True
-        elif keyval == Gtk.keysyms.Page_Down:
+        elif keyval == Gdk.KEY_Page_Down:
             self._popup.scroll(relative=+14)
             return True
-        elif keyval == Gtk.keysyms.Escape:
+        elif keyval == Gdk.KEY_Escape:
             self._popup.popdown()
             return True
 
@@ -543,8 +529,8 @@ class QueryEntryGadget(object):
         self.set_value(None)
         if len(value) >= self.MIN_KEY_LENGTH:
             if self._source_id is not None:
-                Glib.source_remove(self._source_id)
-            self._source_id = Glib.timeout_add(150, self._dispatch, value)
+                GLib.source_remove(self._source_id)
+            self._source_id = GLib.timeout_add(150, self._dispatch, value)
             if not self._popup.visible:
                 self._popup.popup()
             self._popup.set_loading(True)
@@ -552,7 +538,7 @@ class QueryEntryGadget(object):
             # In this case, the user has deleted text to less than the
             # min key length, so pop it down
             if self._source_id is not None:
-                Glib.source_remove(self._source_id)
+                GLib.source_remove(self._source_id)
                 self._source_id = None
             self._popup.popdown()
 
@@ -570,7 +556,7 @@ class QueryEntryGadget(object):
         self.set_value(self.get_object_from_item(item))
         popup.popdown()
         self.entry.grab_focus()
-        Glib.idle_add(self.entry.select_region, len(self.entry.get_text()), -1)
+        GLib.idle_add(self.entry.select_region, len(self.entry.get_text()), -1)
 
         if item is None and fallback_to_search:
             self._run_search()

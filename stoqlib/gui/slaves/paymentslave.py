@@ -863,8 +863,8 @@ class CardMethodSlave(BaseEditorSlave):
             self._add_card_type(name, ptype)
 
     def _add_card_type(self, name, payment_type):
-        radio = Gtk.RadioButton(self._radio_group, name)
-        radio.set_data('type', payment_type)
+        radio = Gtk.RadioButton(group=self._radio_group, label=name)
+        radio._type = payment_type
         radio.connect('toggled', self._on_card_type_radio_toggled)
         self.types_box.pack_start(radio, True, True, 0)
         radio.show()
@@ -876,7 +876,7 @@ class CardMethodSlave(BaseEditorSlave):
         if not radio.get_active():
             return
 
-        self._selected_type = radio.get_data('type')
+        self._selected_type = radio._type
         self._setup_max_installments()
 
     def _validate_auth_number(self):
@@ -1353,10 +1353,10 @@ class MultipleMethodSlave(BaseEditorSlave):
         else:
             description = payment_method.get_description()
 
-        radio = Gtk.RadioButton(group, description)
+        radio = Gtk.RadioButton(group=group, label=description)
         self.methods_box.pack_start(radio, True, True, 0)
         radio.connect('toggled', self._on_method__toggled)
-        radio.set_data('method', payment_method)
+        radio._method = payment_method
         radio.show()
 
         if api.sysparam.compare_object("DEFAULT_PAYMENT_METHOD",
@@ -1558,7 +1558,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         if not radio.get_active():
             return
 
-        self._method = radio.get_data('method')
+        self._method = radio._method
         self._update_values()
         self.value.validate(force=True)
         self.value.grab_focus()

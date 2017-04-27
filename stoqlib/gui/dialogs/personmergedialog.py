@@ -243,7 +243,7 @@ class PersonMergeDialog(BaseEditor):
         self._progress_dialog.progressbar.set_text('%s/%s' % (current, total))
         self._progress_dialog.progressbar.set_fraction((current + 1) / float(total))
         while Gtk.events_pending():
-            Gtk.main_iteration(False)
+            Gtk.main_iteration_do(False)
 
     def _close_progress(self):
         self._progress_dialog.stop()

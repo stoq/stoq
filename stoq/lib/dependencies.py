@@ -37,7 +37,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 # the README and the debian control files
 # TODO: Add requests, weasyprint, lxml
 DATEUTIL_REQUIRED = (1, 4, 1)
-GTK_REQUIRED = (2, 20, 0)
+GTK_REQUIRED = (3, 14)
 GUDEV_REQUIRED = (147, )
 KIWI_REQUIRED = (1, 11, 1)
 MAKO_REQUIRED = (0, 2, 5)
@@ -46,7 +46,6 @@ PYCAIRO_REQUIRED = (1, 8, 2)
 PYPOPPLER_REQUIRED = (0, 12, 1)
 PSQL_REQUIRED = (8, 4)
 PSYCOPG_REQUIRED = (2, 0, 9)
-PYGTK_REQUIRED = (2, 20, 0)
 PYGTKWEBKIT_REQUIRED = (1, 1, 7)
 PYINOTIFY_REQUIRED = (0, 9, 2)
 PYOBJC_REQUIRED = (2, 3)
@@ -73,7 +72,7 @@ class DependencyChecker(object):
     def check(self):
         # First make it possible to open up a graphical interface,
         # so we can display error messages
-        self._check_pygtk(PYGTK_REQUIRED, GTK_REQUIRED)
+        self._check_gtk(GTK_REQUIRED)
         self._check_kiwi(KIWI_REQUIRED)
         self._check_pycairo(PYCAIRO_REQUIRED)
         if platform.system() != 'Windows':
@@ -120,9 +119,9 @@ class DependencyChecker(object):
         # Can't use Kiwi here, so create a simple Gtk dialog
         from gi.repository import Gtk
         dialog = Gtk.MessageDialog(parent=None, flags=0,
-                                   type=Gtk.MessageType.ERROR,
+                                   message_type=Gtk.MessageType.ERROR,
                                    buttons=Gtk.ButtonsType.OK,
-                                   message_format=title)
+                                   text=title)
         dialog.set_markup(msg)
         if details:
             dialog.format_secondary_markup(details)
@@ -158,33 +157,20 @@ class DependencyChecker(object):
 
         self._error(_("Incompatible dependency"), msg)
 
-    def _check_pygtk(self, pygtk_version, gtk_version):
-        return
+    def _check_gtk(self, gtk_version):
         try:
+            import gi
+            gi.require_version('Gtk', '3.0')
             from gi.repository import Gtk
             Gtk  # pylint: disable=W0104
-        except ImportError:
-            pass
-            #try:
-            #    import pygtk
-            #    # This modifies sys.path
-            #    pyGtk.require('2.0')
-            #    # Try again now when pygtk is imported
-            #    from gi.repository import Gtk
-            #except ImportError as e:
-            #    # Can't display a dialog here since gtk is not available
-            #    raise SystemExit(
-            #        "ERROR: PyGTK not found, can't start Stoq: %r" % (e, ))
+        except (ValueError, ImportError) as e:
+            # Can't display a dialog here since gtk is not available
+            raise SystemExit(
+                "ERROR: GTK+ not found, can't start Stoq: %r" % (e, ))
 
-        if Gtk.pygtk_version < pygtk_version:
-            self._too_old(project="PyGTK+",
-                          url="http://www.pyGtk.org/",
-                          found=_tuple2str(Gtk.pygtk_version),
-                          required=pygtk_version)
-
-        if Gtk.gtk_version < gtk_version:
+        if (Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION) < gtk_version:
             self._too_old(project="Gtk+",
-                          url="http://www.Gtk.org/",
+                          url="http://www.gtk.org/",
                           found=_tuple2str(Gtk.gtk_version),
                           required=gtk_version)
 
@@ -221,14 +207,16 @@ class DependencyChecker(object):
 
     def _check_pypoppler(self, version):
         try:
-            import poppler
-        except ImportError:
+            import gi
+            gi.require_version('Poppler', '0.18')
+            from gi.repository import Poppler
+        except (ValueError, ImportError):
             self._missing(project="Pypoppler",
                           url='https://launchpad.net/poppler-python',
                           version=version)
             return
 
-        pypoppler_version = poppler.pypoppler_version
+        pypoppler_version = (Poppler.MAJOR_VERSION, Poppler.MINOR_VERSION)
         if pypoppler_version < version:
             self._too_old(project="Pypoppler",
                           url='https://launchpad.net/poppler-python',
@@ -237,9 +225,11 @@ class DependencyChecker(object):
 
     def _check_pygtkwebkit(self, version):
         try:
-            import webkit
-            webkit  # pylint: disable=W0104
-        except ImportError:
+            import gi
+            gi.require_version('WebKit', '3.0')
+            from gi.repository import WebKit
+            WebKit  # pylint: disable=W0104
+        except (ValueError, ImportError):
             self._missing(project='pywebkitgtk',
                           url='http://code.google.com/p/pywebkitgtk/',
                           version=version)

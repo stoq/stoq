@@ -352,7 +352,7 @@ class SellableEditor(BaseEditor):
 
     def set_main_tab_label(self, tabname):
         self.sellable_notebook.set_tab_label(self.sellable_tab,
-                                             Gtk.Label(tabname))
+                                             Gtk.Label(label=tabname))
 
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)
@@ -360,7 +360,7 @@ class SellableEditor(BaseEditor):
 
         event_box = Gtk.EventBox()
         event_box.show()
-        self.sellable_notebook.append_page(event_box, Gtk.Label(tabname))
+        self.sellable_notebook.append_page(event_box, Gtk.Label(label=tabname))
         self.attach_slave(tabname, tabslave, event_box)
 
     def set_widget_formats(self):

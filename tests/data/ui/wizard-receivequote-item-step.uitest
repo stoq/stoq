@@ -15,10 +15,10 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
             column: title='Cost'
             row: True, u'Description', u'Supplier', Decimal('8.000'), Decimal('0'), <currency $125>
           GtkButtonBox(step.hbuttonbox1, orientation=horizontal, fill=True):
-            GtkButton(step.select_all_button): '_Select All'
-            GtkButton(step.unselect_all_button): '_Unselect All'
-            GtkButton(step.create_order_button): 'C_reate Orders'
-            GtkButton(step.cancel_group_button): 'Cancel _Group'
+            GtkButton(step.select_all_button, expand=True, fill=True): '_Select All'
+            GtkButton(step.unselect_all_button, expand=True, fill=True): '_Unselect All'
+            GtkButton(step.create_order_button, expand=True, fill=True): 'C_reate Orders'
+            GtkButton(step.cancel_group_button, expand=True, fill=True): 'Cancel _Group'
       ProxyLabel(notification_lbl, fill=True):
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
@@ -26,4 +26,5 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): 'gtk-close'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

@@ -11,7 +11,7 @@ GtkBox(toplevel, orientation=vertical):
       GtkBox(orientation=vertical, expand=True, fill=True, padding=6):
         ObjectList(expand=True, fill=True):
           column: title='Branch Name', expand
-        GtkBox(orientation=horizontal):
-          GtkButton(): 'gtk-add', hidden
-          GtkButton(): 'gtk-remove', insensitive
-          GtkButton(): 'gtk-edit', hidden, insensitive
+        GtkBox(orientation=horizontal, fill=True):
+          GtkButton(fill=True): 'gtk-add', hidden
+          GtkButton(fill=True): 'gtk-remove', insensitive
+          GtkButton(fill=True): 'gtk-edit', hidden, insensitive

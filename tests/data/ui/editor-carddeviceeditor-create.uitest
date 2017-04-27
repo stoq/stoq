@@ -26,15 +26,16 @@ GtkDialog(main_dialog.toplevel): title='Add Card Device', hidden
                     column: title='Fee'
                     column: title='Fare'
                   GtkBox(orientation=vertical, fill=True, padding=6):
-                    GtkButton(): 'gtk-add'
-                    GtkButton(): 'gtk-remove', insensitive
-                    GtkButton(): 'gtk-edit', insensitive
+                    GtkButton(fill=True): 'gtk-add'
+                    GtkButton(fill=True): 'gtk-remove', insensitive
+                    GtkButton(fill=True): 'gtk-edit', insensitive
             GtkLabel(label1): '<b>Operation Costs</b>'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

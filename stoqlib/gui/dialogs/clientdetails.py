@@ -26,7 +26,7 @@
 
 import datetime
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, GdkPixbuf
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel, ObjectTree
 from kiwi.ui.gadgets import render_pixbuf
@@ -107,7 +107,7 @@ class DetailsTab(Gtk.VBox):
 
     def get_label(self):
         """Returns the name of the tab."""
-        label = Gtk.Label(self.labels[1])
+        label = Gtk.Label(label=self.labels[1])
         return label
 
     def get_details_model(self, model):
@@ -308,10 +308,10 @@ class WorkOrdersTab(DetailsTab):
                 Column("equipment", title=_("Equipment"),
                        data_type=str, expand=True, pack_end=True),
                 Column('category_color', title=_(u'Equipment'),
-                       column='equipment', data_type=Gdk.Pixbuf,
+                       column='equipment', data_type=GdkPixbuf.Pixbuf,
                        format_func=render_pixbuf),
                 Column('flag_icon', title=_(u'Equipment'), column='equipment',
-                       data_type=Gdk.Pixbuf, format_func_data=True,
+                       data_type=GdkPixbuf.Pixbuf, format_func_data=True,
                        format_func=self._format_state_icon),
                 Column("open_date", title=_("Open date"),
                        data_type=datetime.date, width=120),

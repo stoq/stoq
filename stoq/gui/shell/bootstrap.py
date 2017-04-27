@@ -91,12 +91,10 @@ class ShellBootstrap(object):
         assert not 'gobject' in sys.modules
         assert not 'gtk' in sys.modules
 
-        if 'STOQ_USE_GI' in os.environ:
-            from stoq.lib import gicompat
-            gicompat.enable()
-
-        from kiwi import compat
-        sys.modules['gi'] = compat
+        # FIXME: Set the default encoding to utf-8 just like pygtk used to do.
+        # This probably will not be necessary in python3
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
 
         from gi.repository import GObject
         GObject.threads_init()
@@ -222,17 +220,20 @@ class ShellBootstrap(object):
         # Creating a button as a temporary workaround for bug
         # https://bugzilla.gnome.org/show_bug.cgi?id=632538, until gtk 3.0
         Gtk.Button()
-        settings = Gtk.settings_get_default()
+        settings = Gtk.Settings.get_default()
         settings.props.gtk_button_images = True
 
         from stoqlib.lib.environment import is_developer_mode
-        if is_developer_mode() and Gtk.gtk_version[0] == 2:
+        if is_developer_mode():
             # Install a Control-Q handler that forcefully exits
             # the program without saving any kind of state
             def event_handler(event):
-                if (event.type == Gdk.KEY_PRESS and
-                        event.state & Gdk.ModifierType.CONTROL_MASK and
-                        event.keyval == Gtk.keysyms.q):
+                state = event.get_state()
+                if isinstance(state, tuple):
+                    state = state[1]
+                if (event.type == Gdk.EventType.KEY_PRESS and
+                        state & Gdk.ModifierType.CONTROL_MASK and
+                        event.keyval == Gdk.KEY_q):
                     os._exit(0)
                 Gtk.main_do_event(event)
             Gdk.event_handler_set(event_handler)
@@ -310,7 +311,7 @@ class ShellBootstrap(object):
         from kiwi.ui.pixbufutils import pixbuf_from_string
         data = environ.get_resource_string(
             'stoq', 'pixmaps', 'stoq-stock-app-24x24.png')
-        Gtk.window_set_default_icon(pixbuf_from_string(data))
+        Gtk.Window.set_default_icon(pixbuf_from_string(data))
 
         if platform.system() == 'Darwin':
             from AppKit import NSApplication, NSData, NSImage
@@ -358,10 +359,10 @@ class ShellBootstrap(object):
     def _setup_debug_options(self):
         if not self._options.debug:
             return
-        from gtk import keysyms
+        from gi.repository import Gdk
         from stoqlib.gui.utils.introspection import introspect_slaves
         from stoqlib.gui.utils.keyboardhandler import install_global_keyhandler
-        install_global_keyhandler(keysyms.F12, introspect_slaves)
+        install_global_keyhandler(Gdk.KEY_F12, introspect_slaves)
 
     #
     # Global functions

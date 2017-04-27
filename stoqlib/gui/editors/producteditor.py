@@ -603,7 +603,7 @@ class ProductStockEditor(BaseEditor):
         event_box.show()
         image_gallery_slave = ImageGallerySlave(
             self.store, self.model.sellable, self.visual_mode)
-        self.notebook.append_page(event_box, Gtk.Label(_("Images")))
+        self.notebook.append_page(event_box, Gtk.Label(label=_("Images")))
         self.attach_slave('images', image_gallery_slave, event_box)
 
 

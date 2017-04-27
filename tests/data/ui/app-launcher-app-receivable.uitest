@@ -121,7 +121,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                         item: 'Identical to'
                         item: 'Does Not Contain'
                       HintedEntry(padding=6): ''
-                    GtkButton(): 'gtk-find'
+                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
                 column: title='Payment #'
                 column: title='Description', expand
@@ -140,8 +140,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
-          GtkLabel(expand=True, fill=True):
-      GtkBox(orientation=horizontal, expand=True, fill=True):
+          GtkLabel(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkAlignment(expand=True, fill=True):
           GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'

@@ -28,7 +28,7 @@ import platform
 import tempfile
 import threading
 
-from gi.repository import Gtk, Gdk, Gio, Pango
+from gi.repository import Gtk, Gio, Pango
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.gui.events import PrintReportEvent
@@ -51,9 +51,10 @@ log = logging.Logger(__name__)
 # https://github.com/Kozea/WeasyPrint/issues/130
 # http://pythonhosted.org/cairocffi/cffi_api.html#converting-pycairo-wrappers-to-cairocffi
 def _UNSAFE_pycairo_context_to_cairocffi(pycairo_context):
+    import cairo
     import cairocffi
     # Sanity check. Continuing with another type would probably segfault.
-    if not isinstance(pycairo_context, Gdk.CairoContext):
+    if not isinstance(pycairo_context, cairo.Context):
         raise TypeError('Expected a cairo.Context, got %r' % pycairo_context)
 
     # On CPython, id() gives the memory address of a Python object.
@@ -76,7 +77,8 @@ def _UNSAFE_pycairo_context_to_cairocffi(pycairo_context):
 
 class PrintOperation(Gtk.PrintOperation):
     def __init__(self, report):
-        Gtk.PrintOperation.__init__(self)
+        super(PrintOperation, self).__init__()
+
         self.connect("begin-print", self._on_operation_begin_print)
         self.connect("draw-page", self._on_operation_draw_page)
         self.connect("done", self._on_operation_done)
@@ -101,7 +103,7 @@ class PrintOperation(Gtk.PrintOperation):
 
     def run(self):
         Gtk.PrintOperation.run(self,
-                               Gtk.PRINT_OPERATION_ACTION_PRINT_DIALOG,
+                               Gtk.PrintOperationAction.PRINT_DIALOG,
                                parent=get_current_toplevel())
         # GtkPrintOperation.run() is not blocking by default, as the rendering
         # is threaded we need to wait for the operation to finish before we can
@@ -156,16 +158,16 @@ class PrintOperation(Gtk.PrintOperation):
         schedule_in_main_thread(self._threaded_render_done)
 
     def _threaded_render_done(self):
-        if self.get_status() == Gtk.PRINT_STATUS_FINISHED_ABORTED:
+        if self.get_status() == Gtk.PrintStatus.FINISHED_ABORTED:
             return
         self.render_done()
         self._printing_complete = True
 
     def _is_rendering_finished(self):
         return self.get_status() in [
-            Gtk.PRINT_STATUS_SENDING_DATA,
-            Gtk.PRINT_STATUS_FINISHED,
-            Gtk.PRINT_STATUS_FINISHED_ABORTED]
+            Gtk.PrintStatus.SENDING_DATA,
+            Gtk.PrintStatus.FINISHED,
+            Gtk.PrintStatus.FINISHED_ABORTED]
 
     # Callbacks
 
@@ -174,7 +176,7 @@ class PrintOperation(Gtk.PrintOperation):
                 self._is_rendering_finished()):
             Gtk.main_quit()
 
-        if self.get_status() == Gtk.PRINT_STATUS_FINISHED_ABORTED:
+        if self.get_status() == Gtk.PrintStatus.FINISHED_ABORTED:
             terminate_thread(self._rendering_thread)
 
     def _on_operation_begin_print(self, operation, context):
@@ -207,13 +209,13 @@ class PrintOperationPoppler(PrintOperation):
         # reportlab to weasyprint
         if getattr(self._report, 'print_as_landscape', False):
             default_page_setup = Gtk.PageSetup()
-            default_page_setup.set_orientation(Gtk.PAGE_ORIENTATION_LANDSCAPE)
+            default_page_setup.set_orientation(Gtk.PageOrientation.LANDSCAPE)
             self.set_default_page_setup(default_page_setup)
 
         self._report.save()
-        uri = Gio.File(path=self._report.filename).get_uri()
-        import poppler
-        self._document = poppler.document_new_from_file(uri, password="")
+        uri = Gio.File.new_for_path(self._report.filename).get_uri()
+        from gi.reposutory import Poppler
+        self._document = Poppler.Document.new_from_file(uri, password="")
 
     def render_done(self):
         self.set_n_pages(self._document.get_n_pages())
@@ -266,7 +268,7 @@ class PrintOperationWEasyPrint(PrintOperation):
         self.set_print_settings(settings)
 
         default_page_setup = Gtk.PageSetup()
-        default_page_setup.set_orientation(Gtk.PAGE_ORIENTATION_PORTRAIT)
+        default_page_setup.set_orientation(Gtk.PageOrientation.LANDSCAPE)
         filename = os.path.join(self.config_dir, self.page_setup_name)
         if os.path.exists(filename):
             default_page_setup.load_file(filename)
@@ -304,10 +306,10 @@ class PrintOperationWEasyPrint(PrintOperation):
         orientation = page_setup.get_orientation()
 
         paper_size = page_setup.get_paper_size()
-        width = paper_size.get_width(Gtk.UNIT_MM)
-        height = paper_size.get_height(Gtk.UNIT_MM)
-        if orientation in (Gtk.PAGE_ORIENTATION_LANDSCAPE,
-                           Gtk.PAGE_ORIENTATION_REVERSE_LANDSCAPE):
+        width = paper_size.get_width(Gtk.Unit.MM)
+        height = paper_size.get_height(Gtk.Unit.MM)
+        if orientation in [Gtk.PageOrientation.LANDSCAPE,
+                           Gtk.PageOrientation.REVERSE_LANDSCAPE]:
             width, height = height, width
 
         descr = Pango.FontDescription(font_name)
@@ -332,17 +334,14 @@ class PrintOperationWEasyPrint(PrintOperation):
         table.set_row_spacings(6)
         table.set_col_spacings(6)
         table.set_border_width(6)
-        table.attach(Gtk.Label(_('Font:')), 0, 1, 0, 1,
-                     yoptions=0,
-                     xoptions=0)
+        lbl = Gtk.Label(label=_('Font:'))
+        table.attach(lbl, 0, 1, 0, 1, yoptions=0, xoptions=0)
 
         settings = self.get_print_settings()
         font_name = settings.get('stoq-font-name')
 
         self.font_button = Gtk.FontButton(font_name)
-        table.attach(self.font_button, 1, 2, 0, 1,
-                     xoptions=0,
-                     yoptions=0)
+        table.attach(self.font_button, 1, 2, 0, 1, xoptions=0, yoptions=0)
         box.pack_start(table, False, False, 0)
         box.show_all()
         return box

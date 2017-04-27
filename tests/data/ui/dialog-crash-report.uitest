@@ -1,5 +1,5 @@
 dialog: HIGAlertDialog
-GtkDialog(): title=' ', hidden
+kiwi+ui+dialogs+HIGAlertDialog(): title=' ', hidden
   GtkBox(orientation=vertical):
     GtkBox(orientation=horizontal):
       GtkImage(_image):
@@ -13,6 +13,7 @@ GtkDialog(): title=' ', hidden
         GtkScrolledWindow(padding=6):
           GtkTextView():
         HintedEntry(padding=6): ''
-    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-      GtkButton(fill=True, pack-end): 'Send report'
-      GtkButton(fill=True, pack-end): 'No thanks'
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+        GtkButton(expand=True, fill=True): 'No thanks'
+        GtkButton(expand=True, fill=True): 'Send report'

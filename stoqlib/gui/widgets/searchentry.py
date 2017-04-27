@@ -132,7 +132,7 @@ class SearchEntryGadget(object):
         self._executer.set_filter_columns(self._filter, self._search_columns)
 
     def _create_button(self, stock):
-        image = Gtk.image_new_from_stock(stock, Gtk.IconSize.MENU)
+        image = Gtk.Image.new_from_stock(stock, Gtk.IconSize.MENU)
         button = Gtk.Button()
         button.set_relief(Gtk.ReliefStyle.NONE)
         button.set_image(image)
@@ -144,11 +144,11 @@ class SearchEntryGadget(object):
         # This will remove the entry, add a hbox in the entry old position, and
         # reattach the entry to this box. The box will then be used to add two
         # new buttons (one for searching, other for editing/adding new objects
-        container = self._entry.parent
+        container = self._entry.props.parent
 
         # stolen from gazpacho code (widgets/base/base.py):
         props = {}
-        for pspec in Gtk.container_class_list_child_properties(container):
+        for pspec in container.__class__.list_child_properties():
             props[pspec.name] = container.child_get_property(self._entry, pspec.name)
 
         self.box = Gtk.HBox()
@@ -211,7 +211,7 @@ class SearchEntryGadget(object):
         return obj
 
     def update_edit_button(self, stock, tooltip):
-        image = Gtk.image_new_from_stock(stock, Gtk.IconSize.MENU)
+        image = Gtk.Image.new_from_stock(stock, Gtk.IconSize.MENU)
         self.edit_button.set_image(image)
         self.edit_button.set_tooltip_text(tooltip)
 

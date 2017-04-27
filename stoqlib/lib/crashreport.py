@@ -102,9 +102,8 @@ def collect_report():
         report_['app_version'] = _fix_version(info.get('ver'))
 
     # External dependencies
-    from gi.repository import Gtk
-    report_['pygtk_version'] = _fix_version(Gtk.pygtk_version)
-    report_['gtk_version'] = _fix_version(Gtk.gtk_version)
+    import gi
+    report_['gtk_version'] = _fix_version(gi.version_info)
 
     import kiwi
     report_['kiwi_version'] = _fix_version(

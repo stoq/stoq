@@ -10,6 +10,6 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Average Cost'
         row: u'Description', Decimal('1.000'), <currency $125>, <currency $125>, <currency $125>
       GtkBox(orientation=vertical, fill=True):
-        GtkButton(): 'gtk-add', hidden
-        GtkButton(): 'gtk-remove', hidden, insensitive
-        GtkButton(): 'gtk-edit', hidden, insensitive
+        GtkButton(fill=True): 'gtk-add', hidden
+        GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+        GtkButton(fill=True): 'gtk-edit', hidden, insensitive

@@ -27,7 +27,8 @@ from gi.repository import Gtk
 
 class SearchFilterButton(Gtk.Button):
     def __init__(self, label=None, stock=None, use_underline=True):
-        Gtk.Button.__init__(self, label, stock, use_underline)
+        Gtk.Button.__init__(self, label=label, stock=stock,
+                            use_underline=use_underline)
         self.set_icon_size(Gtk.IconSize.MENU)
         self.set_relief(Gtk.ReliefStyle.NONE)
         if label != stock and label:
