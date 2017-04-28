@@ -24,6 +24,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
             item: 'Choose...', selected
             item: '/dev/ttyS0'
             item: '/dev/ttyS1'
+            item: 'usb:0x270f:0x4d2'
+            item: 'usb:0x9876:0x1234'
+            item: 'USB Printer'
             item: 'Virtual device'
           GtkLabel(label9): 'Host:'
           ProxyComboEntry(station):
@@ -43,5 +46,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkHButtonBox(fill=True, pack-end):
+      GtkButton(test_button): 'Test device'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
