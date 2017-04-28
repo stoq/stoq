@@ -33,6 +33,7 @@ from stoqdrivers.scales.base import get_supported_scales
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.station import BranchStation
+from stoqlib.drivers.scale import read_scale_info
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.environment import is_developer_mode
@@ -40,6 +41,15 @@ from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+TEST_MESSAGE = """<unset_condensed>
+<centralize>Welcome to <set_bold>Stoq<unset_bold>
+<set_condensed>Condensed <set_bold>bold<unset_bold> text<unset_condensed>
+<set_double_height>Double Height<unset_double_height>
+<descentralize>
+<cut_paper>
+"""
 
 
 class DeviceSettingsEditor(BaseEditor):
@@ -64,10 +74,14 @@ class DeviceSettingsEditor(BaseEditor):
         BaseEditor.__init__(self, store, model)
         self._original_brand = self.model.brand
         self._original_model = self.model.model
+        self.test_button = self.add_button(_('Test device'))
 
     def refresh_ok(self, *args):
-        if self._is_initialized:
-            BaseEditor.refresh_ok(self, self.model.is_valid())
+        if not self._is_initialized:
+            return
+        if self.test_button:
+            self.test_button.set_sensitive(self.model.is_valid())
+        BaseEditor.refresh_ok(self, self.model.is_valid())
 
     def setup_station_combo(self):
         if self._branch_station:
@@ -131,7 +145,7 @@ class DeviceSettingsEditor(BaseEditor):
     def _get_usb_devices(self):
         try:
             import usb.core
-        except ImportError:
+        except ImportError:  # pragma no cover
             return []
 
         devices = []
@@ -147,7 +161,7 @@ class DeviceSettingsEditor(BaseEditor):
                     desc = dev
 
                 devices.append((desc, dev))
-            except usb.core.USBError:
+            except usb.core.USBError:  # pragma no cover
                 # The user might not have access to some devices
                 continue
 
@@ -238,3 +252,12 @@ class DeviceSettingsEditor(BaseEditor):
 
     def on_device_combo__changed(self, *args):
         self.refresh_ok()
+
+    def on_test_button__clicked(self, button):
+        driver = self.model.get_interface()
+        if self.model.type == DeviceSettings.NON_FISCAL_PRINTER_DEVICE:
+            with driver.open():
+                driver.print_line(TEST_MESSAGE)
+        elif self.model.type == DeviceSettings.SCALE_DEVICE:
+            data = read_scale_info(self.store, self.model)
+            warning(str(data.weight))

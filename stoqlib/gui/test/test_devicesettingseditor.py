@@ -23,6 +23,7 @@
 ##
 
 import mock
+from kiwi.python import Settable
 
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.gui.editors.deviceseditor import DeviceSettingsEditor
@@ -32,6 +33,12 @@ from stoqlib.gui.test.uitestutils import GUITest
 class _Device(object):
     def __init__(self, name):
         self.device_name = name
+
+
+class _UsbDevice(object):
+    def __init__(self, idVendor, idProduct):
+        self.idVendor = idVendor
+        self.idProduct = idProduct
 
 
 class TestDeviceSettingsEditor(GUITest):
@@ -60,10 +67,22 @@ class TestDeviceSettingsEditor(GUITest):
         editor.brand_combo.select_item_by_data('toledo')
         self.check_editor(editor, 'editor-devicesetting-create')
 
+    @mock.patch('stoqlib.gui.editors.deviceseditor.get_usb_printer_devices')
     @mock.patch('stoqlib.gui.editors.deviceseditor.DeviceManager.get_serial_devices')
-    def test_show(self, get_serial_devices):
+    def test_show(self, get_serial_devices, get_usb):
         get_serial_devices.return_value = [_Device('/dev/ttyS0'),
                                            _Device('/dev/ttyS1')]
+        get_usb.return_value = [
+            # Without manufacturer and product
+            Settable(idProduct=1234, idVendor=9999),
+            # Without manufacturer
+            Settable(idProduct=0x1234, idVendor=0x9876, manufacturer=None,
+                     product='Printer'),
+            # Complete
+            Settable(idProduct=0x1234, idVendor=0x9876, manufacturer='USB',
+                     product='Printer')
+        ]
+
         station = self.create_station()
         settings = DeviceSettings(store=self.store,
                                   type=DeviceSettings.SCALE_DEVICE)
