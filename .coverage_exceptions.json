@@ -117,7 +117,7 @@
  "stoqlib/gui/editors/clientcategoryeditor.py": 92.59,
  "stoqlib/gui/editors/creditcheckhistoryeditor.py": 97.14,
  "stoqlib/gui/editors/deliveryeditor.py": 78.60,
- "stoqlib/gui/editors/deviceseditor.py": 89.00,
+ "stoqlib/gui/editors/deviceseditor.py": 84.00,
  "stoqlib/gui/editors/discounteditor.py": 81.43,
  "stoqlib/gui/editors/fiscaleditor.py": 94.59,
  "stoqlib/gui/editors/formfieldeditor.py": 94.64,

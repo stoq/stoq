@@ -137,9 +137,16 @@ class DeviceSettingsEditor(BaseEditor):
         devices = []
         for device in get_usb_printer_devices():
             try:
-                devices.append((u'{} {}'.format(device.manufacturer, device.product),
-                                u'usb:{}:{}'.format(hex(device.idVendor),
-                                                    hex(device.idProduct))))
+                dev = 'usb:{}:{}'.format(hex(device.idVendor), hex(device.idProduct))
+                try:
+                    if device.manufacturer is not None:
+                        desc = '{} {}'.format(device.manufacturer, device.product)
+                    else:
+                        desc = dev
+                except Exception:
+                    desc = dev
+
+                devices.append((desc, dev))
             except usb.core.USBError:
                 # The user might not have access to some devices
                 continue
