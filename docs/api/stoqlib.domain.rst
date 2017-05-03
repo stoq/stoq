@@ -37,6 +37,13 @@ domain Package
     :members:
     :show-inheritance:
 
+:mod:`certificate`
+-----------------
+
+.. automodule:: stoqlib.domain.certificate
+    :members:
+    :show-inheritance:
+
 :mod:`commission`
 -----------------
 

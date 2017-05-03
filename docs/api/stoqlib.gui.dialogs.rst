@@ -33,6 +33,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`certificatedialog` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.certificatedialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`clientcategorydialog` Module
 ----------------------------------
 

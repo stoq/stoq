@@ -59,7 +59,8 @@ from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.enums import LatePaymentPolicy, RelativeLocation
-from stoqlib.exceptions import SellError, LoginError, DatabaseInconsistency
+from stoqlib.exceptions import (SellError, LoginError, DatabaseInconsistency,
+                                ModelDataError)
 from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.parameters import sysparam
@@ -382,6 +383,13 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertTrue(client3.person.individual in individuals)
         self.assertTrue(client4.person.individual in individuals)
 
+    def test_get_raw_cpf(self):
+        individual = self.create_individual()
+        individual.cpf = u'262'
+        self.assertRaises(ModelDataError, individual.get_raw_cpf)
+        individual.cpf = u'262.588.841-56'
+        self.assertEqual(individual.get_raw_cpf(), '26258884156')
+
 
 class TestCompany(_PersonFacetTest, DomainTest):
     facet = Company
@@ -416,6 +424,13 @@ class TestCompany(_PersonFacetTest, DomainTest):
         company2 = self.create_company()
         company2.cnpj = u'123456789'
         self.assertTrue(company.check_cnpj_exists(u'123456789'))
+
+    def test_get_raw_cnpj(self):
+        company = self.create_company()
+        company.cnpj = u'123'
+        self.assertRaises(ModelDataError, company.get_raw_cnpj)
+        company.cnpj = u'68.483.700/0001-18'
+        self.assertEqual(company.get_raw_cnpj(), '68483700000118')
 
 
 class TestClient(_PersonFacetTest, DomainTest):

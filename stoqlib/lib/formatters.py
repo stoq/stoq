@@ -206,3 +206,12 @@ def format_sellable_description(sellable, batch=None):
         return description
 
     return u'%s [%s: %s]' % (description, _("Batch"), batch.batch_number)
+
+
+#
+#  Document formatters
+#
+
+
+def raw_document(document):
+    return ''.join(c for c in document if c.isdigit())

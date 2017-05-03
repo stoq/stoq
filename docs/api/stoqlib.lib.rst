@@ -57,6 +57,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`certutils` Module
+-----------------------
+
+.. automodule:: stoqlib.lib.certutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`colorutils` Module
 ------------------------
 
@@ -317,6 +325,14 @@ lib Package
 ---------------------
 
 .. automodule:: stoqlib.lib.process
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`session` Module
+---------------------
+
+.. automodule:: stoqlib.lib.session
     :members:
     :undoc-members:
     :show-inheritance:

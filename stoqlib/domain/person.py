@@ -83,11 +83,14 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.profile import UserProfile
 from stoqlib.enums import LatePaymentPolicy, RelativeLocation
-from stoqlib.exceptions import DatabaseInconsistency, LoginError, SellError
+from stoqlib.exceptions import (DatabaseInconsistency, LoginError, SellError,
+                                ModelDataError)
 from stoqlib.lib.dateutils import localnow, localtoday
-from stoqlib.lib.formatters import raw_phone_number, format_phone_number
+from stoqlib.lib.formatters import (raw_phone_number, format_phone_number,
+                                    raw_document)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.validators import validate_cnpj, validate_cpf
 
 _ = stoqlib_gettext
 
@@ -685,6 +688,14 @@ class Individual(Domain):
         """
         return self.check_unique_value_exists(Individual.cpf, cpf)
 
+    def get_raw_cpf(self):
+        """Returns the cpf without non-numeric characters as a string."""
+        if not validate_cpf(self.cpf):
+            raise ModelDataError(_("The CPF of %s is not valid") %
+                                 self.person.name)
+
+        return raw_document(self.cpf)
+
     @classmethod
     def get_birthday_query(cls, start, end=None):
         """
@@ -809,6 +820,13 @@ class Company(Domain):
         in the database.
         """
         return self.check_unique_value_exists(Company.cnpj, cnpj)
+
+    def get_raw_cnpj(self):
+        """Returns the cnpj without non-numeric characters as a string."""
+        if not validate_cnpj(self.cnpj):
+            raise ModelDataError(_("The CNPJ of %s is not valid.") % self.person.name)
+
+        return raw_document(self.cnpj)
 
 
 @implementer(IDescribable)

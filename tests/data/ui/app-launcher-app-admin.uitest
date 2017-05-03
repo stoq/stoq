@@ -42,6 +42,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
           GtkImageMenuItem(): 'Grid Attribute...'
           GtkImageMenuItem(): 'Forms...'
           GtkImageMenuItem(): 'Sale tokens...'
+          GtkImageMenuItem(): 'Configure certificates...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Plugins...'
       GtkImageMenuItem(): '_Search'

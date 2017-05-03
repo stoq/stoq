@@ -31,6 +31,7 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.domain.invoice import InvoiceLayout
+from stoqlib.gui.dialogs.certificatedialog import CertificateListDialog
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
@@ -308,6 +309,9 @@ class Tasks(object):
     def _open_stoq_link_connect(self):
         self.app.run_dialog(PinDialog, self.app.store)
 
+    def _open_certificates(self):
+        self.app.run_dialog(CertificateListDialog, None)
+
 
 class AdminApp(ShellApp):
 
@@ -340,6 +344,7 @@ class AdminApp(ShellApp):
         'ConfigureInvoicePrinters': 'invoice_printers',
         'ConfigurePlugins': 'plugins',
         'StoqLinkConnect': 'stoq_link_connect',
+        'ConfigureCertificates': 'certificates',
     }
 
     action_permissions = {
@@ -406,6 +411,7 @@ class AdminApp(ShellApp):
              _("Create a new user")),
             ("StoqLinkConnect", None, _("Connect to Stoq.Link..."), '',
              _("Connect this Stoq installation to Stoq.Link")),
+            ("ConfigureCertificates", None, _("Configure certificates...")),
         ]
         self.admin_ui = self.add_ui_actions('', actions,
                                             filename='admin.xml')

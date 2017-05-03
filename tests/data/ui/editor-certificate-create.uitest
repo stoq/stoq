@@ -1,0 +1,33 @@
+editor: CertificateEditor
+GtkDialog(main_dialog.toplevel): title='Add Certificate', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave CertificateEditor is attached
+        GtkAlignment(alignment1):
+          GtkVBox(vbox1):
+            GtkAlignment(alignment2):
+              GtkTable(table1):
+                GtkLabel(type_lbl): 'Certificate type:'
+                ProxyComboBox(type):
+                  item: 'A3: Smartcard'
+                  item: 'A1: Digital certificate', selected
+                ProxyCheckButton(active): 'Active', active
+                GtkLabel(certificate_lbl): 'Certificate file'
+                ProxyLabel(name): '<span ></span>'
+                GtkFileChooserButton(certificate_chooser):
+                  GtkButton(expand=True, fill=True):
+                  GtkComboBox(expand=True, fill=True): hidden
+                    GtkCellView():
+                ProxyCheckButton(ask_password): 'Ask password on use', insensitive
+                GtkLabel(password_lbl): 'Password:'
+                ProxyEntry(password): '123456'
+                ProxyCheckButton(unmask): 'Unmask'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

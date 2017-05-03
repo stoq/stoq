@@ -161,6 +161,7 @@ _tables = [
                    'WorkOrderPackageItem',
                    'WorkOrderHistory']),
     ('event', ['Event']),
+    ('certificate', ['Certificate']),
 ]
 
 # table name (e.g. "Person") -> class

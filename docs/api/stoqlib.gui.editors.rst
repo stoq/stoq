@@ -65,6 +65,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`certificateeditor` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.editors.certificateeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`clientcategoryeditor` Module
 ----------------------------------
 
