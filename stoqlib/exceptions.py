@@ -143,3 +143,7 @@ class TaxError(Exception):
 
 class ReportError(Exception):
     """A problem happened when generating a report"""
+
+
+class CertificateException(Exception):
+    """A problem happened while configuring a digital certificate"""
