@@ -259,22 +259,22 @@ class ShellWindow(GladeDelegate):
         self.main_vbox.show()
 
         self.application_box = gtk.VBox()
-        self.main_vbox.pack_start(self.application_box)
+        self.main_vbox.pack_start(self.application_box, True, True, 0)
         self.application_box.show()
 
         menubar = self.uimanager.get_widget('/menubar')
         if self._osx_app:
             self._osx_app.set_menu_bar(menubar)
         else:
-            self.main_vbox.pack_start(menubar, False, False)
+            self.main_vbox.pack_start(menubar, False, False, 0)
             self.main_vbox.reorder_child(menubar, 0)
 
         toolbar = self.uimanager.get_widget('/toolbar')
-        self.main_vbox.pack_start(toolbar, False, False)
+        self.main_vbox.pack_start(toolbar, False, False, 0)
         self.main_vbox.reorder_child(toolbar, len(self.main_vbox) - 2)
 
         self.statusbar = self._create_statusbar()
-        self.main_vbox.pack_start(self.statusbar, False, False)
+        self.main_vbox.pack_start(self.statusbar, False, False, 0)
         self.main_vbox.reorder_child(self.statusbar, len(self.main_vbox) - 1)
 
         menu_tool_button = self.SearchToolItem.get_proxies()[0]

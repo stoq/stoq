@@ -90,7 +90,7 @@ class RenegotiationDetailsDialog(BaseEditor):
                                      label='<b>%s</b>' % api.escape(_(u"Total:")),
                                      value_format='<b>%s</b>')
         summary_label.show()
-        self.payments_vbox.pack_start(summary_label, False)
+        self.payments_vbox.pack_start(summary_label, False, True, 0)
 
     def _get_renegotiation_items(self):
         for item in self.model.get_items():

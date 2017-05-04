@@ -157,18 +157,18 @@ class SearchSlave(SlaveDelegate):
         self.vbox.pack_start(filters_container, False, True, 6)
 
         hbox = gtk.HBox()
-        filters_box.pack_start(hbox, False, False)
+        filters_box.pack_start(hbox, False, False, 0)
         hbox.show()
         self.hbox = hbox
 
         widget = self._primary_filter
-        self.hbox.pack_start(widget, False, False)
+        self.hbox.pack_start(widget, False, False, 0)
         widget.show()
 
         self.search_entry = self._primary_filter.entry
 
         self.search_button = SearchFilterButton(stock=gtk.STOCK_FIND)
-        hbox.pack_start(self.search_button, False, False)
+        hbox.pack_start(self.search_button, False, False, 0)
         self.search_button.show()
 
         self.filters_box = filters_box
@@ -183,10 +183,10 @@ class SearchSlave(SlaveDelegate):
             search_filter.get_parent().remove(search_filter)
 
         if position == SearchFilterPosition.TOP:
-            self.hbox.pack_start(search_filter, False, False)
+            self.hbox.pack_start(search_filter, False, False, 0)
             self.hbox.reorder_child(search_filter, 0)
         elif position == SearchFilterPosition.BOTTOM:
-            self.filters_box.pack_start(search_filter, False, False)
+            self.filters_box.pack_start(search_filter, False, False, 0)
         search_filter.show()
 
     #
@@ -568,7 +568,7 @@ class SearchSlave(SlaveDelegate):
                                                   column=column,
                                                   label=label,
                                                   value_format=format)
-        parent.pack_start(self._summary_label, False, False)
+        parent.pack_start(self._summary_label, False, False, 0)
         self._summary_label.show()
 
     def get_summary_label(self):

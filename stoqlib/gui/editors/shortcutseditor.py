@@ -99,16 +99,16 @@ class ShortcutsEditor(BasicDialog):
                                 self._on_categories__selection_changed)
         self.categories.set_headers_visible(False)
         self.categories.set_size_request(200, -1)
-        hbox.pack_start(self.categories, False, False)
+        hbox.pack_start(self.categories, False, False, 0)
         self.categories.show()
 
         box = gtk.VBox(spacing=6)
-        hbox.pack_start(box)
+        hbox.pack_start(box, True, True, 0)
         box.show()
 
         self.shortcuts = ObjectList(self._get_columns(), [],
                                     gtk.SELECTION_BROWSE)
-        box.pack_start(self.shortcuts)
+        box.pack_start(self.shortcuts, True, True, 0)
         self.shortcuts.show()
 
         self._label = gtk.Label(

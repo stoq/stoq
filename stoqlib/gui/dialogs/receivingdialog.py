@@ -79,7 +79,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
                                               value_format=value_format)
 
         products_summary_label.show()
-        self.products_vbox.pack_start(products_summary_label, False)
+        self.products_vbox.pack_start(products_summary_label, False, True, 0)
 
         label = self.print_labels.get_children()[0]
         label = label.get_children()[0].get_children()[1]

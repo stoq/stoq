@@ -99,7 +99,7 @@ class CalculatorPopup(PopupWindow):
 
         self._main_label = gtk.Label()
         self._main_label.set_ellipsize(pango.ELLIPSIZE_END)
-        vbox.pack_start(self._main_label, True, True)
+        vbox.pack_start(self._main_label, True, True, 0)
         self._main_label.show()
 
         self._entry = ProxyEntry()
@@ -109,21 +109,21 @@ class CalculatorPopup(PopupWindow):
         self._entry.connect('validate', self._on_entry__validate)
         self._entry.connect_after('changed', self._after_entry__changed)
         self._entry.set_alignment(1.0)
-        vbox.pack_start(self._entry, True, True)
+        vbox.pack_start(self._entry, True, True, 0)
         self._entry.show()
 
         hbox = gtk.HBox(spacing=6)
-        vbox.pack_start(hbox, True, True)
+        vbox.pack_start(hbox, True, True, 0)
         hbox.show()
 
         self._label = gtk.Label()
         self._label.set_property('xalign', 1.0)
         self._label.set_use_markup(True)
-        hbox.pack_start(self._label, True, True)
+        hbox.pack_start(self._label, True, True, 0)
         self._label.show()
 
         self._warning = gtk.Image()
-        hbox.pack_start(self._warning, False, False)
+        hbox.pack_start(self._warning, False, False, 0)
 
         return vbox
 

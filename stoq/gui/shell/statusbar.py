@@ -123,18 +123,19 @@ class StatusDialog(BasicDialog):
             hbox = gtk.HBox(spacing=6)
 
             img = gtk.Image()
-            hbox.pack_start(img, False, True)
+            hbox.pack_start(img, False, True, 0)
             lbl = gtk.Label()
-            hbox.pack_start(lbl, False, True)
+            hbox.pack_start(lbl, False, True, 0)
 
             buttonbox = gtk.HButtonBox()
-            hbox.pack_end(buttonbox, False, True)
+            hbox.pack_end(buttonbox, False, True, 0)
 
             self._widgets[name] = (img, lbl, buttonbox)
             vbox.pack_start(hbox, False, True, 6)
 
             if i < len(resources) - 1:
-                vbox.pack_start(gtk.HSeparator(), False, True, 0)
+                separator = gtk.HSeparator()
+                vbox.pack_start(separator, False, True, 0)
 
         self.vbox.show_all()
         self._update_ui()
@@ -342,7 +343,7 @@ class ShellStatusbar(gtk.Statusbar):
         # FIXME: These looks good on Mac, might need to tweak
         # on Linux to look good
         alignment.set_padding(2, 3, 5, 0)
-        self.message_area.pack_start(alignment, True, True)
+        self.message_area.pack_start(alignment, True, True, 0)
         alignment.show()
 
         widget_area = gtk.HBox(False, 0)
@@ -351,7 +352,7 @@ class ShellStatusbar(gtk.Statusbar):
 
         self._text_label = gtk.Label()
         self._text_label.set_alignment(0.0, 0.5)
-        widget_area.pack_start(self._text_label, True, True)
+        widget_area.pack_start(self._text_label, True, True, 0)
         self._text_label.show()
 
         vsep = gtk.VSeparator()

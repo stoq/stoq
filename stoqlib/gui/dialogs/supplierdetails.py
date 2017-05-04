@@ -110,7 +110,7 @@ class SupplierDetailsDialog(BaseEditor):
                                                value_format=value_format)
 
         purchases_summary_label.show()
-        self.purchases_vbox.pack_start(purchases_summary_label, False)
+        self.purchases_vbox.pack_start(purchases_summary_label, False, True, 0)
 
     def _get_purchase_columns(self):
         return [IdentifierColumn("identifier", title=_('Purchase #'), sorted=True),

@@ -91,7 +91,7 @@ class ProductAttributeSlave(BaseEditorSlave):
             return
         widget = gtk.CheckButton(label=attr.description)
         widget.set_sensitive(attr.has_active_options())
-        self.main_box.pack_start(widget, expand=False)
+        self.main_box.pack_start(widget, False, True, 0)
         widget.show()
         self._widgets[widget] = attr
 
@@ -126,10 +126,11 @@ class ProductAttributeSlave(BaseEditorSlave):
         self._create_attribute_box = gtk.HBox()
         btn = gtk.Button(_("Add a new attribute"))
         btn.connect('clicked', self._on_add_new_attribute_btn__clicked)
-        self._create_attribute_box.pack_start(btn, expand=False)
-        self._create_attribute_box.pack_start(gtk.Label(), expand=True)
+        self._create_attribute_box.pack_start(btn, False, True, 0)
+        label = gtk.Label()
+        self._create_attribute_box.pack_start(label, True, True, 0)
         self._create_attribute_box.show_all()
-        self.main_box.pack_start(self._create_attribute_box, expand=False)
+        self.main_box.pack_start(self._create_attribute_box, False, True, 0)
 
     #
     # Kiwi Callbacks
@@ -489,7 +490,7 @@ class ProductComponentSlave(BaseEditorSlave):
             label='<b>%s</b>' % api.escape(_(u'Total:')),
             value_format='<b>%s</b>')
         self.component_label.show()
-        self.component_tree_vbox.pack_start(self.component_label, False)
+        self.component_tree_vbox.pack_start(self.component_label, False, True, 0)
         self.info_label.set_bold(True)
         self._update_widgets()
         if self.visual_mode:

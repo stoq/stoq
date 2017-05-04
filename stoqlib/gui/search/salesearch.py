@@ -216,11 +216,12 @@ class SoldItemsByBranchSearch(SearchDialog):
         hbox = gtk.HBox()
         hbox.set_spacing(6)
 
-        self.vbox.pack_start(hbox, False, True)
+        self.vbox.pack_start(hbox, False, True, 0)
         self.vbox.reorder_child(hbox, 2)
         self.vbox.set_spacing(6)
 
-        hbox.pack_start(gtk.Label(), True, True)
+        label = gtk.Label()
+        hbox.pack_start(label, True, True, 0)
 
         # Create some labels to show a summary for the search (kiwi's
         # SummaryLabel supports only one column)
@@ -230,7 +231,7 @@ class SoldItemsByBranchSearch(SearchDialog):
         self.total_label = gtk.Label()
         for widget in [self.items_label, self.quantity_label,
                        self.items_per_sale_label, self.total_label]:
-            hbox.pack_start(widget, False, False)
+            hbox.pack_start(widget, False, False, 0)
             set_bold(widget)
 
         hbox.show_all()
@@ -385,11 +386,12 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
         hbox = gtk.HBox()
         hbox.set_spacing(6)
 
-        self.vbox.pack_start(hbox, False, True)
+        self.vbox.pack_start(hbox, False, True, 0)
         self.vbox.reorder_child(hbox, 2)
         self.vbox.set_spacing(6)
 
-        hbox.pack_start(gtk.Label(), True, True)
+        label = gtk.Label()
+        hbox.pack_start(label, True, True, 0)
 
         # Create some labels to show a summary for the search (kiwi's
         # SummaryLabel supports only one column)
@@ -398,7 +400,7 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
         self.total_label = gtk.Label()
         for widget in [self.quantity_label, self.reserved_label,
                        self.total_label]:
-            hbox.pack_start(widget, False, False)
+            hbox.pack_start(widget, False, False, 0)
             set_bold(widget)
 
         hbox.show_all()

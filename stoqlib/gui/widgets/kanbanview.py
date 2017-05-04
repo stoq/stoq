@@ -185,7 +185,7 @@ class KanbanView(gtk.Frame):
         :param KanbanViewColumn column: column to add
         """
         object_list = self._create_list(column.title)
-        self.hbox.pack_start(object_list)
+        self.hbox.pack_start(object_list, True, True, 0)
         object_list.show()
 
         self._columns[column.title] = column

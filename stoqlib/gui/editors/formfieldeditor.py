@@ -61,16 +61,16 @@ class FormFieldEditor(BasicDialog):
                            self._on_forms__selection_changed)
         self.forms.set_headers_visible(False)
         self.forms.set_size_request(200, -1)
-        hbox.pack_start(self.forms, False, False)
+        hbox.pack_start(self.forms, False, False, 0)
         self.forms.show()
 
         box = gtk.VBox()
-        hbox.pack_start(box)
+        hbox.pack_start(box, True, True, 0)
         box.show()
 
         self.fields = ObjectList(self._get_columns(), [],
                                  gtk.SELECTION_BROWSE)
-        box.pack_start(self.fields)
+        box.pack_start(self.fields, True, True, 0)
         self.fields.show()
 
         box.show()

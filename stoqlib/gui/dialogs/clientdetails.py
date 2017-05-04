@@ -62,7 +62,7 @@ class DetailsTab(gtk.VBox):
         self.klist = ObjectTree(self.get_columns())
         self.populate()
 
-        self.pack_start(self.klist)
+        self.pack_start(self.klist, True, True, 0)
         self.klist.show()
 
         if len(self.klist) and self.get_details_dialog_class():
@@ -70,11 +70,11 @@ class DetailsTab(gtk.VBox):
             self.button_box.set_layout(gtk.BUTTONBOX_START)
 
             details_button = gtk.Button(self.details_lbl)
-            self.button_box.pack_start(details_button)
+            self.button_box.pack_start(details_button, True, True, 0)
             details_button.set_sensitive(bool(self.klist.get_selected()))
             details_button.show()
 
-            self.pack_end(self.button_box, False, False)
+            self.pack_end(self.button_box, False, False, 0)
             self.button_box.show()
 
             self.button_box.details_button = details_button
@@ -149,13 +149,13 @@ class SalesTab(DetailsTab):
                                            label=total_label,
                                            value_format=value_format)
         sales_summary_label.show()
-        self.pack_start(sales_summary_label, False)
+        self.pack_start(sales_summary_label, False, True, 0)
 
         self.has_open_inventory = self._has_open_inventory()
 
         if len(self.klist):
             return_button = gtk.Button(_('Return sale'))
-            self.button_box.pack_start(return_button)
+            self.button_box.pack_start(return_button, True, True, 0)
             return_button.set_sensitive(bool(self.klist.get_selected()))
             return_button.show()
 
@@ -400,7 +400,7 @@ class CreditAccountsTab(DetailsTab):
                                              data_func=lambda p: p.is_outpayment())
 
         account_summary_label.show()
-        self.pack_start(account_summary_label, False)
+        self.pack_start(account_summary_label, False, True, 0)
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),

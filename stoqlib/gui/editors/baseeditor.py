@@ -441,7 +441,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
 
         button = gtk.Button(label=label, stock=stock)
         button.props.can_focus = True
-        self.main_dialog.action_area.pack_start(button, False, False)
+        self.main_dialog.action_area.pack_start(button, False, False, 0)
         self.main_dialog.action_area.reorder_child(button, 0)
         button.show()
         return button
@@ -610,7 +610,7 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
     def _setup_relations_list(self):
         self.relations_list = ListContainer(self.get_columns(), gtk.ORIENTATION_HORIZONTAL)
         self.relations_list._vbox.padding = 0
-        self.model_vbox.pack_start(self.relations_list)
+        self.model_vbox.pack_start(self.relations_list, True, True, 0)
 
         self.relations_list.set_list_type(ListType.UNADDABLE)
 

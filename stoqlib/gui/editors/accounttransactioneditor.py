@@ -59,7 +59,7 @@ class AccountTransactionEditor(BaseEditor):
         payment_button = gtk.Button(_("Show Payment"))
         payment_button.connect("clicked", self._on_payment_button__clicked)
         box = self.main_dialog.action_area
-        box.pack_start(payment_button, False, False)
+        box.pack_start(payment_button, False, False, 0)
         box.set_child_secondary(payment_button, True)
         box.set_layout(gtk.BUTTONBOX_END)
 

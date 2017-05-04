@@ -74,7 +74,7 @@ class PurchaseFinishProductListStep(WizardEditorStep):
                                     column='total_received',
                                     value_format='<b>%s</b>')
         self.summary.show()
-        self.vbox1.pack_start(self.summary, expand=False)
+        self.vbox1.pack_start(self.summary, False, True, 0)
 
     def _get_columns(self):
         return [Column('description', title=_('Description'),

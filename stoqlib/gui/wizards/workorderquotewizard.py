@@ -197,8 +197,9 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
 
         button = NotebookCloseButton()
         hbox = gtk.HBox(spacing=6)
-        hbox.pack_start(gtk.Label(label))
-        hbox.pack_start(button)
+        tab_label = gtk.Label(label)
+        hbox.pack_start(tab_label, True, True, 0)
+        hbox.pack_start(button, True, True, 0)
         hbox.show_all()
 
         holder = gtk.EventBox()
@@ -378,7 +379,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
         self._work_orders_hbox.show()
 
         label = gtk.Label(_("Work order:"))
-        self._work_orders_hbox.pack_start(label, False, True)
+        self._work_orders_hbox.pack_start(label, False, True, 0)
 
         data = []
         for wo in self.wizard.workorders:
@@ -398,7 +399,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
             self.work_orders_combo.prefill(data)
             self._selected_workorder = self.work_orders_combo.get_selected()
             self._work_orders_hbox.pack_start(self.work_orders_combo,
-                                              False, False)
+                                              False, False, 0)
 
         self._work_orders_hbox.show_all()
 

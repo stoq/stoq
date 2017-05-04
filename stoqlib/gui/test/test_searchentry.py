@@ -55,7 +55,7 @@ class TestSearchEntryGadget(GUITest):
         box = gtk.VBox()
         window.add(box)
         entry = ProxyEntry()
-        box.pack_start(entry)
+        box.pack_start(entry, True, True, 0)
         self.check_dialog(window, 'search-entry-before-replace')
 
         sale = self.create_sale()

@@ -89,7 +89,7 @@ class Operation(gtk.HBox):
         """Add a label to self
         """
         label = gtk.Label(label)
-        self.pack_start(label, False, False)
+        self.pack_start(label, False, False, 0)
         return label
 
     def add_entry(self, data_type):
@@ -100,13 +100,13 @@ class Operation(gtk.HBox):
         value for or a string to replace a value for)
         """
         entry = ProxyEntry(data_type=data_type)
-        self.pack_start(entry, False, False)
+        self.pack_start(entry, False, False, 0)
         return entry
 
     def add_combo(self, data=None):
         """Add a combo for selecting an option"""
         combo = ProxyComboBox()
-        self.pack_start(combo, False, False)
+        self.pack_start(combo, False, False, 0)
         if data:
             combo.prefill(data)
         return combo
@@ -257,7 +257,7 @@ class SetDateValueOperation(Operation):
 
     def setup(self, other_fields):
         self.entry = ProxyDateEntry()
-        self.pack_start(self.entry, False, False)
+        self.pack_start(self.entry, False, False, 0)
         self.entry.show()
 
     def get_new_value(self, item):
@@ -291,7 +291,7 @@ class Editor(gtk.HBox):
         self._field = field
         gtk.HBox.__init__(self, spacing=6)
         self.operations_combo = ProxyComboBox()
-        self.pack_start(self.operations_combo)
+        self.pack_start(self.operations_combo, True, True, 0)
         self.operations_combo.connect('changed', self._on_operation_changed)
         for oper in self.operations:
             self.operations_combo.append_item(oper.label, oper)
@@ -310,7 +310,7 @@ class Editor(gtk.HBox):
 
         self._oper = combo.get_selected()(self._store, self._field,
                                           self._other_fields)
-        self.pack_start(self._oper)
+        self.pack_start(self._oper, True, True, 0)
 
     def apply_operation(self, item):
         return self._oper.apply_operation(item)
@@ -530,15 +530,16 @@ class MassEditorWidget(gtk.HBox):
         self.editor_placeholder.add(self._editor)
 
     def _setup_widgets(self):
-        self.pack_start(gtk.Label(_('Update')), False, False)
+        label = gtk.Label(_('Update'))
+        self.pack_start(label, False, False, 0)
         self.field_combo = ProxyComboBox()
         self.field_combo.connect('changed', self._on_field_combo__changed)
-        self.pack_start(self.field_combo, False, False)
+        self.pack_start(self.field_combo, False, False, 0)
         self.editor_placeholder = gtk.EventBox()
-        self.pack_start(self.editor_placeholder, False, False)
+        self.pack_start(self.editor_placeholder, False, False, 0)
         self.apply_button = gtk.Button(stock=gtk.STOCK_APPLY)
         self.apply_button.connect('clicked', self._on_apply_button__clicked)
-        self.pack_start(self.apply_button, False, False)
+        self.pack_start(self.apply_button, False, False, 0)
 
         for field in self._fields:
             # Don't let the user edit unique fields for now
@@ -606,7 +607,7 @@ class MassEditorSearch(SearchDialog):
         self.set_ok_label(_('Save'))
         self.ok_button.set_sensitive(True)
         self.mass_editor = MassEditorWidget(store, self._fields, self.results)
-        self.search.vbox.pack_start(self.mass_editor, False, False)
+        self.search.vbox.pack_start(self.mass_editor, False, False, 0)
         self.search.vbox.reorder_child(self.mass_editor, 1)
         self.mass_editor.show_all()
 

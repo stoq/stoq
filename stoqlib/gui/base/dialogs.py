@@ -124,17 +124,17 @@ class BasicDialog(GladeDelegate, RunnableView):
         self._main_vbox = self.toplevel.get_content_area()
 
         self.vbox = gtk.VBox()
-        self._main_vbox.pack_start(self.vbox, True, True)
+        self._main_vbox.pack_start(self.vbox, True, True, 0)
         self.vbox.show()
 
         # FIXME
         # stoqlib/gui/base/search.py - hides the header
         self.header = gtk.EventBox()
-        self.vbox.pack_start(self.header, False, False)
+        self.vbox.pack_start(self.header, False, False, 0)
         self.header.show()
 
         self.main = gtk.EventBox()
-        self.vbox.pack_start(self.main, padding=6)
+        self.vbox.pack_start(self.main, True, True, 6)
         self.main.show()
 
         # FIXME
@@ -147,7 +147,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.main_label.show()
 
         hbox1 = gtk.HBox()
-        self.vbox.pack_start(hbox1, False, 6)
+        self.vbox.pack_start(hbox1, False, True, 0)
         hbox1.show()
 
         # FIXME
@@ -161,7 +161,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         # stoqlib/gui/search/productsearch.py
         # stoqlib/gui/search/servicesearch.py
         self.print_holder = gtk.EventBox()
-        hbox1.pack_start(self.print_holder, True, True)
+        hbox1.pack_start(self.print_holder, True, True, 0)
         self.print_holder.show()
 
         # FIXME
@@ -174,7 +174,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         # FIXME
         # stoqlib/gui/dialogs/quotedialog.py
         self.notice = gtk.EventBox()
-        hbox1.pack_start(self.notice, False, 6)
+        hbox1.pack_start(self.notice, False, True, 0)
         self.notice.show()
 
         action_area = self.toplevel.get_action_area()
@@ -223,7 +223,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         #        but we need to change the dialog API and existing
         #        callsites for that to work.
         if (self.enable_confirm_validation and not
-            self.emit('confirm', self.retval)):
+                self.emit('confirm', self.retval)):
             return
 
         self.close()
@@ -233,7 +233,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.retval = False
         # FIXME: See fixme on confirm
         if (self.enable_confirm_validation and
-            not self.emit('cancel', self.retval)):
+                not self.emit('cancel', self.retval)):
             return
 
         self.close()
@@ -291,7 +291,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         if message is None:
             return
         self._message_bar = MessageBar(message, message_type)
-        self._main_vbox.pack_start(self._message_bar, False, False)
+        self._main_vbox.pack_start(self._message_bar, False, False, 0)
         self._main_vbox.reorder_child(self._message_bar, 0)
         self._message_bar.show_all()
         return self._message_bar

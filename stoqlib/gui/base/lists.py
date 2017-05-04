@@ -218,7 +218,7 @@ class ModelListDialog(BasicDialog):
         BasicDialog.__init__(self, title=self.title, size=self.size)
 
         self.vbox = gtk.VBox()
-        self.vbox.pack_start(self.list_slave.listcontainer)
+        self.vbox.pack_start(self.list_slave.listcontainer, True, True, 0)
         self.add(self.vbox)
         self.vbox.show()
 
@@ -436,7 +436,7 @@ class AdditionListSlave(SearchSlave):
 
         button = gtk.Button(label=label, stock=stock)
         button.set_property('can_focus', True)
-        self.button_box.pack_end(button, False, False)
+        self.button_box.pack_end(button, False, False, 0)
         button.show()
 
         return button

@@ -386,9 +386,9 @@ class CalendarApp(ShellApp):
         self.hbox.pack_start(self.date_label, False, False, 6)
         self.hbox.show()
 
-        self.main_vbox.pack_start(self.hbox, False, False)
+        self.main_vbox.pack_start(self.hbox, False, False, 0)
 
-        self.main_vbox.pack_start(self._calendar)
+        self.main_vbox.pack_start(self._calendar, True, True, 0)
         self._calendar.show()
         self.window.Print.set_tooltip(_("Print this calendar"))
 
@@ -402,7 +402,7 @@ class CalendarApp(ShellApp):
         main_vbox = self.window.main_vbox
         toolbar = self.uimanager.get_widget('/toolbar')
         self.hbox.remove(toolbar)
-        main_vbox.pack_start(toolbar, False, False)
+        main_vbox.pack_start(toolbar, False, False, 0)
         main_vbox.reorder_child(toolbar, 1)
 
         self.uimanager.remove_ui(self.calendar_ui)

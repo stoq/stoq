@@ -140,7 +140,7 @@ class PurchaseDetailsDialog(BaseEditor):
             label='<b>%s</b>' % api.escape(_(u"Total")),
             value_format='<b>%s</b>')
         order_summary_label.show()
-        self.ordered_vbox.pack_start(order_summary_label, False)
+        self.ordered_vbox.pack_start(order_summary_label, False, True, 0)
 
     def _setup_widgets(self):
         self.ordered_items.set_columns(self._get_ordered_columns())

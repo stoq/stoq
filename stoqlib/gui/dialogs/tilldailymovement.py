@@ -87,7 +87,7 @@ class TillDailyMovementDialog(BaseEditor):
         for option in [Today, Yesterday, LastWeek, LastMonth]:
             self.date_filter.add_option(option)
         self.date_filter.select(position=0)
-        self.daterange_hbox.pack_start(self.date_filter, False, False)
+        self.daterange_hbox.pack_start(self.date_filter, False, False, 0)
         self.date_filter.show_all()
 
         # Setting report lists' columns

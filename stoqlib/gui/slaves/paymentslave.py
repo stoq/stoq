@@ -866,7 +866,7 @@ class CardMethodSlave(BaseEditorSlave):
         radio = gtk.RadioButton(self._radio_group, name)
         radio.set_data('type', payment_type)
         radio.connect('toggled', self._on_card_type_radio_toggled)
-        self.types_box.pack_start(radio)
+        self.types_box.pack_start(radio, True, True, 0)
         radio.show()
 
         if self._radio_group is None:
@@ -1354,7 +1354,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             description = payment_method.get_description()
 
         radio = gtk.RadioButton(group, description)
-        self.methods_box.pack_start(radio)
+        self.methods_box.pack_start(radio, True, True, 0)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', payment_method)
         radio.show()

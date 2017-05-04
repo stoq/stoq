@@ -89,7 +89,7 @@ class AccountEditor(BaseEditor):
 
         action_area = self.main_dialog.action_area
         action_area.set_layout(gtk.BUTTONBOX_END)
-        action_area.pack_start(self._test_button, expand=False, fill=False)
+        action_area.pack_start(self._test_button, False, False, 0)
         action_area.set_child_secondary(self._test_button, True)
         self._test_button.show()
 
@@ -109,7 +109,7 @@ class AccountEditor(BaseEditor):
         self.parent_accounts = AccountTree(with_code=False, create_mode=True)
         self.parent_accounts.connect('selection-changed',
                                      self._on_parent_accounts__selection_changed)
-        self.tree_box.pack_start(self.parent_accounts)
+        self.tree_box.pack_start(self.parent_accounts, True, True, 0)
         self.tree_box.reorder_child(self.parent_accounts, 0)
 
         if sysparam.compare_object('IMBALANCE_ACCOUNT', self.model):

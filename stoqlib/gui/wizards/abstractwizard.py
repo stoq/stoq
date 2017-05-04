@@ -589,7 +589,7 @@ class SellableItemSlave(BaseEditorSlave):
                                     label=self.summary_label_text,
                                     value_format='<b>%s</b>')
         self.summary.show()
-        self.slave.list_vbox.pack_start(self.summary, expand=False)
+        self.slave.list_vbox.pack_start(self.summary, False, True, 0)
 
     def _run_advanced_search(self, search_str=None):
         table, query = self.get_sellable_view_query()

@@ -96,12 +96,12 @@ class ProgressbarDialog(BasicDialog):
         self.set_ok_label(_("Done"))
 
         self.progressbar = gtk.ProgressBar()
-        self.vbox.pack_start(self.progressbar, False, False)
+        self.vbox.pack_start(self.progressbar, False, False, 0)
         self.progressbar.show()
 
         self.expander = gtk.Expander(label=_("Details..."))
         self.expander.set_expanded(False)
-        self.vbox.pack_start(self.expander, True, True)
+        self.vbox.pack_start(self.expander, True, True, 0)
         self.expander.show()
         self.vbox.set_child_packing(self.main, False, False, 0, 0)
 

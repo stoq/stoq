@@ -82,5 +82,5 @@ class DateRangeDialog(BasicDialog):
             self.date_filter.add_option(option)
         self.date_filter.select(position=0)
 
-        self.vbox.pack_start(self.date_filter, False, False)
+        self.vbox.pack_start(self.date_filter, False, False, 0)
         self.date_filter.show_all()

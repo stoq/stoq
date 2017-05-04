@@ -166,13 +166,13 @@ class CrashReportDialog(object):
                 label = gtk.LinkButton(data['report-url'], message)
             else:
                 label = gtk.Label(message)
-            self._dialog.vbox.pack_start(label)
+            self._dialog.vbox.pack_start(label, True, True, 0)
             label.show()
         self._finish()
 
     def _show_error(self):
         label = gtk.Label(_("Failed to submit bugreport"))
-        self._dialog.vbox.pack_start(label)
+        self._dialog.vbox.pack_start(label, True, True, 0)
         label.show()
         self._finish()
 

@@ -99,7 +99,7 @@ class SearchFilter(gtk.HBox):
         self._remove_button.set_label_visible(False)
         self._remove_button.connect('clicked', self._on_remove_clicked)
         self._remove_button.show()
-        self.pack_start(self._remove_button, False, False)
+        self.pack_start(self._remove_button, False, False, 0)
 
     def _on_remove_clicked(self, button):
         self.emit('removed')
@@ -161,7 +161,7 @@ class DateSearchFilter(SearchFilter):
         self._options = {}
         SearchFilter.__init__(self, label=label)
         self.title_label = gtk.Label(label)
-        self.pack_start(self.title_label, False, False)
+        self.pack_start(self.title_label, False, False, 0)
         self.title_label.show()
 
         self.mode = ProxyComboBox()
@@ -172,7 +172,7 @@ class DateSearchFilter(SearchFilter):
         self.mode.show()
 
         self.from_label = gtk.Label(_("From:"))
-        self.pack_start(self.from_label, False, False)
+        self.pack_start(self.from_label, False, False, 0)
         self.from_label.show()
 
         self.start_date = ProxyDateEntry()
@@ -182,7 +182,7 @@ class DateSearchFilter(SearchFilter):
         self.start_date.show()
 
         self.to_label = gtk.Label(_("To:"))
-        self.pack_start(self.to_label, False, False)
+        self.pack_start(self.to_label, False, False, 0)
         self.to_label.show()
 
         self.end_date = ProxyDateEntry()
@@ -468,7 +468,7 @@ class ComboSearchFilter(SearchFilter):
         self._block_updates = False
         SearchFilter.__init__(self, label=label)
         label = gtk.Label(label)
-        self.pack_start(label, False, False)
+        self.pack_start(label, False, False, 0)
         label.show()
         self.title_label = label
 
@@ -653,7 +653,7 @@ class StringSearchFilter(SearchFilter):
         self._container = container
         SearchFilter.__init__(self, label=label)
         self.title_label = gtk.Label(label)
-        self.pack_start(self.title_label, False, False)
+        self.pack_start(self.title_label, False, False, 0)
         self.title_label.show()
 
         self._options = {}
@@ -786,7 +786,7 @@ class NumberSearchFilter(SearchFilter):
         SearchFilter.__init__(self, label=label)
         self.title_label = gtk.Label(label)
         self.title_label.set_alignment(1.0, 0.5)
-        self.pack_start(self.title_label, False, False)
+        self.pack_start(self.title_label, False, False, 0)
         self.title_label.show()
 
         self.mode = ProxyComboBox()
@@ -802,7 +802,7 @@ class NumberSearchFilter(SearchFilter):
         self.start.connect_after('activate', self._on_entry__activate)
 
         self.and_label = gtk.Label(_("And"))
-        self.pack_start(self.and_label, False, False)
+        self.pack_start(self.and_label, False, False, 0)
         self.and_label.show()
 
         self.end = gtk.SpinButton(climb_rate=1.0)
@@ -921,7 +921,7 @@ class MultiSearchFilter(SearchFilter):
         super(MultiSearchFilter, self).__init__(label=label)
 
         self._title_label = gtk.Label(label)
-        self.pack_start(self._title_label, False, False)
+        self.pack_start(self._title_label, False, False, 0)
 
         self._combo = ProxyMultiCombo(width=400)
         self._combo.prefill(items)

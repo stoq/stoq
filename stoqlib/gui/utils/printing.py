@@ -345,7 +345,7 @@ class PrintOperationWEasyPrint(PrintOperation):
         table.attach(self.font_button, 1, 2, 0, 1,
                      xoptions=0,
                      yoptions=0)
-        box.pack_start(table, False, False)
+        box.pack_start(table, False, False, 0)
         box.show_all()
         return box
 

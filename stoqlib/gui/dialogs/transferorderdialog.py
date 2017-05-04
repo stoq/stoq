@@ -116,7 +116,7 @@ class TransferOrderDetailsDialog(BaseEditor):
                                               label=total_label,
                                               value_format=value_format)
         products_summary_label.show()
-        self.products_vbox.pack_start(products_summary_label, False)
+        self.products_vbox.pack_start(products_summary_label, False, True, 0)
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,

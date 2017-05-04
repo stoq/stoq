@@ -535,14 +535,14 @@ class FinancialApp(ShellApp):
     def _create_tab_label(self, title, pixbuf, account_view_id=None, page=None):
         hbox = gtk.HBox()
         image = gtk.image_new_from_pixbuf(pixbuf)
-        hbox.pack_start(image, False, False)
+        hbox.pack_start(image, False, False, 0)
         label = gtk.Label(title)
-        hbox.pack_start(label, True, False)
+        hbox.pack_start(label, True, False, 0)
         if account_view_id:
             button = NotebookCloseButton()
             if page:
                 button.connect('clicked', lambda button: self._close_page(page))
-            hbox.pack_end(button, False, False)
+            hbox.pack_end(button, False, False, 0)
         hbox.show_all()
         return hbox
 

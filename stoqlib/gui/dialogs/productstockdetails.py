@@ -76,7 +76,7 @@ class ProductStockHistoryDialog(BaseEditor):
         box.set_border_width(6)
         box.show()
         olist = ObjectList()
-        box.pack_start(olist)
+        box.pack_start(olist, True, True, 0)
         olist.show()
         self.history_notebook.append_page(box, gtk.Label(name))
         return olist
@@ -145,34 +145,34 @@ class ProductStockHistoryDialog(BaseEditor):
                                                label=total_label,
                                                value_format=value_format)
         receiving_summary_label.show()
-        self.receiving_vbox.pack_start(receiving_summary_label, False)
+        self.receiving_vbox.pack_start(receiving_summary_label, False, True, 0)
 
         sales_summary_label = SummaryLabel(klist=self.sales_list,
                                            column='quantity',
                                            label=total_label,
                                            value_format=value_format)
         sales_summary_label.show()
-        self.sales_vbox.pack_start(sales_summary_label, False)
+        self.sales_vbox.pack_start(sales_summary_label, False, True, 0)
 
         transfer_summary_label = SummaryLabel(klist=self.transfer_list,
                                               column='item_quantity',
                                               label=total_label,
                                               value_format=value_format)
         transfer_summary_label.show()
-        self.transfer_vbox.pack_start(transfer_summary_label, False)
+        self.transfer_vbox.pack_start(transfer_summary_label, False, True, 0)
 
         loan_summary_label = SummaryLabel(klist=self.loan_list,
                                           column='quantity',
                                           label=total_label,
                                           value_format=value_format)
-        self.loan_vbox.pack_start(loan_summary_label, False)
+        self.loan_vbox.pack_start(loan_summary_label, False, True, 0)
 
         decrease_summary_label = SummaryLabel(klist=self.decrease_list,
                                               column='quantity',
                                               label=total_label,
                                               value_format=value_format)
         decrease_summary_label.show()
-        self.decrease_vbox.pack_start(decrease_summary_label, False)
+        self.decrease_vbox.pack_start(decrease_summary_label, False, True, 0)
 
     def _get_receiving_columns(self):
         return [IdentifierColumn("order_identifier", title=_('Receiving #'), sorted=True),

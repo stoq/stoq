@@ -162,7 +162,7 @@ class InvoiceLayoutEditor(BaseEditor):
                          category=invoice_field.category))
             descriptions[invoice_field.name] = invoice_field.description
         self._field_descriptions = descriptions
-        self.left_vbox.pack_end(items, True, True)
+        self.left_vbox.pack_end(items, True, True, 0)
         items.show()
 
     def _field_changed(self, grid_field):

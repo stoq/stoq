@@ -80,13 +80,13 @@ class UserProfileEditor(BaseEditor):
             button.data_type = bool
             button.model_attribute = 'has_permission'
             button.show()
-            box.pack_start(button, padding=6)
+            box.pack_start(button, True, True, 6)
 
             image = gtk.image_new_from_stock(icon_name, gtk.ICON_SIZE_MENU)
-            box.pack_start(image, False, False)
+            box.pack_start(image, False, False, 0)
             image.show()
 
-            self.applications_vbox.pack_start(box, False)
+            self.applications_vbox.pack_start(box, False, True, 0)
 
             model = settings.get(name)
             if model is None:

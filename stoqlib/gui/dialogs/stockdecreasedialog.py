@@ -85,7 +85,7 @@ class StockDecreaseDetailsDialog(BaseEditor):
                                                        label=total_cost_label,
                                                        value_format=value_format)
             products_cost_summary_label.show()
-            self.products_vbox.pack_start(products_cost_summary_label, False)
+            self.products_vbox.pack_start(products_cost_summary_label, False, True, 0)
         products = self.store.find(StockDecreaseItem, stock_decrease=self.model)
         self.product_list.add_list(list(products))
 

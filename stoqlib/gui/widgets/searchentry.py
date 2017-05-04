@@ -137,7 +137,7 @@ class SearchEntryGadget(object):
         button.set_relief(gtk.RELIEF_NONE)
         button.set_image(image)
         button.show()
-        self.box.pack_start(button, False, False)
+        self.box.pack_start(button, False, False, 0)
         return button
 
     def _replace_widget(self):

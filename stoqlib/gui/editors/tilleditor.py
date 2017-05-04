@@ -221,7 +221,7 @@ class TillClosingEditor(BaseEditor):
             column='value',
             label='<b>%s</b>' % api.escape(_(u'Total balance:')))
         summary_day_history.show()
-        self.day_history_box.pack_start(summary_day_history, False)
+        self.day_history_box.pack_start(summary_day_history, False, True, 0)
 
     def _get_day_history(self):
         if not self.till:

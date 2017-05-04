@@ -64,8 +64,8 @@ def button_set_image_with_label(button, stock_id, text):
     if '_' in text:
         label.set_use_underline(True)
 
-    box.pack_start(image)
-    box.pack_start(label)
+    box.pack_start(image, True, True, 0)
+    box.pack_start(label, True, True, 0)
 
     align.show_all()
     button.add(align)

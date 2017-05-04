@@ -111,7 +111,7 @@ class SystemParameterEditor(BaseEditor):
         if box is None:
             self.container.add(widget)
         else:
-            box.pack_start(widget)
+            box.pack_start(widget, True, True, 0)
 
         widget.show()
         widget.connect('validate', self._on_entry__validate)
@@ -134,7 +134,7 @@ class SystemParameterEditor(BaseEditor):
         if box is None:
             self.container.add(widget)
         else:
-            box.pack_start(widget)
+            box.pack_start(widget, True, True, 0)
 
         widget.show()
         widget.connect('validate', self._on_entry__validate)
@@ -173,7 +173,7 @@ class SystemParameterEditor(BaseEditor):
         if dir_only:
             filechooser_button.set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
 
-        hbox.pack_start(filechooser_button, expand=False)
+        hbox.pack_start(filechooser_button, False, True, 0)
         filechooser_button.show()
 
         self.container.add(hbox)
@@ -232,12 +232,12 @@ class SystemParameterEditor(BaseEditor):
         yes_widget.set_label(_("Yes"))
         yes_widget.connect("toggled", self._on_yes_radio__toggled)
         group = yes_widget.get_group()[0]
-        box.pack_start(yes_widget)
+        box.pack_start(yes_widget, True, True, 0)
         yes_widget.show()
         no_widget = gtk.RadioButton()
         no_widget.set_label(_("No"))
         no_widget.set_group(group)
-        box.pack_start(no_widget)
+        box.pack_start(no_widget, True, True, 0)
         no_widget.show()
         self.container.add(box)
         no_widget.set_active(self.model.field_value == "0")

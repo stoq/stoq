@@ -158,7 +158,7 @@ class _QueryEntryPopup(PopupWindow):
 
         self._sw = gtk.ScrolledWindow()
         self._sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_NEVER)
-        vbox.pack_start(self._sw)
+        vbox.pack_start(self._sw, True, True, 0)
 
         self._model = gtk.ListStore(object, str, str, bool, int)
         self._treeview = gtk.TreeView(self._model)
@@ -448,7 +448,7 @@ class QueryEntryGadget(object):
         button.set_relief(gtk.RELIEF_NONE)
         button.set_image(image)
         button.show()
-        self.box.pack_start(button, False, False)
+        self.box.pack_start(button, False, False, 0)
         return button
 
     def _replace_widget(self):

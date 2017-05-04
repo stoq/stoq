@@ -121,7 +121,7 @@ class CostCenterDialog(BaseEditor):
                                            label=total_label,
                                            value_format=value_format)
         total_summary_label.show()
-        self.payments_vbox.pack_start(total_summary_label, False)
+        self.payments_vbox.pack_start(total_summary_label, False, True, 0)
 
         total_label = "<b>%s</b>" % api.escape(_("Total paid:"))
         total_paid_summary_label = SummaryLabel(klist=self.payments_list,
@@ -129,7 +129,7 @@ class CostCenterDialog(BaseEditor):
                                                 label=total_label,
                                                 value_format=value_format)
         total_paid_summary_label.show()
-        self.payments_vbox.pack_start(total_paid_summary_label, False)
+        self.payments_vbox.pack_start(total_paid_summary_label, False, True, 0)
 
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
         transaction_summary_label = SummaryLabel(
@@ -138,7 +138,7 @@ class CostCenterDialog(BaseEditor):
             label=total_label,
             value_format=value_format)
         transaction_summary_label.show()
-        self.stock_transactions_vbox.pack_start(transaction_summary_label, False)
+        self.stock_transactions_vbox.pack_start(transaction_summary_label, False, True, 0)
 
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
         sale_summary_label = SummaryLabel(klist=self.sales_list,
@@ -146,7 +146,7 @@ class CostCenterDialog(BaseEditor):
                                           label=total_label,
                                           value_format=value_format)
         sale_summary_label.show()
-        self.sales_vbox.pack_start(sale_summary_label, False)
+        self.sales_vbox.pack_start(sale_summary_label, False, True, 0)
 
     def _setup_widgets(self):
         self._setup_columns()
